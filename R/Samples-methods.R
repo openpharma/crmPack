@@ -1,0 +1,319 @@
+#####################################################################################
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Project: Object-oriented implementation of CRM designs
+##
+## Time-stamp: <[Samples-methods.R] by DSB Die 29/04/2014 15:04>
+##
+## Description:
+## Methods for processing the MCMC samples.
+##
+## History:
+## 25/03/2014   file creation
+#####################################################################################
+
+##' @include McmcOptions-methods.R
+##' @include Model-methods.R
+{}
+
+## --------------------------------------------------
+## Extract certain parameter from "Samples" object to produce
+## plots with "ggmcmc" package
+## --------------------------------------------------
+
+
+##' Extract something from an object and produce a data.frame
+##'
+##' @param object the object
+##' @param \dots unused
+##' @return the data frame
+##'
+##' @genericMethods
+##' @export
+##' @keywords methods
+setGeneric("extract",
+           def=
+           function(object, ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("extract")},
+           valueClass="data.frame")
+
+## --------------------------------------------------
+## The method for "Samples"
+## --------------------------------------------------
+
+##' Extract certain parameter from Samples object
+##'
+##' @param object the \code{\linkS4class{Samples}} object
+##' @param parameter the name of the parameter
+##' @return the data frame suitable for use with \code{\link[ggmcmc]{ggmcmc}}
+##'
+##' @export
+##' @keywords methods
+setMethod("extract",
+          signature=
+          signature(object="Samples"),
+          def=
+          function(object,
+                   parameter,
+                   ...){
+
+              ## check the parameter name
+              stopifnot(is.character(parameter),
+                        is.scalar(parameter),
+                        parameter %in% names(object@data))
+
+              ## get the samples for this parameter
+              d <- object@data[[parameter]]
+              ## this can be either a vector or a matrix
+
+              ## what are the names of the parameter
+              ## elements?
+              elements <-
+                  if(NCOL(d) == 1L)
+                      parameter
+                  else
+                      paste(parameter,
+                            "[", seq_len(NCOL(d)), "]",
+                            sep="")
+
+              ## now we can build
+              ret <- data.frame(Iteration=seq_len(NROW(d)),
+                                Chain=1L,
+                                Parameter=
+                                factor(rep(elements, each=NROW(d)),
+                                       levels=elements),
+                                value=as.numeric(d))
+
+              ## add the attributes
+              ret <- structure(ret,
+                               nChains=1L,
+                               nParameters=NCOL(d),
+                               nIterations=object@options@iterations,
+                               nBurnin=object@options@burnin,
+                               nThin=object@options@step,
+                               description=parameter,
+                               parallel=FALSE)
+              return(ret)
+          })
+
+
+## --------------------------------------------------
+## Get fitted dose-tox curve from Samples
+## --------------------------------------------------
+
+##' Fit method for the Samples class
+##'
+##' @param object the \code{\linkS4class{Samples}} object
+##' @param model the \code{\linkS4class{Model}} object
+##' @param data the \code{\linkS4class{Data}} object
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##' @return data frame with dose, middle, lower and upper quantiles
+##'
+##' @export
+##' @keywords methods
+setMethod("fitted",
+          signature=
+          signature(object="Samples"),
+          def=
+          function(object,
+                   model,
+                   data,
+                   quantiles=c(0.025, 0.975),
+                   middle=mean,
+                   ...){
+              ## some checks
+              stopifnot(is(model, "Model"),
+                        is(data, "Data"),
+                        is.probRange(quantiles))
+
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              probSamples <- matrix(nrow=sampleSize(object@options),
+                                    ncol=data@nGrid)
+
+              ## evaluate the probs, for all samples.
+              for(i in seq_len(data@nGrid))
+              {
+                  ## Now we want to evaluate for the
+                  ## following dose:
+                  probSamples[, i] <- prob(dose=data@doseGrid[i],
+                                           model,
+                                           object)
+              }
+
+              ## extract middle curve
+              middleCurve <- apply(probSamples, 2L, FUN=middle)
+
+              ## extract quantiles
+              quantCurve <- apply(probSamples, 2L, quantile,
+                                  prob=quantiles)
+
+              ## now create the data frame
+              ret <- data.frame(dose=data@doseGrid,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+
+              ## return it
+              return(ret)
+          })
+
+## --------------------------------------------------
+## Plot dose-tox fit from a model
+## --------------------------------------------------
+
+##' Plot method for the "Samples" and "Model" object
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{Model}} object
+##' @param data the \code{\linkS4class{Data}} object
+##' @return the \code{\link[ggplot2]{ggplot}} object
+##'
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+##' @keywords methods
+setMethod("plot",
+          signature=
+          signature(x="Samples",
+                    y="Model"),
+          def=
+          function(x, y, data, ...){
+
+              ## get the fit
+              plotData <- fitted(x,
+                                 model=y,
+                                 data=data,
+                                 quantiles=c(0.025, 0.975),
+                                 middle=mean)
+
+              ## make the plot
+              gdata <-
+                  with(plotData,
+                       data.frame(x=rep(dose, 3),
+                                  y=c(middle, lower, upper) * 100,
+                                  group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                  Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                         c("Estimate",
+                                           "95% Credible Interval"))))
+
+              ret <- ggplot2::qplot(x=x,
+                                    y=y,
+                                    data=gdata,
+                                    group=group,
+                                    linetype=Type,
+                                    colour=I("red"),
+                                    geom="line",
+                                    xlab="Dose level",
+                                    ylab="Probability of DLT [%]",
+                                    ylim=c(0, 100))
+
+              ret <- ret +
+                  ggplot2::scale_linetype_manual(breaks=
+                                                 c("Estimate",
+                                                   "95% Credible Interval"),
+                                                 values=c(1,2))
+
+              return(ret)
+          })
+
+
+## --------------------------------------------------
+## Special method for dual endpoint model
+## --------------------------------------------------
+
+##' Plot method for the "Samples" object, when we have
+##' the dual endpoint model
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{DualEndpoint}} object
+##' @param data the \code{\linkS4class{DataDual}} object
+##' @param extrapolate should the biomarker fit be extrapolated to the whole
+##' dose grid? (default)
+##' @return the \code{\link[ggplot2]{ggplot}} object
+##'
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+##' @keywords methods
+setMethod("plot",
+          signature=
+          signature(x="Samples",
+                    y="DualEndpoint"),
+          def=
+          function(x, y, data, extrapolate=TRUE, ...){
+
+              ## call the superclass method, to get the toxicity plot
+              plot1 <- callNextMethod(x, y, data, ...)
+
+              ## only look at these dose levels for the plot:
+              xLevels <-
+                  if(extrapolate)
+                      seq_along(data@doseGrid)
+                  else
+                      1:max(data@xLevel)
+
+              ## get the plot data for the biomarker plot
+              functionSamples <- with(samples@data,
+                                      betaWintercept + betaW)[, xLevels, drop=FALSE]
+
+              ## extract mean curve
+              meanCurve <- colMeans(functionSamples)
+
+              ## extract quantiles
+              quantiles <- c(0.025, 0.975)
+              quantCurve <- apply(functionSamples, 2L, quantile,
+                                  prob=quantiles)
+
+              ## now create the data frame
+              plotData <- data.frame(dose=data@doseGrid[xLevels],
+                                     mean=meanCurve,
+                                     lower=quantCurve[1, ],
+                                     upper=quantCurve[2, ])
+
+              ## make the second plot
+              gdata <-
+                  with(plotData,
+                       data.frame(x=rep(dose, 3),
+                                  y=c(middle, lower, upper),
+                                  group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                  Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                         c("Estimate",
+                                           "95% Credible Interval"))))
+
+              plot2 <- ggplot2::qplot(x=x,
+                                      y=y,
+                                      data=gdata,
+                                      group=group,
+                                      linetype=Type,
+                                      colour=I("blue"),
+                                      geom="line",
+                                      xlab="Dose level",
+                                      ylab="Biomarker level")
+
+              plot2 <- plot2 +
+                  ggplot2::scale_linetype_manual(breaks=
+                                                 c("Estimate",
+                                                   "95% Credible Interval"),
+                                                 values=c(1,2))
+
+              ## arrange both plots side by side
+              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
+              return(ret)
+          })

@@ -1,0 +1,87 @@
+\docType{class}
+\name{Model-class}
+\alias{Model-class}
+\title{Class for the model input}
+\description{
+This is the general model class, from which all other
+specific models inherit.
+}
+\details{
+The \code{datamodel} must obey the convention that the data
+input is called exactly as in the \code{\linkS4class{Data}}
+class. All prior distributions for parameters should be
+contained in the model function \code{priormodel}. The
+background is that this can be used to simulate from the
+prior distribution, before obtaining any data.
+
+The \code{dose} function has as first argument \code{prob},
+a scalar toxicity probability which is targeted. Additional
+arguments are model parameters. Then it computes, using
+model parameter(s) (samples), the resulting dose. Note that
+the model parameters are called exactly as in the
+\code{model} and must be included in the \code{sample}
+vector. The vectors of all samples for these parameters
+will then be supplied to the function. So your function
+must be able to process vectors of the model parameters,
+i.e. it must vectorize over them.
+
+The \code{prob} function has as first argument \code{dose},
+which is a scalar dose. Additional arguments are model
+parameters. Then it computes, using model parameter(s)
+(samples), the resulting probability of toxicity at that
+dose. Again here, the function must vectorize over the
+model parameters.
+
+If you work with multivariate parameters, then please
+assume that your the two functions receive either one
+parameter value as a row vector, or a samples matrix where
+the rows correspond to the sampling index, i.e. the layout
+is then nSamples x dimParameter.
+
+Note that \code{dose} and \code{prob} are the inverse
+functions of each other.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{datamodel}}{a function representing the BUGS data model specification
+(see the details above)}
+
+\item{\code{priormodel}}{a function representing the BUGS prior specification
+(see the details above)}
+
+\item{\code{datanames}}{The names of all \code{\linkS4class{Data}} slots that are
+used in the \code{datamodel} and/or \code{priormodel} definition. Note that
+you cannot specify more variables than those that are really used in the
+model!}
+
+\item{\code{modelspecs}}{a function computing the list of the data model and prior
+model specifications that are required for fully specifying them (e.g. prior
+parameters, reference dose, etc.), based on the \code{\linkS4class{Data}}
+slots that are then required as arguments of this function. This will then
+be passed to BUGS for the computations.}
+
+\item{\code{dose}}{a function computing the dose reaching a specific target
+probability, based on the model parameters and additional prior settings
+(see the details above)}
+
+\item{\code{prob}}{a function computing the probability of toxicity for a specific
+dose, based on the model parameters and additional prior settings (see the
+details above)}
+
+\item{\code{init}}{a function computing the list of starting values for parameters
+required to be initialized in the MCMC sampler, based on the
+\code{\linkS4class{Data}} slots that are then required as arguments of this
+function}
+
+\item{\code{sample}}{names of all parameters from which you would like to save the
+MCMC samples. These must include the ones required by the \code{dose} and
+\code{prob} functions.}
+}}
+\seealso{
+\code{\linkS4class{LogisticNormal}},
+\code{\linkS4class{LogisticKadane}},
+\code{\linkS4class{DualEndpoint}}
+}
+\keyword{classes}
+

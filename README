@@ -1,0 +1,16 @@
+Install OpenBUGS from
+http://www.openbugs.net/w/Downloads
+
+Optionally (not required for standard models) install WinBUGS from
+http://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/
+
+Please use the following command to install the required R-packages:
+
+install.packages(c("Rcpp", "RcppArmadillo",
+	           "R2WinBUGS", "ggplot2", "gridExtra", "GenSA", "mvtnorm"),
+                 dependencies=TRUE)
+
+Finally install the crmPack from the local zip file:
+
+install.packages("crmPack_0.0-6.zip", rep=NULL)
+

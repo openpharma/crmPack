@@ -1,0 +1,20 @@
+\docType{methods}
+\name{&,Stopping,StoppingAll-method}
+\alias{&,Stopping,StoppingAll-method}
+\title{The method combining an atomic and a stopping list}
+\usage{
+\S4method{&}{Stopping,StoppingAll}(e1, e2)
+}
+\arguments{
+  \item{e1}{\code{\linkS4class{Stopping}} object}
+
+  \item{e2}{\code{\linkS4class{StoppingAll}} object}
+}
+\value{
+The modified \code{\linkS4class{StoppingAll}} object
+}
+\description{
+The method combining an atomic and a stopping list
+}
+\keyword{methods}
+

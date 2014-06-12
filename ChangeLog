@@ -1,0 +1,46 @@
+2014-06-12  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* R/simulate.R: Compute the fit only at the end of one trial
+	simulation, not after each cohort
+
+2014-06-03  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* Now we use rcppbugs for the LogisticNormal model, which yields a
+	two-fold speed-up compared to openBUGS. This is still not very
+	fast though.
+
+	* Added cohort size rules.
+
+2014-06-02  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* R/Rules-methods.R: If no dose on the dose grid has acceptable
+	toxicity, then the NCRM and dual endpoint rules return NA as the
+	recommended next best dose. Moreover, in that case the trial is
+	stopped in any case. Note that during the actual run of the trial,
+	the dose grid can be extended to lower doses in order to remedy
+	this situation and to continue the trial at acceptable doses.
+
+	* R/mcmc.R: Fixed an error that occurred when trying to sample
+	with exactly one patient in the data. This is a workaround for a
+	BRugs::bugsData feature (vectors with one entry only are not
+	surrounded by c() in the BUGS data file, which BUGS doesn't
+	allow).
+
+2014-04-22  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* R/Simulations-methods.R: Only call arrangeGrob if there are
+	multiple plots, otherwise return only the plot itself such that it
+	can be modified later on.
+
+2014-04-16  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* R/Data-methods.R: Better x-axis ticks for data plots.
+
+2014-04-01  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* First version for testing.
+
+2014-01-29  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* Started package.
+

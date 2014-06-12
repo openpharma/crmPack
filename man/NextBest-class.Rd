@@ -1,0 +1,14 @@
+\docType{class}
+\name{NextBest-class}
+\alias{NextBest-class}
+\title{The virtual class for finding next best dose}
+\description{
+The virtual class for finding next best dose
+}
+\seealso{
+\code{\linkS4class{NextBestMTD}},
+\code{\linkS4class{NextBestNCRM}},
+\code{\linkS4class{NextBestDualEndpoint}}
+}
+\keyword{classes}
+

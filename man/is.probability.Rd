@@ -1,0 +1,20 @@
+\name{is.probability}
+\alias{is.probability}
+\title{Predicate checking for a probability}
+\usage{
+is.probability(x, bounds = TRUE)
+}
+\arguments{
+  \item{x}{the object being checked}
+
+  \item{bounds}{whether to include the bounds 0 and 1
+  (default)}
+}
+\value{
+Returns \code{TRUE} if \code{x} is a probability
+}
+\description{
+Predicate checking for a probability
+}
+\keyword{internal}
+

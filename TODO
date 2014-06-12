@@ -1,0 +1,29 @@
+- combination designs
+
+- allow placebos in the cohorts for CNS
+
+- implement one-parameter CRM with skeleton probabilities?
+  -> perhaps also with random effects per doses (proposed by David)
+
+- test if custom MCMC sampler could be used for speed
+
+- use faster sampler ... RStan perhaps?
+
+- add examples to help pages
+
+- be able to run simulations on the pRED cluster
+
+- production of Word output tables from simulation summaries
+
+- minimal informative prior construction for other model(s)
+
+- other prior in the Kadane model -> how?
+
+- historical data prior,
+  pseudodata prior
+
+- mixture prior
+
+- record number of times the model is overruled in the simulations (Uli Beyer 
+request)
+

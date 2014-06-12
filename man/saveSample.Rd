@@ -1,0 +1,21 @@
+\name{saveSample}
+\alias{saveSample}
+\title{Determine if we should save this sample}
+\usage{
+saveSample(iteration, mcmcOptions)
+}
+\arguments{
+  \item{iteration}{the current iteration index}
+
+  \item{mcmcOptions}{the \code{\linkS4class{McmcOptions}}
+  object}
+}
+\value{
+Logical value, if we should save this sample
+}
+\description{
+Determine if we should save this sample
+}
+\keyword{internal}
+\keyword{programming}
+
