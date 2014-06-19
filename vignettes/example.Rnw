@@ -69,12 +69,20 @@ install.packages(c("Rcpp", "RcppArmadillo", "rcppbugs",
                  dependencies=TRUE)
 @
 
-Finally, you can install \texttt{crmPack} from the local zip file. The following
-command assumes that the zip file is located in your current working directory:
-
-<<install-crmPack, eval=FALSE>>=
-install.packages("crmPack_0.0-9.zip", repos=NULL)
+Finally, you can obtain the newest version of the package.
+Download it by visiting the following URL:
+\url{https://stash.intranet.roche.com/stash/plugins/servlet/archive/projects/RSTAT/repos/crmpack?at=refs%2Fheads%2Fmaster}
+This will download a file called \texttt{crmpack-master.zip}. You then extract
+the zip file to a folder \texttt{crmpack-master}. Afterwards you can
+install the package from this folder, e.g. from within \texttt{R} using the
+command
+<<install-crmpack, eval=FALSE>>=
+install.packages("path/to/the/directory/crmpack-master",
+                 repos=NULL,
+                 type="source")
 @
+Note that you have to specify the full directory to \texttt{crmpack-master}, unless
+this is a subdirectory of your current working directory.
 
 \section{Getting started}
 \label{sec:getting-started}
