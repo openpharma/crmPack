@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Die 29/04/2014 15:06>
+## Time-stamp: <[fromQuantiles.R] by DSB Don 26/06/2014 14:17>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -56,8 +56,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                      upper,
                                      level=0.95,
                                      parstart=NULL,
-                                     parlower=c(-10, -10, 0, 0, -1),
-                                     parupper=c(10, 10, 5, 5, 1),
+                                     parlower=c(-10, -10, 0, 0, -0.95),
+                                     parupper=c(10, 10, 10, 10, 0.95),
                                      control=
                                      list(threshold.stop=0.01,
                                           maxit=50000,
