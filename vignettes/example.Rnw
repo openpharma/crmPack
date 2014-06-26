@@ -59,7 +59,7 @@ the internal MCMC computations. While OpenBUGS is required for the default MCMC
 runs, WinBUGS only needs to be installed currently if the dual-endpoint designs
 need to be run (because they don't run with OpenBUGS). To increase the speed of
 the MCMC sampling, rcppbugs is currently used for the \texttt{LogisticNormal}
-model.
+and \texttt{LogisticLogNormal} models.
 
 Furthermore, you first have to install some required packages, with the
 following command:
@@ -101,22 +101,22 @@ then clicking on ``Packages'' and then searching for ``crmPack'' and clicking on
 the link. This gives you the list of all help pages available for the package.
 
 First, we will set up a logistic normal model. Therefore, you can now click on
-the corresponding help page \texttt{LogisticNormal-class} as background
+the corresponding help page \texttt{LogisticLogNormal-class} as background
 information for the next steps.
 
 \section{Model setup}
 \label{sec:model-setup}
 
-\subsection{Logistic model with bivariate normal prior}
+\subsection{Logistic model with bivariate (log) normal prior}
 \label{sec:logist-norm-model}
 
 Let us start with setting up the logistic regression model, which will then be
 used in the following for the continual reassessment method. With the following
-command, we create a new model of class \texttt{LogisticNormal}, with certain
+command, we create a new model of class \texttt{LogisticLogNormal}, with certain
 mean and covariance prior parameters and reference dose:
 
 <<model-setup>>=
-model <- new("LogisticNormal",
+model <- new("LogisticLogNormal",
              mean=c(-0.85, 1),
              cov=
              matrix(c(1, -0.5, -0.5, 1),
@@ -126,10 +126,10 @@ model <- new("LogisticNormal",
 
 This command may look unfamiliar to you, because it uses the \texttt{new}
 function. This is a special function in \texttt{R}, as it creates new objects of
-the class specified by its first argument (here: \texttt{"LogisticNormal"}). The
-\texttt{R}-package \texttt{crmPack} uses the S4 class system for implementation
-of the CRM designs. We can query the class an object belongs to with the
-\texttt{class} function:
+the class specified by its first argument (here: \texttt{"LogisticLogNormal"}).
+The \texttt{R}-package \texttt{crmPack} uses the S4 class system for
+implementation of the CRM designs. We can query the class an object belongs to
+with the \texttt{class} function:
 
 <<class>>=
 class(model)
@@ -315,7 +315,7 @@ samples <- mcmc(data, model, options)
 @
 
 The \texttt{mcmc} function takes the data object, the model and the MCMC
-options. As the model here is of class \texttt{LogisticNormal}, the rcppbugs
+options. As the model here is of class \texttt{LogisticLogNormal}, the rcppbugs
 implementation is used, which is about twice as fast as the WinBUGS code.
 However, for other models, by default, the OpenBUGS implementation is used for
 obtaining the samples, and you could specify \texttt{program="WinBUGS"} to use
