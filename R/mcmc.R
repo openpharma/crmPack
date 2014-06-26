@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Die 03/06/2014 15:43>
+## Time-stamp: <[mcmc.R] by DSB Don 26/06/2014 15:20>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -238,7 +238,7 @@ setMethod("mcmc",
                                           mean=model@mean,
                                           sigma=model@cov)
                   samples <- list(alpha0=tmp[, 1],
-                                  alpha1=exp(tmp[, 2]))
+                                  alpha1=tmp[, 2])
               } else {
 
                   ## prior correlation
@@ -274,7 +274,7 @@ setMethod("mcmc",
                   ## the estimated probabilities
                   probs <-
                       deterministic(function(X, theta0, theta1){
-                          plogis(X[,1] * theta0 + X[,2] * exp(theta1))
+                          plogis(X[,1] * theta0 + X[,2] * theta1)
                       }, X, theta0, theta1)
 
                   ## the likelihood
@@ -307,15 +307,13 @@ setMethod("mcmc",
                   ##                         seed=NA, # fixed seed will be used!
                   ##                         beta.start=model@init()["theta")
 
-
-
                   ## select the right iterations first
                   select <- seq(from=length(ans$theta0) - sampleSize(options) + 1,
                                 to=length(ans$theta0))
 
                   ## then form the samples list
                   samples <- list(alpha0=ans$theta0[select],
-                                  alpha1=exp(ans$theta1[select]))
+                                  alpha1=ans$theta1[select])
               }
 
               ## form a Samples object for return:

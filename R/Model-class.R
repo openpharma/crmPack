@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Die 29/04/2014 14:59>
+## Time-stamp: <[Model-class.R] by DSB Don 26/06/2014 15:00>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -125,7 +125,7 @@ setClass(Class="Model",
 ## ============================================================
 
 
-##' Standard logistic model with bivariate normal prior
+##' Standard logistic model with bivariate (log) normal prior
 ##'
 ##' This is the usual logistic regression model with a bivariate normal prior on
 ##' the intercept and log slope.
@@ -149,7 +149,7 @@ setClass(Class="Model",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticNormal",
+setClass(Class="LogisticLogNormal",
          contains="Model",
          representation=
          representation(mean="numeric",
@@ -164,9 +164,9 @@ setClass(Class="LogisticNormal",
          })
 
 
-##' Initialization method for the "LogisticNormal" class
+##' Initialization method for the "LogisticLogNormal" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticNormal}} we want to
+##' @param .Object the \code{\linkS4class{LogisticLogNormal}} we want to
 ##' initialize
 ##' @param mean the prior mean vector
 ##' @param cov the prior covariance matrix
@@ -175,7 +175,7 @@ setClass(Class="LogisticNormal",
 ##' @export
 ##' @keywords methods
 setMethod("initialize",
-          signature(.Object = "LogisticNormal"),
+          signature(.Object = "LogisticLogNormal"),
           function (.Object,
                     mean,
                     cov,
@@ -237,6 +237,122 @@ setMethod("initialize",
                              c("alpha0", "alpha1"),
                              ...)
           })
+
+## ============================================================
+
+
+##' Standard logistic model with bivariate normal prior
+##'
+##' This is the usual logistic regression model with a bivariate normal prior on
+##' the intercept and slope.
+##'
+##' The covariate is the natural logarithm of the dose \eqn{x} divided by
+##' the reference dose \eqn{x^{*}}:
+##'
+##' \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
+##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
+##' \eqn{x}.
+##'
+##' The prior is
+##' \deqn{(\alpha, \beta) \sim Normal(\mu, \Sigma)}
+##'
+##' The slots of this class contain the mean vector and the covariance matrix of
+##' the bivariate normal distribution, as well as the reference dose.
+##'
+##' @slot mean the prior mean vector \eqn{\mu}
+##' @slot cov the prior covariance matrix \eqn{\Sigma}
+##' @slot refDose the reference dose \eqn{x^{*}}
+##'
+##' @export
+##' @keywords classes
+setClass(Class="LogisticNormal",
+         contains="Model",
+         representation=
+         representation(mean="numeric",
+                        cov="matrix",
+                        refDose="numeric"),
+         validity=
+         function(object){
+             stopifnot(length(object@mean) == 2,
+                       identical(dim(object@cov), c(2L, 2L)),
+                       ! is.null(chol(object@cov)),
+                       is.scalar(object@refDose))
+         })
+
+
+##' Initialization method for the "LogisticNormal" class
+##'
+##' @param .Object the \code{\linkS4class{LogisticNormal}} we want to
+##' initialize
+##' @param mean the prior mean vector
+##' @param cov the prior covariance matrix
+##' @param refDose the reference dose
+##'
+##' @export
+##' @keywords methods
+setMethod("initialize",
+          signature(.Object = "LogisticNormal"),
+          function (.Object,
+                    mean,
+                    cov,
+                    refDose,
+                    ...){
+              ## go to the general initialize method now
+              callNextMethod(.Object,
+                             mean=mean,
+                             cov=cov,
+                             refDose=refDose,
+                             datamodel=
+                             function(){
+                                 ## the logistic likelihood
+                                 for (i in 1:nObs)
+                                 {
+                                     y[i] ~ dbern(p[i])
+                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                     StandLogDose[i] <- log(x[i] / refDose)
+                                 }
+                             },
+                             priormodel=
+                             function(){
+                                 ## the multivariate normal prior on the coefficients
+                                 priorPrec[1:2,1:2] <- inverse(priorCov[,])
+                                 theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                                 ## extract actual coefficients
+                                 alpha0 <- theta[1]
+                                 alpha1 <- theta[2]
+
+                                 ## dummy to use refDose here.
+                                 ## It is contained in the modelspecs list below,
+                                 ## so it must occur here
+                                 bla <- refDose + 1
+                             },
+                             datanames=c("nObs", "y", "x"),
+                             modelspecs=
+                             function(){
+                                 list(refDose=refDose,
+                                      priorCov=cov,
+                                      priorMean=mean)
+                             },
+                             dose=
+                             function(prob, alpha0, alpha1){
+                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
+                                 return(exp(StandLogDose) * refDose)
+                             },
+                             prob=
+                             function(dose, alpha0, alpha1){
+                                 StandLogDose <- log(dose / refDose)
+                                 return(plogis(alpha0 + alpha1 * StandLogDose))
+                             },
+                             init=
+                             ## todo: find better starting values
+                             function(){
+                                 list(theta=c(0, 1))
+                             },
+                             sample=
+                             c("alpha0", "alpha1"),
+                             ...)
+          })
+
 
 ## ============================================================
 

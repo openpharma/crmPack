@@ -6,8 +6,8 @@ LinkingTo: Rcpp, RcppArmadillo
 LazyLoad: yes
 Author: Daniel Sabanes Bove <sabanesd@roche.com>
 Description: Object-oriented implementation of CRM designs
-Version: 0.0-10
-Date: 2014-06-19
+Version: 0.0-11
+Date: 2014-06-26
 Depends:
     R (>= 3.0.0),
     Rcpp (>= 0.10.6),
@@ -20,7 +20,8 @@ Imports:
     gridExtra,
     GenSA,
     mvtnorm,
-    parallel
+    parallel,
+    BayesLogit
 Suggests:
     ggmcmc,
     grid
