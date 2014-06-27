@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Don 26/06/2014 15:04>
+## Time-stamp: <[fromQuantiles.R] by DSB Fre 27/06/2014 16:29>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -17,7 +17,8 @@
 {}
 
 
-##' Convert prior quantiles (lower, median, upper) to LogisticNormal model
+##' Convert prior quantiles (lower, median, upper) to logistic (log)
+##' normal model
 ##'
 ##' This function uses generalised simulated annealing to optimise
 ##' a \code{\linkS4class{LogisticNormal}} model to be as close as possible
@@ -30,6 +31,8 @@
 ##' @param upper the upper quantiles
 ##' @param level the credible level of the (lower, upper) intervals (default:
 ##' 0.95)
+##' @param logNormal use the log-normal prior? (not default) otherwise, the
+##' normal prior for the logistic regression coefficients is used
 ##' @param parstart starting values for the parameters. By default, these
 ##' are determined from the medians supplied.
 ##' @param parlower lower bounds on the parameters (intercept alpha and the
@@ -37,11 +40,12 @@
 ##' @param parupper upper bounds on the parameters
 ##' @param control additional options for the optimisation routine, see
 ##' \code{\link[GenSA]{GenSA}} for more details
-##' @return a list with the best approximating LogisticNormal \code{model}, the
-##' resulting \code{quantiles}, the \code{required} quantiles and the
-##' \code{distance} to the required quantiles, as well as the final
-##' \code{parameters} (which could be used for running the algorithm a
-##' second time)
+##' @return a list with the best approximating \code{model}
+##' (\code{\linkS4class{LogisticNormal}} or
+##' \code{\linkS4class{LogisticLogNormal}), the resulting \code{quantiles}, the
+##' \code{required} quantiles and the \code{distance} to the required quantiles,
+##' as well as the final \code{parameters} (which could be used for running the
+##' algorithm a second time)
 ##'
 ##' @importFrom GenSA GenSA
 ##' @importFrom mvtnorm rmvnorm
@@ -53,6 +57,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                      median,
                                      upper,
                                      level=0.95,
+                                     logNormal=FALSE,
                                      parstart=NULL,
                                      parlower=c(-10, -10, 0, 0, -0.95),
                                      parupper=c(10, 10, 10, 10, 0.95),
@@ -75,12 +80,13 @@ Quantiles2LogisticNormal <- function(dosegrid,
               all(lower < median),
               all(upper > median),
               is.probability(level, bounds=FALSE),
+              is.bool(logNormal),
               identical(length(parlower), 5L),
               identical(length(parupper), 5L),
               all(parlower < parupper))
 
     ## parametrize in terms of the means for the intercept alpha and the
-    ## slope beta,
+    ## (log) slope beta,
     ## the corresponding standard deviations and the correlation.
     ## Define start values for optimisation:
     startValues <-
@@ -95,7 +101,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
             c(meanAlpha=
               startAlphaBeta[1],
               meanBeta=
-              startAlphaBeta[2],
+              if(logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
               sdAlpha=
               1,
               sdBeta=
@@ -124,7 +130,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
 
         ## extract separate coefficients
         alphaSamples <- normalSamples[, 1L]
-        betaSamples <- normalSamples[, 2L]
+        betaSamples <- if(logNormal) exp(normalSamples[, 2L]) else normalSamples[, 2L]
 
         ## and compute resulting quantiles
         quants <- matrix(nrow=length(dosegrid),
@@ -163,7 +169,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
     targetRes <- target(pars)
 
     ## and construct the model
-    ret <- new("LogisticNormal",
+    ret <- new(if(logNormal) "LogisticLogNormal" else "LogisticNormal",
                mean=attr(targetRes, "mean"),
                cov=attr(targetRes, "cov"),
                refDose=refDose)
