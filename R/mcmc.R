@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Don 26/06/2014 15:20>
+## Time-stamp: <[mcmc.R] by DSB Don 26/06/2014 15:36>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -218,6 +218,7 @@ setMethod("mcmc",
 ##' The fast method for the LogisticNormal class
 ##'
 ##' @param verbose shall messages be printed? (not default)
+##' @importFrom BayesLogit logit
 setMethod("mcmc",
           signature=
           signature(data="Data",
@@ -239,6 +240,61 @@ setMethod("mcmc",
                                           sigma=model@cov)
                   samples <- list(alpha0=tmp[, 1],
                                   alpha1=tmp[, 2])
+              } else {
+
+                  ## set up design matrix
+                  X <- cbind(1, log(data@x / model@refDose))
+
+                  ## use fast special sampler here
+                  initRes <- BayesLogit::logit(y=data@y,
+                                               X=X,
+                                               m0=model@mean,
+                                               P0=solve(model@cov),
+                                               samp=sampleSize(options),
+                                               burn=options@burnin)
+
+                  ## then form the samples list
+                  samples <- list(alpha0=initRes$beta[,1],
+                                  alpha1=initRes$beta[,2])
+              }
+
+              ## form a Samples object for return:
+              ret <- new("Samples",
+                         data=samples,
+                         options=options)
+
+              return(ret)
+          })
+
+
+## --------------------------------------------------
+## The fast method for the LogisticLogNormal class
+## --------------------------------------------------
+
+##' The fast method for the LogisticLogNormal class
+##'
+##' @param verbose shall messages be printed? (not default)
+setMethod("mcmc",
+          signature=
+          signature(data="Data",
+                    model="LogisticLogNormal",
+                    options="McmcOptions"),
+          def=
+          function(data, model, options,
+                   verbose=FALSE,
+                   ...){
+
+              ## decide whether we sample from the prior or not
+              fromPrior <- data@nObs == 0L
+
+              if(fromPrior)
+              {
+                  ## sample from the bivariate normal prior for theta
+                  tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
+                                          mean=model@mean,
+                                          sigma=model@cov)
+                  samples <- list(alpha0=tmp[, 1],
+                                  alpha1=exp(tmp[, 2]))
               } else {
 
                   ## prior correlation
@@ -274,7 +330,7 @@ setMethod("mcmc",
                   ## the estimated probabilities
                   probs <-
                       deterministic(function(X, theta0, theta1){
-                          plogis(X[,1] * theta0 + X[,2] * theta1)
+                          plogis(X[,1] * theta0 + X[,2] * exp(theta1))
                       }, X, theta0, theta1)
 
                   ## the likelihood
@@ -290,30 +346,13 @@ setMethod("mcmc",
                                    adapt=0,
                                    thin=options@step)
 
-                  ## MCMCpack try, but not applicable because of lognormal!
-
-                  ## ## determine verbose steps: 50 for now fixed.
-                  ## verboseSteps <-
-                  ##     if(verbose) 50 else 0
-
-                  ## ## run MCMC sampler
-                  ## postSamples <-
-                  ##     MCMCpack::MCMClogit(y ~ standLogDose,
-                  ##                         data=dat,
-                  ##                         burnin=options@burnin,
-                  ##                         mcmc=options@iterations,
-                  ##                         thin=options@step,
-                  ##                         verbose=verboseSteps,
-                  ##                         seed=NA, # fixed seed will be used!
-                  ##                         beta.start=model@init()["theta")
-
                   ## select the right iterations first
                   select <- seq(from=length(ans$theta0) - sampleSize(options) + 1,
                                 to=length(ans$theta0))
 
                   ## then form the samples list
                   samples <- list(alpha0=ans$theta0[select],
-                                  alpha1=ans$theta1[select])
+                                  alpha1=exp(ans$theta1[select]))
               }
 
               ## form a Samples object for return:

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Don 26/06/2014 15:00>
+## Time-stamp: <[Model-class.R] by DSB Don 26/06/2014 15:44>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -79,6 +79,7 @@
 ##' \code{prob} functions.
 ##'
 ##' @seealso \code{\linkS4class{LogisticNormal}},
+##' \code{\linkS4class{LogisticLogNormal}},
 ##' \code{\linkS4class{LogisticKadane}},
 ##' \code{\linkS4class{DualEndpoint}}
 ##'
@@ -256,11 +257,13 @@ setMethod("initialize",
 ##' The prior is
 ##' \deqn{(\alpha, \beta) \sim Normal(\mu, \Sigma)}
 ##'
-##' The slots of this class contain the mean vector and the covariance matrix of
-##' the bivariate normal distribution, as well as the reference dose.
+##' The slots of this class contain the mean vector, the covariance and
+##' precision matrices of the bivariate normal distribution, as well as the
+##' reference dose.
 ##'
 ##' @slot mean the prior mean vector \eqn{\mu}
 ##' @slot cov the prior covariance matrix \eqn{\Sigma}
+##' @slot prec the prior precision matrix \eqn{\Sigma^{-1}}
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
 ##' @export
@@ -270,6 +273,7 @@ setClass(Class="LogisticNormal",
          representation=
          representation(mean="numeric",
                         cov="matrix",
+                        prec="matrix",
                         refDose="numeric"),
          validity=
          function(object){
@@ -301,6 +305,7 @@ setMethod("initialize",
               callNextMethod(.Object,
                              mean=mean,
                              cov=cov,
+                             prec=solve(cov),
                              refDose=refDose,
                              datamodel=
                              function(){
@@ -315,7 +320,6 @@ setMethod("initialize",
                              priormodel=
                              function(){
                                  ## the multivariate normal prior on the coefficients
-                                 priorPrec[1:2,1:2] <- inverse(priorCov[,])
                                  theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
                                  ## extract actual coefficients
                                  alpha0 <- theta[1]
@@ -330,7 +334,7 @@ setMethod("initialize",
                              modelspecs=
                              function(){
                                  list(refDose=refDose,
-                                      priorCov=cov,
+                                      priorPrec=prec,
                                       priorMean=mean)
                              },
                              dose=

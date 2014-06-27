@@ -3,9 +3,9 @@
 \title{Convert prior quantiles (lower, median, upper) to LogisticNormal model}
 \usage{
 Quantiles2LogisticNormal(dosegrid, refDose, lower, median, upper,
-  level = 0.95, parstart = NULL, parlower = c(-10, -10, 0, 0, -1),
-  parupper = c(10, 10, 5, 5, 1), control = list(threshold.stop = 0.01, maxit
-  = 50000, temperature = 50000, max.time = 600, verbose = TRUE))
+  level = 0.95, parstart = NULL, parlower = c(-10, -10, 0, 0, -0.95),
+  parupper = c(10, 10, 10, 10, 0.95), control = list(threshold.stop = 0.01,
+  maxit = 50000, temperature = 50000, max.time = 600, verbose = TRUE))
 }
 \arguments{
   \item{dosegrid}{the dose grid}
@@ -25,7 +25,7 @@ Quantiles2LogisticNormal(dosegrid, refDose, lower, median, upper,
   default, these are determined from the medians supplied.}
 
   \item{parlower}{lower bounds on the parameters (intercept
-  alpha and the log slope theta, the corresponding standard
+  alpha and the slope beta, the corresponding standard
   deviations and the correlation.)}
 
   \item{parupper}{upper bounds on the parameters}
@@ -42,10 +42,6 @@ required quantiles, as well as the final \code{parameters}
 time)
 }
 \description{
-Convert prior quantiles (lower, median, upper) to
-LogisticNormal model
-}
-\details{
 This function uses generalised simulated annealing to
 optimise a \code{\linkS4class{LogisticNormal}} model to be
 as close as possible to the given prior quantiles.

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Don 26/06/2014 14:17>
+## Time-stamp: <[fromQuantiles.R] by DSB Don 26/06/2014 15:04>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -19,8 +19,6 @@
 
 ##' Convert prior quantiles (lower, median, upper) to LogisticNormal model
 ##'
-##' Convert prior quantiles (lower, median, upper) to LogisticNormal model
-##'
 ##' This function uses generalised simulated annealing to optimise
 ##' a \code{\linkS4class{LogisticNormal}} model to be as close as possible
 ##' to the given prior quantiles.
@@ -34,8 +32,8 @@
 ##' 0.95)
 ##' @param parstart starting values for the parameters. By default, these
 ##' are determined from the medians supplied.
-##' @param parlower lower bounds on the parameters (intercept alpha and the log
-##' slope theta, the corresponding standard deviations and the correlation.)
+##' @param parlower lower bounds on the parameters (intercept alpha and the
+##' slope beta, the corresponding standard deviations and the correlation.)
 ##' @param parupper upper bounds on the parameters
 ##' @param control additional options for the optimisation routine, see
 ##' \code{\link[GenSA]{GenSA}} for more details
@@ -81,8 +79,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
               identical(length(parupper), 5L),
               all(parlower < parupper))
 
-    ## parametrize in terms of the means for the intercept alpha and the log
-    ## slope theta,
+    ## parametrize in terms of the means for the intercept alpha and the
+    ## slope beta,
     ## the corresponding standard deviations and the correlation.
     ## Define start values for optimisation:
     startValues <-
@@ -96,11 +94,11 @@ Quantiles2LogisticNormal <- function(dosegrid,
             ## overall starting values:
             c(meanAlpha=
               startAlphaBeta[1],
-              meanTheta=
-              log(startAlphaBeta[2]),
+              meanBeta=
+              startAlphaBeta[2],
               sdAlpha=
               1,
-              sdTheta=
+              sdBeta=
               1,
               correlation=
               0)
@@ -126,7 +124,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
 
         ## extract separate coefficients
         alphaSamples <- normalSamples[, 1L]
-        betaSamples <- exp(normalSamples[, 2L])
+        betaSamples <- normalSamples[, 2L]
 
         ## and compute resulting quantiles
         quants <- matrix(nrow=length(dosegrid),

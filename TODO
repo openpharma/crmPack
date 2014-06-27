@@ -1,17 +1,17 @@
+- add slide production with ReporteRs package examples (to demo folder?)  
+
+- include custom MCMC sampler for dual-endpoint model so that we can run
+simulations on the cluster where no winbugs is possible
+
+- be able to run simulations on the pRED cluster (with openbugs)
+
 - combination designs
 
 - allow placebos in the cohorts for CNS
 
-- implement one-parameter CRM with skeleton probabilities?
-  -> perhaps also with random effects per doses (proposed by David)
-
-- test if custom MCMC sampler could be used for speed
-
-- use faster sampler ... RStan perhaps?
+- use faster sampler ... RStan perhaps? 
 
 - add examples to help pages
-
-- be able to run simulations on the pRED cluster
 
 - production of Word output tables from simulation summaries
 
@@ -26,4 +26,7 @@
 
 - record number of times the model is overruled in the simulations (Uli Beyer 
 request)
+
+- implement one-parameter CRM with skeleton probabilities?
+  -> perhaps also with random effects per doses (proposed by David)
 

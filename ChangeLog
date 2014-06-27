@@ -1,3 +1,11 @@
+2014-06-26  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* The LogisticNormal class was renamed to LogisticLogNormal, and a
+	new LogisticNormal class was added which assumes a normal
+	distribution for the slope parameter instead of a log normal. This
+	new LogisticNormal class is now used for the quantile-based
+	priors, and a fast sampler can be used for this standard GLM.
+
 2014-06-12  Daniel Sabanés Bové  <sabanesd@roche.com>
 
 	* R/simulate.R: Compute the fit only at the end of one trial

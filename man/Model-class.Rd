@@ -80,6 +80,7 @@ MCMC samples. These must include the ones required by the \code{dose} and
 }}
 \seealso{
 \code{\linkS4class{LogisticNormal}},
+\code{\linkS4class{LogisticLogNormal}},
 \code{\linkS4class{LogisticKadane}},
 \code{\linkS4class{DualEndpoint}}
 }
