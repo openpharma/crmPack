@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Don 26/06/2014 15:36>
+## Time-stamp: <[mcmc.R] by DSB Fre 27/06/2014 10:39>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -249,7 +249,7 @@ setMethod("mcmc",
                   initRes <- BayesLogit::logit(y=data@y,
                                                X=X,
                                                m0=model@mean,
-                                               P0=solve(model@cov),
+                                               P0=model@prec,
                                                samp=sampleSize(options),
                                                burn=options@burnin)
 
