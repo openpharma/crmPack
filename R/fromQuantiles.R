@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Fre 27/06/2014 16:29>
+## Time-stamp: <[fromQuantiles.R] by DSB Fre 27/06/2014 16:32>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -42,7 +42,7 @@
 ##' \code{\link[GenSA]{GenSA}} for more details
 ##' @return a list with the best approximating \code{model}
 ##' (\code{\linkS4class{LogisticNormal}} or
-##' \code{\linkS4class{LogisticLogNormal}), the resulting \code{quantiles}, the
+##' \code{\linkS4class{LogisticLogNormal}}), the resulting \code{quantiles}, the
 ##' \code{required} quantiles and the \code{distance} to the required quantiles,
 ##' as well as the final \code{parameters} (which could be used for running the
 ##' algorithm a second time)

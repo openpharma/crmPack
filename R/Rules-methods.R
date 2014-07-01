@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Die 03/06/2014 16:25>
+## Time-stamp: <[Rules-methods.R] by DSB Die 01/07/2014 11:36>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -917,6 +917,38 @@ setMethod("stopTrial",
               return(structure(doStop,
                                message=text))
           })
+
+## --------------------------------------------------
+## Stopping based on minimum number of patients
+## --------------------------------------------------
+
+##' Stop based on minimum number of patients
+setMethod("stopTrial",
+          signature=
+          signature(stopping="StoppingMinPatients",
+                    dose="ANY",
+                    samples="ANY",
+                    model="ANY",
+                    data="Data"),
+          def=
+          function(stopping, dose, samples, model, data, ...){
+              ## so can we stop?
+              doStop <- data@nObs >= stopping@nPatients
+
+              ## generate message
+              text <-
+                  paste("Number of patients is",
+                        data@nObs,
+                        "and thus",
+                        ifelse(doStop, "reached", "below"),
+                        "the prespecified minimum number",
+                        stopping@nPatients)
+
+              ## return both
+              return(structure(doStop,
+                               message=text))
+          })
+
 
 ## --------------------------------------------------
 ## Stopping based on probability of target tox interval

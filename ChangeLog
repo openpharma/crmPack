@@ -1,3 +1,7 @@
+2014-07-01  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* Add StoppingMinPatients stopping rule.
+
 2014-06-26  Daniel Sabanés Bové  <sabanesd@roche.com>
 
 	* The LogisticNormal class was renamed to LogisticLogNormal, and a

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Die 03/06/2014 15:49>
+## Time-stamp: <[Rules-class.R] by DSB Die 01/07/2014 11:34>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -197,6 +197,7 @@ setClass(Class="IncrementsRelativeDLT",
 ##' \code{\linkS4class{StoppingCohortsNearDose}},
 ##' \code{\linkS4class{StoppingPatientsNearDose}},
 ##' \code{\linkS4class{StoppingMinCohorts}},
+##' \code{\linkS4class{StoppingMinPatients}},
 ##' \code{\linkS4class{StoppingTargetProb}}
 ##' \code{\linkS4class{StoppingMTDdistribution}},
 ##' \code{\linkS4class{StoppingTargetBiomarker}}
@@ -360,6 +361,22 @@ setClass(Class="StoppingMinCohorts",
          contains="Stopping",
          representation=
          representation(nCohorts="integer"))
+
+## --------------------------------------------------
+## Stopping based on minimum number of patients
+## --------------------------------------------------
+
+##' Stop based on minimum number of patients
+##'
+##' @slot nPatients minimum required number of patients
+##'
+##' @keywords classes
+##' @export
+setClass(Class="StoppingMinPatients",
+         contains="Stopping",
+         representation=
+         representation(nPatients="integer"))
+
 
 ## --------------------------------------------------
 ## Stopping based on probability of target tox interval

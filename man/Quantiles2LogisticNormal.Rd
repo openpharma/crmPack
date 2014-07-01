@@ -1,11 +1,13 @@
 \name{Quantiles2LogisticNormal}
 \alias{Quantiles2LogisticNormal}
-\title{Convert prior quantiles (lower, median, upper) to LogisticNormal model}
+\title{Convert prior quantiles (lower, median, upper) to logistic (log)
+normal model}
 \usage{
 Quantiles2LogisticNormal(dosegrid, refDose, lower, median, upper,
-  level = 0.95, parstart = NULL, parlower = c(-10, -10, 0, 0, -0.95),
-  parupper = c(10, 10, 10, 10, 0.95), control = list(threshold.stop = 0.01,
-  maxit = 50000, temperature = 50000, max.time = 600, verbose = TRUE))
+  level = 0.95, logNormal = FALSE, parstart = NULL, parlower = c(-10,
+  -10, 0, 0, -0.95), parupper = c(10, 10, 10, 10, 0.95),
+  control = list(threshold.stop = 0.01, maxit = 50000, temperature = 50000,
+  max.time = 600, verbose = TRUE))
 }
 \arguments{
   \item{dosegrid}{the dose grid}
@@ -21,6 +23,10 @@ Quantiles2LogisticNormal(dosegrid, refDose, lower, median, upper,
   \item{level}{the credible level of the (lower, upper)
   intervals (default: 0.95)}
 
+  \item{logNormal}{use the log-normal prior? (not default)
+  otherwise, the normal prior for the logistic regression
+  coefficients is used}
+
   \item{parstart}{starting values for the parameters. By
   default, these are determined from the medians supplied.}
 
@@ -34,12 +40,13 @@ Quantiles2LogisticNormal(dosegrid, refDose, lower, median, upper,
   routine, see \code{\link[GenSA]{GenSA}} for more details}
 }
 \value{
-a list with the best approximating LogisticNormal
-\code{model}, the resulting \code{quantiles}, the
-\code{required} quantiles and the \code{distance} to the
-required quantiles, as well as the final \code{parameters}
-(which could be used for running the algorithm a second
-time)
+a list with the best approximating \code{model}
+(\code{\linkS4class{LogisticNormal}} or
+\code{\linkS4class{LogisticLogNormal}}), the resulting
+\code{quantiles}, the \code{required} quantiles and the
+\code{distance} to the required quantiles, as well as the
+final \code{parameters} (which could be used for running
+the algorithm a second time)
 }
 \description{
 This function uses generalised simulated annealing to
