@@ -11,10 +11,11 @@
 
   \item{truth}{a function which takes as input a dose
   (vector) and returns the true probability (vector) for
-  toxicity}
+  toxicity. Additional arguments can be supplied via
+  \dots.}
 
   \item{target}{the target toxicity interval (default:
-  20-35\%)}
+  20-35\%) used for the computations}
 
   \item{...}{additional arguments affecting the summary
   produced.}

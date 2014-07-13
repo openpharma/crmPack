@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Simulations-methods.R] by DSB Die 29/04/2014 16:54>
+## Time-stamp: <[Simulations-methods.R] by DSB Son 13/07/2014 21:06>
 ##
 ## Description:
 ## Methods for handling the simulations output.
@@ -182,8 +182,10 @@ setMethod("plot",
 ##' @param object the \code{\linkS4class{Simulations}} object we want to
 ##' summarize
 ##' @param truth a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity
-##' @param target the target toxicity interval (default: 20-35\%)
+##' true probability (vector) for toxicity. Additional arguments can be supplied
+##' via \dots.
+##' @param target the target toxicity interval (default: 20-35\%) used for the
+##' computations
 ##' @return an object of class \code{\linkS4class{Simulations-summary}}
 ##'
 ##' @export
@@ -201,7 +203,7 @@ setMethod("summary",
               doseGrid <- object@data[[1]]@doseGrid
 
               ## evaluate true toxicity at doseGrid
-              trueTox <- truth(doseGrid)
+              trueTox <- truth(doseGrid, ...)
 
               ## find dose interval corresponding to target tox interval
               targetDoseInterval <-
@@ -212,7 +214,7 @@ setMethod("summary",
                              ## doses can be found that match the target
                              ## interval boundaries!
                              ## In that case we want to return NA
-                             r <- try(uniroot(f=function(x){truth(x) - t},
+                             r <- try(uniroot(f=function(x){truth(x, ...) - t},
                                               interval=
                                               range(doseGrid))$root,
                                       silent=TRUE)
@@ -242,9 +244,12 @@ setMethod("summary",
               ## doses selected for MTD
               doseSelected <- object@doses
 
+              ## replace NA by 0
+              doseSelected[is.na(doseSelected)] <- 0
+
               ## dose most often selected as MTD
               doseMostSelected <-
-                  as.numeric(names(which.max(table(object@doses))))
+                  as.numeric(names(which.max(table(doseSelected))))
               xMostSelected <-
                   match(doseMostSelected,
                         table=doseGrid)
@@ -306,7 +311,7 @@ setMethod("summary",
                                      })
 
               ## Proportion of trials selecting target MTD
-              toxAtDoses <- truth(object@doses)
+              toxAtDoses <- truth(doseSelected, ...)
               propAtTarget <- mean((toxAtDoses > target[1]) &
                                    (toxAtDoses < target[2]))
 
@@ -337,6 +342,8 @@ setMethod("summary",
 ##'
 ##' @param object the \code{\linkS4class{Simulations-summary}} object we want
 ##' to print
+##' @return invisibly returns a data frame of the results with one row and
+##' appropriate column names
 ##'
 ##' @export
 ##' @keywords methods
@@ -346,7 +353,24 @@ setMethod("show",
           def=
           function(object){
 
+              ## start the data frame to return
+              df <- as.data.frame(matrix(nrow=1,
+                                         ncol=0))
+              ## start the column names of the df
+              dfNames <- c()
+
+              ## helper function for saving result
+              ## in df
+              dfSave <- function(res, name)
+              {
+                  df <<- cbind(df, res)
+                  dfNames <<- c(dfNames, name)
+                  return(res)
+              }
+
               ## helper function
+              ## for summarizing and reporting
+              ## results
               report <- function(slotName,
                                  description,
                                  percent=TRUE,
@@ -356,31 +380,45 @@ setMethod("show",
                   vals <- slot(object, name=slotName)
                   if(percent)
                   {
-                      unit <- "%"
+                      unit <- " %"
                       vals <- vals * 100
                   } else {
                       unit <- ""
                   }
 
+                  res <- paste(round(mean(vals), digits),
+                               unit,
+                               " (",
+                               paste(round(quantile(vals,
+                                                    quantiles,
+                                                    na.rm=TRUE),
+                                           digits),
+                                     unit,
+                                     collapse=", ",
+                                     sep=""),
+                               ")",
+                               sep="")
+
+                  ## print result to the buffer
                   cat(description, ":",
                       "mean",
-                      round(mean(vals), digits), unit,
-                      "(",
-                      paste(round(quantile(vals, quantiles),
-                                  digits),
-                            unit,
-                            collapse=", "),
-                      ")",
+                      dfSave(res, slotName),
                       "\n")
               }
 
-              cat("Summary of", object@nsim, "simulations\n\n")
+              cat("Summary of",
+                  dfSave(object@nsim, "nsim"),
+                  "simulations\n\n")
 
               cat("Target toxicity interval was",
-                  paste(round(object@target * 100), collapse=", "),
+                  dfSave(paste(round(object@target * 100),
+                               collapse=", "),
+                         "targetToxInterval"),
                   "%\n")
               cat("Target dose interval corresponding to this was",
-                  paste(round(object@targetDoseInterval, 1), collapse=", "),
+                  dfSave(paste(round(object@targetDoseInterval, 1),
+                               collapse=", "),
+                         "targetDoseInterval"),
                   "\n")
               cat("Intervals are corresponding to",
                   "10 and 90 % quantiles\n\n")
@@ -395,13 +433,16 @@ setMethod("show",
               report("toxAtDosesSelected",
                      "True toxicity at doses selected")
               cat("Proportion of trials selecting target MTD:",
-                  object@propAtTarget * 100,
+                  dfSave(object@propAtTarget * 100,
+                         "percentAtTarget"),
                   "%\n")
               cat("Dose most often selected as MTD:",
-                  object@doseMostSelected,
+                  dfSave(object@doseMostSelected,
+                         "doseMostSelected"),
                   "\n")
               cat("Observed toxicity rate at dose most often selected:",
-                  round(object@obsToxRateAtDoseMostSelected * 100),
+                  dfSave(round(object@obsToxRateAtDoseMostSelected * 100),
+                         "obsToxRateAtDoseMostSelected"),
                   "%\n")
               report("fitAtDoseMostSelected",
                      "Fitted toxicity rate at dose most often selected")
@@ -411,6 +452,11 @@ setMethod("show",
               report("nObs",
                      "Number of patients overall",
                      percent=FALSE)
+
+              ## finally assign names to the df
+              ## and return it invisibly
+              names(df) <- dfNames
+              invisible(df)
           })
 
 
@@ -423,7 +469,9 @@ setMethod("show",
 ##' the moment are:
 ##' \describe{
 ##' \item{nObs}{Distribution of the number of patients in the simulated trials}
-##' \item{doseSelected}{Distribution of the final selected doses in the trials}
+##' \item{doseSelected}{Distribution of the final selected doses in the trials.
+##' Note that this can include zero entries, meaning that the trial was stopped
+##' because all doses in the dose grid appeared too toxic.}
 ##' \item{propDLTs}{Distribution of the proportion of patients with DLTs in the
 ##' trials}
 ##' \item{nAboveTarget}{Distribution of the number of patients treated at doses

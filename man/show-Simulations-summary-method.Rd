@@ -10,6 +10,10 @@
   \code{\linkS4class{Simulations-summary}} object we want
   to print}
 }
+\value{
+invisibly returns a data frame of the results with one row
+and appropriate column names
+}
 \description{
 Show the summary of the simulations
 }

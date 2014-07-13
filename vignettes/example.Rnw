@@ -643,6 +643,7 @@ set.seed(819)
 time <- system.time(mySims <- simulate(design,
                                        truth=myTruth,
                                        args=NULL,
+                                       firstSeparate=FALSE,
                                        nsim=10L,
                                        mcmcOptions=options,
                                        parallel=TRUE))[3]
@@ -814,6 +815,8 @@ time <- system.time(futureSims <- simulate(## supply the new design here
                                            ## further arguments are the
                                            ## posterior samples
                                            args=postSamples,
+                                           ## no separate first patient
+                                           firstSeparate=FALSE,
                                            ## do exactly so many simulations as
                                            ## we have samples
                                            nsim=nrow(postSamples),

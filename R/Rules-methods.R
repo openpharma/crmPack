@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Die 01/07/2014 11:36>
+## Time-stamp: <[Rules-methods.R] by DSB Mit 09/07/2014 17:06>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -875,7 +875,7 @@ setMethod("stopTrial",
                             ". This ",
                             ifelse(doStop, "reached", "is below"),
                             " the required ",
-                            stopping@nCohorts,
+                            stopping@nPatients,
                             " patients",
                             sep="")
 

@@ -58,12 +58,14 @@ summarize them graphically. Possible \code{type}s of plots
 at the moment are: \describe{ \item{nObs}{Distribution of
 the number of patients in the simulated trials}
 \item{doseSelected}{Distribution of the final selected
-doses in the trials} \item{propDLTs}{Distribution of the
-proportion of patients with DLTs in the trials}
-\item{nAboveTarget}{Distribution of the number of patients
-treated at doses which are above the target toxicity
-interval (as specified by the \code{truth} and
-\code{target} arguments to
+doses in the trials. Note that this can include zero
+entries, meaning that the trial was stopped because all
+doses in the dose grid appeared too toxic.}
+\item{propDLTs}{Distribution of the proportion of patients
+with DLTs in the trials} \item{nAboveTarget}{Distribution
+of the number of patients treated at doses which are above
+the target toxicity interval (as specified by the
+\code{truth} and \code{target} arguments to
 \code{\link{summary,Simulations-method}})}
 \item{meanFit}{Plot showing the average fitted
 dose-toxicity curve across the trials, together with 95\%

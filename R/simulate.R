@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[simulate.R] by DSB Don 12/06/2014 09:20>
+## Time-stamp: <[simulate.R] by DSB Don 10/07/2014 14:13>
 ##
 ## Description:
 ## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
@@ -36,6 +36,9 @@
 ##' distribution, e.g, pass an \code{object} that contains the data observed so
 ##' far, \code{truth} contains the \code{prob} function from the model in
 ##' \code{object}, and \code{args} contains posterior samples from the model.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
 ##' @param nsim the number of simulations (default: 1)
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
 ##' giving the MCMC options for each evaluation in the trial. By default,
@@ -61,15 +64,16 @@ setMethod("simulate",
           signature=
           signature(object="Design"),
           def=
-          function(object, truth, args=NULL, nsim=1L,
+          function(object, truth, args=NULL, firstSeparate=FALSE, nsim=1L,
                    mcmcOptions=new("McmcOptions"), seed=NULL,
                    parallel=FALSE, ...){
 
               ## checks and extracts
               stopifnot(is.function(truth),
+                        is.bool(firstSeparate),
                         is.scalar(nsim),
                         nsim > 0,
-                        is.logical(parallel),
+                        is.bool(parallel),
                         is.scalar(parallel))
 
               args <- as.data.frame(args)
@@ -101,7 +105,7 @@ setMethod("simulate",
 
                   ## what is now the argument for the truth?
                   ## (appropriately recycled)
-                  thisArgs <- args[(iterSim - 1) %% nArgs + 1, ]
+                  thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop=FALSE]
 
                   ## so this truth is...
                   thisTruth <- function(dose)
@@ -136,9 +140,29 @@ setMethod("simulate",
                                        dose=thisDose,
                                        data=thisData)
 
-                      ## simulate DLTs
-                      thisDLTs <- rbinom(n=thisSize,
-                                         size=1L, prob=thisProb)
+                      ## simulate DLTs: depends on whether we
+                      ## separate the first patient or not.
+                      if(firstSeparate && (thisSize > 1L))
+                      {
+                          ## dose the first patient
+                          thisDLTs <- rbinom(n=1L,
+                                             size=1L,
+                                             prob=thisProb)
+                          ## if there is no DLT:
+                          if(thisDLTs == 0)
+                          {
+                              ## enroll the remaining patients
+                              thisDLTs <- c(thisDLTs,
+                                            rbinom(n=thisSize - 1L,
+                                                   size=1L,
+                                                   prob=thisProb))
+                          }
+                      } else {
+                          ## we can directly dose all patients
+                          thisDLTs <- rbinom(n=thisSize,
+                                             size=1L,
+                                             prob=thisProb)
+                      }
 
                       ## update the data with this cohort
                       thisData <- update(object=thisData,
@@ -215,6 +239,7 @@ setMethod("simulate",
                                                   c("simSeeds",
                                                     "args",
                                                     "nArgs",
+                                                    "firstSeparate",
                                                     "truth",
                                                     "object",
                                                     "mcmcOptions"),

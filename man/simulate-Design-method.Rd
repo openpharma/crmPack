@@ -3,8 +3,9 @@
 \alias{simulate,Design-method}
 \title{Simulate outcomes from a CRM design}
 \usage{
-\S4method{simulate}{Design}(object, truth, args = NULL, nsim = 1L,
-  mcmcOptions = new("McmcOptions"), seed = NULL, parallel = FALSE, ...)
+\S4method{simulate}{Design}(object, truth, args = NULL,
+  firstSeparate = FALSE, nsim = 1L, mcmcOptions = new("McmcOptions"),
+  seed = NULL, parallel = FALSE, ...)
 }
 \arguments{
   \item{object}{the \code{\linkS4class{Design}} object we
@@ -25,6 +26,10 @@
   \code{truth} contains the \code{prob} function from the
   model in \code{object}, and \code{args} contains
   posterior samples from the model.}
+
+  \item{firstSeparate}{enroll the first patient separately
+  from the rest of the cohort? (not default) If yes, the
+  cohort will be closed if a DLT occurs in this patient.}
 
   \item{nsim}{the number of simulations (default: 1)}
 
