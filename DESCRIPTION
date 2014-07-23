@@ -21,7 +21,8 @@ Imports:
     GenSA,
     mvtnorm,
     parallel,
-    BayesLogit
+    BayesLogit,
+    rjags
 Suggests:
     ggmcmc,
     grid

@@ -1,5 +1,7 @@
 - add slide production with ReporteRs package examples (to demo folder?)  
 
+- use JAGS instead of BUGS
+
 - include custom MCMC sampler for dual-endpoint model so that we can run
 simulations on the cluster where no winbugs is possible
 
@@ -8,8 +10,6 @@ simulations on the cluster where no winbugs is possible
 - combination designs
 
 - allow placebos in the cohorts for CNS
-
-- use faster sampler ... RStan perhaps? 
 
 - add examples to help pages
 

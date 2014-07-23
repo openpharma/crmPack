@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Don 26/06/2014 15:44>
+## Time-stamp: <[Model-class.R] by DSB Sam 19/07/2014 03:59>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -866,6 +866,167 @@ setMethod("initialize",
                                         betaW=
                                         rep(0, nGrid)))},
                              sample=sample,
+                             ...)
+          })
+
+## ============================================================
+
+
+##' Standard logistic model with mixture of two bivariate normal priors
+##'
+##' This is stanardard logistic regression model with a mixture of two bivariate
+##' normal priors on the intercept and slope parameters.
+##' This type of prior is often used with a mixture of a minimal informative
+##' and an informative component, in order to make the CRM more robust to
+##' data deviations from the informative component.
+##'
+##' The covariate is the natural logarithm of the dose \eqn{x} divided by
+##' the reference dose \eqn{x^{*}}:
+##'
+##' \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
+##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
+##' \eqn{x}.
+##'
+##' The prior is
+##' \deqn{(\alpha, \beta) \sim
+##' w * Normal(\mu_{1}, \Sigma_{1}) + (1 - w) * Normal(\mu_{2}, \Sigma_{2})}
+##'
+##' The weight w for the first component is assigned a beta prior B(a, b).
+##'
+##' The slots of this class comprise two lists, containing the mean vector, the
+##' covariance and precision matrices of the two bivariate normal distributions
+##' each, the parameters of the beta prior for the first component weight, as
+##' well as the reference dose.
+##'
+##' @slot comp1 the specifications of the first component: a list with
+##' \code{mean}, \code{cov} and \code{prec} for the first bivariate normal prior
+##' @slot comp2 the specifications of the second component
+##' @slot weightpar the beta parameters for the weight of the first component
+##' @slot refDose the reference dose \eqn{x^{*}}
+##'
+##' @export
+##' @keywords classes
+setClass(Class="LogisticNormalMixture",
+         contains="Model",
+         representation=
+         representation(comp1="list",
+                        comp2="list",
+                        weightpar="numeric",
+                        refDose="numeric"),
+         validity=
+         function(object){
+             stopifnot(identical(names(object@comp1),
+                                 c("mean", "cov", "prec")),
+                       identical(names(object@comp2),
+                                 c("mean", "cov", "prec")),
+                       identical(names(object@weightpar),
+                                 c("a", "b")),
+                       is.scalar(object@refDose))
+         })
+
+
+##' Initialization method for the "LogisticNormalMixture" class
+##'
+##' @param .Object the \code{\linkS4class{LogisticNormalMixture}} we want to
+##' initialize
+##' @param comp1 the specifications of the first component: a list with
+##' \code{mean} and \code{cov} for the first bivariate normal prior
+##' @param comp2 the specifications of the second component
+##' @param weightpar the beta parameters for the weight of the first component
+##' @param refDose the reference dose
+##'
+##' @export
+##' @keywords methods
+setMethod("initialize",
+          signature(.Object = "LogisticNormalMixture"),
+          function (.Object,
+                    comp1,
+                    comp2,
+                    weightpar,
+                    refDose,
+                    ...){
+              ## add precision matrices to component lists
+              comp1 <- c(comp1,
+                         list(prec=solve(comp1$cov)))
+              comp2 <- c(comp2,
+                         list(prec=solve(comp2$cov)))
+
+              ## go to the general initialize method now
+              callNextMethod(.Object,
+                             comp1=comp1,
+                             comp2=comp2,
+                             weightpar=weightpar,
+                             refDose=refDose,
+                             datamodel=
+                             function(){
+                                 ## the logistic likelihood:
+                                 ## not changed from non-mixture case
+                                 for (i in 1:nObs)
+                                 {
+                                     y[i] ~ dbern(p[i])
+                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                     StandLogDose[i] <- log(x[i] / refDose)
+                                 }
+                             },
+                             priormodel=
+                             function(){
+                                 ## the multivariate normal prior on the coefficients
+                                 theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                     priorPrec[1:2, 1:2, comp])
+                                 ## this is conditional on the component index
+                                 ## "comp"
+
+                                 ## component index is 1 or 2
+                                 comp <- comp0 + 1
+
+                                 ## it is 1 with probability w and
+                                 ## 2 with probability 1 - w
+                                 comp0 ~ dbern(wc)
+                                 wc <- 1 - w
+
+                                 ## we have a beta prior on w
+                                 w ~ dbeta(weightpar[1], weightpar[2])
+
+                                 ## extract actual coefficients
+                                 alpha0 <- theta[1]
+                                 alpha1 <- theta[2]
+
+                                 ## dummy to use refDose here.
+                                 ## It is contained in the modelspecs list below,
+                                 ## so it must occur here
+                                 bla <- refDose + 1
+                             },
+                             datanames=c("nObs", "y", "x"),
+                             modelspecs=
+                             function(){
+                                 list(refDose=refDose,
+                                      priorMean=
+                                      cbind(comp1$mean,
+                                            comp2$mean),
+                                      priorPrec=
+                                      array(data=
+                                            c(comp1$prec,
+                                              comp2$prec),
+                                            dim=c(2, 2, 2)),
+                                      weightpar=weightpar)
+                             },
+                             dose=
+                             function(prob, alpha0, alpha1){
+                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
+                                 return(exp(StandLogDose) * refDose)
+                             },
+                             prob=
+                             function(dose, alpha0, alpha1){
+                                 StandLogDose <- log(dose / refDose)
+                                 return(plogis(alpha0 + alpha1 * StandLogDose))
+                             },
+                             init=
+                             ## todo: find better starting values
+                             function(){
+                                 list(theta=c(0, 1))
+                             },
+                             sample=
+                             c("alpha0", "alpha1", "w"),
                              ...)
           })
 

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Fre 27/06/2014 10:39>
+## Time-stamp: <[mcmc.R] by DSB Sam 19/07/2014 05:57>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -362,3 +362,146 @@ setMethod("mcmc",
 
               return(ret)
           })
+
+## --------------------------------------------------
+## JAGS for the LogisticNormalMixture method
+## --------------------------------------------------
+
+##' JAGS for the LogisticNormalMixture method
+##'
+##' @param verbose shall messages be printed? (not default)
+##'
+##' @importFrom rjags
+setMethod("mcmc",
+          signature=
+          signature(data="Data",
+                    model="LogisticNormalMixture",
+                    options="McmcOptions"),
+          def=
+          function(data, model, options,
+                   verbose=FALSE,
+                   ...){
+
+              ## get a temp directory
+              bugsTempDir <- file.path(tempdir(), "bugs")
+              dir.create(bugsTempDir)
+
+              options(BRugsVerbose=verbose)
+              if(verbose)
+              {
+                  cat("Using BUGS temporary directory", bugsTempDir, "\n")
+              }
+
+              ## decide whether we sample from the prior or not
+              fromPrior <- data@nObs == 0L
+
+              ## and accordingly build the model
+              bugsModel <-
+                  if(fromPrior)
+                  {
+                      ## here only the prior
+                      model@priormodel
+                  } else {
+                      ## here the data model + the prior
+                      joinModels(model@datamodel,
+                                 model@priormodel)
+                  }
+
+              ## write the model file into it
+              modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
+              R2WinBUGS::write.model(bugsModel, modelFileName)
+
+              ## get the initial values for the parameters,
+              ## by evaluating the init function from the model object.
+              ## This gives us a list
+              inits <-
+                  do.call(model@init,
+                          as.list(data)[names(formals(model@init))])
+              stopifnot(is.list(inits))
+
+              ## get the model specs
+              ## by evaluating the modelspecs function from the model object.
+              ## This gives us a list
+              modelspecs <-
+                  do.call(model@modelspecs,
+                          as.list(data)[names(formals(model@modelspecs))])
+              stopifnot(is.list(modelspecs))
+
+              ## prepare the required data.
+              ## This is necessary, because if there is only one observation,
+              ## the data is not passed correctly to openBUGS: Then x and y
+              ## are treated like scalars in the data file. Therefore we add
+              ## dummy values to the vectors in this case.
+              requiredData <-
+                  if(fromPrior)
+                  {
+                      ## in this case requiredData will not be used
+                      NULL
+                  } else if(data@nObs == 1L) {
+                      ## here we need to modify!!
+                      tmp <- as.list(data)[model@datanames]
+
+                      ## get the names where to add dummy entries:
+                      addWhere <- which(! (names(tmp) %in% c("nObs", "nGrid")))
+                      ## all names that are not referring to the scalars
+                      ## nObs and nGrid
+
+                      for(i in addWhere)
+                      {
+                          tmp[[i]] <- as(c(tmp[[i]],
+                                           0), ## additional zero here!
+                                         class(tmp[[i]])) ## preserve class
+                      }
+                      ## because we don't change the number of observations
+                      ## (nObs), this addition of zeros doesn't affect the
+                      ## results.
+
+                      ## return:
+                      tmp
+
+                  } else {
+                      ## we can take the usual one
+                      as.list(data)[model@datanames]
+                  }
+
+              ## specify the JAGS model
+              jagsModel <- jags.model(file=modelFileName,
+                                      data=
+                                      if(fromPrior) modelspecs else
+                                      c(requiredData,
+                                        modelspecs),
+                                      inits=
+                                      list(inits),
+                                      quiet=!verbose)
+
+              ## generate samples
+              samples <- jags.samples(model=jagsModel,
+                                      variable.names=model@sample,
+                                      n.iter=options@iterations,
+                                      thin=options@step)
+
+              ## discard burnin and reformat slightly for Samples object
+              ret <- lapply(samples,
+                            function(x) {
+                                ## take the first chain (because we use only
+                                ## one anyway), discard the burnin
+                                x <- x[, - seq_len(options@burnin /
+                                                   options@step), 1]
+                                ## transpose if it is a matrix
+                                ## (in case that there are multiple parameters
+                                ## in a node)
+                                if(is.matrix(x))
+                                {
+                                    x <- t(x)
+                                }
+                                x
+                            })
+
+              ## and form a Samples object from it for return
+              ret <- new("Samples",
+                         data=ret,
+                         options=options)
+              return(ret)
+          })
+
+

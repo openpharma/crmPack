@@ -2,18 +2,19 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Die 03/06/2014 14:26>
+## Time-stamp: <[project.R] by DSB Sam 19/07/2014 06:11>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
 ##
 ## History:
 ## 06/02/2014   file creation
+## 19/07/2014   update and test mixture prior
 ###################################################################################
 
 source("../R/Model-class.R")
 source("../R/helpers.R")
-model <- new("LogisticNormal",
+model <- new("LogisticLogNormal",
              mean=c(-0.85, 1),
              cov=
              matrix(c(1, -0.5, -0.5, 1),
@@ -110,49 +111,12 @@ ggs_density(alpha1)
 
 
 ## ok now we want to plot the fit:
+samples <- samples1
 str(samples)
 
 source("../R/Model-methods.R")
 
 plot(samples, model, data)
-
-
-## now on to the rules:
-
-source("../R/helpers.R")
-source("../R/Rules-class.R")
-source("../R/Rules-methods.R")
-
-## target tox rate is 33%.
-## 25% quantile of posterior distribution is used
-## and 90% one-sided CI must be above 50% of current MTD estimate,
-## that is the probability that the MTD is above 50% of the current estimate
-## must be larger than 90%
-myNextBest <- new("NextBestMTD",
-                  target=0.5,
-                  derive=
-                  function(mtdSamples){
-                      quantile(mtdSamples, probs=0.25)
-                  })
-
-mtdRet <- nextBest(myNextBest, doselimit=50, samples=samples, model=model,
-                   data=data,
-                   plot=FALSE)
-mtdRet$value
-
-## target tox interval is 20-35%.
-## overdose tox interval is 35%+
-## required prob for target is 50%
-myNextBest <- new("NextBestNCRM",
-                  target=c(0.2, 0.35),
-                  overdose=c(0.35, 1),
-                  maxOverdoseProb=0.25)
-
-ncrmRet <- nextBest(myNextBest, doselimit=50,
-                    samples=samples, model=model, data=data,
-                    plot=FALSE)
-ncrmRet$value
-ncrmRet$plot
 
 
 ## test quantiles function
@@ -202,6 +166,106 @@ matplot(minTest$required,
         type="l", col="blue", lty=1)
 matlines(minTest$quantiles,
          col="red", lty=1)
+
+
+## OK, now we can setup the mixture prior:
+## Note that the informative part does not match the LogisticLogNormal model
+## above, because here we use LogisticNormal...
+
+mixModel <- new("LogisticNormalMixture",
+                comp1=
+                list(mean=c(-0.85, exp(1)),
+                     cov=
+                     matrix(c(1, -0.5, -0.5, 1),
+                            nrow=2L)),
+                comp2=
+                list(mean=minTest$model@mean,
+                     cov=minTest$model@cov),
+                weightpar=c(a=1, b=1),
+                refDose=56)
+mixModel@modelspecs()
+
+## obtain the samples
+time <- system.time(mixSamples <- mcmc(data, mixModel, options, verbose=TRUE))
+
+## extract samples for diagnostic plots
+alpha0 <- extract(mixSamples, "alpha0")
+alpha1 <- extract(mixSamples, "alpha1")
+w <- extract(mixSamples, "w")
+mean(w$value)
+
+## use other package for plotting
+library(ggmcmc)
+ggs_traceplot(alpha0)
+ggs_autocorrelation(alpha0)
+ggs_density(alpha0)
+
+ggs_traceplot(alpha1)
+ggs_autocorrelation(alpha1)
+ggs_density(alpha1)
+
+ggs_traceplot(w)
+ggs_autocorrelation(w)
+ggs_density(w)
+## etc.
+
+plot(mixSamples, mixModel, data)
+
+## compare with the minimal informative result:
+time <- system.time(minSamples <- mcmc(data, minTest$model, options,
+                                       verbose=TRUE))
+x11()
+plot(minSamples, minTest$model, data)
+
+
+## and with the informative result:
+infModel <- new("LogisticNormal",
+                mean=c(-0.85, exp(1)),
+                cov=
+                matrix(c(1, -0.5, -0.5, 1),
+                       nrow=2L),
+                refDose=56)
+infSamples <- mcmc(data, infModel, options)
+x11()
+plot(infSamples, infModel, data)
+
+## now on to the rules:
+
+source("../R/helpers.R")
+source("../R/Rules-class.R")
+source("../R/Rules-methods.R")
+
+## target tox rate is 33%.
+## 25% quantile of posterior distribution is used
+## and 90% one-sided CI must be above 50% of current MTD estimate,
+## that is the probability that the MTD is above 50% of the current estimate
+## must be larger than 90%
+myNextBest <- new("NextBestMTD",
+                  target=0.5,
+                  derive=
+                  function(mtdSamples){
+                      quantile(mtdSamples, probs=0.25)
+                  })
+
+mtdRet <- nextBest(myNextBest, doselimit=50, samples=samples, model=model,
+                   data=data,
+                   plot=FALSE)
+mtdRet$value
+
+## target tox interval is 20-35%.
+## overdose tox interval is 35%+
+## required prob for target is 50%
+myNextBest <- new("NextBestNCRM",
+                  target=c(0.2, 0.35),
+                  overdose=c(0.35, 1),
+                  maxOverdoseProb=0.25)
+
+ncrmRet <- nextBest(myNextBest, doselimit=50,
+                    samples=samples, model=model, data=data,
+                    plot=FALSE)
+ncrmRet$value
+ncrmRet$plot
+
 
 
 ## stopping rule:
