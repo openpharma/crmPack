@@ -1,11 +1,13 @@
-- add slide production with ReporteRs package examples (to demo folder?)  
+- add slide production with ReporteRs package examples (to demo folder?)
 
-- use JAGS instead of BUGS
+- use JAGS instead of BUGS for everything
 
-- include custom MCMC sampler for dual-endpoint model so that we can run
+- mixture prior: add documentation in vignette
+
+- only if JAGS does not work: include custom MCMC sampler for dual-endpoint model so that we can run
 simulations on the cluster where no winbugs is possible
 
-- be able to run simulations on the pRED cluster (with openbugs)
+- be able to run simulations on the pRED cluster (with JAGS)
 
 - combination designs
 
@@ -22,9 +24,7 @@ simulations on the cluster where no winbugs is possible
 - historical data prior,
   pseudodata prior
 
-- mixture prior
-
-- record number of times the model is overruled in the simulations (Uli Beyer 
+- record number of times the model is overruled in the simulations (Uli Beyer
 request)
 
 - implement one-parameter CRM with skeleton probabilities?

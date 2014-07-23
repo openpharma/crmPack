@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Sam 19/07/2014 05:57>
+## Time-stamp: <[mcmc.R] by DSB Mit 23/07/2014 03:04>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -371,7 +371,8 @@ setMethod("mcmc",
 ##'
 ##' @param verbose shall messages be printed? (not default)
 ##'
-##' @importFrom rjags
+##' @importFrom R2WinBUGS write.model
+##' @importFrom rjags jags.model jags.samples
 setMethod("mcmc",
           signature=
           signature(data="Data",
