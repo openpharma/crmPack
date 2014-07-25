@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Mit 23/07/2014 03:04>
+## Time-stamp: <[mcmc.R] by DSB Fre 25/07/2014 11:32>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -56,12 +56,13 @@ setGeneric("mcmc",
 ## The standard method
 ## --------------------------------------------------
 
-##' Standard method which uses BUGS
+##' Standard method which uses JAGS/BUGS
 ##'
-##' @param program the program which shall be used (see
-##' \code{\link[R2WinBUGS]{bugs}} for details)
+##' @param program the program which shall be used: either \dQuote{JAGS} (default),
+##' \dQuote{OpenBUGS} or \dQuote{WinBUGS}
 ##' @param verbose shall messages be printed? (not default)
 ##'
+##' @importFrom rjags jags.model jags.samples
 ##' @importFrom R2WinBUGS write.model bugs
 setMethod("mcmc",
           signature=
@@ -70,9 +71,12 @@ setMethod("mcmc",
                     options="McmcOptions"),
           def=
           function(data, model, options,
-                   program="OpenBUGS",
+                   program=c("JAGS", "OpenBUGS", "WinBUGS"),
                    verbose=FALSE,
                    ...){
+
+              ## select program
+              program <- match.arg(program)
 
               ## get a temp directory
               bugsTempDir <- file.path(tempdir(), "bugs")
@@ -81,7 +85,7 @@ setMethod("mcmc",
               options(BRugsVerbose=verbose)
               if(verbose)
               {
-                  cat("Using BUGS temporary directory", bugsTempDir, "\n")
+                  cat("Using temporary directory", bugsTempDir, "\n")
               }
 
               ## decide whether we sample from the prior or not
@@ -156,53 +160,93 @@ setMethod("mcmc",
                       as.list(data)[model@datanames]
                   }
 
-              ## Obtain MCMC samples:
-              bugsResult <-
-                  try(R2WinBUGS::bugs(data=
-                                      ## combine the *required* data (as list)
-                                      ## with the model specs
-                                      if(fromPrior) modelspecs else
-                                      c(requiredData,
-                                        modelspecs),
-                                      inits=
-                                      ## currently only have one chain
-                                      ## in this inits list
-                                      list(inits),
-                                      parameters.to.save=
-                                      ## which parameters should be saved?
-                                      model@sample,
-                                      ## don't save DIC because we also want
-                                      ## to sample from prior without any
-                                      ## data
-                                      DIC=FALSE,
-                                      model=
-                                      ## supply the model file
-                                      "bugsModel.txt",
-                                      working.directory=
-                                      ## and the working directory
-                                      bugsTempDir,
-                                      ## supply MCMC options
-                                      program=program,
-                                      n.burnin=options@burnin,
-                                      n.iter=options@iterations,
-                                      n.thin=options@step,
-                                      n.chains=1,
-                                      bugs.seed=2L),
-                      silent=TRUE)
-
-              ## catch possible error here
-              if(is(bugsResult, "try-error"))
+              ## now decide whether JAGS or something else is used
+              if(program=="JAGS")
               {
-                  ## give the log file output
-                  stop(paste(readLines(file.path(bugsTempDir, "log.txt")),
-                             collapse="\n"))
+                  ## specify the JAGS model
+                  jagsModel <- jags.model(file=modelFileName,
+                                          data=
+                                          if(fromPrior) modelspecs else
+                                          c(requiredData,
+                                            modelspecs),
+                                          inits=
+                                          list(inits),
+                                          quiet=!verbose)
+
+                  ## generate samples
+                  samples <- jags.samples(model=jagsModel,
+                                          variable.names=model@sample,
+                                          n.iter=options@iterations,
+                                          thin=options@step)
+
+                  ## discard burnin and reformat slightly for Samples object
+                  ret <- lapply(samples,
+                                function(x) {
+                                    ## take the first chain (because we use only
+                                    ## one anyway), discard the burnin
+                                    x <- x[, - seq_len(options@burnin /
+                                                       options@step), 1]
+                                    ## transpose if it is a matrix
+                                    ## (in case that there are multiple parameters
+                                    ## in a node)
+                                    if(is.matrix(x))
+                                    {
+                                        x <- t(x)
+                                    }
+                                    x
+                                })
+              } else {
+                  ## here we use OpenBUGS or WinBUGS.
+
+                  ## Obtain MCMC samples:
+                  bugsResult <-
+                      try(R2WinBUGS::bugs(data=
+                                          ## combine the *required* data (as list)
+                                          ## with the model specs
+                                          if(fromPrior) modelspecs else
+                                          c(requiredData,
+                                            modelspecs),
+                                          inits=
+                                          ## currently only have one chain
+                                          ## in this inits list
+                                          list(inits),
+                                          parameters.to.save=
+                                          ## which parameters should be saved?
+                                          model@sample,
+                                          ## don't save DIC because we also want
+                                          ## to sample from prior without any
+                                          ## data
+                                          DIC=FALSE,
+                                          model=
+                                          ## supply the model file
+                                          "bugsModel.txt",
+                                          working.directory=
+                                          ## and the working directory
+                                          bugsTempDir,
+                                          ## supply MCMC options
+                                          program=program,
+                                          n.burnin=options@burnin,
+                                          n.iter=options@iterations,
+                                          n.thin=options@step,
+                                          n.chains=1,
+                                          bugs.seed=2L),
+                          silent=TRUE)
+
+                  ## catch possible error here
+                  if(is(bugsResult, "try-error"))
+                  {
+                      ## give the log file output
+                      stop(paste(readLines(file.path(bugsTempDir, "log.txt")),
+                                 collapse="\n"))
+                  }
+
+                  ## extract the samples (really only save the parameters we wanted
+                  ## to sample)
+                  ret <- bugsResult$sims.list[model@sample]
+
               }
 
-              ## extract the samples (really only save the parameters we wanted
-              ## to sample)
-              ret <- bugsResult$sims.list[model@sample]
-
-              ## and form a Samples object from it for return
+              ## form a Samples object for return
               ret <- new("Samples",
                          data=ret,
                          options=options)
@@ -362,147 +406,4 @@ setMethod("mcmc",
 
               return(ret)
           })
-
-## --------------------------------------------------
-## JAGS for the LogisticNormalMixture method
-## --------------------------------------------------
-
-##' JAGS for the LogisticNormalMixture method
-##'
-##' @param verbose shall messages be printed? (not default)
-##'
-##' @importFrom R2WinBUGS write.model
-##' @importFrom rjags jags.model jags.samples
-setMethod("mcmc",
-          signature=
-          signature(data="Data",
-                    model="LogisticNormalMixture",
-                    options="McmcOptions"),
-          def=
-          function(data, model, options,
-                   verbose=FALSE,
-                   ...){
-
-              ## get a temp directory
-              bugsTempDir <- file.path(tempdir(), "bugs")
-              dir.create(bugsTempDir)
-
-              options(BRugsVerbose=verbose)
-              if(verbose)
-              {
-                  cat("Using BUGS temporary directory", bugsTempDir, "\n")
-              }
-
-              ## decide whether we sample from the prior or not
-              fromPrior <- data@nObs == 0L
-
-              ## and accordingly build the model
-              bugsModel <-
-                  if(fromPrior)
-                  {
-                      ## here only the prior
-                      model@priormodel
-                  } else {
-                      ## here the data model + the prior
-                      joinModels(model@datamodel,
-                                 model@priormodel)
-                  }
-
-              ## write the model file into it
-              modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-              R2WinBUGS::write.model(bugsModel, modelFileName)
-
-              ## get the initial values for the parameters,
-              ## by evaluating the init function from the model object.
-              ## This gives us a list
-              inits <-
-                  do.call(model@init,
-                          as.list(data)[names(formals(model@init))])
-              stopifnot(is.list(inits))
-
-              ## get the model specs
-              ## by evaluating the modelspecs function from the model object.
-              ## This gives us a list
-              modelspecs <-
-                  do.call(model@modelspecs,
-                          as.list(data)[names(formals(model@modelspecs))])
-              stopifnot(is.list(modelspecs))
-
-              ## prepare the required data.
-              ## This is necessary, because if there is only one observation,
-              ## the data is not passed correctly to openBUGS: Then x and y
-              ## are treated like scalars in the data file. Therefore we add
-              ## dummy values to the vectors in this case.
-              requiredData <-
-                  if(fromPrior)
-                  {
-                      ## in this case requiredData will not be used
-                      NULL
-                  } else if(data@nObs == 1L) {
-                      ## here we need to modify!!
-                      tmp <- as.list(data)[model@datanames]
-
-                      ## get the names where to add dummy entries:
-                      addWhere <- which(! (names(tmp) %in% c("nObs", "nGrid")))
-                      ## all names that are not referring to the scalars
-                      ## nObs and nGrid
-
-                      for(i in addWhere)
-                      {
-                          tmp[[i]] <- as(c(tmp[[i]],
-                                           0), ## additional zero here!
-                                         class(tmp[[i]])) ## preserve class
-                      }
-                      ## because we don't change the number of observations
-                      ## (nObs), this addition of zeros doesn't affect the
-                      ## results.
-
-                      ## return:
-                      tmp
-
-                  } else {
-                      ## we can take the usual one
-                      as.list(data)[model@datanames]
-                  }
-
-              ## specify the JAGS model
-              jagsModel <- jags.model(file=modelFileName,
-                                      data=
-                                      if(fromPrior) modelspecs else
-                                      c(requiredData,
-                                        modelspecs),
-                                      inits=
-                                      list(inits),
-                                      quiet=!verbose)
-
-              ## generate samples
-              samples <- jags.samples(model=jagsModel,
-                                      variable.names=model@sample,
-                                      n.iter=options@iterations,
-                                      thin=options@step)
-
-              ## discard burnin and reformat slightly for Samples object
-              ret <- lapply(samples,
-                            function(x) {
-                                ## take the first chain (because we use only
-                                ## one anyway), discard the burnin
-                                x <- x[, - seq_len(options@burnin /
-                                                   options@step), 1]
-                                ## transpose if it is a matrix
-                                ## (in case that there are multiple parameters
-                                ## in a node)
-                                if(is.matrix(x))
-                                {
-                                    x <- t(x)
-                                }
-                                x
-                            })
-
-              ## and form a Samples object from it for return
-              ret <- new("Samples",
-                         data=ret,
-                         options=options)
-              return(ret)
-          })
-
 
