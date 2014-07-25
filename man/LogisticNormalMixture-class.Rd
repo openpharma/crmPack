@@ -1,14 +1,15 @@
 \docType{class}
 \name{LogisticNormalMixture-class}
 \alias{LogisticNormalMixture-class}
-\title{Standard logistic model with mixture of two bivariate normal priors}
+\title{Standard logistic model with flexible mixture of two bivariate normal priors}
 \description{
-This is stanardard logistic regression model with a mixture
+This is standard logistic regression model with a mixture
 of two bivariate normal priors on the intercept and slope
-parameters. This type of prior is often used with a mixture
-of a minimal informative and an informative component, in
-order to make the CRM more robust to data deviations from
-the informative component.
+parameters. The weight of the two normal priors is a model
+parameter, hence it is a flexible mixture. This type of
+prior is often used with a mixture of a minimal informative
+and an informative component, in order to make the CRM more
+robust to data deviations from the informative component.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x}

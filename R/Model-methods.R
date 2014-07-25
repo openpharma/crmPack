@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-methods.R] by DSB Die 01/04/2014 08:49>
+## Time-stamp: <[Model-methods.R] by DSB Don 24/07/2014 17:01>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -54,7 +54,7 @@ setMethod("dose",
               ## now call the function with prob and with
               ## the arguments taken from the samples
               ret <- do.call(doseFun,
-                             c(prob=prob,
+                             c(list(prob=prob),
                                samples@data[argNames]))
               ## return the resulting vector
               return(ret)
@@ -100,7 +100,7 @@ setMethod("prob",
               ## now call the function with dose and with
               ## the arguments taken from the samples
               ret <- do.call(probFun,
-                             c(dose=dose,
+                             c(list(dose=dose),
                                samples@data[argNames]))
               ## return the resulting vector
               return(ret)

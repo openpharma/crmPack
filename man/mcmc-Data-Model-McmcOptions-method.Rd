@@ -1,14 +1,15 @@
 \docType{methods}
 \name{mcmc,Data,Model,McmcOptions-method}
 \alias{mcmc,Data,Model,McmcOptions-method}
-\title{Standard method which uses BUGS}
+\title{Standard method which uses JAGS/BUGS}
 \usage{
 \S4method{mcmc}{Data,Model,McmcOptions}(data, model, options,
-  program = "OpenBUGS", verbose = FALSE, ...)
+  program = c("JAGS", "OpenBUGS", "WinBUGS"), verbose = FALSE, ...)
 }
 \arguments{
-  \item{program}{the program which shall be used (see
-  \code{\link[R2WinBUGS]{bugs}} for details)}
+  \item{program}{the program which shall be used: either
+  \dQuote{JAGS} (default), \dQuote{OpenBUGS} or
+  \dQuote{WinBUGS}}
 
   \item{verbose}{shall messages be printed? (not default)}
 
@@ -24,6 +25,6 @@
   \item{...}{unused}
 }
 \description{
-Standard method which uses BUGS
+Standard method which uses JAGS/BUGS
 }
 

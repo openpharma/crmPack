@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Fre 25/07/2014 12:11>
+## Time-stamp: <[Samples-methods.R] by DSB Fre 25/07/2014 13:20>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -259,7 +259,7 @@ setMethod("approximate",
 
               ## return the model
               return(quantRes$model)
-          }
+          })
 
 ## --------------------------------------------------
 ## Plot dose-tox fit from a model
