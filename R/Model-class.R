@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Sam 19/07/2014 03:59>
+## Time-stamp: <[Model-class.R] by DSB Fre 25/07/2014 11:22>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -872,10 +872,11 @@ setMethod("initialize",
 ## ============================================================
 
 
-##' Standard logistic model with mixture of two bivariate normal priors
+##' Standard logistic model with flexible mixture of two bivariate normal priors
 ##'
-##' This is stanardard logistic regression model with a mixture of two bivariate
-##' normal priors on the intercept and slope parameters.
+##' This is standard logistic regression model with a mixture of two bivariate
+##' normal priors on the intercept and slope parameters. The weight of the two
+##' normal priors is a model parameter, hence it is a flexible mixture.
 ##' This type of prior is often used with a mixture of a minimal informative
 ##' and an informative component, in order to make the CRM more robust to
 ##' data deviations from the informative component.
@@ -1030,5 +1031,165 @@ setMethod("initialize",
                              ...)
           })
 
+## ============================================================
+
+
+##' Standard logistic model with fixed mixture of multiple bivariate normal priors
+##'
+##' This is standard logistic regression model with a mixture of multiple bivariate
+##' normal priors on the intercept and slope parameters. The weights of the
+##' normal priors are fixed, hence no additional model parameters are introduced.
+##' This type of prior is often used to better approximate a given posterior
+##' distribution, or when the information is given in terms of a mixture.
+##'
+##' The covariate is the natural logarithm of the dose \eqn{x} divided by
+##' the reference dose \eqn{x^{*}}:
+##'
+##' \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
+##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
+##' \eqn{x}.
+##'
+##' The prior is
+##' \deqn{(\alpha, \beta) \sim
+##' \sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
+##'
+##' The weight \eqn{w_{j}} of the components are fixed and sum to 1.
+##'
+##' The slots of this class comprise two lists, containing the mean vector, the
+##' covariance and precision matrices of the two bivariate normal distributions
+##' each, the parameters of the beta prior for the first component weight, as
+##' well as the reference dose.
+##'
+##' @slot components a list with one entry per component of the mixture.
+##' Each entry is a list with \code{mean}, \code{cov} and \code{prec} for the
+##' bivariate normal prior
+##' @slot weights the weights of the components, these must be positive and sum
+##' to 1
+##' @slot refDose the reference dose \eqn{x^{*}}
+##'
+##' @export
+##' @keywords classes
+setClass(Class="LogisticNormalFixedMixture",
+         contains="Model",
+         representation=
+         representation(components="list",
+                        weights="numeric",
+                        refDose="numeric"),
+         validity=
+         function(object){
+             stopifnot(all(sapply(object@components,
+                                  function(x){
+                                      identical(names(x),
+                                                c("mean", "cov", "prec"))})),
+                       identical(length(object@components),
+                                 length(object@weights)),
+                       all(object@weights > 0),
+                       sum(object@weights) == 1,
+                       is.scalar(object@refDose))
+         })
+
+
+##' Initialization method for the "LogisticNormalFixedMixture" class
+##'
+##' @param .Object the \code{\linkS4class{LogisticNormalFixedMixture}} we want to
+##' initialize
+##' @param components the specifications of the mixture components: a list with
+##' one list of \code{mean} and \code{cov} for each bivariate normal prior
+##' @param weights the weights of the components, these must be positive and
+##' will be normalized to sum to 1
+##' @param refDose the reference dose
+##'
+##' @export
+##' @keywords methods
+setMethod("initialize",
+          signature(.Object = "LogisticNormalFixedMixture"),
+          function (.Object,
+                    components,
+                    weights,
+                    refDose,
+                    ...){
+              ## add precision matrices to component lists
+              components <- lapply(components,
+                                   function(x){
+                                       c(x,
+                                         list(prec=solve(x$cov)))})
+
+              ## normalize the weights to sum to 1
+              weights <- weights / sum(weights)
+
+              ## go to the general initialize method now
+              callNextMethod(.Object,
+                             components=components,
+                             weights=weights,
+                             refDose=refDose,
+                             datamodel=
+                             function(){
+                                 ## the logistic likelihood:
+                                 ## not changed from non-mixture case
+                                 for (i in 1:nObs)
+                                 {
+                                     y[i] ~ dbern(p[i])
+                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                     StandLogDose[i] <- log(x[i] / refDose)
+                                 }
+                             },
+                             priormodel=
+                             function(){
+                                 ## the multivariate normal prior on the coefficients
+                                 theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                     priorPrec[1:2, 1:2, comp])
+                                 ## this is conditional on the component index
+                                 ## "comp"
+
+                                 ## mixture for component index
+                                 comp ~ dcat(weights)
+
+                                 ## extract actual coefficients
+                                 alpha0 <- theta[1]
+                                 alpha1 <- theta[2]
+
+                                 ## dummy to use refDose here.
+                                 ## It is contained in the modelspecs list below,
+                                 ## so it must occur here
+                                 bla <- refDose + 1
+                             },
+                             datanames=c("nObs", "y", "x"),
+                             modelspecs=
+                             function(){
+                                 list(refDose=refDose,
+                                      priorMean=
+                                      do.call(cbind,
+                                              lapply(components, "[[", "mean")),
+                                      priorPrec=
+                                      array(data=
+                                            do.call(c,
+                                                    lapply(components, "[[", "prec")),
+                                            dim=c(2, 2, length(components))),
+                                      weights=weights)
+                             },
+                             dose=
+                             function(prob, alpha0, alpha1){
+                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
+                                 return(exp(StandLogDose) * refDose)
+                             },
+                             prob=
+                             function(dose, alpha0, alpha1){
+                                 StandLogDose <- log(dose / refDose)
+                                 return(plogis(alpha0 + alpha1 * StandLogDose))
+                             },
+                             init=
+                             ## todo: find better starting values
+                             function(){
+                                 list(theta=c(0, 1))
+                             },
+                             sample=
+                             c("alpha0", "alpha1"),
+                             ...)
+          })
+
 
 ## ============================================================
+
+
+
+
