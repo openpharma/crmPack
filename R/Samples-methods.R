@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Die 29/04/2014 15:04>
+## Time-stamp: <[Samples-methods.R] by DSB Fre 25/07/2014 12:11>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -13,6 +13,7 @@
 
 ##' @include McmcOptions-methods.R
 ##' @include Model-methods.R
+##' @include fromQuantiles.R
 {}
 
 ## --------------------------------------------------
@@ -107,6 +108,8 @@ setMethod("extract",
 ##' @param object the \code{\linkS4class{Samples}} object
 ##' @param model the \code{\linkS4class{Model}} object
 ##' @param data the \code{\linkS4class{Data}} object
+##' @param points at which dose levels is the fit requested? default is the dose
+##' grid
 ##' @param quantiles the quantiles to be calculated (default: 0.025 and
 ##' 0.975)
 ##' @param middle the function for computing the middle point. Default:
@@ -122,25 +125,27 @@ setMethod("fitted",
           function(object,
                    model,
                    data,
+                   points=data@doseGrid,
                    quantiles=c(0.025, 0.975),
                    middle=mean,
                    ...){
               ## some checks
               stopifnot(is(model, "Model"),
                         is(data, "Data"),
-                        is.probRange(quantiles))
+                        is.probRange(quantiles),
+                        is.numeric(points))
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
               probSamples <- matrix(nrow=sampleSize(object@options),
-                                    ncol=data@nGrid)
+                                    ncol=length(points))
 
               ## evaluate the probs, for all samples.
-              for(i in seq_len(data@nGrid))
+              for(i in seq_along(points))
               {
                   ## Now we want to evaluate for the
                   ## following dose:
-                  probSamples[, i] <- prob(dose=data@doseGrid[i],
+                  probSamples[, i] <- prob(dose=points[i],
                                            model,
                                            object)
               }
@@ -153,7 +158,7 @@ setMethod("fitted",
                                   prob=quantiles)
 
               ## now create the data frame
-              ret <- data.frame(dose=data@doseGrid,
+              ret <- data.frame(dose=points,
                                 middle=middleCurve,
                                 lower=quantCurve[1, ],
                                 upper=quantCurve[2, ])
@@ -161,6 +166,100 @@ setMethod("fitted",
               ## return it
               return(ret)
           })
+
+## --------------------------------------------------
+## Approximate posterior with (log) normal distribution
+## --------------------------------------------------
+
+##' Approximate posterior with (log) normal distribution
+##'
+##' @param object the object
+##' @param \dots unused
+##' @return the approximation model
+##'
+##' @genericMethods
+##' @export
+##' @keywords methods
+setGeneric("approximate",
+           def=
+           function(object, ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("approximate")},
+           valueClass="Model")
+
+
+##' Approximate posterior with (log) normal distribution
+##'
+##' It is recommended to use \code{\link{set.seed}} before, in order
+##' to be able to reproduce the resulting approximating model exactly.
+##'
+##' @param object the \code{\linkS4class{Samples}} object
+##' @param model the \code{\linkS4class{Model}} object
+##' @param data the \code{\linkS4class{Data}} object
+##' @param points optional parameter, which gives the dose values at which
+##' the approximation should rely on (default: 5 values equally spaced from
+##' minimum to maximum of the dose grid)
+##' @param refDose the reference dose to be used (default: median of
+##' \code{points})
+##' @param verbose be verbose (progress statements and plot)? (default)
+##' @param \dots additional arguments for
+##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
+##' approximation quality, whether log normal should be used, etc.
+##' @return the approximation \code{\linkS4class{Model}}
+##'
+##' @export
+##' @keywords methods
+setMethod("approximate",
+          signature=
+          signature(object="Samples"),
+          def=
+          function(object,
+                   model,
+                   data,
+                   points=
+                   seq(from=min(data@doseGrid),
+                       to=max(data@doseGrid),
+                       length=5L),
+                   refDose=median(points),
+                   verbose=TRUE,
+                   ...){
+
+              ## get the required quantiles at these dose levels:
+              quants <- fitted(object,
+                               model,
+                               data,
+                               points=points,
+                               quantiles=c(0.025, 0.975),
+                               middle=median)
+
+              ## run the approx function
+              quantRes <- Quantiles2LogisticNormal(dosegrid=quants$dose,
+                                                   refDose=refDose,
+                                                   lower=quants$lower,
+                                                   upper=quants$upper,
+                                                   median=quants$middle,
+                                                   verbose=verbose,
+                                                   ...)
+
+              if(verbose)
+              {
+                  matplot(x=points,
+                          quantRes$required,
+                          type="l", col="blue", lty=1)
+                  matlines(x=points,
+                           quantRes$quantiles,
+                           col="red", lty=1)
+                  legend("bottomright",
+                         legend=c("original", "approximation"),
+                         col=c("blue", "red"),
+                         lty=1,
+                         bty="n")
+              }
+
+              ## return the model
+              return(quantRes$model)
+          }
 
 ## --------------------------------------------------
 ## Plot dose-tox fit from a model
