@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Fre 27/06/2014 16:32>
+## Time-stamp: <[fromQuantiles.R] by DSB Fre 25/07/2014 11:51>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -38,6 +38,7 @@
 ##' @param parlower lower bounds on the parameters (intercept alpha and the
 ##' slope beta, the corresponding standard deviations and the correlation.)
 ##' @param parupper upper bounds on the parameters
+##' @param verbose be verbose? (default)
 ##' @param control additional options for the optimisation routine, see
 ##' \code{\link[GenSA]{GenSA}} for more details
 ##' @return a list with the best approximating \code{model}
@@ -61,12 +62,12 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                      parstart=NULL,
                                      parlower=c(-10, -10, 0, 0, -0.95),
                                      parupper=c(10, 10, 10, 10, 0.95),
+                                     verbose=TRUE,
                                      control=
                                      list(threshold.stop=0.01,
                                           maxit=50000,
                                           temperature=50000,
-                                          max.time=600,
-                                          verbose=TRUE))
+                                          max.time=600))
 {
     ## extracts and checks
     nDoses <- length(dosegrid)
@@ -81,9 +82,13 @@ Quantiles2LogisticNormal <- function(dosegrid,
               all(upper > median),
               is.probability(level, bounds=FALSE),
               is.bool(logNormal),
+              is.bool(verbose),
               identical(length(parlower), 5L),
               identical(length(parupper), 5L),
               all(parlower < parupper))
+
+    ## put verbose argument in the control list
+    control$verbose <- verbose
 
     ## parametrize in terms of the means for the intercept alpha and the
     ## (log) slope beta,
