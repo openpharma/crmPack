@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Fre 25/07/2014 13:20>
+## Time-stamp: <[Samples-methods.R] by DSB Don 28/08/2014 17:34>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -202,10 +202,12 @@ setGeneric("approximate",
 ##' minimum to maximum of the dose grid)
 ##' @param refDose the reference dose to be used (default: median of
 ##' \code{points})
+##' @param logNormal use the log-normal prior? (not default) otherwise, the
+##' normal prior for the logistic regression coefficients is used
 ##' @param verbose be verbose (progress statements and plot)? (default)
 ##' @param \dots additional arguments for
 ##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
-##' approximation quality, whether log normal should be used, etc.
+##' approximation quality, etc.
 ##' @return the approximation \code{\linkS4class{Model}}
 ##'
 ##' @export
@@ -222,6 +224,7 @@ setMethod("approximate",
                        to=max(data@doseGrid),
                        length=5L),
                    refDose=median(points),
+                   logNormal=FALSE,
                    verbose=TRUE,
                    ...){
 
@@ -233,6 +236,32 @@ setMethod("approximate",
                                quantiles=c(0.025, 0.975),
                                middle=median)
 
+              ## get better starting values if it is already a logistic normal
+              ## model
+              if(is(model, "LogisticNormal") && (! logNormal))
+              {
+                  means <- sapply(object@data,
+                                  mean)
+                  cov <- cov(as.data.frame(object@data))
+
+                  parstart <- c(means[1], means[2],
+                                sqrt(cov[1, 1]), sqrt(cov[2, 2]),
+                                cov2cor(cov)[1, 2])
+              } else if(is(model, "LogisticLogNormal") && logNormal) {
+                  datTrafo <- with(object@data,
+                                   cbind(alpha0,
+                                         log(alpha1)))
+
+                  means <- colMeans(datTrafo)
+                  cov <- cov(datTrafo)
+
+                  parstart <- c(means[1], means[2],
+                                sqrt(cov[1, 1]), sqrt(cov[2, 2]),
+                                cov2cor(cov)[1, 2])
+              } else {
+                  parstart <- NULL
+              }
+
               ## run the approx function
               quantRes <- Quantiles2LogisticNormal(dosegrid=quants$dose,
                                                    refDose=refDose,
@@ -240,6 +269,8 @@ setMethod("approximate",
                                                    upper=quants$upper,
                                                    median=quants$middle,
                                                    verbose=verbose,
+                                                   parstart=parstart,
+                                                   logNormal=logNormal,
                                                    ...)
 
               if(verbose)
@@ -270,6 +301,8 @@ setMethod("approximate",
 ##' @param x the \code{\linkS4class{Samples}} object
 ##' @param y the \code{\linkS4class{Model}} object
 ##' @param data the \code{\linkS4class{Data}} object
+##' @param xlab the x axis label
+##' @param ylab the y axis label
 ##' @return the \code{\link[ggplot2]{ggplot}} object
 ##'
 ##' @export
@@ -280,7 +313,9 @@ setMethod("plot",
           signature(x="Samples",
                     y="Model"),
           def=
-          function(x, y, data, ...){
+          function(x, y, data, ...,
+                   xlab="Dose level",
+                   ylab="Probability of DLT [%]"){
 
               ## get the fit
               plotData <- fitted(x,
@@ -313,8 +348,8 @@ setMethod("plot",
                                     linetype=Type,
                                     colour=I("red"),
                                     geom="line",
-                                    xlab="Dose level",
-                                    ylab="Probability of DLT [%]",
+                                    xlab=xlab,
+                                    ylab=ylab,
                                     ylim=c(0, 100))
 
               ret <- ret +
