@@ -12,8 +12,7 @@ Depends:
     R (>= 3.0.0),
     Rcpp (>= 0.10.6),
     RcppArmadillo (>= 0.3.920),
-    ggplot2,
-    rcppbugs
+    ggplot2
 Imports:
     methods,
     R2WinBUGS,

@@ -50,22 +50,21 @@ options(continue="  ")                  # use two blanks instead of "+" for
 Probably you have already installed the package. However, if not, here is a
 brief installation summary.
 
-\texttt{crmPack} is relying on
-\href{https://github.com/armstrtw/rcppbugs}{rcppbugs},
-\href{http://www.openbugs.net}{OpenBUGS} and
+\texttt{crmPack} is relying on \href{http://mcmc-jags.sourceforge.net/}{JAGS}
+and
 \href{http://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/}{WinBUGS}
 (please click on the links for going to the webpages of the two projects) for
-the internal MCMC computations. While OpenBUGS is required for the default MCMC
+the internal MCMC computations. While JAGS is required for the default MCMC
 runs, WinBUGS only needs to be installed currently if the dual-endpoint designs
-need to be run (because they don't run with OpenBUGS). To increase the speed of
-the MCMC sampling, rcppbugs is currently used for the \texttt{LogisticNormal}
-and \texttt{LogisticLogNormal} models.
+need to be run (because they don't run with JAGS at the moment). To increase the
+speed of the MCMC sampling, \texttt{BayesLogit} is currently used for the
+\texttt{LogisticNormal} model.
 
 Furthermore, you first have to install some required packages, with the
 following command:
 <<install-others, eval=FALSE>>=
-install.packages(c("Rcpp", "RcppArmadillo", "rcppbugs",
-	           "R2WinBUGS", "ggplot2", "gridExtra", "GenSA", "mvtnorm"),
+install.packages(c("Rcpp", "RcppArmadillo", "rjags",
+	           "R2WinBUGS", "ggplot2", "gridExtra", "GenSA", "BayesLogit", "mvtnorm"),
                  dependencies=TRUE)
 @
 
@@ -292,10 +291,10 @@ for example as follows:
 options <- new("McmcOptions",
                burnin=100,
                step=2,
-               samples=1000)
+               samples=2000)
 @
 
-Now the object \texttt{options} specifies that you would like to have 1000
+Now the object \texttt{options} specifies that you would like to have 2000
 parameter samples obtained from a Markov chain that starts with a ``burn-in''
 phase of 100 iterations that are discarded, and then save a sample every 2
 iterations. Note that these numbers are too low for actual implementation and
@@ -315,11 +314,8 @@ samples <- mcmc(data, model, options)
 @
 
 The \texttt{mcmc} function takes the data object, the model and the MCMC
-options. As the model here is of class \texttt{LogisticLogNormal}, the rcppbugs
-implementation is used, which is about twice as fast as the WinBUGS code.
-However, for other models, by default, the OpenBUGS implementation is used for
-obtaining the samples, and you could specify \texttt{program="WinBUGS"} to use
-WinBUGS instead.
+options. By default, JAGS is used for obtaining the samples, and you could
+specify \texttt{program="WinBUGS"} to use WinBUGS instead.
 
 Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, \texttt{crmPack}
@@ -778,7 +774,7 @@ For the simulations, these arguments are internally given by the values
 contained in the data frame given to \texttt{simulate} as the \texttt{args}
 argument. In our case, we want to supply the posterior samples of
 \texttt{alpha0} and \texttt{alpha1} in this data frame. We take only 50 out of
-the 1000 posterior samples in order to reduce the runtime for this example:
+the 2000 posterior samples in order to reduce the runtime for this example:
 
 <<fut-samples>>=
 postSamples <- as.data.frame(samples@data)[(1:20)*50, ]

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Fre 25/07/2014 11:32>
+## Time-stamp: <[mcmc.R] by DSB Fre 17/10/2014 16:03>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -310,100 +310,4 @@ setMethod("mcmc",
               return(ret)
           })
 
-
-## --------------------------------------------------
-## The fast method for the LogisticLogNormal class
-## --------------------------------------------------
-
-##' The fast method for the LogisticLogNormal class
-##'
-##' @param verbose shall messages be printed? (not default)
-setMethod("mcmc",
-          signature=
-          signature(data="Data",
-                    model="LogisticLogNormal",
-                    options="McmcOptions"),
-          def=
-          function(data, model, options,
-                   verbose=FALSE,
-                   ...){
-
-              ## decide whether we sample from the prior or not
-              fromPrior <- data@nObs == 0L
-
-              if(fromPrior)
-              {
-                  ## sample from the bivariate normal prior for theta
-                  tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
-                                          mean=model@mean,
-                                          sigma=model@cov)
-                  samples <- list(alpha0=tmp[, 1],
-                                  alpha1=exp(tmp[, 2]))
-              } else {
-
-                  ## prior correlation
-                  rho <- model@cov[1, 2] / sqrt(model@cov[1, 1] * model@cov[2, 2])
-
-                  ## prior precisions
-                  prec0 <- 1 / model@cov[1, 1]
-                  prec1 <- 1 / model@cov[2, 2]
-
-                  ## starting values
-                  inits <- model@init()$theta
-
-                  ## marginal unvariate normal prior for theta0
-                  theta0 <- mcmc.normal(x=inits[1],
-                                        mu=model@mean[1],
-                                        tau=prec0)
-
-                  ## moments for the conditional normal prior of theta1
-                  condMu <- deterministic(function(theta0){
-                      model@mean[2] + rho / sqrt(prec1) * (theta0 - model@mean[1])
-                  }, theta0)
-
-                  condTau <- prec1 / (1 - rho^2)
-
-                  ## conditional normal prior for theta1
-                  theta1 <- mcmc.normal(x=inits[2],
-                                        mu=condMu,
-                                        tau=condTau)
-
-                  ## intercept and standardized log dose
-                  X <- cbind(1, log(data@x / model@refDose))
-
-                  ## the estimated probabilities
-                  probs <-
-                      deterministic(function(X, theta0, theta1){
-                          plogis(X[,1] * theta0 + X[,2] * exp(theta1))
-                      }, X, theta0, theta1)
-
-                  ## the likelihood
-                  lik <- mcmc.bernoulli(x=as.double(data@y), p=probs, observed=TRUE)
-
-                  ## create the model
-                  m <- create.model(theta0, theta1, probs, lik)
-
-                  ## run the sampler
-                  ans <- run.model(m,
-                                   iterations=options@iterations,
-                                   burn=options@burnin,
-                                   adapt=0,
-                                   thin=options@step)
-
-                  ## select the right iterations first
-                  select <- seq(from=length(ans$theta0) - sampleSize(options) + 1,
-                                to=length(ans$theta0))
-
-                  ## then form the samples list
-                  samples <- list(alpha0=ans$theta0[select],
-                                  alpha1=exp(ans$theta1[select]))
-              }
-
-              ## form a Samples object for return:
-              ret <- new("Samples",
-                         data=samples,
-                         options=options)
-
-              return(ret)
-          })
 
