@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Data-methods.R] by DSB Die 29/04/2014 14:57>
+## Time-stamp: <[Data-methods.R] by DSB Mon 08/09/2014 23:26>
 ##
 ## Description:
 ## Methods for handling the data. Plot ideas taken from bcrm package.
@@ -178,7 +178,7 @@ setMethod("update",
           function(object,
                    x,
                    y,
-                   ID,
+                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
                    ...){
 
               ## some checks
@@ -210,11 +210,6 @@ setMethod("update",
               object@y <- c(object@y, as.integer(y))
 
               ## add ID
-              if(missing(ID))
-              {
-                  offsetID <- if(length(object@ID)) max(object@ID) else 0L
-                  ID <- offsetID + seq_along(y)
-              }
               object@ID <- c(object@ID, ID)
 
               ## add cohort number
@@ -225,6 +220,62 @@ setMethod("update",
               ## return the object
               return(object)
           })
+
+
+## --------------------------------------------------
+## Update a DataParts object
+## --------------------------------------------------
+
+##' Update method for the "DataParts" class
+##'
+##' Add new data to the \code{\linkS4class{DataParts}} object
+##'
+##' @param object the old \code{\linkS4class{DataParts}} object
+##' @param x the dose level (one level only!)
+##' @param y the DLT vector (0/1 vector), for all patients in this cohort
+##' @param ID the patient IDs
+##' @return the new \code{\linkS4class{DataParts}} object
+##'
+##' @export
+##' @keywords methods
+setMethod("update",
+          signature=
+          signature(object="DataParts"),
+          def=
+          function(object,
+                   x,
+                   y,
+                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
+                   ...){
+
+              ## first do the usual things as for Data objects
+              object <- callNextMethod(object=object, x=x, y=y, ID=ID, ...)
+
+              ## update the part information
+              object@part <- c(object@part,
+                               rep(object@nextPart,
+                                   length(y)))
+
+              ## now decide which part the next cohort will belong to:
+              ## only if the nextPart was 1, it can potentially be required to
+              ## change it to 2 (once it is 2, it stays)
+              if(object@nextPart == 1L)
+              {
+                  ## if there was a DLT in one of the cohorts,
+                  ## or if the current dose was the highest from part 1:
+                  if(any(object@y == 1L) || x == max(object@part1Ladder))
+                  {
+                      ## then this closes part 1 and the next cohort will
+                      ## be from part 2:
+                      object@nextPart <- 2L
+                  }
+              }
+
+              ## return the object
+              return(object)
+          })
+
+
 
 ## ============================================================
 

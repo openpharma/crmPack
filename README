@@ -12,5 +12,5 @@ install.packages(c("Rcpp", "RcppArmadillo",
 
 Finally install the crmPack from the local zip file:
 
-install.packages("crmPack_0.0-6.zip", rep=NULL)
+install.packages("crmPack_0.0-16.zip", rep=NULL)
 

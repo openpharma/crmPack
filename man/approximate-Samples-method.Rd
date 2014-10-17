@@ -5,7 +5,7 @@
 \usage{
 \S4method{approximate}{Samples}(object, model, data, points = seq(from =
   min(data@doseGrid), to = max(data@doseGrid), length = 5L),
-  refDose = median(points), verbose = TRUE, ...)
+  refDose = median(points), logNormal = FALSE, verbose = TRUE, ...)
 }
 \arguments{
   \item{object}{the \code{\linkS4class{Samples}} object}
@@ -22,13 +22,16 @@
   \item{refDose}{the reference dose to be used (default:
   median of \code{points})}
 
+  \item{logNormal}{use the log-normal prior? (not default)
+  otherwise, the normal prior for the logistic regression
+  coefficients is used}
+
   \item{verbose}{be verbose (progress statements and plot)?
   (default)}
 
   \item{\dots}{additional arguments for
   \code{\link{Quantiles2LogisticNormal}}, e.g. in order to
-  control the approximation quality, whether log normal
-  should be used, etc.}
+  control the approximation quality, etc.}
 
   \item{...}{unused}
 }

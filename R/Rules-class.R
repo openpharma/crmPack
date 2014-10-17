@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Die 01/07/2014 11:34>
+## Time-stamp: <[Rules-class.R] by DSB Mit 03/09/2014 14:31>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -65,6 +65,15 @@ setClass(Class="NextBestMTD",
 
 ##' The class with the input for finding the next dose in target interval
 ##'
+##' Note that to avoid numerical problems, the dose selection algorithm has been
+##' implemented as follows: First admissible doses are found, which are those
+##' with probability to fall in \code{overdose} category being below
+##' \code{maxOverdoseProb}. Next, within the admissible doses, the maximum
+##' probability to fall in the \code{target} category is calculated. If that is
+##' above 5\% (i.e., it is not just numerical error), then the corresponding
+##' dose is the next recommended dose. Otherwise, the highest admissible dose is
+##' the next recommended dose.
+##'
 ##' @slot target the target toxicity interval
 ##' @slot overdose the overdose toxicity interval
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
@@ -124,7 +133,8 @@ setClass(Class="NextBestDualEndpoint",
 ##' The virtual class for controlling increments
 ##'
 ##' @seealso \code{\linkS4class{IncrementsRelative}},
-##' \code{\linkS4class{IncrementsRelativeDLT}}
+##' \code{\linkS4class{IncrementsRelativeDLT}},
+##' \code{\linkS4class{IncrementsRelativeParts}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -157,6 +167,50 @@ setClass(Class="IncrementsRelative",
                                  n-1L),
                        ! is.unsorted(object@intervals, strictly=TRUE))
          })
+
+
+## --------------------------------------------------
+## Increments control based on relative differences in intervals,
+## with special rules for part 1 and beginning of part 2
+## --------------------------------------------------
+
+##' Increments control based on relative differences in intervals,
+##' with special rules for part 1 and beginning of part 2
+##'
+##' Note that this only works in conjunction with \code{\linkS4class{DataParts}}
+##' objects. If the part 2 will just be started in the next cohort, then the
+##' next maximum dose will be either \code{dltStart} (e.g. -1) shift of the last
+##' part 1 dose in case of a DLT in part 1, or \code{cleanStart} shift (e.g. 0)
+##' in case of no DLTs in part 1. If part 1 will still be on in the next cohort,
+##' then the next dose level will be the next higher dose level in the
+##' \code{part1Ladder} of the data object. If part 2 has been started before,
+##' the usual relative increment rules apply, see
+##' \code{\linkS4class{IncrementsRelative}.
+##'
+##' @slot dltStart integer giving the dose level increment for starting part 2
+##' in case of a DLT in part 1
+##' @slot cleanStart integer giving the dose level increment for starting part 2
+##' in case of a DLT in part 1. If this is less or equal to 0, then the part 1
+##' ladder will be used to find the maximum next dose. If this is larger than 0,
+##' then the relative increment rules will be applied to find the next maximum
+##' dose level.
+##'
+##' @export
+##' @keywords classes
+setClass(Class="IncrementsRelativeParts",
+         contains="IncrementsRelative",
+         representation=
+         representation(dltStart="integer",
+                        cleanStart="integer"),
+         validity=
+         function(object){
+             stopifnot(is.scalar(object@dltStart),
+                       is.scalar(object@cleanStart),
+                       object@cleanStart >= object@dltStart) # meaningful
+                                        # assumption
+         })
+
+
 
 ## --------------------------------------------------
 ## Increments control based on relative differences in terms of DLTs
@@ -475,7 +529,8 @@ setClass(Class="StoppingTargetBiomarker",
 ##' \code{\linkS4class{CohortSizeMin}},
 ##' \code{\linkS4class{CohortSizeRange}},
 ##' \code{\linkS4class{CohortSizeDLT}},
-##' \code{\linkS4class{CohortSizeConst}}
+##' \code{\linkS4class{CohortSizeConst}},
+##' \code{\linkS4class{CohortSizeParts}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -610,6 +665,30 @@ setClass(Class="CohortSizeConst",
          function(object){
              stopifnot(is.scalar(size),
                        object@size > 0)
+         })
+
+## --------------------------------------------------
+## Cohort size based on the parts
+## --------------------------------------------------
+
+##' Cohort size based on the parts
+##'
+##' This class is used when the cohort size should change for the second part of
+##' the dose escalation. Only works in conjunction with
+##' \code{\linkS4class{DataParts}} objects.
+##'
+##' @slot sizes the two sizes for part 1 and part 2
+##'
+##' @keywords classes
+##' @export
+setClass(Class="CohortSizeParts",
+         contains="CohortSize",
+         representation=
+         representation(sizes="integer"),
+         validity=
+         function(object){
+             stopifnot(all(object@sizes > 0),
+                       identical(length(object@sizes), 2L))
          })
 
 

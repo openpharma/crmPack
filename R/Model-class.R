@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Fre 25/07/2014 11:22>
+## Time-stamp: <[Model-class.R] by DSB Sam 26/07/2014 00:00>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -1034,10 +1034,10 @@ setMethod("initialize",
 ## ============================================================
 
 
-##' Standard logistic model with fixed mixture of multiple bivariate normal priors
+##' Standard logistic model with fixed mixture of multiple bivariate (log) normal priors
 ##'
 ##' This is standard logistic regression model with a mixture of multiple bivariate
-##' normal priors on the intercept and slope parameters. The weights of the
+##' (log) normal priors on the intercept and slope parameters. The weights of the
 ##' normal priors are fixed, hence no additional model parameters are introduced.
 ##' This type of prior is often used to better approximate a given posterior
 ##' distribution, or when the information is given in terms of a mixture.
@@ -1052,13 +1052,18 @@ setMethod("initialize",
 ##' The prior is
 ##' \deqn{(\alpha, \beta) \sim
 ##' \sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
+##' if a normal prior is used and
+##' \deqn{(\alpha, \log(\beta)) \sim
+##' \sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
+##' if a log normal prior is used.
 ##'
 ##' The weight \eqn{w_{j}} of the components are fixed and sum to 1.
 ##'
-##' The slots of this class comprise two lists, containing the mean vector, the
-##' covariance and precision matrices of the two bivariate normal distributions
-##' each, the parameters of the beta prior for the first component weight, as
-##' well as the reference dose.
+##' The (additional) slots of this class comprise two lists, containing the mean
+##' vector, the covariance and precision matrices of the two bivariate normal
+##' distributions each, the parameters of the beta prior for the first component
+##' weight, as well as the reference dose. Moreover, a slot specifies whether a
+##' log normal prior is used.
 ##'
 ##' @slot components a list with one entry per component of the mixture.
 ##' Each entry is a list with \code{mean}, \code{cov} and \code{prec} for the
@@ -1066,6 +1071,7 @@ setMethod("initialize",
 ##' @slot weights the weights of the components, these must be positive and sum
 ##' to 1
 ##' @slot refDose the reference dose \eqn{x^{*}}
+##' @slot logNormal is a log normal prior specified for each of the components?
 ##'
 ##' @export
 ##' @keywords classes
@@ -1074,7 +1080,8 @@ setClass(Class="LogisticNormalFixedMixture",
          representation=
          representation(components="list",
                         weights="numeric",
-                        refDose="numeric"),
+                        refDose="numeric",
+                        logNormal="logical"),
          validity=
          function(object){
              stopifnot(all(sapply(object@components,
@@ -1085,7 +1092,8 @@ setClass(Class="LogisticNormalFixedMixture",
                                  length(object@weights)),
                        all(object@weights > 0),
                        sum(object@weights) == 1,
-                       is.scalar(object@refDose))
+                       is.scalar(object@refDose),
+                       is.bool(object@logNormal))
          })
 
 
@@ -1094,10 +1102,13 @@ setClass(Class="LogisticNormalFixedMixture",
 ##' @param .Object the \code{\linkS4class{LogisticNormalFixedMixture}} we want to
 ##' initialize
 ##' @param components the specifications of the mixture components: a list with
-##' one list of \code{mean} and \code{cov} for each bivariate normal prior
+##' one list of \code{mean} and \code{cov} for each bivariate (log) normal prior
 ##' @param weights the weights of the components, these must be positive and
 ##' will be normalized to sum to 1
 ##' @param refDose the reference dose
+##' @param logNormal should a log normal prior be specified, such that the mean
+##' vectors and covariance matrices are valid for the intercept and log slope?
+##' (not default)
 ##'
 ##' @export
 ##' @keywords methods
@@ -1107,6 +1118,7 @@ setMethod("initialize",
                     components,
                     weights,
                     refDose,
+                    logNormal=FALSE,
                     ...){
               ## add precision matrices to component lists
               components <- lapply(components,
@@ -1122,6 +1134,7 @@ setMethod("initialize",
                              components=components,
                              weights=weights,
                              refDose=refDose,
+                             logNormal=logNormal,
                              datamodel=
                              function(){
                                  ## the logistic likelihood:
@@ -1134,24 +1147,49 @@ setMethod("initialize",
                                  }
                              },
                              priormodel=
-                             function(){
-                                 ## the multivariate normal prior on the coefficients
-                                 theta[1:2] ~ dmnorm(priorMean[1:2, comp],
-                                                     priorPrec[1:2, 1:2, comp])
-                                 ## this is conditional on the component index
-                                 ## "comp"
+                             if(logNormal){
+                                 function()
+                                 {
+                                     ## the multivariate normal prior on the coefficients
+                                     theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                         priorPrec[1:2, 1:2, comp])
+                                     ## this is conditional on the component index
+                                     ## "comp"
 
-                                 ## mixture for component index
-                                 comp ~ dcat(weights)
+                                     ## mixture for component index
+                                     comp ~ dcat(weights)
 
-                                 ## extract actual coefficients
-                                 alpha0 <- theta[1]
-                                 alpha1 <- theta[2]
+                                     ## extract actual coefficients
+                                     alpha0 <- theta[1]
+                                     alpha1 <- exp(theta[2])
+                                     ## single difference to !logNormal ...
 
-                                 ## dummy to use refDose here.
-                                 ## It is contained in the modelspecs list below,
-                                 ## so it must occur here
-                                 bla <- refDose + 1
+                                     ## dummy to use refDose here.
+                                     ## It is contained in the modelspecs list below,
+                                     ## so it must occur here
+                                     bla <- refDose + 1
+                                 }
+                             } else {
+                                 function()
+                                 {
+                                     ## the multivariate normal prior on the coefficients
+                                     theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                         priorPrec[1:2, 1:2, comp])
+                                     ## this is conditional on the component index
+                                     ## "comp"
+
+                                     ## mixture for component index
+                                     comp ~ dcat(weights)
+
+                                     ## extract actual coefficients
+                                     alpha0 <- theta[1]
+                                     alpha1 <- theta[2]
+
+                                     ## dummy to use refDose here.
+                                     ## It is contained in the modelspecs list below,
+                                     ## so it must occur here
+                                     bla <- refDose + 1
+                                 }
                              },
                              datanames=c("nObs", "y", "x"),
                              modelspecs=

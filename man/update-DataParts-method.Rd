@@ -1,13 +1,14 @@
 \docType{methods}
-\name{update,Data-method}
-\alias{update,Data-method}
-\title{Update method for the "Data" class}
+\name{update,DataParts-method}
+\alias{update,DataParts-method}
+\title{Update method for the "DataParts" class}
 \usage{
-\S4method{update}{Data}(object, x, y, ID = (if (length(object@ID))
+\S4method{update}{DataParts}(object, x, y, ID = (if (length(object@ID))
   max(object@ID) else 0L) + seq_along(y), ...)
 }
 \arguments{
-  \item{object}{the old \code{\linkS4class{Data}} object}
+  \item{object}{the old \code{\linkS4class{DataParts}}
+  object}
 
   \item{x}{the dose level (one level only!)}
 
@@ -21,10 +22,10 @@
   argument \code{name}.}
 }
 \value{
-the new \code{\linkS4class{Data}} object
+the new \code{\linkS4class{DataParts}} object
 }
 \description{
-Add new data to the \code{\linkS4class{Data}} object
+Add new data to the \code{\linkS4class{DataParts}} object
 }
 \keyword{methods}
 

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Data-class.R] by DSB Die 29/04/2014 14:54>
+## Time-stamp: <[Data-class.R] by DSB Mit 03/09/2014 14:07>
 ##
 ## Description:
 ## Encapsulate the data input in formal classes.
@@ -145,3 +145,36 @@ setClass(Class="DataDual",
              stopifnot(identical(object@nObs, length(object@w)))
          })
 
+## --------------------------------------------------
+## Subclass with additional two parts information
+## --------------------------------------------------
+
+##' Class for the data with two study parts
+##'
+##' This is a subclass of \code{\linkS4class{Data}}, so contains all
+##' slots from \code{\linkS4class{Data}}, and in addition information on the two
+##' study parts.
+##'
+##' @slot part integer vector; which part does each of the patients belong to?
+##' @slot nextPart integer; what is the part for the next cohort?
+##' @slot part1Ladder sorted numeric vector; what is the escalation ladder for
+##' part 1? This shall be a subset of the \code{doseGrid}.
+##'
+##' @export
+##' @keywords classes
+setClass(Class="DataParts",
+         representation=
+         representation(part="integer",
+                        nextPart="integer",
+                        part1Ladder="numeric"),
+         contains="Data",
+         validity=
+         function(object){
+             stopifnot(identical(length(object@part), length(object@x)),
+                       all(object@part %in% as.integer(c(1, 2))),
+                       is.scalar(object@nextPart),
+                       object@nextPart %in% as.integer(c(1, 2)),
+                       all(object@part1Ladder %in% object@doseGrid),
+                       ! is.unsorted(object@part1Ladder,
+                                     strictly=TRUE))
+         })

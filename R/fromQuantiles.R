@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Fre 25/07/2014 11:51>
+## Time-stamp: <[fromQuantiles.R] by DSB Don 31/07/2014 10:55>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -72,7 +72,6 @@ Quantiles2LogisticNormal <- function(dosegrid,
     ## extracts and checks
     nDoses <- length(dosegrid)
     stopifnot(! is.unsorted(dosegrid, strictly=TRUE),
-              (refDose > dosegrid[1]) && (refDose < dosegrid[nDoses]),
               ## the medians must be monotonically increasing:
               ! is.unsorted(median),
               identical(length(lower), nDoses),
@@ -85,7 +84,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
               is.bool(verbose),
               identical(length(parlower), 5L),
               identical(length(parupper), 5L),
-              all(parlower < parupper))
+              all(parlower < parstart),
+              all(parstart < parupper))
 
     ## put verbose argument in the control list
     control$verbose <- verbose

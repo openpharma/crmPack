@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Mit 09/07/2014 17:06>
+## Time-stamp: <[Rules-methods.R] by DSB Die 09/09/2014 00:19>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -175,7 +175,18 @@ setMethod("nextBest",
               if(length(dosesOK))
               {
                   ## what is the recommended dose level?
-                  doseLevel <- which.max(probTarget[dosesOK])
+
+                  ## if maximum target probability is higher than some numerical
+                  ## threshold, then take that level, otherwise stick to the
+                  ## maximum level that is OK:
+                  doseLevel <-
+                      if(max(probTarget[dosesOK]) > 0.05)
+                      {
+                          which.max(probTarget[dosesOK])
+                      } else {
+                          which.max(data@doseGrid[dosesOK])
+                      }
+
                   ret <- data@doseGrid[dosesOK][doseLevel]
               } else {
                   ## if none of the doses is OK:
@@ -257,6 +268,33 @@ setMethod("nextBest",
           })
 
 
+##' Find the next best dose based on the NCRM method when two parts
+##' trial is used
+setMethod("nextBest",
+          signature=
+          signature(nextBest="NextBestNCRM",
+                    doselimit="numeric",
+                    samples="Samples",
+                    model="Model",
+                    data="DataParts"),
+          def=
+          function(nextBest, doselimit, samples, model, data, ...){
+              ## exception when we are in part I or about to start part II!
+              if(all(data@part == 1L))
+              {
+                  ## here we will always propose the highest possible dose
+                  ## (assuming that the dose limit came from reasonable
+                  ## increments rule, i.e. inrementsRelativeParts)
+                  return(list(value=doselimit,
+                              plot=NULL))
+              } else {
+                  ## otherwise we will just do the standard thing
+                  callNextMethod(nextBest, doselimit, samples, model, data, ...)
+              }
+          })
+
+
+
 ## --------------------------------------------------
 ## The method for the dual endpoint model
 ## --------------------------------------------------
@@ -321,7 +359,18 @@ setMethod("nextBest",
               if(length(dosesOK))
               {
                   ## what is the recommended dose level?
-                  doseLevel <- which.max(probTarget[dosesOK])
+
+                  ## if maximum target probability is higher than some numerical
+                  ## threshold, then take that level, otherwise stick to the
+                  ## maximum level that is OK:
+                  doseLevel <-
+                      if(max(probTarget[dosesOK]) > 0.05)
+                      {
+                          which.max(probTarget[dosesOK])
+                      } else {
+                          which.max(data@doseGrid[dosesOK])
+                      }
+
                   ret <- data@doseGrid[dosesOK][doseLevel]
               } else {
                   ## if none of the doses is OK:
@@ -460,6 +509,69 @@ setMethod("maxDose",
                       lastDose
 
               return(ret)
+          })
+
+
+## --------------------------------------------------
+## The maximum allowable relative increments, with special rules for
+## part 1 and beginning of part 2, method method
+## --------------------------------------------------
+
+##' Determine the maximum possible next dose based on relative increments
+##' and part 1 and 2
+setMethod("maxDose",
+          signature=
+          signature(increments="IncrementsRelativeParts",
+                    data="DataParts"),
+          def=
+          function(increments, data, ...){
+
+              ## determine if there are already cohorts
+              ## belonging to part 2:
+              alreadyInPart2 <- any(data@part == 2L)
+
+              ## if so, we just call the next higher method
+              if(alreadyInPart2)
+              {
+                  callNextMethod(increments, data, ...)
+              } else {
+                  ## otherwise we have special rules.
+
+                  ## what dose level (index) has the highest dose
+                  ## so far?
+                  lastDoseLevel <- match(max(data@x),
+                                         data@part1Ladder)
+
+                  ## determine the next maximum dose
+                  ret <-
+                      if(data@nextPart == 1L)
+                      {
+                          ## here the next cohort will still be in part 1.
+                          ## Therefore we just make one step on the part 1 ladder:
+                          data@part1Ladder[lastDoseLevel + 1L]
+                      } else {
+                          ## the next cohort will start part 2.
+
+                          ## if there was a DLT so far:
+                          if(any(data@y == 1L))
+                          {
+                              data@part1Ladder[lastDoseLevel + increments@dltStart]
+                          } else {
+                              ## otherwise
+                              if(increments@cleanStart > 0)
+                              {
+                                  ## if we want to start part 2 higher than
+                                  ## the last part 1 dose, use usual increments
+                                  callNextMethod(increments, data, ...)
+                              } else {
+                                  ## otherwise
+                                  data@part1Ladder[lastDoseLevel + increments@cleanStart]
+                              }
+                          }
+                      }
+
+                  return(ret)
+              }
           })
 
 
@@ -1331,6 +1443,22 @@ setMethod("size",
           def=
           function(cohortSize, dose, data, ...){
               return(cohortSize@size)
+          })
+
+
+## --------------------------------------------------
+## Cohort size based on the parts
+## --------------------------------------------------
+
+##' Cohort size based on the parts
+setMethod("size",
+          signature=
+          signature(cohortSize="CohortSizeParts",
+                    dose="ANY",
+                    data="DataParts"),
+          def=
+          function(cohortSize, dose, data, ...){
+              return(cohortSize@sizes[data@nextPart])
           })
 
 

@@ -1,3 +1,7 @@
+2014-09-03  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* Add functionality for trial with two parts (SAD vs. MAD e.g.).
+
 2014-07-13  Daniel Sabanés Bové  <sabanesd@roche.com>
 
 	* Few more updates, including better simulation summary functions.

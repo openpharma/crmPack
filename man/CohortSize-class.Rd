@@ -10,7 +10,8 @@ The virtual class for cohort sizes
 \code{\linkS4class{CohortSizeMin}},
 \code{\linkS4class{CohortSizeRange}},
 \code{\linkS4class{CohortSizeDLT}},
-\code{\linkS4class{CohortSizeConst}}
+\code{\linkS4class{CohortSizeConst}},
+\code{\linkS4class{CohortSizeParts}}
 }
 \keyword{classes}
 

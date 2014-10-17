@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[simulate.R] by DSB Don 10/07/2014 14:13>
+## Time-stamp: <[simulate.R] by DSB Mon 08/09/2014 23:57>
 ##
 ## Description:
 ## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
@@ -275,7 +275,7 @@ setMethod("simulate",
               dataList <- lapply(resultList, "[[", "data")
 
               ## the vector of the final dose recommendations
-              recommendedDoses <- sapply(resultList, "[[", "dose")
+              recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
 
               ## setup the list for the final fits
               fitList <- lapply(resultList, "[[", "fit")

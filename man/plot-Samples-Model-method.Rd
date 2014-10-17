@@ -3,7 +3,8 @@
 \alias{plot,Samples,Model-method}
 \title{Plot method for the "Samples" and "Model" object}
 \usage{
-\S4method{plot}{Samples,Model}(x, y, data, ...)
+\S4method{plot}{Samples,Model}(x, y, data, ..., xlab = "Dose level",
+  ylab = "Probability of DLT [\%]")
 }
 \arguments{
   \item{x}{the \code{\linkS4class{Samples}} object}
@@ -11,6 +12,10 @@
   \item{y}{the \code{\linkS4class{Model}} object}
 
   \item{data}{the \code{\linkS4class{Data}} object}
+
+  \item{xlab}{the x axis label}
+
+  \item{ylab}{the y axis label}
 
   \item{...}{Arguments to be passed to methods, such as
   \link{graphical parameters} (see \code{\link{par}}).

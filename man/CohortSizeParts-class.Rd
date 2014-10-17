@@ -1,0 +1,16 @@
+\docType{class}
+\name{CohortSizeParts-class}
+\alias{CohortSizeParts-class}
+\title{Cohort size based on the parts}
+\description{
+This class is used when the cohort size should change for
+the second part of the dose escalation. Only works in
+conjunction with \code{\linkS4class{DataParts}} objects.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{sizes}}{the two sizes for part 1 and part 2}
+}}
+\keyword{classes}
+
