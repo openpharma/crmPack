@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Mit 03/09/2014 14:31>
+## Time-stamp: <[Rules-class.R] by DSB Mon 08/12/2014 19:25>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -185,7 +185,7 @@ setClass(Class="IncrementsRelative",
 ##' then the next dose level will be the next higher dose level in the
 ##' \code{part1Ladder} of the data object. If part 2 has been started before,
 ##' the usual relative increment rules apply, see
-##' \code{\linkS4class{IncrementsRelative}.
+##' \code{\linkS4class{IncrementsRelative}}.
 ##'
 ##' @slot dltStart integer giving the dose level increment for starting part 2
 ##' in case of a DLT in part 1

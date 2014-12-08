@@ -11,15 +11,17 @@ options(continue="  ")                  # use two blanks instead of "+" for
 ###################################################
 ### code chunk number 2: install-others (eval = FALSE)
 ###################################################
-## install.packages(c("Rcpp", "RcppArmadillo",
-## 	           "R2WinBUGS", "ggplot2", "gridExtra", "GenSA", "mvtnorm"),
+## install.packages(c("Rcpp", "RcppArmadillo", "rjags",
+## 	           "ggplot2", "gridExtra", "GenSA", "BayesLogit", "mvtnorm"),
 ##                  dependencies=TRUE)
 
 
 ###################################################
-### code chunk number 3: install-crmPack (eval = FALSE)
+### code chunk number 3: install-crmpack (eval = FALSE)
 ###################################################
-## install.packages("crmPack_0.0-8.zip", repos=NULL)
+## install.packages("path/to/the/directory/crmpack-master",
+##                  repos=NULL,
+##                  type="source")
 
 
 ###################################################
@@ -37,7 +39,7 @@ library(crmPack)
 ###################################################
 ### code chunk number 6: model-setup
 ###################################################
-model <- new("LogisticNormal",
+model <- new("LogisticLogNormal",
              mean=c(-0.85, 1),
              cov=
              matrix(c(1, -0.5, -0.5, 1),
@@ -133,9 +135,9 @@ print(plot(data))
 ### code chunk number 17: mcmc-opts
 ###################################################
 options <- new("McmcOptions",
-               burnin=200,
-               step=4,
-               samples=1000)
+               burnin=100,
+               step=2,
+               samples=2000)
 
 
 ###################################################
@@ -211,36 +213,7 @@ nextMaxDose
 
 
 ###################################################
-### code chunk number 27: size-range
-###################################################
-mySize1 <- new("CohortSizeRange",
-               intervals=c(0, 30, Inf),
-               cohortSize=as.integer(c(1, 3)))
-
-
-###################################################
-### code chunk number 28: size-dlt
-###################################################
-mySize2 <- new("CohortSizeDLT",
-               DLTintervals=c(0, 1, Inf),
-               cohortSize=as.integer(c(1, 3)))
-
-
-###################################################
-### code chunk number 29: size-combined
-###################################################
-mySize <- maxSize(mySize1, mySize2)
-
-
-###################################################
-### code chunk number 30: size-const
-###################################################
-mySize <- new("CohortSizeConst",
-              size=3L)
-
-
-###################################################
-### code chunk number 31: ncrm-spec
+### code chunk number 27: ncrm-spec
 ###################################################
 myNextBest <- new("NextBestNCRM",
                   target=c(0.2, 0.35),
@@ -249,7 +222,7 @@ myNextBest <- new("NextBestNCRM",
 
 
 ###################################################
-### code chunk number 32: mtd-spec
+### code chunk number 28: mtd-spec
 ###################################################
 mtdNextBest <- new("NextBestMTD",
                    target=0.33,
@@ -260,7 +233,7 @@ mtdNextBest <- new("NextBestMTD",
 
 
 ###################################################
-### code chunk number 33: next-best-run
+### code chunk number 29: next-best-run
 ###################################################
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
@@ -268,39 +241,76 @@ doseRecommendation <- nextBest(myNextBest,
 
 
 ###################################################
-### code chunk number 34: next-best-results
+### code chunk number 30: next-best-results
 ###################################################
 doseRecommendation$value
 print(doseRecommendation$plot)
 
 
 ###################################################
-### code chunk number 35: rules-bits
+### code chunk number 31: size-range
+###################################################
+mySize1 <- new("CohortSizeRange",
+               intervals=c(0, 30, Inf),
+               cohortSize=as.integer(c(1, 3)))
+
+
+###################################################
+### code chunk number 32: size-dlt
+###################################################
+mySize2 <- new("CohortSizeDLT",
+               DLTintervals=c(0, 1, Inf),
+               cohortSize=as.integer(c(1, 3)))
+
+
+###################################################
+### code chunk number 33: size-combined
+###################################################
+mySize <- maxSize(mySize1, mySize2)
+
+
+###################################################
+### code chunk number 34: size-eval
+###################################################
+size(mySize,
+     dose=doseRecommendation$value,
+     data=data)
+
+
+###################################################
+### code chunk number 35: size-const
+###################################################
+mySize <- new("CohortSizeConst",
+              size=3L)
+
+
+###################################################
+### code chunk number 36: rules-bits
 ###################################################
 myStopping1 <- new("StoppingMinCohorts",
                    nCohorts=3L)
-myStopping2 <- new("StoppingMaxPatients",
-                   nPatients=20L)
-myStopping3 <- new("StoppingTargetProb",
+myStopping2 <- new("StoppingTargetProb",
                    target=c(0.2, 0.35),
                    prob=0.5)
+myStopping3 <- new("StoppingMaxPatients",
+                   nPatients=20L)
 
 
 ###################################################
-### code chunk number 36: rules-compose
+### code chunk number 37: rules-compose
 ###################################################
-myStopping <- (myStopping1 & myStopping3) | myStopping2
+myStopping <- (myStopping1 & myStopping2) | myStopping3
 
 
 ###################################################
-### code chunk number 37: rules-try
+### code chunk number 38: rules-try
 ###################################################
 stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
 
 
 ###################################################
-### code chunk number 38: design-setup
+### code chunk number 39: design-setup
 ###################################################
 design <- new("Design",
               model=model,
@@ -313,7 +323,7 @@ design <- new("Design",
 
 
 ###################################################
-### code chunk number 39: true-def
+### code chunk number 40: true-def
 ###################################################
 ## define the true function
 myTruth <- function(dose)
@@ -326,12 +336,13 @@ curve(myTruth(x), from=0, to=80, ylim=c(0, 1))
 
 
 ###################################################
-### code chunk number 40: run-sims
+### code chunk number 41: run-sims
 ###################################################
 set.seed(819)
 time <- system.time(mySims <- simulate(design,
                                        truth=myTruth,
                                        args=NULL,
+                                       firstSeparate=FALSE,
                                        nsim=10L,
                                        mcmcOptions=options,
                                        parallel=TRUE))[3]
@@ -339,51 +350,51 @@ time
 
 
 ###################################################
-### code chunk number 41: sim-class
+### code chunk number 42: sim-class
 ###################################################
 class(mySims)
 
 
 ###################################################
-### code chunk number 42: sim-help
+### code chunk number 43: sim-help
 ###################################################
 help("Simulations-class")
 
 
 ###################################################
-### code chunk number 43: third-trial
+### code chunk number 44: third-trial
 ###################################################
 print(plot(mySims@data[[3]]))
 
 
 ###################################################
-### code chunk number 44: third-dose
+### code chunk number 45: third-dose
 ###################################################
 mySims@doses[3]
 
 
 ###################################################
-### code chunk number 45: third-stop
+### code chunk number 46: third-stop
 ###################################################
 mySims@stopReasons[[3]]
 
 
 ###################################################
-### code chunk number 46: sim-plot
+### code chunk number 47: sim-plot
 ###################################################
 library(grid)
 grid.draw(plot(mySims))
 
 
 ###################################################
-### code chunk number 47: sim-summary
+### code chunk number 48: sim-summary
 ###################################################
 summary(mySims,
         truth=myTruth)
 
 
 ###################################################
-### code chunk number 48: sim-sum-plot
+### code chunk number 49: sim-sum-plot
 ###################################################
 simSum <- summary(mySims,
                   truth=myTruth)
@@ -391,27 +402,27 @@ grid.draw(plot(simSum))
 
 
 ###################################################
-### code chunk number 49: sim-sum-plot2
+### code chunk number 50: sim-sum-plot2
 ###################################################
 print(plot(simSum, type="doseSelected") +
       scale_x_continuous(breaks=40:60, limits=c(40, 60)))
 
 
 ###################################################
-### code chunk number 50: explain-fut
+### code chunk number 51: explain-fut
 ###################################################
 model@prob
 
 
 ###################################################
-### code chunk number 51: fut-samples
+### code chunk number 52: fut-samples
 ###################################################
 postSamples <- as.data.frame(samples@data)[(1:20)*50, ]
 postSamples
 
 
 ###################################################
-### code chunk number 52: design-future
+### code chunk number 53: design-future
 ###################################################
 nowDesign <- new("Design",
                  model=model,
@@ -426,7 +437,7 @@ nowDesign <- new("Design",
 
 
 ###################################################
-### code chunk number 53: sim-future
+### code chunk number 54: sim-future
 ###################################################
 set.seed(901)
 time <- system.time(futureSims <- simulate(## supply the new design here
@@ -436,6 +447,8 @@ time <- system.time(futureSims <- simulate(## supply the new design here
                                            ## further arguments are the
                                            ## posterior samples
                                            args=postSamples,
+                                           ## no separate first patient
+                                           firstSeparate=FALSE,
                                            ## do exactly so many simulations as
                                            ## we have samples
                                            nsim=nrow(postSamples),
@@ -446,14 +459,14 @@ time
 
 
 ###################################################
-### code chunk number 54: sim-future-plot
+### code chunk number 55: sim-future-plot
 ###################################################
 a <- plot(futureSims)
 grid.draw(a)
 
 
 ###################################################
-### code chunk number 55: sim-future-summary
+### code chunk number 56: sim-future-summary
 ###################################################
 summary(futureSims,
         truth=myTruth)

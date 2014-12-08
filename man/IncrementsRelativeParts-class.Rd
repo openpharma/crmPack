@@ -14,7 +14,7 @@ last part 1 dose in case of a DLT in part 1, or
 next dose level will be the next higher dose level in the
 \code{part1Ladder} of the data object. If part 2 has been
 started before, the usual relative increment rules apply,
-see \code{\linkS4class{IncrementsRelative}.
+see \code{\linkS4class{IncrementsRelative}}.
 }
 \section{Slots}{
 

@@ -2,17 +2,19 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Fre 17/10/2014 16:03>
+## Time-stamp: <[mcmc.R] by DSB Mon 08/12/2014 19:10>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
 ##
 ## History:
 ## 31/01/2014   file creation
+## 08/12/2014   no longer rely on R2WinBUGS for write.model but get it internal
 ###################################################################################
 
 ##' @include helpers.R
 ##' @include Samples-class.R
+##' @include writeModel.R
 {}
 
 
@@ -63,7 +65,6 @@ setGeneric("mcmc",
 ##' @param verbose shall messages be printed? (not default)
 ##'
 ##' @importFrom rjags jags.model jags.samples
-##' @importFrom R2WinBUGS write.model bugs
 setMethod("mcmc",
           signature=
           signature(data="Data",
@@ -105,7 +106,7 @@ setMethod("mcmc",
 
               ## write the model file into it
               modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-              R2WinBUGS::write.model(bugsModel, modelFileName)
+              writeModel(bugsModel, modelFileName)
 
               ## get the initial values for the parameters,
               ## by evaluating the init function from the model object.
@@ -197,6 +198,7 @@ setMethod("mcmc",
                                 })
               } else {
                   ## here we use OpenBUGS or WinBUGS.
+                  require(library("R2WinBUGS"))
 
                   ## Obtain MCMC samples:
                   bugsResult <-

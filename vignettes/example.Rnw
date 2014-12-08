@@ -64,7 +64,7 @@ Furthermore, you first have to install some required packages, with the
 following command:
 <<install-others, eval=FALSE>>=
 install.packages(c("Rcpp", "RcppArmadillo", "rjags",
-	           "R2WinBUGS", "ggplot2", "gridExtra", "GenSA", "BayesLogit", "mvtnorm"),
+	           "ggplot2", "gridExtra", "GenSA", "BayesLogit", "mvtnorm"),
                  dependencies=TRUE)
 @
 
@@ -315,7 +315,10 @@ samples <- mcmc(data, model, options)
 
 The \texttt{mcmc} function takes the data object, the model and the MCMC
 options. By default, JAGS is used for obtaining the samples, and you could
-specify \texttt{program="WinBUGS"} to use WinBUGS instead.
+specify \texttt{program="WinBUGS"} to use WinBUGS instead. This will dynamically
+try to load the \texttt{R}-package \texttt{R2WinBUGS} to interface with WinBUGS.
+Therefore you must have installed both WinBUGS and the R-package
+\texttt{R2WinBUGS} in order to use this option.
 
 Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, \texttt{crmPack}
@@ -557,18 +560,18 @@ pieces the rule is composed of:
 <<rules-bits>>=
 myStopping1 <- new("StoppingMinCohorts",
                    nCohorts=3L)
-myStopping2 <- new("StoppingMaxPatients",
-                   nPatients=20L)
-myStopping3 <- new("StoppingTargetProb",
+myStopping2 <- new("StoppingTargetProb",
                    target=c(0.2, 0.35),
                    prob=0.5)
+myStopping3 <- new("StoppingMaxPatients",
+                   nPatients=20L)
 @
 
 Finally we combine these with the ``and'' operator \texttt{\&} and the ``or''
 operator \verb-|-:
 
 <<rules-compose>>=
-myStopping <- (myStopping1 & myStopping3) | myStopping2
+myStopping <- (myStopping1 & myStopping2) | myStopping3
 @
 
 You can find a link to all implemented stopping rule parts in the help page

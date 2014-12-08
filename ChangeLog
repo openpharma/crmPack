@@ -1,3 +1,8 @@
+2014-12-08  Daniel Sabanés Bové  <sabanesd@roche.com>
+
+	* Remove the package's dependency on a (R2)WinBUGS installation.
+	Include Word file with very detailed installation instructions.
+
 2014-09-03  Daniel Sabanés Bové  <sabanesd@roche.com>
 
 	* Add functionality for trial with two parts (SAD vs. MAD e.g.).
