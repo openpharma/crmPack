@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[helpers.R] by DSB Mit 12/02/2014 10:52>
+## Time-stamp: <[helpers.R] by DSB Mon 15/12/2014 21:19>
 ##
 ## Description:
 ## Some helper functions
@@ -122,4 +122,34 @@ is.probRange <- function(x,
 logit <- function(x)
 {
     qlogis(x)
+}
+
+##' Open the example pdf for crmPack
+##'
+##' Calling this helper function should open the example.pdf document,
+##' residing in the doc subfolder of the package installation directory.
+##'
+##' @return nothing
+##' @export
+##' @keywords documentation
+##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+crmPackExample <- function()
+{
+    crmPath <- system.file(package="crmPack")
+    utils:::print.vignette(list(PDF="example.pdf", Dir=crmPath))
+}
+
+##' Open the browser with help pages for crmPack
+##'
+##' This convenience function opens your browser with the help pages for
+##' crmPack.
+##'
+##' @return nothing
+##' @export
+##' @importFrom utils help
+##' @keywords documentation
+##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+crmPackHelp <- function()
+{
+    utils::help(package="crmPack", help_type="html")
 }
