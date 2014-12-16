@@ -44,9 +44,7 @@
 \value{
 A single \code{\link[ggplot2]{ggplot2}} object if a single
 plot is asked for, otherwise a
-\code{\link{gridExtra}{gTree}} object. The first can be
-plotted with the \code{print} command, the latter with the
-\code{\link[grid]{grid.draw}} command.
+\code{\link{gridExtra}{gTree}} object.
 }
 \description{
 Graphical display of the simulation summary

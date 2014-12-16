@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Simulations-methods.R] by DSB Son 13/07/2014 21:06>
+## Time-stamp: <[Simulations-methods.R] by DSB Die 16/12/2014 17:50>
 ##
 ## Description:
 ## Methods for handling the simulations output.
@@ -33,9 +33,7 @@
 ##' to plot from
 ##' @param type the type of plots you want to obtain.
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
-##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object. The first can
-##' be plotted with the \code{print} command, the latter with the
-##' \code{\link[grid]{grid.draw}} command.
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
@@ -489,9 +487,7 @@ setMethod("show",
 ##' to plot from
 ##' @param type the types of plots you want to obtain.
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
-##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object. The first can
-##' be plotted with the \code{print} command, the latter with the
-##' \code{\link[grid]{grid.draw}} command.
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual

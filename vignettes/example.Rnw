@@ -697,8 +697,7 @@ Furthermore, with this object, we can apply two methods. First, we can plot it,
 i.e. we can apply the plot method:
 
 <<sim-plot, fig=TRUE>>=
-library(grid)
-grid.draw(plot(mySims))
+plot(mySims)
 @
 
 The resulting plot shows on the top panel a summary of the trial trajectories.
@@ -727,7 +726,7 @@ detail than the textual summary we have just seen:
 <<sim-sum-plot, fig=TRUE>>=
 simSum <- summary(mySims,
                   truth=myTruth)
-grid.draw(plot(simSum))
+plot(simSum)
 @
 
 The top left panel shows the distribution of the sample size across the
@@ -830,8 +829,7 @@ simulations, we can summarize the resulting predictive simulations, for example
 show the predicted trajectories of doses:
 
 <<sim-future-plot, fig=TRUE>>=
-a <- plot(futureSims)
-grid.draw(a)
+plot(futureSims)
 @
 
 In the summary, we do not need to look at the characteristics involving the true

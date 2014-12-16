@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[helpers.R] by DSB Mon 15/12/2014 21:19>
+## Time-stamp: <[helpers.R] by DSB Die 16/12/2014 17:45>
 ##
 ## Description:
 ## Some helper functions
@@ -12,6 +12,8 @@
 ## 19/12/2013   add is.bool from glmBfp
 ## 31/01/2014   copied from adaptive package
 ## 11/02/2014   add logit function
+## 16/12/2014   add plot method for arrange objects, that we generate by calling
+##              gridExtra::arrangeGrob for combining ggplot2 objects
 #####################################################################################
 
 
@@ -152,4 +154,17 @@ crmPackExample <- function()
 crmPackHelp <- function()
 {
     utils::help(package="crmPack", help_type="html")
+}
+
+##' @importFrom grid grid.draw
+##' @export
+plot.arrange <- function(x, ...)
+{
+    grid::grid.draw(x, ...)
+}
+
+##' @export
+print.arrange <- function(x, ...)
+{
+    plot.arrange(x, ...)
 }
