@@ -3,8 +3,12 @@
 \alias{IncrementsRelativeDLT-class}
 \title{Increments control based on relative differences in terms of DLTs}
 \description{
-Increments control based on relative differences in terms
-of DLTs
+Note that \code{DLTintervals} is to be read as follows. If
+for example, we want to specify three intervals: First 0
+DLTs, second 1 or 2 DLTs, and third at least 3 DLTs, then
+we specify \code{DLTintervals} to be \code{c(0, 1, 3,
+Inf)}. That means, the right bound of the intervals are
+exclusive to the interval.
 }
 \section{Slots}{
 

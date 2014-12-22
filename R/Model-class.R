@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Mon 22/12/2014 16:38>
+## Time-stamp: <[Model-class.R] by DSB Mon 22/12/2014 16:59>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -310,7 +310,7 @@ setMethod("initialize",
                                  for (i in 1:nObs)
                                  {
                                      y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                     logit(p[i]) <- alpha0 + alpha1 * StandDose[i]
                                      StandDose[i] <- x[i] - refDose
                                  }
                              },

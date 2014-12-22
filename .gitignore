@@ -5,3 +5,5 @@
 .Rdata
 
 *~
+
+vignettes/.build.timestamp
