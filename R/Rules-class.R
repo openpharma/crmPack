@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Mon 08/12/2014 19:25>
+## Time-stamp: <[Rules-class.R] by DSB Mon 22/12/2014 16:47>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -148,8 +148,14 @@ setClass(Class="Increments",
 
 ##' Increments control based on relative differences in intervals
 ##'
+##' Note that \code{intervals} is to be read as follows. If for example,
+##' we want to specify three intervals: First 0 to less than 50, second at least
+##' 50 up to less than 100 mg, and third at least 100 mg, then we specify
+##' \code{intervals} to be \code{c(0, 50, 100, Inf)}. That means, the right
+##' bound of the intervals are exclusive to the interval.
+##'
 ##' @slot intervals a vector with the bounds of the relevant intervals of length
-##' \code{n}
+##' \code{n}.
 ##' @slot increments a vector of length \code{n-1} with the maximum allowable
 ##' relative increments in the \code{intervals}
 ##'
@@ -217,6 +223,12 @@ setClass(Class="IncrementsRelativeParts",
 ## --------------------------------------------------
 
 ##' Increments control based on relative differences in terms of DLTs
+##'
+##' Note that \code{DLTintervals} is to be read as follows. If for example,
+##' we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and
+##' third at least 3 DLTs, then we specify
+##' \code{DLTintervals} to be \code{c(0, 1, 3, Inf)}. That means, the right
+##' bound of the intervals are exclusive to the interval.
 ##'
 ##' @slot DLTintervals a vector with the bounds of the relevant DLT intervals of
 ##' length \code{n}

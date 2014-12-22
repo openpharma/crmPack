@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Data-class.R] by DSB Mit 03/09/2014 14:07>
+## Time-stamp: <[Data-class.R] by DSB Mon 22/12/2014 16:50>
 ##
 ## Description:
 ## Encapsulate the data input in formal classes.
@@ -97,6 +97,9 @@ setMethod("initialize",
               .Object@nObs <- length(x)
               .Object@nGrid <- length(doseGrid)
               .Object@xLevel <- match(x, doseGrid)
+
+              ## make it easy to specify y:
+              y <- as.integer(y)
 
               if((missing(ID) || length(ID) == 0) && length(x))
               {
