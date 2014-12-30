@@ -2,20 +2,21 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[dual.R] by DSB Mon 31/03/2014 16:17>
+## Time-stamp: <[dual.R] by DSB Die 23/12/2014 15:29>
 ##
 ## Description:
 ## Test the dual endpoint stuff. For development only!!
 ##
 ## History:
 ## 24/03/2014   file creation
+## 22/12/2014   test the new JAGS implementation
 ###################################################################################
 
 source("../R/Model-class.R")
 source("../R/helpers.R")
 ## set up the model
 
-model <- new("DualEndpoint",
+model <- new("DualEndpoint2",
              mu=c(0, 1),
              Sigma=matrix(c(1, 0, 0, 1), nrow=2),
              sigma2betaW=
@@ -26,22 +27,26 @@ model <- new("DualEndpoint",
              rho=
              c(a=1, b=1),
              ## c(a=20, b=10)
-             smooth="RW2")
+             smooth="RW1")
 
 source("../R/Data-class.R")
 source("../R/Data-methods.R")
 ## create some test data
 data <- new("DataDual",
             x=
-            c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+            c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+              20, 20, 20, 40, 40, 40, 50, 50, 50),
             y=
-            as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
+            as.integer(c(0, 0, 0, 0, 0, 0, 1, 0,
+                         0, 1, 1, 0, 0, 1, 0, 1, 1)),
             w=
-            c(0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6),
+            c(0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
+              0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2),
             doseGrid=
             c(0.1, 0.5, 1.5, 3, 6,
               seq(from=10, to=80, by=2)))
 data
+data@nGrid
 
 library(ggplot2)
 plot(data)
@@ -50,19 +55,27 @@ source("../R/McmcOptions-class.R")
 source("../R/McmcOptions-methods.R")
 ## and some MCMC options
 options <- new("McmcOptions",
-               burnin=100,
+               burnin=1000,
                step=2,
-               samples=1000)
+               samples=10000)
 
 
 source("../R/mcmc.R")
+source("../R/writeModel.R")
 source("../R/Samples-class.R")
 
 ## obtain the samples
+library(rjags)
 samples <- mcmc(data, model, options,
-                program="WinBUGS")
+                program="JAGS")
 
 str(samples)
+
+plot(samples@data$betaW[, 40], type="l")
+## ok, so we don't have convergence for RW2 at least with JAGS!
+## there is convergence with WinBUGS however.
+
+str(samplesNew)
 
 ## it only works with WinBUGS!! But not with the default "OpenBUGS".
 source("../R/Samples-methods.R")
@@ -79,13 +92,26 @@ ggs_density(betaZ)
 ggs_autocorrelation(betaZ)
 ggs_running(betaZ)
 
+
+betaW <- extract(samples, "betaW")
+str(betaW)
+
+ggs_traceplot(betaW, family="betaW[1]")
+ggs_density(betaZ)
+ggs_autocorrelation(betaZ)
+ggs_running(betaZ)
+
+
 rho <- extract(samples, "rho")
 ggs_traceplot(rho)
 plot(rho)
 ggs_histogram(rho)
 
 ## ok now we want to plot the fit:
+source("../R/Model-methods.R")
+
 plot(samples, model, data)
+x11()
 plot(samples, model, data, extrapolate=FALSE)
 
 

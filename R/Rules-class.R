@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Mon 22/12/2014 16:47>
+## Time-stamp: <[Rules-class.R] by DSB Die 30/12/2014 15:32>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -24,7 +24,8 @@
 ##'
 ##' @seealso \code{\linkS4class{NextBestMTD}},
 ##' \code{\linkS4class{NextBestNCRM}},
-##' \code{\linkS4class{NextBestDualEndpoint}}
+##' \code{\linkS4class{NextBestDualEndpoint}},
+##' \code{\linkS4class{NextBestThreePlusThree}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -92,6 +93,21 @@ setClass(Class="NextBestNCRM",
                        is.probRange(object@overdose),
                        is.probability(object@maxOverdoseProb))
          })
+
+
+## --------------------------------------------------
+## Next best dose based on 3+3 rule
+## --------------------------------------------------
+
+##' The class with the input for finding the next dose in target interval
+##'
+##' Implements the classical 3+3 dose recommendation.
+##' No input is required, hence this class has no slots.
+##'
+##' @export
+##' @keywords classes
+setClass(Class="NextBestThreePlusThree",
+         contains=list("NextBest"))
 
 
 ## --------------------------------------------------

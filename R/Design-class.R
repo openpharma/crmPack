@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Design-class.R] by DSB Mon 02/06/2014 17:10>
+## Time-stamp: <[Design-class.R] by DSB Die 30/12/2014 17:27>
 ##
 ## Description:
 ## This class encapsulates a whole CRM design.
@@ -56,3 +56,56 @@ setClass(Class="Design",
 
 
 
+##' Class for rule-based designs
+##'
+##' The difference to \code{\linkS4class{Design}} class is that
+##' model, stopping and increments slots are missing.
+##'
+##' @slot nextBest how to find the next best dose, an object of class
+##' \code{\linkS4class{NextBest}}
+##' @slot cohortSize rules for the cohort sizes,
+##' an object of class \code{\linkS4class{CohortSize}}
+##' @slot data what is the dose grid, any previous data, etc., contained
+##' in an object of class \code{\linkS4class{Data}}
+##' @slot startingDose what is the starting dose? Must lie on the grid in \code{data}
+##'
+##' @export
+##' @keywords classes
+setClass(Class="RuleDesign",
+         representation=
+         representation(nextBest="NextBest",
+                        cohortSize="CohortSize",
+                        data="Data",
+                        startingDose="numeric"),
+         validity=
+         function(object){
+             stopifnot(is.scalar(object@startingDose),
+                       object@startingDose %in% object@data@doseGrid)
+         })
+
+
+##' Creates a new 3+3 design object from a dose grid
+##'
+##' @param doseGrid the dose grid to be used
+##' @return the object of class \code{\linkS4class{RuleDesign}} with the
+##' 3+3 design
+##'
+##' @export
+##' @keywords programming
+##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+getThreePlusThreeDesign <- function(doseGrid)
+{
+    emptydata <- new("Data",
+                     x=numeric(),
+                     y=integer(),
+                     doseGrid=doseGrid)
+    new("NextBestThreePlusThree")
+    design <- new("RuleDesign",
+                  nextBest=new("NextBestThreePlusThree"),
+                  data=emptydata,
+                  cohortSize=
+                  new("CohortSizeConst", size=3L),
+                  ## using a constant cohort size of 3,
+                  ## we obtain exactly the 3+3 design
+                  startingDose=head(emptydata@doseGrid, 1))
+}

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Don 28/08/2014 17:34>
+## Time-stamp: <[Samples-methods.R] by DSB Die 23/12/2014 11:59>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -418,7 +418,81 @@ setMethod("plot",
               gdata <-
                   with(plotData,
                        data.frame(x=rep(dose, 3),
-                                  y=c(middle, lower, upper),
+                                  y=c(mean, lower, upper),
+                                  group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                  Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                         c("Estimate",
+                                           "95% Credible Interval"))))
+
+              plot2 <- ggplot2::qplot(x=x,
+                                      y=y,
+                                      data=gdata,
+                                      group=group,
+                                      linetype=Type,
+                                      colour=I("blue"),
+                                      geom="line",
+                                      xlab="Dose level",
+                                      ylab="Biomarker level")
+
+              plot2 <- plot2 +
+                  ggplot2::scale_linetype_manual(breaks=
+                                                 c("Estimate",
+                                                   "95% Credible Interval"),
+                                                 values=c(1,2))
+
+              ## arrange both plots side by side
+              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
+              return(ret)
+          })
+
+
+setMethod("plot",
+          signature=
+          signature(x="Samples",
+                    y="DualEndpoint2"),
+          def=
+          function(x, y, data, extrapolate=TRUE, ...){
+
+              ## call the superclass method, to get the toxicity plot
+              plot1 <- callNextMethod(x, y, data, ...)
+
+              ## only look at these dose levels for the plot:
+              xLevels <-
+                  if(extrapolate)
+                      seq_along(data@doseGrid)
+                  else
+                      1:max(data@xLevel)
+
+              ## get the plot data for the biomarker plot
+              functionSamples <- with(samples@data,
+                                      betaW)[, xLevels, drop=FALSE]
+
+              ## extract mean curve
+              meanCurve <- colMeans(functionSamples)
+
+              ## extract quantiles
+              quantiles <- c(0.025, 0.975)
+              quantCurve <- apply(functionSamples, 2L, quantile,
+                                  prob=quantiles)
+
+              ## now create the data frame
+              plotData <- data.frame(dose=data@doseGrid[xLevels],
+                                     mean=meanCurve,
+                                     lower=quantCurve[1, ],
+                                     upper=quantCurve[2, ])
+
+              ## make the second plot
+              gdata <-
+                  with(plotData,
+                       data.frame(x=rep(dose, 3),
+                                  y=c(mean, lower, upper),
                                   group=
                                   rep(c("mean", "lower", "upper"),
                                       each=nrow(plotData)),

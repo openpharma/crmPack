@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[helpers.R] by DSB Die 16/12/2014 17:45>
+## Time-stamp: <[helpers.R] by DSB Die 30/12/2014 19:39>
 ##
 ## Description:
 ## Some helper functions
@@ -168,3 +168,6 @@ print.arrange <- function(x, ...)
 {
     plot.arrange(x, ...)
 }
+
+
+

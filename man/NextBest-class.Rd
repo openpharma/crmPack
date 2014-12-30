@@ -8,7 +8,8 @@ The virtual class for finding next best dose
 \seealso{
 \code{\linkS4class{NextBestMTD}},
 \code{\linkS4class{NextBestNCRM}},
-\code{\linkS4class{NextBestDualEndpoint}}
+\code{\linkS4class{NextBestDualEndpoint}},
+\code{\linkS4class{NextBestThreePlusThree}}
 }
 \keyword{classes}
 

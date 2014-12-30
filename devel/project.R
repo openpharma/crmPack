@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Sam 19/07/2014 06:11>
+## Time-stamp: <[project.R] by DSB Die 30/12/2014 19:30>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -83,6 +83,8 @@ options <- new("McmcOptions",
 
 
 source("../R/mcmc.R")
+source("../R/writeModel.R")
+library(rjags)
 
 ## obtain the samples
 time2 <- system.time(samples2 <- mcmc(data, model, options, verbose=TRUE))
@@ -361,7 +363,8 @@ mySims <- simulate(design,
                    truth=truth,
                    args=args,
                    nsim=2L,
-                   mcmcOptions=options)
+                   mcmcOptions=options,
+                   firstSeparate=FALSE)
 
 str(mySims)
 
@@ -386,12 +389,14 @@ source("../R/Simulations-methods.R")
 myTruth <- function(dose){model@prob(dose, alpha0=0, alpha1=1)}
 curve(myTruth(x), from=0, to=30)
 
-sumOut <- summary(mySims,
+sumOut <- summary(as(mySims, Class="Simulations"),
                   truth=myTruth)
 sumOut
 
 mySims@doses
 
+sumOut@obsToxRateAtDoseMostSelected
+str(sumOut)
 
 ## make nice plots for simulation output:
 ## first from the summary object

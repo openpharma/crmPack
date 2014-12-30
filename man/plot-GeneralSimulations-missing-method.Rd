@@ -1,14 +1,14 @@
 \docType{methods}
-\name{plot,Simulations,missing-method}
-\alias{plot,Simulations,missing-method}
+\name{plot,GeneralSimulations,missing-method}
+\alias{plot,GeneralSimulations,missing-method}
 \title{Plot simulations}
 \usage{
-\S4method{plot}{Simulations,missing}(x, y, type = c("trajectory",
+\S4method{plot}{GeneralSimulations,missing}(x, y, type = c("trajectory",
   "dosesTried"), ...)
 }
 \arguments{
-  \item{x}{the \code{\linkS4class{Simulations}} object we
-  want to plot from}
+  \item{x}{the \code{\linkS4class{GeneralSimulations}}
+  object we want to plot from}
 
   \item{type}{the type of plots you want to obtain.}
 
@@ -31,15 +31,15 @@
   } All other \code{type}s give a warning or an error;
   using, e.g., \code{type = "punkte"} being equivalent to
   \code{type = "p"} for S compatibility.  Note that some
-  methods, e.g. \code{\link{plot.factor}}, do not accept
-  this.  } \item{\code{main}}{an overall title for the
-  plot: see \code{\link{title}}.} \item{\code{sub}}{a sub
-  title for the plot: see \code{\link{title}}.}
-  \item{\code{xlab}}{a title for the x axis: see
-  \code{\link{title}}.} \item{\code{ylab}}{a title for the
-  y axis: see \code{\link{title}}.} \item{\code{asp}}{the
-  \eqn{y/x} aspect ratio, see \code{\link{plot.window}}.} }
-  }
+  methods, e.g.\ifelse{{latex}{\out{~}}{
+  }}{}\code{\link{plot.factor}}, do not accept this.  }
+  \item{\code{main}}{an overall title for the plot: see
+  \code{\link{title}}.} \item{\code{sub}}{a sub title for
+  the plot: see \code{\link{title}}.} \item{\code{xlab}}{a
+  title for the x axis: see \code{\link{title}}.}
+  \item{\code{ylab}}{a title for the y axis: see
+  \code{\link{title}}.} \item{\code{asp}}{the \eqn{y/x}
+  aspect ratio, see \code{\link{plot.window}}.} } }
 }
 \value{
 A single \code{\link[ggplot2]{ggplot2}} object if a single
@@ -51,7 +51,7 @@ Summarize the simulations with plots
 }
 \details{
 This plot method can be applied to
-\code{\linkS4class{Simulations}} objects in order to
+\code{\linkS4class{GeneralSimulations}} objects in order to
 summarize them graphically. Possible \code{type}s of plots
 at the moment are: \describe{ \item{trajectory}{Summary of
 the trajectory of the simulated trials}

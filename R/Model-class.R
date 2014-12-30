@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Mon 22/12/2014 16:59>
+## Time-stamp: <[Model-class.R] by DSB Die 23/12/2014 15:24>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -986,6 +986,322 @@ setMethod("initialize",
                              sample=sample,
                              ...)
           })
+
+
+## ============================================================
+
+
+##' Dual endpoint model version 2 which shall work with JAGS
+##'
+##' Model class should be the same. Difference is in the initialize method.
+##' todo: describe the model
+##'
+##' @slot mu For the probit toxicity model, \code{mu} contains the prior mean
+##' vector
+##' @slot Sigma For the probit toxicity model, contains the prior covariance
+##' matrix
+##' @slot sigma2betaW For the biomarker model, contains the prior variance
+##' factor of the random walk prior. If it is not a single number, it can also
+##' contain a vector with elements \code{a} and {b} for the inverse-gamma prior
+##' on \code{sigma2betaW}.
+##' @slot sigma2W Either a fixed value for the biomarker variance, or a vector
+##' with elements \code{a} and \code{b} for the inverse-gamma prior parameters.
+##' @slot rho Either a fixed value for the correlation (between -1 and 1), or a
+##' vector with elements \code{a} and \code{b} for the Beta prior on the
+##' transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
+##' \code{a=1,b=1} leads to a uniform prior on rho.
+##' @slot useRW1 for specifying the random walk prior on the biomarker level: if
+##' \code{TRUE}, RW1 is used, otherwise RW2.
+##' @slot useFixed a list with logical value for each of the three parameters
+##' \code{sigma2betaW}, \code{sigma2W} and \code{rho} indicating whether
+##' a fixed value is used or not.
+##'
+##' @export
+##' @keywords classes
+setClass(Class="DualEndpoint2",
+         contains="Model",
+         representation=
+         representation(mu="numeric",
+                        Sigma="matrix",
+                        sigma2betaW="numeric",
+                        sigma2W="numeric",
+                        rho="numeric",
+                        useRW1="logical",
+                        useFixed="list"),
+         validity=
+         function(object){
+
+             ## check the prior parameters with variable content
+             for(parName in c("sigma2betaW", "sigma2W", "rho"))
+             {
+                 ## if we use a fixed value for this parameter
+                 if(object@useFixed[[parName]])
+                 {
+                     ## check range of value
+                     if(parName == "rho")
+                     {
+                         stopifnot((object@rho > -1) && (object@rho < 1))
+                     } else {
+                         stopifnot(slot(object, parName) > 0)
+                     }
+                 } else {
+                     ## use a IG(a, b) or Beta(a, b)  prior
+                     stopifnot(all(slot(object, parName) > 0),
+                               identical(names(slot(object, parName)),
+                                         c("a", "b")))
+                 }
+             }
+
+             ## check the other prior parameters
+             stopifnot(identical(length(object@mu), 2L),
+                       identical(dim(object@Sigma), c(2L, 2L)),
+                       is.scalar(object@useRW1))
+         })
+
+
+##' Initialization method for the "DualEndpoint2" class (JAGS version)
+##'
+##' @param .Object the \code{\linkS4class{DualEndpoint2}} we want to
+##' initialize
+##' @param mu see \code{\linkS4class{DualEndpoint2}}
+##' @param Sigma see \code{\linkS4class{DualEndpoint2}}
+##' @param sigma2betaW see \code{\linkS4class{DualEndpoint2}}
+##' @param sigma2W see \code{\linkS4class{DualEndpoint2}}
+##' @param rho see \code{\linkS4class{DualEndpoint2}}
+##' @param smooth either \dQuote{RW1} (default) or \dQuote{RW2}, for
+##' specifying the random walk prior on the biomarker level.
+##'
+##' @export
+##' @keywords methods
+setMethod("initialize",
+          signature(.Object = "DualEndpoint2"),
+          function(.Object,
+                   mu,
+                   Sigma,
+                   sigma2betaW,
+                   sigma2W,
+                   rho,
+                   smooth=c("RW1", "RW2"),
+                   ...){
+
+              ## Find out RW choice
+              smooth <- match.arg(smooth)
+              .Object@useRW1 <- smooth == "RW1"
+
+              ## Find out which parameters are fixed
+              useFixed <- list()
+              for(parName in c("sigma2betaW", "sigma2W", "rho"))
+              {
+                  useFixed[[parName]] <-
+                      identical(length(get(parName)), 1L)
+              }
+              .Object@useFixed <- useFixed
+
+              ## build together the prior model and the parameters
+              ## to be saved during sampling
+              ## ----------
+
+              ## start with this:
+
+              modelspecs <-
+                  list(mu=mu,
+                       PrecBetaZ=solve(Sigma)## ,
+                       ## low=c(-10000, 0),
+                       ## high=c(0, 10000)
+                       )
+
+              priormodel <-
+                  function(){
+                      ## priors
+                      betaW[1] <- betaWintercept
+                      for (j in 2:nGrid) {
+                          betaW[j] <- betaWintercept + sum(delta[1:(j-1)])
+                      }
+                      ## delta will then be defined below
+                      ## (depending on whether RW1 or RW2 is used)
+
+                      ## the intercept (= first location betaW value)
+                      betaWintercept ~ dnorm(0, 0.000001)
+                      ## ~ essentially dflat(),
+                      ## which is not available in JAGS.
+
+                      ## the bivariate normal prior for the
+                      ## probit coefficients
+                      betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[,])
+
+                      ## conditional precision for biomarker
+                      condPrecW <- precW / (1 - pow(rho, 2))
+                  }
+
+              if(.Object@useRW1)
+              {
+                  ## add RW1 part
+                  priormodel <-
+                      joinModels(priormodel,
+                                 function(){
+                                     ## the iid first oder differences:
+                                     for (j in 2:nGrid) {
+                                         delta[j-1] ~ dnorm(0, precBetaW)
+                                     }
+                                 })
+              } else {
+                  ## add RW2 part
+                  priormodel <-
+                      joinModels(priormodel,
+                                 function(){
+                                     ## the first order differences:
+                                     delta[1] <- deltaStart
+                                     for (j in 2:(nGrid-1)) {
+                                         delta[j] <- deltaStart +
+                                             sum(delta2[1:(j-1)])
+                                     }
+
+                                     ## the iid second oder differences:
+                                     for (j in 1:(nGrid-2)) {
+                                         delta2[j] ~ dnorm(0, precBetaW)
+                                     }
+
+                                     ## the first 1st order difference:
+                                     deltaStart ~ dnorm(0, 0.000001)
+                                 })
+              }
+
+              ## we will fill in more, depending on which parameters
+              ## are fixed, in these two variables:
+              sample <- c("betaZ", "betaWintercept", "betaW", "delta")
+              initlist <- list()
+
+              ## first the biomarker regression variance
+              if(! useFixed[["sigma2W"]])
+              {
+                  priormodel <-
+                      joinModels(priormodel,
+                                 function(){
+                                     ## gamma prior for biomarker precision
+                                     precW ~ dgamma(precWa, precWb)
+                                 })
+
+                  sample <- c(sample,
+                              "precW")
+
+                  modelspecs <- c(modelspecs,
+                                  list(precWa=sigma2W["a"],
+                                       precWb=sigma2W["b"]))
+
+                  initlist$precW <- 1
+
+              } else {
+                  modelspecs <- c(modelspecs,
+                                  list(precW=1/sigma2W))
+              }
+
+              ## second the variance for the RW prior
+              if(! useFixed[["sigma2betaW"]])
+              {
+                  priormodel <-
+                      joinModels(priormodel,
+                                 function(){
+                                     ## gamma prior for RW precision
+                                     precBetaW ~ dgamma(precBetaWa, precBetaWb)
+                                 })
+
+                  sample <- c(sample,
+                              "precBetaW")
+
+                  initlist$precBetaW <- 1
+
+                  modelspecs <- c(modelspecs,
+                                  list(precBetaWa=sigma2betaW["a"],
+                                       precBetaWb=sigma2betaW["b"]))
+              } else {
+                  modelspecs <- c(modelspecs,
+                                  list(precBetaW=1/sigma2betaW))
+              }
+
+              ## third the correlation
+              if(! useFixed[["rho"]])
+              {
+                  priormodel <-
+                      joinModels(priormodel,
+                                 function(){
+                                     ## transformed Beta prior for rho
+                                     kappa ~ dbeta(rhoa, rhob)
+                                     rho <- kappa * 2 - 1
+                                 })
+
+                  sample <- c(sample,
+                              "rho")
+
+                  initlist$kappa <- 1/2
+
+                  modelspecs <- c(modelspecs,
+                                  list(rhoa=rho["a"],
+                                       rhob=rho["b"]))
+              } else {
+                  modelspecs <- c(modelspecs,
+                                  list(rho=rho))
+              }
+
+              ## go to the general initialize method now
+              callNextMethod(.Object,
+                             mu=mu,
+                             Sigma=Sigma,
+                             sigma2betaW=sigma2betaW,
+                             sigma2W=sigma2W,
+                             rho=rho,
+                             datamodel=
+                             function(){
+                                 ## the likelihood
+                                 for (i in 1:nObs)
+                                 {
+                                     ## the toxicity model
+                                     ## z[i] ~ dnorm(meanZ[i], 1) %_%
+                                     ##     I(low[y[i] + 1], high[y[i] + 1])
+                                     y[i] ~ dinterval(z[i], 0)
+                                     z[i] ~ dnorm(meanZ[i], 1)
+
+                                     ## the conditional biomarker model
+                                     w[i] ~ dnorm(condMeanW[i], condPrecW)
+
+                                     ## the moments
+                                     meanZ[i] <- betaZ[1] + betaZ[2] * x[i]
+                                     condMeanW[i] <- betaW[xLevel[i]] +
+                                         rho / sqrt(precW) * (z[i] - meanZ[i])
+                                 }
+                             },
+                             priormodel=priormodel,
+                             datanames=
+                             c("nObs", "w", "x", "xLevel", "y", "nGrid"),
+                             modelspecs=
+                             function(){
+                                 modelspecs
+                             },
+                             dose=
+                             function(prob, betaZ){
+                                 ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+                                 return(ret)
+                             },
+                             prob=
+                             function(dose, betaZ){
+                                 ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose)
+                                 return(ret)
+                             },
+                             init=
+                             function(y, w, nGrid){
+                                 c(initlist,
+                                   list(z=
+                                        ifelse(y==0, -1, 1),
+                                        betaZ=c(0,1),
+                                        betaWintercept=w[1]),
+                                   if(.Object@useRW1){
+                                       list(delta=rep(0, nGrid-1))
+                                   } else {
+                                       list(delta2=rep(0, nGrid-2))
+                                   })},
+                             sample=sample,
+                             ...)
+          })
+
 
 ## ============================================================
 

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Simulations-methods.R] by DSB Die 16/12/2014 17:50>
+## Time-stamp: <[Simulations-methods.R] by DSB Die 30/12/2014 19:25>
 ##
 ## Description:
 ## Methods for handling the simulations output.
@@ -13,6 +13,7 @@
 
 
 ##' @include Simulations-class.R
+##' @include helpers.R
 {}
 
 
@@ -20,16 +21,14 @@
 ##'
 ##' Summarize the simulations with plots
 ##'
-##' This plot method can be applied to \code{\linkS4class{Simulations}} objects
-##' in order to summarize them graphically. Possible \code{type}s of plots at
-##' the moment are:
-##' \describe{
-##' \item{trajectory}{Summary of the trajectory of the simulated trials}
-##' \item{dosesTried}{Average proportions of the doses tested in patients}
-##' }
-##' You can specify one or both of these in the \code{type} argument.
+##' This plot method can be applied to \code{\linkS4class{GeneralSimulations}}
+##' objects in order to summarize them graphically. Possible \code{type}s of
+##' plots at the moment are: \describe{ \item{trajectory}{Summary of the
+##' trajectory of the simulated trials} \item{dosesTried}{Average proportions of
+##' the doses tested in patients} } You can specify one or both of these in the
+##' \code{type} argument.
 ##'
-##' @param x the \code{\linkS4class{Simulations}} object we want
+##' @param x the \code{\linkS4class{GeneralSimulations}} object we want
 ##' to plot from
 ##' @param type the type of plots you want to obtain.
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
@@ -42,7 +41,7 @@
 ##' @keywords methods
 setMethod("plot",
           signature=
-          signature(x="Simulations",
+          signature(x="GeneralSimulations",
                     y="missing"),
           def=
           function(x,
@@ -174,23 +173,22 @@ setMethod("plot",
           })
 
 
-
 ##' Summarize the simulations, relative to a given truth
 ##'
-##' @param object the \code{\linkS4class{Simulations}} object we want to
+##' @param object the \code{\linkS4class{GeneralSimulations}} object we want to
 ##' summarize
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' via \dots.
 ##' @param target the target toxicity interval (default: 20-35\%) used for the
 ##' computations
-##' @return an object of class \code{\linkS4class{Simulations-summary}}
+##' @return an object of class \code{\linkS4class{GeneralSimulations-summary}}
 ##'
 ##' @export
 ##' @keywords methods
 setMethod("summary",
           signature=
-          signature(object="Simulations"),
+          signature(object="GeneralSimulations"),
           def=
           function(object,
                    truth,
@@ -269,34 +267,6 @@ setMethod("summary",
               obsToxRateAtDoseMostSelected <-
                   mean(tmp["nDLTatThisDose",]) / mean(tmp["nAtThisDose",])
 
-              ## fitted toxicity rate at dose most often selected
-              fitAtDoseMostSelected <-
-                  sapply(object@fit,
-                         function(f){
-                             f$middle[xMostSelected]
-                         })
-
-              ## mean fitted toxicity (average, lower and upper quantiles)
-              ## at each dose level
-              ## (this is required for plotting)
-              meanFitMatrix <- sapply(object@fit,
-                                      "[[",
-                                      "middle")
-              meanFit <- list(truth=
-                              trueTox,
-                              average=
-                              rowMeans(meanFitMatrix),
-                              lower=
-                              apply(meanFitMatrix,
-                                    1L,
-                                    quantile,
-                                    0.025),
-                              upper=
-                              apply(meanFitMatrix,
-                                          1L,
-                                    quantile,
-                                    0.975))
-
               ## number of patients overall
               nObs <- sapply(object@data,
                              slot,
@@ -313,9 +283,9 @@ setMethod("summary",
               propAtTarget <- mean((toxAtDoses > target[1]) &
                                    (toxAtDoses < target[2]))
 
-              ## give back an object of class Simulations-summary,
+              ## give back an object of class GeneralSimulations-summary,
               ## for which we then define a print / plot method
-              ret <- new("Simulations-summary",
+              ret <- new("GeneralSimulations-summary",
                          target=target,
                          targetDoseInterval=targetDoseInterval,
                          nsim=length(object@data),
@@ -324,8 +294,6 @@ setMethod("summary",
                          doseSelected=doseSelected,
                          doseMostSelected=doseMostSelected,
                          obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
-                         fitAtDoseMostSelected=fitAtDoseMostSelected,
-                         meanFit=meanFit,
                          nObs=nObs,
                          nAboveTarget=nAboveTarget,
                          toxAtDosesSelected=toxAtDoses,
@@ -333,6 +301,200 @@ setMethod("summary",
                          doseGrid=doseGrid)
 
               return(ret)
+          })
+
+
+##' Summarize the model-based design simulations, relative to a given truth
+##'
+##' @return an object of class \code{\linkS4class{Simulations-summary}}
+##'
+##' @export
+##' @keywords methods
+setMethod("summary",
+          signature=
+          signature(object="Simulations"),
+          def=
+          function(object,
+                   truth,
+                   target=c(0.2, 0.35),
+                   ...){
+
+              ## call the parent method
+              start <- callNextMethod(object=object,
+                                      truth=truth,
+                                      target=target,
+                                      ...)
+
+              doseGrid <- object@data[[1]]@doseGrid
+
+              ## dose level most often selected as MTD
+              xMostSelected <-
+                  match(start@doseMostSelected,
+                        table=doseGrid)
+
+              ## fitted toxicity rate at dose most often selected
+              fitAtDoseMostSelected <-
+                  sapply(object@fit,
+                         function(f){
+                             f$middle[xMostSelected]
+                         })
+
+              ## mean fitted toxicity (average, lower and upper quantiles)
+              ## at each dose level
+              ## (this is required for plotting)
+              meanFitMatrix <- sapply(object@fit,
+                                      "[[",
+                                      "middle")
+              meanFit <- list(truth=
+                              truth(doseGrid, ...),
+                              average=
+                              rowMeans(meanFitMatrix),
+                              lower=
+                              apply(meanFitMatrix,
+                                    1L,
+                                    quantile,
+                                    0.025),
+                              upper=
+                              apply(meanFitMatrix,
+                                          1L,
+                                    quantile,
+                                    0.975))
+
+              ## give back an object of class Simulations-summary,
+              ## for which we then define a print / plot method
+              ret <- new("Simulations-summary",
+                         start,
+                         fitAtDoseMostSelected=fitAtDoseMostSelected,
+                         meanFit=meanFit)
+
+              return(ret)
+          })
+
+
+##' A Reference Class to represent sequentially updated reporting objects.
+##' @name Report
+##' @field object The object from which to report
+##' @field df the data frame to which columns are sequentially added
+##' @field dfNames the names to which strings are sequentially added
+Report <-
+    setRefClass("Report",
+                fields =
+                list(object = "ANY",
+                     df = "data.frame",
+                     dfNames = "character"),
+                methods = list(
+                dfSave =
+                function(res, name) {
+                    df <<- cbind(df, res)
+                    dfNames <<- c(dfNames, name)
+                    return(res)
+                },
+                report =
+                function(slotName,
+                         description,
+                         percent=TRUE,
+                         digits=0,
+                         quantiles=c(0.1, 0.9)) {
+                    vals <- slot(object, name=slotName)
+                    if(percent)
+                    {
+                        unit <- " %"
+                        vals <- vals * 100
+                    } else {
+                        unit <- ""
+                    }
+
+                    res <- paste(round(mean(vals), digits),
+                                 unit,
+                                 " (",
+                                 paste(round(quantile(vals,
+                                                      quantiles,
+                                                      na.rm=TRUE),
+                                             digits),
+                                       unit,
+                                       collapse=", ",
+                                       sep=""),
+                                 ")",
+                                 sep="")
+
+                    ## print result to the buffer
+                    cat(description, ":",
+                        "mean",
+                        dfSave(res, slotName),
+                        "\n")
+                }))
+
+
+##' Show the summary of the simulations
+##'
+##' @param object the \code{\linkS4class{GeneralSimulations-summary}} object we want
+##' to print
+##' @return invisibly returns a data frame of the results with one row and
+##' appropriate column names
+##'
+##' @export
+##' @keywords methods
+setMethod("show",
+          signature=
+          signature(object="GeneralSimulations-summary"),
+          def=
+          function(object){
+
+              r <- Report$new(object=object,
+                              df=
+                              as.data.frame(matrix(nrow=1,
+                                                   ncol=0)),
+                              dfNames=character())
+
+              cat("Summary of",
+                  r$dfSave(object@nsim, "nsim"),
+                  "simulations\n\n")
+
+              cat("Target toxicity interval was",
+                  r$dfSave(paste(round(object@target * 100),
+                               collapse=", "),
+                         "targetToxInterval"),
+                  "%\n")
+              cat("Target dose interval corresponding to this was",
+                  r$dfSave(paste(round(object@targetDoseInterval, 1),
+                               collapse=", "),
+                         "targetDoseInterval"),
+                  "\n")
+              cat("Intervals are corresponding to",
+                  "10 and 90 % quantiles\n\n")
+
+              r$report("nObs",
+                       "Number of patients overall",
+                       percent=FALSE)
+              r$report("nAboveTarget",
+                       "Number of patients treated above target tox interval",
+                       percent=FALSE)
+              r$report("propDLTs",
+                       "Proportions of DLTs in the trials")
+              r$report("meanToxRisk",
+                       "Mean toxicity risks for the patients")
+              r$report("doseSelected",
+                       "Doses selected as MTD",
+                       percent=FALSE, digits=1)
+              r$report("toxAtDosesSelected",
+                       "True toxicity at doses selected")
+              cat("Proportion of trials selecting target MTD:",
+                  r$dfSave(object@propAtTarget * 100,
+                         "percentAtTarget"),
+                  "%\n")
+              cat("Dose most often selected as MTD:",
+                  r$dfSave(object@doseMostSelected,
+                         "doseMostSelected"),
+                  "\n")
+              cat("Observed toxicity rate at dose most often selected:",
+                  r$dfSave(round(object@obsToxRateAtDoseMostSelected * 100),
+                         "obsToxRateAtDoseMostSelected"),
+                  "%\n")
+
+              ## finally assign names to the df
+              ## and return it invisibly
+              names(r$df) <- r$dfNames
+              invisible(r$df)
           })
 
 
@@ -351,120 +513,34 @@ setMethod("show",
           def=
           function(object){
 
-              ## start the data frame to return
-              df <- as.data.frame(matrix(nrow=1,
-                                         ncol=0))
-              ## start the column names of the df
-              dfNames <- c()
+              ## call the parent method
+              df <- callNextMethod(object)
+              dfNames <- names(df)
 
-              ## helper function for saving result
-              ## in df
-              dfSave <- function(res, name)
-              {
-                  df <<- cbind(df, res)
-                  dfNames <<- c(dfNames, name)
-                  return(res)
-              }
+              ## start report object
+              r <- Report$new(object=object,
+                              df=df,
+                              dfNames=dfNames)
 
-              ## helper function
-              ## for summarizing and reporting
-              ## results
-              report <- function(slotName,
-                                 description,
-                                 percent=TRUE,
-                                 digits=0,
-                                 quantiles=c(0.1, 0.9))
-              {
-                  vals <- slot(object, name=slotName)
-                  if(percent)
-                  {
-                      unit <- " %"
-                      vals <- vals * 100
-                  } else {
-                      unit <- ""
-                  }
+              ## add one reporting line
+              r$report("fitAtDoseMostSelected",
+                       "Fitted toxicity rate at dose most often selected")
 
-                  res <- paste(round(mean(vals), digits),
-                               unit,
-                               " (",
-                               paste(round(quantile(vals,
-                                                    quantiles,
-                                                    na.rm=TRUE),
-                                           digits),
-                                     unit,
-                                     collapse=", ",
-                                     sep=""),
-                               ")",
-                               sep="")
-
-                  ## print result to the buffer
-                  cat(description, ":",
-                      "mean",
-                      dfSave(res, slotName),
-                      "\n")
-              }
-
-              cat("Summary of",
-                  dfSave(object@nsim, "nsim"),
-                  "simulations\n\n")
-
-              cat("Target toxicity interval was",
-                  dfSave(paste(round(object@target * 100),
-                               collapse=", "),
-                         "targetToxInterval"),
-                  "%\n")
-              cat("Target dose interval corresponding to this was",
-                  dfSave(paste(round(object@targetDoseInterval, 1),
-                               collapse=", "),
-                         "targetDoseInterval"),
-                  "\n")
-              cat("Intervals are corresponding to",
-                  "10 and 90 % quantiles\n\n")
-
-              report("propDLTs",
-                     "Proportions of DLTs in the trials")
-              report("meanToxRisk",
-                     "Mean toxicity risks for the patients")
-              report("doseSelected",
-                     "Doses selected as MTD",
-                     percent=FALSE, digits=1)
-              report("toxAtDosesSelected",
-                     "True toxicity at doses selected")
-              cat("Proportion of trials selecting target MTD:",
-                  dfSave(object@propAtTarget * 100,
-                         "percentAtTarget"),
-                  "%\n")
-              cat("Dose most often selected as MTD:",
-                  dfSave(object@doseMostSelected,
-                         "doseMostSelected"),
-                  "\n")
-              cat("Observed toxicity rate at dose most often selected:",
-                  dfSave(round(object@obsToxRateAtDoseMostSelected * 100),
-                         "obsToxRateAtDoseMostSelected"),
-                  "%\n")
-              report("fitAtDoseMostSelected",
-                     "Fitted toxicity rate at dose most often selected")
-              report("nAboveTarget",
-                     "Number of patients treated above target tox interval",
-                     percent=FALSE)
-              report("nObs",
-                     "Number of patients overall",
-                     percent=FALSE)
-
-              ## finally assign names to the df
-              ## and return it invisibly
-              names(df) <- dfNames
-              invisible(df)
+              ## and return the updated information
+              names(r$df) <- r$dfNames
+              invisible(r$df)
           })
 
 
-##' Plot summaries of the simulations
+##' Plot summaries of the general simulations
 ##'
-##' Graphical display of the simulation summary
+##' Graphical display of the general simulation summary
 ##'
-##' This plot method can be applied to \code{\linkS4class{Simulations}} objects
-##' in order to summarize them graphically. Possible \code{type}s of plots at
-##' the moment are:
+##' This plot method can be applied to
+##' \code{\linkS4class{GeneralSimulations-summary}} objects in order to
+##' summarize them graphically. Possible \code{type}s of plots at the moment
+##' are:
+##'
 ##' \describe{
 ##' \item{nObs}{Distribution of the number of patients in the simulated trials}
 ##' \item{doseSelected}{Distribution of the final selected doses in the trials.
@@ -475,15 +551,11 @@ setMethod("show",
 ##' \item{nAboveTarget}{Distribution of the number of patients treated at doses
 ##' which are above the target toxicity interval (as specified by the
 ##' \code{truth} and \code{target} arguments to
-##' \code{\link{summary,Simulations-method}})}
-##' \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
-##' the trials, together with 95\% credible intervals, and comparison with the
-##' assumed truth (as specified by the \code{truth} argument to
-##' \code{\link{summary,Simulations-method}})}
+##' \code{\link{summary,GeneralSimulations-method}})}
 ##' }
 ##' You can specify any subset of these in the \code{type} argument.
 ##'
-##' @param x the \code{\linkS4class{Simulations-summary}} object we want
+##' @param x the \code{\linkS4class{GeneralSimulations-summary}} object we want
 ##' to plot from
 ##' @param type the types of plots you want to obtain.
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
@@ -496,7 +568,7 @@ setMethod("show",
 ##' @keywords methods
 setMethod("plot",
           signature=
-          signature(x="Simulations-summary",
+          signature(x="GeneralSimulations-summary",
                     y="missing"),
           def=
           function(x,
@@ -505,8 +577,7 @@ setMethod("plot",
                    c("nObs",
                      "doseSelected",
                      "propDLTs",
-                     "nAboveTarget",
-                     "meanFit"),
+                     "nAboveTarget"),
                    ...){
 
               ## convenience function to make histograms
@@ -579,6 +650,73 @@ setMethod("plot",
                       }
               }
 
+              ## then return
+              ret
+          })
+
+
+##' Plot summaries of the model-based design simulations
+##'
+##' Graphical display of the simulation summary
+##'
+##' This plot method can be applied to \code{\linkS4class{Simulations-summary}}
+##' objects in order to summarize them graphically. Possible \code{type} of
+##' plots at the moment are those listed in
+##' \code{\link{plot,GeneralSimulations-summary-method}} plus:
+##' \describe{
+##' \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
+##' the trials, together with 95\% credible intervals, and comparison with the
+##' assumed truth (as specified by the \code{truth} argument to
+##' \code{\link{summary,Simulations-method}})}
+##' }
+##' You can specify any subset of these in the \code{type} argument.
+##'
+##' @param x the \code{\linkS4class{Simulations-summary}} object we want
+##' to plot from
+##' @param type the types of plots you want to obtain.
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
+##' scale_linetype_manual scale_colour_manual
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature=
+          signature(x="Simulations-summary",
+                    y="missing"),
+          def=
+          function(x,
+                   y,
+                   type=
+                   c("nObs",
+                     "doseSelected",
+                     "propDLTs",
+                     "nAboveTarget",
+                     "meanFit"),
+                   ...){
+
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+
+              ## substract the specific plot types for model-based
+              ## designs
+              typeReduced <- setdiff(type,
+                                     "meanFit")
+
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                  ret <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+
+              ## is the meanFit plot requested?
               if("meanFit" %in% type)
               {
                   ## which types of lines do we have?
@@ -627,7 +765,7 @@ setMethod("plot",
 
                   ## add this plot to the bottom
                   ret <-
-                      if(length(plotList))
+                      if(moreFromGeneral)
                           gridExtra::arrangeGrob(ret, thisPlot)
                       else
                           thisPlot

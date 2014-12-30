@@ -1,7 +1,7 @@
 \docType{methods}
 \name{plot,Simulations-summary,missing-method}
 \alias{plot,Simulations-summary,missing-method}
-\title{Plot summaries of the simulations}
+\title{Plot summaries of the model-based design simulations}
 \usage{
 \S4method{plot}{Simulations-summary,missing}(x, y, type = c("nObs",
   "doseSelected", "propDLTs", "nAboveTarget", "meanFit"), ...)
@@ -31,15 +31,15 @@
   } All other \code{type}s give a warning or an error;
   using, e.g., \code{type = "punkte"} being equivalent to
   \code{type = "p"} for S compatibility.  Note that some
-  methods, e.g. \code{\link{plot.factor}}, do not accept
-  this.  } \item{\code{main}}{an overall title for the
-  plot: see \code{\link{title}}.} \item{\code{sub}}{a sub
-  title for the plot: see \code{\link{title}}.}
-  \item{\code{xlab}}{a title for the x axis: see
-  \code{\link{title}}.} \item{\code{ylab}}{a title for the
-  y axis: see \code{\link{title}}.} \item{\code{asp}}{the
-  \eqn{y/x} aspect ratio, see \code{\link{plot.window}}.} }
-  }
+  methods, e.g.\ifelse{{latex}{\out{~}}{
+  }}{}\code{\link{plot.factor}}, do not accept this.  }
+  \item{\code{main}}{an overall title for the plot: see
+  \code{\link{title}}.} \item{\code{sub}}{a sub title for
+  the plot: see \code{\link{title}}.} \item{\code{xlab}}{a
+  title for the x axis: see \code{\link{title}}.}
+  \item{\code{ylab}}{a title for the y axis: see
+  \code{\link{title}}.} \item{\code{asp}}{the \eqn{y/x}
+  aspect ratio, see \code{\link{plot.window}}.} } }
 }
 \value{
 A single \code{\link[ggplot2]{ggplot2}} object if a single
@@ -51,21 +51,11 @@ Graphical display of the simulation summary
 }
 \details{
 This plot method can be applied to
-\code{\linkS4class{Simulations}} objects in order to
-summarize them graphically. Possible \code{type}s of plots
-at the moment are: \describe{ \item{nObs}{Distribution of
-the number of patients in the simulated trials}
-\item{doseSelected}{Distribution of the final selected
-doses in the trials. Note that this can include zero
-entries, meaning that the trial was stopped because all
-doses in the dose grid appeared too toxic.}
-\item{propDLTs}{Distribution of the proportion of patients
-with DLTs in the trials} \item{nAboveTarget}{Distribution
-of the number of patients treated at doses which are above
-the target toxicity interval (as specified by the
-\code{truth} and \code{target} arguments to
-\code{\link{summary,Simulations-method}})}
-\item{meanFit}{Plot showing the average fitted
+\code{\linkS4class{Simulations-summary}} objects in order
+to summarize them graphically. Possible \code{type} of
+plots at the moment are those listed in
+\code{\link{plot,GeneralSimulations-summary-method}} plus:
+\describe{ \item{meanFit}{Plot showing the average fitted
 dose-toxicity curve across the trials, together with 95\%
 credible intervals, and comparison with the assumed truth
 (as specified by the \code{truth} argument to

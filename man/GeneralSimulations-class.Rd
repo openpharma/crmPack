@@ -1,0 +1,25 @@
+\docType{class}
+\name{GeneralSimulations-class}
+\alias{GeneralSimulations-class}
+\title{General class for the simulations output}
+\description{
+This class captures trial simulations.
+}
+\details{
+Here also the random generator state before starting the
+simulation is saved, in order to be able to reproduce the
+outcome. For this just use \code{\link{set.seed}} with the
+\code{seed} as argument before running
+\code{\link{simulate,Design-method}}.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{data}}{list of produced \code{\linkS4class{Data}} objects}
+
+\item{\code{doses}}{the vector of final dose recommendations}
+
+\item{\code{seed}}{random generator state before starting the simulation}
+}}
+\keyword{classes}
+

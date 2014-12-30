@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Die 09/09/2014 00:19>
+## Time-stamp: <[Rules-methods.R] by DSB Die 30/12/2014 17:01>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -291,6 +291,78 @@ setMethod("nextBest",
                   ## otherwise we will just do the standard thing
                   callNextMethod(nextBest, doselimit, samples, model, data, ...)
               }
+          })
+
+
+## --------------------------------------------------
+## The 3+3 method
+## --------------------------------------------------
+
+##' Find the next best dose based on the 3+3 method
+setMethod("nextBest",
+          signature=
+          signature(nextBest="NextBestThreePlusThree",
+                    doselimit="missing",
+                    samples="missing",
+                    model="missing",
+                    data="Data"),
+          def=
+          function(nextBest, doselimit, samples, model, data, ...){
+
+              ## split the DLTs into the dose level groups
+              dltSplit <- split(data@y,
+                                factor(data@x,
+                                       levels=data@doseGrid))
+
+              ## number of patients and number of DLTs per dose level group
+              nPatients <- sapply(dltSplit, length)
+              nDLTs <- sapply(dltSplit, sum)
+
+              ## what was the last dose level tested?
+              lastLevel <- tail(data@xLevel, 1)
+
+              ## if there are less than 1/3 DLTs at that level
+              if(nDLTs[lastLevel]/nPatients[lastLevel] < 1/3)
+              {
+                  ## we could escalate, unless this is the highest
+                  ## level or the higher level was tried already
+                  ## (in which case it was not safe)
+                  if((lastLevel == length(data@doseGrid)) ||
+                     (nPatients[lastLevel+1] > 0))
+                  {
+                      nextLevel <- lastLevel
+                  } else {
+                      nextLevel <- lastLevel + 1
+                  }
+              } else if(nDLTs[lastLevel]/nPatients[lastLevel] > 1/3) {
+                  ## rate here is too high, therefore deescalate
+                  nextLevel <- lastLevel - 1
+              } else {
+                  ## otherwise: rate is 1/3 == 2/6,
+                  ## then it depends on the number of patients:
+                  ## if more than 3, then deescalate, otherwise stay.
+                  nextLevel <-
+                      if(nPatients[lastLevel] > 3)
+                          lastLevel - 1
+                      else
+                          lastLevel
+              }
+
+              ## do we stop here? only if we have no MTD
+              ## or the next level has been tried enough (more than
+              ## three patients already)
+              stopHere <-
+                  if(nextLevel == 0)
+                  {
+                      TRUE
+                  } else {
+                      nPatients[nextLevel] > 3
+                  }
+
+              ## return value and plot
+              return(list(value=
+                          if(nextLevel == 0) NA else data@doseGrid[nextLevel],
+                          stopHere=stopHere))
           })
 
 

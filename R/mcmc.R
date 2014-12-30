@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Mon 08/12/2014 19:10>
+## Time-stamp: <[mcmc.R] by DSB Mon 22/12/2014 18:40>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -198,7 +198,7 @@ setMethod("mcmc",
                                 })
               } else {
                   ## here we use OpenBUGS or WinBUGS.
-                  require(library("R2WinBUGS"))
+                  require("R2WinBUGS")
 
                   ## Obtain MCMC samples:
                   bugsResult <-
