@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: install script for crmPack
 ##
-## Time-stamp: <[install.R] by DSB Fre 16/01/2015 17:20>
+## Time-stamp: <[install.R] by DSB Sam 17/01/2015 20:25>
 ##
 ## Description:
 ## This is an install script to get crmPack onto your computer.
@@ -14,7 +14,7 @@
 
 ## install and load required package
 options(repos=structure(c(CRAN="http://stat.ethz.ch/CRAN/")))
-install.packages("httr")
+install.packages("httr", dependencies=TRUE)
 library("httr")
 
 ## specify source and target (temporary file in tmp)
