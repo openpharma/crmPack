@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-methods.R] by DSB Don 24/07/2014 17:01>
+## Time-stamp: <[Model-methods.R] by DSB Mon 05/01/2015 16:46>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -26,7 +26,6 @@
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("dose",
@@ -38,7 +37,7 @@ setGeneric("dose",
            },
            valueClass="numeric")
 
-##' Compute the doses for a given probability, given model and samples
+##' @describeIn dose
 setMethod("dose",
           signature=
           signature(prob="numeric",
@@ -72,7 +71,6 @@ setMethod("dose",
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("prob",
@@ -84,7 +82,7 @@ setGeneric("prob",
            },
            valueClass="numeric")
 
-##' Compute the probability for a given dose, given model and samples
+##' @describeIn prob
 setMethod("prob",
           signature=
           signature(dose="numeric",
@@ -104,5 +102,44 @@ setMethod("prob",
                                samples@data[argNames]))
               ## return the resulting vector
               return(ret)
+          })
+
+
+## --------------------------------------------------
+## Compute the biomarker level for a given dose, given model and samples
+## --------------------------------------------------
+
+##' Compute the biomarker level for a given dose, given model and samples
+##'
+##' @param dose the dose
+##' @param model the \code{\linkS4class{DualEndpoint}} object
+##' @param samples the \code{\linkS4class{Samples}} object
+##' @param \dots unused
+##'
+##' @export
+##' @keywords methods
+setGeneric("biomLevel",
+           def=
+           function(dose, model, samples, ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("biomLevel")
+           },
+           valueClass="numeric")
+
+##' @param xLevel the grid index of \code{dose}
+##' @describeIn biomLevel Here it is very easy, we just return the corresponding
+##' column (index \code{xLevel}) of the biomarker samples matrix, since we save
+##' that in the samples
+setMethod("biomLevel",
+          signature=
+          signature(dose="numeric",
+                    model="DualEndpoint",
+                    samples="Samples"),
+          def=
+          function(dose, model, samples, xLevel, ...){
+
+              return(samples@data$betaW[, xLevel])
+
           })
 

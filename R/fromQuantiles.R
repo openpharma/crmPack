@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[fromQuantiles.R] by DSB Don 31/07/2014 10:55>
+## Time-stamp: <[fromQuantiles.R] by DSB Sam 17/01/2015 18:26>
 ##
 ## Description:
 ## Find the best LogisticNormal model for a given set of quantiles at certain
@@ -174,10 +174,15 @@ Quantiles2LogisticNormal <- function(dosegrid,
     targetRes <- target(pars)
 
     ## and construct the model
-    ret <- new(if(logNormal) "LogisticLogNormal" else "LogisticNormal",
-               mean=attr(targetRes, "mean"),
-               cov=attr(targetRes, "cov"),
-               refDose=refDose)
+    ret <-
+        if(logNormal)
+            LogisticLogNormal(mean=attr(targetRes, "mean"),
+                              cov=attr(targetRes, "cov"),
+                              refDose=refDose)
+        else
+            LogisticNormal(mean=attr(targetRes, "mean"),
+                           cov=attr(targetRes, "cov"),
+                           refDose=refDose)
 
     ## return it together with the resulting distance and the quantiles
     return(list(model=ret,
@@ -191,7 +196,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
 ##' Construct a minimally informative prior
 ##'
 ##' This function constructs a minimally informative prior, which is captured in
-##' a \code{\linkS4class{LogisticNormal}} object.
+##' a \code{\linkS4class{LogisticNormal}} (or
+##' \code{\linkS4class{LogisticLogNormal}}) object.
 ##'
 ##' Based on the proposal by Neuenschwander et al (2008, Statistics in
 ##' Medicine), a minimally informative prior distribution is constructed. The
@@ -204,7 +210,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
 ##' than \eqn{q_{J}} has only 5\% probability. Subsequently, for all doses
 ##' supplied in the \code{dosegrid} argument, Beta distributions are set up, and
 ##' \code{\link{Quantiles2LogisticNormal}} is used to transform the resulting
-##' quantiles into an approximating \code{\linkS4class{LogisticNormal}} model.
+##' quantiles into an approximating \code{\linkS4class{LogisticNormal}} (or
+##' \code{\linkS4class{LogisticLogNormal}}) model.
 ##'
 ##' @param dosegrid the dose grid
 ##' @param refDose the reference dose
@@ -213,7 +220,8 @@ Quantiles2LogisticNormal <- function(dosegrid,
 ##' @param threshmax Any toxicity probability below this threshold would
 ##' be very unlikely (5\%) at the maximum dose (default: 0.3)
 ##' @param \dots additional arguments for computations, see
-##' \code{\link{Quantiles2LogisticNormal}}
+##' \code{\link{Quantiles2LogisticNormal}}, e.g. \code{logNormal=TRUE} to obtain
+##' a minimal informative log normal prior.
 ##' @return see \code{\link{Quantiles2LogisticNormal}}
 ##'
 ##' @export

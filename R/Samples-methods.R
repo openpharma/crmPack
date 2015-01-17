@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Die 23/12/2014 11:59>
+## Time-stamp: <[Samples-methods.R] by DSB Son 11/01/2015 14:51>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -21,62 +21,80 @@
 ## plots with "ggmcmc" package
 ## --------------------------------------------------
 
-
-##' Extract something from an object and produce a data.frame
+##' Get specific parameter samples and produce a data.frame
 ##'
-##' @param object the object
-##' @param \dots unused
-##' @return the data frame
+##' Here you have to specify with \code{pos} which
+##' parameter you would like to extract from the \code{\linkS4class{Samples}}
+##' object
 ##'
-##' @genericMethods
-##' @export
-##' @keywords methods
-setGeneric("extract",
-           def=
-           function(object, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("extract")},
-           valueClass="data.frame")
-
-## --------------------------------------------------
-## The method for "Samples"
-## --------------------------------------------------
-
-##' Extract certain parameter from Samples object
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param pos the name of the parameter
+##' @param envir for vectorial parameters, you can give the indices of the
+##' elements you would like to extract. If \code{NULL}, the whole vector samples
+##' will be returned
+##' @param mode not used
+##' @param inherits not used
 ##'
-##' @param object the \code{\linkS4class{Samples}} object
-##' @param parameter the name of the parameter
 ##' @return the data frame suitable for use with \code{\link[ggmcmc]{ggmcmc}}
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("extract",
+setMethod("get",
           signature=
-          signature(object="Samples"),
+              signature(x="Samples",
+                        pos="character",
+                        envir="ANY",
+                        mode="ANY",
+                        inherits="ANY"),
           def=
-          function(object,
-                   parameter,
-                   ...){
+          function(x,
+                   pos,
+                   envir=NULL,
+                   mode=NULL,
+                   inherits=NULL){
 
               ## check the parameter name
-              stopifnot(is.character(parameter),
-                        is.scalar(parameter),
-                        parameter %in% names(object@data))
+              stopifnot(is.scalar(pos),
+                        pos %in% names(x@data))
 
               ## get the samples for this parameter
-              d <- object@data[[parameter]]
+              d <- x@data[[pos]]
               ## this can be either a vector or a matrix
 
-              ## what are the names of the parameter
+              ## how many parameters do we have?
+              nPars <- NCOL(d)
+
+              ## what are the names of all parameter
               ## elements?
               elements <-
-                  if(NCOL(d) == 1L)
-                      parameter
+                  if(nPars == 1L)
+                      pos
                   else
-                      paste(parameter,
-                            "[", seq_len(NCOL(d)), "]",
+                      paste(pos,
+                            "[", seq_len(nPars), "]",
                             sep="")
+
+              ## in case we have a vector parameter
+              if(nPars > 1L)
+              {
+                  ## what are the indices to be returned?
+                  indices <-
+                      if(is.null(envir))
+                      {
+                          seq_along(elements)
+                      } else {
+                          stopifnot(is.numeric(envir),
+                                    all(envir %in% seq_along(elements)))
+                          as.integer(envir)
+                      }
+
+                  ## subset the data matrix and par names appropriately
+                  d <- d[, indices, drop=FALSE]
+                  elements <- elements[indices]
+
+                  ## and also reduce the number of parameters
+                  nPars <- length(indices)
+              }
 
               ## now we can build
               ret <- data.frame(Iteration=seq_len(NROW(d)),
@@ -89,38 +107,64 @@ setMethod("extract",
               ## add the attributes
               ret <- structure(ret,
                                nChains=1L,
-                               nParameters=NCOL(d),
-                               nIterations=object@options@iterations,
-                               nBurnin=object@options@burnin,
-                               nThin=object@options@step,
-                               description=parameter,
+                               nParameters=nPars,
+                               nIterations=x@options@iterations,
+                               nBurnin=x@options@burnin,
+                               nThin=x@options@step,
+                               description=elements,
                                parallel=FALSE)
               return(ret)
           })
 
 
 ## --------------------------------------------------
-## Get fitted dose-tox curve from Samples
+## Get fitted curves from Samples
 ## --------------------------------------------------
 
 ##' Fit method for the Samples class
 ##'
+##' Note this new generic function is necessary because the \code{\link{fitted}}
+##' function only allows the first argument \code{object} to appear in the
+##' signature. But we need also other arguments in the signature.
+##'
 ##' @param object the \code{\linkS4class{Samples}} object
 ##' @param model the \code{\linkS4class{Model}} object
 ##' @param data the \code{\linkS4class{Data}} object
+##' @param \dots unused
+##' @return the data frame with required information (see method details)
+##'
+##' @export
+##' @keywords methods
+setGeneric("fit",
+           def=
+           function(object,
+                    model,
+                    data,
+                    ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("fit")},
+           valueClass="data.frame")
+
+
+## --------------------------------------------------
+## Get fitted dose-tox curve from Samples
+## --------------------------------------------------
+
 ##' @param points at which dose levels is the fit requested? default is the dose
 ##' grid
 ##' @param quantiles the quantiles to be calculated (default: 0.025 and
 ##' 0.975)
 ##' @param middle the function for computing the middle point. Default:
 ##' \code{\link{mean}}
-##' @return data frame with dose, middle, lower and upper quantiles
 ##'
-##' @export
-##' @keywords methods
-setMethod("fitted",
+##' @describeIn fit This method returns a data frame with dose, middle, lower
+##' and upper quantiles for the dose-toxicity curve
+setMethod("fit",
           signature=
-          signature(object="Samples"),
+          signature(object="Samples",
+                    model="Model",
+                    data="Data"),
           def=
           function(object,
                    model,
@@ -130,9 +174,7 @@ setMethod("fitted",
                    middle=mean,
                    ...){
               ## some checks
-              stopifnot(is(model, "Model"),
-                        is(data, "Data"),
-                        is.probRange(quantiles),
+              stopifnot(is.probRange(quantiles),
                         is.numeric(points))
 
               ## first we have to get samples from the dose-tox
@@ -168,26 +210,75 @@ setMethod("fitted",
           })
 
 ## --------------------------------------------------
-## Approximate posterior with (log) normal distribution
+## Get fitted dose-tox and dose-biomarker curves from Samples
 ## --------------------------------------------------
 
-##' Approximate posterior with (log) normal distribution
-##'
-##' @param object the object
-##' @param \dots unused
-##' @return the approximation model
-##'
-##' @genericMethods
-##' @export
-##' @keywords methods
-setGeneric("approximate",
-           def=
-           function(object, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("approximate")},
-           valueClass="Model")
+##' @describeIn fit This method returns a data frame with dose, and middle,
+##' lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
+##' "Biomarker") curves, for all grid points (Note that currently only the grid
+##' points can be used, because the DualEndpointRW models only allow that)
+setMethod("fit",
+          signature=
+          signature(object="Samples",
+                    model="DualEndpoint",
+                    data="DataDual"),
+          def=
+          function(object,
+                   model,
+                   data,
+                   quantiles=c(0.025, 0.975),
+                   middle=mean,
+                   ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles))
 
+              ## first obtain the dose-tox curve results from the parent method
+              start <- callNextMethod(object=object,
+                                      model=model,
+                                      data=data,
+                                      points=data@doseGrid,
+                                      quantiles=quantiles,
+                                      middle=middle,
+                                      ...)
+
+              ## now obtain the dose-biomarker results
+
+              ## get the biomarker level samples
+              ## at the dose grid points.
+              biomLevelSamples <- matrix(nrow=sampleSize(object@options),
+                                         ncol=data@nGrid)
+
+              ## evaluate the biomLevels, for all samples.
+              for(i in seq_len(data@nGrid))
+              {
+                  ## Now we want to evaluate for the
+                  ## following dose:
+                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
+                                                     xLevel=i,
+                                                     model,
+                                                     object)
+              }
+
+              ## extract middle curve
+              middleCurve <- apply(biomLevelSamples, 2L, FUN=middle)
+
+              ## extract quantiles
+              quantCurve <- apply(biomLevelSamples, 2L, quantile,
+                                  prob=quantiles)
+
+              ## now create the data frame
+              biomResults <- data.frame(middleBiomarker=middleCurve,
+                                        lowerBiomarker=quantCurve[1, ],
+                                        upperBiomarker=quantCurve[2, ])
+
+              ## return both, pasted together
+              return(cbind(start, biomResults))
+          })
+
+
+## --------------------------------------------------
+## Approximate posterior with (log) normal distribution
+## --------------------------------------------------
 
 ##' Approximate posterior with (log) normal distribution
 ##'
@@ -197,6 +288,21 @@ setGeneric("approximate",
 ##' @param object the \code{\linkS4class{Samples}} object
 ##' @param model the \code{\linkS4class{Model}} object
 ##' @param data the \code{\linkS4class{Data}} object
+##' @param \dots additional arguments (see methods)
+##' @return the approximation model
+##'
+##' @export
+##' @keywords methods
+setGeneric("approximate",
+           def=
+           function(object, model, data, ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("approximate")},
+           valueClass="Model")
+
+
+
 ##' @param points optional parameter, which gives the dose values at which
 ##' the approximation should rely on (default: 5 values equally spaced from
 ##' minimum to maximum of the dose grid)
@@ -205,13 +311,10 @@ setGeneric("approximate",
 ##' @param logNormal use the log-normal prior? (not default) otherwise, the
 ##' normal prior for the logistic regression coefficients is used
 ##' @param verbose be verbose (progress statements and plot)? (default)
-##' @param \dots additional arguments for
+##'
+##' @describeIn approximate Here the \dots argument can transport additional arguments for
 ##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
 ##' approximation quality, etc.
-##' @return the approximation \code{\linkS4class{Model}}
-##'
-##' @export
-##' @keywords methods
 setMethod("approximate",
           signature=
           signature(object="Samples"),
@@ -229,12 +332,12 @@ setMethod("approximate",
                    ...){
 
               ## get the required quantiles at these dose levels:
-              quants <- fitted(object,
-                               model,
-                               data,
-                               points=points,
-                               quantiles=c(0.025, 0.975),
-                               middle=median)
+              quants <- fit(object,
+                            model,
+                            data,
+                            points=points,
+                            quantiles=c(0.025, 0.975),
+                            middle=median)
 
               ## get better starting values if it is already a logistic normal
               ## model
@@ -296,18 +399,20 @@ setMethod("approximate",
 ## Plot dose-tox fit from a model
 ## --------------------------------------------------
 
-##' Plot method for the "Samples" and "Model" object
+
+##' Plotting dose-toxicity model fits
 ##'
 ##' @param x the \code{\linkS4class{Samples}} object
 ##' @param y the \code{\linkS4class{Model}} object
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param xlab the x axis label
 ##' @param ylab the y axis label
-##' @return the \code{\link[ggplot2]{ggplot}} object
+##' @param \dots not used
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object for the dose-toxicity model fit
 ##'
 ##' @export
 ##' @importFrom ggplot2 qplot scale_linetype_manual
-##' @keywords methods
 setMethod("plot",
           signature=
           signature(x="Samples",
@@ -318,11 +423,11 @@ setMethod("plot",
                    ylab="Probability of DLT [%]"){
 
               ## get the fit
-              plotData <- fitted(x,
-                                 model=y,
-                                 data=data,
-                                 quantiles=c(0.025, 0.975),
-                                 middle=mean)
+              plotData <- fit(x,
+                              model=y,
+                              data=data,
+                              quantiles=c(0.025, 0.975),
+                              middle=mean)
 
               ## make the plot
               gdata <-
@@ -366,19 +471,23 @@ setMethod("plot",
 ## Special method for dual endpoint model
 ## --------------------------------------------------
 
-##' Plot method for the "Samples" object, when we have
-##' the dual endpoint model
+
+##' Plotting dose-toxicity and dose-biomarker model fits
+##'
+##' When we have the dual endpoint model,
+##' also the dose-biomarker fit is shown in the plot
 ##'
 ##' @param x the \code{\linkS4class{Samples}} object
 ##' @param y the \code{\linkS4class{DualEndpoint}} object
 ##' @param data the \code{\linkS4class{DataDual}} object
 ##' @param extrapolate should the biomarker fit be extrapolated to the whole
 ##' dose grid? (default)
-##' @return the \code{\link[ggplot2]{ggplot}} object
+##' @param \dots additional arguments for the parent method
+##' \code{\link{plot,Samples,Model-method}}
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object with the dose-toxicity and dose-biomarker model fits
 ##'
 ##' @export
-##' @importFrom ggplot2 qplot scale_linetype_manual
-##' @keywords methods
 setMethod("plot",
           signature=
           signature(x="Samples",
@@ -397,8 +506,20 @@ setMethod("plot",
                       1:max(data@xLevel)
 
               ## get the plot data for the biomarker plot
-              functionSamples <- with(samples@data,
-                                      betaWintercept + betaW)[, xLevels, drop=FALSE]
+              functionSamples <- matrix(nrow=sampleSize(x@options),
+                                        ncol=length(xLevels))
+
+              ## evaluate the biomLevels, for all samples.
+              for(i in seq_along(xLevels))
+              {
+                  ## Now we want to evaluate for the
+                  ## following dose:
+                  functionSamples[, i] <-
+                      biomLevel(dose=data@doseGrid[xLevels[i]],
+                                xLevel=xLevels[i],
+                                model=y,
+                                samples=x)
+              }
 
               ## extract mean curve
               meanCurve <- colMeans(functionSamples)
@@ -452,76 +573,3 @@ setMethod("plot",
               return(ret)
           })
 
-
-setMethod("plot",
-          signature=
-          signature(x="Samples",
-                    y="DualEndpoint2"),
-          def=
-          function(x, y, data, extrapolate=TRUE, ...){
-
-              ## call the superclass method, to get the toxicity plot
-              plot1 <- callNextMethod(x, y, data, ...)
-
-              ## only look at these dose levels for the plot:
-              xLevels <-
-                  if(extrapolate)
-                      seq_along(data@doseGrid)
-                  else
-                      1:max(data@xLevel)
-
-              ## get the plot data for the biomarker plot
-              functionSamples <- with(samples@data,
-                                      betaW)[, xLevels, drop=FALSE]
-
-              ## extract mean curve
-              meanCurve <- colMeans(functionSamples)
-
-              ## extract quantiles
-              quantiles <- c(0.025, 0.975)
-              quantCurve <- apply(functionSamples, 2L, quantile,
-                                  prob=quantiles)
-
-              ## now create the data frame
-              plotData <- data.frame(dose=data@doseGrid[xLevels],
-                                     mean=meanCurve,
-                                     lower=quantCurve[1, ],
-                                     upper=quantCurve[2, ])
-
-              ## make the second plot
-              gdata <-
-                  with(plotData,
-                       data.frame(x=rep(dose, 3),
-                                  y=c(mean, lower, upper),
-                                  group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotData)),
-                                  Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotData) * 2)),
-                                         levels=
-                                         c("Estimate",
-                                           "95% Credible Interval"))))
-
-              plot2 <- ggplot2::qplot(x=x,
-                                      y=y,
-                                      data=gdata,
-                                      group=group,
-                                      linetype=Type,
-                                      colour=I("blue"),
-                                      geom="line",
-                                      xlab="Dose level",
-                                      ylab="Biomarker level")
-
-              plot2 <- plot2 +
-                  ggplot2::scale_linetype_manual(breaks=
-                                                 c("Estimate",
-                                                   "95% Credible Interval"),
-                                                 values=c(1,2))
-
-              ## arrange both plots side by side
-              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
-              return(ret)
-          })

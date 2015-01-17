@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Data-methods.R] by DSB Mon 08/09/2014 23:26>
+## Time-stamp: <[Data-methods.R] by DSB Mon 05/01/2015 17:25>
 ##
 ## Description:
 ## Methods for handling the data. Plot ideas taken from bcrm package.
@@ -24,6 +24,7 @@
 ##' as.list method for the "Data" class
 ##'
 ##' @param x the \code{\linkS4class{Data}} object we want to convert
+##' @param \dots unused
 ##' @return a list of all slots in \code{x}
 ##'
 ##' @export
@@ -54,6 +55,8 @@ setMethod("as.list",
 ##' Plot method for the "Data" class
 ##'
 ##' @param x the \code{\linkS4class{Data}} object we want to plot
+##' @param y missing
+##' @param \dots not used
 ##' @return the \code{\link[ggplot2]{ggplot}} object
 ##'
 ##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
@@ -109,6 +112,8 @@ setMethod("plot",
 ##' Plot method for the "DataDual" class
 ##'
 ##' @param x the \code{\linkS4class{DataDual}} object we want to plot
+##' @param y missing
+##' @param \dots not used
 ##' @return the \code{\link[ggplot2]{ggplot}} object
 ##'
 ##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
@@ -167,6 +172,7 @@ setMethod("plot",
 ##' @param x the dose level (one level only!)
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
 ##' @param ID the patient IDs
+##' @param \dots not used
 ##' @return the new \code{\linkS4class{Data}} object
 ##'
 ##' @export
@@ -234,6 +240,7 @@ setMethod("update",
 ##' @param x the dose level (one level only!)
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
 ##' @param ID the patient IDs
+##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataParts}} object
 ##'
 ##' @export
@@ -275,9 +282,52 @@ setMethod("update",
               return(object)
           })
 
+## --------------------------------------------------
+## Update a DataDual object
+## --------------------------------------------------
+
+##' Update method for the "DataDual" class
+##'
+##' Add new data to the \code{\linkS4class{DataDual}} object
+##'
+##' @param object the old \code{\linkS4class{DataDual}} object
+##' @param x the dose level (one level only!)
+##' @param y the DLT vector (0/1 vector), for all patients in this cohort
+##' @param w the biomarker vector, for all patients in this cohort
+##' @param ID the patient IDs
+##' @param \dots not used
+##' @return the new \code{\linkS4class{DataDual}} object
+##'
+##' @export
+##' @keywords methods
+setMethod("update",
+          signature=
+          signature(object="DataDual"),
+          def=
+          function(object,
+                   x,
+                   y,
+                   w,
+                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
+                   ...){
+
+              ## first do the usual things as for Data objects
+              object <- callNextMethod(object=object, x=x, y=y, ID=ID, ...)
+
+              ## update the biomarker information
+              object@w <- c(object@w,
+                            w)
+
+              ## return the object
+              return(object)
+          })
+
 
 
 ## ============================================================
+
+
+
 
 
 

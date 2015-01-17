@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Die 30/12/2014 15:32>
+## Time-stamp: <[Rules-class.R] by DSB Sam 17/01/2015 17:55>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -46,18 +46,45 @@ setClass(Class="NextBest",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="NextBestMTD",
-         contains=list("NextBest"),
-         representation=
-         representation(target="numeric",
-                        derive="function"),
-         validity=
-         function(object){
-             stopifnot(is.probability(object@target,
-                                      bounds=FALSE),
-                       identical(names(formals(object@derive)),
-                                 c("mtdSamples")))
-         })
+.NextBestMTD <-
+    setClass(Class="NextBestMTD",
+             representation(target="numeric",
+                            derive="function"),
+             prototype(target=0.3,
+                       derive=
+                           function(mtdSamples){
+                               quantile(mtdSamples,
+                                        probs=0.3)}),
+             contains=list("NextBest"),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(is.probability(object@target,
+                                            bounds=FALSE),
+                             "target must be probability > 0 and < 1")
+                     o$check(identical(names(formals(object@derive)),
+                                       c("mtdSamples")),
+                             "derive must have as single argument 'mtdSamples'")
+
+                     o$result()
+                 })
+validObject(.NextBestMTD())
+
+##' Initialization function for class "NextBestMTD"
+##'
+##' @param target see \code{\linkS4class{NextBestMTD}}
+##' @param derive see \code{\linkS4class{NextBestMTD}}
+##' @return the \code{\linkS4class{NextBestMTD}} object
+##'
+##' @export
+##' @keywords methods
+NextBestMTD <- function(target,
+                        derive)
+{
+    .NextBestMTD(target=target,
+                 derive=derive)
+}
 
 
 ## --------------------------------------------------
@@ -81,19 +108,48 @@ setClass(Class="NextBestMTD",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="NextBestNCRM",
-         contains=list("NextBest"),
-         representation=
-         representation(target="numeric",
-                        overdose="numeric",
-                        maxOverdoseProb="numeric"),
-         validity=
-         function(object){
-             stopifnot(is.probRange(object@target),
-                       is.probRange(object@overdose),
-                       is.probability(object@maxOverdoseProb))
-         })
+.NextBestNCRM <-
+    setClass(Class="NextBestNCRM",
+             representation(target="numeric",
+                            overdose="numeric",
+                            maxOverdoseProb="numeric"),
+             prototype(target=c(0.2, 0.35),
+                       overdose=c(0.35, 1),
+                       maxOverdoseProb=0.25),
+             contains=list("NextBest"),
+             validity=
+                 function(object){
+                     o <- Validate()
 
+                     o$check(is.probRange(object@target),
+                             "target has to be a probability range")
+                     o$check(is.probRange(object@overdose),
+                             "overdose has to be a probability range")
+                     o$check(is.probability(object@maxOverdoseProb),
+                             "maxOverdoseProb has to be a probability")
+
+                     o$result()
+                 })
+validObject(.NextBestNCRM())
+
+
+##' Initialization function for "NextBestNCRM"
+##'
+##' @param target see \code{\linkS4class{NextBestNCRM}}
+##' @param overdose see \code{\linkS4class{NextBestNCRM}}
+##' @param maxOverdoseProb see \code{\linkS4class{NextBestNCRM}}
+##' @return the \code{\linkS4class{NextBestNCRM}} object
+##'
+##' @export
+##' @keywords methods
+NextBestNCRM <- function(target,
+                         overdose,
+                         maxOverdoseProb)
+{
+    .NextBestNCRM(target=target,
+                  overdose=overdose,
+                  maxOverdoseProb=maxOverdoseProb)
+}
 
 ## --------------------------------------------------
 ## Next best dose based on 3+3 rule
@@ -106,8 +162,20 @@ setClass(Class="NextBestNCRM",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="NextBestThreePlusThree",
-         contains=list("NextBest"))
+.NextBestThreePlusThree <-
+    setClass(Class="NextBestThreePlusThree",
+             contains=list("NextBest"))
+
+##' Initialization function for "NextBestThreePlusThree"
+##'
+##' @return the \code{\linkS4class{NextBestThreePlusThree}} object
+##'
+##' @export
+##' @keywords methods
+NextBestThreePlusThree <- function()
+{
+    .NextBestThreePlusThree()
+}
 
 
 ## --------------------------------------------------
@@ -126,18 +194,47 @@ setClass(Class="NextBestThreePlusThree",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="NextBestDualEndpoint",
-         contains=list("NextBest"),
-         representation=
-         representation(target="numeric",
-                        overdose="numeric",
-                        maxOverdoseProb="numeric"),
-         validity=
-         function(object){
-             stopifnot(is.probability(object@target),
-                       is.probRange(object@overdose),
-                       is.probability(object@maxOverdoseProb))
-         })
+.NextBestDualEndpoint <-
+    setClass(Class="NextBestDualEndpoint",
+             representation(target="numeric",
+                            overdose="numeric",
+                            maxOverdoseProb="numeric"),
+             prototype(target=0.9,
+                       overdose=c(0.35, 1),
+                       maxOverdoseProb=0.25),
+             contains=list("NextBest"),
+             validity=
+                 function(object){
+                                          o <- Validate()
+
+                     o$check(is.probability(object@target),
+                             "target has to be a probability")
+                     o$check(is.probRange(object@overdose),
+                             "overdose has to be a probability range")
+                     o$check(is.probability(object@maxOverdoseProb),
+                             "maxOverdoseProb has to be a probability")
+
+                     o$result()
+                 })
+validObject(.NextBestDualEndpoint())
+
+##' Initialization function for "NextBestDualEndpoint"
+##'
+##' @param target see \code{\linkS4class{NextBestDualEndpoint}}
+##' @param overdose see \code{\linkS4class{NextBestDualEndpoint}}
+##' @param maxOverdoseProb see \code{\linkS4class{NextBestDualEndpoint}}
+##' @return the \code{\linkS4class{NextBestDualEndpoint}} object
+##'
+##' @export
+##' @keywords methods
+NextBestDualEndpoint <- function(target,
+                                 overdose,
+                                 maxOverdoseProb)
+{
+    .NextBestDualEndpoint(target=target,
+                          overdose=overdose,
+                          maxOverdoseProb=maxOverdoseProb)
+}
 
 
 ## ============================================================
@@ -167,29 +264,51 @@ setClass(Class="Increments",
 ##' Note that \code{intervals} is to be read as follows. If for example,
 ##' we want to specify three intervals: First 0 to less than 50, second at least
 ##' 50 up to less than 100 mg, and third at least 100 mg, then we specify
-##' \code{intervals} to be \code{c(0, 50, 100, Inf)}. That means, the right
-##' bound of the intervals are exclusive to the interval.
+##' \code{intervals} to be \code{c(0, 50, 100)}. That means, the right
+##' bound of the intervals are exclusive to the interval, and the last interval
+##' goes from the last value until infinity.
 ##'
-##' @slot intervals a vector with the bounds of the relevant intervals of length
-##' \code{n}.
-##' @slot increments a vector of length \code{n-1} with the maximum allowable
+##' @slot intervals a vector with the left bounds of the relevant intervals
+##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{intervals}
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="IncrementsRelative",
-         contains="Increments",
-         representation=
-         representation(intervals="numeric",
-                        increments="numeric"),
-         validity=
-         function(object){
-             n <- length(object@intervals)
-             stopifnot(identical(length(object@increments),
-                                 n-1L),
-                       ! is.unsorted(object@intervals, strictly=TRUE))
-         })
+.IncrementsRelative <-
+    setClass(Class="IncrementsRelative",
+             representation(intervals="numeric",
+                            increments="numeric"),
+             prototype(intervals=c(0, 2),
+                       increments=c(2, 1)),
+             contains="Increments",
+             validity=
+                 function(object){
+                     o <- Validate()
 
+                     o$check(identical(length(object@increments),
+                                       length(object@intervals)),
+                             "increments must have same length as intervals")
+                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
+                             "intervals has to be sorted and have unique values")
+
+                     o$result()
+                 })
+validObject(.IncrementsRelative())
+
+##' Initialization function for "IncrementsRelative"
+##'
+##' @param intervals see \code{\linkS4class{IncrementsRelative}}
+##' @param increments see \code{\linkS4class{IncrementsRelative}}
+##' @return the \code{\linkS4class{IncrementsRelative}} object
+##'
+##' @export
+##' @keywords methods
+IncrementsRelative <- function(intervals,
+                               increments)
+{
+    .IncrementsRelative(intervals=intervals,
+                        increments=increments)
+}
 
 ## --------------------------------------------------
 ## Increments control based on relative differences in intervals,
@@ -219,19 +338,46 @@ setClass(Class="IncrementsRelative",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="IncrementsRelativeParts",
-         contains="IncrementsRelative",
-         representation=
-         representation(dltStart="integer",
-                        cleanStart="integer"),
-         validity=
-         function(object){
-             stopifnot(is.scalar(object@dltStart),
-                       is.scalar(object@cleanStart),
-                       object@cleanStart >= object@dltStart) # meaningful
-                                        # assumption
-         })
+.IncrementsRelativeParts <-
+    setClass(Class="IncrementsRelativeParts",
+             representation(dltStart="integer",
+                            cleanStart="integer"),
+             prototype(dltStart=-1L,
+                       cleanStart=1L),
+             contains="IncrementsRelative",
+             validity=
+                 function(object){
+                     o <- Validate()
 
+                     o$check(is.scalar(object@dltStart),
+                             "dltStart must be scalar integer")
+                     o$check(is.scalar(object@cleanStart),
+                             "cleanStart must be scalar integer")
+                     o$check(object@cleanStart >= object@dltStart,
+                             "dltStart cannot be higher than cleanStart")
+
+                     o$result()
+                 })
+validObject(.IncrementsRelativeParts())
+
+
+##' Initialization function for "IncrementsRelativeParts"
+##'
+##' @param dltStart see \code{\linkS4class{IncrementsRelativeParts}}
+##' @param cleanStart see \code{\linkS4class{IncrementsRelativeParts}}
+##' @param \dots additional slots from \code{\linkS4class{IncrementsRelative}}
+##' @return the \code{\linkS4class{IncrementsRelativeParts}} object
+##'
+##' @export
+##' @keywords methods
+IncrementsRelativeParts <- function(dltStart,
+                                    cleanStart,
+                                    ...)
+{
+    .IncrementsRelativeParts(dltStart=safeInteger(dltStart),
+                             cleanStart=safeInteger(cleanStart),
+                             ...)
+}
 
 
 ## --------------------------------------------------
@@ -243,28 +389,57 @@ setClass(Class="IncrementsRelativeParts",
 ##' Note that \code{DLTintervals} is to be read as follows. If for example,
 ##' we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and
 ##' third at least 3 DLTs, then we specify
-##' \code{DLTintervals} to be \code{c(0, 1, 3, Inf)}. That means, the right
-##' bound of the intervals are exclusive to the interval.
+##' \code{DLTintervals} to be \code{c(0, 1, 3)}. That means, the right
+##' bound of the intervals are exclusive to the interval -- the vector only
+##' gives the left bounds of the intervals. The last interval goes from 3 to
+##' infinity.
 ##'
-##' @slot DLTintervals a vector with the bounds of the relevant DLT intervals of
-##' length \code{n}
-##' @slot increments a vector of length \code{n-1} with the maximum allowable
+##' @slot DLTintervals an integer vector with the left bounds of the relevant
+##' DLT intervals
+##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{DLTintervals}
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="IncrementsRelativeDLT",
-         contains="Increments",
-         representation=
-         representation(DLTintervals="numeric",
-                        increments="numeric"),
-         validity=
-         function(object){
-             n <- length(object@DLTintervals)
-             stopifnot(identical(length(object@increments),
-                                 n-1L),
-                       ! is.unsorted(object@DLTintervals, strictly=TRUE))
+.IncrementsRelativeDLT <-
+    setClass(Class="IncrementsRelativeDLT",
+             representation(DLTintervals="integer",
+                            increments="numeric"),
+             prototype(DLTintervals=as.integer(c(0, 1)),
+                       increments=c(2, 1)),
+             contains="Increments",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(identical(length(object@increments),
+                                       length(object@DLTintervals)),
+                             "increments must have same length as DLTintervals")
+                     o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
+                             "DLTintervals has to be sorted and have unique values")
+                     o$check(all(object@DLTintervals >= 0),
+                             "DLTintervals must only contain non-negative integers")
+
+                     o$result()
          })
+validObject(.IncrementsRelativeDLT())
+
+
+##' Initialization function for "IncrementsRelativeDLT"
+##'
+##' @param DLTintervals see \code{\linkS4class{IncrementsRelativeDLT}}
+##' @param increments see \code{\linkS4class{IncrementsRelativeDLT}}
+##' @return the \code{\linkS4class{IncrementsRelativeDLT}} object
+##'
+##' @export
+##' @keywords methods
+IncrementsRelativeDLT <- function(DLTintervals,
+                                  increments)
+{
+    .IncrementsRelativeDLT(DLTintervals=safeInteger(DLTintervals),
+                           increments=increments)
+}
+
 
 ## ============================================================
 
@@ -275,7 +450,6 @@ setClass(Class="IncrementsRelativeDLT",
 ##' The virtual class for stopping rules
 ##'
 ##' @seealso \code{\linkS4class{StoppingList}},
-##' \code{\linkS4class{StoppingMaxPatients}},
 ##' \code{\linkS4class{StoppingCohortsNearDose}},
 ##' \code{\linkS4class{StoppingPatientsNearDose}},
 ##' \code{\linkS4class{StoppingMinCohorts}},
@@ -291,109 +465,6 @@ setClass(Class="Stopping",
 
 
 ## --------------------------------------------------
-## Stopping based on multiple stopping rules
-## --------------------------------------------------
-
-##' Stop based on multiple stopping rules
-##'
-##' This class can be used to combine multiple stopping rules.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}, and the \code{summary} is a function
-##' taking a logical vector of the size of \code{stopList} and returning a
-##' single logical value. For example, if the function \code{all} is given as
-##' \code{summary} function, then this means that all stopping rules must be
-##' fulfilled in order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##' @slot summary the summary function to combine the results
-##' of the stopping rules into a single result
-##'
-##' @keywords classes
-##' @export
-setClass(Class="StoppingList",
-         contains="Stopping",
-         representation=
-         representation(stopList="list",
-                        summary="function"),
-         validity=
-         function(object){
-             stopifnot(all(sapply(object@stopList, is, "Stopping")))
-         })
-
-
-## --------------------------------------------------
-## Stopping based on fulfillment of all multiple stopping rules
-## --------------------------------------------------
-
-##' Stop based on fullfillment of all multiple stopping rules
-##'
-##' This class can be used to combine multiple stopping rules with an AND
-##' operator.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}. All stopping rules must be fulfilled in
-##' order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##' of the stopping rules into a single result
-##'
-##' @keywords classes
-##' @export
-setClass(Class="StoppingAll",
-         contains="Stopping",
-         representation=
-         representation(stopList="list"),
-         validity=
-         function(object){
-             stopifnot(all(sapply(object@stopList, is, "Stopping")))
-         })
-
-## --------------------------------------------------
-## Stopping based on fulfillment of any stopping rule
-## --------------------------------------------------
-
-##' Stop based on fullfillment of any stopping rule
-##'
-##' This class can be used to combine multiple stopping rules with an OR
-##' operator.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}. Any of these rules must be fulfilled in
-##' order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##' of the stopping rules into a single result
-##'
-##' @keywords classes
-##' @export
-setClass(Class="StoppingAny",
-         contains="Stopping",
-         representation=
-         representation(stopList="list"),
-         validity=
-         function(object){
-             stopifnot(all(sapply(object@stopList, is, "Stopping")))
-         })
-
-
-## --------------------------------------------------
-## Stopping based on maximum number of patients
-## --------------------------------------------------
-
-##' Stop based on maximum number of patients
-##'
-##' @slot nPatients maximum allowed number of patients
-##'
-##' @keywords classes
-##' @export
-setClass(Class="StoppingMaxPatients",
-         contains="Stopping",
-         representation=
-         representation(nPatients="integer"))
-
-
-## --------------------------------------------------
 ## Stopping based on number of cohorts near to next best dose
 ## --------------------------------------------------
 
@@ -405,12 +476,39 @@ setClass(Class="StoppingMaxPatients",
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingCohortsNearDose",
-         contains="Stopping",
-         representation=
-         representation(nCohorts="integer",
-                        percentage="numeric"))
+.StoppingCohortsNearDose <-
+    setClass(Class="StoppingCohortsNearDose",
+             representation(nCohorts="integer",
+                            percentage="numeric"),
+             prototype(nCohorts=2L,
+                       percentage=50),
+             contains="Stopping",
+             validity=function(object){
+                 o <- Validate()
 
+                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
+                         "nCohorts must be positive scalar")
+                 o$check(is.probability(object@percentage / 100),
+                         "percentage must be between 0 and 100")
+
+                 o$result()
+             })
+validObject(.StoppingCohortsNearDose())
+
+##' Initialization function for "StoppingCohortsNearDose"
+##'
+##' @param nCohorts see \code{\linkS4class{StoppingCohortsNearDose}}
+##' @param percentage see \code{\linkS4class{StoppingCohortsNearDose}}
+##' @return the \code{\linkS4class{StoppingCohortsNearDose}} object
+##'
+##' @export
+##' @keywords methods
+StoppingCohortsNearDose <- function(nCohorts,
+                                    percentage)
+{
+    .StoppingCohortsNearDose(nCohorts=safeInteger(nCohorts),
+                             percentage=percentage)
+}
 ## --------------------------------------------------
 ## Stopping based on number of patients near to next best dose
 ## --------------------------------------------------
@@ -423,11 +521,41 @@ setClass(Class="StoppingCohortsNearDose",
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingPatientsNearDose",
-         contains="Stopping",
-         representation=
-         representation(nPatients="integer",
-                        percentage="numeric"))
+.StoppingPatientsNearDose <-
+    setClass(Class="StoppingPatientsNearDose",
+             representation(nPatients="integer",
+                            percentage="numeric"),
+             prototype(nPatients=10L,
+                       percentage=50),
+             contains="Stopping",
+             validity=function(object){
+                 o <- Validate()
+
+                 o$check((object@nPatients > 0L) && is.scalar(object@nPatients),
+                         "nPatients must be positive scalar")
+                 o$check(is.probability(object@percentage / 100),
+                         "percentage must be between 0 and 100")
+
+                 o$result()
+             })
+validObject(.StoppingPatientsNearDose())
+
+
+##' Initialization function for "StoppingPatientsNearDose"
+##'
+##' @param nPatients see \code{\linkS4class{StoppingPatientsNearDose}}
+##' @param percentage see \code{\linkS4class{StoppingPatientsNearDose}}
+##' @return the \code{\linkS4class{StoppingPatientsNearDose}} object
+##'
+##' @export
+##' @keywords methods
+StoppingPatientsNearDose <- function(nPatients,
+                                     percentage)
+{
+    .StoppingPatientsNearDose(nPatients=safeInteger(nPatients),
+                              percentage=percentage)
+}
+
 
 ## --------------------------------------------------
 ## Stopping based on minimum number of cohorts
@@ -439,10 +567,35 @@ setClass(Class="StoppingPatientsNearDose",
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingMinCohorts",
-         contains="Stopping",
-         representation=
-         representation(nCohorts="integer"))
+.StoppingMinCohorts <-
+    setClass(Class="StoppingMinCohorts",
+             representation(nCohorts="integer"),
+             prototype(nCohorts=3L),
+             contains="Stopping",
+             validity=function(object){
+                 o <- Validate()
+
+                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
+                         "nCohorts must be positive scalar")
+
+                 o$result()
+             })
+validObject(.StoppingMinCohorts())
+
+
+
+##' Initialization function for "StoppingMinCohorts"
+##'
+##' @param nCohorts see \code{\linkS4class{StoppingMinCohorts}}
+##' @return the \code{\linkS4class{StoppingMinCohorts}} object
+##'
+##' @export
+##' @keywords methods
+StoppingMinCohorts <- function(nCohorts)
+{
+    .StoppingMinCohorts(nCohorts=safeInteger(nCohorts))
+}
+
 
 ## --------------------------------------------------
 ## Stopping based on minimum number of patients
@@ -450,14 +603,36 @@ setClass(Class="StoppingMinCohorts",
 
 ##' Stop based on minimum number of patients
 ##'
-##' @slot nPatients minimum required number of patients
+##' @slot nPatients minimum allowed number of patients
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingMinPatients",
-         contains="Stopping",
-         representation=
-         representation(nPatients="integer"))
+.StoppingMinPatients <-
+    setClass(Class="StoppingMinPatients",
+             representation(nPatients="integer"),
+             prototype(nPatients=20L),
+             contains="Stopping",
+             validity=function(object){
+                 o <- Validate()
+
+                 o$check((object@nPatients > 0L) && is.scalar(object@nPatients),
+                         "nPatients must be positive scalar")
+
+                 o$result()
+             })
+validObject(.StoppingMinPatients())
+
+##' Initialization function for "StoppingMinPatients"
+##'
+##' @param nPatients see \code{\linkS4class{StoppingMinPatients}}
+##' @return the \code{\linkS4class{StoppingMinPatients}} object
+##'
+##' @export
+##' @keywords methods
+StoppingMinPatients <- function(nPatients)
+{
+    .StoppingMinPatients(nPatients=safeInteger(nPatients))
+}
 
 
 ## --------------------------------------------------
@@ -466,23 +641,48 @@ setClass(Class="StoppingMinPatients",
 
 ##' Stop based on probability of target tox interval
 ##'
-##' @slot target the target toxicity interval
-##' @slot prob required target toxicity probability
+##' @slot target the target toxicity interval, e.g. \code{c(0.2, 0.35)}
+##' @slot prob required target toxicity probability (e.g. \code{0.4})
 ##' for reaching sufficient precision
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingTargetProb",
-         contains="Stopping",
-         representation=
-         representation(target="numeric",
-                        prob="numeric"),
-         validity=
-         function(object){
-             stopifnot(is.probRange(object@target),
-                       is.probability(object@prob,
-                                      bounds=FALSE))
-         })
+.StoppingTargetProb <-
+    setClass(Class="StoppingTargetProb",
+             representation(target="numeric",
+                            prob="numeric"),
+             prototype(target=c(0.2, 0.35),
+                       prob=0.4),
+             contains="Stopping",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(is.probRange(object@target),
+                             "target must be probability range")
+                     o$check(is.probability(object@prob,
+                                            bounds=FALSE),
+                             "prob must be probability > 0 and < 1")
+
+                     o$result()
+                 })
+validObject(.StoppingTargetProb())
+
+
+##' Initialization function for "StoppingTargetProb"
+##'
+##' @param target see \code{\linkS4class{StoppingTargetProb}}
+##' @param prob see \code{\linkS4class{StoppingTargetProb}}
+##' @return the \code{\linkS4class{StoppingTargetProb}} object
+##'
+##' @export
+##' @keywords methods
+StoppingTargetProb <- function(target,
+                               prob)
+{
+    .StoppingTargetProb(target=target,
+                        prob=prob)
+}
 
 
 ## --------------------------------------------------
@@ -500,21 +700,51 @@ setClass(Class="StoppingTargetProb",
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingMTDdistribution",
-         contains="Stopping",
-         representation=
-         representation(target="numeric",
-                        thresh="numeric",
-                        prob="numeric"),
-         validity=
-         function(object){
-             stopifnot(is.probability(object@target,
-                                      bounds=FALSE),
-                       is.probability(object@thresh,
-                                      bounds=FALSE),
-                       is.probability(object@prob,
-                                      bounds=FALSE))
-         })
+.StoppingMTDdistribution <-
+    setClass(Class="StoppingMTDdistribution",
+             representation(target="numeric",
+                            thresh="numeric",
+                            prob="numeric"),
+             prototype(target=0.33,
+                       thresh=0.5,
+                       prob=0.9),
+             contains="Stopping",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(is.probability(object@target,
+                                            bounds=FALSE),
+                             "target must be probability > 0 and < 1")
+                     o$check(is.probability(object@thresh,
+                                            bounds=FALSE),
+                             "thresh must be probability > 0 and < 1")
+                     o$check(is.probability(object@prob,
+                                            bounds=FALSE),
+                             "prob must be probability > 0 and < 1")
+
+                     o$result()
+                 })
+validObject(.StoppingMTDdistribution())
+
+
+##' Initialization function for "StoppingMTDdistribution"
+##'
+##' @param target see \code{\linkS4class{StoppingMTDdistribution}}
+##' @param thresh see \code{\linkS4class{StoppingMTDdistribution}}
+##' @param prob see \code{\linkS4class{StoppingMTDdistribution}}
+##' @return the \code{\linkS4class{StoppingMTDdistribution}} object
+##'
+##' @export
+##' @keywords methods
+StoppingMTDdistribution <- function(target,
+                                    thresh,
+                                    prob)
+{
+    .StoppingMTDdistribution(target=target,
+                             thresh=thresh,
+                             prob=prob)
+}
 
 
 ## --------------------------------------------------
@@ -523,24 +753,208 @@ setClass(Class="StoppingMTDdistribution",
 
 ##' Stop based on probability of target biomarker
 ##'
-##' @slot target the biomarker level, relative to the maximum, that
-##' needs to be reached
-##' @slot prob required target probability
-##' for reaching sufficient precision
+##' @slot target the biomarker level, relative to the maximum, that needs to be
+##' reached. So this must be a probability (1 is allowed here)
+##' @slot prob required target probability for reaching sufficient precision
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="StoppingTargetBiomarker",
-         contains="Stopping",
-         representation=
-         representation(target="numeric",
-                        prob="numeric"),
-         validity=
-         function(object){
-             stopifnot(is.probability(object@target),
-                       is.probability(object@prob,
-                                      bounds=FALSE))
-         })
+.StoppingTargetBiomarker <-
+    setClass(Class="StoppingTargetBiomarker",
+             representation(target="numeric",
+                            prob="numeric"),
+             prototype(target=0.9,
+                       prob=0.3),
+             contains="Stopping",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(is.probability(object@target),
+                             "target must be a probability")
+                     o$check(is.probability(object@prob,
+                                            bounds=FALSE),
+                             "prob must be probability > 0 and < 1")
+
+                     o$result()
+                 })
+validObject(.StoppingTargetBiomarker())
+
+
+##' Initialization function for "StoppingTargetBiomarker"
+##'
+##' @param target see \code{\linkS4class{StoppingTargetBiomarker}}
+##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
+##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
+##'
+##' @export
+##' @keywords methods
+StoppingTargetBiomarker <- function(target,
+                                    prob)
+{
+    .StoppingTargetBiomarker(target=target,
+                             prob=prob)
+}
+
+## --------------------------------------------------
+## Stopping based on multiple stopping rules
+## --------------------------------------------------
+
+##' Stop based on multiple stopping rules
+##'
+##' This class can be used to combine multiple stopping rules.
+##'
+##' \code{stopList} contains all stopping rules, which are again objects of
+##' class \code{\linkS4class{Stopping}}, and the \code{summary} is a function
+##' taking a logical vector of the size of \code{stopList} and returning a
+##' single logical value. For example, if the function \code{all} is given as
+##' \code{summary} function, then this means that all stopping rules must be
+##' fulfilled in order that the result of this rule is to stop.
+##'
+##' @slot stopList list of stopping rules
+##' @slot summary the summary function to combine the results of the stopping
+##' rules into a single result
+##'
+##' @keywords classes
+##' @export
+.StoppingList <-
+    setClass(Class="StoppingList",
+             representation(stopList="list",
+                            summary="function"),
+             prototype(stopList=
+                           list(StoppingMinPatients(50),
+                                StoppingMinCohorts(5)),
+                       summary=all),
+             contains="Stopping",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(all(sapply(object@stopList, is, "Stopping")),
+                             "all stopList elements have to Stopping objects")
+                     testRes <- object@summary(rep(c(TRUE, FALSE),
+                                                   length.out=length(object@stopList)))
+                     o$check(is.bool(testRes),
+                             "summary function must return a boolean value")
+
+                     o$result()
+                 })
+validObject(.StoppingList())
+
+
+##' Initialization function for "StoppingList"
+##'
+##' @param stopList see \code{\linkS4class{StoppingList}}
+##' @param summary see \code{\linkS4class{StoppingList}}
+##' @return the \code{\linkS4class{StoppingList}} object
+##'
+##' @export
+##' @keywords methods
+StoppingList <- function(stopList,
+                         summary)
+{
+    .StoppingList(stopList=stopList,
+                  summary=summary)
+}
+
+
+## --------------------------------------------------
+## Stopping based on fulfillment of all multiple stopping rules
+## --------------------------------------------------
+
+##' Stop based on fullfillment of all multiple stopping rules
+##'
+##' This class can be used to combine multiple stopping rules with an AND
+##' operator.
+##'
+##' \code{stopList} contains all stopping rules, which are again objects of
+##' class \code{\linkS4class{Stopping}}. All stopping rules must be fulfilled in
+##' order that the result of this rule is to stop.
+##'
+##' @slot stopList list of stopping rules
+##'
+##' @keywords classes
+##' @export
+.StoppingAll <-
+    setClass(Class="StoppingAll",
+             representation(stopList="list"),
+             prototype(stopList=
+                           list(StoppingMinPatients(50),
+                                StoppingMinCohorts(5))),
+             contains="Stopping",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(all(sapply(object@stopList, is, "Stopping")),
+                             "all stopList elements have to Stopping objects")
+
+                     o$result()
+                 })
+validObject(.StoppingAll())
+
+
+##' Initialization function for "StoppingAll"
+##'
+##' @param stopList see \code{\linkS4class{StoppingAll}}
+##' @return the \code{\linkS4class{StoppingAll}} object
+##'
+##' @export
+##' @keywords methods
+StoppingAll <- function(stopList)
+{
+    .StoppingAll(stopList=stopList)
+}
+
+
+## --------------------------------------------------
+## Stopping based on fulfillment of any stopping rule
+## --------------------------------------------------
+
+##' Stop based on fullfillment of any stopping rule
+##'
+##' This class can be used to combine multiple stopping rules with an OR
+##' operator.
+##'
+##' \code{stopList} contains all stopping rules, which are again objects of
+##' class \code{\linkS4class{Stopping}}. Any of these rules must be fulfilled in
+##' order that the result of this rule is to stop.
+##'
+##' @slot stopList list of stopping rules
+##'
+##' @keywords classes
+##' @export
+.StoppingAny <-
+    setClass(Class="StoppingAny",
+             representation(stopList="list"),
+             prototype(stopList=
+                           list(StoppingMinPatients(50),
+                                StoppingMinCohorts(5))),
+             contains="Stopping",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(all(sapply(object@stopList, is, "Stopping")),
+                             "all stopList elements have to Stopping objects")
+
+                     o$result()
+                 })
+validObject(.StoppingAny())
+
+
+##' Initialization function for "StoppingAny"
+##'
+##' @param stopList see \code{\linkS4class{StoppingAny}}
+##' @return the \code{\linkS4class{StoppingAny}} object
+##'
+##' @export
+##' @keywords methods
+StoppingAny <- function(stopList)
+{
+    .StoppingAny(stopList=stopList)
+}
+
 
 
 ## ============================================================
@@ -567,6 +981,197 @@ setClass(Class="CohortSize",
 
 
 ## --------------------------------------------------
+## Cohort size based on dose range
+## --------------------------------------------------
+
+##' Cohort size based on dose range
+##'
+##' @slot intervals a vector with the left bounds of the relevant dose intervals
+##' @slot cohortSize an integer vector of the same length with the cohort
+##' sizes in the \code{intervals}
+##'
+##' @export
+##' @keywords classes
+.CohortSizeRange <-
+    setClass(Class="CohortSizeRange",
+             representation(intervals="numeric",
+                            cohortSize="integer"),
+             prototype(intervals=c(0, 20),
+                       cohortSize=as.integer(c(1L, 3L))),
+             contains="CohortSize",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(identical(length(object@cohortSize),
+                                       length(object@intervals)),
+                             "cohortSize must have same length as intervals")
+                     o$check(all(object@cohortSize > 0),
+                             "cohortSize must only contain positive integers")
+                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
+                             "intervals has to be sorted and have unique values")
+
+                     o$result()
+                 })
+validObject(.CohortSizeRange())
+
+##' Initialization function for "CohortSizeRange"
+##'
+##' @param intervals see \code{\linkS4class{CohortSizeRange}}
+##' @param cohortSize see \code{\linkS4class{CohortSizeRange}}
+##' @return the \code{\linkS4class{CohortSizeRange}} object
+##'
+##' @export
+##' @keywords methods
+CohortSizeRange <- function(intervals,
+                            cohortSize)
+{
+    .CohortSizeRange(intervals=intervals,
+                     cohortSize=safeInteger(cohortSize))
+}
+
+## --------------------------------------------------
+## Cohort size based on number of DLTs
+## --------------------------------------------------
+
+##' Cohort size based on number of DLTs
+##'
+##' @slot DLTintervals an integer vector with the left bounds of the relevant
+##' DLT intervals
+##' @slot cohortSize an integer vector of the same length with the cohort
+##' sizes in the \code{DLTintervals}
+##'
+##' @export
+##' @keywords classes
+.CohortSizeDLT <-
+    setClass(Class="CohortSizeDLT",
+             representation(DLTintervals="integer",
+                            cohortSize="integer"),
+             prototype(DLTintervals=as.integer(c(0, 1)),
+                       cohortSize=as.integer(c(1, 3))),
+             contains="CohortSize",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(identical(length(object@cohortSize),
+                                       length(object@DLTintervals)),
+                             "cohortSize must have same length as DLTintervals")
+                     o$check(all(object@cohortSize > 0),
+                             "cohortSize must only contain positive integers")
+                     o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
+                             "DLTintervals has to be sorted and have unique values")
+                     o$check(all(object@DLTintervals >= 0),
+                             "DLTintervals must only contain non-negative integers")
+
+                     o$result()
+                 })
+validObject(.CohortSizeDLT())
+
+##' Initialization function for "CohortSizeDLT"
+##'
+##' @param DLTintervals see \code{\linkS4class{CohortSizeDLT}}
+##' @param cohortSize see \code{\linkS4class{CohortSizeDLT}}
+##' @return the \code{\linkS4class{CohortSizeDLT}} object
+##'
+##' @export
+##' @keywords methods
+CohortSizeDLT <- function(DLTintervals,
+                          cohortSize)
+{
+    .CohortSizeDLT(DLTintervals=safeInteger(DLTintervals),
+                   cohortSize=safeInteger(cohortSize))
+}
+
+
+## --------------------------------------------------
+## Constant cohort size
+## --------------------------------------------------
+
+##' Constant cohort size
+##'
+##' This class is used when the cohort size should be kept constant.
+##'
+##' @slot size the constant integer size
+##'
+##' @keywords classes
+##' @export
+.CohortSizeConst <-
+    setClass(Class="CohortSizeConst",
+             representation(size="integer"),
+             prototype(size=3L),
+             contains="CohortSize",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(is.scalar(object@size) && (object@size > 0),
+                             "size needs to be positive scalar")
+
+                     o$result()
+                 })
+validObject(.CohortSizeConst())
+
+##' Initialization function for "CohortSizeConst"
+##'
+##' @param size see \code{\linkS4class{CohortSizeConst}}
+##' @return the \code{\linkS4class{CohortSizeConst}} object
+##'
+##' @export
+##' @keywords methods
+CohortSizeConst <- function(size)
+{
+    .CohortSizeConst(size=safeInteger(size))
+}
+
+
+
+## --------------------------------------------------
+## Cohort size based on the parts
+## --------------------------------------------------
+
+##' Cohort size based on the parts
+##'
+##' This class is used when the cohort size should change for the second part of
+##' the dose escalation. Only works in conjunction with
+##' \code{\linkS4class{DataParts}} objects.
+##'
+##' @slot sizes the two sizes for part 1 and part 2
+##'
+##' @keywords classes
+##' @export
+.CohortSizeParts <-
+    setClass(Class="CohortSizeParts",
+             representation(sizes="integer"),
+             prototype(sizes=as.integer(c(1, 3))),
+             contains="CohortSize",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(all(object@sizes > 0),
+                             "the cohort sizes need to be positive")
+                     o$check(identical(length(object@sizes), 2L),
+                             "2 elements required in sizes")
+
+                     o$result()
+                 })
+validObject(.CohortSizeParts())
+
+##' Initialization function for "CohortSizeParts"
+##'
+##' @param sizes see \code{\linkS4class{CohortSizeParts}}
+##' @return the \code{\linkS4class{CohortSizeParts}} object
+##' @export
+##'
+##' @keywords methods
+CohortSizeParts <- function(sizes)
+{
+    .CohortSizeParts(sizes=safeInteger(sizes))
+}
+
+
+## --------------------------------------------------
 ## Size based on maximum of multiple cohort size rules
 ## --------------------------------------------------
 
@@ -583,14 +1188,40 @@ setClass(Class="CohortSize",
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="CohortSizeMax",
-         contains="CohortSize",
-         representation=
-         representation(cohortSizeList="list"),
-         validity=
-         function(object){
-             stopifnot(all(sapply(object@cohortSizeList, is, "CohortSize")))
-         })
+.CohortSizeMax <-
+    setClass(Class="CohortSizeMax",
+             representation(cohortSizeList="list"),
+             prototype(cohortSizeList=
+                           list(CohortSizeRange(intervals=c(0, 30),
+                                                cohortSize=c(1, 3)),
+                                CohortSizeDLT(DLTintervals=c(0, 1),
+                                              cohortSize=c(1, 3)))),
+             contains="CohortSize",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(all(sapply(object@cohortSizeList, is,
+                                        "CohortSize")),
+                             "all cohortSizeList elements have to be CohortSize objects")
+
+                     o$result()
+                 })
+validObject(.CohortSizeMax())
+
+
+##' Initialization function for "CohortSizeMax"
+##'
+##' @param cohortSizeList see \code{\linkS4class{CohortSizeMax}}
+##' @return the \code{\linkS4class{CohortSizeMax}} object
+##'
+##' @export
+##' @keywords methods
+CohortSizeMax <- function(cohortSizeList)
+{
+    .CohortSizeMax(cohortSizeList=cohortSizeList)
+}
+
 
 ## --------------------------------------------------
 ## Size based on minimum of multiple cohort size rules
@@ -609,115 +1240,40 @@ setClass(Class="CohortSizeMax",
 ##'
 ##' @keywords classes
 ##' @export
-setClass(Class="CohortSizeMin",
-         contains="CohortSize",
-         representation=
-         representation(cohortSizeList="list"),
-         validity=
-         function(object){
-             stopifnot(all(sapply(object@cohortSizeList, is, "CohortSize")))
-         })
+.CohortSizeMin <-
+    setClass(Class="CohortSizeMin",
+             representation(cohortSizeList="list"),
+             prototype(cohortSizeList=
+                           list(CohortSizeRange(intervals=c(0, 30),
+                                                cohortSize=c(1, 3)),
+                                CohortSizeDLT(DLTintervals=c(0, 1),
+                                              cohortSize=c(1, 3)))),
+             contains="CohortSize",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(all(sapply(object@cohortSizeList, is,
+                                        "CohortSize")),
+                             "all cohortSizeList elements have to be CohortSize objects")
+
+                     o$result()
+                 })
+validObject(.CohortSizeMin())
 
 
-## --------------------------------------------------
-## Cohort size based on dose range
-## --------------------------------------------------
-
-##' Cohort size based on dose range
+##' Initialization function for "CohortSizeMin"
 ##'
-##' @slot intervals a vector with the bounds of the relevant dose intervals of
-##' length \code{n}
-##' @slot cohortSize an integer vector of length \code{n-1} with the cohort
-##' sizes in the \code{intervals}
+##' @param cohortSizeList see \code{\linkS4class{CohortSizeMin}}
+##' @return the \code{\linkS4class{CohortSizeMin}} object
 ##'
 ##' @export
-##' @keywords classes
-setClass(Class="CohortSizeRange",
-         contains="CohortSize",
-         representation=
-         representation(intervals="numeric",
-                        cohortSize="integer"),
-         validity=
-         function(object){
-             n <- length(object@intervals)
-             stopifnot(identical(length(object@cohortSize),
-                                 n-1L),
-                       all(object@cohortSize > 0),
-                       ! is.unsorted(object@intervals, strictly=TRUE))
-         })
+##' @keywords methods
+CohortSizeMin <- function(cohortSizeList)
+{
+    .CohortSizeMin(cohortSizeList=cohortSizeList)
+}
 
-## --------------------------------------------------
-## Cohort size based on number of DLTs
-## --------------------------------------------------
-
-##' Cohort size based on number of DLTs
-##'
-##' @slot DLTintervals a vector with the bounds of the relevant DLT intervals of
-##' length \code{n}
-##' @slot cohortSize an integer vector of length \code{n-1} with the cohort
-##' sizes in the \code{DLTintervals}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="CohortSizeDLT",
-         contains="CohortSize",
-         representation=
-         representation(DLTintervals="numeric",
-                        cohortSize="integer"),
-         validity=
-         function(object){
-             n <- length(object@DLTintervals)
-             stopifnot(identical(length(object@cohortSize),
-                                 n-1L),
-                       all(object@cohortSize > 0),
-                       ! is.unsorted(object@DLTintervals, strictly=TRUE))
-         })
-
-## --------------------------------------------------
-## Constant cohort size
-## --------------------------------------------------
-
-##' Constant cohort size
-##'
-##' This class is used when the cohort size should be kept constant.
-##'
-##' @slot size the constant integer size
-##'
-##' @keywords classes
-##' @export
-setClass(Class="CohortSizeConst",
-         contains="CohortSize",
-         representation=
-         representation(size="integer"),
-         validity=
-         function(object){
-             stopifnot(is.scalar(size),
-                       object@size > 0)
-         })
-
-## --------------------------------------------------
-## Cohort size based on the parts
-## --------------------------------------------------
-
-##' Cohort size based on the parts
-##'
-##' This class is used when the cohort size should change for the second part of
-##' the dose escalation. Only works in conjunction with
-##' \code{\linkS4class{DataParts}} objects.
-##'
-##' @slot sizes the two sizes for part 1 and part 2
-##'
-##' @keywords classes
-##' @export
-setClass(Class="CohortSizeParts",
-         contains="CohortSize",
-         representation=
-         representation(sizes="integer"),
-         validity=
-         function(object){
-             stopifnot(all(object@sizes > 0),
-                       identical(length(object@sizes), 2L))
-         })
 
 
 ## ============================================================

@@ -2,13 +2,14 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: install script for crmPack
 ##
-## Time-stamp: <[install.R] by DSB Mon 15/12/2014 21:10>
+## Time-stamp: <[install.R] by DSB Fre 16/01/2015 17:20>
 ##
 ## Description:
 ## This is an install script to get crmPack onto your computer.
 ##
 ## History:
 ## 09/12/2014   file creation
+## 16/01/2015   updates
 #####################################################################################
 
 ## install and load required package
@@ -35,9 +36,9 @@ unzip(zipfile=target, exdir=dir)
 
 ## install required packages and crmPack
 ## descr <- packageDescription(pkg="crmpack", lib.loc = tmp)
-install.packages(c("Rcpp", "RcppArmadillo", "rjags", "ggplot2", "gridExtra",
+install.packages(c("rjags", "ggplot2", "gridExtra",
                    "GenSA", "BayesLogit", "mvtnorm"), dependencies=TRUE)
 install.packages(dir, repos=NULL, type="source")
 
-test <- system.file(package="crmPack")
-utils:::print.vignette(list(PDF="example.pdf", Dir=test))
+library(crmPack)
+crmPackExample()

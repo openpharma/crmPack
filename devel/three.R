@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[three.R] by DSB Die 30/12/2014 19:27>
+## Time-stamp: <[three.R] by DSB Fre 02/01/2015 09:53>
 ##
 ## Description:
 ## Test the 3+3 stuff. For development only!!
@@ -107,7 +107,7 @@ seed <- 23
 
 
 source("../R/Simulations-class.R")
-source("../R/simulate.R")
+source("../R/Design-methods.R")
 
 mySims <- simulate(design,
                    truth=truth,

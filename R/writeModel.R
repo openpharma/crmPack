@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
-## Time-stamp: <[writeModel.R] by DSB Mon 08/12/2014 19:35>
+## Time-stamp: <[writeModel.R] by DSB Mon 05/01/2015 17:38>
 ##
 ## Description:
 ## This is the write.model functionality from R2WinBUGS. We only need this,
@@ -37,7 +37,6 @@
 ##' @return Nothing, but as a side effect, the model file is written
 ##'
 ##' @export
-##' @keywords internal
 ##' @author original idea by Jouni Kerman, modified by Uwe Ligges, DSB removed S
 ##' Plus part
 writeModel <- function(model, con = "model.bug", digits = 5)
@@ -56,7 +55,7 @@ writeModel <- function(model, con = "model.bug", digits = 5)
     writeLines(model.text, con = con)
 }
 
-
+##' @keywords internal
 replaceScientificNotationR <- function(bmodel, digits = 5){
     env <- new.env()
     assign("rSNRidCounter", 0, envir=env)

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Mon 22/12/2014 18:40>
+## Time-stamp: <[mcmc.R] by DSB Sam 17/01/2015 18:56>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -41,7 +41,6 @@
 ##' @return The posterior samples, an object of class
 ##' \code{\linkS4class{Samples}}.
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods regression
 setGeneric("mcmc",
@@ -58,11 +57,11 @@ setGeneric("mcmc",
 ## The standard method
 ## --------------------------------------------------
 
-##' Standard method which uses JAGS/BUGS
+##' @describeIn mcmc Standard method which uses JAGS/BUGS
 ##'
 ##' @param program the program which shall be used: either \dQuote{JAGS} (default),
 ##' \dQuote{OpenBUGS} or \dQuote{WinBUGS}
-##' @param verbose shall messages be printed? (not default)
+##' @param verbose shall progress bar and messages be printed? (not default)
 ##'
 ##' @importFrom rjags jags.model jags.samples
 setMethod("mcmc",
@@ -165,20 +164,24 @@ setMethod("mcmc",
               if(program=="JAGS")
               {
                   ## specify the JAGS model
-                  jagsModel <- jags.model(file=modelFileName,
-                                          data=
-                                          if(fromPrior) modelspecs else
-                                          c(requiredData,
-                                            modelspecs),
-                                          inits=
-                                          list(inits),
-                                          quiet=!verbose)
+                  jagsModel <- rjags::jags.model(file=modelFileName,
+                                                 data=
+                                                     if(fromPrior) modelspecs else
+                                                 c(requiredData,
+                                                   modelspecs),
+                                                 inits=
+                                                     list(inits),
+                                                 quiet=!verbose)
 
                   ## generate samples
-                  samples <- jags.samples(model=jagsModel,
-                                          variable.names=model@sample,
-                                          n.iter=options@iterations,
-                                          thin=options@step)
+                  samples <- rjags::jags.samples(model=jagsModel,
+                                                 variable.names=model@sample,
+                                                 n.iter=options@iterations,
+                                                 thin=options@step,
+                                                 progress.bar=
+                                                     ifelse(verbose,
+                                                            "text",
+                                                            "none"))
 
                   ## discard burnin and reformat slightly for Samples object
                   ret <- lapply(samples,
@@ -249,9 +252,8 @@ setMethod("mcmc",
               }
 
               ## form a Samples object for return
-              ret <- new("Samples",
-                         data=ret,
-                         options=options)
+              ret <- Samples(data=ret,
+                             options=options)
               return(ret)
           })
 
@@ -261,9 +263,8 @@ setMethod("mcmc",
 ## The fast method for the LogisticNormal class
 ## --------------------------------------------------
 
-##' The fast method for the LogisticNormal class
+##' @describeIn mcmc The fast method for the LogisticNormal class
 ##'
-##' @param verbose shall messages be printed? (not default)
 ##' @importFrom BayesLogit logit
 setMethod("mcmc",
           signature=
@@ -305,9 +306,8 @@ setMethod("mcmc",
               }
 
               ## form a Samples object for return:
-              ret <- new("Samples",
-                         data=samples,
-                         options=options)
+              ret <- Samples(data=samples,
+                             options=options)
 
               return(ret)
           })

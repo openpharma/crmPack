@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Simulations-methods.R] by DSB Die 30/12/2014 19:25>
+## Time-stamp: <[Simulations-methods.R] by DSB Fre 16/01/2015 13:41>
 ##
 ## Description:
 ## Methods for handling the simulations output.
@@ -30,7 +30,9 @@
 ##'
 ##' @param x the \code{\linkS4class{GeneralSimulations}} object we want
 ##' to plot from
+##' @param y missing
 ##' @param type the type of plots you want to obtain.
+##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
@@ -173,16 +175,123 @@ setMethod("plot",
           })
 
 
+##' Plot dual-endpoint simulations
+##'
+##' This plot method can be applied to \code{\linkS4class{DualSimulations}}
+##' objects in order to summarize them graphically. In addition to the standard
+##' plot types, there is
+##' \describe{
+##' \item{sigma2W}{Plot a boxplot of the final biomarker variance estimates in
+##' the simulated trials}
+##' \item{rho}{Plot a boxplot of the final correlation estimates in
+##' the simulated trials}
+##' }
+##'
+##' @param x the \code{\linkS4class{DualSimulations}} object we want
+##' to plot from
+##' @param y missing
+##' @param type the type of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 qplot coord_flip scale_x_discrete
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature=
+          signature(x="DualSimulations",
+                    y="missing"),
+          def=
+          function(x,
+                   y,
+                   type=
+                   c("trajectory",
+                     "dosesTried",
+                     "sigma2W",
+                     "rho"),
+                   ...){
+
+              ## start the plot list
+              plotList <- list()
+              plotIndex <- 0L
+
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+
+              ## substract the specific plot types for
+              ## dual-endpoint simulation results
+              typeReduced <- setdiff(type,
+                                     c("sigma2W", "rho"))
+
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                  genPlot <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+
+              ## now to the specific dual-endpoint plots:
+
+              ## biomarker variance estimates boxplot
+              if("sigma2W" %in% type)
+              {
+                  ## save the plot
+                  plotList[[plotIndex <- plotIndex + 1L]] <-
+                      qplot(factor(0), y=y, data=data.frame(y=x@sigma2West), geom="boxplot",
+                            xlab="", ylab="Biomarker variance estimates") +
+                                coord_flip() + scale_x_discrete(breaks=NULL)
+              }
+
+              ## correlation estimates boxplot
+              if("rho" %in% type)
+              {
+                  ## save the plot
+                  plotList[[plotIndex <- plotIndex + 1L]] <-
+                      qplot(factor(0), y=y, data=data.frame(y=x@rhoEst), geom="boxplot",
+                            xlab="", ylab="Correlation estimates") +
+                                coord_flip() + scale_x_discrete(breaks=NULL)
+              }
+
+              ## then finally plot everything
+              if(identical(length(plotList),
+                           0L))
+              {
+                  return(genPlot)
+              } else if(identical(length(plotList),
+                                  1L))
+              {
+                  ret <- plotList[[1L]]
+              } else {
+                  ret <- do.call(gridExtra::arrangeGrob,
+                                 plotList)
+              }
+
+              if(moreFromGeneral)
+              {
+                  ret <- gridExtra::arrangeGrob(genPlot, ret)
+              }
+
+              return(ret)
+          })
+
+
+
 ##' Summarize the simulations, relative to a given truth
 ##'
 ##' @param object the \code{\linkS4class{GeneralSimulations}} object we want to
 ##' summarize
 ##' @param truth a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity. Additional arguments can be supplied
-##' via \dots.
+##' true probability (vector) for toxicity
 ##' @param target the target toxicity interval (default: 20-35\%) used for the
 ##' computations
-##' @return an object of class \code{\linkS4class{GeneralSimulations-summary}}
+##' @param \dots Additional arguments can be supplied here for \code{truth}
+##' @return an object of class \code{\linkS4class{GeneralSimulationsSummary}}
 ##'
 ##' @export
 ##' @keywords methods
@@ -283,22 +392,23 @@ setMethod("summary",
               propAtTarget <- mean((toxAtDoses > target[1]) &
                                    (toxAtDoses < target[2]))
 
-              ## give back an object of class GeneralSimulations-summary,
+              ## give back an object of class GeneralSimulationsSummary,
               ## for which we then define a print / plot method
-              ret <- new("GeneralSimulations-summary",
-                         target=target,
-                         targetDoseInterval=targetDoseInterval,
-                         nsim=length(object@data),
-                         propDLTs=propDLTs,
-                         meanToxRisk=meanToxRisk,
-                         doseSelected=doseSelected,
-                         doseMostSelected=doseMostSelected,
-                         obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
-                         nObs=nObs,
-                         nAboveTarget=nAboveTarget,
-                         toxAtDosesSelected=toxAtDoses,
-                         propAtTarget=propAtTarget,
-                         doseGrid=doseGrid)
+              ret <-
+                  .GeneralSimulationsSummary(
+                      target=target,
+                      targetDoseInterval=targetDoseInterval,
+                      nsim=length(object@data),
+                      propDLTs=propDLTs,
+                      meanToxRisk=meanToxRisk,
+                      doseSelected=doseSelected,
+                      doseMostSelected=doseMostSelected,
+                      obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
+                      nObs=nObs,
+                      nAboveTarget=nAboveTarget,
+                      toxAtDosesSelected=toxAtDoses,
+                      propAtTarget=propAtTarget,
+                      doseGrid=doseGrid)
 
               return(ret)
           })
@@ -306,7 +416,14 @@ setMethod("summary",
 
 ##' Summarize the model-based design simulations, relative to a given truth
 ##'
-##' @return an object of class \code{\linkS4class{Simulations-summary}}
+##' @param object the \code{\linkS4class{Simulations}} object we want to
+##' summarize
+##' @param truth a function which takes as input a dose (vector) and returns the
+##' true probability (vector) for toxicity
+##' @param target the target toxicity interval (default: 20-35\%) used for the
+##' computations
+##' @param \dots Additional arguments can be supplied here for \code{truth}
+##' @return an object of class \code{\linkS4class{SimulationsSummary}}
 ##'
 ##' @export
 ##' @keywords methods
@@ -360,16 +477,94 @@ setMethod("summary",
                                     quantile,
                                     0.975))
 
-              ## give back an object of class Simulations-summary,
+              ## give back an object of class SimulationsSummary,
               ## for which we then define a print / plot method
-              ret <- new("Simulations-summary",
-                         start,
-                         fitAtDoseMostSelected=fitAtDoseMostSelected,
-                         meanFit=meanFit)
+              ret <- .SimulationsSummary(
+                  start,
+                  fitAtDoseMostSelected=fitAtDoseMostSelected,
+                  meanFit=meanFit)
 
               return(ret)
           })
 
+
+##' Summarize the dual-endpoint design simulations, relative to given true
+##' dose-toxicity and dose-biomarker curves
+##'
+##' @param object the \code{\linkS4class{DualSimulations}} object we want to
+##' summarize
+##' @param trueTox a function which takes as input a dose (vector) and returns the
+##' true probability (vector) for toxicity.
+##' @param trueBiomarker a function which takes as input a dose (vector) and
+##' returns the true biomarker level (vector).
+##' @param target the target toxicity interval (default: 20-35\%) used for the
+##' computations
+##' @param \dots Additional arguments can be supplied here for \code{trueTox}
+##' and \code{trueBiomarker}
+##' @return an object of class \code{\linkS4class{DualSimulationsSummary}}
+##'
+##' @export
+##' @keywords methods
+setMethod("summary",
+          signature=
+          signature(object="DualSimulations"),
+          def=
+          function(object,
+                   trueTox,
+                   trueBiomarker,
+                   target=c(0.2, 0.35),
+                   ...){
+
+              ## call the parent method
+              start <- callNextMethod(object=object,
+                                      truth=trueTox,
+                                      target=target,
+                                      ...)
+
+              doseGrid <- object@data[[1]]@doseGrid
+
+              ## dose level most often selected as MTD
+              xMostSelected <-
+                  match(start@doseMostSelected,
+                        table=doseGrid)
+
+              ## fitted biomarker level at dose most often selected
+              biomarkerFitAtDoseMostSelected <-
+                  sapply(object@fitBiomarker,
+                         function(f){
+                             f$middleBiomarker[xMostSelected]
+                         })
+
+              ## mean fitted biomarker curve (average, lower and upper quantiles)
+              ## at each dose level
+              ## (this is required for plotting)
+              meanBiomarkerFitMatrix <- sapply(object@fitBiomarker,
+                                               "[[",
+                                               "middleBiomarker")
+              meanBiomarkerFit <- list(truth=
+                                       trueBiomarker(doseGrid, ...),
+                                       average=
+                                       rowMeans(meanBiomarkerFitMatrix),
+                                       lower=
+                                       apply(meanBiomarkerFitMatrix,
+                                             1L,
+                                             quantile,
+                                             0.025),
+                                       upper=
+                                       apply(meanBiomarkerFitMatrix,
+                                             1L,
+                                             quantile,
+                                             0.975))
+
+              ## give back an object of class DualSimulationsSummary,
+              ## for which we then define a print / plot method
+              ret <- .DualSimulationsSummary(
+                  start,
+                  biomarkerFitAtDoseMostSelected=biomarkerFitAtDoseMostSelected,
+                  meanBiomarkerFit=meanBiomarkerFit)
+
+              return(ret)
+          })
 
 ##' A Reference Class to represent sequentially updated reporting objects.
 ##' @name Report
@@ -427,7 +622,7 @@ Report <-
 
 ##' Show the summary of the simulations
 ##'
-##' @param object the \code{\linkS4class{GeneralSimulations-summary}} object we want
+##' @param object the \code{\linkS4class{GeneralSimulationsSummary}} object we want
 ##' to print
 ##' @return invisibly returns a data frame of the results with one row and
 ##' appropriate column names
@@ -436,7 +631,7 @@ Report <-
 ##' @keywords methods
 setMethod("show",
           signature=
-          signature(object="GeneralSimulations-summary"),
+          signature(object="GeneralSimulationsSummary"),
           def=
           function(object){
 
@@ -500,7 +695,7 @@ setMethod("show",
 
 ##' Show the summary of the simulations
 ##'
-##' @param object the \code{\linkS4class{Simulations-summary}} object we want
+##' @param object the \code{\linkS4class{SimulationsSummary}} object we want
 ##' to print
 ##' @return invisibly returns a data frame of the results with one row and
 ##' appropriate column names
@@ -509,7 +704,7 @@ setMethod("show",
 ##' @keywords methods
 setMethod("show",
           signature=
-          signature(object="Simulations-summary"),
+          signature(object="SimulationsSummary"),
           def=
           function(object){
 
@@ -531,13 +726,48 @@ setMethod("show",
               invisible(r$df)
           })
 
+##' Show the summary of the dual-endpoint simulations
+##'
+##' @param object the \code{\linkS4class{DualSimulationsSummary}} object we want
+##' to print
+##' @return invisibly returns a data frame of the results with one row and
+##' appropriate column names
+##'
+##' @export
+##' @keywords methods
+setMethod("show",
+          signature=
+          signature(object="DualSimulationsSummary"),
+          def=
+          function(object){
+
+              ## call the parent method
+              df <- callNextMethod(object)
+              dfNames <- names(df)
+
+              ## start report object
+              r <- Report$new(object=object,
+                              df=df,
+                              dfNames=dfNames)
+
+              ## add one reporting line
+              r$report("biomarkerFitAtDoseMostSelected",
+                       "Fitted biomarker level at dose most often selected",
+                       percent=FALSE,
+                       digits=1)
+
+              ## and return the updated information
+              names(r$df) <- r$dfNames
+              invisible(r$df)
+          })
+
 
 ##' Plot summaries of the general simulations
 ##'
 ##' Graphical display of the general simulation summary
 ##'
 ##' This plot method can be applied to
-##' \code{\linkS4class{GeneralSimulations-summary}} objects in order to
+##' \code{\linkS4class{GeneralSimulationsSummary}} objects in order to
 ##' summarize them graphically. Possible \code{type}s of plots at the moment
 ##' are:
 ##'
@@ -555,9 +785,11 @@ setMethod("show",
 ##' }
 ##' You can specify any subset of these in the \code{type} argument.
 ##'
-##' @param x the \code{\linkS4class{GeneralSimulations-summary}} object we want
+##' @param x the \code{\linkS4class{GeneralSimulationsSummary}} object we want
 ##' to plot from
+##' @param y missing
 ##' @param type the types of plots you want to obtain.
+##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
@@ -568,7 +800,7 @@ setMethod("show",
 ##' @keywords methods
 setMethod("plot",
           signature=
-          signature(x="GeneralSimulations-summary",
+          signature(x="GeneralSimulationsSummary",
                     y="missing"),
           def=
           function(x,
@@ -659,10 +891,10 @@ setMethod("plot",
 ##'
 ##' Graphical display of the simulation summary
 ##'
-##' This plot method can be applied to \code{\linkS4class{Simulations-summary}}
+##' This plot method can be applied to \code{\linkS4class{SimulationsSummary}}
 ##' objects in order to summarize them graphically. Possible \code{type} of
 ##' plots at the moment are those listed in
-##' \code{\link{plot,GeneralSimulations-summary-method}} plus:
+##' \code{\link{plot,GeneralSimulationsSummary,missing-method}} plus:
 ##' \describe{
 ##' \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
 ##' the trials, together with 95\% credible intervals, and comparison with the
@@ -671,9 +903,11 @@ setMethod("plot",
 ##' }
 ##' You can specify any subset of these in the \code{type} argument.
 ##'
-##' @param x the \code{\linkS4class{Simulations-summary}} object we want
+##' @param x the \code{\linkS4class{SimulationsSummary}} object we want
 ##' to plot from
+##' @param y missing
 ##' @param type the types of plots you want to obtain.
+##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
@@ -684,7 +918,7 @@ setMethod("plot",
 ##' @keywords methods
 setMethod("plot",
           signature=
-          signature(x="Simulations-summary",
+          signature(x="SimulationsSummary",
                     y="missing"),
           def=
           function(x,
@@ -720,9 +954,9 @@ setMethod("plot",
               if("meanFit" %in% type)
               {
                   ## which types of lines do we have?
-                  type <- c("True toxicity",
-                            "Average estimated toxicity",
-                            "95% interval for estimated toxicity")
+                  linetype <- c("True toxicity",
+                                "Average estimated toxicity",
+                                "95% interval for estimated toxicity")
 
                   ## create the data frame, with
                   ## true tox, average estimated tox, and 95% (lower, upper)
@@ -731,10 +965,10 @@ setMethod("plot",
                                     rep(x@doseGrid, 4L),
                                     group=
                                     rep(1:4, each=length(x@doseGrid)),
-                                    type=
-                                    factor(rep(type[c(1, 2, 3, 3)],
+                                    linetype=
+                                    factor(rep(linetype[c(1, 2, 3, 3)],
                                                each=length(x@doseGrid)),
-                                           levels=type),
+                                           levels=linetype),
                                     lines=
                                     unlist(x@meanFit) * 100)
 
@@ -753,8 +987,8 @@ setMethod("plot",
                       geom_line(aes(x=dose,
                                     y=lines,
                                     group=group,
-                                    linetype=type,
-                                    col=type),
+                                    linetype=linetype,
+                                    col=linetype),
                                 data=dat)
 
                   thisPlot <- thisPlot +
@@ -767,6 +1001,128 @@ setMethod("plot",
                   ret <-
                       if(moreFromGeneral)
                           gridExtra::arrangeGrob(ret, thisPlot)
+                      else
+                          thisPlot
+              }
+
+              ## then finally plot everything
+              ret
+          })
+
+
+##' Plot summaries of the dual-endpoint design simulations
+##'
+##' This plot method can be applied to \code{\linkS4class{DualSimulationsSummary}}
+##' objects in order to summarize them graphically. Possible \code{type} of
+##' plots at the moment are those listed in
+##' \code{\link{plot,SimulationsSummary,missing-method}} plus:
+##' \describe{
+##' \item{meanBiomarkerFit}{Plot showing the average fitted dose-biomarker curve across
+##' the trials, together with 95\% credible intervals, and comparison with the
+##' assumed truth (as specified by the \code{trueBiomarker} argument to
+##' \code{\link{summary,DualSimulations-method}})}
+##' }
+##' You can specify any subset of these in the \code{type} argument.
+##'
+##' @param x the \code{\linkS4class{DualSimulationsSummary}} object we want
+##' to plot from
+##' @param y missing
+##' @param type the types of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
+##' scale_linetype_manual scale_colour_manual
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature=
+          signature(x="DualSimulationsSummary",
+                    y="missing"),
+          def=
+          function(x,
+                   y,
+                   type=
+                   c("nObs",
+                     "doseSelected",
+                     "propDLTs",
+                     "nAboveTarget",
+                     "meanFit",
+                     "meanBiomarkerFit"),
+                   ...){
+
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+
+              ## substract the specific plot types for dual-endpoint
+              ## designs
+              typeReduced <- setdiff(type,
+                                     "meanBiomarkerFit")
+
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                  ret <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+
+              ## is the meanBiomarkerFit plot requested?
+              if("meanBiomarkerFit" %in% type)
+              {
+                  ## which types of lines do we have?
+                  linetype <- c("True biomarker",
+                                "Average estimated biomarker",
+                                "95% interval for estimated biomarker")
+
+                  ## create the data frame, with
+                  ## true biomarker, average estimated biomarker, and 95% (lower, upper)
+                  ## estimated biomarker stacked below each other
+                  dat <- data.frame(dose=
+                                    rep(x@doseGrid, 4L),
+                                    group=
+                                    rep(1:4, each=length(x@doseGrid)),
+                                    linetype=
+                                    factor(rep(linetype[c(1, 2, 3, 3)],
+                                               each=length(x@doseGrid)),
+                                           levels=linetype),
+                                    lines=
+                                    unlist(x@meanBiomarkerFit))
+
+                  ## linetypes for the plot
+                  lt <- c("True biomarker"=1,
+                          "Average estimated biomarker"=1,
+                          "95% interval for estimated biomarker"=2)
+
+                  ## colour for the plot
+                  col <- c("True biomarker"=1,
+                          "Average estimated biomarker"=2,
+                          "95% interval for estimated biomarker"=2)
+
+                  ## now create and save the plot
+                  thisPlot <- ggplot() +
+                      geom_line(aes(x=dose,
+                                    y=lines,
+                                    group=group,
+                                    linetype=linetype,
+                                    col=linetype),
+                                data=dat)
+
+                  thisPlot <- thisPlot +
+                       scale_linetype_manual(values=lt) +
+                           scale_colour_manual(values=col) +
+                               xlab("Dose level") +
+                                   ylab("Biomarker level")
+
+                  ## add this plot to the bottom
+                  ret <-
+                      if(moreFromGeneral)
+                          gridExtra::arrangeGrob(ret, thisPlot, heights=c(2/3, 1/3))
                       else
                           thisPlot
               }

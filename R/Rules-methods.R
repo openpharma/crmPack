@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Die 30/12/2014 17:01>
+## Time-stamp: <[Rules-methods.R] by DSB Sam 17/01/2015 17:39>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -13,6 +13,7 @@
 
 ##' @include Model-methods.R
 ##' @include Samples-class.R
+##' @include Rules-class.R
 {}
 
 ## ============================================================
@@ -40,7 +41,6 @@
 ##' on the grid defined in \code{data}, and a plot depicting this recommendation
 ##' (element \code{plot})
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("nextBest",
@@ -56,7 +56,7 @@ setGeneric("nextBest",
 ## The MTD method
 ## --------------------------------------------------
 
-##' Find the next best dose based on the MTD rule
+##' @describeIn nextBest Find the next best dose based on the MTD rule
 ##'
 ##' @importFrom ggplot2 ggplot geom_density xlab ylab xlim aes geom_vline
 ##' geom_text
@@ -127,7 +127,7 @@ setMethod("nextBest",
 ## The NCRM method
 ## --------------------------------------------------
 
-##' Find the next best dose based on the NCRM method
+##' @describeIn nextBest Find the next best dose based on the NCRM method
 ##'
 ##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
 ##' geom_hline geom_point
@@ -268,8 +268,8 @@ setMethod("nextBest",
           })
 
 
-##' Find the next best dose based on the NCRM method when two parts
-##' trial is used
+##' @describeIn nextBest Find the next best dose based on the NCRM method when
+##' two parts trial is used
 setMethod("nextBest",
           signature=
           signature(nextBest="NextBestNCRM",
@@ -298,7 +298,7 @@ setMethod("nextBest",
 ## The 3+3 method
 ## --------------------------------------------------
 
-##' Find the next best dose based on the 3+3 method
+##' @describeIn nextBest Find the next best dose based on the 3+3 method
 setMethod("nextBest",
           signature=
           signature(nextBest="NextBestThreePlusThree",
@@ -371,7 +371,8 @@ setMethod("nextBest",
 ## The method for the dual endpoint model
 ## --------------------------------------------------
 
-##' Find the next best dose based on the dual endpoint model
+##' @describeIn nextBest Find the next best dose based on the dual endpoint
+##' model
 ##'
 ##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
 ##' geom_hline geom_point
@@ -387,7 +388,21 @@ setMethod("nextBest",
           function(nextBest, doselimit, samples, model, data, ...){
 
               ## get the biomarker level samples
-              biomLevelSamples <- samples@data$betaW
+              ## at the dose grid points.
+              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
+                                         ncol=data@nGrid)
+
+              ## evaluate the biomLevels, for all samples.
+              for(i in seq_len(data@nGrid))
+              {
+                  ## Now we want to evaluate for the
+                  ## following dose:
+                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
+                                                     xLevel=i,
+                                                     model,
+                                                     samples)
+              }
+              ## biomLevelSamples <- samples@data$betaW
 
               ## now for each sample, look which was the minimum dose giving
               ## relative target level
@@ -543,7 +558,6 @@ setMethod("nextBest",
 ##' @param \dots further arguments
 ##' @return the maximum possible next dose
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("maxDose",
@@ -560,7 +574,8 @@ setGeneric("maxDose",
 ## The maximum allowable relative increments in intervals method
 ## --------------------------------------------------
 
-##' Determine the maximum possible next dose based on relative increments
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' relative increments
 setMethod("maxDose",
           signature=
           signature(increments="IncrementsRelative",
@@ -589,8 +604,8 @@ setMethod("maxDose",
 ## part 1 and beginning of part 2, method method
 ## --------------------------------------------------
 
-##' Determine the maximum possible next dose based on relative increments
-##' and part 1 and 2
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' relative increments and part 1 and 2
 setMethod("maxDose",
           signature=
           signature(increments="IncrementsRelativeParts",
@@ -651,8 +666,8 @@ setMethod("maxDose",
 ## The maximum allowable relative increments in terms of DLTs
 ## --------------------------------------------------
 
-##' Determine the maximum possible next dose based on relative increments
-##' determined by DLTs so far
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' relative increments determined by DLTs so far
 setMethod("maxDose",
           signature=
           signature(increments="IncrementsRelativeDLT",
@@ -697,9 +712,7 @@ setMethod("&",
                     e2="Stopping"),
           def=
           function(e1, e2){
-              new("StoppingAll",
-                  stopList=
-                  list(e1, e2))
+              StoppingAll(list(e1, e2))
           })
 
 ##' The method combining a stopping list and an atomic
@@ -746,6 +759,7 @@ setMethod("&",
 ##' @param e2 Second \code{\linkS4class{Stopping}} object
 ##' @return The \code{\linkS4class{StoppingAny}} object
 ##'
+##' @aliases |,Stopping,Stopping-method
 ##' @name or-Stopping-Stopping
 ##' @keywords methods
 setMethod("|",
@@ -753,9 +767,7 @@ setMethod("|",
                     e2="Stopping"),
           def=
           function(e1, e2){
-              new("StoppingAny",
-                  stopList=
-                  list(e1, e2))
+              StoppingAny(list(e1, e2))
           })
 
 ##' The method combining a stopping list and an atomic
@@ -764,6 +776,7 @@ setMethod("|",
 ##' @param e2 \code{\linkS4class{Stopping}} object
 ##' @return The modified \code{\linkS4class{StoppingAny}} object
 ##'
+##' @aliases |,StoppingAny,Stopping-method
 ##' @name or-Stopping-StoppingAny
 ##' @keywords methods
 setMethod("|",
@@ -782,6 +795,7 @@ setMethod("|",
 ##' @param e2 \code{\linkS4class{StoppingAny}} object
 ##' @return The modified \code{\linkS4class{StoppingAny}} object
 ##'
+##' @aliases |,Stopping,StoppingAny-method
 ##' @name or-StoppingAny-Stopping
 ##' @keywords methods
 setMethod("|",
@@ -816,7 +830,6 @@ setMethod("|",
 ##' otherwise. It should have an attribute \code{message} which gives the reason
 ##' for the decision.
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("stopTrial",
@@ -841,7 +854,7 @@ setGeneric("stopTrial",
 ## Stopping based on multiple stopping rules
 ## --------------------------------------------------
 
-##' Stop based on multiple stopping rules
+##' @describeIn stopTrial Stop based on multiple stopping rules
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingList",
@@ -877,7 +890,8 @@ setMethod("stopTrial",
 ## Stopping based on fulfillment of all multiple stopping rules
 ## --------------------------------------------------
 
-##' Stop based on fulfillment of all multiple stopping rules
+##' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
+##' rules
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingAll",
@@ -914,7 +928,7 @@ setMethod("stopTrial",
 ## Stopping based on fulfillment of any stopping rule
 ## --------------------------------------------------
 
-##' Stop based on fulfillment of any stopping rule
+##' @describeIn stopTrial Stop based on fulfillment of any stopping rule
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingAny",
@@ -950,41 +964,10 @@ setMethod("stopTrial",
 
 
 ## --------------------------------------------------
-## Stopping based on maximum number of patients
-## --------------------------------------------------
-
-##' Stop based on maximum number of patients
-setMethod("stopTrial",
-          signature=
-          signature(stopping="StoppingMaxPatients",
-                    dose="ANY",
-                    samples="ANY",
-                    model="ANY",
-                    data="Data"),
-          def=
-          function(stopping, dose, samples, model, data, ...){
-              ## can we stop?
-              doStop <- data@nObs >= stopping@nPatients
-
-              ## generate message
-              text <-
-                  paste("Number of patients is",
-                        data@nObs,
-                        "and thus",
-                        ifelse(doStop, "reached", "below"),
-                        "the prespecified maximum number",
-                        stopping@nPatients)
-
-              ## return both
-              return(structure(doStop,
-                               message=text))
-          })
-
-## --------------------------------------------------
 ## Stopping based on number of cohorts near to next best dose
 ## --------------------------------------------------
 
-##' Stop based on number of cohorts near to next best dose
+##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingCohortsNearDose",
@@ -1030,7 +1013,8 @@ setMethod("stopTrial",
 ## Stopping based on number of patients near to next best dose
 ## --------------------------------------------------
 
-##' Stop based on number of patients near to next best dose
+##' @describeIn stopTrial Stop based on number of patients near to next best
+##' dose
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingPatientsNearDose",
@@ -1072,7 +1056,7 @@ setMethod("stopTrial",
 ## Stopping based on minimum number of cohorts
 ## --------------------------------------------------
 
-##' Stop based on minimum number of cohorts
+##' @describeIn stopTrial Stop based on minimum number of cohorts
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingMinCohorts",
@@ -1106,7 +1090,7 @@ setMethod("stopTrial",
 ## Stopping based on minimum number of patients
 ## --------------------------------------------------
 
-##' Stop based on minimum number of patients
+##' @describeIn stopTrial Stop based on minimum number of patients
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingMinPatients",
@@ -1138,7 +1122,7 @@ setMethod("stopTrial",
 ## Stopping based on probability of target tox interval
 ## --------------------------------------------------
 
-##' Stop based on probability of target tox interval
+##' @describeIn stopTrial Stop based on probability of target tox interval
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingTargetProb",
@@ -1184,7 +1168,7 @@ setMethod("stopTrial",
 ## Stopping based on MTD distribution
 ## --------------------------------------------------
 
-##' Stop based on MTD distribution
+##' @describeIn stopTrial Stop based on MTD distribution
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingMTDdistribution",
@@ -1236,7 +1220,7 @@ setMethod("stopTrial",
 ## Stopping based on probability of targeting biomarker
 ## --------------------------------------------------
 
-##' Stop based on probability of targeting biomarker
+##' @describeIn stopTrial Stop based on probability of targeting biomarker
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingTargetBiomarker",
@@ -1249,7 +1233,20 @@ setMethod("stopTrial",
               ## compute the target biomarker prob at this dose
 
               ## get the biomarker level samples
-              biomLevelSamples <- samples@data$betaW
+              ## at the dose grid points.
+              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
+                                         ncol=data@nGrid)
+
+              ## evaluate the biomLevels, for all samples.
+              for(i in seq_len(data@nGrid))
+              {
+                  ## Now we want to evaluate for the
+                  ## following dose:
+                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
+                                                     xLevel=i,
+                                                     model,
+                                                     samples)
+              }
 
               ## now for each sample, look which was the minimum dose giving
               ## relative target level
@@ -1302,7 +1299,6 @@ setMethod("stopTrial",
 ##' \code{\linkS4class{CohortSizeMax}}
 ##'
 ##' @seealso \code{\link{minSize}}
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("maxSize",
@@ -1314,14 +1310,12 @@ setGeneric("maxSize",
            },
            valueClass="CohortSizeMax")
 
-##' The method combining cohort size rules by taking maximum
+##' @describeIn maxSize The method combining cohort size rules by taking maximum
 setMethod("maxSize",
           "CohortSize",
           def=
           function(...){
-              new("CohortSizeMax",
-                  cohortSizeList=
-                  list(...))
+              CohortSizeMax(list(...))
           })
 
 ## --------------------------------------------------
@@ -1338,7 +1332,6 @@ setMethod("maxSize",
 ##' \code{\linkS4class{CohortSizeMin}}
 ##'
 ##' @seealso \code{\link{maxSize}}
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("minSize",
@@ -1350,14 +1343,12 @@ setGeneric("minSize",
            },
            valueClass="CohortSizeMin")
 
-##' The method combining cohort size rules by taking minimum
+##' @describeIn minSize The method combining cohort size rules by taking minimum
 setMethod("minSize",
           "CohortSize",
           def=
           function(...){
-              new("CohortSizeMin",
-                  cohortSizeList=
-                  list(...))
+              CohortSizeMin(list(...))
           })
 
 
@@ -1377,7 +1368,6 @@ setMethod("minSize",
 ##'
 ##' @return the size as integer value
 ##'
-##' @genericMethods
 ##' @export
 ##' @keywords methods
 setGeneric("size",
@@ -1400,8 +1390,8 @@ setGeneric("size",
 ## The dose range method
 ## --------------------------------------------------
 
-##' Determine the cohort size based on the range into which the next
-##' dose falls into
+##' @describeIn size Determine the cohort size based on the range into which the
+##' next dose falls into
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeRange",
@@ -1425,7 +1415,8 @@ setMethod("size",
 ## The DLT range method
 ## --------------------------------------------------
 
-##' Determine the cohort size based on the number of DLTs so far
+##' @describeIn size Determine the cohort size based on the number of DLTs so
+##' far
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeDLT",
@@ -1452,7 +1443,7 @@ setMethod("size",
 ## Size based on maximum of multiple cohort size rules
 ## --------------------------------------------------
 
-##' Size based on maximum of multiple cohort size rules
+##' @describeIn size Size based on maximum of multiple cohort size rules
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeMax",
@@ -1479,7 +1470,7 @@ setMethod("size",
 ## Size based on minimum of multiple cohort size rules
 ## --------------------------------------------------
 
-##' Size based on minimum of multiple cohort size rules
+##' @describeIn size Size based on minimum of multiple cohort size rules
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeMin",
@@ -1506,7 +1497,7 @@ setMethod("size",
 ## Constant cohort size
 ## --------------------------------------------------
 
-##' Constant cohort size
+##' @describeIn size Constant cohort size
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeConst",
@@ -1522,7 +1513,7 @@ setMethod("size",
 ## Cohort size based on the parts
 ## --------------------------------------------------
 
-##' Cohort size based on the parts
+##' @describeIn size Cohort size based on the parts
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeParts",

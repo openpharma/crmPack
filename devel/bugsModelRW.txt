@@ -1,0 +1,24 @@
+model
+{
+    for (i in 1:nObs) {
+        y[i] ~ dinterval(z[i], 0.00000E+00)
+        z[i] ~ dnorm(meanZ[i], 1)
+        w[i] ~ dnorm(condMeanW[i], condPrecW)
+        meanZ[i] <- betaZ[1] + betaZ[2] * x[i]
+        condMeanW[i] <- betaW[xLevel[i]] + rho/sqrt(precW) *
+            (z[i] - meanZ[i])
+    }
+    betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[, ])
+    condPrecW <- precW/(1 - pow(rho, 2))
+    precW ~ dgamma(precWa, precWb)
+    kappa ~ dbeta(rhoa, rhob)
+    rho <- kappa * 2 - 1
+    betaW[1] <- betaWintercept
+    for (j in 2:nGrid) {
+        betaW[j] <- betaWintercept + sum(delta[1:(j - 1)])
+    }
+    betaWintercept ~ dnorm(0.00000E+00, 1.00000E-06)
+    for (j in 2:nGrid) {
+        delta[j - 1] ~ dnorm(0.00000E+00, precBetaW)
+    }
+}

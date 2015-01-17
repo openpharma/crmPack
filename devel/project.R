@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Die 30/12/2014 19:30>
+## Time-stamp: <[project.R] by DSB Fre 02/01/2015 09:53>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -357,7 +357,7 @@ parallel <- TRUE
 
 
 source("../R/Simulations-class.R")
-source("../R/simulate.R")
+source("../R/Design-methods.R")
 
 mySims <- simulate(design,
                    truth=truth,

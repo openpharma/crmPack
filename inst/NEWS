@@ -1,0 +1,50 @@
+Version 0.0.22
+--------------------------------------------------------------------------------
+
+* Dual-endpoint model-based design has been added.
+
+* 3+3 design simulation is now possible, see ?ThreePlusThreeDesign
+
+* Welcome message on attaching crmPack, i.e. when library("crmPack") is
+  run
+
+* crmPackUpgrade() function for easy upgrade of crmPack to the latest version
+
+* Rule-based designs now can be specified with the class RuleDesign, while the
+  model-based designs stay with the class Design. An even more special class is
+  the DualDesign class, for dual-endpoint model-based designs. Corresponding
+  classes GeneralSimulations, Simulations and DualSimulations capture the output
+  of the trial simulations for rule-based, model-based and dual-endpoint
+  designs.
+
+* The class Simulations-summary has been renamed to SimulationsSummary,
+  similarly for the classes GeneralSimulationsSummary and
+  DualSimulationsSummary.
+
+* All Stopping and CohortSize rules that are based on intervals
+  (IncrementsRelative, IncrementsRelativeDLT, CohortSizeRange, CohortSizeDLT)
+  now use a different intervals definition. Now the "intervals" slots only contain
+  the left bounds of the intervals. Before, the last element needed to be
+  infinity. See the vignette for examples.
+
+* StoppingMaxPatients class has been removed, as it was redundant with the class
+  StoppingMinPatients. Please just use the StoppingMinPatients class instead.
+
+* Initialization methods have been replaced by dedicated initialization
+  functions. Please now use these Class(...) functions instead of new("Class",
+  ...) calls to obtain the correct objects. This change is also reflected in the
+  vignette.
+
+* The extract function for extracting parameter samples from Samples objects has
+  been removed (due to a name conflict with ggmcmc dependency packages). Please
+  now use instead the "get" method for Samples objects (see the vignette for an
+  example) to obtain data in the ggmcmc format.
+
+* crmPack now needs the package httr (it's now in the "Imports" field). Packages
+  Rcpp and RcppArmadillo have been moved from "Depends" to "Suggests" packages.
+  Currently we are not using them at all.
+
+Version 0.0.21
+--------------------------------------------------------------------------------
+
+no NEWS until this version

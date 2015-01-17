@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[helpers.R] by DSB Die 30/12/2014 19:39>
+## Time-stamp: <[helpers.R] by DSB Fre 16/01/2015 10:06>
 ##
 ## Description:
 ## Some helper functions
@@ -50,6 +50,20 @@ joinModels <- function(model1, model2)
     return(model1)
 }
 
+##' Check overlap of two character vectors
+##'
+##' @param a first character vector
+##' @param b second character vector
+##' @return returns TRUE if there is no overlap between the two character
+##' vectors, otherwise FALSE
+##'
+##' @keywords internal
+noOverlap <- function(a, b)
+{
+    identical(intersect(a, b),
+              character(0))
+}
+
 ##' Checking for scalar
 ##'
 ##' @param x the input
@@ -74,6 +88,39 @@ is.bool <- function(x)
 {
     return(is.scalar(x) &&
            is.logical(x))
+}
+
+
+##' checks for whole numbers (integers)
+##'
+##' @param x the numeric vector
+##' @param tol the tolerance
+##' @return TRUE or FALSE for each element of x
+##'
+##' @keywords internal
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)
+{
+    abs(x - round(x)) < tol
+}
+
+
+##' Safe conversion to integer vector
+##'
+##' @param x the numeric vector
+##' @return the integer vector
+##'
+##' @keywords internal
+safeInteger <- function(x)
+{
+    testres <- is.wholenumber(x)
+    if(! all(testres))
+    {
+        notInt <- which(! testres)
+        stop(paste("elements",
+                   paste(notInt, sep=", "),
+                   "of vector are not integers!"))
+    }
+    as.integer(x)
 }
 
 ##' Predicate checking for a probability
@@ -138,7 +185,8 @@ logit <- function(x)
 crmPackExample <- function()
 {
     crmPath <- system.file(package="crmPack")
-    utils:::print.vignette(list(PDF="example.pdf", Dir=crmPath))
+    printVignette(list(PDF="example.pdf", Dir=crmPath))
+    ## instead of utils:::print.vignette
 }
 
 ##' Open the browser with help pages for crmPack
@@ -156,6 +204,13 @@ crmPackHelp <- function()
     utils::help(package="crmPack", help_type="html")
 }
 
+
+##' Plots arrange objects
+##'
+##' @method plot arrange
+##' @param x the arrange object
+##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
+##'
 ##' @importFrom grid grid.draw
 ##' @export
 plot.arrange <- function(x, ...)
@@ -170,4 +225,73 @@ print.arrange <- function(x, ...)
 }
 
 
+## todo: use this function layOut (orig from wq package)?
+## function (...)
+## {
+##     require(grid)
+##     x <- list(...)
+##     n <- max(sapply(x, function(x) max(x[[2]])))
+##     p <- max(sapply(x, function(x) max(x[[3]])))
+##     pushViewport(viewport(layout = grid.layout(n, p)))
+##     for (i in seq_len(length(x))) {
+##         print(x[[i]][[1]], vp = viewport(layout.pos.row = x[[i]][[2]],
+##             layout.pos.col = x[[i]][[3]]))
+##     }
+## }
+
+##' Taken from utils package (print.vignette)
+##'
+##' @importFrom tools file_ext
+##' @importFrom utils browseURL
+##' @keywords internal
+printVignette <- function (x, ...)
+{
+    if (nzchar(out <- x$PDF)) {
+        ext <- tools::file_ext(out)
+        out <- file.path(x$Dir, "doc", out)
+        if (tolower(ext) == "pdf") {
+            pdfviewer <- getOption("pdfviewer")
+            if (identical(pdfviewer, "false")) {
+            }
+            else if (.Platform$OS.type == "windows" && identical(pdfviewer,
+                file.path(R.home("bin"), "open.exe")))
+                shell.exec(out)
+            else system2(pdfviewer, shQuote(out), wait = FALSE)
+        }
+        else browseURL(out)
+    }
+    else {
+        warning(gettextf("vignette %s has no PDF/HTML", sQuote(x$Topic)),
+            call. = FALSE, domain = NA)
+    }
+    invisible(x)
+}
+
+
+##' A Reference Class to help programming validation for new S4 classes
+##'
+##' Starting from an empty \code{msg} vector, with each check that is returning
+##' FALSE the vector gets a new element - the string explaining the failure of
+##' the validation
+##'
+##' @name Validate
+##' @field msg the message character vector
+Validate <-
+    setRefClass("Validate",
+                fields =
+                list(msg = "character"),
+                methods = list(
+                check =
+                    function(test,
+                             string){
+                        if(test)
+                        {} else {
+                            msg <<- c(msg,
+                                      string)
+                        }
+                    },
+                result =
+                    function() {
+                        if(length(msg) > 0) msg else TRUE
+                    }))
 

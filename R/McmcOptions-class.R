@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[McmcOptions-class.R] by DSB Fre 11/04/2014 17:07>
+## Time-stamp: <[McmcOptions-class.R] by DSB Fre 16/01/2015 12:02>
 ##
 ## Description:
 ## Encapsulate the three canonical MCMC options in a formal class.
@@ -14,6 +14,10 @@
 ##              to be better extensible
 ###################################################################################
 
+##' @include helpers.R
+{}
+
+
 ##' Class for the three canonical MCMC options
 ##'
 ##' @slot iterations number of MCMC iterations
@@ -22,49 +26,49 @@
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="McmcOptions",
-         representation=
-         representation(iterations="integer",
-                        burnin="integer",
-                        step="integer"),
-         validity=function(object){
-             if(object@burnin < 0L )
-             {
-                 return("Burn-in must be non-negative")
-             }
-             else if(object@burnin >= object@iterations)
-             {
-                 return("Burn-in must be smaller than iterations")
-             }
-             else if(object@step < 1)
-             {
-                 return("Step size must be at least 1")
-             }
-         })
+.McmcOptions <-
+    setClass(Class="McmcOptions",
+             representation(iterations="integer",
+                            burnin="integer",
+                            step="integer"),
+             prototype(iterations=1000L,
+                       burnin=100L,
+                       step=2L),
+             validity=function(object){
+                 o <- Validate()
+
+                 o$check(is.scalar(object@burnin) && (object@burnin >= 0L),
+                         "burn-in must be non-negative scalar")
+                 o$check(is.scalar(object@iterations),
+                         "iterations must be integer scalar")
+                 o$check(object@burnin < object@iterations,
+                         "burn-in must be smaller than iterations")
+                 o$check(is.scalar(object@step) && (object@step >= 1),
+                         "step size must be scalar of at least 1")
+
+                 o$result()
+             })
+validObject(.McmcOptions())
 
 
-##' Initialization method for the "McmcOptions" class
+##' Initialization function for the "McmcOptions" class
 ##'
-##' @param .Object the \code{\linkS4class{McmcOptions}} we want to initialize
 ##' @param burnin number of burn-in iterations which are not saved (default:
 ##' \code{10,000})
 ##' @param step only every step-th iteration is saved after the burn-in
 ##' (default: \code{2})
 ##' @param samples number of resulting samples (by default \code{10,000} will
 ##' result)
+##' @return the \code{\linkS4class{McmcOptions}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "McmcOptions"),
-          function(.Object,
-                   burnin=1e4L,
-                   step=2L,
-                   samples=1e4L,
-                   ...){
-              callNextMethod(.Object,
-                             iterations=as.integer(burnin + (step * samples)),
-                             burnin=as.integer(burnin),
-                             step=as.integer(step),
-                             ...)
-          })
+McmcOptions <- function(burnin=1e4L,
+                        step=2L,
+                        samples=1e4L)
+{
+    .McmcOptions(iterations=safeInteger(burnin + (step * samples)),
+                 burnin=safeInteger(burnin),
+                 step=safeInteger(step))
+}
+validObject(McmcOptions())

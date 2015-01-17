@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[crmPack-package.R] by DSB Don 06/02/2014 14:05>
+## Time-stamp: <[crmPack-package.R] by DSB Sam 17/01/2015 17:52>
 ##
 ## Description:
 ## Package description.
@@ -26,3 +26,13 @@
 ##' signature prototype initialize new is
 ##' @keywords package
 {}
+
+##' @keywords internal
+.onAttach <- function(libname, pkgname)
+{
+    packageStartupMessage(
+        "Type crmPackHelp() to open help browser\n",
+        "Type crmPackExample() to open example\n",
+        "Type crmPackUpgrade() to upgrade crmPack to latest version\n",
+        "Please visit https://roche.jiveon.com/projects/crmpack for more\n")
+}

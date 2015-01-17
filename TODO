@@ -1,11 +1,6 @@
 - add slide production with ReporteRs package examples (to demo folder?)
 
-- use JAGS instead of BUGS for everything
-
 - mixture prior: add documentation in vignette
-
-- only if JAGS does not work: include custom MCMC sampler for dual-endpoint model so that we can run
-simulations on the cluster where no winbugs is possible
 
 - be able to run simulations on the pRED cluster (with JAGS)
 

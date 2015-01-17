@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[McmcOptions-methods.R] by DSB Fre 11/04/2014 16:46>
+## Time-stamp: <[McmcOptions-methods.R] by DSB Fre 16/01/2015 11:58>
 ##
 ## Description:
 ## Functions/methods for the MCMC formal class.
@@ -23,7 +23,8 @@ sampleSize <-
 {
     stopifnot(is(mcmcOptions, "McmcOptions"))
 
-    return(as.integer(ceiling((mcmcOptions@iterations - mcmcOptions@burnin) / mcmcOptions@step)))
+    return(as.integer(ceiling((mcmcOptions@iterations - mcmcOptions@burnin) /
+                                  mcmcOptions@step)))
 }
 
 ##' Determine if we should save this sample

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Die 23/12/2014 15:24>
+## Time-stamp: <[Model-class.R] by DSB Son 11/01/2015 19:07>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -64,6 +64,8 @@
 ##' parameters, reference dose, etc.), based on the \code{\linkS4class{Data}}
 ##' slots that are then required as arguments of this function. This will then
 ##' be passed to BUGS for the computations.
+##' todo: if we remove DualEndpointOld, then revert this back to list instead
+##' of function for simplicity!!
 ##' @slot dose a function computing the dose reaching a specific target
 ##' probability, based on the model parameters and additional prior settings
 ##' (see the details above)
@@ -85,43 +87,42 @@
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="Model",
-         representation=
-         representation(datamodel="function",
-                        priormodel="function",
-                        datanames="character",
-                        modelspecs="function",
-                        dose="function",
-                        prob="function",
-                        init="function",
-                        sample="character"),
-         validity=
-         function(object){
-             ## convenience function
-             noOverlap <- function(a, b)
-             {
-                 identical(intersect(a, b),
-                           character(0))
-             }
+.Model <-
+    setClass(Class="Model",
+             representation(datamodel="function",
+                            priormodel="function",
+                            datanames="character",
+                            modelspecs="function",
+                            dose="function",
+                            prob="function",
+                            init="function",
+                            sample="character"),
+             validity=
+                 function(object){
+                     o <- Validate()
 
-             ## names of the Data class slots
-             allDatanames <- c("x", "y", "w",
-                               "doseGrid", "nObs", "nGrid", "xLevel")
+                     ## names of the Data class slots
+                     allDatanames <- c("x", "y", "w",
+                                       "doseGrid", "nObs", "nGrid", "xLevel")
 
-             stopifnot(## check that arguments of the init function
-                       ## are only data names
-                       all(names(formals(object@init)) %in%
-                           allDatanames),
-                       ## check that only possible slots are in datanames
-                       all(object@datanames %in% allDatanames),
-                       ## check that arguments of the dose and prob
-                       ## functions are correct
-                       all(names(formals(object@dose)) %in%
-                           c("prob", object@sample)),
-                       all(names(formals(object@prob)) %in%
-                           c("dose", object@sample)))
+                     o$check(all(names(formals(object@init)) %in%
+                                 allDatanames),
+                             "arguments of the init function must be data names")
+                     o$check(all(object@datanames %in% allDatanames),
+                             paste("data names must be in",
+                                   paste(allDatanames, collapse=", ")))
+                     o$check(all(names(formals(object@dose)) %in%
+                                 c("prob", object@sample)),
+                             "objects of dose function incorrect")
+                     o$check(all(names(formals(object@prob)) %in%
+                                 c("dose", object@sample)),
+                             "objects of prob function incorrect")
+
+                     o$result()
          })
+validObject(.Model())
 
+## no init function for this one
 
 ## ============================================================
 
@@ -150,94 +151,102 @@ setClass(Class="Model",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticLogNormal",
-         contains="Model",
-         representation=
-         representation(mean="numeric",
-                        cov="matrix",
-                        refDose="numeric"),
-         validity=
-         function(object){
-             stopifnot(length(object@mean) == 2,
-                       identical(dim(object@cov), c(2L, 2L)),
-                       ! is.null(chol(object@cov)),
-                       is.scalar(object@refDose))
-         })
+.LogisticLogNormal <-
+    setClass(Class="LogisticLogNormal",
+             representation(mean="numeric",
+                            cov="matrix",
+                            refDose="numeric"),
+             prototype(mean=c(0, 1),
+                       cov=diag(2),
+                       refDose=1),
+             contains="Model",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(length(object@mean) == 2,
+                             "mean must have length 2")
+                     o$check(identical(dim(object@cov), c(2L, 2L)) &&
+                                 ! is.null(chol(object@cov)),
+                             "cov must be positive-definite 2x2 covariance matrix")
+                     o$check(is.scalar(object@refDose) &&
+                                 (object@refDose > 0),
+                             "refDose must be positive scalar")
+
+                     o$result()
+                 })
+validObject(.LogisticLogNormal())
 
 
-##' Initialization method for the "LogisticLogNormal" class
+##' Initialization function for the "LogisticLogNormal" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticLogNormal}} we want to
-##' initialize
 ##' @param mean the prior mean vector
 ##' @param cov the prior covariance matrix
 ##' @param refDose the reference dose
+##' @return the \code{\linkS4class{LogisticLogNormal}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "LogisticLogNormal"),
-          function (.Object,
-                    mean,
-                    cov,
-                    refDose,
-                    ...){
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             mean=mean,
-                             cov=cov,
-                             refDose=refDose,
-                             datamodel=
-                             function(){
-                                 ## the logistic likelihood
-                                 for (i in 1:nObs)
-                                 {
-                                     y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                                     StandLogDose[i] <- log(x[i] / refDose)
-                                 }
-                             },
-                             priormodel=
-                             function(){
-                                 ## the multivariate normal prior on the (transformed)
-                                 ## coefficients
-                                 priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                                 theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                 ## extract actual coefficients
-                                 alpha0 <- theta[1]
-                                 alpha1 <- exp(theta[2])
+LogisticLogNormal <- function(mean,
+                              cov,
+                              refDose)
+{
+    .LogisticLogNormal(mean=mean,
+                       cov=cov,
+                       refDose=refDose,
+                       datamodel=
+                       function(){
+                           ## the logistic likelihood
+                           for (i in 1:nObs)
+                           {
+                               y[i] ~ dbern(p[i])
+                               logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                               StandLogDose[i] <- log(x[i] / refDose)
+                           }
+                       },
+                       priormodel=
+                       function(){
+                           ## the multivariate normal prior on the (transformed)
+                           ## coefficients
+                           priorPrec[1:2,1:2] <- inverse(priorCov[,])
+                           theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                           ## extract actual coefficients
+                           alpha0 <- theta[1]
+                           alpha1 <- exp(theta[2])
 
-                                 ## dummy to use refDose here.
-                                 ## It is contained in the modelspecs list below,
-                                 ## so it must occur here
-                                 bla <- refDose + 1
-                             },
-                             datanames=c("nObs", "y", "x"),
-                             modelspecs=
-                             function(){
-                                 list(refDose=refDose,
-                                      priorCov=cov,
-                                      priorMean=mean)
-                             },
-                             dose=
-                             function(prob, alpha0, alpha1){
-                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
-                                 return(exp(StandLogDose) * refDose)
-                             },
-                             prob=
-                             function(dose, alpha0, alpha1){
-                                 StandLogDose <- log(dose / refDose)
-                                 return(plogis(alpha0 + alpha1 * StandLogDose))
-                             },
-                             init=
-                             ## todo: find better starting values
-                             function(){
-                                 list(theta=c(0, 1))
-                             },
-                             sample=
-                             c("alpha0", "alpha1"),
-                             ...)
-          })
+                           ## dummy to use refDose here.
+                           ## It is contained in the modelspecs list below,
+                           ## so it must occur here
+                           bla <- refDose + 1
+                       },
+                       datanames=c("nObs", "y", "x"),
+                       modelspecs=
+                       function(){
+                           list(refDose=refDose,
+                                priorCov=cov,
+                                priorMean=mean)
+                       },
+                       dose=
+                       function(prob, alpha0, alpha1){
+                           StandLogDose <- (logit(prob) - alpha0) / alpha1
+                           return(exp(StandLogDose) * refDose)
+                       },
+                       prob=
+                       function(dose, alpha0, alpha1){
+                           StandLogDose <- log(dose / refDose)
+                           return(plogis(alpha0 + alpha1 * StandLogDose))
+                       },
+                       init=
+                       ## todo: find better starting values
+                       function(){
+                           list(theta=c(0, 1))
+                       },
+                       sample=
+                       c("alpha0", "alpha1"))
+}
+validObject(LogisticLogNormal(mean=c(0, 1),
+                              cov=diag(2),
+                              refDose=1))
 
 
 ## ============================================================
@@ -267,95 +276,102 @@ setMethod("initialize",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticLogNormalSub",
-         contains="Model",
-         representation=
-         representation(mean="numeric",
-                        cov="matrix",
-                        refDose="numeric"),
-         validity=
-         function(object){
-             stopifnot(length(object@mean) == 2,
-                       identical(dim(object@cov), c(2L, 2L)),
-                       ! is.null(chol(object@cov)),
-                       is.scalar(object@refDose))
-         })
+.LogisticLogNormalSub <-
+    setClass(Class="LogisticLogNormalSub",
+             contains="Model",
+             representation(mean="numeric",
+                            cov="matrix",
+                            refDose="numeric"),
+             prototype(mean=c(0, 1),
+                       cov=diag(2),
+                       refDose=1),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(length(object@mean) == 2,
+                             "mean must have length 2")
+                     o$check(identical(dim(object@cov), c(2L, 2L)) &&
+                                 ! is.null(chol(object@cov)),
+                             "cov must be positive-definite 2x2 covariance matrix")
+                     o$check(is.scalar(object@refDose) &&
+                                 (object@refDose > 0),
+                             "refDose must be positive scalar")
+
+                     o$result()
+                 })
+validObject(.LogisticLogNormalSub())
 
 
-##' Initialization method for the "LogisticLogNormalSub" class
+##' Initialization function for the "LogisticLogNormalSub" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticLogNormalSub}} we want to
-##' initialize
 ##' @param mean the prior mean vector
 ##' @param cov the prior covariance matrix
 ##' @param refDose the reference dose
+##' @return the \code{\linkS4class{LogisticLogNormalSub}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "LogisticLogNormalSub"),
-          function (.Object,
-                    mean,
-                    cov,
-                    refDose,
-                    ...){
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             mean=mean,
-                             cov=cov,
-                             refDose=refDose,
-                             datamodel=
-                             function(){
-                                 ## the logistic likelihood
-                                 for (i in 1:nObs)
-                                 {
-                                     y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- alpha0 + alpha1 * StandDose[i]
-                                     StandDose[i] <- x[i] - refDose
-                                 }
-                             },
-                             priormodel=
-                             function(){
-                                 ## the multivariate normal prior on the (transformed)
-                                 ## coefficients
-                                 priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                                 theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                 ## extract actual coefficients
-                                 alpha0 <- theta[1]
-                                 alpha1 <- exp(theta[2])
+LogisticLogNormalSub <- function (mean,
+                                  cov,
+                                  refDose){
 
-                                 ## dummy to use refDose here.
-                                 ## It is contained in the modelspecs list below,
-                                 ## so it must occur here
-                                 bla <- refDose + 1
-                             },
-                             datanames=c("nObs", "y", "x"),
-                             modelspecs=
-                             function(){
-                                 list(refDose=refDose,
-                                      priorCov=cov,
-                                      priorMean=mean)
-                             },
-                             dose=
-                             function(prob, alpha0, alpha1){
-                                 StandDose <- (logit(prob) - alpha0) / alpha1
-                                 return(StandDose + refDose)
-                             },
-                             prob=
-                             function(dose, alpha0, alpha1){
-                                 StandDose <- dose - refDose
-                                 return(plogis(alpha0 + alpha1 * StandDose))
-                             },
-                             init=
-                             ## todo: find better starting values
-                             function(){
-                                 list(theta=c(0, -20))
-                             },
-                             sample=
-                             c("alpha0", "alpha1"),
-                             ...)
-          })
+    .LogisticLogNormalSub(mean=mean,
+                          cov=cov,
+                          refDose=refDose,
+                          datamodel=
+                              function(){
+                                  ## the logistic likelihood
+                                  for (i in 1:nObs)
+                                  {
+                                      y[i] ~ dbern(p[i])
+                                      logit(p[i]) <- alpha0 + alpha1 * StandDose[i]
+                                      StandDose[i] <- x[i] - refDose
+                                  }
+                              },
+                          priormodel=
+                              function(){
+                                  ## the multivariate normal prior on the (transformed)
+                                  ## coefficients
+                                  priorPrec[1:2,1:2] <- inverse(priorCov[,])
+                                  theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                                  ## extract actual coefficients
+                                  alpha0 <- theta[1]
+                                  alpha1 <- exp(theta[2])
 
+                                  ## dummy to use refDose here.
+                                  ## It is contained in the modelspecs list below,
+                                  ## so it must occur here
+                                  bla <- refDose + 1
+                              },
+                          datanames=c("nObs", "y", "x"),
+                          modelspecs=
+                              function(){
+                                  list(refDose=refDose,
+                                       priorCov=cov,
+                                       priorMean=mean)
+                              },
+                          dose=
+                              function(prob, alpha0, alpha1){
+                                  StandDose <- (logit(prob) - alpha0) / alpha1
+                                  return(StandDose + refDose)
+                              },
+                          prob=
+                              function(dose, alpha0, alpha1){
+                                  StandDose <- dose - refDose
+                                  return(plogis(alpha0 + alpha1 * StandDose))
+                              },
+                          init=
+                              ## todo: find better starting values
+                              function(){
+                                  list(theta=c(0, -20))
+                              },
+                          sample=
+                              c("alpha0", "alpha1"))
+}
+validObject(LogisticLogNormalSub(mean=c(0, 1),
+                                 cov=diag(2),
+                                 refDose=1))
 
 ## ============================================================
 
@@ -386,94 +402,105 @@ setMethod("initialize",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticNormal",
-         contains="Model",
-         representation=
-         representation(mean="numeric",
-                        cov="matrix",
-                        prec="matrix",
-                        refDose="numeric"),
-         validity=
-         function(object){
-             stopifnot(length(object@mean) == 2,
-                       identical(dim(object@cov), c(2L, 2L)),
-                       ! is.null(chol(object@cov)),
-                       is.scalar(object@refDose))
-         })
+.LogisticNormal <-
+    setClass(Class="LogisticNormal",
+             contains="Model",
+             representation(mean="numeric",
+                            cov="matrix",
+                            prec="matrix",
+                            refDose="numeric"),
+             prototype(mean=c(0, 1),
+                       cov=diag(2),
+                       prec=diag(2),
+                       refDose=1),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(length(object@mean) == 2,
+                             "mean must have length 2")
+                     o$check(identical(dim(object@cov), c(2L, 2L)) &&
+                                 ! is.null(chol(object@cov)),
+                             "cov must be positive-definite 2x2 covariance matrix")
+                     o$check(all.equal(solve(object@cov), object@prec,
+                                       check.attributes=FALSE),
+                             "prec must be inverse of cov")
+                     o$check(is.scalar(object@refDose) &&
+                                 (object@refDose > 0),
+                             "refDose must be positive scalar")
+
+                     o$result()
+                 })
 
 
-##' Initialization method for the "LogisticNormal" class
+##' Initialization function for the "LogisticNormal" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticNormal}} we want to
-##' initialize
 ##' @param mean the prior mean vector
 ##' @param cov the prior covariance matrix
 ##' @param refDose the reference dose
+##' @return the \code{\linkS4class{LogisticNormal}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "LogisticNormal"),
-          function (.Object,
-                    mean,
-                    cov,
-                    refDose,
-                    ...){
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             mean=mean,
-                             cov=cov,
-                             prec=solve(cov),
-                             refDose=refDose,
-                             datamodel=
-                             function(){
-                                 ## the logistic likelihood
-                                 for (i in 1:nObs)
-                                 {
-                                     y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                                     StandLogDose[i] <- log(x[i] / refDose)
-                                 }
-                             },
-                             priormodel=
-                             function(){
-                                 ## the multivariate normal prior on the coefficients
-                                 theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                 ## extract actual coefficients
-                                 alpha0 <- theta[1]
-                                 alpha1 <- theta[2]
+LogisticNormal <- function (mean,
+                            cov,
+                            refDose)
+{
+    .LogisticNormal(mean=mean,
+                    cov=cov,
+                    prec=solve(cov),
+                    refDose=refDose,
+                    datamodel=
+                        function(){
+                            ## the logistic likelihood
+                            for (i in 1:nObs)
+                            {
+                                y[i] ~ dbern(p[i])
+                                logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                StandLogDose[i] <- log(x[i] / refDose)
+                            }
+                        },
+                    priormodel=
+                        function(){
+                            ## the multivariate normal prior on the coefficients
+                            theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                            ## extract actual coefficients
+                            alpha0 <- theta[1]
+                            alpha1 <- theta[2]
 
-                                 ## dummy to use refDose here.
-                                 ## It is contained in the modelspecs list below,
-                                 ## so it must occur here
-                                 bla <- refDose + 1
-                             },
-                             datanames=c("nObs", "y", "x"),
-                             modelspecs=
-                             function(){
-                                 list(refDose=refDose,
-                                      priorPrec=prec,
-                                      priorMean=mean)
-                             },
-                             dose=
-                             function(prob, alpha0, alpha1){
-                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
-                                 return(exp(StandLogDose) * refDose)
-                             },
-                             prob=
-                             function(dose, alpha0, alpha1){
-                                 StandLogDose <- log(dose / refDose)
+                            ## dummy to use refDose here.
+                            ## It is contained in the modelspecs list below,
+                            ## so it must occur here
+                            bla <- refDose + 1
+                        },
+                    datanames=c("nObs", "y", "x"),
+                    modelspecs=
+                        function(){
+                            list(refDose=refDose,
+                                 priorPrec=prec,
+                                 priorMean=mean)
+                        },
+                    dose=
+                        function(prob, alpha0, alpha1){
+                            StandLogDose <- (logit(prob) - alpha0) / alpha1
+                            return(exp(StandLogDose) * refDose)
+                        },
+                    prob=
+                        function(dose, alpha0, alpha1){
+                            StandLogDose <- log(dose / refDose)
                                  return(plogis(alpha0 + alpha1 * StandLogDose))
-                             },
-                             init=
-                             ## todo: find better starting values
-                             function(){
-                                 list(theta=c(0, 1))
-                             },
-                             sample=
-                             c("alpha0", "alpha1"),
-                             ...)
-          })
+                        },
+                    init=
+                        ## todo: find better starting values
+                        function(){
+                            list(theta=c(0, 1))
+                        },
+                    sample=
+                        c("alpha0", "alpha1"))
+}
+validObject(LogisticNormal(mean=c(0, 1),
+                           cov=diag(2),
+                           refDose=1))
 
 
 ## ============================================================
@@ -508,90 +535,94 @@ setMethod("initialize",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticKadane",
-         contains="Model",
-         representation=
-         representation(theta="numeric",
-                        xmin="numeric",
-                        xmax="numeric"),
-         validity=
-         function(object){
-             stopifnot(is.probability(object@theta,
-                                      bounds=FALSE),
-                       object@xmin < object@xmax,
-                       is.scalar(object@xmin),
-                       is.scalar(object@xmax))
-         })
+.LogisticKadane <-
+    setClass(Class="LogisticKadane",
+             contains="Model",
+             representation(theta="numeric",
+                            xmin="numeric",
+                            xmax="numeric"),
+             prototype(theta=0.3,
+                       xmin=0.1,
+                       xmax=1),
+             validity=
+                 function(object){
+                     o <- Validate()
 
+                     o$check(is.probability(object@theta,
+                                            bounds=FALSE),
+                             "theta must be a probability > 0 and < 1")
+                     o$check(object@xmin < object@xmax,
+                             "xmin must be smaller than xmax")
+                     o$check(is.scalar(object@xmin),
+                             "xmin must be scalar")
+                     o$check(is.scalar(object@xmax),
+                             "xmax must be scalar")
 
-##' Initialization method for the "LogisticKadane" class
+                     o$result()
+                 })
+validObject(.LogisticKadane())
+
+##' Initialization function for the "LogisticKadane" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticKadane}} we want to
-##' initialize
 ##' @param theta the target toxicity probability
 ##' @param xmin the minimum of the dose range
 ##' @param xmax the maximum of the dose range
+##' @return the \code{\linkS4class{LogisticKadane}}
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "LogisticKadane"),
-          function(.Object,
-                   theta,
-                   xmin,
-                   xmax,
-                   ...){
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             theta=theta,
-                             xmin=xmin,
-                             xmax=xmax,
-                             datamodel=
-                             function(){
-                                 ## the logistic likelihood
-                                 for (i in 1:nObs)
-                                 {
-                                     y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- (1/(gamma - xmin)) *
-                                         (gamma*logit(rho0) - xmin*logit(theta)
-                                          + (logit(theta) - logit(rho0)) * x[i])
-                                 }
-                             },
-                             priormodel=
-                             function(){
-                                 ## priors
-                                 gamma ~ dunif(xmin, xmax)
-                                 rho0 ~ dunif(0, theta)
-                             },
-                             datanames=c("nObs", "y", "x"),
-                             modelspecs=
-                             function(){
-                                 list(theta=theta,
-                                      xmin=xmin,
-                                      xmax=xmax)
-                             },
-                             dose=
-                             function(prob, rho0, gamma){
-                                 ret <- gamma * (logit(prob) - logit(rho0)) +
-                                     xmin * (logit(theta) - logit(prob))
-                                 ret <- ret / (logit(theta) - logit(rho0))
-                                 return(ret)
-                             },
-                             prob=
-                             function(dose, rho0, gamma){
-                                 ret <- (gamma*logit(rho0) - xmin*logit(theta)
-                                         + (logit(theta) - logit(rho0)) * dose)
-                                 ret <- plogis(ret / (gamma - xmin))
-                                 return(ret)
-                             },
-                             init=
-                             function(){
-                                 list(rho0 = theta / 10,
-                                      gamma = (xmax - xmin) / 2)},
-                             sample=
-                             c("rho0", "gamma"),
-                             ...)
-          })
+LogisticKadane <- function(theta,
+                           xmin,
+                           xmax)
+{
+    .LogisticKadane(theta=theta,
+                    xmin=xmin,
+                    xmax=xmax,
+                    datamodel=
+                        function(){
+                            ## the logistic likelihood
+                            for (i in 1:nObs)
+                            {
+                                y[i] ~ dbern(p[i])
+                                logit(p[i]) <- (1/(gamma - xmin)) *
+                                    (gamma*logit(rho0) - xmin*logit(theta)
+                                     + (logit(theta) - logit(rho0)) * x[i])
+                            }
+                        },
+                    priormodel=
+                        function(){
+                            ## priors
+                            gamma ~ dunif(xmin, xmax)
+                            rho0 ~ dunif(0, theta)
+                        },
+                    datanames=c("nObs", "y", "x"),
+                    modelspecs=
+                        function(){
+                            list(theta=theta,
+                                 xmin=xmin,
+                                 xmax=xmax)
+                        },
+                    dose=
+                        function(prob, rho0, gamma){
+                            ret <- gamma * (logit(prob) - logit(rho0)) +
+                                xmin * (logit(theta) - logit(prob))
+                            ret <- ret / (logit(theta) - logit(rho0))
+                            return(ret)
+                        },
+                    prob=
+                        function(dose, rho0, gamma){
+                            ret <- (gamma*logit(rho0) - xmin*logit(theta)
+                                    + (logit(theta) - logit(rho0)) * dose)
+                            ret <- plogis(ret / (gamma - xmin))
+                            return(ret)
+                        },
+                    init=
+                        function(){
+                            list(rho0 = theta / 10,
+                                 gamma = (xmax - xmin) / 2)},
+                    sample=
+                        c("rho0", "gamma"))
+}
 
 
 ## ============================================================
@@ -622,8 +653,8 @@ setMethod("initialize",
 ##' a fixed value is used or not.
 ##'
 ##' @export
-##' @keywords classes
-setClass(Class="DualEndpoint",
+##' @keywords classes internal
+setClass(Class="DualEndpointOld",
          contains="Model",
          representation=
          representation(mu="numeric",
@@ -664,22 +695,23 @@ setClass(Class="DualEndpoint",
          })
 
 
-##' Initialization method for the "DualEndpoint" class
+##' Initialization method for the "DualEndpointOld" class
 ##'
-##' @param .Object the \code{\linkS4class{DualEndpoint}} we want to
+##' @param .Object the \code{\linkS4class{DualEndpointOld}} we want to
 ##' initialize
-##' @param mu see \code{\linkS4class{DualEndpoint}}
-##' @param Sigma see \code{\linkS4class{DualEndpoint}}
-##' @param sigma2betaW see \code{\linkS4class{DualEndpoint}}
-##' @param sigma2W see \code{\linkS4class{DualEndpoint}}
-##' @param rho see \code{\linkS4class{DualEndpoint}}
+##' @param mu see \code{\linkS4class{DualEndpointOld}}
+##' @param Sigma see \code{\linkS4class{DualEndpointOld}}
+##' @param sigma2betaW see \code{\linkS4class{DualEndpointOld}}
+##' @param sigma2W see \code{\linkS4class{DualEndpointOld}}
+##' @param rho see \code{\linkS4class{DualEndpointOld}}
 ##' @param smooth either \dQuote{RW1} (default) or \dQuote{RW2}, for
 ##' specifying the random walk prior on the biomarker level.
+##' @param \dots not used
 ##'
 ##' @export
 ##' @keywords methods
 setMethod("initialize",
-          signature(.Object = "DualEndpoint"),
+          signature(.Object = "DualEndpointOld"),
           function(.Object,
                    mu,
                    Sigma,
@@ -991,316 +1023,691 @@ setMethod("initialize",
 ## ============================================================
 
 
-##' Dual endpoint model version 2 which shall work with JAGS
+##' General class for the dual endpoint model
 ##'
-##' Model class should be the same. Difference is in the initialize method.
-##' todo: describe the model
+##' Note that only the subclasses of this can be used. This class here
+##' shall contain all the common features to reduce duplicate code.
+##' (However, this class must not be virtual, because we need to create
+##' objects of it during the construction of subclass objects.)
 ##'
 ##' @slot mu For the probit toxicity model, \code{mu} contains the prior mean
 ##' vector
 ##' @slot Sigma For the probit toxicity model, contains the prior covariance
 ##' matrix
-##' @slot sigma2betaW For the biomarker model, contains the prior variance
-##' factor of the random walk prior. If it is not a single number, it can also
-##' contain a vector with elements \code{a} and {b} for the inverse-gamma prior
-##' on \code{sigma2betaW}.
 ##' @slot sigma2W Either a fixed value for the biomarker variance, or a vector
 ##' with elements \code{a} and \code{b} for the inverse-gamma prior parameters.
 ##' @slot rho Either a fixed value for the correlation (between -1 and 1), or a
 ##' vector with elements \code{a} and \code{b} for the Beta prior on the
 ##' transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
 ##' \code{a=1,b=1} leads to a uniform prior on rho.
-##' @slot useRW1 for specifying the random walk prior on the biomarker level: if
-##' \code{TRUE}, RW1 is used, otherwise RW2.
-##' @slot useFixed a list with logical value for each of the three parameters
-##' \code{sigma2betaW}, \code{sigma2W} and \code{rho} indicating whether
-##' a fixed value is used or not.
+##' @slot useFixed a list with logical value for each of the parameters
+##' indicating whether a fixed value is used or not.
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="DualEndpoint2",
-         contains="Model",
-         representation=
-         representation(mu="numeric",
-                        Sigma="matrix",
-                        sigma2betaW="numeric",
-                        sigma2W="numeric",
-                        rho="numeric",
-                        useRW1="logical",
-                        useFixed="list"),
-         validity=
-         function(object){
+.DualEndpoint <-
+    setClass(Class="DualEndpoint",
+             representation(mu="numeric",
+                            Sigma="matrix",
+                            sigma2W="numeric",
+                            rho="numeric",
+                            useFixed="list"),
+             prototype(mu=c(0, 1),
+                       Sigma=diag(2),
+                       sigma2W=1,
+                       rho=0,
+                       useFixed=
+                           list(sigma2W=TRUE,
+                                rho=TRUE)),
+             contains="Model",
+             validity=
+                 function(object){
+                     o <- Validate()
 
-             ## check the prior parameters with variable content
-             for(parName in c("sigma2betaW", "sigma2W", "rho"))
-             {
-                 ## if we use a fixed value for this parameter
-                 if(object@useFixed[[parName]])
-                 {
-                     ## check range of value
-                     if(parName == "rho")
+                     ## check the prior parameters with variable content
+                     for(parName in c("sigma2W", "rho"))
                      {
-                         stopifnot((object@rho > -1) && (object@rho < 1))
-                     } else {
-                         stopifnot(slot(object, parName) > 0)
+                         ## if we use a fixed value for this parameter
+                         if(object@useFixed[[parName]])
+                         {
+                             ## check range of value
+                             if(parName == "rho")
+                             {
+                                 o$check((object@rho > -1) && (object@rho < 1),
+                                         "rho must be in (-1, 1)")
+                             } else {
+                                 o$check(slot(object, parName) > 0,
+                                         paste(parName, "must be positive"))
+                             }
+                         } else {
+                             ## use a IG(a, b) or Beta(a, b)  prior
+                             o$check(all(slot(object, parName) > 0) &&
+                                         identical(names(slot(object, parName)),
+                                                   c("a", "b")),
+                                     paste(parName,
+                                           "has not proper prior parameters"))
+                         }
                      }
-                 } else {
-                     ## use a IG(a, b) or Beta(a, b)  prior
-                     stopifnot(all(slot(object, parName) > 0),
-                               identical(names(slot(object, parName)),
-                                         c("a", "b")))
-                 }
-             }
 
-             ## check the other prior parameters
-             stopifnot(identical(length(object@mu), 2L),
-                       identical(dim(object@Sigma), c(2L, 2L)),
-                       is.scalar(object@useRW1))
-         })
+                     ## check the other prior parameters
+                     o$check(identical(length(object@mu), 2L),
+                             "mu must have length 2")
+                     o$check(identical(dim(object@Sigma), c(2L, 2L)) &&
+                                 ! is.null(chol(object@Sigma)),
+                             "Sigma must be positive-definite 2x2 covariance matrix")
 
+                     o$result()
+                 })
+validObject(.DualEndpoint())
 
-##' Initialization method for the "DualEndpoint2" class (JAGS version)
+##' Initialization function for the "DualEndpoint" class
 ##'
-##' @param .Object the \code{\linkS4class{DualEndpoint2}} we want to
-##' initialize
-##' @param mu see \code{\linkS4class{DualEndpoint2}}
-##' @param Sigma see \code{\linkS4class{DualEndpoint2}}
-##' @param sigma2betaW see \code{\linkS4class{DualEndpoint2}}
-##' @param sigma2W see \code{\linkS4class{DualEndpoint2}}
-##' @param rho see \code{\linkS4class{DualEndpoint2}}
-##' @param smooth either \dQuote{RW1} (default) or \dQuote{RW2}, for
-##' specifying the random walk prior on the biomarker level.
+##' @param mu see \code{\linkS4class{DualEndpoint}}
+##' @param Sigma see \code{\linkS4class{DualEndpoint}}
+##' @param sigma2W see \code{\linkS4class{DualEndpoint}}
+##' @param rho see \code{\linkS4class{DualEndpoint}}
+##' @return the \code{\linkS4class{DualEndpoint}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "DualEndpoint2"),
-          function(.Object,
-                   mu,
-                   Sigma,
-                   sigma2betaW,
-                   sigma2W,
-                   rho,
-                   smooth=c("RW1", "RW2"),
-                   ...){
+DualEndpoint <- function(mu,
+                         Sigma,
+                         sigma2W,
+                         rho)
+{
+    ## Find out which parameters are fixed
+    useFixed <- list()
+    for(parName in c("sigma2W", "rho"))
+    {
+        useFixed[[parName]] <-
+            identical(length(get(parName)), 1L)
+    }
 
-              ## Find out RW choice
-              smooth <- match.arg(smooth)
-              .Object@useRW1 <- smooth == "RW1"
+    ## build together the prior model and the parameters
+    ## to be saved during sampling
+    ## ----------
 
-              ## Find out which parameters are fixed
-              useFixed <- list()
-              for(parName in c("sigma2betaW", "sigma2W", "rho"))
-              {
-                  useFixed[[parName]] <-
-                      identical(length(get(parName)), 1L)
-              }
-              .Object@useFixed <- useFixed
+    ## start with this:
 
-              ## build together the prior model and the parameters
-              ## to be saved during sampling
-              ## ----------
+    modelspecs <-
+        list(mu=mu,
+             PrecBetaZ=solve(Sigma)## ,
+             ## low=c(-10000, 0),
+             ## high=c(0, 10000)
+             )
 
-              ## start with this:
+    priormodel <-
+        function(){
+            ## priors for betaW: defined in subclasses
 
-              modelspecs <-
-                  list(mu=mu,
-                       PrecBetaZ=solve(Sigma)## ,
-                       ## low=c(-10000, 0),
-                       ## high=c(0, 10000)
-                       )
+            ## the bivariate normal prior for the
+            ## probit coefficients
+            betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[,])
 
-              priormodel <-
+            ## conditional precision for biomarker
+            condPrecW <- precW / (1 - pow(rho, 2))
+        }
+
+    ## we will fill in more, depending on which parameters
+    ## are fixed, in these two variables:
+    sample <- c("betaZ")
+    initlist <- list()
+
+    ## first the biomarker regression variance
+    if(! useFixed[["sigma2W"]])
+    {
+        priormodel <-
+            joinModels(priormodel,
+                       function(){
+                           ## gamma prior for biomarker precision
+                           precW ~ dgamma(precWa, precWb)
+                       })
+
+        sample <- c(sample,
+                    "precW")
+
+        modelspecs <- c(modelspecs,
+                        list(precWa=sigma2W["a"],
+                             precWb=sigma2W["b"]))
+
+        initlist$precW <- 1
+
+    } else {
+        modelspecs <- c(modelspecs,
+                        list(precW=1/sigma2W))
+    }
+
+    ## second the correlation
+    if(! useFixed[["rho"]])
+    {
+        priormodel <-
+            joinModels(priormodel,
+                       function(){
+                           ## transformed Beta prior for rho
+                           kappa ~ dbeta(rhoa, rhob)
+                           rho <- kappa * 2 - 1
+                       })
+
+        sample <- c(sample,
+                    "rho")
+
+        initlist$kappa <- 1/2
+
+        modelspecs <- c(modelspecs,
+                        list(rhoa=rho["a"],
+                             rhob=rho["b"]))
+    } else {
+        modelspecs <- c(modelspecs,
+                        list(rho=rho))
+    }
+
+    ## finally build the object
+    .DualEndpoint(mu=mu,
+                  Sigma=Sigma,
+                  sigma2W=sigma2W,
+                  rho=rho,
+                  useFixed=useFixed,
+                  datamodel=
                   function(){
-                      ## priors
-                      betaW[1] <- betaWintercept
-                      for (j in 2:nGrid) {
-                          betaW[j] <- betaWintercept + sum(delta[1:(j-1)])
+                      ## the likelihood
+                      for (i in 1:nObs)
+                      {
+                          ## the toxicity model
+                          ## z[i] ~ dnorm(meanZ[i], 1) %_%
+                          ##     I(low[y[i] + 1], high[y[i] + 1])
+                          y[i] ~ dinterval(z[i], 0)
+                          z[i] ~ dnorm(meanZ[i], 1)
+
+                          ## the conditional biomarker model
+                          w[i] ~ dnorm(condMeanW[i], condPrecW)
+
+                          ## the moments
+                          meanZ[i] <- betaZ[1] + betaZ[2] * x[i]
+                          condMeanW[i] <- betaW[xLevel[i]] +
+                              rho / sqrt(precW) * (z[i] - meanZ[i])
+                          ## betaW needs to be defined in subclasses!
                       }
-                      ## delta will then be defined below
-                      ## (depending on whether RW1 or RW2 is used)
+                  },
+                  priormodel=priormodel,
+                  datanames=
+                  c("nObs", "w", "x", "xLevel", "y", "nGrid"),
+                  modelspecs=
+                  function(){
+                      modelspecs
+                  },
+                  dose=
+                  function(prob, betaZ){
+                      ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+                      return(ret)
+                  },
+                  prob=
+                  function(dose, betaZ){
+                      ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose)
+                      return(ret)
+                  },
+                  init=
+                  function(y, w, nGrid){
+                      c(initlist,
+                        list(z=
+                             ifelse(y==0, -1, 1),
+                             betaZ=c(0,1)))},
+                  sample=sample)
+}
+validObject(DualEndpoint(mu=c(0, 1),
+                         Sigma=diag(2),
+                         sigma2W=1,
+                         rho=0))
 
-                      ## the intercept (= first location betaW value)
-                      betaWintercept ~ dnorm(0, 0.000001)
-                      ## ~ essentially dflat(),
-                      ## which is not available in JAGS.
 
-                      ## the bivariate normal prior for the
-                      ## probit coefficients
-                      betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[,])
+## ============================================================
 
-                      ## conditional precision for biomarker
-                      condPrecW <- precW / (1 - pow(rho, 2))
-                  }
 
-              if(.Object@useRW1)
-              {
-                  ## add RW1 part
-                  priormodel <-
-                      joinModels(priormodel,
-                                 function(){
-                                     ## the iid first oder differences:
-                                     for (j in 2:nGrid) {
-                                         delta[j-1] ~ dnorm(0, precBetaW)
-                                     }
-                                 })
-              } else {
-                  ## add RW2 part
-                  priormodel <-
-                      joinModels(priormodel,
-                                 function(){
-                                     ## the first order differences:
-                                     delta[1] <- deltaStart
-                                     for (j in 2:(nGrid-1)) {
-                                         delta[j] <- deltaStart +
-                                             sum(delta2[1:(j-1)])
-                                     }
+##' Dual endpoint model with RW prior for biomarker
+##'
+##' This class extends the \code{\linkS4class{DualEndpoint}} class.
+##'
+##' todo: describe RW priors
+##'
+##' @slot sigma2betaW Contains the prior variance factor of the random walk
+##' prior for the biomarker model. If it is not a single number, it can also
+##' contain a vector with elements \code{a} and {b} for the inverse-gamma prior
+##' on \code{sigma2betaW}.
+##' @slot useRW1 for specifying the random walk prior on the biomarker level: if
+##' \code{TRUE}, RW1 is used, otherwise RW2.
+##'
+##' @export
+##' @keywords classes
+.DualEndpointRW <-
+    setClass(Class="DualEndpointRW",
+             representation(sigma2betaW="numeric",
+                            useRW1="logical"),
+             prototype(sigma2betaW=1,
+                       useRW1=TRUE,
+                       useFixed=
+                       list(sigma2W=TRUE,
+                            rho=TRUE,
+                            sigma2betaW=TRUE)),
+             contains="DualEndpoint",
+             validity=
+                 function(object){
+                     o <- Validate()
 
-                                     ## the iid second oder differences:
-                                     for (j in 1:(nGrid-2)) {
-                                         delta2[j] ~ dnorm(0, precBetaW)
-                                     }
+                     ## check the additional prior parameters
+                     for(parName in c("sigma2betaW"))
+                     {
+                         ## if we use a fixed value for this parameter
+                         if(object@useFixed[[parName]])
+                         {
+                             o$check(slot(object, parName) > 0,
+                                     paste(parName, "must be positive"))
+                         } else {
+                             o$check(all(slot(object, parName) > 0) &&
+                                         identical(names(slot(object, parName)),
+                                                   c("a", "b")),
+                                     paste(parName,
+                                           "has not proper prior parameters"))
+                         }
+                     }
 
-                                     ## the first 1st order difference:
-                                     deltaStart ~ dnorm(0, 0.000001)
-                                 })
-              }
+                     o$result()
+                 })
+validObject(.DualEndpointRW())
 
-              ## we will fill in more, depending on which parameters
-              ## are fixed, in these two variables:
-              sample <- c("betaZ", "betaWintercept", "betaW", "delta")
-              initlist <- list()
 
-              ## first the biomarker regression variance
-              if(! useFixed[["sigma2W"]])
-              {
-                  priormodel <-
-                      joinModels(priormodel,
-                                 function(){
-                                     ## gamma prior for biomarker precision
-                                     precW ~ dgamma(precWa, precWb)
-                                 })
+##' Initialization function for the "DualEndpointRW" class
+##'
+##' @param sigma2betaW see \code{\linkS4class{DualEndpointRW}}
+##' @param smooth either \dQuote{RW1} (default) or \dQuote{RW2}, for
+##' specifying the random walk prior on the biomarker level.
+##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
+##' @return the \code{\linkS4class{DualEndpointRW}} object
+##'
+##' @export
+##' @keywords methods
+DualEndpointRW <- function(sigma2betaW,
+                           smooth=c("RW1", "RW2"),
+                           ...)
+{
+    ## call the initialize function from DualEndpoint
+    ## to get started
+    start <- DualEndpoint(...)
 
-                  sample <- c(sample,
-                              "precW")
+    ## Find out RW choice
+    smooth <- match.arg(smooth)
+    useRW1 <- smooth == "RW1"
 
-                  modelspecs <- c(modelspecs,
-                                  list(precWa=sigma2W["a"],
-                                       precWb=sigma2W["b"]))
+    ## Find out which of the additional parameters are fixed
+    for(parName in c("sigma2betaW"))
+    {
+        start@useFixed[[parName]] <-
+            identical(length(get(parName)), 1L)
+    }
 
-                  initlist$precW <- 1
+    ## build together the prior model and the parameters
+    ## to be saved during sampling
+    ## ----------
 
-              } else {
-                  modelspecs <- c(modelspecs,
-                                  list(precW=1/sigma2W))
-              }
+    start@priormodel <-
+        joinModels(start@priormodel,
+                   function(){
 
-              ## second the variance for the RW prior
-              if(! useFixed[["sigma2betaW"]])
-              {
-                  priormodel <-
-                      joinModels(priormodel,
-                                 function(){
-                                     ## gamma prior for RW precision
-                                     precBetaW ~ dgamma(precBetaWa, precBetaWb)
-                                 })
+                       betaW[1] <- betaWintercept
+                       for (j in 2:nGrid) {
+                           betaW[j] <- betaWintercept +
+                               sum(delta[1:(j-1)])
+                       }
 
-                  sample <- c(sample,
-                              "precBetaW")
+                       ## delta will then be defined below
+                       ## (depending on whether RW1 or RW2 is used)
 
-                  initlist$precBetaW <- 1
+                       ## the intercept (= first location betaW value)
+                       betaWintercept ~ dnorm(0, 0.000001)
+                       ## ~ essentially dflat(),
+                       ## which is not available in JAGS.
+                   })
 
-                  modelspecs <- c(modelspecs,
-                                  list(precBetaWa=sigma2betaW["a"],
-                                       precBetaWb=sigma2betaW["b"]))
-              } else {
-                  modelspecs <- c(modelspecs,
-                                  list(precBetaW=1/sigma2betaW))
-              }
+    if(useRW1)
+    {
+        ## add RW1 part
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## the iid first oder differences:
+                           for (j in 2:nGrid) {
+                               delta[j-1] ~ dnorm(0, precBetaW)
+                           }
+                       })
+    } else {
+        ## add RW2 part
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## the first order differences:
+                           delta[1] <- deltaStart
+                           for (j in 2:(nGrid-1)) {
+                               delta[j] <- deltaStart +
+                                   sum(delta2[1:(j-1)])
+                           }
 
-              ## third the correlation
-              if(! useFixed[["rho"]])
-              {
-                  priormodel <-
-                      joinModels(priormodel,
-                                 function(){
-                                     ## transformed Beta prior for rho
-                                     kappa ~ dbeta(rhoa, rhob)
-                                     rho <- kappa * 2 - 1
-                                 })
+                           ## the iid second oder differences:
+                           for (j in 1:(nGrid-2)) {
+                               delta2[j] ~ dnorm(0, precBetaW)
+                           }
 
-                  sample <- c(sample,
-                              "rho")
+                           ## the first 1st order difference:
+                           deltaStart ~ dnorm(0, 0.000001)
+                       })
+    }
 
-                  initlist$kappa <- 1/2
+    ## we will fill in more, depending on which parameters
+    ## are fixed, in these two variables:
+    start@sample <- c(start@sample,
+                      "betaWintercept", "betaW", "delta")
 
-                  modelspecs <- c(modelspecs,
-                                  list(rhoa=rho["a"],
-                                       rhob=rho["b"]))
-              } else {
-                  modelspecs <- c(modelspecs,
-                                  list(rho=rho))
-              }
+    ## copy some things that we need to amend
+    oldModelspecs <- start@modelspecs
+    oldInit <- start@init
 
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             mu=mu,
-                             Sigma=Sigma,
-                             sigma2betaW=sigma2betaW,
-                             sigma2W=sigma2W,
-                             rho=rho,
-                             datamodel=
-                             function(){
-                                 ## the likelihood
-                                 for (i in 1:nObs)
-                                 {
-                                     ## the toxicity model
-                                     ## z[i] ~ dnorm(meanZ[i], 1) %_%
-                                     ##     I(low[y[i] + 1], high[y[i] + 1])
-                                     y[i] ~ dinterval(z[i], 0)
-                                     z[i] ~ dnorm(meanZ[i], 1)
+    ## check the variance for the RW prior
+    if(! start@useFixed[["sigma2betaW"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## gamma prior for RW precision
+                           precBetaW ~ dgamma(precBetaWa, precBetaWb)
+                       })
 
-                                     ## the conditional biomarker model
-                                     w[i] ~ dnorm(condMeanW[i], condPrecW)
+        start@sample <- c(start@sample,
+                          "precBetaW")
 
-                                     ## the moments
-                                     meanZ[i] <- betaZ[1] + betaZ[2] * x[i]
-                                     condMeanW[i] <- betaW[xLevel[i]] +
-                                         rho / sqrt(precW) * (z[i] - meanZ[i])
-                                 }
-                             },
-                             priormodel=priormodel,
-                             datanames=
-                             c("nObs", "w", "x", "xLevel", "y", "nGrid"),
-                             modelspecs=
-                             function(){
-                                 modelspecs
-                             },
-                             dose=
-                             function(prob, betaZ){
-                                 ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
-                                 return(ret)
-                             },
-                             prob=
-                             function(dose, betaZ){
-                                 ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose)
-                                 return(ret)
-                             },
-                             init=
-                             function(y, w, nGrid){
-                                 c(initlist,
-                                   list(z=
-                                        ifelse(y==0, -1, 1),
-                                        betaZ=c(0,1),
-                                        betaWintercept=w[1]),
-                                   if(.Object@useRW1){
-                                       list(delta=rep(0, nGrid-1))
-                                   } else {
-                                       list(delta2=rep(0, nGrid-2))
-                                   })},
-                             sample=sample,
+        start@init <-
+            function(y, w, nGrid){
+                c(oldInit(y, w, nGrid),
+                  list(precBetaW=1))
+            }
+
+        start@modelspecs <-
+            function(){
+                c(oldModelspecs(),
+                  list(precBetaWa=sigma2betaW["a"],
+                       precBetaWb=sigma2betaW["b"]))
+            }
+
+    } else {
+        start@modelspecs <-
+            function(){
+                c(oldModelspecs(),
+                  list(precBetaW=1/sigma2betaW))
+            }
+    }
+
+    ## call the constructor:
+    ## inherit everything from DualEndpoint object "start", and add
+    ## specifics
+    .DualEndpointRW(start,
+                    sigma2betaW=sigma2betaW,
+                    useRW1=useRW1)
+}
+validObject(DualEndpointRW(sigma2betaW=1,
+                           smooth="RW1",
+                           mu=c(0, 1),
+                           Sigma=diag(2),
+                           sigma2W=1,
+                           rho=0))
+
+
+## ============================================================
+
+
+##' Dual endpoint model with beta prior for biomarker
+##'
+##' This class extends the \code{\linkS4class{DualEndpoint}} class.
+##'
+##' Here the biomarker mean is parametrized in the form of a rescaled
+##' beta density function:
+##'
+##' mu = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1 * (1 - x/x*)^delta2
+##'
+##' where x* is a reference dose, delta1 and delta2 are the two beta
+##' parameters, and E0 and Emax are the minimum and maximum levels,
+##' respectively.
+##' For ease of interpretation, we parametrize with delta1 and the mode
+##' of the curve instead, where mode = delta1 / (delta1 + delta2).
+##'
+##' @slot E0 either a fixed number or the two uniform distribution parameters
+##' @slot Emax either a fixed number or the two uniform distribution parameters
+##' @slot delta1 either a fixed number or the two uniform distribution parameters
+##' @slot mode either a fixed number or the two uniform distribution parameters
+##' @slot refDose the reference dose \eqn{x^{*}}
+##'
+##' @export
+##' @keywords classes
+.DualEndpointBeta <-
+    setClass("DualEndpointBeta",
+             representation(E0="numeric",
+                            Emax="numeric",
+                            delta1="numeric",
+                            mode="numeric",
+                            refDose="numeric"),
+             prototype(E0=c(0, 100),
+                       Emax=c(0, 500),
+                       delta1=c(0, 5),
+                       mode=c(1, 15),
+                       refDose=1000,
+                       useFixed=
+                       list(sigma2W=TRUE,
+                            rho=TRUE,
+                            E0=FALSE,
+                            Emax=FALSE,
+                            delta1=FALSE,
+                            mode=FALSE)),
+             contains="DualEndpoint",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     ## check the prior parameters with variable content
+                     for(parName in c("E0", "Emax", "delta1", "mode"))
+                     {
+                         ## if we use a fixed value for this parameter
+                         if(object@useFixed[[parName]])
+                         {
+                             ## check range of value
+                             o$check(slot(object, parName) > 0,
+                                         paste(parName, "must be positive"))
+                         } else {
+                             ## use a Uniform(a, b) prior
+                             o$check(all(slot(object, parName) >= 0) &&
+                                         (diff(slot(object, parName)) > 0),
+                                     paste(parName,
+                                           "has not proper prior parameters"))
+                         }
+                     }
+
+                     ## check the refDose
+                     o$check(object@refDose > 0,
+                             "refDose must be positive")
+
+                     o$result()
+                 })
+validObject(.DualEndpointBeta())
+
+##' Initialization function for the "DualEndpointBeta" class
+##'
+##' @param E0 see \code{\linkS4class{DualEndpointBeta}}
+##' @param Emax see \code{\linkS4class{DualEndpointBeta}}
+##' @param delta1 see \code{\linkS4class{DualEndpointBeta}}
+##' @param mode see \code{\linkS4class{DualEndpointBeta}}
+##' @param refDose see \code{\linkS4class{DualEndpointBeta}}
+##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
+##' @return the \code{\linkS4class{DualEndpointBeta}} object
+##'
+##' @export
+##' @keywords methods
+DualEndpointBeta <- function(E0,
+                             Emax,
+                             delta1,
+                             mode,
+                             refDose,
                              ...)
-          })
+{
+    ## call the initialize function from DualEndpoint
+    ## to get started
+    start <- DualEndpoint(...)
+
+    ## we need the dose grid here in the BUGS model,
+    ## therefore add it to datanames
+    start@datanames <- c(start@datanames,
+                         "doseGrid")
+
+    ## Find out which of the additional parameters are fixed
+    for(parName in c("E0", "Emax", "delta1", "mode"))
+    {
+        start@useFixed[[parName]] <-
+            identical(length(get(parName)), 1L)
+    }
+
+    ## build together the prior model and the parameters
+    ## to be saved during sampling
+    ## ----------
+
+    start@priormodel <-
+        joinModels(start@priormodel,
+                   function(){
+                       ## delta2 <- delta1 * (1 - (mode/refDose)) / (mode/refDose)
+                       delta2 <- delta1 * (refDose/mode - 1)
+                       ## betafun <- (delta1 + delta2)^(delta1 + delta2) *
+                       ##     delta1^(- delta1) * delta2^(- delta2)
+                       betafun <- (1 + delta2 / delta1)^delta1 *
+                           (delta1 / delta2 + 1)^delta2
+
+                       for (j in 1:nGrid)
+                       {
+                           StandDose[j] <- doseGrid[j] / refDose
+                           betaW[j] <- E0 + (Emax - E0) * betafun *
+                               StandDose[j]^delta1 * (1 - StandDose[j])^delta2
+                       }
+                   })
+
+    ## we will fill in more, depending on which parameters
+    ## are fixed, in these two variables:
+    start@sample <- c(start@sample,
+                      "betaW")
+    newInits <- list()
+    newModelspecs <- list(refDose=refDose)
+
+    ## for E0:
+    if(! start@useFixed[["E0"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for E0
+                           E0 ~ dunif(E0low, E0high)
+                       })
+
+        start@sample <- c(start@sample,
+                          "E0")
+
+        newInits$E0 <- mean(E0)
+        newModelspecs$E0low <- E0[1]
+        newModelspecs$E0high <- E0[2]
+    } else {
+        newModelspecs$E0 <- E0
+    }
+
+    ## for Emax:
+    if(! start@useFixed[["Emax"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for Emax
+                           Emax ~ dunif(EmaxLow, EmaxHigh)
+                       })
+
+        start@sample <- c(start@sample,
+                          "Emax")
+
+        newInits$Emax <- mean(Emax)
+        newModelspecs$EmaxLow <- Emax[1]
+        newModelspecs$EmaxHigh <- Emax[2]
+    } else {
+        newModelspecs$Emax <- Emax
+    }
+
+    ## for delta1 and delta2:
+    if(! start@useFixed[["delta1"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for E0
+                           delta1 ~ dunif(delta1Low, delta1High)
+                       })
+
+        start@sample <- c(start@sample,
+                          "delta1")
+
+        newInits$delta1 <- mean(delta1)
+        newModelspecs$delta1Low <- delta1[1]
+        newModelspecs$delta1High <- delta1[2]
+    } else {
+        newModelspecs$delta1 <- delta1
+    }
+
+    if(! start@useFixed[["mode"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for E0
+                           mode ~ dunif(modeLow, modeHigh)
+                       })
+
+        start@sample <- c(start@sample,
+                          "mode")
+
+        newInits$mode <- mean(mode)
+        newModelspecs$modeLow <- mode[1]
+        newModelspecs$modeHigh <- mode[2]
+    } else {
+        newModelspecs$mode <- mode
+    }
+
+    ## now define the new modelspecs and init functions:
+    oldModelspecs <- start@modelspecs
+    start@modelspecs <- function()
+    {
+        c(oldModelspecs(),
+          newModelspecs)
+    }
+
+    oldInit <- start@init
+    start@init <- function(y, w, nGrid)
+    {
+        c(oldInit(y, w, nGrid),
+          newInits)
+    }
+
+    ## finally call the constructor
+    .DualEndpointBeta(start,
+                      E0=E0,
+                      Emax=Emax,
+                      delta1=delta1,
+                      mode=mode,
+                      refDose=refDose)
+}
+validObject(DualEndpointBeta(E0=10,
+                             Emax=50,
+                             delta1=c(1, 5),
+                             mode=c(3, 10),
+                             refDose=10,
+                             mu=c(0, 1),
+                             Sigma=diag(2),
+                             sigma2W=1,
+                             rho=0))
 
 
 ## ============================================================
@@ -1341,129 +1748,162 @@ setMethod("initialize",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticNormalMixture",
-         contains="Model",
-         representation=
-         representation(comp1="list",
-                        comp2="list",
-                        weightpar="numeric",
-                        refDose="numeric"),
-         validity=
-         function(object){
-             stopifnot(identical(names(object@comp1),
-                                 c("mean", "cov", "prec")),
-                       identical(names(object@comp2),
-                                 c("mean", "cov", "prec")),
-                       identical(names(object@weightpar),
-                                 c("a", "b")),
-                       is.scalar(object@refDose))
-         })
+.LogisticNormalMixture <-
+    setClass(Class="LogisticNormalMixture",
+             contains="Model",
+             representation(comp1="list",
+                            comp2="list",
+                            weightpar="numeric",
+                            refDose="numeric"),
+             prototype(comp1=
+                           list(mean=c(0, 1),
+                                cov=diag(2),
+                                prec=diag(2)),
+                       comp2=
+                           list(mean=c(-1, 1),
+                                cov=diag(2),
+                                prec=diag(2)),
+                       weightpar=c(a=1, b=1),
+                       refDose=1),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     for(thisSlot in c("comp1", "comp2"))
+                     {
+                         thisList <- slot(object, thisSlot)
+                         o$check(identical(names(thisList),
+                                           c("mean", "cov", "prec")),
+                                 paste(thisSlot,
+                                       "must be a list with elements mean, cov, prec"))
+                         o$check(length(thisList$mean) == 2,
+                                 paste(thisSlot,
+                                       "mean must have length 2"))
+                         o$check(identical(dim(thisList$cov), c(2L, 2L)) &&
+                                     ! is.null(chol(thisList$cov)),
+                                 paste(thisSlot,
+                                       "cov must be positive-definite 2x2 covariance matrix"))
+                         o$check(all.equal(solve(thisList$cov), thisList$prec,
+                                           check.attributes=FALSE),
+                                 paste(thisSlot,
+                                       "prec must be inverse of cov"))
+                     }
+
+                     o$check(all(object@weightpar > 0) &&
+                                 identical(names(object@weightpar),
+                                           c("a", "b")),
+                             "weightpar does not specify proper prior parameters")
+                     o$check(is.scalar(object@refDose) && (object@refDose > 0),
+                             "refDose must be scalar and positive")
+                 })
+validObject(.LogisticNormalMixture())
 
 
-##' Initialization method for the "LogisticNormalMixture" class
+##' Initialization function for the "LogisticNormalMixture" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticNormalMixture}} we want to
-##' initialize
 ##' @param comp1 the specifications of the first component: a list with
 ##' \code{mean} and \code{cov} for the first bivariate normal prior
 ##' @param comp2 the specifications of the second component
 ##' @param weightpar the beta parameters for the weight of the first component
 ##' @param refDose the reference dose
+##' @return the \code{\linkS4class{LogisticNormalMixture}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "LogisticNormalMixture"),
-          function (.Object,
-                    comp1,
-                    comp2,
-                    weightpar,
-                    refDose,
-                    ...){
-              ## add precision matrices to component lists
-              comp1 <- c(comp1,
-                         list(prec=solve(comp1$cov)))
-              comp2 <- c(comp2,
-                         list(prec=solve(comp2$cov)))
+LogisticNormalMixture <- function(comp1,
+                                  comp2,
+                                  weightpar,
+                                  refDose)
+{
+    ## add precision matrices to component lists
+    comp1 <- c(comp1,
+               list(prec=solve(comp1$cov)))
+    comp2 <- c(comp2,
+               list(prec=solve(comp2$cov)))
 
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             comp1=comp1,
-                             comp2=comp2,
-                             weightpar=weightpar,
-                             refDose=refDose,
-                             datamodel=
-                             function(){
-                                 ## the logistic likelihood:
-                                 ## not changed from non-mixture case
-                                 for (i in 1:nObs)
-                                 {
-                                     y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                                     StandLogDose[i] <- log(x[i] / refDose)
-                                 }
-                             },
-                             priormodel=
-                             function(){
-                                 ## the multivariate normal prior on the coefficients
-                                 theta[1:2] ~ dmnorm(priorMean[1:2, comp],
-                                                     priorPrec[1:2, 1:2, comp])
-                                 ## this is conditional on the component index
-                                 ## "comp"
+    .LogisticNormalMixture(comp1=comp1,
+                           comp2=comp2,
+                           weightpar=weightpar,
+                           refDose=refDose,
+                           datamodel=
+                               function(){
+                                   ## the logistic likelihood:
+                                   ## not changed from non-mixture case
+                                   for (i in 1:nObs)
+                                   {
+                                       y[i] ~ dbern(p[i])
+                                       logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                       StandLogDose[i] <- log(x[i] / refDose)
+                                   }
+                               },
+                           priormodel=
+                               function(){
+                                   ## the multivariate normal prior on the coefficients
+                                   theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                       priorPrec[1:2, 1:2, comp])
+                                   ## this is conditional on the component index
+                                   ## "comp"
 
-                                 ## component index is 1 or 2
-                                 comp <- comp0 + 1
+                                   ## component index is 1 or 2
+                                   comp <- comp0 + 1
 
-                                 ## it is 1 with probability w and
-                                 ## 2 with probability 1 - w
-                                 comp0 ~ dbern(wc)
-                                 wc <- 1 - w
+                                   ## it is 1 with probability w and
+                                   ## 2 with probability 1 - w
+                                   comp0 ~ dbern(wc)
+                                   wc <- 1 - w
 
-                                 ## we have a beta prior on w
-                                 w ~ dbeta(weightpar[1], weightpar[2])
+                                   ## we have a beta prior on w
+                                   w ~ dbeta(weightpar[1], weightpar[2])
 
-                                 ## extract actual coefficients
-                                 alpha0 <- theta[1]
-                                 alpha1 <- theta[2]
+                                   ## extract actual coefficients
+                                   alpha0 <- theta[1]
+                                   alpha1 <- theta[2]
 
-                                 ## dummy to use refDose here.
-                                 ## It is contained in the modelspecs list below,
-                                 ## so it must occur here
-                                 bla <- refDose + 1
-                             },
-                             datanames=c("nObs", "y", "x"),
-                             modelspecs=
-                             function(){
-                                 list(refDose=refDose,
-                                      priorMean=
-                                      cbind(comp1$mean,
-                                            comp2$mean),
-                                      priorPrec=
-                                      array(data=
-                                            c(comp1$prec,
-                                              comp2$prec),
-                                            dim=c(2, 2, 2)),
-                                      weightpar=weightpar)
-                             },
-                             dose=
-                             function(prob, alpha0, alpha1){
-                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
-                                 return(exp(StandLogDose) * refDose)
-                             },
-                             prob=
-                             function(dose, alpha0, alpha1){
-                                 StandLogDose <- log(dose / refDose)
-                                 return(plogis(alpha0 + alpha1 * StandLogDose))
-                             },
-                             init=
-                             ## todo: find better starting values
-                             function(){
-                                 list(theta=c(0, 1))
-                             },
-                             sample=
-                             c("alpha0", "alpha1", "w"),
-                             ...)
-          })
+                                   ## dummy to use refDose here.
+                                   ## It is contained in the modelspecs list below,
+                                   ## so it must occur here
+                                   bla <- refDose + 1
+                               },
+                           datanames=c("nObs", "y", "x"),
+                           modelspecs=
+                               function(){
+                                   list(refDose=refDose,
+                                        priorMean=
+                                            cbind(comp1$mean,
+                                                  comp2$mean),
+                                        priorPrec=
+                                            array(data=
+                                                      c(comp1$prec,
+                                                        comp2$prec),
+                                                  dim=c(2, 2, 2)),
+                                        weightpar=weightpar)
+                               },
+                           dose=
+                               function(prob, alpha0, alpha1){
+                                   StandLogDose <- (logit(prob) - alpha0) / alpha1
+                                   return(exp(StandLogDose) * refDose)
+                               },
+                           prob=
+                               function(dose, alpha0, alpha1){
+                                   StandLogDose <- log(dose / refDose)
+                                   return(plogis(alpha0 + alpha1 * StandLogDose))
+                               },
+                           init=
+                               ## todo: find better starting values
+                               function(){
+                                   list(theta=c(0, 1))
+                               },
+                           sample=
+                               c("alpha0", "alpha1", "w"))
+}
+validObject(LogisticNormalMixture(comp1=
+                                      list(mean=c(0, 1),
+                                           cov=diag(2)),
+                                  comp2=
+                                      list(mean=c(-1, 1),
+                                           cov=diag(2)),
+                                  weightpar=c(a=1, b=1),
+                                  refDose=1))
 
 ## ============================================================
 
@@ -1509,32 +1949,64 @@ setMethod("initialize",
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="LogisticNormalFixedMixture",
-         contains="Model",
-         representation=
-         representation(components="list",
-                        weights="numeric",
-                        refDose="numeric",
-                        logNormal="logical"),
-         validity=
-         function(object){
-             stopifnot(all(sapply(object@components,
-                                  function(x){
-                                      identical(names(x),
-                                                c("mean", "cov", "prec"))})),
-                       identical(length(object@components),
-                                 length(object@weights)),
-                       all(object@weights > 0),
-                       sum(object@weights) == 1,
-                       is.scalar(object@refDose),
-                       is.bool(object@logNormal))
-         })
+.LogisticNormalFixedMixture <-
+    setClass(Class="LogisticNormalFixedMixture",
+             contains="Model",
+             representation(components="list",
+                            weights="numeric",
+                            refDose="numeric",
+                            logNormal="logical"),
+             prototype(components=
+                           list(comp1=
+                                    list(mean=c(0, 1),
+                                         cov=diag(2),
+                                         prec=diag(2)),
+                                comp2=
+                                    list(mean=c(-1, 1),
+                                         cov=diag(2),
+                                         prec=diag(2))),
+                       weights=c(1/2, 1/2),
+                       refDose=1,
+                       logNormal=TRUE),
+             validity=
+                 function(object){
+                     o <- Validate()
 
+                     for(thisComp in seq_along(object@components))
+                     {
+                         thisList <- object@components[[thisComp]]
+                         o$check(identical(names(thisList),
+                                           c("mean", "cov", "prec")),
+                                 paste("element", thisComp,
+                                       "must be a list with elements mean, cov, prec"))
+                         o$check(length(thisList$mean) == 2,
+                                 paste("element", thisComp,
+                                       "mean must have length 2"))
+                         o$check(identical(dim(thisList$cov), c(2L, 2L)) &&
+                                     ! is.null(chol(thisList$cov)),
+                                 paste("element", thisComp,
+                                       "cov must be positive-definite 2x2 covariance matrix"))
+                         o$check(all.equal(solve(thisList$cov), thisList$prec,
+                                           check.attributes=FALSE),
+                                 paste("element", thisComp,
+                                       "prec must be inverse of cov"))
+                     }
 
-##' Initialization method for the "LogisticNormalFixedMixture" class
+                     o$check(identical(length(object@components),
+                                       length(object@weights)),
+                             "components must have same length as weights")
+                     o$check(all(object@weights > 0) &&
+                                 (sum(object@weights) == 1),
+                             "weights must be positive and sum to 1")
+                     o$check(is.scalar(object@refDose) && (object@refDose > 0),
+                             "refDose must be scalar and positive")
+                     o$check(is.bool(object@logNormal),
+                             "logNormal must be TRUE or FALSE")
+                 })
+validObject(.LogisticNormalFixedMixture())
+
+##' Initialization function for the "LogisticNormalFixedMixture" class
 ##'
-##' @param .Object the \code{\linkS4class{LogisticNormalFixedMixture}} we want to
-##' initialize
 ##' @param components the specifications of the mixture components: a list with
 ##' one list of \code{mean} and \code{cov} for each bivariate (log) normal prior
 ##' @param weights the weights of the components, these must be positive and
@@ -1543,122 +2015,128 @@ setClass(Class="LogisticNormalFixedMixture",
 ##' @param logNormal should a log normal prior be specified, such that the mean
 ##' vectors and covariance matrices are valid for the intercept and log slope?
 ##' (not default)
+##' @return the \code{\linkS4class{LogisticNormalFixedMixture}} object
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("initialize",
-          signature(.Object = "LogisticNormalFixedMixture"),
-          function (.Object,
-                    components,
-                    weights,
-                    refDose,
-                    logNormal=FALSE,
-                    ...){
-              ## add precision matrices to component lists
-              components <- lapply(components,
-                                   function(x){
-                                       c(x,
-                                         list(prec=solve(x$cov)))})
+LogisticNormalFixedMixture <- function(components,
+                                       weights,
+                                       refDose,
+                                       logNormal=FALSE)
+{
+    ## add precision matrices to component lists
+    components <- lapply(components,
+                         function(x){
+                             c(x,
+                               list(prec=solve(x$cov)))})
 
-              ## normalize the weights to sum to 1
-              weights <- weights / sum(weights)
+    ## normalize the weights to sum to 1
+    weights <- weights / sum(weights)
 
-              ## go to the general initialize method now
-              callNextMethod(.Object,
-                             components=components,
-                             weights=weights,
-                             refDose=refDose,
-                             logNormal=logNormal,
-                             datamodel=
-                             function(){
-                                 ## the logistic likelihood:
-                                 ## not changed from non-mixture case
-                                 for (i in 1:nObs)
-                                 {
-                                     y[i] ~ dbern(p[i])
-                                     logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                                     StandLogDose[i] <- log(x[i] / refDose)
-                                 }
-                             },
-                             priormodel=
-                             if(logNormal){
-                                 function()
-                                 {
-                                     ## the multivariate normal prior on the coefficients
-                                     theta[1:2] ~ dmnorm(priorMean[1:2, comp],
-                                                         priorPrec[1:2, 1:2, comp])
-                                     ## this is conditional on the component index
-                                     ## "comp"
+    ## go to the general initialize method now
+    .LogisticNormalFixedMixture(components=components,
+                                weights=weights,
+                                refDose=refDose,
+                                logNormal=logNormal,
+                                datamodel=
+                                    function(){
+                                        ## the logistic likelihood:
+                                        ## not changed from non-mixture case
+                                        for (i in 1:nObs)
+                                        {
+                                            y[i] ~ dbern(p[i])
+                                            logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                                            StandLogDose[i] <- log(x[i] / refDose)
+                                        }
+                                    },
+                                priormodel=
+                                    if(logNormal){
+                                        function()
+                                        {
+                                            ## the multivariate normal prior on the coefficients
+                                            theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                                priorPrec[1:2, 1:2, comp])
+                                            ## this is conditional on the component index
+                                            ## "comp"
 
-                                     ## mixture for component index
-                                     comp ~ dcat(weights)
+                                            ## mixture for component index
+                                            comp ~ dcat(weights)
 
-                                     ## extract actual coefficients
-                                     alpha0 <- theta[1]
-                                     alpha1 <- exp(theta[2])
-                                     ## single difference to !logNormal ...
+                                            ## extract actual coefficients
+                                            alpha0 <- theta[1]
+                                            alpha1 <- exp(theta[2])
+                                            ## single difference to !logNormal ...
 
-                                     ## dummy to use refDose here.
-                                     ## It is contained in the modelspecs list below,
-                                     ## so it must occur here
-                                     bla <- refDose + 1
-                                 }
-                             } else {
-                                 function()
-                                 {
-                                     ## the multivariate normal prior on the coefficients
-                                     theta[1:2] ~ dmnorm(priorMean[1:2, comp],
-                                                         priorPrec[1:2, 1:2, comp])
-                                     ## this is conditional on the component index
-                                     ## "comp"
+                                            ## dummy to use refDose here.
+                                            ## It is contained in the modelspecs list below,
+                                            ## so it must occur here
+                                            bla <- refDose + 1
+                                        }
+                                    } else {
+                                        function()
+                                        {
+                                            ## the multivariate normal prior on the coefficients
+                                            theta[1:2] ~ dmnorm(priorMean[1:2, comp],
+                                                                priorPrec[1:2, 1:2, comp])
+                                            ## this is conditional on the component index
+                                            ## "comp"
 
-                                     ## mixture for component index
-                                     comp ~ dcat(weights)
+                                            ## mixture for component index
+                                            comp ~ dcat(weights)
 
-                                     ## extract actual coefficients
-                                     alpha0 <- theta[1]
-                                     alpha1 <- theta[2]
+                                            ## extract actual coefficients
+                                            alpha0 <- theta[1]
+                                            alpha1 <- theta[2]
 
-                                     ## dummy to use refDose here.
-                                     ## It is contained in the modelspecs list below,
-                                     ## so it must occur here
-                                     bla <- refDose + 1
-                                 }
-                             },
-                             datanames=c("nObs", "y", "x"),
-                             modelspecs=
-                             function(){
-                                 list(refDose=refDose,
-                                      priorMean=
-                                      do.call(cbind,
-                                              lapply(components, "[[", "mean")),
-                                      priorPrec=
-                                      array(data=
-                                            do.call(c,
-                                                    lapply(components, "[[", "prec")),
-                                            dim=c(2, 2, length(components))),
-                                      weights=weights)
-                             },
-                             dose=
-                             function(prob, alpha0, alpha1){
-                                 StandLogDose <- (logit(prob) - alpha0) / alpha1
-                                 return(exp(StandLogDose) * refDose)
-                             },
-                             prob=
-                             function(dose, alpha0, alpha1){
-                                 StandLogDose <- log(dose / refDose)
-                                 return(plogis(alpha0 + alpha1 * StandLogDose))
-                             },
-                             init=
-                             ## todo: find better starting values
-                             function(){
-                                 list(theta=c(0, 1))
-                             },
-                             sample=
-                             c("alpha0", "alpha1"),
-                             ...)
-          })
-
+                                            ## dummy to use refDose here.
+                                            ## It is contained in the modelspecs list below,
+                                            ## so it must occur here
+                                            bla <- refDose + 1
+                                        }
+                                    },
+                                datanames=c("nObs", "y", "x"),
+                                modelspecs=
+                                    function(){
+                                        list(refDose=refDose,
+                                             priorMean=
+                                                 do.call(cbind,
+                                                         lapply(components, "[[", "mean")),
+                                             priorPrec=
+                                                 array(data=
+                                                           do.call(c,
+                                                                   lapply(components, "[[", "prec")),
+                                                       dim=c(2, 2, length(components))),
+                                             weights=weights)
+                                    },
+                                dose=
+                                    function(prob, alpha0, alpha1){
+                                        StandLogDose <- (logit(prob) - alpha0) / alpha1
+                                        return(exp(StandLogDose) * refDose)
+                                    },
+                                prob=
+                                    function(dose, alpha0, alpha1){
+                                        StandLogDose <- log(dose / refDose)
+                                        return(plogis(alpha0 + alpha1 * StandLogDose))
+                                    },
+                                init=
+                                    ## todo: find better starting values
+                                    function(){
+                                        list(theta=c(0, 1))
+                                    },
+                                sample=
+                                    c("alpha0", "alpha1"))
+}
+validObject(LogisticNormalFixedMixture(components=
+                                           list(comp1=
+                                                    list(mean=c(0, 1),
+                                                         cov=diag(2),
+                                                         prec=diag(2)),
+                                                comp2=
+                                                    list(mean=c(-1, 1),
+                                                         cov=diag(2),
+                                                         prec=diag(2))),
+                                       weights=c(1/2, 1/2),
+                                       refDose=1))
 
 ## ============================================================
 

@@ -27,8 +27,9 @@
 %% no indentation of paragraphs
 \noindent
 
-\title{Using the package \texttt{crmPack}:\\ an introductory example.}
+\title{Using the package \texttt{crmPack}:\\ introductory examples}
 \author{Daniel Saban\'es Bov\'e}
+\date{\today\\Package version 0.0.22}
 \maketitle
 
 This short vignette shall introduce into the usage of the package
@@ -36,7 +37,9 @@ This short vignette shall introduce into the usage of the package
 
 If you have any questions or feedback concerning the package, please write an
 email to me:
-\href{mailto:sabanesd@roche.com}{\nolinkurl{sabanesd@roche.com}}.
+\href{mailto:sabanesd@roche.com}{\nolinkurl{sabanesd@roche.com}}
+or even better post it on the Hive page:
+\url{https://roche.jiveon.com/projects/crmpack}
 Thank you very much in advance!
 
 <<setup, echo=FALSE, results=hide>>=
@@ -47,41 +50,15 @@ options(continue="  ")                  # use two blanks instead of "+" for
 \section{Installation}
 \label{sec:installation}
 
-Probably you have already installed the package. However, if not, here is a
-brief installation summary.
+Probably you have already installed the package. If not, please refer to the
+separate installation document available from the Hive page:
+\url{https://roche.jiveon.com/servlet/JiveServlet/download/38-91276/installation.docx}
 
 \texttt{crmPack} is relying on \href{http://mcmc-jags.sourceforge.net/}{JAGS}
-and
-\href{http://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/}{WinBUGS}
-(please click on the links for going to the webpages of the two projects) for
-the internal MCMC computations. While JAGS is required for the default MCMC
-runs, WinBUGS only needs to be installed currently if the dual-endpoint designs
-need to be run (because they don't run with JAGS at the moment). To increase the
-speed of the MCMC sampling, \texttt{BayesLogit} is currently used for the
+(please click on the link for going to the webpage of the project) for the
+internal MCMC computations. WinBUGS is no longer required. To increase the speed
+of the MCMC sampling, \texttt{BayesLogit} is currently used for the
 \texttt{LogisticNormal} model.
-
-Furthermore, you first have to install some required packages, with the
-following command:
-<<install-others, eval=FALSE>>=
-install.packages(c("Rcpp", "RcppArmadillo", "rjags",
-	           "ggplot2", "gridExtra", "GenSA", "BayesLogit", "mvtnorm"),
-                 dependencies=TRUE)
-@
-
-Finally, you can obtain the newest version of the package.
-Download it by visiting the following URL:
-\url{https://stash.intranet.roche.com/stash/plugins/servlet/archive/projects/RSTAT/repos/crmpack?at=refs%2Fheads%2Fmaster}
-This will download a file called \texttt{crmpack-master.zip}. You then extract
-the zip file to a folder \texttt{crmpack-master}. Afterwards you can
-install the package from this folder, e.g. from within \texttt{R} using the
-command
-<<install-crmpack, eval=FALSE>>=
-install.packages("path/to/the/directory/crmpack-master",
-                 repos=NULL,
-                 type="source")
-@
-Note that you have to specify the full directory to \texttt{crmpack-master}, unless
-this is a subdirectory of your current working directory.
 
 \section{Getting started}
 \label{sec:getting-started}
@@ -94,10 +71,9 @@ library(crmPack)
 For browsing the help pages for the package, it is easiest to start the web
 browser interface with
 <<webinterface, eval=FALSE>>=
-help.start()
+crmPackHelp()
 @
-then clicking on ``Packages'' and then searching for ``crmPack'' and clicking on
-the link. This gives you the list of all help pages available for the package.
+This gives you the list of all help pages available for the package.
 
 First, we will set up a logistic normal model. Therefore, you can now click on
 the corresponding help page \texttt{LogisticLogNormal-class} as background
@@ -115,20 +91,18 @@ command, we create a new model of class \texttt{LogisticLogNormal}, with certain
 mean and covariance prior parameters and reference dose:
 
 <<model-setup>>=
-model <- new("LogisticLogNormal",
-             mean=c(-0.85, 1),
-             cov=
-             matrix(c(1, -0.5, -0.5, 1),
-                    nrow=2L),
-             refDose=56)
+model <- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov=
+                               matrix(c(1, -0.5, -0.5, 1),
+                                      nrow=2),
+                           refDose=56)
 @
 
-This command may look unfamiliar to you, because it uses the \texttt{new}
-function. This is a special function in \texttt{R}, as it creates new objects of
-the class specified by its first argument (here: \texttt{"LogisticLogNormal"}).
 The \texttt{R}-package \texttt{crmPack} uses the S4 class system for
-implementation of the CRM designs. We can query the class an object belongs to
-with the \texttt{class} function:
+implementation of the dose-escalation designs. There is the convention that
+class initialization functions have the same name as the class, and all class
+names are capitalized. We can query the class that an object belongs to with the
+\texttt{class} function:
 
 <<class>>=
 class(model)
@@ -148,19 +122,21 @@ the \verb|$| operator), for example we can extract the \texttt{dose} slot:
 model@dose
 @
 
-This is the function that computes for a given probability \texttt{prob} and
-parameters \texttt{alpha0} and \texttt{alpha1} the dose that gives this
-probability. You can find out yourself about the other slots, by looking at the
-help page for \texttt{Model-class} in the help browser, because all models
-are just special cases of the general \texttt{Model} class. In the
-\texttt{Model-class} help page, you also find out that there are two additional
-specific model classes, namely \texttt{LogisticKadane} and
+This is the function that computes for given parameters \texttt{alpha0} and
+\texttt{alpha1} the dose that gives the probability \texttt{prob} for a
+dose-limiting toxicity (DLT). You can find out yourself about the other slots,
+by looking at the help page for \texttt{Model-class} in the help browser,
+because all models are just special cases of the general \texttt{Model} class.
+In the \texttt{Model-class} help page, you also find out that there are three
+additional specific model classes that are subclasses of the \texttt{Model}
+class, namely \texttt{LogisticNormal}, \texttt{LogisticKadane} and
 \texttt{DualEndpoint}.
 
 \subsection{Advanced model specification}
 \label{sec:advanc-model-spec}
 
-There are a few further advanced ways to specify a model in \texttt{crmPack}.
+There are a few further, advanced ways to specify a model object in
+\texttt{crmPack}.
 
 First, a minimal informative prior \citep{Neuenschwander2008} can be computed
 using the \texttt{MinimalInformative} function. The construction is based on the
@@ -168,9 +144,9 @@ input of a minimal and a maximal dose, where certain ranges of DLT probabilities
 are deemed unlikely. A logistic function is then fitted through the
 corresponding points on the dose-toxicity plane in order to derive Beta
 distributions also for doses in-between. Finally these Beta distributions are
-approximated by a common \texttt{LogisticNormal} model. So the minimal informative
-construction avoids explicit specification of the parameters of the
-\texttt{LogisticNormal} model.
+approximated by a common \texttt{LogisticNormal} (or \texttt{LogisticLogNormal})
+model. So the minimal informative construction avoids explicit specification of
+the prior parameters of the logistic regression model.
 
 In our example, we could construct it as follows, assuming a minimal dose of 0.1
 mg and a maximum dose of 100 mg:
@@ -186,7 +162,6 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   list(threshold.stop=0.03,
                                        maxit=200))
 @
-
 
 We use a few grid points between the minimum and the maximum to guide the
 approximation routine, which is based on a stochastic optimization method (the
@@ -210,6 +185,11 @@ matplot(x=coarseGrid,
 matlines(x=coarseGrid,
          y=minInfModel$quantiles,
          type="b", pch=19, col="red", lty=1)
+legend("right",
+       legend=c("quantiles", "approximation"),
+       col=c("blue", "red"),
+       lty=1,
+       bty="n")
 @
 
 In this plot we see in blue the quantiles (2.5\%, 50\%, and 97.5\%) of
@@ -222,7 +202,7 @@ minInfModel$distance
 @
 
 The final approximating model, which has produced the red points, is contained
-in the \texttt{model} element:
+in the \texttt{model} list element:
 
 <<min-inf-model>>=
 str(minInfModel$model)
@@ -232,8 +212,13 @@ Here we see in the slots \texttt{mean}, \texttt{cov} the parameters that have
 been determined. At this point a slight warning: you cannot directly change
 these parameters in the slots of the existing model object, because the
 parameters have also been saved invisibly in other places in the model object.
-Therefore, always use the \texttt{new} command with the new parameters to create
-a new model object.
+Therefore, always use the class initialization function to create a new model
+object, if new parameters are required. But if we want to further use the
+approximation model, we can save it under a shorter name, e.g.:
+
+<<min-inf-model-extract>>=
+myModel <- minInfModel$model
+@
 
 \section{Data}
 \label{sec:data}
@@ -243,16 +228,12 @@ dose, then you have data from the previous patients for input into the model.
 This data needs to be captured in a \texttt{Data} object. For example:
 
 <<data>>=
-data <- new("Data",
-            x=
-            c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-            y=
-            as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
-            cohort=
-            as.integer(c(0, 1, 2, 3, 4, 5, 5, 5)),
-            doseGrid=
-            c(0.1, 0.5, 1.5, 3, 6,
-              seq(from=10, to=80, by=2)))
+data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y=c(0, 0, 0, 0, 0, 0, 1, 0),
+             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
+             doseGrid=
+                 c(0.1, 0.5, 1.5, 3, 6,
+                   seq(from=10, to=80, by=2)))
 @
 
 Most important are \texttt{x} (the doses) and \texttt{y} (the DLTs, 0 for no DLT
@@ -288,10 +269,9 @@ sampling can be controlled with an object of class \texttt{McmcOptions}, created
 for example as follows:
 
 <<mcmc-opts>>=
-options <- new("McmcOptions",
-               burnin=100,
-               step=2,
-               samples=2000)
+options <- McmcOptions(burnin=100,
+                       step=2,
+                       samples=2000)
 @
 
 Now the object \texttt{options} specifies that you would like to have 2000
@@ -299,11 +279,9 @@ parameter samples obtained from a Markov chain that starts with a ``burn-in''
 phase of 100 iterations that are discarded, and then save a sample every 2
 iterations. Note that these numbers are too low for actual implementation and
 only used for illustrating purposes here; normally you would specify at least
-the default parameters of the initialization method that is invoked by the
-\texttt{new} generic function: $10\,000$ burn-in iterations and $10\,000$
-samples saved every 2nd iteration. You can look these up in help browser under
-the link ``initialize-method'' (there are multiple of those), described in the
-right column with ``Initialization method for the "McmcOptions" class''.
+the default parameters of the initialization function \texttt{McmcOptions}:
+$10\,000$ burn-in iterations and $10\,000$ samples saved every 2nd iteration.
+You can look these up in help browser under the link ``McmcOptions''.
 
 After having set up the options, you can proceed to MCMC sampling by calling the
 \texttt{mcmc} function:
@@ -314,16 +292,18 @@ samples <- mcmc(data, model, options)
 @
 
 The \texttt{mcmc} function takes the data object, the model and the MCMC
-options. By default, JAGS is used for obtaining the samples, and you could
-specify \texttt{program="WinBUGS"} to use WinBUGS instead. This will dynamically
-try to load the \texttt{R}-package \texttt{R2WinBUGS} to interface with WinBUGS.
-Therefore you must have installed both WinBUGS and the R-package
+options. By default, JAGS is used for obtaining the samples. Use the option
+\texttt{verbose=TRUE} to show a progress bar and detailed JAGS messages.
+
+You could specify \texttt{program="WinBUGS"} to use WinBUGS instead. This will
+dynamically try to load the \texttt{R}-package \texttt{R2WinBUGS} to interface
+with WinBUGS. Therefore you must have installed both WinBUGS and the R-package
 \texttt{R2WinBUGS} in order to use this option.
 
 Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, \texttt{crmPack}
 provides an interface to the convenient \texttt{R}-package \texttt{ggmcmc}. With
-the function \texttt{extract} you can extract the individual parameters from the
+the function \texttt{get} you can extract the individual parameters from the
 object of class \texttt{Samples}. For example, we extract the $\alpha_{0}$
 samples:
 
@@ -331,7 +311,7 @@ samples:
 ## look at the structure of the samples object:
 str(samples)
 ## now extract the alpha0 samples (intercept of the regression model)
-alpha0samples <- extract(samples, "alpha0")
+alpha0samples <- get(samples, "alpha0")
 @
 
 \texttt{alpha0samples} now contains the $\alpha_{0}$ samples in a format
@@ -353,7 +333,7 @@ consider using a higher thinning parameter in order to decrease it.
 You can find other useful plotting functions in the package information:
 
 <<ggmcmc-help, eval=FALSE>>=
-help(package="ggmcmc")
+help(package="ggmcmc", help_type="html")
 @
 
 \section{Plotting the model fit}
@@ -374,12 +354,8 @@ intervals, i.e. from the model without any data. This works in principle the
 same way as with data, just that we use an empty data object:
 
 <<empty-data, fig=TRUE>>=
-## provide empty dose and DLT vectors, and use same dose grid
-## as before:
-emptydata <- new("Data",
-                 x=numeric(),
-                 y=integer(),
-                 doseGrid=data@doseGrid)
+## provide only the dose grid:
+emptydata <- Data(doseGrid=data@doseGrid)
 ## obtain prior samples with this Data object
 priorsamples <- mcmc(emptydata, model, options)
 ## then produce the plot
@@ -415,14 +391,13 @@ For example, in order to specify maximum increase of 100\% for doses up to 20 mg
 and 33\% for doses above 20 mg, we can setup the following increments rule:
 
 <<rel-incs>>=
-myIncrements <- new("IncrementsRelative",
-                    intervals=c(0, 20, Inf),
-                    increments=c(1, 0.33))
+myIncrements <- IncrementsRelative(intervals=c(0, 20),
+                                   increments=c(1, 0.33))
 @
 
-Here the \texttt{intervals} slot specifies the intervals, in which the maximum
-relative \texttt{increments} (note: decimal values here, no percentages!) are
-valid.
+Here the \texttt{intervals} slot specifies the left bounds of the intervals, in
+which the maximum relative \texttt{increments} (note: decimal values here, no
+percentages!) are valid.
 
 The increments rule is used by the \texttt{maxDose} function to obtain the
 maximum allowable dose given the current data:
@@ -448,10 +423,9 @@ For example, in order to use the N-CRM with target toxicity interval from 20\%
 to 35\%, and a maximum overdosing probability of 25\%, we specify:
 
 <<ncrm-spec>>=
-myNextBest <- new("NextBestNCRM",
-                  target=c(0.2, 0.35),
-                  overdose=c(0.35, 1),
-                  maxOverdoseProb=0.25)
+myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
+                           overdose=c(0.35, 1),
+                           maxOverdoseProb=0.25)
 @
 
 Alternatively, we could use an MTD driven recommendation rule. For example, with
@@ -459,12 +433,11 @@ a target toxicity rate of 33\%, and recommending the 25\% posterior quantile of
 the MTD, we specify
 
 <<mtd-spec>>=
-mtdNextBest <- new("NextBestMTD",
-                   target=0.33,
-                   derive=
-                   function(mtdSamples){
-                       quantile(mtdSamples, probs=0.25)
-                   })
+mtdNextBest <- NextBestMTD(target=0.33,
+                           derive=
+                               function(mtdSamples){
+                                   quantile(mtdSamples, probs=0.25)
+                               })
 @
 
 Note that the \texttt{NextBestMTD} class is quite flexible, because you can
@@ -504,17 +477,15 @@ the first DLT is encountered, and then proceed with three patients per cohort.
 We start by creating the two separate rules, first for the dose range:
 
 <<size-range>>=
-mySize1 <- new("CohortSizeRange",
-               intervals=c(0, 30, Inf),
-               cohortSize=as.integer(c(1, 3)))
+mySize1 <- CohortSizeRange(intervals=c(0, 30),
+                           cohortSize=c(1, 3))
 @
 
 Then for the DLT range:
 
 <<size-dlt>>=
-mySize2 <- new("CohortSizeDLT",
-               DLTintervals=c(0, 1, Inf),
-               cohortSize=as.integer(c(1, 3)))
+mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
+                         cohortSize=c(1, 3))
 @
 
 Finally we combine the two rules by taking the maximum number of patients of
@@ -541,8 +512,7 @@ following \texttt{CohortSizeConst} class, which we will use (with three
 patients) for simplicity for the remainder of this vignette:
 
 <<size-const>>=
-mySize <- new("CohortSizeConst",
-              size=3L)
+mySize <- CohortSizeConst(size=3)
 @
 
 
@@ -558,13 +528,10 @@ sample size of 20 patients has been reached. Then we start by creating the three
 pieces the rule is composed of:
 
 <<rules-bits>>=
-myStopping1 <- new("StoppingMinCohorts",
-                   nCohorts=3L)
-myStopping2 <- new("StoppingTargetProb",
-                   target=c(0.2, 0.35),
-                   prob=0.5)
-myStopping3 <- new("StoppingMaxPatients",
-                   nPatients=20L)
+myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
+                                  prob=0.5)
+myStopping3 <- StoppingMinPatients(nPatients=20)
 @
 
 Finally we combine these with the ``and'' operator \texttt{\&} and the ``or''
@@ -589,7 +556,7 @@ stopTrial(stopping=myStopping, dose=doseRecommendation$value,
 We receive here \texttt{FALSE}, which means that the stopping rule criteria have
 not been met. The attribute \texttt{message} contains the textual results of the
 atomic parts of the stopping rule. Here we can read that the probability for
-target toxicity was just 31\% for the recommended dose 20 mg and therefore too
+target toxicity was just 30\% for the recommended dose 20 mg and therefore too
 low, and also the maximum sample size has not been reached, therefore the trial
 shall continue.
 
@@ -604,14 +571,13 @@ that this makes sense. First, we use our \texttt{emptydata} object that only
 contains the dose grid, and a cohorts of 3 patients, starting from 0.1 mg:
 
 <<design-setup>>=
-design <- new("Design",
-              model=model,
-              nextBest=myNextBest,
-              stopping=myStopping,
-              increments=myIncrements,
-              cohortSize=mySize,
-              data=emptydata,
-              startingDose=3)
+design <- Design(model=model,
+                 nextBest=myNextBest,
+                 stopping=myStopping,
+                 increments=myIncrements,
+                 cohortSize=mySize,
+                 data=emptydata,
+                 startingDose=3)
 @
 
 \subsection{Simulating from a true scenario}
@@ -643,7 +609,7 @@ time <- system.time(mySims <- simulate(design,
                                        truth=myTruth,
                                        args=NULL,
                                        firstSeparate=FALSE,
-                                       nsim=10L,
+                                       nsim=10,
                                        mcmcOptions=options,
                                        parallel=TRUE))[3]
 time
@@ -669,13 +635,15 @@ class(mySims)
 From the help page
 
 <<sim-help>>=
-help("Simulations-class")
+help("Simulations-class", help="html")
 @
 
-we find the description of the slots of \texttt{mySims}. In particular, the
-\texttt{data} slot contains the list of produced \texttt{Data} objects of the
-simulated trials. Therefore, we can plot the course of e.g. the third simulated
-trial as follows:
+we see that this class is a subclass of the ``GeneralSimulations'' class. By
+looking at the help pages for ``Simulations'' and the parent class
+``GeneralSimulations'', we can find the description of all slots of
+\texttt{mySims}. In particular, the \texttt{data} slot contains the list of
+produced \texttt{Data} objects of the simulated trials. Therefore, we can plot
+the course of e.g. the third simulated trial as follows:
 
 <<third-trial, fig=TRUE>>=
 print(plot(mySims@data[[3]]))
@@ -697,7 +665,7 @@ Furthermore, with this object, we can apply two methods. First, we can plot it,
 i.e. we can apply the plot method:
 
 <<sim-plot, fig=TRUE>>=
-plot(mySims)
+print(plot(mySims))
 @
 
 The resulting plot shows on the top panel a summary of the trial trajectories.
@@ -715,18 +683,20 @@ summary(mySims,
         truth=myTruth)
 @
 
-Note that the observed toxicity rate at dose most often selected (52 mg) is not
-available, because no patients were actually treated at 52 mg during the
-simulations. This means the MTD was selected based on the evidence from the data
-at other dose levels.
+Note that sometimes the observed toxicity rate at the dose most often selected
+(here 50 mg) is not available, because it can happen that no patients were
+actually treated that dose during the simulations. (Here it is available.) This
+illustrates that the MTD can be selected based on the evidence from the data at
+other dose levels -- which is an advantage of model-based dose-escalation
+designs.
 
-Now we can also produce a plot of the summary results, which give a bit more
+Now we can also produce a plot of the summary results, which gives a bit more
 detail than the textual summary we have just seen:
 
 <<sim-sum-plot, fig=TRUE>>=
 simSum <- summary(mySims,
                   truth=myTruth)
-plot(simSum)
+print(plot(simSum))
 @
 
 The top left panel shows the distribution of the sample size across the
@@ -734,20 +704,21 @@ simulated trials. In this case all trials had 21 patients. The top right panel
 shows the distribution of the final MTD estimate / recommended dose across the
 simulated trials. The middle left panel shows the distribution across the
 simulations of the DLT proportions observed in the patients dosed. Here we see
-that not more than 14\% of the patients had DLTs in the simulated trials. The
-middle right panel shows the distribution across simulations of the number of
-patients treated above the target toxicity window (here we used the default from
-20\% to 35\%). We see here that in all trials, none of the patients were treated
-with too toxic doses. Finally, in the bottom panel we see a comparison of the
-true dose-toxicity curve (black) with the estimated dose-toxicity curves,
-averaged (continuous red line) across the trials and with 95\% credible interval
-across the trials. Here we see a good correspondence of the truth and the
-estimation.
+that in 30\% of the simulated trials had 0, 5, or 10\% of the patient had DLTs,
+respectively, while in 10\% of the simulated trials 18\% of the patients had
+DLTs. The middle right panel shows the distribution across simulations of the
+number of patients treated above the target toxicity window (here we used the
+default from 20\% to 35\%). We see here that in all trials, none of the patients
+were treated with too toxic doses. Finally, in the bottom panel we see a
+comparison of the true dose-toxicity curve (black) with the estimated
+dose-toxicity curves, averaged (continuous red line) across the trials and with
+95\% credible interval across the trials. Here we see a good correspondence of
+the truth and the estimation.
 
 If we find that e.g. the top right plot with the distribution of the final
 selected doses is too small and shows not the right x-axis window, we can only
 plot this one and add x-axis customization on top: (see the \texttt{ggplot2}
-documentation for more on customizing)
+documentation for more information on customizing the plots)
 
 <<sim-sum-plot2, fig=TRUE>>=
 print(plot(simSum, type="doseSelected") +
@@ -790,16 +761,15 @@ Furthermore we have to make a new \texttt{Design} object that contains the
 current data to start from, and the current recommended dose as the starting dose:
 
 <<design-future>>=
-nowDesign <- new("Design",
-                 model=model,
-                 nextBest=myNextBest,
-                 stopping=myStopping,
-                 increments=myIncrements,
-                 cohortSize=mySize,
-                 ## use the current data:
-                 data=data,
-                 ## and the recommended dose as the starting dose:
-                 startingDose=doseRecommendation$value)
+nowDesign <- Design(model=model,
+                    nextBest=myNextBest,
+                    stopping=myStopping,
+                    increments=myIncrements,
+                    cohortSize=mySize,
+                    ## use the current data:
+                    data=data,
+                    ## and the recommended dose as the starting dose:
+                    startingDose=doseRecommendation$value)
 @
 
 Finally we can execute the simulations:
@@ -829,7 +799,7 @@ simulations, we can summarize the resulting predictive simulations, for example
 show the predicted trajectories of doses:
 
 <<sim-future-plot, fig=TRUE>>=
-plot(futureSims)
+print(plot(futureSims))
 @
 
 In the summary, we do not need to look at the characteristics involving the true
@@ -841,7 +811,7 @@ summary(futureSims,
         truth=myTruth)
 @
 
-We see here e.g. that the estimated number of patients overall is 19, so 11 more
+We see here e.g. that the estimated number of patients overall is 18, so 10 more
 than the current 8 patients are expected to be needed before finishing the
 trial.
 
@@ -856,5 +826,5 @@ trial.
 %%% mode: latex-math
 %%% TeX-master: t
 %%% coding: utf-8-unix
-%%% ispell-local-dictionary: "english"
+%%% ispell-local-dictionary: "american"
 %%% End:
