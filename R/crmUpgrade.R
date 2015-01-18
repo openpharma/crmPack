@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
-## Time-stamp: <[crmUpgrade.R] by DSB Sam 17/01/2015 17:53>
+## Time-stamp: <[crmUpgrade.R] by DSB Son 18/01/2015 09:28>
 ##
 ## Description:
 ## Upgrade function for crmPack
@@ -79,6 +79,7 @@ crmPackUpgrade <- function(lib = NULL, devel = TRUE, force = FALSE,
     target <- file.path(tmp, "crmPack.zip")
 
     ## download from source to target
+    cat("Please wait ...\n")
     x <- httr::GET(url, config = list(ssl.verifypeer = FALSE))
     bin <- httr::content(x, "raw")
     writeBin(bin, target)

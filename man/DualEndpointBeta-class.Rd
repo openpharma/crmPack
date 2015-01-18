@@ -4,21 +4,26 @@
 \name{DualEndpointBeta-class}
 \alias{.DualEndpointBeta}
 \alias{DualEndpointBeta-class}
-\title{Dual endpoint model with beta prior for biomarker}
+\title{Dual endpoint model with beta function for dose-biomarker relationship}
 \description{
-This class extends the \code{\linkS4class{DualEndpoint}} class.
+This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
+dose-biomarker relationship \eqn{f(x)} is modelled by a parametric, rescaled
+beta density function:
 }
 \details{
-Here the biomarker mean is parametrized in the form of a rescaled
-beta density function:
+\deqn{f(x) = E_{0} + (E_{max} - E_{0}) * Beta(\delta_{1}, \delta_{2}) *
+                  (x/x^{*})^{\delta_{1}} * (1 - x/x^{*})^{\delta_{2}}}
 
-mu = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1 * (1 - x/x*)^delta2
+where \eqn{x^{*}} is the maximum dose (end of the dose range to be
+considered), \eqn{\delta_{1}} and \eqn{\delta_{2}} are the two beta
+parameters, and \eqn{E_{0}} and \eqn{E_{max}} are the minimum and maximum
+levels, respectively. For ease of interpretation, we parametrize with
+\eqn{\delta_{1}} and the mode of the curve instead, where
+\deqn{mode = \delta_{1} / (\delta_{1} + \delta_{2}),}
+and multiplying this with \eqn{x^{*}} gives the mode on the dose grid.
 
-where x* is a reference dose, delta1 and delta2 are the two beta
-parameters, and E0 and Emax are the minimum and maximum levels,
-respectively.
-For ease of interpretation, we parametrize with delta1 and the mode
-of the curve instead, where mode = delta1 / (delta1 + delta2).
+All parameters can currently be assigned uniform distributions or be fixed
+in advance.
 }
 \section{Slots}{
 

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[dualPackage.R] by DSB Son 11/01/2015 15:06>
+## Time-stamp: <[dualPackage.R] by DSB Son 18/01/2015 20:43>
 ##
 ## Description:
 ## Test the dual endpoint stuff. For development only!!
@@ -47,19 +47,19 @@ curve(betaMod(x, e0=0.2, eMax=0.6, delta1=1, delta2=1 * 0.9 / 0.1, scal=100),
       from=0, to=50)
 
 ## create some test data
-data <- new("DataDual",
-            x=
-            c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-              20, 20, 20, 40, 40, 40, 50, 50, 50),
-            y=
-            as.integer(c(0, 0, 0, 0, 0, 0, 1, 0,
-                         0, 1, 1, 0, 0, 1, 0, 1, 1)),
-            w=
-            c(0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
-              0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2),
-            doseGrid=
-            c(0.1, 0.5, 1.5, 3, 6,
-              seq(from=10, to=80, by=2)))
+data <- DataDual(
+    x=
+        c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+          20, 20, 20, 40, 40, 40, 50, 50, 50),
+    y=
+        as.integer(c(0, 0, 0, 0, 0, 0, 1, 0,
+                     0, 1, 1, 0, 0, 1, 0, 1, 1)),
+    w=
+        c(0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
+          0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2),
+    doseGrid=
+        c(0.1, 0.5, 1.5, 3, 6,
+          seq(from=10, to=80, by=2)))
 data
 data@nGrid
 data@nObs
@@ -67,10 +67,9 @@ data@nObs
 plot(data)
 
 ## and some MCMC options
-options <- new("McmcOptions",
-               burnin=10000,
-               step=2,
-               samples=50000)
+options <- McmcOptions(burnin=10000,
+                       step=2,
+                       samples=50000)
 
 
 ## obtain the samples

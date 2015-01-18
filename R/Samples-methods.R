@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Son 11/01/2015 14:51>
+## Time-stamp: <[Samples-methods.R] by DSB Son 18/01/2015 23:28>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -407,6 +407,7 @@ setMethod("approximate",
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param xlab the x axis label
 ##' @param ylab the y axis label
+##' @param showLegend should the legend be shown? (default)
 ##' @param \dots not used
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-toxicity model fit
@@ -420,7 +421,11 @@ setMethod("plot",
           def=
           function(x, y, data, ...,
                    xlab="Dose level",
-                   ylab="Probability of DLT [%]"){
+                   ylab="Probability of DLT [%]",
+                   showLegend=TRUE){
+
+              ## check args
+              stopifnot(is.bool(showLegend))
 
               ## get the fit
               plotData <- fit(x,
@@ -461,7 +466,8 @@ setMethod("plot",
                   ggplot2::scale_linetype_manual(breaks=
                                                  c("Estimate",
                                                    "95% Credible Interval"),
-                                                 values=c(1,2))
+                                                 values=c(1,2), guide=ifelse(showLegend,
+                                                 "legend", FALSE))
 
               return(ret)
           })
@@ -482,6 +488,7 @@ setMethod("plot",
 ##' @param data the \code{\linkS4class{DataDual}} object
 ##' @param extrapolate should the biomarker fit be extrapolated to the whole
 ##' dose grid? (default)
+##' @param showLegend should the legend be shown? (not default)
 ##' @param \dots additional arguments for the parent method
 ##' \code{\link{plot,Samples,Model-method}}
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
@@ -493,10 +500,12 @@ setMethod("plot",
           signature(x="Samples",
                     y="DualEndpoint"),
           def=
-          function(x, y, data, extrapolate=TRUE, ...){
+          function(x, y, data, extrapolate=TRUE, showLegend=FALSE, ...){
+
+              stopifnot(is.bool(extrapolate))
 
               ## call the superclass method, to get the toxicity plot
-              plot1 <- callNextMethod(x, y, data, ...)
+              plot1 <- callNextMethod(x, y, data, showLegend=showLegend, ...)
 
               ## only look at these dose levels for the plot:
               xLevels <-
@@ -566,7 +575,9 @@ setMethod("plot",
                   ggplot2::scale_linetype_manual(breaks=
                                                  c("Estimate",
                                                    "95% Credible Interval"),
-                                                 values=c(1,2))
+                                                 values=c(1,2),
+                                                 guide=ifelse(showLegend,
+                                                 "legend", FALSE))
 
               ## arrange both plots side by side
               ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)

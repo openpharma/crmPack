@@ -6,10 +6,38 @@
 \alias{DualEndpoint-class}
 \title{General class for the dual endpoint model}
 \description{
-Note that only the subclasses of this can be used. This class here
-shall contain all the common features to reduce duplicate code.
-(However, this class must not be virtual, because we need to create
-objects of it during the construction of subclass objects.)
+The idea of the dual-endpoint models is to model not only the dose-toxicity
+relationship, but also to model at the same time the relationship of a PD
+biomarker with the dose. The subclasses of this class detail how the
+dose-biomarker relationship is parametrized and are those to be used. This
+class here shall contain all the common features to reduce duplicate code.
+(However, this class must not be virtual, because we need to create objects
+of it during the construction of subclass objects.)
+}
+\details{
+Currently a probit regression model
+\deqn{\Phi^{-1}[p(x)] = \beta_{Z1} + \beta_{Z2} \cdot x}
+is used, where \eqn{p(x)} is the probability of observing a DLT for a given
+dose \eqn{x}, and \eqn{\Phi} is the standard normal cdf. This could later be
+generalized to have a reference dose or a log transformation for the dose.
+The prior is
+\deqn{\beta{Z} \sim Normal(\mu, \Sigma)}.
+
+For the biomarker response w at a dose x, we assume
+\deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}
+and \eqn{f(x)} is a function of the dose x, which is further specified in
+the subclasses. The biomarker variance \eqn{\sigma^{2}_{W}} can be fixed or
+assigned an inverse gamma prior distribution; see the details below under
+slot \code{sigma2W}.
+
+Finally, the two endpoints y (the binary DLT variable) and w (the biomarker)
+can be correlated, by assuming a correlation \eqn{\rho} between the
+underlying continuous latent toxicity variable z and the biomarker w.
+Again, this correlation can be fixed or assigned a prior distribution from
+the scaled beta family; see the details below under slot \code{rho}.
+
+Please see the Hive page for more details on the model and the example
+vignette by typing \code{crmPackExample()} for a full example.
 }
 \section{Slots}{
 
@@ -29,7 +57,12 @@ transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
 \code{a=1,b=1} leads to a uniform prior on rho.}
 
 \item{\code{useFixed}}{a list with logical value for each of the parameters
-indicating whether a fixed value is used or not.}
+indicating whether a fixed value is used or not; this slot is needed for
+internal purposes and not to be touched by the user.}
 }}
+\seealso{
+Current subclasses: \code{\linkS4class{DualEndpointRW}},
+\code{\linkS4class{DualEndpointBeta}}
+}
 \keyword{classes}
 

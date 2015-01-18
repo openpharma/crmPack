@@ -5,12 +5,16 @@
 \alias{simulate,RuleDesign-method}
 \title{Simulate outcomes from a rule-based design}
 \usage{
-\S4method{simulate}{RuleDesign}(object, truth, args = NULL, nsim = 1L,
-  seed = NULL, parallel = FALSE, ...)
+\S4method{simulate}{RuleDesign}(object, nsim = 1L, seed = NULL, truth,
+  args = NULL, parallel = FALSE, ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{RuleDesign}} object we want to simulate
 data from}
+
+\item{nsim}{the number of simulations (default: 1)}
+
+\item{seed}{see \code{\link{setSeed}}}
 
 \item{truth}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
@@ -20,10 +24,6 @@ in \code{args}.}
 column names correspond to the argument names, the rows to the values of the
 arguments. The rows are appropriately recycled in the \code{nsim}
 simulations.}
-
-\item{nsim}{the number of simulations (default: 1)}
-
-\item{seed}{see \code{\link{setSeed}}}
 
 \item{parallel}{should the simulation runs be parallelized across the
 clusters of the computer? (not default)}

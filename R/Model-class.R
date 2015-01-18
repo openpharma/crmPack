@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Son 11/01/2015 19:07>
+## Time-stamp: <[Model-class.R] by DSB Son 18/01/2015 20:39>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -82,6 +82,7 @@
 ##'
 ##' @seealso \code{\linkS4class{LogisticNormal}},
 ##' \code{\linkS4class{LogisticLogNormal}},
+##' \code{\linkS4class{LogisticLogNormalSub}},
 ##' \code{\linkS4class{LogisticKadane}},
 ##' \code{\linkS4class{DualEndpoint}}
 ##'
@@ -1025,10 +1026,37 @@ setMethod("initialize",
 
 ##' General class for the dual endpoint model
 ##'
-##' Note that only the subclasses of this can be used. This class here
-##' shall contain all the common features to reduce duplicate code.
-##' (However, this class must not be virtual, because we need to create
-##' objects of it during the construction of subclass objects.)
+##' The idea of the dual-endpoint models is to model not only the dose-toxicity
+##' relationship, but also to model at the same time the relationship of a PD
+##' biomarker with the dose. The subclasses of this class detail how the
+##' dose-biomarker relationship is parametrized and are those to be used. This
+##' class here shall contain all the common features to reduce duplicate code.
+##' (However, this class must not be virtual, because we need to create objects
+##' of it during the construction of subclass objects.)
+##'
+##' Currently a probit regression model
+##' \deqn{\Phi^{-1}[p(x)] = \beta_{Z1} + \beta_{Z2} \cdot x}
+##' is used, where \eqn{p(x)} is the probability of observing a DLT for a given
+##' dose \eqn{x}, and \eqn{\Phi} is the standard normal cdf. This could later be
+##' generalized to have a reference dose or a log transformation for the dose.
+##' The prior is
+##' \deqn{\beta{Z} \sim Normal(\mu, \Sigma)}.
+##'
+##' For the biomarker response w at a dose x, we assume
+##' \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}
+##' and \eqn{f(x)} is a function of the dose x, which is further specified in
+##' the subclasses. The biomarker variance \eqn{\sigma^{2}_{W}} can be fixed or
+##' assigned an inverse gamma prior distribution; see the details below under
+##' slot \code{sigma2W}.
+##'
+##' Finally, the two endpoints y (the binary DLT variable) and w (the biomarker)
+##' can be correlated, by assuming a correlation \eqn{\rho} between the
+##' underlying continuous latent toxicity variable z and the biomarker w.
+##' Again, this correlation can be fixed or assigned a prior distribution from
+##' the scaled beta family; see the details below under slot \code{rho}.
+##'
+##' Please see the Hive page for more details on the model and the example
+##' vignette by typing \code{crmPackExample()} for a full example.
 ##'
 ##' @slot mu For the probit toxicity model, \code{mu} contains the prior mean
 ##' vector
@@ -1041,9 +1069,12 @@ setMethod("initialize",
 ##' transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
 ##' \code{a=1,b=1} leads to a uniform prior on rho.
 ##' @slot useFixed a list with logical value for each of the parameters
-##' indicating whether a fixed value is used or not.
+##' indicating whether a fixed value is used or not; this slot is needed for
+##' internal purposes and not to be touched by the user.
 ##'
 ##' @export
+##' @seealso Current subclasses: \code{\linkS4class{DualEndpointRW}},
+##' \code{\linkS4class{DualEndpointBeta}}
 ##' @keywords classes
 .DualEndpoint <-
     setClass(Class="DualEndpoint",
@@ -1081,11 +1112,13 @@ setMethod("initialize",
                              }
                          } else {
                              ## use a IG(a, b) or Beta(a, b)  prior
-                             o$check(all(slot(object, parName) > 0) &&
-                                         identical(names(slot(object, parName)),
-                                                   c("a", "b")),
+                             o$check(identical(names(slot(object, parName)),
+                                               c("a", "b")),
                                      paste(parName,
-                                           "has not proper prior parameters"))
+                                           "must have names 'a' and 'b'"))
+                             o$check(all(slot(object, parName) > 0),
+                                     paste(parName,
+                                           "must have positive prior parameters"))
                          }
                      }
 
@@ -1264,9 +1297,26 @@ validObject(DualEndpoint(mu=c(0, 1),
 
 ##' Dual endpoint model with RW prior for biomarker
 ##'
-##' This class extends the \code{\linkS4class{DualEndpoint}} class.
+##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
+##' dose-biomarker relationship \eqn{f(x)} is modelled by a non-parametric
+##' random-walk of first (RW1) or second order (RW2) (todo: warning: at the
+##' moment only the first order random walk produces useful results).
 ##'
-##' todo: describe RW priors
+##' That means, for the RW1 we assume
+##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim' Normal(0, \sigma^{2}_{\beta_{W}})},
+##' where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
+##' gridpoint \eqn{x_{i}}.
+##' For the RW2, the second-order differences instead of the first-order
+##' differences of the biomarker means follow the normal distribution.
+##'
+##' The variance parameter \eqn{\sigma^{2}_{\beta_{W}}} is important because it
+##' steers the smoothness of the function f(x): if it is large, then f(x) will
+##' be very wiggly; if it is small, then f(x) will be smooth. This parameter can
+##' either be fixed or assigned an inverse gamma prior distribution.
+##'
+##' Usually this modelling will only make sense if a regular dose grid is used,
+##' with equidistant grid points ensuring that the distance \eqn{x_{i} -
+##' x_{i-1}} is the same for all grid positions \eqn{i}.
 ##'
 ##' @slot sigma2betaW Contains the prior variance factor of the random walk
 ##' prior for the biomarker model. If it is not a single number, it can also
@@ -1301,11 +1351,13 @@ validObject(DualEndpoint(mu=c(0, 1),
                              o$check(slot(object, parName) > 0,
                                      paste(parName, "must be positive"))
                          } else {
-                             o$check(all(slot(object, parName) > 0) &&
-                                         identical(names(slot(object, parName)),
-                                                   c("a", "b")),
+                              o$check(identical(names(slot(object, parName)),
+                                               c("a", "b")),
                                      paste(parName,
-                                           "has not proper prior parameters"))
+                                           "must have names 'a' and 'b'"))
+                              o$check(all(slot(object, parName) > 0),
+                                      paste(parName,
+                                            "must have positive prior parameters"))
                          }
                      }
 
@@ -1335,6 +1387,11 @@ DualEndpointRW <- function(sigma2betaW,
     ## Find out RW choice
     smooth <- match.arg(smooth)
     useRW1 <- smooth == "RW1"
+
+    if(! useRW1)
+    {
+        warning("todo: Currently only the RW1 model produces useful results!")
+    }
 
     ## Find out which of the additional parameters are fixed
     for(parName in c("sigma2betaW"))
@@ -1460,20 +1517,25 @@ validObject(DualEndpointRW(sigma2betaW=1,
 ## ============================================================
 
 
-##' Dual endpoint model with beta prior for biomarker
+##' Dual endpoint model with beta function for dose-biomarker relationship
 ##'
-##' This class extends the \code{\linkS4class{DualEndpoint}} class.
-##'
-##' Here the biomarker mean is parametrized in the form of a rescaled
+##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
+##' dose-biomarker relationship \eqn{f(x)} is modelled by a parametric, rescaled
 ##' beta density function:
 ##'
-##' mu = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1 * (1 - x/x*)^delta2
+##' \deqn{f(x) = E_{0} + (E_{max} - E_{0}) * Beta(\delta_{1}, \delta_{2}) *
+##'                   (x/x^{*})^{\delta_{1}} * (1 - x/x^{*})^{\delta_{2}}}
 ##'
-##' where x* is a reference dose, delta1 and delta2 are the two beta
-##' parameters, and E0 and Emax are the minimum and maximum levels,
-##' respectively.
-##' For ease of interpretation, we parametrize with delta1 and the mode
-##' of the curve instead, where mode = delta1 / (delta1 + delta2).
+##' where \eqn{x^{*}} is the maximum dose (end of the dose range to be
+##' considered), \eqn{\delta_{1}} and \eqn{\delta_{2}} are the two beta
+##' parameters, and \eqn{E_{0}} and \eqn{E_{max}} are the minimum and maximum
+##' levels, respectively. For ease of interpretation, we parametrize with
+##' \eqn{\delta_{1}} and the mode of the curve instead, where
+##' \deqn{mode = \delta_{1} / (\delta_{1} + \delta_{2}),}
+##' and multiplying this with \eqn{x^{*}} gives the mode on the dose grid.
+##'
+##' All parameters can currently be assigned uniform distributions or be fixed
+##' in advance.
 ##'
 ##' @slot E0 either a fixed number or the two uniform distribution parameters
 ##' @slot Emax either a fixed number or the two uniform distribution parameters

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Fre 02/01/2015 09:53>
+## Time-stamp: <[project.R] by DSB Son 18/01/2015 23:21>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -11,11 +11,11 @@
 ## 06/02/2014   file creation
 ## 19/07/2014   update and test mixture prior
 ###################################################################################
-
-source("../R/Model-class.R")
 source("../R/helpers.R")
-model <- new("LogisticLogNormal",
-             mean=c(-0.85, 1),
+source("../R/Model-class.R")
+
+model <-LogisticLogNormal(
+    mean=c(-0.85, 1),
              cov=
              matrix(c(1, -0.5, -0.5, 1),
                     nrow=2L),
@@ -32,8 +32,7 @@ model@prob(30, 0, 1)
 source("../R/Data-class.R")
 source("../R/Data-methods.R")
 ## create some test data
-data <- new("Data",
-            x=
+data <- Data(x=
             c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
             y=
             as.integer(c(0, 0, 0, 0, 0, 0, 1, 0)),
@@ -58,8 +57,7 @@ library(ggplot2)
 plot(data)
 
 
-data <- new("Data",
-            x=
+data <- Data(x=
             numeric(),
             y=
             as.integer(c()),
@@ -76,8 +74,7 @@ source("../R/Samples-class.R")
 source("../R/Samples-methods.R")
 
 ## and some MCMC options
-options <- new("McmcOptions",
-               burnin=100,
+options <- McmcOptions(burnin=100,
                step=2,
                samples=50000)
 
@@ -113,11 +110,11 @@ ggs_density(alpha1)
 
 
 ## ok now we want to plot the fit:
-samples <- samples1
+samples <- samples2
 str(samples)
 
 source("../R/Model-methods.R")
-
+source("../R/Samples-methods.R")
 plot(samples, model, data)
 
 

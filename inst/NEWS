@@ -1,6 +1,8 @@
 Version 0.0.22
 --------------------------------------------------------------------------------
 
+* simulate function has been fixed (specification of arguments)
+
 * Dual-endpoint model-based design has been added.
 
 * 3+3 design simulation is now possible, see ?ThreePlusThreeDesign
@@ -43,6 +45,9 @@ Version 0.0.22
 * crmPack now needs the package httr (it's now in the "Imports" field). Packages
   Rcpp and RcppArmadillo have been moved from "Depends" to "Suggests" packages.
   Currently we are not using them at all.
+
+* showLegend argument for model fit plotting functions, in order to show the
+  legend or not.
 
 Version 0.0.21
 --------------------------------------------------------------------------------

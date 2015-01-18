@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Design-methods.R] by DSB Sam 17/01/2015 19:22>
+## Time-stamp: <[Design-methods.R] by DSB Son 18/01/2015 09:55>
 ##
 ## Description:
 ## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
@@ -51,11 +51,14 @@ setSeed <- function(seed=NULL)
         RNGstate <- get(".Random.seed", envir = .GlobalEnv)
     } else {
         R.seed <- get(".Random.seed", envir = .GlobalEnv)
+        ## make sure R.seed exists in parent frame:
+        assign("R.seed", R.seed, envir=parent.frame())
         set.seed(seed)
         RNGstate <- structure(seed, kind = as.list(RNGkind()))
         do.call("on.exit",
                 list(quote(assign(".Random.seed", R.seed, envir = .GlobalEnv))),
                 envir = parent.frame())
+        ## here we need the R.seed in the parent.frame!
     }
 
     return(RNGstate)
@@ -147,6 +150,8 @@ getResultList <- function(fun,
 ##'
 ##' @param object the \code{\linkS4class{Design}} object we want to simulate
 ##' data from
+##' @param nsim the number of simulations (default: 1)
+##' @param seed see \code{\link{setSeed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -160,11 +165,9 @@ getResultList <- function(fun,
 ##' @param firstSeparate enroll the first patient separately from the rest of
 ##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 ##' in this patient.
-##' @param nsim the number of simulations (default: 1)
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
 ##' giving the MCMC options for each evaluation in the trial. By default,
 ##' the standard options are used
-##' @param seed see \code{\link{setSeed}}
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
@@ -175,11 +178,14 @@ getResultList <- function(fun,
 ##' @keywords methods
 setMethod("simulate",
           signature=
-          signature(object="Design"),
+              signature(object="Design",
+                        nsim="ANY",
+                        seed="ANY"),
           def=
-          function(object, truth, args=NULL, firstSeparate=FALSE, nsim=1L,
-                   mcmcOptions=McmcOptions(), seed=NULL,
-                   parallel=FALSE, ...){
+              function(object, nsim=1L, seed=NULL,
+                       truth, args=NULL, firstSeparate=FALSE,
+                       mcmcOptions=McmcOptions(),
+                       parallel=FALSE, ...){
 
               nsim <- safeInteger(nsim)
 
@@ -188,8 +194,7 @@ setMethod("simulate",
                         is.bool(firstSeparate),
                         is.scalar(nsim),
                         nsim > 0,
-                        is.bool(parallel),
-                        is.scalar(parallel))
+                        is.bool(parallel))
 
               args <- as.data.frame(args)
               nArgs <- max(nrow(args), 1L)
@@ -359,6 +364,8 @@ setMethod("simulate",
 ##'
 ##' @param object the \code{\linkS4class{RuleDesign}} object we want to simulate
 ##' data from
+##' @param nsim the number of simulations (default: 1)
+##' @param seed see \code{\link{setSeed}}
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -366,8 +373,6 @@ setMethod("simulate",
 ##' column names correspond to the argument names, the rows to the values of the
 ##' arguments. The rows are appropriately recycled in the \code{nsim}
 ##' simulations.
-##' @param nsim the number of simulations (default: 1)
-##' @param seed see \code{\link{setSeed}}
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
@@ -378,11 +383,13 @@ setMethod("simulate",
 ##' @keywords methods
 setMethod("simulate",
           signature=
-          signature(object="RuleDesign"),
+              signature(object="RuleDesign",
+                        nsim="ANY",
+                        seed="ANY"),
           def=
-          function(object, truth, args=NULL, nsim=1L,
-                   seed=NULL,
-                   parallel=FALSE, ...){
+              function(object, nsim=1L, seed=NULL,
+                       truth, args=NULL,
+                       parallel=FALSE, ...){
 
               nsim <- safeInteger(nsim)
 
@@ -390,8 +397,7 @@ setMethod("simulate",
               stopifnot(is.function(truth),
                         is.scalar(nsim),
                         nsim > 0,
-                        is.bool(parallel),
-                        is.scalar(parallel))
+                        is.bool(parallel))
 
               args <- as.data.frame(args)
               nArgs <- max(nrow(args), 1L)
@@ -504,6 +510,8 @@ setMethod("simulate",
 ##'
 ##' @param object the \code{\linkS4class{DualDesign}} object we want to simulate
 ##' data from
+##' @param nsim the number of simulations (default: 1)
+##' @param seed see \code{\link{setSeed}}
 ##' @param trueTox a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity. Additional arguments can be supplied
 ##' in \code{args}.
@@ -520,11 +528,9 @@ setMethod("simulate",
 ##' @param firstSeparate enroll the first patient separately from the rest of
 ##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 ##' in this patient.
-##' @param nsim the number of simulations (default: 1)
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
 ##' giving the MCMC options for each evaluation in the trial. By default,
 ##' the standard options are used
-##' @param seed see \code{\link{setSeed}}
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
@@ -538,11 +544,12 @@ setMethod("simulate",
           signature=
           signature(object="DualDesign"),
           def=
-          function(object, trueTox, trueBiomarker, args=NULL,
-                   sigma2W, rho=0,
-                   firstSeparate=FALSE, nsim=1L,
-                   mcmcOptions=McmcOptions(), seed=NULL,
-                   parallel=FALSE, ...){
+              function(object, nsim=1L, seed=NULL,
+                       trueTox, trueBiomarker, args=NULL,
+                       sigma2W, rho=0,
+                       firstSeparate=FALSE,
+                       mcmcOptions=McmcOptions(),
+                       parallel=FALSE, ...){
 
               nsim <- safeInteger(nsim)
 
@@ -554,8 +561,7 @@ setMethod("simulate",
                         is.bool(firstSeparate),
                         is.scalar(nsim),
                         nsim > 0,
-                        is.bool(parallel),
-                        is.scalar(parallel))
+                        is.bool(parallel))
 
               args <- as.data.frame(args)
               nArgs <- max(nrow(args), 1L)

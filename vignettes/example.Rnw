@@ -127,10 +127,10 @@ This is the function that computes for given parameters \texttt{alpha0} and
 dose-limiting toxicity (DLT). You can find out yourself about the other slots,
 by looking at the help page for \texttt{Model-class} in the help browser,
 because all models are just special cases of the general \texttt{Model} class.
-In the \texttt{Model-class} help page, you also find out that there are three
+In the \texttt{Model-class} help page, you also find out that there are four
 additional specific model classes that are subclasses of the \texttt{Model}
-class, namely \texttt{LogisticNormal}, \texttt{LogisticKadane} and
-\texttt{DualEndpoint}.
+class, namely \texttt{LogisticLogNormalSub}, \texttt{LogisticNormal},
+\texttt{LogisticKadane} and \texttt{DualEndpoint}.
 
 \subsection{Advanced model specification}
 \label{sec:advanc-model-spec}
@@ -592,24 +592,23 @@ space:
 ## define the true function
 myTruth <- function(dose)
 {
-    model@prob(dose, alpha0=-1, alpha1=4)
+    model@prob(dose, alpha0=7, alpha1=8)
 }
 
 ## plot it in the range of the dose grid
 curve(myTruth(x), from=0, to=80, ylim=c(0, 1))
 @
 
-Now we can proceed to the simulations. We only generate 10 trial outcomes here
+Now we can proceed to the simulations. We only generate 100 trial outcomes here
 for illustration, for the actual study this should be increased of course to at
 least 500:
 
 <<run-sims>>=
-set.seed(819)
 time <- system.time(mySims <- simulate(design,
-                                       truth=myTruth,
                                        args=NULL,
-                                       firstSeparate=FALSE,
-                                       nsim=10,
+                                       truth=myTruth,
+                                       nsim=100,
+                                       seed=819,
                                        mcmcOptions=options,
                                        parallel=TRUE))[3]
 time
@@ -618,12 +617,14 @@ time
 We have wrapped the call to \texttt{simulate} in a \texttt{system.time} to
 obtain the required time for the simulations (about \Sexpr{round(time)}~seconds
 in this case). The argument \texttt{args} could contain additional arguments for
-the \texttt{truth} function, which we did not require here and therefore set it
-to \texttt{NULL}. Note that we also pass again the MCMC options object, because
-during the trial simulations the MCMC routines are used. Finally, the argument
-\texttt{parallel} can be used to enable the use of all processors of the
-computer for running the simulations in parallel. This can yield a meaningful
-speedup, especially for larger number of simulations.
+the \texttt{truth} function, which we did not require here and therefore let it
+at the default \texttt{NULL}. We specify the number of simulations with
+\texttt{nsim} and the random number generator seed with \texttt{seed}. Note that
+we also pass again the MCMC options object, because during the trial simulations
+the MCMC routines are used. Finally, the argument \texttt{parallel} can be used
+to enable the use of all processors of the computer for running the simulations
+in parallel. This can yield a meaningful speedup, especially for larger number
+of simulations.
 
 As (almost) always, the result of this call is again an object with a class, in
 this case \texttt{Simulations}:
@@ -669,10 +670,9 @@ print(plot(mySims))
 @
 
 The resulting plot shows on the top panel a summary of the trial trajectories.
-Because of the low number of simulations here, we can essentially only see the
-median trajectory. On the bottom, the proportions of doses tried, averaged over
-the simulated trials, are shown. Note that you can select the plots by changing
-the \texttt{type} argument of \texttt{plot}, which by default is \texttt{type =
+On the bottom, the proportions of doses tried, averaged over the simulated
+trials, are shown. Note that you can select the plots by changing the
+\texttt{type} argument of \texttt{plot}, which by default is \texttt{type =
   c("trajectory", "dosesTried")}.
 
 Second, we can summarize the simulation results. Here again we have to supply a
@@ -684,7 +684,7 @@ summary(mySims,
 @
 
 Note that sometimes the observed toxicity rate at the dose most often selected
-(here 50 mg) is not available, because it can happen that no patients were
+(here 20 mg) is not available, because it can happen that no patients were
 actually treated that dose during the simulations. (Here it is available.) This
 illustrates that the MTD can be selected based on the evidence from the data at
 other dose levels -- which is an advantage of model-based dose-escalation
@@ -700,20 +700,18 @@ print(plot(simSum))
 @
 
 The top left panel shows the distribution of the sample size across the
-simulated trials. In this case all trials had 21 patients. The top right panel
-shows the distribution of the final MTD estimate / recommended dose across the
-simulated trials. The middle left panel shows the distribution across the
-simulations of the DLT proportions observed in the patients dosed. Here we see
-that in 30\% of the simulated trials had 0, 5, or 10\% of the patient had DLTs,
-respectively, while in 10\% of the simulated trials 18\% of the patients had
-DLTs. The middle right panel shows the distribution across simulations of the
-number of patients treated above the target toxicity window (here we used the
-default from 20\% to 35\%). We see here that in all trials, none of the patients
-were treated with too toxic doses. Finally, in the bottom panel we see a
-comparison of the true dose-toxicity curve (black) with the estimated
-dose-toxicity curves, averaged (continuous red line) across the trials and with
-95\% credible interval across the trials. Here we see a good correspondence of
-the truth and the estimation.
+simulated trials. In this case the trials had between 15 and 21 patients. The
+top right panel shows the distribution of the final MTD estimate / recommended
+dose across the simulated trials. The middle left panel shows the distribution
+across the simulations of the DLT proportions observed in the patients dosed.
+Here in most trials between 20 and 30\% of the patients had DLTs.
+The middle right panel shows the distribution across simulations of the number
+of patients treated above the target toxicity window (here we used the default
+from 20\% to 35\%). Finally, in the bottom panel we see a comparison
+of the true dose-toxicity curve (black) with the estimated dose-toxicity curves,
+averaged (continuous red line) across the trials and with 95\% credible interval
+across the trials. Here we see that the steep true dose-toxicity curve is not
+recovered by the model fit.
 
 If we find that e.g. the top right plot with the distribution of the final
 selected doses is too small and shows not the right x-axis window, we can only
@@ -721,8 +719,9 @@ plot this one and add x-axis customization on top: (see the \texttt{ggplot2}
 documentation for more information on customizing the plots)
 
 <<sim-sum-plot2, fig=TRUE>>=
-print(plot(simSum, type="doseSelected") +
-      scale_x_continuous(breaks=40:60, limits=c(40, 60)))
+dosePlot <- plot(simSum, type="doseSelected") +
+      scale_x_continuous(breaks=10:30, limits=c(10, 30))
+print(dosePlot)
 @
 
 \subsection{Predicting the future course of the trial}
@@ -775,22 +774,21 @@ nowDesign <- Design(model=model,
 Finally we can execute the simulations:
 
 <<sim-future>>=
-set.seed(901)
-time <- system.time(futureSims <- simulate(## supply the new design here
-                                           nowDesign,
-                                           ## the truth is the assumed prob function
-                                           truth=model@prob,
-                                           ## further arguments are the
-                                           ## posterior samples
-                                           args=postSamples,
-                                           ## no separate first patient
-                                           firstSeparate=FALSE,
-                                           ## do exactly so many simulations as
-                                           ## we have samples
-                                           nsim=nrow(postSamples),
-                                           ## this remains the same:
-                                           mcmcOptions=options,
-                                           parallel=TRUE))[3]
+time <- system.time(futureSims <- simulate(
+    ## supply the new design here
+    nowDesign,
+    ## the truth is the assumed prob function
+    truth=model@prob,
+    ## further arguments are the
+    ## posterior samples
+    args=postSamples,
+    ## do exactly so many simulations as
+    ## we have samples
+    nsim=nrow(postSamples),
+    seed=918,
+    ## this remains the same:
+    mcmcOptions=options,
+    parallel=TRUE))[3]
 time
 @
 
@@ -811,9 +809,342 @@ summary(futureSims,
         truth=myTruth)
 @
 
-We see here e.g. that the estimated number of patients overall is 18, so 10 more
+We see here e.g. that the estimated number of patients overall is 19, so 11 more
 than the current 8 patients are expected to be needed before finishing the
 trial.
+
+\section{Simulating 3+3 design outcomes}
+\label{sec:simul-3+3-design}
+
+While \texttt{crmPack} focuses on model-based dose-escalation designs, it now
+includes the 3+3 design in order to allow for convenient comparisons. Note that
+actually no simulations would be required for the 3+3 design, because all
+possible outcomes can be enumerated, however we still rely here on simulations
+for consistency with the overall \texttt{crmPack} design.
+
+The easiest way to setup a 3+3 design is the function
+\texttt{ThreePlusThreeDesign}:
+
+<<three-plus-three-setup>>=
+threeDesign <- ThreePlusThreeDesign(doseGrid=c(5, 10, 15, 25, 35, 50, 80))
+class(threeDesign)
+@
+
+We have used here a much coarser dose grid than for the model-based design
+before, because the 3+3 design cannot jump over doses. The starting dose is
+automatically chosen as the first dose from the grid. The outcome is a
+\texttt{RuleDesign} object, and you have more setup options if you directly use
+the \texttt{RuleDesign()} initialization function. We can then simulate trials,
+again assuming that the \texttt{myTruth} function gives the true dose-toxicity
+relationship:
+
+<<three-sims>>=
+threeSims <- simulate(threeDesign,
+                      nsim=1000,
+                      seed=35,
+                      truth=myTruth,
+                      parallel=TRUE)
+@
+
+As before for the model-based design, we can summarize the simulations:
+
+<<three-sims-summary>>=
+threeSimsSum <- summary(threeSims,
+                        truth=myTruth)
+threeSimsSum
+@
+
+Here we see that \Sexpr{threeSimsSum@doseMostSelected} mg was the dose most
+often selected as MTD, and this is actually too low when comparing with the
+narrow target dose interval going from
+\Sexpr{round(threeSimsSum@targetDoseInterval[1],1)} to
+\Sexpr{round(threeSimsSum@targetDoseInterval[2],1)} mg. This is an inherent problem of
+dose-escalation designs where the dose grid has to be coarse: you might not know
+before starting the trial which is the range where you need a more refined dose
+grid. In this case we obtain doses that are too low, as one can see from the
+average true toxicity of
+\Sexpr{round(mean(threeSimsSum@toxAtDosesSelected)*100)}~\% at doses selected.
+Graphical summaries are again obtained by calling ``plot'' on the summary
+object:
+
+<<three-sims-plot, fig=TRUE>>=
+print(plot(threeSimsSum))
+@
+
+\section{Dual-endpoint designs}
+\label{sec:dual-endp-designs}
+
+The latest version of \texttt{crmPack} includes dual-endpoint designs. These are
+still under development, and so far we have not yet published a peer-reviewed paper
+on these methods, therefore please consider them as experimental.
+
+In the help page ``DualEndpoint-class'' the general model structure is
+described, and on the \href{https://roche.jiveon.com/projects/crmpack}{Hive
+  page} more information can be found. Basically the idea is that a (single)
+biomarker variable is the second endpoint of the dose-escalation design, with
+the aim to maximize the biomarker response while controlling toxicity in a safe
+range. This is useful when it can not be assumed that just increasing the dose
+will always lead to a better clinical response.
+
+Let's look at the data structure. Here is an example:
+<<dual-data-struct>>=
+data <- DataDual(
+    x=
+        c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
+          20, 20, 20, 40, 40, 40, 50, 50, 50),
+    y=
+        c(0, 0, 0, 0, 0, 0, 1, 0,
+          0, 1, 1, 0, 0, 1, 0, 1, 1),
+    w=
+        c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
+          0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
+    doseGrid=
+        c(0.1, 0.5, 1.5, 3, 6,
+          seq(from=10, to=80, by=2)))
+@
+
+The corresponding plot can again be obtained with:
+
+<<dual-data-plot, fig=TRUE>>=
+print(plot(data))
+@
+
+Here we see that there seems to be a maximum biomarker response at around 10~mg
+already. In order to model this data, we consider a dual-endpoint model with RW1
+structure for the dose-biomarker relationship:
+
+<<dual-rw1-model>>=
+model <- DualEndpointRW(mu=c(0, 1),
+                        Sigma=matrix(c(1, 0, 0, 1), nrow=2),
+                        sigma2betaW=
+                        0.01,
+                        sigma2W=
+                        c(a=0.1, b=0.1),
+                        rho=
+                        c(a=1, b=1),
+                        smooth="RW1")
+@
+
+We use a smoothing parameter $\sigma^{2}_{\beta_{W}} = 0.01$, an inverse-gamma
+prior $\mathrm{IG}(0.1, 0.1)$ on the biomarker variance $\sigma^{2}_{W}$ and a
+uniform prior (or $\mathrm{Beta}(1, 1)$ prior) on the correlation $\rho$ between
+the latent DLT and the biomarker variable.
+
+As the dual-endpoint models are more complex, it is advisable to use a
+sufficiently long Markov chain for fitting them. Here we set:
+
+<<dual-options>>=
+options <- McmcOptions(burnin=10000,
+                       step=2,
+                       samples=50000)
+@
+
+Then we can obtain the MCMC samples:
+
+<<dual-mcmc>>=
+samples <- mcmc(data, model, options)
+@
+
+And we check the convergence by picking a few of the fitted biomarker means and
+plotting their traceplots:
+
+<<dual-conv, fig=TRUE>>=
+data@nGrid
+betaWpicks <- get(samples, "betaW", c(1, 5, 10, 25))
+ggs_traceplot(betaWpicks)
+@
+
+Here all 4 $\beta_{W,j}$ ($j=1, 5, 10, 25$) means, which are the biomarker means
+at the first, 5th, 10th and 25th gridpoint, respectively, seem to have
+converged, as the traceplots show. (Remember that \verb|data@nGrid| gives the
+number of gridpoints.) So we can plot the model fit:
+
+\setkeys{Gin}{width=\textwidth}
+<<dual-modelfit, fig=TRUE>>=
+print(plot(samples, model, data, extrapolate=FALSE))
+@
+\setkeys{Gin}{width=0.65\textwidth}
+
+We specify \texttt{extrapolate = FALSE} to focus the biomarker plot in the right
+panel on the observed dose range, so we don't want to extrapolate the
+biomarker fit to higher dose levels. We can also look at the estimated biomarker
+precision $1 / \sigma^{2}_{W}$. For that we extract the precision ``precW'' and
+then use another \texttt{ggmcmc} function to create the histogram:
+
+<<dual-variance, fig=TRUE>>=
+ggs_histogram(get(samples, "precW"))
+@
+
+For the selection of the next best dose, a special class
+``NextBestDualEndpoint'' has been implemented. It tries to maximize the
+biomarker response, under an NCRM-type safety constraint. If we want to have at
+least 90\% of the maximum biomarker response, and a 25\% maximum overdose
+probability for the next dose, we specify:
+
+<<dual-nextbest>>=
+myNextBest <- NextBestDualEndpoint(target=0.9,
+                                   overdose=c(0.35, 1),
+                                   maxOverdoseProb=0.25)
+@
+
+In our example, and assuming a dose limit of 50~mg given by the maximum
+allowable increments, the next dose can then be found as follows:
+
+<<dual-nextdose-eval>>=
+nextDose <- nextBest(myNextBest,
+                     doselimit=50,
+                     samples=samples,
+                     model=model,
+                     data=data)
+nextDose$value
+@
+
+A corresponding plot can be produced by printing the ``plot'' element of the
+returned list:
+
+<<dual-nextdose-plot>>=
+print(nextDose$plot)
+@
+
+Here the bottom panel shows (as for the NCRM) the overdose probability, and we
+see that doses above 6~mg are too toxic. In the top panel, we see the
+probability for each dose to reach at least 90\% of the maximum biomarker
+response in the dose grid --- this is here our target probability. While the
+numbers are low, we clearly see that there is a local maximum at 10~mg of the
+target probability, confirming what we have seen in the previous data and
+model fit plots.
+
+A corresponding stopping rule exists. When we have a certain probability to be
+above a relative biomarker target, then the ``StoppingTargetBiomarker'' rule
+gives back \texttt{TRUE} when queried if it has been fulfilled by the
+\texttt{stopTrial} function. For example, if we require at least 50\%
+probability to be above 90\% biomarker response, we specify:
+
+<<dual-stop>>=
+myStopping4 <- StoppingTargetBiomarker(target=0.9,
+                                       prob=0.5)
+@
+
+In this case, the rule has not been fulfilled yet, as we see here:
+
+<<dual-stop-try>>=
+stopTrial(myStopping4, dose=nextDose$value,
+          samples, model, data)
+@
+
+Again, this dual-endpoint specific rule can be combined as required with any
+other stopping rule. For example, we could combine it with a maximum sample size
+of 40~patients:
+
+<<dual-stop-whole>>=
+myStopping <- myStopping4 | StoppingMinPatients(40)
+@
+
+If one or both of the stopping rules are fulfilled, then the trial is stopped.
+
+Let's try to build a corresponding dual-endpoint design. We start with an empty
+data set, and use the relative increments rule defined in a previous section and
+use a constant cohort size of 3 patients:
+
+<<dual-design>>=
+emptydata <- DataDual(doseGrid=data@doseGrid)
+design <- DualDesign(model=model,
+                     data=emptydata,
+                     nextBest=myNextBest,
+                     stopping=myStopping,
+                     increments=myIncrements,
+                     cohortSize=CohortSizeConst(3),
+                     startingDose=6)
+@
+
+In order to study operating characteristics, we need to determine true biomarker
+and DLT probability functions. Here we are going to use a biomarker function
+from the beta family. Note that there is a corresponding ``DualEndpointBeta''
+model class, that allows to have dual-endpoint designs with the beta biomarker
+response function. Have a look at the corresponding help page for more
+information on that. But let's come back to our scenario definition:
+
+<<dual-scenario>>=
+betaMod <- function (dose, e0, eMax, delta1, delta2, scal)
+{
+    maxDens <- (delta1^delta1) * (delta2^delta2)/((delta1 + delta2)^(delta1 + delta2))
+    dose <- dose/scal
+    e0 + eMax/maxDens * (dose^delta1) * (1 - dose)^delta2
+}
+trueBiomarker <- function(dose)
+{
+    betaMod(dose, e0=0.2, eMax=0.6, delta1=5, delta2=5 * 0.5 / 0.5, scal=100)
+}
+trueTox <- function(dose)
+{
+    pnorm((dose-60)/10)
+}
+@
+
+We can draw the corresponding curves:
+
+<<dual-sc-plot, fig=TRUE>>=
+par(mfrow=c(1, 2))
+curve(trueTox(x), from=0, to=80)
+curve(trueBiomarker(x), from=0, to=80)
+@
+
+So the biomarker response peaks at 50~mg, where the toxicity is still low. After
+deciding for a true correlation of $\rho=0$ and a true biomarker variance of
+$\sigma^{2}_{W} = 0.01$ (giving a high signal-to-noise ratio), we can start
+simulating trials (starting each with 6~mg):
+
+<<dual-sims>>=
+mySims <- simulate(design,
+                   trueTox=trueTox,
+                   trueBiomarker=trueBiomarker,
+                   sigma2W=0.01,
+                   rho=0,
+                   nsim=10,
+                   parallel=TRUE,
+                   seed=3,
+                   startingDose=6,
+                   mcmcOptions =
+                       McmcOptions(burnin=1000,
+                                   step=1,
+                                   samples=3000))
+@
+
+Note that we are having a ``small'' MCMC option set here, in order to reduce
+simulation time --- for the real application, this should be ``larger''.
+
+Plotting the result gives not only an overview of the final dose recommendations
+and trial trajectories, but also a summary of the biomarker variance and
+correlation estimates in the simulations:
+
+<<dual-sims-plot, fig=TRUE>>=
+print(plot(mySims))
+@
+
+Finally, a summary of the simulations can be obtained with the corresponding function:
+
+<<dual-sims-sum>>=
+sumOut <- summary(mySims,
+                  trueTox=trueTox,
+                  trueBiomarker=trueBiomarker)
+sumOut
+@
+
+We see here that all trials proceeded until the maximum sample size of 40
+patients (reaching 42 because of the cohort size 3). The doses selected are
+lower than the toxicity target range, because here we were aiming for a
+biomarker target instead, and the true biomarker response peaked at 50~mg.
+
+The corresponding plot looks as follows:
+
+<<dual-sim-sum-plot, fig=TRUE>>=
+print(plot(sumOut))
+@
+
+We see that the average biomarker fit is not too bad in the range up to 50~mg,
+but the toxicity curve fit is bad --- probably a result of the very low
+frequency of DLTs. Again the warning here: the dual-endpoint designs are still
+experimental!
 
 \bibliographystyle{plainnat}
 \bibliography{example}

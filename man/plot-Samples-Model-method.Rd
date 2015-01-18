@@ -6,7 +6,7 @@
 \title{Plotting dose-toxicity model fits}
 \usage{
 \S4method{plot}{Samples,Model}(x, y, data, ..., xlab = "Dose level",
-  ylab = "Probability of DLT [\%]")
+  ylab = "Probability of DLT [\%]", showLegend = TRUE)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{Samples}} object}
@@ -18,6 +18,8 @@
 \item{xlab}{the x axis label}
 
 \item{ylab}{the y axis label}
+
+\item{showLegend}{should the legend be shown? (default)}
 
 \item{\dots}{not used}
 }

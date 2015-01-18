@@ -5,13 +5,17 @@
 \alias{simulate,DualDesign-method}
 \title{Simulate outcomes from a dual-endpoint design}
 \usage{
-\S4method{simulate}{DualDesign}(object, trueTox, trueBiomarker, args = NULL,
-  sigma2W, rho = 0, firstSeparate = FALSE, nsim = 1L,
-  mcmcOptions = McmcOptions(), seed = NULL, parallel = FALSE, ...)
+\S4method{simulate}{DualDesign}(object, nsim = 1L, seed = NULL, trueTox,
+  trueBiomarker, args = NULL, sigma2W, rho = 0, firstSeparate = FALSE,
+  mcmcOptions = McmcOptions(), parallel = FALSE, ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{DualDesign}} object we want to simulate
 data from}
+
+\item{nsim}{the number of simulations (default: 1)}
+
+\item{seed}{see \code{\link{setSeed}}}
 
 \item{trueTox}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity. Additional arguments can be supplied
@@ -35,13 +39,9 @@ recycled in the \code{nsim} simulations.}
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{nsim}{the number of simulations (default: 1)}
-
 \item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
 giving the MCMC options for each evaluation in the trial. By default,
 the standard options are used}
-
-\item{seed}{see \code{\link{setSeed}}}
 
 \item{parallel}{should the simulation runs be parallelized across the
 clusters of the computer? (not default)}

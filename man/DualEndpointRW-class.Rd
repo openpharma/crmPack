@@ -6,10 +6,27 @@
 \alias{DualEndpointRW-class}
 \title{Dual endpoint model with RW prior for biomarker}
 \description{
-This class extends the \code{\linkS4class{DualEndpoint}} class.
+This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
+dose-biomarker relationship \eqn{f(x)} is modelled by a non-parametric
+random-walk of first (RW1) or second order (RW2) (todo: warning: at the
+moment only the first order random walk produces useful results).
 }
 \details{
-todo: describe RW priors
+That means, for the RW1 we assume
+\deqn{\beta_{W,i} - \beta_{W,i-1} \sim' Normal(0, \sigma^{2}_{\beta_{W}})},
+where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
+gridpoint \eqn{x_{i}}.
+For the RW2, the second-order differences instead of the first-order
+differences of the biomarker means follow the normal distribution.
+
+The variance parameter \eqn{\sigma^{2}_{\beta_{W}}} is important because it
+steers the smoothness of the function f(x): if it is large, then f(x) will
+be very wiggly; if it is small, then f(x) will be smooth. This parameter can
+either be fixed or assigned an inverse gamma prior distribution.
+
+Usually this modelling will only make sense if a regular dose grid is used,
+with equidistant grid points ensuring that the distance \eqn{x_{i} -
+x_{i-1}} is the same for all grid positions \eqn{i}.
 }
 \section{Slots}{
 

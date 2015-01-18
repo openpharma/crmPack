@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Sam 17/01/2015 17:39>
+## Time-stamp: <[Rules-methods.R] by DSB Son 18/01/2015 22:21>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -408,7 +408,9 @@ setMethod("nextBest",
               ## relative target level
               targetIndex <- apply(biomLevelSamples, 1L,
                                    function(x){
-                                       min(which(x >= nextBest@target * max(x)))
+                                       rnx <- range(x)
+                                       min(which(x >= nextBest@target *
+                                                     diff(rnx) + rnx[1]))
                                    })
 
               probTarget <- numeric(ncol(biomLevelSamples))
@@ -1252,7 +1254,9 @@ setMethod("stopTrial",
               ## relative target level
               targetIndex <- apply(biomLevelSamples, 1L,
                                    function(x){
-                                       min(which(x >= stopping@target * max(x)))
+                                       rnx <- range(x)
+                                       min(which(x >= stopping@target *
+                                                     diff(rnx) + rnx[1]))
                                    })
 
               probTarget <- numeric(ncol(biomLevelSamples))

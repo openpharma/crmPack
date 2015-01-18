@@ -7,8 +7,12 @@
 \title{The class with the input for finding the next dose
 based on the dual endpoint model}
 \description{
-The class with the input for finding the next dose
-based on the dual endpoint model
+This rule first excludes all doses that exceed the probability
+\code{maxOverdoseProb} of having an overdose toxicity, as specified by the
+overdose interval \code{overdose}. Then, it picks under the remaining
+admissible doses the one that maximizes the probability to have at least
+\code{target} biomarker level, relative to the maximum biomarker level
+across the dose grid.
 }
 \section{Slots}{
 

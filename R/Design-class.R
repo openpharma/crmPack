@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Design-class.R] by DSB Fre 16/01/2015 14:33>
+## Time-stamp: <[Design-class.R] by DSB Son 18/01/2015 21:35>
 ##
 ## Description:
 ## This class encapsulates a whole CRM design.
@@ -180,7 +180,9 @@ DualDesign <- function(model,
                        data,
                        ...)
 {
-    start <- Design(...)
+    start <- Design(data=data,
+                    model=model,
+                    ...)
     .DualDesign(start,
                 model=model,
                 data=data)

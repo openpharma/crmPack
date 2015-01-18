@@ -16,7 +16,9 @@
      "sec:stopping-rules"
      "sec:simulations"
      "sec:simulating-from-true"
-     "sec:pred-future-course")
+     "sec:pred-future-course"
+     "sec:simul-3+3-design"
+     "sec:dual-endp-designs")
     (TeX-run-style-hooks
      "mySweave"
      "nogin"

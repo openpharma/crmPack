@@ -5,7 +5,8 @@
 \alias{plot,Samples,DualEndpoint-method}
 \title{Plotting dose-toxicity and dose-biomarker model fits}
 \usage{
-\S4method{plot}{Samples,DualEndpoint}(x, y, data, extrapolate = TRUE, ...)
+\S4method{plot}{Samples,DualEndpoint}(x, y, data, extrapolate = TRUE,
+  showLegend = FALSE, ...)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{Samples}} object}
@@ -16,6 +17,8 @@
 
 \item{extrapolate}{should the biomarker fit be extrapolated to the whole
 dose grid? (default)}
+
+\item{showLegend}{should the legend be shown? (not default)}
 
 \item{\dots}{additional arguments for the parent method
 \code{\link{plot,Samples,Model-method}}}
