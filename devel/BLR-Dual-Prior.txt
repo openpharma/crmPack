@@ -1,0 +1,94 @@
+# -----------------------------------------------------------------
+# Filename: BLR-Dual-Prior.odc
+#
+# Description: Bayesian Model for dual-agent phase I dose-escalation trials 
+#              - This Code Provides DLT summary under prior
+#
+# Model: 5 parameter model
+#   odds12 = odds12.0*exp(eta x d1/d1* x d2/d2*)     
+#   odds12.0 = odds1 + odds2 + odds1*odds2 (independence)
+#   log(odds1) = logAlpha1 + Beta1*log(Dose1/DoseRef1)
+#   log(odds2) = logAlpha2 + Beta2*log(Dose2/DoseRef2)
+# 
+# Priors:
+#   BVN for (logAlpha1,logBeta1) and (logAlpha2,logBeta2)
+#   Normal prior for eta
+#
+# Reference: 
+#   Neuenschwander, Matano, Tang, Roychoudhury, Wandel and Bailey. 
+#   A Bayesian Industry Approach to Phase I Combination Trials in Oncology. 
+#   Statistical Methods in Drug Combination Studies, Boca Raton, FL:   
+#   Chapman & Hall/CRC Press 2015. 
+#
+# Nodes to monitor: 
+#    P12: probabiliy of toxicity, vector of length Ndoses1 x Ndoses2
+#    pCat: category indicators, Ndoses1 x Ndoses2 x Ncat matrix
+#    logAlphaBeta: model parameters, 
+#    logAlphaBeta1[1]: logAlpha1,
+#    logAlphaBeta1[2]: logBeta1
+#    logAlphaBeta2[1]: logAlpha2,
+#    logAlphaBeta2[2]: logBeta2
+#    eta: interaction odds multiplier
+# -----------------------------------------------------------------------
+model{
+  cova1[1,1] <- Prior1[3]*Prior1[3]
+  cova1[2,2] <- Prior1[4]*Prior1[4]
+  cova1[1,2] <- Prior1[3]*Prior1[4]*Prior1[5]
+  cova1[2,1] <- cova1[1,2]
+  prec1[1:2,1:2] <- inverse(cova1[,])
+  logAlphaBeta1[1:2] ~ dmnorm(Prior1[1:2],prec1[1:2,1:2])
+ 
+  cova2[1,1] <- Prior2[3]*Prior2[3]
+  cova2[2,2] <- Prior2[4]*Prior2[4]
+  cova2[1,2] <- Prior2[3]*Prior2[4]*Prior2[5]
+  cova2[2,1] <- cova2[1,2]
+  prec2[1:2,1:2] <- inverse(cova2[,])
+  logAlphaBeta2[1:2] ~ dmnorm(Prior2[1:2],prec2[1:2,1:2])
+
+   etaPriorPrec <- pow(etaPrior[2], -2)
+  eta  ~ dnorm(etaPrior[1], etaPriorPrec)
+  OddsFactor <- exp(eta)
+
+  for (j in 1:(Ncat-1)) { Pcutoffs1[j] <- Pcutoffs[j] }
+  Pcutoffs1[Ncat] <- 1
+
+  for (i in 1:Ndoses1){
+    lin1.1[i] <- logAlphaBeta1[1] + exp(logAlphaBeta1[2])*log(Doses1[i]/DoseRef1)
+    odds1[i] <- exp(lin1.1[i]) 
+  }
+
+ for(i in 1:Ndoses2){      
+    lin2.1[i] <- logAlphaBeta2[1] + exp(logAlphaBeta2[2])*log(Doses2[i]/DoseRef2)
+    odds2[i] <- exp(lin2.1[i])
+                     } 
+
+ for(i in 1:Ndoses1){
+  for(j in 1:Ndoses2){
+    odds12.0[i,j] <- odds1[i] + odds2[j] + odds1[i] * odds2[j]
+ odds12[i,j] <- odds12.0[i,j] * exp(eta *(Doses1[i]/DoseRef1)*(Doses2[j]/DoseRef2))
+   P12[i,j] <- odds12[i,j]/(1 + odds12[i,j])
+
+    pCat[i,j,1] <- step(Pcutoffs1[1] - P12[i,j])
+    for (k in 2:Ncat) {
+      pCat[i,j,k] <- step(Pcutoffs1[k] - P12[i,j]) - sum(pCat[i,j,1:(k-1)])
+                      }
+                    }
+                        
+                                               }
+
+  }
+
+
+list(
+  Prior1     = c(-3.146, 0.388,1.214, 0.886,-0.63),
+  Prior2     = c(-1.961, 0.690,0.541, 0.650, 0.04),
+  etaPrior   = c(0,1.121),
+    Ndoses1 = 4,
+    Ndoses2 = 4,
+    Doses1 = c(0, 3, 4.5, 6),
+    Doses2 = c(0, 400, 600, 800),
+    DoseRef1 = 3,
+    DoseRef2 = 960,
+    Ncat = 3,
+    Pcutoffs = c(0.16,0.35)
+)

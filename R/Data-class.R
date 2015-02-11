@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Data-class.R] by DSB Sam 17/01/2015 17:38>
+## Time-stamp: <[Data-class.R] by DSB Son 25/01/2015 13:37>
 ##
 ## Description:
 ## Encapsulate the data input in formal classes.
@@ -275,4 +275,206 @@ DataParts <- function(part=integer(),
                part1Ladder=part1Ladder)
 }
 validObject(DataParts())
+
+
+
+## --------------------------------------------------
+## Class for combo trials
+## --------------------------------------------------
+
+
+##' Class for the data input in combo trials
+##'
+##' @slot x a matrix with the doses of all \code{nDrugs} drugs (columns) for the
+##' \code{nObs} patients (rows). The column names are the \code{drugNames}.
+##' @slot y the vector of toxicity events (0 or 1 integers)
+##' @slot ID unique patient IDs (integer vector)
+##' @slot cohort the cohort indices (sorted values from 0, 1, 2, ...)
+##' @slot doseGrid a list containing a vector of all possible doses (sorted) for
+##' each of the \code{nDrugs} drugs (named with \code{drugNames}).
+##' @slot nObs number of observations
+##' @slot nDrugs number of drugs
+##' @slot drugNames character vector with the drug names
+##' @slot nGrid vector with the number of gridpoints for each of the drugs
+##' @slot xLevel an integer matrix with the levels for the doses the patients
+##' have been given, same dimensions as \code{x}.
+##'
+##' @export
+##' @keywords classes
+.DataCombo <-
+    setClass(Class="DataCombo",
+             representation(x="matrix",
+                            y="integer",
+                            ID="integer",
+                            cohort="integer",
+                            doseGrid="list",
+                            nObs="integer",
+                            nDrugs="integer",
+                            drugNames="character",
+                            nGrid="integer",
+                            xLevel="matrix"),
+             prototype(x=
+                           cbind(a=numeric(),
+                                 b=numeric()),
+                       y=integer(),
+                       ID=integer(),
+                       cohort=integer(),
+                       doseGrid=
+                           list(a=numeric(),
+                                b=numeric()),
+                       nObs=0L,
+                       nDrugs=2L,
+                       drugNames=c("a", "b"),
+                       nGrid=
+                           c(a=0L,
+                             b=0L),
+                       xLevel=
+                           cbind(a=integer(),
+                                 b=integer())),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(identical(colnames(object@x),
+                                       object@drugNames),
+                             "column names of matrix x must be drugNames")
+                     o$check(identical(colnames(object@xLevel),
+                                       object@drugNames),
+                             "column names of matrix xLevel must be drugNames")
+                     o$check(identical(names(object@doseGrid),
+                                       object@drugNames),
+                             "names of list doseGrid must be drugNames")
+                     o$check(identical(names(object@nGrid),
+                                       object@drugNames),
+                             "names of vector nGrid must be drugNames")
+                     o$check(identical(dim(object@x),
+                                       c(object@nObs, object@nDrugs)),
+                             "dimensions of matrix x must be (nObs, nDrugs)")
+                     o$check(identical(dim(object@xLevel),
+                                       c(object@nObs, object@nDrugs)),
+                             "dimensions of matrix xLevel must be (nObs, nDrugs)")
+                     o$check(identical(length(object@drugNames),
+                                       object@nDrugs),
+                             "length of drugNames must be nDrugs")
+                     o$check(identical(sapply(object@doseGrid, length),
+                                       object@nGrid),
+                             "lengths of doseGrid elements must be nGrid")
+                     o$check(all(object@y %in% c(0, 1)),
+                             "DLT vector y can only have 0 or 1 values")
+                     o$check(all(! duplicated(object@ID)),
+                             "IDs must be unique")
+                     o$check(all(object@cohort >= 0),
+                             "cohort indices must be non-negative")
+                     o$check(! is.unsorted(object@cohort,
+                                           strictly=FALSE),
+                             "cohort indices must be sorted")
+                     o$check(all(by(data=object@x,
+                                    INDICES=object@cohort,
+                                    FUN=
+                                        function(doseMatrix){nrow(unique(doseMatrix))}) == 1),
+                             "there must be only one dose level combination per cohort")
+                     for(k in object@drugNames)
+                     {
+                         o$check(all(object@x[,k] %in% object@doseGrid[[k]]),
+                                 paste(k,
+                                       "dose values in x must be from doseGrid"))
+                         o$check(! is.unsorted(object@doseGrid[[k]],
+                                               strictly=TRUE),
+                                 paste(k,
+                                       "doseGrid must be sorted and without duplicate values"))
+                         o$check(identical(object@x[,k],
+                                           object@doseGrid[[k]][object@xLevel[,k]]),
+                                 paste("xLevel for drug", k, "not matching x"))
+                     }
+                     for(thisSlot in c("y", "cohort", "ID"))
+                         o$check(identical(object@nObs, length(slot(object, thisSlot))),
+                                 paste(thisSlot, "must have length nObs"))
+
+                     o$result()
+                 })
+validObject(.DataCombo())
+
+##' Initialization function for the "DataCombo" class
+##'
+##' This is the function for initializing a "DataCombo" class object.
+##'
+##' Note that \code{ID} and \code{cohort} can be missing, then a warning
+##' will be issued and the variables will be filled with default
+##' IDs and best guesses, respectively.
+##'
+##' @param x the matrix with the doses for the patients. Recommendation: Use
+##' \code{cbind(drugA=..., drugB=...)} to create this matrix.
+##' @param y the vector of toxicity events (0 or 1 integers). You can also
+##' normal numeric vectors, but these will then be converted to integers.
+##' @param ID unique patient IDs (integer vector)
+##' @param cohort the cohort indices (sorted values from 0, 1, 2, ...)
+##' @param doseGrid the list with vectors of all possible doses for each of the
+##' drugs
+##' @return the initialized \code{\linkS4class{DataCombo}} object
+##'
+##' @export
+##' @keywords programming
+DataCombo <- function(x,
+                      y,
+                      ID,
+                      cohort,
+                      doseGrid){
+
+    ## checks
+    stopifnot(is.matrix(x),
+              is.list(doseGrid),
+              identical(colnames(x), names(doseGrid)))
+    storage.mode(x) <- "double"
+
+    ## extracts
+    nObs <- nrow(x)
+    nDrugs <- ncol(x)
+    drugNames <- colnames(x)
+
+    ## sort the dose grid for each drug
+    doseGrid <- lapply(doseGrid,
+                       function(x) as.numeric(sort(unique(x))))
+
+    ## check IDs
+    if((missing(ID) || length(ID) == 0) && (nObs > 0))
+    {
+        warning("Used default patient IDs!")
+        ID <- seq_len(nObs)
+    }
+
+    ## check cohort indices
+    if((missing(cohort) || length(cohort) == 0) && (nObs > 0))
+    {
+        warning("Used best guess cohort indices!")
+        ## This is just assuming that consecutive patients
+        ## in the data set are in the same cohort if they
+        ## have the same dose. Note that this could be wrong,
+        ## if two subsequent cohorts are at the same dose.
+        cohort <- as.integer(c(1, 1 + cumsum(rowSums(abs(diff(x))) != 0)))
+    }
+
+    ## get xLevel matrix
+    xLevel <- NULL
+    for(k in drugNames)
+    {
+        xLevel <- cbind(xLevel,
+                        match(x=x[,k],
+                              table=doseGrid[[k]]))
+    }
+    colnames(xLevel) <- drugNames
+
+    ## then initialize the DataCombo object
+    ## (in this case just putting arguments into slots)
+    ret <- .DataCombo(x=x,
+                      y=safeInteger(y),
+                      ID=safeInteger(ID),
+                      cohort=safeInteger(cohort),
+                      doseGrid=doseGrid,
+                      nObs=nObs,
+                      nDrugs=nDrugs,
+                      drugNames=drugNames,
+                      nGrid=sapply(doseGrid, length),
+                      xLevel=xLevel)
+    return(ret)
+}
 

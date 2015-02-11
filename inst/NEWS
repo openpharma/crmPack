@@ -1,3 +1,13 @@
+Version 0.0.23
+--------------------------------------------------------------------------------
+
+* Fixed bug in mcmc function which led to error
+  "all data elements must have as many rows as the sample size was"
+
+* Reduced number of MCMC samples for dual-endpoint example in vignette to be
+  able to plot the vignette
+
+
 Version 0.0.22
 --------------------------------------------------------------------------------
 

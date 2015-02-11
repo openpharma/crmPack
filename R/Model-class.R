@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Son 18/01/2015 20:39>
+## Time-stamp: <[Model-class.R] by DSB Mon 02/02/2015 20:23>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -84,7 +84,8 @@
 ##' \code{\linkS4class{LogisticLogNormal}},
 ##' \code{\linkS4class{LogisticLogNormalSub}},
 ##' \code{\linkS4class{LogisticKadane}},
-##' \code{\linkS4class{DualEndpoint}}
+##' \code{\linkS4class{DualEndpoint}},
+##' \code{\linkS4class{ComboLogistic}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -1303,7 +1304,7 @@ validObject(DualEndpoint(mu=c(0, 1),
 ##' moment only the first order random walk produces useful results).
 ##'
 ##' That means, for the RW1 we assume
-##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim' Normal(0, \sigma^{2}_{\beta_{W}})},
+##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim Normal(0, \sigma^{2}_{\beta_{W}}),}
 ##' where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
 ##' gridpoint \eqn{x_{i}}.
 ##' For the RW2, the second-order differences instead of the first-order
@@ -2204,4 +2205,186 @@ validObject(LogisticNormalFixedMixture(components=
 
 
 
+##' Combo model with logistic regression
+##'
+##' Currently, this model is for double combination dose escalation trials.
+##' todo: Later, it will be extended to higher-order combinations. The model and
+##' code is building on the work by Simon Wandel et al (Novartis).
+##'
+##' The regression model is defined as follows. Let \eqn{odds(p)=p/(1-p)} be the
+##' odds transformation of the probability \eqn{p}, such that \eqn{logit(p) =
+##' log(odds(p))\}. Let \eqn{x_i} be the dose of drug i=1,2, and \eqn{p(x_1, x_2)}
+##' be the probability of DLT with doses \eqn{x_1} and \eqn{x_2}. The reference
+##' doses for the two compounds are again denoted by stars. Then the model
+##' assumes:
+##' \deqn{odds(p(x_1, x_2)) = odds(p_0(x_1, x_2)) \cdot \exp(\eta x_1/x_1^{*}
+##' x_2/x_2^{*}),}
+##' where \eqn{\eta} is the interaction coefficient (positive values correspond
+##' to synergistic toxicity, zero corresponds to additive effect without
+##' interaction, and negative values correspond to antagonistic toxicity). A
+##' normal prior
+##' \deqn{\eta \sim Normal(\gamma, \tau^-1)}
+##' is used.
+##' Under no interaction with \eqn{\eta=0}, this reduces the probability
+##' \eta{odds(p(x_1, x_2))} to
+##' \deqn{p_0(x_1, x_2) = p(x_1) + p(x_2) - p(x_1)p(x_2) = 1 - (1 - p(x_1))(1 -
+##' p(x_2)).}
+##' Now for the single-agent DLT probabilities \eqn{p(x_1)} and \eqn{p(x_2)} we
+##' assume the logistic log-normal models (compare
+##' \code{\linkS4class{LogisticLogNormal}}):
+##' \deqn{logit[p(x_i)] = \alpha_i + \beta_i \cdot \log(x_i/x_i^{*}),}
+##' with prior
+##' \deqn{(\alpha_i, \log(\beta_i)) \sim Normal(\mu_i, \Sigma_i)}
+##' for \eqn{i=1,2}. todo: Note that in principle any model could be used for the
+##' individual agents. For now we stick to this simple, fixed implementation.
+##'
+##' @slot singlePriors a list with one \code{\linkS4class{LogisticLogNormal}}
+##' model per drug specifying the bivariate log normal prior described above.
+##' @slot gamma the mean for the interaction parameter
+##' @slot tau the precision for the interaction parameter
+##'
+##' @export
+##' @keywords classes
+.ComboLogistic <-
+    setClass(Class="ComboLogistic",
+             representation(singlePriors="list",
+                            gamma="numeric",
+                            tau="numeric"),
+             prototype(singlePriors=
+                           list(a=LogisticLogNormal(),
+                                b=LogisticLogNormal()),
+                       gamma=0,
+                       tau=1),
+             contains="Model",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     o$check(identical(length(object@singlePriors), 2L),
+                             "2 drugs can be combined currently")
+                     o$check(all(sapply(object@singlePriors, is,
+                                        "LogisticLogNormal")),
+                             "all singlePriors elements must be of class LogisticLogNormal")
+                     o$check(is.scalar(object@gamma),
+                             "gamma must be scalar")
+                     o$check(is.scalar(object@tau) && (object@tau > 0),
+                             "tau must be positive scalar")
+
+                     o$result()
+                 })
+validObject(.ComboLogistic())
+
+##' Initialization function for the "ComboLogistic" class
+##'
+##' @param singlePriors a named list where each element is a
+##' \code{\linkS4class{LogisticLogNormal}} object, specifying the prior for this
+##' drug. The list names are the drug names.
+##' @param gamma see \code{\linkS4class{ComboLogistic}}
+##' @param tau see \code{\linkS4class{ComboLogistic}}
+##' @return the \code{\linkS4class{ComboLogistic}} object
+##'
+##' @export
+##' @keywords methods
+ComboLogistic <- function(singlePriors,
+                          gamma,
+                          tau)
+{
+    ## checks:
+    stopifnot(is.list(singlePriors),
+              all(sapply(singlePriors, is, "LogisticLogNormal")))
+
+    ## number of drugs:
+    nDrugs <- length(singlePriors)
+
+    ## currently only two drugs allowed:
+    identical(nDrugs, 2L)
+
+    ## required model specifications:
+    modelspecs <-
+        list(refDose=
+                 do.call(c,
+                         lapply(singlePriors, slot,
+                                "refDose")),
+             priorMean=
+                 do.call(cbind(singlePriors, slot, "mean")),
+             priorPrec=
+                 array(data=
+                           do.call(c,
+                                   lapply(singlePriors, function(x){
+                                       solve(slot(x, "cov"))})),
+                       dim=c(2, 2, length(singlePriors))),
+             drugNames=names(singlePriors),
+             gamma=gamma,
+             tau=tau,
+             nDrugs=nDrugs)
+
+    ## data model:
+    datamodel <- function(){
+        ## the logistic likelihood:
+        for (i in 1:nObs)
+        {
+            y[i] ~ dbern(p[i])
+            p[i] <- odds[i]/(1 + odds[i])
+
+            ## note: these appear to be generic to more than 2 drugs,
+            ## but are not so easily generalized!!
+            ## todo: look carefully at the formulas for more than 2 drugs
+            ## later...
+            odds[i] <- odds0[i] * exp(eta * prod(StandDoses[i, ]))
+            odds0[i] <- sum(odds[i, ]) + prod(odds[i, ])
+
+            ## calculate single agent odds
+            for(j in 1:nDrugs)
+            {
+                StandDoses[i, j] <- x[i] / refDose[j]
+                odds[i, j] <-  exp(lin[i, j])
+                ## step function here to avoid numeric problems:
+                ## if linpred < -20, it will be set to -20,
+                ## if linpred > 20, it will be set to 20.
+                lin[i, j] <- linpred[i, j] +
+                    step(-20 - linpred[i,j]) * (-20 - linpred[i,j]) +
+                        step(linpred[i,j] - 20) * (20 - linpred[i,j])
+                ## note if StandDoses[i,j]=0, then linpred[i,j]=-Inf, and
+                ## lin[i,j] = -20.
+                linpred[i, j] <- alpha0[j] + alpha1[j] * log(StandDoses[i, j])
+            }
+        }
+    }
+
+    ## prior model:
+
+
+    ## todo: cont here
+    .ComboLogistic(singlePriors=singlePriors,
+                   gamma=gamma,
+                   tau=tau,
+                   datamodel=datamodel,
+                   priormodel=priormodel,
+                   datanames=
+                       c("nObs", "w", "x", "xLevel", "y", "nGrid"),
+                   modelspecs=
+                       function(){
+                           modelspecs
+                       },
+                   dose=
+                       function(prob, betaZ){
+                           ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+                           return(ret)
+                       },
+                   prob=
+                       function(dose, betaZ){
+                           ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose)
+                           return(ret)
+                       },
+                   init=
+                      function(){
+                      },
+                  sample=sample)
+}
+validObject(ComboLogistic())
+
+
+
+
+## ============================================================
 

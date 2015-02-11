@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Sam 17/01/2015 18:56>
+## Time-stamp: <[mcmc.R] by DSB Fre 23/01/2015 16:17>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -23,8 +23,6 @@
 ## --------------------------------------------------
 
 
-##' Obtain posterior samples for all model parameters
-##'
 ##' Obtain posterior samples for all model parameters
 ##'
 ##' This is the function to actually run the MCMC machinery to produce posterior
@@ -187,9 +185,11 @@ setMethod("mcmc",
                   ret <- lapply(samples,
                                 function(x) {
                                     ## take the first chain (because we use only
-                                    ## one anyway), discard the burnin
-                                    x <- x[, - seq_len(options@burnin /
-                                                       options@step), 1]
+                                    ## one anyway), and take only the last
+                                    ## sampleSize samples (equivalent to discarding
+                                    ## the burnin)
+                                    x <- x[, tail(seq_len(ncol(x)),
+                                                  sampleSize(options)), 1]
                                     ## transpose if it is a matrix
                                     ## (in case that there are multiple parameters
                                     ## in a node)
