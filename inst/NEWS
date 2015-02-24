@@ -1,6 +1,15 @@
 Version 0.0.23
 --------------------------------------------------------------------------------
 
+* Introduced combination designs via new classes:
+  ComboData, ComboLogistic
+
+* Introduced GeneralModel class, from which then the class Model for single
+  agent dose escalation derives. Another branch is currently the ComboLogistic
+  model for multiple agent combinations. Similarly introduced GeneralData class,
+  from which the class Data for single agent derives, separately from that is
+  the subclass DataCombo.
+
 * Fixed bug in mcmc function which led to error
   "all data elements must have as many rows as the sample size was"
 

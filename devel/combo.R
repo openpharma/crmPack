@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[combo.R] by DSB Son 01/02/2015 18:10>
+## Time-stamp: <[combo.R] by DSB Son 15/02/2015 20:02>
 ##
 ## Description:
 ## Test the combo stuff. For development only!!
@@ -42,11 +42,24 @@ data2 <- update(data,
 library(ggplot2)
 plot(data)
 
-## define the model
-## todo: cont here
+## load model code
 source("../R/Model-class.R")
-source("../R/Model-methods.R")
 
+## define the model
+model <- ComboLogistic(singlePriors=
+                           list(a=
+                                    LogisticLogNormal(mean=c(0, 1),
+                                                      cov=diag(2),
+                                                      refDose=10),
+                                b=
+                                    LogisticLogNormal(mean=c(1, 2),
+                                                      cov=diag(2),
+                                                      refDose=20)),
+                       gamma=0,
+                       tau=0.4)
+
+
+## try sampling from the model:
 
 source("../R/McmcOptions-class.R")
 source("../R/McmcOptions-methods.R")
@@ -63,57 +76,28 @@ source("../R/Samples-class.R")
 ## obtain the samples
 library(rjags)
 
-
 samples <- mcmc(data, model, options, verbose=TRUE)
 
 str(samples)
 
-plot(samples@data$betaW[, 40], type="l")
-plot(samples@data$betaW[, 30], type="l")
-## ok, so we don't have convergence for RW2 at least with JAGS!
-## there is convergence with WinBUGS however.
-
 source("../R/Samples-methods.R")
-
 
 ## use the ggmcmc package for convergence checks. we provide the extract function
 ## for this purpose:
 library(ggmcmc)
-betaZ <- get(samples, "betaZ")
-str(betaZ)
 
-ggs_traceplot(betaZ)
-ggs_density(betaZ)
-ggs_autocorrelation(betaZ)
-ggs_running(betaZ)
+alpha0samples <- get(samples, "alpha0")
+ggs_traceplot(alpha0samples)
 
-mode <- get(samples, "mode")
-ggs_traceplot(mode)
+alpha1samples <- get(samples, "alpha1")
+ggs_traceplot(alpha1samples)
 
-delta1 <- get(samples, "delta1")
-ggs_traceplot(delta1)
-
-E0 <- get(samples, "E0")
-ggs_traceplot(E0)
-
-Emax <- get(samples, "Emax")
-ggs_traceplot(Emax)
-
-ggs_traceplot(get(samples, "precW"))
-
-betaW <- get(samples, "betaW", 6:10)
-str(betaW)
-
-ggs_traceplot(betaW)
-
-rho <- get(samples, "rho")
-ggs_traceplot(rho)
-plot(rho)
-ggs_histogram(rho)
+ggs_traceplot(get(samples, "eta"))
 
 ## ok now we want to plot the fit:
 source("../R/Model-methods.R")
 
+## todo: cont here
 plot(samples, model, data)
 x11()
 plot(samples, model, data, extrapolate=FALSE)

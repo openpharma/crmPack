@@ -3,6 +3,7 @@
 \docType{methods}
 \name{fit}
 \alias{fit}
+\alias{fit,Samples,ComboLogistic,DataCombo-method}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
 \alias{fit,Samples,Model,Data-method}
 \title{Fit method for the Samples class}
@@ -13,6 +14,11 @@ fit(object, model, data, ...)
   points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
 
 \S4method{fit}{Samples,DualEndpoint,DataDual}(object, model, data,
+  quantiles = c(0.025, 0.975), middle = mean, ...)
+
+\S4method{fit}{Samples,ComboLogistic,DataCombo}(object, model, data,
+  focus = head(names(model@singlePriors), 2L),
+  points = as.matrix(expand.grid(data@doseGrid[focus])),
   quantiles = c(0.025, 0.975), middle = mean, ...)
 }
 \arguments{
@@ -31,7 +37,19 @@ grid}
 \item{middle}{the function for computing the middle point. Default:
 \code{\link{mean}}}
 
+\item{focus}{two drug names of this combo for which the model fit should be
+produced. Defaults to the first two drugs.}
+
 \item{\dots}{unused}
+
+\item{points}{matrix with the dose combos at which the fit is requested.
+Default is the expanded dose grid of the focus drugs.}
+
+\item{quantiles}{the quantiles to be calculated (default: 0.025 and
+0.975)}
+
+\item{middle}{the function for computing the middle point. Default:
+\code{\link{mean}}}
 }
 \value{
 the data frame with required information (see method details)
@@ -50,6 +68,9 @@ and upper quantiles for the dose-toxicity curve
 lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
 "Biomarker") curves, for all grid points (Note that currently only the grid
 points can be used, because the DualEndpointRW models only allow that)
+
+\item \code{object = Samples,model = ComboLogistic,data = DataCombo}: This method returns a data frame with doses for the two
+focus drugs, middle, lower and upper quantiles for the dose-toxicity surface
 }}
 \keyword{methods}
 

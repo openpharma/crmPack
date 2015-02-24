@@ -6,7 +6,7 @@
 \alias{Data-class}
 \title{Class for the data input}
 \description{
-Class for the data input
+This class inherits from \code{\linkS4class{GeneralData}}.
 }
 \section{Slots}{
 
@@ -15,14 +15,8 @@ Class for the data input
 
 \item{\code{y}}{the vector of toxicity events (0 or 1 integers)}
 
-\item{\code{ID}}{unique patient IDs (integer vector)}
-
-\item{\code{cohort}}{the cohort indices (sorted values from 0, 1, 2, ...)}
-
 \item{\code{doseGrid}}{the vector of all possible doses (sorted), i.e. the dose
 grid}
-
-\item{\code{nObs}}{number of observations}
 
 \item{\code{nGrid}}{number of gridpoints}
 

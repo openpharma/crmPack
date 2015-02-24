@@ -3,17 +3,18 @@
 \docType{methods}
 \name{prob}
 \alias{prob}
-\alias{prob,numeric,Model,Samples-method}
+\alias{prob,numeric,ModelOrComboLogistic,Samples-method}
 \title{Compute the probability for a given dose, given model and samples}
 \usage{
 prob(dose, model, samples, ...)
 
-\S4method{prob}{numeric,Model,Samples}(dose, model, samples, ...)
+\S4method{prob}{numeric,ModelOrComboLogistic,Samples}(dose, model, samples, ...)
 }
 \arguments{
 \item{dose}{the dose}
 
-\item{model}{the \code{\linkS4class{Model}}}
+\item{model}{the \code{\linkS4class{Model}} or
+\code{\linkS4class{ComboLogistic}} object}
 
 \item{samples}{the \code{\linkS4class{Samples}}}
 
@@ -24,7 +25,7 @@ Compute the probability for a given dose, given model and samples
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{dose = numeric,model = Model,samples = Samples}: 
+\item \code{dose = numeric,model = ModelOrComboLogistic,samples = Samples}: 
 }}
 \keyword{methods}
 

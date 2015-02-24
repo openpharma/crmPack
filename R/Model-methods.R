@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-methods.R] by DSB Mon 05/01/2015 16:46>
+## Time-stamp: <[Model-methods.R] by DSB Son 15/02/2015 18:45>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -67,7 +67,8 @@ setMethod("dose",
 ##' Compute the probability for a given dose, given model and samples
 ##'
 ##' @param dose the dose
-##' @param model the \code{\linkS4class{Model}}
+##' @param model the \code{\linkS4class{Model}} or
+##' \code{\linkS4class{ComboLogistic}} object
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##'
@@ -82,11 +83,14 @@ setGeneric("prob",
            },
            valueClass="numeric")
 
+setClassUnion(name="ModelOrComboLogistic",
+              members=c("Model", "ComboLogistic"))
+
 ##' @describeIn prob
 setMethod("prob",
           signature=
           signature(dose="numeric",
-                    model="Model",
+                    model="ModelOrComboLogistic",
                     samples="Samples"),
           def=
           function(dose, model, samples, ...){

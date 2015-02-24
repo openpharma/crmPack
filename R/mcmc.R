@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Fre 23/01/2015 16:17>
+## Time-stamp: <[mcmc.R] by DSB Son 15/02/2015 17:15>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -28,10 +28,10 @@
 ##' This is the function to actually run the MCMC machinery to produce posterior
 ##' samples from all model parameters and required derived values. It is a
 ##' generic function, so that customized versions may be conveniently defined
-##' for specific subclasses of Data, Model, and McmcOptions input.
+##' for specific subclasses of GeneralData, GeneralModel, and McmcOptions input.
 ##'
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param model The model input, an object of class \code{\linkS4class{Model}}
+##' @param data The data input, an object of class \code{\linkS4class{GeneralData}}
+##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
 ##' @param options MCMC options, an object of class
 ##' \code{\linkS4class{McmcOptions}}
 ##' @param \dots unused
@@ -64,8 +64,8 @@ setGeneric("mcmc",
 ##' @importFrom rjags jags.model jags.samples
 setMethod("mcmc",
           signature=
-          signature(data="Data",
-                    model="Model",
+          signature(data="GeneralData",
+                    model="GeneralModel",
                     options="McmcOptions"),
           def=
           function(data, model, options,

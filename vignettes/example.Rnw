@@ -1002,7 +1002,7 @@ nextDose$value
 A corresponding plot can be produced by printing the ``plot'' element of the
 returned list:
 
-<<dual-nextdose-plot>>=
+<<dual-nextdose-plot, fig=TRUE>>=
 print(nextDose$plot)
 @
 

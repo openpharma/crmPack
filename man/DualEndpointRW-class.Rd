@@ -13,7 +13,7 @@ moment only the first order random walk produces useful results).
 }
 \details{
 That means, for the RW1 we assume
-\deqn{\beta_{W,i} - \beta_{W,i-1} \sim' Normal(0, \sigma^{2}_{\beta_{W}})},
+\deqn{\beta_{W,i} - \beta_{W,i-1} \sim Normal(0, \sigma^{2}_{\beta_{W}}),}
 where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
 gridpoint \eqn{x_{i}}.
 For the RW2, the second-order differences instead of the first-order

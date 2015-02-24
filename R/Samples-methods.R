@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Son 18/01/2015 23:28>
+## Time-stamp: <[Samples-methods.R] by DSB Son 15/02/2015 20:02>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -275,6 +275,83 @@ setMethod("fit",
               return(cbind(start, biomResults))
           })
 
+
+## --------------------------------------------------
+## Get fitted combo dose-tox surface from Samples
+## --------------------------------------------------
+
+##' @param focus two drug names of this combo for which the model fit should be
+##' produced. Defaults to the first two drugs.
+##' @param points matrix with the dose combos at which the fit is requested.
+##' Default is the expanded dose grid of the focus drugs.
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##'
+##' @describeIn fit This method returns a data frame with doses for the two
+##' focus drugs, middle, lower and upper quantiles for the dose-toxicity surface
+setMethod("fit",
+          signature=
+          signature(object="Samples",
+                    model="ComboLogistic",
+                    data="DataCombo"),
+          def=
+          function(object,
+                   model,
+                   data,
+                   focus=head(names(model@singlePriors), 2L),
+                   points=as.matrix(expand.grid(data@doseGrid[focus])),
+                   quantiles=c(0.025, 0.975),
+                   middle=mean,
+                   ...){
+              ## some checks
+              stopifnot(identical(length(focus), 2L),
+                        all(focus %in% names(model@singlePriors)),
+                        identical(focus, colnames(points)),
+                        is.matrix(points))
+
+              ## todo: later consider 0 doses for non-focus drugs,
+              ## or use temporary dual model (similarly as we use
+              ## temporary single model for the single focus)
+              nonFocus <- setdiff(names(model@singlePriors),
+                                  focus)
+              if(length(nonFocus))
+              {
+                  stop("only dual combo supported right now")
+              }
+
+              ## first we have to get samples from the dose-tox
+              ## surface at the points.
+              probSamples <- matrix(nrow=sampleSize(object@options),
+                                    ncol=nrow(points))
+
+              ## evaluate the probs, for all samples.
+              for(i in seq_len(nrow(points)))
+              {
+                  ## Now we want to evaluate for the
+                  ## following dose:
+                  probSamples[, i] <- prob(dose=points[i, ],
+                                           model,
+                                           object)
+              }
+
+              ## extract middle surface
+              middleSurface <- apply(probSamples, 2L, FUN=middle)
+
+              ## extract quantiles
+              quantSurface <- apply(probSamples, 2L, quantile,
+                                    prob=quantiles)
+
+              ## now create the data frame
+              ret <- data.frame(points,
+                                middle=middleSurface,
+                                lower=quantSurface[1, ],
+                                upper=quantSurface[2, ])
+
+              ## return it
+              return(ret)
+          })
 
 ## --------------------------------------------------
 ## Approximate posterior with (log) normal distribution
@@ -581,6 +658,119 @@ setMethod("plot",
 
               ## arrange both plots side by side
               ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
+              return(ret)
+          })
+
+## --------------------------------------------------
+## Plot dose-tox fit from a combo model
+## --------------------------------------------------
+
+
+##' Plotting dose-toxicity combo model fits
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{ComboLogistic}} object
+##' @param data the \code{\linkS4class{DataCombo}} object
+##' @param focus one or two drug names of this combo for which the model fit
+##' plot should be produced
+##' @param resolution number of points to be used in each dimension for 2D plots
+##' (default: 20) - higher number is higher resolution
+##' @param \dots passed to the single agent plotting method if \code{focus}
+##' specifies only one drug name
+##' @return todo
+##'
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+setMethod("plot",
+          signature=
+          signature(x="Samples",
+                    y="ComboLogistic"),
+          def=
+          function(x, y, data, focus, resolution=20, ...){
+
+              ## get the focus
+              possibleDrugNames <- names(y@singlePriors)
+              focus <- match.arg(focus, choices=possibleDrugNames,
+                                 several.ok=TRUE)
+              if(length(focus) > 2L)
+              {
+                  stop("maximum two drug names can be the focus")
+              }
+              if(length(focus) == 0L)
+              {
+                  stop("drug names not found")
+              }
+
+              ## if the focus is on one drug only, we can go to
+              ## single agent method now.
+              if(length(focus) == 1L)
+              {
+                  whichDrug <- match(focus, possibleDrugNames)
+
+                  newSamples <- Samples(data=
+                                            list(alpha0=x@alpha0[, whichDrug],
+                                                 alpha1=x@alpha1[, whichDrug]),
+                                        options=x@options)
+                  newModel <- y@singlePriors[[focus]]
+                  newData <- Data(x=data@x[, focus],
+                                  y=data@y,
+                                  ID=data@ID,
+                                  cohort=data@cohort,
+                                  doseGrid=data@doseGrid[[focus]])
+                  return(plot(newSamples, newModel, newData))
+              }
+
+              ## now from here on we have two-dimensional situation.
+              ## todo: later check if this works correctly in triple combos etc.
+
+              ## check resolution
+              resolution <- as.integer(resolution)
+              stopifnot(resolution > 2)
+
+              ## get the grid matrix:
+              seq1 <- data@doseGrid[[focus[1]]]
+              seq1 <- seq(from=min(seq1), to=max(seq1), length=resolution)
+              seq2 <- data@doseGrid[[focus[2]]]
+              seq2 <- seq(from=min(seq2), to=max(seq2), length=resolution)
+              points <- as.matrix(expand.grid(one=seq1,
+                                              two=seq2))
+              colnames(points) <- focus
+
+              ## get the fit
+              plotData <- fit(x,
+                              model=y,
+                              data=data,
+                              focus=focus,
+                              points=points,
+                              quantiles=c(0.025, 0.975),
+                              middle=mean)
+              ## todo: this is quite slow at the moment, needs speed-up
+
+              names(plotData)[1:2] <- c("x1", "x2")
+
+              ## make the plot
+              ret <- ggplot2::ggplot(plotData[, c("x1", "x2", "middle")],
+                                     aes(x1,x2,middle)) +
+                                         geom_tile(aes(fill=middle))
+
+              breaks <- seq(from=0, to=1, by=0.1)
+              ## from RColorBrewer package:
+              ## colorRampPalette(c("green", "yellow", "orange", "red", "red"))(n = 10)
+              colors <- c("#00FF00", "#38FF00", "#71FF00", "#AAFF00", "#E2FF00",
+                          "#FFE200",  "#FFAA00", "#FF7100", "#FF3800",
+                          "#FF0000")
+              ret <- ret +
+                  stat_contour(aes(x1,x2,z=middle),
+                               colour="black", size=0.3,
+                               breaks=breaks) +
+                                   scale_fill_gradientn(colours=colors,
+                                                        breaks=breaks,
+                                                        labels=format(breaks))
+
+              ## todo: cont here
+              ret
+
+
               return(ret)
           })
 

@@ -4,21 +4,21 @@
 \name{mcmc}
 \alias{mcmc}
 \alias{mcmc,Data,LogisticNormal,McmcOptions-method}
-\alias{mcmc,Data,Model,McmcOptions-method}
+\alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
 \title{Obtain posterior samples for all model parameters}
 \usage{
 mcmc(data, model, options, ...)
 
-\S4method{mcmc}{Data,Model,McmcOptions}(data, model, options,
+\S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options,
   program = c("JAGS", "OpenBUGS", "WinBUGS"), verbose = FALSE, ...)
 
 \S4method{mcmc}{Data,LogisticNormal,McmcOptions}(data, model, options,
   verbose = FALSE, ...)
 }
 \arguments{
-\item{data}{The data input, an object of class \code{\linkS4class{Data}}}
+\item{data}{The data input, an object of class \code{\linkS4class{GeneralData}}}
 
-\item{model}{The model input, an object of class \code{\linkS4class{Model}}}
+\item{model}{The model input, an object of class \code{\linkS4class{GeneralModel}}}
 
 \item{options}{MCMC options, an object of class
 \code{\linkS4class{McmcOptions}}}
@@ -38,11 +38,11 @@ The posterior samples, an object of class
 This is the function to actually run the MCMC machinery to produce posterior
 samples from all model parameters and required derived values. It is a
 generic function, so that customized versions may be conveniently defined
-for specific subclasses of Data, Model, and McmcOptions input.
+for specific subclasses of GeneralData, GeneralModel, and McmcOptions input.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{data = Data,model = Model,options = McmcOptions}: Standard method which uses JAGS/BUGS
+\item \code{data = GeneralData,model = GeneralModel,options = McmcOptions}: Standard method which uses JAGS/BUGS
 
 \item \code{data = Data,model = LogisticNormal,options = McmcOptions}: The fast method for the LogisticNormal class
 }}

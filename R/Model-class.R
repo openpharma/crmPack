@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Mon 02/02/2015 20:23>
+## Time-stamp: <[Model-class.R] by DSB Die 24/02/2015 18:36>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -16,10 +16,79 @@
 
 ## ============================================================
 
-##' Class for the model input
+##' General class for model input
 ##'
 ##' This is the general model class, from which all other specific models
 ##' inherit.
+##'
+##' The \code{datamodel} must obey the convention that the data input is
+##' called exactly as in the corresponding data class.
+##' All prior distributions for parameters should be contained in the
+##' model function \code{priormodel}. The background is that this can
+##' be used to simulate from the prior distribution, before obtaining any
+##' data.
+##'
+##' @slot datamodel a function representing the BUGS data model specification
+##' (see the details above)
+##' @slot priormodel a function representing the BUGS prior specification
+##' (see the details above)
+##' @slot datanames The names of all data slots that are used in the
+##' \code{datamodel} and/or \code{priormodel} definition. Note that you cannot
+##' specify more variables than those that are really used in the model!
+##' @slot modelspecs a function computing the list of the data model and prior
+##' model specifications that are required for fully specifying them (e.g. prior
+##' parameters, reference dose, etc.), based on the data
+##' slots that are then required as arguments of this function. This will then
+##' be passed to BUGS for the computations.
+##' @slot init a function computing the list of starting values for parameters
+##' required to be initialized in the MCMC sampler, based on the
+##' data slots that are then required as arguments of this
+##' function
+##' @slot sample names of all parameters from which you would like to save the
+##' MCMC samples.
+##'
+##' @seealso \code{\linkS4class{Model}}, \code{\linkS4class{ComboLogistic}}
+##'
+##' @export
+##' @keywords classes
+.GeneralModel <-
+    setClass(Class="GeneralModel",
+             representation(datamodel="function",
+                            priormodel="function",
+                            datanames="character",
+                            modelspecs="function",
+                            init="function",
+                            sample="character"),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     ## put here all names of data class slots
+                     allDatanames <- c("x", "y", "w",
+                                       "doseGrid", "nObs", "nGrid", "xLevel")
+
+                     o$check(all(names(formals(object@init)) %in%
+                                 allDatanames),
+                             "arguments of the init function must be data names")
+                     o$check(all(object@datanames %in% allDatanames),
+                             paste("data names must be in",
+                                   paste(allDatanames, collapse=", ")))
+
+                     o$result()
+         })
+validObject(.GeneralModel())
+
+## no init function for this one
+
+
+
+## ============================================================
+
+##' Class for the model input
+##'
+##' This is the model class for single agent dose escalation,
+##' from which all other specific models inherit. It inherits all slots
+##' from \code{\linkS4class{GeneralModel}}.
 ##'
 ##' The \code{datamodel} must obey the convention that the data input is
 ##' called exactly as in the \code{\linkS4class{Data}} class.
@@ -51,34 +120,12 @@
 ##' Note that \code{dose} and \code{prob} are the inverse functions of each
 ##' other.
 ##'
-##' @slot datamodel a function representing the BUGS data model specification
-##' (see the details above)
-##' @slot priormodel a function representing the BUGS prior specification
-##' (see the details above)
-##' @slot datanames The names of all \code{\linkS4class{Data}} slots that are
-##' used in the \code{datamodel} and/or \code{priormodel} definition. Note that
-##' you cannot specify more variables than those that are really used in the
-##' model!
-##' @slot modelspecs a function computing the list of the data model and prior
-##' model specifications that are required for fully specifying them (e.g. prior
-##' parameters, reference dose, etc.), based on the \code{\linkS4class{Data}}
-##' slots that are then required as arguments of this function. This will then
-##' be passed to BUGS for the computations.
-##' todo: if we remove DualEndpointOld, then revert this back to list instead
-##' of function for simplicity!!
 ##' @slot dose a function computing the dose reaching a specific target
 ##' probability, based on the model parameters and additional prior settings
 ##' (see the details above)
 ##' @slot prob a function computing the probability of toxicity for a specific
 ##' dose, based on the model parameters and additional prior settings (see the
 ##' details above)
-##' @slot init a function computing the list of starting values for parameters
-##' required to be initialized in the MCMC sampler, based on the
-##' \code{\linkS4class{Data}} slots that are then required as arguments of this
-##' function
-##' @slot sample names of all parameters from which you would like to save the
-##' MCMC samples. These must include the ones required by the \code{dose} and
-##' \code{prob} functions.
 ##'
 ##' @seealso \code{\linkS4class{LogisticNormal}},
 ##' \code{\linkS4class{LogisticLogNormal}},
@@ -91,28 +138,13 @@
 ##' @keywords classes
 .Model <-
     setClass(Class="Model",
-             representation(datamodel="function",
-                            priormodel="function",
-                            datanames="character",
-                            modelspecs="function",
-                            dose="function",
-                            prob="function",
-                            init="function",
-                            sample="character"),
+             representation(dose="function",
+                            prob="function"),
+             contains="GeneralModel",
              validity=
                  function(object){
                      o <- Validate()
 
-                     ## names of the Data class slots
-                     allDatanames <- c("x", "y", "w",
-                                       "doseGrid", "nObs", "nGrid", "xLevel")
-
-                     o$check(all(names(formals(object@init)) %in%
-                                 allDatanames),
-                             "arguments of the init function must be data names")
-                     o$check(all(object@datanames %in% allDatanames),
-                             paste("data names must be in",
-                                   paste(allDatanames, collapse=", ")))
                      o$check(all(names(formals(object@dose)) %in%
                                  c("prob", object@sample)),
                              "objects of dose function incorrect")
@@ -2208,12 +2240,13 @@ validObject(LogisticNormalFixedMixture(components=
 ##' Combo model with logistic regression
 ##'
 ##' Currently, this model is for double combination dose escalation trials.
+##'
 ##' todo: Later, it will be extended to higher-order combinations. The model and
 ##' code is building on the work by Simon Wandel et al (Novartis).
 ##'
 ##' The regression model is defined as follows. Let \eqn{odds(p)=p/(1-p)} be the
 ##' odds transformation of the probability \eqn{p}, such that \eqn{logit(p) =
-##' log(odds(p))\}. Let \eqn{x_i} be the dose of drug i=1,2, and \eqn{p(x_1, x_2)}
+##' log(odds(p))}. Let \eqn{x_i} be the dose of drug i=1,2, and \eqn{p(x_1, x_2)}
 ##' be the probability of DLT with doses \eqn{x_1} and \eqn{x_2}. The reference
 ##' doses for the two compounds are again denoted by stars. Then the model
 ##' assumes:
@@ -2226,7 +2259,7 @@ validObject(LogisticNormalFixedMixture(components=
 ##' \deqn{\eta \sim Normal(\gamma, \tau^-1)}
 ##' is used.
 ##' Under no interaction with \eqn{\eta=0}, this reduces the probability
-##' \eta{odds(p(x_1, x_2))} to
+##' \eqn{\eta{odds(p(x_1, x_2))}} to
 ##' \deqn{p_0(x_1, x_2) = p(x_1) + p(x_2) - p(x_1)p(x_2) = 1 - (1 - p(x_1))(1 -
 ##' p(x_2)).}
 ##' Now for the single-agent DLT probabilities \eqn{p(x_1)} and \eqn{p(x_2)} we
@@ -2238,10 +2271,24 @@ validObject(LogisticNormalFixedMixture(components=
 ##' for \eqn{i=1,2}. todo: Note that in principle any model could be used for the
 ##' individual agents. For now we stick to this simple, fixed implementation.
 ##'
+##' The \code{prob} function has as first argument \code{doses}, which is a dose
+##' combination: a vector with names specifying the drug names. Additional
+##' arguments are the model parameters \code{alpha0} (intercepts, nSamples x
+##' nDrugs matrix), \code{alpha1} (slopes, nSamples x nDrugs matrix) and
+##' \code{eta} (vector of length nSamples), containing the nSamples MCMC
+##' samples. Then \code{prob} computes the resulting samples of the probability
+##' of toxicity at that dose combination. Again here, the function must
+##' vectorize over the model parameters.
+##'
 ##' @slot singlePriors a list with one \code{\linkS4class{LogisticLogNormal}}
 ##' model per drug specifying the bivariate log normal prior described above.
+##' The names of this list are the drug names for this model - they have to be
+##' specified correctly in any interactions with the model object (e.g. when
+##' calling the \code{prob} function).
 ##' @slot gamma the mean for the interaction parameter
 ##' @slot tau the precision for the interaction parameter
+##' @slot prob function calculating the probability of toxicity for a specific
+##' dose combination, based on the model parameters (see the details above)
 ##'
 ##' @export
 ##' @keywords classes
@@ -2249,19 +2296,20 @@ validObject(LogisticNormalFixedMixture(components=
     setClass(Class="ComboLogistic",
              representation(singlePriors="list",
                             gamma="numeric",
-                            tau="numeric"),
+                            tau="numeric",
+                            prob="function"),
              prototype(singlePriors=
-                           list(a=LogisticLogNormal(),
-                                b=LogisticLogNormal()),
+                           list(a=.LogisticLogNormal(),
+                                b=.LogisticLogNormal()),
                        gamma=0,
                        tau=1),
-             contains="Model",
+             contains="GeneralModel",
              validity=
                  function(object){
                      o <- Validate()
 
                      o$check(identical(length(object@singlePriors), 2L),
-                             "2 drugs can be combined currently")
+                             "Only 2 drugs can be combined currently")
                      o$check(all(sapply(object@singlePriors, is,
                                         "LogisticLogNormal")),
                              "all singlePriors elements must be of class LogisticLogNormal")
@@ -2296,8 +2344,8 @@ ComboLogistic <- function(singlePriors,
     ## number of drugs:
     nDrugs <- length(singlePriors)
 
-    ## currently only two drugs allowed:
-    identical(nDrugs, 2L)
+    ## get the drug names
+    drugNames <- names(singlePriors)
 
     ## required model specifications:
     modelspecs <-
@@ -2306,20 +2354,21 @@ ComboLogistic <- function(singlePriors,
                          lapply(singlePriors, slot,
                                 "refDose")),
              priorMean=
-                 do.call(cbind(singlePriors, slot, "mean")),
+                 do.call(cbind,
+                         lapply(singlePriors, slot, "mean")),
              priorPrec=
                  array(data=
                            do.call(c,
                                    lapply(singlePriors, function(x){
                                        solve(slot(x, "cov"))})),
                        dim=c(2, 2, length(singlePriors))),
-             drugNames=names(singlePriors),
              gamma=gamma,
              tau=tau,
              nDrugs=nDrugs)
 
     ## data model:
-    datamodel <- function(){
+    datamodel <- function()
+    {
         ## the logistic likelihood:
         for (i in 1:nObs)
         {
@@ -2331,13 +2380,13 @@ ComboLogistic <- function(singlePriors,
             ## todo: look carefully at the formulas for more than 2 drugs
             ## later...
             odds[i] <- odds0[i] * exp(eta * prod(StandDoses[i, ]))
-            odds0[i] <- sum(odds[i, ]) + prod(odds[i, ])
+            odds0[i] <- sum(singleOdds[i, ]) + prod(singleOdds[i, ])
 
             ## calculate single agent odds
             for(j in 1:nDrugs)
             {
-                StandDoses[i, j] <- x[i] / refDose[j]
-                odds[i, j] <-  exp(lin[i, j])
+                StandDoses[i, j] <- x[i, j] / refDose[j]
+                singleOdds[i, j] <-  exp(lin[i, j])
                 ## step function here to avoid numeric problems:
                 ## if linpred < -20, it will be set to -20,
                 ## if linpred > 20, it will be set to 20.
@@ -2352,36 +2401,103 @@ ComboLogistic <- function(singlePriors,
     }
 
     ## prior model:
+    priormodel <- function()
+    {
+        ## normal prior on interaction parameter eta:
+        eta ~ dnorm(gamma, tau)
 
+        for(j in 1:nDrugs)
+        {
+            ## the multivariate normal prior on the
+            ## theta = c(alpha0, log(alpha1)):
+            theta[1:2, j] ~ dmnorm(priorMean[1:2, j],
+                                   priorPrec[1:2,
+                                             1:2,
+                                             j])
 
-    ## todo: cont here
+            ## extract actual coefficients
+            alpha0[j] <- theta[1, j]
+            alpha1[j] <- exp(theta[2, j])
+        }
+    }
+
     .ComboLogistic(singlePriors=singlePriors,
                    gamma=gamma,
                    tau=tau,
                    datamodel=datamodel,
                    priormodel=priormodel,
                    datanames=
-                       c("nObs", "w", "x", "xLevel", "y", "nGrid"),
+                       c("nObs", "y"),
+                   ## x is not taken directly from data, but first correctly
+                   ## ordered in the modelspecs function:
                    modelspecs=
-                       function(){
-                           modelspecs
-                       },
-                   dose=
-                       function(prob, betaZ){
-                           ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
-                           return(ret)
+                       function(x){
+                           c(list(x=x[, drugNames]),
+                             modelspecs)
                        },
                    prob=
-                       function(dose, betaZ){
-                           ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose)
+                       function(dose, alpha0, alpha1, eta){
+                           ## dose is the vector for all drugs,
+                           ## so only one combination.
+                           ## but alpha0 and alpha1 can be matrices (samples x drugs)
+                           ## and eta can be a vector -> samples!
+
+                           ## order doses
+                           dose <- dose[drugNames]
+
+                           ## calculate standardized dose
+                           standDose <- dose / modelspecs$refDose
+                           singleOdds <- matrix(nrow=nrow(alpha0),
+                                                ncol=ncol(alpha0))
+
+                           ## calculate single agent odds
+                           for(j in 1:nDrugs)
+                           {
+                               thisLinpred <- alpha0[, j] + alpha1[, j] *
+                                   log(standDose[j])
+
+                               ## step function here to avoid numeric problems:
+                               ## if linpred < -20, it will be set to -20,
+                               ## if linpred > 20, it will be set to 20, else it
+                               ## stays.
+                               thisLin <- ifelse(thisLinpred < -20, -20,
+                                                 ifelse(thisLinpred > 20,
+                                                        20,
+                                                        thisLinpred))
+
+                               singleOdds[, j] <-  exp(thisLin)
+                           }
+
+                           ## note: these appear to be generic to more than 2 drugs,
+                           ## but are not so easily generalized!!
+                           ## todo: look carefully at the formulas for more than 2 drugs
+                           ## later...
+                           odds0 <- rowSums(singleOdds) + apply(singleOdds, 1L, prod)
+                           odds <- odds0 * exp(eta * prod(standDose))
+
+                           ## so the final prob vector is:
+                           ret <- odds / (1 + odds)
+
                            return(ret)
                        },
                    init=
-                      function(){
-                      },
-                  sample=sample)
+                       function(){
+                           list(theta=
+                                    matrix(nrow=2L,
+                                           ncol=nDrugs,
+                                           data=
+                                               rep(c(0, 1),
+                                                   nDrugs)),
+                                eta=0)
+                       },
+                   sample=
+                       c("alpha0", "alpha1", "eta"))
 }
-validObject(ComboLogistic())
+validObject(ComboLogistic(singlePriors=
+                              list(a=.LogisticLogNormal(),
+                                   b=.LogisticLogNormal()),
+                          gamma=0,
+                          tau=1))
 
 
 
