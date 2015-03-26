@@ -540,6 +540,177 @@ setMethod("nextBest",
           })
 
 
+
+
+## --------------------------------------------------
+## The method for the dual endpoint Emax model
+## --------------------------------------------------
+
+##' @describeIn nextBest Find the next best dose based on the dual endpoint Emax
+##' model
+##'
+##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
+##' geom_hline geom_point
+##' @importFrom gridExtra arrangeGrob
+setMethod("nextBest",
+          signature=
+              signature(nextBest="NextBestDualEndpointEmax",
+                        doselimit="numeric",
+                        samples="Samples",
+                        model="DualEndpointEmax",
+                        data="Data"),
+          def=
+              function(nextBest, doselimit, samples, model, data, ...){
+                  
+                  ## get the biomarker level samples
+                  ## at the dose grid points.
+                  biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
+                                             ncol=data@nGrid)
+                  ## evaluate the biomLevels, for all samples.
+                  for(i in seq_len(data@nGrid))
+                  {
+                      ## Now we want to evaluate for the
+                      ## following dose:
+                      biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
+                                                         xLevel=i,
+                                                         model,
+                                                         samples)
+                  }
+                  ## biomLevelSamples <- samples@data$betaW
+                  
+                  ## now get samples from the dose-tox
+                  ## curve at the dose grid points.
+                  probSamples <- matrix(nrow=sampleSize(samples@options),
+                                        ncol=data@nGrid)
+                  ## evaluate the probs, for all samples.
+                  for(i in seq_len(data@nGrid))
+                  {
+                      ## Now we want to evaluate for the
+                      ## following dose:
+                      probSamples[, i] <- prob(dose=data@doseGrid[i],
+                                               model,
+                                               samples)
+                  }
+                  
+                  ## now for each sample, look which dose is maximizing the 
+                  ## simultaneous probability to be in the target biomarker 
+                  ## range and below overdose toxicity
+                  probTarget <- numeric(ncol(biomLevelSamples))
+                  probTarget <- sapply(seq(1,ncol(biomLevelSamples)),
+                                       function(x){
+                                           sum(biomLevelSamples[, x] >= nextBest@target[1]*samples@data$Emax &
+                                               biomLevelSamples[, x] <= nextBest@target[2]*samples@data$Emax &
+                                               probSamples[, x] <= nextBest@overdose[1]) / nrow(biomLevelSamples)
+                                       })
+                  
+                  
+                  ## Now compute marginal probabilities to be in
+                  ## overdose tox interval
+                  probOverdose <-
+                      colMeans((probSamples > nextBest@overdose[1]) &
+                                   (probSamples < nextBest@overdose[2]))
+                  
+                  ## which doses are eligible after accounting
+                  ## for maximum possible dose and discarding overdoses?
+                  dosesOK <- which((data@doseGrid <= doselimit) &
+                                       (probOverdose < nextBest@maxOverdoseProb))
+                  
+                  ## check if there are doses that are OK
+                  if(length(dosesOK))
+                  {
+                      ## what is the recommended dose level?
+                      
+                      ## if maximum target probability is higher than some numerical
+                      ## threshold, then take that level, otherwise stick to the
+                      ## maximum level that is OK:
+                      doseLevel <-
+                          if(max(probTarget[dosesOK]) > 0.05)
+                          {
+                              which.max(probTarget[dosesOK])
+                          } else {
+                              which.max(data@doseGrid[dosesOK])
+                          }
+                      
+                      ret <- data@doseGrid[dosesOK][doseLevel]
+                  } else {
+                      ## if none of the doses is OK:
+                      doseLevel <- NA
+                      ret <- NA
+                  }
+                  
+                  ## produce plot
+                  
+                  ## first for the target probability
+                  plot1 <- ggplot() +
+                      geom_bar(data=
+                                   data.frame(x=data@doseGrid,
+                                              y=probTarget * 100),
+                               aes(x=x, y=y),
+                               stat="identity",
+                               position="identity",
+                               width=1,
+                               colour="darkgreen",
+                               fill="darkgreen") +
+                      xlab("Dose") +
+                      ylab(paste("Target probability [%]")) +
+                      ylim(c(0, 100))
+                  
+                  plot1 <- plot1 +
+                      geom_vline(xintercept=doselimit,
+                                 lwd=1.1,
+                                 lty=2,
+                                 colour="black")
+                  
+                  if(length(dosesOK))
+                  {
+                      plot1 <- plot1 +
+                          geom_vline(xintercept=data@doseGrid[max(dosesOK)],
+                                     lwd=1.1,
+                                     lty=2,
+                                     colour="red")
+                      
+                      plot1 <- plot1 +
+                          geom_point(data=
+                                         data.frame(x=ret,
+                                                    y=probTarget[dosesOK][doseLevel] *
+                                                        100 + 0.03),
+                                     aes(x=x, y=y),
+                                     size=3,
+                                     pch=25,
+                                     col="red",
+                                     bg="red")
+                  }
+                  
+                  ## second for the overdosing probability
+                  plot2 <- ggplot() +
+                      geom_bar(data=
+                                   data.frame(x=data@doseGrid,
+                                              y=probOverdose * 100),
+                               aes(x=x, y=y),
+                               stat="identity",
+                               position="identity",
+                               width=1,
+                               colour="red",
+                               fill="red") +
+                      xlab("Dose") +
+                      ylab("Overdose probability [%]") +
+                      ylim(c(0, 100))
+                  
+                  plot2 <- plot2 +
+                      geom_hline(yintercept=nextBest@maxOverdoseProb * 100,
+                                 lwd=1.1,
+                                 lty=2,
+                                 colour="black")
+                  
+                  ## now plot them below each other
+                  plotJoint <- gridExtra::arrangeGrob(plot1, plot2, nrow=2)
+                  
+                  ## return value and plot
+                  return(list(value=ret,
+                              plot=plotJoint))
+              })
+
+
 ## ============================================================
 
 

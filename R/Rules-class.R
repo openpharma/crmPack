@@ -244,6 +244,71 @@ NextBestDualEndpoint <- function(target,
 }
 
 
+## --------------------------------------------------
+## Next best dose based on dual endpoint Emax model
+## --------------------------------------------------
+
+##' The class with the input for finding the next dose
+##' based on the dual endpoint Emax model
+##'
+##' This rule first excludes all doses that exceed the probability
+##' \code{maxOverdoseProb} of having an overdose toxicity, as specified by the
+##' overdose interval \code{overdose}. Then, it picks under the remaining
+##' admissible doses the one that maximizes simultaneously the probability to have the
+##' biomarker level in the \code{target} range, relative to the EMAX paramater of the
+##' Emax model, and the probability that toxicity is below \code{overdose}.
+##'
+##' @slot target the biomarker range, relative to EMAX, that
+##' needs to be reached. For example, (0.5,0.8) means that a dose within 50% and 80%
+##' of EMAX is considered as the target biomarker level.
+##' @slot overdose the overdose toxicity interval
+##' @slot maxOverdoseProb maximum overdose probability that is allowed
+##'
+##' @export
+##' @keywords classes
+.NextBestDualEndpointEmax <-
+    setClass(Class="NextBestDualEndpointEmax",
+             representation(target="numeric",
+                            overdose="numeric",
+                            maxOverdoseProb="numeric"),
+             prototype(target=c(0.5,0.8),
+                       overdose=c(0.35, 1),
+                       maxOverdoseProb=0.25),
+             contains=list("NextBest"),
+             validity=
+                 function(object){
+                     o <- Validate()
+                     
+                     o$check(is.probRange(object@target),
+                             "target has to be a probability range")
+                     o$check(is.probRange(object@overdose),
+                             "overdose has to be a probability range")
+                     o$check(is.probability(object@maxOverdoseProb),
+                             "maxOverdoseProb has to be a probability")
+                     
+                     o$result()
+                 })
+validObject(.NextBestDualEndpointEmax())
+
+##' Initialization function for "NextBestDualEndpointEmax"
+##'
+##' @param target see \code{\linkS4class{NextBestDualEndpointEmax}}
+##' @param overdose see \code{\linkS4class{NextBestDualEndpointEmax}}
+##' @param maxOverdoseProb see \code{\linkS4class{NextBestDualEndpointEmax}}
+##' @return the \code{\linkS4class{NextBestDualEndpointEmax}} object
+##'
+##' @export
+##' @keywords methods
+NextBestDualEndpointEmax <- function(target,
+                                     overdose,
+                                     maxOverdoseProb)
+{
+    .NextBestDualEndpointEmax(target=target,
+                              overdose=overdose,
+                              maxOverdoseProb=maxOverdoseProb)
+}
+
+
 ## ============================================================
 
 ## --------------------------------------------------
