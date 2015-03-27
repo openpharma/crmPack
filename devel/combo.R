@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[combo.R] by DSB Son 15/02/2015 20:02>
+## Time-stamp: <[combo.R] by DSB Sam 07/03/2015 21:58>
 ##
 ## Description:
 ## Test the combo stuff. For development only!!
@@ -40,6 +40,7 @@ data2 <- update(data,
 
 ## plotting:
 library(ggplot2)
+x11()
 plot(data)
 
 ## load model code
@@ -97,8 +98,40 @@ ggs_traceplot(get(samples, "eta"))
 ## ok now we want to plot the fit:
 source("../R/Model-methods.R")
 
+## test C++ inline. requires MinGW installation and path settings,
+## see http://stackoverflow.com/questions/23458841/how-to-get-rcpp-to-work
+library(Rcpp)
+
+cppFunction('
+int fibonacci(const int x) {
+if (x < 2)
+return x;
+else
+return (fibonacci(x - 1)) + fibonacci(x - 2);
+}
+')
+fibonacci(5)
+
+
 ## todo: cont here
-plot(samples, model, data)
+system.time(print(plot(samples, model, data, focus=c("a", "b"))))
+
+## old:
+##   user  system elapsed
+##  73.40    0.25   73.74
+
+## new:
+
+## user  system elapsed
+## 5.27    0.20    5.51
+
+## after first run even slightly faster:
+   ## user  system elapsed
+## 4.87    0.15    5.02
+
+## ==> ~15 times faster with C++!
+## nice!
+
 x11()
 plot(samples, model, data, extrapolate=FALSE)
 

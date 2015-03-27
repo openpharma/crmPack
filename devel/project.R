@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Son 18/01/2015 23:21>
+## Time-stamp: <[project.R] by DSB Mit 25/03/2015 18:05>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -10,6 +10,7 @@
 ## History:
 ## 06/02/2014   file creation
 ## 19/07/2014   update and test mixture prior
+## 25/03/2015   update with new syntax and check JAGS/burnin issue fix.
 ###################################################################################
 source("../R/helpers.R")
 source("../R/Model-class.R")
@@ -40,33 +41,11 @@ data <- Data(x=
             c(0.1, 0.5, 1.5, 3, 6,
               seq(from=10, to=80, by=2)))
 
-data <- new("Data",
-            x=
-            c(0.1, 0.1, 0.1, 0.1, 0.1),
-            y=
-            as.integer(c(1, 1, 1, 1, 1)),
-            cohort=
-            as.integer(c(0, 0, 0, 0, 0)),
-            doseGrid=
-            c(0.1, 0.5, 1.5, 3, 6,
-              seq(from=10, to=80, by=2)))
-
 data
 
 library(ggplot2)
 plot(data)
 
-
-data <- Data(x=
-            numeric(),
-            y=
-            as.integer(c()),
-            cohort=
-            as.integer(c()),
-            doseGrid=
-            c(seq(from=0.1, to=10, by=0.1),
-              seq(from=10, to=80, by=2)))
-plot(data)
 
 source("../R/McmcOptions-class.R")
 source("../R/McmcOptions-methods.R")
@@ -74,9 +53,9 @@ source("../R/Samples-class.R")
 source("../R/Samples-methods.R")
 
 ## and some MCMC options
-options <- McmcOptions(burnin=100,
-               step=2,
-               samples=50000)
+options <- McmcOptions(burnin=100000,
+               step=4,
+               samples=40829)
 
 
 source("../R/mcmc.R")
@@ -85,6 +64,7 @@ library(rjags)
 
 ## obtain the samples
 time2 <- system.time(samples2 <- mcmc(data, model, options, verbose=TRUE))
+str(samples2)
 
 ## with the standard method:
 time1 <- system.time(samples1 <-

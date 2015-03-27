@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Die 24/02/2015 18:36>
+## Time-stamp: <[Model-class.R] by DSB Son 08/03/2015 12:05>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -2271,14 +2271,15 @@ validObject(LogisticNormalFixedMixture(components=
 ##' for \eqn{i=1,2}. todo: Note that in principle any model could be used for the
 ##' individual agents. For now we stick to this simple, fixed implementation.
 ##'
-##' The \code{prob} function has as first argument \code{doses}, which is a dose
-##' combination: a vector with names specifying the drug names. Additional
-##' arguments are the model parameters \code{alpha0} (intercepts, nSamples x
-##' nDrugs matrix), \code{alpha1} (slopes, nSamples x nDrugs matrix) and
-##' \code{eta} (vector of length nSamples), containing the nSamples MCMC
-##' samples. Then \code{prob} computes the resulting samples of the probability
-##' of toxicity at that dose combination. Again here, the function must
-##' vectorize over the model parameters.
+##' The \code{prob} function has as first argument \code{dose}, which is either
+##' a single dose combination (a vector with names specifying the drug names) or
+##' multiple dose combinations in rows of a matrix (with the column names
+##' specifying the drug names). Additional arguments are the model parameters
+##' \code{alpha0} (intercepts, nSamples x nDrugs matrix), \code{alpha1} (slopes,
+##' nSamples x nDrugs matrix) and \code{eta} (vector of length nSamples),
+##' containing the nSamples MCMC samples. Then \code{prob} computes the
+##' resulting samples of the probability of toxicity at that dose combination(s)
+##' (nSamples x nCombinations).
 ##'
 ##' @slot singlePriors a list with one \code{\linkS4class{LogisticLogNormal}}
 ##' model per drug specifying the bivariate log normal prior described above.
@@ -2321,6 +2322,89 @@ validObject(LogisticNormalFixedMixture(components=
                      o$result()
                  })
 validObject(.ComboLogistic())
+
+
+##' Helper for the prob function of ComboLogistic
+##'
+##' Internal helper function. It will either use C++ or R code,
+##' depending on "crmPackUsesCpp" option (determined in .onLoad hook)
+##'
+##' @param dose matrix, with each row corresponding to a
+##' different combination (combis x drugs)
+##' @param alpha0 matrix of alpha0 samples (samples x drugs)
+##' @param alpha1 matrix of alpha1 samples (samples x drugs)
+##' @param eta vector of eta samples (length samples)
+##' @param refDose vector of reference doses (length drugs)
+##' @return matrix of sample probabilities
+##' for each of the drug combinations (samples x combis)
+##'
+##' @keywords internal
+##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+probComboLogistic <- function(dose,
+                              alpha0,
+                              alpha1,
+                              eta,
+                              refDose)
+{
+    if(getOption("crmPackUsesCpp"))
+    {
+        ## either C++
+        crmPackCppProbComboLogistic(dose, alpha0, alpha1, eta,
+                                    modelspecs$refDose)
+    } else {
+        ## or R
+
+        ## first get dimensions
+        nSamples <- nrow(alpha0)
+        nDrugs <- ncol(alpha0)
+        nCombis <- nrow(dose)
+
+        ## allocate return matrix
+        ret <- matrix(nrow=nSamples, ncol=nCombis)
+
+        ## for each drug combination
+        for(iCombi in seq_len(nCombis))
+        {
+            ## calculate standardized dose
+            standDose <- dose[iCombi, ] / refDose
+
+            ## this we will update below:
+            singleOdds <- matrix(nrow=nSamples,
+                                 ncol=nDrugs)
+
+            ## calculate single agent odds
+            for(j in seq_len(nDrugs))
+            {
+                thisLinpred <- alpha0[, j] + alpha1[, j] *
+                    log(standDose[j])
+
+                ## step function here to avoid numeric problems:
+                ## if linpred < -20, it will be set to -20,
+                ## if linpred > 20, it will be set to 20, else it
+                ## stays.
+                thisLin <- ifelse(thisLinpred < -20, -20,
+                                  ifelse(thisLinpred > 20,
+                                         20,
+                                         thisLinpred))
+
+                singleOdds[, j] <-  exp(thisLin)
+            }
+
+            ## note: these appear to be generic to more than 2 drugs,
+            ## but are not so easily generalized!!
+            ## todo: look carefully at the formulas for more than 2 drugs
+            ## later...
+            odds0 <- rowSums(singleOdds) + apply(singleOdds, 1L, prod)
+            odds <- odds0 * exp(eta * prod(standDose))
+
+            ## so the final prob vector is:
+            ret[, iCombi] <- odds / (1 + odds)
+
+        }
+
+        return(ret)
+    }
+}
 
 ##' Initialization function for the "ComboLogistic" class
 ##'
@@ -2437,48 +2521,27 @@ ComboLogistic <- function(singlePriors,
                        },
                    prob=
                        function(dose, alpha0, alpha1, eta){
-                           ## dose is the vector for all drugs,
-                           ## so only one combination.
-                           ## but alpha0 and alpha1 can be matrices (samples x drugs)
-                           ## and eta can be a vector -> samples!
 
-                           ## order doses
-                           dose <- dose[drugNames]
+                           ## dose is either a vector, with only one combination,
+                           ## or a matrix, with each row corresponding to a
+                           ## different combination.
 
-                           ## calculate standardized dose
-                           standDose <- dose / modelspecs$refDose
-                           singleOdds <- matrix(nrow=nrow(alpha0),
-                                                ncol=ncol(alpha0))
-
-                           ## calculate single agent odds
-                           for(j in 1:nDrugs)
+                           ## if dose is a vector (i.e., not a matrix)
+                           if(! is.matrix(dose))
                            {
-                               thisLinpred <- alpha0[, j] + alpha1[, j] *
-                                   log(standDose[j])
-
-                               ## step function here to avoid numeric problems:
-                               ## if linpred < -20, it will be set to -20,
-                               ## if linpred > 20, it will be set to 20, else it
-                               ## stays.
-                               thisLin <- ifelse(thisLinpred < -20, -20,
-                                                 ifelse(thisLinpred > 20,
-                                                        20,
-                                                        thisLinpred))
-
-                               singleOdds[, j] <-  exp(thisLin)
+                               ## get a 1 x drugs matrix
+                               dose <- t(dose)
                            }
 
-                           ## note: these appear to be generic to more than 2 drugs,
-                           ## but are not so easily generalized!!
-                           ## todo: look carefully at the formulas for more than 2 drugs
-                           ## later...
-                           odds0 <- rowSums(singleOdds) + apply(singleOdds, 1L, prod)
-                           odds <- odds0 * exp(eta * prod(standDose))
+                           ## order doses
+                           dose <- dose[, drugNames]
 
-                           ## so the final prob vector is:
-                           ret <- odds / (1 + odds)
+                           ## alpha0 and alpha1 are matrices (samples x drugs)
+                           ## and eta can be a vector -> samples!
 
-                           return(ret)
+                           ## now go to helper function:
+                           probComboLogistic(dose, alpha0, alpha1, eta,
+                                             modelspecs$refDose)
                        },
                    init=
                        function(){
@@ -2500,7 +2563,4 @@ validObject(ComboLogistic(singlePriors=
                           tau=1))
 
 
-
-
 ## ============================================================
-

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Son 15/02/2015 17:15>
+## Time-stamp: <[mcmc.R] by DSB Mit 25/03/2015 18:11>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -171,25 +171,29 @@ setMethod("mcmc",
                                                      list(inits),
                                                  quiet=!verbose)
 
-                  ## generate samples
+                  ## run for the burnin time -> but don't show progress bar for
+                  ## this one in order not to confuse the user
+                  update(jagsModel,
+                         n.iter=options@burnin,
+                         progress.bar="none")
+
+                  ## afterwards generate more samples and save every step one
                   samples <- rjags::jags.samples(model=jagsModel,
                                                  variable.names=model@sample,
-                                                 n.iter=options@iterations,
+                                                 n.iter=(options@iterations - options@burnin),
                                                  thin=options@step,
                                                  progress.bar=
                                                      ifelse(verbose,
                                                             "text",
                                                             "none"))
 
-                  ## discard burnin and reformat slightly for Samples object
+                  ## reformat slightly for Samples object
                   ret <- lapply(samples,
                                 function(x) {
                                     ## take the first chain (because we use only
-                                    ## one anyway), and take only the last
-                                    ## sampleSize samples (equivalent to discarding
-                                    ## the burnin)
-                                    x <- x[, tail(seq_len(ncol(x)),
-                                                  sampleSize(options)), 1]
+                                    ## one anyway), and take all samples (burnin
+                                    ## was already not saved!)
+                                    x <- x[, , 1L]
                                     ## transpose if it is a matrix
                                     ## (in case that there are multiple parameters
                                     ## in a node)

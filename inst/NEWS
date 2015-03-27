@@ -11,7 +11,9 @@ Version 0.0.23
   the subclass DataCombo.
 
 * Fixed bug in mcmc function which led to error
-  "all data elements must have as many rows as the sample size was"
+  "all data elements must have as many rows as the sample size was" and slightly
+  changed JAGS way of handling burnin / thinning (which should not have a user
+  impact).
 
 * Reduced number of MCMC samples for dual-endpoint example in vignette to be
   able to plot the vignette

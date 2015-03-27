@@ -1,14 +1,24 @@
-- add slide production with ReporteRs package examples (to demo folder?)
+----------------------------------------------------------------
+IMPROVEMENTS:
+
+- also optimize refDose for quantile->logistic functions
+
+- record number of times the model is overruled in the simulations (Uli Beyer
+request)
+
+- add examples to help pages
 
 - mixture prior: add documentation in vignette
 
+
+----------------------------------------------------------------
+NEW FEATURES:
+
+- add slide production with ReporteRs package examples (to demo folder?)
+
 - be able to run simulations on the pRED cluster (with JAGS)
 
-- combination designs
-
 - allow placebos in the cohorts for CNS
-
-- add examples to help pages
 
 - production of Word output tables from simulation summaries
 
@@ -18,9 +28,6 @@
 
 - historical data prior,
   pseudodata prior
-
-- record number of times the model is overruled in the simulations (Uli Beyer
-request)
 
 - implement one-parameter CRM with skeleton probabilities?
   -> perhaps also with random effects per doses (proposed by David)

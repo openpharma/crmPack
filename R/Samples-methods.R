@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Son 15/02/2015 20:02>
+## Time-stamp: <[Samples-methods.R] by DSB Sam 07/03/2015 21:45>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -323,18 +323,23 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## surface at the points.
-              probSamples <- matrix(nrow=sampleSize(object@options),
-                                    ncol=nrow(points))
+              ## probSamples <- matrix(nrow=sampleSize(object@options),
+              ##                       ncol=nrow(points))
+
+              ## ## evaluate the probs, for all samples.
+              ## for(i in seq_len(nrow(points)))
+              ## {
+              ##     ## Now we want to evaluate for the
+              ##     ## following dose:
+              ##     probSamples[, i] <- prob(dose=points[i, ],
+              ##                              model,
+              ##                              object)
+              ## }
 
               ## evaluate the probs, for all samples.
-              for(i in seq_len(nrow(points)))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  probSamples[, i] <- prob(dose=points[i, ],
-                                           model,
-                                           object)
-              }
+              probSamples <- prob(dose=points,
+                                  model,
+                                  object)
 
               ## extract middle surface
               middleSurface <- apply(probSamples, 2L, FUN=middle)
@@ -746,12 +751,12 @@ setMethod("plot",
                               middle=mean)
               ## todo: this is quite slow at the moment, needs speed-up
 
-              names(plotData)[1:2] <- c("x1", "x2")
+              names(plotData)[1:3] <- c("x1", "x2", "toxicity")
 
               ## make the plot
-              ret <- ggplot2::ggplot(plotData[, c("x1", "x2", "middle")],
-                                     aes(x1,x2,middle)) +
-                                         geom_tile(aes(fill=middle))
+              ret <- ggplot2::ggplot(plotData[, c("x1", "x2", "toxicity")],
+                                     aes(x1,x2,toxicity)) +
+                                         geom_tile(aes(fill=toxicity))
 
               breaks <- seq(from=0, to=1, by=0.1)
               ## from RColorBrewer package:
@@ -760,16 +765,15 @@ setMethod("plot",
                           "#FFE200",  "#FFAA00", "#FF7100", "#FF3800",
                           "#FF0000")
               ret <- ret +
-                  stat_contour(aes(x1,x2,z=middle),
+                  stat_contour(aes(x1,x2,z=toxicity),
                                colour="black", size=0.3,
                                breaks=breaks) +
-                                   scale_fill_gradientn(colours=colors,
-                                                        breaks=breaks,
-                                                        labels=format(breaks))
-
-              ## todo: cont here
+                                   xlab(focus[1]) + ylab(focus[2]) +
+                                       scale_fill_gradientn(colours=colors,
+                                                            breaks=breaks,
+                                                            labels=format(breaks))
               ret
-
+              ## todo: add plots for lower/upper quantiles?
 
               return(ret)
           })

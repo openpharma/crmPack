@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[helpers.R] by DSB Fre 16/01/2015 10:06>
+## Time-stamp: <[helpers.R] by DSB Fre 27/03/2015 14:15>
 ##
 ## Description:
 ## Some helper functions
@@ -75,7 +75,6 @@ is.scalar <- function(x)
 {
     return(identical(length(x), 1L))
 }
-
 
 ##' Predicate checking for a boolean option
 ##'
