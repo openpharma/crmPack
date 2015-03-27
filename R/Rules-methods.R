@@ -403,26 +403,13 @@ setMethod("nextBest",
                                                      samples)
               }
               ## biomLevelSamples <- samples@data$betaW
-
-              ## now for each sample, look which was the minimum dose giving
-              ## relative target level
-              targetIndex <- apply(biomLevelSamples, 1L,
-                                   function(x){
-                                       rnx <- range(x)
-                                       min(which(x >= nextBest@target *
-                                                     diff(rnx) + rnx[1]))
-                                   })
-
-              probTarget <- numeric(ncol(biomLevelSamples))
-              tab <- table(targetIndex)
-              probTarget[as.numeric(names(tab))] <- tab
-              probTarget <- probTarget / nrow(biomLevelSamples)
-
+              
+              
               ## now get samples from the dose-tox
               ## curve at the dose grid points.
               probSamples <- matrix(nrow=sampleSize(samples@options),
                                     ncol=data@nGrid)
-
+              
               ## evaluate the probs, for all samples.
               for(i in seq_len(data@nGrid))
               {
@@ -431,6 +418,39 @@ setMethod("nextBest",
                   probSamples[, i] <- prob(dose=data@doseGrid[i],
                                            model,
                                            samples)
+              }
+              
+              # If there is an 'Emax' parameter, target biomarker level will
+              # be relative to 'Emax', otherwise will be relative to the 
+              # maximum biomarker level achieved in the given dose range.
+              if("Emax" %in% names(samples@data)){
+                  
+                  ## For each sample, look which dose is maximizing the 
+                  ## simultaneous probability to be in the target biomarker 
+                  ## range and below overdose toxicity
+                  probTarget <- numeric(ncol(biomLevelSamples))
+                  probTarget <- sapply(seq(1,ncol(biomLevelSamples)),
+                                       function(x){
+                                           sum(biomLevelSamples[, x] >= nextBest@target[1]*samples@data$Emax &
+                                               biomLevelSamples[, x] <= nextBest@target[2]*samples@data$Emax &
+                                               probSamples[, x] <= nextBest@overdose[1]) / nrow(biomLevelSamples)
+                                       })
+              }else{
+              
+                  ## For each sample, look which was the minimum dose giving
+                  ## relative target level
+                  targetIndex <- apply(biomLevelSamples, 1L,
+                                       function(x){
+                                           rnx <- range(x)
+                                           min(which((x >= nextBest@target[1] * diff(rnx) + rnx[1]) &
+                                                     (x <= nextBest@target[2] * diff(rnx) + rnx[1] + 1e-15))
+                                              )
+                                       })
+    
+                  probTarget <- numeric(ncol(biomLevelSamples))
+                  tab <- table(targetIndex)
+                  probTarget[as.numeric(names(tab))] <- tab
+                  probTarget <- probTarget / nrow(biomLevelSamples)
               }
 
               ## Now compute probabilities to be in
@@ -538,6 +558,7 @@ setMethod("nextBest",
               return(list(value=ret,
                           plot=plotJoint))
           })
+
 
 
 ## ============================================================
