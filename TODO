@@ -1,3 +1,8 @@
+BUGFIXES:
+
+- make it possible to sample from prior for DualEndpointRW model,
+  see report by Giuseppe in devel/dualEndpointRWbug.R
+
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
