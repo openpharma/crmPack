@@ -1,3 +1,12 @@
+Version 0.0.23
+--------------------------------------------------------------------------------
+
+* Slightly updated package vignette (example.pdf) to make it easier to print
+  out.
+
+* Fixed a critical bug in the mcmc function, which could lead to failure of the
+  function call.
+
 Version 0.0.22
 --------------------------------------------------------------------------------
 

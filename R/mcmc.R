@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Sam 17/01/2015 18:56>
+## Time-stamp: <[mcmc.R] by DSB Fre 27/03/2015 16:27>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -173,23 +173,29 @@ setMethod("mcmc",
                                                      list(inits),
                                                  quiet=!verbose)
 
-                  ## generate samples
+                  ## run for the burnin time -> but don't show progress bar for
+                  ## this one in order not to confuse the user
+                  update(jagsModel,
+                         n.iter=options@burnin,
+                         progress.bar="none")
+
+                  ## afterwards generate more samples and save every step one
                   samples <- rjags::jags.samples(model=jagsModel,
                                                  variable.names=model@sample,
-                                                 n.iter=options@iterations,
+                                                 n.iter=(options@iterations - options@burnin),
                                                  thin=options@step,
                                                  progress.bar=
                                                      ifelse(verbose,
                                                             "text",
                                                             "none"))
 
-                  ## discard burnin and reformat slightly for Samples object
+                  ## reformat slightly for Samples object
                   ret <- lapply(samples,
                                 function(x) {
                                     ## take the first chain (because we use only
-                                    ## one anyway), discard the burnin
-                                    x <- x[, - seq_len(options@burnin /
-                                                       options@step), 1]
+                                    ## one anyway), and take all samples (burnin
+                                    ## was already not saved!)
+                                    x <- x[, , 1L]
                                     ## transpose if it is a matrix
                                     ## (in case that there are multiple parameters
                                     ## in a node)
@@ -199,6 +205,7 @@ setMethod("mcmc",
                                     }
                                     x
                                 })
+
               } else {
                   ## here we use OpenBUGS or WinBUGS.
                   require("R2WinBUGS")
