@@ -27,9 +27,14 @@
 %% no indentation of paragraphs
 \noindent
 
+<<load, echo=FALSE, results=hide>>=
+## load package already here to be able to reference the package version!!
+library(crmPack)
+crmPackVersion <- as.character(packageVersion("crmPack"))
+@
 \title{Using the package \texttt{crmPack}:\\ introductory examples}
 \author{Daniel Saban\'es Bov\'e}
-\date{\today\\Package version 0.0.22}
+\date{\today\\Package version \Sexpr{crmPackVersion}}
 \maketitle
 
 This short vignette shall introduce into the usage of the package
@@ -931,12 +936,13 @@ uniform prior (or $\mathrm{Beta}(1, 1)$ prior) on the correlation $\rho$ between
 the latent DLT and the biomarker variable.
 
 As the dual-endpoint models are more complex, it is advisable to use a
-sufficiently long Markov chain for fitting them. Here we set:
+sufficiently long Markov chain for fitting them. Here we just use for illustration
+purposes quite a small Markov chain -- again, for the real application, this would need to be at least 100 times longer!
 
 <<dual-options>>=
-options <- McmcOptions(burnin=10000,
+options <- McmcOptions(burnin=100,
                        step=2,
-                       samples=50000)
+                       samples=500)
 @
 
 Then we can obtain the MCMC samples:
