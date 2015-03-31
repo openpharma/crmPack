@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Mit 25/03/2015 18:05>
+## Time-stamp: <[project.R] by DSB Die 31/03/2015 21:02>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -63,7 +63,12 @@ source("../R/writeModel.R")
 library(rjags)
 
 ## obtain the samples
+set.seed(12)
 time2 <- system.time(samples2 <- mcmc(data, model, options, verbose=TRUE))
+set.seed(12)
+time3 <- system.time(samples3 <- mcmc(data, model, options, verbose=TRUE))
+all.equal(samples2, samples3)
+
 str(samples2)
 
 ## with the standard method:

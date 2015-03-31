@@ -1,5 +1,9 @@
-Version 0.0.23
+Version 0.0.24
 --------------------------------------------------------------------------------
+
+* Made results from mcmc() (works with the usual set.seed in earlier user code)
+  and simulate() (as previously already promised) reproducible. See help file for
+  mcmc for more details.
 
 * Introduced combination designs via new classes:
   ComboData, ComboLogistic
@@ -9,6 +13,9 @@ Version 0.0.23
   model for multiple agent combinations. Similarly introduced GeneralData class,
   from which the class Data for single agent derives, separately from that is
   the subclass DataCombo.
+
+Version 0.0.23
+--------------------------------------------------------------------------------
 
 * Fixed bug in mcmc function which led to error
   "all data elements must have as many rows as the sample size was" and slightly
