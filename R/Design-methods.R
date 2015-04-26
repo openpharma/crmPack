@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Design-methods.R] by DSB Son 18/01/2015 09:55>
+## Time-stamp: <[Design-methods.R] by DSB Son 26/04/2015 18:21>
 ##
 ## Description:
 ## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
@@ -67,9 +67,8 @@ setSeed <- function(seed=NULL)
 
 ##' Helper function to obtain simulation results list
 ##'
-##' The function \code{fun} can use variables that are visible to itself.
-##' In order to be able to run on Windows, the names of these variables
-##' have to given in the vector \code{vars}.
+##' The function \code{fun} can use variables that are visible to itself. The
+##' names of these variables have to given in the vector \code{vars}.
 ##'
 ##' @param fun the simulation function for a single iteration, which takes as
 ##' single parameter the iteration index
@@ -80,7 +79,6 @@ setSeed <- function(seed=NULL)
 ##' to one list element)
 ##'
 ##' @importFrom parallel detectCores makeCluster clusterApply stopCluster
-##' mclapply
 ##' @keywords internal programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 getResultList <- function(fun,
@@ -98,48 +96,37 @@ getResultList <- function(fun,
             ## now process all simulations
             cores <- parallel::detectCores()
 
-            ## clusterApply() for Windows
-            if (Sys.info()[1] == "Windows")
-            {
-                ## start the cluster
-                cl <- parallel::makeCluster(cores)
+            ## start the cluster
+            cl <- parallel::makeCluster(cores)
 
-                ## load the required R package
-                parallel::clusterEvalQ(cl, {
-                    library(crmPack)
-                    NULL
-                })
+            ## load the required R package
+            parallel::clusterEvalQ(cl, {
+                library(crmPack)
+                NULL
+            })
 
-                ## export local variables
-                parallel::clusterExport(cl=cl,
-                                        varlist=vars,
-                                        envir=parent.frame())
-                ## parent.frame() gives back the caller environment
-                ## (different from parent.env() which returns
-                ## the environment where this function has been
-                ## defined!)
+            ## export local variables
+            parallel::clusterExport(cl=cl,
+                                    varlist=vars,
+                                    envir=parent.frame())
+            ## parent.frame() gives back the caller environment
+            ## (different from parent.env() which returns
+            ## the environment where this function has been
+            ## defined!)
 
-                ## export all global variables
-                parallel::clusterExport(cl=cl,
-                                        varlist=ls(.GlobalEnv))
+            ## export all global variables
+            parallel::clusterExport(cl=cl,
+                                    varlist=ls(.GlobalEnv))
 
-                ## now do the computations
-                res <- parallel::parLapply(cl=cl,
-                                           X=seq_len(nsim),
-                                           fun=fun)
+            ## now do the computations
+            res <- parallel::parLapply(cl=cl,
+                                       X=seq_len(nsim),
+                                       fun=fun)
 
-                ## stop the cluster
-                parallel::stopCluster(cl)
+            ## stop the cluster
+            parallel::stopCluster(cl)
 
-                res
-            } else {
-
-                ## mclapply() for everybody else
-                res <- parallel::mclapply(X=seq_len(nsim),
-                                          FUN=fun,
-                                          mc.cores=cores)
-                res
-            }
+            res
         }
 
     return(ret)

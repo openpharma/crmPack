@@ -1,6 +1,9 @@
 Version 0.0.24
 --------------------------------------------------------------------------------
 
+* Made simulate with parallel=TRUE work on r.roche.com (Linux server),
+  using the same parallelization method as for laptops (Windows)
+
 * Made results from mcmc() (works with the usual set.seed in earlier user code)
   and simulate() (as previously already promised) reproducible. See help file for
   mcmc for more details.
