@@ -309,8 +309,11 @@ Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, \texttt{crmPack}
 provides an interface to the convenient \texttt{R}-package \texttt{ggmcmc}. With
 the function \texttt{get} you can extract the individual parameters from the
-object of class \texttt{Samples}. For example, we extract the $\alpha_{0}$
-samples:
+object of class \texttt{Samples}.
+
+For example, we extract the $\alpha_{0}$ samples:
+(please have a look at the help page for the \texttt{LogisticLogNormal} model
+class for the interpretation of the parameters)
 
 <<mcmc-extract>>=
 ## look at the structure of the samples object:

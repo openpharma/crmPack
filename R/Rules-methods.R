@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Son 18/01/2015 22:21>
+## Time-stamp: <[Rules-methods.R] by DSB Son 26/04/2015 18:57>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -32,7 +32,9 @@
 ##' \code{model} and the underlying \code{data}.
 ##'
 ##' @param nextBest The rule, an object of class \code{\linkS4class{NextBest}}
-##' @param doselimit The maximum allowed next dose
+##' @param doselimit The maximum allowed next dose. If this is an empty (length
+##' 0) vector, then no dose limit will be applied in the course of dose
+##' recommendation calculation, and a corresponding warning is given.
 ##' @param samples the \code{\linkS4class{Samples}} object
 ##' @param model The model input, an object of class \code{\linkS4class{Model}}
 ##' @param data The data input, an object of class \code{\linkS4class{Data}}
@@ -45,11 +47,16 @@
 ##' @keywords methods
 setGeneric("nextBest",
            def=
-           function(nextBest, doselimit, samples, model, data, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("nextBest")
-           },
+               function(nextBest, doselimit, samples, model, data, ...){
+                   if(identical(length(doselimit), 0L))
+                   {
+                       warning("doselimit is empty, therefore no dose limit will be applied")
+                   }
+
+                   ## there should be no default method,
+                   ## therefore just forward to next method!
+                   standardGeneric("nextBest")
+               },
            valueClass="list")
 
 ## --------------------------------------------------
@@ -78,8 +85,12 @@ setMethod("nextBest",
               mtdEstimate <- nextBest@derive(mtdSamples=mtdSamples)
 
               ## be sure which doses are ok with respect to maximum
-              ## possible dose
-              dosesOK <- which(data@doseGrid <= doselimit)
+              ## possible dose - if one was specified
+              dosesOK <-
+                  if(length(doselimit))
+                      which(data@doseGrid <= doselimit)
+                  else
+                      seq_along(data@doseGrid)
 
               ## but now, round to the next possible grid point
               index <- which.min(abs(data@doseGrid[dosesOK] - mtdEstimate))
@@ -102,13 +113,16 @@ setMethod("nextBest",
                                     label = "Est", hjust=+1, vjust = +1),
                                 colour="black")
 
-              plot1 <- plot1 +
-                  geom_vline(xintercept=doselimit, colour="red", lwd=1.1) +
-                      geom_text(data=
-                                data.frame(x=doselimit),
-                                aes(x, 0,
-                                    label = "Max", hjust = +1, vjust = +1),
-                                colour="red")
+              if(length(doselimit))
+              {
+                  plot1 <- plot1 +
+                      geom_vline(xintercept=doselimit, colour="red", lwd=1.1) +
+                          geom_text(data=
+                                        data.frame(x=doselimit),
+                                    aes(x, 0,
+                                        label = "Max", hjust = +1, vjust = +1),
+                                    colour="red")
+              }
 
               plot1 <- plot1 +
                   geom_vline(xintercept=ret, colour="blue", lwd=1.1) +
@@ -168,7 +182,13 @@ setMethod("nextBest",
 
               ## which doses are eligible after accounting
               ## for maximum possible dose and  discarding overdoses?
-              dosesOK <- which((data@doseGrid <= doselimit) &
+              dosesBelowLimit <-
+                  if(length(doselimit))
+                      (data@doseGrid <= doselimit)
+                  else
+                      rep(TRUE, length(data@doseGrid))
+
+              dosesOK <- which(dosesBelowLimit &
                                (probOverdose < nextBest@maxOverdoseProb))
 
               ## check if there are doses that are OK
@@ -211,12 +231,14 @@ setMethod("nextBest",
                                    ylab(paste("Target probability [%]")) +
                                        ylim(c(0, 100))
 
-              plot1 <- plot1 +
-                  geom_vline(xintercept=doselimit,
-                             lwd=1.1,
-                             lty=2,
-                             colour="black")
-
+              if(length(doselimit))
+              {
+                  plot1 <- plot1 +
+                      geom_vline(xintercept=doselimit,
+                                 lwd=1.1,
+                                 lty=2,
+                                 colour="black")
+              }
 
               if(length(dosesOK))
               {
@@ -285,6 +307,11 @@ setMethod("nextBest",
                   ## here we will always propose the highest possible dose
                   ## (assuming that the dose limit came from reasonable
                   ## increments rule, i.e. inrementsRelativeParts)
+                  if(identical(length(doselimit), 0L))
+                  {
+                      stop("doselimit needs to be given for Part I")
+                  }
+
                   return(list(value=doselimit,
                               plot=NULL))
               } else {
@@ -403,13 +430,13 @@ setMethod("nextBest",
                                                      samples)
               }
               ## biomLevelSamples <- samples@data$betaW
-              
-              
+
+
               ## now get samples from the dose-tox
               ## curve at the dose grid points.
               probSamples <- matrix(nrow=sampleSize(samples@options),
                                     ncol=data@nGrid)
-              
+
               ## evaluate the probs, for all samples.
               for(i in seq_len(data@nGrid))
               {
@@ -419,14 +446,14 @@ setMethod("nextBest",
                                            model,
                                            samples)
               }
-              
+
               # If there is an 'Emax' parameter, target biomarker level will
-              # be relative to 'Emax', otherwise will be relative to the 
+              # be relative to 'Emax', otherwise will be relative to the
               # maximum biomarker level achieved in the given dose range.
               if("Emax" %in% names(samples@data)){
-                  
-                  ## For each sample, look which dose is maximizing the 
-                  ## simultaneous probability to be in the target biomarker 
+
+                  ## For each sample, look which dose is maximizing the
+                  ## simultaneous probability to be in the target biomarker
                   ## range and below overdose toxicity
                   probTarget <- numeric(ncol(biomLevelSamples))
                   probTarget <- sapply(seq(1,ncol(biomLevelSamples)),
@@ -436,7 +463,7 @@ setMethod("nextBest",
                                                probSamples[, x] <= nextBest@overdose[1]) / nrow(biomLevelSamples)
                                        })
               }else{
-              
+
                   ## For each sample, look which was the minimum dose giving
                   ## relative target level
                   targetIndex <- apply(biomLevelSamples, 1L,
@@ -446,7 +473,7 @@ setMethod("nextBest",
                                                      (x <= nextBest@target[2] * diff(rnx) + rnx[1] + 1e-15))
                                               )
                                        })
-    
+
                   probTarget <- numeric(ncol(biomLevelSamples))
                   tab <- table(targetIndex)
                   probTarget[as.numeric(names(tab))] <- tab
@@ -461,7 +488,13 @@ setMethod("nextBest",
 
               ## which doses are eligible after accounting
               ## for maximum possible dose and discarding overdoses?
-              dosesOK <- which((data@doseGrid <= doselimit) &
+              dosesBelowLimit <-
+                  if(length(doselimit))
+                      (data@doseGrid <= doselimit)
+                  else
+                      rep(TRUE, length(data@doseGrid))
+
+              dosesOK <- which(dosesBelowLimit &
                                (probOverdose < nextBest@maxOverdoseProb))
 
               ## check if there are doses that are OK
@@ -504,11 +537,14 @@ setMethod("nextBest",
                                    ylab(paste("Target probability [%]")) +
                                        ylim(c(0, 100))
 
-              plot1 <- plot1 +
-                  geom_vline(xintercept=doselimit,
-                             lwd=1.1,
-                             lty=2,
-                             colour="black")
+              if(length(doselimit))
+              {
+                  plot1 <- plot1 +
+                      geom_vline(xintercept=doselimit,
+                                 lwd=1.1,
+                                 lty=2,
+                                 colour="black")
+              }
 
               if(length(dosesOK))
               {

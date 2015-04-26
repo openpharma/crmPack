@@ -1,6 +1,10 @@
 Version 0.0.24
 --------------------------------------------------------------------------------
 
+* Passing an empty (zero length) vector as the doselimit parameter of the
+  nextBest function is now considered as requesting a dose recommendation
+  without a strict dose limit, and a corresponding warning is printed.
+
 * Made simulate with parallel=TRUE work on r.roche.com (Linux server),
   using the same parallelization method as for laptops (Windows)
 

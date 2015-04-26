@@ -192,7 +192,7 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 ### code chunk number 25: max-dose
 ###################################################
 nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+                       data=emptydata)
 nextMaxDose
 
 
@@ -219,7 +219,7 @@ mtdNextBest <- NextBestMTD(target=0.33,
 ###################################################
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+                               samples=priorsamples, model=model, data=emptydata)
 
 
 ###################################################

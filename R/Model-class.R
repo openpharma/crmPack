@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Son 08/03/2015 12:05>
+## Time-stamp: <[Model-class.R] by DSB Son 26/04/2015 19:11>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -178,6 +178,20 @@ validObject(.Model())
 ##'
 ##' The slots of this class contain the mean vector and the covariance matrix of
 ##' the bivariate normal distribution, as well as the reference dose.
+##'
+##' Note that the parametrization inside the class uses alpha0 and alpha1.
+##' alpha0 is identical to the intercept \eqn{\alpha} above and is the log-odds
+##' for a DLT at the reference dose x*. Therefore, the prior mean for alpha0
+##' is the expected log-odds at the reference dose x* before observing any data.
+##' Note that the expected odds is not just the exp of the prior mean of alpha0,
+##' because the non-linearity of the exp transformation. The log-normal
+##' distribution on Wikipedia gives the formula for computing the prior mean of
+##' exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
+##' paper. alpha1 is identical to \eqn{\log(\beta)} above and equals the beta
+##' in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
+##' between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
+##' log-normal distribution in the LogisticLogNormal model in order to ensure
+##' positivity of alpha1 and thus exp(alpha1) > 1.
 ##'
 ##' @slot mean the prior mean vector \eqn{\mu}
 ##' @slot cov the prior covariance matrix \eqn{\Sigma}
@@ -1815,8 +1829,8 @@ validObject(DualEndpointBeta(E0=10,
 ##'
 ##' \deqn{f(x) = E_{0} + \frac{(E_{max} - E_{0}) * (x/x^{*})}{ED_{50} + (x/x^{*})}}
 ##'
-##' where \eqn{x^{*}} is a reference dose, \eqn{E_{0}} and \eqn{E_{max}} are the  
-##' minimum and maximum levels for the biomarker and \eqn{ED_{50}} is the dose 
+##' where \eqn{x^{*}} is a reference dose, \eqn{E_{0}} and \eqn{E_{max}} are the
+##' minimum and maximum levels for the biomarker and \eqn{ED_{50}} is the dose
 ##' achieving half of the maximum effect \eqn{0.5 * E_{max}}.
 ##'
 ##' All parameters can currently be assigned uniform distributions or be fixed
@@ -1849,7 +1863,7 @@ validObject(DualEndpointBeta(E0=10,
              validity=
                  function(object){
                      o <- Validate()
-                     
+
                      ## check the prior parameters with variable content
                      for(parName in c("E0", "Emax", "ED50"))
                      {
@@ -1867,11 +1881,11 @@ validObject(DualEndpointBeta(E0=10,
                                            "has not proper prior parameters"))
                          }
                      }
-                     
+
                      ## check the refDose
                      o$check(object@refDose > 0,
                              "refDose must be positive")
-                     
+
                      o$result()
                  })
 validObject(.DualEndpointEmax())
@@ -1896,27 +1910,27 @@ DualEndpointEmax <- function(E0,
     ## call the initialize function from DualEndpoint
     ## to get started
     start <- DualEndpoint(...)
-    
+
     ## we need the dose grid here in the BUGS model,
     ## therefore add it to datanames
     start@datanames <- c(start@datanames,
                          "doseGrid")
-    
+
     ## Find out which of the additional parameters are fixed
     for(parName in c("E0", "Emax", "ED50"))
     {
         start@useFixed[[parName]] <-
             identical(length(get(parName)), 1L)
     }
-    
+
     ## build together the prior model and the parameters
     ## to be saved during sampling
     ## ----------
-    
+
     start@priormodel <-
         joinModels(start@priormodel,
                    function(){
-                       
+
                        for (j in 1:nGrid)
                        {
                            StandDose[j] <- doseGrid[j] / refDose
@@ -1924,14 +1938,14 @@ DualEndpointEmax <- function(E0,
                                             (ED50 + StandDose[j])
                        }
                    })
-    
+
     ## we will fill in more, depending on which parameters
     ## are fixed, in these two variables:
     start@sample <- c(start@sample,
                       "betaW")
     newInits <- list()
     newModelspecs <- list(refDose=refDose)
-    
+
     ## for E0:
     if(! start@useFixed[["E0"]])
     {
@@ -1941,17 +1955,17 @@ DualEndpointEmax <- function(E0,
                            ## uniform for E0
                            E0 ~ dunif(E0low, E0high)
                        })
-        
+
         start@sample <- c(start@sample,
                           "E0")
-        
+
         newInits$E0 <- mean(E0)
         newModelspecs$E0low <- E0[1]
         newModelspecs$E0high <- E0[2]
     } else {
         newModelspecs$E0 <- E0
     }
-    
+
     ## for Emax:
     if(! start@useFixed[["Emax"]])
     {
@@ -1961,17 +1975,17 @@ DualEndpointEmax <- function(E0,
                            ## uniform for Emax
                            Emax ~ dunif(EmaxLow, EmaxHigh)
                        })
-        
+
         start@sample <- c(start@sample,
                           "Emax")
-        
+
         newInits$Emax <- mean(Emax)
         newModelspecs$EmaxLow <- Emax[1]
         newModelspecs$EmaxHigh <- Emax[2]
     } else {
         newModelspecs$Emax <- Emax
     }
-    
+
     ## for ED50:
     if(! start@useFixed[["ED50"]])
     {
@@ -1981,18 +1995,18 @@ DualEndpointEmax <- function(E0,
                            ## uniform for ED50
                            ED50 ~ dunif(ED50Low, ED50High)
                        })
-        
+
         start@sample <- c(start@sample,
                           "ED50")
-        
+
         newInits$ED50 <- mean(ED50)
         newModelspecs$ED50Low <- ED50[1]
         newModelspecs$ED50High <- ED50[2]
     } else {
         newModelspecs$ED50 <- ED50
     }
-    
-    
+
+
     ## now define the new modelspecs and init functions:
     oldModelspecs <- start@modelspecs
     start@modelspecs <- function()
@@ -2000,14 +2014,14 @@ DualEndpointEmax <- function(E0,
         c(oldModelspecs(),
           newModelspecs)
     }
-    
+
     oldInit <- start@init
     start@init <- function(y, w, nGrid)
     {
         c(oldInit(y, w, nGrid),
           newInits)
     }
-    
+
     ## finally call the constructor
     .DualEndpointEmax(start,
                       E0=E0,
