@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
-## Time-stamp: <[crmUpgrade.R] by DSB Mon 11/05/2015 17:49>
+## Time-stamp: <[crmUpgrade.R] by DSB Mon 11/05/2015 23:42>
 ##
 ## Description:
 ## Upgrade function for crmPack
@@ -63,6 +63,9 @@ crmPackUpgrade <- function(lib = NULL, devel = FALSE, force = FALSE,
         }
     }
 
+    ## get a temporary directory
+    tmp <- tempdir()
+
     ## here will the source tree of the downloaded crmPack version be stored:
     dir <- file.path(tmp, "crmPack")
 
@@ -78,7 +81,6 @@ crmPackUpgrade <- function(lib = NULL, devel = FALSE, force = FALSE,
                   "/repos/crmpack?at=refs%2Fheads%2F",
                   "develop",
                   sep="")
-        tmp <- tempdir()
         target <- file.path(tmp, "crmPack.zip")
 
         ## download from source to target
