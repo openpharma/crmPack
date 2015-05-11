@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-methods.R] by DSB Sam 07/03/2015 21:56>
+## Time-stamp: <[Model-methods.R] by DSB Mon 11/05/2015 17:45>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -67,12 +67,10 @@ setMethod("dose",
 ##' Compute the probability for a given dose, given model and samples
 ##'
 ##' @param dose the dose
-##' @param model the \code{\linkS4class{Model}} or
-##' \code{\linkS4class{ComboLogistic}} object
+##' @param model the \code{\linkS4class{Model}} object
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
-##' @return either the vector (for \code{\linkS4class{Model}} objects) or the
-##' matrix (for \code{\linkS4class{ComboLogistic}} objects) of probability
+##' @return the vector (for \code{\linkS4class{Model}} objects) of probability
 ##' samples.
 ##'
 ##' @export
@@ -92,28 +90,6 @@ setMethod("prob",
           signature=
           signature(dose="numeric",
                     model="Model",
-                    samples="Samples"),
-          def=
-          function(dose, model, samples, ...){
-              ## extract the prob function from the model
-              probFun <- slot(model, "prob")
-              ## which arguments, besides the dose, does it need?
-              argNames <- setdiff(names(formals(probFun)),
-                                  "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              ret <- do.call(probFun,
-                             c(list(dose=dose),
-                               samples@data[argNames]))
-              ## return the resulting vector
-              return(ret)
-          })
-
-##' @describeIn prob
-setMethod("prob",
-          signature=
-          signature(dose="matrix",
-                    model="ComboLogistic",
                     samples="Samples"),
           def=
           function(dose, model, samples, ...){
