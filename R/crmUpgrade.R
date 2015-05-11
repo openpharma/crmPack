@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
-## Time-stamp: <[crmUpgrade.R] by DSB Sam 02/05/2015 22:19>
+## Time-stamp: <[crmUpgrade.R] by DSB Mon 11/05/2015 17:53>
 ##
 ## Description:
 ## Upgrade function for crmPack
@@ -152,8 +152,9 @@ crmPackUpgrade <- function(lib = NULL, devel = FALSE, force = FALSE,
         ## for release, first check if binary can be installed,
         ## otherwise go for source
         install.packages("crmPack",
-                         repos="http://gran.roche.com/packages",
-                         type="both")
+                         repos=c("http://stat.ethz.ch/CRAN/", "http://gran.roche.com/packages"),
+                         type="both",
+                         dependencies=TRUE)
     }
 
     ## load new version
