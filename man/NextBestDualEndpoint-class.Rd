@@ -13,8 +13,8 @@ overdose interval \code{overdose}. Then, it picks under the remaining
 admissible doses the one that maximizes the probability to be in the
 \code{target} biomarker range, relative to the maximum biomarker level
 across the dose grid or relative to the Emax parameter in case a parametric
-model was selected (e.g. \code{\linkS4class{NextBestDualEndpointBeta}},
-\code{\linkS4class{NextBestDualEndpointEmax}}))
+model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
+\code{\linkS4class{DualEndpointEmax}}))
 }
 \section{Slots}{
 

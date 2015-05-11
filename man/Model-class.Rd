@@ -57,8 +57,7 @@ details above)}
 \code{\linkS4class{LogisticLogNormal}},
 \code{\linkS4class{LogisticLogNormalSub}},
 \code{\linkS4class{LogisticKadane}},
-\code{\linkS4class{DualEndpoint}},
-\code{\linkS4class{ComboLogistic}}
+\code{\linkS4class{DualEndpoint}}
 }
 \keyword{classes}
 

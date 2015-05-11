@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Sam 02/05/2015 22:40>
+## Time-stamp: <[Rules-class.R] by DSB Mon 11/05/2015 23:21>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -191,8 +191,8 @@ NextBestThreePlusThree <- function()
 ##' admissible doses the one that maximizes the probability to be in the
 ##' \code{target} biomarker range, relative to the maximum biomarker level
 ##' across the dose grid or relative to the Emax parameter in case a parametric
-##' model was selected (e.g. \code{\linkS4class{NextBestDualEndpointBeta}},
-##' \code{\linkS4class{NextBestDualEndpointEmax}}))
+##' model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
+##' \code{\linkS4class{DualEndpointEmax}}))
 ##'
 ##' @slot target the biomarker target range, relative to the maximum, that
 ##' needs to be reached. For example, (0.8, 1.0) means we target a dose

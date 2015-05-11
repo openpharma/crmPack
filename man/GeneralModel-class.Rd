@@ -45,7 +45,7 @@ function}
 MCMC samples.}
 }}
 \seealso{
-\code{\linkS4class{Model}}, \code{\linkS4class{ComboLogistic}}
+\code{\linkS4class{Model}}
 }
 \keyword{classes}
 
