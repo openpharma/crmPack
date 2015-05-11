@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Son 18/01/2015 20:52>
+## Time-stamp: <[Rules-class.R] by DSB Sam 02/05/2015 22:40>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -191,13 +191,13 @@ NextBestThreePlusThree <- function()
 ##' admissible doses the one that maximizes the probability to be in the
 ##' \code{target} biomarker range, relative to the maximum biomarker level
 ##' across the dose grid or relative to the Emax parameter in case a parametric
-##' model was selected (e.g. \code{\linkS4class{NextBestDualEndpointBeta}}, 
+##' model was selected (e.g. \code{\linkS4class{NextBestDualEndpointBeta}},
 ##' \code{\linkS4class{NextBestDualEndpointEmax}}))
 ##'
 ##' @slot target the biomarker target range, relative to the maximum, that
-##' needs to be reached. For example, (0.8,1.0) means we target a dose
-##' with at least 80% of maximum biomarker level. As an other example, 
-##' (0.5,0.8) would mean that we target a dose between 50% and 80% of
+##' needs to be reached. For example, (0.8, 1.0) means we target a dose
+##' with at least 80% of maximum biomarker level. As an other example,
+##' (0.5, 0.8) would mean that we target a dose between 50% and 80% of
 ##' the maximum biomarker level.
 ##' @slot overdose the overdose toxicity interval
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
@@ -764,8 +764,8 @@ StoppingMTDdistribution <- function(target,
 
 ##' Stop based on probability of target biomarker
 ##'
-##' @slot target the biomarker level, relative to the maximum, that needs to be
-##' reached. So this must be a probability (1 is allowed here)
+##' @slot target the biomarker target range, relative to the maximum, that
+##' needs to be reached. So this must be a probability range (1 is allowed here)
 ##' @slot prob required target probability for reaching sufficient precision
 ##'
 ##' @keywords classes
@@ -774,15 +774,15 @@ StoppingMTDdistribution <- function(target,
     setClass(Class="StoppingTargetBiomarker",
              representation(target="numeric",
                             prob="numeric"),
-             prototype(target=0.9,
+             prototype(target=c(0.9, 1),
                        prob=0.3),
              contains="Stopping",
              validity=
                  function(object){
                      o <- Validate()
 
-                     o$check(is.probability(object@target),
-                             "target must be a probability")
+                     o$check(is.probRange(object@target),
+                             "target has to be a probability range")
                      o$check(is.probability(object@prob,
                                             bounds=FALSE),
                              "prob must be probability > 0 and < 1")

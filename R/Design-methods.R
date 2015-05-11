@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Design-methods.R] by DSB Son 26/04/2015 18:21>
+## Time-stamp: <[Design-methods.R] by DSB Son 03/05/2015 20:35>
 ##
 ## Description:
 ## Simulate outcomes from a CRM trial, assuming a true dose-toxicity
@@ -132,6 +132,8 @@ getResultList <- function(fun,
     return(ret)
 }
 
+
+## ============================================================
 
 ##' Simulate outcomes from a CRM design
 ##'
@@ -774,3 +776,256 @@ setMethod("simulate",
 
               return(ret)
           })
+
+
+## ============================================================
+
+##' Obtain hypothetical trial course table for a design
+##'
+##' This generic function takes a design and generates a dataframe
+##' showing the beginning of several hypothetical trial courses under
+##' the design. This means, from the generated dataframe one can read off:
+##' - how many cohorts are required in the optimal case (no DLTs observed) in
+##'   order to reach the highest dose of the specified dose grid
+##' - assuming no DLTs are observed until a certain dose level, what the next
+##'   recommended dose is for all possible number of DLTs observed
+##' - the actual relative increments that will be used in these cases
+##' - whether the trial would stop at a certain cohort
+##' Examining the "single trial" behavior of a dose escalation design is
+##' the first important step in evaluating a design, and cannot be replaced by
+##' studying solely the operating characteristics in "many trials". The cohort
+##' sizes are also taken from the design, assuming no DLTs occur until the dose
+##' listed.
+##'
+##' @param object the design (\code{\linkS4class{Design}} or
+##' \code{\linkS4class{RuleDesign}} object) we want to examine
+##' @param \dots additional arguments (see methods)
+##'
+##' @return The data frame
+##'
+##' @export
+##' @keywords methods regression
+setGeneric("examine",
+           def=
+           function(object, ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("examine")
+           },
+           valueClass="data.frame")
+
+
+##' @describeIn examine Examine a model-based CRM
+##'
+##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
+##' giving the MCMC options for each evaluation in the trial. By default,
+##' the standard options are used
+setMethod("examine",
+          signature=
+              signature(object="Design"),
+          def=
+              function(object, mcmcOptions=McmcOptions(), ...){
+
+                  ## start with the empty table
+                  ret <- data.frame(dose=numeric(),
+                                    DLTs=integer(),
+                                    nextDose=numeric(),
+                                    stop=logical(),
+                                    increment=integer())
+
+                  ## start the base data with the provided one
+                  baseData <- object@data
+
+                  ## are we finished and can stop?
+                  stopit <- FALSE
+
+                  ## what is the next dose to be used?
+                  ## initialize with starting dose
+                  thisDose <- object@startingDose
+
+                  ## inside this loop we continue filling up the table, until
+                  ## stopping
+                  while(! stopit)
+                  {
+                      ## what is the cohort size at this dose?
+                      thisSize <- size(cohortSize=object@cohortSize,
+                                       dose=thisDose,
+                                       data=baseData)
+
+                      ## for all possible number of DLTs:
+                      for(numDLTs in 0:thisSize)
+                      {
+                          ## update data with corresponding DLT vector
+                          thisData <-
+                              update(object=baseData,
+                                     x=thisDose,
+                                     y=
+                                         rep(x=c(0, 1),
+                                             times=
+                                                 c(thisSize - numDLTs,
+                                                   numDLTs)))
+
+                          ## what is the dose limit?
+                          doselimit <- maxDose(object@increments,
+                                               data=thisData)
+
+                          ## generate samples from the model
+                          thisSamples <- mcmc(data=thisData,
+                                              model=object@model,
+                                              options=mcmcOptions)
+
+                          ## => what is the next best dose?
+                          nextDose <- nextBest(object@nextBest,
+                                               doselimit=doselimit,
+                                               samples=thisSamples,
+                                               model=object@model,
+                                               data=thisData)$value
+
+                          ## compute relative increment in percent
+                          thisIncrement <-
+                              round((nextDose - thisDose) / thisDose * 100)
+
+                          ## evaluate stopping rules
+                          stopThisTrial <- stopTrial(object@stopping,
+                                                     dose=nextDose,
+                                                     samples=thisSamples,
+                                                     model=object@model,
+                                                     data=thisData)
+
+                          ## append information to the data frame
+                          ret <- rbind(ret,
+                                       list(dose=thisDose,
+                                            DLTs=numDLTs,
+                                            nextDose=nextDose,
+                                            stop=stopThisTrial,
+                                            increment=as.integer(thisIncrement)))
+                      }
+
+                      ## change base data
+                      baseData <-
+                          update(object=baseData,
+                                 x=thisDose,
+                                 y=rep(0, thisSize))
+
+                      ## what is the new dose according to table?
+                      newDose <- as.numeric(subset(ret,
+                                                   dose==thisDose & DLTs==0,
+                                                   select=nextDose))
+
+                      ## what is the difference to the previous dose?
+                      doseDiff <- newDose - thisDose
+
+                      ## update dose
+                      thisDose <- newDose
+
+                      ## check if we can stop:
+                      ## either when we have reached the highest dose in the
+                      ## next cohort, or when there is no improvement in dose
+                      ## over the last cohort
+                      stopit <- (thisDose >= max(object@data@doseGrid)) ||
+                          (! (doseDiff > 0))
+                  }
+
+                  return(ret)
+              })
+
+
+
+##' @describeIn examine Examine a rule-based design
+setMethod("examine",
+          signature=
+              signature(object="RuleDesign"),
+          def=
+              function(object, ...){
+
+                  ## start with the empty table
+                  ret <- data.frame(dose=numeric(),
+                                    DLTs=integer(),
+                                    nextDose=numeric(),
+                                    stop=logical(),
+                                    increment=integer())
+
+                  ## start the base data with the provided one
+                  baseData <- object@data
+
+                  ## are we finished and can stop?
+                  stopit <- FALSE
+
+                  ## what is the next dose to be used?
+                  ## initialize with starting dose
+                  thisDose <- object@startingDose
+
+                  ## inside this loop we continue filling up the table, until
+                  ## stopping
+                  while(! stopit)
+                  {
+                      ## what is the cohort size at this dose?
+                      thisSize <- size(cohortSize=object@cohortSize,
+                                       dose=thisDose,
+                                       data=baseData)
+
+                      ## for all possible number of DLTs:
+                      for(numDLTs in 0:thisSize)
+                      {
+                          ## update data with corresponding DLT vector
+                          thisData <-
+                              update(object=baseData,
+                                     x=thisDose,
+                                     y=
+                                         rep(x=c(0, 1),
+                                             times=
+                                                 c(thisSize - numDLTs,
+                                                   numDLTs)))
+
+                          ## evaluate the rule
+                          thisOutcome <- nextBest(object@nextBest,
+                                                  data=thisData)
+
+                          ## next dose
+                          nextDose <- thisOutcome$value
+
+                          ## do we stop here?
+                          stopThisTrial <- thisOutcome$stopHere
+
+                          ## compute relative increment in percent
+                          thisIncrement <-
+                              round((nextDose - thisDose) / thisDose * 100)
+
+                          ## append information to the data frame
+                          ret <- rbind(ret,
+                                       list(dose=thisDose,
+                                            DLTs=numDLTs,
+                                            nextDose=nextDose,
+                                            stop=stopThisTrial,
+                                            increment=as.integer(thisIncrement)))
+                      }
+
+                      ## change base data
+                      baseData <-
+                          update(object=baseData,
+                                 x=thisDose,
+                                 y=rep(0, thisSize))
+
+                      ## what is the new dose according to table?
+                      newDose <- as.numeric(subset(ret,
+                                                   dose==thisDose & DLTs==0,
+                                                   select=nextDose))
+
+                      ## what is the difference to the previous dose?
+                      doseDiff <- newDose - thisDose
+
+                      ## update dose
+                      thisDose <- newDose
+
+                      ## check if we can stop:
+                      ## either when we have reached the highest dose in the
+                      ## next cohort, or when there is no improvement in dose
+                      ## over the last cohort
+                      stopit <- (thisDose >= max(object@data@doseGrid)) ||
+                          (! (doseDiff > 0))
+                  }
+
+                  return(ret)
+              })
+
+## ============================================================

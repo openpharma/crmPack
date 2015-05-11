@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Die 31/03/2015 21:04>
+## Time-stamp: <[mcmc.R] by DSB Son 03/05/2015 13:25>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -68,6 +68,7 @@ setGeneric("mcmc",
 ##' @param verbose shall progress bar and messages be printed? (not default)
 ##'
 ##' @importFrom rjags jags.model jags.samples
+##' @importFrom utils capture.output
 setMethod("mcmc",
           signature=
           signature(data="GeneralData",
@@ -84,7 +85,8 @@ setMethod("mcmc",
 
               ## get a temp directory
               bugsTempDir <- file.path(tempdir(), "bugs")
-              dir.create(bugsTempDir)
+              ## don't warn, because the temp dir often exists (which is OK)
+              dir.create(bugsTempDir, showWarnings=FALSE)
 
               options(BRugsVerbose=verbose)
               if(verbose)
@@ -206,16 +208,30 @@ setMethod("mcmc",
                          progress.bar="none")
 
                   ## afterwards generate more samples and save every step one
-                  samples <-
+
+                  ## code is:
+                  samplesCode <- "samples <-
                       rjags::jags.samples(model=jagsModel,
                                           variable.names=model@sample,
                                           n.iter=
-                                          (options@iterations - options@burnin),
+                                              (options@iterations - options@burnin),
                                           thin=options@step,
                                           progress.bar=
-                                                     ifelse(verbose,
-                                                            "text",
-                                                            "none"))
+                                              ifelse(verbose,
+                                                     'text',
+                                                     'none'))"
+
+                  ## evaluate with or without outstream capturing
+                  if(verbose)
+                  {
+                      eval(parse(text=samplesCode))
+                  } else {
+
+                      ## this is necessary because some outputs
+                      ## are written directly from the JAGS compiled
+                      ## code to the outstream
+                      capture.output(eval(parse(text=samplesCode)))
+                  }
 
                   ## reformat slightly for Samples object
                   ret <- lapply(samples,

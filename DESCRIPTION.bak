@@ -5,8 +5,8 @@ Title: Object-oriented implementation of CRM designs
 LazyLoad: yes
 Author: Daniel Sabanes Bove <sabanesd@roche.com>
 Description: Object-oriented implementation of CRM designs
-Version: 0.0.23
-Date: 2015-02-24
+Version: 0.0.24
+Date: 2015-05-02
 Depends:
     R (>= 3.0.0),
     ggplot2,

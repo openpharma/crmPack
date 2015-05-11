@@ -39,14 +39,15 @@ with prior
 for \eqn{i=1,2}. todo: Note that in principle any model could be used for the
 individual agents. For now we stick to this simple, fixed implementation.
 
-The \code{prob} function has as first argument \code{doses}, which is a dose
-combination: a vector with names specifying the drug names. Additional
-arguments are the model parameters \code{alpha0} (intercepts, nSamples x
-nDrugs matrix), \code{alpha1} (slopes, nSamples x nDrugs matrix) and
-\code{eta} (vector of length nSamples), containing the nSamples MCMC
-samples. Then \code{prob} computes the resulting samples of the probability
-of toxicity at that dose combination. Again here, the function must
-vectorize over the model parameters.
+The \code{prob} function has as first argument \code{dose}, which is either
+a single dose combination (a vector with names specifying the drug names) or
+multiple dose combinations in rows of a matrix (with the column names
+specifying the drug names). Additional arguments are the model parameters
+\code{alpha0} (intercepts, nSamples x nDrugs matrix), \code{alpha1} (slopes,
+nSamples x nDrugs matrix) and \code{eta} (vector of length nSamples),
+containing the nSamples MCMC samples. Then \code{prob} computes the
+resulting samples of the probability of toxicity at that dose combination(s)
+(nSamples x nCombinations).
 }
 \section{Slots}{
 

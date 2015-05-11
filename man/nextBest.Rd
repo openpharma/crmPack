@@ -32,7 +32,9 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \arguments{
 \item{nextBest}{The rule, an object of class \code{\linkS4class{NextBest}}}
 
-\item{doselimit}{The maximum allowed next dose}
+\item{doselimit}{The maximum allowed next dose. If this is an empty (length
+0) vector, then no dose limit will be applied in the course of dose
+recommendation calculation, and a corresponding warning is given.}
 
 \item{samples}{the \code{\linkS4class{Samples}} object}
 

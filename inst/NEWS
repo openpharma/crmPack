@@ -1,6 +1,9 @@
 Version 0.0.24
 --------------------------------------------------------------------------------
 
+* Added examine function to generate a table of hypothetical trial courses
+  for model-based and rule-based DLT-endpoint designs
+
 * Passing an empty (zero length) vector as the doselimit parameter of the
   nextBest function is now considered as requesting a dose recommendation
   without a strict dose limit, and a corresponding warning is printed.
@@ -10,7 +13,8 @@ Version 0.0.24
 
 * Made results from mcmc() (works with the usual set.seed in earlier user code)
   and simulate() (as previously already promised) reproducible. See help file for
-  mcmc for more details.
+  mcmc for more details. Additional improvements to reduce confusing warning
+  messages / notes from mcmc() and higher-level functions.
 
 * Introduced combination designs via new classes:
   ComboData, ComboLogistic

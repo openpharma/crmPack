@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: install script for crmPack
 ##
-## Time-stamp: <[install.R] by DSB Sam 17/01/2015 20:25>
+## Time-stamp: <[install.R] by DSB Mon 11/05/2015 17:19>
 ##
 ## Description:
 ## This is an install script to get crmPack onto your computer.
@@ -10,35 +10,19 @@
 ## History:
 ## 09/12/2014   file creation
 ## 16/01/2015   updates
+## 01/05/2015   updates (gran)
+## 11/05/2015   update: don't spell out the names of the package crmPack
+##              depends on
 #####################################################################################
 
 ## install and load required package
-options(repos=structure(c(CRAN="http://stat.ethz.ch/CRAN/")))
-install.packages("httr", dependencies=TRUE)
-library("httr")
+options(repos=
+        c(CRAN="http://stat.ethz.ch/CRAN",
+          GRAN="http://gran.roche.com/packages"))
 
-## specify source and target (temporary file in tmp)
-url <-
-    paste("https://stash.intranet.roche.com/stash/plugins/servlet/archive/projects/RSTAT",
-          "/repos/crmpack?at=refs%2Fheads%2Fmaster",
-          sep="")
-tmp <- tempdir()
-target <- file.path(tmp, "crmpack.zip")
+install.packages("crmPack",
+                 type="both",
+                 dependencies=TRUE)
 
-## download from source to target
-x <- GET(url, config = list(ssl.verifypeer = FALSE))
-bin <- content(x, "raw")
-writeBin(bin, target)
 
-## unzip to a temporary directory below tmp
-dir <- file.path(tmp, "crmpack")
-unzip(zipfile=target, exdir=dir)
 
-## install required packages and crmPack
-## descr <- packageDescription(pkg="crmpack", lib.loc = tmp)
-install.packages(c("rjags", "ggplot2", "gridExtra",
-                   "GenSA", "BayesLogit", "mvtnorm"), dependencies=TRUE)
-install.packages(dir, repos=NULL, type="source")
-
-library(crmPack)
-crmPackExample()

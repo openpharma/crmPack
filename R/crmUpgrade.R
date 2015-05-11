@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
-## Time-stamp: <[crmUpgrade.R] by DSB Son 18/01/2015 09:28>
+## Time-stamp: <[crmUpgrade.R] by DSB Sam 02/05/2015 22:19>
 ##
 ## Description:
 ## Upgrade function for crmPack
@@ -10,6 +10,7 @@
 ## History:
 ## 11/01/2015   file creation
 #####################################################################################
+
 
 
 ##' Upgrade your crmPack installation with the latest version
@@ -24,8 +25,9 @@
 ##'
 ##' @param lib library where to install the new version (and other required
 ##' packages) into. Default: same location as the last crmPack version.
-##' @param devel Should the development version be installed? (default) -
-##' currently there is no other possibility.
+##' @param devel Should the development version from Stash be installed?
+##' (default FALSE) Otherwise and by default the latest version on the internal
+##' package repository GRAN is installed.
 ##' @param force Should the installation be forced, i.e., even if you have
 ##' already the latest version, should the package be re-installed?
 ##' @param repos which repository to use for installing required packages
@@ -36,17 +38,9 @@
 ##' @importFrom httr GET content
 ##' @keywords programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-crmPackUpgrade <- function(lib = NULL, devel = TRUE, force = FALSE,
+crmPackUpgrade <- function(lib = NULL, devel = FALSE, force = FALSE,
                            repos=structure(c(CRAN="http://stat.ethz.ch/CRAN/")))
 {
-    ## check devel parameter.
-    if(! devel)
-    {
-        stop("currently there is only the development version for download")
-    }
-    ## todo: later we will probably have a release version (on the package
-    ## server) and still the development version (on Stash)
-
     ## set the repository (set it back to old setting when exiting this
     ## function)
     oldRepos <- options("repos")
@@ -69,24 +63,54 @@ crmPackUpgrade <- function(lib = NULL, devel = TRUE, force = FALSE,
         }
     }
 
-    ## specify source and target (temporary file in tmp)
-    url <-
-        paste("https://stash.intranet.roche.com/stash/plugins",
-              "/servlet/archive/projects/RSTAT",
-              "/repos/crmpack?at=refs%2Fheads%2Fmaster",
-              sep="")
-    tmp <- tempdir()
-    target <- file.path(tmp, "crmPack.zip")
-
-    ## download from source to target
-    cat("Please wait ...\n")
-    x <- httr::GET(url, config = list(ssl.verifypeer = FALSE))
-    bin <- httr::content(x, "raw")
-    writeBin(bin, target)
-
-    ## unzip to a temporary directory below tmp
+    ## here will the source tree of the downloaded crmPack version be stored:
     dir <- file.path(tmp, "crmPack")
-    unzip(zipfile=target, exdir=dir)
+
+    ## check devel parameter.
+    if(devel)
+    {
+        ## download develop package source from Stash
+
+        ## specify source and target (temporary file in tmp)
+        url <-
+            paste("https://stash.intranet.roche.com/stash/plugins",
+                  "/servlet/archive/projects/RSTAT",
+                  "/repos/crmpack?at=refs%2Fheads%2F",
+                  "develop",
+                  sep="")
+        tmp <- tempdir()
+        target <- file.path(tmp, "crmPack.zip")
+
+        ## download from source to target
+        cat("Please wait ...\n")
+        x <- httr::GET(url, config = list(ssl.verifypeer = FALSE))
+        bin <- httr::content(x, "raw")
+        writeBin(bin, target)
+
+        ## unzip to target directory
+        unzip(zipfile=target, exdir=dir)
+    } else {
+
+        ## download source package from GRAN
+        downRes <- download.packages("crmPack",
+                                     destdir=tmp,
+                                     repos="http://gran.roche.com/packages",
+                                     type="source",
+                                     quiet=TRUE)
+
+        ## make sure that target directory is empty
+        ## (otherwise old and new stuff could be mixed!)
+        unlink(x=dir,
+               recursive=TRUE)
+
+        ## get the downloaded file name
+        target <- gsub("\\\\", "/", downRes[2])
+
+        ## extract it into target directory
+        untar(tarfile=target,
+              exdir=tmp, ## leads to correct target directory
+              tar="internal") ## important
+    }
 
     ## now compare the installed and the just downloaded crmPack versions
     oldVersion <- try(packageVersion("crmPack", lib.loc=lib))
@@ -119,8 +143,20 @@ crmPackUpgrade <- function(lib = NULL, devel = TRUE, force = FALSE,
     try(detach(package:crmPack), silent = TRUE)
     try(unloadNamespace("crmPack"), silent = TRUE)
 
-    ## install new version
-    install.packages(dir, lib = lib, repos=NULL, type="source")
+    ## install new version:
+    if(devel)
+    {
+        ## directly install from source for development version
+        install.packages(dir, lib = lib, repos=NULL, type="source")
+    } else {
+        ## for release, first check if binary can be installed,
+        ## otherwise go for source
+        install.packages("crmPack",
+                         repos="http://gran.roche.com/packages",
+                         type="both")
+    }
+
+    ## load new version
     library("crmPack", lib.loc = lib)
 
     ## find the NEWS file

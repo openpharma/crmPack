@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Son 26/04/2015 18:57>
+## Time-stamp: <[Rules-methods.R] by DSB Sam 02/05/2015 23:30>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -48,10 +48,6 @@
 setGeneric("nextBest",
            def=
                function(nextBest, doselimit, samples, model, data, ...){
-                   if(identical(length(doselimit), 0L))
-                   {
-                       warning("doselimit is empty, therefore no dose limit will be applied")
-                   }
 
                    ## there should be no default method,
                    ## therefore just forward to next method!
@@ -75,7 +71,13 @@ setMethod("nextBest",
                     model="Model",
                     data="Data"),
           def=
-          function(nextBest, doselimit, samples, model, data, ...){
+              function(nextBest, doselimit, samples, model, data, ...){
+
+                  if(identical(length(doselimit), 0L))
+                  {
+                      warning("doselimit is empty, therefore no dose limit will be applied")
+                  }
+
               ## First, generate the MTD samples.
               mtdSamples <- dose(prob=nextBest@target,
                                  model,
@@ -154,7 +156,13 @@ setMethod("nextBest",
                     model="Model",
                     data="Data"),
           def=
-          function(nextBest, doselimit, samples, model, data, ...){
+              function(nextBest, doselimit, samples, model, data, ...){
+
+                  if(identical(length(doselimit), 0L))
+                  {
+                      warning("doselimit is empty, therefore no dose limit will be applied")
+                  }
+
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
               probSamples <- matrix(nrow=sampleSize(samples@options),
@@ -300,7 +308,8 @@ setMethod("nextBest",
                     model="Model",
                     data="DataParts"),
           def=
-          function(nextBest, doselimit, samples, model, data, ...){
+              function(nextBest, doselimit, samples, model, data, ...){
+
               ## exception when we are in part I or about to start part II!
               if(all(data@part == 1L))
               {
@@ -413,6 +422,11 @@ setMethod("nextBest",
                     data="Data"),
           def=
           function(nextBest, doselimit, samples, model, data, ...){
+
+              if(identical(length(doselimit), 0L))
+                  {
+                      warning("doselimit is empty, therefore no dose limit will be applied")
+                  }
 
               ## get the biomarker level samples
               ## at the dose grid points.
@@ -1307,19 +1321,38 @@ setMethod("stopTrial",
                                                      samples)
               }
 
-              ## now for each sample, look which was the minimum dose giving
-              ## relative target level
-              targetIndex <- apply(biomLevelSamples, 1L,
-                                   function(x){
-                                       rnx <- range(x)
-                                       min(which(x >= stopping@target *
-                                                     diff(rnx) + rnx[1]))
-                                   })
+              ## If there is an 'Emax' parameter, target biomarker level will
+              ## be relative to 'Emax', otherwise will be relative to the
+              ## maximum biomarker level achieved in the given dose range.
+              if("Emax" %in% names(samples@data)){
 
-              probTarget <- numeric(ncol(biomLevelSamples))
-              tab <- table(targetIndex)
-              probTarget[as.numeric(names(tab))] <- tab
-              probTarget <- probTarget / nrow(biomLevelSamples)
+                  ## For each sample, look which dose is maximizing the
+                  ## simultaneous probability to be in the target biomarker
+                  ## range and below overdose toxicity
+                  probTarget <- numeric(ncol(biomLevelSamples))
+                  probTarget <- sapply(seq(1,ncol(biomLevelSamples)),
+                                       function(x){
+                                           sum(biomLevelSamples[, x] >= stopping@target[1]*samples@data$Emax &
+                                               biomLevelSamples[, x] <= stopping@target[2]*samples@data$Emax &
+                                               probSamples[, x] <= stopping@overdose[1]) / nrow(biomLevelSamples)
+                                       })
+              }else{
+
+                  ## For each sample, look which was the minimum dose giving
+                  ## relative target level
+                  targetIndex <- apply(biomLevelSamples, 1L,
+                                       function(x){
+                                           rnx <- range(x)
+                                           min(which((x >= stopping@target[1] * diff(rnx) + rnx[1]) &
+                                                     (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-15))
+                                              )
+                                       })
+
+                  probTarget <- numeric(ncol(biomLevelSamples))
+                  tab <- table(targetIndex)
+                  probTarget[as.numeric(names(tab))] <- tab
+                  probTarget <- probTarget / nrow(biomLevelSamples)
+              }
 
               ## so for this dose we have:
               probTarget <- probTarget[which(data@doseGrid == dose)]

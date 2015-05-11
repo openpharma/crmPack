@@ -2,39 +2,40 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[three.R] by DSB Fre 02/01/2015 09:53>
+## Time-stamp: <[three.R] by DSB Son 03/05/2015 20:30>
 ##
 ## Description:
 ## Test the 3+3 stuff. For development only!!
 ##
 ## History:
 ## 30/12/2014   file creation
+## 03/05/2015   update with new syntax
 ###################################################################################
 
 source("../R/helpers.R")
 source("../R/Data-class.R")
 source("../R/Data-methods.R")
+
 ## create some test data
-data <- new("Data",
-            x=
-            c(0.1, 0.1, 0.1,
-              10, 10, 10,
-              10, 10, 10,
-              20, 20, 20,
-              30, 30, 30,
-              60, 60, 60,
-              60, 60, 60),
-            y=
-            as.integer(c(1, 1, 0,
-                         0, 0, 1,
-                         0, 0, 0,
-                         0, 0, 0,
-                         0, 0, 0,
-                         0, 0, 0,
-                         1, 0, 0
-                         )),
-            doseGrid=
-            c(0.1, 10, 20, 30, 60))
+data <- Data(x=
+                 c(0.1, 0.1, 0.1,
+                   10, 10, 10,
+                   10, 10, 10,
+                   20, 20, 20,
+                   30, 30, 30,
+                   60, 60, 60,
+                   60, 60, 60),
+             y=
+                 as.integer(c(1, 1, 0,
+                              0, 0, 1,
+                              0, 0, 0,
+                              0, 0, 0,
+                              0, 0, 0,
+                              0, 0, 0,
+                              1, 0, 0
+                              )),
+             doseGrid=
+                 c(0.1, 10, 20, 30, 60))
 data
 data@nGrid
 
@@ -52,7 +53,7 @@ source("../R/Rules-class.R")
 source("../R/Rules-methods.R")
 
 ## next best method
-myNextBest <- new("NextBestThreePlusThree")
+myNextBest <- NextBestThreePlusThree()
 
 nextDose <- nextBest(myNextBest, data=data)
 nextDose$value
@@ -61,25 +62,20 @@ data
 
 
 ## test design
-
-emptydata <- new("Data",
-                 x=numeric(),
-                 y=integer(),
-                 doseGrid=
-                 c(0.1, 10, 20, 30, 60))
+emptydata <- Data(doseGrid=c(0.1, 10, 20, 30, 60))
 
 source("../R/Design-class.R")
-design <- new("RuleDesign",
+design <- RuleDesign(
               nextBest=myNextBest,
               data=emptydata,
               cohortSize=
-              new("CohortSizeConst", size=3L),
+              CohortSizeConst(size=3L),
               ## using a constant cohort size of 3,
               ## we obtain exactly the 3+3 design
               startingDose=0.1)
 
 ## alternative:
-design <- getThreePlusThreeDesign(emptydata@doseGrid)
+design <- ThreePlusThreeDesign(emptydata@doseGrid)
 
 
 

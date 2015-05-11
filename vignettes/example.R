@@ -2,26 +2,34 @@
 ### Encoding: ISO8859-1
 
 ###################################################
-### code chunk number 1: setup
+### code chunk number 1: load
+###################################################
+## load package already here to be able to reference the package version!!
+library(crmPack)
+crmPackVersion <- as.character(packageVersion("crmPack"))
+
+
+###################################################
+### code chunk number 2: setup
 ###################################################
 options(continue="  ")                  # use two blanks instead of "+" for
                                         # continued lines (for easy copying)
 
 
 ###################################################
-### code chunk number 2: load
+### code chunk number 3: load
 ###################################################
 library(crmPack)
 
 
 ###################################################
-### code chunk number 3: webinterface (eval = FALSE)
+### code chunk number 4: webinterface (eval = FALSE)
 ###################################################
 ## crmPackHelp()
 
 
 ###################################################
-### code chunk number 4: model-setup
+### code chunk number 5: model-setup
 ###################################################
 model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
@@ -31,25 +39,25 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
 
 
 ###################################################
-### code chunk number 5: class
+### code chunk number 6: class
 ###################################################
 class(model)
 
 
 ###################################################
-### code chunk number 6: str
+### code chunk number 7: str
 ###################################################
 str(model)
 
 
 ###################################################
-### code chunk number 7: dose
+### code chunk number 8: dose
 ###################################################
 model@dose
 
 
 ###################################################
-### code chunk number 8: min-inf
+### code chunk number 9: min-inf
 ###################################################
 set.seed(432)
 coarseGrid <- c(0.1, 10, 30, 60, 100)
@@ -63,7 +71,7 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
 
 
 ###################################################
-### code chunk number 9: min-inf-res
+### code chunk number 10: min-inf-res
 ###################################################
 matplot(x=coarseGrid,
         y=minInfModel$required,
@@ -81,25 +89,25 @@ legend("right",
 
 
 ###################################################
-### code chunk number 10: min-inf-dist
+### code chunk number 11: min-inf-dist
 ###################################################
 minInfModel$distance
 
 
 ###################################################
-### code chunk number 11: min-inf-model
+### code chunk number 12: min-inf-model
 ###################################################
 str(minInfModel$model)
 
 
 ###################################################
-### code chunk number 12: min-inf-model-extract
+### code chunk number 13: min-inf-model-extract
 ###################################################
 myModel <- minInfModel$model
 
 
 ###################################################
-### code chunk number 13: data
+### code chunk number 14: data
 ###################################################
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
              y=c(0, 0, 0, 0, 0, 0, 1, 0),
@@ -110,19 +118,19 @@ data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
 
 
 ###################################################
-### code chunk number 14: ids
+### code chunk number 15: ids
 ###################################################
 data@ID
 
 
 ###################################################
-### code chunk number 15: plotdata
+### code chunk number 16: plotdata
 ###################################################
 print(plot(data))
 
 
 ###################################################
-### code chunk number 16: mcmc-opts
+### code chunk number 17: mcmc-opts
 ###################################################
 options <- McmcOptions(burnin=100,
                        step=2,
@@ -130,14 +138,14 @@ options <- McmcOptions(burnin=100,
 
 
 ###################################################
-### code chunk number 17: mcmc-sampling
+### code chunk number 18: mcmc-sampling
 ###################################################
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 
 ###################################################
-### code chunk number 18: mcmc-extract
+### code chunk number 19: mcmc-extract
 ###################################################
 ## look at the structure of the samples object:
 str(samples)
@@ -146,32 +154,32 @@ alpha0samples <- get(samples, "alpha0")
 
 
 ###################################################
-### code chunk number 19: ggmcmc
+### code chunk number 20: ggmcmc
 ###################################################
 library(ggmcmc)
 print(ggs_traceplot(alpha0samples))
 
 
 ###################################################
-### code chunk number 20: ggmcmc2
+### code chunk number 21: ggmcmc2
 ###################################################
 print(ggs_autocorrelation(alpha0samples))
 
 
 ###################################################
-### code chunk number 21: ggmcmc-help (eval = FALSE)
+### code chunk number 22: ggmcmc-help (eval = FALSE)
 ###################################################
 ## help(package="ggmcmc", help_type="html")
 
 
 ###################################################
-### code chunk number 22: plot-model-fit
+### code chunk number 23: plot-model-fit
 ###################################################
 print(plot(samples, model, data))
 
 
 ###################################################
-### code chunk number 23: empty-data
+### code chunk number 24: empty-data
 ###################################################
 ## provide only the dose grid:
 emptydata <- Data(doseGrid=data@doseGrid)
@@ -182,22 +190,22 @@ print(plot(priorsamples, model, emptydata))
 
 
 ###################################################
-### code chunk number 24: rel-incs
+### code chunk number 25: rel-incs
 ###################################################
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
                                    increments=c(1, 0.33))
 
 
 ###################################################
-### code chunk number 25: max-dose
+### code chunk number 26: max-dose
 ###################################################
 nextMaxDose <- maxDose(myIncrements,
-                       data=emptydata)
+                       data=data)
 nextMaxDose
 
 
 ###################################################
-### code chunk number 26: ncrm-spec
+### code chunk number 27: ncrm-spec
 ###################################################
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
@@ -205,7 +213,7 @@ myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
 
 
 ###################################################
-### code chunk number 27: mtd-spec
+### code chunk number 28: mtd-spec
 ###################################################
 mtdNextBest <- NextBestMTD(target=0.33,
                            derive=
@@ -215,42 +223,42 @@ mtdNextBest <- NextBestMTD(target=0.33,
 
 
 ###################################################
-### code chunk number 28: next-best-run
+### code chunk number 29: next-best-run
 ###################################################
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
-                               samples=priorsamples, model=model, data=emptydata)
+                               samples=samples, model=model, data=data)
 
 
 ###################################################
-### code chunk number 29: next-best-results
+### code chunk number 30: next-best-results
 ###################################################
 doseRecommendation$value
 print(doseRecommendation$plot)
 
 
 ###################################################
-### code chunk number 30: size-range
+### code chunk number 31: size-range
 ###################################################
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohortSize=c(1, 3))
 
 
 ###################################################
-### code chunk number 31: size-dlt
+### code chunk number 32: size-dlt
 ###################################################
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
                          cohortSize=c(1, 3))
 
 
 ###################################################
-### code chunk number 32: size-combined
+### code chunk number 33: size-combined
 ###################################################
 mySize <- maxSize(mySize1, mySize2)
 
 
 ###################################################
-### code chunk number 33: size-eval
+### code chunk number 34: size-eval
 ###################################################
 size(mySize,
      dose=doseRecommendation$value,
@@ -258,13 +266,13 @@ size(mySize,
 
 
 ###################################################
-### code chunk number 34: size-const
+### code chunk number 35: size-const
 ###################################################
 mySize <- CohortSizeConst(size=3)
 
 
 ###################################################
-### code chunk number 35: rules-bits
+### code chunk number 36: rules-bits
 ###################################################
 myStopping1 <- StoppingMinCohorts(nCohorts=3)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
@@ -273,20 +281,20 @@ myStopping3 <- StoppingMinPatients(nPatients=20)
 
 
 ###################################################
-### code chunk number 36: rules-compose
+### code chunk number 37: rules-compose
 ###################################################
 myStopping <- (myStopping1 & myStopping2) | myStopping3
 
 
 ###################################################
-### code chunk number 37: rules-try
+### code chunk number 38: rules-try
 ###################################################
 stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
 
 
 ###################################################
-### code chunk number 38: design-setup
+### code chunk number 39: design-setup
 ###################################################
 design <- Design(model=model,
                  nextBest=myNextBest,
@@ -298,7 +306,7 @@ design <- Design(model=model,
 
 
 ###################################################
-### code chunk number 39: true-def
+### code chunk number 40: true-def
 ###################################################
 ## define the true function
 myTruth <- function(dose)
@@ -311,7 +319,7 @@ curve(myTruth(x), from=0, to=80, ylim=c(0, 1))
 
 
 ###################################################
-### code chunk number 40: run-sims
+### code chunk number 41: run-sims
 ###################################################
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
@@ -319,55 +327,55 @@ time <- system.time(mySims <- simulate(design,
                                        nsim=100,
                                        seed=819,
                                        mcmcOptions=options,
-                                       parallel=TRUE))[3]
+                                       parallel=FALSE))[3]
 time
 
 
 ###################################################
-### code chunk number 41: sim-class
+### code chunk number 42: sim-class
 ###################################################
 class(mySims)
 
 
 ###################################################
-### code chunk number 42: sim-help
+### code chunk number 43: sim-help
 ###################################################
 help("Simulations-class", help="html")
 
 
 ###################################################
-### code chunk number 43: third-trial
+### code chunk number 44: third-trial
 ###################################################
 print(plot(mySims@data[[3]]))
 
 
 ###################################################
-### code chunk number 44: third-dose
+### code chunk number 45: third-dose
 ###################################################
 mySims@doses[3]
 
 
 ###################################################
-### code chunk number 45: third-stop
+### code chunk number 46: third-stop
 ###################################################
 mySims@stopReasons[[3]]
 
 
 ###################################################
-### code chunk number 46: sim-plot
+### code chunk number 47: sim-plot
 ###################################################
 print(plot(mySims))
 
 
 ###################################################
-### code chunk number 47: sim-summary
+### code chunk number 48: sim-summary
 ###################################################
 summary(mySims,
         truth=myTruth)
 
 
 ###################################################
-### code chunk number 48: sim-sum-plot
+### code chunk number 49: sim-sum-plot
 ###################################################
 simSum <- summary(mySims,
                   truth=myTruth)
@@ -375,7 +383,7 @@ print(plot(simSum))
 
 
 ###################################################
-### code chunk number 49: sim-sum-plot2
+### code chunk number 50: sim-sum-plot2
 ###################################################
 dosePlot <- plot(simSum, type="doseSelected") +
       scale_x_continuous(breaks=10:30, limits=c(10, 30))
@@ -383,20 +391,20 @@ print(dosePlot)
 
 
 ###################################################
-### code chunk number 50: explain-fut
+### code chunk number 51: explain-fut
 ###################################################
 model@prob
 
 
 ###################################################
-### code chunk number 51: fut-samples
+### code chunk number 52: fut-samples
 ###################################################
 postSamples <- as.data.frame(samples@data)[(1:20)*50, ]
 postSamples
 
 
 ###################################################
-### code chunk number 52: design-future
+### code chunk number 53: design-future
 ###################################################
 nowDesign <- Design(model=model,
                     nextBest=myNextBest,
@@ -410,7 +418,7 @@ nowDesign <- Design(model=model,
 
 
 ###################################################
-### code chunk number 53: sim-future
+### code chunk number 54: sim-future
 ###################################################
 time <- system.time(futureSims <- simulate(
     ## supply the new design here
@@ -426,42 +434,42 @@ time <- system.time(futureSims <- simulate(
     seed=918,
     ## this remains the same:
     mcmcOptions=options,
-    parallel=TRUE))[3]
+    parallel=FALSE))[3]
 time
 
 
 ###################################################
-### code chunk number 54: sim-future-plot
+### code chunk number 55: sim-future-plot
 ###################################################
 print(plot(futureSims))
 
 
 ###################################################
-### code chunk number 55: sim-future-summary
+### code chunk number 56: sim-future-summary
 ###################################################
 summary(futureSims,
         truth=myTruth)
 
 
 ###################################################
-### code chunk number 56: three-plus-three-setup
+### code chunk number 57: three-plus-three-setup
 ###################################################
 threeDesign <- ThreePlusThreeDesign(doseGrid=c(5, 10, 15, 25, 35, 50, 80))
 class(threeDesign)
 
 
 ###################################################
-### code chunk number 57: three-sims
+### code chunk number 58: three-sims
 ###################################################
 threeSims <- simulate(threeDesign,
                       nsim=1000,
                       seed=35,
                       truth=myTruth,
-                      parallel=TRUE)
+                      parallel=FALSE)
 
 
 ###################################################
-### code chunk number 58: three-sims-summary
+### code chunk number 59: three-sims-summary
 ###################################################
 threeSimsSum <- summary(threeSims,
                         truth=myTruth)
@@ -469,13 +477,13 @@ threeSimsSum
 
 
 ###################################################
-### code chunk number 59: three-sims-plot
+### code chunk number 60: three-sims-plot
 ###################################################
 print(plot(threeSimsSum))
 
 
 ###################################################
-### code chunk number 60: dual-data-struct
+### code chunk number 61: dual-data-struct
 ###################################################
 data <- DataDual(
     x=
@@ -493,13 +501,13 @@ data <- DataDual(
 
 
 ###################################################
-### code chunk number 61: dual-data-plot
+### code chunk number 62: dual-data-plot
 ###################################################
 print(plot(data))
 
 
 ###################################################
-### code chunk number 62: dual-rw1-model
+### code chunk number 63: dual-rw1-model
 ###################################################
 model <- DualEndpointRW(mu=c(0, 1),
                         Sigma=matrix(c(1, 0, 0, 1), nrow=2),
@@ -513,49 +521,49 @@ model <- DualEndpointRW(mu=c(0, 1),
 
 
 ###################################################
-### code chunk number 63: dual-options
+### code chunk number 64: dual-options
 ###################################################
-options <- McmcOptions(burnin=20000,
-                       step=3,
-                       samples=10000)
+options <- McmcOptions(burnin=100,
+                       step=2,
+                       samples=500)
 
 
 ###################################################
-### code chunk number 64: dual-mcmc
+### code chunk number 65: dual-mcmc
 ###################################################
 samples <- mcmc(data, model, options)
 
 
 ###################################################
-### code chunk number 65: dual-conv
+### code chunk number 66: dual-conv
 ###################################################
 data@nGrid
-betaWpicks <- get(samples, "betaW", c(2, 10, 25))
+betaWpicks <- get(samples, "betaW", c(1, 5, 10, 25))
 ggs_traceplot(betaWpicks)
 
 
 ###################################################
-### code chunk number 66: dual-modelfit
+### code chunk number 67: dual-modelfit
 ###################################################
 print(plot(samples, model, data, extrapolate=FALSE))
 
 
 ###################################################
-### code chunk number 67: dual-variance
+### code chunk number 68: dual-variance
 ###################################################
 ggs_histogram(get(samples, "precW"))
 
 
 ###################################################
-### code chunk number 68: dual-nextbest
+### code chunk number 69: dual-nextbest
 ###################################################
-myNextBest <- NextBestDualEndpoint(target=0.9,
+myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
                                    maxOverdoseProb=0.25)
 
 
 ###################################################
-### code chunk number 69: dual-nextdose-eval
+### code chunk number 70: dual-nextdose-eval
 ###################################################
 nextDose <- nextBest(myNextBest,
                      doselimit=50,
@@ -566,33 +574,33 @@ nextDose$value
 
 
 ###################################################
-### code chunk number 70: dual-nextdose-plot
+### code chunk number 71: dual-nextdose-plot
 ###################################################
 print(nextDose$plot)
 
 
 ###################################################
-### code chunk number 71: dual-stop
+### code chunk number 72: dual-stop
 ###################################################
-myStopping4 <- StoppingTargetBiomarker(target=0.9,
+myStopping4 <- StoppingTargetBiomarker(target=c(0.9, 1),
                                        prob=0.5)
 
 
 ###################################################
-### code chunk number 72: dual-stop-try
+### code chunk number 73: dual-stop-try
 ###################################################
 stopTrial(myStopping4, dose=nextDose$value,
           samples, model, data)
 
 
 ###################################################
-### code chunk number 73: dual-stop-whole
+### code chunk number 74: dual-stop-whole
 ###################################################
 myStopping <- myStopping4 | StoppingMinPatients(40)
 
 
 ###################################################
-### code chunk number 74: dual-design
+### code chunk number 75: dual-design
 ###################################################
 emptydata <- DataDual(doseGrid=data@doseGrid)
 design <- DualDesign(model=model,
@@ -605,7 +613,7 @@ design <- DualDesign(model=model,
 
 
 ###################################################
-### code chunk number 75: dual-scenario
+### code chunk number 76: dual-scenario
 ###################################################
 betaMod <- function (dose, e0, eMax, delta1, delta2, scal)
 {
@@ -624,7 +632,7 @@ trueTox <- function(dose)
 
 
 ###################################################
-### code chunk number 76: dual-sc-plot
+### code chunk number 77: dual-sc-plot
 ###################################################
 par(mfrow=c(1, 2))
 curve(trueTox(x), from=0, to=80)
@@ -632,7 +640,7 @@ curve(trueBiomarker(x), from=0, to=80)
 
 
 ###################################################
-### code chunk number 77: dual-sims
+### code chunk number 78: dual-sims
 ###################################################
 mySims <- simulate(design,
                    trueTox=trueTox,
@@ -640,7 +648,7 @@ mySims <- simulate(design,
                    sigma2W=0.01,
                    rho=0,
                    nsim=10,
-                   parallel=TRUE,
+                   parallel=FALSE,
                    seed=3,
                    startingDose=6,
                    mcmcOptions =
@@ -650,13 +658,13 @@ mySims <- simulate(design,
 
 
 ###################################################
-### code chunk number 78: dual-sims-plot
+### code chunk number 79: dual-sims-plot
 ###################################################
 print(plot(mySims))
 
 
 ###################################################
-### code chunk number 79: dual-sims-sum
+### code chunk number 80: dual-sims-sum
 ###################################################
 sumOut <- summary(mySims,
                   trueTox=trueTox,
@@ -665,7 +673,7 @@ sumOut
 
 
 ###################################################
-### code chunk number 80: dual-sim-sum-plot
+### code chunk number 81: dual-sim-sum-plot
 ###################################################
 print(plot(sumOut))
 

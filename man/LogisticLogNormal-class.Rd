@@ -22,6 +22,20 @@ The prior is
 
 The slots of this class contain the mean vector and the covariance matrix of
 the bivariate normal distribution, as well as the reference dose.
+
+Note that the parametrization inside the class uses alpha0 and alpha1.
+alpha0 is identical to the intercept \eqn{\alpha} above and is the log-odds
+for a DLT at the reference dose x*. Therefore, the prior mean for alpha0
+is the expected log-odds at the reference dose x* before observing any data.
+Note that the expected odds is not just the exp of the prior mean of alpha0,
+because the non-linearity of the exp transformation. The log-normal
+distribution on Wikipedia gives the formula for computing the prior mean of
+exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
+paper. alpha1 is identical to \eqn{\log(\beta)} above and equals the beta
+in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
+between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
+log-normal distribution in the LogisticLogNormal model in order to ensure
+positivity of alpha1 and thus exp(alpha1) > 1.
 }
 \section{Slots}{
 

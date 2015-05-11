@@ -40,6 +40,13 @@ samples from all model parameters and required derived values. It is a
 generic function, so that customized versions may be conveniently defined
 for specific subclasses of GeneralData, GeneralModel, and McmcOptions input.
 }
+\details{
+Reproducible samples can be obtained by setting the seed via
+\code{\link{set.seed}} before in the user code as usual. However, note that
+because the RNG sampler used is external to R, running this MCMC function
+will not change the seed position -- that is, the repeated call to this
+function will then result in exactly the same output.
+}
 \section{Methods (by class)}{
 \itemize{
 \item \code{data = GeneralData,model = GeneralModel,options = McmcOptions}: Standard method which uses JAGS/BUGS
