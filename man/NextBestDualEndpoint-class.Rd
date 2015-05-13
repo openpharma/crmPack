@@ -10,17 +10,20 @@ based on the dual endpoint model}
 This rule first excludes all doses that exceed the probability
 \code{maxOverdoseProb} of having an overdose toxicity, as specified by the
 overdose interval \code{overdose}. Then, it picks under the remaining
-admissible doses the one that maximizes the probability to have at least
-\code{target} biomarker level, relative to the maximum biomarker level
-across the dose grid.
+admissible doses the one that maximizes the probability to be in the
+\code{target} biomarker range, relative to the maximum biomarker level
+across the dose grid or relative to the Emax parameter in case a parametric
+model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
+\code{\linkS4class{DualEndpointEmax}}))
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the biomarker level, relative to the maximum, that
-needs to be reached. For example, 0.9 means that a dose with 90%
-of the maximum biomarker level is considered as having reached
-sufficient biomarker level.}
+\item{\code{target}}{the biomarker target range, relative to the maximum, that
+needs to be reached. For example, (0.8, 1.0) means we target a dose
+with at least 80% of maximum biomarker level. As an other example,
+(0.5, 0.8) would mean that we target a dose between 50% and 80% of
+the maximum biomarker level.}
 
 \item{\code{overdose}}{the overdose toxicity interval}
 

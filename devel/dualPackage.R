@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[dualPackage.R] by DSB Son 18/01/2015 20:43>
+## Time-stamp: <[dualPackage.R] by DSB Fre 06/03/2015 14:04>
 ##
 ## Description:
 ## Test the dual endpoint stuff. For development only!!
@@ -52,8 +52,8 @@ data <- DataDual(
         c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
           20, 20, 20, 40, 40, 40, 50, 50, 50),
     y=
-        as.integer(c(0, 0, 0, 0, 0, 0, 1, 0,
-                     0, 1, 1, 0, 0, 1, 0, 1, 1)),
+        c(0, 0, 0, 0, 0, 0, 1, 0,
+          0, 1, 1, 0, 0, 1, 0, 1, 1),
     w=
         c(0.3, 0.4, 0.5, 0.4, 0.6, 0.7, 0.5, 0.6,
           0.5, 0.5, 0.55, 0.4, 0.41, 0.39, 0.3, 0.3, 0.2),
@@ -63,6 +63,7 @@ data <- DataDual(
 data
 data@nGrid
 data@nObs
+help("DataDual-class", help="html")
 
 plot(data)
 

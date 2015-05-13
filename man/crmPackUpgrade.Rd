@@ -4,15 +4,16 @@
 \alias{crmPackUpgrade}
 \title{Upgrade your crmPack installation with the latest version}
 \usage{
-crmPackUpgrade(lib = NULL, devel = TRUE, force = FALSE,
+crmPackUpgrade(lib = NULL, devel = FALSE, force = FALSE,
   repos = structure(c(CRAN = "http://stat.ethz.ch/CRAN/")))
 }
 \arguments{
 \item{lib}{library where to install the new version (and other required
 packages) into. Default: same location as the last crmPack version.}
 
-\item{devel}{Should the development version be installed? (default) -
-currently there is no other possibility.}
+\item{devel}{Should the development version from Stash be installed?
+(default FALSE) Otherwise and by default the latest version on the internal
+package repository GRAN is installed.}
 
 \item{force}{Should the installation be forced, i.e., even if you have
 already the latest version, should the package be re-installed?}

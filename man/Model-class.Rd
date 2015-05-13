@@ -6,8 +6,9 @@
 \alias{Model-class}
 \title{Class for the model input}
 \description{
-This is the general model class, from which all other specific models
-inherit.
+This is the model class for single agent dose escalation,
+from which all other specific models inherit. It inherits all slots
+from \code{\linkS4class{GeneralModel}}.
 }
 \details{
 The \code{datamodel} must obey the convention that the data input is
@@ -43,25 +44,6 @@ other.
 \section{Slots}{
 
 \describe{
-\item{\code{datamodel}}{a function representing the BUGS data model specification
-(see the details above)}
-
-\item{\code{priormodel}}{a function representing the BUGS prior specification
-(see the details above)}
-
-\item{\code{datanames}}{The names of all \code{\linkS4class{Data}} slots that are
-used in the \code{datamodel} and/or \code{priormodel} definition. Note that
-you cannot specify more variables than those that are really used in the
-model!}
-
-\item{\code{modelspecs}}{a function computing the list of the data model and prior
-model specifications that are required for fully specifying them (e.g. prior
-parameters, reference dose, etc.), based on the \code{\linkS4class{Data}}
-slots that are then required as arguments of this function. This will then
-be passed to BUGS for the computations.
-todo: if we remove DualEndpointOld, then revert this back to list instead
-of function for simplicity!!}
-
 \item{\code{dose}}{a function computing the dose reaching a specific target
 probability, based on the model parameters and additional prior settings
 (see the details above)}
@@ -69,15 +51,6 @@ probability, based on the model parameters and additional prior settings
 \item{\code{prob}}{a function computing the probability of toxicity for a specific
 dose, based on the model parameters and additional prior settings (see the
 details above)}
-
-\item{\code{init}}{a function computing the list of starting values for parameters
-required to be initialized in the MCMC sampler, based on the
-\code{\linkS4class{Data}} slots that are then required as arguments of this
-function}
-
-\item{\code{sample}}{names of all parameters from which you would like to save the
-MCMC samples. These must include the ones required by the \code{dose} and
-\code{prob} functions.}
 }}
 \seealso{
 \code{\linkS4class{LogisticNormal}},

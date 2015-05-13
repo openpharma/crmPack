@@ -1,11 +1,37 @@
+Version 0.1.0
+--------------------------------------------------------------------------------
+
+* Added examine function to generate a table of hypothetical trial courses
+  for model-based and rule-based DLT-endpoint designs
+
+* Made results from mcmc() (works with the usual set.seed in earlier user code)
+  and simulate() (as previously already promised) reproducible. See help file
+  for mcmc for more details. Additional improvements to reduce confusing warning
+  messages / notes from mcmc() and higher-level functions.
+
+* Made simulate with parallel=TRUE work on r.roche.com (Linux server),
+  using the same parallelization method as for laptops (Windows)
+
+* Passing an empty (zero length) vector as the doselimit parameter of the
+  nextBest function is now considered as requesting a dose recommendation
+  without a strict dose limit, and a corresponding warning is printed.
+
+* Introduced GeneralModel class, from which then the class Model for single
+  agent dose escalation derives. Another branch will be the ComboLogistic model
+  for multiple agent combinations (in a future version). Similarly introduced
+  GeneralData class, from which the class Data for single agent derives,
+  separately from that will be the subclass DataCombo (in a future version).
+
 Version 0.0.23
 --------------------------------------------------------------------------------
 
-* Slightly updated package vignette (example.pdf) to make it easier to print
-  out.
+* Fixed bug in mcmc function which led to error
+  "all data elements must have as many rows as the sample size was" and slightly
+  changed JAGS way of handling burnin / thinning (which should not have a user
+  impact).
 
-* Fixed a critical bug in the mcmc function, which could lead to failure of the
-  function call.
+* Reduced number of MCMC samples for dual-endpoint example in vignette to be
+  able to plot the vignette
 
 Version 0.0.22
 --------------------------------------------------------------------------------

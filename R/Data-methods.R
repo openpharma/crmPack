@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Data-methods.R] by DSB Mon 05/01/2015 17:25>
+## Time-stamp: <[Data-methods.R] by DSB Mon 11/05/2015 17:43>
 ##
 ## Description:
 ## Methods for handling the data. Plot ideas taken from bcrm package.
@@ -21,9 +21,9 @@
 ## --------------------------------------------------
 
 
-##' as.list method for the "Data" class
+##' as.list method for the "GeneralData" class
 ##'
-##' @param x the \code{\linkS4class{Data}} object we want to convert
+##' @param x the \code{\linkS4class{GeneralData}} object we want to convert
 ##' @param \dots unused
 ##' @return a list of all slots in \code{x}
 ##'
@@ -31,7 +31,7 @@
 ##' @keywords methods
 setMethod("as.list",
           signature=
-          signature(x="Data"),
+          signature(x="GeneralData"),
           def=
           function(x, ...){
               nams <- slotNames(x)
@@ -100,7 +100,6 @@ setMethod("plot",
 
               a <- a + scale_x_continuous(breaks=df$patient,
                                           minor_breaks=numeric())
-
               return(a)
           })
 
@@ -321,7 +320,6 @@ setMethod("update",
               ## return the object
               return(object)
           })
-
 
 
 ## ============================================================

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Model-class.R] by DSB Son 18/01/2015 20:39>
+## Time-stamp: <[Model-class.R] by DSB Mon 11/05/2015 17:44>
 ##
 ## Description:
 ## Encapsulate the model input in a formal class.
@@ -16,10 +16,79 @@
 
 ## ============================================================
 
-##' Class for the model input
+##' General class for model input
 ##'
 ##' This is the general model class, from which all other specific models
 ##' inherit.
+##'
+##' The \code{datamodel} must obey the convention that the data input is
+##' called exactly as in the corresponding data class.
+##' All prior distributions for parameters should be contained in the
+##' model function \code{priormodel}. The background is that this can
+##' be used to simulate from the prior distribution, before obtaining any
+##' data.
+##'
+##' @slot datamodel a function representing the BUGS data model specification
+##' (see the details above)
+##' @slot priormodel a function representing the BUGS prior specification
+##' (see the details above)
+##' @slot datanames The names of all data slots that are used in the
+##' \code{datamodel} and/or \code{priormodel} definition. Note that you cannot
+##' specify more variables than those that are really used in the model!
+##' @slot modelspecs a function computing the list of the data model and prior
+##' model specifications that are required for fully specifying them (e.g. prior
+##' parameters, reference dose, etc.), based on the data
+##' slots that are then required as arguments of this function. This will then
+##' be passed to BUGS for the computations.
+##' @slot init a function computing the list of starting values for parameters
+##' required to be initialized in the MCMC sampler, based on the
+##' data slots that are then required as arguments of this
+##' function
+##' @slot sample names of all parameters from which you would like to save the
+##' MCMC samples.
+##'
+##' @seealso \code{\linkS4class{Model}}
+##'
+##' @export
+##' @keywords classes
+.GeneralModel <-
+    setClass(Class="GeneralModel",
+             representation(datamodel="function",
+                            priormodel="function",
+                            datanames="character",
+                            modelspecs="function",
+                            init="function",
+                            sample="character"),
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     ## put here all names of data class slots
+                     allDatanames <- c("x", "y", "w",
+                                       "doseGrid", "nObs", "nGrid", "xLevel")
+
+                     o$check(all(names(formals(object@init)) %in%
+                                 allDatanames),
+                             "arguments of the init function must be data names")
+                     o$check(all(object@datanames %in% allDatanames),
+                             paste("data names must be in",
+                                   paste(allDatanames, collapse=", ")))
+
+                     o$result()
+         })
+validObject(.GeneralModel())
+
+## no init function for this one
+
+
+
+## ============================================================
+
+##' Class for the model input
+##'
+##' This is the model class for single agent dose escalation,
+##' from which all other specific models inherit. It inherits all slots
+##' from \code{\linkS4class{GeneralModel}}.
 ##'
 ##' The \code{datamodel} must obey the convention that the data input is
 ##' called exactly as in the \code{\linkS4class{Data}} class.
@@ -51,34 +120,12 @@
 ##' Note that \code{dose} and \code{prob} are the inverse functions of each
 ##' other.
 ##'
-##' @slot datamodel a function representing the BUGS data model specification
-##' (see the details above)
-##' @slot priormodel a function representing the BUGS prior specification
-##' (see the details above)
-##' @slot datanames The names of all \code{\linkS4class{Data}} slots that are
-##' used in the \code{datamodel} and/or \code{priormodel} definition. Note that
-##' you cannot specify more variables than those that are really used in the
-##' model!
-##' @slot modelspecs a function computing the list of the data model and prior
-##' model specifications that are required for fully specifying them (e.g. prior
-##' parameters, reference dose, etc.), based on the \code{\linkS4class{Data}}
-##' slots that are then required as arguments of this function. This will then
-##' be passed to BUGS for the computations.
-##' todo: if we remove DualEndpointOld, then revert this back to list instead
-##' of function for simplicity!!
 ##' @slot dose a function computing the dose reaching a specific target
 ##' probability, based on the model parameters and additional prior settings
 ##' (see the details above)
 ##' @slot prob a function computing the probability of toxicity for a specific
 ##' dose, based on the model parameters and additional prior settings (see the
 ##' details above)
-##' @slot init a function computing the list of starting values for parameters
-##' required to be initialized in the MCMC sampler, based on the
-##' \code{\linkS4class{Data}} slots that are then required as arguments of this
-##' function
-##' @slot sample names of all parameters from which you would like to save the
-##' MCMC samples. These must include the ones required by the \code{dose} and
-##' \code{prob} functions.
 ##'
 ##' @seealso \code{\linkS4class{LogisticNormal}},
 ##' \code{\linkS4class{LogisticLogNormal}},
@@ -90,28 +137,13 @@
 ##' @keywords classes
 .Model <-
     setClass(Class="Model",
-             representation(datamodel="function",
-                            priormodel="function",
-                            datanames="character",
-                            modelspecs="function",
-                            dose="function",
-                            prob="function",
-                            init="function",
-                            sample="character"),
+             representation(dose="function",
+                            prob="function"),
+             contains="GeneralModel",
              validity=
                  function(object){
                      o <- Validate()
 
-                     ## names of the Data class slots
-                     allDatanames <- c("x", "y", "w",
-                                       "doseGrid", "nObs", "nGrid", "xLevel")
-
-                     o$check(all(names(formals(object@init)) %in%
-                                 allDatanames),
-                             "arguments of the init function must be data names")
-                     o$check(all(object@datanames %in% allDatanames),
-                             paste("data names must be in",
-                                   paste(allDatanames, collapse=", ")))
                      o$check(all(names(formals(object@dose)) %in%
                                  c("prob", object@sample)),
                              "objects of dose function incorrect")
@@ -145,6 +177,20 @@ validObject(.Model())
 ##'
 ##' The slots of this class contain the mean vector and the covariance matrix of
 ##' the bivariate normal distribution, as well as the reference dose.
+##'
+##' Note that the parametrization inside the class uses alpha0 and alpha1.
+##' alpha0 is identical to the intercept \eqn{\alpha} above and is the log-odds
+##' for a DLT at the reference dose x*. Therefore, the prior mean for alpha0
+##' is the expected log-odds at the reference dose x* before observing any data.
+##' Note that the expected odds is not just the exp of the prior mean of alpha0,
+##' because the non-linearity of the exp transformation. The log-normal
+##' distribution on Wikipedia gives the formula for computing the prior mean of
+##' exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
+##' paper. alpha1 is identical to \eqn{\log(\beta)} above and equals the beta
+##' in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
+##' between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
+##' log-normal distribution in the LogisticLogNormal model in order to ensure
+##' positivity of alpha1 and thus exp(alpha1) > 1.
 ##'
 ##' @slot mean the prior mean vector \eqn{\mu}
 ##' @slot cov the prior covariance matrix \eqn{\Sigma}
@@ -1303,7 +1349,7 @@ validObject(DualEndpoint(mu=c(0, 1),
 ##' moment only the first order random walk produces useful results).
 ##'
 ##' That means, for the RW1 we assume
-##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim' Normal(0, \sigma^{2}_{\beta_{W}})},
+##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim Normal(0, \sigma^{2}_{\beta_{W}}),}
 ##' where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
 ##' gridpoint \eqn{x_{i}}.
 ##' For the RW2, the second-order differences instead of the first-order
@@ -1775,6 +1821,227 @@ validObject(DualEndpointBeta(E0=10,
 ## ============================================================
 
 
+##' Dual endpoint model with emax function for dose-biomarker relationship
+##'
+##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
+##' dose-biomarker relationship \eqn{f(x)} is modelled by a parametric EMAX function:
+##'
+##' \deqn{f(x) = E_{0} + \frac{(E_{max} - E_{0}) * (x/x^{*})}{ED_{50} + (x/x^{*})}}
+##'
+##' where \eqn{x^{*}} is a reference dose, \eqn{E_{0}} and \eqn{E_{max}} are the
+##' minimum and maximum levels for the biomarker and \eqn{ED_{50}} is the dose
+##' achieving half of the maximum effect \eqn{0.5 * E_{max}}.
+##'
+##' All parameters can currently be assigned uniform distributions or be fixed
+##' in advance.
+##'
+##' @slot E0 either a fixed number or the two uniform distribution parameters
+##' @slot Emax either a fixed number or the two uniform distribution parameters
+##' @slot ED50 either a fixed number or the two uniform distribution parameters
+##' @slot refDose the reference dose \eqn{x^{*}}
+##'
+##' @export
+##' @keywords classes
+.DualEndpointEmax <-
+    setClass("DualEndpointEmax",
+             representation(E0="numeric",
+                            Emax="numeric",
+                            ED50="numeric",
+                            refDose="numeric"),
+             prototype(E0=c(0, 100),
+                       Emax=c(0, 500),
+                       ED50=c(0,500),
+                       refDose=1000,
+                       useFixed=
+                           list(sigma2W=TRUE,
+                                rho=TRUE,
+                                E0=FALSE,
+                                Emax=FALSE,
+                                ED50=FALSE)),
+             contains="DualEndpoint",
+             validity=
+                 function(object){
+                     o <- Validate()
+
+                     ## check the prior parameters with variable content
+                     for(parName in c("E0", "Emax", "ED50"))
+                     {
+                         ## if we use a fixed value for this parameter
+                         if(object@useFixed[[parName]])
+                         {
+                             ## check range of value
+                             o$check(slot(object, parName) > 0,
+                                     paste(parName, "must be positive"))
+                         } else {
+                             ## use a Uniform(a, b) prior
+                             o$check(all(slot(object, parName) >= 0) &&
+                                         (diff(slot(object, parName)) > 0),
+                                     paste(parName,
+                                           "has not proper prior parameters"))
+                         }
+                     }
+
+                     ## check the refDose
+                     o$check(object@refDose > 0,
+                             "refDose must be positive")
+
+                     o$result()
+                 })
+validObject(.DualEndpointEmax())
+
+##' Initialization function for the "DualEndpointEmax" class
+##'
+##' @param E0 see \code{\linkS4class{DualEndpointEmax}}
+##' @param Emax see \code{\linkS4class{DualEndpointEmax}}
+##' @param ED50 see \code{\linkS4class{DualEndpointEmax}}
+##' @param refDose see \code{\linkS4class{DualEndpointEmax}}
+##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
+##' @return the \code{\linkS4class{DualEndpointEmax}} object
+##'
+##' @export
+##' @keywords methods
+DualEndpointEmax <- function(E0,
+                             Emax,
+                             ED50,
+                             refDose,
+                             ...)
+{
+    ## call the initialize function from DualEndpoint
+    ## to get started
+    start <- DualEndpoint(...)
+
+    ## we need the dose grid here in the BUGS model,
+    ## therefore add it to datanames
+    start@datanames <- c(start@datanames,
+                         "doseGrid")
+
+    ## Find out which of the additional parameters are fixed
+    for(parName in c("E0", "Emax", "ED50"))
+    {
+        start@useFixed[[parName]] <-
+            identical(length(get(parName)), 1L)
+    }
+
+    ## build together the prior model and the parameters
+    ## to be saved during sampling
+    ## ----------
+
+    start@priormodel <-
+        joinModels(start@priormodel,
+                   function(){
+
+                       for (j in 1:nGrid)
+                       {
+                           StandDose[j] <- doseGrid[j] / refDose
+                           betaW[j] <- E0 + (Emax - E0) * StandDose[j] /
+                                            (ED50 + StandDose[j])
+                       }
+                   })
+
+    ## we will fill in more, depending on which parameters
+    ## are fixed, in these two variables:
+    start@sample <- c(start@sample,
+                      "betaW")
+    newInits <- list()
+    newModelspecs <- list(refDose=refDose)
+
+    ## for E0:
+    if(! start@useFixed[["E0"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for E0
+                           E0 ~ dunif(E0low, E0high)
+                       })
+
+        start@sample <- c(start@sample,
+                          "E0")
+
+        newInits$E0 <- mean(E0)
+        newModelspecs$E0low <- E0[1]
+        newModelspecs$E0high <- E0[2]
+    } else {
+        newModelspecs$E0 <- E0
+    }
+
+    ## for Emax:
+    if(! start@useFixed[["Emax"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for Emax
+                           Emax ~ dunif(EmaxLow, EmaxHigh)
+                       })
+
+        start@sample <- c(start@sample,
+                          "Emax")
+
+        newInits$Emax <- mean(Emax)
+        newModelspecs$EmaxLow <- Emax[1]
+        newModelspecs$EmaxHigh <- Emax[2]
+    } else {
+        newModelspecs$Emax <- Emax
+    }
+
+    ## for ED50:
+    if(! start@useFixed[["ED50"]])
+    {
+        start@priormodel <-
+            joinModels(start@priormodel,
+                       function(){
+                           ## uniform for ED50
+                           ED50 ~ dunif(ED50Low, ED50High)
+                       })
+
+        start@sample <- c(start@sample,
+                          "ED50")
+
+        newInits$ED50 <- mean(ED50)
+        newModelspecs$ED50Low <- ED50[1]
+        newModelspecs$ED50High <- ED50[2]
+    } else {
+        newModelspecs$ED50 <- ED50
+    }
+
+
+    ## now define the new modelspecs and init functions:
+    oldModelspecs <- start@modelspecs
+    start@modelspecs <- function()
+    {
+        c(oldModelspecs(),
+          newModelspecs)
+    }
+
+    oldInit <- start@init
+    start@init <- function(y, w, nGrid)
+    {
+        c(oldInit(y, w, nGrid),
+          newInits)
+    }
+
+    ## finally call the constructor
+    .DualEndpointEmax(start,
+                      E0=E0,
+                      Emax=Emax,
+                      ED50=ED50,
+                      refDose=refDose)
+}
+validObject(DualEndpointEmax(E0=10,
+                             Emax=50,
+                             ED50=20,
+                             refDose=10,
+                             mu=c(0, 1),
+                             Sigma=diag(2),
+                             sigma2W=1,
+                             rho=0))
+
+
+## ============================================================
+
+
+
 ##' Standard logistic model with flexible mixture of two bivariate normal priors
 ##'
 ##' This is standard logistic regression model with a mixture of two bivariate
@@ -2201,7 +2468,6 @@ validObject(LogisticNormalFixedMixture(components=
                                        refDose=1))
 
 ## ============================================================
-
 
 
 

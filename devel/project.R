@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Son 18/01/2015 23:21>
+## Time-stamp: <[project.R] by DSB Son 10/05/2015 22:05>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -10,6 +10,7 @@
 ## History:
 ## 06/02/2014   file creation
 ## 19/07/2014   update and test mixture prior
+## 25/03/2015   update with new syntax and check JAGS/burnin issue fix.
 ###################################################################################
 source("../R/helpers.R")
 source("../R/Model-class.R")
@@ -40,33 +41,11 @@ data <- Data(x=
             c(0.1, 0.5, 1.5, 3, 6,
               seq(from=10, to=80, by=2)))
 
-data <- new("Data",
-            x=
-            c(0.1, 0.1, 0.1, 0.1, 0.1),
-            y=
-            as.integer(c(1, 1, 1, 1, 1)),
-            cohort=
-            as.integer(c(0, 0, 0, 0, 0)),
-            doseGrid=
-            c(0.1, 0.5, 1.5, 3, 6,
-              seq(from=10, to=80, by=2)))
-
 data
 
 library(ggplot2)
 plot(data)
 
-
-data <- Data(x=
-            numeric(),
-            y=
-            as.integer(c()),
-            cohort=
-            as.integer(c()),
-            doseGrid=
-            c(seq(from=0.1, to=10, by=0.1),
-              seq(from=10, to=80, by=2)))
-plot(data)
 
 source("../R/McmcOptions-class.R")
 source("../R/McmcOptions-methods.R")
@@ -74,9 +53,9 @@ source("../R/Samples-class.R")
 source("../R/Samples-methods.R")
 
 ## and some MCMC options
-options <- McmcOptions(burnin=100,
-               step=2,
-               samples=50000)
+options <- McmcOptions(burnin=100000,
+               step=4,
+               samples=40829)
 
 
 source("../R/mcmc.R")
@@ -84,7 +63,15 @@ source("../R/writeModel.R")
 library(rjags)
 
 ## obtain the samples
+set.seed(12)
 time2 <- system.time(samples2 <- mcmc(data, model, options, verbose=TRUE))
+set.seed(12)
+time3 <- system.time(samples3 <- mcmc(data, model, options, verbose=TRUE))
+all.equal(samples2, samples3)
+
+str(samples2)
+str(samples3)
+samples1 <- samples2
 
 ## with the standard method:
 time1 <- system.time(samples1 <-
@@ -94,8 +81,8 @@ time1 <- system.time(samples1 <-
                                                  model, options, verbose=TRUE))
 
 ## extract samples for diagnostic plots
-alpha0 <- extract(samples1, "alpha0")
-alpha1 <- extract(samples2, "alpha1")
+alpha0 <- get(samples1, "alpha0")
+alpha1 <- get(samples2, "alpha1")
 
 ## use other package for plotting
 library(ggmcmc)
@@ -115,8 +102,37 @@ str(samples)
 
 source("../R/Model-methods.R")
 source("../R/Samples-methods.R")
-plot(samples, model, data)
+p1 <- plot(samples, model, data)
+p1
 
+nodata <- Data(doseGrid=data@doseGrid)
+nosamples <- mcmc(nodata, model, options)
+p2 <- plot(nosamples, model, nodata)
+p2
+
+f2 <- fit(nosamples, model, nodata)
+gdata <-
+    with(f2,
+         data.frame(x=rep(dose, 3),
+                    y=c(middle, lower, upper) * 100,
+                    group=
+                        rep(c("mean", "lower", "upper"),
+                            each=nrow(f2)),
+                    Type=
+                        factor(c(rep("Estimate",
+                                     nrow(f2)),
+                                 rep("95% Credible Interval",
+                                     nrow(f2) * 2)),
+                               levels=
+                                   c("Estimate",
+                                     "95% Credible Interval"))))
+
+p1 <- p1 +
+    geom_line(data=gdata,
+              aes(x=x, y=y, group=group, linetype=Type),
+              colour="blue")
+
+p1
 
 ## test quantiles function
 source("../R/fromQuantiles.R")
@@ -254,10 +270,9 @@ mtdRet$value
 ## target tox interval is 20-35%.
 ## overdose tox interval is 35%+
 ## required prob for target is 50%
-myNextBest <- new("NextBestNCRM",
-                  target=c(0.2, 0.35),
-                  overdose=c(0.35, 1),
-                  maxOverdoseProb=0.25)
+myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
+                           overdose=c(0.35, 1),
+                           maxOverdoseProb=0.25)
 
 ncrmRet <- nextBest(myNextBest, doselimit=50,
                     samples=samples, model=model, data=data,
@@ -270,30 +285,27 @@ ncrmRet$plot
 ## stopping rule:
 ## min 3 cohorts and at least 50% prob in target interval,
 ## or max 20 patients
-myStopping1 <- new("StoppingMinCohorts",
-                   nCohorts=3L)
-myStopping2 <- new("StoppingMaxPatients",
-                   nPatients=20L)
-myStopping3 <- new("StoppingTargetProb",
-                   target=c(0.2, 0.35),
-                   prob=0.5)
+myStopping1 <- StoppingMinCohorts(nCohorts=3L)
+myStopping2 <- StoppingMinPatients(nPatients=20L)
+myStopping3 <- StoppingTargetProb(target=c(0.2, 0.35),
+                                  prob=0.5)
 
 ## you can either write this:
-myStopping <- new("StoppingAny",
-                  stopList=
-                  list(new("StoppingAll",
-                           stopList=
-                           list(myStopping1,
-                                myStopping3)),
-                       myStopping2))
+## myStopping <- new("StoppingAny",
+##                   stopList=
+##                       list(new("StoppingAll",
+##                                stopList=
+##                                    list(myStopping1,
+##                                         myStopping3)),
+##                            myStopping2))
 
 ## or much more intuitively:
 myStoppingEasy <- (myStopping1 & myStopping3) | myStopping2
 myStoppingEasy
-identical(myStopping, myStoppingEasy)
+## identical(myStopping, myStoppingEasy)
 
 ## what would be the decision in this case?
-stopTrial(stopping=myStopping,
+stopTrial(stopping=myStoppingEasy,
           dose=ncrmRet$value,
           samples=samples,
           model=model,
@@ -301,42 +313,35 @@ stopTrial(stopping=myStopping,
 
 
 ## relative increments:
-myIncrements <- new("IncrementsRelative",
-                    intervals=c(0, 20, Inf),
-                    increments=c(1, 0.33))
+myIncrements <- IncrementsRelative(intervals=c(0, 20),
+                                   increments=c(1, 0.33))
 
 
 ## cohort size:
 ## DLT rule says to have size 1 if no DLT has happened,
 ## and size 3 if at least 1 DLT has happened
-mySize <- new("CohortSizeDLT",
-              DLTintervals=c(0, 1, Inf),
-              cohortSize=as.integer(c(1, 3)))
+mySize <- CohortSizeDLT(DLTintervals=c(0, 1),
+                        cohortSize=c(1, 3))
 
 ## Range rule says to have size 1 until 30 mg, then size 3.
-mySize2 <- new("CohortSizeRange",
-               intervals=c(0, 30, Inf),
-               cohortSize=as.integer(c(1, 3)))
+mySize2 <- CohortSizeRange(intervals=c(0, 30),
+                           cohortSize=c(1, 3))
 
 ## these two rules are now combined by taking the maximum
 mySizeCombined <- maxSize(mySize, mySize2)
 
 ## create empty data to start with
-emptydata <- new("Data",
-                 x=numeric(),
-                 y=integer(),
-                 doseGrid=seq(from=0.1, to=50, by=0.1))
+emptydata <- Data(doseGrid=seq(from=0.1, to=50, by=0.1))
 
 ## test design
 source("../R/Design-class.R")
-design <- new("Design",
-              model=model,
-              nextBest=myNextBest,
-              stopping=myStopping,
-              increments=myIncrements,
-              cohortSize=mySizeCombined,
-              data=emptydata,
-              startingDose=0.1)
+design <- Design(model=model,
+                 nextBest=myNextBest,
+                 stopping=myStoppingEasy,
+                 increments=myIncrements,
+                 cohortSize=mySizeCombined,
+                 data=emptydata,
+                 startingDose=0.1)
 
 ## for testing the simulate function:
 object <- design
@@ -356,12 +361,23 @@ parallel <- TRUE
 source("../R/Simulations-class.R")
 source("../R/Design-methods.R")
 
+set.seed(29)
 mySims <- simulate(design,
                    truth=truth,
                    args=args,
                    nsim=2L,
                    mcmcOptions=options,
                    firstSeparate=FALSE)
+
+set.seed(29)
+mySims2 <- simulate(design,
+                    truth=truth,
+                    args=args,
+                    nsim=2L,
+                    mcmcOptions=options,
+                    firstSeparate=FALSE)
+
+all.equal(mySims, mySims2)
 
 str(mySims)
 
@@ -377,6 +393,9 @@ mySims@doses
 truth(mySims@doses,
       alpha0=0,
       alpha1=1)
+
+## todo: test hypothetical cohorts
+
 
 
 ## extract operating characteristics

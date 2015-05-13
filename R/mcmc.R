@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[mcmc.R] by DSB Fre 27/03/2015 16:27>
+## Time-stamp: <[mcmc.R] by DSB Mit 13/05/2015 23:10>
 ##
 ## Description:
 ## Methods for producing the MCMC samples from Data and Model input.
@@ -25,15 +25,19 @@
 
 ##' Obtain posterior samples for all model parameters
 ##'
-##' Obtain posterior samples for all model parameters
-##'
 ##' This is the function to actually run the MCMC machinery to produce posterior
 ##' samples from all model parameters and required derived values. It is a
 ##' generic function, so that customized versions may be conveniently defined
-##' for specific subclasses of Data, Model, and McmcOptions input.
+##' for specific subclasses of GeneralData, GeneralModel, and McmcOptions input.
 ##'
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param model The model input, an object of class \code{\linkS4class{Model}}
+##' Reproducible samples can be obtained by setting the seed via
+##' \code{\link{set.seed}} before in the user code as usual. However, note that
+##' because the RNG sampler used is external to R, running this MCMC function
+##' will not change the seed position -- that is, the repeated call to this
+##' function will then result in exactly the same output.
+##'
+##' @param data The data input, an object of class \code{\linkS4class{GeneralData}}
+##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
 ##' @param options MCMC options, an object of class
 ##' \code{\linkS4class{McmcOptions}}
 ##' @param \dots unused
@@ -64,10 +68,11 @@ setGeneric("mcmc",
 ##' @param verbose shall progress bar and messages be printed? (not default)
 ##'
 ##' @importFrom rjags jags.model jags.samples
+##' @importFrom utils capture.output
 setMethod("mcmc",
           signature=
-          signature(data="Data",
-                    model="Model",
+          signature(data="GeneralData",
+                    model="GeneralModel",
                     options="McmcOptions"),
           def=
           function(data, model, options,
@@ -80,7 +85,8 @@ setMethod("mcmc",
 
               ## get a temp directory
               bugsTempDir <- file.path(tempdir(), "bugs")
-              dir.create(bugsTempDir)
+              ## don't warn, because the temp dir often exists (which is OK)
+              dir.create(bugsTempDir, showWarnings=FALSE)
 
               options(BRugsVerbose=verbose)
               if(verbose)
@@ -163,15 +169,37 @@ setMethod("mcmc",
               ## now decide whether JAGS or something else is used
               if(program=="JAGS")
               {
+                  ## get or set the seed
+                  rSeed <- try(get(".Random.seed", envir = .GlobalEnv),
+                               silent=TRUE)
+                  if(is(rSeed, "try-error"))
+                  {
+                      set.seed(floor(runif(n=1, min=0, max=1e4)))
+                      rSeed <- get(".Random.seed", envir = .GlobalEnv)
+                  }
+                  ## .Random.seed contains two leading integers where the second
+                  ## gives the position in the following 624 long vector (see
+                  ## ?set.seed). Take the current position and ensure positivity
+                  rSeed <- abs(rSeed[-c(1:2)][rSeed[2]])
+
                   ## specify the JAGS model
-                  jagsModel <- rjags::jags.model(file=modelFileName,
-                                                 data=
-                                                     if(fromPrior) modelspecs else
-                                                 c(requiredData,
-                                                   modelspecs),
-                                                 inits=
-                                                     list(inits),
-                                                 quiet=!verbose)
+                  jagsModel <-
+                      rjags::jags.model(file=modelFileName,
+                                        data=
+                                        if(fromPrior) modelspecs else
+                                        c(requiredData,
+                                          modelspecs),
+                                        inits=
+                                        ## add the RNG seed to the inits list:
+                                        ## (use Mersenne Twister as per R
+                                        ## default)
+                                        c(inits,
+                                          list(.RNG.name="base::Mersenne-Twister",
+                                               .RNG.seed=rSeed)),
+                                        quiet=!verbose,
+                                        ## important for
+                                        ## reproducibility:
+                                        n.adapt=0)
 
                   ## run for the burnin time -> but don't show progress bar for
                   ## this one in order not to confuse the user
@@ -180,14 +208,29 @@ setMethod("mcmc",
                          progress.bar="none")
 
                   ## afterwards generate more samples and save every step one
-                  samples <- rjags::jags.samples(model=jagsModel,
-                                                 variable.names=model@sample,
-                                                 n.iter=(options@iterations - options@burnin),
-                                                 thin=options@step,
-                                                 progress.bar=
-                                                     ifelse(verbose,
-                                                            "text",
-                                                            "none"))
+                  ## code is:
+                  samplesCode <- "samples <-
+                      rjags::jags.samples(model=jagsModel,
+                                          variable.names=model@sample,
+                                          n.iter=
+                                              (options@iterations - options@burnin),
+                                          thin=options@step,
+                                          progress.bar=
+                                              ifelse(verbose,
+                                                     'text',
+                                                     'none'))"
+
+                  ## evaluate with or without outstream capturing
+                  if(verbose)
+                  {
+                      eval(parse(text=samplesCode))
+                  } else {
+
+                      ## this is necessary because some outputs
+                      ## are written directly from the JAGS compiled
+                      ## code to the outstream
+                      capture.output(eval(parse(text=samplesCode)))
+                  }
 
                   ## reformat slightly for Samples object
                   ret <- lapply(samples,

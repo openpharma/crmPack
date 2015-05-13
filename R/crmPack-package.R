@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[crmPack-package.R] by DSB Sam 17/01/2015 17:52>
+## Time-stamp: <[crmPack-package.R] by DSB Mon 11/05/2015 17:47>
 ##
 ## Description:
 ## Package description.
@@ -36,3 +36,4 @@
         "Type crmPackUpgrade() to upgrade crmPack to latest version\n",
         "Please visit https://roche.jiveon.com/projects/crmpack for more\n")
 }
+

@@ -309,8 +309,11 @@ Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, \texttt{crmPack}
 provides an interface to the convenient \texttt{R}-package \texttt{ggmcmc}. With
 the function \texttt{get} you can extract the individual parameters from the
-object of class \texttt{Samples}. For example, we extract the $\alpha_{0}$
-samples:
+object of class \texttt{Samples}.
+
+For example, we extract the $\alpha_{0}$ samples:
+(please have a look at the help page for the \texttt{LogisticLogNormal} model
+class for the interpretation of the parameters)
 
 <<mcmc-extract>>=
 ## look at the structure of the samples object:
@@ -585,13 +588,43 @@ design <- Design(model=model,
                  startingDose=3)
 @
 
+\subsection{Examining single trial behavior}
+\label{sec:examine-single-trial}
+
+Before looking at the ``many trials'' operating characteristics, it is important
+to look at the ``single trial'' operating characteristics of the dose escalation
+design. For this, \texttt{crmPack} provides the function \texttt{examine}, which
+generates a dataframe showing the beginning of several hypothetical trial
+courses under the design. Assuming no DLTs have been seen until a certain dose,
+then the consequences of different number of DLTs being observed at this dose
+are shown. In the current example we have
+
+<<design-examine>>=
+set.seed(23)
+examine(design)
+@
+
+Note that it is important to set a seed, since minor changes might occur due to
+sampling variations. However, the \texttt{mcmcOptions} parameter should be
+chosen in order to minimize such variation. The default setting, used implicitly
+in the above call, should normally be sufficient, but checking this is
+important.
+
+The resulting data frame gives the dose of the cohort until which no DLTs are
+observed, the number of DLTs, the resulting next dose recommendation, whether
+the design would stop, and the relative increment of the next dose compared to
+the current dose in percentage. Note that cohort size rules are taken into
+account by \texttt{examine}. \texttt{NA} entries mean that the design would stop
+without a valid dose, since all doses are considered too toxic after observing
+the number of DLTs at that dose.
+
 \subsection{Simulating from a true scenario}
 \label{sec:simulating-from-true}
 
-Next, we have to define a true scenario, from which the data should arise. In
-this case, this only requires a function that computes the probability of DLT
-given a dose. Here we use a specific case of the function contained in the model
-space:
+For the ``many trials'' operating characteristics, we have to define a true
+scenario, from which the data should arise. In this case, this only requires a
+function that computes the probability of DLT given a dose. Here we use a
+specific case of the function contained in the model space:
 
 <<true-def, fig=TRUE>>=
 ## define the true function
@@ -615,7 +648,7 @@ time <- system.time(mySims <- simulate(design,
                                        nsim=100,
                                        seed=819,
                                        mcmcOptions=options,
-                                       parallel=TRUE))[3]
+                                       parallel=FALSE))[3]
 time
 @
 
@@ -793,7 +826,7 @@ time <- system.time(futureSims <- simulate(
     seed=918,
     ## this remains the same:
     mcmcOptions=options,
-    parallel=TRUE))[3]
+    parallel=FALSE))[3]
 time
 @
 
@@ -848,7 +881,7 @@ threeSims <- simulate(threeDesign,
                       nsim=1000,
                       seed=35,
                       truth=myTruth,
-                      parallel=TRUE)
+                      parallel=FALSE)
 @
 
 As before for the model-based design, we can summarize the simulations:
@@ -988,7 +1021,7 @@ least 90\% of the maximum biomarker response, and a 25\% maximum overdose
 probability for the next dose, we specify:
 
 <<dual-nextbest>>=
-myNextBest <- NextBestDualEndpoint(target=0.9,
+myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
                                    maxOverdoseProb=0.25)
 @
@@ -1027,7 +1060,7 @@ gives back \texttt{TRUE} when queried if it has been fulfilled by the
 probability to be above 90\% biomarker response, we specify:
 
 <<dual-stop>>=
-myStopping4 <- StoppingTargetBiomarker(target=0.9,
+myStopping4 <- StoppingTargetBiomarker(target=c(0.9, 1),
                                        prob=0.5)
 @
 
@@ -1107,7 +1140,7 @@ mySims <- simulate(design,
                    sigma2W=0.01,
                    rho=0,
                    nsim=10,
-                   parallel=TRUE,
+                   parallel=FALSE,
                    seed=3,
                    startingDose=6,
                    mcmcOptions =

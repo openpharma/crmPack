@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[projectWithPackage.R] by DSB Don 28/08/2014 20:21>
+## Time-stamp: <[projectWithPackage.R] by DSB Mit 25/03/2015 17:59>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!

@@ -11,8 +11,8 @@ Stop based on probability of target biomarker
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the biomarker level, relative to the maximum, that needs to be
-reached. So this must be a probability (1 is allowed here)}
+\item{\code{target}}{the biomarker target range, relative to the maximum, that
+needs to be reached. So this must be a probability range (1 is allowed here)}
 
 \item{\code{prob}}{required target probability for reaching sufficient precision}
 }}

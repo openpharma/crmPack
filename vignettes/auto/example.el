@@ -15,6 +15,7 @@
      "sec:rules-next-best"
      "sec:stopping-rules"
      "sec:simulations"
+     "sec:examine-single-trial"
      "sec:simulating-from-true"
      "sec:pred-future-course"
      "sec:simul-3+3-design"

@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Samples-methods.R] by DSB Son 18/01/2015 23:28>
+## Time-stamp: <[Samples-methods.R] by DSB Mon 11/05/2015 17:46>
 ##
 ## Description:
 ## Methods for processing the MCMC samples.
@@ -583,4 +583,5 @@ setMethod("plot",
               ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
               return(ret)
           })
+
 

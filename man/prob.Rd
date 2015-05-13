@@ -13,11 +13,15 @@ prob(dose, model, samples, ...)
 \arguments{
 \item{dose}{the dose}
 
-\item{model}{the \code{\linkS4class{Model}}}
+\item{model}{the \code{\linkS4class{Model}} object}
 
 \item{samples}{the \code{\linkS4class{Samples}}}
 
 \item{\dots}{unused}
+}
+\value{
+the vector (for \code{\linkS4class{Model}} objects) of probability
+samples.
 }
 \description{
 Compute the probability for a given dose, given model and samples
