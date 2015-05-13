@@ -1,29 +1,26 @@
-Version 0.0.24
+Version 0.1.0
 --------------------------------------------------------------------------------
 
 * Added examine function to generate a table of hypothetical trial courses
   for model-based and rule-based DLT-endpoint designs
 
-* Passing an empty (zero length) vector as the doselimit parameter of the
-  nextBest function is now considered as requesting a dose recommendation
-  without a strict dose limit, and a corresponding warning is printed.
+* Made results from mcmc() (works with the usual set.seed in earlier user code)
+  and simulate() (as previously already promised) reproducible. See help file
+  for mcmc for more details. Additional improvements to reduce confusing warning
+  messages / notes from mcmc() and higher-level functions.
 
 * Made simulate with parallel=TRUE work on r.roche.com (Linux server),
   using the same parallelization method as for laptops (Windows)
 
-* Made results from mcmc() (works with the usual set.seed in earlier user code)
-  and simulate() (as previously already promised) reproducible. See help file for
-  mcmc for more details. Additional improvements to reduce confusing warning
-  messages / notes from mcmc() and higher-level functions.
-
-* Introduced combination designs via new classes:
-  ComboData, ComboLogistic
+* Passing an empty (zero length) vector as the doselimit parameter of the
+  nextBest function is now considered as requesting a dose recommendation
+  without a strict dose limit, and a corresponding warning is printed.
 
 * Introduced GeneralModel class, from which then the class Model for single
-  agent dose escalation derives. Another branch is currently the ComboLogistic
-  model for multiple agent combinations. Similarly introduced GeneralData class,
-  from which the class Data for single agent derives, separately from that is
-  the subclass DataCombo.
+  agent dose escalation derives. Another branch will be the ComboLogistic model
+  for multiple agent combinations (in a future version). Similarly introduced
+  GeneralData class, from which the class Data for single agent derives,
+  separately from that will be the subclass DataCombo (in a future version).
 
 Version 0.0.23
 --------------------------------------------------------------------------------
