@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-class.R] by DSB Sam 02/05/2015 22:40>
+## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
 ##
 ## Description:
 ## Encapsulate the rules in formal classes.
@@ -102,8 +102,9 @@ NextBestMTD <- function(target,
 ##' dose is the next recommended dose. Otherwise, the highest admissible dose is
 ##' the next recommended dose.
 ##'
-##' @slot target the target toxicity interval
-##' @slot overdose the overdose toxicity interval
+##' @slot target the target toxicity interval (limits included)
+##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
+##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
 ##'
 ##' @export
@@ -191,15 +192,16 @@ NextBestThreePlusThree <- function()
 ##' admissible doses the one that maximizes the probability to be in the
 ##' \code{target} biomarker range, relative to the maximum biomarker level
 ##' across the dose grid or relative to the Emax parameter in case a parametric
-##' model was selected (e.g. \code{\linkS4class{NextBestDualEndpointBeta}},
-##' \code{\linkS4class{NextBestDualEndpointEmax}}))
+##' model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
+##' \code{\linkS4class{DualEndpointEmax}}))
 ##'
 ##' @slot target the biomarker target range, relative to the maximum, that
 ##' needs to be reached. For example, (0.8, 1.0) means we target a dose
 ##' with at least 80% of maximum biomarker level. As an other example,
 ##' (0.5, 0.8) would mean that we target a dose between 50% and 80% of
 ##' the maximum biomarker level.
-##' @slot overdose the overdose toxicity interval
+##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
+##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
 ##'
 ##' @export
