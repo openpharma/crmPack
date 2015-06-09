@@ -6,6 +6,8 @@ BUGFIXES:
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
+- in nextBest function return not only recommendation but limits
+
 - also optimize refDose for quantile->logistic functions
 
 - record number of times the model is overruled in the simulations (Uli Beyer
