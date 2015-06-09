@@ -25,7 +25,8 @@ with at least 80% of maximum biomarker level. As an other example,
 (0.5, 0.8) would mean that we target a dose between 50% and 80% of
 the maximum biomarker level.}
 
-\item{\code{overdose}}{the overdose toxicity interval}
+\item{\code{overdose}}{the overdose toxicity interval (lower limit excluded, upper
+limit included)}
 
 \item{\code{maxOverdoseProb}}{maximum overdose probability that is allowed}
 }}

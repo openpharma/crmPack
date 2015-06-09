@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[Rules-methods.R] by DSB Sam 02/05/2015 23:30>
+## Time-stamp: <[Rules-methods.R] by DSB Die 09/06/2015 21:29>
 ##
 ## Description:
 ## Encapsulate the rule functions in formal methods.
@@ -181,12 +181,12 @@ setMethod("nextBest",
               ## Now compute probabilities to be in target and
               ## overdose tox interval
               probTarget <-
-                  colMeans((probSamples > nextBest@target[1]) &
-                           (probSamples < nextBest@target[2]))
+                  colMeans((probSamples >= nextBest@target[1]) &
+                           (probSamples <= nextBest@target[2]))
 
               probOverdose <-
                   colMeans((probSamples > nextBest@overdose[1]) &
-                           (probSamples < nextBest@overdose[2]))
+                           (probSamples <= nextBest@overdose[2]))
 
               ## which doses are eligible after accounting
               ## for maximum possible dose and  discarding overdoses?
@@ -498,7 +498,7 @@ setMethod("nextBest",
               ## overdose tox interval
               probOverdose <-
                   colMeans((probSamples > nextBest@overdose[1]) &
-                           (probSamples < nextBest@overdose[2]))
+                           (probSamples <= nextBest@overdose[2]))
 
               ## which doses are eligible after accounting
               ## for maximum possible dose and discarding overdoses?
@@ -1213,8 +1213,8 @@ setMethod("stopTrial",
 
               ## Now compute probability to be in target interval
               probTarget <-
-                  mean((probSamples > stopping@target[1]) &
-                       (probSamples < stopping@target[2]))
+                  mean((probSamples >= stopping@target[1]) &
+                       (probSamples <= stopping@target[2]))
 
               ## so can we stop?
               doStop <- probTarget >= stopping@prob

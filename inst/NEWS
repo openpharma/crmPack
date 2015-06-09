@@ -1,3 +1,12 @@
+Version 0.1.1
+--------------------------------------------------------------------------------
+
+* Bugfix: Previously, it could happen with NextBestNCRM rule, that higher doses
+  lead to decreasing probability of overdosing, only because for some doses
+  there was numerically probability 1 of having a DLT. With this bugfix, it was
+  clarified in the rules documentation and fixed in the rule method, that the
+  right limit of the overdose interval vector will be inclusive.
+
 Version 0.1.0
 --------------------------------------------------------------------------------
 
