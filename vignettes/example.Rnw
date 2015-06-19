@@ -199,13 +199,16 @@ legend("right",
 
 In this plot we see in blue the quantiles (2.5\%, 50\%, and 97.5\%) of
 the Beta distributions that we approximate with the red quantiles of the
-logistic normal model. We see that the distance is quite small, and the maximum
+logistic normal model. We see that the distance is still quite large, and the maximum
 distance between any red and blue point is:
 
 <<min-inf-dist>>=
 minInfModel$distance
 @
 
+Therefore usually we would let the computations take longer (by removing the
+\texttt{control} option from the \texttt{MinimalInformative} call) to obtain a
+better approximation.
 The final approximating model, which has produced the red points, is contained
 in the \texttt{model} list element:
 

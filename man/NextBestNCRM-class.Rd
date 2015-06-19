@@ -18,9 +18,10 @@ the next recommended dose.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the target toxicity interval}
+\item{\code{target}}{the target toxicity interval (limits included)}
 
-\item{\code{overdose}}{the overdose toxicity interval}
+\item{\code{overdose}}{the overdose toxicity interval (lower limit excluded, upper
+limit included)}
 
 \item{\code{maxOverdoseProb}}{maximum overdose probability that is allowed}
 }}
