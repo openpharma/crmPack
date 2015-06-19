@@ -1,3 +1,12 @@
+Version 0.1.2
+--------------------------------------------------------------------------------
+
+* Bugfix: The MinimalInformative function previously produced too uninformative
+  prior quantiles, which were not fulfilling the requirements in the function's
+  documentation. With this bugfix, the correct (as per the Neuenschwander et al
+  (2008) publication) prior quantiles are specified and then approximated with
+  logistic (log) normal priors.
+
 Version 0.1.1
 --------------------------------------------------------------------------------
 
