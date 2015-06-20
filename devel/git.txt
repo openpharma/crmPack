@@ -1,0 +1,9 @@
+Tricks in Emacs:
+
+- Use "C-u C-x v l" to show history of all references -> then this also shows
+  the different branches!!
+
+- In order to add single files (e.g. bla.txt) from branch B to branch A:
+  First checkout arm A, and then do (in the shell)
+  git checkout B bla.txt
+
