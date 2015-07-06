@@ -72,6 +72,7 @@ validObject(.GeneralData())
 ##' grid
 ##' @slot nGrid number of gridpoints
 ##' @slot xLevel the levels for the doses the patients have been given
+##' @slot placebo logical value: if TRUE the first dose level in the grid is considered as PLACEBO
 ##'
 ##' @export
 ##' @keywords classes
@@ -81,12 +82,14 @@ validObject(.GeneralData())
                             y="integer",
                             doseGrid="numeric",
                             nGrid="integer",
-                            xLevel="integer"),
+                            xLevel="integer",
+                            placebo="logical"),
              prototype(x=numeric(),
                        y=integer(),
                        doseGrid=numeric(),
                        nGrid=0L,
-                       xLevel=integer()),
+                       xLevel=integer(),
+                       placebo=FALSE),
              contains="GeneralData",
              validity=
                  function(object){
@@ -94,11 +97,21 @@ validObject(.GeneralData())
 
                      o$check(all(object@y %in% c(0, 1)),
                              "DLT vector y can only have 0 or 1 values")
-                     o$check(all(tapply(X=object@x,
+                     if(!object@placebo){
+                        o$check(all(tapply(X=object@x,
                                         INDEX=object@cohort,
                                         FUN=
                                             function(doses){length(unique(doses))}) == 1),
                              "there must be only one dose level per cohort")
+                     }else{
+                         o$check(all(tapply(X=object@x,
+                                            INDEX=object@cohort,
+                                            FUN=
+                                                function(doses){
+                                                    doses <- doses[doses != object@doseGrid[1]]
+                                                    length(unique(doses))}) == 1),
+                                 "There must be only one dose level, other than placebo, per cohort. In addition a cohort with only placebo is not allowed")    
+                     }
                      o$check(all(object@x %in% object@doseGrid),
                              "dose values in x must be from doseGrid")
                      o$check(! is.unsorted(object@doseGrid,
@@ -131,6 +144,7 @@ validObject(.Data())
 ##' @param ID unique patient IDs (integer vector)
 ##' @param cohort the cohort indices (sorted values from 0, 1, 2, ...)
 ##' @param doseGrid the vector of all possible doses
+##' @param placebo logical value: if TRUE the first dose level in the grid is considered as PLACEBO
 ##' @param \dots not used
 ##' @return the initialized \code{\linkS4class{Data}} object
 ##'
@@ -141,6 +155,7 @@ Data <- function(x=numeric(),
                  ID=integer(),
                  cohort=integer(),
                  doseGrid=numeric(),
+                 placebo=FALSE,
                  ...){
     ## sort the dose grid
     doseGrid <- as.numeric(sort(unique(doseGrid)))
@@ -172,7 +187,8 @@ Data <- function(x=numeric(),
                  doseGrid=doseGrid,
                  nObs=length(x),
                  nGrid=length(doseGrid),
-                 xLevel=match(x=x, table=doseGrid))
+                 xLevel=match(x=x, table=doseGrid),
+                 placebo=placebo)
     return(ret)
 }
 validObject(Data())

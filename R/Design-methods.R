@@ -238,6 +238,17 @@ setMethod("simulate",
                       thisSize <- size(cohortSize=object@cohortSize,
                                        dose=thisDose,
                                        data=thisData)
+                      
+                      ## In case there are placebo
+                      if(thisData@placebo){
+                          
+                          thisProb.PL <- thisTruth(object@data@doseGrid[1])
+                          
+                          thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                              dose=thisDose,
+                                              data=thisData)
+                      }
+                          
 
                       ## simulate DLTs: depends on whether we
                       ## separate the first patient or not.
@@ -247,6 +258,13 @@ setMethod("simulate",
                           thisDLTs <- rbinom(n=1L,
                                              size=1L,
                                              prob=thisProb)
+                          
+                          if(thisData@placebo){
+                              thisDLTs.PL <- rbinom(n=1L,
+                                                    size=1L,
+                                                    prob=thisProb.PL)    
+                          }
+                          
                           ## if there is no DLT:
                           if(thisDLTs == 0)
                           {
@@ -255,19 +273,41 @@ setMethod("simulate",
                                             rbinom(n=thisSize - 1L,
                                                    size=1L,
                                                    prob=thisProb))
+                              
+                              if(thisData@placebo){
+                                  thisDLTs.PL <- c(thisDLTs.PL,
+                                                   rbinom(n=thisSize.PL - 1L,
+                                                          size=1L,
+                                                          prob=thisProb.PL))
+                              }
                           }
                       } else {
                           ## we can directly dose all patients
                           thisDLTs <- rbinom(n=thisSize,
                                              size=1L,
                                              prob=thisProb)
+                          
+                          if(thisData@placebo){
+                              thisDLTs.PL <- rbinom(n=thisSize.PL,
+                                                    size=1L,
+                                                    prob=thisProb.PL)    
+                          }
                       }
 
+                      ## update the data with this placebo (if any) cohort
+                      if(thisData@placebo){
+                          thisData <- update(object=thisData,
+                                             x=object@data@doseGrid[1],
+                                             y=thisDLTs.PL)
+                      }
+                      
                       ## update the data with this cohort
                       thisData <- update(object=thisData,
                                          x=thisDose,
-                                         y=thisDLTs)
-
+                                         y=thisDLTs,
+                                         newCohort=FALSE)
+                      
+                      
                       ## what is the dose limit?
                       doselimit <- maxDose(object@increments,
                                            data=thisData)

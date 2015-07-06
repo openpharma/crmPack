@@ -68,7 +68,7 @@ setMethod("plot",
           signature=
           signature(x="Data", y="missing"),
           def=
-          function(x, y, ...){
+          function(x, y, blind=FALSE, ...){
               if(x@nObs == 0)
               {
                   return()
@@ -79,6 +79,23 @@ setMethod("plot",
                                toxicity=ifelse(x@y==1, "Yes", "No"),
                                ID=paste(" ", x@ID))
               cols <- c("No" = "black","Yes" = "red")
+              
+              # If there are placebo, consider this a y=0.0 for the plot
+              if(x@placebo & !blind)
+                    df$dose[df$dose == x@doseGrid[1]] <- 0.0  
+              
+              # This is to blind the data
+              # For each cohort, the placebo is set to the active dose level for that cohort.
+              # In addition, all DLTs are assigned to the first subjects in the cohort
+              if(x@placebo & blind){
+                cohort.id <- unique(x@cohort)   
+                for(iCoh in seq(a=cohort.id)){
+                    filter.coh <- which(x@cohort == cohort.id[iCoh])  
+                    df[filter.coh,"dose"] <- max(df[filter.coh,"dose"])
+                    df[filter.coh,"toxicity"] <- sort(df[filter.coh,"toxicity"],
+                                                      decreasing=TRUE)
+                }
+              }
 
               a <- ggplot(df, aes(x=patient,y=dose)) +
                   scale_y_continuous(breaks=
@@ -100,6 +117,13 @@ setMethod("plot",
 
               a <- a + scale_x_continuous(breaks=df$patient,
                                           minor_breaks=numeric())
+              
+              # add a vertical lines separating sub-sequent cohorts
+              if(x@placebo & length(unique(x@cohort)) > 1)
+                a <- a + geom_vline(xintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5, 
+                                    colour="green", 
+                                    linetype = "longdash")
+              
               return(a)
           })
 
@@ -339,6 +363,8 @@ setMethod("plot",
 ##' @param x the dose level (one level only!)
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
 ##' @param ID the patient IDs
+##' @param newCohort logical: if TRUE (default) the new data are assigned 
+##' to a new cohort
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{Data}} object
 ##'
@@ -352,6 +378,7 @@ setMethod("update",
                    x,
                    y,
                    ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
+                   newCohort=TRUE,
                    ...){
 
               ## some checks
@@ -386,9 +413,15 @@ setMethod("update",
               object@ID <- c(object@ID, ID)
 
               ## add cohort number
-              object@cohort <- c(object@cohort,
-                                 rep(max(tail(object@cohort, 1L), 0L) + 1L,
-                                     length(y)))
+              if(newCohort){
+                    object@cohort <- c(object@cohort,
+                                       rep(max(tail(object@cohort, 1L), 0L) + 1L,
+                                           length(y)))
+              }else{
+                    object@cohort <- c(object@cohort,
+                                     rep(max(tail(object@cohort, 1L), 0L),
+                                         length(y)))
+              }
 
               ## return the object
               return(object)
