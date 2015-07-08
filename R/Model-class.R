@@ -2531,9 +2531,9 @@ validObject(.ModelEff)
 
 ##' class for the two-parameter logistic regression DLE model
 ##' This is the two-parameter logistic regression model using pseudo data prior 
-##' The probabilities of an occurence of DLE based on the pseudo data have independent
-##' beta distributions
-##' 
+##' which describe the relationship of the probabilities of an occurence of DLE 
+##' with their corresponding log dose levels. These probabilities of occurence of a DLE
+##' have independent Beta distributions
 ##'  
 ##' 
 ##' @export
@@ -2619,6 +2619,125 @@ LogisticIndepBeta <- function(binDLE,
 }
 
 ## ======================================================================================================
-##' Class for the linear log-log efiicay model using 
+##' Class for the linear log-log efiicay model using pseudo data prior
+##' This is the efficay model which describe the realtionship of the normal efficacy responses 
+##' and their corresponding log-log dose levels
+##'
+##'@export
+##'@keywords methods
+.Effloglog<-
+  setClass(Class="Effloglog", 
+           representation(Eff="numeric",
+                          Effdose="numeric",
+                          nu="numeric",
+                          useFixed="logical",
+                          theta1="numeric",
+                          theta2="numeric",
+                          vecmu="matrix",
+                          matX="matrix",
+                          matQ="matrix",
+                          vecY="matrix"),
+           prototype(Eff=c(0,0),
+                     Effdose=c(1,1),
+                     nu=1/0.025,
+                     useFixed=TRUE),
+           contains="ModelEff",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               
+               o$check(length(object@Eff) >= 2,
+                       "length of Eff must be at least 2")
+               o$check(length(object@Effdose) >= 2,
+                       "length of Effdose must be at least 2")
+               o$check(length(object@Eff)==length(object@Effdose),
+                       "length of Eff and Effdose must be equal")
+               if (object@useFixed == "TRUE"){
+                 o$check((length(object@nu)==1)&&(object@nu > 0),
+                         "nu must be a single postive real number")} else {
+                           o$check(identical(names(slot(object,"nu")),c("a","b")),
+                                   "nu must have names 'a' and 'b' ")
+                           o$check(all(slot(object,"nu") > 0),
+                                   "nu must have positive prior paramters")
+                           o$check(identical(length(object@nu),2L),
+                                   "nu must have length at most 2")
+                         }
+               o$result()
+             })
+validObject(.Effloglog())
 
+##' Initialization function for the "Effloglog" class
+##' 
+##' @export
+##' @keywords methods
+Effloglog<-function(Eff,
+                    Effdose,
+                    nu,
+                    data)
+{if (!all(data@doseGrid >=1))
+  stop("doseGrid in data must be greater or equal to 1 for Effloglog model")
+  ##No observed Efficacy response
+  if (length(data@w)==0){
+    w1<-Eff
+    x1<-Effdose} else {##Combine pseudo data and Observed Efficacy without DLE
+      w1<-c(Eff,getEff(data)$wNoDLE)
+      x1<-c(Effdose,getEff(data)$xNoDLE)
+      w2<-getEff(data)$wNoDLE
+      x2<-getEff(data)$xNoDLE} 
+  
+  
+  ##Check if sigma2/nu is a fixed contant
+  
+  useFixed <- identical(length(nu), 1L)
+  ##Fit pseudo and observed efficacy
+  FitEff<-glm(w1~log(log(x1)),family=gaussian)
+  SFitEff<-summary(FitEff)
+  ##Obtain paramter estimates
+  theta1<-coef(SFitEff)[1,1]
+  theta2<-coef(SFitEff)[2,1]
+  ##if sigma2/nu is not a fixed constant
+  if (length(nu)==2){
+    mu0<-matrix(c(theta1,theta2),2,1)
+    vecmu<-mu0
+    X0<-matrix(c(1,1,log(log(Effdose[1])),log(log(Effdose[2]))),2,2)
+    matX<-X0
+    Q0=t(X0)%*%X0
+    matQ<-Q0
+    vecY<-matrix(Eff,2,1)
+    ##if there are some observed efficacy
+    if (length(data@w)!=0){
+      X<-matrix(c(rep(1,length(x2)), log(log(x2))), length(x2),2)
+      matX<-X
+      mu<-MASS:::ginv(Q0+t(X)%*%X)%*%(Q0%*%mu0+t(X)%*%t(t(w2)))
+      vecmu<-mu
+      Q<-Q0+t(X)%*%X
+      matQ<-Q
+      vecY<-matrix(w2,length(w2),1)
+      a<-nu[1]+(length(w2))/2
+      b<-nu[2]+(t(w2)%*%t(t(w2))+t(mu0)%*%Q0%*%mu0-t(mu)%*%Q%*%mu)/2
+      nu[1]<-a
+      nu[2]<-b}} else {nu<-nu} 
+  
+  .Effloglog(Eff=Eff,
+             Effdose=Effdose,
+             nu=nu,
+             useFixed=useFixed,
+             datanames=c("nObs","w","x"),
+             data=data,
+             dose=function(ExpEff,theta1,theta2){
+               LogDose<-exp((ExpEff-theta1)/theta2)
+               return(exp(LogDose))},
+             
+             ExpEff=function(dose,theta1,theta2){
+               
+               return(theta1+theta2*log(log(dose)))},
+             theta1=theta1,
+             theta2=theta2,
+             vecmu=vecmu,
+             matX=matX,
+             matQ=matQ,
+             vecY=vecY
+  )}
+
+## ============================================================
 
