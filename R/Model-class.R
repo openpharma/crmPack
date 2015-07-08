@@ -2528,6 +2528,7 @@ validObject(.ModelTox)
 validObject(.ModelEff)
 ## no init function for this one
 ## ================================================================
+
 ##' class for the two-parameter logistic regression DLE model
 ##' This is the two-parameter logistic regression model using pseudo data prior 
 ##' The probabilities of an occurence of DLE based on the pseudo data have independent
@@ -2618,6 +2619,6 @@ LogisticIndepBeta <- function(binDLE,
 }
 
 ## ======================================================================================================
-
+##' Class for the linear log-log efiicay model using 
 
 
