@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove, Wai Yin Yeung [sabanesd *a*t* roche *.* com, w.yeung *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Model-class.R] by DSB Mon 11/05/2015 17:44>
@@ -9,16 +9,38 @@
 ##
 ## History:
 ## 31/01/2014   file creation
+## 08/07/2015   Adding Pseudo model classes
 ###################################################################################
 
 ##' @include helpers.R
 {}
 
+
+##' Class for All models
+##' This is a class where all other model inherit 
+##' 
+##' @export
+##' @keywords classes
+
+.AllModels<-setClass(Class="AllModels",
+                     representation(datanames="character"),
+                     validity=function(object){
+                       o <- crmPack:::Validate()
+                       
+                       ## put here all names of data class slots
+                       allDatanames <- c("x", "y", "w",
+                                         "doseGrid", "nObs", "nGrid", "xLevel")
+                       o$result()
+                     })
+validObject(.AllModels())
+
+## no init function for this one
+
 ## ============================================================
 
 ##' General class for model input
 ##'
-##' This is the general model class, from which all other specific models
+##' This is the general model class, from which all other specific models for BUGS
 ##' inherit.
 ##'
 ##' The \code{datamodel} must obey the convention that the data input is
@@ -2468,6 +2490,134 @@ validObject(LogisticNormalFixedMixture(components=
                                        refDose=1))
 
 ## ============================================================
+##' Class of models using prior in form of Pseudo data
+##' 
+##' @export
+##' @keywords classes
+.ModelPseudo<-setClass(Class="ModelPseudo",
+                       contains="AllModels"
+)
+validObject(.ModelPseudo)
+## no init function for this one
+
+## ============================================================
+##' Class for DLE models using pesudo data prior
+##' 
+##' @export
+##' @keywords classes
+.ModelTox<-setClass(Class="ModelTox",
+                    representation(dose="function",
+                                   prob="function",
+                                   data="Data"),
+                    contains="ModelPseudo"
+)
+validObject(.ModelTox)
+## no init function for this one
+## ==============================================================
+
+##' class for Efficacy models using pseudo data prior
+##' 
+##' @export
+##' @keywords classes
+.ModelEff<-setClass(Class="ModelEff",
+                    representation(dose="function",
+                                   ExpEff="function",
+                                   data="DataDual"),
+                    contains="ModelPseudo"
+)
+validObject(.ModelEff)
+## no init function for this one
+## ================================================================
+##' class for the two-parameter logistic regression DLE model
+##' This is the two-parameter logistic regression model using pseudo data prior 
+##' The probabilities of an occurence of DLE based on the pseudo data have independent
+##' beta distributions
+##' 
+##'  
+##' 
+##' @export
+##' @keywords classes
+
+
+.LogisticIndepBeta<-
+  setClass(Class="LogisticIndepBeta",
+           representation(binDLE="numeric",
+                          DLEdose="numeric",
+                          DLEweights="numeric",
+                          
+                          phi1="numeric",
+                          phi2="numeric"),
+           prototype(binDLE=c(0,0),
+                     DLEdose=c(1,1),
+                     DLEweights=c(1,1)),
+           contains="ModelTox",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               ##Check if at least two pseudo DLE responses are given
+               o$check(length(object@binDLE) >= 2,
+                       "length of binDLE must be at least 2")
+               ##Check if at least two weights for pseudo DLE are given 
+               o$check(length(object@DLEweights) >= 2,
+                       "length of DLEweights must be at least 2")
+               ##Check if at least two corresponding dose levels are given for the pseudo DLE responses
+               o$check(length(object@DLEdose) >= 2,
+                       "length of DLEdose must be at least 2")
+               ##Check if pseudo DLE responses have same length with it corresponding dose levels and weights
+               o$check((length(object@binDLE)==length(object@DLEweights))&(length(object@binDLE)==length(object@DLEdose))&(length(object@DLEweights)==length(object@DLEdose)),
+                       "length of binDLE, DLEweights, DLEDose must be equal")
+               o$result()
+             })
+validObject(.LogisticIndepBeta())  
+
+##' Intialization function for "LogisticIndepBeta" class
+##' @param binDLE the pseudo DLE responses 
+##' @param DLEweights number of subjects treated for this binDLE response
+##' @param DLEdose the corresponding levels for the pseudo DLE responses
+##' @param data follow the \code{\linkS4class{LogisticIndepBeta}} object class specification
+##' 
+##' @export
+##' @keywords methods
+LogisticIndepBeta <- function(binDLE,
+                              DLEdose,
+                              DLEweights,
+                              data)
+{##if no observed DLE(data)
+  if (length(data@y)==0){
+    w1<-DLEweights
+    y1<-binDLE
+    x1<-DLEdose} else {w1<-c(DLEweights,rep(1,data@nObs))
+    ##combine pseudo and observed
+    y1<-c(binDLE,data@y)
+    x1<-c(DLEdose,data@x)}
+  ##Fit the pseudo data and DLE responses with their corresponding dose levels
+  FitDLE<-glm(y1/w1~log(x1),family=binomial(link="logit"),weights=w1)
+  SFitDLE<-summary(FitDLE)
+  ##Obtain parameter estimates for dose-DLE curve
+  phi1<-coef(SFitDLE)[1,1]
+  phi2<-coef(SFitDLE)[2,1]
+  
+  
+  .LogisticIndepBeta(binDLE=binDLE,
+                     DLEdose=DLEdose,
+                     DLEweights=DLEweights,
+                     phi1=phi1,
+                     phi2=phi2,
+                     datanames=c("nObs","y","x"),
+                     data=data,
+                     dose=function(prob,phi1,phi2){
+                       LogDose<-((log(prob/(1-prob)))-phi1)/phi2
+                       return(exp(LogDose))
+                     },
+                     prob=function(dose,phi1,phi2){
+                       LogDose<-log(dose)
+                       pj<-(exp(phi1+phi2*LogDose))/(1+exp(phi1+phi2*LogDose))
+                       return(pj)
+                     }
+  )
+}
+
+## ======================================================================================================
 
 
 
