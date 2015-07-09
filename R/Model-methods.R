@@ -294,14 +294,17 @@ setMethod("biomLevel",
 ## ---------------------------------------------------------------------------------
 
 ##' Extracting efficay responses for subjects without an DLE
+##' @param object for data input from \code\{\linkS4class{Data}} object 
+##' 
+##' @export
+##' @keywords
 
 setGeneric("getEff",
 def=function(object,...){
   standardGeneric("getEff")},
 valueClass="list")
 
-#########################################################
-
+##' @describeIn getEff
 setMethod("getEff",
           signature=
             signature(object="DataDual"),
@@ -327,3 +330,84 @@ setMethod("getEff",
               ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
               return(ret)
             })
+## =============================================================================================
+## ---------------------------------------------------------------------------------------------
+## Compute the Expected Efficacy based on a given dose, a given pseduo Efficacy model and a given sample
+## -----------------------------------------------------------------------------
+##' Compute the expected efficacy based on a given dose, a given pseudo Efficacy model and a given sample
+##' 
+##' @param dose the dose
+##' @param model the \code{\linkS4class{ModelEff}} class object
+##' @param samples the \code{\linkS4class{Samples}} class object
+##' 
+##' @export
+##' @keywords methods
+setGeneric("ExpEff",
+           def=
+             function(dose,model,samples,...){
+               standardGeneric("ExpEff")
+             },
+           valueClass="numeric")
+
+##' @describeIn ExpEff
+
+setMethod("ExpEff",
+          signature=
+            signature(dose="numeric",
+                      model="ModelEff",
+                      samples="Samples"),
+          def=
+            function(dose, model, samples, ...){
+              ## extract the ExpEff function from the model
+              EffFun <- slot(model, "ExpEff")
+              ## which arguments, besides the dose, does it need?
+              argNames <- setdiff(names(formals(EffFun)),
+                                  "dose")
+              ## now call the function with dose and with
+              ## the arguments taken from the samples
+              ret <- do.call(EffFun,
+                             c(list(dose=dose),
+                               samples@data[argNames]))
+              ## return the resulting vector
+              return(ret)
+            })
+##======================================================================================
+
+## -------------------------------------------------------------------------------------
+## Compute the Expected Efficacy based on a given dose and a given Pseudo Efficacy model
+## --------------------------------------------------------------------------------------
+##' Compute the Expected Efficacy based a given dose and a given Pseudo Efficacy model without
+##' samples
+##' @param dose the dose
+##' @param model the \code{\linkS4class{ModelEff}} class object
+##' 
+##' @export
+##' @keywords methods
+setMethod("ExpEff",
+          signature=
+            signature(dose="numeric",
+                      model="ModelEff"),
+          def=
+            function(dose, model, ...){
+              ## extract the ExpEff function from the model
+              EffFun <- slot(model, "ExpEff")
+              ## which arguments, besides the dose, does it need?
+              argNames <- setdiff(names(formals(EffFun)),
+                                  "dose")
+              ## now call the function with dose
+              values<-c()
+              for (parName in argNames){
+                values <- c(values, slot(model,parName))}
+              
+              ret <- do.call(EffFun,
+                             c(list(dose=dose),values))
+              ## return the resulting vector
+              return(ret)
+            })
+## ======================================================================
+
+## -------------------------------------------------------------------------
+## Compute the dose for a given Expected Efficacy, a given Pseudo Efficacy model and a given sample
+## -------------------------------------------------------------------------------------
+##' Compute the dose for a given Expected Efficacy, a given Pseudo Efficacy model and a given sample 
+##' 
