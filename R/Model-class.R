@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove, Wai Yin Yeung [sabanesd *a*t* roche *.* com, w.yeung *a*t* lancaster *.* ac *.* uk]
+## Author: Daniel Sabanes Bove, Wai Yin Yeung [sabanesd *a*t* roche *.* com, w *.* yeung *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Model-class.R] by DSB Mon 11/05/2015 17:44>
@@ -2740,4 +2740,5 @@ Effloglog<-function(Eff,
   )}
 
 ## ============================================================
+
 

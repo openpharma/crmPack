@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove, Wai Yin Yeung [sabanesd *a*t* roche *.* com, w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Model-methods.R] by DSB Mon 11/05/2015 17:45>
@@ -9,7 +9,8 @@
 ##
 ## History:
 ## 31/03/2014   file creation
-###################################################################################
+## 09/07/2015   Adding more methods for Pseudo Models
+######################################################################################
 
 ##' @include Model-class.R
 ##' @include Samples-class.R
@@ -59,6 +60,74 @@ setMethod("dose",
               return(ret)
           })
 
+## =================================================================
+## -------------------------------------------------------------------------------------
+## Compute the doses for a given probability, given Pseudo DLE model and given samples
+## ----------------------------------------------------------------------------- 
+##' Compute the doses for a given probability, given Pseudo DLE model with samples 
+##' 
+##' @param prob the probability
+##' @param model the \code{\linkS4class{ModelTox}}
+##' @param samples the \code{\linkS4class{Samples}}
+##' @param \dots unused
+##'
+##' @export
+##' @keywords methods
+setMethod("dose",
+          signature=
+            signature(prob="numeric",
+                      model="ModelTox",
+                      samples="Samples"),
+          def=
+            function(prob, model, samples, ...){
+              ## extract the dose function from the model
+              doseFun <- slot(model, "dose")
+              ## which arguments, besides the prob, does it need?
+              argNames <- setdiff(names(formals(doseFun)),
+                                  "prob")
+              ## now call the function with prob and with
+              ## the arguments taken from the samples
+              ret <- do.call(doseFun,
+                             c(list(prob=prob),
+                               samples@data[argNames]))
+              ## return the resulting vector
+              return(ret)
+            })
+
+## =========================================================================
+## ----------------------------------------------------------------------------
+## Compute the dose for a given Pseudo DLE model and a given probability
+## -----------------------------------------------------------------------
+##' Compute the dose for a given probability and a given Pseudo DLE model without samples
+##' @param prob the probability
+##' @param model the \code{\linkS4class{ModelTox}}
+##' @param \dots unused
+##'
+##' @export
+##' @keywords methods
+setMethod("dose",
+          signature=
+            signature(prob="numeric",
+                      model="ModelTox"),
+          def=
+            function(prob, model, ...){
+              ## extract the dose function from the model
+              doseFun <- slot(model, "dose")
+              ## which arguments, besides the prob, does it need?
+              argNames <- setdiff(names(formals(doseFun)),
+                                  "prob")
+              values<-c()
+              for (parName in argNames){
+                values<-c(values, slot(model,parName))}
+              ## now call the function with prob
+              ret <- do.call(doseFun,
+                             c(list(prob=prob), values))
+              ## return the resulting vector
+              return(ret)
+            })
+
+
+## =======================================================================================
 
 ## --------------------------------------------------
 ## Compute the probability for a given dose, given model and samples
@@ -107,6 +176,80 @@ setMethod("prob",
               return(ret)
           })
 
+## =============================================================================================
+## Compute the probability for a given dose, given Pseudo DLE model and samples
+## --------------------------------------------------
+
+##' Compute the probability for a given dose, given Pseudo DLE model and samples
+##'
+##' @param dose the dose
+##' @param model the \code{\linkS4class{ModelTox}} object
+##' @param samples the \code{\linkS4class{Samples}}
+##' @param \dots unused
+##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
+##' samples.
+##'
+##' @export
+##' @keywords methods
+setMethod("prob",
+          signature=
+            signature(dose="numeric",
+                      model="ModelTox",
+                      samples="Samples"),
+          def=
+            function(dose, model, samples, ...){
+              ## extract the prob function from the model
+              probFun <- slot(model, "prob")
+              ## which arguments, besides the dose, does it need?
+              argNames <- setdiff(names(formals(probFun)),
+                                  "dose")
+              ## now call the function with dose and with
+              ## the arguments taken from the samples
+              ret <- do.call(probFun,
+                             c(list(dose=dose),
+                               samples@data[argNames]))
+              ## return the resulting vector
+              return(ret)
+            })
+
+
+
+
+## ==============================================================================
+## ## Compute the probability for a given dose, given Pseudo DLE model
+## --------------------------------------------------
+
+##' Compute the probability for a given dose, given Pseudo DLE model without samples
+##' @param dose the dose
+##' @param model the \code{\linkS4class{ModelTox}} object
+##' @param \dots unused
+##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
+##' samples.
+##'
+##' @export
+##' @keywords methods
+setMethod("prob",
+          signature=
+            signature(dose="numeric",
+                      model="ModelTox"),
+          def=
+            function(dose,model,...){
+              ## extract the prob function from the model
+              probFun <- slot(model, "prob")
+              ## which arguments, besides the dose, does it need?
+              argNames <- setdiff(names(formals(probFun)),
+                                  "dose")
+              ## now call the function with dose
+              values<-c()
+              for (parName in argNames){
+                values<-c(values, slot(model,parName))}
+              ret <- do.call(probFun,
+                             c(list(dose=dose), values))
+              ## return the resulting vector
+              return(ret)
+            })
+
+## =============================================================================
 
 ## --------------------------------------------------
 ## Compute the biomarker level for a given dose, given model and samples
@@ -145,4 +288,42 @@ setMethod("biomLevel",
               return(samples@data$betaW[, xLevel])
 
           })
+## ==========================================================================================
+## -----------------------------------------------------------------------------------------
+## Extracting efficacy responses for subjects without DLE observed
+## ---------------------------------------------------------------------------------
 
+##' Extracting efficay responses for subjects without an DLE
+
+setGeneric("getEff",
+def=function(object,...){
+  standardGeneric("getEff")},
+valueClass="list")
+
+#########################################################
+
+setMethod("getEff",
+          signature=
+            signature(object="DataDual"),
+          def=
+            function(object,
+                     x,
+                     y,
+                     w,...){
+              if (length(which(object@y == 1))==0){
+                wNoDLE<-object@w
+                wDLE<-NULL
+                xNoDLE<- object@x
+                xDLE<-NULL
+              } else {##with observed efficacy response and DLE observed
+                IndexDLE<-which(object@y==1)
+                ##Take efficacy responses with no DLE observed
+                wNoDLE<-object@w[-IndexDLE]
+                wDLE<-object@w[IndexDLE]
+                ##Take the corresponding dose levels
+                xNoDLE<-object@x[-IndexDLE]
+                xDLE<-object@x[IndexDLE]
+              }
+              ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
+              return(ret)
+            })
