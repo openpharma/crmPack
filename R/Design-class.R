@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [ w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Design-class.R] by DSB Son 18/01/2015 21:35>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 12/02/2014   file creation
+## 10/07/2015  adding designs for Pseudo models
 #####################################################################################
 
 ##' @include Model-class.R
@@ -213,3 +215,115 @@ ThreePlusThreeDesign <- function(doseGrid)
 
     return(design)
 }
+
+## ===================================================================================
+## -------------------------------------------------------------------------------
+## Design class using DLE responses only based on the pseudo DLE model
+## -------------------------------------------------------------------------
+##' Design class using DLE responses only with samples
+##' 
+##' @export
+##' @keywords class 
+
+.TDsamplesDesign <-
+  setClass(Class="TDsamplesDesign",
+           representation(model="LogisticIndepBeta",
+                          stopping="Stopping",
+                          increments="Increments"),
+           prototype(model=.LogisticIndepBeta(),
+                     nextBest=.NextBestTDsamples(),
+                     stopping=.StoppingMinPatients(),
+                     increments=.IncrementsRelative()),
+           
+           contains=list("RuleDesign"))
+
+validObject(.TDsamplesDesign())
+##' Initi function 
+
+TDsamplesDesign<-function(model,stopping,increments,...){
+  start<-RuleDesign(...)
+  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments)}
+
+## ==========================================================
+##' Design class using DLE responses only without samples
+##' 
+##' @export
+##' @keywords class
+.TDDesign <-
+  setClass(Class="TDDesign",
+           representation(model="LogisticIndepBeta",
+                          stopping="Stopping",
+                          increments="Increments"),
+           prototype(model=.LogisticIndepBeta(),
+                     nextBest=.NextBestTD(),
+                     stopping=.StoppingMinPatients(),
+                     increments=.IncrementsRelative()),
+           
+           contains=list("RuleDesign"))
+
+validObject(.TDDesign())
+
+##' Init function
+
+TDDesign<-function(model,stopping,increments,...){
+  start<-RuleDesign(...)
+  .TDDesign(start,model=model,stopping=stopping,increments=increments)}
+## ============================================================================
+
+## ------------------------------------------------------------------------------
+## Class for design based on one Pseudo DLE and one Pseudo Efficacy model
+## ------------------------------------------------------------------------------
+##' Class of design which based on one pseudo DLE and one pseudo efficacy model without samples
+##' 
+##' @export
+##' @keywords class
+.DualResponsesDesign <-
+  setClass(Class="DualResponsesDesign",
+           representation(DLEmodel="ModelTox",
+                          Effmodel="ModelEff",
+                          data="DataDual",
+                          stopping="Stopping",
+                          increments="Increments"),
+           prototype(nextBest=.NextBestMaxGain(),
+                     startingDose=1,
+                     DLEmodel=.LogisticIndepBeta(),
+                     Effmodel=.Effloglog(),
+                     data=DataDual(doseGrid=1:2),
+                     stopping=.StoppingMinPatients(),
+                     increments=.IncrementsRelative()),
+           
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               
+               o$check(is.scalar(object@startingDose),
+                       "startingDose must be scalar")
+               o$check(object@startingDose %in% object@data@doseGrid,
+                       "startingDose must be included in data@doseGrid")
+               
+               o$result()
+             })
+validObject(.DualResponsesDesign())
+
+##' Init function
+DualResponsesDesign <- function(nextBestGain,
+                                cohortSize,
+                                startingDose,
+                                DLEmodel,
+                                Effmodel,
+                                data,
+                                stopping,
+                                increments)
+  
+{
+  .DualResponsesDesign(nextBestGain=nextBestGain,
+                       cohortSize=cohortSize,
+                       startingDose=as.numeric(startingDose),
+                       DLEmodel=DLEmodel,
+                       Effmodel=Effmodel,
+                       data=data,
+                       stopping=stopping,
+                       increments=increments)
+}
+
+  ## ===============================================================================
