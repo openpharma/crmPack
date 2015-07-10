@@ -406,6 +406,32 @@ setMethod("ExpEff",
               return(ret)
             })
 ## ======================================================================
+## -------------------------------------------------------------------------------------
+## Compute the Expected Efficacy based on a given dose, Efficacy Flexible model and the Efficacy samples
+## --------------------------------------------------------------------------------------
+##' Compute the Expected Efficacy based a given dose, Efficacy Flexible  model with
+##' samples
+##' @param dose the dose
+##' @param model the \code{\linkS4class{ModelEff}} class object
+##' @param samples the \code{\linkS4class{Samples}} class object
+##' 
+##' @export
+##' @keywords methods
+
+setMethod("ExpEff",
+          signature=
+            signature(dose="numeric",
+                      model="EffFlexi",
+                      samples="Samples"),
+          def=
+            function(dose, model, samples, ...){
+              ## extract the ExpEff function from the model
+              EffFun <- slot(model, "ExpEff")
+              ret <- EffFun(dose)
+              ## return the resulting vector
+              return(ret)
+            })
+
 
 ## -------------------------------------------------------------------------
 ## Compute the dose for a given Expected Efficacy and a given Pseudo Efficacy model 
@@ -414,7 +440,7 @@ setMethod("ExpEff",
 ##' 
 ##' @param ExpEff the Expected Efficacy value
 ##' @param model the \code{\linkS4class{ModelEff}} class object
-
+##' @param sample the \code{\linkS4class{Samples}} class object
 ##' 
 ##' @export
 ##' @keywords methods
