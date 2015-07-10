@@ -1513,12 +1513,9 @@ setMethod("simulate",
                 ## start the simulated data with the provided one
                 thisData <- object@data
                 
-                ## start with the pseudo nu/sigma2
-                ##if it is not a fixed value
+              ## find true sigma2 to generate responses
                 
-                thisNu<-trueNu
-                thisSigma2<-trueSigma2
-                
+                trueSigma2<-1/trueNu
                 
                 
                 ## shall we stop the trial?
