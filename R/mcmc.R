@@ -483,6 +483,7 @@ setMethod("mcmc",
 ##' 
 ##' @export
 ##' @keywords methods
+
 setMethod("mcmc",
           signature=
             signature(data="DataDual",
@@ -504,7 +505,8 @@ setMethod("mcmc",
               if (length(thismodel@nu)==2) {
                 nusamples <- rgamma(sampleSize(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
                 priornu <- mean(nusamples)} else {
-                  priornu <- thismodel@nu}
+                  priornu <- thismodel@nu
+                  nusamples <- rep(nu,sampleSize(options))}
               
               
               
@@ -525,5 +527,5 @@ setMethod("mcmc",
               
               return(ret)
             })
-## ============================================================================================
+## ======================================================================================
 
