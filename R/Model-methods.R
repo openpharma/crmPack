@@ -407,7 +407,23 @@ setMethod("ExpEff",
 ## ======================================================================
 
 ## -------------------------------------------------------------------------
-## Compute the dose for a given Expected Efficacy, a given Pseudo Efficacy model and a given sample
+## Compute the dose for a given Expected Efficacy and a given Pseudo Efficacy model 
 ## -------------------------------------------------------------------------------------
-##' Compute the dose for a given Expected Efficacy, a given Pseudo Efficacy model and a given sample 
+##' Compute the dose for a given Expected Efficacy and a given Pseudo Efficacy model 
 ##' 
+##' @param ExpEff the Expected Efficacy value
+##' @param model the \code{\linkS4class{ModelEff}} class object
+
+##' 
+##' @export
+##' @keywords methods
+
+setGeneric("doseforEff",
+           def=
+             function(ExpEff,model,...){
+               standardGeneric("doseforEff")
+             },
+           valueClass="numeric")
+##' @describeIn doseforEff
+
+
