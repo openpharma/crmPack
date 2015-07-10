@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove, Wai Yin Yeung  [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Samples-methods.R] by DSB Mon 11/05/2015 17:46>
@@ -9,6 +9,7 @@
 ##
 ## History:
 ## 25/03/2014   file creation
+## 10/07/2015   Adding more methods for pseudo models
 #####################################################################################
 
 ##' @include McmcOptions-methods.R
@@ -584,4 +585,114 @@ setMethod("plot",
               return(ret)
           })
 
+## ----------------------------------------------------------------------------
+setMethod("fit",
+          signature=
+            signature(object="Samples",
+                      model="LogisticIndepBeta",
+                      data="Data"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     points=data@doseGrid,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(points))
+              
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              probSamples <- matrix(nrow=sampleSize(object@options),
+                                    ncol=length(points))
+              
+              ## evaluate the probs, for all samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                probSamples[, i] <- prob(dose=points[i],
+                                         model,
+                                         object)
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(probSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(probSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(dose=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)
+            })
 
+
+## ---------------------------------------------------------------------------------
+setMethod("plot",
+          signature=
+            signature(x="Samples",
+                      y="LogisticIndepBeta"),
+          def=
+            function(x, y, data, ...,
+                     xlab="Dose level",
+                     ylab="Probability of DLT [%]",
+                     showLegend=TRUE){
+              
+              ## check args
+              stopifnot(is.bool(showLegend))
+              
+              ## get the fit
+              plotData <- fit(x,
+                              model=y,
+                              data=data,
+                              quantiles=c(0.025, 0.975),
+                              middle=mean)
+              
+              ## make the plot
+              gdata <-
+                with(plotData,
+                     data.frame(x=rep(dose, 3),
+                                y=c(middle, lower, upper) * 100,
+                                group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                           c("Estimate",
+                                             "95% Credible Interval"))))
+              
+              ret <- ggplot2::qplot(x=x,
+                                    y=y,
+                                    data=gdata,
+                                    group=group,
+                                    linetype=Type,
+                                    colour=I("red"),
+                                    geom="line",
+                                    xlab=xlab,
+                                    ylab=ylab,
+                                    ylim=c(0, 100))
+              
+              ret <- ret +
+                ggplot2::scale_linetype_manual(breaks=
+                                                 c("Estimate",
+                                                   "95% Credible Interval"),
+                                               values=c(1,2), guide=ifelse(showLegend,
+                                                                           "legend", FALSE))
+              
+              return(ret)
+            })
+
+## ----------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove, Wai Yin Yeung  [sabanesd *a*t* roche *.* com, w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Rules-methods.R] by DSB Die 09/06/2015 21:29>
@@ -9,6 +9,7 @@
 ##
 ## History:
 ## 07/02/2014   file creation
+## 10/07/2015   Adding more classes
 ###################################################################################
 
 ##' @include Model-methods.R
@@ -1620,3 +1621,104 @@ setMethod("size",
 
 
 ## ============================================================
+##' nextBest method using pseudo DLE model with samples
+##' 
+setMethod("nextBest",
+          signature=
+            signature(nextBest="NextBestTDsamples",
+                      doselimit="numeric",
+                      samples="Samples",
+                      model="LogisticIndepBeta",
+                      data="Data"),
+          def=
+            function(nextBest, doselimit, samples, model, data, ...){
+              ## First, generate the TDtargetDuringTrial (TDtarget During a Trial) and 
+              ## TDtargetEndOfTrial (TDtarget at the EndOfTrial) samples.
+              
+              TDtargetDuringTrialSamples <- dose(prob=nextBest@targetDuringTrial,
+                                                 model,
+                                                 samples)
+              
+              TDtargetEndOfTrialSamples <- dose(prob=nextBest@targetEndOfTrial,
+                                                model,
+                                                samples)
+              
+              ## then derive the prior/posterior mean of the above two samples
+              
+              TDtargetDuringTrialEstimate <- nextBest@derive(TDsamples=TDtargetDuringTrialSamples)
+              TDtargetEndOfTrialEstimate <- nextBest@derive(TDsamples=TDtargetEndOfTrialSamples)
+              
+              ## be sure which doses are ok with respect to maximum
+              ## possible dose
+              dosesOK <- which(data@doseGrid <= doselimit)
+              
+              ##Find the index of next dose in the doseGrid
+              ##next dose is the dose level closest below the TDtargetDuringTrialEstimate
+              index <- max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              ret <- data@doseGrid[dosesOK][index]
+              
+              
+              ##Find the dose level (in doseGrid) closest below the TDtargetEndOfTrialEstimate
+              index1 <- max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              ret1 <- data@doseGrid[dosesOK][index1]
+              
+              
+              ## produce plot
+              plot1 <- ggplot() +
+                geom_density(data=
+                               data.frame(x=TDtargetDuringTrialSamples),
+                             aes(x=x),
+                             fill = "grey50", colour = "grey50") 
+              
+              
+              plot1 <- plot1 +
+                geom_density(data=
+                               data.frame(x=TDtargetEndOfTrialSamples),
+                             aes(x=x),
+                             fill = "grey50", colour = "violet") +
+                xlab("TD") + ylab("Posterior density") +
+                xlim(range(data@doseGrid))
+              
+              
+              plot1 <- plot1+
+                geom_vline(xintercept=TDtargetDuringTrialEstimate, colour="orange", lwd=1.1) +
+                annotate("text",label=paste(paste("TD",nextBest@targetDuringTrial*100),"Estimate"),
+                         x=TDtargetDuringTrialEstimate,y=0,hjust=-0.1, vjust = -20,size=5,colour="orange")
+              
+              
+              plot1 <- plot1+
+                geom_vline(xintercept=TDtargetEndOfTrialEstimate, colour="violet", lwd=1.1) +
+                annotate("text",label=paste(paste("TD",nextBest@targetEndOfTrial*100),"Estimate"),
+                         x=TDtargetEndOfTrialEstimate,y=0,hjust=-0.1, vjust = -25,size=5,colour="violet")
+              
+              
+              
+              if (doselimit > max(data@doseGrid)){maxdoselimit<-max(data@doseGrid)} else {maxdoselimit <-doselimit}
+              
+              plot1 <- plot1 +
+                geom_vline(xintercept=maxdoselimit, colour="red", lwd=1.1) +
+                geom_text(data=
+                            data.frame(x=maxdoselimit),
+                          aes(x, 0,
+                              label = "Max", hjust = +1, vjust = -35),
+                          colour="red")
+              
+              plot1 <- plot1 +
+                geom_vline(xintercept=ret, colour="blue", lwd=1.1) +
+                geom_text(data=
+                            data.frame(x=ret),
+                          aes(x, 0,
+                              label = "Next", hjust = 0.1, vjust = -30),
+                          colour="blue")
+              
+              ## return next best dose and plot
+              return(list(nextdose=ret,
+                          targetDuringTrial=nextBest@targetDuringTrial,
+                          TDtargetDuringTrialEstimate=TDtargetDuringTrialEstimate,
+                          targetEndOfTrial=nextBest@targetEndOfTrial,
+                          TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
+                          
+                          TDtargetEndOfTrialAtDoseGrid=ret1,
+                          plot=plot1))
+            })
+

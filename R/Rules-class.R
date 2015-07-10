@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 07/02/2014   file creation
+## 10/07/2014   Added further rule classs
 ###################################################################################
 
 ##' @include helpers.R
@@ -1289,4 +1291,47 @@ CohortSizeMin <- function(cohortSizeList)
 
 
 
-## ============================================================
+## ==========================================================================================
+## --------------------------------------------------------
+## Class for next best based on Pseudo DLE Model with samples
+## -----------------------------------------------------------
+
+.NextBestTDsamples<-
+  setClass(Class="NextBestTDsamples",
+           representation(targetDuringTrial="numeric",
+                          targetEndOfTrial="numeric",
+                          derive="function"),
+           ##targetDuringTrial is the target DLE probability during the trial
+           ##targetEndOfTrial is the target DLE probability at the End of the trial
+           prototype(targetDuringTrial=0.35,
+                     targetEndOfTrial=0.3,
+                     derive=function(TDsamples){
+                       quantile(TDsamples,prob=0.3)}),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o<-crmPack:::Validate()
+               o$check(is.probability(object@targetDuringTrial,
+                                      bounds=FALSE),
+                       "targetDuringTrial must be probability > 0 and < 1")
+               o$check(is.probability(object@targetEndOfTrial,
+                                      bounds=FALSE),
+                       "targetEndOfTrial must be probability > 0 and < 1")
+               o$check(identical(names(formals(object@derive)),
+                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
+               
+               o$result()
+             })
+validObject(.NextBestTDsamples())
+## ---------------------------------------------------------------------------
+##' Init function for NextBestTDsamples
+NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
+{
+  .NextBestTDsamples(targetDuringTrial=targetDuringTrial,
+                     targetEndOfTrial=targetEndOfTrial,
+                     derive=derive)
+}
+## ------------------------------------------------------------------------------
+
+
+

@@ -2575,7 +2575,8 @@ validObject(.LogisticIndepBeta())
 ##' @param binDLE the pseudo DLE responses 
 ##' @param DLEweights number of subjects treated for this binDLE response
 ##' @param DLEdose the corresponding levels for the pseudo DLE responses
-##' @param data follow the \code{\linkS4class{LogisticIndepBeta}} object class specification
+##' @param data the input data to update estimates of model parameters and 
+##' follow the \code{\linkS4class{Data}} object class specification
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2619,7 +2620,7 @@ LogisticIndepBeta <- function(binDLE,
 }
 
 ## ======================================================================================================
-##' Class for the linear log-log efiicay model using pseudo data prior
+##' Class for the linear log-log efficacy model using pseudo data prior
 ##' This is the efficay model which describe the realtionship of the normal efficacy responses 
 ##' and their corresponding log-log dose levels
 ##'
@@ -2667,6 +2668,12 @@ LogisticIndepBeta <- function(binDLE,
 validObject(.Effloglog())
 
 ##' Initialization function for the "Effloglog" class
+##' 
+##'@param Eff the pseudo efficacy responses
+##'@param Effdose the corresponding dose levels for the pseudo efficacy responses
+##'@param nu the precision (inverse of the variance) of the efficacy responses
+##' @param data the input data to update estimates of model parameters and 
+##' follow the \code{\linkS4class{DataDual}} object class specification
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2740,5 +2747,151 @@ Effloglog<-function(Eff,
   )}
 
 ## ============================================================
+##' Class for the efficacy model in non-parameteric or flexible form using pseudo data prior
+##' This is a class where no parameter model and the mean efficacy responses are estimated at 
+##' each dose levels aiming to capture different shapes for the efficacy curve. 
+##' The first order or the second order random walk model can be used foe smoothing data
+##'
+##'@export
+##'@keywords class
+.EffFlexi<-setClass(Class="EffFlexi",
+representation(Eff="numeric",
+               Effdose="numeric",
+               sigma2="numeric",
+               sigma2betaW="numeric",
+               useFixed="list",
+               useRW1="logical",
+               designW="matrix",
+               RWmat="matrix",
+               RWmatRank="integer"),
+prototype(Eff=c(0,0),
+          Effdose=c(1,1),
+          sigma2=0.025,
+          sigma2betaW=1,
+          useRW1=TRUE,
+          useFixed=list(sigma2=TRUE,sigma2betaW=TRUE)),
+contains="ModelEff",
+validity=
+  function(object){
+    o<- crmPack:::Validate()
+    o$check(length(object@Eff) >= 2,
+            "length of Eff must be at least 2")
+    o$check(length(object@Effdose) >= 2,
+            "length of Effdose must be at least 2")
+    o$check(length(object@Eff)==length(object@Effdose),
+            "length of Eff and Effdose must be equal")
+    for (parName in c("sigma2","sigma2betaW"))
+    {
+      if (object@useFixed[[parName]]){
+        o$check(slot(object,parName) > 0,
+                paste(parName, "must be positive"))} else {
+                  o$check(identical(names(slot(object,parName)),c("a","b")), 
+                          paste(parName,"must have names 'a' and 'b'"))
+                  o$check(all(slot(object,parName) > 0),
+                          paste(parName, "must have positive prior parameters"))
+                }
+    }
+    o$result()
+  })
+validObject(.EffFlexi())
 
+##' Initialization function for the "EffFlexi" class
+##' 
+##' @param Eff the pseudo efficacy responses
+##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
+##' @param sigma2 the variance of the efficacy responses which can be a fixed value or from the
+##' inverse gamma distribution, that is either specific a fixed value or specified the values
+##' of the two paramters of the inverse gamma distribtuion
+##' @param sigma2betaW the variance of the random walk model used for smoothing data which can be
+##' a fixed value or using the inverse gamm distribution
+##' @param smooth used for smoothing data for this efficacy model, either the "RW1", the 
+##' first-order random walk model or "RW2", the second-order random walk model can be used.
+##' @param data the input data to update estimates of model parameters and 
+##' follow the \code{\linkS4class{DataDual}} object class specification
+##' 
+##' @export
+##' @keywords methods
+
+EffFlexi <- function(Eff,
+                     Effdose,
+                     sigma2,
+                     sigma2betaW,
+                     smooth=c("RW1","RW2"),
+                     data
+)
+{##No observed Efficacy response
+  if (length(data@w)==0){
+    w1<-Eff
+    x1<-Effdose} else {
+      ## with observed efficacy responses and no DLE observed
+      w1<-c(Eff,getEff(data)$wNoDLE)
+      x1<-c(Effdose,getEff(data)$xNoDLE)
+    }
+  ## Match dose levels in x1 with the all dose levels for evaluations
+  x1Level <- match(x1,data@doseGrid)
+  smooth<-match.arg(smooth)
+  useRW1<- smooth == "RW1"
+  useFixed<-list()
+  for (parName in c("sigma2","sigma2betaW"))
+  {useFixed[[parName]] <- identical(length(get(parName)),1L)}
+  #design matrics
+  designW <- model.matrix(~ -1 + I(factor(x1Level, levels=seq_len(data@nGrid))))
+  dimnames(designW) <- list(NULL,NULL)
+  
+  ##difference matrix of order 1:
+  D1mat<- cbind(0,diag(data@nGrid-1)) - cbind(diag(data@nGrid - 1),0)
+  
+  ## set up the random walk penalty matrix and its rank:
+  if (useRW1)
+  {## the rank-deficient prior precision for the RW1 prior:
+    RWmat <- crossprod(D1mat)
+    ##Rank: dimension -1
+    RWmatRank <- data@nGrid-1L
+  } else {##second-order difference
+    D2mat <- D1mat[-1,-1] %*% D1mat
+    RWmat <- crossprod(D2mat)
+    RWmatRank <- data@nGrid-2L
+  }
+  .EffFlexi(Eff=Eff,
+            Effdose=Effdose,
+            sigma2=sigma2,
+            sigma2betaW=sigma2betaW,
+            datanames=c("nObs","w","x"),
+            data=data,
+            dose=function(ExpEff){
+              ##Find dose level given a particular Expected Efficacy level with linear Interpolation
+              dosevec<-c()
+              for (k in 1:sampleSize(options)){
+                IxEff0<- max(which((ExpEff-Effsamples@data$ExpEff[k,]) >= 0))
+                IxEff1<- min(which((ExpEff-Effsamples@data$ExpEff[k,]) < 0))
+                Interpoldose<-data@doseGrid[IxEff0]+(data@doseGrid[IxEff1]-data@doseGrid[IxEff0])*((ExpEff-Effsamples@data$ExpEff[k,IxEff0])/(Effsamples@data$ExpEff[k,IxEff1]-Effsamples@data$ExpEff[k,IxEff0]))
+                dosevec[k]<-Interpoldose
+              }
+              ##return coreresponding dose levels
+              return(dosevec)},
+            
+            ExpEff=function(dose){
+              ##Find the ExpEff with a given dose level
+              ##Check if given dose is in doseGrid
+              DoseInGrid<-!is.na(match(dose,data@doseGrid))
+              if (DoseInGrid==TRUE){
+                ##Find which dose is this in the dose Grid
+                EIx<-which(dose==data@doseGrid)
+                ##Return corresponding expected efficacy values from mcmc samples
+                return(Effsamples@data$ExpEff[,EIx])} else {##if dose not in doseGrid do linear Interploation
+                  ## check if this dose is within doseGrid
+                  stopifnot(dose <= max(data@doseGrid), dose >= min(data@doseGrid))
+                  Ixd0 <- max(which((dose-data@doseGrid) > 0))
+                  Ixd1<-min(which((dose-data@doseGrid) < 0))
+                  ExpEffd0<-Effsamples@data$ExpEff[,Ixd0]
+                  ExpEffd1<-Effsamples@data$ExpEff[,Ixd1]
+                  InterpolExpEff<- ExpEffd0+(ExpEffd1-ExpEffd0)*((dose-data@doseGrid[Ixd0])/(data@doseGrid[Ixd1]-data@doseGrid[Ixd0]))
+                  return(InterpolExpEff)}
+            },
+            useFixed=useFixed,
+            useRW1=useRW1,
+            designW=designW,
+            RWmat=RWmat,
+            RWmatRank=RWmatRank)}
+## ---------------------------------------------------------------------------------------------------------
 

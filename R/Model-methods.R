@@ -425,5 +425,33 @@ setGeneric("doseforEff",
              },
            valueClass="numeric")
 ##' @describeIn doseforEff
+setMethod("doseforEff",
+          signature=
+            signature(ExpEff="numeric",
+                      model="ModelEff"),
+          def=
+            function(ExpEff, model, ...){
+              ## extract the dose function from the model
+              doseFun <- slot(model, "dose")
+              ## which arguments, besides the ExpEff, does it need?
+              argNames <- setdiff(names(formals(doseFun)),
+                                  "ExpEff")
+              
+              ## now call the function with dose 
+              values<-c()
+              for (parName in argNames){
+                values <- c(values,slot(model,parName))}
+              
+              ret <- do.call(doseFun,
+                             c(list(ExpEff=ExpEff),values))
+              
+              ## return the resulting vector
+              return(ret)
+            })
 
+## =============================================================================
+## ---------------------------------------------------------------------------
+## Update Pseduo models object to ontain new estimates for model parameters
+## -------------------------------------------------------------------------------
 
+##' Update method for the 'Model' class 
