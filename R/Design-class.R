@@ -306,7 +306,7 @@ TDDesign<-function(model,stopping,increments,...){
 validObject(.DualResponsesDesign())
 
 ##' Init function
-DualResponsesDesign <- function(nextBestGain,
+DualResponsesDesign <- function(nextBest,
                                 cohortSize,
                                 startingDose,
                                 DLEmodel,
@@ -316,7 +316,7 @@ DualResponsesDesign <- function(nextBestGain,
                                 increments)
   
 {
-  .DualResponsesDesign(nextBestGain=nextBestGain,
+  .DualResponsesDesign(nextBest=nextBest,
                        cohortSize=cohortSize,
                        startingDose=as.numeric(startingDose),
                        DLEmodel=DLEmodel,
