@@ -1623,6 +1623,9 @@ setMethod("size",
 ## ============================================================
 ##' nextBest method using pseudo DLE model with samples
 ##' 
+##' nextBest method only using DLE responses
+##' @export
+##' @keywords methods
 setMethod("nextBest",
           signature=
             signature(nextBest="NextBestTDsamples",
@@ -1721,4 +1724,116 @@ setMethod("nextBest",
                           TDtargetEndOfTrialAtDoseGrid=ret1,
                           plot=plot1))
             })
+ ## =======================================================================
+##' nextBest method using pseudo DLE model
+##' This is the nextBest method using only DLE responses and based on pseudo DLE model without 
+##' using any samples
+##' 
+##' @export
+##' @keywords methods
+setMethod("nextBest",
+          signature=
+            signature(nextBest="NextBestTD",
+                      doselimit="numeric",
+                      samples="missing",
+                      model="LogisticIndepBeta",
+                      data="Data"),
+          def=
+            function(nextBest, doselimit, model, data, ...){
+              ##Find the target prob During Trial
+              targetDuringTrial<- nextBest@targetDuringTrial
+              ##Find the target prob End of Trial
+              targetEndOfTrial<- nextBest@targetEndOfTrial
+              
+              mylabel<-targetDuringTrial*100
+              label2 <-targetEndOfTrial*100
+              
+              ## Find the TD30 Estimate and TD(target) Estimate
+              
+              TDtargetEndOfTrialEstimate <- dose(prob=targetEndOfTrial,
+                                                 model)
+              
+              TDEfourdg<-signif(TDtargetEndOfTrialEstimate,digits=4)
+              
+              
+              TDtargetDuringTrialEstimate<-dose(prob=targetDuringTrial,
+                                                model)
+              
+              TDDfourdg<-signif(TDtargetDuringTrialEstimate,digits=4)
+              
+              probDLE=prob(dose=data@doseGrid,
+                           model=model)
+              
+              ## be sure which doses are ok with respect to maximum
+              ## possible dose
+              dosesOK <- which(data@doseGrid <= doselimit)
+              
+              ##Find the index of next dose in the doseGrid
+              ##next dose is the dose level closest below the TDtargetEstimate
+              index <- max(which((TDDfourdg- data@doseGrid[dosesOK]) >= 0))
+              ret <- data@doseGrid[dosesOK][index]
+              
+              
+              ##Find the dose level (in doseGrid) closest below the TD30Estimate
+              index <- max(which((TDEfourdg - data@doseGrid[dosesOK]) >= 0))
+              retTDE <- data@doseGrid[dosesOK][index]
+              
+              plotData <- data.frame(dose=data@doseGrid,
+                                     probDLE=prob(dose=data@doseGrid,
+                                                  model=model))
+              
+              ##make the plot
+              gdata <- with(plotData,
+                            data.frame(x=dose,
+                                       y=probDLE,
+                                       group=rep("Estimated DLE",each=nrow(plotData)),
+                                       Type=factor(rep("Estimated DLE",nrow(plotData)),levels="Estimated DLE")))
+              
+              plot1 <- ggplot(data=gdata, aes(x=x,y=y), group=group) +
+                xlab("Dose Levels")+
+                ylab(paste("Probability of DLE")) + ylim(c(0,1)) + xlim(c(0,max(data@doseGrid))) +
+                geom_line(colour=I("red"), size=1.5)
+              
+              if ((TDDfourdg < min(data@doseGrid))|(TDDfourdg > max(data@doseGrid))) {
+                plot1<-plot1
+                print(paste(paste("TD",targetDuringTrial*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {plot1 <- plot1+
+                  geom_point(data=data.frame(x=TDtargetDuringTrialEstimate,y=targetDuringTrial),aes(x=x,y=y),colour="orange", shape=15, size=8) +
+                  annotate("text",label=paste(paste("TD",mylabel),"Estimate"),x=TDtargetDuringTrialEstimate+1,y=targetDuringTrial-0.2,size=5,colour="orange")}
+              
+              
+              if ((TDEfourdg < min(data@doseGrid))|(TDEfourdg > max(data@doseGrid))) {
+                plot1<-plot1
+                print(paste(paste("TD",targetEndOfTrial*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))} else {plot1 <- plot1+
+                  geom_point(data=data.frame(x=TDtargetEndOfTrialEstimate,y=0.3),aes(x=x,y=y),colour="violet", shape=16, size=8) +
+                  annotate("text",label=paste(paste("TD",label2),"Estimate"),x=TDtargetEndOfTrialEstimate+1,y=targetEndOfTrial-0.1,size=5,colour="violet")}
+              
+              if (doselimit > max(data@doseGrid)) {maxdoselimit <- max(data@doseGrid)} else {maxdoselimit<-doselimit}
+              
+              plot1 <- plot1 +
+                geom_vline(xintercept=maxdoselimit, colour="brown", lwd=1.1) +
+                geom_text(data=
+                            data.frame(x=maxdoselimit),
+                          aes(x, 0,
+                              label = "Max", hjust = +1, vjust = -30),
+                          colour="brown")
+              
+              plot1 <-plot1 +
+                geom_vline(xintercept=ret, colour="purple", lwd=1.1) +
+                geom_text(data=
+                            data.frame(x=ret),
+                          aes(x, 0,
+                              label = "Next", hjust = 0, vjust = -30),
+                          colour="purple")
+              
+              
+              ## return next best dose and plot
+              return(list(nextdose=ret,
+                          targetDuringTrial=targetDuringTrial,
+                          TDtargetDuringTrialEstimate=TDtargetDuringTrialEstimate,
+                          targetEndOfTrial=targetEndOfTrial,
+                          TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
+                          TDtargetEndOfTrialatdoseGrid=retTDE,
+                          plot=plot1))
+            })
 
+## ============================================================================

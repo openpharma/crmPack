@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove, Wai Yin Yeung [sabanesd *a*t* roche *.* com, w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
+## Author: Daniel Sabanes Bove[sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [w *.* yeung *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Model-methods.R] by DSB Mon 11/05/2015 17:45>
@@ -449,9 +450,127 @@ setMethod("doseforEff",
               return(ret)
             })
 
-## =============================================================================
+## ---------------------------------------------------------------------------------
+## Compute gain value using a Pseudo DLE and a Efficacy model
+## -------------------------------------------------------------------------------
+
+##' Compute the gain value with a given dose level, given DLE model, given DLE sample, given Efficacy
+##' model and a given Efficacy sample
+##' 
+##' @export
+##' @keywords methods
+setGeneric("gain",
+           def=
+             function(dose,DLEmodel,DLEsamples,Effmodel,Effsamples,...){
+               standardGeneric("gain")
+             },
+           valueClass="numeric")
+
+## ================================================================
+##' Compute the gain given a dose level, a given DLE model and a given Efficacy model
+##' 
+##' @export
+##' @keywords methods
+##' 
+setMethod("gain",
+          signature=
+            signature(dose="numeric",
+                      DLEmodel="ModelTox",
+                      Effmodel="ModelEff"),
+          def=
+            function(dose,DLEmodel,Effmodel,...){
+              ##extract the prob function from the DLE model
+              probFun <- slot(DLEmodel,"prob")
+              ##which arguments besides the dose dose it need?
+              DLEargNames <- setdiff(names(formals(probFun)),"dose")
+              ##now call the function with dose
+              DLEvalues<-c()
+              for (DLEparName in DLEargNames){
+                DLEvalues<-c(DLEvalues, slot(DLEmodel,DLEparName))}
+              DLEret <- do.call(probFun,
+                                c(list(dose=dose), DLEvalues))
+              
+              ##extract the ExpEff function from the Eff model
+              EffFun <- slot(Effmodel,"ExpEff")
+              ##which arguments besides the dose dose it need?
+              EffargNames <- setdiff(names(formals(EffFun)),"dose")
+              ##now call the function with dose 
+              Effvalues<-c()
+              for (EffparName in EffargNames){
+                Effvalues <- c(Effvalues, slot(Effmodel,EffparName))}
+              
+              Effret <- do.call(EffFun,
+                                c(list(dose=dose),Effvalues))
+              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
+              return(Gainret)
+            })
+
+
+## ==================================================================================
+
 ## ---------------------------------------------------------------------------
 ## Update Pseduo models object to ontain new estimates for model parameters
 ## -------------------------------------------------------------------------------
 
-##' Update method for the 'Model' class 
+##' Update method for the 'LogisticIndepBeta'Model class 
+##' @param object is the model which follow \code{\linkS4Class{LogisticIndpeBeta}}} class object
+##'
+##'@export
+##'@keywords method
+setMethod("update",
+          signature=
+            signature(object="LogisticIndepBeta"),
+          def=
+            function(object,
+                     data,
+                     ...){
+              ##Get Pseudo DLE responses (prior) of the model
+              
+              PseudoDLE<-object@binDLE
+              
+              ##Get Pseudo DLE weights of the DLE responses of the model
+              PseudoDLEweight<-object@DLEweights
+              
+              
+              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
+              PseudoDLEdose<- object@DLEdose
+              
+              ##update the model estimates with data
+              model<- LogisticIndepBeta(binDLE=PseudoDLE,DLEweights=PseudoDLEweight,DLEdose=PseudoDLEdose,data=data)
+              
+              ##return the updated model
+              return(model)
+            })
+
+## ================================================================================
+##' Update method for the 'Effloglog'Model class 
+##' @param object is the model which follow \code{\linkS4Class{Effloglog}}} class object
+##' 
+##' @export
+##' @keywords methods
+setMethod("update",
+          signature=
+            signature(object="Effloglog"),
+          def=
+            function(object,
+                     data,
+                     ...){
+              ##Get Pseudo Eff responses (prior) of the model
+              
+              PseudoEff<-object@Eff
+              
+              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
+              PseudoEffdose<- object@Effdose
+              
+              ## Get the initial values of parameters for nu (if it is not fixed)
+              ##OR get the fixed value of nu
+              PseudoNu<- object@nu
+              
+              
+              ##update the model estimates with data
+              model<- Effloglog(Eff=PseudoEff,Effdose=PseudoEffdose,nu=PseudoNu,data=data)
+              
+              ##return the updated model
+              return(model)
+            })
+## =================================================================================
