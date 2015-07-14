@@ -484,7 +484,7 @@ setMethod("nextBest",
                                        function(x){
                                            rnx <- range(x)
                                            min(which((x >= nextBest@target[1] * diff(rnx) + rnx[1]) &
-                                                     (x <= nextBest@target[2] * diff(rnx) + rnx[1] + 1e-15))
+                                                     (x <= nextBest@target[2] * diff(rnx) + rnx[1] + 1e-10))
                                               )
                                        })
 
@@ -1344,7 +1344,7 @@ setMethod("stopTrial",
                                        function(x){
                                            rnx <- range(x)
                                            min(which((x >= stopping@target[1] * diff(rnx) + rnx[1]) &
-                                                     (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-15))
+                                                     (x <= stopping@target[2] * diff(rnx) + rnx[1] + 1e-10))
                                               )
                                        })
 
