@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Design-methods.R] by DSB Son 03/05/2015 20:35>
@@ -12,6 +13,7 @@
 ## 12/02/2014   file creation
 ## 07/04/2014   start with parallelization on cores
 ## 02/01/2015   rename: simulate.R --> Design-methods.R
+## 10/07/2015   added simulate methods
 #####################################################################################
 
 ##' @include Data-methods.R
@@ -1029,3 +1031,667 @@ setMethod("examine",
               })
 
 ## ============================================================
+## ----------------------------------------------------------
+## Methods for simulate using Pseudo Models
+## ----------------------------------------------------------
+##'  Methods to simulate using 'LogisticIndepBeta' model with samples 
+##'  
+##'  @export
+##'  @keywords methods
+setMethod("simulate",
+          signature=
+            signature(object="TDsamplesDesign",
+                      nsim="ANY",
+                      seed="ANY"),
+          def=
+            function(object, nsim=1L, seed=NULL,
+                     truth, args=NULL, firstSeparate=FALSE,
+                     mcmcOptions=McmcOptions(),
+                     parallel=FALSE, ...){
+              
+              nsim <- safeInteger(nsim)
+              
+              ## checks and extracts
+              stopifnot(is.function(truth),
+                        is.bool(firstSeparate),
+                        is.scalar(nsim),
+                        nsim > 0,
+                        is.bool(parallel))
+              
+              args <- as.data.frame(args)
+              nArgs <- max(nrow(args), 1L)
+              
+              
+              ## seed handling
+              RNGstate <- setSeed(seed)
+              
+              ## from this,
+              ## generate the individual seeds for the simulation runs
+              simSeeds <- sample(x=seq_len(1e5), size=nsim)
+              
+              ## the function to produce the run a single simulation
+              ## with index "iterSim"
+              runSim <- function(iterSim)
+              {
+                ## set the seed for this run
+                set.seed(simSeeds[iterSim])
+                
+                ## what is now the argument for the truth?
+                ## (appropriately recycled)
+                thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop=FALSE]
+                
+                ## so this truth is...
+                thisTruth <- function(dose)
+                {
+                  do.call(truth,
+                          ## First argument: the dose
+                          c(dose,
+                            ## Following arguments
+                            thisArgs))
+                }
+                
+                ## start the simulated data with the provided one
+                thisData <- object@data
+                
+                ## shall we stop the trial?
+                ## First, we want to continue with the starting dose.
+                ## This variable is updated after each cohort in the loop.
+                stopit <- FALSE
+                
+                ## what is the next dose to be used?
+                ## initialize with starting dose
+                thisDose <- object@startingDose
+                
+                ## inside this loop we simulate the whole trial, until stopping
+                while(! stopit)
+                {
+                  ## what is the probability for tox. at this dose?
+                  thisProb <- thisTruth(thisDose)
+                  
+                  
+                  ## what is the cohort size at this dose?
+                  thisSize <- size(cohortSize=object@cohortSize,
+                                   dose=thisDose,
+                                   data=thisData)
+                  
+                  
+                  ## simulate DLTs: depends on whether we
+                  ## separate the first patient or not.
+                  if(firstSeparate && (thisSize > 1L))
+                  {
+                    ## dose the first patient
+                    thisDLTs <- rbinom(n=1L,
+                                       size=1L,
+                                       prob=thisProb)
+                    ## if there is no DLT:
+                    if(thisDLTs == 0)
+                    {
+                      ## enroll the remaining patients
+                      thisDLTs <- c(thisDLTs,
+                                    rbinom(n=thisSize - 1L,
+                                           size=1L,
+                                           prob=thisProb))
+                    }
+                  } else {
+                    ## we can directly dose all patients
+                    thisDLTs <- rbinom(n=thisSize,
+                                       size=1L,
+                                       prob=thisProb)    
+                  }
+                  
+                  ## update the data with this cohort
+                  thisData <- update(object=thisData,
+                                     x=thisDose,
+                                     y=thisDLTs)
+                  
+                  ##Update the model with thisData
+                  thisModel <- update(object@model,
+                                      data=thisData)
+                  
+                  ## what is the dose limit?
+                  doselimit <- maxDose(object@increments,
+                                       data=thisData)
+                  
+                  ## generate samples from the model
+                  thisSamples <- mcmc(data=thisData,
+                                      model=thisModel,
+                                      options=mcmcOptions)
+                  
+                  ## => what is the next best dose?
+                  
+                  NEXT<-nextBest(object@nextBest,
+                                 doselimit=doselimit,
+                                 samples=thisSamples,
+                                 model=thisModel,
+                                 data=thisData)
+                  
+                  thisDose <- NEXT$nextdose
+                  
+                  
+                  thistargetDuringTrialDose<- NEXT$TDtargetDuringTrialEstimate
+                  
+                  
+                  thistargetEndOfTrialDose<- NEXT$TDtargetEndOfTrialEstimate
+                  
+                  
+                  
+                  thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialAtDoseGrid
+                  
+                  
+                  
+                  ## evaluate stopping rules
+                  stopit <- stopTrial(object@stopping,
+                                      dose=thisDose,
+                                      samples=thisSamples,
+                                      model=thisModel,
+                                      data=thisData)
+                }
+                
+                ## get the fit
+                thisFit <- fit(object=thisSamples,
+                               model=thisModel,
+                               data=thisData)
+                
+                
+                ## return the results
+                thisResult <-
+                  list(data=thisData,
+                       dose=thisDose,
+                       TDtargetDuringTrial=thistargetDuringTrialDose,
+                       TDtargetEndOfTrial=thistargetEndOfTrialDose,
+                       TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
+                       fit=
+                         subset(thisFit,
+                                select=c(middle, lower, upper)),
+                       stop=
+                         attr(stopit,
+                              "message"))
+                return(thisResult)
+              }
+              
+              resultList <- crmPack:::getResultList(fun=runSim,
+                                                    nsim=nsim,
+                                                    vars=
+                                                      c("simSeeds",
+                                                        "args",
+                                                        "nArgs",
+                                                        "firstSeparate",
+                                                        "truth",
+                                                        "object",
+                                                        "mcmcOptions"),
+                                                    parallel=parallel)
+              
+              ## put everything in the Simulations format:
+              
+              ## setup the list for the simulated data objects
+              dataList <- lapply(resultList, "[[", "data")
+              
+              ## the vector of the final dose recommendations
+              recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
+              
+              ## setup the list for the final fits
+              fitList <- lapply(resultList, "[[", "fit")
+              
+              ## the reasons for stopping
+              stopReasons <- lapply(resultList, "[[", "stop")
+              
+              ## return the results in the Simulations class object
+              ret <- Simulations(data=dataList,
+                                 doses=recommendedDoses,
+                                 fit=fitList,
+                                 stopReasons=stopReasons,
+                                 seed=RNGstate)
+              
+              return(ret)
+            })
+## -------------------------------------------------------------------------------------
+## ----------------------------------------------------------
+## Methods for simulate using Pseudo Models
+## ----------------------------------------------------------
+##'  Methods to simulate using 'LogisticIndepBeta' model without samples 
+##'  
+##'  @export
+##'  @keywords methods
+setMethod("simulate",
+          signature=
+            signature(object="TDDesign",
+                      nsim="ANY",
+                      seed="ANY"),
+          def=
+            function(object, nsim=1L, seed=NULL,
+                     truth, args=NULL, firstSeparate=FALSE,
+                     parallel=FALSE, ...){
+              
+              nsim <- safeInteger(nsim)
+              
+              ## checks and extracts
+              stopifnot(is.function(truth),
+                        is.bool(firstSeparate),
+                        is.scalar(nsim),
+                        nsim > 0,
+                        is.bool(parallel))
+              
+              args <- as.data.frame(args)
+              nArgs <- max(nrow(args), 1L)
+              
+              ## seed handling
+              RNGstate <- crmPack:::setSeed(seed)
+              
+              ## from this,
+              ## generate the individual seeds for the simulation runs
+              simSeeds <- sample(x=seq_len(1e5), size=nsim)
+              
+              ## the function to produce the run a single simulation
+              ## with index "iterSim"
+              runSim <- function(iterSim)
+              {
+                ## set the seed for this run
+                set.seed(simSeeds[iterSim])
+                
+                ## what is now the argument for the truth?
+                ## (appropriately recycled)
+                thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop=FALSE]
+                
+                ## so this truth is...
+                thisTruth <- function(dose)
+                {
+                  do.call(truth,
+                          ## First argument: the dose
+                          c(dose,
+                            ## Following arguments
+                            thisArgs))
+                }
+                
+                ## start the simulated data with the provided one
+                thisData <- object@data
+                
+                ## shall we stop the trial?
+                ## First, we want to continue with the starting dose.
+                ## This variable is updated after each cohort in the loop.
+                stopit <- FALSE
+                
+                ## what is the next dose to be used?
+                ## initialize with starting dose
+                thisDose <- object@startingDose
+                
+                ## inside this loop we simulate the whole trial, until stopping
+                while(! stopit)
+                {
+                  ## what is the probability for tox. at this dose?
+                  thisProb <- thisTruth(thisDose)
+                  
+                  ## what is the cohort size at this dose?
+                  thisSize <- size(cohortSize=object@cohortSize,
+                                   dose=thisDose,
+                                   data=thisData)
+                  
+                  ## simulate DLTs: depends on whether we
+                  ## separate the first patient or not.
+                  if(firstSeparate && (thisSize > 1L))
+                  {
+                    ## dose the first patient
+                    thisDLTs <- rbinom(n=1L,
+                                       size=1L,
+                                       prob=thisProb)
+                    ## if there is no DLT:
+                    if(thisDLTs == 0)
+                    {
+                      ## enroll the remaining patients
+                      thisDLTs <- c(thisDLTs,
+                                    rbinom(n=thisSize - 1L,
+                                           size=1L,
+                                           prob=thisProb))
+                    }
+                  } else {
+                    ## we can directly dose all patients
+                    thisDLTs <- rbinom(n=thisSize,
+                                       size=1L,
+                                       prob=thisProb)
+                  }
+                  
+                  ## update the data with this cohort
+                  thisData <- update(object=thisData,
+                                     x=thisDose,
+                                     y=thisDLTs)
+                  
+                  
+                  ##Update model estimates with thisData
+                  thisModel <- update(object@model,
+                                      data=thisData)
+                  
+                  ## what is the dose limit?
+                  doselimit <- maxDose(object@increments,data=thisData)
+                  
+                  
+                  ## => what is the next best dose?
+                  NEXT<-nextBest(object@nextBest,
+                                 doselimit=doselimit,
+                                 model=thisModel,
+                                 data=thisData)
+                  
+                  thistargetDuringTrialDose<- NEXT$TDtargetDuringTrialEstimate
+                  
+                  
+                  thistargetEndOfTrialDose<- NEXT$TDtargetEndOfTrialEstimate
+                  
+                  
+                  
+                  thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialatdoseGrid
+                  
+                  
+                  ## evaluate stopping rules
+                  stopit <- stopTrial(object@stopping,
+                                      dose=thisDose,
+                                      model=thisModel,
+                                      data=thisData)
+                }
+                
+                
+                ## return the results
+                thisResult <-
+                  list(data=thisData,
+                       dose=thisDose,
+                       TDtargetDuringTrial=thistargetDuringTrialDose,
+                       TDtargetEndOfTrial=thistargetEndOfTrialDose,
+                       TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
+                       stop=
+                         attr(stopit,
+                              "message"))
+                return(thisResult)
+              }
+              
+              
+              resultList <- crmPack:::getResultList(fun=runSim,
+                                                    nsim=nsim,
+                                                    vars=
+                                                      c("simSeeds",
+                                                        "args",
+                                                        "nArgs",
+                                                        "firstSeparate",
+                                                        "truth",
+                                                        "object"),
+                                                    parallel=parallel)
+              
+              ## put everything in the Simulations format:
+              
+              ## setup the list for the simulated data objects
+              dataList <- lapply(resultList, "[[", "data")
+              
+              ## the vector of the final dose recommendations
+              recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
+              
+              
+              ## the reasons for stopping
+              stopReasons <- lapply(resultList, "[[", "stop")
+              
+              ## return the results in the Simulations class object
+              ret <- PseudoSimulations(data=dataList,
+                                       doses=recommendedDoses,
+                                       stopReasons=stopReasons,
+                                       seed=RNGstate)
+              
+              return(ret)
+            })
+## -----------------------------------------------------------------------------------------------
+## Method for simulate based on Dual responses on Pseudo models without samples
+## ----------------------------------------------------------------------------------
+##' Methods to simulate without any samples based on one Pseudo DLE and one Pseudo Efficacy model
+##' 
+##' @export
+##' @keywords method
+
+setMethod("simulate",
+          signature=
+            signature(object="DualResponsesDesign",
+                      nsim="ANY",
+                      seed="ANY"),
+          def=
+            function(object, nsim=1L, seed=NULL,
+                     trueDLE, trueEff, trueNu,
+                     args=NULL, firstSeparate=FALSE,
+                     parallel=FALSE, ...){
+              
+              nsim <- safeInteger(nsim)
+              
+              ## checks and extracts
+              stopifnot(is.function(trueDLE),
+                        is.function(trueEff),
+                        trueNu > 0,
+                        is.bool(firstSeparate),
+                        is.scalar(nsim),
+                        nsim > 0,
+                        is.bool(parallel))
+              
+              args <- as.data.frame(args)
+              nArgs <- max(nrow(args), 1L)
+              
+              ## get names of arguments (excluding the first one which is the dose)
+              trueDLEArgnames <- names(formals(trueDLE))[-1]
+              trueEffArgnames <- names(formals(trueEff))[-1]
+              
+              
+              
+              ## seed handling
+              RNGstate <- crmPack:::setSeed(seed)
+              
+              ## from this,
+              ## generate the individual seeds for the simulation runs
+              simSeeds <- sample(x=seq_len(1e5), size=nsim)
+              
+              ## the function to produce the run a single simulation
+              ## with index "iterSim"
+              runSim <- function(iterSim)
+              {
+                ## set the seed for this run
+                set.seed(simSeeds[iterSim])
+                
+                ## what is now the argument for the truth?
+                ## (appropriately recycled)
+                thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop=FALSE]
+                
+                ## so this truth DLE function is...
+                thisTruthDLE <- function(dose)
+                { do.call(trueDLE,
+                          ## First argument: the dose
+                          c(dose,
+                            ## Following arguments: take only those that
+                            ## are required by the DLE function
+                            as.list(thisArgs)[trueDLEArgnames]))
+                }
+                
+                ##and the truth Eff function is:
+                thisTruthEff <- function (dose)
+                { 
+                  do.call(trueEff,
+                          ## First argument: the dose
+                          c(dose,
+                            ## Following arguments: take only those that
+                            ## are required by the Eff function
+                            as.list(thisArgs)[trueEffArgnames]))
+                }
+                
+                ## start the simulated data with the provided one
+                thisData <- object@data
+                
+              ## find true sigma2 to generate responses
+                
+                trueSigma2<-1/trueNu
+                
+                
+                ## shall we stop the trial?
+                ## First, we want to continue with the starting dose.
+                ## This variable is updated after each cohort in the loop.
+                stopit <- FALSE
+                
+                ## what is the next dose to be used?
+                ## initialize with starting dose
+                thisDose <- object@startingDose
+                
+                ## inside this loop we simulate the whole trial, until stopping
+                while(! stopit)
+                {
+                  ## what is the probability for tox. at this dose?
+                  thisDLEProb <- thisTruthDLE(thisDose)
+                  thisEff<-thisTruthEff(thisDose)
+                  
+                  ## what is the cohort size at this dose?
+                  thisSize <- size(cohortSize=object@cohortSize,
+                                   dose=thisDose,
+                                   data=thisData)
+                  
+                  ## simulate DLTs: depends on whether we
+                  ## separate the first patient or not.
+                  if(firstSeparate && (thisSize > 1L))
+                  {
+                    ## dose the first patient
+                    thisDLTs <- rbinom(n=1L,
+                                       size=1L,
+                                       prob=thisDLEProb)
+                    thisEff <- rnorm(n=1L,
+                                     mean=thisEff,
+                                     sd=sqrt(trueSigma2))
+                    
+                    ## if there is no DLT:
+                    if(thisDLTs == 0)
+                    {
+                      ## enroll the remaining patients
+                      thisDLTs <- c(thisDLTs,
+                                    rbinom(n=thisSize - 1L,
+                                           size=1L,
+                                           prob=thisDLEProb))
+                      thisEff<-c(thisEff,
+                                 rnorm(n=thisSize - 1L,
+                                       mean=thisEff,
+                                       sd=sqrt(trueSigma2)))
+                    }
+                  } else {
+                    ## we can directly dose all patients
+                    thisDLTs <- rbinom(n=thisSize,
+                                       size=1L,
+                                       prob=thisDLEProb)
+                    thisEff <- rnorm(n=thisSize,
+                                     mean=thisEff,
+                                     sd=sqrt(trueSigma2))
+                  }
+                  
+                  
+                  
+                  ## update the data with this cohort
+                  thisData <- update(object=thisData,
+                                     x=thisDose,
+                                     y=thisDLTs,
+                                     w=thisEff)
+                  
+                  
+                  ##Update model estimate in DLE and Eff models
+                  thisDLEModel <- update(object=object@DLEmodel,
+                                         data=thisData)
+                  
+                  thisEffModel <- update(object=object@Effmodel,
+                                         data=thisData)
+                  
+                  thisNu<-thisEffModel@nu
+                  
+                  
+                  if (thisEffModel@useFixed==FALSE){
+                    thisSigma2 <- as.numeric(thisNu["a"]/thisNu["b"])} else {
+                      thisSigma2 <- 1/thisNu}
+                  
+                  
+                  ## what is the dose limit?
+                  doselimit <- maxDose(object@increments,data=thisData)
+                  
+                  
+                  
+                  ## => what is the next best dose?
+                  NEXT<-nextBest(object@nextBestGain,
+                                 doselimit=doselimit,
+                                 model=thisDLEModel,
+                                 data=thisData,
+                                 Effmodel=thisEffModel)
+                  
+                  thisDose <- NEXT$nextdose
+                  
+                  thisTDtarget<- NEXT$TDtargetEstimate
+                  
+                  thisTDtargetatdoseGrid <- NEXT$TDtargetAtDoseGrid
+                  
+                  thisTD30<-NEXT$TD30Estimate
+                  
+                  
+                  thisTD30atdoseGrid <-NEXT$TD30AtDoseGrid
+                  
+                  thisGstar<-NEXT$GstarEstimate
+                  
+                  thisGstaratdosegrid <- NEXT$GstarAtDoseGrid
+                  
+                  
+                  Recommend<-min(thisTD30atdoseGrid,thisGstaratdosegrid)
+                  
+                  ## evaluate stopping rules
+                  stopit <- stopTrial(object@stopping,
+                                      dose=thisDose,
+                                      data=thisData)
+                  
+                }
+                
+                ## return the results
+                thisResult <- list(data=thisData,
+                                   dose=thisDose,
+                                   TDtargetDose=thisTDtarget,
+                                   TDtargetDoseAtDoseGrid=thisTDtargetatdoseGrid,
+                                   TD30=thisTD30,
+                                   TD30AtDoseGrid=thisTD30atdoseGrid,
+                                   Gstar=thisGstar,
+                                   GstarAtDoseGrid=thisGstaratdosegrid,
+                                   Recommend=Recommend,
+                                   nu=thisNu,
+                                   sigma2est=thisSigma2,
+                                   stop=attr(stopit,
+                                             "message"))
+                
+                return(thisResult)
+              }
+              
+              
+              resultList <- getResultList(fun=runSim,
+                                                    nsim=nsim,
+                                                    vars=
+                                                      c("simSeeds",
+                                                        "args",
+                                                        "nArgs",
+                                                        "firstSeparate",
+                                                        "trueDLE",
+                                                        "trueEff",
+                                                        "trueNu",
+                                                        "object"),
+                                                    parallel=parallel)
+              
+              
+              ## put everything in the Simulations format:
+              
+              ## setup the list for the simulated data objects
+              dataList <- lapply(resultList, "[[", "data")
+              
+              ## the vector of the final dose recommendations
+              recommendedDoses <- as.numeric(sapply(resultList, "[[", "Recommend"))
+              
+              ## the vector of the sigma2
+              sigma2Estimates <- as.numeric(sapply(resultList, "[[", "sigma2est"))
+              
+              ## the reasons for stopping
+              stopReasons <- lapply(resultList, "[[", "stop")
+              
+              ## return the results in the Simulations class object
+              ret <- PseudoDualSimulations(data=dataList,
+                                           doses=recommendedDoses,
+                                           sigma2est=sigma2Estimates,
+                                           stopReasons=stopReasons,
+                                           seed=RNGstate)
+              return(ret)
+              print(ret)
+              
+              
+            })
+
+##=========================================================================

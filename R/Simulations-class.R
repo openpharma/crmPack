@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Simulations-class.R] by DSB Sam 17/01/2015 19:42>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 12/02/2014   file creation
+## 10/07/2015   added Pseudo simulation class
 ###################################################################################
 
 ##' @include helpers.R
@@ -286,4 +288,81 @@ DualSimulations <- function(rhoEst,
              representation=
                  representation(biomarkerFitAtDoseMostSelected="numeric",
                                 meanBiomarkerFit="list"))
+## ==============================================================================
+
+## --------------------------------------------------------------------------------
+## class for simulation using pseudo models
+## ------------------------------------------------------
+##
+##' Class for Pseudo simulation 
+##' 
+##' @export
+##' @keywords class
+.PseudoSimulations <-
+  setClass(Class="PseudoSimulations",
+           representation(stopReasons="list"),
+           ## note: this prototype is put together with the prototype
+           ## for GeneralSimulations
+           prototype(stopReasons=
+                       list("A", "A")),
+           contains="GeneralSimulations",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               nSims <- length(object@data)
+               o$check(identical(length(object@stopReasons), nSims),
+                       "stopReasons must have same length as data")
+               
+               o$result()
+             })
+validObject(.PseudoSimulations())
+
+##' Init function
+PseudoSimulations <- function(stopReasons,
+                              ...)
+{
+  start <- GeneralSimulations(...)
+  .PseudoSimulations(start,
+                     stopReasons=stopReasons)
+}
+
+## ====================================================================
+## ---------------------------------------------------------------------
+## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models)
+## --------------------------------------------------------------------
+ 
+##' Class for Pseudo Simulation based on DLE and efficacy pseudo model
+##' 
+##' @export
+##' @keywords class
+
+.PseudoDualSimulations <- 
+  setClass(Class="PseudoDualSimulations",
+           representation(sigma2est="numeric"),
+           prototype(sigma2est= c(0.001,0.002)),
+           contains="PseudoSimulations",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               nSims <- length(object@data)
+               o$check(identical(length(object@sigma2est),nSims),
+                       "sigma2est has to have same length as data")
+               o$result()
+             })
+
+validObject(.PseudoDualSimulations())
+
+##inti function
+
+PseudoDualSimulations <- function(sigma2est,
+                                  ...)
+{ 
+  start <- PseudoSimulations(...)
+  .PseudoDualSimulations(start,
+                         sigma2est=sigma2est)
+}
+
+## ================================================================================================
+
 

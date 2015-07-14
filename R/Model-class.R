@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove[sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [ w *.* yeung *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Model-class.R] by DSB Mon 11/05/2015 17:44>
@@ -9,16 +10,38 @@
 ##
 ## History:
 ## 31/01/2014   file creation
+## 08/07/2015   Adding Pseudo model classes
 ###################################################################################
 
 ##' @include helpers.R
 {}
 
+
+##' Class for All models
+##' This is a class where all other model inherit 
+##' 
+##' @export
+##' @keywords classes
+
+.AllModels<-setClass(Class="AllModels",
+                     representation(datanames="character"),
+                     validity=function(object){
+                       o <- crmPack:::Validate()
+                       
+                       ## put here all names of data class slots
+                       allDatanames <- c("x", "y", "w",
+                                         "doseGrid", "nObs", "nGrid", "xLevel")
+                       o$result()
+                     })
+validObject(.AllModels())
+
+## no init function for this one
+
 ## ============================================================
 
 ##' General class for model input
 ##'
-##' This is the general model class, from which all other specific models
+##' This is the general model class, from which all other specific models for BUGS
 ##' inherit.
 ##'
 ##' The \code{datamodel} must obey the convention that the data input is
@@ -2468,6 +2491,408 @@ validObject(LogisticNormalFixedMixture(components=
                                        refDose=1))
 
 ## ============================================================
+##' Class of models using prior in form of Pseudo data
+##' 
+##' @export
+##' @keywords classes
+.ModelPseudo<-setClass(Class="ModelPseudo",
+                       contains="AllModels"
+)
+validObject(.ModelPseudo)
+## no init function for this one
+
+## ============================================================
+##' Class for DLE models using pesudo data prior
+##' 
+##' @export
+##' @keywords classes
+.ModelTox<-setClass(Class="ModelTox",
+                    representation(dose="function",
+                                   prob="function",
+                                   data="Data"),
+                    contains="ModelPseudo"
+)
+validObject(.ModelTox)
+## no init function for this one
+## ==============================================================
+
+##' class for Efficacy models using pseudo data prior
+##' 
+##' @export
+##' @keywords classes
+.ModelEff<-setClass(Class="ModelEff",
+                    representation(dose="function",
+                                   ExpEff="function",
+                                   data="DataDual"),
+                    contains="ModelPseudo"
+)
+validObject(.ModelEff)
+## no init function for this one
+## ================================================================
+
+##' class for the two-parameter logistic regression DLE model
+##' This is the two-parameter logistic regression model using pseudo data prior 
+##' which describe the relationship of the probabilities of an occurence of DLE 
+##' with their corresponding log dose levels. These probabilities of occurence of a DLE
+##' have independent Beta distributions
+##'  
+##' 
+##' @export
+##' @keywords classes
 
 
+.LogisticIndepBeta<-
+  setClass(Class="LogisticIndepBeta",
+           representation(binDLE="numeric",
+                          DLEdose="numeric",
+                          DLEweights="numeric",
+                          
+                          phi1="numeric",
+                          phi2="numeric"),
+           prototype(binDLE=c(0,0),
+                     DLEdose=c(1,1),
+                     DLEweights=c(1,1)),
+           contains="ModelTox",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               ##Check if at least two pseudo DLE responses are given
+               o$check(length(object@binDLE) >= 2,
+                       "length of binDLE must be at least 2")
+               ##Check if at least two weights for pseudo DLE are given 
+               o$check(length(object@DLEweights) >= 2,
+                       "length of DLEweights must be at least 2")
+               ##Check if at least two corresponding dose levels are given for the pseudo DLE responses
+               o$check(length(object@DLEdose) >= 2,
+                       "length of DLEdose must be at least 2")
+               ##Check if pseudo DLE responses have same length with it corresponding dose levels and weights
+               o$check((length(object@binDLE)==length(object@DLEweights))&(length(object@binDLE)==length(object@DLEdose))&(length(object@DLEweights)==length(object@DLEdose)),
+                       "length of binDLE, DLEweights, DLEDose must be equal")
+               o$result()
+             })
+validObject(.LogisticIndepBeta())  
+
+##' Intialization function for "LogisticIndepBeta" class
+##' @param binDLE the pseudo DLE responses 
+##' @param DLEweights number of subjects treated for this binDLE response
+##' @param DLEdose the corresponding levels for the pseudo DLE responses
+##' @param data the input data to update estimates of model parameters and 
+##' follow the \code{\linkS4class{Data}} object class specification
+##' 
+##' @export
+##' @keywords methods
+LogisticIndepBeta <- function(binDLE,
+                              DLEdose,
+                              DLEweights,
+                              data)
+{##if no observed DLE(data)
+  if (length(data@y)==0){
+    w1<-DLEweights
+    y1<-binDLE
+    x1<-DLEdose} else {w1<-c(DLEweights,rep(1,data@nObs))
+    ##combine pseudo and observed
+    y1<-c(binDLE,data@y)
+    x1<-c(DLEdose,data@x)}
+  ##Fit the pseudo data and DLE responses with their corresponding dose levels
+  FitDLE<-glm(y1/w1~log(x1),family=binomial(link="logit"),weights=w1)
+  SFitDLE<-summary(FitDLE)
+  ##Obtain parameter estimates for dose-DLE curve
+  phi1<-coef(SFitDLE)[1,1]
+  phi2<-coef(SFitDLE)[2,1]
+  
+  
+  .LogisticIndepBeta(binDLE=binDLE,
+                     DLEdose=DLEdose,
+                     DLEweights=DLEweights,
+                     phi1=phi1,
+                     phi2=phi2,
+                     datanames=c("nObs","y","x"),
+                     data=data,
+                     dose=function(prob,phi1,phi2){
+                       LogDose<-((log(prob/(1-prob)))-phi1)/phi2
+                       return(exp(LogDose))
+                     },
+                     prob=function(dose,phi1,phi2){
+                       LogDose<-log(dose)
+                       pj<-(exp(phi1+phi2*LogDose))/(1+exp(phi1+phi2*LogDose))
+                       return(pj)
+                     }
+  )
+}
+
+## ======================================================================================================
+##' Class for the linear log-log efficacy model using pseudo data prior
+##' This is the efficay model which describe the realtionship of the normal efficacy responses 
+##' and their corresponding log-log dose levels
+##'
+##'@export
+##'@keywords methods
+.Effloglog<-
+  setClass(Class="Effloglog", 
+           representation(Eff="numeric",
+                          Effdose="numeric",
+                          nu="numeric",
+                          useFixed="logical",
+                          theta1="numeric",
+                          theta2="numeric",
+                          vecmu="matrix",
+                          matX="matrix",
+                          matQ="matrix",
+                          vecY="matrix"),
+           prototype(Eff=c(0,0),
+                     Effdose=c(1,1),
+                     nu=1/0.025,
+                     useFixed=TRUE),
+           contains="ModelEff",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               
+               o$check(length(object@Eff) >= 2,
+                       "length of Eff must be at least 2")
+               o$check(length(object@Effdose) >= 2,
+                       "length of Effdose must be at least 2")
+               o$check(length(object@Eff)==length(object@Effdose),
+                       "length of Eff and Effdose must be equal")
+               if (object@useFixed == "TRUE"){
+                 o$check((length(object@nu)==1)&&(object@nu > 0),
+                         "nu must be a single postive real number")} else {
+                           o$check(identical(names(slot(object,"nu")),c("a","b")),
+                                   "nu must have names 'a' and 'b' ")
+                           o$check(all(slot(object,"nu") > 0),
+                                   "nu must have positive prior paramters")
+                           o$check(identical(length(object@nu),2L),
+                                   "nu must have length at most 2")
+                         }
+               o$result()
+             })
+validObject(.Effloglog())
+
+##' Initialization function for the "Effloglog" class
+##' 
+##'@param Eff the pseudo efficacy responses
+##'@param Effdose the corresponding dose levels for the pseudo efficacy responses
+##'@param nu the precision (inverse of the variance) of the efficacy responses
+##' @param data the input data to update estimates of model parameters and 
+##' follow the \code{\linkS4class{DataDual}} object class specification
+##' 
+##' @export
+##' @keywords methods
+Effloglog<-function(Eff,
+                    Effdose,
+                    nu,
+                    data)
+{if (!all(data@doseGrid >=1))
+  stop("doseGrid in data must be greater or equal to 1 for Effloglog model")
+  ##No observed Efficacy response
+  if (length(data@w)==0){
+    w1<-Eff
+    x1<-Effdose} else {##Combine pseudo data and Observed Efficacy without DLE
+      w1<-c(Eff,getEff(data)$wNoDLE)
+      x1<-c(Effdose,getEff(data)$xNoDLE)
+      w2<-getEff(data)$wNoDLE
+      x2<-getEff(data)$xNoDLE} 
+  
+  
+  ##Check if sigma2/nu is a fixed contant
+  
+  useFixed <- identical(length(nu), 1L)
+  ##Fit pseudo and observed efficacy
+  FitEff<-glm(w1~log(log(x1)),family=gaussian)
+  SFitEff<-summary(FitEff)
+  ##Obtain paramter estimates
+  theta1<-coef(SFitEff)[1,1]
+  theta2<-coef(SFitEff)[2,1]
+  ##if sigma2/nu is not a fixed constant
+  if (length(nu)==2){
+    mu0<-matrix(c(theta1,theta2),2,1)
+    vecmu<-mu0
+    X0<-matrix(c(1,1,log(log(Effdose[1])),log(log(Effdose[2]))),2,2)
+    matX<-X0
+    Q0=t(X0)%*%X0
+    matQ<-Q0
+    vecY<-matrix(Eff,2,1)
+    ##if there are some observed efficacy
+    if (length(data@w)!=0){
+      X<-matrix(c(rep(1,length(x2)), log(log(x2))), length(x2),2)
+      matX<-X
+      mu<-MASS:::ginv(Q0+t(X)%*%X)%*%(Q0%*%mu0+t(X)%*%t(t(w2)))
+      vecmu<-mu
+      Q<-Q0+t(X)%*%X
+      matQ<-Q
+      vecY<-matrix(w2,length(w2),1)
+      a<-nu[1]+(length(w2))/2
+      b<-nu[2]+(t(w2)%*%t(t(w2))+t(mu0)%*%Q0%*%mu0-t(mu)%*%Q%*%mu)/2
+      nu[1]<-a
+      nu[2]<-b}} else {nu<-nu} 
+  
+  .Effloglog(Eff=Eff,
+             Effdose=Effdose,
+             nu=nu,
+             useFixed=useFixed,
+             datanames=c("nObs","w","x"),
+             data=data,
+             dose=function(ExpEff,theta1,theta2){
+               LogDose<-exp((ExpEff-theta1)/theta2)
+               return(exp(LogDose))},
+             
+             ExpEff=function(dose,theta1,theta2){
+               
+               return(theta1+theta2*log(log(dose)))},
+             theta1=theta1,
+             theta2=theta2,
+             vecmu=vecmu,
+             matX=matX,
+             matQ=matQ,
+             vecY=vecY
+  )}
+
+## ============================================================
+##' Class for the efficacy model in non-parameteric or flexible form using pseudo data prior
+##' This is a class where no parameter model and the mean efficacy responses are estimated at 
+##' each dose levels aiming to capture different shapes for the efficacy curve. 
+##' The first order or the second order random walk model can be used foe smoothing data
+##'
+##'@export
+##'@keywords class
+.EffFlexi<-setClass(Class="EffFlexi",
+representation(Eff="numeric",
+               Effdose="numeric",
+               sigma2="numeric",
+               sigma2betaW="numeric",
+               useFixed="list",
+               useRW1="logical",
+               designW="matrix",
+               RWmat="matrix",
+               RWmatRank="integer"),
+prototype(Eff=c(0,0),
+          Effdose=c(1,1),
+          sigma2=0.025,
+          sigma2betaW=1,
+          useRW1=TRUE,
+          useFixed=list(sigma2=TRUE,sigma2betaW=TRUE)),
+contains="ModelEff",
+validity=
+  function(object){
+    o<- crmPack:::Validate()
+    o$check(length(object@Eff) >= 2,
+            "length of Eff must be at least 2")
+    o$check(length(object@Effdose) >= 2,
+            "length of Effdose must be at least 2")
+    o$check(length(object@Eff)==length(object@Effdose),
+            "length of Eff and Effdose must be equal")
+    for (parName in c("sigma2","sigma2betaW"))
+    {
+      if (object@useFixed[[parName]]){
+        o$check(slot(object,parName) > 0,
+                paste(parName, "must be positive"))} else {
+                  o$check(identical(names(slot(object,parName)),c("a","b")), 
+                          paste(parName,"must have names 'a' and 'b'"))
+                  o$check(all(slot(object,parName) > 0),
+                          paste(parName, "must have positive prior parameters"))
+                }
+    }
+    o$result()
+  })
+validObject(.EffFlexi())
+
+##' Initialization function for the "EffFlexi" class
+##' 
+##' @param Eff the pseudo efficacy responses
+##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
+##' @param sigma2 the variance of the efficacy responses which can be a fixed value or from the
+##' inverse gamma distribution, that is either specific a fixed value or specified the values
+##' of the two paramters of the inverse gamma distribtuion
+##' @param sigma2betaW the variance of the random walk model used for smoothing data which can be
+##' a fixed value or using the inverse gamm distribution
+##' @param smooth used for smoothing data for this efficacy model, either the "RW1", the 
+##' first-order random walk model or "RW2", the second-order random walk model can be used.
+##' @param data the input data to update estimates of model parameters and 
+##' follow the \code{\linkS4class{DataDual}} object class specification
+##' 
+##' @export
+##' @keywords methods
+
+EffFlexi <- function(Eff,
+                     Effdose,
+                     sigma2,
+                     sigma2betaW,
+                     smooth=c("RW1","RW2"),
+                     data
+)
+{##No observed Efficacy response
+  if (length(data@w)==0){
+    w1<-Eff
+    x1<-Effdose} else {
+      ## with observed efficacy responses and no DLE observed
+      w1<-c(Eff,getEff(data)$wNoDLE)
+      x1<-c(Effdose,getEff(data)$xNoDLE)
+    }
+  ## Match dose levels in x1 with the all dose levels for evaluations
+  x1Level <- match(x1,data@doseGrid)
+  smooth<-match.arg(smooth)
+  useRW1<- smooth == "RW1"
+  useFixed<-list()
+  for (parName in c("sigma2","sigma2betaW"))
+  {useFixed[[parName]] <- identical(length(get(parName)),1L)}
+  #design matrics
+  designW <- model.matrix(~ -1 + I(factor(x1Level, levels=seq_len(data@nGrid))))
+  dimnames(designW) <- list(NULL,NULL)
+  
+  ##difference matrix of order 1:
+  D1mat<- cbind(0,diag(data@nGrid-1)) - cbind(diag(data@nGrid - 1),0)
+  
+  ## set up the random walk penalty matrix and its rank:
+  if (useRW1)
+  {## the rank-deficient prior precision for the RW1 prior:
+    RWmat <- crossprod(D1mat)
+    ##Rank: dimension -1
+    RWmatRank <- data@nGrid-1L
+  } else {##second-order difference
+    D2mat <- D1mat[-1,-1] %*% D1mat
+    RWmat <- crossprod(D2mat)
+    RWmatRank <- data@nGrid-2L
+  }
+  .EffFlexi(Eff=Eff,
+            Effdose=Effdose,
+            sigma2=sigma2,
+            sigma2betaW=sigma2betaW,
+            datanames=c("nObs","w","x"),
+            data=data,
+            dose=function(ExpEff){
+              ##Find dose level given a particular Expected Efficacy level with linear Interpolation
+              dosevec<-c()
+              for (k in 1:sampleSize(options)){
+                IxEff0<- max(which((ExpEff-Effsamples@data$ExpEff[k,]) >= 0))
+                IxEff1<- min(which((ExpEff-Effsamples@data$ExpEff[k,]) < 0))
+                Interpoldose<-data@doseGrid[IxEff0]+(data@doseGrid[IxEff1]-data@doseGrid[IxEff0])*((ExpEff-Effsamples@data$ExpEff[k,IxEff0])/(Effsamples@data$ExpEff[k,IxEff1]-Effsamples@data$ExpEff[k,IxEff0]))
+                dosevec[k]<-Interpoldose
+              }
+              ##return coreresponding dose levels
+              return(dosevec)},
+            
+            ExpEff=function(dose){
+              ##Find the ExpEff with a given dose level
+              ##Check if given dose is in doseGrid
+              DoseInGrid<-!is.na(match(dose,data@doseGrid))
+              if (DoseInGrid==TRUE){
+                ##Find which dose is this in the dose Grid
+                EIx<-which(dose==data@doseGrid)
+                ##Return corresponding expected efficacy values from mcmc samples
+                return(Effsamples@data$ExpEff[,EIx])} else {##if dose not in doseGrid do linear Interploation
+                  ## check if this dose is within doseGrid
+                  stopifnot(dose <= max(data@doseGrid), dose >= min(data@doseGrid))
+                  Ixd0 <- max(which((dose-data@doseGrid) > 0))
+                  Ixd1<-min(which((dose-data@doseGrid) < 0))
+                  ExpEffd0<-Effsamples@data$ExpEff[,Ixd0]
+                  ExpEffd1<-Effsamples@data$ExpEff[,Ixd1]
+                  InterpolExpEff<- ExpEffd0+(ExpEffd1-ExpEffd0)*((dose-data@doseGrid[Ixd0])/(data@doseGrid[Ixd1]-data@doseGrid[Ixd0]))
+                  return(InterpolExpEff)}
+            },
+            useFixed=useFixed,
+            useRW1=useRW1,
+            designW=designW,
+            RWmat=RWmat,
+            RWmatRank=RWmatRank)}
+## ---------------------------------------------------------------------------------------------------------
 

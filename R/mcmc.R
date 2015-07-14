@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com ],
+##         Wai Yin Yeung [,w *.* yeung *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[mcmc.R] by DSB Mit 13/05/2015 23:10>
@@ -10,6 +11,7 @@
 ## History:
 ## 31/01/2014   file creation
 ## 08/12/2014   no longer rely on R2WinBUGS for write.model but get it internal
+## 10/07/2015   added mcmc methods for pseudo model class
 ###################################################################################
 
 ##' @include helpers.R
@@ -362,4 +364,166 @@ setMethod("mcmc",
               return(ret)
           })
 
+## ----------------------------------------------------------------------------------
+## Obtain postrior samples for the two-parameter logistic pseudo DLE model
+## -------------------------------------------------------------------------------
+
+
+##' Obtain postrior samples for the two-parameter logistic pseudo DLE model
+##' 
+##' @param data The data input, an object of class \code{\linkS4class{Data}}
+##' @param model The model input, an object of class \code{\linkS4class{LogisticIndepBeta}}
+##' @param options MCMC options, an object of class
+##' \code{\linkS4class{McmcOptions}}
+##' @param \dots unused
+##'
+##' @return The posterior samples, an object of class
+##' \code{\linkS4class{Samples}}.
+##'
+##' @export
+##' @keywords methods
+setMethod("mcmc",
+          signature=
+            signature(data="Data",
+                      model="LogisticIndepBeta",
+                      options="McmcOptions"),
+          def=
+            function(data, model, options,
+                     verbose=FALSE,
+                     ...){
+              
+              ## decide whether we sample from the prior or not
+              fromPrior <- data@nObs == 0L
+              
+              
+              ##probabilities of risk of DLE at all dose levels
+              pi<-(model@binDLE)/(model@DLEweights)
+              ##scalar term for the covariance matrix
+              scalarI<-model@DLEweights*pi*(1-pi)
+              ##
+              cov<-matrix(rep(0,4),nrow=2,ncol=2)
+              
+              for (i in (1:(length(model@binDLE)))){
+                
+                covmat<-scalarI[i]*matrix(c(1,log(model@DLEdose[i]),log(model@DLEdose[i]),(log(model@DLEdose[i]))^2),2,2)
+                cov<-cov+covmat
+              }
+              
+              if(fromPrior){
+                ## sample from the (asymptotic) bivariate normal prior for theta
+                
+                tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
+                                        mean=c(slot(model,"phi1"),slot(model,"phi2")),
+                                        sigma=solve(cov)) 
+                
+                
+                samples <- list(phi1=tmp[, 1],
+                                phi2=tmp[, 2])
+              } else {
+                
+                ## set up design matrix
+                X <- cbind(1, log(data@x))
+                
+                weights<-rep(1,length(data@y))
+                ##probabilities of risk of DLE at all dose levels
+                pi<-(data@y)/weights
+                ##scalar term for the covariance matrix
+                scalarI<-weights*pi*(1-pi)
+                ##
+                
+                priordle<-model@binDLE
+                priorw1<-model@DLEweights
+                
+                priordose<-model@DLEdose
+                FitDLE<-glm(priordle/priorw1~log(priordose),family=binomial(link="logit"),weights=priorw1)
+                SFitDLE<-summary(FitDLE)
+                ##Obtain parameter estimates for dose-DLE curve
+                priorphi1<-coef(SFitDLE)[1,1]
+                priorphi2<-coef(SFitDLE)[2,1]
+                cov1<-matrix(nrow=2,ncol=2)
+                
+                
+                cov1<-matrix(rep(0,4),nrow=2,ncol=2)
+                
+                for (i in (1:(length(data@y)))){
+                  
+                  covmat<-scalarI[i]*matrix(c(1,log(data@x[i]),log(data@x[i]),(log(data@x[i]))^2),2,2)
+                  cov1<-cov1+covmat
+                }
+                
+                
+                ## use fast special sampler here
+                initRes <- BayesLogit::logit(y=data@y,
+                                             X=X,
+                                             m0=c(priorphi1,priorphi2),
+                                             P0=cov,
+                                             samp=sampleSize(options),
+                                             burn=options@burnin)
+                
+                ## then form the samples list
+                samples <- list(phi1=initRes$beta[,1],
+                                phi2=initRes$beta[,2])
+              }
+              
+              ## form a Samples object for return:
+              ret <- Samples(data=samples,
+                             options=options)
+              
+              return(ret)
+            })
+
+## ================================================================================
+
+## -----------------------------------------------------------------------------------
+## obtain the posterior samples for the Pseudo Efficacy log log model
+## ----------------------------------------------------------------------------
+##
+##' Obtain the posterior samples for the efficacy linear log log model using pseudo 
+##' data as prior
+##' 
+##' @export
+##' @keywords methods
+setMethod("mcmc",
+          signature=
+            signature(data="DataDual",
+                      model="Effloglog",
+                      options="McmcOptions"),
+          def=
+            function(data, model, options,
+                     verbose=FALSE,
+                     ...){
+              
+              ## decide whether we sample from the prior or not
+              fromPrior <- data@nObs == 0L
+              
+              thismodel <- update(object=model,data=data)
+              
+              
+              
+              
+              if (length(thismodel@nu)==2) {
+                nusamples <- rgamma(sampleSize(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
+                priornu <- mean(nusamples)} else {
+                  priornu <- thismodel@nu}
+              
+              
+              
+              ## sample from the (asymptotic) bivariate normal prior for theta1 and theta2
+              
+              tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
+                                      mean=c(thismodel@theta1,thismodel@theta2),
+                                      sigma=solve(priornu*(thismodel@matQ))) 
+              
+              
+              samples <- list(theta1=tmp[, 1],
+                              theta2=tmp[, 2],
+                              nu=nusamples)
+              
+              ## form a Samples object for return:
+              ret <- Samples(data=samples,
+                             options=options)
+              
+              return(ret)
+            })
+## ============================================================================================
 

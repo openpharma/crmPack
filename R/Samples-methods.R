@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Samples-methods.R] by DSB Mon 11/05/2015 17:46>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 25/03/2014   file creation
+## 10/07/2015   Adding more methods for pseudo models
 #####################################################################################
 
 ##' @include McmcOptions-methods.R
@@ -584,4 +586,320 @@ setMethod("plot",
               return(ret)
           })
 
+## ----------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------
+## Get fitted dose-tox curve from Samples for 'LogisticIndepBeta' model class
+## ------------------------------------------------------------------------------------
+##' @export
+##' @keywords methods
 
+setMethod("fit",
+          signature=
+            signature(object="Samples",
+                      model="LogisticIndepBeta",
+                      data="Data"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     points=data@doseGrid,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(points))
+              
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              probSamples <- matrix(nrow=sampleSize(object@options),
+                                    ncol=length(points))
+              
+              ## evaluate the probs, for all samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                probSamples[, i] <- prob(dose=points[i],
+                                         model,
+                                         object)
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(probSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(probSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(dose=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)
+            })
+
+
+## ---------------------------------------------------------
+## Plot dose-tox fit from 'LogisticIndepBeta' model class
+##'
+##'@export
+##'@keywrds methods
+##'
+setMethod("plot",
+          signature=
+            signature(x="Samples",
+                      y="LogisticIndepBeta"),
+          def=
+            function(x, y, data, ...,
+                     xlab="Dose level",
+                     ylab="Probability of DLT [%]",
+                     showLegend=TRUE){
+              
+              ## check args
+              stopifnot(is.bool(showLegend))
+              
+              ## get the fit
+              plotData <- fit(x,
+                              model=y,
+                              data=data,
+                              quantiles=c(0.025, 0.975),
+                              middle=mean)
+              
+              ## make the plot
+              gdata <-
+                with(plotData,
+                     data.frame(x=rep(dose, 3),
+                                y=c(middle, lower, upper) * 100,
+                                group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                           c("Estimate",
+                                             "95% Credible Interval"))))
+              
+              ret <- ggplot2::qplot(x=x,
+                                    y=y,
+                                    data=gdata,
+                                    group=group,
+                                    linetype=Type,
+                                    colour=I("red"),
+                                    geom="line",
+                                    xlab=xlab,
+                                    ylab=ylab,
+                                    ylim=c(0, 100))
+              
+              ret <- ret +
+                ggplot2::scale_linetype_manual(breaks=
+                                                 c("Estimate",
+                                                   "95% Credible Interval"),
+                                               values=c(1,2), guide=ifelse(showLegend,
+                                                                           "legend", FALSE))
+              
+              return(ret)
+            })
+
+## ----------------------------------------------------------------------------------------------------------
+## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
+## ----------------------------------------------------------------------------------------------------
+##' Plot the gain curve in addition with the DLE and Efficacy curve using a given DLE pseudo and 
+##' a given Efficacy Pseudo model
+##' 
+##' @param DLEmodel a specified Dle model follow \code{\linkS4class{ModelTox}} class specification
+##' @papra Effmodel a specified Dle model follow \code{\linkS4class{ModelEff}} class specification
+##' @param data the data input follow \code{\linkS4class{DataDual}} class specification
+##' 
+##' @export
+##' @keywords methods
+##' 
+setGeneric("plotGain",
+           def=
+             function(DLEmodel,
+                      Effmodel,
+                      data,...){
+               standardGeneric("plotGain")})
+setMethod("plotGain",
+          signature=
+            signature(DLEmodel="ModelTox",
+                      Effmodel="ModelEff"),
+          def=
+            function(DLEmodel,Effmodel,data,...){
+              
+              plotData<-data.frame(dose=rep(data@doseGrid,3),
+                                   values=c(prob(dose=data@doseGrid,
+                                                 model=DLEmodel),
+                                            ExpEff(dose=data@doseGrid,
+                                                   model=Effmodel),
+                                            gain(dose=data@doseGrid,
+                                                 DLEmodel=DLEmodel,
+                                                 Effmodel=Effmodel)))
+              gdata<-with(plotData,
+                          data.frame(x=dose,
+                                     y=values,
+                                     group=c(rep("p(DLE)",length(data@doseGrid)),
+                                             rep("Expected Efficacy",length(data@doseGrid)),
+                                             rep("Gain",length(data@doseGrid))),
+                                     Type=factor("Estimate",levels="Estimate")
+                                     
+                          ))
+              
+              ##plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)
+              
+              plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
+                ggplot2:::scale_colour_manual(name="curves",values=c("blue","green3","red"))+
+                xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
+                ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
+              
+              
+              
+              TD30 <- dose(prob=0.3,model=DLEmodel)
+              
+              Gainfun<-function(DOSE){
+                -gain(DOSE,DLEmodel=DLEmodel,Effmodel=Effmodel)
+              }
+              Gstar<-(optim(min(data@doseGrid),Gainfun)$par)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun)$value)
+              
+              
+              if ((TD30 < min(data@doseGrid))|(TD30 > max(data@doseGrid))) {
+                plot1<-plot1
+                print(paste("TD30",paste(TD30," not within dose Grid")))} else {plot1 <-plot1 + geom_point(data=data.frame(x=TD30,y=0.3),aes(x=x,y=y),colour="violet", shape=16, size=8) +
+                  annotate("text",label="p(DLE=0.3)",x=TD30+1,y=0.2,size=5,colour="violet")}
+              
+              
+              
+              if ((Gstar < min(data@doseGrid))|(Gstar > max(data@doseGrid))) {
+                plot1<-plot1
+                print(paste("Gstar=",paste(Gstar," not within dose Grid")))} else {plot1 <- plot1 + geom_point(data=data.frame(x=Gstar,y=MaxGain),aes(x=x,y=y),colour="green3", shape=17, size=8) +
+                  annotate("text",label="Max Gain",x=Gstar,y=MaxGain-0.1,size=5,colour="green3")}
+              
+              return(plot1)
+            })
+##==========================================================================================
+## --------------------------------------------------------------------
+## Fit based on the Efficacy Flexible model
+## -------------------------------------------------------------
+##' Fit based on the Efficacy Flexible model with samples
+##' 
+##' @export
+##' @keywords method
+setMethod("fit",
+          signature=
+            signature(object="Samples",
+                      model="EffFlexi",
+                      data="DataDual"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     points=data@doseGrid,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(points))
+              
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
+                                      ncol=length(points))
+              
+              ## evaluate the probs, for all samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                ExpEffSamples[, i] <- ExpEff(dose=points[i],
+                                             model,
+                                             object)
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(ExpEffSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(ExpEffSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(dose=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)
+            })
+## --------------------------------------------------------------------------------------------
+##Plot the Efficacy Flexible model
+## -------------------------------------------------------------------------------------------
+##' Plot of the Efficacy Flexible Model with samples
+##' 
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature=
+            signature(x="Samples",
+                      y="EffFlexi"),
+          def=
+            function(x, y, data, ...,
+                     xlab="Dose level",
+                     ylab="Expected Efficacy",
+                     showLegend=TRUE){
+              
+              ## check args
+              stopifnot(is.bool(showLegend))
+              
+              ## get the fit
+              plotData <- fit(x,
+                              model=y,
+                              data=data,
+                              quantiles=c(0.025, 0.975),
+                              middle=mean)
+              
+              ## make the plot
+              gdata <-
+                with(plotData,
+                     data.frame(x=rep(dose, 3),
+                                y=c(middle, lower, upper) ,
+                                group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                           c("Estimate",
+                                             "95% Credible Interval"))))
+              
+              ret <- ggplot2::qplot(x=x,
+                                    y=y,
+                                    data=gdata,
+                                    group=group,
+                                    linetype=Type,
+                                    colour=I("blue"),
+                                    geom="line",
+                                    xlab=xlab,
+                                    ylab=ylab,
+                                    xlim=c(0,max(data@doseGrid)))
+              
+              ret <- ret +
+                ggplot2::scale_linetype_manual(breaks=
+                                                 c("Estimate",
+                                                   "95% Credible Interval"),
+                                               values=c(1,2), guide=ifelse(showLegend,
+                                                                           "legend", FALSE))
+              
+              return(ret)
+            })
