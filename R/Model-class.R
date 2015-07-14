@@ -1087,7 +1087,7 @@ setMethod("initialize",
 ##' dose \eqn{x}, and \eqn{\Phi} is the standard normal cdf. This could later be
 ##' generalized to have a reference dose or a log transformation for the dose.
 ##' The prior is
-##' \deqn{\beta{Z} \sim Normal(\mu, \Sigma)}.
+##' \deqn{\left ( \beta_{Z1} \right, log(\beta_{Z2}) ) \sim Normal(\mu, \Sigma)}.
 ##'
 ##' For the biomarker response w at a dose x, we assume
 ##' \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}
@@ -1222,7 +1222,10 @@ DualEndpoint <- function(mu,
 
             ## the bivariate normal prior for the
             ## probit coefficients
-            betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[,])
+            log.betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[,])
+            
+            betaZ[1] <- log.betaZ[1]
+            betaZ[2] <- exp(log.betaZ[2])
 
             ## conditional precision for biomarker
             condPrecW <- precW / (1 - pow(rho, 2))
@@ -1330,7 +1333,7 @@ DualEndpoint <- function(mu,
                       c(initlist,
                         list(z=
                              ifelse(y==0, -1, 1),
-                             betaZ=c(0,1)))},
+                             log.betaZ=c(0,1)))},
                   sample=sample)
 }
 validObject(DualEndpoint(mu=c(0, 1),
