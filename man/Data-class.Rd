@@ -21,6 +21,8 @@ grid}
 \item{\code{nGrid}}{number of gridpoints}
 
 \item{\code{xLevel}}{the levels for the doses the patients have been given}
+
+\item{\code{placebo}}{logical value: if TRUE the first dose level in the grid is considered as PLACEBO}
 }}
 \keyword{classes}
 

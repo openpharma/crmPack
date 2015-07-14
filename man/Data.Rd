@@ -5,7 +5,7 @@
 \title{Initialization function for the "Data" class}
 \usage{
 Data(x = numeric(), y = integer(), ID = integer(), cohort = integer(),
-  doseGrid = numeric(), ...)
+  doseGrid = numeric(), placebo = FALSE, ...)
 }
 \arguments{
 \item{x}{the doses for the patients}
@@ -18,6 +18,8 @@ normal numeric vectors, but these will then be converted to integers.}
 \item{cohort}{the cohort indices (sorted values from 0, 1, 2, ...)}
 
 \item{doseGrid}{the vector of all possible doses}
+
+\item{placebo}{logical value: if TRUE the first dose level in the grid is considered as PLACEBO}
 
 \item{\dots}{not used}
 }
