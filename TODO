@@ -1,10 +1,16 @@
 BUGFIXES:
 
+- fix barplot of MTD distribution (Sharon)
+
 - make it possible to sample from prior for DualEndpointRW model,
   see report by Giuseppe in devel/dualEndpointRWbug.R
 
 ----------------------------------------------------------------
 IMPROVEMENTS:
+
+
+- integrate new stopping rule for highest dose (Sharon)
+
 
 - in nextBest function return not only recommendation but limits
 

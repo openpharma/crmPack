@@ -2,7 +2,7 @@
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
 ##
-## Time-stamp: <[project.R] by DSB Son 10/05/2015 22:05>
+## Time-stamp: <[project.R] by DSB Fre 19/06/2015 14:12>
 ##
 ## Description:
 ## Test in the setup of the project. For development only!!
@@ -11,6 +11,7 @@
 ## 06/02/2014   file creation
 ## 19/07/2014   update and test mixture prior
 ## 25/03/2015   update with new syntax and check JAGS/burnin issue fix.
+## 19/06/2015   check fixed MinimalInformative
 ###################################################################################
 source("../R/helpers.R")
 source("../R/Model-class.R")
