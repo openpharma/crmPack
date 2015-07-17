@@ -477,6 +477,12 @@ setMethod("doseforEff",
             })
 
 ## ---------------------------------------------------------------------------------
+## Compute gain value using Psedo DLE and Efficacy model with samples
+## -------------------------------------------------------------------------
+##' Compute the gain value samples using a given dose level, given DLE model, given DLE sample,
+##' 
+
+## ---------------------------------------------------------------------------------
 ## Compute gain value using a Pseudo DLE and a Efficacy model
 ## -------------------------------------------------------------------------------
 
