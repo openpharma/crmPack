@@ -476,11 +476,6 @@ setMethod("doseforEff",
               return(ret)
             })
 
-## ---------------------------------------------------------------------------------
-## Compute gain value using Psedo DLE and Efficacy model with samples
-## -------------------------------------------------------------------------
-##' Compute the gain value samples using a given dose level, given DLE model, given DLE sample,
-##' 
 
 ## ---------------------------------------------------------------------------------
 ## Compute gain value using a Pseudo DLE and a Efficacy model
@@ -497,6 +492,52 @@ setGeneric("gain",
                standardGeneric("gain")
              },
            valueClass="numeric")
+
+## ===================================
+##' Compute the gain value samples given a dose level, a DLE model, a DLE sample, a Efficacy model
+##' and a Efficacy sample
+##' 
+##' @export
+##' @keywords methods
+##' 
+setMethod("gain",
+          signature=
+            signature(dose="numeric",
+                      DLEmodel="ModelTox",
+                      DLEsamples="Samples",
+                      Effmodel="ModelEff",
+                      Effsamples="Samples"),
+          def=
+            function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
+              
+              
+              
+              ## extract the prob function from the model
+              probFun <- slot(DLEmodel, "prob")
+              ## which arguments, besides the dose, does it need?
+              DLEargNames <- setdiff(names(formals(probFun)),
+                                     "dose")
+              ## now call the function with dose and with
+              ## the arguments taken from the samples
+              DLEret <- do.call(probFun,
+                                c(list(dose=dose),
+                                  DLEsamples@data[DLEargNames]))
+              
+              ## extract the ExpEff function from the model
+              EffFun <- slot(Effmodel, "ExpEff")
+              ## which arguments, besides the dose, does it need?
+              EffargNames <- setdiff(names(formals(EffFun)),
+                                     "dose")
+              ## now call the function with dose and with
+              ## the arguments taken from the samples
+              Effret <- do.call(EffFun,
+                                c(list(dose=dose),
+                                  Effsamples@data[EffargNames]))
+              
+              ## return the resulting vector
+              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
+              return(Gainret)
+            })
 
 ## ================================================================
 ##' Compute the gain given a dose level, a given DLE model and a given Efficacy model
