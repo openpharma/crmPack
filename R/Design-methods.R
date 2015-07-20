@@ -1605,7 +1605,7 @@ setMethod("simulate",
                   
                   
                   if (thisEffModel@useFixed==FALSE){
-                    thisSigma2 <- as.numeric(thisNu["a"]/thisNu["b"])} else {
+                    thisSigma2 <- 1/(as.numeric(thisNu["a"]/thisNu["b"]))} else {
                       thisSigma2 <- 1/thisNu}
                   
                   
@@ -1646,6 +1646,17 @@ setMethod("simulate",
                   
                 }
                 
+                ## get the fit
+                thisFit <- list(phi1=thisDLEModel@phi1,
+                                phi2=thisDLEModel@phi2,
+                                probDLE=thisDLEModel@prob(object@data@doseGrid,
+                                                          thisDLEModel@phi1,thisDLEModel@phi2),
+                                theta1=thisEffModel@theta1,
+                                theta2=thisEffModel@theta2,
+                                ExpEff=thisEffModel@ExpEff(object@data@doseGrid,
+                                                           thisEffModel@theta1,
+                                                           thisEffModel@theta2))
+                
                 ## return the results
                 thisResult <- list(data=thisData,
                                    dose=thisDose,
@@ -1656,7 +1667,7 @@ setMethod("simulate",
                                    Gstar=thisGstar,
                                    GstarAtDoseGrid=thisGstaratdosegrid,
                                    Recommend=Recommend,
-                                   nu=thisNu,
+                                   fit=thisFit,
                                    sigma2est=thisSigma2,
                                    stop=attr(stopit,
                                              "message"))
@@ -1687,6 +1698,9 @@ setMethod("simulate",
               ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "Recommend"))
               
+              ##set up the list for the final fits
+              fitList <- lapply(resultList,"[[","fit")
+              
               ## the vector of the sigma2
               sigma2Estimates <- as.numeric(sapply(resultList, "[[", "sigma2est"))
               
@@ -1696,11 +1710,11 @@ setMethod("simulate",
               ## return the results in the Simulations class object
               ret <- PseudoDualSimulations(data=dataList,
                                            doses=recommendedDoses,
+                                           fit=fitList,
                                            sigma2est=sigma2Estimates,
                                            stopReasons=stopReasons,
                                            seed=RNGstate)
               return(ret)
-              print(ret)
               
               
             })
