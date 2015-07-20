@@ -300,7 +300,8 @@ DualSimulations <- function(rhoEst,
 ##' @keywords class
 .PseudoSimulations <-
   setClass(Class="PseudoSimulations",
-           representation(stopReasons="list"),
+           representation(fit="list",
+                          stopReasons="list"),
            ## note: this prototype is put together with the prototype
            ## for GeneralSimulations
            prototype(stopReasons=
@@ -308,7 +309,7 @@ DualSimulations <- function(rhoEst,
            contains="GeneralSimulations",
            validity=
              function(object){
-               o <- Validate()
+               o <- crmPack:::Validate()
                
                nSims <- length(object@data)
                o$check(identical(length(object@stopReasons), nSims),
@@ -319,11 +320,13 @@ DualSimulations <- function(rhoEst,
 validObject(.PseudoSimulations())
 
 ##' Init function
-PseudoSimulations <- function(stopReasons,
+PseudoSimulations <- function(fit,
+                              stopReasons,
                               ...)
 {
   start <- GeneralSimulations(...)
   .PseudoSimulations(start,
+                     fit=fit,
                      stopReasons=stopReasons)
 }
 

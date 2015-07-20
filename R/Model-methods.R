@@ -540,6 +540,47 @@ setMethod("gain",
             })
 
 ## ================================================================
+##' Compute the gain given a dose level, a given DLE model, a given DLE sample, 
+##' the EffFlexi model and a given Efficacy sample
+##' 
+##' @export
+##' @keywords methods
+##'
+setMethod("gain",
+          signature=
+            signature(dose="numeric",
+                      DLEmodel="ModelTox",
+                      DLEsamples="Samples",
+                      Effmodel="EffFlexi",
+                      Effsamples="Samples"),
+          def=
+            function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
+              
+              
+              
+              ## extract the prob function from the model
+              probFun <- slot(DLEmodel, "prob")
+              ## which arguments, besides the dose, does it need?
+              DLEargNames <- setdiff(names(formals(probFun)),
+                                     "dose")
+              ## now call the function with dose and with
+              ## the arguments taken from the samples
+              DLEret <- do.call(probFun,
+                                c(list(dose=dose),
+                                  DLEsamples@data[DLEargNames]))
+              
+              ## extract the ExpEff function from the model
+              EffFun <- slot(Effmodel, "ExpEff")
+              
+              ## now call the function with dose and with
+              ## the arguments taken from the samples
+              Effret <- EffFun(dose)
+              
+              ## return the resulting vector
+              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
+              return(Gainret)
+            })
+## ===================================================================================
 ##' Compute the gain given a dose level, a given DLE model and a given Efficacy model
 ##' 
 ##' @export

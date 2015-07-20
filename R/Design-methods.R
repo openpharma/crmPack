@@ -1368,6 +1368,7 @@ setMethod("simulate",
                                  doselimit=doselimit,
                                  model=thisModel,
                                  data=thisData)
+                  thisDose <- NEXT$nextdose
                   
                   thistargetDuringTrialDose<- NEXT$TDtargetDuringTrialEstimate
                   
@@ -1385,6 +1386,11 @@ setMethod("simulate",
                                       model=thisModel,
                                       data=thisData)
                 }
+                ## get the fit
+                thisFit <- list(phi1=thisModel@phi1,
+                                phi2=thisModel@phi2,
+                                probDLE=thisModel@prob(object@data@doseGrid,
+                                                       thisModel@phi1,thisModel@phi2))
                 
                 
                 ## return the results
@@ -1394,6 +1400,7 @@ setMethod("simulate",
                        TDtargetDuringTrial=thistargetDuringTrialDose,
                        TDtargetEndOfTrial=thistargetEndOfTrialDose,
                        TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
+                       fit=thisFit,
                        stop=
                          attr(stopit,
                               "message"))
@@ -1420,6 +1427,9 @@ setMethod("simulate",
               ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
               
+              ##set up the list for the final fits
+              
+              fitList <- lapply(resultList,"[[", "fit")
               
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
@@ -1427,6 +1437,7 @@ setMethod("simulate",
               ## return the results in the Simulations class object
               ret <- PseudoSimulations(data=dataList,
                                        doses=recommendedDoses,
+                                      fit=fitList,
                                        stopReasons=stopReasons,
                                        seed=RNGstate)
               

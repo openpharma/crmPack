@@ -840,7 +840,7 @@ setMethod("fit",
               return(ret)
             })
 ## --------------------------------------------------------------------------------------------
-##Plot the Efficacy Flexible model
+## Plot the Efficacy Flexible model
 ## -------------------------------------------------------------------------------------------
 ##' Plot of the Efficacy Flexible Model with samples
 ##' 
@@ -903,3 +903,23 @@ setMethod("plot",
               
               return(ret)
             })
+
+## ---------------------------------------------------------------------------------------------------
+## Plot DLE and Efficacy curve side by side
+## --------------------------------------------------------------------------------------------
+##'
+##' Plot the DLE and Efficacy curve side by side using a given a DLE model, DLE sample, Efficacy model
+##' and a Efficacy sample 
+##' 
+##' @export
+##' @keywords methods
+setGeneric("plotDualResponses",
+           def=
+             function(DLEsamples,
+                      Effsamples,
+                      DLEmodel,
+                      Effmodel,
+                      data,...){
+               standardGeneric("plotDualResponses")})
+
+
