@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [ w *.*yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Data-methods.R] by DSB Mon 11/05/2015 17:43>
@@ -11,6 +12,7 @@
 ## 30/01/2014   file creation
 ## 06/02/2014   add method for conversion to list
 ## 17/02/2014   add update methods
+## 21/07/2015   add plots using data and pseudo models
 ###################################################################################
 
 
