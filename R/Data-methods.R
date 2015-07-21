@@ -324,18 +324,129 @@ setMethod("update",
           })
 
 
-## ============================================================
+## ==================================================================================================
+## ----------------------------------------------------------------------------------------
+## Plot of fitted dose-tox curve based without sample based on a given pseudo model
+## and data
+##-------------------------------------------------------------------------------------
+##' Plot of the fitted dose-tox based with a given pseudo DLE model and data witout samples
+##' 
+##' @param x the data input from the \code{\linkS4class{Data}} class object
+##' @param y the model from the \code{\linkS4class{ModelTox}} class object
+##' 
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature=
+            signature(x="Data",
+                      y="ModelTox"),
+          def=
+            function(x,y,...,
+                     xlab="Dose level",
+                     ylab="Probability of DLE",
+                     showLegend=TRUE){
+              ##check args
+              
+              stopifnot(is.bool(showLegend))
+              
+              ##Make sure the right model estimates are use with the given data
+              y <- update(object=y,data=x)
+              
+              
+              
+              ##create data frame
+              
+              plotData <- data.frame(dose=x@doseGrid,
+                                     probDLE=prob(dose=x@doseGrid,
+                                                  model=y))
+              ##Look for TD30 and TD35
+              TD30 <-dose(prob=0.30,
+                          model=y)
+              TD35 <-dose(prob=0.35,
+                          model=y)
+              
+              ##make the plot
+              gdata <- with(plotData,
+                            data.frame(x=dose,
+                                       y=probDLE,
+                                       group=rep("Estimated DLE",each=nrow(plotData)),
+                                       Type=factor(rep("Estimated DLE",nrow(plotData)),levels="Estimated DLE")))
+              
+              plot1 <- ggplot2::qplot(x=x,
+                                      y=y,
+                                      data=gdata,
+                                      group=group,
+                                      linetype=Type,
+                                      colour=I("red"),
+                                      geom="line",
+                                      xlab=xlab,
+                                      ylab=ylab,
+                                      ylim=c(0,1))
+              
+              plot1 <- plot1 + ggplot2::scale_linetype_manual(breaks="Estimated DLE",
+                                                              values=c(1,2),
+                                                              guide=ifelse(showLegend,"legend",FALSE))
+              
+              
+              plot1 <- plot1 +
+                geom_line(size=1.5,colour="red")
+              
+              return(plot1)
+            })
+
+## ==============================================================================================
+## ---------------------------------------------------------------------------------------------
+## Plot the fitted dose-efficacy curve given a pseudo data and data
+## -----------------------------------------------------------------------------
+##' Plot the fitted dose-efficacy curve given a pseudo Efficacy model and data 
+##' without samples
+##' 
+##' @param x the data input from the \code{\linkS4class{DataDual}} class object
+##' @param y the model from the \code{\linkS4class{ModelEff}} class object
+##' 
+
+setMethod("plot",
+          signature=
+            signature(x="DataDual",
+                      y="ModelEff"),
+          def=
+            function(x,y,...,
+                     xlab="Dose level",
+                     ylab="Expected Efficacy",
+                     showLegend=TRUE){
+              ##check args
+              
+              stopifnot(is.bool(showLegend))
+              y <- update(object=y,data=x)
+              
+              ##create data frame
+              
+              plotEffData<- data.frame(dose=x@doseGrid,
+                                       ExpEff=ExpEff(dose=x@doseGrid,
+                                                     model=y))
+              
+              ##make the second plot
+              ggdata<-with(plotEffData,
+                           data.frame(x=dose,
+                                      y=ExpEff,
+                                      group=rep("Estimated Expected Efficacy",each=nrow(plotEffData)),
+                                      Type=factor(rep("Estimated Expected Efficacy",nrow(plotEffData)),levels="Estimated Expected Efficacy")))
+              
+              ##Get efficacy plot
+              plot2 <- ggplot(data=ggdata, aes(x=x,y=y), group=group) +
+                xlab("Dose Levels")+
+                ylab(paste("Estimated Expected Efficacy")) + xlim(c(0,max(data@doseGrid))) +
+                geom_line(colour=I("blue"), size=1.5)
+              
+              plot2 <- plot2 +
+                geom_line(size=1.5,colour="blue")
+              
+              
+              return(plot2)
+            })
 
 
-
-
-
-
-
-
-
-
-
+## ===================================================================================================
 
 
 

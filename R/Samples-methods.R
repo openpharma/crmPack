@@ -642,6 +642,118 @@ setMethod("fit",
               return(ret)
             })
 
+## -------------------------------------------------------------------------------------
+## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
+## ------------------------------------------------------------------------------------
+
+##' @export
+##' @keywords methods
+
+setMethod("fit",
+          signature=
+            signature(object="Samples",
+                      model="Effloglog",
+                      data="DataDual"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     points=data@doseGrid,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(points))
+              
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
+                                      ncol=length(points))
+              
+              ## evaluate the probs, for all samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                ExpEffSamples[, i] <- ExpEff(dose=points[i],
+                                             model,
+                                             object)
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(ExpEffSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(ExpEffSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(dose=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)
+            })
+## ==========================================================================================
+## --------------------------------------------------------------------
+## Fit based on the Efficacy Flexible model
+## -------------------------------------------------------------
+##' Fit based on the Efficacy Flexible model with samples
+##' 
+##' @export
+##' @keywords method
+setMethod("fit",
+          signature=
+            signature(object="Samples",
+                      model="EffFlexi",
+                      data="DataDual"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     points=data@doseGrid,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(points))
+              
+              ## first we have to get samples from the dose-tox
+              ## curve at the dose grid points.
+              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
+                                      ncol=length(points))
+              
+              ## evaluate the probs, for all samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                ExpEffSamples[, i] <- ExpEff(dose=points[i],
+                                             model,
+                                             object)
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(ExpEffSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(ExpEffSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(dose=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)
+            })
+## ==============================================================
 
 ## ---------------------------------------------------------
 ## Plot dose-tox fit from 'LogisticIndepBeta' model class
@@ -706,6 +818,7 @@ setMethod("plot",
               
               return(ret)
             })
+
 
 ## ----------------------------------------------------------------------------------------------------------
 ## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
@@ -784,61 +897,7 @@ setMethod("plotGain",
               return(plot1)
             })
 ##==========================================================================================
-## --------------------------------------------------------------------
-## Fit based on the Efficacy Flexible model
-## -------------------------------------------------------------
-##' Fit based on the Efficacy Flexible model with samples
-##' 
-##' @export
-##' @keywords method
-setMethod("fit",
-          signature=
-            signature(object="Samples",
-                      model="EffFlexi",
-                      data="DataDual"),
-          def=
-            function(object,
-                     model,
-                     data,
-                     points=data@doseGrid,
-                     quantiles=c(0.025, 0.975),
-                     middle=mean,
-                     ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(points))
-              
-              ## first we have to get samples from the dose-tox
-              ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
-                                      ncol=length(points))
-              
-              ## evaluate the probs, for all samples.
-              for(i in seq_along(points))
-              {
-                ## Now we want to evaluate for the
-                ## following dose:
-                ExpEffSamples[, i] <- ExpEff(dose=points[i],
-                                             model,
-                                             object)
-              }
-              
-              ## extract middle curve
-              middleCurve <- apply(ExpEffSamples, 2L, FUN=middle)
-              
-              ## extract quantiles
-              quantCurve <- apply(ExpEffSamples, 2L, quantile,
-                                  prob=quantiles)
-              
-              ## now create the data frame
-              ret <- data.frame(dose=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
-              
-              ## return it
-              return(ret)
-            })
+
 ## --------------------------------------------------------------------------------------------
 ## Plot the Efficacy Flexible model
 ## -------------------------------------------------------------------------------------------
@@ -921,5 +980,6 @@ setGeneric("plotDualResponses",
                       Effmodel,
                       data,...){
                standardGeneric("plotDualResponses")})
+
 
 
