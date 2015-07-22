@@ -609,7 +609,7 @@ setMethod("fit",
               ## some checks
               stopifnot(is.probRange(quantiles),
                         is.numeric(points))
-              
+            
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
               probSamples <- matrix(nrow=sampleSize(object@options),
@@ -774,6 +774,7 @@ setMethod("plot",
               ## check args
               stopifnot(is.bool(showLegend))
               
+         
               ## get the fit
               plotData <- fit(x,
                               model=y,
@@ -845,6 +846,10 @@ setMethod("plotGain",
                       Effmodel="ModelEff"),
           def=
             function(DLEmodel,Effmodel,data,...){
+            
+              ##Make sure the model estimates are corresponds to the input data
+              DLEmodel <- update(object=DLEmodel,data=data)
+              Effmodel <- update(object=Effmodel,data=data)
               
               plotData<-data.frame(dose=rep(data@doseGrid,3),
                                    values=c(prob(dose=data@doseGrid,
@@ -980,6 +985,77 @@ setGeneric("plotDualResponses",
                       Effmodel,
                       data,...){
                standardGeneric("plotDualResponses")})
+## -------------------------------------------------------------------------------
+##----------------------------------------------------------------
+##' Plot the DLE and efficacy curve side by side given a DLE model, an Efiicacy model without any samples
+##' 
+##' @export
+##' @keywords methods
+setMethod("plotDualResponses",
+          signature=
+            signature(DLEmodel="ModelTox",
+                      Effmodel="ModelEff"),
+          def=
+            function(DLEmodel,Effmodel,data,...){
+              
+              ## Get Toxicity plot
+              ## get the fit
+              
+              
+              ##Make sure the model estimates are corresponds to the input data 
+              DLEmodel <- update(object=DLEmodel,data=data)
+              Effmodel <- update(object=Effmodel,data=data)
+              
+              
+              plotDLEData <- data.frame(dose=data@doseGrid,
+                                        probDLE=prob(dose=data@doseGrid,
+                                                     model=DLEmodel))
+              ## make the plot
+              gdata <- with(plotDLEData,
+                            data.frame(x=dose,
+                                       y=probDLE,
+                                       group=rep("Estimated DLE",each=nrow(plotDLEData)),
+                                       Type=factor(rep("Estimated DLE",nrow(plotDLEData)),levels="Estimated DLE")))
+              
+              plot1 <- ggplot(data=gdata, aes(x=x,y=y), group=group) +
+                xlab("Dose Levels")+
+                ylab(paste("Probability of DLE")) + ylim(c(0,1)) + xlim(c(0,max(data@doseGrid))) +
+                geom_line(colour=I("red"), size=1.5)
+              
+              
+              plot1 <- plot1 +
+                geom_line(size=1.5,colour="red")
+              
+              ##only look at these dose levels for the plot:
+              
+              ##get the plot data for the efficacy
+              plotEffData<- data.frame(dose=data@doseGrid,
+                                       ExpEff=ExpEff(dose=data@doseGrid,
+                                                     model=Effmodel))
+              
+              ##make the second plot
+              ggdata<-with(plotEffData,
+                           data.frame(x=dose,
+                                      y=ExpEff,
+                                      group=rep("Estimated Expected Efficacy",each=nrow(plotEffData)),
+                                      Type=factor(rep("Estimated Expected Efficacy",nrow(plotEffData)),levels="Estimated Expected Efficacy")))
+              
+              ##Get efficacy plot
+              plot2 <- ggplot(data=ggdata, aes(x=x,y=y), group=group) +
+                xlab("Dose Levels")+
+                ylab(paste("Estimatimated Expected Efficacy")) + xlim(c(0,max(data@doseGrid))) +
+                geom_line(colour=I("blue"), size=1.5)
+              
+              plot2 <- plot2 +
+                geom_line(size=1.5,colour="blue")
+              
+              ## arrange both plots side by side
+              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
+              return(ret)
+            })
+## ===================================================================================
+
+
 
 
 
