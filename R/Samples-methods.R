@@ -699,9 +699,9 @@ setMethod("fit",
             })
 ## ==========================================================================================
 ## --------------------------------------------------------------------
-## Fit based on the Efficacy Flexible model
+## Get fitted dose-efficacy based on the Efficacy Flexible model
 ## -------------------------------------------------------------
-##' Fit based on the Efficacy Flexible model with samples
+##' Fitted values based on the Efficacy Flexible model with samples
 ##' 
 ##' @export
 ##' @keywords method
@@ -754,7 +754,91 @@ setMethod("fit",
               return(ret)
             })
 ## ==============================================================
+## ----------------------------------------------------------------
+## Get fitted values at all dose levels from gain samples 
+## -----------------------------------------------------------------
+##' Get the fiited values for the gain values at all dose levels based on 
+##' a given DLE model, DLE sample, an efficacy model, Efficacy sample and data
+##' 
+##' @param DLEmodel the DLE pseudo model of \code{\linkS4class{ModelTox}} class object
+##' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
+##' @param Effmodel the efficacy pseudo model of \code{\linkS4class{ModelEff}} class object
+##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
+##' @param the data input of \code{\linkS4class{DataDual}} class object
+##' 
+##' @export
+##' @ketwords methods
 
+setGeneric("fitGain",
+           def=
+             function(DLEmodel,
+                      DLEsamples,
+                      Effmodel,
+                      Effsamples,
+                      data,
+                      ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("fitGain")},
+           valueClass="data.frame")
+
+##' init' function
+
+setMethod("fitGain",
+          signature=
+            signature(DLEmodel="ModelTox",
+                      DLEsamples="Samples",
+                      Effmodel="ModelEff",
+                      Effsamples="Samples",
+                      data="DataDual"),
+          def=
+            function(DLEmodel,
+                     DLEsamples,
+                     Effmodel,
+                     Effsamples,
+                     data,
+                     points=data@doseGrid,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     ...){
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(points))
+              
+              ## first we have to get samples from the gain
+              ## at the dose grid points.
+              GainSamples <- matrix(nrow=sampleSize(DLEsamples@options),
+                                    ncol=length(points))
+              
+              ## evaluate the probs, for all gain samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                GainSamples[, i] <- gain(dose=points[i],
+                                         DLEmodel=DLEmodel,
+                                         DLEsamples=DLEsamples, 
+                                         Effmodel=Effmodel,
+                                         Effsamples=Effsamples)
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(GainSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(GainSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(dose=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)
+            })
+# =========================================================================================================
 ## ---------------------------------------------------------
 ## Plot dose-tox fit from 'LogisticIndepBeta' model class
 ##'
@@ -1053,7 +1137,7 @@ setMethod("plotDualResponses",
               ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
               return(ret)
             })
-## ===================================================================================
+## =======================================================================================================
 
 
 
