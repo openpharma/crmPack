@@ -134,6 +134,7 @@ validObject(.Data())
 ##' @param \dots not used
 ##' @return the initialized \code{\linkS4class{Data}} object
 ##'
+##' @example examples/Data-class.R
 ##' @export
 ##' @keywords programming
 Data <- function(x=numeric(),

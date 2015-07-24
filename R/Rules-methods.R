@@ -1853,11 +1853,11 @@ setMethod("nextBest",
             signature(nextBest="NextBestMaxGain",
                       doselimit="numeric",
                       model="ModelTox",
-                      data="DataDual",
-                      Effmodel="ModelEff"),
-          
+                      data="DataDual"),
           def=
             function(nextBest,doselimit,model,data,Effmodel,...){
+              
+              stop(! is(Effmodel, "ModelEff"))
               
               DuringTrialtargetprob <- nextBest@DLEDuringTrialtarget
               EndOfTrialtargetprob <- nextBest@DLEEndOfTrialtarget

@@ -6,7 +6,7 @@
 \alias{GeneralModel-class}
 \title{General class for model input}
 \description{
-This is the general model class, from which all other specific models
+This is the general model class, from which all other specific models for BUGS
 inherit.
 }
 \details{
