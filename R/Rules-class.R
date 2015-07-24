@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 07/02/2014   file creation
+## 10/07/2014   Added further rule classs
 ###################################################################################
 
 ##' @include helpers.R
@@ -1289,4 +1291,117 @@ CohortSizeMin <- function(cohortSizeList)
 
 
 
-## ============================================================
+## ==========================================================================================
+## --------------------------------------------------------
+## Class for next best based on Pseudo DLE Model with samples
+## -----------------------------------------------------------
+##'
+##'Class for next best based on DLE responses also using DLE samples
+##'
+##'@export
+##'@keywords class
+
+.NextBestTDsamples<-
+  setClass(Class="NextBestTDsamples",
+           representation(targetDuringTrial="numeric",
+                          targetEndOfTrial="numeric",
+                          derive="function"),
+           ##targetDuringTrial is the target DLE probability during the trial
+           ##targetEndOfTrial is the target DLE probability at the End of the trial
+           prototype(targetDuringTrial=0.35,
+                     targetEndOfTrial=0.3,
+                     derive=function(TDsamples){
+                       quantile(TDsamples,prob=0.3)}),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o<-crmPack:::Validate()
+               o$check(is.probability(object@targetDuringTrial,
+                                      bounds=FALSE),
+                       "targetDuringTrial must be probability > 0 and < 1")
+               o$check(is.probability(object@targetEndOfTrial,
+                                      bounds=FALSE),
+                       "targetEndOfTrial must be probability > 0 and < 1")
+               o$check(identical(names(formals(object@derive)),
+                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
+               
+               o$result()
+             })
+validObject(.NextBestTDsamples())
+## ---------------------------------------------------------------------------
+##' Init function for NextBestTDsamples
+
+NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
+{
+  .NextBestTDsamples(targetDuringTrial=targetDuringTrial,
+                     targetEndOfTrial=targetEndOfTrial,
+                     derive=derive)
+}
+## ------------------------------------------------------------------------------
+## class for nextBest based on Pseudo DLE model without sample
+## ------------------------------------------------------------------
+
+##' Class for next best based only on the DLE responses without using any samples
+##' 
+##' @export
+##' @keywords methods
+.NextBestTD<-
+  setClass(Class="NextBestTD",
+           representation(targetDuringTrial="numeric",
+                          targetEndOfTrial="numeric"),
+           ##targetDuringTrial is the target DLE probability during the trial
+           ##targetEndOfTrial is the target DLE probability at the End of the trial
+           prototype(targetDuringTrial=0.35,
+                     targetEndOfTrial=0.3),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o<-crmPack:::Validate()
+               o$check(is.probability(object@targetDuringTrial,
+                                      bounds=FALSE),
+                       "targetDuringTrial must be probability > 0 and < 1")
+               o$check(is.probability(object@targetEndOfTrial,
+                                      bounds=FALSE),
+                       "targetEndOfTrial must be probability > 0 and < 1")
+               o$result()
+             })
+validObject(.NextBestTD())
+
+##' Init function for NextBestTDsamples 
+NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
+{
+  .NextBestTD(targetDuringTrial=targetDuringTrial,
+              targetEndOfTrial=targetEndOfTrial)
+}
+
+##-------------------------------------------------------------------
+## Class for next best with maximum gain value based on one DLE and one Efficacy pseudo model
+## ---------------------------------------------------------------------------------------
+
+##' Class for next best with maximum gain based on DLE and Efficacy responses
+##' 
+##' @export
+##' @keywords class
+.NextBestMaxGain<-
+  setClass(Class="NextBestMaxGain",
+           representation(DLEDuringTrialtarget="numeric",
+                          DLEEndOfTrialtarget="numeric"),
+           prototype(DLEDuringTrialtarget=0.35,
+                     DLEEndOfTrialtarget=0.3),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               o$check(is.probability(object@DLEDuringTrialtarget),
+                       "DLE DuringTrialtarget has to be a probability")
+               o$check(is.probability(object@DLEEndOfTrialtarget),
+                       "DLE EndOfTrialtarget has to be a probability")
+               o$result()
+             })
+validObject(.NextBestMaxGain)
+##' Init function for NextBestMaxGain
+
+NextBestMaxGain <- function(DLEDuringTrialtarget,
+                            DLEEndOfTrialtarget)
+{.NextBestMaxGain(DLEDuringTrialtarget=DLEDuringTrialtarget,
+                  DLEEndOfTrialtarget=DLEEndOfTrialtarget)}
