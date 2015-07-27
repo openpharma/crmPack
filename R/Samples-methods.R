@@ -901,31 +901,103 @@ setMethod("plot",
             })
 
 
+
 ## ----------------------------------------------------------------------------------------------------------
-## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
+## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model with samples
 ## ----------------------------------------------------------------------------------------------------
-##' Plot the gain curve in addition with the DLE and Efficacy curve using a given DLE pseudo and 
-##' a given Efficacy Pseudo model
+##' Plot the gain curve in addition with the DLE and Efficacy curve using a given DLE pseudo, a DLE sample,
+##' a given Efficacy Pseudo model and an efficacy sample
 ##' 
-##' @param DLEmodel a specified Dle model follow \code{\linkS4class{ModelTox}} class specification
-##' @param Effmodel a specified Dle model follow \code{\linkS4class{ModelEff}} class specification
+##' @param DLEmodel a specified DLE model follow \code{\linkS4class{ModelTox}} class specification
+##' @param DLEsamples the DLE sample of \code{\linkS4class{Sample}} class specification
+##' @param Effmodel a specified DLE model follow \code{\linkS4class{ModelEff}} class specification
+##' @param Effsample the efficacy sample of of \code{\linkS4class{Sample}} class specification
 ##' @param data the data input follow \code{\linkS4class{DataDual}} class specification
 ##' 
 ##' @export
 ##' @keywords methods
-##' 
 setGeneric("plotGain",
            def=
              function(DLEmodel,
+                      DLEsamples,
                       Effmodel,
+                      Effsamples,
                       data,...){
                standardGeneric("plotGain")})
-
-##' describeIn plotGain Standard method
+##' @describeIn plotGain Standard method
 setMethod("plotGain",
           signature=
             signature(DLEmodel="ModelTox",
-                      Effmodel="ModelEff"),
+                      DLEsamples="Samples",
+                      Effmodel="ModelEff",
+                      Effsamples="Samples"),
+          def=
+            function(DLEmodel,DLEsamples,Effmodel,Effsamples,data,...){
+              
+              ##Get fitted values for probabilities of DLE at all dose levels 
+              plotDLEData <- fit(DLEsamples,
+                                 model=DLEmodel,
+                                 data=data,
+                                 quantiles=c(0.025, 0.975),
+                                 middle=mean)
+              
+              
+              
+              ##Get fitted values for mean efficacy values at all dose levels 
+              plotEffData <- fit(Effsamples, 
+                                 model=Effmodel,
+                                 data=data,
+                                 quantiles=c(0.025, 0.975),
+                                 middle=mean)
+              
+              ##Get fitted values for gain values at all dose levels 
+              plotGainData <- fitGain(DLEmodel=DLEmodel,
+                                      DLEsamples=DLEsamples,
+                                      Effmodel=Effmodel,
+                                      Effsamples=Effsamples,
+                                      data=data)
+              
+              ##For each of the dose levels, take the median for the probabilties of DLE, mean efiicacy values 
+              ## and gain values. Hence combine them into a data frame
+              
+              plotData<-data.frame(dose=rep(data@doseGrid,3),
+                                   values=c(plotDLEData$middle,
+                                            plotEffData$middle,
+                                            plotGainData$middle))
+              
+              gdata<-with(plotData,
+                          data.frame(x=dose,
+                                     y=values,
+                                     group=c(rep("p(DLE)",length(data@doseGrid)),
+                                             rep("Mean Expected Efficacy",length(data@doseGrid)),
+                                             rep("Gain",length(data@doseGrid))),
+                                     Type=factor("Estimate",levels="Estimate")
+                                     
+                          ))
+              
+              plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
+                ggplot2:::scale_colour_manual(name="curves",values=c("green3","blue","red"))+
+                xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
+                ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
+              
+              
+              
+              return(plot1)
+            })
+
+##----------------------------------------------------------------------------------------------------
+## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
+## ----------------------------------------------------------------------------------------------------
+##' Plot the gain curve in addition with the DLE and Efficacy curve using a given DLE pseudo and 
+##' a given Efficacy Pseudo model without DLE and Efficay samples
+##' 
+##' @describeIn plotGain Standard method
+setMethod("plotGain",
+          signature=
+            signature(DLEmodel="ModelTox",
+                      DLEsamples="missing",
+                      Effmodel="ModelEff",
+                      Effsamples="missing"),
           def=
             function(DLEmodel,Effmodel,data,...){
             
@@ -986,12 +1058,12 @@ setMethod("plotGain",
 ##==========================================================================================
 
 ## --------------------------------------------------------------------------------------------
-## Plot the Efficacy pSSEUDO model
+## Plot the Efficacy pseudo model
 ## -------------------------------------------------------------------------------------------
 ##' Plot of the Efficacy pseudo Model with samples
 ##' 
-##' @param x bla
-##' @param y bli todo
+##' @param x samples the Efficacy samples 
+##' @param y ModelEff the Efficacy model
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1200,7 +1272,9 @@ setMethod("plotDualResponses",
 setMethod("plotDualResponses",
           signature=
             signature(DLEmodel="ModelTox",
-                      Effmodel="ModelEff"),
+                      DLEsamples="missing",
+                      Effmodel="ModelEff",
+                      Effsamples="missing"),
           def=
             function(DLEmodel,Effmodel,data,...){
               
