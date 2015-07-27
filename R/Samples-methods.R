@@ -590,9 +590,8 @@ setMethod("plot",
 ## -------------------------------------------------------------------------------------
 ## Get fitted dose-tox curve from Samples for 'LogisticIndepBeta' model class
 ## ------------------------------------------------------------------------------------
-##' @export
-##' @keywords methods
-
+##' @describeIn fit Get fitted dose-tox curve from Samples for 
+##' \dQuote{LogisticIndepBeta} model class
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -646,9 +645,8 @@ setMethod("fit",
 ## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
 ## ------------------------------------------------------------------------------------
 
-##' @export
-##' @keywords methods
-
+##' @describeIn fit Get fitted dose-efficacy curve from Samples for 
+##'   \dQuote{Effloglog} model class
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -701,10 +699,7 @@ setMethod("fit",
 ## --------------------------------------------------------------------
 ## Get fitted dose-efficacy based on the Efficacy Flexible model
 ## -------------------------------------------------------------
-##' Fitted values based on the Efficacy Flexible model with samples
-##' 
-##' @export
-##' @keywords method
+##' @describeIn fit Fitted values based on the Efficacy Flexible model with samples
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -767,8 +762,7 @@ setMethod("fit",
 ##' @param the data input of \code{\linkS4class{DataDual}} class object
 ##' 
 ##' @export
-##' @ketwords methods
-
+##' @keywords methods
 setGeneric("fitGain",
            def=
              function(DLEmodel,
@@ -839,12 +833,14 @@ setMethod("fitGain",
               return(ret)
             })
 # =========================================================================================================
-## ---------------------------------------------------------
-## Plot dose-tox fit from 'LogisticIndepBeta' model class
+
+##' Plot dose-tox fit from 'LogisticIndepBeta' model class
+##' 
+##' @param x the samples
+##' @param y the LogisticIndepBeta object
 ##'
-##'@export
-##'@keywrds methods
-##'
+##' @export
+##' @keywords methods
 setMethod("plot",
           signature=
             signature(x="Samples",
@@ -912,7 +908,7 @@ setMethod("plot",
 ##' a given Efficacy Pseudo model
 ##' 
 ##' @param DLEmodel a specified Dle model follow \code{\linkS4class{ModelTox}} class specification
-##' @papra Effmodel a specified Dle model follow \code{\linkS4class{ModelEff}} class specification
+##' @param Effmodel a specified Dle model follow \code{\linkS4class{ModelEff}} class specification
 ##' @param data the data input follow \code{\linkS4class{DataDual}} class specification
 ##' 
 ##' @export
@@ -924,6 +920,8 @@ setGeneric("plotGain",
                       Effmodel,
                       data,...){
                standardGeneric("plotGain")})
+
+##' describeIn plotGain Standard method
 setMethod("plotGain",
           signature=
             signature(DLEmodel="ModelTox",
@@ -991,6 +989,9 @@ setMethod("plotGain",
 ## Plot the Efficacy pSSEUDO model
 ## -------------------------------------------------------------------------------------------
 ##' Plot of the Efficacy pseudo Model with samples
+##' 
+##' @param x bla
+##' @param y bli todo
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1075,7 +1076,7 @@ setGeneric("plotDualResponses",
                       data,...){
                standardGeneric("plotDualResponses")})
 
-##' init' function
+##' @describeIn plotDualResponses function todo
 setMethod("plotDualResponses",
           signature=
             signature(DLEmodel="ModelTox",
@@ -1195,10 +1196,7 @@ setMethod("plotDualResponses",
 ## =======================================================================================
 
 ##-------------------------------------------------------------------------------------------
-##' Plot the DLE and efficacy curve side by side given a DLE model, an Efiicacy model without any samples
-##' 
-##' @export
-##' @keywords methods
+##' @describeIn plotDualResponses Plot the DLE and efficacy curve side by side given a DLE model, an Efiicacy model without any samples 
 setMethod("plotDualResponses",
           signature=
             signature(DLEmodel="ModelTox",

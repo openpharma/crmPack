@@ -32,5 +32,10 @@ Note that \code{ID} and \code{cohort} can be missing, then a warning
 will be issued and the variables will be filled with default
 IDs and best guesses, respectively.
 }
+\examples{
+myData <- Data(x=c(1, 2, 2, 3, 3),
+               y=c(0, 0, 0, 1, 1),
+               doseGrid=1:10)
+}
 \keyword{programming}
 

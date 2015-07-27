@@ -234,7 +234,6 @@ ThreePlusThreeDesign <- function(doseGrid)
                      nextBest=.NextBestTDsamples(),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative()),
-           
            contains=list("RuleDesign"))
 
 validObject(.TDsamplesDesign())
@@ -258,7 +257,6 @@ TDsamplesDesign<-function(model,stopping,increments,...){
                      nextBest=.NextBestTD(),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative()),
-           
            contains=list("RuleDesign"))
 
 validObject(.TDDesign())
@@ -291,7 +289,7 @@ TDDesign<-function(model,stopping,increments,...){
                      data=DataDual(doseGrid=1:2),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative()),
-           
+           contains=list("RuleDesign"),
            validity=
              function(object){
                o <- crmPack:::Validate()

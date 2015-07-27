@@ -82,6 +82,7 @@ validObject(.AllModels())
                             modelspecs="function",
                             init="function",
                             sample="character"),
+             contains="AlllModels",
              validity=
                  function(object){
                      o <- Validate()

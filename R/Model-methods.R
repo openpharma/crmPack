@@ -295,11 +295,10 @@ setMethod("biomLevel",
 ## ---------------------------------------------------------------------------------
 
 ##' Extracting efficay responses for subjects without an DLE
-##' @param object for data input from \code\{\linkS4class{Data}} object 
+##' @param object for data input from \code{\linkS4class{Data}} object 
 ##' 
 ##' @export
-##' @keywords
-
+##' @keywords methods
 setGeneric("getEff",
 def=function(object,...){
   standardGeneric("getEff")},
@@ -590,7 +589,9 @@ setMethod("gain",
           signature=
             signature(dose="numeric",
                       DLEmodel="ModelTox",
-                      Effmodel="ModelEff"),
+                      DLEsamples="missing",
+                      Effmodel="ModelEff",
+                      Effsamples="missing"),
           def=
             function(dose,DLEmodel,Effmodel,...){
               ##extract the prob function from the DLE model
@@ -627,10 +628,10 @@ setMethod("gain",
 ## -------------------------------------------------------------------------------
 
 ##' Update method for the 'LogisticIndepBeta'Model class 
-##' @param object is the model which follow \code{\linkS4Class{LogisticIndpeBeta}}} class object
+##' @param object is the model which follow \code{\linkS4Class{LogisticIndepBeta}} class object
 ##'
-##'@export
-##'@keywords method
+##' @export
+##' @keywords method
 setMethod("update",
           signature=
             signature(object="LogisticIndepBeta"),
@@ -658,7 +659,7 @@ setMethod("update",
 
 ## ================================================================================
 ##' Update method for the 'Effloglog'Model class 
-##' @param object is the model which follow \code{\linkS4Class{Effloglog}}} class object
+##' @param object is the model which follow \code{\linkS4Class{Effloglog}} class object
 ##' 
 ##' @export
 ##' @keywords methods
