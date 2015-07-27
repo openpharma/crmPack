@@ -231,7 +231,7 @@ ThreePlusThreeDesign <- function(doseGrid)
                           stopping="Stopping",
                           increments="Increments"),
            prototype(model=.LogisticIndepBeta(),
-                     nextBest=.NextBestTDsamples(),
+                     nextBest=.nextBestTDsamples(),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative()),
            contains=list("RuleDesign"))
@@ -271,7 +271,7 @@ TDDesign<-function(model,stopping,increments,...){
 ## ------------------------------------------------------------------------------
 ## Class for design based on one Pseudo DLE and one Pseudo Efficacy model
 ## ------------------------------------------------------------------------------
-##' Class of design which based on one pseudo DLE and one pseudo efficacy model without samples
+##' Class of design which based on one pseudo DLE and one pseudo efficacy model
 ##' 
 ##' @export
 ##' @keywords class
@@ -282,17 +282,15 @@ TDDesign<-function(model,stopping,increments,...){
                           data="DataDual",
                           stopping="Stopping",
                           increments="Increments"),
-           prototype(nextBest=.NextBestMaxGain(),
-                     startingDose=1,
+           prototype(startingDose=1,
                      DLEmodel=.LogisticIndepBeta(),
-                     Effmodel=.Effloglog(),
                      data=DataDual(doseGrid=1:2),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative()),
            contains=list("RuleDesign"),
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                
                o$check(is.scalar(object@startingDose),
                        "startingDose must be scalar")
