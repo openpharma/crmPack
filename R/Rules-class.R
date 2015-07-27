@@ -1405,3 +1405,54 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
                             DLEEndOfTrialtarget)
 {.NextBestMaxGain(DLEDuringTrialtarget=DLEDuringTrialtarget,
                   DLEEndOfTrialtarget=DLEEndOfTrialtarget)}
+
+
+
+## ---------------------------------------------------------------------------------------
+##-------------------------------------------------------------------
+## Class for next best with maximum gain value based on one DLE and one Efficacy pseudo model with samples
+## ---------------------------------------------------------------------------------------
+
+##' Class for next best with maximum gain based on DLE and Efficacy responses given a DLE pseudo model,
+##' a DLE samples, an efficacy pseudo model and  an efficacy sample
+##' 
+##' @export
+##' @keywords class
+.NextBestMaxGainSamples<-
+  setClass(Class="NextBestMaxGainSamples",
+           representation(DLEDuringTrialtarget="numeric",
+                          DLEEndOfTrialtarget="numeric",
+                          TDderive="function",
+                          Gstarderive="function"),
+           prototype(DLEDuringTrialtarget=0.35,
+                     DLEEndOfTrialtarget=0.3,
+                     TDderive=function(TDsamples){
+                       quantile(TDsamples,prob=0.3)},
+                     Gstarderive=function(Gstarsamples){
+                       quantile(Gstarsamples,prob=0.5)}),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               o$check(is.probability(object@DLEDuringTrialtarget),
+                       "DLE DuringTrialtarget has to be a probability")
+               o$check(is.probability(object@DLEEndOfTrialtarget),
+                       "DLE EndOfTrialtarget has to be a probability")
+               o$check(identical(names(formals(object@TDderive)),
+                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
+               o$check(identical(names(formals(object@Gstarderive)),
+                                 c("Gstarsamples")),"derive must have as single argument 'Gstarsamples'")
+               
+               o$result()
+             })
+validObject(.NextBestMaxGainSamples)
+##' Initial function
+
+NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
+                                   DLEEndOfTrialtarget,TDderive,Gstarderive)
+{.NextBestMaxGainSamples(DLEDuringTrialtarget=DLEDuringTrialtarget,
+                         DLEEndOfTrialtarget=DLEEndOfTrialtarget,
+                         TDderive=TDderive,
+                         Gstarderive=Gstarderive)}
+
+## --------------------------------------------------------------------------------------------------
