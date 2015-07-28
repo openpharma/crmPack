@@ -2549,7 +2549,8 @@ validObject(.ModelEff)
                           DLEweights="numeric",
                           
                           phi1="numeric",
-                          phi2="numeric"),
+                          phi2="numeric",
+                          Pcov="matrix"),
            prototype(binDLE=c(0,0),
                      DLEdose=c(1,1),
                      DLEweights=c(1,1)),
@@ -2600,13 +2601,15 @@ LogisticIndepBeta <- function(binDLE,
   ##Obtain parameter estimates for dose-DLE curve
   phi1<-coef(SFitDLE)[1,1]
   phi2<-coef(SFitDLE)[2,1]
-  
+  ## covariance matrix of phi1 and phi2
+  Pcov <- vcov(FitDLE)
   
   .LogisticIndepBeta(binDLE=binDLE,
                      DLEdose=DLEdose,
                      DLEweights=DLEweights,
                      phi1=phi1,
                      phi2=phi2,
+                     Pcov=Pcov,
                      datanames=c("nObs","y","x"),
                      data=data,
                      dose=function(prob,phi1,phi2){
@@ -2636,6 +2639,7 @@ LogisticIndepBeta <- function(binDLE,
                           useFixed="logical",
                           theta1="numeric",
                           theta2="numeric",
+                          Pcov="matrix",
                           vecmu="matrix",
                           matX="matrix",
                           matQ="matrix",
@@ -2704,6 +2708,8 @@ Effloglog<-function(Eff,
   ##Obtain paramter estimates
   theta1<-coef(SFitEff)[1,1]
   theta2<-coef(SFitEff)[2,1]
+  ##covariance matrix of theta1 and theta2
+  Pcov <- vcov(FitEff)
   ##if sigma2/nu is not a fixed constant
   if (length(nu)==2){
     mu0<-matrix(c(theta1,theta2),2,1)
@@ -2742,6 +2748,7 @@ Effloglog<-function(Eff,
                return(theta1+theta2*log(log(dose)))},
              theta1=theta1,
              theta2=theta2,
+             Pcov=Pcov,
              vecmu=vecmu,
              matX=matX,
              matQ=matQ,
