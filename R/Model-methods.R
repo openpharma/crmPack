@@ -689,3 +689,38 @@ setMethod("update",
               return(model)
             })
 ## =================================================================================
+
+##' Update method for the 'EffFlexi'Model class 
+##' @param object is the model which follow \code{\linkS4Class{EffFlexi}} class object
+##' 
+##' @export
+##' @keywords methods
+setMethod("update",
+          signature=
+            signature(object="EffFlexi"),
+          def=
+            function(object,
+                     data,
+                     ...){
+              ##Get Pseudo Eff responses (prior) of the model
+              
+              PseudoEff<-object@Eff
+              
+              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
+              PseudoEffdose<- object@Effdose
+              
+              ## Get the initial values of parameters for Sigma2 (if it is not fixed)
+              ##OR get the fixed value of sigma2
+              PseudoSigma2<- object@sigma2
+              
+              
+              ## Get the initial values of parameters for Sigma2betaW (if it is not fixed)
+              ##OR get the fixed value of sigma2betaW
+              PseudoSigma2betaW<- object@sigma2betaW
+              
+              ##update the model estimates with data
+              model<- EffFlexi(Eff=PseudoEff,Effdose=PseudoEffdose,sigma2=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
+              
+              ##return the updated model
+              return(model)
+            })

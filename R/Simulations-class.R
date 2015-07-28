@@ -309,7 +309,7 @@ DualSimulations <- function(rhoEst,
            contains="GeneralSimulations",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                
                nSims <- length(object@data)
                o$check(identical(length(object@stopReasons), nSims),
@@ -342,7 +342,8 @@ PseudoSimulations <- function(fit,
 
 .PseudoDualSimulations <- 
   setClass(Class="PseudoDualSimulations",
-           representation(sigma2est="numeric"),
+           representation(fitEff="list",
+                          sigma2est="numeric"),
            prototype(sigma2est= c(0.001,0.002)),
            contains="PseudoSimulations",
            validity=
@@ -358,14 +359,15 @@ validObject(.PseudoDualSimulations())
 
 ##inti function
 
-PseudoDualSimulations <- function(sigma2est,
+PseudoDualSimulations <- function(fitEff,
+                                  sigma2est,
                                   ...)
 { 
   start <- PseudoSimulations(...)
   .PseudoDualSimulations(start,
+                         fitEff=fitEff,
                          sigma2est=sigma2est)
 }
-
 ## ================================================================================================
 
 

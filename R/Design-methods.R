@@ -1408,7 +1408,7 @@ setMethod("simulate",
               }
               
               
-              resultList <- crmPack:::getResultList(fun=runSim,
+              resultList <- getResultList(fun=runSim,
                                                     nsim=nsim,
                                                     vars=
                                                       c("simSeeds",
@@ -1483,7 +1483,7 @@ setMethod("simulate",
               
               
               ## seed handling
-              RNGstate <- crmPack:::setSeed(seed)
+              RNGstate <- setSeed(seed)
               
               ## from this,
               ## generate the individual seeds for the simulation runs
@@ -1527,6 +1527,9 @@ setMethod("simulate",
               ## find true sigma2 to generate responses
                 
                 trueSigma2<-1/trueNu
+                
+                ##start the simulated data with the provided one
+                thisData <- object@data
                 
                 
                 ## shall we stop the trial?
@@ -1615,7 +1618,7 @@ setMethod("simulate",
                   
                   
                   ## => what is the next best dose?
-                  NEXT<-nextBest(object@nextBestGain,
+                  NEXT<-nextBest(object@nextBest,
                                  doselimit=doselimit,
                                  model=thisDLEModel,
                                  data=thisData,
@@ -1646,16 +1649,16 @@ setMethod("simulate",
                   
                 }
                 
-                ## get the fit
-                thisFit <- list(phi1=thisDLEModel@phi1,
-                                phi2=thisDLEModel@phi2,
-                                probDLE=thisDLEModel@prob(object@data@doseGrid,
-                                                          thisDLEModel@phi1,thisDLEModel@phi2),
-                                theta1=thisEffModel@theta1,
-                                theta2=thisEffModel@theta2,
-                                ExpEff=thisEffModel@ExpEff(object@data@doseGrid,
-                                                           thisEffModel@theta1,
-                                                           thisEffModel@theta2))
+                ## get the fits
+                thisDLEFit <- list(phi1=thisDLEModel@phi1,
+                                   phi2=thisDLEModel@phi2,
+                                   probDLE=thisDLEModel@prob(object@data@doseGrid,
+                                                             thisDLEModel@phi1,thisDLEModel@phi2))
+                thisEffFit <- list(theta1=thisEffModel@theta1,
+                                   theta2=thisEffModel@theta2,
+                                   ExpEff=thisEffModel@ExpEff(object@data@doseGrid,
+                                                              thisEffModel@theta1,
+                                                              thisEffModel@theta2))
                 
                 ## return the results
                 thisResult <- list(data=thisData,
@@ -1667,7 +1670,8 @@ setMethod("simulate",
                                    Gstar=thisGstar,
                                    GstarAtDoseGrid=thisGstaratdosegrid,
                                    Recommend=Recommend,
-                                   fit=thisFit,
+                                   fitDLE=thisDLEFit,
+                                   fitEff=thisEffFit,
                                    sigma2est=thisSigma2,
                                    stop=attr(stopit,
                                              "message"))
@@ -1699,7 +1703,9 @@ setMethod("simulate",
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "Recommend"))
               
               ##set up the list for the final fits
-              fitList <- lapply(resultList,"[[","fit")
+              fitDLEList <- lapply(resultList,"[[","fitDLE")
+              fitEffList <- lapply(resultList,"[[","fitEff")
+              
               
               ## the vector of the sigma2
               sigma2Estimates <- as.numeric(sapply(resultList, "[[", "sigma2est"))
@@ -1710,7 +1716,8 @@ setMethod("simulate",
               ## return the results in the Simulations class object
               ret <- PseudoDualSimulations(data=dataList,
                                            doses=recommendedDoses,
-                                           fit=fitList,
+                                           fit=fitDLEList,
+                                           fitEff=fitEffList,
                                            sigma2est=sigma2Estimates,
                                            stopReasons=stopReasons,
                                            seed=RNGstate)
