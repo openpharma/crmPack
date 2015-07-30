@@ -82,7 +82,7 @@ validObject(.AllModels())
                             modelspecs="function",
                             init="function",
                             sample="character"),
-             contains="AlllModels",
+             contains="AllModels",
              validity=
                  function(object){
                      o <- Validate()
@@ -2629,6 +2629,7 @@ LogisticIndepBeta <- function(binDLE,
 ##' This is the efficay model which describe the realtionship of the normal efficacy responses 
 ##' and their corresponding log-log dose levels
 ##'
+##'@example examples\Model-class Effloglog.R
 ##'@export
 ##'@keywords methods
 .Effloglog<-

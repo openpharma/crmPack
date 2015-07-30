@@ -370,4 +370,59 @@ PseudoDualSimulations <- function(fitEff,
 }
 ## ================================================================================================
 
+##' Class for the summary of pseudo-models simulations output
+##'
+##' Note that objects should not be created by users, therefore no
+##' initialization function is provided for this class.
+##'
+##' @slot targetEndOfTrial the target probability of DLE wanted at the end of a trial
+##' @slot targetDoseEndOfTrial the dose level corresponds to the target probability
+##' of DLE wanted at the end of a trial
+##' @slot targetDuringTrial the target probability of DLE wanted during a trial
+##' @slot targetDoseDuringTrial the dose level corresponds to the target probability of DLE
+##' wanted during the trial
+##' @slot nsim number of simulations
+##' @slot propDLE proportions of DLE in the trials
+##' @slot meanToxRisk mean toxicity risks for the patients
+##' @slot doseSelected doses selected as MTD (targetDoseEndOfTrial)
+##' @slot toxAtDosesSelected true toxicity at doses selected
+##' @slot propAtTargetEndOfTrial Proportion of trials selecting at the doseGrid closest below the MTD, the 
+##' targetDoseEndOfTrial
+##' @slot propAtTargetDuringTrial Proportion of trials selecting at the doseGrid closest below the 
+##' targetDoseDuringTrial
+##' @slot doseMostSelected dose most often selected as MTD
+##' @slot obsToxRateAtDoseMostSelected observed toxicity rate at dose most often
+##' selected
+##' @slot nObs number of patients overall
+##' @slot nAboveTargetEndOfTrial number of patients treated above targetDoseEndOfTrial
+##' @slot nAboveTargetDuringTrial number of patients treated above targetDoseDuringTrial
+##' @slot doseGrid the dose grid that has been used
+##' @slot fitAtDoseMostSelected fitted toxicity rate at dose most often selected
+##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
+##' quantiles of the mean fitted toxicity at each dose level
+##' 
+##' @export
+##' @keywords classes
+.PseudoSimulationsSummary <- 
+  setClass(Class="PseudoSimulationsSummary",
+           representation(targetEndOfTrial="numeric",
+                          targetDoseEndOfTrial="numeric",
+                          targetDuringTrial="numeric",
+                          targetDoseDuringTrial="numeric",
+                          nsim="integer",
+                          propDLE="numeric",
+                          meanToxRisk="numeric",
+                          doseSelected="numeric",
+                          toxAtDosesSelected="numeric",
+                          propAtTargetEndOfTrial="numeric",
+                          propAtTargetDuringTrial="numeric",
+                          doseMostSelected="numeric",
+                          obsToxRateAtDoseMostSelected="numeric",
+                          nObs="integer",
+                          nAboveTargetEndOfTrial="integer",
+                          nAboveTargetDuringTrial="integer",
+                          doseGrid="numeric",
+                          fitAtDoseMostSelected="numeric",
+                          meanFit="list"))
+## ---------------------------------------------------------------------------------------------
 

@@ -1130,3 +1130,293 @@ setMethod("plot",
               ## then finally plot everything
               ret
           })
+
+## -----------------------------------------------------------------------------------------
+##' Summarize the simulations, relative to a given truth
+##'
+##' @param object the \code{\linkS4class{PseudoSimulations}} object we want to
+##' summarize
+##' @param truth a function which takes as input a dose (vector) and returns the
+##' true probability (vector) for toxicity
+##' @param targetEndOfTrial the target probability of DLE wanted to achieve at the end of a trial
+##' @param targetDuringTrial the target probability of DLE wanted to achieve during a trial
+##' 
+##' @param \dots Additional arguments can be supplied here for \code{truth}
+##' @return an object of class \code{\linkS4class{PseudoSimulationsSummary}}
+##'
+##' @export
+##' @keywords methods
+setMethod("summary",
+          signature=
+            signature(object="PseudoSimulations"),
+          def=
+            function(object,
+                     truth,
+                     targetEndOfTrial=0.3,
+                     targetDuringTrial=0.35,
+                     ...){
+              ##extract dose grid
+              doseGrid <- object@data[[1]]@doseGrid
+              
+              ##evaluate true DLE at doseGrid
+              trueDLE <- truth(doseGrid,...)
+              
+              ##Inverse function of the truth function
+              inverse = function (f, lower = -100, upper = 100) {
+                function (y) uniroot((function (x) f(x) - y), lower = lower, upper = upper)[1]
+              }
+              
+              ##Function to obtain corresponsing dose level given target prob
+              TD <- inverse(truth, 0, max(data@doseGrid))
+              
+              ##Find the dose corresponding to the target dose during trial
+              targetDoseEndOfTrial <- as.numeric(TD(targetEndOfTrial))
+              
+              
+              ##Find the dose corresponding to the target does end of trial
+              targetDoseDuringTrial <- as.numeric(TD(targetDuringTrial))
+              
+              ##what are the levels above target End of Trial?
+              xAboveTargetEndOfTrial <- which(trueDLE > targetEndOfTrial)
+              
+              ##what are the levels above target During Trial?
+              xAboveTargetDuringTrial<- which(trueDLE > targetDuringTrial)
+              
+              
+              ##proportion of DLEs in this trial
+              propDLE<- sapply(object@data,
+                               function(d) {
+                                 mean(d@y)
+                               })
+              ### mean toxicity risk
+              meanToxRisk <- sapply(object@data,
+                                    function(d){
+                                      mean(trueDLE[d@xLevel])
+                                    })
+              
+              ## doses selected for MTD
+              doseSelected <- object@doses
+              
+              ## replace NA by 0
+              doseSelected[is.na(doseSelected)] <- 0
+              
+              ## dose most often selected as MTD
+              doseMostSelected <-
+                as.numeric(names(which.max(table(doseSelected))))
+              xMostSelected <-
+                match(doseMostSelected,
+                      table=doseGrid)
+              
+              ## observed toxicity rate at dose most often selected
+              ## Note: this does not seem very useful!
+              ## Reason: In case of a fine grid, few patients if any
+              ## will have been treated at this dose.
+              tmp <-
+                sapply(object@data,
+                       function(d){
+                         whichAtThisDose <- which(d@x == doseMostSelected)
+                         nAtThisDose <- length(whichAtThisDose)
+                         nDLTatThisDose <- sum(d@y[whichAtThisDose])
+                         return(c(nAtThisDose=nAtThisDose,
+                                  nDLTatThisDose=nDLTatThisDose))
+                       })
+              
+              obsToxRateAtDoseMostSelected <-
+                mean(tmp["nDLTatThisDose",]) / mean(tmp["nAtThisDose",])
+              
+              ## number of patients overall
+              nObs <- sapply(object@data,
+                             slot,
+                             "nObs")
+              
+              ## number of patients treated above target End of trial
+              nAboveTargetEndOfTrial <- sapply(object@data,
+                                               function(d){
+                                                 sum(d@xLevel %in% xAboveTargetEndOfTrial)
+                                               })
+              
+              ## number of patients treated above target During trial
+              nAboveTargetDuringTrial <- sapply(object@data,
+                                                function(d){
+                                                  sum(d@xLevel %in% xAboveTargetDuringTrial)
+                                                })
+              
+              toxAtDoses <- truth(doseSelected,...)
+              
+              
+              ## Proportion of trials selecting target TDEndOfTrial and TDDuringTrial
+              TDtargetEndOfTrialAtDoseGrid<- doseGrid[max(which(targetDoseEndOfTrial-doseGrid >=0))]
+              
+              TDtargetDuringTrialAtDoseGrid<- doseGrid[max(which(targetDoseDuringTrial-doseGrid >=0))]
+              nsim <- length(object@data)
+              
+              propAtTargetEndOfTrial <- (length(which(object@doses==TDtargetEndOfTrialAtDoseGrid)))/nsim
+              propAtTargetDuringTrial <- (length(which(object@doses==TDtargetDuringTrialAtDoseGrid)))/nsim
+              
+              ##fitted probDLE at dose most often selected
+              ##find names in the fit list (check it is with or without samples)
+              FitNames<- sapply(object@fit,names)
+              
+              
+              if ("probDLE" %in% FitNames){
+                
+                fitAtDoseMostSelected <- sapply(object@fit,
+                                                function(f){
+                                                  f$probDLE[xMostSelected]
+                                                })
+                meanFitMatrix <- sapply(object@fit,
+                                        "[[",
+                                        "probDLE")
+                
+                meanFit <- list(truth=
+                                  truth(doseGrid,...),
+                                average=rowMeans(meanFitMatrix))
+              } else {
+                
+                ## fitted toxicity rate at dose most often selected
+                fitAtDoseMostSelected <-
+                  sapply(object@fit,
+                         function(f){
+                           f$middle[xMostSelected]
+                         })
+                
+                ## mean fitted toxicity (average, lower and upper quantiles)
+                ## at each dose level
+                ## (this is required for plotting)
+                meanFitMatrix <- sapply(object@fit,
+                                        "[[",
+                                        "middle")
+                meanFit <- list(truth=
+                                  truth(doseGrid, ...),
+                                average=
+                                  rowMeans(meanFitMatrix),
+                                lower=
+                                  apply(meanFitMatrix,
+                                        1L,
+                                        quantile,
+                                        0.025),
+                                upper=
+                                  apply(meanFitMatrix,
+                                        1L,
+                                        quantile,
+                                        0.975))
+                
+              }
+              
+              ## give back an object of class GeneralSimulationsSummary,
+              ## for which we then define a print / plot method
+              ret <- .PseudoSimulationsSummary(
+                targetEndOfTrial=targetEndOfTrial,
+                targetDoseEndOfTrial=targetDoseEndOfTrial,
+                targetDuringTrial=targetDuringTrial,
+                targetDoseDuringTrial=targetDoseDuringTrial,
+                nsim=length(object@data),
+                propDLE=propDLE,
+                meanToxRisk=meanToxRisk,
+                doseSelected=doseSelected,
+                doseMostSelected=doseMostSelected,
+                obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
+                nObs=nObs,
+                nAboveTargetEndOfTrial=nAboveTargetEndOfTrial,
+                nAboveTargetDuringTrial=nAboveTargetDuringTrial,
+                toxAtDosesSelected=toxAtDoses,
+                propAtTargetEndOfTrial=propAtTargetEndOfTrial,
+                propAtTargetDuringTrial=propAtTargetDuringTrial,
+                doseGrid=doseGrid,
+                fitAtDoseMostSelected=fitAtDoseMostSelected,
+                meanFit=meanFit)
+              
+              return(ret)
+            })
+## ========================================================================================================
+##' Show the summary of the simulations
+##'
+##' @param object the \code{\linkS4class{PseudoSimulationsSummary}} object we want
+##' to print
+##' @return invisibly returns a data frame of the results with one row and
+##' appropriate column names
+##'
+##' @export
+##' @keywords methods
+
+setMethod("show",
+          signature=
+            signature(object="PseudoSimulationsSummary"),
+          def=
+            function(object){
+              
+              r <- crmPack:::Report$new(object=object,
+                                        df=
+                                          as.data.frame(matrix(nrow=1,
+                                                               ncol=0)),
+                                        dfNames=character())
+              cat("Summary of",
+                  r$dfSave(object@nsim, "nsim"),
+                  "simulations\n\n")
+              
+              cat("Target prob of DLE End of trial was",
+                  r$dfSave(object@targetEndOfTrial * 100,
+                           "targetEndOfTrial"),"%\n")
+              
+              cat("Target dose End of Trial was",
+                  r$dfSave(object@targetDoseEndOfTrial,
+                           "targetDoseEndOfTrial"),"\n")
+              
+              cat("Target prob of DLE during trial was",
+                  r$dfSave(object@targetDuringTrial * 100,
+                           "targetDuringTrial"),"%\n")
+              
+              cat("Target dose during Trial was",
+                  r$dfSave(object@targetDoseDuringTrial,
+                           "targetDoseDuringTrial"),"\n")
+              
+              r$report("nObs",
+                       "Number of patients overall",
+                       percent=FALSE)
+              r$report("nAboveTargetEndOfTrial",
+                       "Number of patients treated above target End of Trial",
+                       percent=FALSE)
+              
+              r$report("nAboveTargetDuringTrial",
+                       "Number of patients treated above target during trial",
+                       percent=FALSE)
+              
+              r$report("propDLE",
+                       "Proportions of DLE in the trials")
+              r$report("meanToxRisk",
+                       "Mean toxicity risks for the patients")
+              r$report("doseSelected",
+                       "Doses selected as MTD (TD End of Trial)",
+                       percent=FALSE, digits=1)
+              r$report("toxAtDosesSelected",
+                       "True toxicity at doses selected")
+              
+              cat("Proportion of trials selecting target End of Trial:",
+                  r$dfSave(object@propAtTargetEndOfTrial * 100,
+                           "percentAtTarget"),
+                  "%\n")
+              
+              
+              cat("Proportion of trials selecting target During Trial:",
+                  r$dfSave(object@propAtTargetDuringTrial * 100,
+                           "percentAtTarget"),
+                  "%\n")
+              
+              cat("Dose most often selected as MTD (TDEndOfTrial):",
+                  r$dfSave(object@doseMostSelected,
+                           "doseMostSelected"),
+                  "\n")
+              cat("Observed toxicity rate at dose most often selected:",
+                  r$dfSave(round(object@obsToxRateAtDoseMostSelected * 100),
+                           "obsToxRateAtDoseMostSelected"),
+                  "%\n")
+              r$report("fitAtDoseMostSelected",
+                       "Fitted probabilities of DLE at dose most often selected")
+              
+              
+              ## finally assign names to the df
+              ## and return it invisibly
+              names(r$df) <- r$dfNames
+              invisible(r$df)
+            })
+## -------------------------------------------------------------------------------------------

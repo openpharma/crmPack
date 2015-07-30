@@ -190,6 +190,7 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
+##' @example examples/Model-methods probLogisticIndepBetaSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
@@ -227,6 +228,7 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
+##' @example examples/Model-methods probLogisticIndepBetaNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
@@ -629,7 +631,7 @@ setMethod("gain",
 ## -------------------------------------------------------------------------------
 
 ##' Update method for the 'LogisticIndepBeta'Model class 
-##' @param object is the model which follow \code{\linkS4Class{LogisticIndepBeta}} class object
+##' @param object the model of \code{\linkS4Class{LogisticIndepBeta}} class object
 ##'
 ##' @export
 ##' @keywords method
@@ -660,7 +662,7 @@ setMethod("update",
 
 ## ================================================================================
 ##' Update method for the 'Effloglog'Model class 
-##' @param object is the model which follow \code{\linkS4Class{Effloglog}} class object
+##' @param object the model of \code{\linkS4Class{Effloglog}} class object
 ##' 
 ##' @export
 ##' @keywords methods
