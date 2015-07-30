@@ -1420,3 +1420,209 @@ setMethod("show",
               invisible(r$df)
             })
 ## -------------------------------------------------------------------------------------------
+##' Plot summaries of the simulations
+##'
+##' Graphical display of the simulation summary
+##'
+##' This plot method can be applied to \code{\linkS4class{PseudoSimulationsSummary}}
+##' objects in order to summarize them graphically. This can be used when only DLE responses are involved
+##' in the simulations. This also applied to results with or without samples generated during the simulations
+##'
+##' @param x the \code{\linkS4class{PseudoSimulationsSummary}} object we want
+##' to plot from
+##' @param y missing
+##' @param type the types of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
+##' scale_linetype_manual scale_colour_manual
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+##' 
+
+setMethod("plot",
+          signature=
+            signature(x="PseudoSimulationsSummary",
+                      y="missing"),
+          def=
+            function(x,
+                     y,
+                     type=
+                       c("nObs",
+                         "doseSelected",
+                         "propDLE",
+                         "nAboveTargetEndOfTrial",
+                         "meanFit"),
+                     ...){
+              
+              ## convenience function to make histograms
+              myHist <- function(x, description)
+              {
+                dat <- data.frame(x=x)
+                ggplot() +
+                  geom_histogram(aes(x=x, y=100*..density..),
+                                 data=dat, binwidth=1, origin=-0.5) +
+                  xlab(description)+
+                  ylab("Percent")
+              }
+              
+              
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+              
+              ## start the plot list
+              plotList <- list()
+              plotIndex <- 0L
+              
+              ## distribution of overall sample size
+              if("nObs" %in% type)
+              {
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  myHist(x=x@nObs,
+                         description="Number of patients in total")
+              }
+              
+              ## distribution of final MTD estimate
+              if("doseSelected" %in% type)
+              {
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  myHist(x=x@doseSelected,
+                         description="MTD estimate")
+              }
+              
+              ## distribution of proportion of DLTs
+              if("propDLE" %in% type)
+              {
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  myHist(x=x@propDLE * 100,
+                         description="Proportion of DLE [%]")
+              }
+              
+              ## distribution of number of patients treated at too much tox
+              if("nAboveTargetEndOfTrial" %in% type)
+              {
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  myHist(x=x@nAboveTargetEndOfTrial,
+                         description="Number of patients above target")
+              }
+              ##the meanFit plot
+              
+              if ("meanFit" %in% type)
+              {## Find if DLE samples are generated in the simulations
+                ## by checking if there the lower limits of the 95% Credibility
+                ## interval are calculated
+                if (!is.null(x@meanFit$lower)) {
+                  
+                  ## which types of lines do we have?
+                  linetype <- c("True toxicity",
+                                "Average estimated toxicity",
+                                "95% interval for estimated toxicity")
+                  ## create the data frame, with
+                  ## true tox, average estimated tox, and 95% (lower, upper)
+                  ## estimated tox (in percentage) stacked below each other
+                  dat <- data.frame(dose=
+                                      rep(x@doseGrid, 4L),
+                                    group=
+                                      rep(1:4, each=length(x@doseGrid)),
+                                    linetype=
+                                      factor(rep(linetype[c(1, 2, 3, 3)],
+                                                 each=length(x@doseGrid)),
+                                             levels=linetype),
+                                    lines=
+                                      unlist(x@meanFit) * 100)
+                  
+                  ## linetypes for the plot
+                  lt <- c("True toxicity"=1,
+                          "Average estimated toxicity"=1,
+                          "95% interval for estimated toxicity"=2)
+                  
+                  ## colour for the plot
+                  col <- c("True toxicity"=1,
+                           "Average estimated toxicity"=2,
+                           "95% interval for estimated toxicity"=2)
+                  
+                  ## now create and save the plot
+                  thisPlot <- ggplot() +
+                    geom_line(aes(x=dose,
+                                  y=lines,
+                                  group=group,
+                                  linetype=linetype,
+                                  col=linetype),
+                              data=dat)
+                  
+                  thisPlot <- thisPlot +
+                    scale_linetype_manual(values=lt) +
+                    scale_colour_manual(values=col) +
+                    xlab("Dose level") +
+                    ylab("Probability of DLE [%]")} else {
+                      ## which types of lines do we have?
+                      linetype <- c("True toxicity",
+                                    "Average estimated toxicity")
+                      
+                      ## create the data frame, with
+                      ## true tox, average estimated tox
+                      ## estimated tox (in percentage) stacked below each other
+                      dat <- data.frame(dose=
+                                          rep(x@doseGrid, 2L),
+                                        group=
+                                          rep(1:2, each=length(x@doseGrid)),
+                                        linetype=
+                                          factor(rep(linetype[c(1, 2)],
+                                                     each=length(x@doseGrid)),
+                                                 levels=linetype),
+                                        lines=
+                                          unlist(x@meanFit) * 100)
+                      
+                      ## linetypes for the plot
+                      lt <- c("True toxicity"=1,
+                              "Average estimated toxicity"=1)
+                      
+                      ## colour for the plot
+                      col <- c("True toxicity"=1,
+                               "Average estimated toxicity"=2)
+                      
+                      ## now create and save the plot
+                      thisPlot <- ggplot() +
+                        geom_line(aes(x=dose,
+                                      y=lines,
+                                      group=group,
+                                      linetype=linetype,
+                                      col=linetype),
+                                  data=dat)
+                      
+                      thisPlot <- thisPlot +
+                        scale_linetype_manual(values=lt) +
+                        scale_colour_manual(values=col) +
+                        xlab("Dose level") +
+                        ylab("Probability of DLE [%]")}
+              }
+              
+              plotList[[plotIndex <- plotIndex +1L]] <-
+                thisPlot
+              
+              ## first combine these small plots
+              if(length(plotList))
+              {
+                ret <-
+                  ## if there is only one plot
+                  if(identical(length(plotList),
+                               1L))
+                  {
+                    ## just use that
+                    plotList[[1L]]
+                  } else {
+                    ## multiple plots in this case
+                    do.call(gridExtra::arrangeGrob,
+                            plotList)
+                  }
+              }
+              
+              ## then return
+              ret
+            })
+ ## --------------------------------------------------------------------------------------

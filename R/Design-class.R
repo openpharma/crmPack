@@ -231,7 +231,7 @@ ThreePlusThreeDesign <- function(doseGrid)
                           stopping="Stopping",
                           increments="Increments"),
            prototype(model=.LogisticIndepBeta(),
-                     nextBest=.nextBestTDsamples(),
+                     nextBest=.NextBestTDsamples(),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative()),
            contains=list("RuleDesign"))
