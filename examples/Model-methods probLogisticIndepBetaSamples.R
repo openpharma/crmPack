@@ -1,0 +1,11 @@
+##obtain the probability of DLE given a dose level e.g (75), the LogisticIndepBeta (DLE model) and a given
+## DLE sample
+data<-Data(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
+           doseGrid=seq(25,300,25))
+
+model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+options<-McmcOptions(burnin=10000,step=20,samples=2000)
+set.seed(94)
+samples<-mcmc(data,model,options)
+
+prob(dose=75,model,samples)

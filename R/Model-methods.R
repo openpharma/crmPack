@@ -386,7 +386,8 @@ setMethod("ExpEff",
 setMethod("ExpEff",
           signature=
             signature(dose="numeric",
-                      model="ModelEff"),
+                      model="ModelEff",
+                      samples="missing"),
           def=
             function(dose, model, ...){
               ## extract the ExpEff function from the model

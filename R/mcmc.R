@@ -380,6 +380,7 @@ setMethod("mcmc",
 ##' @return The posterior samples, an object of class
 ##' \code{\linkS4class{Samples}}.
 ##'
+##' @example examples/mcmc-LogisticIndepBeta.R
 ##' @export
 ##' @keywords methods
 setMethod("mcmc",

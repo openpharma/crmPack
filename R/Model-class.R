@@ -2537,7 +2537,7 @@ validObject(.ModelEff)
 ##' with their corresponding log dose levels. These probabilities of occurence of a DLE
 ##' have independent Beta distributions
 ##'  
-##' 
+##' @example examples/Model-class LogisticIndepBeta.R
 ##' @export
 ##' @keywords classes
 
