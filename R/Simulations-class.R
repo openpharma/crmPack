@@ -319,7 +319,7 @@ DualSimulations <- function(rhoEst,
              })
 validObject(.PseudoSimulations())
 
-##' Init function
+##' Initialization function
 PseudoSimulations <- function(fit,
                               stopReasons,
                               ...)
@@ -357,7 +357,7 @@ PseudoSimulations <- function(fit,
 
 validObject(.PseudoDualSimulations())
 
-##inti function
+##'Initialization function
 
 PseudoDualSimulations <- function(fitEff,
                                   sigma2est,
@@ -368,6 +368,46 @@ PseudoDualSimulations <- function(fitEff,
                          fitEff=fitEff,
                          sigma2est=sigma2est)
 }
+
+
+
+## ====================================================================
+## ---------------------------------------------------------------------
+## Class for Pseudo simulation with DLE and efficacy responses using the Flexible efficacy form
+## --------------------------------------------------------------------
+
+##' Class for Pseudo Simulation for DLE and efficacy responses when using the Flexible efficacy form
+##' 
+##' 
+##' @export
+##' @keywords class
+.PseudoDualFlexiSimulations <- 
+  setClass(Class="PseudoDualFlexiSimulations",
+           representation(sigma2betaWest="numeric"),
+           prototype(sigma2betaWest= c(0.001,0.002)),
+           contains="PseudoDualSimulations",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               nSims <- length(object@data)
+               o$check(identical(length(object@sigma2betaWest),nSims),
+                       "sigma2betaWest has to have same length as data")
+               o$result()
+             })
+
+validObject(.PseudoDualFlexiSimulations())
+
+##' Initialization function
+
+PseudoDualFlexiSimulations <- function(sigma2betaWest,
+                                       ...)
+{ 
+  start <- PseudoDualSimulations(...)
+  .PseudoDualFlexiSimulations(start,
+                              sigma2betaWest=sigma2betaWest)
+}
+
+## -------------------------------------------------------------------------------------------------------
 ## ================================================================================================
 
 ##' Class for the summary of pseudo-models simulations output

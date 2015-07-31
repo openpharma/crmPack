@@ -1420,7 +1420,7 @@ setMethod("show",
               invisible(r$df)
             })
 ## -------------------------------------------------------------------------------------------
-##' Plot summaries of the simulations
+##' Plot summaries of the pseudo simulations
 ##'
 ##' Graphical display of the simulation summary
 ##'
@@ -1626,3 +1626,193 @@ setMethod("plot",
               ret
             })
  ## --------------------------------------------------------------------------------------
+##' Plot simulations
+##'
+##' Summarize the simulations with plots
+##'
+##' This plot method can be applied to \code{\linkS4class{PseudoDualSimulations}}
+##' objects in order to summarize them graphically. Possible \code{type}s of
+##' plots at the moment are: \describe{ \item{trajectory}{Summary of the
+##' trajectory of the simulated trials} \item{dosesTried}{Average proportions of
+##' the doses tested in patients} \item{sigma2}{The variance of the efficacy responses}} 
+##' You can specify one or both of these in the
+##' \code{type} argument.
+##'
+##' @param x the \code{\linkS4class{PseudoDualSimulations}} object we want
+##' to plot from
+##' @param y missing
+##' @param type the type of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
+##' scale_linetype_manual
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature= 
+            signature(x="PseudoDualSimulations",
+                      y="missing"),
+          def=
+            function(x,
+                     y,
+                     type=
+                       c("trajectory",
+                         "dosesTried",
+                         "sigma2"),
+                     ...){
+              ## start the plot list
+              plotList <- list()
+              plotIndex <- 0L
+              
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+              
+              ## substract the specific plot types for
+              ## dual-endpoint simulation results
+              typeReduced <- setdiff(type,
+                                     c("sigma2", ""))
+              
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+              
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                genPlot <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+              
+              ## now to the specific dual-endpoint plots:
+              
+              ## Efficacy variance estimates boxplot
+              if("sigma2" %in% type)
+              {
+                ## save the plot
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  qplot(factor(0), y=y, data=data.frame(y=x@sigma2est), geom="boxplot",
+                        xlab="", ylab="Efficacy variance estimates") +
+                  coord_flip() + scale_x_discrete(breaks=NULL)
+              }
+              
+              
+              ## then finally plot everything
+              if(identical(length(plotList),
+                           0L))
+              {
+                return(genPlot)
+              } else if(identical(length(plotList),
+                                  1L))
+              {
+                ret <- plotList[[1L]]
+              } else {
+                ret <- do.call(gridExtra::arrangeGrob,
+                               plotList)
+              }
+              
+              if(moreFromGeneral)
+              {
+                ret <- gridExtra::arrangeGrob(genPlot, ret,heights=c(2/3, 1/3))
+              }
+              
+              return(ret)
+            })
+## ---------------------------------------------------------------------------------
+
+##'
+##' This plot method can be applied to \code{\linkS4class{PseudoDualFlexiSimulations}}
+##' objects in order to summarize them graphically. Possible \code{type}s of
+##' plots at the moment are: \describe{ \item{trajectory}{Summary of the
+##' trajectory of the simulated trials} \item{dosesTried}{Average proportions of
+##' the doses tested in patients} \item{sigma2}{The variance of the efficacy responses} 
+##' \item{sigma2betaW}{The variance of the random walk model}} 
+##' You can specify one or both of these in the
+##' \code{type} argument.
+##'
+##' @param x the \code{\linkS4class{PseudoDualFlexiSimulations}} object we want
+##' to plot from
+##' @param y missing
+##' @param type the type of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
+##' scale_linetype_manual
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature= 
+            signature(x="PseudoDualFlexiSimulations",
+                      y="missing"),
+          def=
+            function(x,
+                     y,
+                     type=
+                       c("trajectory",
+                         "dosesTried",
+                         "sigma2",
+                         "sigma2betaW"),
+                     ...){
+              ## start the plot list
+              plotList <- list()
+              plotIndex <- 0L
+              
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+              
+              ## substract the specific plot types for
+              ## dual-endpoint simulation results
+              typeReduced <- setdiff(type,
+                                     c("sigma2betaW", ""))
+              
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+              
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                genPlot <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+              
+              ## now to the specific dual-endpoint plots:
+              ## random walk model variance estimates boxplot
+              
+              if("sigma2betaW" %in% type)
+              {
+                ## save the plot
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  qplot(factor(0), y=y, data=data.frame(y=x@sigma2betaWest), geom="boxplot",
+                        xlab="", ylab="Random walk model variance estimates") +
+                  coord_flip() + scale_x_discrete(breaks=NULL)
+              }
+              
+              ## then finally plot everything
+              if(identical(length(plotList),
+                           0L))
+              {
+                return(genPlot)
+              } else if(identical(length(plotList),
+                                  1L))
+              {
+                ret <- plotList[[1L]]
+              } else {
+                ret <- do.call(gridExtra::arrangeGrob,
+                               plotList)
+              }
+              
+              if(moreFromGeneral)
+              {
+                ret <- gridExtra::arrangeGrob(genPlot, ret,heights=c(2/3, 1/3))
+              }
+              
+              return(ret)
+            })
+
+

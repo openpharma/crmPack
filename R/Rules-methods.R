@@ -1994,7 +1994,7 @@ setMethod("nextBest",
                           TDtargetDuringTrialEstimate=TDtargetDuringTrialEstimate,
                           TDtargetDuringTrialAtDoseGrid=retD,
                           DLEEndOfTrialtarget=EndOfTrialtargetprob,
-                          TDtargetEndEstimate=TDtargetEndOfTrialEstimate,
+                          TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
                           TDtargetEndOfTrialAtDoseGrid=retE,
                           GstarEstimate=Gstar,
                           GstarAtDoseGrid=Gstarret,
@@ -2236,7 +2236,7 @@ setMethod("nextBest",
                           TDtargetDuringTrialEstimate=TDtargetDuringTrialEstimate,
                           TDtargetDuringTrialAtDoseGrid=retD,
                           DLEEndOfTrialtarget=EndOfTrialtargetprob,
-                          TDtargetEndEstimate=TDtargetEndOfTrialEstimate,
+                          TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
                           TDtargetEndOfTrialAtDoseGrid=retE,
                           GstarEstimate=Gstar,
                           GstarAtDoseGrid=Gstarret,
@@ -2486,7 +2486,7 @@ setMethod("stopTrial",
                       model="ModelTox",
                       data="ANY"),
           def=
-            function(stopping,dose,model,data,targetEndOfTrial,...){
+            function(stopping,dose,samples,model,data,targetEndOfTrial,...){
               
               ##check id targetEndOfTrial is a probability
               stopifnot(is.probability(targetEndOfTrial))
@@ -2524,7 +2524,7 @@ setMethod("stopTrial",
                       model="ModelTox",
                       data="ANY"),
           def=
-            function(stopping,dose,samples,model,data,targetEndOfTrial,...){
+            function(stopping,dose,model,data,targetEndOfTrial,...){
               
               ##check if targetEndOfTrial is a probability
               stopifnot(is.probability(targetEndOfTrial))
