@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove, Wai Yin Yeung  [sabanesd *a*t* roche *.* com, w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Rules-methods.R] by DSB Die 09/06/2015 21:29>
@@ -2468,4 +2469,276 @@ setMethod("nextBest",
                           GstarAtDoseGrid=Gstarret,
                           plot=plot1))
             })
-# -------------------------------------------------------------------------------------------------------------
+
+## ------------------------------------------------------------------------------------------------
+## Stopping based on a target ratio of the upper to the lower 95% credibility interval
+## ------------------------------------------------------------------------------------------------
+
+
+##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only DLE responses and
+##' DLE samples are given
+setMethod("stopTrial",
+          signature=
+            signature(stopping="StoppingCIRatio",
+                      dose="ANY",
+                      samples="Samples",
+                      model="ModelTox",
+                      data="ANY"),
+          def=
+            function(stopping,dose,model,data,targetEndOfTrial,...){
+              
+              ##check id targetEndOfTrial is a probability
+              stopifnot(is.probability(targetEndOfTrial))
+              
+              ## find the TDtarget End of Trial samples
+              TDtargetEndOfTrialSamples <- dose(prob=targetEndOfTrial,
+                                                model=model,
+                                                samples=samples)
+              
+              ##Find the upper and lower limit of the 95% credibility interval
+              CI <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975))
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratio <- as.numeric(CI[2]/CI[1])
+              
+              
+              ##so can we stop? 
+              doStop <- ratio <= stopping@targetRatio
+              ##generate messgae
+              text <- paste("Ratio =",ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+                            "targetRatio =", stopping@targetRatio)
+              ##return both
+              return(structure(doStop,
+                               messgae=text))
+            })
+
+## ---------------------------------------------------------------------------------------
+##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate(TDtargetEndOfTrial). This is a stopping rule which incorporate only DLE responses without any samples
+setMethod("stopTrial",
+          signature=
+            signature(stopping="StoppingCIRatio",
+                      dose="ANY",
+                      samples="missing",
+                      model="ModelTox",
+                      data="ANY"),
+          def=
+            function(stopping,dose,samples,model,data,targetEndOfTrial,...){
+              
+              ##check if targetEndOfTrial is a probability
+              stopifnot(is.probability(targetEndOfTrial))
+              
+              ## find the TDtarget End of Trial
+              TDtargetEndOfTrial <- dose(prob=targetEndOfTrial,
+                                         model=model)
+              
+              ##Find the variance of the log of the TDtargetEndOfTrial(eta)
+              M1 <- matrix(c(-1/(model@phi2), - (log(targetEndOfTrial/(1-targetEndOfTrial))-model@phi1)/(model@phi2)),1,2)
+              M2 <- model@Pcov
+              
+              varEta <- M1%*%M2%*%t(M1)
+              
+              ##Find the upper and lower limit of the 95% credibility interval
+              CI <- c()
+              CI[2] <- exp(log(TDtargetEndOfTrial) + 1.96* sqrt(varEta))
+              CI[1] <- exp(log(TDtargetEndOfTrial) - 1.96* sqrt(varEta))
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratio <- as.numeric(CI[2]/CI[1])
+              
+              
+              ##so can we stop? 
+              doStop <- ratio <= stopping@targetRatio
+              ##generate messgae
+              text <- paste("Ratio =", ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+                            "targetRatio =", stopping@targetRatio)
+              ##return both
+              return(structure(doStop,
+                               messgae=text))
+            })
+
+## --------------------------------------------------------------------------------------------------
+##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate, the smaller of the TDtargetEndOfTrial and the Gstar estimate. 
+##' This is a stopping rule when DLE and efficacy responses are incorporated and
+##' a DLE samples and an efficacy samples are given
+
+setMethod("stopTrial",
+          signature=
+            signature(stopping="StoppingCIRatio",
+                      dose="ANY",
+                      samples="Samples",
+                      model="ModelTox",
+                      data="DataDual"),
+          def=
+            function(stopping,dose,samples,model,data,targetEndOfTrial,TDderive, Effmodel,Effsamples,Gstarderive,...){
+              
+              ##checks
+              stopifnot(is.probability(targetEndOfTrial))
+              stopifnot(is(Effmodel,"ModelEff"))
+              stopifnot(is(Effsamples,"Samples"))
+              stopifnot(is.function(TDderive))
+              stopifnot(is.function(Gstarderive))
+              
+              ## find the TDtarget End of Trial samples
+              TDtargetEndOfTrialSamples <- dose(prob=targetEndOfTrial,
+                                                model=model,
+                                                samples=samples)
+              ##Find the TDtarget End of trial estimate
+              TDtargetEndOfTrialEstimate <- TDderive(TDtargetEndOfTrialSamples)
+              
+              ##Find the gain value samples then the GstarSamples
+              points <- data@doseGrid
+              
+              GainSamples <- matrix(nrow=sampleSize(samples@options),
+                                    ncol=length(points))
+              
+              ## evaluate the probs, for all gain samples.
+              for(i in seq_along(points))
+              {
+                ## Now we want to evaluate for the
+                ## following dose:
+                GainSamples[, i] <- gain(dose=points[i],
+                                         DLEmodel=model,
+                                         DLEsamples=samples, 
+                                         Effmodel=Effmodel,
+                                         Effsamples=Effsamples)
+              }
+              
+              ##Find the maximum gain value samples
+              MaxGainSamples <- apply(GainSamples,1,max)
+              
+              ##Obtain Gstar samples, samples for the dose level which gives the maximum gain value
+              IndexG <- apply(GainSamples,1,which.max)
+              GstarSamples <- data@doseGrid[IndexG]
+              
+              ##Find the Gstar estimate
+              
+              Gstar <- Gstarderive(GstarSamples)
+              
+              ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
+              
+              if (TDtargetEndOfTrialEstimate <= Gstar){
+                
+                ##Find the upper and lower limit of the 95% credibility interval
+                CI <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+                chooseTD <- TRUE} else {
+                  
+                  CI <- quantile(GstarSamples, prob=c(0.025,0.975))
+                  chooseTD <- FALSE}
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratio <- as.numeric(CI[2]/CI[1]) 
+              
+              
+              
+              ##so can we stop? 
+              doStop <- ratio <= stopping@targetRatio
+              ##generate messgae
+              text <- paste(ifelse(chooseTD,"TD30 estimate","Gstar estimate"), "is smaller and its ratio =", 
+                            ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+                            "targetRatio =", stopping@targetRatio)
+              ##return both
+              return(structure(doStop,
+                               messgae=text))
+            })
+
+## -----------------------------------------------------------------------------------------------
+
+##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate, smaller of TDEndOfTrial or Gstar estimate. This is a stopping rule which incorporate 
+## both the DLE adn efficacy responses without any samples involved
+
+setMethod("stopTrial",
+          signature=
+            signature(stopping="StoppingCIRatio",
+                      dose="ANY",
+                      samples="missing",
+                      model="ModelTox",
+                      data="DataDual"),
+          def=
+            function(stopping,dose,model,data,targetEndOfTrial,Effmodel,...){
+              
+              ##checks
+              stopifnot(is.probability(targetEndOfTrial))
+              stopifnot(is(Effmodel,"ModelEff"))
+              
+              
+              ## find the TDtarget End of Trial
+              TDtargetEndOfTrial <- dose(prob=targetEndOfTrial,
+                                         model=model)
+              
+              ##Find the dose with maximum gain value
+              Gainfun<-function(DOSE){
+                -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
+              }
+              Gstar<-(optim(min(data@doseGrid),Gainfun)$par)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun)$value)
+              logGstar <- log(Gstar)
+              
+              
+              if (Gstar <= TDtargetEndOfTrial){
+                chooseTD <- FALSE
+                ##From paper
+                
+                meanEffGstar <- Effmodel@theta1+Effmodel@theta2*logGstar
+                
+                denom <- (model@phi2)*(meanEffGstar)*(1+logGstar*model@phi2)
+                
+                dgphi1 <- -(meanEffGstar*logGstar*model@phi2-Effmodel@theta2)/denom
+                
+                dgphi2 <- -((meanEffGstar)*logGstar+meanEffGstar*(logGstar)^2*model@phi2-Effmodel@theta2*logGstar)/denom
+                
+                dgtheta1 <- -(logGstar*model@phi2)/denom
+                
+                dgtheta2 <- -(logGstar*exp(model@phi1+model@phi2*logGstar)*model@phi2*log(logGstar)-1-exp(model@phi1+model@phi2*logGstar))/denom
+                
+                deltaG <- martix(c(dgphi1,dgphi2,dgtheta1,dgtheta2),4,1)
+                
+                
+                ##Find the variance of the log Gstar
+                ##First find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
+                ## such that phi1 and phi2 and independent of theta1 and theta2
+                emptyMatrix <- matrix(0,2,2)
+                covBETA <-  cbind(rbind(model@Pcov,emptyMatrix),rbind(emptyMatrix,Effmodel@Pcov))
+                varlogGstar <- t(deltaG)%*%covBETA%*%deltaG
+                
+                
+                
+                ##Find the upper and lower limit of the 95% credibility interval
+                CI <- c()
+                CI[2] <- exp(logGstar + 1.96* sqrt(varlogGstar))
+                CI[1] <- exp(logGstar - 1.96* sqrt(varlogGstar))
+                
+                ##The ratio of the upper to the lower 95% credibility interval
+                ratio <- as.numeric(CI[2]/CI[1]) } else {
+                  chooseTD <- TRUE 
+                  
+                  ##Find the variance of the log of the TDtargetEndOfTrial(eta)
+                  M1 <- matrix(c(-1/(model@phi2), - (log(targetEndOfTrial/(1-targetEndOfTrial))-model@phi1)/(model@phi2)),1,2)
+                  M2 <- model@Pcov
+                  
+                  varEta <- M1%*%M2%*%t(M1)
+                  
+                  ##Find the upper and lower limit of the 95% credibility interval
+                  CI <- c()
+                  CI[2] <- exp(log(TDtargetEndOfTrial) + 1.96* sqrt(varEta))
+                  CI[1] <- exp(log(TDtargetEndOfTrial) - 1.96* sqrt(varEta))
+                  
+                  ##The ratio of the upper to the lower 95% credibility interval
+                  ratio <- as.numeric(CI[2]/CI[1])
+                } 
+              
+              
+              ##so can we stop? 
+              doStop <- ratio <= stopping@targetRatio
+              ##generate messgae
+              text <- paste(ifelse(chooseTD,"TD30 estimate","Gstar estimate"), "is smaller and its ratio =", 
+                            ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+                            "targetRatio =", stopping@targetRatio)
+              ##return both
+              return(structure(doStop,
+                               messgae=text))
+            })
+

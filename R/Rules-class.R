@@ -1456,3 +1456,42 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
                          Gstarderive=Gstarderive)}
 
 ## --------------------------------------------------------------------------------------------------
+
+##-------------------------------------------------------------------------------------------------------------------
+## Stopping based on a target ratio of the credibility interval
+## ---------------------------------------------------------------------------------------------------------------
+
+##' Stopping based on a target ratio, the ratio of the upper to the lower
+##' 95% credibility interval of the estimate
+##' @targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
+##' estimate that required to stop a trial
+##' 
+##' @export
+##' @keywords classes 
+
+
+.StoppingCIRatio <- 
+  setClass(Class="StoppingCIRatio",
+           representation(targetRatio="numeric"),
+           prototype(targetRatio=5),
+           contains="Stopping",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               
+               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
+                       "targetRatio must be a positive numerical number")
+               
+               o$result()
+             })
+
+validObject(.StoppingCIRatio())
+
+##' Initialization function for "StoppingCIRatio"
+##' @describeIn StoppinCIRatio
+
+StoppingCIRatio <- function(targetRatio)
+{
+  .StoppingCIRatio(targetRatio=targetRatio)
+}
+##-------------------------------------------------------------------------------------
