@@ -1722,6 +1722,10 @@ setMethod("plot",
             })
 ## ---------------------------------------------------------------------------------
 
+
+
+
+
 ##'
 ##' This plot method can be applied to \code{\linkS4class{PseudoDualFlexiSimulations}}
 ##' objects in order to summarize them graphically. Possible \code{type}s of
@@ -1815,4 +1819,324 @@ setMethod("plot",
               return(ret)
             })
 
+## -----------------------------------------------------------------------------------------
+##' Method of summary for Pseudo Dual responses simulations summary
+##' 
+##' @export
+##' @keywords methods
+setMethod("summary",
+          signature=
+            signature(object="PseudoDualSimulations"),
+          def=
+            function(object,
+                     trueDLE,
+                     trueEff,
+                     targetEndOfTrial=0.3,
+                     targetDuringTrial=0.35,
+                     ...){
+              ##call the parent method
+              start <- callNextMethod(object=object,
+                                      truth=trueDLE,
+                                      targetEndOfTrial=targetEndOfTrial,
+                                      targetDuringTrial=targetDuringTrial,
+                                      ...)
+              doseGrid <- object@data[[1]]@doseGrid
+              
+              ## ## dose level most often selected as MTD (TDEnd of Trial)
+              xMostSelected <-
+                match(start@doseMostSelected,
+                      table=doseGrid)
+              
+              ##find names in the fit efficacy list (check it is with or without samples)
+              FitNames<- sapply(object@fitEff,names)
+              
+              if ("ExpEff" %in% FitNames){
+                ## fitted efficacy level at dose most often selected
+                EffFitAtDoseMostSelected <- sapply(object@fitEff,
+                                                   function(f){
+                                                     f$ExpEff[xMostSelected]
+                                                   })
+                meanEffFitMatrix <- sapply(object@fitEff,
+                                           "[[",
+                                           "ExpEff")
+                
+                meanEffFit <- list(truth=
+                                     trueEff(doseGrid,...),
+                                   average=rowMeans(meanEffFitMatrix))
+                
+              } else {## fitted efficacy level at dose most often selected
+                EffFitAtDoseMostSelected <-
+                  sapply(object@fitEff,
+                         function(f){
+                           f$middle[xMostSelected]
+                         })
+                
+                ## mean fitted  curve (average, lower and upper quantiles)
+                ## at each dose level
+                ## (this is required for plotting)
+                meanEffFitMatrix <- sapply(object@fitEff,
+                                           "[[",
+                                           "middle")
+                meanEffFit <- list(truth=
+                                     trueEff(doseGrid, ...),
+                                   average=
+                                     rowMeans(meanEffFitMatrix),
+                                   lower=
+                                     apply(meanEffFitMatrix,
+                                           1L,
+                                           quantile,
+                                           0.025),
+                                   upper=
+                                     apply(meanEffFitMatrix,
+                                           1L,
+                                           quantile,
+                                           0.975))}
+              
+              ## give back an object of class PseudoDualSimulationsSummary,
+              ## for which we then define a print / plot method
+              ret <- .PseudoDualSimulationsSummary(
+                start,
+                EffFitAtDoseMostSelected=EffFitAtDoseMostSelected,
+                meanEffFit=meanEffFit)
+              
+              return(ret)
+            })
+## --------------------------------------------------------------------------------------------------
+##' Method summaary for Pseudo Dual responses using Flexible efficacy model simulation summary
+##' 
+##' @export
+##' @keywords methods
+
+setMethod("summary",
+          signature=
+            signature(object="PseudoDualFlexiSimulations"),
+          def=
+            function(object,
+                     trueDLE,
+                     trueEff,
+                     targetEndOfTrial=0.3,
+                     targetDuringTrial=0.35,
+                     ...){
+              ##call the parent method
+              start <- callNextMethod(object=object,
+                                      truth=trueDLE,
+                                      targetEndOfTrial=targetEndOfTrial,
+                                      targetDuringTrial=targetDuringTrial,
+                                      ...)
+              doseGrid <- object@data[[1]]@doseGrid
+              
+              ## ## dose level most often selected as MTD (TDEnd of Trial)
+              xMostSelected <-
+                match(start@doseMostSelected,
+                      table=doseGrid)
+              
+              ## fitted efficacy level at dose most often selected
+              EffFitAtDoseMostSelected <-
+                sapply(object@fitEff,
+                       function(f){
+                         f$middle[xMostSelected]
+                       })
+              
+              ## mean fitted  curve (average, lower and upper quantiles)
+              ## at each dose level
+              ## (this is required for plotting)
+              meanEffFitMatrix <- sapply(object@fitEff,
+                                         "[[",
+                                         "middle")
+              meanEffFit <- list(truth=trueEff,
+                                 average=
+                                   rowMeans(meanEffFitMatrix),
+                                 lower=
+                                   apply(meanEffFitMatrix,
+                                         1L,
+                                         quantile,
+                                         0.025),
+                                 upper=
+                                   apply(meanEffFitMatrix,
+                                         1L,
+                                         quantile,
+                                         0.975))
+              
+              ## give back an object of class PseudoDualSimulationsSummary,
+              ## for which we then define a print / plot method
+              ret <- .PseudoDualSimulationsSummary(
+                start,
+                EffFitAtDoseMostSelected=EffFitAtDoseMostSelected,
+                meanEffFit=meanEffFit)
+              
+              return(ret)
+            })
+
+## ----------------------------------------------------------------------------------------
+##' Show the summary of Pseudo Dual simulations summary
+##'
+##' @export
+##' @keywords methods
+setMethod("show",
+signature=
+  signature(object="PseudoDualSimulationsSummary"),
+def=
+  function(object){
+    
+    ##call the parent method
+    df <- callNextMethod(object)
+    dfNames <- names(df)
+    
+    ##start report object
+    r <- Report$new(object=object,
+                    df=df,
+                    dfNames=dfNames)
+    
+    ##add one reporting line
+    r$report("EffFitAtDoseMostSelected",
+             "Fitted expected efficacy level at dose most often selected",
+             percentage=FALSE,
+             digits=1)
+    ## and return the updated information
+    names(r$df) <- r$dfNames
+    invisible(r$df)
+  })
+
+## --------------------------------------------------------------------------------------------------
+##' Plot the summary of Pseudo Dual Simulations summary
+##' 
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature=
+            signature(x="PseudoDualSimulationsSummary",
+                      y="missing"),
+          def=
+            function(x,
+                     y,
+                     type=
+                       c("nObs",
+                         "doseSelected",
+                         "propDLE",
+                         "nAboveTargetEndOfTrial",
+                         "meanFit",
+                         "meanEffFit"),
+                     ...){
+              
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+              
+              ## substract the specific plot types for dual-endpoint
+              ## designs
+              typeReduced <- setdiff(type,
+                                     "meanEffFit")
+              
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+              
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                ret <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+              
+              ## is the meanBiomarkerFit plot requested?
+              if("meanEffFit" %in% type)
+              { ## Find if Effsamples are generated in the simulations
+                ## by checking if there the lower limits of the 95% Credibility
+                ## interval are calculated
+                if (!is.null(x@meanEffFit$lower)) {
+                  ## which types of lines do we have?
+                  linetype <- c("True Expected Efficacy",
+                                "Average estimated expected efficacy",
+                                "95% interval for estimated expected efficacy")
+                  
+                  ## create the data frame, with
+                  ## true biomarker, average estimated expected efficacy, and 95% (lower, upper)
+                  ## estimated biomarker stacked below each other
+                  dat <- data.frame(dose=
+                                      rep(x@doseGrid, 4L),
+                                    group=
+                                      rep(1:4, each=length(x@doseGrid)),
+                                    linetype=
+                                      factor(rep(linetype[c(1, 2, 3, 3)],
+                                                 each=length(x@doseGrid)),
+                                             levels=linetype),
+                                    lines=
+                                      unlist(x@meanEffFit))
+                  
+                  ## linetypes for the plot
+                  lt <- c("True Expected Efficacy"=1,
+                          "Average estimated expected efficacy"=1,
+                          "95% interval for estimated expected efficacy"=2)
+                  
+                  ## colour for the plot
+                  col <- c("True Expected Efficacy"=1,
+                           "Average estimated expected efficacy"=4,
+                           "95% interval for estimated expected efficacy"=4)
+                  
+                  ## now create and save the plot
+                  thisPlot <- ggplot() +
+                    geom_line(aes(x=dose,
+                                  y=lines,
+                                  group=group,
+                                  linetype=linetype,
+                                  col=linetype),
+                              data=dat)
+                  
+                  thisPlot <- thisPlot +
+                    scale_linetype_manual(values=lt) +
+                    scale_colour_manual(values=col) +
+                    xlab("Dose level") +
+                    ylab("Expected Efficacy level")} else {
+                      linetype <- c("True Expected Efficacy",
+                                    "Average estimated expected efficacy")
+                      
+                      ## create the data frame, with
+                      ## true biomarker, average estimated expected efficacy
+                      dat <- data.frame(dose=
+                                          rep(x@doseGrid, 2L),
+                                        group=
+                                          rep(1:2, each=length(x@doseGrid)),
+                                        linetype=
+                                          factor(rep(linetype[c(1, 2)],
+                                                     each=length(x@doseGrid)),
+                                                 levels=linetype),
+                                        lines=
+                                          unlist(x@meanEffFit))
+                      
+                      ## linetypes for the plot
+                      lt <- c("True Expected Efficacy"=1,
+                              "Average estimated expected efficacy"=1)
+                      
+                      ## colour for the plot
+                      col <- c("True Expected Efficacy"=1,
+                               "Average estimated expected efficacy"=4)
+                      
+                      ## now create and save the plot
+                      thisPlot <- ggplot() +
+                        geom_line(aes(x=dose,
+                                      y=lines,
+                                      group=group,
+                                      linetype=linetype,
+                                      col=linetype),
+                                  data=dat)
+                      
+                      thisPlot <- thisPlot +
+                        scale_linetype_manual(values=lt) +
+                        scale_colour_manual(values=col) +
+                        xlab("Dose level") +
+                        ylab("Expected Efficacy level")
+                    }
+                
+                ## add this plot to the bottom
+                ret <-
+                  if(moreFromGeneral)
+                    gridExtra::arrangeGrob(ret, thisPlot, heights=c(2/3, 1/3))
+                else
+                  thisPlot
+              }
+              
+              ## then finally plot everything
+              ret
+            })
+
+ ## ------------------------------------------------------------------------
 

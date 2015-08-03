@@ -465,4 +465,13 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
                           fitAtDoseMostSelected="numeric",
                           meanFit="list"))
 ## ---------------------------------------------------------------------------------------------
-
+##' Class for pseudo Dual responses summary
+##' 
+##' @export
+##' @keywords class
+.PseudoDualSimulationsSummary <-
+  setClass(Class="PseudoDualSimulationsSummary",
+           contains="PseudoSimulationsSummary",
+           representation=
+             representation(EffFitAtDoseMostSelected="numeric",
+                            meanEffFit="list"))
