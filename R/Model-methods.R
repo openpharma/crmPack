@@ -190,7 +190,6 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
-##' @example examples/Model-methods probLogisticIndepBetaSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
@@ -228,7 +227,6 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
-##' @example examples/Model-methods probLogisticIndepBetaNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
