@@ -27,7 +27,8 @@
 ##' @param model the \code{\linkS4class{Model}}
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
-##'
+##' 
+##' @example examples\Model-method dose.R
 ##' @export
 ##' @keywords methods
 setGeneric("dose",
@@ -61,17 +62,18 @@ setMethod("dose",
               return(ret)
           })
 
-## =================================================================
+## =====================================================================================
 ## -------------------------------------------------------------------------------------
 ## Compute the doses for a given probability, given Pseudo DLE model and given samples
-## ----------------------------------------------------------------------------- 
+## -----------------------------------------------------------------------------------
 ##' Compute the doses for a given probability, given Pseudo DLE model with samples 
 ##' 
 ##' @param prob the probability
 ##' @param model the \code{\linkS4class{ModelTox}}
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
-##'
+##' 
+##' @example examples\Model-method dose.R
 ##' @export
 ##' @keywords methods
 setMethod("dose",
@@ -103,13 +105,15 @@ setMethod("dose",
 ##' @param prob the probability
 ##' @param model the \code{\linkS4class{ModelTox}}
 ##' @param \dots unused
-##'
+##'  
+##' @example examples\Model-method probNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("dose",
           signature=
             signature(prob="numeric",
-                      model="ModelTox"),
+                      model="ModelTox",
+                      samples="missing"),
           def=
             function(prob, model, ...){
               ## extract the dose function from the model
@@ -143,6 +147,7 @@ setMethod("dose",
 ##' @return the vector (for \code{\linkS4class{Model}} objects) of probability
 ##' samples.
 ##'
+##' @example examples\Model-method prob.R
 ##' @export
 ##' @keywords methods
 setGeneric("prob",
@@ -190,6 +195,7 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
+##' @example examples\Model-method prob.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
@@ -227,12 +233,14 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
+##' @example examples\Model-method probNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
           signature=
             signature(dose="numeric",
-                      model="ModelTox"),
+                      model="ModelTox",
+                      samples="missing"),
           def=
             function(dose,model,...){
               ## extract the prob function from the model
@@ -262,7 +270,8 @@ setMethod("prob",
 ##' @param model the \code{\linkS4class{DualEndpoint}} object
 ##' @param samples the \code{\linkS4class{Samples}} object
 ##' @param \dots unused
-##'
+##'  
+##' @example examples\Model-method biomLevel.R
 ##' @export
 ##' @keywords methods
 setGeneric("biomLevel",
@@ -289,57 +298,21 @@ setMethod("biomLevel",
               return(samples@data$betaW[, xLevel])
 
           })
-## ==========================================================================================
-## -----------------------------------------------------------------------------------------
-## Extracting efficacy responses for subjects without DLE observed
-## ---------------------------------------------------------------------------------
 
-##' Extracting efficay responses for subjects without an DLE
-##' @param object for data input from \code{\linkS4class{Data}} object 
-##' 
-##' @export
-##' @keywords methods
-setGeneric("getEff",
-def=function(object,...){
-  standardGeneric("getEff")},
-valueClass="list")
-
-##' @describeIn getEff
-setMethod("getEff",
-          signature=
-            signature(object="DataDual"),
-          def=
-            function(object,
-                     x,
-                     y,
-                     w,...){
-              if (length(which(object@y == 1))==0){
-                wNoDLE<-object@w
-                wDLE<-NULL
-                xNoDLE<- object@x
-                xDLE<-NULL
-              } else {##with observed efficacy response and DLE observed
-                IndexDLE<-which(object@y==1)
-                ##Take efficacy responses with no DLE observed
-                wNoDLE<-object@w[-IndexDLE]
-                wDLE<-object@w[IndexDLE]
-                ##Take the corresponding dose levels
-                xNoDLE<-object@x[-IndexDLE]
-                xDLE<-object@x[IndexDLE]
-              }
-              ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
-              return(ret)
-            })
 ## =============================================================================================
 ## ---------------------------------------------------------------------------------------------
-## Compute the Expected Efficacy based on a given dose, a given pseduo Efficacy model and a given sample
-## -----------------------------------------------------------------------------
-##' Compute the expected efficacy based on a given dose, a given pseudo Efficacy model and a given sample
+## Compute the Expected Efficacy based on a given dose, a given pseduo Efficacy model and a given 
+## efficacy sample
+## -----------------------------------------------------------------------------------------------
+##' Compute the expected efficacy based on a given dose, a given pseudo Efficacy model and a given 
+##' efficacy sample
 ##' 
 ##' @param dose the dose
 ##' @param model the \code{\linkS4class{ModelEff}} class object
 ##' @param samples the \code{\linkS4class{Samples}} class object
+##' @param \dots unused
 ##' 
+##' @example examples\Model-method ExpEff.R
 ##' @export
 ##' @keywords methods
 setGeneric("ExpEff",
@@ -381,6 +354,7 @@ setMethod("ExpEff",
 ##' @param dose the dose
 ##' @param model the \code{\linkS4class{ModelEff}} class object
 ##' 
+##' @example examples\Model-method ExpEffNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("ExpEff",
@@ -409,12 +383,13 @@ setMethod("ExpEff",
 ## -------------------------------------------------------------------------------------
 ## Compute the Expected Efficacy based on a given dose, Efficacy Flexible model and the Efficacy samples
 ## --------------------------------------------------------------------------------------
-##' Compute the Expected Efficacy based a given dose, Efficacy Flexible  model with
+##' Compute the Expected Efficacy based a given dose, Efficacy Flexible model with
 ##' samples
 ##' @param dose the dose
-##' @param model the \code{\linkS4class{ModelEff}} class object
+##' @param model the \code{\linkS4class{EffFlexi}} class object
 ##' @param samples the \code{\linkS4class{Samples}} class object
 ##' 
+##' @example examples\Model-method ExpEff Flexi.R
 ##' @export
 ##' @keywords methods
 
@@ -432,58 +407,21 @@ setMethod("ExpEff",
               return(ret)
             })
 
-
-## -------------------------------------------------------------------------
-## Compute the dose for a given Expected Efficacy and a given Pseudo Efficacy model 
-## -------------------------------------------------------------------------------------
-##' Compute the dose for a given Expected Efficacy and a given Pseudo Efficacy model 
-##' 
-##' @param ExpEff the Expected Efficacy value
-##' @param model the \code{\linkS4class{ModelEff}} class object
-##' @param sample the \code{\linkS4class{Samples}} class object
-##' 
-##' @export
-##' @keywords methods
-
-setGeneric("doseforEff",
-           def=
-             function(ExpEff,model,...){
-               standardGeneric("doseforEff")
-             },
-           valueClass="numeric")
-##' @describeIn doseforEff
-setMethod("doseforEff",
-          signature=
-            signature(ExpEff="numeric",
-                      model="ModelEff"),
-          def=
-            function(ExpEff, model, ...){
-              ## extract the dose function from the model
-              doseFun <- slot(model, "dose")
-              ## which arguments, besides the ExpEff, does it need?
-              argNames <- setdiff(names(formals(doseFun)),
-                                  "ExpEff")
-              
-              ## now call the function with dose 
-              values<-c()
-              for (parName in argNames){
-                values <- c(values,slot(model,parName))}
-              
-              ret <- do.call(doseFun,
-                             c(list(ExpEff=ExpEff),values))
-              
-              ## return the resulting vector
-              return(ret)
-            })
-
-
 ## ---------------------------------------------------------------------------------
-## Compute gain value using a Pseudo DLE and a Efficacy model
+## Compute gain value using a Pseudo DLE and a pseduo Efficacy model
 ## -------------------------------------------------------------------------------
 
-##' Compute the gain value with a given dose level, given DLE model, given DLE sample, given Efficacy
-##' model and a given Efficacy sample
+##' Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample, 
+##' a pseudo Efficacy model and a Efficacy sample
 ##' 
+##' @param dose the dose
+##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
+##' @param DLEsamples the \code{\linkS4class{Samples}} object
+##' @param Effmodel the \code{\linkS4class{ModelEff}} object
+##' @param Effsamples the \code{\linkS4class{Samples}} object
+##' @param \dots unused
+##' 
+##' @example examples\Model-method gain.R
 ##' @export
 ##' @keywords methods
 setGeneric("gain",
@@ -492,14 +430,7 @@ setGeneric("gain",
                standardGeneric("gain")
              },
            valueClass="numeric")
-
-## ===================================
-##' Compute the gain value samples given a dose level, a DLE model, a DLE sample, a Efficacy model
-##' and a Efficacy sample
-##' 
-##' @export
-##' @keywords methods
-##' 
+##' @describeIn gain
 setMethod("gain",
           signature=
             signature(dose="numeric",
@@ -539,13 +470,23 @@ setMethod("gain",
               return(Gainret)
             })
 
-## ================================================================
-##' Compute the gain given a dose level, a given DLE model, a given DLE sample, 
-##' the EffFlexi model and a given Efficacy sample
+## ===================================================================
+## ---------------------------------------------------------------------------------
+## Compute gain value using a Pseudo DLE and the EffFlexi model
+## -------------------------------------------------------------------------------
+##' Compute the gain given a dose level, a pseduo DLE model, a DLE sample, 
+##' the pseudo EffFlexi model and an Efficacy sample
 ##' 
+##' @param dose the dose
+##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
+##' @param DLEsamples the \code{\linkS4class{Samples}} object
+##' @param Effmodel the \code{\linkS4class{EffFlexi}} object
+##' @param Effsamples the \code{\linkS4class{Samples}} object
+##' @param \dots unused
+##' 
+##' @example examples\Model-method gain Flexi.R
 ##' @export
 ##' @keywords methods
-##'
 setMethod("gain",
           signature=
             signature(dose="numeric",
@@ -580,12 +521,21 @@ setMethod("gain",
               Gainret <- Effret/(1+(DLEret/(1-DLEret)))
               return(Gainret)
             })
-## ===================================================================================
-##' Compute the gain given a dose level, a given DLE model and a given Efficacy model
+## ===================================================================================================
+## Compute the gain given a dose level, a pseudo DLE model and a pseudo efficacy model without DLE and
+## efficacy samples
+## ===================================================================================================
+##' Compute the gain value given a dose level, a pseudo DLE model and a pseudo efficacy model without 
+##' DLE and the efficacy sample
 ##' 
+##' @param dose the dose
+##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
+##' @param Effmodel the \code{\linkS4class{ModelEff}} object
+##' @param \dots unused
+##' 
+##' @example examples\Model-method gainNoSamples.R
 ##' @export
 ##' @keywords methods
-##' 
 setMethod("gain",
           signature=
             signature(dose="numeric",
@@ -624,15 +574,24 @@ setMethod("gain",
 
 ## ==================================================================================
 
-## ---------------------------------------------------------------------------
-## Update Pseduo models object to ontain new estimates for model parameters
-## -------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------------
+## Update Pseduo models object to obtain new modal estimates for pseudo model parameters
+## ------------------------------------------------------------------------------------
+## Update the 'LogisticIndepBeta' model
+## -----------------------------------------------------------------
 
-##' Update method for the 'LogisticIndepBeta'Model class 
-##' @param object the model of \code{\linkS4Class{LogisticIndepBeta}} class object
-##'
+##' Update method for the 'LogisticIndepBeta'Model class. This is a method to update the modal
+##' estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data 
+##' or new observations of responses are available and added in. 
+##' 
+##' @param object the model of \code{\linkS4class{LogisticIndepBeta}} class object
+##' @param data all currently availabvle of \code{\linkS4class{Data}} class object
+##' @param \dots unused
+##' @return the new \code{\linkS4class{LogisticIndepBeta}} class object
+##' 
+##' @example examples\Model-method update LogisticIndepBeta.R
 ##' @export
-##' @keywords method
+##' @keywords methods
 setMethod("update",
           signature=
             signature(object="LogisticIndepBeta"),
@@ -659,9 +618,22 @@ setMethod("update",
             })
 
 ## ================================================================================
-##' Update method for the 'Effloglog'Model class 
-##' @param object the model of \code{\linkS4Class{Effloglog}} class object
+## ------------------------------------------------------------------------------------
+## Update the 'Effloglog' model
+## -----------------------------------------------------------------
+
+##' Update method for the 'Effloglog' Model class. This is a method to update the modal
+##' estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu} 
+##' (nu, the precision of the efficacy responses ) when new data 
+##' or new observations of responses are available and added in.
 ##' 
+##' @param object the \code{\linkS4class{Effloglog}} class object
+##' @param data all currently available data or responses of \code{\linkS4class{DataDual}}
+##' class object
+##' @param \dots unused
+##' @return the new \code{\linkS4class{Effloglog}} class object
+##' 
+##' @example examples\Model-method update Effloglog.R
 ##' @export
 ##' @keywords methods
 setMethod("update",
@@ -690,10 +662,22 @@ setMethod("update",
               return(model)
             })
 ## =================================================================================
+## ------------------------------------------------------------------------------------
+## Update the 'EffFlexi' model
+## -----------------------------------------------------------------
 
-##' Update method for the 'EffFlexi'Model class 
-##' @param object is the model which follow \code{\linkS4Class{EffFlexi}} class object
+##' Update method for the 'EffFlexi' Model class. This is a method to update 
+##' estimates both for the flexible form model and the random walk model (see details in
+##' \code{\linkS4class{EffFlexi}} class object) when new data 
+##' or new observations of responses are available and added in.
+##'  
+##' @param object is the model which follow \code{\linkS4class{EffFlexi}} class object
+##' @param data all currently available data and responses of \code{\linkS4class{DataDual}}
+##' class object
+##' @param \dots unused
+##' @return the new \code{\linkS4class{EffFlexi}} class object
 ##' 
+##' @example examples\Model-method update EffFlexi.R
 ##' @export
 ##' @keywords methods
 setMethod("update",

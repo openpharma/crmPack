@@ -3076,8 +3076,9 @@ Effloglog<-function(Eff,
 ##' @slot RWmatRank is the rank of the difference matrix. This slot is needed for internal purposes and not
 ##' to be touched by the user.
 ##'
-##'@export
-##'@keywords class
+##' @example examples\Model-class EffFlexi.R
+##' @export
+##' @keywords class
 .EffFlexi<-setClass(Class="EffFlexi",
 representation(Eff="numeric",
                Effdose="numeric",

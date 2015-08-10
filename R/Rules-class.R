@@ -1292,11 +1292,24 @@ CohortSizeMin <- function(cohortSizeList)
 
 
 ## ==========================================================================================
-## --------------------------------------------------------
+## ------------------------------------------------------------------------------------
 ## Class for next best based on Pseudo DLE Model with samples
-## -----------------------------------------------------------
+## -----------------------------------------------------------------------------------------
 ##'
-##'Class for next best based on DLE responses also using DLE samples
+##' The class with the input of two target probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial for finding the next best dose for allocation. For this class, only
+##' DLE response will be incorporated for the dose allocation and DLEsamples
+##' must be used to obtain the next dose for allocation.
+##'  @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##'  during the trial
+##'  @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##'  of the trial. This target is particularly used to recommend the dose for which its posterior 
+##'  probability of the occurrence of a DLE is equal to this target
+##'  @slot derive the function which derives from the input, a vector of the posterior samples called 
+##'  \called{TDsamples} of the dose
+##'  which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##'  targetEndOfTrial, the final next best (dose  probability of the occurrence of DLE equals to 
+##'  the targetDuringTrial) TDtargetDuringTrial and TDtargetEndOfTrial estimate.
 ##'
 ##'@export
 ##'@keywords class
@@ -1329,7 +1342,11 @@ CohortSizeMin <- function(cohortSizeList)
              })
 validObject(.NextBestTDsamples())
 ## ---------------------------------------------------------------------------
-##' Init function for NextBestTDsamples
+##' Initialization function for class "NextBestTDsamples"
+##' 
+##' @describeIn NextBestTDsamples
+##' @export
+##' @keywords methods
 
 NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 {

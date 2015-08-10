@@ -135,6 +135,7 @@ setMethod("get",
 ##' @param \dots unused
 ##' @return the data frame with required information (see method details)
 ##'
+##' @example examples\Samples-method fit DLE.R
 ##' @export
 ##' @keywords methods
 setGeneric("fit",
@@ -590,8 +591,9 @@ setMethod("plot",
 ## -------------------------------------------------------------------------------------
 ## Get fitted dose-tox curve from Samples for 'LogisticIndepBeta' model class
 ## ------------------------------------------------------------------------------------
-##' @describeIn fit Get fitted dose-tox curve from Samples for 
-##' \dQuote{LogisticIndepBeta} model class
+##' @describeIn fit This method return a data frame with dose, middle lower and upper quantiles 
+##' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
+##' @example examples\Samples-method fit DLE.R
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -645,8 +647,9 @@ setMethod("fit",
 ## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
 ## ------------------------------------------------------------------------------------
 
-##' @describeIn fit Get fitted dose-efficacy curve from Samples for 
-##'   \dQuote{Effloglog} model class
+##' @describeIn fit This method returns a data frame with dose, middle, lower, upper quantiles for 
+##' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
+##' @example examples\Samples-method fit Eff.R
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -699,7 +702,10 @@ setMethod("fit",
 ## --------------------------------------------------------------------
 ## Get fitted dose-efficacy based on the Efficacy Flexible model
 ## -------------------------------------------------------------
-##' @describeIn fit Fitted values based on the Efficacy Flexible model with samples
+##' @describeIn fit This method returns a data frame with dose, middle, lower and upper 
+##' quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi} 
+##' model class
+##' @example examples\Samples-method fit EffFlexi.R
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -753,7 +759,9 @@ setMethod("fit",
 ## Get fitted values at all dose levels from gain samples 
 ## -----------------------------------------------------------------
 ##' Get the fiited values for the gain values at all dose levels based on 
-##' a given DLE model, DLE sample, an efficacy model, Efficacy sample and data
+##' a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample 
+##' and data. This method returns a data frame with dose, middle, lower and upper quantiles 
+##' of the gain value samples
 ##' 
 ##' @param DLEmodel the DLE pseudo model of \code{\linkS4class{ModelTox}} class object
 ##' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
@@ -761,6 +769,7 @@ setMethod("fit",
 ##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
 ##' @param the data input of \code{\linkS4class{DataDual}} class object
 ##' 
+##' @example examples\Samples-method fitGain.R
 ##' @export
 ##' @keywords methods
 setGeneric("fitGain",
@@ -776,8 +785,8 @@ setGeneric("fitGain",
                standardGeneric("fitGain")},
            valueClass="data.frame")
 
-##' init' function
-
+##' Initialization function
+##' @describeIn fitgain
 setMethod("fitGain",
           signature=
             signature(DLEmodel="ModelTox",
@@ -832,15 +841,25 @@ setMethod("fitGain",
               ## return it
               return(ret)
             })
-# =========================================================================================================
-
-##' Plot dose-tox fit from 'LogisticIndepBeta' model class
+## ---------------------------------------------------------------------------------
+## Plot dose-DLE fit using the 'LogisticIndepBeta' model
+## --------------------------------------------------------------------
+##' Plot dose-DLE model fit using 'LogisticIndepBeta' class model
 ##' 
-##' @param x the samples
-##' @param y the LogisticIndepBeta object
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{LogisticIndepBeta}} model class object
+##' @param data the \code{\loinkS4class{Data}} object
+##' @param xlab the x axis label
+##' @param ylab the y axis label
+##' @param showLegend should the legend be shown? (default)
+##' @param \dots not used
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object for the dose-DLE model fit
+##' 
 ##'
 ##' @export
 ##' @keywords methods
+##' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
           signature=
             signature(x="Samples",

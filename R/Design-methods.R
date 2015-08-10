@@ -1168,10 +1168,10 @@ setMethod("simulate",
                   thisDose <- NEXT$nextdose
                   
                   
-                  thistargetDuringTrialDose<- NEXT$TDtargetDuringTrialEstimate
+                  thisTDtargetDuringTrial<- NEXT$TDtargetDuringTrialEstimate
                   
                   
-                  thistargetEndOfTrialDose<- NEXT$TDtargetEndOfTrialEstimate
+                  thisTDtargetEndOfTrial<- NEXT$TDtargetEndOfTrialEstimate
                   
                   
                   
@@ -1197,8 +1197,8 @@ setMethod("simulate",
                 thisResult <-
                   list(data=thisData,
                        dose=thisDose,
-                       TDtargetDuringTrial=thistargetDuringTrialDose,
-                       TDtargetEndOfTrial=thistargetEndOfTrialDose,
+                       TDtargetDuringTrial=thisTDtargetDuringTrial,
+                       TDtargetEndOfTrial=thisTDtargetEndOfTrial,
                        TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
                        fit=
                          subset(thisFit,
@@ -1370,12 +1370,10 @@ setMethod("simulate",
                                  data=thisData)
                   thisDose <- NEXT$nextdose
                   
-                  thistargetDuringTrialDose<- NEXT$TDtargetDuringTrialEstimate
+                  thisTDtargetDuringTrial<- NEXT$TDtargetDuringTrialEstimate
                   
                   
-                  thistargetEndOfTrialDose<- NEXT$TDtargetEndOfTrialEstimate
-                  
-                  
+                  thisTDtargetEndOfTrial<- NEXT$TDtargetEndOfTrialEstimate
                   
                   thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialatdoseGrid
                   
@@ -1397,8 +1395,8 @@ setMethod("simulate",
                 thisResult <-
                   list(data=thisData,
                        dose=thisDose,
-                       TDtargetDuringTrial=thistargetDuringTrialDose,
-                       TDtargetEndOfTrial=thistargetEndOfTrialDose,
+                       TDtargetDuringTrial=thisTDtargetDuringTrial,
+                       TDtargetEndOfTrial=thisTDtargetEndOfTrial,
                        TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
                        fit=thisFit,
                        stop=
@@ -1626,21 +1624,19 @@ setMethod("simulate",
                   
                   thisDose <- NEXT$nextdose
                   
-                  thisTDtarget<- NEXT$TDtargetEstimate
+                  thisTDtargetDuringTrial <- NEXT$TDtargetDuringTrialEstimate
                   
-                  thisTDtargetatdoseGrid <- NEXT$TDtargetAtDoseGrid
-                  
-                  thisTD30<-NEXT$TD30Estimate
+                  thisTDtargetDuringTrialAtDoseGrid<- NEXT$TDtargetDuringTrialAtDoseGrid
                   
                   
-                  thisTD30atdoseGrid <-NEXT$TD30AtDoseGrid
+                  thisTDtargetEndOfTrial <- NEXT$TDtargetEndOfTrialEstimate
+                  thisTDtargetEndOfTrialAtDoseGrid <- NEXT$TDtargetEndOfTrialAtDoseGrid
+                  thisGstar <- NEXT$GstarEstimate
+                  thisGstarAtDoseGrid <- NEXT$GstarAtDoseGrid
                   
-                  thisGstar<-NEXT$GstarEstimate
                   
-                  thisGstaratdosegrid <- NEXT$GstarAtDoseGrid
+                  Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
                   
-                  
-                  Recommend<-min(thisTD30atdoseGrid,thisGstaratdosegrid)
                   
                   ## evaluate stopping rules
                   stopit <- stopTrial(object@stopping,
@@ -1665,12 +1661,12 @@ setMethod("simulate",
                 ## return the results
                 thisResult <- list(data=thisData,
                                    dose=thisDose,
-                                   TDtargetDose=thisTDtarget,
-                                   TDtargetDoseAtDoseGrid=thisTDtargetatdoseGrid,
-                                   TD30=thisTD30,
-                                   TD30AtDoseGrid=thisTD30atdoseGrid,
+                                   TDtargetDuringTrial=thisTDtargetDuringTrial ,
+                                   TDtargetDuringTrialAtDoseGrid=thisTDtargetDuringTrialAtDoseGrid,
+                                   TDtargetEndOfTrial=thisTDtargetEndOfTrial,
+                                   TDtargetEndOfTrialAtDoseGrid=thisTDtargetEndOfTrialAtDoseGrid,
                                    Gstar=thisGstar,
-                                   GstarAtDoseGrid=thisGstaratdosegrid,
+                                   GstarAtDoseGrid=thisGstarAtDoseGrid,
                                    Recommend=Recommend,
                                    fitDLE=thisDLEFit,
                                    fitEff=thisEffFit,
@@ -1921,21 +1917,19 @@ setMethod("simulate",
                   
                   thisDose <- NEXT$nextdose
                   
-                  thisTDtarget<- NEXT$TDtargetEstimate
+                  thisTDtargetDuringTrial <- NEXT$TDtargetDuringTrialEstimate
                   
-                  thisTDtargetatdoseGrid <- NEXT$TDtargetAtDoseGrid
-                  
-                  thisTD30<-NEXT$TD30Estimate
+                  thisTDtargetDuringTrialAtDoseGrid<- NEXT$TDtargetDuringTrialAtDoseGrid
                   
                   
-                  thisTD30atdoseGrid <-NEXT$TD30AtDoseGrid
+                  thisTDtargetEndOfTrial <- NEXT$TDtargetEndOfTrialEstimate
+                  thisTDtargetEndOfTrialAtDoseGrid <- NEXT$TDtargetEndOfTrialAtDoseGrid
+                  thisGstar <- NEXT$GstarEstimate
+                  thisGstarAtDoseGrid <- NEXT$GstarAtDoseGrid
                   
-                  thisGstar<-NEXT$GstarEstimate
                   
-                  thisGstaratdosegrid <- NEXT$GstarAtDoseGrid
+                  Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
                   
-                  
-                  Recommend<-min(thisTD30atdoseGrid,thisGstaratdosegrid)
                   
                   ## evaluate stopping rules
                   stopit <- stopTrial(object@stopping,
@@ -1960,12 +1954,12 @@ setMethod("simulate",
                 ## return the results
                 thisResult <- list(data=thisData,
                                    dose=thisDose,
-                                   TDtargetDose=thisTDtarget,
-                                   TDtargetDoseAtDoseGrid=thisTDtargetatdoseGrid,
-                                   TD30=thisTD30,
-                                   TD30AtDoseGrid=thisTD30atdoseGrid,
+                                   TDtargetDuringTrial=thisTDtargetDuringTrial ,
+                                   TDtargetDuringTrialAtDoseGrid=thisTDtargetDuringTrialAtDoseGrid,
+                                   TDtargetEndOfTrial=thisTDtargetEndOfTrial,
+                                   TDtargetEndOfTrialAtDoseGrid=thisTDtargetEndOfTrialAtDoseGrid,
                                    Gstar=thisGstar,
-                                   GstarAtDoseGrid=thisGstaratdosegrid,
+                                   GstarAtDoseGrid=thisGstarAtDoseGrid,
                                    Recommend=Recommend,
                                    fitDLE=subset(thisDLEFit,
                                                  select=
@@ -2024,3 +2018,317 @@ setMethod("simulate",
               
               
             })
+
+
+## ----------------------------------------------------------------------------------
+##' Methods to simulate based on one Pseudo DLE and one Pseudo Efficacy Flexible form/model
+##' involving DLE and Efficacy samples
+##' 
+##' @export
+##' @keywords method
+setMethod("simulate",
+signature=
+  signature(object="DualResponsesDesign",
+            nsim="ANY",
+            seed="ANY"),
+def=
+  function(object, nsim=1L, seed=NULL,
+           trueDLE, trueEff, trueSigma2,trueSigma2betaW,
+           args=NULL, firstSeparate=FALSE,
+           mcmcOptions=McmcOptions(),
+           parallel=FALSE, ...){
+    
+    nsim <- safeInteger(nsim)
+    
+    ## checks and extracts
+    stopifnot(is.function(trueDLE),
+              length(trueEff)==length(data@doseGrid),
+              trueSigma2 > 0,
+              trueSigma2betaW > 0,
+              is.bool(firstSeparate),
+              is.scalar(nsim),
+              nsim > 0,
+              is.bool(parallel))
+    
+    args <- as.data.frame(args)
+    nArgs <- max(nrow(args), 1L)
+    
+    ## get names of arguments (excluding the first one which is the dose)
+    trueDLEArgnames <- names(formals(trueDLE))[-1]
+    
+    ##Find th true Sigma2 (scenario)
+    ##if it is not fixed
+    if (length(trueSigma2)==2){
+      trueSigma2 <- as.numeric(trueSigma2["b"]/(trueSigma2["a"]-1))} else {
+        trueSigma2 <- trueSigma2} 
+    
+    
+    ##Then the true Sigma2betaW
+    ##if it is not fixed
+    if (length(trueSigma2betaW)==2){
+      trueSigma2betaW <- as.numeric(trueSigma2betaW["b"]/(trueSigma2betaW["a"]-1))} else {
+        trueSigma2betaW <- trueSigma2betaW} 
+    
+    ## seed handling
+    RNGstate <- setSeed(seed)
+    
+    ## from this,
+    ## generate the individual seeds for the simulation runs
+    simSeeds <- sample(x=seq_len(1e5), size=nsim)
+    
+    ## the function to produce the run a single simulation
+    ## with index "iterSim"
+    runSim <- function(iterSim)
+    {
+      ## set the seed for this run
+      set.seed(simSeeds[iterSim])
+      
+      ## what is now the argument for the truth?
+      ## (appropriately recycled)
+      thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop=FALSE]
+      
+      ## so this truth is...
+      thisTruthDLE <- function(dose)
+      {
+        do.call(trueDLE,
+                ## First argument: the dose
+                c(dose,
+                  ## Following arguments
+                  thisArgs))
+      }
+      
+      
+      
+      ##get the true Eff
+      thisTruthEff <- trueEff
+      
+      ## start the simulated data with the provided one
+      thisData <- object@data
+      
+      ## shall we stop the trial?
+      ## First, we want to continue with the starting dose.
+      ## This variable is updated after each cohort in the loop.
+      stopit <- FALSE
+      
+      ## what is the next dose to be used?
+      ## initialize with starting dose
+      thisDose <- object@startingDose
+      
+      ##Start with specified sigma2 and sigma2betaW
+      thisSigma2 <- trueSigma2
+      thisSigma2betaW <- trueSigma2betaW
+      
+      
+      ## inside this loop we simulate the whole trial, until stopping
+      while(! stopit)
+      {
+        ## what is the probability for tox. at this dose?
+        thisDLEProb <- thisTruthDLE(thisDose)
+        thisDoseIndex <- which(thisDose==data@doseGrid)
+        thisEff <- thisTruthEff[thisDoseIndex]
+        
+        
+        
+        ## what is the cohort size at this dose?
+        thisSize <- size(cohortSize=object@cohortSize,
+                         dose=thisDose,
+                         data=thisData)
+        
+        
+        ## simulate DLTs: depends on whether we
+        ## separate the first patient or not.
+        if(firstSeparate && (thisSize > 1L))
+        {
+          ## dose the first patient
+          thisDLTs <- rbinom(n=1L,
+                             size=1L,
+                             prob=thisDLEProb)
+          
+          thisEff <- rnorm(n=1L,
+                           mean=thisEff,
+                           sd=sqrt(trueSigma2))
+          
+          ## if there is no DLT:
+          if(thisDLTs == 0)
+          {
+            ## enroll the remaining patients
+            thisDLTs <- c(thisDLTs,
+                          rbinom(n=thisSize - 1L,
+                                 size=1L,
+                                 prob=thisDLEProb))
+            thisEff<-c(thisEff,
+                       rnorm(n=thisSize - 1L,
+                             mean=thisEff,
+                             sd=sqrt(trueSigma2)))
+          }
+        } else {
+          ## we can directly dose all patients
+          thisDLTs <- rbinom(n=thisSize,
+                             size=1L,
+                             prob=thisDLEProb)
+          
+          thisEff <- rnorm(n=thisSize,
+                           mean=thisEff,
+                           sd=sqrt(trueSigma2))  
+        }
+        
+        ## update the data with this cohort
+        thisData <- update(object=thisData,
+                           x=thisDose,
+                           y=thisDLTs,
+                           w=thisEff)
+        
+        ##Update model estimate in DLE model
+        thisDLEModel <- update(object=object@DLEmodel,
+                               data=thisData)
+        
+        thisEffModel <- update(object=object@Effmodel,
+                               data=thisData)
+        
+        
+        
+        ## what is the dose limit?
+        doselimit <- maxDose(object@increments,
+                             data=thisData)
+        
+        ## generate DLE and Eff samples from the DLE and Eff model
+        thisDLEsamples <- mcmc(data=thisData,
+                               model=thisDLEModel,
+                               options=mcmcOptions)
+        
+        thisEffsamples <- mcmc(data=thisData,
+                               model=thisEffModel,
+                               options=mcmcOptions)
+        
+        
+        thisSigma2 <- mean(thisEffsamples@data$sigma2)
+        
+        thisSigma2betaW <- mean(thisEffsamples@data$sigma2betaW)
+        
+        ## => what is the next best dose?
+        
+        NEXT<-nextBest(object@nextBest,
+                       doselimit=doselimit,
+                       samples=thisDLEsamples,
+                       model=thisDLEModel,
+                       Effmodel=thisEffModel,
+                       Effsamples=thisEffsamples,
+                       data=thisData)
+        
+        
+        
+        thisDose <- NEXT$nextdose
+        
+        thisTDtargetDuringTrial <- NEXT$TDtargetDuringTrialEstimate
+        
+        thisTDtargetDuringTrialAtDoseGrid<- NEXT$TDtargetDuringTrialAtDoseGrid
+        
+        
+        thisTDtargetEndOfTrial <- NEXT$TDtargetEndOfTrialEstimate
+        thisTDtargetEndOfTrialAtDoseGrid <- NEXT$TDtargetEndOfTrialAtDoseGrid
+        thisGstar <- NEXT$GstarEstimate
+        thisGstarAtDoseGrid <- NEXT$GstarAtDoseGrid
+        
+        
+        Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
+        
+        
+        ## evaluate stopping rules
+        stopit <- stopTrial(object@stopping,
+                            dose=thisDose,
+                            samples=thisDLEsamples,
+                            model=thisDLEModel,
+                            data=thisData,
+                            Effmodel=thisEffModel,
+                            Effsamples=thisEffsamples)
+      }
+      
+      ##get the fits
+      
+      thisDLEFit <- fit(object=thisDLEsamples,
+                        model=thisDLEModel,
+                        data=thisData)
+      
+      thisEffFit <- fit(object=thisEffsamples,
+                        model=thisEffModel,
+                        data=thisData)
+      
+      
+      ## return the results
+      thisResult <-
+        list(data=thisData,
+             dose=thisDose,
+             TDtargetDuringTrial=thisTDtargetDuringTrial ,
+             TDtargetDuringTrialAtDoseGrid=thisTDtargetDuringTrialAtDoseGrid,
+             TDtargetEndOfTrial=thisTDtargetEndOfTrial,
+             TDtargetEndOfTrialAtDoseGrid=thisTDtargetEndOfTrialAtDoseGrid,
+             Gstar=thisGstar,
+             GstarAtDoseGrid=thisGstarAtDoseGrid,
+             Recommend=Recommend,
+             fitDLE=subset(thisDLEFit,
+                           select=
+                             c(middle,lower,upper)),
+             fitEff=subset(thisEffFit,
+                           select=
+                             c(middle,lower,upper)),
+             sigma2est=thisSigma2,
+             sigma2betaWest=thisSigma2betaW,
+             stop=
+               attr(stopit,
+                    "message"))
+      
+      return(thisResult)
+    }
+    
+    resultList <- crmPack:::getResultList(fun=runSim,
+                                          nsim=nsim,
+                                          vars=
+                                            c("simSeeds",
+                                              "args",
+                                              "nArgs",
+                                              "firstSeparate",
+                                              "trueDLE",
+                                              "trueEff",
+                                              "trueSigma2",
+                                              "trueSigma2betaW",
+                                              "object",
+                                              "mcmcOptions"),
+                                          parallel=parallel)
+    
+    ## put everything in the Simulations format:
+    
+    ## setup the list for the simulated data objects
+    dataList <- lapply(resultList, "[[", "data")
+    
+    ## the vector of the final dose recommendations
+    recommendedDoses <- as.numeric(sapply(resultList, "[[", "Recommend"))
+    
+    
+    ##set up the list for the final fits for both DLE and efficacy
+    fitDLEList <- lapply(resultList,"[[","fitDLE")
+    fitEffList <- lapply(resultList,"[[","fitEff") 
+    
+    ## the vector of sigma2 estimates
+    sigma2Estimates <- as.numeric(sapply(resultList, "[[", "sigma2est"))
+    
+    ## the vector of sigma2betaW estimates
+    sigma2betaWEstimates <- as.numeric(sapply(resultList, "[[", "sigma2betaWest"))
+    
+    
+    ## the reasons for stopping
+    stopReasons <- lapply(resultList, "[[", "stop")
+    
+    ## return the results in the Simulations class object
+    ret <- PseudoDualFlexiSimulations(data=dataList,
+                                      doses=recommendedDoses,
+                                      fit=fitDLEList,
+                                      fitEff=fitEffList,
+                                      sigma2est=sigma2Estimates,
+                                      sigma2betaWest=sigma2betaWEstimates,
+                                      stopReasons=stopReasons,
+                                      seed=RNGstate)
+    
+    return(ret)
+  })
+
+## --------------------------------------------------------------------------
