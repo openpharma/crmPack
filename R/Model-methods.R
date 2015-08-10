@@ -572,8 +572,6 @@ setMethod("gain",
             })
 
 
-## ==================================================================================
-
 ## ------------------------------------------------------------------------------------
 ## Update Pseduo models object to obtain new modal estimates for pseudo model parameters
 ## ------------------------------------------------------------------------------------
@@ -617,14 +615,13 @@ setMethod("update",
               return(model)
             })
 
-## ================================================================================
 ## ------------------------------------------------------------------------------------
 ## Update the 'Effloglog' model
 ## -----------------------------------------------------------------
 
 ##' Update method for the 'Effloglog' Model class. This is a method to update the modal
 ##' estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu} 
-##' (nu, the precision of the efficacy responses ) when new data 
+##' (nu, the precision of the efficacy responses) when new data 
 ##' or new observations of responses are available and added in.
 ##' 
 ##' @param object the \code{\linkS4class{Effloglog}} class object

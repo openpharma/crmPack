@@ -1622,9 +1622,15 @@ setMethod("size",
 
 
 ## ============================================================
-##' nextBest method using pseudo DLE model with samples
+##' @describeIn nextBest Find the next best dose based on the 'NextBestTDsamples'
+##' class rule. This a method based only on the DLE responses and for 
+##' \code{\linkS4class{LogisticIndepBeta}} model class object involving DLE samples
 ##' 
-##' nextBest method only using DLE responses
+##' @importFrom ggplot2 ggplot geom_density xlab ylab xlim aes geom_vline
+##' geom_text
+##' 
+##' @example examples\Rules-method nextbest_TDsamples.R
+##' 
 ##' @export
 ##' @keywords methods
 setMethod("nextBest",
