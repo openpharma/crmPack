@@ -290,11 +290,18 @@ DualSimulations <- function(rhoEst,
                                 meanBiomarkerFit="list"))
 ## ==============================================================================
 
-## --------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------
 ## class for simulation using pseudo models
-## ------------------------------------------------------
-##
-##' Class for Pseudo simulation 
+## ------------------------------------------------------------------------
+##' This is a class which captures the trial simulations from designs using 
+##' pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
+##' class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
+##' Additional slots fit and stopReasons compared to the general class 
+##' \code{\linkS4class{GeneralSimulations}}.
+##' 
+##' @slot fit list of the final values. If samples are involved, these are the final fitted values.
+##' If no samples are involved, these are included the final modal estimates of the model parameters
+##' and the posterior estimates of the probabilities of the occurrence of a DLE.
 ##' 
 ##' @export
 ##' @keywords class
@@ -319,7 +326,14 @@ DualSimulations <- function(rhoEst,
              })
 validObject(.PseudoSimulations())
 
-##' Initialization function
+##' Initialization function of the 'PseudoSimulations' class
+##' @describeIn PseudoSimulations
+##' 
+##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
+##' @return the \code{\linkS4class{PseudoSimulations}} object
+##' 
+##' @export
+##' @keywords methods
 PseudoSimulations <- function(fit,
                               stopReasons,
                               ...)
@@ -330,16 +344,27 @@ PseudoSimulations <- function(fit,
                      stopReasons=stopReasons)
 }
 
-## ====================================================================
-## ---------------------------------------------------------------------
-## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models)
-## --------------------------------------------------------------------
- 
-##' Class for Pseudo Simulation based on DLE and efficacy pseudo model
+## ===============================================================================
+## -------------------------------------------------------------------------------
+## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models except 'EffFlexi' model)
+## -----------------------------------------------------------------------------------
+##' This is a class which captures the trial simulations design using both the
+##' DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
+##' class and the efficacy model from \code{\linkS4class{ModelEff}} class 
+##' (except \code{\linkS4class{EffFlex}} class). It contains all slots from 
+##' \code{\linkS4class{GeneralSimulations}} and \code{\linkS4class{PseudoSimulations}} object.
+##' In comparison to the parent class \code{\linkS4class{PseudoSimulations}}, 
+##' it contains additional slots to 
+##' capture the dose-efficacy curve and the sigma2 estimates.
+##' 
+##' @slot fitEff list of the final values. If DLE and efficacy samples are gerneated, it contains the
+##' final fitted values. If no DLE and efficacy samples are used, it contains the modal estimates of the
+##' parameters in the two models and the posterior estimates of the probabilities of the occurrence of a
+##' DLE and the expected efficacy responses. 
+##' @slot sigma2est the vector of the final posterior mean sigma2 estimates
 ##' 
 ##' @export
 ##' @keywords class
-
 .PseudoDualSimulations <- 
   setClass(Class="PseudoDualSimulations",
            representation(fitEff="list",
@@ -357,8 +382,10 @@ PseudoSimulations <- function(fit,
 
 validObject(.PseudoDualSimulations())
 
-##'Initialization function
-
+##' Initialization function for 'DualPseudoSimulations' class
+##' @describeIn DualPseudoSimulations
+##' @param \dots additional parameters from \code{\linkS4class{PseudoSimulations}}
+##' @return the \code{\linkS4class{PseudoDualSimulations}} object
 PseudoDualSimulations <- function(fitEff,
                                   sigma2est,
                                   ...)
@@ -370,14 +397,20 @@ PseudoDualSimulations <- function(fitEff,
 }
 
 
-
-## ====================================================================
-## ---------------------------------------------------------------------
-## Class for Pseudo simulation with DLE and efficacy responses using the Flexible efficacy form
-## --------------------------------------------------------------------
-
-##' Class for Pseudo Simulation for DLE and efficacy responses when using the Flexible efficacy form
+## -------------------------------------------------------------------------------
+## Class for Pseudo simulation using DLE and efficacy responses using 'EffFlex' efficacy model
+## -----------------------------------------------------------------------------------
+##' This is a class which captures the trial simulations design using both the
+##' DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
+##' class and the efficacy model from \code{\linkS4class{EffFlexi}} class 
+##'  It contains all slots from 
+##' \code{\linkS4class{GeneralSimulations}}, \code{\linkS4class{PseudoSimulations}} 
+##' and \code{\linkS4class{PseudoDualSimulations}} object.
+##' In comparison to the parent class \code{\linkS4class{PseudoDualSimulations}}, 
+##' it contains additional slots to 
+##' capture the sigma2betaW estimates.
 ##' 
+##' @slot sigma2betaWest the vector of the final posterior mean sigma2betaW estimates
 ##' 
 ##' @export
 ##' @keywords class
@@ -397,8 +430,10 @@ PseudoDualSimulations <- function(fitEff,
 
 validObject(.PseudoDualFlexiSimulations())
 
-##' Initialization function
-
+##' Initialization function for 'PseudoDualFlexiSimulations' class
+##' @describeIn PseudoDualFlexiSimulations
+##' @param \dots additional parameters from \code{\linkS4class{PseudoDualSimulations}}
+##' @return the \code{\linkS4class{PseudoDualFlexiSimulations}} object
 PseudoDualFlexiSimulations <- function(sigma2betaWest,
                                        ...)
 { 
@@ -441,6 +476,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @slot meanFit list with the average, lower (2.5%) and upper (97.5%)
 ##' quantiles of the mean fitted toxicity at each dose level
 ##' 
+##' 
 ##' @export
 ##' @keywords classes
 .PseudoSimulationsSummary <- 
@@ -465,7 +501,19 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
                           fitAtDoseMostSelected="numeric",
                           meanFit="list"))
 ## ---------------------------------------------------------------------------------------------
-##' Class for pseudo Dual responses summary
+##' Class for the summary of the dual responses simulations using pseudo models
+##' 
+##' It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to 
+##' the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains two 
+##' more slots for the efficacy model fit information.
+##' 
+##' Note that objects should not be created by users, therefore no initialization function
+##' is provided for this class.
+##' 
+##' @slot EffFitAtDoseMoseSelected fitted expected mean efficacy value at dose most often
+##' selected
+##' @slot meanEffFit list with mean, lower (2.5%) and upper (97.5%) quantiles of the fitted expected 
+##' efficacy value at each dose level.
 ##' 
 ##' @export
 ##' @keywords class

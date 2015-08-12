@@ -1348,7 +1348,7 @@ validObject(.NextBestTDsamples())
 ##' Initialization function for class "NextBestTDsamples"
 ##' 
 ##' @describeIn NextBestTDsamples
-##' @return the \code{\linkS4class{NextBestTDsamples}} object
+##' @return the \code{\linkS4class{NextBestTDsamples}} class object
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1406,7 +1406,7 @@ validObject(.NextBestTD())
 
 ##' Initialization function for the class "NextBestTD"
 ##' @describeIn NextBestTD
-##' @return the \code{\linkS4class{NextBestTD}} object
+##' @return the \code{\linkS4class{NextBestTD}} class object
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1575,6 +1575,8 @@ validObject(.StoppingCIRatio())
 
 ##' Initialization function for "StoppingCIRatio"
 ##' @describeIn StoppinCIRatio
+##' 
+##' @return the \code{\linkS4class{StoppingCIRatio}} class object
 
 StoppingCIRatio <- function(targetRatio)
 {

@@ -1,6 +1,10 @@
 ##Construct the DualResponsesSamplesDesign for simulations
 ##The design comprises the DLE and efficacy models, the escalation rule, starting data, 
 ##a cohort size and a starting dose
+##Define your data set first using an empty data set 
+## with dose levels from 25 to 300 with increments 25
+data <- DataDual(doseGrid=seq(25,300,25))
+
 ##First for the DLE model and DLE samples
 ##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class and DLEsamples of 'Samples' class
 DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)

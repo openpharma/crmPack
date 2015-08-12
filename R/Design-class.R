@@ -226,7 +226,7 @@ ThreePlusThreeDesign <- function(doseGrid)
 ##' objects of this class contain:
 ##' 
 ##' @slot model the pseudo DLE model to be used, an object class of 
-##' \code{\linkS4class{LogisticIndepBeta}}
+##' \code{\linkS4class{ModelTox}}
 ##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels, an object class of 
 ##' \code{\linkS4class{Increments}}
@@ -237,7 +237,7 @@ ThreePlusThreeDesign <- function(doseGrid)
 
 .TDsamplesDesign <-
   setClass(Class="TDsamplesDesign",
-           representation(model="LogisticIndepBeta",
+           representation(model="ModelTox",
                           stopping="Stopping",
                           increments="Increments"),
            prototype(model=.LogisticIndepBeta(),
@@ -259,7 +259,7 @@ TDsamplesDesign<-function(model,stopping,increments,...){
   start<-RuleDesign(...)
   .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments)}
 
-## ==========================================================
+## =============================================================================
 ## -------------------------------------------------------------------------------
 ## Design class using DLE responses only based on the pseudo DLE model without sample
 ## ---------------------------------------------------------------------------
@@ -269,7 +269,7 @@ TDsamplesDesign<-function(model,stopping,increments,...){
 ##' objects of this class contain:
 ##' 
 ##' @slot model the pseudo DLE model to be used, an object class of 
-##' \code{\linkS4class{LogisticIndepBeta}}
+##' \code{\linkS4class{ModelTox}}
 ##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels, an object class of 
 ##' \code{\linkS4class{Increments}}
@@ -279,7 +279,7 @@ TDsamplesDesign<-function(model,stopping,increments,...){
 ##' @keywords class 
 .TDDesign <-
   setClass(Class="TDDesign",
-           representation(model="LogisticIndepBeta",
+           representation(model="ModelTox",
                           stopping="Stopping",
                           increments="Increments"),
            prototype(model=.LogisticIndepBeta(),
@@ -302,58 +302,99 @@ TDDesign<-function(model,stopping,increments,...){
   .TDDesign(start,model=model,stopping=stopping,increments=increments)}
 
 
-## ------------------------------------------------------------------------------
-## Class for design based on one Pseudo DLE and one Pseudo Efficacy model
-## ------------------------------------------------------------------------------
-##' Class of design which based on one pseudo DLE and one pseudo efficacy model
+
+## ---------------------------------------------------------------------------------------------------
+## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
+##----------------------------------------------------------------------------------------------------
+##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model 
+##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
+##' with DLE and efficacy samples.It contain all slots in 
+##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object
+##' 
+##' @slot data the data set of \code{\linkS4class{DataDual}} class object
+##' @slot Effmodel the pseudo efficacy model to be used, an object class of 
+##' \code{\linkS4class{ModelEff}}
+##' 
+##' @example examples\design-class DualResponsesSamplesDesign.R
+##' @export
+##' @keywords class 
+##' 
+.DualResponsesSamplesDesign <-
+setClass(Class="DualResponsesSamplesDesign",
+         representation(Effmodel="ModelEff",
+                        data="DataDual"),
+         prototype(nextBest=.NextBestMaxGainSamples(),
+                   data=DataDual(doseGrid=1:2),
+                   startingDose=1,
+                   model=.LogisticIndepBeta()),
+         contains=list("TDsamplesDesign")
+           )
+validObject(.DualResponsesSamplesDesign())
+
+##' Initialization function for 'DualResponsesSamplesDesign"
+##' @describeIn DualResponsesSamplesDesign
+##' 
+##' @return the \code{\linkS4class{DualResponsesSamplesDesign}} class object
 ##' 
 ##' @export
-##' @keywords class
-.DualResponsesDesign <-
-  setClass(Class="DualResponsesDesign",
-           representation(DLEmodel="ModelTox",
-                          Effmodel="ModelEff",
-                          data="DataDual",
-                          stopping="Stopping",
-                          increments="Increments"),
-           prototype(startingDose=1,
-                     DLEmodel=.LogisticIndepBeta(),
-                     data=DataDual(doseGrid=1:2),
-                     stopping=.StoppingMinPatients(),
-                     increments=.IncrementsRelative()),
-           contains=list("RuleDesign"),
-           validity=
-             function(object){
-               o <- Validate()
-               
-               o$check(is.scalar(object@startingDose),
-                       "startingDose must be scalar")
-               o$check(object@startingDose %in% object@data@doseGrid,
-                       "startingDose must be included in data@doseGrid")
-               
-               o$result()
-             })
-validObject(.DualResponsesDesign())
-
-##' Init function
-DualResponsesDesign <- function(nextBest,
-                                cohortSize,
-                                startingDose,
-                                DLEmodel,
-                                Effmodel,
+##' @keywords methods
+DualResponsesSamplesDesign <- function(Effmodel,
                                 data,
-                                stopping,
-                                increments)
+                                ...)
   
 {
-  .DualResponsesDesign(nextBest=nextBest,
-                       cohortSize=cohortSize,
-                       startingDose=as.numeric(startingDose),
-                       DLEmodel=DLEmodel,
+  
+  start <- TDsamplesDesign(data=data,...)
+  .DualResponsesSamplesDesign(start,
+                              Effmodel=Effmodel,
+                              data=data)
+}
+
+## ---------------------------------------------------------------------------------------------------
+## class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
+##----------------------------------------------------------------------------------------------------
+##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model 
+##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
+##' without DLE and efficacy samples. It contain all slots in 
+##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
+##' 
+##' @slot data the data set of \code{\linkS4class{DataDual}} class object
+##' @slot Effmodel the pseudo efficacy model to be used, an object class of 
+##' \code{\linkS4class{ModelEff}}
+##' 
+##' @example examples\design-class DualResponsesDesign.R
+##' @export
+##' @keywords class 
+.DualResponsesDesign <-
+  setClass(Class="DualResponsesDesign",
+           representation(Effmodel="ModelEff",
+                          data="DataDual"),
+           prototype(nextBest=.NextBestMaxGain(),
+                     data=DataDual(doseGrid=1:2),
+                     startingDose=1,
+                     model=.LogisticIndepBeta()),
+           contains=list("TDDesign")
+  )
+validObject(.DualResponsesDesign())
+
+
+##' Initialization function for 'DualResponsesDesign"
+##' @describeIn DualResponsesDesign
+##' 
+##' @return the \code{\linkS4class{DualResponsesDesign}} class object
+##' 
+##' @export
+##' @keywords methods
+DualResponsesDesign <- function(Effmodel,
+                                data,
+                                ...)
+  
+{
+  
+  start <- TDDesign(data=data,...)
+  .DualResponsesDesign(start,
                        Effmodel=Effmodel,
-                       data=data,
-                       stopping=stopping,
-                       increments=increments)
+                       data=data)
 }
 
   ## ===============================================================================

@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Simulations-methods.R] by DSB Fre 16/01/2015 13:41>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 19/02/2014   file creation
+## 30/07/2014   added in methods for pseudo models simulations
 ###################################################################################
 
 
@@ -39,6 +41,8 @@
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples\Simulations-method plotSIMsingle.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1132,6 +1136,125 @@ setMethod("plot",
           })
 
 ## -----------------------------------------------------------------------------------------
+##' Plot simulations with DLE and efficacy responses
+##'
+##' This plot method can be applied to \code{\linkS4class{PseudoDualSimulations}}
+##' objects in order to summarize them graphically. Possible \code{type}s of
+##' plots at the moment are: \describe{ \item{trajectory}{Summary of the
+##' trajectory of the simulated trials} \item{dosesTried}{Average proportions of
+##' the doses tested in patients} \item{sigma2}{Plot a boxplot of the final variance estimates of the
+##' efficacy responses in the simulated trials}} 
+##' You can specify one or both of these in the
+##' \code{type} argument.
+##'
+##' @param x the \code{\linkS4class{PseudoDualSimulations}} object we want
+##' to plot from
+##' @param y missing
+##' @param type the type of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
+##' scale_linetype_manual
+##' @importFrom gridExtra arrangeGrob
+##' @export
+##' @keywords methods
+setMethod("plot",
+          signature= 
+            signature(x="PseudoDualSimulations",
+                      y="missing"),
+          def=
+            function(x,
+                     y,
+                     type=
+                       c("trajectory",
+                         "dosesTried",
+                         "sigma2"),
+                     ...){
+              ## start the plot list
+              plotList <- list()
+              plotIndex <- 0L
+              
+              ## which plots should be produced?
+              type <- match.arg(type,
+                                several.ok=TRUE)
+              stopifnot(length(type) > 0L)
+              
+              ## substract the specific plot types for
+              ## dual-endpoint simulation results
+              typeReduced <- setdiff(type,
+                                     c("sigma2", ""))
+              
+              ## are there more plots from general?
+              moreFromGeneral <- (length(typeReduced) > 0)
+              
+              ## if so, then produce these plots
+              if(moreFromGeneral)
+              {
+                genPlot <- callNextMethod(x=x, y=y, type=typeReduced)
+              }
+              
+              ## now to the specific dual-endpoint plots:
+              
+              ## Efficacy variance estimates boxplot
+              if("sigma2" %in% type)
+              {
+                ## save the plot
+                plotList[[plotIndex <- plotIndex + 1L]] <-
+                  qplot(factor(0), y=y, data=data.frame(y=x@sigma2est), geom="boxplot",
+                        xlab="", ylab="Efficacy variance estimates") +
+                  coord_flip() + scale_x_discrete(breaks=NULL)
+              }
+              
+              
+              ## then finally plot everything
+              if(identical(length(plotList),
+                           0L))
+              {
+                return(genPlot)
+              } else if(identical(length(plotList),
+                                  1L))
+              {
+                ret <- plotList[[1L]]
+              } else {
+                ret <- do.call(gridExtra::arrangeGrob,
+                               plotList)
+              }
+              
+              if(moreFromGeneral)
+              {
+                ret <- gridExtra::arrangeGrob(genPlot, ret,heights=c(2/3, 1/3))
+              }
+              
+              return(ret)
+            })
+## ---------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## --------------------------------------------------------------------------------------------------------
 ##' Summarize the simulations, relative to a given truth
 ##'
 ##' @param object the \code{\linkS4class{PseudoSimulations}} object we want to
@@ -1329,6 +1452,17 @@ setMethod("summary",
               return(ret)
             })
 ## ========================================================================================================
+
+
+
+
+
+
+
+
+
+
+
 ##' Show the summary of the simulations
 ##'
 ##' @param object the \code{\linkS4class{PseudoSimulationsSummary}} object we want

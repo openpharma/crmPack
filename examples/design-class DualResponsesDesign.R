@@ -27,10 +27,10 @@ mySize<-CohortSizeConst(size=3)
 myStopping <- StoppingMinPatients(nPatients=36)
 ##Now specified the design with all the above information and starting with a dose of 25
 
-design <- design <- DualResponsesDesign(nextBest=mynextbest,
-                                        model=DLEmodel,
-                                        Effmodel=Effmodel,
-                                        stopping=myStopping,
-                                        increments=myIncrements,
-                                        cohortSize=mySize,
-                                        data=emptydata,startingDose=25)
+design <- DualResponsesDesign(nextBest=mynextbest,
+                              model=DLEmodel,
+                              Effmodel=Effmodel,
+                              stopping=myStopping,
+                              increments=myIncrements,
+                              cohortSize=mySize,
+                              data=emptydata,startingDose=25)

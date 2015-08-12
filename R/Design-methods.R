@@ -1807,14 +1807,47 @@ setMethod("simulate",
 
 ##=========================================================================
 ## -----------------------------------------------------------------------------------------------
-## Method for simulate based on Dual responses on Pseudo models with DLE and efficacy samples
-## ----------------------------------------------------------------------------------
-##' Methods to simulate based on one Pseudo DLE and one Pseudo Efficacy model (not EffFlexi model) 
-##' involving DLE and Efficacy samples
+## Simulate design using DLE and efficacy responses with DLE and efficacy samples (pseudo models)
+## --------------------------------------------------------------------------------------------
+###
+##' This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
+##' This is a method based on the \code{\linkS4class{DualResponsesSamplesDesign}} where DLEmodel 
+##' used are of
+##' \code{\linkS4class{ModelTox}} class object and efficacy model used are of 
+##' \code{\linkS4class{ModelEff}}
+##' class object except \code{\linkS4class{EffFlexi}} class model object. 
+##' In addition, DLE and efficacy samples are involved or generated in the simulation 
+##' process
+##' 
+##' @param object the \code{\linkS4class{DualResponsesSamplesDesign}} object we want to 
+##' simulate the data from
+##' @param nsim the number of simulations (default :1)
+##' @param see see \code{\link{setSeed}}
+##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability 
+##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
+##' @param trueEff a function which takes as input a dose (vector) and returns the expected efficacy
+##' responses (vector). Additional arguments can be supplied in \code{args}.
+##' @param trueNu the precision, the inverse of the variance of the efficacy responses
+##' @param args data frame with arguments for the \code{trueDLE} and
+##' \code{trueEff} function. The column names correspond to the argument
+##' names, the rows to the values of the arguments. The rows are appropriately
+##' recycled in the \code{nsim} simulations.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
+##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
+##' giving the MCMC options for each evaluation in the trial. By default,
+##' the standard options are used
+##' @param parallel should the simulation runs be parallelized across the
+##' clusters of the computer? (not default)
+##' @param \dots not used
+##' 
+##' @example examples\design-method simulateDualResponsesSamplesDesign.R
+##'
+##' @return an object of class \code{\linkS4class{PseudoDualSimulations}}
 ##' 
 ##' @export
-##' @keywords method
-
+##' @keywords methods
 setMethod("simulate",
           signature=
             signature(object="DualResponsesSamplesDesign",
@@ -2102,8 +2135,50 @@ setMethod("simulate",
 
 
 ## ----------------------------------------------------------------------------------
-##' Methods to simulate based on one Pseudo DLE and one Pseudo Efficacy Flexible form/model
-##' involving DLE and Efficacy samples
+## -----------------------------------------------------------------------------------------------
+##   Simulate design using DLE and efficacy responses with DLE and efficacy samples for the 
+##  'EffFlexi' efficacy model
+## --------------------------------------------------------------------------------------------
+###
+##' This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
+##' This is a method based on the \code{\linkS4class{DualResponsesSamplesDesign}} where DLEmodel 
+##' used are of
+##' \code{\linkS4class{ModelTox}} class object and efficacy model used are of 
+##' \code{\linkS4class{EffFlexi}}
+##' class object. 
+##' In addition, DLE and efficacy samples are involved or generated in the simulation 
+##' process
+##' 
+##' @param object the \code{\linkS4class{DualResponsesSamplesDesign}} object we want to 
+##' simulate the data from
+##' @param nsim the number of simulations (default :1)
+##' @param see see \code{\link{setSeed}}
+##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability 
+##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
+##' @param trueEff a function which takes as input a dose (vector) and returns the expected efficacy
+##' responses (vector). Additional arguments can be supplied in \code{args}.
+##' @param trueSigma2 the true variance of the efficacy responses which must be a single 
+##' positive scalar.
+##' @param trueSigma2betaW the true variance for the random walk model used for smoothing. This 
+##' must be a single postive scalar.
+##' 
+##' @param args data frame with arguments for the \code{trueDLE} and
+##' \code{trueEff} function. The column names correspond to the argument
+##' names, the rows to the values of the arguments. The rows are appropriately
+##' recycled in the \code{nsim} simulations.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
+##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
+##' giving the MCMC options for each evaluation in the trial. By default,
+##' the standard options are used
+##' @param parallel should the simulation runs be parallelized across the
+##' clusters of the computer? (not default)
+##' @param \dots not used
+##' 
+##' @example examples\design-method simulateDualResponsesSamplesFlexiDesign.R
+##'
+##' @return an object of class \code{\linkS4class{PseudoDualFlexiSimulations}}
 ##' 
 ##' @export
 ##' @keywords method
@@ -2136,19 +2211,6 @@ def=
     
     ## get names of arguments (excluding the first one which is the dose)
     trueDLEArgnames <- names(formals(trueDLE))[-1]
-    
-    ##Find th true Sigma2 (scenario)
-    ##if it is not fixed
-    if (length(trueSigma2)==2){
-      trueSigma2 <- as.numeric(trueSigma2["b"]/(trueSigma2["a"]-1))} else {
-        trueSigma2 <- trueSigma2} 
-    
-    
-    ##Then the true Sigma2betaW
-    ##if it is not fixed
-    if (length(trueSigma2betaW)==2){
-      trueSigma2betaW <- as.numeric(trueSigma2betaW["b"]/(trueSigma2betaW["a"]-1))} else {
-        trueSigma2betaW <- trueSigma2betaW} 
     
     ## seed handling
     RNGstate <- setSeed(seed)
