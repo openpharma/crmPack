@@ -10,4 +10,4 @@ tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,targetEndOfTrial=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
 
 ##doselimit is the maximum allowable dose level to be given to subjects
-RD<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,model=model,data=data)
+RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,model=model,data=data)

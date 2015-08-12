@@ -7,7 +7,7 @@ model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),
 tdNextBest<-NextBestTD(targetDuringTrial=0.35,targetEndOfTrial=0.3)
 
 ##doselimit is the maximum allowable dose level to be given to subjects
-RD<- nextBest(tdNextBest,
+RecommendDose<- nextBest(tdNextBest,
               doselimit=max(data@doseGrid),
               model=model,
               data=data)

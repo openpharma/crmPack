@@ -1416,9 +1416,9 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
               targetEndOfTrial=targetEndOfTrial)
 }
 
-##--------------------------------------------------------------------------------------
-## Class for next best with maximum gain value based on a pseudo DLE and efficacy model
-## ---------------------------------------------------------------------------------------
+##------------------------------------------------------------------------------------------------------
+## Class for next best with maximum gain value based on a pseudo DLE and efficacy model without samples
+## ----------------------------------------------------------------------------------------------------
 ##' This is a class for which to find the next dose which is safe and give the maximum gain value 
 ##' for allocation. This is a class where no DLE and efficacy samples are involved. This is only based 
 ##' on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
@@ -1455,25 +1455,45 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
                        "DLE EndOfTrialtarget has to be a probability")
                o$result()
              })
-validObject(.NextBestMaxGain)
+validObject(.NextBestMaxGain())
 ##' Initialization function for the class 'NextBestMaxGain'
 ##' @describeIn NextBestMaxGain
-##' @return the \code
-
+##' @return the \code{\linkS4class{NextBestMaxGain}}
+##' 
+##' @export
+##' @keywords methods
 NextBestMaxGain <- function(DLEDuringTrialtarget,
                             DLEEndOfTrialtarget)
 {.NextBestMaxGain(DLEDuringTrialtarget=DLEDuringTrialtarget,
                   DLEEndOfTrialtarget=DLEEndOfTrialtarget)}
 
-
-
-## ---------------------------------------------------------------------------------------
-##-------------------------------------------------------------------
-## Class for next best with maximum gain value based on one DLE and one Efficacy pseudo model with samples
-## ---------------------------------------------------------------------------------------
-
-##' Class for next best with maximum gain based on DLE and Efficacy responses given a DLE pseudo model,
-##' a DLE samples, an efficacy pseudo model and  an efficacy sample
+##------------------------------------------------------------------------------------------------------
+## Class for next best with maximum gain value based on a pseudo DLE and efficacy model with samples
+## ----------------------------------------------------------------------------------------------------
+##' This is a class for which to find the next dose which is safe and give the maximum gain value 
+##' for allocation. This is a class where DLE and efficacy samples are involved.
+##' There are two inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
+##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
+##' class
+##'
+##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##' @slot TDderive the function which derives from the input, a vector of the posterior samples called 
+##' \called{TDsamples} of the dose
+##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##' @slot Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
+##' which gives the maximum gain value) samples 
+##' called \called{Gstarsamples}, the final next best Gstar estimate.
+##' 
+##' @example examples\Rules-class NextBestMaxGainSamples.R
 ##' 
 ##' @export
 ##' @keywords class
@@ -1505,7 +1525,13 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
                o$result()
              })
 validObject(.NextBestMaxGainSamples)
-##' Initial function
+##' Initialization function for class "NextBestMaxGainSamples"
+##' @describeIn NextBestMaxGainSamples
+##' 
+##' @return the \code{\linkS4class{NextBestMaxGainSamples}} object
+##' 
+##' @export
+##' @keywords methods
 
 NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
                                    DLEEndOfTrialtarget,TDderive,Gstarderive)
@@ -1517,14 +1543,15 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 ## --------------------------------------------------------------------------------------------------
 
 ##-------------------------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the credibility interval
+## Stopping based on a target ratio of the 95% credibility interval
 ## ---------------------------------------------------------------------------------------------------------------
 
-##' Stopping based on a target ratio, the ratio of the upper to the lower
+##' Stop based on a target ratio, the ratio of the upper to the lower
 ##' 95% credibility interval of the estimate
 ##' @targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
 ##' estimate that required to stop a trial
 ##' 
+##' @example examples\Rules-class StoppingCIRatio.R
 ##' @export
 ##' @keywords classes 
 
@@ -1553,4 +1580,5 @@ StoppingCIRatio <- function(targetRatio)
 {
   .StoppingCIRatio(targetRatio=targetRatio)
 }
+
 ##-------------------------------------------------------------------------------------

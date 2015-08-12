@@ -1621,7 +1621,9 @@ setMethod("size",
           })
 
 
-## ============================================================
+## ================================================================
+## The nextBest method based only on DLE responses with samples
+## ================================================================
 ##' @describeIn nextBest Find the next best dose based on the 'NextBestTDsamples'
 ##' class rule. This a method based only on the DLE responses and for 
 ##' \code{\linkS4class{LogisticIndepBeta}} model class object involving DLE samples
@@ -1731,10 +1733,17 @@ setMethod("nextBest",
                           TDtargetEndOfTrialAtDoseGrid=ret1,
                           plot=plot1))
             })
- ## =======================================================================
-##' nextBest method using pseudo DLE model
-##' This is the nextBest method using only DLE responses and based on pseudo DLE model without 
-##' using any samples
+## -------------------------------------------------------------------------------
+## The nextBest method based only on DLE responses without samples
+## -----------------------------------------------------------------------------
+##' @describeIn nextBest Find the next best dose based on the 'NextBestTD'
+##' class rule. This a method based only on the DLE responses and for 
+##' \code{\linkS4class{LogisticIndepBeta}} model class object without DLE samples
+##' 
+##' @importFrom ggplot2 ggplot  xlab ylab xlim aes geom_vline
+##' geom_text
+##' 
+##' @example examples\Rules-method nextbest_TD.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1843,18 +1852,25 @@ setMethod("nextBest",
                           plot=plot1))
             })
 
-## ============================================================================
+
 ## ------------------------------------------------------------------------------------
-## Method for nextBest giving the maximum gain
-## ----------------------------------------------------------------------------   
-##' This is the nextBest method to choose the next dose with the maximum gain value using
-##' a given model (DLE model) and a given Effmodel
+## the nextBest method based on DLE and efficacy responses without DLE and efficacy samples
+## -------------------------------------------------------------------------- ----------
+##' @describeIn nextBest for slots \code{nextBest},\code{doselimit} and \code{data}. This is 
+##' a function to find the next best dose based on the 'NextBestMaxGain'
+##' class rule. This a method based on the DLE responses and efficacy responses without DLE and 
+##' efficacy samples. 
+##' 
+##' @param model the DLE model of \code{\links4class{ModelTox}} class object
+##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
+##' 
+##' @importFrom ggplot2 ggplot xlab ylab xlim aes geom_vline
+##' geom_text
+##' 
+##' @example examples\Rules-method nextbest_MaxGain.R
 ##' 
 ##' @export
 ##' @keywords methods
-##' 
-##' 
-## added aditional slot in nextBest for Effmodel, need to check if 'nextBest' can read this slot 
 setMethod("nextBest",
           signature=
             signature(nextBest="NextBestMaxGain",
@@ -2007,18 +2023,22 @@ setMethod("nextBest",
                           plot=plot1))
             })
 ## =====================================================================================
-## nextBest method to choose the dose with maximum gain values given a DLE and an efficacy samples
-## -----------------------------------------------------------------------------------------
-
-##' This is the nextBest method to choose the safe dose which gives the maximum gain value given 
-##' a DLE model, a DLE sample, the Effloglog efficacy model and an given efficacy sample
+## the nextBest method based on DLE and efficacy responses with DLE and efficacy samples
+## -------------------------------------------------------------------------- ----------
+##' @describeIn nextBest for slots \code{nextBest},\code{doselimit} and \code{data}. This is 
+##' a function to find the next best dose based on the 'NextBestMaxGainSamples'
+##' class rule. This a method based on the DLE responses and efficacy responses with DLE and 
+##' efficacy samples. 
 ##' 
-##' @param nextBest the rule, an object of class \code{\linkS4class{NextBestMaxGainSamples}}
-##' @param samples the DLE sample of class \code{\linkS4class{Samples}}
-##' @param model the DLE model of class \code{\linkS4class{ModelTox}}
-##' @param data the data input of class  \code{\linkS4class{DataDual}}]
-##' @param Effmodel the efficacy model of class \code{\linkS4class{Effloglog}}
-##' @param Effsamples the efficacy sample of class \code{\linkS4class{Samples}}
+##' @param model the DLE model of \code{\links4class{ModelTox}} class object
+##' @param samples the DLE samples of \code{\linkS4class{Samples}} class object
+##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
+##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
+##' 
+##' @importFrom ggplot2 ggplot geom_histogram xlab ylab xlim aes geom_vline
+##' geom_text
+##' 
+##' @example examples\Rules-method nextbest_MaxGainSamples.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2249,15 +2269,23 @@ setMethod("nextBest",
                           plot=plot1))
             })
  ## -----------------------------------------------------------------------------------------------------
-##' This is the nextBest method to choose the safe dose which gives the maximum gain value given 
-##' a DLE model, a DLE sample, the EffFlexi efficacy model and an given efficacy sample
+## the nextBest method based on DLE and efficacy responses using the 'EffFlexi' efficacy model with samples
+## -------------------------------------------------------------------------- ----------
+##' @describeIn nextBest for slots \code{nextBest},\code{doselimit} and \code{data}. This is 
+##' a function to find the next best dose based on the 'NextBestMaxGainSamples'
+##' class rule. This a method based on the DLE responses and efficacy responses with DLE and 
+##' efficacy samples. This method can only applied for efficacy model defined in 
+##' \code{\linkS4class{EffFlexi}} class object
 ##' 
-##' @param nextBest the rule, an object of class \code{\linkS4class{NextBestMaxGainSamples}}
-##' @param samples the DLE sample of class \code{\linkS4class{Samples}}
-##' @param model the DLE model of class \code{\linkS4class{ModelTox}}
-##' @param data the data input of class  \code{\linkS4class{DataDual}}]
-##' @param Effmodel the efficacy model of class \code{\linkS4class{EffFlexi}}
-##' @param Effsamples the efficacy sample of class \code{\linkS4class{Samples}}
+##' @param model the DLE model of \code{\links4class{ModelTox}} class object
+##' @param samples the DLE samples of \code{\linkS4class{Samples}} class object
+##' @param Effmodel the efficacy model of \code{\linkS4class{EffFlexi}} class object
+##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
+##' 
+##' @importFrom ggplot2 ggplot geom_histogram xlab ylab xlim aes geom_vline
+##' geom_text
+##' 
+##' @example examples\Rules-method nextbest_MaxGainSamplesFlexi.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2479,11 +2507,16 @@ setMethod("nextBest",
 ## ------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
 ## ------------------------------------------------------------------------------------------------
-
-
-##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
-##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only DLE responses and
-##' DLE samples are given
+##' @describeIn stopTrial Stop based on 'StoppingCIRatio' class when 
+##' reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only 
+##' DLE responses and DLE samples are given
+##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
+##' 
+##' @example examples\Rules-method stopTrialCITDsamples.R
+##' 
+##' @export
+##' @keywords methods
 setMethod("stopTrial",
           signature=
             signature(stopping="StoppingCIRatio",
@@ -2519,9 +2552,19 @@ setMethod("stopTrial",
                                messgae=text))
             })
 
-## ---------------------------------------------------------------------------------------
-##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
-##' interval of the estimate(TDtargetEndOfTrial). This is a stopping rule which incorporate only DLE responses without any samples
+## ----------------------------------------------------------------------------------------------
+## Stopping based on a target ratio of the upper to the lower 95% credibility interval
+## ------------------------------------------------------------------------------------------------
+##' @describeIn stopTrial Stop based on 'StoppingCIRatio' class
+##' when reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only 
+##' DLE responses and no DLE samples are involved
+##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
+##' 
+##' @example examples\Rules-method stopTrialCITD.R
+##' 
+##' @export
+##' @keywords methods
 setMethod("stopTrial",
           signature=
             signature(stopping="StoppingCIRatio",
@@ -2565,11 +2608,31 @@ setMethod("stopTrial",
             })
 
 ## --------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
-##' interval of the estimate, the smaller of the TDtargetEndOfTrial and the Gstar estimate. 
-##' This is a stopping rule when DLE and efficacy responses are incorporated and
-##' a DLE samples and an efficacy samples are given
-
+## Stopping based on a target ratio of the upper to the lower 95% credibility interval
+## ------------------------------------------------------------------------------------------------
+##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which 
+##' incorporate DLE and efficacy responses and DLE and efficacy samples are also used.
+##' 
+##' @param samples the DLE samples of \code{\linkS4class{Samples}}
+##' @param model The DLE model of \code{\linkS4class{ModelTox}}
+##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
+##' @param TDderive the function which derives from the input, a vector of the posterior samples called 
+##' \called{TDsamples} of the dose
+##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
+##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
+##' @param Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
+##' which gives the maximum gain value) samples 
+##' called \called{Gstarsamples}, the final next best Gstar estimate.
+##' 
+##' 
+##' @example examples\Rules-method stopTrialCIMaxGainSamples.R
+##' 
+##' @export
+##' @keywords methods
 setMethod("stopTrial",
           signature=
             signature(stopping="StoppingCIRatio",
@@ -2651,11 +2714,21 @@ setMethod("stopTrial",
             })
 
 ## -----------------------------------------------------------------------------------------------
-
-##' @describeIn stopTrial  Stop based on reaching the target ratio of the upper to the lower 95% credibility 
-##' interval of the estimate, smaller of TDEndOfTrial or Gstar estimate. This is a stopping rule which incorporate 
-## both the DLE adn efficacy responses without any samples involved
-
+## Stopping based on a target ratio of the upper to the lower 95% credibility interval
+## ------------------------------------------------------------------------------------------------
+##' @describeIn stopTrial Stop based on reaching the target ratio of the upper to the lower 95% credibility 
+##' interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which 
+##' incorporate DLE and efficacy responses without DLE and efficacy samples involved.
+##' 
+##' @param model The DLE model of \code{\linkS4class{ModelTox}}
+##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
+##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
+##' 
+##' 
+##' @example examples\Rules-method stopTrialCIMaxGain.R
+##' 
+##' @export
+##' @keywords methods
 setMethod("stopTrial",
           signature=
             signature(stopping="StoppingCIRatio",

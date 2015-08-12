@@ -218,10 +218,20 @@ ThreePlusThreeDesign <- function(doseGrid)
 
 ## ===================================================================================
 ## -------------------------------------------------------------------------------
-## Design class using DLE responses only based on the pseudo DLE model
-## -------------------------------------------------------------------------
-##' Design class using DLE responses only with samples
+## Design class using DLE responses only based on the pseudo DLE model with samples
+## ---------------------------------------------------------------------------
+##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
+##' and DLE samples are also used. 
+##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
+##' objects of this class contain:
 ##' 
+##' @slot model the pseudo DLE model to be used, an object class of 
+##' \code{\linkS4class{LogisticIndepBeta}}
+##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
+##' @slot increments how to control increments between dose levels, an object class of 
+##' \code{\linkS4class{Increments}}
+##' 
+##' @example examples\design-class TDsamplesDesign.R
 ##' @export
 ##' @keywords class 
 
@@ -237,17 +247,36 @@ ThreePlusThreeDesign <- function(doseGrid)
            contains=list("RuleDesign"))
 
 validObject(.TDsamplesDesign())
-##' Initi function 
-
+##' Initialization function for 'TDsamplesDesign' class
+##' 
+##' @describeIn TDsamplesDesign
+##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
+##' @return the \code{\linkS4class{TDsamplesDesign}} class object
+##' 
+##' @export
+##' @keywords methods
 TDsamplesDesign<-function(model,stopping,increments,...){
   start<-RuleDesign(...)
   .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments)}
 
 ## ==========================================================
-##' Design class using DLE responses only without samples
+## -------------------------------------------------------------------------------
+## Design class using DLE responses only based on the pseudo DLE model without sample
+## ---------------------------------------------------------------------------
+##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
+##' are used without samples.
+##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
+##' objects of this class contain:
 ##' 
+##' @slot model the pseudo DLE model to be used, an object class of 
+##' \code{\linkS4class{LogisticIndepBeta}}
+##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
+##' @slot increments how to control increments between dose levels, an object class of 
+##' \code{\linkS4class{Increments}}
+##' 
+##' @example examples\design-class TDDesign.R
 ##' @export
-##' @keywords class
+##' @keywords class 
 .TDDesign <-
   setClass(Class="TDDesign",
            representation(model="LogisticIndepBeta",
@@ -260,13 +289,18 @@ TDsamplesDesign<-function(model,stopping,increments,...){
            contains=list("RuleDesign"))
 
 validObject(.TDDesign())
-
-##' Init function
-
+##' Initialization function for 'TDDesign' class
+##' 
+##' @describeIn TDDesign
+##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
+##' @return the \code{\linkS4class{TDDesign}} class object
+##' 
+##' @export
+##' @keywords methods
 TDDesign<-function(model,stopping,increments,...){
   start<-RuleDesign(...)
   .TDDesign(start,model=model,stopping=stopping,increments=increments)}
-## ============================================================================
+
 
 ## ------------------------------------------------------------------------------
 ## Class for design based on one Pseudo DLE and one Pseudo Efficacy model

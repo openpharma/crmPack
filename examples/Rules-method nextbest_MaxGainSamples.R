@@ -23,5 +23,5 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    Gstarderive=function(Gstarsamples){
                                      quantile(Gstarsamples,prob=0.5)})
 
-RecommendDose<-nextBest(mynextbest,doselimit=300,samples=DLEsamples,model=DLEmodel,
+RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
                         data=data,Effmodel=Effmodel,Effsamples=Effsamples)

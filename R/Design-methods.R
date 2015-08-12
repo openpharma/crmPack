@@ -1030,12 +1030,40 @@ setMethod("examine",
                   return(ret)
               })
 
-## ============================================================
-## ----------------------------------------------------------
-## Methods for simulate using Pseudo Models
-## ----------------------------------------------------------
-##'  Methods to simulate using 'LogisticIndepBeta' model with samples 
-##'  
+## ===================================================================================
+## ----------------------------------------------------------------------------------------
+##  Simulate design using DLE responses only with DLE samples (pseudo DLE model)
+## ------------------------------------------------------------------------------------
+##' This is a methods to simulate dose escalation procedure only using the DLE responses.
+##' This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model used are of
+##' \code{\linkS4class{ModelTox}} class object DLE samples are also used
+##' 
+##' @param object the \code{\linkS4class{TDsamplesDesign}} object we want to simulate the data from
+##' @param nsim the number of simulations (default :1)
+##' @param see see \code{\link{setSeed}}
+##' @param truth a function which takes as input a dose (vector) and returns the true probability 
+##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
+##' @param args data frame with arguments for the \code{truth} function. The
+##' column names correspond to the argument names, the rows to the values of the
+##' arguments. The rows are appropriately recycled in the \code{nsim}
+##' simulations. In order to produce outcomes from the posterior predictive
+##' distribution, e.g, pass an \code{object} that contains the data observed so
+##' far, \code{truth} contains the \code{prob} function from the model in
+##' \code{object}, and \code{args} contains posterior samples from the model.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
+##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
+##' giving the MCMC options for each evaluation in the trial. By default,
+##' the standard options are used
+##' @param parallel should the simulation runs be parallelized across the
+##' clusters of the computer? (not default)
+##' @param \dots not used
+##' 
+##' @example examples\design-method simulateTDsamplesDesign.R
+##'
+##' @return an object of class \code{\linkS4class{PseudoSimulations}}
+##'
 ##'  @export
 ##'  @keywords methods
 setMethod("simulate",
@@ -1209,17 +1237,17 @@ setMethod("simulate",
                 return(thisResult)
               }
               
-              resultList <- crmPack:::getResultList(fun=runSim,
-                                                    nsim=nsim,
-                                                    vars=
-                                                      c("simSeeds",
-                                                        "args",
-                                                        "nArgs",
-                                                        "firstSeparate",
-                                                        "truth",
-                                                        "object",
-                                                        "mcmcOptions"),
-                                                    parallel=parallel)
+              resultList <- getResultList(fun=runSim,
+                                          nsim=nsim,
+                                          vars=
+                                          c("simSeeds",
+                                            "args",
+                                            "nArgs",
+                                            "firstSeparate",
+                                            "truth",
+                                            "object",
+                                            "mcmcOptions"),
+                                            parallel=parallel)
               
               ## put everything in the Simulations format:
               
@@ -1245,11 +1273,36 @@ setMethod("simulate",
               return(ret)
             })
 ## -------------------------------------------------------------------------------------
-## ----------------------------------------------------------
-## Methods for simulate using Pseudo Models
-## ----------------------------------------------------------
-##'  Methods to simulate using 'LogisticIndepBeta' model without samples 
-##'  
+## Simulate design using DLE responses only without samples (pseudo DLE model)
+## --------------------------------------------------------------------------------
+###
+##' This is a methods to simulate dose escalation procedure only using the DLE responses.
+##' This is a method based on the \code{\linkS4class{TDDesign}} where model used are of
+##' \code{\linkS4class{ModelTox}} class object and no samples are involved.
+##' 
+##' @param object the \code{\linkS4class{TDDesign}} object we want to simulate the data from
+##' @param nsim the number of simulations (default :1)
+##' @param see see \code{\link{setSeed}}
+##' @param truth a function which takes as input a dose (vector) and returns the true probability 
+##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
+##' @param args data frame with arguments for the \code{truth} function. The
+##' column names correspond to the argument names, the rows to the values of the
+##' arguments. The rows are appropriately recycled in the \code{nsim}
+##' simulations. In order to produce outcomes from the posterior predictive
+##' distribution, e.g, pass an \code{object} that contains the data observed so
+##' far, \code{truth} contains the \code{prob} function from the model in
+##' \code{object}, and \code{args} contains posterior samples from the model.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
+##' @param parallel should the simulation runs be parallelized across the
+##' clusters of the computer? (not default)
+##' @param \dots not used
+##' 
+##' @example examples\design-method simulateTDDesign.R
+##'
+##' @return an object of class \code{\linkS4class{PseudoSimulations}}
+##' 
 ##'  @export
 ##'  @keywords methods
 setMethod("simulate",
@@ -1442,12 +1495,40 @@ setMethod("simulate",
               return(ret)
             })
 ## -----------------------------------------------------------------------------------------------
-## Method for simulate based on Dual responses on Pseudo models without samples
-## ----------------------------------------------------------------------------------
-##' Methods to simulate without any samples based on one Pseudo DLE and one Pseudo Efficacy model
+## Simulate design using DLE and efficacy responses without DLE and efficacy samples (pseudo models)
+## --------------------------------------------------------------------------------------------
+###
+##' This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
+##' This is a method based on the \code{\linkS4class{DualResponsesDesign}} where DLEmodel used are of
+##' \code{\linkS4class{ModelTox}} class object and efficacy model used are of \code{\linkS4class{ModelEff}}
+##' class object. In addition, no DLE and efficacy samples are involved or generated in the simulation 
+##' process
+##' 
+##' @param object the \code{\linkS4class{DualResponsesDesign}} object we want to simulate the data from
+##' @param nsim the number of simulations (default :1)
+##' @param see see \code{\link{setSeed}}
+##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability 
+##' (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.
+##' @param trueEff a function which takes as input a dose (vector) and returns the expected efficacy
+##' responses (vector). Additional arguments can be supplied in \code{args}.
+##' @param trueNu the precision, the inverse of the variance of the efficacy responses
+##' @param args data frame with arguments for the \code{trueDLE} and
+##' \code{trueEff} function. The column names correspond to the argument
+##' names, the rows to the values of the arguments. The rows are appropriately
+##' recycled in the \code{nsim} simulations.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
+##' @param parallel should the simulation runs be parallelized across the
+##' clusters of the computer? (not default)
+##' @param \dots not used
+##' 
+##' @example examples\design-method simulateDualResponsesDesign.R
+##'
+##' @return an object of class \code{\linkS4class{PseudoDualSimulations}}
 ##' 
 ##' @export
-##' @keywords method
+##' @keywords methods
 
 setMethod("simulate",
           signature=
@@ -1596,7 +1677,7 @@ setMethod("simulate",
                   
                   
                   ##Update model estimate in DLE and Eff models
-                  thisDLEModel <- update(object=object@DLEmodel,
+                  thisDLEModel <- update(object=object@model,
                                          data=thisData)
                   
                   thisEffModel <- update(object=object@Effmodel,
@@ -1736,7 +1817,7 @@ setMethod("simulate",
 
 setMethod("simulate",
           signature=
-            signature(object="DualResponsesDesign",
+            signature(object="DualResponsesSamplesDesign",
                       nsim="ANY",
                       seed="ANY"),
           def=
@@ -1879,7 +1960,7 @@ setMethod("simulate",
                   
                   
                   ##Update model estimate in DLE and Eff models
-                  thisDLEModel <- update(object=object@DLEmodel,
+                  thisDLEModel <- update(object=object@model,
                                          data=thisData)
                   
                   thisEffModel <- update(object=object@Effmodel,
@@ -2028,7 +2109,7 @@ setMethod("simulate",
 ##' @keywords method
 setMethod("simulate",
 signature=
-  signature(object="DualResponsesDesign",
+  signature(object="DualResponsesSamplesDesign",
             nsim="ANY",
             seed="ANY"),
 def=
@@ -2179,7 +2260,7 @@ def=
                            w=thisEff)
         
         ##Update model estimate in DLE model
-        thisDLEModel <- update(object=object@DLEmodel,
+        thisDLEModel <- update(object=object@model,
                                data=thisData)
         
         thisEffModel <- update(object=object@Effmodel,
@@ -2280,7 +2361,7 @@ def=
       return(thisResult)
     }
     
-    resultList <- crmPack:::getResultList(fun=runSim,
+    resultList <- getResultList(fun=runSim,
                                           nsim=nsim,
                                           vars=
                                             c("simSeeds",
