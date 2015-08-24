@@ -18,7 +18,15 @@
 
 
 ##' Class for All models
-##' This is a class where all other model inherit 
+##' This is a class where all models inherit.
+##' 
+##' @slot datanames The names of all data slots that are used in all models. 
+##' In particularly, those are also used in the \code{datamodel} and/or
+##' \code{priormodel} definition for \code{\linkS4class{GeneralModel}}.
+##' Note that you cannot specify more variable than those that are really 
+##' used in the models!
+##' 
+##' @seealso \code{\linkS4class{GeneralModel}}, \code{\linkS4class{ModelPseudo}}
 ##' 
 ##' @export
 ##' @keywords classes
@@ -26,23 +34,28 @@
 .AllModels<-setClass(Class="AllModels",
                      representation(datanames="character"),
                      validity=function(object){
-                       o <- crmPack:::Validate()
-                       
+                       o <- Validate()
+                      
                        ## put here all names of data class slots
                        allDatanames <- c("x", "y", "w",
                                          "doseGrid", "nObs", "nGrid", "xLevel")
+                     
+                       o$check(all(object@datanames %in% allDatanames),
+                               paste("data names must be in",
+                                     paste(allDatanames, collapse=", ")))
                        o$result()
                      })
 validObject(.AllModels())
 
-## no init function for this one
+##' No Intitialization function for this
 
 ## ============================================================
 
 ##' General class for model input
 ##'
-##' This is the general model class, from which all other specific models for BUGS
-##' inherit.
+##' This is the general model class, from which all other specific models for 
+##' involving BUGS (the software) for computing result. 
+##' It inherits all slots from \code{\linkS4class{AllModels}}
 ##'
 ##' The \code{datamodel} must obey the convention that the data input is
 ##' called exactly as in the corresponding data class.
@@ -55,9 +68,6 @@ validObject(.AllModels())
 ##' (see the details above)
 ##' @slot priormodel a function representing the BUGS prior specification
 ##' (see the details above)
-##' @slot datanames The names of all data slots that are used in the
-##' \code{datamodel} and/or \code{priormodel} definition. Note that you cannot
-##' specify more variables than those that are really used in the model!
 ##' @slot modelspecs a function computing the list of the data model and prior
 ##' model specifications that are required for fully specifying them (e.g. prior
 ##' parameters, reference dose, etc.), based on the data
@@ -78,10 +88,10 @@ validObject(.AllModels())
     setClass(Class="GeneralModel",
              representation(datamodel="function",
                             priormodel="function",
-                            datanames="character",
                             modelspecs="function",
                             init="function",
                             sample="character"),
+             contains="AllModels",
              validity=
                  function(object){
                      o <- Validate()
@@ -93,9 +103,6 @@ validObject(.AllModels())
                      o$check(all(names(formals(object@init)) %in%
                                  allDatanames),
                              "arguments of the init function must be data names")
-                     o$check(all(object@datanames %in% allDatanames),
-                             paste("data names must be in",
-                                   paste(allDatanames, collapse=", ")))
 
                      o$result()
          })
@@ -2490,19 +2497,79 @@ validObject(LogisticNormalFixedMixture(components=
                                        weights=c(1/2, 1/2),
                                        refDose=1))
 
-## ============================================================
-##' Class of models using prior in form of Pseudo data
+## =========================================================================
+##' Class of models using expressing their prior in form of Pseudo data
 ##' 
+##' This is the Pseudo model class, from which all models where their prior 
+##' are expressed in form of pseudo data (as if some data are 
+##' available before the trial starts) inherit. It also inherits all slots
+##' from \code{\linkS4class{AllModels}}.No slots for this class
+##' 
+##' @seealso \code{\linkS4class{LogisticIndepBeta}},
+##' \code{\linkS4class{Effloglog}},
+##' \code{\linkS4class{EffFlexi}}
+##'  
 ##' @export
 ##' @keywords classes
 .ModelPseudo<-setClass(Class="ModelPseudo",
                        contains="AllModels"
 )
 validObject(.ModelPseudo)
-## no init function for this one
+##' No intialization function
 
-## ============================================================
-##' Class for DLE models using pesudo data prior
+## ===========================================================================
+
+##' Class for DLE models using pseudo data prior. 
+##' This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models 
+##' for which their prior are specified in form of pseudo data (as if there is some data before
+##' the trial starts). It inherits all slots from \code{\linkS4class{ModelPseudo}}
+##' 
+##' The \code{dose} function has a first argument \code{prob}, a scalar a probability of 
+##' the occurrence of a DLE which is targeted. Additional arguments are models parameters. 
+##' It computes, using the model parameter(s)/ model parameter(s) samples, the resulting dose. 
+##' Note that the model parameters are called exactly as in the \code{model}. The model estimates 
+##' generated can be single values of the maximum likelihodd estimates (prior or posterior modal
+##' estimates) or samples of the model estimates generated. If samples of the model estimates are
+##' generated, the model parameters (samples) must be included in the \code{samples} vector.
+##' The vectors of all samples for these model paramters will be supplied to the function such 
+##' that the function will be able to process vectors of model parameters.
+##' 
+##' The \code{prob} function has a first argument \code{dose}, a scalar dose level which is targeted.
+##' Additional arguments are model paramters. It computes using model paramter(s) (samples), the 
+##' resulting probabilities of a DLE occuring at the target dose level. If samples of model parameters
+##' are generated, the function must vectorize over the model parameters.
+##' 
+##' Note that \code{dose} and \code{prob} are the inverse functions of each other.
+##' 
+##' The \code{data} must obey the covention that the data input is called exactly in the 
+##' \code{\linkS4class{Data}} class. This refers to any observed DLE responses (\code{y} in 
+##' \code{\linkS4class{Data}} class), the dose (levels) (\code{x} in \code{\linkS4class{Data}} class)
+##' at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
+##' in \code{\linkS4class{Data}}) class and other specifications in \code{\linkS4class{Data}}
+##' class that can be used to generate prior or
+##' posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+##' at least \code{doseGrid} in \code{\linkS4class{Data}} has to be specified in \code{data} slot for which
+##' prior modal estimates or samples can be obtained for model parameters based on the specified pseudo 
+##' data.
+##' 
+##' 
+##' 
+##' @slot dose a function computing the dose level reaching a specific target probabilty of the occurrence 
+##' of a DLE, based on the model parameters. The model paramters (samples)are obtained based on the prior 
+##' specified in form of pseudo data and together with (if any) the observed
+##' DLE responses and their corresponding dose levels (see details above)
+##' @slot prob a function computing the probability of the occurrence of a DLEat a specidfied dose level, 
+##' based on the model parameters. The model paramters (samples) are obtained the prior specified in form 
+##' of pseudo data and together with (if any) the observed DLE responses and their 
+##' corresponding dose levels (see dtails above)
+##' @slot data refers to the data input specification in \code{\linkS4class{Data}} class which are used to
+##' obtain model paramters estimates or samples (see details above)
+##'
+##' 
+##' @seealso \code{\linkS4class{LogisticIndepBeta}},
+##' \code{\linkS4class{Effloglog}},
+##' \code{\linkS4class{EffFlexi}}
+##' 
 ##' 
 ##' @export
 ##' @keywords classes
@@ -2513,10 +2580,52 @@ validObject(.ModelPseudo)
                     contains="ModelPseudo"
 )
 validObject(.ModelTox)
-## no init function for this one
-## ==============================================================
+##' No Initialization function
+
+## ==========================================================================================
 
 ##' class for Efficacy models using pseudo data prior
+##' 
+##' This is a class of which contains all efficacy models for which their prior are specified in 
+##' form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
+##' 
+##' The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value 
+##' which is targeted. Additional arguements are model parameters. It computes using modal estimate(s)
+##' or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
+##' of the model parameters are used, the function must vectorize over the model parameters.
+##' 
+##' The \code{ExpEff} function has a first argument \code{dose}, a scalar dose level which is targeted. 
+##' Additional arguments are model parameters. It computes using modal estimates or samples of the
+##' model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
+##' of the model parameter(s) are used, the function must vectorize over the model parameters.
+##' 
+##' The \code{data} must obey the covention that the data input is called exactly in the 
+##' \code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses 
+##' (\code{w} in 
+##' \code{\linkS4class{DataDual}} class), the dose (levels) (\code{x} in \code{\linkS4class{DataDual}} or
+##' \code{Data} class)
+##' at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
+##' in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in 
+##' \code{\linkS4class{DataDual}}
+##' class that can be used to generate prior or
+##' posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+##' at least \code{doseGrid} in \code{\linkS4class{DataDual}} has to be specified in \code{data} slot
+##' for which prior modal estimates or samples can be obtained for model parameters based on 
+##' the specified pseudo data.
+##' 
+##' @slot dose a function computing the dose reaching a specific target value of expected efficacy, based
+##' on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified 
+##' in form of pseudo data and if any together with any observed responses (see details above)
+##' 
+##' @slot ExpEff a function computing the expected efficacy (value) for a specific dose, based on model 
+##' parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any) 
+##' with observed responses (see details above)
+##' 
+##' @slot data refers to the data input specification in \code{\linkS4class{DataDual}} class which are used to
+##' obtain model paramters estimates or samples (see details above)
+##'
+##' @seealso \code{\linkS4class{Effloglog}},
+##' \code{\linkS4class{EffFlexi}}
 ##' 
 ##' @export
 ##' @keywords classes
@@ -2527,20 +2636,78 @@ validObject(.ModelTox)
                     contains="ModelPseudo"
 )
 validObject(.ModelEff)
-## no init function for this one
-## ================================================================
+##' No initialization function
 
-##' class for the two-parameter logistic regression DLE model
-##' This is the two-parameter logistic regression model using pseudo data prior 
-##' which describe the relationship of the probabilities of an occurence of DLE 
-##' with their corresponding log dose levels. These probabilities of occurence of a DLE
-##' have independent Beta distributions
-##'  
+## ==============================================================================
+##' Standard logistic model with prior in form of pseudo data
 ##' 
+##' This is a class for the two-parameter logistic regression DLE model with prior expressed
+##' in form of pseudo data. This model describe the relationhship of the binary DLE (dose-limiting
+##' events) responses and the dose levels. More specifically, this DLE model reprsents the relationship 
+##' of the probabilities of the occurrence of a DLE with their corresponding dose levels in log scale.
+##' This model is specified as 
+##' \deqn{p(d_{(j)})= \frac{exp(\phi_1+\phi_2 log(d_{(j)}))}{1+exp(\phi_1+\phi_2 log(d_{(j)}))}}
+##' for any dose j where \eqn{p(d_{(j)})} is the probability of the occurrence of a DLE at dose j.
+##' The two parameters of this model is the intercept \eqn{\phi_1} and the slope \eqn{\phi_2}
+##' It inherits all slots from \code{\linkS4class{ModelTox}} class.
+##' 
+##' The pseudo data can be interpreted as as if we obtain some observations before the trial starts.
+##' These pseudo data can be used to express our prior, the initial beliefs for the model parameter(s).
+##' The pseudo data are expressed in the following way. First, fix at least two dose levels which are
+##' Then ask for experts' opinion how many subjects are to be treated at each of these dose levels and
+##' the number of subjects observed with DLE are observed. At each dose level, the number of subjects 
+##' observed with a DLE divided by the total number of subjects treated is the probability of the 
+##' occurrence of a DLE at that particular dose level. The probabilities of the occurrence of a DLE
+##' based on these pseudo data are independent Beta distributions. Therefore, the joint prior probability 
+##' density function of all these probabilities can be obtained. Hence, by a change of variable, the 
+##' joint prior probability density function of the two parameters in this model can also be obtained.
+##' In addition, a conjugate joint perior density function of the two paramaters in the model is used.
+##' For details about the form of all these joint prior and posterior probability density function, please 
+##' refers to Whitehead and Willamson (1998). 
+##' 
+##' 
+##' When expressing the pseudo data, \code{binDLE},\code{DLEdose} and \code{DLEweights} are used.
+##' The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary 
+##' nature of the pseudo data, the number of subjects observed wtih DLE is not necesssary to be integer(s)
+##' but any scalar value.
+##' The \code{DLEdose} represents the dose levels at which the pseudo DLE responses (\code{binDLE}) are 
+##' observed.
+##' The \code{DLEweights} represents the total number of subjects treated.
+##' Since at least two DLE pseudo responses are needed to obtain prior modal estimates (same as the maximum 
+##' likelihood estimates) for the model parameters. \code{binDLE}, \code{DLEdose} and \code{DLEweights} must
+##' all be vectors of at least length 2. Since given one pseudo DLE responses, the number of subjects observed 
+##' with a DLE relates to at which dose level they are treated and the total number of of subjects treated at
+##' this dose level. Therefore, each of the elements in any of the vectors of \code{binDLE}, \code{DLEdose} and 
+##' \code{DLEweights} must have a corresponding elements in the other two vectors. A set of three values with
+##' one of each in the vectors of \code{binDLE}, \code{DLEdose} and \code{DLEweights}. In this model, each of 
+##' these three values must be specified in the same position as in each of the vector of \code{binDLE}, 
+##' \code{DLEdose} and \code{DLEweights}. The order of the values or elements in one of the vector \code{binDLE}, 
+##' \code{DLEdose} and \code{DLEweights} must corresponds to the values or elements specified in the other two 
+##' vectors.
+##' 
+##' @slot binDLE represents the vector of pseudo DLE responses. This must be at least f length 2 and the 
+##' order of its elements must corresponds to values specified in \code{DLEdose} and \code{DLEweights}. 
+##' (see details from above)
+##' @slot DLEdose represents the vector of the corresponding dose levels observed at each of the 
+##' pseudo DLE responses (\code{binDLE}). This mus be at least of length 2 and the order of its elements
+##' must corresponds to values specified in \code{binDLE} and \code{DLEweights}.
+##' (see details from above)
+##' @slot DLEweights refers to the total number of subjects treated at each of the pseudo dose level 
+##' (\code{DLEdose}). This must be of length of at least 2 and the oreder of its elements must corresponds
+##' to values specified in \code{binDLE} and \code{DLEdose}. (see details from above)
+##' @slot phi1 refers the intercept of the model. This slot is used in output to display the resulting prior 
+##' or posterior modal estimate of the intercept obtained based on the pseudo data and (if any) 
+##' observed data/responses.
+##' @slot phi2 refers to slope of the model. This slot is used in output to display the resulting prior or 
+##' posterior modal estimate of the slope obtained based on the pseudo data and (if any) the observed data/responses.
+##' @slot Pcov refers to the covariance matrix of the intercept (phi1) and the slope parameters (phi2) of the 
+##' model. This is used in output to display the resulting prior and posterior covariance matrix of phi1 and 
+##' phi2 obtained, based on the pseudo data and (if any) the observed data and responses. This slot is needed for 
+##' internal purposes.
+##'  
+##' @example examples/Model-class LogisticIndepBeta.R
 ##' @export
 ##' @keywords classes
-
-
 .LogisticIndepBeta<-
   setClass(Class="LogisticIndepBeta",
            representation(binDLE="numeric",
@@ -2548,7 +2715,8 @@ validObject(.ModelEff)
                           DLEweights="numeric",
                           
                           phi1="numeric",
-                          phi2="numeric"),
+                          phi2="numeric",
+                          Pcov="matrix"),
            prototype(binDLE=c(0,0),
                      DLEdose=c(1,1),
                      DLEweights=c(1,1)),
@@ -2573,11 +2741,12 @@ validObject(.ModelEff)
 validObject(.LogisticIndepBeta())  
 
 ##' Intialization function for "LogisticIndepBeta" class
-##' @param binDLE the pseudo DLE responses 
-##' @param DLEweights number of subjects treated for this binDLE response
-##' @param DLEdose the corresponding levels for the pseudo DLE responses
+##' @param binDLE the number of subjects observed with a DLE, the pseudo DLE responses
+##' @param DLEdose the corresponding dose levels for the pseudo DLE responses, pseudo dose levels
+##' @param DLEweights the total number of subjects treated at each of the dose levels, pseudo weights
 ##' @param data the input data to update estimates of model parameters and 
 ##' follow the \code{\linkS4class{Data}} object class specification
+##' @return the \code{\linkS4class{LogisticIndepBeta}}
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2599,13 +2768,15 @@ LogisticIndepBeta <- function(binDLE,
   ##Obtain parameter estimates for dose-DLE curve
   phi1<-coef(SFitDLE)[1,1]
   phi2<-coef(SFitDLE)[2,1]
-  
+  ## covariance matrix of phi1 and phi2
+  Pcov <- vcov(FitDLE)
   
   .LogisticIndepBeta(binDLE=binDLE,
                      DLEdose=DLEdose,
                      DLEweights=DLEweights,
                      phi1=phi1,
                      phi2=phi2,
+                     Pcov=Pcov,
                      datanames=c("nObs","y","x"),
                      data=data,
                      dose=function(prob,phi1,phi2){
@@ -2622,9 +2793,100 @@ LogisticIndepBeta <- function(binDLE,
 
 ## ======================================================================================================
 ##' Class for the linear log-log efficacy model using pseudo data prior
-##' This is the efficay model which describe the realtionship of the normal efficacy responses 
-##' and their corresponding log-log dose levels
-##'
+##' 
+##' This is the efficacy model which describe the relationship of the continuous efficacy responses and 
+##' the dose levels. More specifically, this is a model to describe the linear relationship between the 
+##' continuous efficacy responses and its coressponding dose level in log-log scale. 
+##' The efficacy log-log model is given as 
+##' \deqn{y_i=\theta_1 +theta_2 log(log(d_i))+\epsilon_i}
+##' where \eqn{y_i} is the efficacy responses
+##' for subject i, \eqn{d_i} is the dose level treated for subject i and \eqn{\epsilon_i} is the random error 
+##' term of efficacy model at subject i such that \eqn{\epsilon_i} has a normal distribution of mean 0 and 
+##' variance \eqn{\sigma^2=\nu^{-1}}. This variance is assumed to be the same for all subjects.
+##' 
+##' There are three parameters in this model which is to intercept \eqn{\theta_1}, the slope \eqn{\theta_2} 
+##' and the precision \eqn{\nu} of the efficay responses.
+##' It inherit all slots from \code{\linkS4class{ModelEff}}
+##' 
+##' The prior of this model is specified in form of pseudo data. First at least two dose levels are fixed.
+##' Then ask for experts' opinion about the efficacy values that can be obtained at each of the dose levels
+##' if one subject is treated at each of these dose levels. The prior modal estimates (same as the maximum 
+##' likelihood estimates) can be obtained for the intercept and slope paramters in this model.
+##' 
+##' The \code{Eff} and \code{Effdose} are used to represent the prior in form of the pseudo data. 
+##' The \code{Eff} represents the pseudo scalar efficacy values. The \code{Effdose} represents the dose levels
+##' at which these pseudo efficacy values are observed. These pseudo efficay values are always specified by
+##' assuming one subject are treated in each of the dose levels. Since at least 2 pseudo efficacy values are 
+##' needed to obtain modal estimates of the intercept and slope parameters, both \code{Eff} and \code{Effdose}
+##' must be vector of at least length 2. The position of the values or elements specified in \code{Eff} or
+##' \code{Effdose} must be corresponds to the same elements or values in the other vector.
+##' 
+##' The \code{nu} represents the prior presion \eqn{\nu} of the pseudo efficacy responses. It is also known as the inverse 
+##' of the variance of the pseduo efficacy responses. The precision can be a fixed constant or having a gamma
+##' distribution. Therefore, single scalar value, a fixed 
+##' value of the precision can be specified. If not, two positive scalar values must be specified as the 
+##' shape and rate parameter of the gamma distribution. If there are some observed efficacy responses available,
+##' in the output, \code{nu} will display the updated value of the precision or the updated values for the 
+##' parameters of the gamma distribution.
+##' 
+##' 
+##' Given the variance of the pseudo efficacy responses, the joint prior distribution of the intercept \eqn{\theta_1}
+##' (theta1) and the slope \eqn{\theta_2} (theta2) of this model is a bivariate normal distribution. 
+##' A conjugate posterior joint distribution is also used for theta1 and theta2. The joint prior bivariate 
+##' normal distribution has 
+##' mean \eqn{\boldsymbol\mu_0} and covariance matrix \eqn{(\nu \mathbf{Q}_0)^{-1}}. \eqn{\boldsymbol\mu_0} is a 
+##' \eqn{2 \times 1}
+##' column vector contains the prior modal estimates of the intercept (theta1) and the slope (theta2). Based on 
+##' \eqn{r} for \eqn{r \geq 2} pseudo efficacy responses specified, \eqn{\mathbf{X}_0} will be the 
+##'\eqn{r \times 2} design matrix 
+##' obtained for these pseudo efficacy responses. the matrix \eqn{\mathbf{Q}_0} will be calculated by 
+##' \eqn{\mathbf{Q}_0=\mathbf{X}_0 \mathbf{X}^T_0} where \eqn{\nu} is the precision of the pseudo efficacy responses.
+##' For the joint posterior bivariate distribution, we have \eqn{\boldsymbold\mu} as the mean and 
+##' \eqn{(\nu\mathbf{Q}_0)^{-1}} as the covariance matrix. Here, \eqn{\boldsymbol\mu} is the column vector containing the 
+##' posterior modal estimates
+##' of the intercept (theta1) and the slope (theta2). The design matrix \eqn{\mathbf{X}} obtained based only on 
+##' observed efficacy responses will give \eqn{\mathbf{Q}=\mathbf{X}\mathbf{X}^T} with \eqn{\nu} as the precision of 
+##' the observed efficay responses. If no observed efficay responses are availble (i.e only pseudo 
+##' efficay responses are used), the \code{vecmu}, \code{matX}, \code{matQ} and \code{vecY} represents 
+##' \eqn{\boldsymbol\mu_0}, \eqn{\mathbf{X}_0}, \eqn{\mathbf{Q}_0} and the column vector of pseudo efficay responses,
+##' respectively. If there are some observed efficacy responses, \code{vecmu}, \code{matX}, \code{matQ} 
+##' and \code{vecY} will represent \eqn{\boldsymbol\mu}, \eqn{\mathbf{X}}, \eqn{\mathbf{Q}} and the column vector contains
+##' all observed efficacy responses, respectively. (see details in about the form of prior and posterior distribution)
+##' 
+##' @slot Eff the pseudo efficacy response, the scalar efficacy values. This must be a vector of at least 
+##' length 2. Each element or value here must represents responses treated based on one subject. The order
+##'  of its elements must corresponds to the values presented in vector \code{Effdose} (see details above)
+##' @slot Effdose the pseudo efficacy dose level. This is the dose levels at which the pseudo efficacy 
+##' responses are observed at. This must be a vector of at least length 2 and the orde of its elements must
+##' corresponds to values presented in vector \code{Eff} (see detial above)
+##' @slot nu refers to the prior precision of pseudo efficacy responses. This is either a fixed value or a 
+##' vector of elements \code{a}, a positive scalar for the shape parameter, and \code{b}, a positive scalar 
+##' for the rate parameter for the gamma dsitribution. (see detail from above) 
+##' @slot useFixed a logical value if \code{nu} specified is a fixed value or not. This slot is needed for 
+##' internal purposes and not to be touched by the user.
+##' @slot theta1 The intercept \eqn{\theta_1} parameter of this efficacy log-log model. This slot is used in output to display
+##' the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the 
+##' observed data/ responses.
+##' @slot theta2 The slope \eqn{theta_2} parameter of the efficacy log-lgo model. This slot is used in output to display 
+##' the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the 
+##' observed data/ responses.
+##' @slot Pcov refers to the covariance matrix of the intercept (phi1) and slope (phi2) paramters of this model.
+##' This slot is used in output to display the covariance matrix obtained based on the pseudo data and (if any)
+##' the observed data/responses. This slot is needed for internal purposes.
+##' @slot vecmu is the column vector of the prior or the posterior modal estimates of the intercept (phi1) and 
+##' the slope (phi2).
+##' This slot is used in output to display as the mean of the prior or posterior bivariate normal distribtuion
+##' for phi1 and phi2. (see details from above)
+##' @slot matX is the design matrix based on either the pseudo or all observed efficacy response. This is used in 
+##' output to display the design matrix for the pseudo or the observed efficacy responses (see details from above)
+##' @slot matQ is the square matrix of multiplying the the design matrix with its transponse. This is represented 
+##' either using the only the pseudo efficay responses or only with the observed efficacy responses. This is display 
+##' in the output (see details from above)
+##' @slot vecY is the column vector either contains the pseudo efficay responses or all the observed efficacy 
+##' responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)
+##' 
+##' 
+##'@example examples\Model-class Effloglog.R
 ##'@export
 ##'@keywords methods
 .Effloglog<-
@@ -2635,6 +2897,7 @@ LogisticIndepBeta <- function(binDLE,
                           useFixed="logical",
                           theta1="numeric",
                           theta2="numeric",
+                          Pcov="matrix",
                           vecmu="matrix",
                           matX="matrix",
                           matQ="matrix",
@@ -2670,11 +2933,11 @@ validObject(.Effloglog())
 
 ##' Initialization function for the "Effloglog" class
 ##' 
-##'@param Eff the pseudo efficacy responses
-##'@param Effdose the corresponding dose levels for the pseudo efficacy responses
-##'@param nu the precision (inverse of the variance) of the efficacy responses
-##' @param data the input data to update estimates of model parameters and 
-##' follow the \code{\linkS4class{DataDual}} object class specification
+##' @param Eff the pseudo efficacy responses
+##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
+##' @param nu the precision (inverse of the variance) of the efficacy responses
+##' @param data the input data of \code{\linkS4class{DataDual}} class to update model estimates
+##' @return the \code{\linkS4class{Effloglog}} object
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2703,6 +2966,8 @@ Effloglog<-function(Eff,
   ##Obtain paramter estimates
   theta1<-coef(SFitEff)[1,1]
   theta2<-coef(SFitEff)[2,1]
+  ##covariance matrix of theta1 and theta2
+  Pcov <- vcov(FitEff)
   ##if sigma2/nu is not a fixed constant
   if (length(nu)==2){
     mu0<-matrix(c(theta1,theta2),2,1)
@@ -2741,20 +3006,79 @@ Effloglog<-function(Eff,
                return(theta1+theta2*log(log(dose)))},
              theta1=theta1,
              theta2=theta2,
+             Pcov=Pcov,
              vecmu=vecmu,
              matX=matX,
              matQ=matQ,
              vecY=vecY
   )}
 
-## ============================================================
-##' Class for the efficacy model in non-parameteric or flexible form using pseudo data prior
-##' This is a class where no parameter model and the mean efficacy responses are estimated at 
-##' each dose levels aiming to capture different shapes for the efficacy curve. 
-##' The first order or the second order random walk model can be used foe smoothing data
+## =========================================================================================
+##' Class for the efficacy model in flexible form for prior expressed in form of pseudo data
+##' 
+##' This is a class where a flexible form is used to describe the realtionship between the efficacy
+##' responses and the dose levels. This flexible form aims to capture different shape for the 
+##' dose-efficacy curve and the mean efficacy responses at each dose level are estimated using MCMC.
+##' In addition, the first (RW1) or second order (RW2) random walk model can be used for smoothing data. That is 
+##' the random walk model is used to model the first or the second order differnece of the mean 
+##' efficacy responses to its neighbouring dose levels of their mean efficacy responses.
+##' The flexible form is specified as 
+##' \deqn{\mathbf{W}|\boldsymbol\beta_w, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol\beta_w, \sigma^2 \mathbf{I})}
+##' where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol\beta_w} 
+##' is th column vector of the mean efficacy responses for all dose levels, \eqn{\mathbf{X_w}} is the 
+##' design matrix with entries \eqn{\mathds{1}_{i(j)}} which gives a value 1 if subject i is allocated to 
+##' dose j. The \eqn{\sigma^2} (sigma2) is the variance of the efficacy responses which can be either fixed or from
+##' an inverse gamma distribution.
+##' 
+##' The RW1 model is given as 
+##' \deqn{\beta_{W,(j)} - \beta_{W,(j-1)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
+##' where \eqn{\beta_{W,(j)} is the mean efficacy responses at dose j
+##' For the RW2 is given as 
+##' \deqn{\beta_{W,(j-2)} - 2 \beta_{W,(j-1)} + \beta_{W,(j)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
+##' The variance parameter \eqn{\sigma^{2}_{\beta_{W}}}. The variance \eqn{\sigma^{2}_{\beta_{W}}} 
+##' (sigma2betaW) will be the same at all dose levels and can
+##' either be fixed or assigned an inverse gamma prior distribution.
+##' 
+##' The \code{Eff} and \code{Effdose} are the pseduo efficacy responses and dose levels at which these 
+##' pseudo efficacy responses are observed at. (see more details for \code{\linkS4class{Effloglog}} class)
+##' \code{Eff} and \code{Effdose} must be vector of at least length 2. The values or elements in vectors
+##' \code{Eff} or \code{Effdose} must put in the same position with its corresponding value in the other 
+##' vector. The \code{sigma2} is the prior variance of the flexible efficacy form. The variance is either specified
+##' with a single scalar value (fixed) or postive scalar value have to be specified for the \code{a} shape and 
+##' \code{b} slope parameter for th inverse gamme distribtuion. Similarly, \code{sigma2betaW} is the prior variance 
+##' of the random walk model which can be specified with a single scalar (fixed) value or specifying positive 
+##' scalar values for the shape \code{a} and rate \code{b} parameters for the inverse gamma distributions. 
+##' This model will output the updated value or the updated values of the paramters of the inverse gamma
+##' distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (sigma2betaW)
+##' 
+##' @slot Eff the pseudo efficacy responses. A vector of at least length 2 with the elements here and its 
+##' corresponding value in \code{Effdose} must be specified in the same position. (see dtails above)
+##' @slot Effdose the dose levels at which the pseudo efficacy responses are observed. This is a vector of at 
+##' least length 2 and the elements here and its corrresponding value in \code{Eff} must be specified in the
+##' same postion. (see details from above)
+##' @slot sigma2 the prior variance of the flexible efficacy form. It can be specified with a single positive
+##' scalar or specifying \code{a}, the shape and \code{b}, the rate parameter of the inverse gamma 
+##' distribution. (see details from above)
+##' @slot sigma2betaW the prior variance of the random walk model for the mean efficact responses. A single
+##' positve scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of 
+##' the inverse gamma distribution (see details from above)
+##' @slot useFixed a list of with logical value to each of the parameters \code{sigma2} and \code{sigma2betaw}
+##' indicating whether a fixed value is used or not; this slot is needed for internal purposes and not to
+##' be touched by the user.
+##' @slot useRW1 for specifying the random walk model for the mean efficacy responses; if \code{TRUE}, 
+##' first order random walk model is used, otherwise the second-order random walk model.
+##' @slot designW is the design matrix for the efficacy responses. If only the pseudo efficacy responses 
+##' are used, this will be the design matrix of the pseudo efficacy responses. If there are some observed
+##' efficacy responses available. It will be the design matrix based on both the pseudo and the observed
+##' efficacy responses. 
+##' @slot RWmat is the the difference matrix for the random walk model. This slot is needed for internal 
+##' purposes and not to be touched by the user.
+##' @slot RWmatRank is the rank of the difference matrix. This slot is needed for internal purposes and not
+##' to be touched by the user.
 ##'
-##'@export
-##'@keywords class
+##' @example examples\Model-class EffFlexi.R
+##' @export
+##' @keywords class
 .EffFlexi<-setClass(Class="EffFlexi",
 representation(Eff="numeric",
                Effdose="numeric",
@@ -2800,15 +3124,18 @@ validObject(.EffFlexi())
 ##' 
 ##' @param Eff the pseudo efficacy responses
 ##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
-##' @param sigma2 the variance of the efficacy responses which can be a fixed value or from the
-##' inverse gamma distribution, that is either specific a fixed value or specified the values
-##' of the two paramters of the inverse gamma distribtuion
-##' @param sigma2betaW the variance of the random walk model used for smoothing data which can be
-##' a fixed value or using the inverse gamm distribution
-##' @param smooth used for smoothing data for this efficacy model, either the "RW1", the 
-##' first-order random walk model or "RW2", the second-order random walk model can be used.
+##' @param sigma2 the prior variance of the efficacy responses which can be specified 
+##' with a single positive scalar or with two positive scalar values fot the shape \code{a} and 
+##' the rate \code{b} parameters of the inverse gamma distribtuion.
+##' @param sigma2betaW the prior variance of the random walk model used for smoothing which can be
+##' specified with a single postive scalar or with two positive scalars representing the shape \code{a}
+##' and the rate \code{b} parameter of the inverse gamma distribution.
+##' @param smooth used for smoothing data for this efficacy model. That is either the "RW1", the 
+##' first-order random walk model or "RW2", the second-order random walk model is used of the mean
+##' efficacy responses.
 ##' @param data the input data to update estimates of model parameters and 
 ##' follow the \code{\linkS4class{DataDual}} object class specification
+##' @return the \code{\linkS4class{EffFlexi}} class object
 ##' 
 ##' @export
 ##' @keywords methods

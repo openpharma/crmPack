@@ -369,7 +369,14 @@ setMethod("mcmc",
 ## -------------------------------------------------------------------------------
 
 
-##' Obtain postrior samples for the two-parameter logistic pseudo DLE model
+##' Obtain postrior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
+##' DLE model. The joint prior and posterior probbability function of 
+##' the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and 
+##' Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint probability density 
+##' will be a bivariate normal distribution. Therefore, we will use the bivariate normal distribution to
+##' generate prior samples of the intercept and the slope parameters using the the prior modal estimates 
+##' of the intercept and the slope as the mean and the covaraince matrix given in Whitehead and 
+##' William (1998) of the bivariate noram distribution
 ##' 
 ##' @param data The data input, an object of class \code{\linkS4class{Data}}
 ##' @param model The model input, an object of class \code{\linkS4class{LogisticIndepBeta}}
@@ -379,7 +386,9 @@ setMethod("mcmc",
 ##'
 ##' @return The posterior samples, an object of class
 ##' \code{\linkS4class{Samples}}.
+##' @importFrom BayesLogit logit
 ##'
+##' @example examples/mcmc-LogisticIndepBeta.R
 ##' @export
 ##' @keywords methods
 setMethod("mcmc",
@@ -478,11 +487,24 @@ setMethod("mcmc",
 ## obtain the posterior samples for the Pseudo Efficacy log log model
 ## ----------------------------------------------------------------------------
 ##
-##' Obtain the posterior samples for the efficacy linear log log model using pseudo 
-##' data as prior
+##' Obtain the posterior samples for the model parameters in the Efficacy log log model
+##' Given the value of \eqn{\nu}, the precision of the efficacy responses, the joint prior 
+##' or the posterior probability of the intercept \eqn{\theta_1} (theta1) and 
+##' the slope \eqn{\theta_2} (theta2) is a bivariate normal distribtuion. The  \eqn{\nu} (nu), 
+##' the precision of the efficacy responses is either a fixed value or has a gamma distribution.
+##' If a gamma distribution is used, the samples of nu will be first generated. 
+##' Then the mean of the of the nu samples 
+##' will be used the generate samples of the intercept and slope parameters of the model
 ##' 
+##' @slot data the \code{\linkS4class{DataDual}} class object
+##' @slot model the \code{\linkS4class{ModelEff}} class object
+##' @slot options the options to be specified for MCMC samples of \code{\linkS4class{McmcOptions}}
+##' class object
+##' 
+##' @example examples\mcmc-Effloglog.R
 ##' @export
 ##' @keywords methods
+
 setMethod("mcmc",
           signature=
             signature(data="DataDual",
@@ -499,12 +521,11 @@ setMethod("mcmc",
               thismodel <- update(object=model,data=data)
               
               
-              
-              
               if (length(thismodel@nu)==2) {
                 nusamples <- rgamma(sampleSize(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
                 priornu <- mean(nusamples)} else {
-                  priornu <- thismodel@nu}
+                  priornu <- thismodel@nu
+                  nusamples <- rep(nu,sampleSize(options))}
               
               
               
@@ -525,5 +546,163 @@ setMethod("mcmc",
               
               return(ret)
             })
-## ============================================================================================
-
+## ======================================================================================
+## -----------------------------------------------------------------------------------
+## obtain the posterior samples for the Pseudo Efficacy Flexible form
+## ----------------------------------------------------------------------------
+##
+##' Obtain the posterior samples for the estimates in the Efficacy Flexible form.
+##' 
+##' This is the mcmc procedure based on what is described in Lang and Brezger (2004) such that 
+##' samples of the mean efficacy responses at all dose levels, samples of sigma2 \eqn{sigma^2}, 
+##' the variance of the efficacy response and samples of sigma2betaW \eqn{sigma^2_{beta_W}}, the variance of
+##' the random walk model will
+##' be generated. Please refer to Lang and Brezger (2004) for the procedures and the form of 
+##' the joint prior and posterior probability density for the mean efficay responses. In addition,
+##' both sigma2 and sigma2betaW acan be fixed or having an inverse-gamma prior and posterior distribution. 
+##' Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be 
+##' first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
+##' 
+##' @slot data the \code{\linkS4class{DataDual}} class object
+##' @slot model the \code{\linkS4class{EffFlexi}} class object
+##' @slot options the options to be specified for MCMC samples of \code{\linkS4class{McmcOptions}}
+##' class object
+##' 
+##' @example examples\mcmc-EffFlexi.R
+##' @export
+##' @keywords methods
+setMethod("mcmc",
+          signature=
+            signature(data="DataDual",
+                      model="EffFlexi",
+                      options="McmcOptions"),
+          def=
+            function(data,model,options,
+                     verbose=FALSE,
+                     ...){
+              nSamples <- sampleSize(options)
+              
+              ##Prepare samples container
+              ###List parameter samples to save
+              samples<- list(ExpEff=
+                               matrix(ncol=data@nGrid, nrow=nSamples),
+                             sigma2betaW=matrix(nrow=nSamples),
+                             sigma2=matrix(nrow=nSamples))
+              ##Prepare starting values
+              ##Index of the next sample to be saved:
+              
+              iterSave <- 1L
+              ##Monitoring the Metropolis-Hastings update for sigma2
+              
+              acceptHistory <- list(sigma2=logical(options@iterations))
+              
+              ## Current parameter values and also the starting values for the MCMC are set
+              ## EstEff: constant, the average of the observed efficacy values
+              
+              if (length(data@w)==0){
+                w1<-model@Eff
+                x1<-model@Effdose} else {
+                  ## Combine pseudo data with observed efficacy responses and no DLE observed
+                  w1<-c(model@Eff,getEff(data)$wNoDLE)
+                  x1<-c(model@Effdose,getEff(data)$xNoDLE)
+                }
+              x1Level <- match(x1,data@doseGrid)
+              ##betaW is constant, the average of the efficacy values
+              betaW <- rep(mean(w1), data@nGrid)
+              ##sigma2betaW use fixed value or prior mean
+              sigma2betaW <- 
+                if (model@useFixed[["sigma2betaW"]])
+                {model@sigma2betaW
+                } else {model@sigma2betaW["b"]/(model@sigma2betaW["a"]-1)}
+              ##sigma2: fixed value or just the empirical variance
+              sigma2 <- if (model@useFixed[["sigma2"]])
+              {
+                model@sigma2
+              } else {
+                var(w1)
+              }
+              ##Set up diagonal matrix with the number of patients in the corresponding dose levels on the diagonal
+              designWcrossprod <- crossprod(model@designW)
+              
+              ###The MCMC cycle
+              
+              for (iterMcmc in seq_len(options@iterations))
+              {## 1) Generate coefficients for the Flexible Efficacy model
+                ## the variance
+                adjustedVar <- sigma2
+                ## New precision matrix
+                thisPrecW <- designWcrossprod/adjustedVar + model@RWmat/sigma2betaW
+                ##draw random normal vector
+                normVec <- rnorm(data@nGrid)
+                ##and its Cholesky factor 
+                thisPrecWchol <- chol(thisPrecW)
+                ## solve betaW for L^T * betaW = normVec
+                betaW <- backsolve(r=thisPrecWchol, 
+                                   x=normVec)
+                ##the residual
+                adjustedW <- w1-model@designW%*%betaW
+                
+                ##forward substitution
+                ## solve L^T * tmp =designW ^T * adjustedW/ adjustedVar
+                
+                tmp <- forwardsolve(l=thisPrecWchol,
+                                    x=crossprod(model@designW,adjustedW)/adjustedVar,
+                                    upper.tri=TRUE,
+                                    transpose=TRUE)
+                ##Backward substitution solve R*tepNew =tmp
+                tmp <- backsolve(r=thisPrecWchol,
+                                 x=tmp)
+                
+                ## tmp is the mean vector of the distribution
+                ## add tmp to betaW to obtain final sample
+                
+                betaW <- betaW + tmp
+                
+                ## 2) Generate prior variance factor for the random walk
+                ## if fixed, do nothing
+                ## Otherwise sample from full condition
+                
+                if (!model@useFixed$sigma2betaW)
+                {
+                  sigma2betaW <- rinvGamma (n=1L,
+                                            a=model@sigma2betaW["a"]+model@RWmatRank/2,
+                                            b=model@sigma2betaW["b"]+crossprod(betaW,model@RWmat%*%betaW)/2)
+                }
+                ##3) Generate variance for the flexible efficacy model
+                ##if fixed variance is used
+                if (model@useFixed$sigma2)
+                {##do nothing
+                  acceptHistory$sigma2[iterMcmc] <- TRUE
+                } else {
+                  ##Metropolis-Hastings update step here, using 
+                  ##an inverse gamma distribution
+                  aStar <- model@sigma2["a"] + length(x1)/2
+                  ##Second paramter bStar depends on the value for sigma2
+                  bStar <- function(x)
+                  {adjW <-w1
+                  ret <- sum((adjW - betaW[x1Level])^2)/2 + model@sigma2["b"]
+                  return(ret)
+                  }
+                  ###Draw proposal:
+                  bStarProposal <- bStar(sigma2)
+                  sigma2<- rinvGamma(n=1L,a=aStar,b=bStarProposal)
+                  
+                  
+                }
+                
+                
+                ##4)Save Samples
+                
+                if (saveSample(iterMcmc,options)){
+                  samples$ExpEff[iterSave,]<-betaW
+                  samples$sigma2[iterSave,1]<-sigma2
+                  samples$sigma2betaW[iterSave,1] <-sigma2betaW
+                  iterSave <- iterSave+1L 
+                }
+              }
+              
+              
+              ret <- Samples(data=samples,
+                             options=options)
+              return(ret)
+            })

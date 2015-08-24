@@ -1,5 +1,6 @@
 #####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [ w *.*yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Data-methods.R] by DSB Mon 11/05/2015 17:43>
@@ -11,6 +12,7 @@
 ## 30/01/2014   file creation
 ## 06/02/2014   add method for conversion to list
 ## 17/02/2014   add update methods
+## 21/07/2015   add plots using data and pseudo models
 ###################################################################################
 
 
@@ -321,22 +323,51 @@ setMethod("update",
               return(object)
           })
 
+## -----------------------------------------------------------------------------------------
+## Extracting efficacy responses for subjects without DLE observed
+## ---------------------------------------------------------------------------------
 
-## ============================================================
+##' Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
+##' efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding 
+##' dose levels treated at in two categories (with or without DLE)
+##' 
+##' @param object for data input from \code{\linkS4class{DataDual}} object
+##' @param \dots unused
+##' 
+##' @example examples\Data-method getEff.R
+##' @export
+##' @keywords methods
+setGeneric("getEff",
+           def=function(object,...){
+             standardGeneric("getEff")},
+           valueClass="list")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+##' @describeIn getEff
+setMethod("getEff",
+          signature=
+            signature(object="DataDual"),
+          def=
+            function(object,
+                     x,
+                     y,
+                     w,...){
+              if (length(which(object@y == 1))==0){
+                wNoDLE<-object@w
+                wDLE<-NULL
+                xNoDLE<- object@x
+                xDLE<-NULL
+              } else {##with observed efficacy response and DLE observed
+                IndexDLE<-which(object@y==1)
+                ##Take efficacy responses with no DLE observed
+                wNoDLE<-object@w[-IndexDLE]
+                wDLE<-object@w[IndexDLE]
+                ##Take the corresponding dose levels
+                xNoDLE<-object@x[-IndexDLE]
+                xDLE<-object@x[IndexDLE]
+              }
+              ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
+              return(ret)
+            })
 
 
 

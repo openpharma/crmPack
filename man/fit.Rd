@@ -4,6 +4,9 @@
 \name{fit}
 \alias{fit}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
+\alias{fit,Samples,EffFlexi,DataDual-method}
+\alias{fit,Samples,Effloglog,DataDual-method}
+\alias{fit,Samples,LogisticIndepBeta,Data-method}
 \alias{fit,Samples,Model,Data-method}
 \title{Fit method for the Samples class}
 \usage{
@@ -14,6 +17,15 @@ fit(object, model, data, ...)
 
 \S4method{fit}{Samples,DualEndpoint,DataDual}(object, model, data,
   quantiles = c(0.025, 0.975), middle = mean, ...)
+
+\S4method{fit}{Samples,LogisticIndepBeta,Data}(object, model, data,
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
+
+\S4method{fit}{Samples,Effloglog,DataDual}(object, model, data,
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
+
+\S4method{fit}{Samples,EffFlexi,DataDual}(object, model, data,
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{Samples}} object}
@@ -50,6 +62,14 @@ and upper quantiles for the dose-toxicity curve
 lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
 "Biomarker") curves, for all grid points (Note that currently only the grid
 points can be used, because the DualEndpointRW models only allow that)
+
+\item \code{object = Samples,model = LogisticIndepBeta,data = Data}: Get fitted dose-tox curve from Samples for
+\dQuote{LogisticIndepBeta} model class
+
+\item \code{object = Samples,model = Effloglog,data = DataDual}: Get fitted dose-efficacy curve from Samples for
+\dQuote{Effloglog} model class
+
+\item \code{object = Samples,model = EffFlexi,data = DataDual}: Fitted values based on the Efficacy Flexible model with samples
 }}
 \keyword{methods}
 

@@ -1292,14 +1292,30 @@ CohortSizeMin <- function(cohortSizeList)
 
 
 ## ==========================================================================================
-## --------------------------------------------------------
+## ------------------------------------------------------------------------------------
 ## Class for next best based on Pseudo DLE Model with samples
-## -----------------------------------------------------------
+## -----------------------------------------------------------------------------------------
 ##'
-##'Class for next best based on DLE responses also using DLE samples
-##'
-##'@export
-##'@keywords class
+##' The class is to find the next best dose for allocation and the dose for final recommendation 
+##' at the end of a trial. There are two input target probabilities of the occurrence of a DLE 
+##' used during trial and used at the end of trial to find the two doses. For this class, only
+##' DLE response will be incorporated for the dose allocation and DLEsamples
+##' must be used to obtain the next dose for allocation.
+##'  @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##'  during the trial
+##'  @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##'  of the trial. This target is particularly used to recommend the dose at the end of a trial
+##'  for which its posterior 
+##'  probability of the occurrence of a DLE is equal to this target
+##'  @slot derive the function which derives from the input, a vector of the posterior samples called 
+##'  \called{TDsamples} of the dose
+##'  which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##'  targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##'  occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##'  
+##' @example examples\Rules-class NextBestTDsamples.R
+##' @export
+##' @keywords class
 
 .NextBestTDsamples<-
   setClass(Class="NextBestTDsamples",
@@ -1329,7 +1345,13 @@ CohortSizeMin <- function(cohortSizeList)
              })
 validObject(.NextBestTDsamples())
 ## ---------------------------------------------------------------------------
-##' Init function for NextBestTDsamples
+##' Initialization function for class "NextBestTDsamples"
+##' 
+##' @describeIn NextBestTDsamples
+##' @return the \code{\linkS4class{NextBestTDsamples}} class object
+##' 
+##' @export
+##' @keywords methods
 
 NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 {
@@ -1339,12 +1361,27 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 }
 ## ------------------------------------------------------------------------------
 ## class for nextBest based on Pseudo DLE model without sample
-## ------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 
-##' Class for next best based only on the DLE responses without using any samples
+##' The class is to find the next best dose for allocation and the dose for final recommendation 
+##' at the end of a trial without involving any samples. This is a class for which only
+##'  DLE response will be incorporated for the dose-allocation.
+##' This is only based on the probabilities of
+##' the occurrence of a DLE obtained by using the modal estimates of the model paramters.
+##' There are two inputs inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose for allocation and the dose 
+##' for recommendation at the end of the trial.
+##' It is only suitable to use with the model specified in \code{ModelTox} class.
+##'  @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##'  during the trial
+##'  @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##'  of the trial. This target is particularly used to recommend the dose for which its posterior 
+##'  probability of the occurrence of a DLE is equal to this target
 ##' 
+##' @example examples\Rules-class NextBestTD.R
 ##' @export
-##' @keywords methods
+##' @keywords class
 .NextBestTD<-
   setClass(Class="NextBestTD",
            representation(targetDuringTrial="numeric",
@@ -1367,19 +1404,39 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
              })
 validObject(.NextBestTD())
 
-##' Init function for NextBestTDsamples 
+##' Initialization function for the class "NextBestTD"
+##' @describeIn NextBestTD
+##' @return the \code{\linkS4class{NextBestTD}} class object
+##' 
+##' @export
+##' @keywords methods
 NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
 {
   .NextBestTD(targetDuringTrial=targetDuringTrial,
               targetEndOfTrial=targetEndOfTrial)
 }
 
-##-------------------------------------------------------------------
-## Class for next best with maximum gain value based on one DLE and one Efficacy pseudo model
-## ---------------------------------------------------------------------------------------
-
-##' Class for next best with maximum gain based on DLE and Efficacy responses
+##------------------------------------------------------------------------------------------------------
+## Class for next best with maximum gain value based on a pseudo DLE and efficacy model without samples
+## ----------------------------------------------------------------------------------------------------
+##' This is a class for which to find the next dose which is safe and give the maximum gain value 
+##' for allocation. This is a class where no DLE and efficacy samples are involved. This is only based 
+##' on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
+##' obtained by using the modal estimates of the DLE and efficacy model parameters.
+##' There are two inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
+##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
+##' class
+##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
 ##' 
+##'   
+##' @example examples\Rules-class NextBestMaxGain.R
 ##' @export
 ##' @keywords class
 .NextBestMaxGain<-
@@ -1398,10 +1455,132 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
                        "DLE EndOfTrialtarget has to be a probability")
                o$result()
              })
-validObject(.NextBestMaxGain)
-##' Init function for NextBestMaxGain
-
+validObject(.NextBestMaxGain())
+##' Initialization function for the class 'NextBestMaxGain'
+##' @describeIn NextBestMaxGain
+##' @return the \code{\linkS4class{NextBestMaxGain}}
+##' 
+##' @export
+##' @keywords methods
 NextBestMaxGain <- function(DLEDuringTrialtarget,
                             DLEEndOfTrialtarget)
 {.NextBestMaxGain(DLEDuringTrialtarget=DLEDuringTrialtarget,
                   DLEEndOfTrialtarget=DLEEndOfTrialtarget)}
+
+##------------------------------------------------------------------------------------------------------
+## Class for next best with maximum gain value based on a pseudo DLE and efficacy model with samples
+## ----------------------------------------------------------------------------------------------------
+##' This is a class for which to find the next dose which is safe and give the maximum gain value 
+##' for allocation. This is a class where DLE and efficacy samples are involved.
+##' There are two inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
+##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
+##' class
+##'
+##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##' @slot TDderive the function which derives from the input, a vector of the posterior samples called 
+##' \called{TDsamples} of the dose
+##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##' @slot Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
+##' which gives the maximum gain value) samples 
+##' called \called{Gstarsamples}, the final next best Gstar estimate.
+##' 
+##' @example examples\Rules-class NextBestMaxGainSamples.R
+##' 
+##' @export
+##' @keywords class
+.NextBestMaxGainSamples<-
+  setClass(Class="NextBestMaxGainSamples",
+           representation(DLEDuringTrialtarget="numeric",
+                          DLEEndOfTrialtarget="numeric",
+                          TDderive="function",
+                          Gstarderive="function"),
+           prototype(DLEDuringTrialtarget=0.35,
+                     DLEEndOfTrialtarget=0.3,
+                     TDderive=function(TDsamples){
+                       quantile(TDsamples,prob=0.3)},
+                     Gstarderive=function(Gstarsamples){
+                       quantile(Gstarsamples,prob=0.5)}),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               o$check(is.probability(object@DLEDuringTrialtarget),
+                       "DLE DuringTrialtarget has to be a probability")
+               o$check(is.probability(object@DLEEndOfTrialtarget),
+                       "DLE EndOfTrialtarget has to be a probability")
+               o$check(identical(names(formals(object@TDderive)),
+                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
+               o$check(identical(names(formals(object@Gstarderive)),
+                                 c("Gstarsamples")),"derive must have as single argument 'Gstarsamples'")
+               
+               o$result()
+             })
+validObject(.NextBestMaxGainSamples)
+##' Initialization function for class "NextBestMaxGainSamples"
+##' @describeIn NextBestMaxGainSamples
+##' 
+##' @return the \code{\linkS4class{NextBestMaxGainSamples}} object
+##' 
+##' @export
+##' @keywords methods
+
+NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
+                                   DLEEndOfTrialtarget,TDderive,Gstarderive)
+{.NextBestMaxGainSamples(DLEDuringTrialtarget=DLEDuringTrialtarget,
+                         DLEEndOfTrialtarget=DLEEndOfTrialtarget,
+                         TDderive=TDderive,
+                         Gstarderive=Gstarderive)}
+
+## --------------------------------------------------------------------------------------------------
+
+##-------------------------------------------------------------------------------------------------------------------
+## Stopping based on a target ratio of the 95% credibility interval
+## ---------------------------------------------------------------------------------------------------------------
+
+##' Stop based on a target ratio, the ratio of the upper to the lower
+##' 95% credibility interval of the estimate
+##' @targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
+##' estimate that required to stop a trial
+##' 
+##' @example examples\Rules-class StoppingCIRatio.R
+##' @export
+##' @keywords classes 
+
+
+.StoppingCIRatio <- 
+  setClass(Class="StoppingCIRatio",
+           representation(targetRatio="numeric"),
+           prototype(targetRatio=5),
+           contains="Stopping",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               
+               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
+                       "targetRatio must be a positive numerical number")
+               
+               o$result()
+             })
+
+validObject(.StoppingCIRatio())
+
+##' Initialization function for "StoppingCIRatio"
+##' @describeIn StoppinCIRatio
+##' 
+##' @return the \code{\linkS4class{StoppingCIRatio}} class object
+
+StoppingCIRatio <- function(targetRatio)
+{
+  .StoppingCIRatio(targetRatio=targetRatio)
+}
+
+##-------------------------------------------------------------------------------------
