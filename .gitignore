@@ -3,7 +3,7 @@
 .Rdata
 *~
 vignettes/.build.timestamp
-.Rproj.user/
+.Rproj.user/*
 crmpack.Rproj
 .Rbuildignore
 .gitignore
