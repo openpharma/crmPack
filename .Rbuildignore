@@ -1,9 +1,0 @@
-.gitignore
-R/.Rhistory
-inst/.Rhistory
-vignettes/.Rhistory
-vignettes/.build.timestamp
-.git
-devel
-^.*\.Rproj$
-^\.Rproj\.user$
