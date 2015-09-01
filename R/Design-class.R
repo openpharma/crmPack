@@ -256,7 +256,9 @@ ThreePlusThreeDesign <- function(doseGrid)
 validObject(.TDsamplesDesign())
 ##' Initialization function for 'TDsamplesDesign' class
 ##' 
-##' @describeIn TDsamplesDesign
+##' @param model see \code{\linkS4class{TDsamplesDesign}}
+##' @param stopping see \code{\linkS4class{TDsamplesDesign}}
+##' @param increments see \code{\linkS4class{TDsamplesDesign}}
 ##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
 ##' @return the \code{\linkS4class{TDsamplesDesign}} class object
 ##' 

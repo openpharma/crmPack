@@ -1548,14 +1548,12 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 
 ##' Stop based on a target ratio, the ratio of the upper to the lower
 ##' 95% credibility interval of the estimate
-##' @targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
+##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
 ##' estimate that required to stop a trial
 ##' 
 ##' @example examples\Rules-class StoppingCIRatio.R
 ##' @export
 ##' @keywords classes 
-
-
 .StoppingCIRatio <- 
   setClass(Class="StoppingCIRatio",
            representation(targetRatio="numeric"),

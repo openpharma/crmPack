@@ -3026,8 +3026,8 @@ Effloglog<-function(Eff,
 ##' the random walk model is used to model the first or the second order differnece of the mean 
 ##' efficacy responses to its neighbouring dose levels of their mean efficacy responses.
 ##' The flexible form is specified as 
-##' \deqn{\mathbf{W}|\boldsymbol\beta_w, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol\beta_w, \sigma^2 \mathbf{I})}
-##' where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol\beta_w} 
+##' \deqn{\mathbf{W}\vert\boldsymbol{\beta_w}, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol{\beta_w}, \sigma^2 \mathbf{I})}
+##' where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol{\beta_w}}
 ##' is th column vector of the mean efficacy responses for all dose levels, \eqn{\mathbf{X_w}} is the 
 ##' design matrix with entries \eqn{\mathds{1}_{i(j)}} which gives a value 1 if subject i is allocated to 
 ##' dose j. The \eqn{\sigma^2} (sigma2) is the variance of the efficacy responses which can be either fixed or from
@@ -3035,7 +3035,7 @@ Effloglog<-function(Eff,
 ##' 
 ##' The RW1 model is given as 
 ##' \deqn{\beta_{W,(j)} - \beta_{W,(j-1)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
-##' where \eqn{\beta_{W,(j)} is the mean efficacy responses at dose j
+##' where \eqn{\beta_{W,(j)}} is the mean efficacy responses at dose j
 ##' For the RW2 is given as 
 ##' \deqn{\beta_{W,(j-2)} - 2 \beta_{W,(j-1)} + \beta_{W,(j)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
 ##' The variance parameter \eqn{\sigma^{2}_{\beta_{W}}}. The variance \eqn{\sigma^{2}_{\beta_{W}}} 
