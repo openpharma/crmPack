@@ -300,7 +300,9 @@ TDsamplesDesign<-function(model,stopping,increments,...){
 validObject(.TDDesign())
 ##' Initialization function for 'TDDesign' class
 ##' 
-##' @describeIn TDDesign
+##' @param model please refer to \code{\linkS4class{TDDesign}} class object
+##' @param stopping please refer to \code{\linkS4class{TDDesign}} class object
+##' @param increments please refer to \code{\linkS4class{TDDesign}} class object
 ##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
 ##' @return the \code{\linkS4class{TDDesign}} class object
 ##' 
@@ -341,7 +343,8 @@ setClass(Class="DualResponsesSamplesDesign",
 validObject(.DualResponsesSamplesDesign())
 
 ##' Initialization function for 'DualResponsesSamplesDesign"
-##' @describeIn DualResponsesSamplesDesign
+##' @param data please refer to \code{\linkS4class{DualResponsesSamplesDesign}} class object
+##' @param Effmodel please refer to \code{\linkS4class{DualResponsesSamplesDesign}} class object
 ##' 
 ##' @return the \code{\linkS4class{DualResponsesSamplesDesign}} class object
 ##' 
@@ -388,7 +391,8 @@ validObject(.DualResponsesDesign())
 
 
 ##' Initialization function for 'DualResponsesDesign"
-##' @describeIn DualResponsesDesign
+##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
+##' @param Effmodel please refer to \code{\linkS4class{DualResponsesDesign}} class object
 ##' 
 ##' @return the \code{\linkS4class{DualResponsesDesign}} class object
 ##' 

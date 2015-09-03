@@ -327,8 +327,7 @@ DualSimulations <- function(rhoEst,
 validObject(.PseudoSimulations())
 
 ##' Initialization function of the 'PseudoSimulations' class
-##' @describeIn PseudoSimulations
-##' 
+##' @param fit please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##' 
@@ -383,7 +382,8 @@ PseudoSimulations <- function(fit,
 validObject(.PseudoDualSimulations())
 
 ##' Initialization function for 'DualPseudoSimulations' class
-##' @describeIn DualPseudoSimulations
+##' @param fitEff please refer to \code{\linkS4class{PseudoDualSimulations}} class object
+##' @param sigma2est please refer to \code{\linkS4class{PseudoDualSimulations}} class object
 ##' @param \dots additional parameters from \code{\linkS4class{PseudoSimulations}}
 ##' @return the \code{\linkS4class{PseudoDualSimulations}} object
 PseudoDualSimulations <- function(fitEff,
@@ -431,7 +431,7 @@ PseudoDualSimulations <- function(fitEff,
 validObject(.PseudoDualFlexiSimulations())
 
 ##' Initialization function for 'PseudoDualFlexiSimulations' class
-##' @describeIn PseudoDualFlexiSimulations
+##' @param sigma2betaWest please refer to \code{\linkS4class{PseudoDualFlexiSimulations}} class object
 ##' @param \dots additional parameters from \code{\linkS4class{PseudoDualSimulations}}
 ##' @return the \code{\linkS4class{PseudoDualFlexiSimulations}} object
 PseudoDualFlexiSimulations <- function(sigma2betaWest,

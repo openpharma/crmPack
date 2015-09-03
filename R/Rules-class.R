@@ -1347,7 +1347,9 @@ validObject(.NextBestTDsamples())
 ## ---------------------------------------------------------------------------
 ##' Initialization function for class "NextBestTDsamples"
 ##' 
-##' @describeIn NextBestTDsamples
+##'  @param targetDuringTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##'  @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##'  @param derive please refer to \code{\linkS4class{NextBestTDsamples}} class object
 ##' @return the \code{\linkS4class{NextBestTDsamples}} class object
 ##' 
 ##' @export
@@ -1405,7 +1407,8 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 validObject(.NextBestTD())
 
 ##' Initialization function for the class "NextBestTD"
-##' @describeIn NextBestTD
+##' @param targetDuringTrial please refer to \code{\linkS4class{NextBestTD}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTD}} class object
 ##' @return the \code{\linkS4class{NextBestTD}} class object
 ##' 
 ##' @export
@@ -1457,8 +1460,9 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
              })
 validObject(.NextBestMaxGain())
 ##' Initialization function for the class 'NextBestMaxGain'
-##' @describeIn NextBestMaxGain
-##' @return the \code{\linkS4class{NextBestMaxGain}}
+##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
+##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
+##' @return the \code{\linkS4class{NextBestMaxGain}} class object
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1526,9 +1530,12 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
              })
 validObject(.NextBestMaxGainSamples)
 ##' Initialization function for class "NextBestMaxGainSamples"
-##' @describeIn NextBestMaxGainSamples
+##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' @param TDderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' @param Gstarderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
 ##' 
-##' @return the \code{\linkS4class{NextBestMaxGainSamples}} object
+##' @return the \code{\linkS4class{NextBestMaxGainSamples}} class object
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1572,7 +1579,7 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 validObject(.StoppingCIRatio())
 
 ##' Initialization function for "StoppingCIRatio"
-##' @describeIn StoppinCIRatio
+##' @param targetRatio please refer to \code{\linkS4class{StoppingCIRatio}} class object
 ##' 
 ##' @return the \code{\linkS4class{StoppingCIRatio}} class object
 
