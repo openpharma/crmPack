@@ -401,6 +401,9 @@ setMethod("mcmc",
                      verbose=FALSE,
                      ...){
               
+              ##update the DLE model first
+              model <- update(object=model,data=data)
+              
               ## decide whether we sample from the prior or not
               fromPrior <- data@nObs == 0L
               
@@ -449,16 +452,16 @@ setMethod("mcmc",
                 ##Obtain parameter estimates for dose-DLE curve
                 priorphi1<-coef(SFitDLE)[1,1]
                 priorphi2<-coef(SFitDLE)[2,1]
-                cov1<-matrix(nrow=2,ncol=2)
+                #cov1<-matrix(nrow=2,ncol=2)
                 
                 
-                cov1<-matrix(rep(0,4),nrow=2,ncol=2)
+                #cov1<-matrix(rep(0,4),nrow=2,ncol=2)
                 
-                for (i in (1:(length(data@y)))){
+                #for (i in (1:(length(data@y)))){
                   
-                  covmat<-scalarI[i]*matrix(c(1,log(data@x[i]),log(data@x[i]),(log(data@x[i]))^2),2,2)
-                  cov1<-cov1+covmat
-                }
+                  #covmat<-scalarI[i]*matrix(c(1,log(data@x[i]),log(data@x[i]),(log(data@x[i]))^2),2,2)
+                  #cov1<-cov1+covmat
+                #}
                 
                 
                 ## use fast special sampler here
@@ -580,6 +583,9 @@ setMethod("mcmc",
             function(data,model,options,
                      verbose=FALSE,
                      ...){
+              ##update the model
+              model <- update(object=model,data=data)
+              
               nSamples <- sampleSize(options)
               
               ##Prepare samples container
