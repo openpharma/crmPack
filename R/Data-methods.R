@@ -29,7 +29,7 @@
 ##' @param \dots unused
 ##' @return a list of all slots in \code{x}
 ##'
-##' @example examples\Data-method-asList.R
+##' @example examples/Data-method-asList.R
 ##' @export
 ##' @keywords methods
 setMethod("as.list",
@@ -68,7 +68,7 @@ setMethod("as.list",
 ##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
 ##' scale_y_continuous
 ##'
-##' @example examples\Data-method-plot-Data.R
+##' @example examples/Data-method-plot-Data.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -151,7 +151,7 @@ setMethod("plot",
 ##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
 ##' @importFrom gridExtra arrangeGrob
 ##'
-##' @example examples\Data-method-plot-DataDual.R
+##' @example examples/Data-method-plot-DataDual.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -225,7 +225,7 @@ setMethod("plot",
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{Data}} object
 ##'
-##' @example examples\Data-method-update-Data.R
+##' @example examples/Data-method-update-Data.R
 ##' @export
 ##' @keywords methods
 setMethod("update",
@@ -358,7 +358,7 @@ setMethod("update",
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataDual}} object
 ##'
-##' @example examples\Data-method-update-DataDual.R
+##' @example examples/Data-method-update-DataDual.R
 ##' @export
 ##' @keywords methods
 setMethod("update",
@@ -396,7 +396,7 @@ setMethod("update",
 ##' @param object for data input from \code{\linkS4class{DataDual}} object
 ##' @param \dots unused
 ##' 
-##' @example examples\Data-method getEff.R
+##' @example examples/Data-method getEff.R
 ##' @export
 ##' @keywords methods
 setGeneric("getEff",
