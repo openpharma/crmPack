@@ -8,7 +8,7 @@
 \S4method{update}{Effloglog}(object, data, ...)
 }
 \arguments{
-\item{object}{is the model which follow \code{\linkS4Class{Effloglog}} class object}
+\item{object}{is the model which follow \code{\linkS4class{Effloglog}} class object}
 }
 \description{
 Update method for the 'Effloglog'Model class

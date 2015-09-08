@@ -8,7 +8,7 @@
 \S4method{update}{LogisticIndepBeta}(object, data, ...)
 }
 \arguments{
-\item{object}{is the model which follow \code{\linkS4Class{LogisticIndepBeta}} class object}
+\item{object}{is the model which follow \code{\linkS4class{LogisticIndepBeta}} class object}
 }
 \description{
 Update method for the 'LogisticIndepBeta'Model class

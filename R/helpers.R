@@ -294,3 +294,79 @@ Validate <-
                         if(length(msg) > 0) msg else TRUE
                     }))
 
+##' Compute the density of Inverse gamma distribution
+##' @param x vector of quantiles
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' @param log logical; if TRUE, probabilities p are given as log(p)
+##' @param normalize logical; if TRUE, the output will be normalized
+##' 
+##' @keywords internal
+dinvGamma <- function (x,
+                       a,
+                       b,
+                       log=FALSE,
+                       normalize=TRUE)
+{ ret<- -(a+1)*log(x)-b /x
+if (normalize)
+  ret <- ret +a*log(b)-lgamma(a)
+if (log)
+  return (ret)
+else
+  return (exp(ret))
+}
+
+##' Compute the distribution function of Inverse gamma distribution
+##' @param q vector of quantiles
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
+##' @param logical; FLASE (default) if TRUE, probabilities/densities p are returned as log(p)
+##' 
+##' @keywords internal
+pinvGamma <- function(q,
+                      a,
+                      b,
+                      lower.tail =TRUE,
+                      log.p = FALSE)
+{
+  pgamma(q=1/q,
+         shape=a,
+         rate=b,
+         lower.tail= !lower.tail,
+         log.p =log.p)
+}
+
+##' Compute the quantile function of Inverse gamma distribution
+##' @param p vector of probabilities
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
+##' @param logical; FLASE (default) if TRUE, probabilities/densities p are returned as log(p)
+##' 
+##' @keywords internal
+qinvGamma <- function(p,
+                      a,
+                      b,
+                      lower.tail =TRUE,
+                      log.p = FALSE)
+{
+  1/qgamma(p = p,
+           shape=a,
+           rate=b,
+           lower.tail= !lower.tail,
+           log.p =log.p)
+}
+##' The random generation of the Inverse gamma distribution
+##' @param n the number of observations
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' 
+##' @keywords internal
+rinvGamma <- function(n,
+                      a,
+                      b)
+{1/rgamma(n,
+          shape=a,
+          rate=b)
+}
