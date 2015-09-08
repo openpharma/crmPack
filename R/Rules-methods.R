@@ -63,6 +63,7 @@ setGeneric("nextBest",
 
 ##' @describeIn nextBest Find the next best dose based on the MTD rule
 ##'
+##' @example examples\Rules-method-NextBestMTD.R
 ##' @importFrom ggplot2 ggplot geom_density xlab ylab xlim aes geom_vline
 ##' geom_text
 setMethod("nextBest",
@@ -147,6 +148,7 @@ setMethod("nextBest",
 
 ##' @describeIn nextBest Find the next best dose based on the NCRM method
 ##'
+##' @example examples\Rules-method-NextBestNCRM.R
 ##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
 ##' geom_hline geom_point
 ##' @importFrom gridExtra arrangeGrob
@@ -337,6 +339,8 @@ setMethod("nextBest",
 ## --------------------------------------------------
 
 ##' @describeIn nextBest Find the next best dose based on the 3+3 method
+##' 
+##' @example examples\Rules-method-NextBestThreePlusThree.R
 setMethod("nextBest",
           signature=
           signature(nextBest="NextBestThreePlusThree",
@@ -412,6 +416,7 @@ setMethod("nextBest",
 ##' @describeIn nextBest Find the next best dose based on the dual endpoint
 ##' model
 ##'
+##' @example examples\Rules-method-NextBestDualEndpoint.R
 ##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
 ##' geom_hline geom_point
 ##' @importFrom gridExtra arrangeGrob
@@ -651,6 +656,8 @@ setGeneric("maxDose",
 
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' relative increments
+##' 
+##' @example examples\Rules-method-maxDose-IncrementsRelative.R
 setMethod("maxDose",
           signature=
           signature(increments="IncrementsRelative",
@@ -743,6 +750,8 @@ setMethod("maxDose",
 
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' relative increments determined by DLTs so far
+##' 
+##' @example examples\Rules-method-maxDose-IncrementsRelativeDLT.R
 setMethod("maxDose",
           signature=
           signature(increments="IncrementsRelativeDLT",
@@ -781,6 +790,7 @@ setMethod("maxDose",
 ##' @param e2 Second \code{\linkS4class{Stopping}} object
 ##' @return The \code{\linkS4class{StoppingAll}} object
 ##'
+##' @example examples\Rules-method-and-stopping-stopping.R
 ##' @keywords methods
 setMethod("&",
           signature(e1="Stopping",
@@ -796,6 +806,7 @@ setMethod("&",
 ##' @param e2 \code{\linkS4class{Stopping}} object
 ##' @return The modified \code{\linkS4class{StoppingAll}} object
 ##'
+##' @example examples\Rules-method-and-stoppingAll-stopping.R
 ##' @keywords methods
 setMethod("&",
           signature(e1="StoppingAll",
@@ -813,6 +824,7 @@ setMethod("&",
 ##' @param e2 \code{\linkS4class{StoppingAll}} object
 ##' @return The modified \code{\linkS4class{StoppingAll}} object
 ##'
+##' @example examples\Rules-method-and-stopping-stoppingAll.R
 ##' @keywords methods
 setMethod("&",
           signature(e1="Stopping",
@@ -836,6 +848,7 @@ setMethod("&",
 ##'
 ##' @aliases |,Stopping,Stopping-method
 ##' @name or-Stopping-Stopping
+##' @example examples\Rules-method-or-stopping-stopping.R
 ##' @keywords methods
 setMethod("|",
           signature(e1="Stopping",
@@ -853,6 +866,7 @@ setMethod("|",
 ##'
 ##' @aliases |,StoppingAny,Stopping-method
 ##' @name or-Stopping-StoppingAny
+##' @example examples\Rules-method-or-stoppingAny-stopping.R
 ##' @keywords methods
 setMethod("|",
           signature(e1="StoppingAny",
@@ -872,6 +886,7 @@ setMethod("|",
 ##'
 ##' @aliases |,Stopping,StoppingAny-method
 ##' @name or-StoppingAny-Stopping
+##' @example examples\Rules-method-or-stopping-stoppingAny.R
 ##' @keywords methods
 setMethod("|",
           signature(e1="Stopping",
@@ -930,6 +945,7 @@ setGeneric("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on multiple stopping rules
+##' @example examples\Rules-method-stopTrial-StoppingList.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingList",
@@ -967,6 +983,8 @@ setMethod("stopTrial",
 
 ##' @describeIn stopTrial Stop based on fulfillment of all multiple stopping
 ##' rules
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingAll.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingAll",
@@ -1004,6 +1022,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on fulfillment of any stopping rule
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingAny.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingAny",
@@ -1043,6 +1063,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingCohortsNearDose.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingCohortsNearDose",
@@ -1084,12 +1106,14 @@ setMethod("stopTrial",
           })
 
 
-## --------------------------------------------------
+## -------------------------------------------------------------
 ## Stopping based on number of patients near to next best dose
-## --------------------------------------------------
+## -------------------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on number of patients near to next best
 ##' dose
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingPatientsNearDose.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingPatientsNearDose",
@@ -1132,6 +1156,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on minimum number of cohorts
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingMinCohorts.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingMinCohorts",
@@ -1166,6 +1192,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on minimum number of patients
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingMinPatients.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingMinPatients",
@@ -1198,6 +1226,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on probability of target tox interval
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingTargetProb.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingTargetProb",
@@ -1244,6 +1274,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on MTD distribution
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingMTDdistribution.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingMTDdistribution",
@@ -1296,6 +1328,8 @@ setMethod("stopTrial",
 ## --------------------------------------------------
 
 ##' @describeIn stopTrial Stop based on probability of targeting biomarker
+##' 
+##' @example examples\Rules-method-stopTrial-StoppingTargetBiomarker.R
 setMethod("stopTrial",
           signature=
           signature(stopping="StoppingTargetBiomarker",
@@ -1407,6 +1441,7 @@ setGeneric("maxSize",
            valueClass="CohortSizeMax")
 
 ##' @describeIn maxSize The method combining cohort size rules by taking maximum
+##' @example examples\Rules-method-maxSize.R
 setMethod("maxSize",
           "CohortSize",
           def=
@@ -1440,6 +1475,7 @@ setGeneric("minSize",
            valueClass="CohortSizeMin")
 
 ##' @describeIn minSize The method combining cohort size rules by taking minimum
+##' @example examples\Rules-method-minSize.R
 setMethod("minSize",
           "CohortSize",
           def=
@@ -1488,6 +1524,8 @@ setGeneric("size",
 
 ##' @describeIn size Determine the cohort size based on the range into which the
 ##' next dose falls into
+##' 
+##' @example examples\Rules-method-size-CohortSizeRange.R
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeRange",
@@ -1513,6 +1551,8 @@ setMethod("size",
 
 ##' @describeIn size Determine the cohort size based on the number of DLTs so
 ##' far
+##' 
+##' @example examples\Rules-method-size-CohortSizeDLT.R
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeDLT",
@@ -1540,6 +1580,7 @@ setMethod("size",
 ## --------------------------------------------------
 
 ##' @describeIn size Size based on maximum of multiple cohort size rules
+##' @example examples\Rules-method-size-CohortSizeMax.R
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeMax",
@@ -1567,6 +1608,7 @@ setMethod("size",
 ## --------------------------------------------------
 
 ##' @describeIn size Size based on minimum of multiple cohort size rules
+##' @example examples\Rules-method-size-CohortSizeMin.R
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeMin",
@@ -1594,6 +1636,7 @@ setMethod("size",
 ## --------------------------------------------------
 
 ##' @describeIn size Constant cohort size
+##' @example examples\Rules-method-size-CohortSizeConst.R
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeConst",

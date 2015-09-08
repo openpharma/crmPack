@@ -151,7 +151,7 @@ validObject(.Data())
 ##' @param \dots not used
 ##' @return the initialized \code{\linkS4class{Data}} object
 ##'
-##' @example examples/Data-class.R
+##' @example examples\Data-class.R
 ##' @export
 ##' @keywords programming
 Data <- function(x=numeric(),
@@ -238,6 +238,7 @@ validObject(.DataDual())
 ##' @param \dots additional parameters from \code{\link{Data}}
 ##' @return the initialized \code{\linkS4class{DataDual}} object
 ##'
+##' @example examples\Data-class-DataDual.R
 ##' @export
 ##' @keywords programming
 DataDual <- function(w=numeric(),
