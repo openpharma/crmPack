@@ -301,14 +301,14 @@ setMethod("biomLevel",
 
 ## =============================================================================================
 ## ---------------------------------------------------------------------------------------------
-## Compute the Expected Efficacy based on a given dose, a given pseduo Efficacy model and a given 
+## Compute the Expected Efficacy based on a given dose, a given pseduo Efficacy log-log model and a given 
 ## efficacy sample
 ## -----------------------------------------------------------------------------------------------
-##' Compute the expected efficacy based on a given dose, a given pseudo Efficacy model and a given 
+##' Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given 
 ##' efficacy sample
 ##' 
 ##' @param dose the dose
-##' @param model the \code{\linkS4class{ModelEff}} class object
+##' @param model the \code{\linkS4class{Effloglog}} class object
 ##' @param samples the \code{\linkS4class{Samples}} class object
 ##' @param \dots unused
 ##' 
@@ -327,7 +327,7 @@ setGeneric("ExpEff",
 setMethod("ExpEff",
           signature=
             signature(dose="numeric",
-                      model="ModelEff",
+                      model="Effloglog",
                       samples="Samples"),
           def=
             function(dose, model, samples, ...){
@@ -347,12 +347,12 @@ setMethod("ExpEff",
 ##======================================================================================
 
 ## -------------------------------------------------------------------------------------
-## Compute the Expected Efficacy based on a given dose and a given Pseudo Efficacy model
+## Compute the Expected Efficacy based on a given dose and a given Pseudo Efficacy log-log model
 ## --------------------------------------------------------------------------------------
-##' Compute the Expected Efficacy based a given dose and a given Pseudo Efficacy model without
+##' Compute the Expected Efficacy based a given dose and a given Pseudo Efficacy log log model without
 ##' samples
 ##' @param dose the dose
-##' @param model the \code{\linkS4class{ModelEff}} class object
+##' @param model the \code{\linkS4class{Effloglog}} class object
 ##' 
 ##' @example examples\Model-method ExpEffNoSamples.R
 ##' @export
@@ -360,7 +360,7 @@ setMethod("ExpEff",
 setMethod("ExpEff",
           signature=
             signature(dose="numeric",
-                      model="ModelEff",
+                      model="Effloglog",
                       samples="missing"),
           def=
             function(dose, model, ...){
@@ -408,16 +408,16 @@ setMethod("ExpEff",
             })
 
 ## ---------------------------------------------------------------------------------
-## Compute gain value using a Pseudo DLE and a pseduo Efficacy model
+## Compute gain value using a Pseudo DLE and a pseduo Efficacy log-log model
 ## -------------------------------------------------------------------------------
 
 ##' Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample, 
-##' a pseudo Efficacy model and a Efficacy sample
+##' a pseudo Efficacy log-log model and a Efficacy sample
 ##' 
 ##' @param dose the dose
 ##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
 ##' @param DLEsamples the \code{\linkS4class{Samples}} object
-##' @param Effmodel the \code{\linkS4class{ModelEff}} object
+##' @param Effmodel the \code{\linkS4class{Effloglog}} object
 ##' @param Effsamples the \code{\linkS4class{Samples}} object
 ##' @param \dots unused
 ##' 
@@ -436,7 +436,7 @@ setMethod("gain",
             signature(dose="numeric",
                       DLEmodel="ModelTox",
                       DLEsamples="Samples",
-                      Effmodel="ModelEff",
+                      Effmodel="Effloglog",
                       Effsamples="Samples"),
           def=
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){

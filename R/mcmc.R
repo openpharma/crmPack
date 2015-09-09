@@ -583,7 +583,7 @@ setMethod("mcmc",
             function(data,model,options,
                      verbose=FALSE,
                      ...){
-              ##update the model
+             ##update the model
               model <- update(object=model,data=data)
               
               nSamples <- sampleSize(options)
