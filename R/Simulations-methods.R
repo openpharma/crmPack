@@ -42,7 +42,7 @@
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
 ##' 
-##' @example examples\Simulations-method plotSIMsingle.R
+##' @example examples/Simulations-method plotSIMsingle.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -201,6 +201,7 @@ setMethod("plot",
 ##'
 ##' @importFrom ggplot2 qplot coord_flip scale_x_discrete
 ##' @importFrom gridExtra arrangeGrob
+##' 
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1229,28 +1230,7 @@ setMethod("plot",
               
               return(ret)
             })
-## ---------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## -----------------------------------------------------------------------------------------------
 
 
 
@@ -1266,7 +1246,8 @@ setMethod("plot",
 ##' 
 ##' @param \dots Additional arguments can be supplied here for \code{truth}
 ##' @return an object of class \code{\linkS4class{PseudoSimulationsSummary}}
-##'
+##' 
+##' @example examples/Simulations-method summarySIMsingle.R
 ##' @export
 ##' @keywords methods
 setMethod("summary",
@@ -1452,17 +1433,6 @@ setMethod("summary",
               return(ret)
             })
 ## ========================================================================================================
-
-
-
-
-
-
-
-
-
-
-
 ##' Show the summary of the simulations
 ##'
 ##' @param object the \code{\linkS4class{PseudoSimulationsSummary}} object we want
@@ -1470,6 +1440,7 @@ setMethod("summary",
 ##' @return invisibly returns a data frame of the results with one row and
 ##' appropriate column names
 ##'
+##' @example examples/Simulations-method showSIMsingle.R
 ##' @export
 ##' @keywords methods
 
@@ -1573,6 +1544,8 @@ setMethod("show",
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples/Simulations-method plotSUMsingle.R
 ##' @export
 ##' @keywords methods
 ##' 
@@ -1783,6 +1756,8 @@ setMethod("plot",
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples/Simulations-method plotSIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1855,11 +1830,6 @@ setMethod("plot",
               return(ret)
             })
 ## ---------------------------------------------------------------------------------
-
-
-
-
-
 ##'
 ##' This plot method can be applied to \code{\linkS4class{PseudoDualFlexiSimulations}}
 ##' objects in order to summarize them graphically. Possible \code{type}s of
@@ -1881,6 +1851,8 @@ setMethod("plot",
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples/Simulations-method plotSIMDualFlexi.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1954,8 +1926,9 @@ setMethod("plot",
             })
 
 ## -----------------------------------------------------------------------------------------
-##' Method of summary for Pseudo Dual responses simulations summary
+##' Summary for Pseudo Dual responses simulations
 ##' 
+##' @example examples/Simulations-method summarySIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("summary",
@@ -2036,8 +2009,9 @@ setMethod("summary",
               return(ret)
             })
 ## --------------------------------------------------------------------------------------------------
-##' Method summaary for Pseudo Dual responses using Flexible efficacy model simulation summary
+##' Summary for Pseudo Dual responses using Flexible efficacy model simulation
 ##' 
+##' @example examples/Simulations-method summarySIMDualFlexi.R
 ##' @export
 ##' @keywords methods
 
@@ -2103,7 +2077,8 @@ setMethod("summary",
 
 ## ----------------------------------------------------------------------------------------
 ##' Show the summary of Pseudo Dual simulations summary
-##'
+##' 
+##' @example examples/Simulations-method showSIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("show",
@@ -2134,6 +2109,7 @@ def=
 ## --------------------------------------------------------------------------------------------------
 ##' Plot the summary of Pseudo Dual Simulations summary
 ##' 
+##' @example examples/Simulations-method plotSUMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",

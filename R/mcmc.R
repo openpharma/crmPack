@@ -504,7 +504,7 @@ setMethod("mcmc",
 ##' @slot options the options to be specified for MCMC samples of \code{\linkS4class{McmcOptions}}
 ##' class object
 ##' 
-##' @example examples\mcmc-Effloglog.R
+##' @example examples/mcmc-Effloglog.R
 ##' @export
 ##' @keywords methods
 
@@ -571,7 +571,7 @@ setMethod("mcmc",
 ##' @slot options the options to be specified for MCMC samples of \code{\linkS4class{McmcOptions}}
 ##' class object
 ##' 
-##' @example examples\mcmc-EffFlexi.R
+##' @example examples/mcmc-EffFlexi.R
 ##' @export
 ##' @keywords methods
 setMethod("mcmc",

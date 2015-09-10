@@ -28,7 +28,7 @@
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##' 
-##' @example examples\Model-method dose.R
+##' @example examples/Model-method dose.R
 ##' @export
 ##' @keywords methods
 setGeneric("dose",
@@ -73,7 +73,7 @@ setMethod("dose",
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##' 
-##' @example examples\Model-method dose.R
+##' @example examples/Model-method dose.R
 ##' @export
 ##' @keywords methods
 setMethod("dose",
@@ -106,7 +106,7 @@ setMethod("dose",
 ##' @param model the \code{\linkS4class{ModelTox}}
 ##' @param \dots unused
 ##'  
-##' @example examples\Model-method probNoSamples.R
+##' @example examples/Model-method probNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("dose",
@@ -147,7 +147,7 @@ setMethod("dose",
 ##' @return the vector (for \code{\linkS4class{Model}} objects) of probability
 ##' samples.
 ##'
-##' @example examples\Model-method prob.R
+##' @example examples/Model-method prob.R
 ##' @export
 ##' @keywords methods
 setGeneric("prob",
@@ -195,7 +195,7 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
-##' @example examples\Model-method prob.R
+##' @example examples/Model-method prob.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
@@ -271,7 +271,7 @@ setMethod("prob",
 ##' @param samples the \code{\linkS4class{Samples}} object
 ##' @param \dots unused
 ##'  
-##' @example examples\Model-method biomLevel.R
+##' @example examples/Model-method biomLevel.R
 ##' @export
 ##' @keywords methods
 setGeneric("biomLevel",
@@ -312,7 +312,7 @@ setMethod("biomLevel",
 ##' @param samples the \code{\linkS4class{Samples}} class object
 ##' @param \dots unused
 ##' 
-##' @example examples\Model-method ExpEff.R
+##' @example examples/Model-method ExpEff.R
 ##' @export
 ##' @keywords methods
 setGeneric("ExpEff",
@@ -354,7 +354,7 @@ setMethod("ExpEff",
 ##' @param dose the dose
 ##' @param model the \code{\linkS4class{Effloglog}} class object
 ##' 
-##' @example examples\Model-method ExpEffNoSamples.R
+##' @example examples/Model-method ExpEffNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("ExpEff",
@@ -389,7 +389,7 @@ setMethod("ExpEff",
 ##' @param model the \code{\linkS4class{EffFlexi}} class object
 ##' @param samples the \code{\linkS4class{Samples}} class object
 ##' 
-##' @example examples\Model-method ExpEff Flexi.R
+##' @example examples/Model-method ExpEff Flexi.R
 ##' @export
 ##' @keywords methods
 
@@ -402,7 +402,7 @@ setMethod("ExpEff",
             function(dose, model, samples, ...){
               ## extract the ExpEff function from the model
               EffFun <- slot(model, "ExpEff")
-              ret <- EffFun(dose)
+              ret <- EffFun(dose,model@data)
               ## return the resulting vector
               return(ret)
             })
@@ -421,7 +421,7 @@ setMethod("ExpEff",
 ##' @param Effsamples the \code{\linkS4class{Samples}} object
 ##' @param \dots unused
 ##' 
-##' @example examples\Model-method gain.R
+##' @example examples/Model-method gain.R
 ##' @export
 ##' @keywords methods
 setGeneric("gain",
@@ -484,7 +484,7 @@ setMethod("gain",
 ##' @param Effsamples the \code{\linkS4class{Samples}} object
 ##' @param \dots unused
 ##' 
-##' @example examples\Model-method gain Flexi.R
+##' @example examples/Model-method gain Flexi.R
 ##' @export
 ##' @keywords methods
 setMethod("gain",
@@ -515,7 +515,7 @@ setMethod("gain",
               
               ## now call the function with dose and with
               ## the arguments taken from the samples
-              Effret <- EffFun(dose)
+              Effret <- EffFun(dose,Effmodel@data)
               
               ## return the resulting vector
               Gainret <- Effret/(1+(DLEret/(1-DLEret)))
@@ -533,7 +533,7 @@ setMethod("gain",
 ##' @param Effmodel the \code{\linkS4class{ModelEff}} object
 ##' @param \dots unused
 ##' 
-##' @example examples\Model-method gainNoSamples.R
+##' @example examples/Model-method gainNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("gain",
@@ -587,7 +587,7 @@ setMethod("gain",
 ##' @param \dots unused
 ##' @return the new \code{\linkS4class{LogisticIndepBeta}} class object
 ##' 
-##' @example examples\Model-method update LogisticIndepBeta.R
+##' @example examples/Model-method update LogisticIndepBeta.R
 ##' @export
 ##' @keywords methods
 setMethod("update",
@@ -630,7 +630,7 @@ setMethod("update",
 ##' @param \dots unused
 ##' @return the new \code{\linkS4class{Effloglog}} class object
 ##' 
-##' @example examples\Model-method update Effloglog.R
+##' @example examples/Model-method update Effloglog.R
 ##' @export
 ##' @keywords methods
 setMethod("update",
@@ -674,7 +674,7 @@ setMethod("update",
 ##' @param \dots unused
 ##' @return the new \code{\linkS4class{EffFlexi}} class object
 ##' 
-##' @example examples\Model-method update EffFlexi.R
+##' @example examples/Model-method update EffFlexi.R
 ##' @export
 ##' @keywords methods
 setMethod("update",

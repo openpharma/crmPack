@@ -2889,7 +2889,7 @@ LogisticIndepBeta <- function(binDLE,
 ##' responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)
 ##' 
 ##' 
-##'@example examples\Model-class Effloglog.R
+##'@example examples/Model-class Effloglog.R
 ##'@export
 ##'@keywords methods
 .Effloglog<-
@@ -3079,7 +3079,7 @@ Effloglog<-function(Eff,
 ##' @slot RWmatRank is the rank of the difference matrix. This slot is needed for internal purposes and not
 ##' to be touched by the user.
 ##'
-##' @example examples\Model-class EffFlexi.R
+##' @example examples/Model-class EffFlexi.R
 ##' @export
 ##' @keywords class
 .EffFlexi<-setClass(Class="EffFlexi",
@@ -3201,7 +3201,7 @@ EffFlexi <- function(Eff,
               ##return coreresponding dose levels
               return(dosevec)},
             
-            ExpEff=function(dose){
+            ExpEff=function(dose,data){
               ##Find the ExpEff with a given dose level
               ##Check if given dose is in doseGrid
               DoseInGrid<-!is.na(match(dose,data@doseGrid))

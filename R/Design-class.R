@@ -238,7 +238,7 @@ ThreePlusThreeDesign <- function(doseGrid)
 ##' @slot increments how to control increments between dose levels, an object class of 
 ##' \code{\linkS4class{Increments}}
 ##' 
-##' @example examples\design-class TDsamplesDesign.R
+##' @example examples/design-class TDsamplesDesign.R
 ##' @export
 ##' @keywords class 
 
@@ -283,7 +283,7 @@ TDsamplesDesign<-function(model,stopping,increments,...){
 ##' @slot increments how to control increments between dose levels, an object class of 
 ##' \code{\linkS4class{Increments}}
 ##' 
-##' @example examples\design-class TDDesign.R
+##' @example examples/design-class TDDesign.R
 ##' @export
 ##' @keywords class 
 .TDDesign <-
@@ -326,7 +326,7 @@ TDDesign<-function(model,stopping,increments,...){
 ##' @slot Effmodel the pseudo efficacy model to be used, an object class of 
 ##' \code{\linkS4class{ModelEff}}
 ##' 
-##' @example examples\design-class DualResponsesSamplesDesign.R
+##' @example examples/design-class DualResponsesSamplesDesign.R
 ##' @export
 ##' @keywords class 
 ##' 
@@ -374,7 +374,7 @@ DualResponsesSamplesDesign <- function(Effmodel,
 ##' @slot Effmodel the pseudo efficacy model to be used, an object class of 
 ##' \code{\linkS4class{ModelEff}}
 ##' 
-##' @example examples\design-class DualResponsesDesign.R
+##' @example examples/design-class DualResponsesDesign.R
 ##' @export
 ##' @keywords class 
 .DualResponsesDesign <-

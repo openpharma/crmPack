@@ -1178,7 +1178,7 @@ setMethod("examine",
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
 ##' 
-##' @example examples\design-method simulateTDsamplesDesign.R
+##' @example examples/design-method simulateTDsamplesDesign.R
 ##'
 ##' @return an object of class \code{\linkS4class{PseudoSimulations}}
 ##'
@@ -1417,7 +1417,7 @@ setMethod("simulate",
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
 ##' 
-##' @example examples\design-method simulateTDDesign.R
+##' @example examples/design-method simulateTDDesign.R
 ##'
 ##' @return an object of class \code{\linkS4class{PseudoSimulations}}
 ##' 
@@ -1641,7 +1641,7 @@ setMethod("simulate",
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
 ##' 
-##' @example examples\design-method simulateDualResponsesDesign.R
+##' @example examples/design-method simulateDualResponsesDesign.R
 ##'
 ##' @return an object of class \code{\linkS4class{PseudoDualSimulations}}
 ##' 
@@ -1960,7 +1960,7 @@ setMethod("simulate",
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
 ##' 
-##' @example examples\design-method simulateDualResponsesSamplesDesign.R
+##' @example examples/design-method simulateDualResponsesSamplesDesign.R
 ##'
 ##' @return an object of class \code{\linkS4class{PseudoDualSimulations}}
 ##' 
@@ -2294,7 +2294,7 @@ setMethod("simulate",
 ##' clusters of the computer? (not default)
 ##' @param \dots not used
 ##' 
-##' @example examples\design-method simulateDualResponsesSamplesFlexiDesign.R
+##' @example examples/design-method simulateDualResponsesSamplesFlexiDesign.R
 ##'
 ##' @return an object of class \code{\linkS4class{PseudoDualFlexiSimulations}}
 ##' 
