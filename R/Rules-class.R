@@ -1334,7 +1334,7 @@ CohortSizeMin <- function(cohortSizeList)
 ##'  targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
 ##'  occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
 ##'  
-##' @example examples/Rules-class NextBestTDsamples.R
+##' @example examples/Rules-class-NextBestTDsamples.R
 ##' @export
 ##' @keywords class
 
@@ -1402,7 +1402,7 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 ##'  of the trial. This target is particularly used to recommend the dose for which its posterior 
 ##'  probability of the occurrence of a DLE is equal to this target
 ##' 
-##' @example examples/Rules-class NextBestTD.R
+##' @example examples/Rules-class-NextBestTD.R
 ##' @export
 ##' @keywords class
 .NextBestTD<-
@@ -1460,7 +1460,7 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
 ##' probability of the occurrence of a DLE is equal to this target
 ##' 
 ##'   
-##' @example examples/Rules-class NextBestMaxGain.R
+##' @example examples/Rules-class-NextBestMaxGain.R
 ##' @export
 ##' @keywords class
 .NextBestMaxGain<-
@@ -1518,7 +1518,7 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
 ##' which gives the maximum gain value) samples 
 ##' called \called{Gstarsamples}, the final next best Gstar estimate.
 ##' 
-##' @example examples/Rules-class NextBestMaxGainSamples.R
+##' @example examples/Rules-class-NextBestMaxGainSamples.R
 ##' 
 ##' @export
 ##' @keywords class

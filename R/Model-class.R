@@ -2708,7 +2708,7 @@ validObject(.ModelEff)
 ##' phi2 obtained, based on the pseudo data and (if any) the observed data and responses. This slot is needed for 
 ##' internal purposes.
 ##'  
-##' @example examples/Model-class LogisticIndepBeta.R
+##' @example examples/Model-class-LogisticIndepBeta.R
 ##' @export
 ##' @keywords classes
 .LogisticIndepBeta<-
@@ -2889,7 +2889,7 @@ LogisticIndepBeta <- function(binDLE,
 ##' responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)
 ##' 
 ##' 
-##'@example examples/Model-class Effloglog.R
+##'@example examples/Model-class-Effloglog.R
 ##'@export
 ##'@keywords methods
 .Effloglog<-
@@ -3079,7 +3079,7 @@ Effloglog<-function(Eff,
 ##' @slot RWmatRank is the rank of the difference matrix. This slot is needed for internal purposes and not
 ##' to be touched by the user.
 ##'
-##' @example examples/Model-class EffFlexi.R
+##' @example examples/Model-class-EffFlexi.R
 ##' @export
 ##' @keywords class
 .EffFlexi<-setClass(Class="EffFlexi",
