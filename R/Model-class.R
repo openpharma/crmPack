@@ -3201,7 +3201,7 @@ EffFlexi <- function(Eff,
               ##return coreresponding dose levels
               return(dosevec)},
             
-            ExpEff=function(dose,data){
+            ExpEff=function(dose,data,Effsamples){
               ##Find the ExpEff with a given dose level
               ##Check if given dose is in doseGrid
               DoseInGrid<-!is.na(match(dose,data@doseGrid))

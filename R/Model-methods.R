@@ -402,7 +402,7 @@ setMethod("ExpEff",
             function(dose, model, samples, ...){
               ## extract the ExpEff function from the model
               EffFun <- slot(model, "ExpEff")
-              ret <- EffFun(dose,model@data)
+              ret <- EffFun(dose,data=model@data,Effsamples=samples)
               ## return the resulting vector
               return(ret)
             })
@@ -515,7 +515,7 @@ setMethod("gain",
               
               ## now call the function with dose and with
               ## the arguments taken from the samples
-              Effret <- EffFun(dose,Effmodel@data)
+              Effret <- EffFun(dose,Effmodel@data,Effsamples)
               
               ## return the resulting vector
               Gainret <- Effret/(1+(DLEret/(1-DLEret)))
