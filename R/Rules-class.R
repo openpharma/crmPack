@@ -45,7 +45,8 @@ setClass(Class="NextBest",
 ##' @slot derive the function which derives from the input, a vector of
 ##' posterior MTD samples called \code{mtdSamples}, the final next best MTD
 ##' estimate.
-##'
+##' 
+##' @example examples/Rules-class-NextBestMTD.R
 ##' @export
 ##' @keywords classes
 .NextBestMTD <-
@@ -79,7 +80,6 @@ validObject(.NextBestMTD())
 ##' @param derive see \code{\linkS4class{NextBestMTD}}
 ##' @return the \code{\linkS4class{NextBestMTD}} object
 ##'
-##' @example examples/Rules-class-NextBestMTD.R
 ##' @export
 ##' @keywords methods
 NextBestMTD <- function(target,
@@ -164,7 +164,8 @@ NextBestNCRM <- function(target,
 ##'
 ##' Implements the classical 3+3 dose recommendation.
 ##' No input is required, hence this class has no slots.
-##'
+##' 
+##' @example examples/Rules-class-NextBestThreePlusThree.R
 ##' @export
 ##' @keywords classes
 .NextBestThreePlusThree <-
@@ -175,7 +176,6 @@ NextBestNCRM <- function(target,
 ##'
 ##' @return the \code{\linkS4class{NextBestThreePlusThree}} object
 ##'
-##' @example examples/Rules-class-NextBestThreePlusThree.R
 ##' @export
 ##' @keywords methods
 NextBestThreePlusThree <- function()
@@ -208,7 +208,8 @@ NextBestThreePlusThree <- function()
 ##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
 ##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
-##'
+##' 
+##' @example examples/Rules-class-NextBestDualEndpoint.R
 ##' @export
 ##' @keywords classes
 .NextBestDualEndpoint <-
@@ -242,7 +243,6 @@ validObject(.NextBestDualEndpoint())
 ##' @param maxOverdoseProb see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @return the \code{\linkS4class{NextBestDualEndpoint}} object
 ##'
-##' @example examples/Rules-class-NextBestDualEndpoint.R
 ##' @export
 ##' @keywords methods
 NextBestDualEndpoint <- function(target,
@@ -290,7 +290,8 @@ setClass(Class="Increments",
 ##' @slot intervals a vector with the left bounds of the relevant intervals
 ##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{intervals}
-##'
+##' 
+##' @example examples/Rules-class-IncrementsRelative.R
 ##' @export
 ##' @keywords classes
 .IncrementsRelative <-
@@ -320,7 +321,6 @@ validObject(.IncrementsRelative())
 ##' @param increments see \code{\linkS4class{IncrementsRelative}}
 ##' @return the \code{\linkS4class{IncrementsRelative}} object
 ##'
-##' @example examples/Rules-class-IncrementsRelative.R
 ##' @export
 ##' @keywords methods
 IncrementsRelative <- function(intervals,
@@ -419,6 +419,7 @@ IncrementsRelativeParts <- function(dltStart,
 ##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{DLTintervals}
 ##'
+##' @example examples/Rules-class-IncrementsRelativeDLT.R
 ##' @export
 ##' @keywords classes
 .IncrementsRelativeDLT <-
@@ -451,7 +452,6 @@ validObject(.IncrementsRelativeDLT())
 ##' @param increments see \code{\linkS4class{IncrementsRelativeDLT}}
 ##' @return the \code{\linkS4class{IncrementsRelativeDLT}} object
 ##'
-##' @example examples/Rules-class-IncrementsRelativeDLT.R
 ##' @export
 ##' @keywords methods
 IncrementsRelativeDLT <- function(DLTintervals,
@@ -494,7 +494,8 @@ setClass(Class="Stopping",
 ##' @slot nCohorts number of required cohorts
 ##' @slot percentage percentage (between 0 and 100) within the next best dose
 ##' the cohorts must lie
-##'
+##' 
+##' @example examples/Rules-class-StoppingCohortsNearDose.R
 ##' @keywords classes
 ##' @export
 .StoppingCohortsNearDose <-
@@ -522,7 +523,6 @@ validObject(.StoppingCohortsNearDose())
 ##' @param percentage see \code{\linkS4class{StoppingCohortsNearDose}}
 ##' @return the \code{\linkS4class{StoppingCohortsNearDose}} object
 ##'
-##' @example examples/Rules-class-StoppingCohortsNearDose.R
 ##' @export
 ##' @keywords methods
 StoppingCohortsNearDose <- function(nCohorts,
@@ -540,7 +540,8 @@ StoppingCohortsNearDose <- function(nCohorts,
 ##' @slot nPatients number of required patients
 ##' @slot percentage percentage (between 0 and 100) within the next best dose
 ##' the patients must lie
-##'
+##' 
+##' @example examples/Rules-class-StoppingPatientsNearDose.R
 ##' @keywords classes
 ##' @export
 .StoppingPatientsNearDose <-
@@ -569,7 +570,6 @@ validObject(.StoppingPatientsNearDose())
 ##' @param percentage see \code{\linkS4class{StoppingPatientsNearDose}}
 ##' @return the \code{\linkS4class{StoppingPatientsNearDose}} object
 ##'
-##' @example examples/Rules-class-StoppingPatientsNearDose.R
 ##' @export
 ##' @keywords methods
 StoppingPatientsNearDose <- function(nPatients,
@@ -587,7 +587,8 @@ StoppingPatientsNearDose <- function(nPatients,
 ##' Stop based on minimum number of cohorts
 ##'
 ##' @slot nCohorts minimum required number of cohorts
-##'
+##' 
+##' @example examples/Rules-class-StoppingMinCohorts.R
 ##' @keywords classes
 ##' @export
 .StoppingMinCohorts <-
@@ -612,7 +613,6 @@ validObject(.StoppingMinCohorts())
 ##' @param nCohorts see \code{\linkS4class{StoppingMinCohorts}}
 ##' @return the \code{\linkS4class{StoppingMinCohorts}} object
 ##'
-##' @example examples/Rules-class-StoppingMinCohorts.R
 ##' @export
 ##' @keywords methods
 StoppingMinCohorts <- function(nCohorts)
@@ -628,7 +628,8 @@ StoppingMinCohorts <- function(nCohorts)
 ##' Stop based on minimum number of patients
 ##'
 ##' @slot nPatients minimum allowed number of patients
-##'
+##' 
+##' @example examples/Rules-class-StoppingMinPatients.R
 ##' @keywords classes
 ##' @export
 .StoppingMinPatients <-
@@ -651,7 +652,6 @@ validObject(.StoppingMinPatients())
 ##' @param nPatients see \code{\linkS4class{StoppingMinPatients}}
 ##' @return the \code{\linkS4class{StoppingMinPatients}} object
 ##'
-##' @example examples/Rules-class-StoppingMinPatients.R
 ##' @export
 ##' @keywords methods
 StoppingMinPatients <- function(nPatients)
@@ -669,7 +669,8 @@ StoppingMinPatients <- function(nPatients)
 ##' @slot target the target toxicity interval, e.g. \code{c(0.2, 0.35)}
 ##' @slot prob required target toxicity probability (e.g. \code{0.4})
 ##' for reaching sufficient precision
-##'
+##' 
+##' @example examples/Rules-class-StoppingTargetProb.R
 ##' @keywords classes
 ##' @export
 .StoppingTargetProb <-
@@ -700,7 +701,6 @@ validObject(.StoppingTargetProb())
 ##' @param prob see \code{\linkS4class{StoppingTargetProb}}
 ##' @return the \code{\linkS4class{StoppingTargetProb}} object
 ##'
-##' @example examples/Rules-class-StoppingTargetProb.R
 ##' @export
 ##' @keywords methods
 StoppingTargetProb <- function(target,
@@ -723,7 +723,8 @@ StoppingTargetProb <- function(target,
 ##' @slot target the target toxicity probability (e.g. 0.33) defining the MTD
 ##' @slot thresh the threshold relative to the MTD (e.g. 0.5)
 ##' @slot prob required probability (e.g. 0.9)
-##'
+##' 
+##' @example examples/Rules-class-StoppingMTDdistribution.R
 ##' @keywords classes
 ##' @export
 .StoppingMTDdistribution <-
@@ -761,7 +762,6 @@ validObject(.StoppingMTDdistribution())
 ##' @param prob see \code{\linkS4class{StoppingMTDdistribution}}
 ##' @return the \code{\linkS4class{StoppingMTDdistribution}} object
 ##'
-##' @example examples/Rules-class-StoppingMTDdistribution.R
 ##' @export
 ##' @keywords methods
 StoppingMTDdistribution <- function(target,
@@ -783,7 +783,8 @@ StoppingMTDdistribution <- function(target,
 ##' @slot target the biomarker target range, relative to the maximum, that
 ##' needs to be reached. So this must be a probability range (1 is allowed here)
 ##' @slot prob required target probability for reaching sufficient precision
-##'
+##' 
+##' @example examples/Rules-class-StoppingTargetBiomarker.R
 ##' @keywords classes
 ##' @export
 .StoppingTargetBiomarker <-
@@ -814,7 +815,6 @@ validObject(.StoppingTargetBiomarker())
 ##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
 ##'
-##' @example examples/Rules-class-StoppingTargetBiomarker.R
 ##' @export
 ##' @keywords methods
 StoppingTargetBiomarker <- function(target,
@@ -842,7 +842,8 @@ StoppingTargetBiomarker <- function(target,
 ##' @slot stopList list of stopping rules
 ##' @slot summary the summary function to combine the results of the stopping
 ##' rules into a single result
-##'
+##' 
+##' @example examples/Rules-class-StoppingList.R
 ##' @keywords classes
 ##' @export
 .StoppingList <-
@@ -876,7 +877,6 @@ validObject(.StoppingList())
 ##' @param summary see \code{\linkS4class{StoppingList}}
 ##' @return the \code{\linkS4class{StoppingList}} object
 ##'
-##' @example examples/Rules-class-StoppingList.R
 ##' @export
 ##' @keywords methods
 StoppingList <- function(stopList,
@@ -902,6 +902,7 @@ StoppingList <- function(stopList,
 ##'
 ##' @slot stopList list of stopping rules
 ##'
+##' @example examples/Rules-class-StoppingAll.R
 ##' @keywords classes
 ##' @export
 .StoppingAll <-
@@ -928,7 +929,6 @@ validObject(.StoppingAll())
 ##' @param stopList see \code{\linkS4class{StoppingAll}}
 ##' @return the \code{\linkS4class{StoppingAll}} object
 ##'
-##' @example examples/Rules-class-StoppingAll.R
 ##' @export
 ##' @keywords methods
 StoppingAll <- function(stopList)
@@ -951,7 +951,8 @@ StoppingAll <- function(stopList)
 ##' order that the result of this rule is to stop.
 ##'
 ##' @slot stopList list of stopping rules
-##'
+##' 
+##' @example examples/Rules-class-StoppingAny.R
 ##' @keywords classes
 ##' @export
 .StoppingAny <-
@@ -978,7 +979,6 @@ validObject(.StoppingAny())
 ##' @param stopList see \code{\linkS4class{StoppingAny}}
 ##' @return the \code{\linkS4class{StoppingAny}} object
 ##'
-##' @example examples/Rules-class-StoppingAny.R
 ##' @export
 ##' @keywords methods
 StoppingAny <- function(stopList)
@@ -1020,7 +1020,8 @@ setClass(Class="CohortSize",
 ##' @slot intervals a vector with the left bounds of the relevant dose intervals
 ##' @slot cohortSize an integer vector of the same length with the cohort
 ##' sizes in the \code{intervals}
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeRange.R
 ##' @export
 ##' @keywords classes
 .CohortSizeRange <-
@@ -1052,7 +1053,6 @@ validObject(.CohortSizeRange())
 ##' @param cohortSize see \code{\linkS4class{CohortSizeRange}}
 ##' @return the \code{\linkS4class{CohortSizeRange}} object
 ##'
-##' @example examples/Rules-class-CohortSizeRange.R
 ##' @export
 ##' @keywords methods
 CohortSizeRange <- function(intervals,
@@ -1072,7 +1072,8 @@ CohortSizeRange <- function(intervals,
 ##' DLT intervals
 ##' @slot cohortSize an integer vector of the same length with the cohort
 ##' sizes in the \code{DLTintervals}
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeDLT.R
 ##' @export
 ##' @keywords classes
 .CohortSizeDLT <-
@@ -1106,7 +1107,6 @@ validObject(.CohortSizeDLT())
 ##' @param cohortSize see \code{\linkS4class{CohortSizeDLT}}
 ##' @return the \code{\linkS4class{CohortSizeDLT}} object
 ##'
-##' @example examples/Rules-class-CohortSizeDLT.R
 ##' @export
 ##' @keywords methods
 CohortSizeDLT <- function(DLTintervals,
@@ -1126,7 +1126,8 @@ CohortSizeDLT <- function(DLTintervals,
 ##' This class is used when the cohort size should be kept constant.
 ##'
 ##' @slot size the constant integer size
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeConst.R
 ##' @keywords classes
 ##' @export
 .CohortSizeConst <-
@@ -1150,7 +1151,6 @@ validObject(.CohortSizeConst())
 ##' @param size see \code{\linkS4class{CohortSizeConst}}
 ##' @return the \code{\linkS4class{CohortSizeConst}} object
 ##'
-##' @example examples/Rules-class-CohortSizeConst.R
 ##' @export
 ##' @keywords methods
 CohortSizeConst <- function(size)
@@ -1219,7 +1219,8 @@ CohortSizeParts <- function(sizes)
 ##' individual cohort sizes is taken to give the final cohort size.
 ##'
 ##' @slot cohortSizeList list of cohort size rules
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeMax.R
 ##' @keywords classes
 ##' @export
 .CohortSizeMax <-
@@ -1249,7 +1250,6 @@ validObject(.CohortSizeMax())
 ##' @param cohortSizeList see \code{\linkS4class{CohortSizeMax}}
 ##' @return the \code{\linkS4class{CohortSizeMax}} object
 ##'
-##' @example examples/Rules-class-CohortSizeMax.R
 ##' @export
 ##' @keywords methods
 CohortSizeMax <- function(cohortSizeList)
@@ -1273,6 +1273,7 @@ CohortSizeMax <- function(cohortSizeList)
 ##'
 ##' @slot cohortSizeList list of cohort size rules
 ##'
+##' @example examples/Rules-class-CohortSizeMin.R
 ##' @keywords classes
 ##' @export
 .CohortSizeMin <-
@@ -1302,7 +1303,6 @@ validObject(.CohortSizeMin())
 ##' @param cohortSizeList see \code{\linkS4class{CohortSizeMin}}
 ##' @return the \code{\linkS4class{CohortSizeMin}} object
 ##'
-##' @example examples/Rules-class-CohortSizeMin.R
 ##' @export
 ##' @keywords methods
 CohortSizeMin <- function(cohortSizeList)
@@ -1334,7 +1334,7 @@ CohortSizeMin <- function(cohortSizeList)
 ##'  targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
 ##'  occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
 ##'  
-##' @example examples/Rules-class NextBestTDsamples.R
+##' @example examples/Rules-class-NextBestTDsamples.R
 ##' @export
 ##' @keywords class
 
@@ -1402,7 +1402,7 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 ##'  of the trial. This target is particularly used to recommend the dose for which its posterior 
 ##'  probability of the occurrence of a DLE is equal to this target
 ##' 
-##' @example examples/Rules-class NextBestTD.R
+##' @example examples/Rules-class-NextBestTD.R
 ##' @export
 ##' @keywords class
 .NextBestTD<-
@@ -1460,7 +1460,7 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
 ##' probability of the occurrence of a DLE is equal to this target
 ##' 
 ##'   
-##' @example examples/Rules-class NextBestMaxGain.R
+##' @example examples/Rules-class-NextBestMaxGain.R
 ##' @export
 ##' @keywords class
 .NextBestMaxGain<-
@@ -1518,7 +1518,7 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
 ##' which gives the maximum gain value) samples 
 ##' called \called{Gstarsamples}, the final next best Gstar estimate.
 ##' 
-##' @example examples/Rules-class NextBestMaxGainSamples.R
+##' @example examples/Rules-class-NextBestMaxGainSamples.R
 ##' 
 ##' @export
 ##' @keywords class
@@ -1579,7 +1579,7 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 ##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
 ##' estimate that required to stop a trial
 ##' 
-##' @example examples/Rules-class StoppingCIRatio.R
+##' @example examples/Rules-class-StoppingCIRatio.R
 ##' @export
 ##' @keywords classes 
 .StoppingCIRatio <- 
