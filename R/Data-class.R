@@ -74,7 +74,8 @@ validObject(.GeneralData())
 ##' @slot xLevel the levels for the doses the patients have been given
 ##' @slot placebo logical value: if TRUE the first dose level in the grid is
 ##' considered as PLACEBO
-##'
+##' 
+##' @example examples/Data-class.R
 ##' @export
 ##' @keywords classes
 .Data <-
@@ -151,7 +152,6 @@ validObject(.Data())
 ##' @param \dots not used
 ##' @return the initialized \code{\linkS4class{Data}} object
 ##'
-##' @example examples/Data-class.R
 ##' @export
 ##' @keywords programming
 Data <- function(x=numeric(),
@@ -211,7 +211,8 @@ validObject(Data())
 ##' values.
 ##'
 ##' @slot w the continuous vector of biomarker values
-##'
+##' 
+##' @examples examples/Data-class-DataDual.R
 ##' @export
 ##' @keywords classes
 .DataDual <-
@@ -238,7 +239,6 @@ validObject(.DataDual())
 ##' @param \dots additional parameters from \code{\link{Data}}
 ##' @return the initialized \code{\linkS4class{DataDual}} object
 ##'
-##' @example examples/Data-class-DataDual.R
 ##' @export
 ##' @keywords programming
 DataDual <- function(w=numeric(),
