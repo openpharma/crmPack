@@ -1212,7 +1212,7 @@ setMethod("plotGain",
                           ))
               
               plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
-                ggplot2:::scale_colour_manual(name="curves",values=c("green3","blue","red"))+
+                ggplot2::scale_colour_manual(name="curves",values=c("green3","blue","red"))+
                 xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
                 ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
               
@@ -1266,7 +1266,7 @@ setMethod("plotGain",
               ##plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)
               
               plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
-                ggplot2:::scale_colour_manual(name="curves",values=c("blue","green3","red"))+
+                ggplot2::scale_colour_manual(name="curves",values=c("blue","green3","red"))+
                 xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
                 ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
               
@@ -1424,7 +1424,7 @@ setMethod("plotDualResponses",
                                                               c("Estimate",
                                                                 "95% Credible Interval"))))
               
-              plot2 <- ggplot2:::qplot(x=x,
+              plot2 <- ggplot2::qplot(x=x,
                                        y=y,
                                        data=ggdata,
                                        group=group,
@@ -1435,7 +1435,7 @@ setMethod("plotDualResponses",
                                        ylab="Expected Efficacy")
               
               plot2 <- plot2 +
-                ggplot2:::scale_linetype_manual(breaks=
+                ggplot2::scale_linetype_manual(breaks=
                                                   c("Estimate",
                                                     "95% Credible Interval"),
                                                 values=c(1,2),

@@ -2984,7 +2984,7 @@ Effloglog<-function(Eff,
     if (length(data@w)!=0){
       X<-matrix(c(rep(1,length(x2)), log(log(x2))), length(x2),2)
       matX<-X
-      mu<-MASS:::ginv(Q0+t(X)%*%X)%*%(Q0%*%mu0+t(X)%*%t(t(w2)))
+      mu<-MASS::ginv(Q0+t(X)%*%X)%*%(Q0%*%mu0+t(X)%*%t(t(w2)))
       vecmu<-mu
       Q<-Q0+t(X)%*%X
       matQ<-Q
