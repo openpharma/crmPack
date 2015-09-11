@@ -1674,7 +1674,7 @@ setMethod("size",
 ##' @importFrom ggplot2 ggplot geom_density xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
-##' @example examples/Rules-method nextbest_TDsamples.R
+##' @example examples/Rules-method-nextbest_TDsamples.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1786,7 +1786,7 @@ setMethod("nextBest",
 ##' @importFrom ggplot2 ggplot  xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
-##' @example examples/Rules-method nextbest_TD.R
+##' @example examples/Rules-method-nextbest_TD.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1910,7 +1910,7 @@ setMethod("nextBest",
 ##' @importFrom ggplot2 ggplot xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
-##' @example examples/Rules-method nextbest_MaxGain.R
+##' @example examples/Rules-method-nextbest_MaxGain.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2081,7 +2081,7 @@ setMethod("nextBest",
 ##' @importFrom ggplot2 ggplot geom_histogram xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
-##' @example examples/Rules-method nextbest_MaxGainSamples.R
+##' @example examples/Rules-method-nextbest_MaxGainSamples.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2328,7 +2328,7 @@ setMethod("nextBest",
 ##' @importFrom ggplot2 ggplot geom_histogram xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
-##' @example examples/Rules-method nextbest_MaxGainSamplesFlexi.R
+##' @example examples/Rules-method-nextbest_MaxGainSamplesFlexi.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2556,7 +2556,7 @@ setMethod("nextBest",
 ##' DLE responses and DLE samples are given
 ##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
 ##' 
-##' @example examples/Rules-method stopTrialCITDsamples.R
+##' @example examples/Rules-method-stopTrialCITDsamples.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2604,7 +2604,7 @@ setMethod("stopTrial",
 ##' DLE responses and no DLE samples are involved
 ##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
 ##' 
-##' @example examples/Rules-method stopTrialCITD.R
+##' @example examples/Rules-method-stopTrialCITD.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2672,7 +2672,7 @@ setMethod("stopTrial",
 ##' called \called{Gstarsamples}, the final next best Gstar estimate.
 ##' 
 ##' 
-##' @example examples/Rules-method stopTrialCIMaxGainSamples.R
+##' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -2768,7 +2768,7 @@ setMethod("stopTrial",
 ##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
 ##' 
 ##' 
-##' @example examples/Rules-method stopTrialCIMaxGain.R
+##' @example examples/Rules-method-stopTrialCIMaxGain.R
 ##' 
 ##' @export
 ##' @keywords methods
