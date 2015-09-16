@@ -413,12 +413,12 @@ setMethod("mcmc",
               ##scalar term for the covariance matrix
               scalarI<-model@DLEweights*pi*(1-pi)
               ##
-              cov<-matrix(rep(0,4),nrow=2,ncol=2)
+              precision<-matrix(rep(0,4),nrow=2,ncol=2)
               
               for (i in (1:(length(model@binDLE)))){
                 
-                covmat<-scalarI[i]*matrix(c(1,log(model@DLEdose[i]),log(model@DLEdose[i]),(log(model@DLEdose[i]))^2),2,2)
-                cov<-cov+covmat
+                precisionmat<-scalarI[i]*matrix(c(1,log(model@DLEdose[i]),log(model@DLEdose[i]),(log(model@DLEdose[i]))^2),2,2)
+                precision<-precision+precisionmat
               }
               
               if(fromPrior){
@@ -426,7 +426,7 @@ setMethod("mcmc",
                 
                 tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
                                         mean=c(slot(model,"phi1"),slot(model,"phi2")),
-                                        sigma=solve(cov)) 
+                                        sigma=solve(precision)) 
                 
                 
                 samples <- list(phi1=tmp[, 1],
@@ -452,23 +452,14 @@ setMethod("mcmc",
                 ##Obtain parameter estimates for dose-DLE curve
                 priorphi1<-coef(SFitDLE)[1,1]
                 priorphi2<-coef(SFitDLE)[2,1]
-                #cov1<-matrix(nrow=2,ncol=2)
-                
-                
-                #cov1<-matrix(rep(0,4),nrow=2,ncol=2)
-                
-                #for (i in (1:(length(data@y)))){
-                  
-                  #covmat<-scalarI[i]*matrix(c(1,log(data@x[i]),log(data@x[i]),(log(data@x[i]))^2),2,2)
-                  #cov1<-cov1+covmat
-                #}
+             
                 
                 
                 ## use fast special sampler here
                 initRes <- BayesLogit::logit(y=data@y,
                                              X=X,
                                              m0=c(priorphi1,priorphi2),
-                                             P0=cov,
+                                             P0=precision,
                                              samp=sampleSize(options),
                                              burn=options@burnin)
                 

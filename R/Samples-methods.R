@@ -135,7 +135,7 @@ setMethod("get",
 ##' @param \dots unused
 ##' @return the data frame with required information (see method details)
 ##'
-##' @example examples/Samples-method fit DLE.R
+##' @example examples/Samples-method-fitDLE.R
 ##' @export
 ##' @keywords methods
 setGeneric("fit",
@@ -593,7 +593,7 @@ setMethod("plot",
 ## ------------------------------------------------------------------------------------
 ##' @describeIn fit This method return a data frame with dose, middle lower and upper quantiles 
 ##' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
-##' @example examples/Samples-method fit DLE.R
+##' @example examples/Samples-method-fitDLE.R
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -649,7 +649,7 @@ setMethod("fit",
 
 ##' @describeIn fit This method returns a data frame with dose, middle, lower, upper quantiles for 
 ##' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
-##' @example examples/Samples-method fit Eff.R
+##' @example examples/Samples-method-fitEff.R
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -705,7 +705,7 @@ setMethod("fit",
 ##' @describeIn fit This method returns a data frame with dose, middle, lower and upper 
 ##' quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi} 
 ##' model class
-##' @example examples/Samples-method fit EffFlexi.R
+##' @example examples/Samples-method-fitEffFlexi.R
 setMethod("fit",
           signature=
             signature(object="Samples",
@@ -769,7 +769,7 @@ setMethod("fit",
 ##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
 ##' @param the data input of \code{\linkS4class{DataDual}} class object
 ##' 
-##' @example examples/Samples-method fitGain.R
+##' @example examples/Samples-method-fitGain.R
 ##' @export
 ##' @keywords methods
 setGeneric("fitGain",
@@ -856,7 +856,7 @@ setMethod("fitGain",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-DLE model fit
 ##' 
-##' @example examples/Samples-method plot LogisticIndepBeta.R
+##' @example examples/Samples-method-plotModelTox.R
 ##' @export
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual
@@ -936,7 +936,7 @@ setMethod("plot",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-efficacy model fit
 ##' 
-##' @example examples/Samples-method plot ModelEff.R 
+##' @example examples/Samples-method-plotModelEff.R 
 ##' @export
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual
@@ -1012,7 +1012,7 @@ setMethod("plot",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-DLE model plot
 ##' 
-##' @example examples/Samples-method plot ModelToxNoSamples.R 
+##' @example examples/Samples-method-plotModelToxNoSamples.R 
 ##' @export
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual
@@ -1088,7 +1088,7 @@ setMethod("plot",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-efficacy model plot
 ##' 
-##' @example examples/Samples-method plot ModelEffNoSamples.R 
+##' @example examples/Samples-method-plotModelEffNoSamples.R 
 ##' @export
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual 
@@ -1148,7 +1148,7 @@ setMethod("plot",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the plot
 ##' 
-##' @example examples/Samples-method plotGain.R
+##' @example examples/Samples-method-plotGain.R
 ##' @export
 ##' @keywords methods
 setGeneric("plotGain",
@@ -1229,7 +1229,7 @@ setMethod("plotGain",
 ##' 
 ##' @describeIn plotGain Standard method
 ##' 
-##' @example examples/Samples-method plotGainNoSamples.R
+##' @example examples/Samples-method-plotGainNoSamples.R
 ##' @export
 ##' @keywords methods
 setMethod("plotGain",
@@ -1316,7 +1316,7 @@ setMethod("plotGain",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object with the dose-toxicity and dose-efficacy model fits
 ##' 
-##' @example examples/Samples-method plotDualResponses.R
+##' @example examples/Samples-method-plotDualResponses.R
 ##' 
 ##' @export
 ##' @keywords methods
@@ -1456,7 +1456,7 @@ setMethod("plotDualResponses",
 ##' @describeIn plotDualResponses Plot the DLE and efficacy curve side by side given a DLE model
 ##' and an efficacy model without any samples
 ##' 
-##' @example examples/Samples-method plotDualResponsesNoSamples.R
+##' @example examples/Samples-method-plotDualResponsesNoSamples.R
 ##'  
 ##' @export
 ##' @keywords methods 

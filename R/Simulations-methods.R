@@ -42,7 +42,7 @@
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
 ##' 
-##' @example examples/Simulations-method plotSIMsingle.R
+##' @example examples/Simulations-method-plotSIMsingle.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1159,6 +1159,8 @@ setMethod("plot",
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples/Simulations-method-plotSIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1247,7 +1249,7 @@ setMethod("plot",
 ##' @param \dots Additional arguments can be supplied here for \code{truth}
 ##' @return an object of class \code{\linkS4class{PseudoSimulationsSummary}}
 ##' 
-##' @example examples/Simulations-method summarySIMsingle.R
+##' @example examples/Simulations-method-summarySIMsingle.R
 ##' @export
 ##' @keywords methods
 setMethod("summary",
@@ -1440,7 +1442,7 @@ setMethod("summary",
 ##' @return invisibly returns a data frame of the results with one row and
 ##' appropriate column names
 ##'
-##' @example examples/Simulations-method showSIMsingle.R
+##' @example examples/Simulations-method-showSIMsingle.R
 ##' @export
 ##' @keywords methods
 
@@ -1545,7 +1547,7 @@ setMethod("show",
 ##' scale_linetype_manual scale_colour_manual
 ##' @importFrom gridExtra arrangeGrob
 ##' 
-##' @example examples/Simulations-method plotSUMsingle.R
+##' @example examples/Simulations-method-plotSUMsingle.R
 ##' @export
 ##' @keywords methods
 ##' 
