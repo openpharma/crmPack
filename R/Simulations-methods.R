@@ -1136,105 +1136,6 @@ setMethod("plot",
               ret
           })
 
-## -----------------------------------------------------------------------------------------
-##' Plot simulations with DLE and efficacy responses
-##'
-##' This plot method can be applied to \code{\linkS4class{PseudoDualSimulations}}
-##' objects in order to summarize them graphically. Possible \code{type}s of
-##' plots at the moment are: \describe{ \item{trajectory}{Summary of the
-##' trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-##' the doses tested in patients} \item{sigma2}{Plot a boxplot of the final variance estimates of the
-##' efficacy responses in the simulated trials}} 
-##' You can specify one or both of these in the
-##' \code{type} argument.
-##'
-##' @param x the \code{\linkS4class{PseudoDualSimulations}} object we want
-##' to plot from
-##' @param y missing
-##' @param type the type of plots you want to obtain.
-##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
-##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
-##'
-##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
-##' scale_linetype_manual
-##' @importFrom gridExtra arrangeGrob
-##' 
-##' @example examples/Simulations-method-plotSIMDual.R
-##' @export
-##' @keywords methods
-setMethod("plot",
-          signature= 
-            signature(x="PseudoDualSimulations",
-                      y="missing"),
-          def=
-            function(x,
-                     y,
-                     type=
-                       c("trajectory",
-                         "dosesTried",
-                         "sigma2"),
-                     ...){
-              ## start the plot list
-              plotList <- list()
-              plotIndex <- 0L
-              
-              ## which plots should be produced?
-              type <- match.arg(type,
-                                several.ok=TRUE)
-              stopifnot(length(type) > 0L)
-              
-              ## substract the specific plot types for
-              ## dual-endpoint simulation results
-              typeReduced <- setdiff(type,
-                                     c("sigma2", ""))
-              
-              ## are there more plots from general?
-              moreFromGeneral <- (length(typeReduced) > 0)
-              
-              ## if so, then produce these plots
-              if(moreFromGeneral)
-              {
-                genPlot <- callNextMethod(x=x, y=y, type=typeReduced)
-              }
-              
-              ## now to the specific dual-endpoint plots:
-              
-              ## Efficacy variance estimates boxplot
-              if("sigma2" %in% type)
-              {
-                ## save the plot
-                plotList[[plotIndex <- plotIndex + 1L]] <-
-                  qplot(factor(0), y=y, data=data.frame(y=x@sigma2est), geom="boxplot",
-                        xlab="", ylab="Efficacy variance estimates") +
-                  coord_flip() + scale_x_discrete(breaks=NULL)
-              }
-              
-              
-              ## then finally plot everything
-              if(identical(length(plotList),
-                           0L))
-              {
-                return(genPlot)
-              } else if(identical(length(plotList),
-                                  1L))
-              {
-                ret <- plotList[[1L]]
-              } else {
-                ret <- do.call(gridExtra::arrangeGrob,
-                               plotList)
-              }
-              
-              if(moreFromGeneral)
-              {
-                ret <- gridExtra::arrangeGrob(genPlot, ret,heights=c(2/3, 1/3))
-              }
-              
-              return(ret)
-            })
-## -----------------------------------------------------------------------------------------------
-
-
 
 ## --------------------------------------------------------------------------------------------------------
 ##' Summarize the simulations, relative to a given truth
@@ -1759,7 +1660,7 @@ setMethod("plot",
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
 ##' 
-##' @example examples/Simulations-method plotSIMDual.R
+##' @example examples/Simulations-method-plotSIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1786,7 +1687,7 @@ setMethod("plot",
               ## substract the specific plot types for
               ## dual-endpoint simulation results
               typeReduced <- setdiff(type,
-                                     c("sigma2", ""))
+                                     "sigma2")
               
               ## are there more plots from general?
               moreFromGeneral <- (length(typeReduced) > 0)
@@ -1854,7 +1755,7 @@ setMethod("plot",
 ##' scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
 ##' 
-##' @example examples/Simulations-method plotSIMDualFlexi.R
+##' @example examples/Simulations-method-plotSIMDualFlexi.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1881,8 +1782,7 @@ setMethod("plot",
               
               ## substract the specific plot types for
               ## dual-endpoint simulation results
-              typeReduced <- setdiff(type,
-                                     c("sigma2betaW", ""))
+              typeReduced <- setdiff(type,"sigma2betaW")
               
               ## are there more plots from general?
               moreFromGeneral <- (length(typeReduced) > 0)
@@ -1928,9 +1828,19 @@ setMethod("plot",
             })
 
 ## -----------------------------------------------------------------------------------------
-##' Summary for Pseudo Dual responses simulations
+##' Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model 
+##' (except the EffFlexi class model)
 ##' 
-##' @example examples/Simulations-method summarySIMDual.R
+##' @param object the \code{\linkS4class{PseudoDualSimulations}} object we want to summarize
+##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability (vector)
+##' of DLE
+##' @param trueEff a function which takes as input a dose (vector) and returns the mean efficacy value(s) (vector).
+##' @param targetEndOfTrial the target probability of DLE that are used at the end of a trial. Default at 0.3.
+##' @param targetDuringTrial the target probability of DLE that are used during the trial. Default at 0.35.
+##' @param \dots Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}
+##' @return an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
+##' 
+##' @example examples/Simulations-method-summarySIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("summary",
@@ -2011,9 +1921,17 @@ setMethod("summary",
               return(ret)
             })
 ## --------------------------------------------------------------------------------------------------
-##' Summary for Pseudo Dual responses using Flexible efficacy model simulation
+##' Summary for Pseudo Dual responses simulations given a pseudo DLE model and the Flexible efficacy model.
 ##' 
-##' @example examples/Simulations-method summarySIMDualFlexi.R
+##' @param object the \code{\linkS4class{PseudoDualFlexiSimulations}} object we want to summarize
+##' @param trueDLE a function which takes as input a dose (vector) and returns the true probability of DLE (vector)
+##' @param trueEff a vector which takes as input the true mean efficacy values at all dose levels (in order)
+##' @param targetEndOfTrial the target probability of DLE that are used at the end of a trial. Default at 0.3.
+##' @param targetDuringTrial the target probability of DLE that are used during the trial. Default at 0.35.
+##' @param \dots Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}
+##' @return an object of class \code{\linkS4class{PseudoDualFlexiSimulationsSummary}}
+##' 
+##' @example examples/Simulations-method-summarySIMDualFlexi.R
 ##' @export
 ##' @keywords methods
 
@@ -2080,7 +1998,11 @@ setMethod("summary",
 ## ----------------------------------------------------------------------------------------
 ##' Show the summary of Pseudo Dual simulations summary
 ##' 
-##' @example examples/Simulations-method showSIMDual.R
+##' @param object the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to print
+##' @return invisibly returns a data frame of the results with one row and appropriate column names
+##' 
+##' 
+##' @example examples/Simulations-method-showSIMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("show",
@@ -2111,7 +2033,28 @@ def=
 ## --------------------------------------------------------------------------------------------------
 ##' Plot the summary of Pseudo Dual Simulations summary
 ##' 
-##' @example examples/Simulations-method plotSUMDual.R
+##' This plot method can be applied to \code{\linkS4class{PseudoDualSimulationsSummary}} objects in order
+##' to summarize them graphically. Possible \code{type} of plots at the moment are those listed in
+##' \code{\link{plot,PseudoSimulationsSummary,missing-method}} plus: 
+##' \describe{\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no samples are involved, only the
+##' average fitted dose-efficacy curve across the trials will be ploted. If samples (DLE and efficacy) are involved, 
+##' the average fitted dose-efficacy curve across the trials, together with the 95\% credibility interval; and comparison 
+##' with the assumed truth (as specified by the \code{trueEff} argument to 
+##' \code{\link{summary,PseudoDualSimulations-method}})}}
+##' You can specify any subset of these in the \code{type} argument. 
+##' 
+##' @param x the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to plot from
+##' @param y missing
+##' @param type the types of plots you want to obtain.
+##' @param \dots not used
+##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
+##'
+##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
+##' scale_linetype_manual scale_colour_manual
+##' @importFrom gridExtra arrangeGrob
+##'
+##' @example examples/Simulations-method-plotSUMDual.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
