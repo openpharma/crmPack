@@ -28,7 +28,6 @@
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##' 
-##' @example examples/Model-method-dose.R
 ##' @export
 ##' @keywords methods
 setGeneric("dose",
@@ -41,6 +40,7 @@ setGeneric("dose",
            valueClass="numeric")
 
 ##' @describeIn dose
+##' @example examples/Model-method-dose.R
 setMethod("dose",
           signature=
           signature(prob="numeric",
@@ -73,7 +73,7 @@ setMethod("dose",
 ##' @param samples the \code{\linkS4class{Samples}}
 ##' @param \dots unused
 ##' 
-##' @example examples/Model-method-dose.R
+##' @example examples/Model-method-dose-modelTox.R
 ##' @export
 ##' @keywords methods
 setMethod("dose",
@@ -147,7 +147,6 @@ setMethod("dose",
 ##' @return the vector (for \code{\linkS4class{Model}} objects) of probability
 ##' samples.
 ##'
-##' @example examples/Model-method-prob.R
 ##' @export
 ##' @keywords methods
 setGeneric("prob",
@@ -161,6 +160,7 @@ setGeneric("prob",
 ## take/return matrix
 
 ##' @describeIn prob
+##' @example examples/Model-method-prob.R
 setMethod("prob",
           signature=
           signature(dose="numeric",
@@ -195,7 +195,7 @@ setMethod("prob",
 ##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
 ##' samples.
 ##'
-##' @example examples/Model-method-prob.R
+##' @example examples/Model-method-prob-modelTox.R
 ##' @export
 ##' @keywords methods
 setMethod("prob",
@@ -271,7 +271,6 @@ setMethod("prob",
 ##' @param samples the \code{\linkS4class{Samples}} object
 ##' @param \dots unused
 ##'  
-##' @example examples/Model-method-biomLevel.R
 ##' @export
 ##' @keywords methods
 setGeneric("biomLevel",
@@ -287,6 +286,7 @@ setGeneric("biomLevel",
 ##' @describeIn biomLevel Here it is very easy, we just return the corresponding
 ##' column (index \code{xLevel}) of the biomarker samples matrix, since we save
 ##' that in the samples
+##' @example examples/Model-method-biomLevel.R
 setMethod("biomLevel",
           signature=
           signature(dose="numeric",

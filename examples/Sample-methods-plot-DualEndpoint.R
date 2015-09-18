@@ -1,5 +1,5 @@
 
-# Create the data
+# Create some data
 data <- DataDual(
   x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
       20, 20, 20, 40, 40, 40, 50, 50, 50),
@@ -25,11 +25,10 @@ options <- McmcOptions(burnin=100,
 set.seed(94)
 samples <- mcmc(data, model, options)
 
-# Obtain the biomarker level for a given dose, given model and samples
-biomLevel(dose = 0.5,
-          model = model,
-          samples = samples,
-          xLevel = 2)
+# Plot the posterior mean  (and empirical 2.5 and 97.5 percentile)
+# for the prob(DLT) by doses and the Biomarker by doses
+grid.arrange(plot(x = samples, y = model, data = data))
+              
 
 
 

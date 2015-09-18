@@ -11,5 +11,8 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               DLEdose=c(25,300),
                               data=data)
 
-TD45 <- dose(prob=0.45, model = DLEmodel)
+options <- McmcOptions(burnin=1000, step=2, samples=2000)
+DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
+
+TD45 <- dose(prob=0.45, model = DLEmodel,samples = DLEsamples)
 

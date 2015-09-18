@@ -39,6 +39,7 @@
 ##' @slot startingDose what is the starting dose? Must lie on the grid in
 ##' \code{data}
 ##'
+##' @example examples/design-class-RuleDesign.R
 ##' @export
 ##' @keywords classes
 .RuleDesign <-
@@ -104,6 +105,7 @@ RuleDesign <- function(nextBest,
 ##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
 ##' an object of class \code{\linkS4class{CohortSize}}
 ##'
+##' @example examples/design-class-Design.R
 ##' @export
 ##' @keywords classes
 .Design <-
@@ -162,6 +164,7 @@ Design <- function(model,
 ##' comparison with recommendation methods that don't use the
 ##' biomarker information.
 ##'
+##' @example examples/design-class-DualDesign.R
 ##' @export
 ##' @keywords classes
 .DualDesign <-
@@ -206,6 +209,7 @@ DualDesign <- function(model,
 ##' @return the object of class \code{\linkS4class{RuleDesign}} with the
 ##' 3+3 design
 ##'
+##' @example examples/design-class-ThreePlusThreeDesign.R
 ##' @export
 ##' @keywords programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}

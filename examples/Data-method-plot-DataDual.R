@@ -7,5 +7,5 @@ myData <- DataDual(x=c(0.1,0.5,1.5,3,6,10,10,10),
                               seq(from=10,to=80,by=2)))
 
 # Plot the data
-plot(myData)
+grid.arrange(plot(myData))
 
