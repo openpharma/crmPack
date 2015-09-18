@@ -785,8 +785,8 @@ setGeneric("fitGain",
                standardGeneric("fitGain")},
            valueClass="data.frame")
 
-##' Initialization function
-##' @describeIn fitgain
+##' @describeIn fitgain This method returns a data frame with dose, middle, lower, upper quantiles for 
+##' the gain values obtained given the DLE and the efficacy samples
 setMethod("fitGain",
           signature=
             signature(DLEmodel="ModelTox",

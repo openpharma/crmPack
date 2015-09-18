@@ -1329,7 +1329,7 @@ CohortSizeMin <- function(cohortSizeList)
 ##'  for which its posterior 
 ##'  probability of the occurrence of a DLE is equal to this target
 ##'  @slot derive the function which derives from the input, a vector of the posterior samples called 
-##'  \called{TDsamples} of the dose
+##'  \code{TDsamples} of the dose
 ##'  which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
 ##'  targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
 ##'  occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
@@ -1510,13 +1510,13 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
 ##' of the trial. This target is particularly used to recommend the dose for which its posterior 
 ##' probability of the occurrence of a DLE is equal to this target
 ##' @slot TDderive the function which derives from the input, a vector of the posterior samples called 
-##' \called{TDsamples} of the dose
+##' \code{TDsamples} of the dose
 ##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
 ##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
 ##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
 ##' @slot Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
 ##' which gives the maximum gain value) samples 
-##' called \called{Gstarsamples}, the final next best Gstar estimate.
+##' called \code{Gstarsamples}, the final next best Gstar estimate.
 ##' 
 ##' @example examples/Rules-class-NextBestMaxGainSamples.R
 ##' 
@@ -1568,15 +1568,14 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
                          TDderive=TDderive,
                          Gstarderive=Gstarderive)}
 
-## --------------------------------------------------------------------------------------------------
 
 ##-------------------------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the 95% credibility interval
 ## ---------------------------------------------------------------------------------------------------------------
 
 ##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the 
+##' 95\% credibility interval of the estimate
+##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
 ##' estimate that required to stop a trial
 ##' 
 ##' @example examples/Rules-class-StoppingCIRatio.R
