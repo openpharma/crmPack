@@ -39,6 +39,7 @@
 ##'
 ##' @return the data frame suitable for use with \code{\link[ggmcmc]{ggmcmc}}
 ##'
+##' @example examples/Sample-methods-get.R
 ##' @export
 ##' @keywords methods
 setMethod("get",
@@ -135,7 +136,6 @@ setMethod("get",
 ##' @param \dots unused
 ##' @return the data frame with required information (see method details)
 ##'
-##' @example examples/Samples-method-fitDLE.R
 ##' @export
 ##' @keywords methods
 setGeneric("fit",
@@ -163,6 +163,8 @@ setGeneric("fit",
 ##'
 ##' @describeIn fit This method returns a data frame with dose, middle, lower
 ##' and upper quantiles for the dose-toxicity curve
+##' @example examples/Sample-methods-fit.R
+##' 
 setMethod("fit",
           signature=
           signature(object="Samples",
@@ -220,6 +222,8 @@ setMethod("fit",
 ##' lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
 ##' "Biomarker") curves, for all grid points (Note that currently only the grid
 ##' points can be used, because the DualEndpointRW models only allow that)
+##' 
+##' @example examples/Sample-methods-fit-DualEndpoint.R
 setMethod("fit",
           signature=
           signature(object="Samples",
@@ -318,6 +322,8 @@ setGeneric("approximate",
 ##' @describeIn approximate Here the \dots argument can transport additional arguments for
 ##' \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
 ##' approximation quality, etc.
+##' 
+##' @example examples/Sample-methods-approximate.R
 setMethod("approximate",
           signature=
           signature(object="Samples"),
@@ -415,6 +421,7 @@ setMethod("approximate",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-toxicity model fit
 ##'
+##' @example examples/Sample-methods-plot.R
 ##' @export
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
@@ -497,6 +504,7 @@ setMethod("plot",
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object with the dose-toxicity and dose-biomarker model fits
 ##'
+##' @example examples/Sample-methods-plot-DualEndpoint.R
 ##' @export
 setMethod("plot",
           signature=

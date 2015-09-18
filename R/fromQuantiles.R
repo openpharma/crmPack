@@ -258,6 +258,7 @@ getMinInfBeta <- function(p, q)
 ##' \code{logNormal=TRUE} to obtain a minimal informative log normal prior.
 ##' @return see \code{\link{Quantiles2LogisticNormal}}
 ##'
+##' @example examples/MinimalInformative.R
 ##' @export
 ##' @keywords programming
 MinimalInformative <- function(dosegrid,

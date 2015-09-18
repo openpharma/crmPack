@@ -1,8 +1,26 @@
-## obtain the probability of the occurrence of a DLE for a given dose level using a DLE model and a DLE sample
-## DLE model can be models from 'Model' or 'ModelTox' class (model slot)
-## DLE samples is from 'Samples' class (sample slot)
-## Given dose level 50 mg (dose slot), to obtain the probability of the occurrence of DLE at this dose level
-prob(dose=50, model=model, samples=samples)
+
+# create some data
+data <- Data(x =c (0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y = c(0, 0, 0, 0, 0, 0, 1, 0),
+             cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+             doseGrid = c(0.1, 0.5, 1.5, 3, 6,
+                          seq(from=10, to=80, by=2)))
+
+# Initialize a  model
+model <- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov=matrix(c(1, -0.5, -0.5, 1),
+                                      nrow=2),
+                           refDose=56)
+
+# Get samples from posterior
+options <- McmcOptions(burnin=100,
+                       step=2,
+                       samples=2000)
+set.seed(94)
+samples <- mcmc(data, model, options)
+
+# posterior for Prob(DLT | dose=50)
+tox.prob <- prob(dose=50, model=model, samples=samples)
 
 
 

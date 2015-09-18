@@ -226,6 +226,7 @@ validObject(.Model())
 ##' @slot cov the prior covariance matrix \eqn{\Sigma}
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
+##' @example examples/Model-class-LogisticLogNormal.R
 ##' @export
 ##' @keywords classes
 .LogisticLogNormal <-
@@ -351,6 +352,7 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 ##' @slot cov the prior covariance matrix \eqn{\Sigma}
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
+##' @example examples/Model-class-LogisticLogNormalSub.R
 ##' @export
 ##' @keywords classes
 .LogisticLogNormalSub <-
@@ -477,6 +479,7 @@ validObject(LogisticLogNormalSub(mean=c(0, 1),
 ##' @slot prec the prior precision matrix \eqn{\Sigma^{-1}}
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
+##' @example examples/Model-class-LogisticNormal.R
 ##' @export
 ##' @keywords classes
 .LogisticNormal <-
@@ -610,6 +613,7 @@ validObject(LogisticNormal(mean=c(0, 1),
 ##' @slot xmin the minimum of the dose range \eqn{x_{min}}
 ##' @slot xmax the maximum of the dose range \eqn{x_{max}}
 ##'
+##' @example examples/Model-class-LogisticKadane.R
 ##' @export
 ##' @keywords classes
 .LogisticKadane <-
@@ -1404,6 +1408,7 @@ validObject(DualEndpoint(mu=c(0, 1),
 ##' @slot useRW1 for specifying the random walk prior on the biomarker level: if
 ##' \code{TRUE}, RW1 is used, otherwise RW2.
 ##'
+##' @example examples/Model-class-DualEndpointRW.R
 ##' @export
 ##' @keywords classes
 .DualEndpointRW <-
@@ -1622,6 +1627,7 @@ validObject(DualEndpointRW(sigma2betaW=1,
 ##' @slot mode either a fixed number or the two uniform distribution parameters
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
+##' @example examples/Model-class-DualEndpointBeta.R
 ##' @export
 ##' @keywords classes
 .DualEndpointBeta <-
@@ -1873,6 +1879,7 @@ validObject(DualEndpointBeta(E0=10,
 ##' @slot ED50 either a fixed number or the two uniform distribution parameters
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
+##' @example examples/Model-class-DualEndpointEmax.R
 ##' @export
 ##' @keywords classes
 .DualEndpointEmax <-
@@ -2108,6 +2115,7 @@ validObject(DualEndpointEmax(E0=10,
 ##' @slot weightpar the beta parameters for the weight of the first component
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##'
+##' @example examples/Model-class-LogisticNormalMixture.R
 ##' @export
 ##' @keywords classes
 .LogisticNormalMixture <-
@@ -2309,6 +2317,7 @@ validObject(LogisticNormalMixture(comp1=
 ##' @slot refDose the reference dose \eqn{x^{*}}
 ##' @slot logNormal is a log normal prior specified for each of the components?
 ##'
+##' @example examples/Model-class-LogisticNormalFixedMixture.R
 ##' @export
 ##' @keywords classes
 .LogisticNormalFixedMixture <-
