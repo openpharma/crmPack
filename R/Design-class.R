@@ -348,6 +348,7 @@ validObject(.DualResponsesSamplesDesign())
 ##' Initialization function for 'DualResponsesSamplesDesign"
 ##' @param data please refer to \code{\linkS4class{DualResponsesSamplesDesign}} class object
 ##' @param Effmodel please refer to \code{\linkS4class{DualResponsesSamplesDesign}} class object
+##' @param \dots additional arguments for \code{\link{TDsamplesDesign}}
 ##' 
 ##' @return the \code{\linkS4class{DualResponsesSamplesDesign}} class object
 ##' 
@@ -396,7 +397,7 @@ validObject(.DualResponsesDesign())
 ##' Initialization function for 'DualResponsesDesign"
 ##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
 ##' @param Effmodel please refer to \code{\linkS4class{DualResponsesDesign}} class object
-##' 
+##' @param \dots additional arguments for \code{\link{TDDesign}}
 ##' @return the \code{\linkS4class{DualResponsesDesign}} class object
 ##' 
 ##' @export

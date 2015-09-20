@@ -38,5 +38,14 @@ data later on.
 
 \item{\code{xmax}}{the maximum of the dose range \eqn{x_{max}}}
 }}
+\examples{
+
+
+model <- LogisticKadane(theta = 0.33,
+                        xmin = 1,
+                        xmax = 200)
+
+
+}
 \keyword{classes}
 

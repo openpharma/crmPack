@@ -1,14 +1,22 @@
 Package: crmPack
 Maintainer: Daniel Sabanes Bove <sabanesd@roche.com>
 License: GPL (>= 2)
-Title: Object-oriented implementation of CRM designs
+Title: Object-Oriented Implementation of CRM Designs
 LazyLoad: yes
 Author: Daniel Sabanes Bove <sabanesd@roche.com>,
     Wai Yin Yeung <w.yeung1@lancaster.ac.uk.,
     Giuseppe Palermo <giuseppe.palermo@roche.com>
-Description: Object-oriented implementation of CRM designs
+Description: Implements a wide range of model-based dose
+    escalation designs, ranging from classical and modern continual
+    reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
+    dual-endpoint designs taking into account a biomarker/efficacy outcome. The
+    focus is on Bayesian inference, making it very easy to setup a new design
+    with its own JAGS code. However, it is also possible to implement 3+3
+    designs for comparison or models with non-Bayesian estimation. The whole
+    package is written in a modular form in the S4 class system, making it very
+    flexible for adaptation to new models, escalation or stopping rules.
 Version: 0.1.3-1
-Date: 2015-07-06
+Date: 2015-09-20
 Depends:
     R (>= 3.0.0),
     ggplot2,
@@ -24,7 +32,8 @@ Imports:
     rjags,
     utils,
     tools,
-    httr
+    httr,
+    MASS
 Suggests:
     ggmcmc,
     R2WinBUGS,

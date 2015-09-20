@@ -2,11 +2,20 @@
 % Please edit documentation in R/Rules-class.R
 \name{NextBestTD}
 \alias{NextBestTD}
-\title{Init function for NextBestTDsamples}
+\title{Initialization function for the class "NextBestTD"}
 \usage{
 NextBestTD(targetDuringTrial, targetEndOfTrial)
 }
-\description{
-Init function for NextBestTDsamples
+\arguments{
+\item{targetDuringTrial}{please refer to \code{\linkS4class{NextBestTD}} class object}
+
+\item{targetEndOfTrial}{please refer to \code{\linkS4class{NextBestTD}} class object}
 }
+\value{
+the \code{\linkS4class{NextBestTD}} class object
+}
+\description{
+Initialization function for the class "NextBestTD"
+}
+\keyword{methods}
 

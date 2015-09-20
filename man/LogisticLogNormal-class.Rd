@@ -46,5 +46,14 @@ positivity of alpha1 and thus exp(alpha1) > 1.
 
 \item{\code{refDose}}{the reference dose \eqn{x^{*}}}
 }}
+\examples{
+
+
+model <- LogisticLogNormal(mean = c(-0.85, 1),
+                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+                           refDose = 50)
+
+
+}
 \keyword{classes}
 

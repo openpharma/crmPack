@@ -33,9 +33,9 @@ model <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                            DLEweights=c(3,3),
                            DLEdose=c(25,300),
                            data=data)
-options <- McmcOptions(burnin=1000,
+options <- McmcOptions(burnin=100,
                        step=2,
-                       samples=2000)
+                       samples=200)
 ## samples must be from 'Samples' class (object slot in fit)
 samples <- mcmc(data,model,options)
 

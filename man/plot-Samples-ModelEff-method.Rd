@@ -3,18 +3,46 @@
 \docType{methods}
 \name{plot,Samples,ModelEff-method}
 \alias{plot,Samples,ModelEff-method}
-\title{Plot of the Efficacy pseudo Model with samples}
+\title{Plot the fitted dose-effcacy curve using a model from \code{\linkS4class{ModelEff}} class
+with samples}
 \usage{
 \S4method{plot}{Samples,ModelEff}(x, y, data, ..., xlab = "Dose level",
   ylab = "Expected Efficacy", showLegend = TRUE)
 }
 \arguments{
-\item{x}{bla}
+\item{x}{the \code{\linkS4class{Samples}} object}
 
-\item{y}{bli todo}
+\item{y}{the \code{\linkS4class{ModelEff}} model class object}
+
+\item{data}{the \code{\linkS4class{Data}} object}
+
+\item{xlab}{the x axis label}
+
+\item{ylab}{the y axis label}
+
+\item{showLegend}{should the legend be shown? (default)}
+
+\item{\dots}{not used}
+}
+\value{
+This returns the \code{\link[ggplot2]{ggplot}}
+object for the dose-efficacy model fit
 }
 \description{
-Plot of the Efficacy pseudo Model with samples
+Plot the fitted dose-effcacy curve using a model from \code{\linkS4class{ModelEff}} class
+with samples
+}
+\examples{
+##plot the dose-efficacy curve with samples using the model from 'ModelEff' 
+##class e.g. 'Effloglog' class model
+##define the model (see Effloglog example)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+## define the samples obtained using the 'Effloglog' model (see details in 'Samples' example)
+## samples must be of 'Samples' class
+samples <- mcmc(data=data,model=Effmodel,options=options)
+## plot the fitted dose-efficacy curve including the 95\% credibility interval of the samples
+## 'x' should be of 'Samples' class and 'y' of 'ModelEff' class
+plot(x=samples,y=model)
 }
 \keyword{methods}
 

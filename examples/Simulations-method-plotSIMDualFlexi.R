@@ -3,6 +3,7 @@
 ##The efficacy model must be of 'EffFlexi' class
 Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
                     sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+## todo: how does the Effmodel come into the below code?
 ##Specify your simulations. Please refers to the example in design-method 'simulate' 
 ## DualResponsesSamplesFlexiDesign for details
 mySim<-simulate(object=design,

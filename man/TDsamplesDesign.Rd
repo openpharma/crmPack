@@ -2,11 +2,24 @@
 % Please edit documentation in R/Design-class.R
 \name{TDsamplesDesign}
 \alias{TDsamplesDesign}
-\title{Initi function}
+\title{Initialization function for 'TDsamplesDesign' class}
 \usage{
 TDsamplesDesign(model, stopping, increments, ...)
 }
-\description{
-Initi function
+\arguments{
+\item{model}{see \code{\linkS4class{TDsamplesDesign}}}
+
+\item{stopping}{see \code{\linkS4class{TDsamplesDesign}}}
+
+\item{increments}{see \code{\linkS4class{TDsamplesDesign}}}
+
+\item{\dots}{additional arguments for \code{\linkS4class{RuleDesign}}}
 }
+\value{
+the \code{\linkS4class{TDsamplesDesign}} class object
+}
+\description{
+Initialization function for 'TDsamplesDesign' class
+}
+\keyword{methods}
 

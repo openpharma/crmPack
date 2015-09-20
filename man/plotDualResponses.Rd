@@ -3,8 +3,8 @@
 \docType{methods}
 \name{plotDualResponses}
 \alias{plotDualResponses}
-\alias{plotDualResponses,ModelTox,ANY,ModelEff,ANY-method}
 \alias{plotDualResponses,ModelTox,Samples,ModelEff,Samples-method}
+\alias{plotDualResponses,ModelTox,missing,ModelEff,missing-method}
 \title{Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
 a DLE sample, an efficacy pseudo model and a given efficacy sample}
 \usage{
@@ -14,29 +14,74 @@ plotDualResponses(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
   DLEsamples, Effmodel, Effsamples, data, extrapolate = TRUE,
   showLegend = FALSE, ...)
 
-\S4method{plotDualResponses}{ModelTox,ANY,ModelEff,ANY}(DLEmodel, DLEsamples,
-  Effmodel, Effsamples, data, ...)
+\S4method{plotDualResponses}{ModelTox,missing,ModelEff,missing}(DLEmodel,
+  DLEsamples, Effmodel, Effsamples, data, ...)
 }
 \arguments{
 \item{DLEmodel}{the pseudo DLE model of \code{\linkS4class{ModelTox}} class object}
 
-\item{DLEsamples}{the DLE samples of \code{\linkS4class{Samples}} clas object}
+\item{DLEsamples}{the DLE samples of \code{\linkS4class{Samples}} class object}
 
 \item{Effmodel}{the pseudo efficacy model of \code{\linkS4class{ModelEff}} class object}
 
 \item{Effsamples}{the Efficacy samples of \code{\linkS4class{Samples}} class object}
 
 \item{data}{the data input of \code{\linkS4class{DataDual}} class object}
+
+\item{extrapolate}{should the biomarker fit be extrapolated to the whole
+dose grid? (default)}
+
+\item{showLegend}{should the legend be shown? (not default)}
+
+\item{\dots}{additional arguments for the parent method
+\code{\link{plot,Samples,Model-method}}}
+}
+\value{
+This returns the \code{\link[ggplot2]{ggplot}}
+object with the dose-toxicity and dose-efficacy model fits
 }
 \description{
 Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
 a DLE sample, an efficacy pseudo model and a given efficacy sample
+
+Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
+and a given pseudo efficacy model without DLE and efficacy samples
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{DLEmodel = ModelTox,DLEsamples = Samples,Effmodel = ModelEff,Effsamples = Samples}: function todo
 
-\item \code{DLEmodel = ModelTox,DLEsamples = ANY,Effmodel = ModelEff,Effsamples = ANY}: Plot the DLE and efficacy curve side by side given a DLE model, an Efiicacy model without any samples
+\item \code{DLEmodel = ModelTox,DLEsamples = missing,Effmodel = ModelEff,Effsamples = missing}: Plot the DLE and efficacy curve side by side given a DLE model
+and an efficacy model without any samples
 }}
+\examples{
+##plot the dose-DLE and dose-efficacy curves in two plots with DLE and efficacy samples
+##define the DLE model which must be of 'ModelTox' class 
+##(e.g 'LogisticIndepBeta' class model)
+DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+## define the efficacy model which must be of 'ModelEff' class
+## (e.g 'Effloglog' class)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+##define the DLE sample of 'Samples' class
+DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
+##define the efficacy sample of 'Samples' class
+Effsamples <- mcmc(data=data,model=Effmodel,options=options)
+##plot the dose-DLE and dose-efficacy curves with two plot side by side.
+##For each curve the 95\% credibility interval of the two samples are alos given
+plotDualResponses(DLEmodel=DLEmodel,DLEsamples=DLEsamples,
+         Effmodel=Effmodel,Effsamples=Effsamples,
+         data=data)
+##plot the dose-DLE and dose-efficacy curves in two plots without DLE and efficacy samples
+##define the DLE model which must be of 'ModelTox' class 
+##(e.g 'LogisticIndepBeta' class model)
+DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+## define the efficacy model which must be of 'ModelEff' class
+## (e.g 'Effloglog' class)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+##plot the dose-DLE and dose-efficacy curves with two plot side by side.
+plotDualResponses(DLEmodel=DLEmodel,
+                  Effmodel=Effmodel,
+                  data=data)
+}
 \keyword{methods}
 

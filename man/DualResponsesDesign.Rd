@@ -2,12 +2,22 @@
 % Please edit documentation in R/Design-class.R
 \name{DualResponsesDesign}
 \alias{DualResponsesDesign}
-\title{Init function}
+\title{Initialization function for 'DualResponsesDesign"}
 \usage{
-DualResponsesDesign(nextBest, cohortSize, startingDose, DLEmodel, Effmodel,
-  data, stopping, increments)
+DualResponsesDesign(Effmodel, data, ...)
+}
+\arguments{
+\item{Effmodel}{please refer to \code{\linkS4class{DualResponsesDesign}} class object}
+
+\item{data}{please refer to \code{\linkS4class{DualResponsesDesign}} class object}
+
+\item{\dots}{additional arguments for \code{\link{TDDesign}}}
+}
+\value{
+the \code{\linkS4class{DualResponsesDesign}} class object
 }
 \description{
-Init function
+Initialization function for 'DualResponsesDesign"
 }
+\keyword{methods}
 

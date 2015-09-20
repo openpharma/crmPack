@@ -2,11 +2,20 @@
 % Please edit documentation in R/Rules-class.R
 \name{NextBestMaxGain}
 \alias{NextBestMaxGain}
-\title{Init function for NextBestMaxGain}
+\title{Initialization function for the class 'NextBestMaxGain'}
 \usage{
 NextBestMaxGain(DLEDuringTrialtarget, DLEEndOfTrialtarget)
 }
-\description{
-Init function for NextBestMaxGain
+\arguments{
+\item{DLEDuringTrialtarget}{please refer to \code{\linkS4class{NextBestMaxGain}} class object}
+
+\item{DLEEndOfTrialtarget}{please refer to \code{\linkS4class{NextBestMaxGain}} class object}
 }
+\value{
+the \code{\linkS4class{NextBestMaxGain}} class object
+}
+\description{
+Initialization function for the class 'NextBestMaxGain'
+}
+\keyword{methods}
 

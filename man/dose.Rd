@@ -4,11 +4,17 @@
 \name{dose}
 \alias{dose}
 \alias{dose,numeric,Model,Samples-method}
+\alias{dose,numeric,ModelTox,Samples-method}
+\alias{dose,numeric,ModelTox,missing-method}
 \title{Compute the doses for a given probability, given model and samples}
 \usage{
 dose(prob, model, samples, ...)
 
 \S4method{dose}{numeric,Model,Samples}(prob, model, samples, ...)
+
+\S4method{dose}{numeric,ModelTox,Samples}(prob, model, samples, ...)
+
+\S4method{dose}{numeric,ModelTox,missing}(prob, model, samples, ...)
 }
 \arguments{
 \item{prob}{the probability}
@@ -25,6 +31,71 @@ Compute the doses for a given probability, given model and samples
 \section{Methods (by class)}{
 \itemize{
 \item \code{prob = numeric,model = Model,samples = Samples}: 
+
+\item \code{prob = numeric,model = ModelTox,samples = Samples}: Compute the doses for a given probability, given
+Pseudo DLE model with samples
+
+\item \code{prob = numeric,model = ModelTox,samples = missing}: Compute the dose for a given probability and a given
+Pseudo DLE model without samples
 }}
+\examples{
+
+# create some data
+data <- Data(x =c (0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y = c(0, 0, 0, 0, 0, 0, 1, 0),
+             cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+             doseGrid = c(0.1, 0.5, 1.5, 3, 6,
+                          seq(from=10, to=80, by=2)))
+
+# Initialize a  model
+model <- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov=matrix(c(1, -0.5, -0.5, 1),
+                                      nrow=2),
+                           refDose=56)
+
+# Get samples from posterior
+options <- McmcOptions(burnin=100,
+                       step=2,
+                       samples=2000)
+set.seed(94)
+samples <- mcmc(data, model, options)
+
+# Posterior for the dose achieving Prob(DLE) = 0.45
+TD45 <- dose(prob=0.45,model=model,samples=samples)
+
+
+# create data from the 'DataDual' class
+data <- DataDual(x = c(25,50,25,50,75,300,250,150),
+                 y = c(0,0,0,0,0,1,1,0),
+                 w = c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+                 doseGrid = seq(25,300,25))
+
+## Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model
+DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
+                              DLEweights=c(3,3),
+                              DLEdose=c(25,300),
+                              data=data)
+
+options <- McmcOptions(burnin=100, step=2, samples=200)
+DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
+
+TD45 <- dose(prob=0.45, model = DLEmodel,samples = DLEsamples)
+
+
+# create data from the 'DataDual' class
+data <- DataDual(x = c(25,50,25,50,75,300,250,150),
+                 y = c(0,0,0,0,0,1,1,0),
+                 w = c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+                 doseGrid = seq(25,300,25))
+
+## Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model
+DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
+                              DLEweights=c(3,3),
+                              DLEdose=c(25,300),
+                              data=data)
+
+TD45 <- dose(prob=0.45, model = DLEmodel)
+
+}
 \keyword{methods}
 

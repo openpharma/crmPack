@@ -212,7 +212,7 @@ validObject(Data())
 ##'
 ##' @slot w the continuous vector of biomarker values
 ##' 
-##' @examples examples/Data-class-DataDual.R
+##' @example examples/Data-class-DataDual.R
 ##' @export
 ##' @keywords classes
 .DataDual <-

@@ -13,8 +13,10 @@ Effloglog(Eff, Effdose, nu, data)
 
 \item{nu}{the precision (inverse of the variance) of the efficacy responses}
 
-\item{data}{the input data to update estimates of model parameters and
-follow the \code{\linkS4class{DataDual}} object class specification}
+\item{data}{the input data of \code{\linkS4class{DataDual}} class to update model estimates}
+}
+\value{
+the \code{\linkS4class{Effloglog}} object
 }
 \description{
 Initialization function for the "Effloglog" class

@@ -4,9 +4,45 @@
 \name{NextBestTDsamples-class}
 \alias{.NextBestTDsamples}
 \alias{NextBestTDsamples-class}
-\title{Class for next best based on DLE responses also using DLE samples}
+\title{The class is to find the next best dose for allocation and the dose for final recommendation
+at the end of a trial. There are two input target probabilities of the occurrence of a DLE
+used during trial and used at the end of trial to find the two doses. For this class, only
+DLE response will be incorporated for the dose allocation and DLEsamples
+must be used to obtain the next dose for allocation.}
 \description{
-Class for next best based on DLE responses also using DLE samples
+The class is to find the next best dose for allocation and the dose for final recommendation
+at the end of a trial. There are two input target probabilities of the occurrence of a DLE
+used during trial and used at the end of trial to find the two doses. For this class, only
+DLE response will be incorporated for the dose allocation and DLEsamples
+must be used to obtain the next dose for allocation.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{targetDuringTrial}}{the target probability of the occurrrence of a DLE to be used
+during the trial}
+
+\item{\code{targetEndOfTrial}}{the target probability of the occurrence of a DLE to be used at the end
+of the trial. This target is particularly used to recommend the dose at the end of a trial
+for which its posterior
+probability of the occurrence of a DLE is equal to this target}
+
+\item{\code{derive}}{the function which derives from the input, a vector of the posterior samples called
+ \code{TDsamples} of the dose
+ which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+ targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
+ occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.}
+}}
+\examples{
+##define the NextBestTDsamples class
+##specified the target probability of the occurrence of a DLE during the trial be 0.35
+##specified the target probability of the occurrence of a DLE at the end of trial be 0.3
+## we want the use the 30\% posterior quantile (the 30th percentaile) of the TD35 (the dose 
+## level with probability of DLE equals 0.35) and TD30 samples. A function is then defined 
+## in the 'derive' slot
+myNextBest <-NextBestTDsamples(targetDuringTrial=0.35,
+                               targetEndOfTrial=0.3,
+                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
 }
 \keyword{class}
 

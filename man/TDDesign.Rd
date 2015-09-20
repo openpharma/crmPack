@@ -2,11 +2,24 @@
 % Please edit documentation in R/Design-class.R
 \name{TDDesign}
 \alias{TDDesign}
-\title{Init function}
+\title{Initialization function for 'TDDesign' class}
 \usage{
 TDDesign(model, stopping, increments, ...)
 }
-\description{
-Init function
+\arguments{
+\item{model}{please refer to \code{\linkS4class{TDDesign}} class object}
+
+\item{stopping}{please refer to \code{\linkS4class{TDDesign}} class object}
+
+\item{increments}{please refer to \code{\linkS4class{TDDesign}} class object}
+
+\item{\dots}{additional arguments for \code{\linkS4class{RuleDesign}}}
 }
+\value{
+the \code{\linkS4class{TDDesign}} class object
+}
+\description{
+Initialization function for 'TDDesign' class
+}
+\keyword{methods}
 

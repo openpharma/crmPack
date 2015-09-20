@@ -4,10 +4,12 @@
 \name{GeneralModel-class}
 \alias{.GeneralModel}
 \alias{GeneralModel-class}
-\title{General class for model input}
+\title{No Intitialization function for this
+General class for model input}
 \description{
-This is the general model class, from which all other specific models for BUGS
-inherit.
+This is the general model class, from which all other specific models for
+involving BUGS (the software) for computing result.
+It inherits all slots from \code{\linkS4class{AllModels}}
 }
 \details{
 The \code{datamodel} must obey the convention that the data input is
@@ -25,10 +27,6 @@ data.
 
 \item{\code{priormodel}}{a function representing the BUGS prior specification
 (see the details above)}
-
-\item{\code{datanames}}{The names of all data slots that are used in the
-\code{datamodel} and/or \code{priormodel} definition. Note that you cannot
-specify more variables than those that are really used in the model!}
 
 \item{\code{modelspecs}}{a function computing the list of the data model and prior
 model specifications that are required for fully specifying them (e.g. prior

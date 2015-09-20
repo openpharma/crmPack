@@ -4,9 +4,26 @@
 \name{PseudoSimulations-class}
 \alias{.PseudoSimulations}
 \alias{PseudoSimulations-class}
-\title{Class for Pseudo simulation}
+\title{This is a class which captures the trial simulations from designs using
+pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
+class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
+Additional slots fit and stopReasons compared to the general class
+\code{\linkS4class{GeneralSimulations}}.}
 \description{
-Class for Pseudo simulation
+This is a class which captures the trial simulations from designs using
+pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
+class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
+Additional slots fit and stopReasons compared to the general class
+\code{\linkS4class{GeneralSimulations}}.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{fit}}{list of the final values. If samples are involved, these are the final fitted values.
+If no samples are involved, these are included the final modal estimates of the model parameters
+and the posterior estimates of the probabilities of the occurrence of a DLE.}
+
+\item{\code{stopReasons}}{todo: add slot description}
+}}
 \keyword{class}
 

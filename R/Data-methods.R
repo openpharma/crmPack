@@ -396,7 +396,6 @@ setMethod("update",
 ##' @param object for data input from \code{\linkS4class{DataDual}} object
 ##' @param \dots unused
 ##' 
-##' @example examples/Data-method getEff.R
 ##' @export
 ##' @keywords methods
 setGeneric("getEff",
@@ -405,6 +404,10 @@ setGeneric("getEff",
            valueClass="list")
 
 ##' @describeIn getEff
+##' @param x todo
+##' @param y todo
+##' @param w todo
+##' @example examples/Data-method-getEff.R
 setMethod("getEff",
           signature=
             signature(object="DataDual"),

@@ -24,5 +24,18 @@ in an object of class \code{\linkS4class{Data}}}
 \item{\code{startingDose}}{what is the starting dose? Must lie on the grid in
 \code{data}}
 }}
+\examples{
+
+emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
+
+# inizialing a 3+3 design with constant cohort size of 3 and
+# starting dose equal 5
+myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
+                       cohortSize = CohortSizeConst(size=3L),
+                       data = emptydata,
+                       startingDose = 5)
+  
+  
+}
 \keyword{classes}
 

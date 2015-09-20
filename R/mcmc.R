@@ -369,28 +369,18 @@ setMethod("mcmc",
 ## -------------------------------------------------------------------------------
 
 
-##' Obtain postrior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
-##' DLE model. The joint prior and posterior probbability function of 
+##' @describeIn mcmc Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
+##' DLE model. The joint prior and posterior probability function of 
 ##' the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and 
 ##' Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint probability density 
 ##' will be a bivariate normal distribution. Therefore, we will use the bivariate normal distribution to
 ##' generate prior samples of the intercept and the slope parameters using the the prior modal estimates 
 ##' of the intercept and the slope as the mean and the covaraince matrix given in Whitehead and 
-##' William (1998) of the bivariate noram distribution
+##' William (1998) of the bivariate normal distribution.
 ##' 
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param model The model input, an object of class \code{\linkS4class{LogisticIndepBeta}}
-##' @param options MCMC options, an object of class
-##' \code{\linkS4class{McmcOptions}}
-##' @param \dots unused
-##'
-##' @return The posterior samples, an object of class
-##' \code{\linkS4class{Samples}}.
+##' @importFrom mvtnorm rmvnorm
 ##' @importFrom BayesLogit logit
-##'
 ##' @example examples/mcmc-LogisticIndepBeta.R
-##' @export
-##' @keywords methods
 setMethod("mcmc",
           signature=
             signature(data="Data",
@@ -398,7 +388,6 @@ setMethod("mcmc",
                       options="McmcOptions"),
           def=
             function(data, model, options,
-                     verbose=FALSE,
                      ...){
               
               ##update the DLE model first
@@ -454,7 +443,7 @@ setMethod("mcmc",
                 priorphi2<-coef(SFitDLE)[2,1]
              
                 
-                
+                ## todo: to discuss - is this correct?
                 ## use fast special sampler here
                 initRes <- BayesLogit::logit(y=data@y,
                                              X=X,
@@ -481,24 +470,16 @@ setMethod("mcmc",
 ## obtain the posterior samples for the Pseudo Efficacy log log model
 ## ----------------------------------------------------------------------------
 ##
-##' Obtain the posterior samples for the model parameters in the Efficacy log log model
-##' Given the value of \eqn{\nu}, the precision of the efficacy responses, the joint prior 
-##' or the posterior probability of the intercept \eqn{\theta_1} (theta1) and 
+##' @describeIn mcmc Obtain the posterior samples for the model parameters in the 
+##' Efficacy log log model. Given the value of \eqn{\nu}, the precision of the efficacy responses,
+##' the joint prior or the posterior probability of the intercept \eqn{\theta_1} (theta1) and 
 ##' the slope \eqn{\theta_2} (theta2) is a bivariate normal distribtuion. The  \eqn{\nu} (nu), 
 ##' the precision of the efficacy responses is either a fixed value or has a gamma distribution.
 ##' If a gamma distribution is used, the samples of nu will be first generated. 
 ##' Then the mean of the of the nu samples 
 ##' will be used the generate samples of the intercept and slope parameters of the model
-##' 
-##' @slot data the \code{\linkS4class{DataDual}} class object
-##' @slot model the \code{\linkS4class{ModelEff}} class object
-##' @slot options the options to be specified for MCMC samples of \code{\linkS4class{McmcOptions}}
-##' class object
-##' 
 ##' @example examples/mcmc-Effloglog.R
-##' @export
-##' @keywords methods
-
+##' @importFrom mvtnorm rmvnorm
 setMethod("mcmc",
           signature=
             signature(data="DataDual",
@@ -506,7 +487,6 @@ setMethod("mcmc",
                       options="McmcOptions"),
           def=
             function(data, model, options,
-                     verbose=FALSE,
                      ...){
               
               ## decide whether we sample from the prior or not
@@ -545,8 +525,7 @@ setMethod("mcmc",
 ## obtain the posterior samples for the Pseudo Efficacy Flexible form
 ## ----------------------------------------------------------------------------
 ##
-##' Obtain the posterior samples for the estimates in the Efficacy Flexible form.
-##' 
+##' @describeIn mcmc Obtain the posterior samples for the estimates in the Efficacy Flexible form.
 ##' This is the mcmc procedure based on what is described in Lang and Brezger (2004) such that 
 ##' samples of the mean efficacy responses at all dose levels, samples of sigma2 \eqn{sigma^2}, 
 ##' the variance of the efficacy response and samples of sigma2betaW \eqn{sigma^2_{beta_W}}, the variance of
@@ -556,15 +535,7 @@ setMethod("mcmc",
 ##' both sigma2 and sigma2betaW acan be fixed or having an inverse-gamma prior and posterior distribution. 
 ##' Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be 
 ##' first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
-##' 
-##' @slot data the \code{\linkS4class{DataDual}} class object
-##' @slot model the \code{\linkS4class{EffFlexi}} class object
-##' @slot options the options to be specified for MCMC samples of \code{\linkS4class{McmcOptions}}
-##' class object
-##' 
 ##' @example examples/mcmc-EffFlexi.R
-##' @export
-##' @keywords methods
 setMethod("mcmc",
           signature=
             signature(data="DataDual",
@@ -572,7 +543,6 @@ setMethod("mcmc",
                       options="McmcOptions"),
           def=
             function(data,model,options,
-                     verbose=FALSE,
                      ...){
              ##update the model
               model <- update(object=model,data=data)

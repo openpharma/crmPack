@@ -1353,11 +1353,11 @@ setMethod("show",
           def=
             function(object){
               
-              r <- crmPack:::Report$new(object=object,
-                                        df=
-                                          as.data.frame(matrix(nrow=1,
-                                                               ncol=0)),
-                                        dfNames=character())
+              r <- Report$new(object=object,
+                              df=
+                                as.data.frame(matrix(nrow=1,
+                                                     ncol=0)),
+                              dfNames=character())
               cat("Summary of",
                   r$dfSave(object@nsim, "nsim"),
                   "simulations\n\n")
@@ -1929,12 +1929,11 @@ setMethod("summary",
 ##' @param targetEndOfTrial the target probability of DLE that are used at the end of a trial. Default at 0.3.
 ##' @param targetDuringTrial the target probability of DLE that are used during the trial. Default at 0.35.
 ##' @param \dots Additional arguments can be supplied here for \code{trueDLE} and \code{trueEff}
-##' @return an object of class \code{\linkS4class{PseudoDualFlexiSimulationsSummary}}
+##' @return an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
 ##' 
 ##' @example examples/Simulations-method-summarySIMDualFlexi.R
 ##' @export
 ##' @keywords methods
-
 setMethod("summary",
           signature=
             signature(object="PseudoDualFlexiSimulations"),

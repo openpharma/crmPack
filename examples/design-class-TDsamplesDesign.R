@@ -8,10 +8,13 @@ data <- Data(doseGrid=seq(25,300,25))
 ##The design only incorporate DLE responses and DLE samples are involved
 ##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+samples <- mcmc(data=data, model=model, options=McmcOptions(burnin=100,step=2,samples=200))
 ##Then the escalation rule
 tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,targetEndOfTrial=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
-doseRecommendation<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,model=model,data=data)
+doseRecommendation<-nextBest(tdNextBest,doselimit=max(data@doseGrid),
+                             samples=samples,model=model,data=data)
 ##Then the starting data, an empty data set
 emptydata<-Data(doseGrid=seq(25,300,25))
 ## The cohort size, size of 3 subjects

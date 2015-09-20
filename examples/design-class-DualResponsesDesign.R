@@ -6,16 +6,24 @@
 data <- DataDual(doseGrid=seq(25,300,25))
 ##First for the DLE model 
 ##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class 
-DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
+                              DLEweights=c(3,3),
+                              DLEdose=c(25,300),
+                              data=data)
 
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class 
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
+                    nu=c(a=0.025,b=1),data=data)
 
 ##The escalation rule using the 'NextBestMaxGain' class
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
                             DLEEndOfTrialtarget=0.3)
 
-RecommendedDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,Effmodel=Effmodel,data=data)
+RecommendedDose<-nextBest(mynextbest,
+                          doselimit=max(data@doseGrid),
+                          model=DLEmodel,
+                          Effmodel=Effmodel,
+                          data=data)
 
 ##The increments (see Increments class examples) 
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300
@@ -33,4 +41,4 @@ design <- DualResponsesDesign(nextBest=mynextbest,
                               stopping=myStopping,
                               increments=myIncrements,
                               cohortSize=mySize,
-                              data=emptydata,startingDose=25)
+                              data=data,startingDose=25)

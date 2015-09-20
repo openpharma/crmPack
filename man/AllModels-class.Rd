@@ -5,10 +5,22 @@
 \alias{.AllModels}
 \alias{AllModels-class}
 \title{Class for All models
-This is a class where all other model inherit}
+This is a class where all models inherit.}
 \description{
 Class for All models
-This is a class where all other model inherit
+This is a class where all models inherit.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{datanames}}{The names of all data slots that are used in all models.
+In particularly, those are also used in the \code{datamodel} and/or
+\code{priormodel} definition for \code{\linkS4class{GeneralModel}}.
+Note that you cannot specify more variable than those that are really
+used in the models!}
+}}
+\seealso{
+\code{\linkS4class{GeneralModel}}, \code{\linkS4class{ModelPseudo}}
 }
 \keyword{classes}
 

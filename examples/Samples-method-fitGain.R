@@ -12,7 +12,7 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 ## Efficacy model must be from 'ModelEff' class e.g using 'Effloglog' model
 Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=0.025,b=1),data=data)
 ## samples must be from 'Samples' class (object slot in fit)
-options<-McmcOptions(burnin=10000,step=20,samples=2000)
+options<-McmcOptions(burnin=100,step=2,samples=200)
 DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 

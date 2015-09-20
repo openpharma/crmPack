@@ -775,9 +775,9 @@ setMethod("fit",
 ##' @param DLEsamples the DLE samples of \code{\linkS4class{Samples}} class object
 ##' @param Effmodel the efficacy pseudo model of \code{\linkS4class{ModelEff}} class object
 ##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
-##' @param the data input of \code{\linkS4class{DataDual}} class object
+##' @param data the data input of \code{\linkS4class{DataDual}} class object
+##' @param \dots additional arguments for methods
 ##' 
-##' @example examples/Samples-method-fitGain.R
 ##' @export
 ##' @keywords methods
 setGeneric("fitGain",
@@ -793,8 +793,15 @@ setGeneric("fitGain",
                standardGeneric("fitGain")},
            valueClass="data.frame")
 
-##' @describeIn fitgain This method returns a data frame with dose, middle, lower, upper quantiles for 
+##' @describeIn fitGain This method returns a data frame with dose, middle, lower, upper quantiles for 
 ##' the gain values obtained given the DLE and the efficacy samples
+##' @param points at which dose levels is the fit requested? default is the dose
+##' grid
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##' @example examples/Samples-method-fitGain.R
 setMethod("fitGain",
           signature=
             signature(DLEmodel="ModelTox",
@@ -1148,9 +1155,9 @@ setMethod("plot",
 ##' a DLE sample, a given efficacy pseudo model and an efficacy sample
 ##' 
 ##' @param DLEmodel the dose-DLE model of \code{\linkS4class{ModelTox}} class object
-##' @param DLEsamples the DLE sample of \code{\linkS4class{Sample}} class object
+##' @param DLEsamples the DLE sample of \code{\linkS4class{Samples}} class object
 ##' @param Effmodel the dose-efficacy model of \code{\linkS4class{ModelEff}} class object
-##' @param Effsample the efficacy sample of of \code{\linkS4class{Sample}} class object
+##' @param Effsamples the efficacy sample of of \code{\linkS4class{Samples}} class object
 ##' @param data the data input of \code{\linkS4class{DataDual}} class object
 ##' @param \dots not used
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}

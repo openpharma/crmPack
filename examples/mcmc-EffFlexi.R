@@ -1,4 +1,5 @@
-##obtain mcmc efficacy samples given the data, 'EffFlexi' model (efficacy model) and mcmc simulations options
+##obtain mcmc efficacy samples given the data, 'EffFlexi' model (efficacy model) and 
+## mcmc simulations options
 ## data must be of 'DataDual' class
 data<-DataDual(x=c(25,50,25,50,75,300,250,150),
                y=c(0,0,0,0,0,1,1,0),
@@ -10,6 +11,6 @@ Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
                     sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
 
 ## options must be ''McmcOptions' class
-options<-McmcOptions(burnin=10000,step=20,samples=2000)
+options<-McmcOptions(burnin=100,step=2,samples=200)
 set.seed(94)
 samples<-mcmc(data=data,model=Effmodel,options=options)

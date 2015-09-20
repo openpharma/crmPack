@@ -1352,7 +1352,7 @@ CohortSizeMin <- function(cohortSizeList)
            contains=list("NextBest"),
            validity=
              function(object){
-               o<-crmPack:::Validate()
+               o<-Validate()
                o$check(is.probability(object@targetDuringTrial,
                                       bounds=FALSE),
                        "targetDuringTrial must be probability > 0 and < 1")
@@ -1416,7 +1416,7 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
            contains=list("NextBest"),
            validity=
              function(object){
-               o<-crmPack:::Validate()
+               o<-Validate()
                o$check(is.probability(object@targetDuringTrial,
                                       bounds=FALSE),
                        "targetDuringTrial must be probability > 0 and < 1")
@@ -1472,7 +1472,7 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
            contains=list("NextBest"),
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                o$check(is.probability(object@DLEDuringTrialtarget),
                        "DLE DuringTrialtarget has to be a probability")
                o$check(is.probability(object@DLEEndOfTrialtarget),
@@ -1537,7 +1537,7 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
            contains=list("NextBest"),
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                o$check(is.probability(object@DLEDuringTrialtarget),
                        "DLE DuringTrialtarget has to be a probability")
                o$check(is.probability(object@DLEEndOfTrialtarget),
@@ -1550,6 +1550,7 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
                o$result()
              })
 validObject(.NextBestMaxGainSamples)
+
 ##' Initialization function for class "NextBestMaxGainSamples"
 ##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
 ##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
@@ -1560,7 +1561,6 @@ validObject(.NextBestMaxGainSamples)
 ##' 
 ##' @export
 ##' @keywords methods
-
 NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
                                    DLEEndOfTrialtarget,TDderive,Gstarderive)
 {.NextBestMaxGainSamples(DLEDuringTrialtarget=DLEDuringTrialtarget,
@@ -1588,7 +1588,7 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
            contains="Stopping",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                
                o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
                        "targetRatio must be a positive numerical number")
@@ -1599,10 +1599,12 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 validObject(.StoppingCIRatio())
 
 ##' Initialization function for "StoppingCIRatio"
-##' @param targetRatio please refer to \code{\linkS4class{StoppingCIRatio}} class object
 ##' 
+##' @param targetRatio please refer to \code{\linkS4class{StoppingCIRatio}} class object
 ##' @return the \code{\linkS4class{StoppingCIRatio}} class object
-
+##' 
+##' @export
+##' @keywords methods
 StoppingCIRatio <- function(targetRatio)
 {
   .StoppingCIRatio(targetRatio=targetRatio)

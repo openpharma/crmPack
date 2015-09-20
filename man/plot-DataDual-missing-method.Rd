@@ -5,12 +5,14 @@
 \alias{plot,DataDual,missing-method}
 \title{Plot method for the "DataDual" class}
 \usage{
-\S4method{plot}{DataDual,missing}(x, y, ...)
+\S4method{plot}{DataDual,missing}(x, y, blind = FALSE, ...)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{DataDual}} object we want to plot}
 
 \item{y}{missing}
+
+\item{blind}{Logical (default FALSE) if to blind the data}
 
 \item{\dots}{not used}
 }
@@ -19,6 +21,19 @@ the \code{\link[ggplot2]{ggplot}} object
 }
 \description{
 Plot method for the "DataDual" class
+}
+\examples{
+
+# Create some data of class 'DataDual'
+myData <- DataDual(x=c(0.1,0.5,1.5,3,6,10,10,10),
+                   y=c(0,0,0,0,0,0,1,0),
+                   w=rnorm(8),
+                   doseGrid=c(0.1,0.5,1.5,3,6,
+                              seq(from=10,to=80,by=2)))
+
+# Plot the data
+grid.arrange(plot(myData))
+
 }
 \keyword{methods}
 

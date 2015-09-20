@@ -66,16 +66,9 @@ setMethod("dose",
 ## -------------------------------------------------------------------------------------
 ## Compute the doses for a given probability, given Pseudo DLE model and given samples
 ## -----------------------------------------------------------------------------------
-##' Compute the doses for a given probability, given Pseudo DLE model with samples 
-##' 
-##' @param prob the probability
-##' @param model the \code{\linkS4class{ModelTox}}
-##' @param samples the \code{\linkS4class{Samples}}
-##' @param \dots unused
-##' 
+##' @describeIn dose Compute the doses for a given probability, given 
+##' Pseudo DLE model with samples 
 ##' @example examples/Model-method-dose-modelTox.R
-##' @export
-##' @keywords methods
 setMethod("dose",
           signature=
             signature(prob="numeric",
@@ -101,14 +94,9 @@ setMethod("dose",
 ## ----------------------------------------------------------------------------
 ## Compute the dose for a given Pseudo DLE model and a given probability
 ## -----------------------------------------------------------------------
-##' Compute the dose for a given probability and a given Pseudo DLE model without samples
-##' @param prob the probability
-##' @param model the \code{\linkS4class{ModelTox}}
-##' @param \dots unused
-##'  
+##' @describeIn dose Compute the dose for a given probability and a given 
+##' Pseudo DLE model without samples
 ##' @example examples/Model-method-doseNoSamples.R
-##' @export
-##' @keywords methods
 setMethod("dose",
           signature=
             signature(prob="numeric",
@@ -186,18 +174,9 @@ setMethod("prob",
 ## Compute the probability for a given dose, given Pseudo DLE model and samples
 ## --------------------------------------------------
 
-##' Compute the probability for a given dose, given Pseudo DLE model and samples
-##'
-##' @param dose the dose
-##' @param model the \code{\linkS4class{ModelTox}} object
-##' @param samples the \code{\linkS4class{Samples}}
-##' @param \dots unused
-##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
-##' samples.
-##'
+##' @describeIn prob Compute the probability for a given dose, 
+##' given Pseudo DLE model and samples
 ##' @example examples/Model-method-prob-modelTox.R
-##' @export
-##' @keywords methods
 setMethod("prob",
           signature=
             signature(dose="numeric",
@@ -226,16 +205,8 @@ setMethod("prob",
 ## ## Compute the probability for a given dose, given Pseudo DLE model
 ## --------------------------------------------------
 
-##' Compute the probability for a given dose, given Pseudo DLE model without samples
-##' @param dose the dose
-##' @param model the \code{\linkS4class{ModelTox}} object
-##' @param \dots unused
-##' @return the vector (for \code{\linkS4class{ModelTox}} objects) of probability
-##' samples.
-##'
+##' @describeIn prob Compute the probability for a given dose, given Pseudo DLE model without samples
 ##' @example examples\Model-method-probNoSamples.R
-##' @export
-##' @keywords methods
 setMethod("prob",
           signature=
             signature(dose="numeric",
@@ -309,7 +280,8 @@ setMethod("biomLevel",
 ##' 
 ##' @param dose the dose
 ##' @param model the \code{\linkS4class{Effloglog}} class object
-##' @param samples the \code{\linkS4class{Samples}} class object
+##' @param samples the \code{\linkS4class{Samples}} class object 
+##' (can also be missing)
 ##' @param \dots unused
 ##' 
 ##' @example examples/Model-method-ExpEff.R
@@ -322,8 +294,7 @@ setGeneric("ExpEff",
              },
            valueClass="numeric")
 
-##' @describeIn ExpEff
-
+##' @describeIn ExpEff Method for the Effloglog class
 setMethod("ExpEff",
           signature=
             signature(dose="numeric",
@@ -346,17 +317,9 @@ setMethod("ExpEff",
             })
 ##======================================================================================
 
-## -------------------------------------------------------------------------------------
-## Compute the Expected Efficacy based on a given dose and a given Pseudo Efficacy log-log model
-## --------------------------------------------------------------------------------------
-##' Compute the Expected Efficacy based a given dose and a given Pseudo Efficacy log log model without
+##' @describeIn ExpEff Compute the Expected Efficacy based a given dose and a given Pseudo Efficacy log log model without
 ##' samples
-##' @param dose the dose
-##' @param model the \code{\linkS4class{Effloglog}} class object
-##' 
 ##' @example examples/Model-method-ExpEffNoSamples.R
-##' @export
-##' @keywords methods
 setMethod("ExpEff",
           signature=
             signature(dose="numeric",
@@ -379,20 +342,10 @@ setMethod("ExpEff",
               ## return the resulting vector
               return(ret)
             })
-## ======================================================================
-## -------------------------------------------------------------------------------------
-## Compute the Expected Efficacy based on a given dose, Efficacy Flexible model and the Efficacy samples
-## --------------------------------------------------------------------------------------
-##' Compute the Expected Efficacy based a given dose, Efficacy Flexible model with
-##' samples
-##' @param dose the dose
-##' @param model the \code{\linkS4class{EffFlexi}} class object
-##' @param samples the \code{\linkS4class{Samples}} class object
-##' 
-##' @example examples/Model-method-ExpEffFlexi.R
-##' @export
-##' @keywords methods
 
+##' @describeIn ExpEff Compute the Expected Efficacy based a given dose, Efficacy 
+##' Flexible model with samples
+##' @example examples/Model-method-ExpEffFlexi.R
 setMethod("ExpEff",
           signature=
             signature(dose="numeric",
@@ -416,12 +369,11 @@ setMethod("ExpEff",
 ##' 
 ##' @param dose the dose
 ##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
-##' @param DLEsamples the \code{\linkS4class{Samples}} object
+##' @param DLEsamples the \code{\linkS4class{Samples}} object (can also be missing)
 ##' @param Effmodel the \code{\linkS4class{Effloglog}} object
-##' @param Effsamples the \code{\linkS4class{Samples}} object
+##' @param Effsamples the \code{\linkS4class{Samples}} object (can also be missing)
 ##' @param \dots unused
 ##' 
-##' @example examples/Model-method-gain.R
 ##' @export
 ##' @keywords methods
 setGeneric("gain",
@@ -430,7 +382,9 @@ setGeneric("gain",
                standardGeneric("gain")
              },
            valueClass="numeric")
+
 ##' @describeIn gain
+##' @example examples/Model-method-gain.R
 setMethod("gain",
           signature=
             signature(dose="numeric",
@@ -440,7 +394,6 @@ setMethod("gain",
                       Effsamples="Samples"),
           def=
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
-              
               
               
               ## extract the prob function from the model
@@ -471,22 +424,11 @@ setMethod("gain",
             })
 
 ## ===================================================================
-## ---------------------------------------------------------------------------------
-## Compute gain value using a Pseudo DLE and the EffFlexi model
-## -------------------------------------------------------------------------------
-##' Compute the gain given a dose level, a pseduo DLE model, a DLE sample, 
+
+
+##' @describeIn gain Compute the gain given a dose level, a pseduo DLE model, a DLE sample, 
 ##' the pseudo EffFlexi model and an Efficacy sample
-##' 
-##' @param dose the dose
-##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
-##' @param DLEsamples the \code{\linkS4class{Samples}} object
-##' @param Effmodel the \code{\linkS4class{EffFlexi}} object
-##' @param Effsamples the \code{\linkS4class{Samples}} object
-##' @param \dots unused
-##' 
 ##' @example examples/Model-method-gainFlexi.R
-##' @export
-##' @keywords methods
 setMethod("gain",
           signature=
             signature(dose="numeric",
@@ -521,21 +463,11 @@ setMethod("gain",
               Gainret <- Effret/(1+(DLEret/(1-DLEret)))
               return(Gainret)
             })
-## ===================================================================================================
-## Compute the gain given a dose level, a pseudo DLE model and a pseudo efficacy model without DLE and
-## efficacy samples
-## ===================================================================================================
-##' Compute the gain value given a dose level, a pseudo DLE model and a pseudo efficacy model without 
-##' DLE and the efficacy sample
-##' 
-##' @param dose the dose
-##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
-##' @param Effmodel the \code{\linkS4class{ModelEff}} object
-##' @param \dots unused
-##' 
+
+
+##' @describeIn gain Compute the gain value given a dose level, a pseudo DLE model and a pseudo
+##' efficacy model without DLE and the efficacy sample
 ##' @example examples/Model-method-gainNoSamples.R
-##' @export
-##' @keywords methods
 setMethod("gain",
           signature=
             signature(dose="numeric",

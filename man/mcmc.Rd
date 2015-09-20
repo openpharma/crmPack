@@ -3,7 +3,10 @@
 \docType{methods}
 \name{mcmc}
 \alias{mcmc}
+\alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,Data,LogisticNormal,McmcOptions-method}
+\alias{mcmc,DataDual,EffFlexi,McmcOptions-method}
+\alias{mcmc,DataDual,Effloglog,McmcOptions-method}
 \alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
 \title{Obtain posterior samples for all model parameters}
 \usage{
@@ -14,6 +17,12 @@ mcmc(data, model, options, ...)
 
 \S4method{mcmc}{Data,LogisticNormal,McmcOptions}(data, model, options,
   verbose = FALSE, ...)
+
+\S4method{mcmc}{Data,LogisticIndepBeta,McmcOptions}(data, model, options, ...)
+
+\S4method{mcmc}{DataDual,Effloglog,McmcOptions}(data, model, options, ...)
+
+\S4method{mcmc}{DataDual,EffFlexi,McmcOptions}(data, model, options, ...)
 }
 \arguments{
 \item{data}{The data input, an object of class \code{\linkS4class{GeneralData}}}
@@ -52,7 +61,77 @@ function will then result in exactly the same output.
 \item \code{data = GeneralData,model = GeneralModel,options = McmcOptions}: Standard method which uses JAGS/BUGS
 
 \item \code{data = Data,model = LogisticNormal,options = McmcOptions}: The fast method for the LogisticNormal class
+
+\item \code{data = Data,model = LogisticIndepBeta,options = McmcOptions}: Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
+DLE model. The joint prior and posterior probability function of
+the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and
+Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint probability density
+will be a bivariate normal distribution. Therefore, we will use the bivariate normal distribution to
+generate prior samples of the intercept and the slope parameters using the the prior modal estimates
+of the intercept and the slope as the mean and the covaraince matrix given in Whitehead and
+William (1998) of the bivariate normal distribution.
+
+\item \code{data = DataDual,model = Effloglog,options = McmcOptions}: Obtain the posterior samples for the model parameters in the
+Efficacy log log model. Given the value of \eqn{\nu}, the precision of the efficacy responses,
+the joint prior or the posterior probability of the intercept \eqn{\theta_1} (theta1) and
+the slope \eqn{\theta_2} (theta2) is a bivariate normal distribtuion. The  \eqn{\nu} (nu),
+the precision of the efficacy responses is either a fixed value or has a gamma distribution.
+If a gamma distribution is used, the samples of nu will be first generated.
+Then the mean of the of the nu samples
+will be used the generate samples of the intercept and slope parameters of the model
+
+\item \code{data = DataDual,model = EffFlexi,options = McmcOptions}: Obtain the posterior samples for the estimates in the Efficacy Flexible form.
+This is the mcmc procedure based on what is described in Lang and Brezger (2004) such that
+samples of the mean efficacy responses at all dose levels, samples of sigma2 \eqn{sigma^2},
+the variance of the efficacy response and samples of sigma2betaW \eqn{sigma^2_{beta_W}}, the variance of
+the random walk model will
+be generated. Please refer to Lang and Brezger (2004) for the procedures and the form of
+the joint prior and posterior probability density for the mean efficay responses. In addition,
+both sigma2 and sigma2betaW acan be fixed or having an inverse-gamma prior and posterior distribution.
+Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be
+first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
 }}
+\examples{
+##obtain mcmc DLE samples given the data, LogisticIndepBeta (DLE model) and mcmc simulations options
+## data must be of 'Data' class
+data<-Data(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
+           doseGrid=seq(25,300,25))
+## model must be of 'LogisticIndepBeta' class
+model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+## options must be ''McmcOptions' class
+options<-McmcOptions(burnin=100,step=2,samples=200)
+set.seed(94)
+samples<-mcmc(data=data,model=model,options=options)
+##obtain mcmc efficacy samples given the data, 'Effloglog' model (efficacy model) and
+## mcmc simulations options data must be of 'DataDual' class
+data<-DataDual(x=c(25,50,25,50,75,300,250,150),
+              y=c(0,0,0,0,0,1,1,0),
+              w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+              doseGrid=seq(25,300,25))
+## model must be of 'Effloglog' class
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+
+## options must be ''McmcOptions' class
+options<-McmcOptions(burnin=100,step=2,samples=200)
+set.seed(94)
+samples<-mcmc(data=data,model=Effmodel,options=options)
+##obtain mcmc efficacy samples given the data, 'EffFlexi' model (efficacy model) and 
+## mcmc simulations options
+## data must be of 'DataDual' class
+data<-DataDual(x=c(25,50,25,50,75,300,250,150),
+               y=c(0,0,0,0,0,1,1,0),
+               w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+               doseGrid=seq(25,300,25))
+## model must be of 'EffFlexi' class
+
+Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
+                    sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+
+## options must be ''McmcOptions' class
+options<-McmcOptions(burnin=100,step=2,samples=200)
+set.seed(94)
+samples<-mcmc(data=data,model=Effmodel,options=options)
+}
 \keyword{methods}
 \keyword{regression}
 

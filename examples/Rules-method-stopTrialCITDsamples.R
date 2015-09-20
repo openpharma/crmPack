@@ -12,7 +12,8 @@ tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,targetEndOfTrial=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
 
 
-RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,model=model,data=data)
+RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
+                        model=model,data=data)
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 

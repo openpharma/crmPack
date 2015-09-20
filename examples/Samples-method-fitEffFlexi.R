@@ -10,6 +10,6 @@ Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
                     sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
 
 ## samples must be from 'Samples' class (object slot in fit)
-options<-McmcOptions(burnin=10000,step=20,samples=2000)
+options<-McmcOptions(burnin=100,step=2,samples=200)
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 fit(object=Effsamples, model=Effmodel,data=data)

@@ -16,6 +16,13 @@ the object of class \code{\linkS4class{RuleDesign}} with the
 \description{
 Creates a new 3+3 design object from a dose grid
 }
+\examples{
+
+# inizialing a 3+3 design 
+myDesign <- ThreePlusThreeDesign(doseGrid=c(5, 10, 15, 25, 35, 50, 80))
+  
+  
+}
 \author{
 Daniel Sabanes Bove \email{sabanesd@roche.com}
 }

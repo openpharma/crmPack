@@ -37,3 +37,38 @@
         "Please visit https://roche.jiveon.com/projects/crmpack for more\n")
 }
 
+## need to declare global variable / function
+## names in order to avoid R CMD check notes:
+globalVariables(c("log.betaZ",
+                  "precW",
+                  "pow",
+                  "nObs",
+                  "betaZ",
+                  "x",
+                  "betaW",
+                  "xLevel",
+                  "precW",
+                  "z",
+                  "nGrid",
+                  "doseGrid",
+                  "betaWintercept",
+                  "delta",
+                  "deltaStart",
+                  "delta2",
+                  "Effsamples",
+                  "logit<-",
+                  "rho0",
+                  "alpha0",
+                  "alpha1",
+                  "inverse",
+                  "priorCov",
+                  "theta",
+                  "comp0",
+                  "w",
+                  "DLTs",
+                  "y",
+                  "group",
+                  "annotate",
+                  "probSamples",
+                  "prec",
+                  "nu"))

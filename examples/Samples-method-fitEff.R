@@ -8,6 +8,6 @@ data<-DataDual(x=c(25,50,25,50,75,300,250,150),
 ## model must be from 'ModelEff' e.g using 'Effloglog' class
 Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=0.025,b=1),data=data)
 ## samples must be from 'Samples' class (object slot in fit)
-options<-McmcOptions(burnin=10000,step=20,samples=2000)
+options<-McmcOptions(burnin=100,step=2,samples=200)
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 fit(object=Effsamples, model=Effmodel,data=data)

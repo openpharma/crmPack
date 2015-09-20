@@ -11,18 +11,23 @@ EffFlexi(Eff, Effdose, sigma2, sigma2betaW, smooth = c("RW1", "RW2"), data)
 
 \item{Effdose}{the corresponding dose levels for the pseudo efficacy responses}
 
-\item{sigma2}{the variance of the efficacy responses which can be a fixed value or from the
-inverse gamma distribution, that is either specific a fixed value or specified the values
-of the two paramters of the inverse gamma distribtuion}
+\item{sigma2}{the prior variance of the efficacy responses which can be specified
+with a single positive scalar or with two positive scalar values fot the shape \code{a} and
+the rate \code{b} parameters of the inverse gamma distribtuion.}
 
-\item{sigma2betaW}{the variance of the random walk model used for smoothing data which can be
-a fixed value or using the inverse gamm distribution}
+\item{sigma2betaW}{the prior variance of the random walk model used for smoothing which can be
+specified with a single postive scalar or with two positive scalars representing the shape \code{a}
+and the rate \code{b} parameter of the inverse gamma distribution.}
 
-\item{smooth}{used for smoothing data for this efficacy model, either the "RW1", the
-first-order random walk model or "RW2", the second-order random walk model can be used.}
+\item{smooth}{used for smoothing data for this efficacy model. That is either the "RW1", the
+first-order random walk model or "RW2", the second-order random walk model is used of the mean
+efficacy responses.}
 
 \item{data}{the input data to update estimates of model parameters and
 follow the \code{\linkS4class{DataDual}} object class specification}
+}
+\value{
+the \code{\linkS4class{EffFlexi}} class object
 }
 \description{
 Initialization function for the "EffFlexi" class

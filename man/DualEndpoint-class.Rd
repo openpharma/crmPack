@@ -21,7 +21,7 @@ is used, where \eqn{p(x)} is the probability of observing a DLT for a given
 dose \eqn{x}, and \eqn{\Phi} is the standard normal cdf. This could later be
 generalized to have a reference dose or a log transformation for the dose.
 The prior is
-\deqn{\beta{Z} \sim Normal(\mu, \Sigma)}.
+\deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right) \sim Normal(\mu, \Sigma)}.
 
 For the biomarker response w at a dose x, we assume
 \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}

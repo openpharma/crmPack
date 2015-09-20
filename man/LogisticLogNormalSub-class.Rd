@@ -32,5 +32,14 @@ the bivariate normal distribution, as well as the reference dose.
 
 \item{\code{refDose}}{the reference dose \eqn{x^{*}}}
 }}
+\examples{
+
+
+model <- LogisticLogNormalSub(mean = c(-0.85, 1),
+                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+                           refDose = 50)
+
+
+}
 \keyword{classes}
 

@@ -10,12 +10,12 @@ Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=0.025,b=1),data=data)
 DLEsamples<-mcmc(data,DLEmodel,options)
 Effsamples<-mcmc(data,Effmodel,options)
 
-##target probabilities of the occurrence of a DLE during trial and at the end of trial are defined as
-## 0.35 and 0.3, respectively
-## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of TD35 and TD30, function specified
-## in TDderive slot
-## Using the 50% posterio quantile of the Gstar (the dose which gives the maxim gain value) samples as Gstar 
-##estimate,function specified in Gstarderive slot 
+##target probabilities of the occurrence of a DLE during trial and at the end of trial 
+## are defined as 0.35 and 0.3, respectively
+## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of TD35 and TD30, 
+## function specified in TDderive slot
+## Using the 50% posterior quantile of the Gstar (the dose which gives the maxim gain value) 
+## samples as Gstar estimate,function specified in Gstarderive slot 
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    DLEEndOfTrialtarget=0.3,
                                    TDderive=function(TDsamples){
@@ -25,3 +25,34 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
                         data=data,Effmodel=Effmodel,Effsamples=Effsamples)
+
+## now using the 'EffFlexi' class efficacy model:
+
+##The 'nextBest' method using NextBestMaxGainSamples' rules class object for 'EffFlexi' model class
+## using the 'ModelTox' class DLE model 
+## DLEmodel e.g 'LogisticIndepBeta' class
+Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
+                    sigma2=c(a=0.1,b=0.1),
+                    sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+
+##DLE and efficacy samples must be of 'Samples' Class
+DLEsamples<-mcmc(data,DLEmodel,options)
+Effsamples<-mcmc(data,Effmodel,options)
+
+##target probabilities of the occurrence of a DLE during trial and at the 
+## end of trial are defined as 0.35 and 0.3, respectively
+## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of 
+## TD35 and TD30, function specified in TDderive slot
+## Using the 50% posterio quantile of the Gstar (the dose which gives the maximum 
+## gain value) samples as Gstar estimate,function specified in Gstarderive slot 
+mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
+                                   DLEEndOfTrialtarget=0.3,
+                                   TDderive=function(TDsamples){
+                                     quantile(TDsamples,prob=0.3)},
+                                   Gstarderive=function(Gstarsamples){
+                                     quantile(Gstarsamples,prob=0.5)})
+
+RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,
+                        model=DLEmodel,
+                        data=data,Effmodel=Effmodel,Effsamples=Effsamples)
+

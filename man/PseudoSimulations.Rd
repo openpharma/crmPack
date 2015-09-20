@@ -2,11 +2,22 @@
 % Please edit documentation in R/Simulations-class.R
 \name{PseudoSimulations}
 \alias{PseudoSimulations}
-\title{Init function}
+\title{Initialization function of the 'PseudoSimulations' class}
 \usage{
 PseudoSimulations(fit, stopReasons, ...)
 }
-\description{
-Init function
+\arguments{
+\item{fit}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
+
+\item{stopReasons}{please refer to \code{\linkS4class{PseudoSimulations}} class object}
+
+\item{\dots}{additional parameters from \code{\linkS4class{GeneralSimulations}}}
 }
+\value{
+the \code{\linkS4class{PseudoSimulations}} object
+}
+\description{
+Initialization function of the 'PseudoSimulations' class
+}
+\keyword{methods}
 

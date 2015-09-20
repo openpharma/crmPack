@@ -302,6 +302,7 @@ DualSimulations <- function(rhoEst,
 ##' @slot fit list of the final values. If samples are involved, these are the final fitted values.
 ##' If no samples are involved, these are included the final modal estimates of the model parameters
 ##' and the posterior estimates of the probabilities of the occurrence of a DLE.
+##' @slot stopReasons todo: add slot description 
 ##' 
 ##' @export
 ##' @keywords class
@@ -328,6 +329,7 @@ validObject(.PseudoSimulations())
 
 ##' Initialization function of the 'PseudoSimulations' class
 ##' @param fit please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##' 
@@ -350,7 +352,7 @@ PseudoSimulations <- function(fit,
 ##' This is a class which captures the trial simulations design using both the
 ##' DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
 ##' class and the efficacy model from \code{\linkS4class{ModelEff}} class 
-##' (except \code{\linkS4class{EffFlex}} class). It contains all slots from 
+##' (except \code{\linkS4class{EffFlexi}} class). It contains all slots from 
 ##' \code{\linkS4class{GeneralSimulations}} and \code{\linkS4class{PseudoSimulations}} object.
 ##' In comparison to the parent class \code{\linkS4class{PseudoSimulations}}, 
 ##' it contains additional slots to 
@@ -372,7 +374,7 @@ PseudoSimulations <- function(fit,
            contains="PseudoSimulations",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                nSims <- length(object@data)
                o$check(identical(length(object@sigma2est),nSims),
                        "sigma2est has to have same length as data")
@@ -421,7 +423,7 @@ PseudoDualSimulations <- function(fitEff,
            contains="PseudoDualSimulations",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                nSims <- length(object@data)
                o$check(identical(length(object@sigma2betaWest),nSims),
                        "sigma2betaWest has to have same length as data")
@@ -510,7 +512,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' Note that objects should not be created by users, therefore no initialization function
 ##' is provided for this class.
 ##' 
-##' @slot EffFitAtDoseMoseSelected fitted expected mean efficacy value at dose most often
+##' @slot EffFitAtDoseMostSelected fitted expected mean efficacy value at dose most often
 ##' selected
 ##' @slot meanEffFit list with mean, lower (2.5%) and upper (97.5%) quantiles of the fitted expected 
 ##' efficacy value at each dose level.

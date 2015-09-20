@@ -1120,7 +1120,7 @@ setMethod("initialize",
 ##' dose \eqn{x}, and \eqn{\Phi} is the standard normal cdf. This could later be
 ##' generalized to have a reference dose or a log transformation for the dose.
 ##' The prior is
-##' \deqn{\left ( \beta_{Z1} \right, log(\beta_{Z2}) ) \sim Normal(\mu, \Sigma)}.
+##' \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right) \sim Normal(\mu, \Sigma)}.
 ##'
 ##' For the biomarker response w at a dose x, we assume
 ##' \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}
@@ -2735,7 +2735,7 @@ validObject(.ModelEff)
            contains="ModelTox",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                ##Check if at least two pseudo DLE responses are given
                o$check(length(object@binDLE) >= 2,
                        "length of binDLE must be at least 2")
@@ -2853,7 +2853,7 @@ LogisticIndepBeta <- function(binDLE,
 ##'\eqn{r \times 2} design matrix 
 ##' obtained for these pseudo efficacy responses. the matrix \eqn{\mathbf{Q}_0} will be calculated by 
 ##' \eqn{\mathbf{Q}_0=\mathbf{X}_0 \mathbf{X}^T_0} where \eqn{\nu} is the precision of the pseudo efficacy responses.
-##' For the joint posterior bivariate distribution, we have \eqn{\boldsymbold\mu} as the mean and 
+##' For the joint posterior bivariate distribution, we have \eqn{\boldsymbol{\mu}} as the mean and 
 ##' \eqn{(\nu\mathbf{Q}_0)^{-1}} as the covariance matrix. Here, \eqn{\boldsymbol\mu} is the column vector containing the 
 ##' posterior modal estimates
 ##' of the intercept (theta1) and the slope (theta2). The design matrix \eqn{\mathbf{X}} obtained based only on 
@@ -2921,7 +2921,7 @@ LogisticIndepBeta <- function(binDLE,
            contains="ModelEff",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                
                o$check(length(object@Eff) >= 2,
                        "length of Eff must be at least 2")
@@ -2951,6 +2951,7 @@ validObject(.Effloglog())
 ##' @param data the input data of \code{\linkS4class{DataDual}} class to update model estimates
 ##' @return the \code{\linkS4class{Effloglog}} object
 ##' 
+##' @importFrom MASS ginv
 ##' @export
 ##' @keywords methods
 Effloglog<-function(Eff,
@@ -3038,7 +3039,7 @@ Effloglog<-function(Eff,
 ##' \deqn{\mathbf{W}\vert\boldsymbol{\beta_w}, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol{\beta_w}, \sigma^2 \mathbf{I})}
 ##' where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol{\beta_w}}
 ##' is th column vector of the mean efficacy responses for all dose levels, \eqn{\mathbf{X_w}} is the 
-##' design matrix with entries \eqn{\mathds{1}_{i(j)}} which gives a value 1 if subject i is allocated to 
+##' design matrix with entries \eqn{I_{i(j)}} which gives a value 1 if subject i is allocated to 
 ##' dose j. The \eqn{\sigma^2} (sigma2) is the variance of the efficacy responses which can be either fixed or from
 ##' an inverse gamma distribution.
 ##' 
@@ -3110,7 +3111,7 @@ prototype(Eff=c(0,0),
 contains="ModelEff",
 validity=
   function(object){
-    o<- crmPack:::Validate()
+    o<- Validate()
     o$check(length(object@Eff) >= 2,
             "length of Eff must be at least 2")
     o$check(length(object@Effdose) >= 2,
