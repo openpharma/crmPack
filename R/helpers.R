@@ -204,6 +204,8 @@ crmPackHelp <- function()
 }
 
 
+## todo: This is required for backwards compatibility with
+## older versions of grid etc. Can be deleted at some point
 ##' Plots arrange objects
 ##'
 ##' @method plot arrange
@@ -221,6 +223,26 @@ plot.arrange <- function(x, ...)
 print.arrange <- function(x, ...)
 {
     plot.arrange(x, ...)
+}
+
+## this is the new version, working on the gtable objects:
+##' Plots gtable objects
+##'
+##' @method plot gtable
+##' @param x the gtable object
+##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
+##'
+##' @importFrom grid grid.draw
+##' @export
+plot.gtable <- function(x, ...)
+{
+  grid::grid.draw(x, ...)
+}
+
+##' @export
+print.gtable <- function(x, ...)
+{
+  plot.gtable(x, ...)
 }
 
 
