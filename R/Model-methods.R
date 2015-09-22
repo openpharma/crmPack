@@ -206,7 +206,7 @@ setMethod("prob",
 ## --------------------------------------------------
 
 ##' @describeIn prob Compute the probability for a given dose, given Pseudo DLE model without samples
-##' @example examples\Model-method-probNoSamples.R
+##' @example examples/Model-method-probNoSamples.R
 setMethod("prob",
           signature=
             signature(dose="numeric",
