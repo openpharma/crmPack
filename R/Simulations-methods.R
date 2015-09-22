@@ -202,6 +202,7 @@ setMethod("plot",
 ##' @importFrom ggplot2 qplot coord_flip scale_x_discrete
 ##' @importFrom gridExtra arrangeGrob
 ##' 
+##' @example examples/Simulations-method-plot-DualSimulations.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -430,6 +431,7 @@ setMethod("summary",
 ##' @param \dots Additional arguments can be supplied here for \code{truth}
 ##' @return an object of class \code{\linkS4class{SimulationsSummary}}
 ##'
+##' @example examples/Simulations-method-summary.R
 ##' @export
 ##' @keywords methods
 setMethod("summary",
@@ -508,6 +510,7 @@ setMethod("summary",
 ##' and \code{trueBiomarker}
 ##' @return an object of class \code{\linkS4class{DualSimulationsSummary}}
 ##'
+##' @example examples/Simulations-method-summary-DualSimulations.R
 ##' @export
 ##' @keywords methods
 setMethod("summary",
@@ -705,6 +708,7 @@ setMethod("show",
 ##' @return invisibly returns a data frame of the results with one row and
 ##' appropriate column names
 ##'
+##' @example examples/Simulations-method-show-SimulationsSummary.R
 ##' @export
 ##' @keywords methods
 setMethod("show",
@@ -738,6 +742,7 @@ setMethod("show",
 ##' @return invisibly returns a data frame of the results with one row and
 ##' appropriate column names
 ##'
+##' @example examples/Simulations-method-show-DualSimulationsSummary.R
 ##' @export
 ##' @keywords methods
 setMethod("show",
@@ -919,6 +924,8 @@ setMethod("plot",
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples/Simulations-method-plot-SimulationsSummary.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",
@@ -1040,6 +1047,8 @@ setMethod("plot",
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
 ##' scale_linetype_manual scale_colour_manual
 ##' @importFrom gridExtra arrangeGrob
+##' 
+##' @example examples/Simulations-method-plot-DualSimulationsSummary.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",

@@ -71,6 +71,8 @@ setGeneric("mcmc",
 ##'
 ##' @importFrom rjags jags.model jags.samples
 ##' @importFrom utils capture.output
+##' 
+##' @example examples/mcmc.R
 setMethod("mcmc",
           signature=
           signature(data="GeneralData",
@@ -318,6 +320,7 @@ setMethod("mcmc",
 ##' @describeIn mcmc The fast method for the LogisticNormal class
 ##'
 ##' @importFrom BayesLogit logit
+##' @example examples/mcmc.R
 setMethod("mcmc",
           signature=
           signature(data="Data",

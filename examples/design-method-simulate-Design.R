@@ -51,8 +51,8 @@ myTruth <- function(dose)
 # We only generate 10 trial outcomes here for illustration, for the actual study 
 # this should be increased of course
 options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=1000)
+                       step=1,
+                       samples=2000)
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
                                        truth=myTruth,
@@ -60,32 +60,5 @@ time <- system.time(mySims <- simulate(design,
                                        seed=819,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
-
-# Plot the results of the simulation
-print(plot(mySims))
-print(plot(mySims@data[[3]]))
-
-
-
-# ##obtain the plot for the simulation results
-# ##If only DLE responses are considered in the simulations
-# ##Specified your simulations when no DLE samples are used
-# ##(Please refer to desgin-method 'simulate TDDesign' examples for details)
-# mySim <- simulate(design,
-#                   args=NULL,
-#                   truth=myTruth,
-#                   nsim=10,
-#                   seed=819,
-#                   parallel=FALSE)
-# ##If DLE samples are involved
-# ##Please refer to design-method 'simulate TDsamplesDesign' examples for details
-# mySim <- simulate(design,
-#                   args=NULL,
-#                   truth=myTruth,
-#                   nsim=10,
-#                   seed=819,
-#                   mcmcOptions=options,
-#                   parallel=FALSE)
-# ##Then produce plot of you simulted results
-# print(plot(mySim))
-
+  
+  

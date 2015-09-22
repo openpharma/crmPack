@@ -165,6 +165,7 @@ getResultList <- function(fun,
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
+##' @example examples/design-method-simulate-Design.R
 ##' @export
 ##' @keywords methods
 setMethod("simulate",
@@ -413,6 +414,7 @@ setMethod("simulate",
 ##'
 ##' @return an object of class \code{\linkS4class{GeneralSimulations}}
 ##'
+##' @example examples/design-method-simulate-RuleDesign.R
 ##' @export
 ##' @keywords methods
 setMethod("simulate",
@@ -571,6 +573,7 @@ setMethod("simulate",
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
 ##'
+##' @example examples/design-method-simulate-DualDesign.R
 ##' @importFrom mvtnorm rmvnorm
 ##' @export
 ##' @keywords methods
@@ -940,6 +943,8 @@ setGeneric("examine",
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
 ##' giving the MCMC options for each evaluation in the trial. By default,
 ##' the standard options are used
+##' 
+##' @example examples/design-method-examine-Design.R
 setMethod("examine",
           signature=
               signature(object="Design"),
@@ -1052,6 +1057,7 @@ setMethod("examine",
 
 
 ##' @describeIn examine Examine a rule-based design
+##' @example examples/design-method-examine-RuleDesign.R
 setMethod("examine",
           signature=
               signature(object="RuleDesign"),
