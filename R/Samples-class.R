@@ -27,7 +27,7 @@
 ##' of the parameter).
 ##' @slot options the \code{\linkS4class{McmcOptions}} which have been used
 ##'
-##' @example examples/Sample-class-Samples.r
+##' @example examples/Sample-class-Samples.R
 ##' @export
 ##' @keywords classes
 .Samples <-
