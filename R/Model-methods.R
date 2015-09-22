@@ -370,7 +370,7 @@ setMethod("ExpEff",
 ##' @param dose the dose
 ##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
 ##' @param DLEsamples the \code{\linkS4class{Samples}} object (can also be missing)
-##' @param Effmodel the \code{\linkS4class{Effloglog}} object
+##' @param Effmodel the \code{\linkS4class{Effloglog}} or the \code{\linkS4class{EffFlexi}} object
 ##' @param Effsamples the \code{\linkS4class{Samples}} object (can also be missing)
 ##' @param \dots unused
 ##' 
@@ -466,14 +466,14 @@ setMethod("gain",
 
 
 ##' @describeIn gain Compute the gain value given a dose level, a pseudo DLE model and a pseudo
-##' efficacy model without DLE and the efficacy sample
+##' efficacy model of \code{\linkS4class{Effloglog}} class object without DLE and the efficacy sample
 ##' @example examples/Model-method-gainNoSamples.R
 setMethod("gain",
           signature=
             signature(dose="numeric",
                       DLEmodel="ModelTox",
                       DLEsamples="missing",
-                      Effmodel="ModelEff",
+                      Effmodel="Effloglog",
                       Effsamples="missing"),
           def=
             function(dose,DLEmodel,Effmodel,...){
