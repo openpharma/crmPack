@@ -20,6 +20,7 @@
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 %% reduce the height of the plots
 \setkeys{Gin}{width=0.65\textwidth}
@@ -478,7 +479,7 @@ print(doseRecommendation$plot)
 @
 
 \subsection{Cohort size rules}
-\label{sec:increments-rules}
+\label{sec:cohort-size-rules}
 
 Similarly to the increments rules, you can define intervals in the dose space
 and/or the DLT space to define the size of the cohorts. For example, let's
@@ -1001,7 +1002,7 @@ at the first, 5th, 10th and 25th gridpoint, respectively, seem to have
 converged, as the traceplots show. (Remember that \verb|data@nGrid| gives the
 number of gridpoints.) So we can plot the model fit:
 
-\setkeys{Gin}{width=\textwidth}
+\setkeys{Gin}{width=0.65\textwidth}
 <<dual-modelfit, fig=TRUE>>=
 print(plot(samples, model, data, extrapolate=FALSE))
 @
