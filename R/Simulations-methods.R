@@ -1175,7 +1175,7 @@ setMethod("summary",
               doseGrid <- object@data[[1]]@doseGrid
               
               ##evaluate true DLE at doseGrid
-              trueDLE <- truth(doseGrid,...)
+              trueDLE <- truth(doseGrid)
               
               ##Inverse function of the truth function
               inverse = function (f, lower = -100, upper = 100) {
@@ -1183,7 +1183,7 @@ setMethod("summary",
               }
               
               ##Function to obtain corresponsing dose level given target prob
-              TD <- inverse(truth, 0, max(data@doseGrid))
+              TD <- inverse(truth, 0, max(object@data[[1]]@doseGrid))
               
               ##Find the dose corresponding to the target dose during trial
               targetDoseEndOfTrial <- as.numeric(TD(targetEndOfTrial))
