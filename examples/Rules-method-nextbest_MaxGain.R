@@ -1,3 +1,12 @@
+## we need a data object with doses >= 1:
+data <- DataDual(x=c(5, 5, 5, 10, 10, 10),
+                 y=c(0, 0, 0, 0, 1, 0),
+                 w=c(0.43, 0.41, 0.39, 0.34, 0.38, 0.21),     
+                 cohort=c(0, 0, 0, 1, 1, 1),
+                 doseGrid=
+                   c(5,
+                     seq(from=10, to=80, by=2)))
+
 ##The 'nextBest' method using NextBestMaxGain' rules class object
 ## using the 'ModelTox' class DLE model 
 ## DLEmodel e.g 'LogisticIndepBeta' class
