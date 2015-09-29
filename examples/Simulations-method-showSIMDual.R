@@ -1,7 +1,55 @@
-##obtain the plot for the simulation results
+
 ##If DLE and efficacy responses are considered in the simulations
 ##Specified your simulations when no samples are used
-##(Please refer to desgin-method 'simulate DualResponsesDesign' examples for details)
+## we need a data object with doses >= 1:
+data <- DataDual(doseGrid=seq(25,300,25))
+##First for the DLE model 
+##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class 
+DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
+                              DLEweights=c(3,3),
+                              DLEdose=c(25,300),
+                              data=data)
+
+##The efficacy model of 'ModelEff' (e.g 'Effloglog') class 
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
+                    nu=c(a=0.025,b=1),data=data)
+
+##The escalation rule using the 'NextBestMaxGain' class
+mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
+                            DLEEndOfTrialtarget=0.3)
+
+
+##The increments (see Increments class examples) 
+## 200% allowable increase for dose below 300 and 200% increase for dose above 300
+myIncrements<-IncrementsRelative(intervals=c(25,300),
+                                 increments=c(2,2))
+##cohort size of 3
+mySize<-CohortSizeConst(size=3)
+##Stop only when 36 subjects are treated
+myStopping <- StoppingMinPatients(nPatients=36)
+##Now specified the design with all the above information and starting with a dose of 25
+
+##Specified the design(for details please refer to the 'DualResponsesDesign' example)
+design <- DualResponsesDesign(nextBest=mynextbest,
+                              model=DLEmodel,
+                              Effmodel=Effmodel,
+                              stopping=myStopping,
+                              increments=myIncrements,
+                              cohortSize=mySize,
+                              data=data,startingDose=25)
+##Specify the true DLE and efficacy curves
+myTruthDLE<- function(dose)
+{ DLEmodel@prob(dose, phi1=-53.66584, phi2=10.50499)
+}
+
+myTruthEff<- function(dose)
+{Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
+}
+
+## Then specified the simulations and generate the trial for 10 times
+
+options<-McmcOptions(burnin=100,step=2,samples=200)
+
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -10,8 +58,34 @@ mySim <-simulate(object=design,
                  nsim=10,
                  seed=819,
                  parallel=FALSE)
+##Then produce a summary of your simulations
+MYSUM <- summary(mySim,
+                 trueDLE=myTruthDLE,
+                 trueEff=myTruthEff)
+##Then show the summary in data frame for your simulations
+show(MYSUM)
+
+
+
+
 ##If DLE and efficacy samples are involved
-##Please refer to design-method 'simulate DualResponsesSamplesDesign' examples for details
+##The escalation rule using the 'NextBestMaxGainSamples' class
+mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
+                                   DLEEndOfTrialtarget=0.3,
+                                   TDderive=function(TDsamples){
+                                     quantile(TDsamples,prob=0.3)},
+                                   Gstarderive=function(Gstarsamples){
+                                     quantile(Gstarsamples,prob=0.5)})
+##The design of 'DualResponsesSamplesDesign' class
+design <- DualResponsesSamplesDesign(nextBest=mynextbest,
+                                     cohortSize=mySize,
+                                     startingDose=25,
+                                     model=DLEmodel,
+                                     Effmodel=Effmodel,
+                                     data=data,
+                                     stopping=myStopping,
+                                     increments=myIncrements)
+
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,
@@ -21,17 +95,8 @@ mySim<-simulate(design,
                 mcmcOptions=options,
                 seed=819,
                 parallel=FALSE)
-##Or if the the 'EffFlexi' class is used for the efficacy model
-####Please refer to design-method 'simulate DualResponsesSamplesFlexiDesign' examples for details
-mySim<-simulate(object=design,
-                args=NULL,
-                trueDLE=myTruthDLE,
-                trueEff=myTruthEff,
-                trueSigma2=0.025,
-                trueSigma2betaW=1,
-                nsim=1,
-                seed=819,
-                parallel=FALSE)
+
+
 ##Then produce a summary of your simulations
 MYSUM <- summary(mySim,
                  trueDLE=myTruthDLE,

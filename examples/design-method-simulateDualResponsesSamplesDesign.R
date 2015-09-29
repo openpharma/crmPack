@@ -13,9 +13,13 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
                     nu=c(a=0.025,b=1),data=data)
 
-##The escalation rule using the 'NextBestMaxGain' class
-mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
-                            DLEEndOfTrialtarget=0.3)
+##The escalation rule using the 'NextBestMaxGainSamples' class
+mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
+                                   DLEEndOfTrialtarget=0.3,
+                                   TDderive=function(TDsamples){
+                                     quantile(TDsamples,prob=0.3)},
+                                   Gstarderive=function(Gstarsamples){
+                                     quantile(Gstarsamples,prob=0.5)})
 
 RecommendedDose<-nextBest(mynextbest,
                           doselimit=max(data@doseGrid),
@@ -74,7 +78,8 @@ mySim<-simulate(design,
 Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
                     sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
 
-##Specified the design(for details please refer to the 'DualResponsesSamplesDesign' example)
+
+##Specified the design 
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      cohortSize=mySize,
                                      startingDose=25,

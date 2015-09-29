@@ -45,9 +45,7 @@ myTruth <- function(dose)
 ##then plot the truth to see how the truth dose-DLE curve look like
 curve(myTruth(x), from=0, to=300,ylim=c(0,1))
 
-## Then specified the simulations and generate the trial for 10 times
 
-options<-McmcOptions(burnin=100,step=2,samples=200)
 
 ##Then simulate 10 trials of this design
 

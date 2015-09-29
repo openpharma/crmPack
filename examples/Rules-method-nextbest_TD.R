@@ -1,3 +1,4 @@
+data <- Data(doseGrid=seq(25,300,25))
 ##The 'nextBest' method using NextBestTD' rules class object
 ## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples
 ## model must be of 'LogisticIndepBeta' class

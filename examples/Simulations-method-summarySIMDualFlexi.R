@@ -1,11 +1,48 @@
-##obtain the plot for the simulation results
+
 ##If DLE and efficacy responses are considered in the simulations and the 'EffFlexi' class is used 
+## we need a data object with doses >= 1:
+data <- DataDual(doseGrid=seq(25,300,25))
+##First for the DLE model 
+##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class 
+DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
+                              DLEweights=c(3,3),
+                              DLEdose=c(25,300),
+                              data=data)
+
 ## for the efficacy model
 Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
                     sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
-## todo: how does the Effmodel come into the below code?
-##Specify the simulations
-##Please refer to design-method 'simulate DualResponsesSamplesFlexiDesign' examples for details
+
+##specified the next best
+mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
+                                   DLEEndOfTrialtarget=0.3,
+                                   TDderive=function(TDsamples){
+                                     quantile(TDsamples,prob=0.3)},
+                                   Gstarderive=function(Gstarsamples){
+                                     quantile(Gstarsamples,prob=0.5)})
+
+##Specified the design 
+design <- DualResponsesSamplesDesign(nextBest=mynextbest,
+                                     cohortSize=mySize,
+                                     startingDose=25,
+                                     model=DLEmodel,
+                                     Effmodel=Effmodel,
+                                     data=data,
+                                     stopping=myStopping,
+                                     increments=myIncrements)
+##specified the true DLE curve and the true expected efficacy values at all dose levels
+myTruthDLE<- function(dose)
+{ DLEmodel@prob(dose, phi1=-53.66584, phi2=10.50499)
+}
+
+myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,  
+               0.9333009  ,1.0687031,  1.1793942 , 1.2726408 , 
+               1.3529598 , 1.4233411 , 1.4858613 , 1.5420182)
+
+
+##specify the options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=2000)
+##The simulation
 mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,

@@ -10,8 +10,10 @@ data <- Data(doseGrid=seq(25,300,25))
 ##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##Then the escalation rule
-tdNextBest <- NextBestTD(targetDuringTrial=0.35,
-                         targetEndOfTrial=0.3)
+tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,
+                              targetEndOfTrial=0.3,
+                              derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
+
 doseRecommendation<-nextBest(tdNextBest,
                              doselimit=max(data@doseGrid),
                              model=model,

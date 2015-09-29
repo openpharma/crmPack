@@ -394,22 +394,22 @@ setMethod("mcmc",
                      ...){
               
               ##update the DLE model first
-              model <- update(object=model,data=data)
+              thismodel <- update(object=model,data=data)
               
               ## decide whether we sample from the prior or not
               fromPrior <- data@nObs == 0L
               
               
               ##probabilities of risk of DLE at all dose levels
-              pi<-(model@binDLE)/(model@DLEweights)
+              pi<-(thismodel@binDLE)/(thismodel@DLEweights)
               ##scalar term for the covariance matrix
-              scalarI<-model@DLEweights*pi*(1-pi)
+              scalarI<-thismodel@DLEweights*pi*(1-pi)
               ##
               precision<-matrix(rep(0,4),nrow=2,ncol=2)
               
-              for (i in (1:(length(model@binDLE)))){
+              for (i in (1:(length(thismodel@binDLE)))){
                 
-                precisionmat<-scalarI[i]*matrix(c(1,log(model@DLEdose[i]),log(model@DLEdose[i]),(log(model@DLEdose[i]))^2),2,2)
+                precisionmat<-scalarI[i]*matrix(c(1,log(thismodel@DLEdose[i]),log(thismodel@DLEdose[i]),(log(thismodel@DLEdose[i]))^2),2,2)
                 precision<-precision+precisionmat
               }
               
@@ -417,7 +417,7 @@ setMethod("mcmc",
                 ## sample from the (asymptotic) bivariate normal prior for theta
                 
                 tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
-                                        mean=c(slot(model,"phi1"),slot(model,"phi2")),
+                                        mean=c(slot(thismodel,"phi1"),slot(thismodel,"phi2")),
                                         sigma=solve(precision)) 
                 
                 
@@ -435,10 +435,10 @@ setMethod("mcmc",
                 scalarI<-weights*pi*(1-pi)
                 ##
                 
-                priordle<-model@binDLE
-                priorw1<-model@DLEweights
+                priordle<-thismodel@binDLE
+                priorw1<-thismodel@DLEweights
                 
-                priordose<-model@DLEdose
+                priordose<-thismodel@DLEdose
                 FitDLE<-glm(priordle/priorw1~log(priordose),family=binomial(link="logit"),weights=priorw1)
                 SFitDLE<-summary(FitDLE)
                 ##Obtain parameter estimates for dose-DLE curve
@@ -548,7 +548,7 @@ setMethod("mcmc",
             function(data,model,options,
                      ...){
              ##update the model
-              model <- update(object=model,data=data)
+              thismodel <- update(object=model,data=data)
               
               nSamples <- sampleSize(options)
               
@@ -570,29 +570,29 @@ setMethod("mcmc",
               ## EstEff: constant, the average of the observed efficacy values
               
               if (length(data@w)==0){
-                w1<-model@Eff
-                x1<-model@Effdose} else {
+                w1<-thismodel@Eff
+                x1<-thismodel@Effdose} else {
                   ## Combine pseudo data with observed efficacy responses and no DLE observed
-                  w1<-c(model@Eff,getEff(data)$wNoDLE)
-                  x1<-c(model@Effdose,getEff(data)$xNoDLE)
+                  w1<-c(thismodel@Eff,getEff(data)$wNoDLE)
+                  x1<-c(thismodel@Effdose,getEff(data)$xNoDLE)
                 }
               x1Level <- match(x1,data@doseGrid)
               ##betaW is constant, the average of the efficacy values
               betaW <- rep(mean(w1), data@nGrid)
               ##sigma2betaW use fixed value or prior mean
               sigma2betaW <- 
-                if (model@useFixed[["sigma2betaW"]])
-                {model@sigma2betaW
-                } else {model@sigma2betaW["b"]/(model@sigma2betaW["a"]-1)}
+                if (thismodel@useFixed[["sigma2betaW"]])
+                {thismodel@sigma2betaW
+                } else {thismodel@sigma2betaW["b"]/(thismodel@sigma2betaW["a"]-1)}
               ##sigma2: fixed value or just the empirical variance
-              sigma2 <- if (model@useFixed[["sigma2"]])
+              sigma2 <- if (thismodel@useFixed[["sigma2"]])
               {
-                model@sigma2
+                thismodel@sigma2
               } else {
                 var(w1)
               }
               ##Set up diagonal matrix with the number of patients in the corresponding dose levels on the diagonal
-              designWcrossprod <- crossprod(model@designW)
+              designWcrossprod <- crossprod(thismodel@designW)
               
               ###The MCMC cycle
               
@@ -601,7 +601,7 @@ setMethod("mcmc",
                 ## the variance
                 adjustedVar <- sigma2
                 ## New precision matrix
-                thisPrecW <- designWcrossprod/adjustedVar + model@RWmat/sigma2betaW
+                thisPrecW <- designWcrossprod/adjustedVar + thismodel@RWmat/sigma2betaW
                 ##draw random normal vector
                 normVec <- rnorm(data@nGrid)
                 ##and its Cholesky factor 
@@ -610,13 +610,13 @@ setMethod("mcmc",
                 betaW <- backsolve(r=thisPrecWchol, 
                                    x=normVec)
                 ##the residual
-                adjustedW <- w1-model@designW%*%betaW
+                adjustedW <- w1-thismodel@designW%*%betaW
                 
                 ##forward substitution
                 ## solve L^T * tmp =designW ^T * adjustedW/ adjustedVar
                 
                 tmp <- forwardsolve(l=thisPrecWchol,
-                                    x=crossprod(model@designW,adjustedW)/adjustedVar,
+                                    x=crossprod(thismodel@designW,adjustedW)/adjustedVar,
                                     upper.tri=TRUE,
                                     transpose=TRUE)
                 ##Backward substitution solve R*tepNew =tmp
@@ -632,25 +632,25 @@ setMethod("mcmc",
                 ## if fixed, do nothing
                 ## Otherwise sample from full condition
                 
-                if (!model@useFixed$sigma2betaW)
+                if (!thismodel@useFixed$sigma2betaW)
                 {
                   sigma2betaW <- rinvGamma (n=1L,
-                                            a=model@sigma2betaW["a"]+model@RWmatRank/2,
-                                            b=model@sigma2betaW["b"]+crossprod(betaW,model@RWmat%*%betaW)/2)
+                                            a=thismodel@sigma2betaW["a"]+thismodel@RWmatRank/2,
+                                            b=thismodel@sigma2betaW["b"]+crossprod(betaW,thismodel@RWmat%*%betaW)/2)
                 }
                 ##3) Generate variance for the flexible efficacy model
                 ##if fixed variance is used
-                if (model@useFixed$sigma2)
+                if (thismodel@useFixed$sigma2)
                 {##do nothing
                   acceptHistory$sigma2[iterMcmc] <- TRUE
                 } else {
                   ##Metropolis-Hastings update step here, using 
                   ##an inverse gamma distribution
-                  aStar <- model@sigma2["a"] + length(x1)/2
+                  aStar <- thismodel@sigma2["a"] + length(x1)/2
                   ##Second paramter bStar depends on the value for sigma2
                   bStar <- function(x)
                   {adjW <-w1
-                  ret <- sum((adjW - betaW[x1Level])^2)/2 + model@sigma2["b"]
+                  ret <- sum((adjW - betaW[x1Level])^2)/2 + thismodel@sigma2["b"]
                   return(ret)
                   }
                   ###Draw proposal:

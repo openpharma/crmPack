@@ -1183,7 +1183,7 @@ setMethod("summary",
               }
               
               ##Function to obtain corresponsing dose level given target prob
-              TD <- inverse(truth, 0, max(object@data[[1]]@doseGrid))
+              TD <- inverse(truth, 0, max(doseGrid))
               
               ##Find the dose corresponding to the target dose during trial
               targetDoseEndOfTrial <- as.numeric(TD(targetEndOfTrial))
@@ -1889,7 +1889,7 @@ setMethod("summary",
                                            "ExpEff")
                 
                 meanEffFit <- list(truth=
-                                     trueEff(doseGrid,...),
+                                     trueEff(doseGrid),
                                    average=rowMeans(meanEffFitMatrix))
                 
               } else {## fitted efficacy level at dose most often selected
@@ -1906,7 +1906,7 @@ setMethod("summary",
                                            "[[",
                                            "middle")
                 meanEffFit <- list(truth=
-                                     trueEff(doseGrid, ...),
+                                     trueEff(doseGrid),
                                    average=
                                      rowMeans(meanEffFitMatrix),
                                    lower=
