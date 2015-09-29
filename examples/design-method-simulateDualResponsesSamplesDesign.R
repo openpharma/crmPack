@@ -21,11 +21,6 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    Gstarderive=function(Gstarsamples){
                                      quantile(Gstarsamples,prob=0.5)})
 
-RecommendedDose<-nextBest(mynextbest,
-                          doselimit=max(data@doseGrid),
-                          model=DLEmodel,
-                          Effmodel=Effmodel,
-                          data=data)
 
 ##The increments (see Increments class examples) 
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300
@@ -38,7 +33,7 @@ myStopping <- StoppingMinPatients(nPatients=36)
 ##Now specified the design with all the above information and starting with a dose of 25
 
 
-##Specified the design(for details please refer to the 'DualResponsesSamplesDesign' example)
+##Specified the design 
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      cohortSize=mySize,
                                      startingDose=25,
@@ -109,6 +104,7 @@ mySim<-simulate(object=design,
                 trueEff=myTruthEff,
                 trueSigma2=0.025,
                 trueSigma2betaW=1,
+                McmcOptions=options,
                 nsim=1,
                 seed=819,
                 parallel=FALSE)

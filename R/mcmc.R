@@ -386,7 +386,7 @@ setMethod("mcmc",
 ##' @example examples/mcmc-LogisticIndepBeta.R
 setMethod("mcmc",
           signature=
-            signature(data="Data",
+            signature(data="DataDual",
                       model="LogisticIndepBeta",
                       options="McmcOptions"),
           def=

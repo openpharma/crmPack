@@ -37,7 +37,7 @@ myTruth <- function(dose)
 { model@prob(dose, phi1=-53.66584, phi2=10.50499)
 }
 
-
+##The simulations
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,

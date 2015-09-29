@@ -10,7 +10,9 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 ## (e.g 'Effloglog' class)
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
 ##define the DLE sample of 'Samples' class
-DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
+##set up the same data set in class 'Data' for MCMC sampling for DLE
+data1 <- Data(x=data@x,y=data@y,doseGrid=data@doseGrid)
+DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
 ##define the efficacy sample of 'Samples' class
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 ##plot the three curves of mean values of the DLEsamples, Effsamples and 

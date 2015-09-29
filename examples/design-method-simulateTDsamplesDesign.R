@@ -47,9 +47,9 @@ myTruth <- function(dose)
 curve(myTruth(x), from=0, to=300,ylim=c(0,1))
 
 ## Then specified the simulations and generate the trial for 10 times
-
+##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)
-
+##The simulations
 mySim <-  simulate(object=design,
                    args=NULL,
                    truth=myTruth,

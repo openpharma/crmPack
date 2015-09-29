@@ -8,6 +8,8 @@ data <-DataDual(x=c(25,50,25,50,75,300,250,150),
 ##define the model (see Effloglog example)
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
 ## define the samples obtained using the 'Effloglog' model (see details in 'Samples' example)
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
 ## samples must be of 'Samples' class
 samples <- mcmc(data=data,model=Effmodel,options=options)
 ## plot the fitted dose-efficacy curve including the 95% credibility interval of the samples

@@ -48,8 +48,6 @@ myTruthEff<- function(dose)
 
 ## Then specified the simulations and generate the trial for 10 times
 
-options<-McmcOptions(burnin=100,step=2,samples=200)
-
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -85,7 +83,9 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      data=data,
                                      stopping=myStopping,
                                      increments=myIncrements)
-
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
+##The simulations
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,

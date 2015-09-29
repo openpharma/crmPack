@@ -36,9 +36,6 @@ myTruth <- function(dose)
 
 ## Then specified the simulations and generate the trial for 10 times
 
-options<-McmcOptions(burnin=100,step=2,samples=200)
-
-
 ##The simulations
 mySim <- simulate(design,
                   args=NULL,
@@ -67,6 +64,9 @@ design <- TDsamplesDesign(model=model,
                           increments=myIncrements,
                           cohortSize=mySize,
                           data=data,startingDose=25)
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
+##The simulations
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,

@@ -45,14 +45,16 @@ myTruthGain <- function(dose)
 {return((myTruthEff(dose))/(1+(myTruthDLE(dose)/(1-myTruthDLE(dose)))))}
 
 
-##simulate the trial for 10 times involving samples
-options<-McmcOptions(burnin=100,step=2,samples=2000)
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
+##The simulations
 mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,
                 trueEff=myTruthEff,
                 trueSigma2=0.025,
                 trueSigma2betaW=1,
+                mcmcOptions=options,
                 nsim=1,
                 seed=819,
                 parallel=FALSE)

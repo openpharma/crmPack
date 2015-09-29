@@ -48,8 +48,6 @@ myTruthEff<- function(dose)
 
 ## Then specified the simulations and generate the trial for 10 times
 
-options<-McmcOptions(burnin=100,step=2,samples=200)
-
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -58,8 +56,30 @@ mySim <-simulate(object=design,
                  nsim=10,
                  seed=819,
                  parallel=FALSE)
+
+##plot the simulation results
+print(plot(mySim))
+
 ##If DLE and efficacy samples are involved
-##Please refer to design-method 'simulate DualResponsesSamplesDesign' examples for details
+##The escalation rule using the 'NextBestMaxGainSamples' class
+mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
+                                   DLEEndOfTrialtarget=0.3,
+                                   TDderive=function(TDsamples){
+                                     quantile(TDsamples,prob=0.3)},
+                                   Gstarderive=function(Gstarsamples){
+                                     quantile(Gstarsamples,prob=0.5)})
+##The design of 'DualResponsesSamplesDesign' class
+design <- DualResponsesSamplesDesign(nextBest=mynextbest,
+                                     cohortSize=mySize,
+                                     startingDose=25,
+                                     model=DLEmodel,
+                                     Effmodel=Effmodel,
+                                     data=data,
+                                     stopping=myStopping,
+                                     increments=myIncrements)
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
+##The simulations
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,

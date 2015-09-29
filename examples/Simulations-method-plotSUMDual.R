@@ -1,7 +1,6 @@
 ##obtain the plot of the summary for the simulation results
 ##If DLE and efficacy responses are considered in the simulations
 ##Specified your simulations when no samples are used
-##Please refer to design-method 'simulate DualResponsesDesign' examples for details
 ## we need a data object with doses >= 1:
 data <- DataDual(doseGrid=seq(25,300,25))
 ##First for the DLE model 
@@ -49,7 +48,6 @@ myTruthEff<- function(dose)
 
 ## Then specified the simulations and generate the trial for 10 times
 
-options<-McmcOptions(burnin=100,step=2,samples=200)
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -87,6 +85,9 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      data=data,
                                      stopping=myStopping,
                                      increments=myIncrements)
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
+##The simulations
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,
@@ -133,8 +134,9 @@ myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
 ##The true gain curve can also be seen
 myTruthGain <- function(dose)
 {return((myTruthEff(dose))/(1+(myTruthDLE(dose)/(1-myTruthDLE(dose)))))}
-
-##Specify the simulations
+##options for MCMC
+options<-McmcOptions(burnin=100,step=2,samples=200)
+##The simulations
 mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,
@@ -142,12 +144,13 @@ mySim<-simulate(object=design,
                 trueSigma2=0.025,
                 trueSigma2betaW=1,
                 nsim=1,
+                McmcOptions=options,
                 seed=819,
                 parallel=FALSE)
 ##Then produce a summary of your simulations
 MYSUM <- summary(mySim,
                  trueDLE=myTruthDLE,
-                  trueEff=myTruthEff)
+                 trueEff=myTruthEff)
 
 ##Then plot the summary of the simulations
 print(plot(MYSUM))
