@@ -1955,50 +1955,16 @@ setMethod("summary",
                      ...){
               ##call the parent method
               start <- callNextMethod(object=object,
-                                      truth=trueDLE,
+                                      trueDLE=trueDLE,
+                                      trueEff=trueEff,
                                       targetEndOfTrial=targetEndOfTrial,
                                       targetDuringTrial=targetDuringTrial,
                                       ...)
-              doseGrid <- object@data[[1]]@doseGrid
               
-              ## ## dose level most often selected as MTD (TDEnd of Trial)
-              xMostSelected <-
-                match(start@doseMostSelected,
-                      table=doseGrid)
-              
-              ## fitted efficacy level at dose most often selected
-              EffFitAtDoseMostSelected <-
-                sapply(object@fitEff,
-                       function(f){
-                         f$middle[xMostSelected]
-                       })
-              
-              ## mean fitted  curve (average, lower and upper quantiles)
-              ## at each dose level
-              ## (this is required for plotting)
-              meanEffFitMatrix <- sapply(object@fitEff,
-                                         "[[",
-                                         "middle")
-              meanEffFit <- list(truth=trueEff,
-                                 average=
-                                   rowMeans(meanEffFitMatrix),
-                                 lower=
-                                   apply(meanEffFitMatrix,
-                                         1L,
-                                         quantile,
-                                         0.025),
-                                 upper=
-                                   apply(meanEffFitMatrix,
-                                         1L,
-                                         quantile,
-                                         0.975))
               
               ## give back an object of class PseudoDualSimulationsSummary,
               ## for which we then define a print / plot method
-              ret <- .PseudoDualSimulationsSummary(
-                start,
-                EffFitAtDoseMostSelected=EffFitAtDoseMostSelected,
-                meanEffFit=meanEffFit)
+              ret <- .PseudoDualSimulationsSummary(start)
               
               return(ret)
             })

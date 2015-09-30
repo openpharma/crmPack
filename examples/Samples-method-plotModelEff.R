@@ -14,4 +14,4 @@ options<-McmcOptions(burnin=100,step=2,samples=200)
 samples <- mcmc(data=data,model=Effmodel,options=options)
 ## plot the fitted dose-efficacy curve including the 95% credibility interval of the samples
 ## 'x' should be of 'Samples' class and 'y' of 'ModelEff' class
-plot(x=samples,y=model)
+plot(x=samples,y=Effmodel)
