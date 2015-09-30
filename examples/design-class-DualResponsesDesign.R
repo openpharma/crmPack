@@ -19,11 +19,6 @@ Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
                             DLEEndOfTrialtarget=0.3)
 
-RecommendedDose<-nextBest(mynextbest,
-                          doselimit=max(data@doseGrid),
-                          model=DLEmodel,
-                          Effmodel=Effmodel,
-                          data=data)
 
 ##The increments (see Increments class examples) 
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300

@@ -2091,7 +2091,7 @@ setMethod("nextBest",
               
               ##first get the probDLE samples
               points <- data@doseGrid
-              probDLESamples <- matrix(nrow=sampleSize(DLEsamples@options),
+              probDLESamples <- matrix(nrow=sampleSize(samples@options),
                                        ncol=length(points))
               
               ## evaluate the probs, for all gain samples.

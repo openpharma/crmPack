@@ -24,8 +24,7 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    Gstarderive=function(Gstarsamples){
                                      quantile(Gstarsamples,prob=0.5)})
 
-RecommendedDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,
-                          model=DLEmodel, data=data,Effmodel=Effmodel,Effsamples=Effsamples)
+
 ##The increments (see Increments class examples) 
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300
 myIncrements<-IncrementsRelative(intervals=c(25,300),

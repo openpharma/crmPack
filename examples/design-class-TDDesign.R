@@ -11,10 +11,6 @@ model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),
 ##Then the escalation rule
 tdNextBest <- NextBestTD(targetDuringTrial=0.35,
                          targetEndOfTrial=0.3)
-doseRecommendation<-nextBest(tdNextBest,
-                             doselimit=max(data@doseGrid),
-                             model=model,
-                             data=data)
 
 ## The cohort size, size of 3 subjects
 mySize <-CohortSizeConst(size=3)

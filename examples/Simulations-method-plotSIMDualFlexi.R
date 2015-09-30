@@ -23,6 +23,18 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    Gstarderive=function(Gstarsamples){
                                      quantile(Gstarsamples,prob=0.5)})
 
+## The cohort size, size of 3 subjects
+mySize <-CohortSizeConst(size=3)
+##Deifne the increments for the dose-escalation process
+##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid
+##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid
+##This is to specified a maximum of 3-fold restriction in dose-esclation
+myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
+                                 increments=c(2,2))
+##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
+myStopping <- StoppingMinPatients(nPatients=36)
+
+
 ##Specified the design 
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      cohortSize=mySize,
