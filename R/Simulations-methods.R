@@ -2002,9 +2002,7 @@ def=
     
     ##add one reporting line
     r$report("EffFitAtDoseMostSelected",
-             "Fitted expected efficacy level at dose most often selected",
-             percentage=FALSE,
-             digits=1)
+             "Fitted expected efficacy level at dose most often selected")
     ## and return the updated information
     names(r$df) <- r$dfNames
     invisible(r$df)
