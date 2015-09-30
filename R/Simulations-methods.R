@@ -1905,8 +1905,14 @@ setMethod("summary",
                 meanEffFitMatrix <- sapply(object@fitEff,
                                            "[[",
                                            "middle")
+                
+                ## check if special case applies
+                isTrueEffFx <- is.function(myTruthEff)
+                
+                if (isTrueEffFx) {TRUTHeff<- trueEff(doseGrid)} else {TRUTHeff <- trueEff}
+                
                 meanEffFit <- list(truth=
-                                     trueEff(doseGrid),
+                                     TRUTHeff,
                                    average=
                                      rowMeans(meanEffFitMatrix),
                                    lower=
