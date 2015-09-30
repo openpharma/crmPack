@@ -2001,14 +2001,16 @@ setMethod("simulate",
                         is.bool(parallel))
               
               ## check if special case applies
-              isFlexi <- is(object@model, "EffFlexi")
+              isFlexi <- is(object@Effmodel, "EffFlexi")
               
               ## conditional code from here on:
               if(isFlexi)
               {
                 ## special checks and extracts
                 stopifnot(trueSigma2 > 0,
-                          trueSigma2betaW > 0)
+                          trueSigma2betaW > 0,
+                          is.numeric(trueEff),
+                          length(trueEff)==length(object@data@doseGrid))
                 
                 args <- as.data.frame(args)
                 nArgs <- max(nrow(args), 1L)
@@ -2276,7 +2278,8 @@ setMethod("simulate",
                 return(ret)
               } else {
                 
-                stopifnot(trueNu > 0)
+                stopifnot(trueNu > 0,
+                          is.function(trueEff))
                 
                 
               args <- as.data.frame(args)
