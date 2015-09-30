@@ -1995,7 +1995,6 @@ setMethod("simulate",
               
               ## common checks and extracts
               stopifnot(is.function(trueDLE),
-                        is.function(trueEff),
                         is.bool(firstSeparate),
                         is.scalar(nsim),
                         nsim > 0,
