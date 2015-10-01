@@ -1,6 +1,6 @@
 ##Update the 'EffFlexi' model with new data
 ## first define the data and the model
-emptydata<-Data(doseGrid=seq(25,300,25))
+emptydata<-DataDual(doseGrid=seq(25,300,25))
 data<-emptydata
 
 Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
