@@ -13,6 +13,10 @@ Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=
 ##define the DLE sample of 'Samples' class
 ##set up the same data set in class 'Data' for MCMC sampling for DLE
 data1 <- Data(x=data@x,y=data@y,doseGrid=data@doseGrid)
+##Specify the options for MCMC
+options <- McmcOptions(burnin=100,step=2,samples=1000)
+
+
 DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
 ##define the efficacy sample of 'Samples' class
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)

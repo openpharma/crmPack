@@ -13,6 +13,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
 Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
                     sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
 
+
 ##specified the next best
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    DLEEndOfTrialtarget=0.3,
@@ -20,6 +21,15 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(TDsamples,prob=0.3)},
                                    Gstarderive=function(Gstarsamples){
                                      quantile(Gstarsamples,prob=0.5)})
+
+##The increments (see Increments class examples) 
+## 200% allowable increase for dose below 300 and 200% increase for dose above 300
+myIncrements<-IncrementsRelative(intervals=c(25,300),
+                                 increments=c(2,2))
+##cohort size of 3
+mySize<-CohortSizeConst(size=3)
+##Stop only when 36 subjects are treated
+myStopping <- StoppingMinPatients(nPatients=36)
 
 ##Specified the design 
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,

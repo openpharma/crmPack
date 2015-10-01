@@ -6,6 +6,10 @@ data<-Data(x=c(25,50,50,75,150,200,225,300),
 ## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples
 ## model must be of 'LogisticIndepBeta' class
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
+
+##Define the options for MCMC
+options <- McmcOptions(burnin=100,step=2,samples=1000)
+##Then genreate the samples
 samples <- mcmc(data, model, options)
 
 ##target probabilities of the occurrence of a DLE during trial and at the end of trial are 

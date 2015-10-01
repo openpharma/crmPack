@@ -14,12 +14,7 @@ tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,
                               targetEndOfTrial=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
 
-doseRecommendation<-nextBest(tdNextBest,
-                             doselimit=max(data@doseGrid),
-                             model=model,
-                             data=data)
-##Then the starting data, an empty data set
-emptydata<-Data(doseGrid=seq(25,300,25))
+
 ## The cohort size, size of 3 subjects
 mySize <-CohortSizeConst(size=3)
 ##Deifne the increments for the dose-escalation process

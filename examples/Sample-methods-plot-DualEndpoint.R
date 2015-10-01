@@ -27,8 +27,8 @@ samples <- mcmc(data, model, options)
 
 # Plot the posterior mean  (and empirical 2.5 and 97.5 percentile)
 # for the prob(DLT) by doses and the Biomarker by doses
-grid.arrange(plot(x = samples, y = model, data = data))
+#grid.arrange(plot(x = samples, y = model, data = data))
               
-
+plot(x = samples, y = model, data = data)
 
 
