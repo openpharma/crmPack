@@ -2523,7 +2523,7 @@ setMethod("nextBest",
 ##' @keywords methods
 setMethod("stopTrial",
           signature=
-            signature(stopping="StoppingCIRatio",
+            signature(stopping="StoppingTDsamplesCIRatio",
                       dose="ANY",
                       samples="Samples",
                       model="ModelTox",
@@ -2566,7 +2566,7 @@ setMethod("stopTrial",
 ##' @example examples/Rules-method-stopTrialCITD.R
 setMethod("stopTrial",
           signature=
-            signature(stopping="StoppingCIRatio",
+            signature(stopping="StoppingTDCIRatio",
                       dose="ANY",
                       samples="missing",
                       model="ModelTox",
@@ -2627,7 +2627,7 @@ setMethod("stopTrial",
 ##' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
 setMethod("stopTrial",
           signature=
-            signature(stopping="StoppingCIRatio",
+            signature(stopping="StoppingGstarsamplesCIRatio",
                       dose="ANY",
                       samples="Samples",
                       model="ModelTox",
@@ -2714,7 +2714,7 @@ setMethod("stopTrial",
 ##' @example examples/Rules-method-stopTrialCIMaxGain.R
 setMethod("stopTrial",
           signature=
-            signature(stopping="StoppingCIRatio",
+            signature(stopping="StoppingGstarCIRatio",
                       dose="ANY",
                       samples="missing",
                       model="ModelTox",
