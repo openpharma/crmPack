@@ -2756,7 +2756,7 @@ setMethod("stopTrial",
                 
                 dgtheta2 <- -(logGstar*exp(model@phi1+model@phi2*logGstar)*model@phi2*log(logGstar)-1-exp(model@phi1+model@phi2*logGstar))/denom
                 
-                deltaG <- martix(c(dgphi1,dgphi2,dgtheta1,dgtheta2),4,1)
+                deltaG <- matrix(c(dgphi1,dgphi2,dgtheta1,dgtheta2),4,1)
                 
                 
                 ##Find the variance of the log Gstar
