@@ -1907,7 +1907,7 @@ setMethod("summary",
                                            "middle")
                 
                 ## check if special case applies
-                isTrueEffFx <- is.function(myTruthEff)
+                isTrueEffFx <- is.function(trueEff)
                 
                 if (isTrueEffFx) {TRUTHeff<- trueEff(doseGrid)} else {TRUTHeff <- trueEff}
                 
