@@ -66,7 +66,7 @@ setMethod("as.list",
 ##' @return the \code{\link[ggplot2]{ggplot}} object
 ##'
 ##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
-##' scale_y_continuous
+##' scale_y_continuous scale_x_continuous
 ##'
 ##' @example examples/Data-method-plot-Data.R
 ##' @export

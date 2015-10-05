@@ -33,8 +33,7 @@
     packageStartupMessage(
         "Type crmPackHelp() to open help browser\n",
         "Type crmPackExample() to open example\n",
-        "Type crmPackUpgrade() to upgrade crmPack to latest version\n",
-        "Please visit https://roche.jiveon.com/projects/crmpack for more\n")
+        "Type crmPackUpgrade() to upgrade crmPack to latest version\n")
 }
 
 ## need to declare global variable / function
@@ -71,4 +70,20 @@ globalVariables(c("log.betaZ",
                   "annotate",
                   "probSamples",
                   "prec",
-                  "nu"))
+                  "nu",
+                  "samples",
+                  "Type",
+                  "patient",
+                  "toxicity",
+                  "ID",
+                  "biomarker",
+                  "traj",
+                  "Statistic",
+                  "perc",
+                  "..density..",
+                  "middle",
+                  "lower",
+                  "upper",
+                  "middleBiomarker",
+                  "lowerBiomarker",
+                  "upperBiomarker"))
