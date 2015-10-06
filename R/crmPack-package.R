@@ -32,8 +32,7 @@
 {
     packageStartupMessage(
         "Type crmPackHelp() to open help browser\n",
-        "Type crmPackExample() to open example\n",
-        "Type crmPackUpgrade() to upgrade crmPack to latest version\n")
+        "Type crmPackExample() to open example\n")
 }
 
 ## need to declare global variable / function
