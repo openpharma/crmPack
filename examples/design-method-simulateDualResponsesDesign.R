@@ -45,14 +45,14 @@ myTruthEff<- function(dose)
 {Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
 }
 
-## Then specified the simulations and generate the trial for 10 times
-
+## Then specified the simulations and generate the trial 
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 options<-McmcOptions(burnin=100,step=2,samples=200)
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
                  trueEff=myTruthEff,
                  trueNu=1/0.025,
-                 nsim=10,
+                 nsim=1,
                  seed=819,
                  parallel=FALSE)

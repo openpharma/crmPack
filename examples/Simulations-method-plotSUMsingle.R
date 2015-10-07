@@ -34,13 +34,13 @@ myTruth <- function(dose)
 { model@prob(dose, phi1=-53.66584, phi2=10.50499)
 }
 
-## Then specified the simulations and generate the trial for 10 times
-
+## Then specified the simulations and generate the trial 
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 ##The simulations
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=1,
                   seed=819,
                   parallel=FALSE)
 
@@ -67,10 +67,11 @@ design <- TDsamplesDesign(model=model,
 ##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##The simulations
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=1,
                   seed=819,
                   mcmcOptions=options,
                   parallel=FALSE)

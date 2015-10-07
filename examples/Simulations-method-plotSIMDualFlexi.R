@@ -60,6 +60,7 @@ myTruthGain <- function(dose)
 ##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##The simulations
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,

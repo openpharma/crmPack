@@ -48,7 +48,7 @@ myTruth <- function(dose)
 }
 
 # Run the simulation on the desired design
-# We only generate 10 trial outcomes here for illustration, for the actual study 
+# We only generate 1 trial outcomes here for illustration, for the actual study 
 # this should be increased of course
 options <- McmcOptions(burnin=100,
                        step=1,
@@ -56,7 +56,7 @@ options <- McmcOptions(burnin=100,
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
                                        truth=myTruth,
-                                       nsim=10,
+                                       nsim=1,
                                        seed=819,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]

@@ -20,8 +20,9 @@ myTruth <- function(dose)
 }
 
 # Perform the simulation
+##For illustration purpose only 10 simulation is produced (nsim=10). 
 threeSims <- simulate(myDesign,
-                      nsim=1000,
+                      nsim=10,
                       seed=35,
                       truth=myTruth,
                       parallel=FALSE)

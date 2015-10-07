@@ -80,12 +80,13 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
 ##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##The simulations
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,
                 trueEff=myTruthEff,
                 trueNu=1/0.025,
-                nsim=10,
+                nsim=1,
                 mcmcOptions=options,
                 seed=819,
                 parallel=FALSE)

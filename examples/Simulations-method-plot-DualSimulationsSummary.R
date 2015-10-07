@@ -64,14 +64,14 @@ curve(trueTox(x), from=0, to=80)
 curve(trueBiomarker(x), from=0, to=80)
 
 # Run the simulation on the desired design
-# We only generate 10 trial outcomes here for illustration, for the actual study 
+# We only generate 1 trial outcome here for illustration, for the actual study 
 # this should be increased of course
 mySims <- simulate(design,
                    trueTox=trueTox,
                    trueBiomarker=trueBiomarker,
                    sigma2W=0.01,
                    rho=0,
-                   nsim=10,
+                   nsim=1,
                    parallel=FALSE,
                    seed=3,
                    startingDose=6,

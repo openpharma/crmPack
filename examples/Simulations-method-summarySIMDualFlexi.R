@@ -53,6 +53,7 @@ myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
 ##specify the options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=2000)
 ##The simulation
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,

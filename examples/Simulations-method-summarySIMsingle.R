@@ -41,10 +41,11 @@ myTruth <- function(dose)
 
 
 ##(Please refer to desgin-method 'simulate TDDesign' examples for details)
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=1,
                   seed=819,
                   parallel=FALSE)
 ##Then produce a summary of your simulations

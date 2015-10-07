@@ -1944,10 +1944,10 @@ setMethod("nextBest",
                 -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
               }
               ##Find the dose which gives the maximum gain
-              Gstar<-(optim(min(data@doseGrid),Gainfun)$par)
+              Gstar<-(optim(min(data@doseGrid),Gainfun, method = "BFGS")$par)
               ##Find the maximum gain value
               
-              MaxGain<--(optim(min(data@doseGrid),Gainfun)$value)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "BFGS")$value)
               ## be sure which doses are ok with respect to maximum
               ## possible dose
               
@@ -2735,8 +2735,8 @@ setMethod("stopTrial",
               Gainfun<-function(DOSE){
                 -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
               }
-              Gstar<-(optim(min(data@doseGrid),Gainfun)$par)
-              MaxGain<--(optim(min(data@doseGrid),Gainfun)$value)
+              Gstar<-(optim(min(data@doseGrid),Gainfun,method = "BFGS")$par)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "BFGS")$value)
               logGstar <- log(Gstar)
               
               

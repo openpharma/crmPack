@@ -48,7 +48,7 @@ myTruth <- function(dose)
 }
 
 # Run the simulation on the desired design
-# We only generate 10 trial outcomes here for illustration, for the actual study 
+# We only generate 1 trial outcome here for illustration, for the actual study 
 # this should be increased of course
 options <- McmcOptions(burnin=100,
                        step=2,
@@ -56,14 +56,14 @@ options <- McmcOptions(burnin=100,
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
                                        truth=myTruth,
-                                       nsim=10,
+                                       nsim=1,
                                        seed=819,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
 
 # Plot the results of the simulation
 print(plot(mySims))
-print(plot(mySims@data[[3]]))
+print(plot(mySims@data[[1]]))
 
 
 
@@ -103,13 +103,13 @@ myTruth <- function(dose)
 { model@prob(dose, phi1=-53.66584, phi2=10.50499)
 }
 
-## Then specified the simulations and generate the trial for 10 times
-
+## Then specified the simulations and generate the trial 
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 ##The simulations
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=1,
                   seed=819,
                   parallel=FALSE)
 
@@ -134,10 +134,11 @@ design <- TDsamplesDesign(model=model,
 ##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##The simulations
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=1,
                   seed=819,
                   mcmcOptions=options,
                   parallel=FALSE)

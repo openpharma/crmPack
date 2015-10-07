@@ -46,12 +46,10 @@ myTruth <- function(dose)
 curve(myTruth(x), from=0, to=300,ylim=c(0,1))
 
 
-
-##Then simulate 10 trials of this design
-
+##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim <- simulate(object=design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=1,
                   seed=819,
                   parallel=FALSE)
