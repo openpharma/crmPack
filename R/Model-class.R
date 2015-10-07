@@ -2775,7 +2775,7 @@ LogisticIndepBeta <- function(binDLE,
     y1<-c(binDLE,data@y)
     x1<-c(DLEdose,data@x)}
   ##Fit the pseudo data and DLE responses with their corresponding dose levels
-  FitDLE<-glm(y1/w1~log(x1),family=binomial(link="logit"),weights=w1)
+  FitDLE<-suppressWarnings(glm(y1/w1~log(x1),family=binomial(link="logit"),weights=w1))
   SFitDLE<-summary(FitDLE)
   ##Obtain parameter estimates for dose-DLE curve
   phi1<-coef(SFitDLE)[1,1]
@@ -2974,7 +2974,7 @@ Effloglog<-function(Eff,
   
   useFixed <- identical(length(nu), 1L)
   ##Fit pseudo and observed efficacy
-  FitEff<-glm(w1~log(log(x1)),family=gaussian)
+  FitEff<-suppressWarnings(glm(w1~log(log(x1)),family=gaussian))
   SFitEff<-summary(FitEff)
   ##Obtain paramter estimates
   theta1<-coef(SFitEff)[1,1]

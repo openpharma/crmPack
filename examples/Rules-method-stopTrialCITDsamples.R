@@ -1,4 +1,4 @@
-##define the stopping rules based on the 'StoppingCIRatio' class
+##define the stopping rules based on the 'StoppingTDsamplesCIRatio' class
 ##Using only DLE responses with samples
 ## we need a data object with doses >= 1:
 data<-Data(x=c(25,50,50,75,150,200,225,300),

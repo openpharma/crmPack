@@ -1,4 +1,4 @@
-##define the stopping rules based on the 'StoppingCIRatio' class
+##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
 data <-DataDual(x=c(25,50,25,50,75,300,250,150),

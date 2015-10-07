@@ -2511,7 +2511,7 @@ setMethod("nextBest",
 ## ------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
 ## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingCIRatio' class when 
+##' @describeIn stopTrial Stop based on 'StoppingTDsamplesCIRatio' class when 
 ##' reaching the target ratio of the upper to the lower 95% credibility 
 ##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only 
 ##' DLE responses and DLE samples are given
@@ -2559,7 +2559,7 @@ setMethod("stopTrial",
 ## ----------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
 ## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingCIRatio' class
+##' @describeIn stopTrial Stop based on 'StoppingTDCIRatio' class
 ##' when reaching the target ratio of the upper to the lower 95% credibility 
 ##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only 
 ##' DLE responses and no DLE samples are involved

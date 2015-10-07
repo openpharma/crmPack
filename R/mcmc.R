@@ -439,7 +439,7 @@ setMethod("mcmc",
                 priorw1<-thismodel@DLEweights
                 
                 priordose<-thismodel@DLEdose
-                FitDLE<-glm(priordle/priorw1~log(priordose),family=binomial(link="logit"),weights=priorw1)
+                FitDLE<-suppressWarnings(glm(priordle/priorw1~log(priordose),family=binomial(link="logit"),weights=priorw1))
                 SFitDLE<-summary(FitDLE)
                 ##Obtain parameter estimates for dose-DLE curve
                 priorphi1<-coef(SFitDLE)[1,1]
