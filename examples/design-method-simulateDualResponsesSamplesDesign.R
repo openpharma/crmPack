@@ -13,6 +13,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
                     nu=c(a=0.025,b=1),data=data)
 
+
 ##The escalation rule using the 'NextBestMaxGainSamples' class
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    DLEEndOfTrialtarget=0.3,
@@ -48,7 +49,6 @@ myTruthDLE<- function(dose)
 }
 
 
-
 myTruthEff<- function(dose)
 {Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
 }
@@ -56,7 +56,7 @@ myTruthEff<- function(dose)
 ##simulate the trial for 10 times involving samples
 ##for illustration purpose we use 10 burn-ins to generate 50 samples
 options<-McmcOptions(burnin=10,step=2,samples=50)
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulations are produced (nsim=1). 
 mySim<-simulate(design,
                  args=NULL,
                  trueDLE=myTruthDLE,
