@@ -47,13 +47,13 @@ myTruthEff<- function(dose)
 }
 
 ## Then specified the simulations and generate the trial 
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 2 simulation is produced (nsim=2). 
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
                  trueEff=myTruthEff,
                  trueNu=1/0.025,
-                 nsim=1,
+                 nsim=2,
                  seed=819,
                  parallel=FALSE)
 ##Then produce a summary of your simulations
@@ -84,14 +84,15 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      stopping=myStopping,
                                      increments=myIncrements)
 ##options for MCMC
-options<-McmcOptions(burnin=100,step=2,samples=200)
-##The simulations
+##for illustration purpose, we will use 50 burn-ins to generate 200 samples
+options<-McmcOptions(burnin=50,step=2,samples=200)
+##The simulations for illustration purpose we only simulate 2 trials (nsim=2)
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,
                 trueEff=myTruthEff,
                 trueNu=1/0.025,
-                nsim=10,
+                nsim=2,
                 mcmcOptions=options,
                 seed=819,
                 parallel=FALSE)

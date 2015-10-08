@@ -12,9 +12,10 @@ model <- LogisticLogNormal(mean = c(-0.85, 1),
                            refDose = 56)
 
 # Get posterior for all model parameters
-options <- McmcOptions(burnin = 100,
+##For illustration purpose, we will use 50 burn-ins to generate 200 samples 
+options <- McmcOptions(burnin = 50,
                        step = 2,
-                       samples = 2000)
+                       samples = 200)
 set.seed(94)
 samples <- mcmc(data, model, options)
 

@@ -69,12 +69,14 @@ design <- TDsamplesDesign(model=model,
                           cohortSize=mySize,
                           data=data,startingDose=25)
 ##options for MCMC
-options<-McmcOptions(burnin=100,step=2,samples=200)
+##For illustration purpose, we will use 50 burn-ins to generate 200 samples
+options<-McmcOptions(burnin=50,step=2,samples=200)
 ##The simulations
+## For illustration purpose we will only generate 2 trials (nsim=2)
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
-                  nsim=10,
+                  nsim=2,
                   seed=819,
                   mcmcOptions=options,
                   parallel=FALSE)

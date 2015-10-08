@@ -86,7 +86,8 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      stopping=myStopping,
                                      increments=myIncrements)
 ##options for MCMC
-options<-McmcOptions(burnin=100,step=2,samples=200)
+##for illustration purpose we use 10 burn-in and generate 50 samples
+options<-McmcOptions(burnin=10,step=2,samples=50)
 ##The simulations
 ##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(design,
@@ -135,8 +136,7 @@ myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
 ##The true gain curve can also be seen
 myTruthGain <- function(dose)
 {return((myTruthEff(dose))/(1+(myTruthDLE(dose)/(1-myTruthDLE(dose)))))}
-##options for MCMC
-options<-McmcOptions(burnin=100,step=2,samples=200)
+
 ##The simulations
 ##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(object=design,

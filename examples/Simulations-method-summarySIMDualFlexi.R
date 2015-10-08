@@ -51,7 +51,8 @@ myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
 
 
 ##specify the options for MCMC
-options<-McmcOptions(burnin=100,step=2,samples=2000)
+##For illustration purpose, we use 10 burn-ins and generate 50 samples
+options<-McmcOptions(burnin=10,step=2,samples=50)
 ##The simulation
 ##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(object=design,

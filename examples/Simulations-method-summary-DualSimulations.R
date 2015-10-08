@@ -64,7 +64,8 @@ curve(trueTox(x), from=0, to=80)
 curve(trueBiomarker(x), from=0, to=80)
 
 # Run the simulation on the desired design
-# We only generate 1 trial outcome here for illustration, for the actual study 
+# We only generate 1 trial outcome here for illustration, for the actual study
+# Also for illustration purpose, we will use 50 burn-ins to generate 200 samples
 # this should be increased of course
 mySims <- simulate(design,
                    trueTox=trueTox,
@@ -76,9 +77,9 @@ mySims <- simulate(design,
                    seed=3,
                    startingDose=6,
                    mcmcOptions =
-                     McmcOptions(burnin=1000,
+                     McmcOptions(burnin=50,
                                  step=1,
-                                 samples=3000))
+                                 samples=200))
 
 # Summarize the Results of the Simulations
 summary(mySims,
