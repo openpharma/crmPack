@@ -43,7 +43,8 @@ design <- Design(model=model,
 
 # Examine the design
 set.seed(4235)
-examine(design)
-
-  
+# MCMC parameters are set to small values only to show this example. They should be
+# increased for a real case.
+options <- McmcOptions(burnin=10,step=1,samples=20)
+examine(design,options=options)
   

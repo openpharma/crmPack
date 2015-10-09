@@ -12,23 +12,23 @@ model <- LogisticLogNormal(mean = c(-0.85, 1),
                            refDose = 56)
 
 # Get posterior for all model parameters
-##For illustration purpose, we will use 50 burn-ins to generate 200 samples 
-options <- McmcOptions(burnin = 50,
+options <- McmcOptions(burnin = 100,
                        step = 2,
-                       samples = 200)
+                       samples = 2000)
 set.seed(94)
 samples <- mcmc(data, model, options)
 
 # Approximate the posterior distribution with a bivariate normal
-# Do not set the 'threshold.stop' and 'max.time' as in the example below since
-# these were just set to get a result fast. Start instead with default option
+# max.time and maxit are very small only for the purpose of showing the example. They 
+# should be increased for a real case.
 set.seed(94)
 posterior <- approximate(object = samples,
                          model = model,
                          data = data,
                          logNormal=TRUE,
                          control = list(threshold.stop = 0.1,
-                                        max.time = 10))
-             
+                                        max.time = 1,
+                                        maxit = 1))
+
 
 
