@@ -11,4 +11,4 @@ myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
   
 # Examine the design
 set.seed(4235)
-examine(design)
+examine(myDesign)
