@@ -266,6 +266,7 @@ validObject(DataDual())
 ##' @slot part1Ladder sorted numeric vector; what is the escalation ladder for
 ##' part 1? This shall be a subset of the \code{doseGrid}.
 ##'
+##' @example examples/Data-class-DataParts.R
 ##' @export
 ##' @keywords classes
 .DataParts <-

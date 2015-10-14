@@ -356,6 +356,7 @@ IncrementsRelative <- function(intervals,
 ##' then the relative increment rules will be applied to find the next maximum
 ##' dose level.
 ##'
+##' @example examples/Rules-class-IncrementsRelative-DataParts.R
 ##' @export
 ##' @keywords classes
 .IncrementsRelativeParts <-
@@ -1173,6 +1174,7 @@ CohortSizeConst <- function(size)
 ##' @slot sizes the two sizes for part 1 and part 2
 ##'
 ##' @keywords classes
+##' @example examples/Rules-class-CohortSizeParts.R
 ##' @export
 .CohortSizeParts <-
     setClass(Class="CohortSizeParts",

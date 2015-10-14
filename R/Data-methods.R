@@ -301,6 +301,7 @@ setMethod("update",
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataParts}} object
 ##'
+##' @example examples/Data-method-update-DataParts.R
 ##' @export
 ##' @keywords methods
 setMethod("update",

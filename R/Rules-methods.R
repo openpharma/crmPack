@@ -304,6 +304,7 @@ setMethod("nextBest",
 
 ##' @describeIn nextBest Find the next best dose based on the NCRM method when
 ##' two parts trial is used - todo: need an example here for DataParts
+##' @example examples/Rules-method-NextBestNCRM-DataParts.R
 setMethod("nextBest",
           signature=
           signature(nextBest="NextBestNCRM",
@@ -686,6 +687,7 @@ setMethod("maxDose",
 
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' relative increments and part 1 and 2
+##' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
 setMethod("maxDose",
           signature=
           signature(increments="IncrementsRelativeParts",
@@ -1652,6 +1654,7 @@ setMethod("size",
 ## --------------------------------------------------
 
 ##' @describeIn size Cohort size based on the parts
+##' @example examples/Rules-method-size-CohortSizeParts.R
 setMethod("size",
           signature=
           signature(cohortSize="CohortSizeParts",
