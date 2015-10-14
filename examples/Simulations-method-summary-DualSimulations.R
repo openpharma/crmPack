@@ -15,17 +15,12 @@ myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
                                    maxOverdoseProb=0.25)
 
-# Choose the rule for the cohort-size 
-mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
-mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
-                         cohortSize=c(1, 3))
-mySize <- maxSize(mySize1, mySize2)
-
 # Choose the rule for stopping
 myStopping4 <- StoppingTargetBiomarker(target=c(0.9, 1),
                                        prob=0.5)
-myStopping <- myStopping4 | StoppingMinPatients(40)
+# StoppingMinPatients will usually take a higher sample size,
+# just for illustration here
+myStopping <- myStopping4 | StoppingMinPatients(6)
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
@@ -65,8 +60,8 @@ curve(trueBiomarker(x), from=0, to=80)
 
 # Run the simulation on the desired design
 # We only generate 1 trial outcome here for illustration, for the actual study
-# Also for illustration purpose, we will use 50 burn-ins to generate 200 samples
-# this should be increased of course
+# Also for illustration purpose, we will use 5 burn-ins to generate 20 samples
+# this should be increased of course!
 mySims <- simulate(design,
                    trueTox=trueTox,
                    trueBiomarker=trueBiomarker,
@@ -77,9 +72,9 @@ mySims <- simulate(design,
                    seed=3,
                    startingDose=6,
                    mcmcOptions =
-                     McmcOptions(burnin=50,
+                     McmcOptions(burnin=5,
                                  step=1,
-                                 samples=200))
+                                 samples=20))
 
 # Summarize the Results of the Simulations
 summary(mySims,

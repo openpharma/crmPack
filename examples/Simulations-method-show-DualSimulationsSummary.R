@@ -25,7 +25,8 @@ mySize <- maxSize(mySize1, mySize2)
 # Choose the rule for stopping
 myStopping4 <- StoppingTargetBiomarker(target=c(0.9, 1),
                                        prob=0.5)
-myStopping <- myStopping4 | StoppingMinPatients(40)
+# small number of patients just for illustration here
+myStopping <- myStopping4 | StoppingMinPatients(10)
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
@@ -65,7 +66,7 @@ curve(trueBiomarker(x), from=0, to=80)
 
 # Run the simulation on the desired design
 # We only generate 1 trial outcome here for illustration, for the actual study 
-# Also for illustration purpose, we will use 50 burn-ins to generate 200 samples
+# Also for illustration purpose, we will use 5 burn-ins to generate 20 samples
 # this should be increased of course
 mySims <- simulate(design,
                    trueTox=trueTox,
@@ -77,9 +78,9 @@ mySims <- simulate(design,
                    seed=3,
                    startingDose=6,
                    mcmcOptions =
-                     McmcOptions(burnin=50,
+                     McmcOptions(burnin=5,
                                  step=1,
-                                 samples=200))
+                                 samples=20))
 
 # Show the summary of the Simulations
 show(summary(mySims,

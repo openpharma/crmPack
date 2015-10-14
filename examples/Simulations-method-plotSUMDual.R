@@ -25,8 +25,8 @@ myIncrements<-IncrementsRelative(intervals=c(25,300),
                                  increments=c(2,2))
 ##cohort size of 3
 mySize<-CohortSizeConst(size=3)
-##Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients=36)
+##Stop only when 10 subjects are treated (for illustration)
+myStopping <- StoppingMinPatients(nPatients=10)
 ##Now specified the design with all the above information and starting with a dose of 25
 
 ##Specified the design(for details please refer to the 'DualResponsesDesign' example)
@@ -54,6 +54,9 @@ mySim <-simulate(object=design,
                  trueEff=myTruthEff,
                  trueNu=1/0.025,
                  nsim=1,
+                 ## this would need to be increased in the real
+                 ## application:
+                 mcmcOptions=McmcOptions(burnin=10, step=1, samples=50),
                  seed=819,
                  parallel=FALSE)
 
@@ -146,7 +149,7 @@ mySim<-simulate(object=design,
                 trueSigma2=0.025,
                 trueSigma2betaW=1,
                 nsim=1,
-                McmcOptions=options,
+                mcmcOptions=options,
                 seed=819,
                 parallel=FALSE)
 ##Then produce a summary of your simulations

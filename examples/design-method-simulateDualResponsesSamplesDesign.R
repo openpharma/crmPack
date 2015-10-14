@@ -29,9 +29,11 @@ myIncrements<-IncrementsRelative(intervals=c(25,300),
                                  increments=c(2,2))
 ##cohort size of 3
 mySize<-CohortSizeConst(size=3)
-##Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients=36)
-##Now specified the design with all the above information and starting with a dose of 25
+##Stop only when 10 subjects are treated (only for illustration such a low 
+##sample size)
+myStopping <- StoppingMinPatients(nPatients=10)
+##Now specified the design with all the above information and starting with 
+##a dose of 25
 
 
 ##Specified the design 
@@ -55,7 +57,7 @@ myTruthEff<- function(dose)
 
 ##simulate the trial for 10 times involving samples
 ##for illustration purpose we use 10 burn-ins to generate 50 samples
-options<-McmcOptions(burnin=10,step=2,samples=50)
+options<-McmcOptions(burnin=10,step=1,samples=50)
 ##For illustration purpose only 1 simulations are produced (nsim=1). 
 mySim<-simulate(design,
                  args=NULL,
@@ -104,7 +106,7 @@ mySim<-simulate(object=design,
                 trueEff=myTruthEff,
                 trueSigma2=0.025,
                 trueSigma2betaW=1,
-                McmcOptions=options,
+                mcmcOptions=options,
                 nsim=1,
                 seed=819,
                 parallel=FALSE)

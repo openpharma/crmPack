@@ -28,8 +28,9 @@ myIncrements<-IncrementsRelative(intervals=c(25,300),
                                  increments=c(2,2))
 ##cohort size of 3
 mySize<-CohortSizeConst(size=3)
-##Stop only when 36 subjects are treated
-myStopping <- StoppingMinPatients(nPatients=36)
+##Stop only when 10 subjects are treated:
+## very low sample size is just for illustration here
+myStopping <- StoppingMinPatients(nPatients=10)
 
 ##Specified the design 
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
@@ -51,8 +52,8 @@ myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
 
 
 ##specify the options for MCMC
-##For illustration purpose, we use 10 burn-ins and generate 50 samples
-options<-McmcOptions(burnin=10,step=2,samples=50)
+#For illustration purpose, we use 10 burn-in and generate 100 samples
+options<-McmcOptions(burnin=10,step=1,samples=100)
 ##The simulation
 ##For illustration purpose only 1 simulation is produced (nsim=1). 
 mySim<-simulate(object=design,
@@ -63,7 +64,8 @@ mySim<-simulate(object=design,
                 trueSigma2betaW=1,
                 nsim=1,
                 seed=819,
-                parallel=FALSE)
+                parallel=FALSE,
+                mcmcOptions=options)
 ##summarize the simulation results
 summary(mySim,
         trueDLE=myTruthDLE,

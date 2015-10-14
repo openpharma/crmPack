@@ -44,8 +44,6 @@ This short vignette shall introduce into the usage of the package
 If you have any questions or feedback concerning the package, please write an
 email to me:
 \href{mailto:sabanesd@roche.com}{\nolinkurl{sabanesd@roche.com}}
-or even better post it on the Hive page:
-\url{https://roche.jiveon.com/projects/crmpack}
 Thank you very much in advance!
 
 <<setup, echo=FALSE, results=hide>>=
@@ -55,10 +53,6 @@ options(continue="  ")                  # use two blanks instead of "+" for
 
 \section{Installation}
 \label{sec:installation}
-
-Probably you have already installed the package. If not, please refer to the
-separate installation document available from the Hive page:
-\url{https://roche.jiveon.com/servlet/JiveServlet/download/38-91276/installation.docx}
 
 \texttt{crmPack} is relying on \href{http://mcmc-jags.sourceforge.net/}{JAGS}
 (please click on the link for going to the webpage of the project) for the
@@ -921,8 +915,7 @@ still under development, and so far we have not yet published a peer-reviewed pa
 on these methods, therefore please consider them as experimental.
 
 In the help page ``DualEndpoint-class'' the general model structure is
-described, and on the \href{https://roche.jiveon.com/projects/crmpack}{Hive
-  page} more information can be found. Basically the idea is that a (single)
+described. Basically the idea is that a (single)
 biomarker variable is the second endpoint of the dose-escalation design, with
 the aim to maximize the biomarker response while controlling toxicity in a safe
 range. This is useful when it can not be assumed that just increasing the dose

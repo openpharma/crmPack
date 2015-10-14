@@ -269,12 +269,13 @@ validObject(.TDsamplesDesign())
 ##' @keywords methods
 TDsamplesDesign<-function(model,stopping,increments,...){
   start<-RuleDesign(...)
-  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments)}
+  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments)
+}
 
 ## =============================================================================
 ## -------------------------------------------------------------------------------
-## Design class using DLE responses only based on the pseudo DLE model without sample
-## ---------------------------------------------------------------------------
+##' Design class using DLE responses only based on the pseudo DLE model without sample
+##'
 ##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
 ##' are used without samples.
 ##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
