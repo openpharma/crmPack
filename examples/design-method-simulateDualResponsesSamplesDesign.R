@@ -54,6 +54,9 @@ myTruthDLE<- function(dose)
 myTruthEff<- function(dose)
 {Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
 }
+##The true gain curve can also be seen
+myTruthGain <- function(dose)
+{return((myTruthEff(dose))/(1+(myTruthDLE(dose)/(1-myTruthDLE(dose)))))}
 
 ##simulate the trial for 10 times involving samples
 ##for illustration purpose we use 10 burn-ins to generate 50 samples
@@ -96,8 +99,8 @@ myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
                0.9333009  ,1.0687031,  1.1793942 , 1.2726408 , 
                1.3529598 , 1.4233411 , 1.4858613 , 1.5420182)
 ##The true gain curve can also be seen
-myTruthGain <- function(dose)
-{return((myTruthEff(dose))/(1+(myTruthDLE(dose)/(1-myTruthDLE(dose)))))}
+d1 <- data@doseGrid
+myTruthGain <- (myTruthEff)/(1+(myTruthDLE(d1)/(1-myTruthDLE(d1))))
 
 
 mySim<-simulate(object=design,
