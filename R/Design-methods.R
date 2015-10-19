@@ -1848,7 +1848,7 @@ setMethod("simulate",
                                       dose=thisDose,
                                       model=thisDLEModel,
                                       data=thisData,
-                                      Effmoel=thisEffModel)
+                                      Effmodel=thisEffModel)
                   
                 }
                 
