@@ -45,6 +45,11 @@ myTruthEff<- function(dose)
 {Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
 }
 
+##The true gain curve can also be seen
+myTruthGain <- function(dose)
+{return((myTruthEff(dose))/(1+(myTruthDLE(dose)/(1-myTruthDLE(dose)))))}
+
+
 ## Then specified the simulations and generate the trial 
 ##For illustration purpose only 1 simulation is produced (nsim=1). 
 options<-McmcOptions(burnin=100,step=2,samples=200)
