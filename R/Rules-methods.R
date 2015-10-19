@@ -2518,7 +2518,6 @@ setMethod("nextBest",
 ##' reaching the target ratio of the upper to the lower 95% credibility 
 ##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only 
 ##' DLE responses and DLE samples are given
-##' @param targetEndOfTrial the target probability of the occurrence of a DLE at the end of a trial
 ##' 
 ##' @example examples/Rules-method-stopTrialCITDsamples.R
 ##' 
@@ -2532,8 +2531,9 @@ setMethod("stopTrial",
                       model="ModelTox",
                       data="ANY"),
           def=
-            function(stopping,dose,samples,model,data,targetEndOfTrial,...){
+            function(stopping,dose,samples,model,data,...){
               
+              targetEndOfTrial <- stopping@targetEndOfTrial
               ##check id targetEndOfTrial is a probability
               stopifnot(is.probability(targetEndOfTrial))
               
@@ -2575,7 +2575,8 @@ setMethod("stopTrial",
                       model="ModelTox",
                       data="ANY"),
           def=
-            function(stopping,dose,model,data,targetEndOfTrial,...){
+            function(stopping,dose,model,data,...){
+              targetEndOfTrial <- stopping@targetEndOfTrial
               
               ##check if targetEndOfTrial is a probability
               stopifnot(is.probability(targetEndOfTrial))
@@ -2636,7 +2637,8 @@ setMethod("stopTrial",
                       model="ModelTox",
                       data="DataDual"),
           def=
-            function(stopping,dose,samples,model,data,targetEndOfTrial,TDderive, Effmodel,Effsamples,Gstarderive,...){
+            function(stopping,dose,samples,model,data,TDderive, Effmodel,Effsamples,Gstarderive,...){
+              targetEndOfTrial <- stopping@targetEndOfTrial
               
               ##checks
               stopifnot(is.probability(targetEndOfTrial))
@@ -2723,7 +2725,9 @@ setMethod("stopTrial",
                       model="ModelTox",
                       data="DataDual"),
           def=
-            function(stopping,dose,model,data,targetEndOfTrial,Effmodel,...){
+            function(stopping,dose,model,data,Effmodel,...){
+              
+              targetEndOfTrial <- stopping@targetEndOfTrial
               
               ##checks
               stopifnot(is.probability(targetEndOfTrial))

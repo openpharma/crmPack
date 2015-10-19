@@ -16,7 +16,8 @@ Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=
 
 
 ##define the 'StoppingGstarCIRatio' class
-myStopping <- StoppingGstarCIRatio(targetRatio=5)
+myStopping <- StoppingGstarCIRatio(targetRatio=5,
+                                   targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,DLEEndOfTrialtarget=0.3)
 
@@ -28,7 +29,7 @@ RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,
 
 
 stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,model=DLEmodel,
-          data=data,targetEndOfTrial=0.3, Effmodel=Effmodel)
+          data=data, Effmodel=Effmodel)
 
 
 ## RecommendDose$nextdose refers to the next dose obtained in RecommendDose

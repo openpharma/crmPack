@@ -19,7 +19,8 @@ DLEsamples<-mcmc(data,DLEmodel,options)
 Effsamples<-mcmc(data,Effmodel,options)
 
 ##define the 'StoppingGstarsamplesCIRatio' class
-myStopping <- StoppingGstarsamplesCIRatio(targetRatio=5)
+myStopping <- StoppingGstarsamplesCIRatio(targetRatio=5,
+                                          targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                    DLEEndOfTrialtarget=0.3,
@@ -38,7 +39,6 @@ stopTrial(stopping=myStopping,
           samples=DLEsamples,
           model=DLEmodel,
           data=data,
-          targetEndOfTrial=0.3,
           TDderive=function(TDsamples){
             quantile(TDsamples,prob=0.3)},
           Effmodel=Effmodel,
