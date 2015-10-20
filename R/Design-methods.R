@@ -2071,7 +2071,7 @@ setMethod("simulate",
                   {
                     ## what is the probability for tox. at this dose?
                     thisDLEProb <- thisTruthDLE(thisDose)
-                    thisDoseIndex <- which(thisDose==data@doseGrid)
+                    thisDoseIndex <- which(thisDose==thisData@doseGrid)
                     thisEff <- thisTruthEff[thisDoseIndex]
                     
                     
