@@ -2586,7 +2586,7 @@ setMethod("stopTrial",
                                          model=model)
               
               ##Find the variance of the log of the TDtargetEndOfTrial(eta)
-              M1 <- matrix(c(-1/(model@phi2), - (log(targetEndOfTrial/(1-targetEndOfTrial))-model@phi1)/(model@phi2)),1,2)
+              M1 <- matrix(c(-1/(model@phi2), - (log(targetEndOfTrial/(1-targetEndOfTrial))-model@phi1)/(model@phi2)^2),1,2)
               M2 <- model@Pcov
               
               varEta <- M1%*%M2%*%t(M1)
