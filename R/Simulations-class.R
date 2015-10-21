@@ -506,12 +506,14 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' Class for the summary of the dual responses simulations using pseudo models
 ##' 
 ##' It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to 
-##' the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains two 
+##' the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains four 
 ##' more slots for the efficacy model fit information.
 ##' 
 ##' Note that objects should not be created by users, therefore no initialization function
 ##' is provided for this class.
 ##' 
+##' @slot targetGstar the target dose level such that its gain value is at maximum
+##' @slot targetGstarAtDoseGrid the dose level at dose Grid closest and below Gstar
 ##' @slot EffFitAtDoseMostSelected fitted expected mean efficacy value at dose most often
 ##' selected
 ##' @slot meanEffFit list with mean, lower (2.5%) and upper (97.5%) quantiles of the fitted expected 
@@ -523,5 +525,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
   setClass(Class="PseudoDualSimulationsSummary",
            contains="PseudoSimulationsSummary",
            representation=
-             representation(EffFitAtDoseMostSelected="numeric",
+             representation(targetGstar="numeric",
+                            targetGstarAtDoseGrid="numeric",
+                            EffFitAtDoseMostSelected="numeric",
                             meanEffFit="list"))

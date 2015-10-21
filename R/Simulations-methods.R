@@ -1870,14 +1870,33 @@ setMethod("summary",
                                       ...)
               doseGrid <- object@data[[1]]@doseGrid
               
-              ## ## dose level most often selected as MTD (TDEnd of Trial)
+              ## ## dose level most often selected as MTD (TDtargetEnd of Trial)
               xMostSelected <-
                 match(start@doseMostSelected,
                       table=doseGrid)
               
+              ##check if true Eff is a function
+              ## check if special case applies
+              isTrueEffFx <- is.function(trueEff)
+              
+              
+              if (isTrueEffFx) {
+                negtrueGainfn <- function(dose)
+                {return(-(trueEff(dose))/(1+(trueDLE(dose)/(1-trueDLE(dose)))))}
+                Gstar <- optim(exp(1),negtrueGainfn,method="BFGS")$par
+                maxGainValue <- -(optim(exp(1),negtrueGainfn,method="BFGS")$value)
+                GstarAtDoseGrid <- doseGrid[max(which(Gstar-doseGrid >= 0 ))]
+              } else {
+              trueGain <- (trueEff)/(1+(trueDLE(doseGrid)/(1-trueDLE(doseGrid))))
+              maxGainValue<-max(trueGain)
+              Gstar <- doseGrid[which.max(trueGain)]
+              GstarAtDoseGrid <- Gstar
+              }
+              
+              
+              
               ##find names in the fit efficacy list (check it is with or without samples)
               FitNames<- sapply(object@fitEff,names)
-              
               if ("ExpEff" %in% FitNames){
                 ## fitted efficacy level at dose most often selected
                 EffFitAtDoseMostSelected <- sapply(object@fitEff,
@@ -1907,7 +1926,6 @@ setMethod("summary",
                                            "middle")
                 
                 ## check if special case applies
-                isTrueEffFx <- is.function(trueEff)
                 
                 if (isTrueEffFx) {TRUTHeff<- trueEff(doseGrid)} else {TRUTHeff <- trueEff}
                 
@@ -1930,6 +1948,8 @@ setMethod("summary",
               ## for which we then define a print / plot method
               ret <- .PseudoDualSimulationsSummary(
                 start,
+                targetGstar=Gstar,
+                targetGstarAtDoseGrid=GstarAtDoseGrid,
                 EffFitAtDoseMostSelected=EffFitAtDoseMostSelected,
                 meanEffFit=meanEffFit)
               
@@ -2000,7 +2020,13 @@ def=
                     df=df,
                     dfNames=dfNames)
     
-    ##add one reporting line
+    ##add three reporting lines
+    cat("Target Gstar, the dose which gives the maximum gain value was",
+        r$dfSave(object@targetGstar,
+                 "targetGstar"),"\n")
+    cat("Target Gstar at Dose Grid was",
+        r$dfSave(object@targetGstarAtDoseGrid,
+                 "targetGstarAtDoseGrid"),"\n")
     r$report("EffFitAtDoseMostSelected",
              "Fitted expected efficacy level at dose most often selected",
               percent=FALSE,
