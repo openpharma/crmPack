@@ -2023,10 +2023,11 @@ def=
     ##add three reporting lines
     cat("Target Gstar, the dose which gives the maximum gain value was",
         r$dfSave(object@targetGstar,
-                 "targetGstar"),"\n")
-    cat("Target Gstar at Dose Grid was",
+                     "targetGstar"),"\n")
+    cat("Target Gstar at dose Grid was",
         r$dfSave(object@targetGstarAtDoseGrid,
                  "targetGstarAtDoseGrid"),"\n")
+            
     r$report("EffFitAtDoseMostSelected",
              "Fitted expected efficacy level at dose most often selected",
               percent=FALSE,
