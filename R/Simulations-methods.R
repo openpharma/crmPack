@@ -1529,6 +1529,25 @@ setMethod("plot",
                   myHist(x=x@nAboveTargetEndOfTrial,
                          description="Number of patients above target")
               }
+              
+              
+              ## first combine these small plots
+              if(length(plotList))
+              {
+                ret <-
+                  ## if there is only one plot
+                  if(identical(length(plotList),
+                               1L))
+                  {
+                    ## just use that
+                    plotList[[1L]]
+                  } else {
+                    ## multiple plots in this case
+                    do.call(gridExtra::arrangeGrob,
+                            plotList)
+                  }
+              }
+              
               ##the meanFit plot
               
               if ("meanFit" %in% type)
@@ -1621,28 +1640,11 @@ setMethod("plot",
                         ylab("Probability of DLE [%]")}
               }
               
-              plotList[[plotIndex <- plotIndex +1L]] <-
-                thisPlot
-              
-              ## first combine these small plots
-              if(length(plotList))
-              {
-                ret <-
-                  ## if there is only one plot
-                  if(identical(length(plotList),
-                               1L))
-                  {
-                    ## just use that
-                    plotList[[1L]]
-                  } else {
-                    ## multiple plots in this case
-                    do.call(gridExtra::arrangeGrob,
-                            plotList)
-                  }
-              }
-              
-              ## then return
+           
+              ## then add this plot at the bottom
+              ret <- gridExtra::arrangeGrob(ret,thisPlot)
               ret
+              
             })
  ## --------------------------------------------------------------------------------------
 ##' Plot simulations
