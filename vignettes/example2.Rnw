@@ -515,12 +515,12 @@ help(package="ggmcmc", help_type="html")
 Similarly, using models from \texttt{ModelPseudo} class, we can also obtained the prior and posterior samples of the model parameters via MCMC. 
 
 For example, using the DLEmodel, data1, the empty data set and options specified in earlier examples.
-<<mcmc-DLEsamples>>=
+<<mcmc-DLEsamples,results=hide>>=
 DLEsamples <- mcmc(data=data1,model=DLEmodel,options=options)
 @
 
 The prior samples of the model parameters are produced in \texttt{DLEsamples}. 
-<<mcmc-postDLEsamples>>==
+<<mcmc-postDLEsamples,results=hide>>==
 data3 <-Data(x=c(25,50,50,75,100,100,225,300),
              y=c(0,0,0,0,1,1,1,1),
              doseGrid=seq(from=25,to=300,by=25))
@@ -1298,7 +1298,7 @@ print(dosePlot)
 
 Some further examples will be given for simulations using the \texttt{TDDesign} and the \texttt{TDsamplesDesign}. In here for illustration purpose, we will also generate 10 trial outcomes.
 
-<<DLESim-run>>=
+<<DLESim-run,results=hide>>=
 DLESim <- simulate(DLEdesign,
                    args=NULL,
                    truth=TrueDLE,
@@ -1309,7 +1309,7 @@ DLESim <- simulate(DLEdesign,
 
 The above is an example when no MCMC sampling is involved and we have another example below for simulation when MCMC sampling is involved
 
-<<DLEsampSim-run>>=
+<<DLEsampSim-run,results=hide>>=
 DLEsampSim <- simulate(DLEsamplesDesign,
                        args=NULL,
                        truth=TrueDLE,
@@ -2170,7 +2170,7 @@ lty=c(NA,NA,NA,1,1,1),col=c('violet','violet','green3','red','blue','green3'))
 Similarly, we also get the DLE, efficacy and gain values and the corresponding real values of the TD30, TD35 and Gstar.
 
 Then after establishing the real scenarios, we can simulate the trials. First, we will look at two examples when the \texttt{Effloglog} class object is used as the efficacy model. We will show first an example when no DLE and efficacy samples are involved.
-<<simulateDualResponseDesign>>=
+<<simulateDualResponseDesign,results=hide>>=
 Sim1 <- simulate(object=design1,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -2187,7 +2187,7 @@ The \texttt{simulate} function is used in all cases to simulate trials with spec
 
 When DLE and efficacy samples are involved, we will can also specified the simulations in a similar way with an additional argument of \texttt{mcmcOptions} such that we have
 
-<<simulateDualResponsesamplesDesign>>=
+<<simulateDualResponsesamplesDesign,results=hide>>=
 Sim2 <- simulate(object=design2,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -2201,7 +2201,7 @@ Sim2 <- simulate(object=design2,
 
 
 When the \texttt{EffFlexi} class object is used as the efficacy model, we will specify the simulations as
-<<simulateDualResponseFlexiDesign>>=
+<<simulateDualResponseFlexiDesign,results=hide>>=
 Sim3<-simulate(object=design3,
                args=NULL,
                trueDLE=myTruthDLE,
