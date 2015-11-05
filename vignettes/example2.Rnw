@@ -517,13 +517,13 @@ help(package="ggmcmc", help_type="html")
 Similarly, using models from \texttt{ModelPseudo} class, we can also obtain the prior and posterior samples of the model parameters via MCMC. 
 
 For example, using the DLTmodel, data1, the empty data set and options specified in earlier examples.
-<<mcmc-DLTsamples>>=
+<<mcmc-DLTsamples, results=hide>>=
 DLTsamples <- mcmc(data=data1,model=DLTmodel,options=options)
 @
 
 The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}. 
 
-<<mcmc-postDLTsamples>>==
+<<mcmc-postDLTsamples, results=hide>>==
 data3 <-Data(x=c(25,50,50,75,100,100,225,300),
              y=c(0,0,0,0,1,1,1,1),
              doseGrid=seq(from=25,to=300,by=25))
@@ -928,7 +928,7 @@ mySize <- CohortSizeConst(size=3)
 \subsection{Stopping rules}
 \label{sec:stopping-rules}
 
-%Figure \ref{fig:stopping} will show the structure of the \textt{Stopping} rules classes
+%Figure \ref{fig:stopping} will show the structure of the \texttt{Stopping} rules classes
 
 All of the stopping rules included in this package are under the \texttt{Stopping} class object. There are in total 11 stopping rules/ classes contain in \texttt{Stopping} class listed as follows
 \begin{minipage}{0.45\textwidth}
@@ -953,7 +953,6 @@ All of the stopping rules included in this package are under the \texttt{Stoppin
 
 From the names of these stopping rules, we can have an idea of what criteria has/have been used for stopping decisions and we will explain briefly here what are these criteria. For further details please refer to examples presented later in this paper or examples given in the package.
 For example, \texttt{StoppingCohortNearDose} class object is defined such that the trial will be stopped based on the numbers of cohorts treated near to the next best dose. Similarly, for \texttt{StoppingPatientsNearDose}. \texttt{StoppingMinCohorts} and \textt{StoppingMinPatients} rules mean that a trial will be stopped if a minimum number of patients or cohorts have been treated. We have also other stopping rules such that a trial will be stopped either based on the MTD distribution (\texttt{StoppingMTDdistribution}), or reached a pre-specified target level of the probability of DLT (\texttt{StoppingTargetProb}) or biomarker level (\texttt{StoppingTargetBiomarker}) or when the current estimates of the quantity of our interest is 'accurate' enough (\texttt{StoppingTDCIRatio}, \texttt{StoppingTDsamplesCIRatio}, \texttt{StoppingGstarCIRatio}, \texttt{StoppingGstarsamplesCIRatio})
-
 
 Stopping rules are often quite complex, and built from an and/or combination of
 multiple parts. Therefore the \texttt{crmPack} implementation mirrors this, and
@@ -1834,7 +1833,7 @@ Similarly, we can also obtain plot of the data sets using the \texttt{plot} func
 
 As described, we will model the two responses separately. In here, we will only use models specified under the \texttt{ModelPseudo} class.For the binary DLT responses, we can use any of the models specified under the \texttt{ModelTox} class. For example here, we will use models specified under the \texttt{LogisticIndepBeta} class which is the \texttt{DLTmodel} or the \texttt{newDLTmodel} (with observations) given in previous examples.
 
-For the continuous efficacy responses, we can use any models specified under the \texttt{ModelEff} class. In the current version of the package, there are two model classes, the \texttt{Effloglog} and the \texttt{EffFlexi} model, defined under the \texttt{ModelEff} class. Since \texttt{ModelEff} is also under the class of \texttt{ModelPseudo}, the prior of this efficacy model are also required to specify in form of pseudo data. Please refer to \rtef{fig:model} for the structure of model classes defined in this package.
+For the continuous efficacy responses, we can use any models specified under the \texttt{ModelEff} class. In the current version of the package, there are two model classes, the \texttt{Effloglog} and the \texttt{EffFlexi} model, defined under the \texttt{ModelEff} class. Since \texttt{ModelEff} is also under the class of \texttt{ModelPseudo}, the prior of this efficacy model are also required to specify in form of pseudo data. Please refer to \ref{fig:model} for the structure of model classes defined in this package.
 
 
 The following commands show how we set up the Effloglog model.This is an efficacy model to describe the relationship between the efficacy responses to their corresponding dose levels in log-log scale. This refers to a linear model with three unknown parameters where are the intercept $\theta_1$, the slope $\theta_2$ and the precision $\nu$ which is also the inverse of the variance of the efficacy responses. 
@@ -1921,7 +1920,7 @@ print(plot(Effpostsamples, newEffmodel,data4))
 print(plot(Effpostsamples2,newEffmodel2,data4))
 @
 
-In addition, we can also plot the fitted dose-efficacy curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, using \textt{Effmodel} and data set \texttt{data2} specified earlier.
+In addition, we can also plot the fitted dose-efficacy curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, using \texttt{Effmodel} and data set \texttt{data2} specified earlier.
 
 <<emptydatanoEffsamples, fig=TRUE>>=
 print(plot(data2,Effmodel))
@@ -2172,7 +2171,7 @@ lty=c(NA,NA,NA,1,1,1),col=c('violet','violet','green3','red','blue','green3'))
 Similarly, we also get the DLT, efficacy and gain values and the corresponding real values of the TD30, TD35 and Gstar.
 
 Then after establishing the real scenarios, we can simulate the trials. First, we will look at two examples when the \texttt{Effloglog} class object is used as the efficacy model. We will show first an example when no DLT and efficacy samples are involved.
-<<simulateDualResponseDesign>>=
+<<simulateDualResponseDesign,results=hide>>=
 Sim1 <- simulate(object=design1,
                  args=NULL,
                  trueDLE=myTruthDLT,
@@ -2189,7 +2188,7 @@ The \texttt{simulate} function is used in all cases to simulate trials with spec
 
 When DLT and efficacy samples are involved, we will can also specified the simulations in a similar way with an additional argument of \texttt{mcmcOptions} such that we have
 
-<<simulateDualResponsesamplesDesign>>=
+<<simulateDualResponsesamplesDesign,results=hide>>=
 Sim2 <- simulate(object=design2,
                  args=NULL,
                  trueDLE=myTruthDLT,
@@ -2203,7 +2202,7 @@ Sim2 <- simulate(object=design2,
 
 
 When the \texttt{EffFlexi} class object is used as the efficacy model, we will specify the simulations as
-<<simulateDualResponseFlexiDesign>>=
+<<simulateDualResponseFlexiDesign,results=hide>>=
 Sim3<-simulate(object=design3,
                args=NULL,
                trueDLE=myTruthDLT,
