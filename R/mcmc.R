@@ -376,10 +376,10 @@ setMethod("mcmc",
 ##' DLE model. The joint prior and posterior probability density function of 
 ##' the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and 
 ##' Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint posterior probability density 
-##' will be bivariate normal, we will use the bivariate normal distribution to
-##' generate posterior samples of the intercept and the slope parameters using the posterior modal estimates 
-##' of the intercept and the slope as the mean and the covariance matrix given in Whitehead and 
-##' William (1998) of the bivariate normal distribution.
+##' will be bivariate normal and we will use the bivariate normal distribution to
+##' generate posterior samples of the intercept and the slope parameters. For the prior samples of 
+##' of the intercept and the slope a bivariate normal distribution with mean and the covariance matrix given in Whitehead and 
+##' Williamson (1998) is used.
 ##' 
 ##' @importFrom mvtnorm rmvnorm
 ##' @importFrom BayesLogit logit
