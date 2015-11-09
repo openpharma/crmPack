@@ -1307,7 +1307,7 @@ DLTSim <- simulate(DLTdesign,
 
 The above is an example when no MCMC sampling is involved and we have another example below for simulation when MCMC sampling is involved:
 
-<<DLTsampSim-run>>=
+<<DLTsampSim-run,results=hide>>=
 DLTsampSim <- simulate(DLTsamplesDesign,
                        args=NULL,
                        truth=TrueDLT,
@@ -2106,7 +2106,6 @@ myTruthEff<- function(dose)
 }
 
 myTruthGain <- function(dose)
-##{return((myTruthEff(dose)) /(1+(myTruthDLT(dose)/(1-myTruthDLT(dose)))))}
 {return(myTruthEff(dose) * (1-myTruthDLT(dose)))}
 @
 
