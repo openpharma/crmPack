@@ -21,9 +21,14 @@
 ## @useDynLib crmPack
 ##  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
 ##  cpp_coxfit
-##' @importFrom graphics plot hist
+##' @importFrom graphics plot hist legend lines matlines matplot
 ##' @importFrom methods setClass setOldClass setGeneric setMethod representation
-##' signature prototype initialize new is
+##' signature prototype initialize new is .valueClassTest as callNextMethod slot 
+##' slotNames show
+##' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
+##' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
+##' rnorm runif uniroot var vcov
+##' @importFrom utils data head tail
 ##' @keywords package
 {}
 

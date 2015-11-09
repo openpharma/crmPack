@@ -373,12 +373,12 @@ setMethod("mcmc",
 
 
 ##' @describeIn mcmc Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
-##' DLE model. The joint prior and posterior probability function of 
+##' DLE model. The joint prior and posterior probability density function of 
 ##' the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and 
-##' Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint probability density 
-##' will be a bivariate normal distribution. Therefore, we will use the bivariate normal distribution to
-##' generate prior samples of the intercept and the slope parameters using the the prior modal estimates 
-##' of the intercept and the slope as the mean and the covaraince matrix given in Whitehead and 
+##' Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint posterior probability density 
+##' will be bivariate normal, we will use the bivariate normal distribution to
+##' generate posterior samples of the intercept and the slope parameters using the posterior modal estimates 
+##' of the intercept and the slope as the mean and the covariance matrix given in Whitehead and 
 ##' William (1998) of the bivariate normal distribution.
 ##' 
 ##' @importFrom mvtnorm rmvnorm
@@ -445,7 +445,6 @@ setMethod("mcmc",
                 priorphi1<-coef(SFitDLE)[1,1]
                 priorphi2<-coef(SFitDLE)[2,1]
              
-                
                 ## todo: to discuss - is this correct?
                 ## use fast special sampler here
                 initRes <- BayesLogit::logit(y=data@y,

@@ -2556,7 +2556,7 @@ setMethod("stopTrial",
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
-                               messgae=text))
+                               message=text))
             })
 
 ## ----------------------------------------------------------------------------------------------
