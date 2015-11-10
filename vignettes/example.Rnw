@@ -1822,6 +1822,7 @@ First, we have to define the data sets for the dual responses using the \texttt{
 
 <<dualdata>>=
 data2<-DataDual(doseGrid=seq(25,300,25))
+
 data4<-DataDual(x=c(25,50,50,75,100,100,225,300),
                 y=c(0,0,0,0,1,1,1,1),
                 w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
@@ -1922,7 +1923,7 @@ print(plot(Effpostsamples2,newEffmodel2,data4))
 
 In addition, we can also plot the fitted dose-efficacy curve using the prior or the posterior modal estimates of the model parameters when no MCMC sampling is used. For example, using \texttt{Effmodel} and data set \texttt{data2} specified earlier:
 
-<<emptydatanoEffsamples, fig=TRUE>>=
+<<plot-nosamplesEffmodel, fig=TRUE>>=
 print(plot(data2,Effmodel))
 @
 
@@ -2277,7 +2278,7 @@ we can see that in all cases, the fitted dose-DLT curves (solid-red curve) do no
 
 
 \bibliographystyle{plainnat}
-\bibliography{example2}
+\bibliography{example}
 
 \end{document}
 
@@ -2289,3 +2290,5 @@ we can see that in all cases, the fitted dose-DLT curves (solid-red curve) do no
 %%% coding: utf-8-unix
 %%% ispell-local-dictionary: "american"
 %%% End:
+
+
