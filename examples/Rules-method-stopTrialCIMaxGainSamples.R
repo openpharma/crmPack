@@ -1,4 +1,4 @@
-##define the stopping rules based on the 'StoppingGstarsamplesCIRatio' class
+##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
 data <-DataDual(x=c(25,50,25,50,75,300,250,150),
@@ -13,13 +13,14 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
-
+##for illustration purpose we use 10 burn-in and generate 50 samples
+options<-McmcOptions(burnin=10,step=2,samples=50)
 ##DLE and efficacy samples must be of 'Samples' class
 DLEsamples<-mcmc(data,DLEmodel,options)
 Effsamples<-mcmc(data,Effmodel,options)
 
-##define the 'StoppingGstarsamplesCIRatio' class
-myStopping <- StoppingGstarsamplesCIRatio(targetRatio=5,
+##define the 'StoppingGstarCIRatio' class
+myStopping <- StoppingGstarCIRatio(targetRatio=5,
                                           targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,

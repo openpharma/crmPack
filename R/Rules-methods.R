@@ -2514,7 +2514,7 @@ setMethod("nextBest",
 ## ------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the upper to the lower 95% credibility interval
 ## ------------------------------------------------------------------------------------------------
-##' @describeIn stopTrial Stop based on 'StoppingTDsamplesCIRatio' class when 
+##' @describeIn stopTrial Stop based on 'StoppingTDCIRatio' class when 
 ##' reaching the target ratio of the upper to the lower 95% credibility 
 ##' interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only 
 ##' DLE responses and DLE samples are given
@@ -2525,7 +2525,7 @@ setMethod("nextBest",
 ##' @keywords methods
 setMethod("stopTrial",
           signature=
-            signature(stopping="StoppingTDsamplesCIRatio",
+            signature(stopping="StoppingTDCIRatio",
                       dose="ANY",
                       samples="Samples",
                       model="ModelTox",
@@ -2556,7 +2556,7 @@ setMethod("stopTrial",
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
-                               message=text))
+                               messgae=text))
             })
 
 ## ----------------------------------------------------------------------------------------------
@@ -2631,7 +2631,7 @@ setMethod("stopTrial",
 ##' @example examples/Rules-method-stopTrialCIMaxGainSamples.R
 setMethod("stopTrial",
           signature=
-            signature(stopping="StoppingGstarsamplesCIRatio",
+            signature(stopping="StoppingGstarCIRatio",
                       dose="ANY",
                       samples="Samples",
                       model="ModelTox",
@@ -2808,6 +2808,6 @@ setMethod("stopTrial",
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
-                               messgae=text))
+                               message=text))
             })
 

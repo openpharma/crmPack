@@ -1620,53 +1620,6 @@ StoppingTDCIRatio <- function(targetRatio,
                      targetEndOfTrial=targetEndOfTrial)
 }
 
-##-------------------------------------------------------------------------------------
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95\% credibility interval of the estimate ofTD end of trial, the dose with probability of DLE equals to the target 
-##' probability of DLE used at the end of a trial. 
-##' In this case, samples are involved in the escalation rule.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of the trial
-##' 
-##' @example examples/Rules-class-StoppingTDsamplesCIRatio.R
-##' @export
-##' @keywords classes 
-.StoppingTDsamplesCIRatio <- 
-  setClass(Class="StoppingTDsamplesCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
-               
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
-
-validObject(.StoppingTDsamplesCIRatio())
-
-##' Initialization function for "StoppingTDsamplesCIRatio"
-##' 
-##' @param targetRatio please refer to \code{\linkS4class{StoppingTDsamplesCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDsamplesCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingTDsamplesCIRatio}} class object
-##' 
-##' @export
-##' @keywords methods
-StoppingTDsamplesCIRatio <- function(targetRatio,
-                                     targetEndOfTrial)
-{
-  .StoppingTDsamplesCIRatio(targetRatio=targetRatio,
-                            targetEndOfTrial=targetEndOfTrial)
-}
-
 ## ----------------------------------------------------------------------------------------------------------------
 ##' Stop based on a target ratio, the ratio of the upper to the lower
 ##' 95\% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and 
@@ -1714,48 +1667,3 @@ StoppingGstarCIRatio <- function(targetRatio,
                         targetEndOfTrial=targetEndOfTrial)
 }
 ## --------------------------------------------------------------------------------------------------------------------
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95\% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and 
-##' the TD end of trial, the dose with probability of DLE equals to the target 
-##' probability of DLE used at the end of a trial. The DLE and efficacy samples are involved in the dose-esclation procedure.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##' 
-##' @example examples/Rules-class-StoppingGstarsamplesCIRatio.R
-##' @export
-##' @keywords classes 
-.StoppingGstarsamplesCIRatio <- 
-  setClass(Class="StoppingGstarsamplesCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
-               
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
-
-validObject(.StoppingGstarsamplesCIRatio())
-
-##' Initialization function for "StoppingGstarsamplesCIRatio"
-##' 
-##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarsamplesCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarsamplesCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingGstarsamplesCIRatio}} class object
-##' 
-##' @export
-##' @keywords methods
-StoppingGstarsamplesCIRatio <- function(targetRatio,
-                                        targetEndOfTrial)
-{
-  .StoppingGstarsamplesCIRatio(targetRatio=targetRatio,
-                               targetEndOfTrial=targetEndOfTrial)
-}
