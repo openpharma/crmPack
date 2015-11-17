@@ -42,6 +42,7 @@
 ##' @param parlower lower bounds on the parameters (intercept alpha and the
 ##' slope beta, the corresponding standard deviations and the correlation.)
 ##' @param parupper upper bounds on the parameters
+##' @param seed seed for random number generation
 ##' @param verbose be verbose? (default)
 ##' @param control additional options for the optimisation routine, see
 ##' \code{\link[GenSA]{GenSA}} for more details
@@ -66,6 +67,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                      parstart=NULL,
                                      parlower=c(-10, -10, 0, 0, -0.95),
                                      parupper=c(10, 10, 10, 10, 0.95),
+                                     seed=12345,
                                      verbose=TRUE,
                                      control=
                                      list(threshold.stop=0.01,
@@ -133,6 +135,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
                       nrow=2L, ncol=2L)
 
         ## simulate from the corresponding normal distribution
+        set.seed(seed)
         normalSamples <- mvtnorm::rmvnorm(n=1e4L,
                                           mean=mean,
                                           sigma=cov)
@@ -167,6 +170,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
                          quantiles=quants))
     }
 
+    set.seed(seed)
     ## now optimise the target
     genSAres <- GenSA::GenSA(par=startValues,
                         fn=target,
@@ -257,6 +261,7 @@ getMinInfBeta <- function(p, q)
 ##' when you would like to use the same one later on.
 ##'
 ##' @param dosegrid the dose grid
+##' @param refDose the reference dose
 ##' @param threshmin Any toxicity probability above this threshold would
 ##' be very unlikely (5\%) at the minimum dose (default: 0.2)
 ##' @param threshmax Any toxicity probability below this threshold would
@@ -270,6 +275,7 @@ getMinInfBeta <- function(p, q)
 ##' @export
 ##' @keywords programming
 MinimalInformative <- function(dosegrid,
+                               refDose,
                                threshmin=0.2,
                                threshmax=0.3,
                                ...)
@@ -296,8 +302,8 @@ MinimalInformative <- function(dosegrid,
 
     ## now determine the medians of all beta distributions
     beta <- (logit(medianMax) - logit(medianMin)) / (log(xmax) - log(xmin))
-    alpha <- logit(medianMax) - beta * log(xmax)
-    medianDosegrid <- plogis(alpha + beta * log(dosegrid))
+    alpha <- logit(medianMax) - beta * log(xmax/refDose)
+    medianDosegrid <- plogis(alpha + beta * log(dosegrid/refDose))
 
     ## finally for all doses calculate 95% credible interval bounds
     ## (lower and upper)
@@ -317,6 +323,7 @@ MinimalInformative <- function(dosegrid,
 
     ## now go to Quantiles2LogisticNormal
     Quantiles2LogisticNormal(dosegrid=dosegrid,
+                             refDose=refDose,
                              lower=lower,
                              median=medianDosegrid,
                              upper=upper,
