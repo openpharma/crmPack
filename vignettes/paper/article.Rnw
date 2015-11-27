@@ -130,7 +130,6 @@ todo Thomas/Daniel:
 
 - summarize contribution of crmPack, outline possible extensions
 
-\bibliographystyle{jss}
 \bibliography{article}
 
 \end{document}
