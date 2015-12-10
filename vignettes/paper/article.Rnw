@@ -35,7 +35,7 @@ Sys.setenv(TEXINPUTS=getwd(),
 %% an abstract and keywords
 \Abstract{
 %% todo: Abstract and keywords to be refined, only as a placeholder for now!
-  Model-based dose escalation designs have gained increasing interest due to the need for more efficient and informative Phase I trials. The wide-spread implementation of such designs has been hindered by the need for either licensing specialized commercial software or programming the design and simulations from scratch for each project. Therefore we developed the R-package “crmPack”, which is now publicly available on CRAN. By providing a simple and unified object-oriented structure for model-based dose escalation designs, crmPack enables the use of standard designs, full flexibility to adapt designs to the project, and easy extension to new designs. The framework for the designs comprises the data structure, regression model and prior distribution specification, maximum increment rules, derivation of the next best dose, stopping rules for adaptive sample size, adaptive cohort sizes, and starting dose and dose grid specification. In addition to the classic continual reassessment method (CRM) and escalation with overdose control (EWOC) designs with possibly advanced prior specifications with e.g. mixtures and minimal informative priors, crmPack currently features dual-endpoint (safety and biomarker) designs and two-part (SAD followed by MAD part) designs. 
+  Model-based dose escalation designs have gained increasing interest due to the need for more efficient and informative Phase I trials. The wide-spread implementation of such designs has been hindered by the need for either licensing specialized commercial software or programming the design and simulations from scratch for each project. Therefore we developed the R-package \pkg{crmPack}, which is now publicly available on CRAN. By providing a simple and unified object-oriented structure for model-based dose escalation designs, crmPack enables the use of standard designs, full flexibility to adapt designs to the project, and easy extension to new designs. The framework for the designs comprises the data structure, regression model and prior distribution specification, maximum increment rules, derivation of the next best dose, stopping rules for adaptive sample size, adaptive cohort sizes, and starting dose and dose grid specification. In addition to the classic continual reassessment method (CRM) and escalation with overdose control (EWOC) designs with possibly advanced prior specifications with e.g. mixtures and minimal informative priors, crmPack currently features dual-endpoint (safety and biomarker) designs and two-part (SAD followed by MAD part) designs. 
 We introduce crmPack by outlining the design framework and show how easy it is to specify a design, run simulations, and report dose recommendations during the trial.
 }
 \Keywords{CRM, dose escalation, dual-endpoint design, \proglang{R}}
@@ -60,7 +60,7 @@ We introduce crmPack by outlining the design framework and show how easy it is t
   Grenzacherstrasse 124\\
   4070 Basel, Switzerland\\
   E-mail: \email{sabanesd@roche.com}\\
-  Telephone: +41/61/68-73470}
+  Telephone: +41/61/68-73470
 }
 %% It is also possible to add a telephone and fax number
 %% before the e-mail in the following format:
@@ -83,17 +83,30 @@ We introduce crmPack by outlining the design framework and show how easy it is t
 
 \section{Introduction}
 
+While the models underlying most model-based dose-finding procedures can easily be fit in standard software with the capability to fit generalized linear moodels (e.g. \code{PROC MIXED} in \proglang{SAS}, \code{glm} in \proglang{Stata} or \proglang{R}), there are still only few software solutions available dedicated to dose-finding studies.  
+
+The commercial packages \proglang{East} (Cytel, Cambridge, MA) and \proglang{ADDPLAN} (ICON, Dublin, Ireland) both offer extensions to their basic design software for dose-finding studies (\pkg{ESCALATE} in \proglang{East} and \pkg{df} in \proglang{Addplan}) implementing the algorithmic 3+3 design \citep{carter1973} and various versions of the continual reassessment method \citep[CRM,][]{oquigley1990}. Due to the commercial nature of these implementations there is, however, a limitation on how much the designs can be tailored towards the individual needs of the study.\\
+
+Similarly static implementations of methods for dose-finding are available in the \proglang{Stata} module called \pkg{crm} \citep{StataCRM} which implements the CRM and the  \pkg{dfcrm} package in \proglang{R} which additionally implements the time-to-event CRM (TITE-CRM) \citep{cheung2000}. Finally the \pkg{bcrm} package \citep{sweeting2013} offers a wide range of different dose-finding designs. It implements a variety of one and two parameter models, facilitates different ways to specify prior distributions, escalation and stopping rules.\\
+
+In this paper we introduce the \proglang{R} package \pkg{crmPack} for dose-finding studies. This package differs from existing implementations in three fundamental ways. Firstly it is written using a class structure that allows costumized methods to be added to the package while still being able to use the existing supporting functionalities. Secondly methods for studies with a placebo group (e.g. healthy volunteer studies) are readily implemented. Thirdly dual endpoint dose-finding methods that incorporate both safety and efficacy are available. In section \ref{sec:framework} we discribe the underlying structure of the package while section \ref{sec:using} provides some example of the usage of the package.
+
+
+
+
 todo Daniel: 
 
 - introduce dose escalation trials and in particular CRM designs. Use notation already from the \cite{Thall2010} paper
 
 todo Thomas:
 
+
+
 - Also review the software that is already available (not only in R but also elsewhere, e.g. Addplan, FACTS and East).
 
 - Explicit comparison against R-package bcrm 
 
-\section{Framework}
+\section{Framework}\label{sec:framework}
 
 todo Daniel: 
 
@@ -101,7 +114,7 @@ todo Daniel:
 
 - introduce the general class structure in the package
 
-\section{Using crmPack}
+\section{Using crmPack }\label{sec:using}
 
 \subsection{Implementing a CRM trial}
 
