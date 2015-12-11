@@ -83,15 +83,15 @@ We introduce crmPack by outlining the design framework and show how easy it is t
 
 \section{Introduction}
 
-While the models underlying most model-based dose-finding procedures can easily be fit in standard software with the capability to fit generalized linear moodels (e.g. \code{PROC MIXED} in \proglang{SAS}, \code{glm} in \proglang{Stata} or \proglang{R}), there are still only few software solutions available dedicated to dose-finding studies.  
+While the models underlying most model-based dose-finding procedures can easily be fit in standard software with the capability to fit generalized linear models (e.g. \code{PROC MIXED} in \proglang{SAS}, \code{glm} in \proglang{Stata} or \proglang{R}), there are still only few software solutions available dedicated to dose-finding studies.  
 
-The commercial packages \proglang{East} (Cytel, Cambridge, MA) and \proglang{ADDPLAN} (ICON, Dublin, Ireland) both offer extensions to their basic design software for dose-finding studies (\pkg{ESCALATE} in \proglang{East} and \pkg{df} in \proglang{Addplan}) implementing the algorithmic 3+3 design \citep{carter1973} and various versions of the continual reassessment method \citep[CRM,][]{oquigley1990}. Due to the commercial nature of these implementations there is, however, a limitation on how much the designs can be tailored towards the individual needs of the study.\\
+The commercial packages \proglang{East} (Cytel, Cambridge, MA) and \proglang{ADDPLAN} (ICON, Dublin, Ireland) both offer extensions to their basic design software for dose-finding studies (\pkg{ESCALATE} in \proglang{East} and \pkg{df} in \proglang{Addplan}) implementing the algorithmic 3+3 design \citep{carter1973} and various versions of the continual reassessment method \citep[CRM,][]{oquigley1990}. Similarly \proglang{FACTS} \citep{FACTS} also offers different common dose-finding methods. Due to the commercial nature of these implementations there is, however, a limitation on how much the designs can be tailored towards the individual needs of the study.\\
 
-Similarly static implementations of methods for dose-finding are available in the \proglang{Stata} module called \pkg{crm} \citep{StataCRM} which implements the CRM and the  \pkg{dfcrm} package in \proglang{R} which additionally implements the time-to-event CRM (TITE-CRM) \citep{cheung2000}. Finally the \pkg{bcrm} package \citep{sweeting2013} offers a wide range of different dose-finding designs. It implements a variety of one and two parameter models, facilitates different ways to specify prior distributions, escalation and stopping rules.\\
+Similarly static implementations of methods for dose-finding are available in the \proglang{Stata} module \pkg{crm} \citep{StataCRM} which implements the CRM and the  \pkg{dfcrm} package in \proglang{R} which additionally implements the time-to-event CRM (TITE-CRM) \citep{cheung2000}. Finally the \pkg{bcrm} package \citep{sweeting2013} offers a wide range of different dose-finding designs. It implements a variety of one and two parameter models, facilitates different ways to specify prior distributions, escalation and stopping rules.\\
 
-In this paper we introduce the \proglang{R} package \pkg{crmPack} for dose-finding studies. This package differs from existing implementations in three fundamental ways. Firstly it is written using a class structure that allows costumized methods to be added to the package while still being able to use the existing supporting functionalities. Secondly methods for studies with a placebo group (e.g. healthy volunteer studies) are readily implemented. Thirdly dual endpoint dose-finding methods that incorporate both safety and efficacy are available. In section \ref{sec:framework} we discribe the underlying structure of the package while section \ref{sec:using} provides some example of the usage of the package.
+In this paper we introduce the \proglang{R} package \pkg{crmPack} for dose-finding studies. This package differs from existing implementations in three fundamental ways. Firstly it is written using a class structure that allows costumized methods to be added to the package while still being able to use the existing supporting functionalities. Secondly methods for studies with a placebo group (e.g. for healthy volunteer studies) are readily implemented. Thirdly dual endpoint dose-finding methods that incorporate both safety and efficacy are available.\\
 
-
+In Section \ref{sec:framework} we discribe the underlying structure of the package while Section \ref{sec:using} provides some example of the usage of the package including how to add a costum method before we conclude with a discussion (Section \ref{sec:discussion}). \\
 
 
 todo Daniel: 
@@ -137,11 +137,12 @@ todo Daniel/Winnie:
 
 - example how new models / stopping rules can be implemented by the user
 
-\section{Summary}
+\section{Summary}\label{sec:discussion}
 
-todo Thomas/Daniel:
+In this paper we have introduced the \proglang{R} package \pkg{crmPack} for analysing and evaluating dose-finding trials. Unlike existing software the package is written to make full use of a class structure enabling easy extensions to user-specific dose-response models, prior distributions, escalation and stopping rules. The package does, however, already include a wide range of model-based and algorithmic dose-escalation procedures providing end-users easy access to these approaches without the need for further coding. Another unique feature of the package is the inclusion of approaches that allow placebo data, which are routinely collected in healthy volunteer studies, to be utilized. Finally some methods \cite[e.g.][]{bekele2005,yeung2015} for dose-finding incorporating safety and efficacy are readily implemented already in the package and the underlying structure to extend to novel dual endpoint methods is provided. Simulation facilities for all approaches and relevant graphical displays are also provided.\\
 
-- summarize contribution of crmPack, outline possible extensions
+Future extensions - I am not sure what to put there. It is quite comprehensive already and I dont know what is obviously missing....\\
+
 
 \bibliography{article}
 
