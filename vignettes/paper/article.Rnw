@@ -120,7 +120,7 @@ todo Daniel:
 
 todo Giuseppe:
 
-- introduce basic approach for implementing N-CRM trial
+- introduce basic approach for implementing N-CRM trial - use the same motivating example as Winnie
 
 \subsection{Dose escalation with safety and efficacy}
 
@@ -135,7 +135,7 @@ univariate design
 
 todo Daniel/Winnie:
 
-- example how new models / stopping rules can be implemented by the user
+- example how new models / stopping rules can be implemented by the user -> important!
 
 \section{Summary}\label{sec:discussion}
 
