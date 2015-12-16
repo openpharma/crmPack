@@ -361,7 +361,6 @@ In our example, we could construct it as follows, assuming a minimal dose of 0.1
 mg and a maximum dose of 100 mg:
 
 <<min-inf>>=
-set.seed(432)
 coarseGrid <- c(0.1, 10, 30, 60, 100)
 minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   refDose=50,
@@ -369,7 +368,8 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   threshmax=0.3,
                                   control=
                                   list(threshold.stop=0.03,
-                                       maxit=200))
+                                       maxit=200),
+                                  seed=432)
 @
 
 We use a few grid points between the minimum and the maximum to guide the
