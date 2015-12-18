@@ -118,9 +118,171 @@ todo Daniel:
 
 \subsection{Implementing a CRM trial}
 
-todo Giuseppe:
+We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd. For each subject, one response each of DLE and efficacy was observed. The DLE response is equal to 1 if any abnormal symptom is observed and 0 otherwise. In this Section we will show how to implement a CRM design for dose-escalation based on safety only.
 
-- introduce basic approach for implementing N-CRM trial - use the same motivating example as Winnie
+\\ Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a novel agent are available, defining our dose-grid, with 25 mg being our starting dose. Our primary objective in conducting the dose-escalation study is to characterize the dose-toxicity relationship and to estimate the MTD. We choose to use in this case a Bayesian Logistic regression with overdose control \citep{Neuenschwander2008} for which the corresponding two-parameters model is described below.
+
+\begin{equation} \label{eq:LogisticLogNormal}
+logit(Pr(Y=1 | x,\theta)) \equiv logit(\pi(x,\theta)) = \alpha + \beta log(\frac{x}{x^*})
+\end{equation}
+
+where $\theta = (\alpha,\beta)$, $x$ is the dose and $x^*$ is a reference dose.  
+
+\subsubsection*{Prior definition}
+
+\\ A fundamental component of any Bayesian approach is the \emph{Prior} distribution for the model parameters, in this case $\alpha$ and $\beta$, which need to be defined. If previous studies on the same or similar compound are available, one could think of using an informative prior. Here we assume only very limited information is available and we use a \emph{Minimal Informative Prior} \citep{Neuenschwander2008} which can be easily obtained with the function \code{MinimalInformative}. As a result the obtained prior will be defined in terms a bivariate normal distribution for $(\alpha,log(\beta))$. 
+
+\textbf{Below max.time=1. Once the paper is finalized we could change it into max.time=300}
+<<min-inf,warning=FALSE,message=FALSE,results='hide'>>=
+library(devtools); load_all()
+coarseGrid <- c(25, 50, 100, 200, 300)
+minInfModel <- 
+  MinimalInformative(dosegrid = coarseGrid, refDose=100, logNormal=TRUE,
+                     threshmin=0.1, threshmax=0.2, seed=432,
+                     control=list(threshold.stop=0.05,max.time=1))
+@
+
+The result \texttt{minInfModel} is a list and \code{minInfModel$model} is an object of class \code{LogisticLogNormal}, corresponding to the model in (\ref{eq:LogisticLogNormal}), which contain our prior. A more general way to create an object of class \code{LogisticLogNormal} is with the initialization function:
+
+<<init-LogisticLogNormal>>=
+model <- LogisticLogNormal(mean=minInfModel$model@mean,
+                           cov=minInfModel$model@cov,refDose=100)
+@
+
+\subsubsection*{Sampling from the posterior}
+
+Based on the model with we just defined, we show next how to derive a posterior distribution of the model parameters, giving some data. We first need to create an object of \code{Data} class, containing our data, which can then be visualized by simply applying \code{plot} to the \code{data} object.
+
+<<init-Data,warning=FALSE,message=FALSE,fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
+data <- Data(x=c(25,25,25, 50,50,50, 100,100,100), y=c(0,0,0, 0,0,0, 0,0,1),
+             cohort=c(1,1,1, 2,2,2, 3,3,3), doseGrid=seq(25,300,25))
+plot(data)
+@
+
+\\ Now that we have the model (including the prior) and the data in place, we can use MCMC sampling for obtaining the posterior distribution of the model parameters given the data. The MCMC sampling can be controlled with an object of class \code{McmcOptions}, which is then provided to the \code{mcmc} function, together with the \code{data} and the \code{model} objects:
+
+<<mcmc-sampling>>=
+options <- McmcOptions(burnin=1000, step=2, samples=10000)
+
+set.seed(94)
+samples <- mcmc(data, model, options)
+@
+
+The posterior distribution for the $Pr(Y=1 | x)$ can be visualized by supplying the samples, model and data to the generic \code{plot} function, which generate the posterior mean curve and 95\% equi-tailed credible intervals at each point of the dose grid from the \texttt{data} object. Note that you can also produce a similar plot without any data and would corresponds basically to the model's prior.
+
+<<plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center'>>=
+plot(samples, model, data) + ggtitle("Posterior")
+
+emptydata <- Data(doseGrid=data@doseGrid)
+priorsamples <- mcmc(emptydata, model, options)
+plot(priorsamples, model, emptydata) + ggtitle("Prior")
+@
+
+
+\subsubsection*{Rules for dose escalation}
+In this section we present rules for dose-escalation, including how to choose the dose for the next cohort and how to decide when to stop the study. 
+
+We start by defining our \texttt{increment} rules, with the function \code{IncrementsRelative}, and we decide to allow maximum dose increase of: 100\% for doses below 100 mg, 50\% for doses in the range [100,200) and 33\% for doses equal or above 200 mg. Based on this rule, the maximum allowed dose increase, given our current data, can be obtained with the function \code{maxDose}:
+
+<<rel-incrs>>=
+myIncrements <- IncrementsRelative(intervals=c(0,100,200), increments=c(1,0.5,0.33))
+nextMaxDose  <- maxDose(myIncrements,data)
+nextMaxDose
+@
+
+We then define the rule for selecting a dose for the next cohort. In this case we would like to select the dose which maximize the probability of the toxicity rate being in the target toxity range [0.2,0.35], but with the probability of overdosing not exceeeding 25\% \citep{Neuenschwander2008}. This rule can be created with the function \code{NextBestNCRM}. Based on this rule, the dose for the next cohort, given our current data, the maximum allowed dose increase as well the posterior samples and the model, can be obtained with the function \code{nextBest}, which would also produce a plot highligthing the next suggested dose:
+
+<<nextBest-ncrm,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
+myNextBest <- NextBestNCRM(target=c(0.2,0.35), overdose=c(0.35, 1),
+                           maxOverdoseProb=0.25)
+nextDose <- nextBest(myNextBest,nextMaxDose, samples, model, data)
+nextDose$plot
+@
+
+The number of patients in the next cohort (cohort size) can be defined with rules inhereting from the class \code{CohortSize}. In this case we will use a \texttt{fixed} cohort size of 3 patients thoughout the all study with the class \code{CohortSizeConst}. The function \code{size}, provided with the cohort-size rule, the suggested next dose and current data, will then output the size of the next cohort.
+
+<<size-rules>>=
+mySize <- CohortSizeConst(3)
+size(mySize,nextDose$value,data)
+@
+
+Finally before dosing the next cohort of 3 patients at the recommended next dose of 100 mg, we want to check if the dose-escalation can actually be terminated based on our stopping rules. This can be achieved by calling the function \code{stopTrial} requiring an object of class \code{Stopping} containing our stopping rules which we define below. \\
+We would like to stop if:
+
+\begin{itemize}
+  \item 30 patients were already dosed \textbf{OR}
+  \item the probability to be in the target toxicity range is above 50\% \textbf{OR}
+  \item 6 cohorts were already dosed \textbf{AND} 9 patients were dosed within +/- 20\% of the recommended next dose 
+\end{itemize}
+
+The output of \code{stopTrial} is of class \code{logical} and in this is case equals \code{FALSE}, meaning that based on our stopping rules the study should continue with the next cohort of 3 patients receiving a dose of 100 mg.
+
+<<stop-rules,results='hide'>>=
+myStopping1 <- StoppingMinCohorts(nCohorts=6)
+myStopping2 <- StoppingMinPatients(nPatients=30)
+myStopping3 <- StoppingTargetProb(target=c(0.2, 0.35),prob=0.5)
+myStopping4 <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
+
+myStopping <- myStopping2 | myStopping3 | (myStopping1 & myStopping4)
+stopTrial(myStopping, nextDose$value, samples, model, data)
+@
+
+\subsubsection*{Deriving the Operating Characteristic of our CRM Design}
+In the last topic of this setion, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class \code{Design}. It contains our model, our rules for dose escalation (\code{Increments}, \code{nextBest}, \code{Stopping} and \code{cohortSize}), the dose grid (in the example below through the object \code{emptydata}) and our starting dose.
+
+<<design-setup>>=
+design <- Design(model=model, nextBest=myNextBest, stopping=myStopping,
+                 increments=myIncrements, cohortSize=mySize,
+                 data=emptydata,startingDose=25)
+@
+
+We can then start by looking at the \texttt{single trial} operating characteristics of the dose escalation design with the function \code{examine}, which generates a dataframe showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown.
+
+<<design-examine>>=
+set.seed(23)
+examine(design,options)
+@
+
+For the \texttt{many trials} operating characteristics, we have to define a true scenario, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. Here we use the function contained in the slot \code{prob} of the object \code{model}, for which the dose-toxicity curve is shown below.
+
+<<true-def,fig.width=4,fig.height=4,out.width='.4\\linewidth',fig.align='center'>>=
+myTruth <- function(dose){ model@prob(dose, alpha0=7, alpha1=8)}
+curve(myTruth(x), from=0, to=80, ylim=c(0, 1)) # Plot the True Curve
+@
+
+Now we can proceed to the simulations using the function \code{simulate}, which requires as arguments our CRM design, the true toxicity profile, the total number of trials to be simulated and some MCMC options. The argument \code{parallel} can be set to \code{TRUE} if one wish to enable the use of all processors of the computer for running the simulations in parallel. This can yield a meaningful speedup, especially for larger number of simulations.
+
+\textbf{Here nsim=10. Once the paper is finalized we could change it into nsim=1000}
+<<run-sims>>=
+mySims <- simulate(design, truth=myTruth, nsim=10,
+                   seed=819,mcmcOptions=options,parallel=FALSE)
+@
+
+The result of this call is an object of class \texttt{Simulations} containing multiple slots. For example the \texttt{data} slot contains the list of produced \texttt{Data} objects of the simulated trials. Therefore, we can just use the \code{plot} function to plot the course of e.g. the third simulated trial (as shown below). The slots \code{doses} and \code{stopReasons} contain information about the final MTD and the stopping reason for each trial.
+
+<<third-trial, fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
+plot(mySims@data[[3]])    # course of the third simulated trial
+mySims@doses[3]           # MTD at the end of the third simulated trial
+@
+
+Furthermore, with this object, we can apply two methods. First, we can plot it, i.e. we can apply the \code{plot} method:
+
+<<sim-plot, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
+plot(mySims)
+@
+
+The resulting plot shows on the top panel a summary of the trial trajectories. On the bottom, the proportions of doses tried, averaged over the simulated trials, are shown. Note that you can select the plots by changing the \code{type} argument of \code{plot}, which by default is \code{type = c("trajectory", "dosesTried")}.
+
+Second, we can summarize the simulation results with the \code{summary} method. Here again we have to supply a true dose-toxicity function.
+
+<<sim-summary>>=
+simSum <- summary(mySims,truth=myTruth)
+simSum
+@
+
+A plot of the summary results, giving a bit more details than the textual summary, could be produced with the code \code{plot(simSum)}
+
+
 
 \subsection{Dose escalation with safety and efficacy}
 
