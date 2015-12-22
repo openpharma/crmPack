@@ -35,7 +35,7 @@
 ##' @param y missing
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
@@ -196,7 +196,7 @@ setMethod("plot",
 ##' @param y missing
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 qplot coord_flip scale_x_discrete
@@ -800,7 +800,7 @@ setMethod("show",
 ##' @param y missing
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
@@ -918,7 +918,7 @@ setMethod("plot",
 ##' @param y missing
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
@@ -1041,7 +1041,7 @@ setMethod("plot",
 ##' @param y missing
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
@@ -1450,7 +1450,7 @@ setMethod("show",
 ##' @param y missing
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line
@@ -1664,7 +1664,7 @@ setMethod("plot",
 ##' @param y missing
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
@@ -1759,7 +1759,7 @@ setMethod("plot",
 ##' @param y missing
 ##' @param type the type of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 ggplot geom_step geom_bar aes xlab ylab
@@ -2056,7 +2056,7 @@ def=
 ##' @param y missing
 ##' @param type the types of plots you want to obtain.
 ##' @param \dots not used
-##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
+##' @return A single \code{\link[ggplot2]{ggplot}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 ##'
 ##' @importFrom ggplot2 geom_histogram ggplot aes xlab ylab geom_line

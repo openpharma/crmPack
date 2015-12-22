@@ -90,4 +90,7 @@ globalVariables(c("log.betaZ",
                   "upper",
                   "middleBiomarker",
                   "lowerBiomarker",
-                  "upperBiomarker"))
+                  "upperBiomarker",
+                  "nObsshare",
+                  "xshare",
+                  "yshare"))

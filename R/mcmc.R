@@ -68,6 +68,8 @@ setGeneric("mcmc",
 ##' @param program the program which shall be used: either \dQuote{JAGS} (default),
 ##' \dQuote{OpenBUGS} or \dQuote{WinBUGS}
 ##' @param verbose shall progress bar and messages be printed? (not default)
+##' @param fromPrior sample from the prior only? Defaults to checking if nObs is
+##' 0. For some models it might be necessary to specify it manually here though.
 ##'
 ##' @importFrom rjags jags.model jags.samples
 ##' @importFrom utils capture.output
@@ -82,6 +84,7 @@ setMethod("mcmc",
           function(data, model, options,
                    program=c("JAGS", "OpenBUGS", "WinBUGS"),
                    verbose=FALSE,
+                   fromPrior=data@nObs == 0L,
                    ...){
 
               ## select program
@@ -98,10 +101,8 @@ setMethod("mcmc",
                   cat("Using temporary directory", bugsTempDir, "\n")
               }
 
-              ## decide whether we sample from the prior or not
-              fromPrior <- data@nObs == 0L
-
-              ## and accordingly build the model
+              ## build the model according to whether we sample from prior 
+              ## or not:
               bugsModel <-
                   if(fromPrior)
                   {
@@ -148,7 +149,10 @@ setMethod("mcmc",
                       tmp <- as.list(data)[model@datanames]
 
                       ## get the names where to add dummy entries:
-                      addWhere <- which(! (names(tmp) %in% c("nObs", "nGrid")))
+                      addWhere <- which(! (names(tmp) %in% c("nObs", "nGrid",
+                                                             "nObsshare", 
+                                                             "yshare",
+                                                             "xshare")))
                       ## all names that are not referring to the scalars
                       ## nObs and nGrid
 

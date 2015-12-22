@@ -15,6 +15,8 @@
 ##' @include helpers.R
 {}
 
+## ============================================================
+
 
 ## --------------------------------------------------
 ## Class for general data input
@@ -55,6 +57,9 @@
                      o$result()
                  })
 validObject(.GeneralData())
+
+
+## ============================================================
 
 
 ## --------------------------------------------------
@@ -198,6 +203,7 @@ Data <- function(x=numeric(),
 validObject(Data())
 
 
+## ============================================================
 
 
 ## --------------------------------------------------
@@ -249,6 +255,8 @@ DataDual <- function(w=numeric(),
               w=w)
 }
 validObject(DataDual())
+
+## ============================================================
 
 
 ## --------------------------------------------------
@@ -327,5 +335,73 @@ DataParts <- function(part=integer(),
 }
 validObject(DataParts())
 
+## ============================================================
 
+## --------------------------------------------------
+## Subclass with additional data for mixture
+## --------------------------------------------------
+
+
+##' Class for the data with mixture sharing
+##' 
+##' @slot xshare the doses for the share patients
+##' @slot yshare the vector of toxicity events (0 or 1 integers) for the share
+##' patients
+##' @slot nObsshare number of share patients
+##'
+##' @seealso \code{\linkS4class{LogisticLogNormalMixture}} for the explanation
+##' how to use this data class
+##' @export
+##' @example examples/Model-class-LogisticLogNormalMixture.R
+##' @keywords classes
+.DataMixture <-
+  setClass(Class="DataMixture",
+           representation(xshare="numeric",
+                          yshare="integer",
+                          nObsshare="integer"),
+           prototype(xshare=numeric(),
+                     yshare=integer(),
+                     nObsshare=0L),
+           contains="Data",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(all(object@yshare %in% c(0, 1)),
+                       "DLT vector yshare can only have 0 or 1 values")
+               o$check(all(object@xshare %in% object@doseGrid),
+                       "dose values in xshare must be from doseGrid")
+               for(thisSlot in c("xshare", "yshare"))
+                 o$check(identical(object@nObsshare, length(slot(object, thisSlot))),
+                         paste(thisSlot, "must have length nObs"))
+               
+               o$result()
+             })
+validObject(.DataMixture())
+
+##' Initialization function for the "DataMixture" class
+##'
+##' This is the function for initializing a "DataMixture" class object.
+##'
+##' @param xshare see \code{\linkS4class{DataMixture}}
+##' @param yshare see \code{\linkS4class{DataMixture}}
+##' @param \dots additional arguments for the underlying Data slots
+##' 
+##' @return the initialized \code{\linkS4class{DataMixture}} object
+##'
+##' @export
+##' @keywords programming
+DataMixture <- function(xshare=numeric(),
+                        yshare=integer(),
+                        ...){
+  start <- Data(...)
+  ret <- .DataMixture(start,
+                      xshare=as.numeric(xshare),
+                      yshare=safeInteger(yshare),
+                      nObsshare=length(xshare))
+  return(ret)
+}
+validObject(DataMixture())
+
+## ============================================================
 

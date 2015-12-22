@@ -1033,7 +1033,7 @@ setMethod("examine",
                                  y=rep(0, thisSize))
 
                       ## what is the new dose according to table?
-                      newDose <- as.numeric(subset(ret,
+                      newDose <- as.numeric(subset(tail(ret, thisSize + 1),
                                                    dose==thisDose & DLTs==0,
                                                    select=nextDose))
 
@@ -1047,8 +1047,7 @@ setMethod("examine",
                       ## either when we have reached the highest dose in the
                       ## next cohort, or when there is no improvement in dose
                       ## over the last cohort
-                      stopit <- (thisDose >= max(object@data@doseGrid)) ||
-                          (! (doseDiff > 0))
+                      stopit <- (thisDose >= max(object@data@doseGrid))
                   }
 
                   return(ret)
@@ -1133,7 +1132,7 @@ setMethod("examine",
                                  y=rep(0, thisSize))
 
                       ## what is the new dose according to table?
-                      newDose <- as.numeric(subset(ret,
+                      newDose <- as.numeric(subset(tail(ret, thisSize + 1),
                                                    dose==thisDose & DLTs==0,
                                                    select=nextDose))
 
@@ -1147,8 +1146,7 @@ setMethod("examine",
                       ## either when we have reached the highest dose in the
                       ## next cohort, or when there is no improvement in dose
                       ## over the last cohort
-                      stopit <- (thisDose >= max(object@data@doseGrid)) ||
-                          (! (doseDiff > 0))
+                      stopit <- (thisDose >= max(object@data@doseGrid))
                   }
 
                   return(ret)

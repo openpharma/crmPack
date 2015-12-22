@@ -23,8 +23,6 @@
 ##' @slot datanames The names of all data slots that are used in all models. 
 ##' In particularly, those are also used in the \code{datamodel} and/or
 ##' \code{priormodel} definition for \code{\linkS4class{GeneralModel}}.
-##' Note that you cannot specify more variable than those that are really 
-##' used in the models!
 ##' 
 ##' @seealso \code{\linkS4class{GeneralModel}}, \code{\linkS4class{ModelPseudo}}
 ##' 
@@ -32,19 +30,7 @@
 ##' @keywords classes
 
 .AllModels<-setClass(Class="AllModels",
-                     representation(datanames="character"),
-                     validity=function(object){
-                       o <- Validate()
-                      
-                       ## put here all names of data class slots
-                       allDatanames <- c("x", "y", "w",
-                                         "doseGrid", "nObs", "nGrid", "xLevel")
-                     
-                       o$check(all(object@datanames %in% allDatanames),
-                               paste("data names must be in",
-                                     paste(allDatanames, collapse=", ")))
-                       o$result()
-                     })
+                     representation(datanames="character"))
 validObject(.AllModels())
 
 ##' No Intitialization function for this
@@ -93,19 +79,15 @@ validObject(.AllModels())
                             sample="character"),
              contains="AllModels",
              validity=
-                 function(object){
-                     o <- Validate()
+               function(object){
+                 o <- Validate()
+                 
+                 o$check(all(names(formals(object@init)) %in%
+                               object@datanames),
+                         "arguments of the init function must be data names")
 
-                     ## put here all names of data class slots
-                     allDatanames <- c("x", "y", "w",
-                                       "doseGrid", "nObs", "nGrid", "xLevel")
-
-                     o$check(all(names(formals(object@init)) %in%
-                                 allDatanames),
-                             "arguments of the init function must be data names")
-
-                     o$result()
-         })
+                 o$result()
+               })
 validObject(.GeneralModel())
 
 ## no init function for this one
@@ -2277,6 +2259,163 @@ validObject(LogisticNormalMixture(comp1=
 
 ## ============================================================
 
+##' Standard logistic model with online mixture of two bivariate log normal priors
+##'
+##' This model can be used when data is arising online from the informative
+##' component of the prior, at the same time with the data of the trial of
+##' main interest. Formally, this is achieved by assuming that the probability
+##' of a DLT at dose \eqn{x} is given by
+##' 
+##' \deqn{p(x) = \pi p_{1}(x) + (1 - \pi) p_{2}(x)}
+##' 
+##' where \eqn{\pi} is the probability for the model \eqn{p(x)} being the same
+##' as the model \eqn{p_{1}(x)} - this is 
+##' the informative component of the prior. From this model data arises in 
+##' parallel: at doses \code{xshare}, DLT information \code{yshare} is observed, 
+##' in total \code{nObsshare} data points, see \code{\linkS4class{DataMixture}}.
+##' On the other hand, \eqn{1 - \pi}
+##' is the probability of a separate model \eqn{p_{2}(x)}. Both components 
+##' have the same log normal prior distribution, which can be specified by the
+##' user, and which is inherited from the \code{\linkS4class{LogisticLogNormal}}
+##' class.
+##' 
+##' @slot shareWeight the prior weight for sharing the same model \eqn{p_{1}(x)} 
+##'
+##' @seealso the \code{\linkS4class{DataMixture}} class for use with this model
+##' @example examples/Model-class-LogisticLogNormalMixture.R
+##' @export
+##' @keywords classes
+.LogisticLogNormalMixture <-
+  setClass(Class="LogisticLogNormalMixture",
+           contains="LogisticLogNormal",
+           representation(shareWeight="numeric"),
+           prototype(shareWeight=0.1),
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.probability(object@shareWeight),
+                       "shareWeight does not specify a probability")
+               
+             })
+validObject(.LogisticLogNormalMixture())
+
+
+##' Initialization function for the "LogisticLogNormalMixture" class
+##'
+##' @param mean the prior mean vector
+##' @param cov the prior covariance matrix
+##' @param refDose the reference dose
+##' @param shareWeight the prior weight for the share component
+##' @return the \code{\linkS4class{LogisticLogNormalMixture}} object
+##'
+##' @export
+##' @keywords methods
+LogisticLogNormalMixture <- function(mean,
+                                     cov,
+                                     refDose,
+                                     shareWeight)
+{
+  .LogisticLogNormalMixture(mean=mean,
+                            cov=cov,
+                            refDose=refDose,
+                            shareWeight=shareWeight,
+                            datamodel=
+                              function(){
+                                ## the logistic likelihood:
+                                
+                                ## mixture for the new combo obs
+                                for (i in 1:nObs)
+                                {
+                                  ## the bernoulli distribution:
+                                  y[i] ~ dbern(p[comp, i])
+                                  
+                                  ## comp gives the component -
+                                  ## non-informative (1) or share (2)
+                                  
+                                  ## the two components:
+                                  for (k in 1:2)
+                                  {
+                                    logit(p[k, i]) <- alpha0[k] + alpha1[k] *
+                                      StandLogDose[i]
+                                  }
+                                  
+                                  ## just the standardized log dose:
+                                  StandLogDose[i] <- log(x[i] / refDose)
+                                }
+                                
+                                ## just from share for the share obs
+                                for (j in 1:nObsshare)
+                                {
+                                  ## the bernoulli distribution:
+                                  yshare[j] ~ dbern(pshare[j])
+                                  
+                                  ## take the correct - second - component
+                                  logit(pshare[j]) <- alpha0[2] + alpha1[2] *
+                                    StandLogDoseshare[j]
+                                  
+                                  ## just the standardized log dose:
+                                  StandLogDoseshare[j] <- log(xshare[j] / refDose)
+                                }
+                                
+                              },
+                            priormodel=
+                              function(){
+                                
+                                ## compute precision matrix
+                                priorPrec[1:2,1:2] <- inverse(cov[,])
+                                
+                                ## the two components: same prior
+                                for (k in 1:2)
+                                {
+                                  theta[k, 1:2] ~ dmnorm(mean[1:2],
+                                                         priorPrec[1:2,1:2])
+                                  
+                                  alpha0[k] <- theta[k, 1]
+                                  alpha1[k] <- exp(theta[k, 2])
+                                }
+                                
+                                ## the component indicator
+                                comp ~ dcat(catProbs)
+                                
+                                ## dummy to use refDose here.
+                                ## It is contained in the modelspecs list below,
+                                ## so it must occur here
+                                bla <- refDose + 1
+                              },
+                            datanames=c("nObs", "y", "x", "nObsshare", "yshare", "xshare"),
+                            modelspecs=
+                              function(){
+                                list(mean=mean,
+                                     cov=cov,
+                                     refDose=refDose,
+                                     catProbs=c(1 - shareWeight, shareWeight))
+                              },
+                            dose=
+                              function(prob, alpha0, alpha1, comp){
+                                stop("not implemented")
+                              },
+                            prob=
+                              function(dose, alpha0, alpha1, comp){
+                                StandLogDose <- log(dose / refDose)
+                                selectMat <- cbind(seq_len(nrow(alpha0)), comp)
+                                return(plogis(alpha0[selectMat] +
+                                                alpha1[selectMat] * StandLogDose))
+                              },
+                            init=
+                              function(){
+                                list(theta=matrix(c(0, 0, 1, 1), nrow=2))
+                              },
+                            sample=
+                              c("alpha0", "alpha1", "comp"))
+}
+validObject(LogisticLogNormalMixture(mean=c(0, 1),
+                                     cov=diag(2),
+                                     shareWeight=0.1,
+                                     refDose=1))
+
+
+## ============================================================
 
 ##' Standard logistic model with fixed mixture of multiple bivariate (log) normal priors
 ##'

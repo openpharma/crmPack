@@ -19,8 +19,8 @@ mySize <-CohortSizeConst(size=3)
 ##This is to specified a maximum of 3-fold restriction in dose-esclation
 myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
                                  increments=c(2,2))
-##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
-myStopping <- StoppingMinPatients(nPatients=36)
+##Specified the stopping rule e.g stop when the maximum sample size of 12 patients has been reached
+myStopping <- StoppingMinPatients(nPatients=12)
 ##Now specified the design with all the above information and starting with a dose of 25
 design <- TDDesign(model=model,
                    nextBest=tdNextBest,
@@ -68,15 +68,15 @@ design <- TDsamplesDesign(model=model,
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##The simulations
 ##For illustration purpose only 1 simulation is produced (nsim=1). 
-mySim <- simulate(design,
-                  args=NULL,
-                  truth=myTruth,
-                  nsim=1,
-                  seed=819,
-                  mcmcOptions=options,
-                  parallel=FALSE)
-##Then produce a summary of your simulations
-MYSUM <- summary(mySim,
-                 truth=myTruth)
-##plot the summary of the simulations
-print(plot(MYSUM))
+# mySim <- simulate(design,
+#                   args=NULL,
+#                   truth=myTruth,
+#                   nsim=1,
+#                   seed=819,
+#                   mcmcOptions=options,
+#                   parallel=FALSE)
+# ##Then produce a summary of your simulations
+# MYSUM <- summary(mySim,
+#                  truth=myTruth)
+# ##plot the summary of the simulations
+# print(plot(MYSUM))

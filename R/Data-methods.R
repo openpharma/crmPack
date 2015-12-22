@@ -121,7 +121,7 @@ setMethod("plot",
                                    data=df,
                                    hjust=0, vjust=0.5,
                                    angle=90, colour=I("black"),
-                                   show_guide = FALSE)
+                                   show.legend = FALSE)
 
               a <- a + scale_x_continuous(breaks=df$patient,
                                           minor_breaks=numeric())
@@ -196,7 +196,7 @@ setMethod("plot",
                   geom_text(data=df,
                             aes(label=patient, y=biomarker+0.02 * diff(range(biomarker)), size=2), hjust=0,
                             vjust=0.5, angle=90, colour=I("black"),
-                            show_guide=FALSE)
+                            show.legend=FALSE)
 
               ## arrange both plots side by side
               ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)

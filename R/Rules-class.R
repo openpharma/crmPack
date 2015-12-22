@@ -478,7 +478,8 @@ IncrementsRelativeDLT <- function(DLTintervals,
 ##' \code{\linkS4class{StoppingMinPatients}},
 ##' \code{\linkS4class{StoppingTargetProb}}
 ##' \code{\linkS4class{StoppingMTDdistribution}},
-##' \code{\linkS4class{StoppingTargetBiomarker}}
+##' \code{\linkS4class{StoppingTargetBiomarker}},
+##' \code{\linkS4class{StoppingHighestDose}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -824,6 +825,32 @@ StoppingTargetBiomarker <- function(target,
     .StoppingTargetBiomarker(target=target,
                              prob=prob)
 }
+
+## --------------------------------------------------
+## Stopping when the highest dose is reached
+## --------------------------------------------------
+
+##' Stop when the highest dose is reached
+##' 
+##' @example examples/Rules-class-StoppingHighestDose.R
+##' @keywords classes
+##' @export
+.StoppingHighestDose <-
+  setClass(Class="StoppingHighestDose",
+           contains="Stopping")
+validObject(.StoppingHighestDose())
+
+##' Initialization function for "StoppingHighestDose"
+##'
+##' @return the \code{\linkS4class{StoppingHighestDose}} object
+##'
+##' @export
+##' @keywords methods
+StoppingHighestDose <- function()
+{
+  .StoppingHighestDose()
+}
+
 
 ## --------------------------------------------------
 ## Stopping based on multiple stopping rules

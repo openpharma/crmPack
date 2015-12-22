@@ -1,6 +1,6 @@
 
 # Define the dose-grid
-emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 30))
 
 # Initialize the CRM model 
 model <- DualEndpointRW(mu = c(0, 1),

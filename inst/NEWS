@@ -1,7 +1,31 @@
-Version 0.1.3-1
+Version 0.1.6
 --------------------------------------------------------------------------------
 
-* todo: describe new features
+* New model class "LogisticLogNormalMixture" has been added, for use with the 
+  new data class "DataMixture".
+
+* New stopping rule "StoppingHighestDose" has been added.
+
+* The "examine" method no longer stops when two consecutive cohorts start with 
+  the same dose. This is important e.g. for the two-parts study designs, where 
+  part 1 can end with the same dose as part 2 starts.
+  
+* The contents of the "datanames" slot of new models are no longer restricted to 
+  a specific set, which was previously enforced by the validation function of 
+  the GeneralModel and AllModels classes.
+  
+* Sampling from the prior can now be enabled/disabled by the user for the
+  mcmc function, which is necessary for models where it might not be from the
+  prior even though nObs == 0.
+
+* Bugfix: The results from the MinimalInformative function were not reproducible
+  beforehand. Now a seed parameter can be supplied, which ensures 
+  reproducibility.
+
+* Bugfix: Compatibility of help file links with new ggplot2 package version.
+
+Version 0.1.5
+--------------------------------------------------------------------------------
 
 * Bugfix: In newer versions of grid the plotting of simulation objects did no 
   longer work. This was fixed.
