@@ -119,6 +119,11 @@ todo Daniel:
 
 \subsection{Implementing a CRM trial}
 
+Before we start, we have to install and load our package in R
+<<start>>=
+library("crmPack")
+@
+
 We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd. For each subject, one response each of DLE and efficacy was observed. The DLE response is equal to 1 if any abnormal symptom is observed and 0 otherwise. In this Section we will show how to implement a CRM design for dose-escalation based on safety only.
 
 \\ Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a novel agent are available, defining our dose-grid, with 25 mg being our starting dose. Our primary objective in conducting the dose-escalation study is to characterize the dose-toxicity relationship and to estimate the MTD. We choose to use in this case a Bayesian Logistic regression with overdose control \citep{Neuenschwander2008} for which the corresponding two-parameters model is described below.
@@ -135,7 +140,6 @@ where $\theta = (\alpha,\beta)$, $x$ is the dose and $x^*$ is a reference dose.
 
 \textbf{Below max.time=1. Once the paper is finalized we could change it into max.time=300}
 <<min-inf,warning=FALSE,message=FALSE,results='hide'>>=
-library(devtools); load_all()
 coarseGrid <- c(25, 50, 100, 200, 300)
 minInfModel <- 
   MinimalInformative(dosegrid = coarseGrid, refDose=100, logNormal=TRUE,
@@ -326,12 +330,6 @@ Furthermore for $\nu=\sigma^{-2}$, either fixed values or gamma distributions wi
 The \texttt{ModelPseudo} class contains all model classes where their prior are specified in terms of pseudo data and standard maximum likelihood procedures from R can be used to obtain prior and posterior estimates. All models included in this package will have a parent class of either \texttt{GeneralModel} or \texttt{ModelPseudo}. In particular, all dose-responses models that can be used when the two endpoints are modelled separately are contained in \texttt{ModelPseudo} class.
 
 There are two further sub-classes under \texttt{ModelPseudo} class which are the \texttt{ModelTox} class which contains all DLTs models and the \texttt{ModelEff} class which includes all efficacy models. The two-parameter dose-DLTs model describe earlier is defined as \texttt{LogisticIndepBeta} class model in the package and is also contained in \texttt{ModelTox} class. The linear log-log  described are defined as \texttt{Effloglog} contained under \texttt{ModelEff} class. Now we will demonstrate how we define these models on a fictional example. 
-
-Before we start, we have to install and load our package in R
-<<start>>=
-install.packages("crmPack")
-library("crmPack")
-@
 
 This is an example based on a trial in Type II diabetes carried out by Roche. The DLTs response equals to 1 if any abnormal symptom is observed on subject and 0 otherwise. An indication of efficacy is expressed via Dipeptidyl peptidase-4 (DPP4), which is an enzyme found on the surface of cells that plays a key role in glucose metabolism. The drug under investigation is intended to inhibit the DPP4 activity. A transform form of the DPP4 activity is used as the continuous efficacy endpoint. For subject $i$, the efficacy responses is defined as $$y_i=-{\rm log}\left(\frac{\textrm{DPP4 activity at hour 0, day 9}}{\textrm{DPP4 activity at hour 0, day 1}}\right).$$
 
