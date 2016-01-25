@@ -367,7 +367,7 @@ minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   threshmin=0.2,
                                   threshmax=0.3,
                                   control=
-                                  list(threshold.stop=0.03,
+                                 list(threshold.stop=0.03,
                                        maxit=200),
                                   seed=432)
 @
@@ -1840,10 +1840,10 @@ The following commands show how we set up the \texttt{Effloglog} model. This is 
 Similarly to other pseudo models, the data set has to be specified before setting up the model:
 
 <<modelEff>>=
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data2)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data2)
 @
 
-For the specification of the prior pseudo data, two dose levels 25 and 300 mg are fixed and specified in the \texttt{Effdose} slot. After eliciting the prior expected efficacy values at these two dose levels (e.g. by asking for experts'), these are specified in the \texttt{Eff}  slot. Here for example, 1.223 is the expected efficacy value for subjects treated at dose 25 mg and 2.513 is the expected efficacy value for subjects treated at 300 mg. The slot \texttt{nu} represents the prior precision of the efficacy responses. In this example, two positive scalars for $a$ and $b$ are specified suggesting the prior distribution of the precision is gamma with shape parameter $a=0.025$ and rate parameter $b=1$. Note here, since a gamma distribution is used as the prior distribution of $\nu$, the posterior distribution will again be a gamma distribution, because the gamma prior on the precision is conjugate to the normal likelihood. 
+For the specification of the prior pseudo data, two dose levels 25 and 300 mg are fixed and specified in the \texttt{Effdose} slot. After eliciting the prior expected efficacy values at these two dose levels (e.g. by asking for experts'), these are specified in the \texttt{Eff}  slot. Here for example, 1.223 is the expected efficacy value for subjects treated at dose 25 mg and 2.513 is the expected efficacy value for subjects treated at 300 mg. The slot \texttt{nu} represents the prior precision of the efficacy responses. In this example, two positive scalars for $a$ and $b$ are specified suggesting the prior distribution of the precision is gamma with shape parameter $a=1$ and rate parameter $b=0.025$. Note here, since a gamma distribution is used as the prior distribution of $\nu$, the posterior distribution will again be a gamma distribution, because the gamma prior on the precision is conjugate to the normal likelihood. 
 If a fixed value of the precision is preferred, a single positive scalar can also be specified in \texttt{nu} slot. Finally the \texttt{data} slot is specified either with an empty data set or a data set with all currently available observations.
 
 Similarly, we can also look at the structure of the Effmodel by applying the \texttt{str} function:

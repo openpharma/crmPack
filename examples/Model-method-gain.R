@@ -8,7 +8,7 @@ DLEsamples <- mcmc(data, DLEmodel, McmcOptions(burnin=100,step=2,samples=200))
 
 ##The efficacy model must be from 'ModelEff' class (Effmodel slot)
 ## The DLE and efficayc samples must be from 'Samples' class (DLEsamples and Effsamples slot)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
 Effsamples <- mcmc(data, Effmodel, McmcOptions(burnin=100,step=2,samples=200))
 
 ## Given a dose level 75,

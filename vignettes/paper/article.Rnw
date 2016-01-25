@@ -75,6 +75,7 @@ We introduce crmPack by outlining the design framework and show how easy it is t
 
 
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
@@ -89,6 +90,7 @@ We introduce crmPack by outlining the design framework and show how easy it is t
 todo Daniel: 
 
 - introduce dose escalation trials and in particular CRM designs. Use notation already from the \cite{Thall2010} paper
+
 
 
 While the models underlying most model-based dose-escalation procedures can easily be fit in standard software with the capability to fit generalized linear models (e.g. \code{PROC MIXED} in \proglang{SAS}, \code{glm} in \proglang{Stata} or \proglang{R}), there are still only few software solutions available dedicated to dose-finding studies.  
@@ -124,7 +126,7 @@ library("crmPack")
 
 We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd. For each subject, one response each of DLE and efficacy was observed. The DLE response is equal to 1 if any abnormal symptom is observed and 0 otherwise. In this Section we will show how to implement a CRM design for dose-escalation based on safety only.
 
-\\ Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a novel agent are available, defining our dose-grid, with 25 mg being our starting dose. Our primary objective in conducting the dose-escalation study is to characterize the dose-toxicity relationship and to estimate the MTD. We choose to use in this case a Bayesian Logistic regression with overdose control \citep{Neuenschwander2008} for which the corresponding two-parameters model is described below.
+Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a novel agent are available, defining our dose-grid, with 25 mg being our starting dose. Our primary objective in conducting the dose-escalation study is to characterize the dose-toxicity relationship and to estimate the MTD. We choose to use in this case a Bayesian Logistic regression with overdose control \citep{Neuenschwander2008} for which the corresponding two-parameters model is described below.
 
 \begin{equation} \label{eq:LogisticLogNormal}
 logit(Pr(Y=1 | x,\theta)) \equiv logit(\pi(x,\theta)) = \alpha + \beta log(\frac{x}{x^*})
@@ -133,8 +135,8 @@ logit(Pr(Y=1 | x,\theta)) \equiv logit(\pi(x,\theta)) = \alpha + \beta log(\frac
 where $\theta = (\alpha,\beta)$, $x$ is the dose and $x^*$ is a reference dose.  
 
 \subsubsection*{Prior definition}
-
-\\ A fundamental component of any Bayesian approach is the \emph{Prior} distribution for the model parameters, in this case $\alpha$ and $\beta$, which need to be defined. If previous studies on the same or similar compound are available, one could think of using an informative prior. Here we assume only very limited information is available and we use a \emph{Minimal Informative Prior} \citep{Neuenschwander2008} which can be easily obtained with the function \code{MinimalInformative}. As a result the obtained prior will be defined in terms a bivariate normal distribution for $(\alpha,log(\beta))$. 
+\noindent
+A fundamental component of any Bayesian approach is the \emph{Prior} distribution for the model parameters, in this case $\alpha$ and $\beta$, which need to be defined. If previous studies on the same or similar compound are available, one could think of using an informative prior. Here we assume only very limited information is available and we use a \emph{Minimal Informative Prior} \citep{Neuenschwander2008} which can be easily obtained with the function \code{MinimalInformative}. As a result the obtained prior will be defined in terms a bivariate normal distribution for $(\alpha,log(\beta))$. 
 
 \textbf{Below max.time=1. Once the paper is finalized we could change it into max.time=300}
 <<min-inf,warning=FALSE,message=FALSE,results='hide'>>=
@@ -162,7 +164,7 @@ data <- Data(x=c(25,25,25, 50,50,50, 100,100,100), y=c(0,0,0, 0,0,0, 0,0,1),
 plot(data)
 @
 
-\\ Now that we have the model (including the prior) and the data in place, we can use MCMC sampling for obtaining the posterior distribution of the model parameters given the data. The MCMC sampling can be controlled with an object of class \code{McmcOptions}, which is then provided to the \code{mcmc} function, together with the \code{data} and the \code{model} objects:
+Now that we have the model (including the prior) and the data in place, we can use MCMC sampling for obtaining the posterior distribution of the model parameters given the data. The MCMC sampling can be controlled with an object of class \code{McmcOptions}, which is then provided to the \code{mcmc} function, together with the \code{data} and the \code{model} objects:
 
 <<mcmc-sampling>>=
 options <- McmcOptions(burnin=1000, step=2, samples=10000)
@@ -193,7 +195,7 @@ nextMaxDose  <- maxDose(myIncrements,data)
 nextMaxDose
 @
 
-We then define the rule for selecting a dose for the next cohort. In this case we would like to select the dose which maximize the probability of the toxicity rate being in the target toxity range [0.2,0.35], but with the probability of overdosing not exceeeding 25\% \citep{Neuenschwander2008}. This rule can be created with the function \code{NextBestNCRM}. Based on this rule, the dose for the next cohort, given our current data, the maximum allowed dose increase as well the posterior samples and the model, can be obtained with the function \code{nextBest}, which would also produce a plot highligthing the next suggested dose:
+We then define the rule for selecting a dose for the next cohort. In this case we would like to select the dose which maximize the probability of the toxicity rate being in the target toxicity range [0.2,0.35], but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}. This rule can be created with the function \code{NextBestNCRM}. Based on this rule, the dose for the next cohort, given our current data, the maximum allowed dose increase as well the posterior samples and the model, can be obtained with the function \code{nextBest}, which would also produce a plot highlighting the next suggested dose:
 
 <<nextBest-ncrm,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
 myNextBest <- NextBestNCRM(target=c(0.2,0.35), overdose=c(0.35, 1),
@@ -202,7 +204,7 @@ nextDose <- nextBest(myNextBest,nextMaxDose, samples, model, data)
 nextDose$plot
 @
 
-The number of patients in the next cohort (cohort size) can be defined with rules inhereting from the class \code{CohortSize}. In this case we will use a \texttt{fixed} cohort size of 3 patients thoughout the all study with the class \code{CohortSizeConst}. The function \code{size}, provided with the cohort-size rule, the suggested next dose and current data, will then output the size of the next cohort.
+The number of patients in the next cohort (cohort size) can be defined with rules inheriting from the class \code{CohortSize}. In this case we will use a \texttt{fixed} cohort size of 3 patients throughout the all study with the class \code{CohortSizeConst}. The function \code{size}, provided with the cohort-size rule, the suggested next dose and current data, will then output the size of the next cohort.
 
 <<size-rules>>=
 mySize <- CohortSizeConst(3)
@@ -231,7 +233,7 @@ stopTrial(myStopping, nextDose$value, samples, model, data)
 @
 
 \subsubsection*{Deriving the Operating Characteristic of our CRM Design}
-In the last topic of this setion, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class \code{Design}. It contains our model, our rules for dose escalation (\code{Increments}, \code{nextBest}, \code{Stopping} and \code{cohortSize}), the dose grid (in the example below through the object \code{emptydata}) and our starting dose.
+In the last topic of this section, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class \code{Design}. It contains our model, our rules for dose escalation (\code{Increments}, \code{nextBest}, \code{Stopping} and \code{cohortSize}), the dose grid (in the example below through the object \code{emptydata}) and our starting dose.
 
 <<design-setup>>=
 design <- Design(model=model, nextBest=myNextBest, stopping=myStopping,
@@ -239,7 +241,7 @@ design <- Design(model=model, nextBest=myNextBest, stopping=myStopping,
                  data=emptydata,startingDose=25)
 @
 
-We can then start by looking at the \texttt{single trial} operating characteristics of the dose escalation design with the function \code{examine}, which generates a dataframe showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown.
+We can then start by looking at the \texttt{single trial} operating characteristics of the dose escalation design with the function \code{examine}, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown.
 
 <<design-examine>>=
 set.seed(23)
@@ -290,9 +292,9 @@ A plot of the summary results, giving a bit more details than the textual summar
 \subsection{Dose escalation with safety and efficacy}
 
 
-In this section, the dose-escalation procedures where two, the safety and efficacy endpoints are incorporated into the study will be introduced. The safety endpoint is the binary DLTs (dose-limiting toxicity) responses and the efficacy endpoint is the continuous biomarker/efficacy response. In this package, either these two responses are modelled jointly, using a single model class and assuming correlation; or are modelled separately using two separate model classes and assuming no correlation. First, the procedure where the two endpoints are modelled separately will be described. 
+In this section, the dose-escalation procedures where two, the safety and efficacy endpoints are incorporated into the study will be introduced. The safety endpoint is the binary DLTs (dose-limiting toxicity) responses and the efficacy endpoint is the continuous biomarker/efficacy response. In this package, either these two responses are modeled jointly, using a single model class and assuming correlation; or are modeled separately using two separate model classes and assuming no correlation. First, the procedure where the two endpoints are modeled separately will be described. 
 
-\textbf{Two Endpoints modelled with two dose-response models}
+\textbf{Two Endpoints modeled with two dose-response models}
 
 The procedures described below are proposed in \cite{yeung2015}. To start two models to be used to describe the relationship between the responses and their corresponding dose levels have to be defined. Assume that a total of $k$ dose levels have been considered in a study and denoted these dose levels as $d_{(1)},...,d_{(k)}$ and assume that these dose levels are of ascending order such that $d_{(1)} < ... < d_{(k)}$.\\
 
@@ -325,7 +327,7 @@ Furthermore for $\nu=\sigma^{-2}$, either fixed values or gamma distributions wi
 
 \textbf{Corresponding Model classes in crmPack package}
 
-The \texttt{ModelPseudo} class contains all model classes where their prior are specified in terms of pseudo data and standard maximum likelihood procedures from R can be used to obtain prior and posterior estimates. All models included in this package will have a parent class of either \texttt{GeneralModel} or \texttt{ModelPseudo}. In particular, all dose-responses models that can be used when the two endpoints are modelled separately are contained in \texttt{ModelPseudo} class.
+The \texttt{ModelPseudo} class contains all model classes where their prior are specified in terms of pseudo data and standard maximum likelihood procedures from R can be used to obtain prior and posterior estimates. All models included in this package will have a parent class of either \texttt{GeneralModel} or \texttt{ModelPseudo}. In particular, all dose-responses models that can be used when the two endpoints are modeled separately are contained in \texttt{ModelPseudo} class.
 
 There are two further sub-classes under \texttt{ModelPseudo} class which are the \texttt{ModelTox} class which contains all DLTs models and the \texttt{ModelEff} class which includes all efficacy models. The two-parameter dose-DLTs model describe earlier is defined as \texttt{LogisticIndepBeta} class model in the package and is also contained in \texttt{ModelTox} class. The linear log-log  described are defined as \texttt{Effloglog} contained under \texttt{ModelEff} class. Now we will demonstrate how we define these models on a fictional example. 
 
@@ -379,13 +381,13 @@ DLTmodel@phi1
 
 If more observations are available, a new data set can be specified and hence using the \texttt{update} function to update the current model with the new data. After the update, the posterior modal estimate could then be obtained using the \verb|@| operator in the updated model.
 
-For the efficacy response, we will use the linear log-log model in this example. Similarly, imagine clinical pharmacologists' opinions were obtained for efficacy responses at the lowest and the highest dose level and interpreted as 1.223 and 2.513 corresponds to the two dose levels if one subjects are treated at each of these doses. We will use a gamma distribution as the prior of the precision $\nu=\sigma^{-2}$ with $a=0.025$, the shape parameter and $b=1$, the rate parameter and $\sigma^2=\{E(\nu)\}^{-1}=0.025$ as the prior modal value. 
+For the efficacy response, we will use the linear log-log model in this example. Similarly, imagine clinical pharmacologists' opinions were obtained for efficacy responses at the lowest and the highest dose level and interpreted as 1.223 and 2.513 corresponds to the two dose levels if one subjects are treated at each of these doses. We will use a gamma distribution as the prior of the precision $\nu=\sigma^{-2}$ with $a=1$, the shape parameter and $b=0.025$, the rate parameter and $\sigma^2=\{E(\nu)\}^{-1}=0.025$ as the prior modal value. 
 
 The efficacy model will be specified as
 <<Effmodel>>=
 Effmodel <- Effloglog(Eff= c(1.223,2.513),
                       Effdose=c(25,300),
-                      nu=c(a=0.025,b=1),
+                      nu=c(a=1,b=0.025),
                       data=data2)
 @
 
@@ -593,9 +595,9 @@ print(plot(SUM1))
 
 The plot for \texttt{Sim1} gives an overview of the final dose recommendations, trial trajectories and a box plot of the efficacy variance. A textual summary is given using the \texttt{summary} function given the \texttt{trueDLE} and \texttt{trueEff}. Finally, summary of our simulations can also be shown graphically by applying \texttt{plot} to the summary. The plots of the summary gives an overview of the frequency (in percentage) for the total number of subject treated, the MTD estimates, proportion of DLTs observed and number of subjects treated above target across the simulated trials. The average estimated DLTs and efficacy curve are also given to compare to their corresponding real curves.
 
-\subsubsection{Two Endpoints are jointly modelled}
+\subsubsection{Two Endpoints are jointly modeled}
 
-
+--is this subsection necessary?
 
 todo Winnie: 
 
@@ -609,6 +611,153 @@ univariate design
 todo Daniel/Winnie:
 
 - example how new models / stopping rules can be implemented by the user -> important!
+
+
+As described, the \pkg{crmPack} is constructed using S4 classes and methods. This allows users to extend our package easily by constructing their new codes to set up customized S4 classes and corresponding methods that can be used in junction with other existing classes and methods in the package.
+
+One of the main framework of the S4 classes and methods defined in this package is \texttt{Model}. In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses \texttt{GeneralModel} or \texttt{ModelPseudo} of \texttt{AllModels} class. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}. 
+
+
+The continual reassessment method (CRM), one of the most popular designs proposed in \citep{oquigley1990} for phase I dose-escalation trials. Assuming the risk of DLTs increases with doses, a one-parameter model is often assumed for CRM to describe the relationship between the binary DLT responses and their corresponding dose levels.
+In the current version of the \pkg{crmPack}, only the two parameter logistic regression model of class \texttt{LogisticIndepBeta} are defined under \texttt{ModelTox} class. An example will now be given to demonstrate how to implement the one-parameter model in \pkg{crmPack}. Other implementations can be customized by users in a similar way to allow easy extension of the package.
+
+For dose levels $d_{(1)} < ...< d_{(k)}$, the prior guess of corresponding probabilities of the occurrence of DLTs at dose $d_{(j)}$ is denoted by $\pi_j$ such that $\pi_1 < ...<\pi_k$. The one-parameter power model introduced in \citep{oquigley1990} will be used such that the probability of the occurrence of DLTs, $p(d_{(j)})$ at dose $j$ will be given as \begin{equation}
+p(d_{(j)}) = \pi^{\theta}_j
+\end{equation}
+for $j=1,...,k$. An exponential distribution with distribution parameter $\lambda$ will be imposed as the prior distribution of the unknown parameter $\theta$. In particular, fix $\lambda=1$,  the prior is denoted by $\theta \sim {\rm Exp}(1)$ 
+%with the prior probability density function denoted as 
+%\begin{equation}
+%h_0(\theta)= e^{-\theta}
+%\end{equation}. 
+In addition, the prior expectation $E_0(\theta)=1/\lambda= 1$ will be taken as the prior estimate of $\theta$. 
+
+Given more binary DLT observations and the likelihood function of the prior and the observed DLT responses are known, the posterior likelihood density can be computed using Bayes theorem and is conjugate to the prior. 
+Let $\boldsymbol y$ be the vector contain all DLT responses observed. 
+%The likelihood of the observation $\boldsymbol y= (y_1,...,y_s)$ for subjects $1,...,s$ % given $\theta$ is given by \begin{equation*}
+%f(\boldsymbol \textbf{y};\theta)= \prod^s_{i=1} (\pi_{d_{(i)}}^{\theta})^{y_i} (1- \pi_{d_{(i)}}^{\theta})^{(1-y_i)}.
+%\end{equation*} 
+%By Bayes theorem, we can deduce the probability density function of $\theta$ given the observations $\boldsymbol y$ which is written as
+%\begin{equation*}
+%h(\theta; \boldsymbol y)=\frac{h_0(\theta) f(\boldsymbol y;\theta)}{\int^{\infty}_0 h_0(\theta) f(\boldsymbol y;\theta) \,d\theta}.
+%\end{equation*}
+%This is called the posterior probability density function of $\theta$ given the observations $\boldsymbol y$. `
+%The posterior expectation is then easily deduced from the above expressions as
+%\begin{equation*}
+%E(\theta; \boldsymbol y)=\int^{\infty}_{0} \theta h(\theta;\boldsymbol y) \,d\theta ,
+%\end{equation*}
+
+Then by integrating $\theta$ times the posterior density of $\theta$ from 0 to infinity, the expectation $E(\theta; \boldsymbol y)$ of $\theta$ can be obtained and will be used as the posterior estimate of $\theta$. Based the value of the posterior expectation of $\theta$, the updated posterior probabilities of the occurrence of DLT at each dose levels can obtained using the following equation
+\begin{equation}
+p(d_{(j)} ; \boldsymbol y) = \pi_j^ {E(\theta; \boldsymbol y)} 
+\end{equation}
+for dose $j=1,...,k$. 
+
+Then in order to implement the one-parameter model in \pkg{crmPack}, an appropriate class has to be defined. This model will be defined under \texttt{ModelTox} such that instead of using MCMC sampling, the Bayes theorem will be used to obtain posterior estimates of the parameters.  
+The code for defining this model class \texttt{OneParaExponential} consists of the following two sets of codes. First, a S4 model class has to be set up using \texttt{setClass} command
+
+%\begin{CodeChunk}
+%\begin{CodeInput}
+<<classOnePara>>=
+.OneParaExponential<-
+  setClass(Class="OneParaExponential", 
+           representation(priorprobDLT="numeric",
+                          priorprobDose="numeric",
+                          priorlambda="numeric",
+                          probDLT="numeric",
+                          meanTheta="numeric"),
+           prototype(priorprobDLT=c(0,0),
+                     priorprobDose=c(1,1),
+                     priorlambda=1),
+           contains="ModelTox")
+@
+%\end{CodeInput}
+%\end{CodeChunk}
+
+This class \texttt{OneParaExponential} is defined as extending the \texttt{ModelTox}. In other words, class \texttt{OneParaExponential} inherits all methods and slots from \texttt{ModelTox} class. The slots can be defined by users using \texttt{representation} and the initial value of these slots can also be specified using \texttt{prototype}.
+
+Then a function has to be defined for this class and are given as follow.
+
+%\begin{CodeChunk}
+%\begin{CodeInput}
+<<FunOnePara>>=
+OneParaExponential<- function(priorprobDLT,
+                              priorprobDose,
+                              priorlambda,
+                              data)
+{##prior density function of theta
+   h0 <- function(theta){exp(-theta)}
+   ##if no observed DLE(data)
+  if (length(data@y)==0){
+    priormeanTheta <- 1/ priorlambda
+    probDLT <- (priorprobDLT)^priormeanTheta
+    meanTheta <- priormeanTheta
+    } else {
+                   f <- function(theta){
+                        a1 <- length(data@x)
+                        f0 <-1
+                        for (j in 1:a1){
+                         f0 <- f0 * ((priorprobDLT[which(data@x[j]==data@doseGrid)])^theta)^data@y[j] * 
+                               (((1- priorprobDLT[which(data@x[j]==data@doseGrid)])^theta)^(1-data@y[j]))
+                         }
+                        return(f0)}
+                     ##posterior denisty of theta
+                     H <- function(theta){h0(theta)*f(theta)}
+                     ##using Bayes theorem to obtain new estimate of the mean theta
+                     ##denominator of the Bayes theorem
+                     denom <- integrate(H,0,Inf)
+                     ##Then for numerator
+                     H2<- function(theta){H(theta)*theta}
+                     numer <- integrate(H2,0,Inf)
+                     meanTheta <- numer$value/denom$value
+                     probDLT <- priorprobDLT^meanTheta
+                     }
+.OneParaExponential(datanames=c("nObs","y","x"),
+                    data=data,
+                    priorprobDLT=priorprobDLT,
+                    priorprobDose=priorprobDose,
+                    priorlambda=priorlambda,
+                    probDLT=probDLT,
+                    meanTheta=meanTheta,
+                    dose=function(prob, meanTheta){
+                       pj <- priorprobDLT^meanTheta
+                       Ix1 <- max(which(pj <= prob))
+                       Ix2 <- min(which(pj > prob))
+                       DOSE <- priorprobDose[Ix1] + (priorprobDose[Ix2]-priorprobDose[Ix1])*(prob-pj[Ix1])/(pj[Ix2]-pj[Ix1])
+                       return(DOSE)},
+                     prob=function(dose,meanTheta){
+                       pj <- priorprobDLT^meanTheta
+                       IxD1 <- max(which(dose <= priorprobDose))
+                       IxD2 <- min(which(dose > priorprobDose))
+                       p1 <- pj[IxD1] + (pj[IxD2]-pj[IxD1])*(dose-priorprobDose[IxD1])/(priorprobDose[IxD2]-priorprobDose[IxD1])
+                       return(p1)
+                     }
+  )
+}
+@
+%\end{CodeInput}
+%\end{CodeChunk}
+ 
+
+Using this model class, the prior guess of the probabilities of the occurrence of DLE, their corresponding dose levels, the value of the parameter $\lambda$ of the prior exponential distribution for the model parameters and any observed DLE responses have to be specified. Assuming the dose levels considered are of ascending order, the initial guess of all these probabilities and their corresponding dose levels consider have to specify in form of vectors in slots \texttt{priorprobDLT} and \texttt{priorprobdose}, respectively. Since an exponential distribution will be used as the prior distribution of the only parameter in the dose-DLE model, a positive value of the parameter $\lambda$ of the exponential distribution has to be specified in slot \texttt{priorlambda}. Finally, any observed DLE responses can be specified in the \texttt{data} slot inherit from \texttt{ModelTox} class. Using this model, the prior and posterior mean value of the model parameter $\theta$ and probabilities of the occurrence of DLE at all dose levels are computed. The following commands will show how we define the model and obtain model parameters' estimates.
+
+<<Onepara>>=
+OneParaModel <- OneParaExponential(priorprobDLT=seq(0.1,0.98,0.08),
+                                   priorprobDose=seq(25,300,25),
+                                   priorlambda=1,data=data)
+OneParaModel@meanTheta
+OneParaModel@probDLT
+@
+
+Methods inherited from \texttt{ModelTox} class such as \texttt{dose} and \texttt{prob} can also be used for \texttt{OneParaExponential} class as shown.
+<<dose-prob>>=
+dose(prob=0.55,model=OneParaModel)
+prob(dose=50,model=OneParaModel)
+@
+
+Users can also customized or set up other methods corresponds to this model class using the \texttt{setMethod} commands.  
+-- May need to demonstrate here how the user can set up their method using setMethod? may be something about stopping method?
+
+
 
 \section{Summary}\label{sec:discussion}
 
