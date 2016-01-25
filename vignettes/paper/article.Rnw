@@ -333,7 +333,7 @@ data1 <- Data(doseGrid=seq(25,300,25))
 data2 <- DataDual(doseGrid=seq(25,300,25))
 @
 
-Both \texttt{data1} and \texttt{data2} are empty data set. If only DLTs response is incorporated into the escalation process, empty data set \texttt{data1} of class \texttt{Data} can be used. If both DLTs and efficacy responses are incorporated into the procedure, empty data set \texttt{data2} of class \texttt{DataDual} can be used.
+Both \code{data1} and \code{data2} are empty data set. If only DLTs response is incorporated into the escalation process, empty data set \code{data1} of class \texttt{Data} can be used. If both DLTs and efficacy responses are incorporated into the procedure, empty data set \code{data2} of class \texttt{DataDual} can be used.
 
 
 Then we have to know the dose to be given to the first cohort of subjects. The initial beliefs of unknown parameters are expressed in form of pseudo-data. A conservative prior will be used representing what we fear rather than what we believe. The pseudo-data for the prior of the DLTS are shown in table \ref{tab:prior-DLE}
@@ -360,7 +360,7 @@ DLTmodel <- LogisticIndepBeta(binDLE= c(1.05,1.8),
                               data=data1)
 @
 
-The model class \texttt{LogisticIndepBeta} is used. The prior of the model parameters are expressed in terms of pseudo data for this class. The slot \texttt{DLEdose} represented the two dose levels that we fixed, 25 and 300mg. The slot \texttt{binDLE} represented the two numbers of DLTs 1.05 and 1.8 at the two corresponding dose levels when 3 subjects are treated at each of the two dose levels, which represented by slot \texttt{DLEweights} with the vector $c(3,3)$. Since no real observations are available before the trial start, we will specify the \texttt{data} slot of this model with the empty data set \texttt{data1} as this slot require data set defined under class \texttt{Data}. To note that, since we have to fix at least two dose levels to express the opinion in form of pseudo data, slots \texttt{binDLE}, \texttt{DLEweights} and \texttt{DLEdose} must be specified with vectors of at least length 2 and the order of their elements must be consistent to the other two vectors.
+The model class \code{LogisticIndepBeta} is used. The prior of the model parameters are expressed in terms of pseudo data for this class. The slot \code{DLEdose} represented the two dose levels that we fixed, 25 and 300mg. The slot \code{binDLE} represented the two numbers of DLTs 1.05 and 1.8 at the two corresponding dose levels when 3 subjects are treated at each of the two dose levels, which represented by slot \code{DLEweights} with the vector $c(3,3)$. Since no real observations are available before the trial start, we will specify the \code{data} slot of this model with the empty data set \code{data1} as this slot require data set defined under class \texttt{Data}. To note that, since we have to fix at least two dose levels to express the opinion in form of pseudo data, slots \code{binDLE}, \code{DLEweights} and \code{DLEdose} must be specified with vectors of at least length 2 and the order of their elements must be consistent to the other two vectors.
 
 We can look at the structure of this model 
 <<str-model>>=
@@ -372,7 +372,7 @@ and access to their slots using the \verb|@| operator. For example, we can obtai
 DLTmodel@phi1
 @
 
-If more observations are available, a new data set can be specified and hence using the \texttt{update} function to update the current model with the new data. After the update, the posterior modal estimate could then be obtained using the \verb|@| operator in the updated model.
+If more observations are available, a new data set can be specified and hence using the \code{update} function to update the current model with the new data. After the update, the posterior modal estimate could then be obtained using the \verb|@| operator in the updated model.
 
 For the efficacy response, we will use the linear log-log model in this example. Similarly, imagine clinical pharmacologists' opinions were obtained for efficacy responses at the lowest and the highest dose level and interpreted as 1.223 and 2.513 corresponds to the two dose levels if one subjects are treated at each of these doses. We will use a gamma distribution as the prior of the precision $\nu=\sigma^{-2}$ with $a=1$, the shape parameter and $b=0.025$, the rate parameter and $\sigma^2=\{E(\nu)\}^{-1}=0.025$ as the prior modal value. 
 
@@ -384,7 +384,7 @@ Effmodel <- Effloglog(Eff= c(1.223,2.513),
                       data=data2)
 @
 
-The slot \texttt{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels. Each of these efficacy responses is a value given assuming one subject are treated at each of these dose levels. Slot \texttt{Effdose} is the vector for the fixed dose levels. We can specified a fixed value or values of the parameters of the prior gamma distribution of the precision $\nu$. In here, the prior gamma distribution is used for $\nu$ and we have to specify $a,b$ the shape and rate parameter in the slot \texttt{nu}. We will use the empty data set \texttt{data2} as slot \texttt{data} under this model requires data set defined under \texttt{DataDual} class. Similarly, we can also use \texttt{str()} to look at the structure of this model, using \verb|@| operator to obtain slots of this model and using \texttt{update} the update estimates of the model
+The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels. Each of these efficacy responses is a value given assuming one subject are treated at each of these dose levels. Slot \code{Effdose} is the vector for the fixed dose levels. We can specified a fixed value or values of the parameters of the prior gamma distribution of the precision $\nu$. In here, the prior gamma distribution is used for $\nu$ and we have to specify $a,b$ the shape and rate parameter in the slot \code{nu}. We will use the empty data set \code{data2} as slot \code{data} under this model requires data set defined under \texttt{DataDual} class. Similarly, we can also use \code{str()} to look at the structure of this model, using \verb|@| operator to obtain slots of this model and using \code{update} the update estimates of the model
 <<update>>=
 ##new observations availabe and out in a data3
 data3 <-DataDual(x=c(25,50,50,75,100,100,225,300),
@@ -396,7 +396,7 @@ newEffmodel <- update(object=Effmodel, data=data3)
 @
 
 
-Furthermore, instead of using the prior or posterior estimates for the model parameters for evaluation, samples of model parameters can also be generated for all models defined under \texttt{ModelPseudo} class. This flexibility allows users to choose whether prior and posterior modal estimates or samples estimates are used for their evaluations. Using the \texttt{mcmc} function, we can generate samples using MCMC for any models defined under \texttt{AllModels} class.
+Furthermore, instead of using the prior or posterior estimates for the model parameters for evaluation, samples of model parameters can also be generated for all models defined under \texttt{ModelPseudo} class. This flexibility allows users to choose whether prior and posterior modal estimates or samples estimates are used for their evaluations. Using the \code{mcmc} function, we can generate samples using MCMC for any models defined under \texttt{AllModels} class.
 
 <<samples>>=
 options <- McmcOptions (burnin=100,
@@ -406,7 +406,7 @@ DLTsamples <- mcmc(data=data1, model = DLTmodel, options=options)
 Effsamples <- mcmc(data=data2, model = Effmodel, options=options)
 @
 
-The MCMC sampling are controlled with an object of class \texttt{McmcOptions} and now the object \texttt{options} specifies that 2000 parameter samples will be created with a "burn-in" phase of 100 iterations that are discarded and save a sample every 2 iterations. We can also use \texttt{str()} to look at the structure of the samples and \texttt{get} function to extract samples of the model parameters such as 
+The MCMC sampling are controlled with an object of class \texttt{McmcOptions} and now the object \code{options} specifies that 2000 parameter samples will be created with a "burn-in" phase of 100 iterations that are discarded and save a sample every 2 iterations. We can also use \code{str()} to look at the structure of the samples and \code{get} function to extract samples of the model parameters such as 
 
 <<getsamples>>=
 phi1samples <- get(DLTsamples,"phi1")
@@ -465,9 +465,9 @@ GainsamplesNextBest <- NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(Gstarsamples,prob=0.5)})                             
 @
 
-Both the target probability of the occurrence of a DLTs to be used during, \texttt{DLEDuringTrialtarget} slot and at the end of the trial, slot \texttt{DLEEndOfTrialtarget} need to be specified. When DLTs and efficacy samples are involved, two further functions have to be specified in the corresponding class. Based on posterior samples generated, one function, slot \texttt{TDderive}, will be use to derive the estimates of dose corresponds to the target probability of DLTs to be used during and at the end of the trial, and the other , slot \texttt{Gstarderive}, will be used to derive the estimates of Gstar, the dose which gives the maximum gain value. In here, we will recommend 30\% posterior quantile of the samples to be estimates for the doses corresponding to the \texttt{DLEtargetDuringTrialtarget} and \texttt{DLEEndOfTrialtarget} doses and 50\% posterior quantile of the samples to be estimates for the doses corresponding to the Gstar, the dose which gives the maximum gain value.
+Both the target probability of the occurrence of a DLTs to be used during, \code{DLEDuringTrialtarget} slot and at the end of the trial, slot \code{DLEEndOfTrialtarget} need to be specified. When DLTs and efficacy samples are involved, two further functions have to be specified in the corresponding class. Based on posterior samples generated, one function, slot \code{TDderive}, will be use to derive the estimates of dose corresponds to the target probability of DLTs to be used during and at the end of the trial, and the other , slot \code{Gstarderive}, will be used to derive the estimates of Gstar, the dose which gives the maximum gain value. In here, we will recommend 30\% posterior quantile of the samples to be estimates for the doses corresponding to the \code{DLEtargetDuringTrialtarget} and \code{DLEEndOfTrialtarget} doses and 50\% posterior quantile of the samples to be estimates for the doses corresponding to the Gstar, the dose which gives the maximum gain value.
 
-In general under our package, we can apply the method \texttt{nextBest} to any of the classes defined under the parent \texttt{NextBest} class, in order to compute the next best dose for our study.
+In general under our package, we can apply the method \code{nextBest} to any of the classes defined under the parent \texttt{NextBest} class, in order to compute the next best dose for our study.
 
 <<nextBest>>=
 doseRecGain <- nextBest(GainNextBest,
@@ -478,7 +478,7 @@ doseRecGain <- nextBest(GainNextBest,
              
 @
 
-This is an example when no DLT and efficacy samples are involved. For cases where samples are involved, additional slots of \texttt{samples} for DLT samples and \texttt{Effsamples} have to be specified in the \texttt{nextBest} method. From the example above, the escalation rule \texttt{GainNextBest}, the maximum dose in slot \texttt{doselimit}, the DLT model in slot \texttt{model}, the efficacy model in slot \texttt{Effmodel} and the data in slot \texttt{data} have to specified for the \texttt{nextBest} method. In addition, we can use the \verb|@| and \verb|$| operator to look at the structure or to obtain output value and plots. For example,
+This is an example when no DLT and efficacy samples are involved. For cases where samples are involved, additional slots of \code{samples} for DLT samples and \code{Effsamples} have to be specified in the \code{nextBest} method. From the example above, the escalation rule \texttt{GainNextBest}, the maximum dose in slot \code{doselimit}, the DLT model in slot \code{model}, the efficacy model in slot \code{Effmodel} and the data in slot \code{data} have to specified for the \code{nextBest} method. In addition, we can use the \verb|@| and \verb|$| operator to look at the structure or to obtain output value and plots. For example,
 <<doseRecommendation>>=
 doseRecGain$nextdose
 doseRecGain$TDtargetDuringTrialEstimate
@@ -506,7 +506,7 @@ myStopping2 <- StoppingGstarCIRatio(targetRatio=5,
                                     targetEndOfTrial = 0.3)
 @
 
-The \texttt{StoppingMinPatients} class objects can be used to stop the dose escalation if a minimum overall number of patients of 20 have been enrolled. The \texttt{StoppingGstarCIRatio} is the class object that can be used to stop the trial when the ratio of the upper to the lower 95\% CI of the selected quantity (minimum of $d^*$ and $g^*$) is less than equal to 5, specified in the \texttt{targetRatio} slot. In addition, the slot \texttt{targetEndOfTrial} for the target probability of DLTs to be used at the end of the trial are also specified with the value 0.3. There are more \texttt{Stopping} classes defined in this package. Please refer to the examples presented in the vignettes or in the help pages for further details.\\
+The \texttt{StoppingMinPatients} class objects can be used to stop the dose escalation if a minimum overall number of patients of 20 have been enrolled. The \texttt{StoppingGstarCIRatio} is the class object that can be used to stop the trial when the ratio of the upper to the lower 95\% CI of the selected quantity (minimum of $d^*$ and $g^*$) is less than equal to 5, specified in the \code{targetRatio} slot. In addition, the slot \code{targetEndOfTrial} for the target probability of DLTs to be used at the end of the trial are also specified with the value 0.3. There are more \texttt{Stopping} classes defined in this package. Please refer to the examples presented in the vignettes or in the help pages for further details.\\
 
 \textbf{Simulations}\\
 
@@ -552,9 +552,9 @@ myTruthEff<- function(dose)
 myTruthGain <- function(dose)
 {return(myTruthEff(dose) * (1-myTruthDLT(dose)))}
 @
-Functions such as \texttt{curve} and \texttt{plot} can always be used to draw the real DLT, efficacy and gain curves. 
+Functions such as \code{curve} and \code{plot} can always be used to draw the real DLT, efficacy and gain curves. 
 
-After establishing the real scenario, the trial can be simulated. The function \texttt{simulate} is used to simulate trial based a a specified scenario.
+After establishing the real scenario, the trial can be simulated. The function \code{simulate} is used to simulate trial based a a specified scenario.
 
 <<simulate>>=
 Sim1 <- simulate(object=design1,
@@ -569,7 +569,7 @@ class(Sim1)
 
 @
 
-From the example, we specify the true precision (\texttt{trueNu}) of the efficacy response be 1/0.025 which also means using a variance of true value 0.025. The argument \texttt{arg} could contain additional arguments for the \texttt{trueDLE} or \texttt{trueEff} function and default as \texttt{NULL}. The number of simulations are specify with \texttt{nsim} and the random number generator seed with \texttt{seed}. The argument \texttt{parallel} can be used to enable running the simulations in parallel with all processors in the computer. The results \texttt{Sim1} will be put into one of the sub-class defined under the parent class \texttt{GeneralSimulations} within the package. Using the function \texttt{class}, we can see that the simulated results is a \texttt{PseudoDualSimulations} class object. This is a subclass of \texttt{PseudoSimulations} class object which is also a subclass of the \texttt{GeneralSimulations} class object. The descriptions of slots contains in the simulated results can be found at help pages of the corresponding class objects. In particular, the \texttt{data} slot contain a list of data produced of the simulated trial. For example, we can plot the course of the fourth simulated trial and find the final recommended dose of this trial by
+From the example, we specify the true precision (\code{trueNu}) of the efficacy response be 1/0.025 which also means using a variance of true value 0.025. The argument \code{arg} could contain additional arguments for the \code{trueDLE} or \code{trueEff} function and default as \code{NULL}. The number of simulations are specify with \code{nsim} and the random number generator seed with \code{seed}. The argument \code{parallel} can be used to enable running the simulations in parallel with all processors in the computer. The results \code{Sim1} will be put into one of the sub-class defined under the parent class \texttt{GeneralSimulations} within the package. Using the function \code{class}, we can see that the simulated results is a \texttt{PseudoDualSimulations} class object. This is a subclass of \texttt{PseudoSimulations} class object which is also a subclass of the \texttt{GeneralSimulations} class object. The descriptions of slots contains in the simulated results can be found at help pages of the corresponding class objects. In particular, the \code{data} slot contain a list of data produced of the simulated trial. For example, we can plot the course of the fourth simulated trial and find the final recommended dose of this trial by
 <<plot-sim>>=
 print(plot(Sim1@data[[4]]))
 Sim1@doses[4]
@@ -586,7 +586,7 @@ SUM1
 print(plot(SUM1))
 @
 
-The plot for \texttt{Sim1} gives an overview of the final dose recommendations, trial trajectories and a box plot of the efficacy variance. A textual summary is given using the \texttt{summary} function given the \texttt{trueDLE} and \texttt{trueEff}. Finally, summary of our simulations can also be shown graphically by applying \texttt{plot} to the summary. The plots of the summary gives an overview of the frequency (in percentage) for the total number of subject treated, the MTD estimates, proportion of DLTs observed and number of subjects treated above target across the simulated trials. The average estimated DLTs and efficacy curve are also given to compare to their corresponding real curves.
+The plot for \code{Sim1} gives an overview of the final dose recommendations, trial trajectories and a box plot of the efficacy variance. A textual summary is given using the \code{summary} function given the \code{trueDLE} and \code{trueEff}. Finally, summary of our simulations can also be shown graphically by applying \code{plot} to the summary. The plots of the summary gives an overview of the frequency (in percentage) for the total number of subject treated, the MTD estimates, proportion of DLTs observed and number of subjects treated above target across the simulated trials. The average estimated DLTs and efficacy curve are also given to compare to their corresponding real curves.
 
 \subsubsection{Two Endpoints are jointly modeled}
 
@@ -606,12 +606,12 @@ todo Daniel/Winnie:
 - example how new models / stopping rules can be implemented by the user -> important!
 
 
-As described, the \pkg{crmPack} is constructed using S4 classes and methods. This allows users to extend our package easily by constructing their new codes to set up customized S4 classes and corresponding methods that can be used in junction with other existing classes and methods in the package.
+As described, the \pkg{crmPack} is constructed using S4 classes and methods. This allows users to extend our package easily by constructing their own codes to set up new S4 classes and corresponding methods that can be used in junction with other existing classes and methods within the package.
 
-One of the main framework of the S4 classes and methods defined in this package is \texttt{Model}. In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses \texttt{GeneralModel} or \texttt{ModelPseudo} of \texttt{AllModels} class. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}. 
+One of the main framework of the S4 classes and methods defined in this package is \texttt{Model}. In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses of \texttt{AllModels}, \texttt{GeneralModel} or \texttt{ModelPseudo}. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}. 
 
 
-The continual reassessment method (CRM), one of the most popular designs proposed in \citep{oquigley1990} for phase I dose-escalation trials. Assuming the risk of DLTs increases with doses, a one-parameter model is often assumed for CRM to describe the relationship between the binary DLT responses and their corresponding dose levels.
+In \citep{oquigley1990}, the continual reassessment method (CRM) is proposed. This is one of the most well-known procedure used for phase I dose-escalation trials. Assuming the risk of DLTs increases with doses, a one-parameter model is often assumed under CRM to describe the relationship between the binary DLT responses and their corresponding dose levels.
 In the current version of the \pkg{crmPack}, only the two parameter logistic regression model of class \texttt{LogisticIndepBeta} are defined under \texttt{ModelTox} class. An example will now be given to demonstrate how to implement the one-parameter model in \pkg{crmPack}. Other implementations can be customized by users in a similar way to allow easy extension of the package.
 
 For dose levels $d_{(1)} < ...< d_{(k)}$, the prior guess of corresponding probabilities of the occurrence of DLTs at dose $d_{(j)}$ is denoted by $\pi_j$ such that $\pi_1 < ...<\pi_k$. The one-parameter power model introduced in \citep{oquigley1990} will be used such that the probability of the occurrence of DLTs, $p(d_{(j)})$ at dose $j$ will be given as \begin{equation}
@@ -646,7 +646,7 @@ p(d_{(j)} ; \boldsymbol y) = \pi_j^ {E(\theta; \boldsymbol y)}
 for dose $j=1,...,k$. 
 
 Then in order to implement the one-parameter model in \pkg{crmPack}, an appropriate class has to be defined. This model will be defined under \texttt{ModelTox} such that instead of using MCMC sampling, the Bayes theorem will be used to obtain posterior estimates of the parameters.  
-The code for defining this model class \texttt{OneParaExponential} consists of the following two sets of codes. First, a S4 model class has to be set up using \texttt{setClass} command
+The code for defining this model class \texttt{OneParaExponential} consists of the following two sets of codes. First, a S4 model class has to be set up using \code{setClass} command
 
 %\begin{CodeChunk}
 %\begin{CodeInput}
@@ -666,7 +666,7 @@ The code for defining this model class \texttt{OneParaExponential} consists of t
 %\end{CodeInput}
 %\end{CodeChunk}
 
-This class \texttt{OneParaExponential} is defined as extending the \texttt{ModelTox}. In other words, class \texttt{OneParaExponential} inherits all methods and slots from \texttt{ModelTox} class. The slots can be defined by users using \texttt{representation} and the initial value of these slots can also be specified using \texttt{prototype}.
+This class \texttt{OneParaExponential} is defined as extending the \texttt{ModelTox}. In other words, class \texttt{OneParaExponential} inherits all methods and slots from \texttt{ModelTox} class. The slots can be defined by users using \code{representation} and the initial value of these slots can also be specified using \code{prototype}.
 
 Then a function has to be defined for this class and are given as follow.
 
@@ -731,7 +731,7 @@ OneParaExponential<- function(priorprobDLT,
 %\end{CodeChunk}
  
 
-Using this model class, the prior guess of the probabilities of the occurrence of DLE, their corresponding dose levels, the value of the parameter $\lambda$ of the prior exponential distribution for the model parameters and any observed DLE responses have to be specified. Assuming the dose levels considered are of ascending order, the initial guess of all these probabilities and their corresponding dose levels consider have to specify in form of vectors in slots \texttt{priorprobDLT} and \texttt{priorprobdose}, respectively. Since an exponential distribution will be used as the prior distribution of the only parameter in the dose-DLE model, a positive value of the parameter $\lambda$ of the exponential distribution has to be specified in slot \texttt{priorlambda}. Finally, any observed DLE responses can be specified in the \texttt{data} slot inherit from \texttt{ModelTox} class. Using this model, the prior and posterior mean value of the model parameter $\theta$ and probabilities of the occurrence of DLE at all dose levels are computed. The following commands will show how we define the model and obtain model parameters' estimates.
+Using this model class, the prior guess of the probabilities of the occurrence of DLE, their corresponding dose levels, the value of the parameter $\lambda$ of the prior exponential distribution for the model parameters and any observed DLE responses have to be specified. Assuming the dose levels considered are of ascending order, the initial guess of all these probabilities and their corresponding dose levels consider have to specify in form of vectors in slots \code{priorprobDLT} and \code{priorprobdose}, respectively. Since an exponential distribution will be used as the prior distribution of the only parameter in the dose-DLE model, a positive value of the parameter $\lambda$ of the exponential distribution has to be specified in slot \code{priorlambda}. Finally, any observed DLE responses can be specified in the \code{data} slot inherit from \texttt{ModelTox} class. Using this model, the prior and posterior mean value of the model parameter $\theta$ and probabilities of the occurrence of DLE at all dose levels are computed. The following commands will show how we define the model and obtain model parameters' estimates.
 
 <<Onepara>>=
 OneParaModel <- OneParaExponential(priorprobDLT=seq(0.1,0.98,0.08),
@@ -741,13 +741,13 @@ OneParaModel@meanTheta
 OneParaModel@probDLT
 @
 
-Methods inherited from \texttt{ModelTox} class such as \texttt{dose} and \texttt{prob} can also be used for \texttt{OneParaExponential} class as shown.
+Methods inherited from \texttt{ModelTox} class such as \code{dose} and \code{prob} can also be used for \texttt{OneParaExponential} class as shown.
 <<dose-prob>>=
 dose(prob=0.55,model=OneParaModel)
 prob(dose=50,model=OneParaModel)
 @
 
-Users can also customized or set up other methods corresponds to this model class using the \texttt{setMethod} commands.  
+Users can also customized or set up other methods corresponds to this model class using the \code{setMethod} commands.  
 -- May need to demonstrate here how the user can set up their method using setMethod? may be something about stopping method?
 
 
