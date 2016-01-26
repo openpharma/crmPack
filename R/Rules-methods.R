@@ -2071,12 +2071,12 @@ setMethod("nextBest",
               
               plot1 <- plot1 +
                 geom_vline(xintercept=maxdoselimit, colour="brown", lwd=1.1) +
-                annotate("text",label="Max",x=maxdoselimit-2,y=1,size=5,colour="brown")
+                annotate("text",label="Max",x=maxdoselimit-2,y=max(gdata$y),size=5,colour="brown")
               
               
               plot1 <-plot1 +
                 geom_vline(xintercept=ret, colour="purple", lwd=1.1) +
-                annotate("text",label="Next", x=ret+1, y=1.2,size=5,color="purple")
+                annotate("text",label="Next", x=ret+1, y=max(gdata$y)-0.05,size=5,color="purple")
               
               
               ## return next best dose and plot
