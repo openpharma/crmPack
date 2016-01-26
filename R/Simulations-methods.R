@@ -1257,7 +1257,7 @@ setMethod("summary",
                                                   sum(d@xLevel %in% xAboveTargetDuringTrial)
                                                 })
               
-              toxAtDoses <- truth(doseSelected,...)
+              toxAtDoses <- truth(doseSelected)
               
               
               ## Proportion of trials selecting target TDEndOfTrial and TDDuringTrial
@@ -1285,7 +1285,7 @@ setMethod("summary",
                                         "probDLE")
                 
                 meanFit <- list(truth=
-                                  truth(doseGrid,...),
+                                  truth(doseGrid),
                                 average=rowMeans(meanFitMatrix))
               } else {
                 
@@ -1303,7 +1303,7 @@ setMethod("summary",
                                         "[[",
                                         "middle")
                 meanFit <- list(truth=
-                                  truth(doseGrid, ...),
+                                  truth(doseGrid),
                                 average=
                                   rowMeans(meanFitMatrix),
                                 lower=

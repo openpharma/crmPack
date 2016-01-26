@@ -1736,12 +1736,12 @@ setMethod("nextBest",
               
               ##Find the index of next dose in the doseGrid
               ##next dose is the dose level closest below the TDtargetDuringTrialEstimate
-              index <- max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              index <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
               ret <- data@doseGrid[dosesOK][index]
               
               
               ##Find the dose level (in doseGrid) closest below the TDtargetEndOfTrialEstimate
-              index1 <- max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              index1 <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
               ret1 <- data@doseGrid[dosesOK][index1]
               
               
@@ -1856,12 +1856,13 @@ setMethod("nextBest",
               
               ##Find the index of next dose in the doseGrid
               ##next dose is the dose level closest below the TDtargetEstimate
-              index <- max(which((TDDfourdg- data@doseGrid[dosesOK]) >= 0))
+              
+              index <- suppressWarnings(max(which((TDDfourdg- data@doseGrid[dosesOK]) >= 0)))
               ret <- data@doseGrid[dosesOK][index]
               
               
               ##Find the dose level (in doseGrid) closest below the TD30Estimate
-              index <- max(which((TDEfourdg - data@doseGrid[dosesOK]) >= 0))
+              index <- suppressWarnings(max(which((TDEfourdg - data@doseGrid[dosesOK]) >= 0)))
               retTDE <- data@doseGrid[dosesOK][index]
               
               plotData <- data.frame(dose=data@doseGrid,
@@ -1880,7 +1881,9 @@ setMethod("nextBest",
                 ylab(paste("Probability of DLE")) + ylim(c(0,1)) + xlim(c(0,max(data@doseGrid))) +
                 geom_line(colour=I("red"), size=1.5)
               
+              
               if ((TDDfourdg < min(data@doseGrid))|(TDDfourdg > max(data@doseGrid))) {
+                
                 plot1<-plot1
                 print(paste(paste("TD",targetDuringTrial*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {plot1 <- plot1+
                   geom_point(data=data.frame(x=TDtargetDuringTrialEstimate,y=targetDuringTrial),aes(x=x,y=y),colour="orange", shape=15, size=8) +
@@ -1986,28 +1989,28 @@ setMethod("nextBest",
               
               ##Find the dose level in doseGrid closest below nextdose
               
-              index <- max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              index <- suppressWarnings(max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               ret <- data@doseGrid[dosesOK][index]
               
               ##Find the dose level in doseGrid closest below TDtargetEndOfTrial
               
-              indexE <- max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               retE <- data@doseGrid[indexE]
               
               ##Find the dose level in doseGrid closest below TDtargetDuringTrial
               
-              indexD <- max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               retD <- data@doseGrid[indexD]
               
               ##Find the dose level in doseGrid closest below Gstar
               
-              Gstarindex <- max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              Gstarindex <- suppressWarnings(max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               Gstarret <- data@doseGrid[Gstarindex]
@@ -2220,28 +2223,28 @@ setMethod("nextBest",
               
               ##Find the dose level in doseGrid closest below nextdose
               
-              index <- max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              index <- suppressWarnings(max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               ret <- data@doseGrid[dosesOK][index]
               
               ##Find the dose level in doseGrid closest below TDtargetEndOfTrial
               
-              indexE <- max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               retE <- data@doseGrid[indexE]
               
               ##Find the dose level in doseGrid closest below TDtargetDuringTrial
               
-              indexD <- max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               retD <- data@doseGrid[indexD]
               
               ##Find the dose level in doseGrid closest below Gstar
               
-              Gstarindex <- max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              Gstarindex <- suppressWarnings(max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               
               
               Gstarret <- data@doseGrid[Gstarindex]
@@ -2422,28 +2425,28 @@ setMethod("nextBest",
                 
                 ##Find the dose level in doseGrid closest below nextdose
                 
-                index <- max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                index <- suppressWarnings(max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0))
                 
                 
                 ret <- data@doseGrid[dosesOK][index]
                 
                 ##Find the dose level in doseGrid closest below TDtargetEndOfTrial
                 
-                indexE <- max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
                 
                 
                 retE <- data@doseGrid[indexE]
                 
                 ##Find the dose level in doseGrid closest below TDtargetDuringTrial
                 
-                indexD <- max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
                 
                 
                 retD <- data@doseGrid[indexD]
                 
                 ##Find the dose level in doseGrid closest below Gstar
                 
-                Gstarindex <- max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                Gstarindex <- suppressWarnings(max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0))
                 
                 
                 Gstarret <- data@doseGrid[Gstarindex]
@@ -2476,7 +2479,7 @@ setMethod("nextBest",
                   ylab("Posterior density")
                 
                 if (signif(TDtargetDuringTrialEstimate,4) < min(data@doseGrid)|signif(TDtargetDuringTrialEstimate,4) > max(data@doseGrid)) {
-                  plot1<-plot1 
+                  plot1<-plot1
                   print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {
                     plot1 <- plot1+
                       geom_vline(xintercept=TDtargetDuringTrialEstimate, colour="orange", lwd=1.1) +
