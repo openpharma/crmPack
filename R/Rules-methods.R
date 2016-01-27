@@ -959,6 +959,15 @@ setMethod("stopTrial",
               ## evaluate the individual stopping rules
               ## in the list
               individualResults <-
+                if(missing(samples))
+                {
+                  lapply(stopping@stopList,
+                         stopTrial,
+                         dose=dose,
+                         model=model,
+                         data=data,
+                         ...)
+                } else {
                   lapply(stopping@stopList,
                          stopTrial,
                          dose=dose,
@@ -966,6 +975,7 @@ setMethod("stopTrial",
                          model=model,
                          data=data,
                          ...)
+                }
 
               ## summarize to obtain overall result
               overallResult <- stopping@summary(as.logical(individualResults))
@@ -998,6 +1008,15 @@ setMethod("stopTrial",
               ## evaluate the individual stopping rules
               ## in the list
               individualResults <-
+                if(missing(samples))
+                {
+                  lapply(stopping@stopList,
+                         stopTrial,
+                         dose=dose,
+                         model=model,
+                         data=data,
+                         ...)
+                } else {
                   lapply(stopping@stopList,
                          stopTrial,
                          dose=dose,
@@ -1005,6 +1024,7 @@ setMethod("stopTrial",
                          model=model,
                          data=data,
                          ...)
+                }
 
               ## summarize to obtain overall result
               overallResult <- all(as.logical(individualResults))
@@ -1037,6 +1057,15 @@ setMethod("stopTrial",
               ## evaluate the individual stopping rules
               ## in the list
               individualResults <-
+                if(missing(samples))
+                {
+                  lapply(stopping@stopList,
+                         stopTrial,
+                         dose=dose,
+                         model=model,
+                         data=data,
+                         ...)
+                } else {
                   lapply(stopping@stopList,
                          stopTrial,
                          dose=dose,
@@ -1044,6 +1073,7 @@ setMethod("stopTrial",
                          model=model,
                          data=data,
                          ...)
+                }
 
               ## summarize to obtain overall result
               overallResult <- any(as.logical(individualResults))
