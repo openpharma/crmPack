@@ -1766,12 +1766,12 @@ setMethod("nextBest",
               
               ##Find the index of next dose in the doseGrid
               ##next dose is the dose level closest below the TDtargetDuringTrialEstimate
-              index <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              index <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               ret <- data@doseGrid[dosesOK][index]
               
               
               ##Find the dose level (in doseGrid) closest below the TDtargetEndOfTrialEstimate
-              index1 <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+              index1 <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               ret1 <- data@doseGrid[dosesOK][index1]
               
               
@@ -2455,28 +2455,28 @@ setMethod("nextBest",
                 
                 ##Find the dose level in doseGrid closest below nextdose
                 
-                index <- suppressWarnings(max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                index <- suppressWarnings(max(which((signif(nextdose,digits=4) - data@doseGrid[dosesOK]) >= 0)))
                 
                 
                 ret <- data@doseGrid[dosesOK][index]
                 
                 ##Find the dose level in doseGrid closest below TDtargetEndOfTrial
                 
-                indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
                 
                 
                 retE <- data@doseGrid[indexE]
                 
                 ##Find the dose level in doseGrid closest below TDtargetDuringTrial
                 
-                indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
                 
                 
                 retD <- data@doseGrid[indexD]
                 
                 ##Find the dose level in doseGrid closest below Gstar
                 
-                Gstarindex <- suppressWarnings(max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0))
+                Gstarindex <- suppressWarnings(max(which((signif(Gstar,digits=4) - data@doseGrid[dosesOK]) >= 0)))
                 
                 
                 Gstarret <- data@doseGrid[Gstarindex]
@@ -2530,7 +2530,7 @@ setMethod("nextBest",
                     plot1 <- plot1+
                       geom_vline(xintercept=Gstar, colour="green", lwd=1.1) +
                       annotate("text",label=" Gstar Estimate",
-                               x=Gstar,y=0,hjust=-0.1, vjust = -25,size=5,colour="green")}
+                               x=Gstar,y=0,hjust=+0.6, vjust = -25,size=5,colour="green")}
                 
                 
                 if (doselimit > max(data@doseGrid)){maxdoselimit<-max(data@doseGrid)} else {maxdoselimit <-doselimit}
@@ -2610,7 +2610,7 @@ setMethod("stopTrial",
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste("Ratio =",ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+              text <- paste("95% CI is (",CI[1], "," , CI[2], "), Ratio =",ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
@@ -2661,7 +2661,7 @@ setMethod("stopTrial",
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste("Ratio =", ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+              text <- paste("95% CI is (",CI[1], "," , CI[2], "), Ratio =", ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
@@ -2760,7 +2760,8 @@ setMethod("stopTrial",
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste(ifelse(chooseTD,"TD30 estimate","Gstar estimate"), "is smaller and its ratio =", 
+              text <- paste(ifelse(chooseTD,"TD30 estimate","Gstar estimate"), "is smaller with 95% CI (", CI[1], ",", CI[2], 
+                            ") and its ratio =", 
                             ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
               ##return both
@@ -2861,8 +2862,8 @@ setMethod("stopTrial",
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste(ifelse(chooseTD,"TD30 estimate","Gstar estimate"), "is smaller and its ratio =", 
-                            ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+              text <- paste(ifelse(chooseTD,"TD30 estimate","Gstar estimate"), "is smaller with 95% CI (", CI[1], ",", CI[2], 
+                            ") and its ratio =", ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,

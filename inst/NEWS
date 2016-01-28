@@ -3,6 +3,9 @@ Version 0.1.8
 
 * Bugfix: Stopping rules can now also be freely combined using the and/or operators  
   with the dual endpoint design stopping rules not using MCMC samples.
+* The value of the 95% CI of the final estimates 
+  will be display in results when using 'stopTrial'  
+* Bugfix : improved graphical display in plots for nextBest dose 
 
 Version 0.1.6
 --------------------------------------------------------------------------------
