@@ -1840,6 +1840,7 @@ setMethod("nextBest",
 ##' class rule. This a method based only on the DLE responses and for 
 ##' \code{\linkS4class{LogisticIndepBeta}} model class object without DLE samples
 ##' 
+##' @param SIM internal command to notify if this method is used within simulations. Default as FALSE 
 ##' @importFrom ggplot2 ggplot  xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
@@ -1855,7 +1856,7 @@ setMethod("nextBest",
                       model="LogisticIndepBeta",
                       data="Data"),
           def=
-            function(nextBest, doselimit, model, data, ...){
+            function(nextBest, doselimit, model, data, SIM=FALSE,...){
               ##Find the target prob During Trial
               targetDuringTrial<- nextBest@targetDuringTrial
               ##Find the target prob End of Trial
@@ -1913,16 +1914,21 @@ setMethod("nextBest",
               
               
               if ((TDDfourdg < min(data@doseGrid))|(TDDfourdg > max(data@doseGrid))) {
-                
+                if (SIM==FALSE){
                 plot1<-plot1
-                print(paste(paste("TD",targetDuringTrial*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {plot1 <- plot1+
+                print(paste(paste("TD",targetDuringTrial*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))
+                } else {plot1<- plot1}
+               } else {plot1 <- plot1+
                   geom_point(data=data.frame(x=TDtargetDuringTrialEstimate,y=targetDuringTrial),aes(x=x,y=y),colour="orange", shape=15, size=8) +
                   annotate("text",label=paste(paste("TD",mylabel),"Estimate"),x=TDtargetDuringTrialEstimate+1,y=targetDuringTrial-0.2,size=5,colour="orange")}
               
               
               if ((TDEfourdg < min(data@doseGrid))|(TDEfourdg > max(data@doseGrid))) {
+                if (SIM==FALSE){
                 plot1<-plot1
-                print(paste(paste("TD",targetEndOfTrial*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))} else {plot1 <- plot1+
+                print(paste(paste("TD",targetEndOfTrial*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))
+                } else {plot1 <- plot1}
+              } else {plot1 <- plot1+
                   geom_point(data=data.frame(x=TDtargetEndOfTrialEstimate,y=0.3),aes(x=x,y=y),colour="violet", shape=16, size=8) +
                   annotate("text",label=paste(paste("TD",label2),"Estimate"),x=TDtargetEndOfTrialEstimate+1,y=targetEndOfTrial-0.1,size=5,colour="violet")}
               
@@ -1959,13 +1965,13 @@ setMethod("nextBest",
 ## ------------------------------------------------------------------------------------
 ## the nextBest method based on DLE and efficacy responses without DLE and efficacy samples
 ## -------------------------------------------------------------------------- ----------
-##' @describeIn nextBest for slots \code{nextBest},\code{doselimit} and \code{data}. This is 
+##' @describeIn nextBest for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is 
 ##' a function to find the next best dose based on the 'NextBestMaxGain'
 ##' class rule. This a method based on the DLE responses and efficacy responses without DLE and 
 ##' efficacy samples. 
 ##' 
 ##' @param Effmodel the efficacy model of \code{\linkS4class{ModelEff}} class object
-##' 
+##'
 ##' @importFrom ggplot2 ggplot xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' 
@@ -1981,7 +1987,7 @@ setMethod("nextBest",
                       model="ModelTox",
                       data="DataDual"),
           def=
-            function(nextBest,doselimit,model,data,Effmodel,...){
+            function(nextBest,doselimit,model,data,Effmodel,SIM=FALSE,...){
               
               stopifnot(is(Effmodel, "ModelEff"))
               
@@ -2005,10 +2011,10 @@ setMethod("nextBest",
                 -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
               }
               ##Find the dose which gives the maximum gain
-              Gstar<-(optim(min(data@doseGrid),Gainfun, method = "BFGS")$par)
+              Gstar<-(optim(min(data@doseGrid),Gainfun, method = "L-BFGS-B", lower=min(data@doseGrid),upper=max(data@doseGrid))$par)
               ##Find the maximum gain value
               
-              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "BFGS")$value)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B", lower=min(data@doseGrid),upper=max(data@doseGrid))$value)
               ## be sure which doses are ok with respect to maximum
               ## possible dose
               
@@ -2072,16 +2078,21 @@ setMethod("nextBest",
               
               
               if ((signif(TDtargetEndOfTrialEstimate,4) < min(data@doseGrid))|(signif(TDtargetEndOfTrialEstimate,4) > max(data@doseGrid))) {
+                if (SIM==FALSE){
                 plot1<-plot1
-                print(paste(paste("Estimated TD",EndOfTrialtargetprob*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))} else {
+                print(paste(paste("Estimated TD",EndOfTrialtargetprob*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))
+                } else {plot1 <- plot1} 
+              } else {
                   plot1 <-plot1 + geom_point(data=data.frame(x=TDtargetEndOfTrialEstimate,y=EndOfTrialtargetprob),aes(x=x,y=y),colour="violet", shape=16, size=8) +
                     annotate("text",label=paste(paste("TD",EndOfTrialtargetprob*100),"Estimate"),x=TDtargetEndOfTrialEstimate-3,y=0.2,size=5,colour="violet")}
               
               
               
               if ((signif(Gstar,4) < min(data@doseGrid))|(signif(Gstar,4) > max(data@doseGrid))) {
+                if (SIM==FALSE){
                 plot1<-plot1
-                print(paste("Estimated Gstar=",paste(Gstar," not within dose Grid")))} else {plot1 <- plot1 + 
+                print(paste("Estimated Gstar=",paste(Gstar," not within dose Grid")))} else {plot1 <- plot1} 
+              } else {plot1 <- plot1 + 
                   geom_point(data=data.frame(x=Gstar,y=MaxGain),aes(x=x,y=y),colour="green3", shape=17, size=8) +
                   annotate("text",label="Max Gain Estimate",x=Gstar,y=MaxGain-0.1,size=5,colour="green3")}
               
@@ -2091,8 +2102,11 @@ setMethod("nextBest",
               
               
               if ((signif(TDtargetDuringTrialEstimate,4) < min(data@doseGrid))|(signif(TDtargetDuringTrialEstimate,4) > max(data@doseGrid))) {
+                if (SIM==FALSE){
                 plot1<-plot1
-                print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {
+                print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))
+              } else {plot1 <- plot1}
+            }  else {
                   plot1 <- plot1+
                     geom_point(data=data.frame(x=signif(TDtargetDuringTrialEstimate,4),y=DuringTrialtargetprob),aes(x=x,y=y),colour="orange", shape=15, size=8) +
                     annotate("text",label=paste(paste("TD",DuringTrialtargetprob*100),"Estimate"),x=TDtargetDuringTrialEstimate+25,
@@ -2127,12 +2141,13 @@ setMethod("nextBest",
 ## =====================================================================================
 ## the nextBest method based on DLE and efficacy responses with DLE and efficacy samples
 ## -------------------------------------------------------------------------- ----------
-##' @describeIn nextBest for slots \code{nextBest},\code{doselimit} and \code{data}. This is 
+##' @describeIn nextBest for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is 
 ##' a function to find the next best dose based on the 'NextBestMaxGainSamples'
 ##' class rule. This a method based on the DLE responses and efficacy responses with DLE and 
 ##' efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or  
 ##' \code{\linkS4class{EffFlexi}}.
 ##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
+##' 
 ##' @importFrom ggplot2 ggplot geom_histogram xlab ylab xlim aes geom_vline
 ##' geom_text
 ##' @example examples/Rules-method-nextbest_MaxGainSamples.R
@@ -2145,7 +2160,7 @@ setMethod("nextBest",
                       data="DataDual"),
           
           def=
-            function(nextBest,doselimit,samples,model,data,Effmodel,Effsamples,...){
+            function(nextBest,doselimit,samples,model,data,Effmodel,Effsamples,SIM=FALSE,...){
               
               if(is(Effmodel, "Effloglog")) 
                 {
@@ -2307,24 +2322,33 @@ setMethod("nextBest",
                 ylab("Posterior density")
               
               if (signif(TDtargetDuringTrialEstimate,4) < min(data@doseGrid)|signif(TDtargetDuringTrialEstimate,4) > max(data@doseGrid)) {
+                if (SIM==FALSE){
                 plot1<-plot1 
-                print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {
+                print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))
+                } else {plot1 <- plot1}
+              } else {
                   plot1 <- plot1+
                     geom_vline(xintercept=TDtargetDuringTrialEstimate, colour="orange", lwd=1.1) +
                     annotate("text",label=paste(paste("TD",DuringTrialtargetprob*100),"Estimate"),
                              x=TDtargetDuringTrialEstimate,y=0,hjust=-0.1, vjust = -20,size=5,colour="orange")}
               
               if (signif(TDtargetEndOfTrialEstimate,4) < min(data@doseGrid)|signif(TDtargetEndOfTrialEstimate,4) > max(data@doseGrid)) {
+                if (SIM==FALSE){
                 plot1<-plot1 
-                print(paste(paste("Estimated TD",EndOfTrialtargetprob*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))} else {
+                print(paste(paste("Estimated TD",EndOfTrialtargetprob*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))
+                } else {plot1 <- plot1}
+              } else {
                   plot1 <- plot1+
                     geom_vline(xintercept=TDtargetEndOfTrialEstimate, colour="violet", lwd=1.1) +
                     annotate("text",label=paste(paste("TD",EndOfTrialtargetprob*100),"Estimate"),
                              x=TDtargetEndOfTrialEstimate,y=0,hjust=-0.1, vjust = -25,size=5,colour="violet")}
               
               if (signif(Gstar,4) < min(data@doseGrid)|signif(Gstar,4) > max(data@doseGrid)) {
+                if (SIM==FALSE){
                 plot1<-plot1
-                print(paste("Estimated Gstar=",paste(Gstar," not within dose Grid")))} else {           
+                print(paste("Estimated Gstar=",paste(Gstar," not within dose Grid")))
+                } else {plot1 <- plot1}
+              } else {           
                   plot1 <- plot1+
                     geom_vline(xintercept=Gstar, colour="green", lwd=1.1) +
                     annotate("text",label=" Gstar Estimate",
@@ -2509,24 +2533,33 @@ setMethod("nextBest",
                   ylab("Posterior density")
                 
                 if (signif(TDtargetDuringTrialEstimate,4) < min(data@doseGrid)|signif(TDtargetDuringTrialEstimate,4) > max(data@doseGrid)) {
+                  if (SIM==FALSE){
                   plot1<-plot1
-                  print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))} else {
+                  print(paste(paste("Estimated TD",DuringTrialtargetprob*100),paste("=",paste(TDtargetDuringTrialEstimate," not within dose Grid"))))
+                  } else {plo1 <- plot1}
+                } else {
                     plot1 <- plot1+
                       geom_vline(xintercept=TDtargetDuringTrialEstimate, colour="orange", lwd=1.1) +
                       annotate("text",label=paste(paste("TD",DuringTrialtargetprob*100),"Estimate"),
                                x=TDtargetDuringTrialEstimate,y=0,hjust=-0.1, vjust = -20,size=5,colour="orange")}
                 
                 if (signif(TDtargetEndOfTrialEstimate,4) < min(data@doseGrid)|signif(TDtargetEndOfTrialEstimate,4) > max(data@doseGrid)) {
+                  if (SIM==FALSE){
                   plot1<-plot1 
-                  print(paste(paste("Estimated TD",EndOfTrialtargetprob*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))} else {
+                  print(paste(paste("Estimated TD",EndOfTrialtargetprob*100),paste("=",paste(TDtargetEndOfTrialEstimate," not within dose Grid"))))
+                  } else {plot1 <- plot1}
+                } else {
                     plot1 <- plot1+
                       geom_vline(xintercept=TDtargetEndOfTrialEstimate, colour="violet", lwd=1.1) +
                       annotate("text",label=paste(paste("TD",EndOfTrialtargetprob*100),"Estimate"),
                                x=TDtargetEndOfTrialEstimate,y=0,hjust=-0.1, vjust = -25,size=5,colour="violet")}
                 
                 if (signif(Gstar,4) < min(data@doseGrid)|signif(Gstar,4) > max(data@doseGrid)) {
+                  if (SIM==FALSE){
                   plot1<-plot1
-                  print(paste("Estimated Gstar=",paste(Gstar," not within dose Grid")))} else {           
+                  print(paste("Estimated Gstar=",paste(Gstar," not within dose Grid")))
+                  } else {plot1 <- plot1}
+                } else {           
                     plot1 <- plot1+
                       geom_vline(xintercept=Gstar, colour="green", lwd=1.1) +
                       annotate("text",label=" Gstar Estimate",
@@ -2801,8 +2834,8 @@ setMethod("stopTrial",
               Gainfun<-function(DOSE){
                 -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
               }
-              Gstar<-(optim(min(data@doseGrid),Gainfun,method = "BFGS")$par)
-              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "BFGS")$value)
+              Gstar<-(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$par)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$value)
               logGstar <- log(Gstar)
               
               
@@ -2810,7 +2843,7 @@ setMethod("stopTrial",
                 chooseTD <- FALSE
                 ##From paper
                 
-                meanEffGstar <- Effmodel@theta1+Effmodel@theta2*logGstar
+                meanEffGstar <- Effmodel@theta1+Effmodel@theta2*log(logGstar)
                 
                 denom <- (model@phi2)*(meanEffGstar)*(1+logGstar*model@phi2)
                 
@@ -2821,6 +2854,16 @@ setMethod("stopTrial",
                 dgtheta1 <- -(logGstar*model@phi2)/denom
                 
                 dgtheta2 <- -(logGstar*exp(model@phi1+model@phi2*logGstar)*model@phi2*log(logGstar)-1-exp(model@phi1+model@phi2*logGstar))/denom
+                
+                #DLEPRO <- exp(model@phi1+model@phi2*logGstar)
+                
+                #dgphi1 <- Effmodel@theta2*DLEPRO - logGstar*model@phi2*meanEffGstar*DLEPRO
+                
+                #dgphi2 <- logGstar*DLEPRO *(Effmodel@theta2-(meanEffGstar)+model@phi2)
+                
+                #dgtheta1 <- -logGstar*DLEPRO*model@phi2
+                
+                #dgtheta2 <- 1+DLEPRO-logGstar*DLEPRO*model@phi2*log(logGstar)
                 
                 deltaG <- matrix(c(dgphi1,dgphi2,dgtheta1,dgtheta2),4,1)
                 

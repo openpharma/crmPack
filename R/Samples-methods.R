@@ -1292,8 +1292,8 @@ setMethod("plotGain",
               Gainfun<-function(DOSE){
                 -gain(DOSE,DLEmodel=DLEmodel,Effmodel=Effmodel)
               }
-              Gstar<-(optim(min(data@doseGrid),Gainfun,method = "BFGS")$par)
-              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "BFGS")$value)
+              Gstar<-(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$par)
+              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$value)
               
               
               if ((TD30 < min(data@doseGrid))|(TD30 > max(data@doseGrid))) {

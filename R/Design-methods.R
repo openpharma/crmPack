@@ -1313,7 +1313,8 @@ setMethod("simulate",
                                  doselimit=doselimit,
                                  samples=thisSamples,
                                  model=thisModel,
-                                 data=thisData)
+                                 data=thisData,
+                                 SIM=TRUE)
                   
                   thisDose <- NEXT$nextdose
                   
@@ -1542,7 +1543,8 @@ setMethod("simulate",
                   NEXT<-nextBest(object@nextBest,
                                  doselimit=doselimit,
                                  model=thisModel,
-                                 data=thisData)
+                                 data=thisData,
+                                 SIM=TRUE)
                   thisDose <- NEXT$nextdose
                   
                   thisTDtargetDuringTrial<- NEXT$TDtargetDuringTrialEstimate
@@ -1823,7 +1825,8 @@ setMethod("simulate",
                                  doselimit=doselimit,
                                  model=thisDLEModel,
                                  data=thisData,
-                                 Effmodel=thisEffModel)
+                                 Effmodel=thisEffModel,
+                                 SIM=TRUE)
                   
                   thisDose <- NEXT$nextdose
                   
@@ -2158,7 +2161,8 @@ setMethod("simulate",
                                    model=thisDLEModel,
                                    Effmodel=thisEffModel,
                                    Effsamples=thisEffsamples,
-                                   data=thisData)
+                                   data=thisData,
+                                   SIM=TRUE)
                     
                     
                     
@@ -2438,7 +2442,8 @@ setMethod("simulate",
                                  model=thisDLEModel,
                                  data=thisData,
                                  Effmodel=thisEffModel,
-                                 Effsamples=thisEffsamples)
+                                 Effsamples=thisEffsamples,
+                                 SIM=TRUE)
                   
                   thisDose <- NEXT$nextdose
                   
