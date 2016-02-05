@@ -9,6 +9,10 @@ Version 0.1.8
 * Bugfix: Stopping rules can now also be freely combined using the and/or operators    
   with the dual endpoint design stopping rules not using MCMC samples.
 
+* Bugfix: Improved methodology to compute Gstar
+
+* Bugfix: Warning are removed when using nextBest in simulations
+
 Version 0.1.6
 --------------------------------------------------------------------------------
 
