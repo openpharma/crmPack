@@ -210,9 +210,9 @@ $
 
 \section{Using crmPack}\label{sec:using}
 
-\subsection{Implementing a CRM trial}
+\subsection{Implementing a CRM trial}\label{crmtrial}
 
-We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd. For each subject, one response each of DLE and efficacy was observed. The DLE response is equal to 1 if any abnormal symptom is observed and 0 otherwise. In this Section we will show how to implement a CRM design for dose-escalation based on safety only.
+We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd. For each subject, one response each of DLT and efficacy was observed. The DLT response is equal to 1 if any abnormal symptom is observed and 0 otherwise. In this Section we will show how to implement a CRM design for dose-escalation based on safety only.
 
 Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a
 novel agent are available, defining our dose-grid, with 25 mg being our starting
@@ -376,11 +376,11 @@ A plot of the summary results, giving a bit more details than the textual summar
 \subsection{Dose escalation with safety and efficacy}
 
 
-In this section, the dose-escalation procedures where two, the safety and efficacy endpoints are incorporated into the study will be introduced. The safety endpoint is the binary DLTs (dose-limiting toxicity) responses and the efficacy endpoint is the continuous biomarker/efficacy response. In this package, either these two responses are modeled jointly, using a single model class and assuming correlation; or are modeled separately using two separate model classes and assuming no correlation. First, the procedure where the two endpoints are modeled separately will be described.
+In this section, the dose-escalation procedures where two, the safety and efficacy endpoints are incorporated into the study will be introduced. The safety endpoint is the binary DLTs (dose-limiting toxicity) responses and the efficacy endpoint is the continuous biomarker/efficacy response. In this package, either these two responses are modeled jointly, using a single model class and assuming correlation; or are modeled separately using two separate model classes and assuming no correlation. The procedure where the two endpoints are modeled separately will be described now.
 
 \textbf{Two Endpoints modeled with two dose-response models}
 
-The procedures described below are proposed in \cite{yeung2015}. To start two models to be used to describe the relationship between the responses and their corresponding dose levels have to be defined. Assume that a total of $k$ dose levels have been considered in a study and denoted these dose levels as $d_{(1)},...,d_{(k)}$ and assume that these dose levels are of ascending order such that $d_{(1)} < ... < d_{(k)}$.\\
+The procedures described below are proposed in \cite{yeung2015}. Two models were used to describe the relationship between the responses and their corresponding dose levels. Assume that a total of $k$ dose levels are considered and they are of ascending order such that $d_{(1)} < ... < d_{(k)}$.\\
 
 \textit{DLT model}\\
 
@@ -389,36 +389,44 @@ For the safety endpoint or the DLTs response, the two-parameter logistic regress
 p(d_{(j)})= \frac{{\rm exp}(\phi_1 + \phi_2 {\rm log}(d_{(j)}))}{1+ {\rm exp}(\phi_1 + \phi_2 {\rm log}(d_{(j)}))}
 \end{equation}
 
-for $j=1,...,k$. The parameters $\phi_1$ and $\phi_2$ are the corresponding intercept and slope parameter of this model. The values of $\phi_1$ and $\phi_2$ are positive to ensure a monotonically increasing relationship between the doses and their corresponding probabilities of the occurrence of a DLTs.
+for $j=1,...,k$. The parameters $\phi_1$ and $\phi_2 > 0 $ are the corresponding intercept and slope parameter of this model.
 
-Before assign the first dose to the first or first cohort of subjects, we will express our initial beliefs concerning all unknown model parameters in the form of prior distribution. In here, the prior will be expressed in form of pseudo data, as if some data are available before the study begins. The method is described in details \cite{ww98} as follows. We begin by fixing two different dose levels $d_{-1}$ and $d_{0}$ and elicit clinical pharmacologists opinion on $p_{-1}$ and $p_{0}$, the likely probabilities of a DLTs occurring at these two dose levels. Usually $d_{-1}$ and $d_{0}$ are fixed with the lowest and highest dose levels, respectively.
+Before assign the first dose to the first or first cohort of subjects, we will express our initial beliefs concerning all unknown model parameters in the form of prior distribution. In here, the prior will be expressed in form of pseudo data, some imaginary data as if for some observations we already had before the trial starts. Details about how to set up prior inform of the pseudo data is described in \cite{yeung2015}
+%, as if some data are available before the study begins. The method is described in details \cite{ww98} as follows. We begin by fixing two different dose levels $d_{-1}$ and $d_{0}$ and elicit clinical pharmacologists opinion on $p_{-1}$ and $p_{0}$, the likely probabilities of a DLTs occurring at these two dose levels. Usually $d_{-1}$ and $d_{0}$ are fixed with the lowest and highest dose levels, respectively.
 
-We express this opinion with some hypothetical number of number of subjects. Let $l=-1,0$ for $n_l$ subject treated at dose $l$, there will be $t_l$ subjects observed with DLTs and $u_l$ non-DLTs such that $p_l=t_l/n_l$. At stated in \cite{w06}, using the pseudo-data, the prior modal estimates of $\phi_1$ and $\phi_2$ obtained are the same as the maximum likelihood estimates which can be computed using standard statistical software fits. When more DLTs observations are available, standard software fits can be used to obtain posterior modal estimates for the model parameters.\\
+%We express this opinion with some hypothetical number of number of subjects. Let $l=-1,0$ for $n_l$ subject treated at dose $l$, there will be $t_l$ subjects observed with DLTs and $u_l$ non-DLTs such that $p_l=t_l/n_l$. 
+As stated in \cite{w06}, based on the pseudo-data, the prior modal estimates of $\phi_1$ and $\phi_2$ obtained are the same as the maximum likelihood estimates which can be computed using standard statistical software fits. When more DLTs observations are available, standard software fits can also be used to obtain posterior modal estimates for the model parameters.\\
 
 \textit{Efficacy models}\\
 
-For the continuous efficacy endpoint, the linear log-log model can be used to describe the dose-efficacy relationship. In here, efficacy responses of subjects without DLTs will be considered. First the parametric model will be shown . Let $n$ be the total number of subjects treated in a study. Given no DLTs responses, the efficacy response of subject $i$ is represented by
+For the continuous efficacy endpoint, the linear log-log model can be used to describe the dose-efficacy relationship. In here, efficacy responses of subjects without DLTs will be considered. Let $n$ be the total number of subjects treated in a study. Given no DLTs responses, the efficacy response of subject $i$ is represented by
 \begin{equation}\label{loglog}
 w_i = \theta_1 + \theta_2 {\rm log(log}d_i) +\epsilon _i
 \end{equation}
-for $1=1,...,s$ with $ s \leq n$ and $d_i$ represents the dose level given to subject $i$. In addition, with $\epsilon_i$ the random error term of subject $i$ with $\epsilon_i \sim N(0, \sigma^2)$. It is always common to use the ${\rm E_{max}}$ model to estimate the dose-efficacy relationship in clinical pharmacology context. In particular, we are interested to estimate efficacy curve under the ${\rm E_{max}}$ model with a shape such that the efficacy responses will increase sharply with increasing dose at lower dose levels and form a plateau at higher dose level. The advantages of using a linear log-log model instead are firstly this model give a similar shape than to the ${\rm E_{max}}$ model and secondly we only need to fit the intercept, $\theta_1$ and the slope, $\theta_2$ parameter instead of fitting four parameters in the ${\rm E_{max}}$ model.
+for $1=1,...,s$ with $ s \leq n$ and $d_i$ represents the dose level given to subject $i$. $\epsilon_i$ the random error term $\epsilon_i \sim N(0, \sigma^2)$ of subject $i$. The reason of using a linear log-log model for dose-efficacy relationship is also described in \cite{yeung2015}
 
- Similarly, initial beliefs about the parameters $\theta_1$ and $\theta_2$ in this model are expressed in terms of pseudo-data. First two dose levels $d_{-1}$, usually the lowest and $d_{0}$, the highest dose levels are fixed and elicited clinical pharmacologists' opinion about the efficacy responses $w_{-1}$ and $w_0$ corresponding to the two fixed log-log dose levels $l_{-1}$ and $l_0$. The prior modal estimates of $\theta_1$ and $\theta_2$ can be obtained using standard fits in statistical software. Furthermore, given more observed responses of efficacy, the posterior modal estimates of the model parameters can be obtained using standard software fits.
+%It is always common to use the ${\rm E_{max}}$ model to estimate the dose-efficacy relationship in clinical pharmacology context. In particular, we are interested to estimate efficacy curve under the ${\rm E_{max}}$ model with a shape such that the efficacy responses will increase sharply with increasing dose at lower dose levels and form a plateau at higher dose level. The advantages of using a linear log-log model instead are firstly this model give a similar shape than to the ${\rm E_{max}}$ model and secondly we only need to fit the intercept, $\theta_1$ and the slope, $\theta_2$ parameter instead of fitting four parameters in the ${\rm E_{max}}$ model.
 
-Furthermore for $\nu=\sigma^{-2}$, either fixed values or gamma distributions will be specified as the prior and posterior distributions.
+Similarly, initial beliefs about the parameters $\theta_1$ and $\theta_2$ in this model are expressed in terms of pseudo-data as described in \cite{yeung2015}. Using the pseudo data and if any all available efficacy responses,  
+ %First two dose levels $d_{-1}$, usually the lowest and $d_{0}$, the highest dose levels are fixed and elicited clinical pharmacologists' opinion about the efficacy responses $w_{-1}$ and $w_0$ corresponding to the two fixed log-log dose levels $l_{-1}$ and $l_0$. 
+ the prior or the posterior modal estimates of $\theta_1$ and $\theta_2$ can be obtained using standard fits in statistical software. 
+ %Furthermore, given more observed responses of efficacy, the posterior modal estimates of the model parameters can be obtained using standard software fits.
+
+The precision $\nu=\sigma^{-2}$, can be specified with a fixed value or gamma distributions will be used as the prior and posterior distributions.
 
 
 
 \textbf{Corresponding Model classes in crmPack package}
 
-The \texttt{ModelPseudo} class contains all model classes where their prior are specified in terms of pseudo data and standard maximum likelihood procedures from R can be used to obtain prior and posterior estimates. All models included in this package will have a parent class of either \texttt{GeneralModel} or \texttt{ModelPseudo}. In particular, all dose-responses models that can be used when the two endpoints are modeled separately are contained in \texttt{ModelPseudo} class.
+The \texttt{ModelPseudo} class contains all model classes where their prior are specified in terms of pseudo data and when standard maximum likelihood procedures are used to obtain prior and posterior estimates. All models included in this package will contains in either the \texttt{GeneralModel} or \texttt{ModelPseudo} class. In particular, when the two endpoints are modeled separately, all corresponding dose-responses models are contained in \texttt{ModelPseudo} class.
 
-There are two further sub-classes under \texttt{ModelPseudo} class which are the \texttt{ModelTox} class which contains all DLTs models and the \texttt{ModelEff} class which includes all efficacy models. The two-parameter dose-DLTs model describe earlier is defined as \texttt{LogisticIndepBeta} class model in the package and is also contained in \texttt{ModelTox} class. The linear log-log  described are defined as \texttt{Effloglog} contained under \texttt{ModelEff} class. Now we will demonstrate how we define these models on a fictional example.
+There are two sub-classes under \texttt{ModelPseudo} class are the \texttt{ModelTox} class which contains all DLTs models and the \texttt{ModelEff} class which includes all efficacy models. The two-parameter dose-DLTs model described is defined as \texttt{LogisticIndepBeta} class model in the package and contained in \texttt{ModelTox} class. The linear log-log  described are defined as \texttt{Effloglog} class model contained in \texttt{ModelEff} class. Now we will demonstrate how we define these models based on the same example used in Section \cite{crmtrial} and \cite{yeung2015}. The binary DLTs endpoint considered was described in Section \cite{crmtrial} and the continuous efficacy endpoint considered is a transformed form of the DPP4 activity described in \cite{yeung2015}. 
 
-This is an example based on a trial in Type II diabetes carried out by Roche. The DLTs response equals to 1 if any abnormal symptom is observed on subject and 0 otherwise. An indication of efficacy is expressed via Dipeptidyl peptidase-4 (DPP4), which is an enzyme found on the surface of cells that plays a key role in glucose metabolism. The drug under investigation is intended to inhibit the DPP4 activity. A transform form of the DPP4 activity is used as the continuous efficacy endpoint. For subject $i$, the efficacy responses is defined as $$y_i=-{\rm log}\left(\frac{\textrm{DPP4 activity at hour 0, day 9}}{\textrm{DPP4 activity at hour 0, day 1}}\right).$$
 
-We want to find the optimal dose level which represents the best trade-off between the DLTs and efficacy responses. Suppose 12 dose levels ranging from 25mg to 300 mg in 25mg increments are under investigation.
-We can set up our data set before the trail start when no observations are available. That is we only need to specify the dose level that will be used for the trial
+%An indication of efficacy is expressed via Dipeptidyl peptidase-4 (DPP4), which is an enzyme found on the surface of cells that plays a key role in glucose metabolism. The drug under investigation is intended to inhibit the DPP4 activity. A transform form of the DPP4 activity is used as the continuous efficacy endpoint. For subject $i$, the efficacy responses is defined as $$y_i=-{\rm log}\left(\frac{\textrm{DPP4 activity at hour 0, day 9}}{\textrm{DPP4 activity at hour 0, day 1}}\right).$$
+
+We want to find the optimal dose level which represents the best trade-off between the DLTs and efficacy responses. 
+We can set up our data set before the trial start when no observations are available. That is we only need to specify the dose level that will be used for the trial
 <<Data>>=
 data1 <- Data(doseGrid=seq(25,300,25))
 data2 <- DataDual(doseGrid=seq(25,300,25))
@@ -427,22 +435,10 @@ data2 <- DataDual(doseGrid=seq(25,300,25))
 Both \code{data1} and \code{data2} are empty data set. If only DLTs response is incorporated into the escalation process, empty data set \code{data1} of class \texttt{Data} can be used. If both DLTs and efficacy responses are incorporated into the procedure, empty data set \code{data2} of class \texttt{DataDual} can be used.
 
 
-Then we have to know the dose to be given to the first cohort of subjects. The initial beliefs of unknown parameters are expressed in form of pseudo-data. A conservative prior will be used representing what we fear rather than what we believe. The pseudo-data for the prior of the DLTS are shown in table \ref{tab:prior-DLE}
+Then we have to know the dose to be given to the first cohort of subjects. The initial beliefs of unknown parameters are expressed in form of pseudo-data. A conservative prior will be used representing what we fear rather than what we believe. 
 
-\begin{table}[H]
-\centering
-\caption{Pseudo-data for prior on parameters of DLE model\label{tab:prior-DLE}}
-\begin{tabular}{|ccccc|}
-\hline
-&Dose(mg)&No. of administrations&DLEs&prob of DLEs\\
-$l$&$d_l$&$n_l$&$t_l$&$p_l$\\
-\hline
--1&25&3&1.05&0.35\\
-0&300&3&1.80&0.60\\
-\hline
-\end{tabular}
-\end{table}
-
+The pseudo-data for the prior of the DLTS are described as follows.
+Assuming 3 subjects each are treated at the lowest (25mg) and the highest (300mg) dose level and clinical pharmacologists' opinions for the number of DLTs observed are 1.05 and 1.8 at these two dose levels. That is the probability of a DLTs occurring at 25 and 300 mg are 0.35 and 0.6, respectively.  
 The number of DLTs 1.05 and 1.8 are non-integer values, which is allowed in the imaginary nature of the pseudo-data. Then we can defined the two-parameter logistic DLT model as
 <<DLTmodel>>=
 DLTmodel <- LogisticIndepBeta(binDLE= c(1.05,1.8),
@@ -451,21 +447,15 @@ DLTmodel <- LogisticIndepBeta(binDLE= c(1.05,1.8),
                               data=data1)
 @
 
-The model class \code{LogisticIndepBeta} is used. The prior of the model parameters are expressed in terms of pseudo data for this class. The slot \code{DLEdose} represented the two dose levels that we fixed, 25 and 300mg. The slot \code{binDLE} represented the two numbers of DLTs 1.05 and 1.8 at the two corresponding dose levels when 3 subjects are treated at each of the two dose levels, which represented by slot \code{DLEweights} with the vector $c(3,3)$. Since no real observations are available before the trial start, we will specify the \code{data} slot of this model with the empty data set \code{data1} as this slot require data set defined under class \texttt{Data}. To note that, since we have to fix at least two dose levels to express the opinion in form of pseudo data, slots \code{binDLE}, \code{DLEweights} and \code{DLEdose} must be specified with vectors of at least length 2 and the order of their elements must be consistent to the other two vectors.
+The prior of the model parameters are expressed in terms of pseudo data for \texttt{LogisticIndepBeta} class model. The slot \code{DLEdose} represented the two dose levels that we fixed, 25 and 300mg. The vector $c(3,3)$ specofied in the slot \code{DLEweights} means that assummed 3 subjects are treated at each of the two dose levels. The slot \code{binDLE} represented the number of DLTs 1.05 and 1.8 observed at the two corresponding dose levels out of the 3 subjects treated at each of the two dose levels. Since no real observations are available before the trial start, we will specify the \code{data} slot of this model with the empty data set \code{data1} of class \texttt{Data}. Note that, since at least two pseudo responses from two different dose levels are need to obtain the prior modal estimate of the intercept and the slope of the model, slots \code{binDLE}, \code{DLEweights} and \code{DLEdose} must be specified in form of a vector of at least length 2 and the order of their elements must be consistent to the other two vectors.
 
-We can look at the structure of this model
-<<str-model>>=
-str(DLTmodel)
-@
 
-and access to their slots using the \verb|@| operator. For example, we can obtain the prior modal estimate of $\phi1$ the intercept parameter of this model by
- <<DLTmodel-phi1>>=
-DLTmodel@phi1
-@
+Furthermore, the structure of this model can be viewed using \code{str(DLTmodel)} and access to their slots using the \verb|@| operator. For example, we can obtain the prior modal estimate of $\phi1$ the intercept parameter of this model by
+\code{DLTmodel@phi1}.
 
-If more observations are available, a new data set can be specified and hence using the \code{update} function to update the current model with the new data. After the update, the posterior modal estimate could then be obtained using the \verb|@| operator in the updated model.
+If more observations are available, a new data set can be specified. Then the \code{update} function can be used to update the current model and obtain updated posterior modal estimates using the \verb|@| operator. 
 
-For the efficacy response, we will use the linear log-log model in this example. Similarly, imagine clinical pharmacologists' opinions were obtained for efficacy responses at the lowest and the highest dose level and interpreted as 1.223 and 2.513 corresponds to the two dose levels if one subjects are treated at each of these doses. We will use a gamma distribution as the prior of the precision $\nu=\sigma^{-2}$ with $a=1$, the shape parameter and $b=0.025$, the rate parameter and $\sigma^2=\{E(\nu)\}^{-1}=0.025$ as the prior modal value.
+Similarly, for the efficacy linear log-log model, the prior are expressed in terms of pseudo data. Clinical pharmacologists' opinions were obtained for efficacy responses at the lowest and the highest dose level and interpreted as 1.223 and 2.513 corresponds to the two dose levels if one subjects are treated at each of these doses. We will use a gamma distribution as the prior of the precision $\nu=\sigma^{-2}$ with $a=1$, the shape parameter and $b=0.025$, the rate parameter and $\sigma^2=\{E(\nu)\}^{-1}=0.025$ as the prior modal value.
 
 The efficacy model will be specified as
 <<Effmodel>>=
@@ -475,7 +465,7 @@ Effmodel <- Effloglog(Eff= c(1.223,2.513),
                       data=data2)
 @
 
-The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels. Each of these efficacy responses is a value given assuming one subject are treated at each of these dose levels. Slot \code{Effdose} is the vector for the fixed dose levels. We can specified a fixed value or values of the parameters of the prior gamma distribution of the precision $\nu$. In here, the prior gamma distribution is used for $\nu$ and we have to specify $a,b$ the shape and rate parameter in the slot \code{nu}. We will use the empty data set \code{data2} as slot \code{data} under this model requires data set defined under \texttt{DataDual} class. Similarly, we can also use \code{str()} to look at the structure of this model, using \verb|@| operator to obtain slots of this model and using \code{update} the update estimates of the model
+The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels. Each of these efficacy responses is given by assuming one subject are treated at each of these dose levels. Slot \code{Effdose} is the vector for the fixed dose levels. We can specified here with a fixed value or with values of the parameters of the prior gamma distribution of the precision $\nu$. That is if a prior gamma distribution, the shape $a$ and the rate parameter $b$ have to be specified in the slot \code{nu}. A data set of \texttt{DataDual} class like the emptydata set \code{data2} has to be used for slot \code{data}. Similarly, we can also use \code{str()} to look at the structure of the model, the \verb|@| operator to obtain slots of this model and \code{update} the update estimates of the model
 <<update>>=
 ##new observations availabe and out in a data3
 data3 <-DataDual(x=c(25,50,50,75,100,100,225,300),
@@ -487,28 +477,28 @@ newEffmodel <- update(object=Effmodel, data=data3)
 @
 
 
-Furthermore, instead of using the prior or posterior estimates for the model parameters for evaluation, samples of model parameters can also be generated for all models defined under \texttt{ModelPseudo} class. This flexibility allows users to choose whether prior and posterior modal estimates or samples estimates are used for their evaluations. Using the \code{mcmc} function, we can generate samples using MCMC for any models defined under \texttt{AllModels} class.
+Furthermore, instead of using the prior or posterior estimates for the model parameters for evaluation, samples of model parameters for models defined under \texttt{ModelPseudo} class can also be generated. The \code{mcmc} function described earlier can also be used for any models defined under \texttt{ModelPseudo} class .
 
-<<samples>>=
-options <- McmcOptions (burnin=100,
+%<<samples>>=
+%options <- McmcOptions (burnin=100,
                         step=2,
                         samples=2000)
-DLTsamples <- mcmc(data=data1, model = DLTmodel, options=options)
-Effsamples <- mcmc(data=data2, model = Effmodel, options=options)
-@
+%DLTsamples <- mcmc(data=data1, model = DLTmodel, options=options)
+%Effsamples <- mcmc(data=data2, model = Effmodel, options=options)
+%@
 
-The MCMC sampling are controlled with an object of class \texttt{McmcOptions} and now the object \code{options} specifies that 2000 parameter samples will be created with a "burn-in" phase of 100 iterations that are discarded and save a sample every 2 iterations. We can also use \code{str()} to look at the structure of the samples and \code{get} function to extract samples of the model parameters such as
+%The MCMC sampling are controlled with an object of class \texttt{McmcOptions} and now the object \code{options} specifies that 2000 parameter samples will be created with a "burn-in" phase of 100 iterations that are discarded and save a sample every 2 iterations. We can also use \code{str()} to look at the structure of the samples and \code{get} function to extract samples of the model parameters such as
 
-<<getsamples>>=
-phi1samples <- get(DLTsamples,"phi1")
-@
+%<<getsamples>>=
+%phi1samples <- get(DLTsamples,"phi1")
+%@
 
 
 
 \textit{Safety Constraints}\\
 
-A study will be stopped when all dose levels under consideration are unsafe. Therefore, we will not allow subjects to administer to dose levels if the risk of DLTs us unacceptable. We define the target dose at 100$\pi$, $d={\rm TD} 100\pi$, the highest dose with the probability of a DLE occurring is less than or equal to $\pi$. Two DLTS
-limits for DLTs risk are fixed.: 1) $\gamma^{**}$ is the highest risk to be faced by subjects during the trial and 2) $\gamma^{*} \leq \gamma^{**}$ is the highest risk for subsequently treated subjects for future studies. We also denote the corresponding limiting doses by $d^*= {\rm TD}100\gamma^*$ and $d^{**}={\rm TD}100\gamma^{**}$, respectively. The slightly higher risk of DLE allowed during the study will allow
+A study will be stopped when all dose levels under consideration are unsafe. Therefore, we will not allow subjects to administer to dose levels if the risk of DLTs us unacceptable. The safety constriants to be used are described in \cite{yeung2015}.
+Two DLTS limits for DLTs risk (probability of the occurrenc of DLT) are fixed.: 1) $\gamma^{**}$ is the highest risk to be faced by subjects during the trial and 2) $\gamma^{*} \leq \gamma^{**}$ is the highest risk for subsequently treated subjects for future studies. The corresponding limiting doses are $d^*= {\rm TD}100\gamma^*$ and $d^{**}={\rm TD}100\gamma^{**}$, respectively. The slightly higher risk of DLE allowed during the study will allow
 better exploration of the region of interest and hence improved
 performance. Therefore, we will not administer any dose exceeding the current posterior estimate of $d^{**}$ to the next or next cohort of subjects. At the end of a trial, we do not recommend any dose exceeding the final posterior estimate of $d^*$.
 
@@ -517,31 +507,18 @@ If only the DLTs responses are incorporated into the dose-escalation process, th
 
 \textit{Escalation rule}\\
 
-When two separate models are used to model dose-responses relationships, a gain function is used to determine the dose for the next or next cohort of subjects. This gain function is used to reflect the trade-off between efficacy and safety. Assume subject $i$ is treated at dose $j$, define the magnitude
-$$w'_j = \begin{cases} E(w_{(j)})& \textrm{if there is a DLT}\\ \kappa&\textrm{Otherwise}
-\end{cases}$$
-for $j=1,...,k$. The magnitude $w'_j$ is the expected efficacy response observed at dose $j$ given no DLTs is observed and $\kappa$ represents the efficacy responses when DLTs is observed. In general, $\kappa$ can be in any form to describe the dose–efficacy relationship for subjects observed
-with DLE when administered to dose $j$. This
- can be expressed in the form of a model that depends on dose $j$ or a single constant
-value that does not depend on $j$.
-
-The gain function associated with dose $j$ is defined as the expectation of the magnitude $w'_j$ such that
-\begin{equation}
-G_{(j)}=E(w'_j)=\frac{E(w_{(j)})}{1+{\rm exp}(\phi_1+\phi_2 {\rm log} d_{(j)})} + \frac{\kappa}{1+{\rm exp}(\phi_1+\phi_2 {\rm log}d_{(j)})}.
-\end{equation}
-
-In particular, we use $\kappa=0$ to represent there is no gain when a DLTs is observed. The gain function that we are using in here and in the package will be
+A gain function to reflect the trade-off between efficacy and safety is used to determine the dose for the next or next cohort of subjects. Details of the gain function is also described in in \cite{yeung2015} and in particular one specific form of the gain function will be used in this example. To represent no gain when a DLT is observed on a subject, the gain function  associated with dose $j$ is defined as 
 \begin{equation}
 G_{(j)}=\frac{E(w_{(j)})}{1+{\rm exp}(\phi_1+\phi_2 {\rm log} d_{(j)})}
 \end{equation}
-for $j=1,...,k$.
+for $j=1,...,k$ where $w_{j}$ are the efficacy responses observed at dose $j$ given that no DLT is observed. 
 
-In other words, this gain function is represented as the expected efficacy responses times the probability of the occurrence of a DLTs. We have both the components for the efficacy and DLTs responses represented in one equation and reflect the inherent trade-off between efficacy and safety. The maximum dose level which gives the maximum gain value and satisfied the safety constraints will be administer to next or next cohort of subjects. Let $g^*$ be the dose which gives the maximum gain value. In other words. the maximum dose level of the minimum of the posterior estimate of $d^{**}$ and $g^*$ will be the next dose to be administered. At the end of the trial, the maximum dose level closest to the selected quantity, the posterior estimate of the minimum of $d^*$ and $g^*$ will be recommended for subsequent trials.\\
+This gain function is represented as the expected efficacy responses times the probability of the occurrence of a DLTs. Both the components for the efficacy and DLTs responses are presented in one equation to reflect the trade-off between efficacy and safety. The maximum dose level which gives the maximum gain value and satisfies the safety constraints will be administer to next or next cohort of subjects. We also let $g^*$ be the dose which gives the maximum gain value. 
+In other words, the minimum of the posterior estimate of $d^{**}$ and $g^*$ will be selected. The maximum dose level closest to the selected quantity will be the next dose to be administered. At the end of the trial, the maximum dose level closest to, the minimum of the posterior estimate of the $d^*$ and $g^*$, will be recommended for subsequent trials.\\
 
 \textbf{Corresponding NextBest classes in crmPack package}\\
 
-In this package, the rules to determine the dose for the next or next cohort of subjects are contained in the \texttt{NextBest} class. There are two main types of escalation rules: either only the binary DLTs responses are incorporated into the escalation process or both the binary DLTs and the continuous efficacy response are incorporated. In particular, classes \texttt{NextBestTD}, \texttt{NextBestTDSamples}, \texttt{NextBestMaxGain} and \texttt{NextBestMaxGainSamples} can be used with dose-responses models defined under \texttt{ModelPseudo} class. The first two classes relates to escalation rule we described in the above safety constraints section. We set $\gamma^*=0.3$ and $\gamma^{**}=0.35$ as the safety constraints in this example.
-
+In this package, all escalation rules are contained in the \texttt{NextBest} class. There are two main types of rules: either only the binary DLTs responses are incorporated or both the binary DLTs and the continuous efficacy response are incorporated. In particular, classes \texttt{NextBestTD}, \texttt{NextBestTDSamples}, \texttt{NextBestMaxGain} and \texttt{NextBestMaxGainSamples} can be used with dose-responses models defined under \texttt{ModelPseudo} class. The first two classes relates to escalation rule based only on the DLTs response using the safety constraints only as esclation rules. We set $\gamma^*=0.3$ and $\gamma^{**}=0.35$ as the two safety limits.
 
 When DLTs and efficacy responses are both incorporated into the procedure, \texttt{NextBestMaxGain} is the rule when no DLTs and efficacy samples are involved in the escalation while \texttt{NextBestMaxGainSamples} is the rule when both DLTs and efficacy samples are involved.
 
