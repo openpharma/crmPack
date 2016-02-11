@@ -109,7 +109,7 @@ studies) are readily implemented. Thirdly, dual endpoint dose-escalation methods
 that incorporate both safety and efficacy and allow determination of an optimal
 biological dose are available.\\
 
-In Section~\ref{sec:framework} we describe the underlying structure of the package while Section~\ref{sec:using} provides some example of the usage of the package including how to add a costum method before we conclude with a discussion (Section~\ref{sec:discussion}). \\
+In Section~\ref{sec:framework} we describe the underlying structure of the package while Section~\ref{sec:using} provides some example of the usage of the package including how to add a custom method before we conclude with a discussion (Section~\ref{sec:discussion}). \\
 
 \section{Framework}\label{sec:framework}
 %
@@ -447,13 +447,8 @@ DLTmodel <- LogisticIndepBeta(binDLE= c(1.05,1.8),
                               data=data1)
 @
 
-The prior of the model parameters are expressed in terms of pseudo data for \texttt{LogisticIndepBeta} class model. The slot \code{DLEdose} represented the two dose levels that we fixed, 25 and 300mg. The vector $c(3,3)$ specofied in the slot \code{DLEweights} means that assummed 3 subjects are treated at each of the two dose levels. The slot \code{binDLE} represented the number of DLTs 1.05 and 1.8 observed at the two corresponding dose levels out of the 3 subjects treated at each of the two dose levels. Since no real observations are available before the trial start, we will specify the \code{data} slot of this model with the empty data set \code{data1} of class \texttt{Data}. Note that, since at least two pseudo responses from two different dose levels are need to obtain the prior modal estimate of the intercept and the slope of the model, slots \code{binDLE}, \code{DLEweights} and \code{DLEdose} must be specified in form of a vector of at least length 2 and the order of their elements must be consistent to the other two vectors.
+The prior of the model parameters are expressed in terms of pseudo data for \texttt{LogisticIndepBeta} class model. The slot \code{DLEdose} represented the two dose levels that we fixed, 25 and 300mg. The vector $c(3,3)$ specified in the slot \code{DLEweights} means that assumed 3 subjects are treated at each of the two dose levels. The slot \code{binDLE} represented the number of DLTs 1.05 and 1.8 observed at the two corresponding dose levels out of the 3 subjects treated at each of the two dose levels. Since no real observations are available before the trial start, we will specify the \code{data} slot of this model with the empty data set \code{data1} of class \texttt{Data}. Note that, since at least two pseudo responses from two different dose levels are need to obtain the prior modal estimate of the intercept and the slope of the model, slots \code{binDLE}, \code{DLEweights} and \code{DLEdose} must be specified in form of a vector of at least length 2 and the order of their elements must be consistent to the other two vectors.
 
-
-Furthermore, the structure of this model can be viewed using \code{str(DLTmodel)} and access to their slots using the \verb|@| operator. For example, we can obtain the prior modal estimate of $\phi1$ the intercept parameter of this model by
-\code{DLTmodel@phi1}.
-
-If more observations are available, a new data set can be specified. Then the \code{update} function can be used to update the current model and obtain updated posterior modal estimates using the \verb|@| operator. 
 
 Similarly, for the efficacy linear log-log model, the prior are expressed in terms of pseudo data. Clinical pharmacologists' opinions were obtained for efficacy responses at the lowest and the highest dose level and interpreted as 1.223 and 2.513 corresponds to the two dose levels if one subjects are treated at each of these doses. We will use a gamma distribution as the prior of the precision $\nu=\sigma^{-2}$ with $a=1$, the shape parameter and $b=0.025$, the rate parameter and $\sigma^2=\{E(\nu)\}^{-1}=0.025$ as the prior modal value.
 
@@ -465,8 +460,14 @@ Effmodel <- Effloglog(Eff= c(1.223,2.513),
                       data=data2)
 @
 
-The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels. Each of these efficacy responses is given by assuming one subject are treated at each of these dose levels. Slot \code{Effdose} is the vector for the fixed dose levels. We can specified here with a fixed value or with values of the parameters of the prior gamma distribution of the precision $\nu$. That is if a prior gamma distribution, the shape $a$ and the rate parameter $b$ have to be specified in the slot \code{nu}. A data set of \texttt{DataDual} class like the emptydata set \code{data2} has to be used for slot \code{data}. Similarly, we can also use \code{str()} to look at the structure of the model, the \verb|@| operator to obtain slots of this model and \code{update} the update estimates of the model
-<<update>>=
+The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels. Each of these efficacy responses is given by assuming one subject are treated at each of these dose levels. Slot \code{Effdose} is the vector for the fixed dose levels. We can specified here with a fixed value or with values of the parameters of the prior gamma distribution of the precision $\nu$. That is if a prior gamma distribution, the shape $a$ and the rate parameter $b$ have to be specified in the slot \code{nu}. A data set of \texttt{DataDual} class like the emptydata set \code{data2} has to be used for slot \code{data}. 
+
+Furthermore, the structure of these model can be viewed using \code{str} function, to access to their slots using the \verb|@| operator and \code{update} to update the current model to obtain new posterior model estimates. For example,  
+<<stratupdate>>=
+##structure of the DLT model
+str(DLTmodel)
+##Look at slot phi1/ obtain prior modal estimates of phi1 in DLT model
+DLTmodel@phi1
 ##new observations availabe and out in a data3
 data3 <-DataDual(x=c(25,50,50,75,100,100,225,300),
                  y=c(0,0,0,0,1,1,1,1),
@@ -481,8 +482,8 @@ Furthermore, instead of using the prior or posterior estimates for the model par
 
 %<<samples>>=
 %options <- McmcOptions (burnin=100,
-                        step=2,
-                        samples=2000)
+                        %step=2,
+                        %samples=2000)
 %DLTsamples <- mcmc(data=data1, model = DLTmodel, options=options)
 %Effsamples <- mcmc(data=data2, model = Effmodel, options=options)
 %@
@@ -494,15 +495,14 @@ Furthermore, instead of using the prior or posterior estimates for the model par
 %@
 
 
-
 \textit{Safety Constraints}\\
 
-A study will be stopped when all dose levels under consideration are unsafe. Therefore, we will not allow subjects to administer to dose levels if the risk of DLTs us unacceptable. The safety constriants to be used are described in \cite{yeung2015}.
-Two DLTS limits for DLTs risk (probability of the occurrenc of DLT) are fixed.: 1) $\gamma^{**}$ is the highest risk to be faced by subjects during the trial and 2) $\gamma^{*} \leq \gamma^{**}$ is the highest risk for subsequently treated subjects for future studies. The corresponding limiting doses are $d^*= {\rm TD}100\gamma^*$ and $d^{**}={\rm TD}100\gamma^{**}$, respectively. The slightly higher risk of DLE allowed during the study will allow
+A study will be stopped when all dose levels under consideration are unsafe. Therefore, we will not allow subjects to administer to dose levels if the risk of DLTs us unacceptable. The safety constraints to be used are described in \cite{yeung2015}.
+Two DLTS limits for DLTs risk (probability of the occurrence of DLT) are fixed.: 1) $\gamma^{**}$ is the highest risk to be faced by subjects during the trial and 2) $\gamma^{*} \leq \gamma^{**}$ is the highest risk for subsequently treated subjects for future studies. The corresponding limiting doses are $d^*= {\rm TD}100\gamma^*$ and $d^{**}={\rm TD}100\gamma^{**}$, respectively. The slightly higher risk of DLE allowed during the study will allow
 better exploration of the region of interest and hence improved
 performance. Therefore, we will not administer any dose exceeding the current posterior estimate of $d^{**}$ to the next or next cohort of subjects. At the end of a trial, we do not recommend any dose exceeding the final posterior estimate of $d^*$.
 
-If only the DLTs responses are incorporated into the dose-escalation process, the maximum dose level closest to the posterior estimate of $d^{**}$ will be given to the next or next cohort of subject. At the end of a trial, the maximum dose level closest to the final posterior estimate of $d^*$ will be recommended.
+If only the DLTs responses are incorporated into the dose-escalation process, the maximum dose level closest to the posterior estimate of $d^{**}$ will be given to the next or next cohort of subject. At the end of a trial, the maximum dose level closest to the final posterior estimate of $d^*$ will be recommended. (SO approach \cite{yeung2015})
 
 
 \textit{Escalation rule}\\
@@ -514,13 +514,13 @@ G_{(j)}=\frac{E(w_{(j)})}{1+{\rm exp}(\phi_1+\phi_2 {\rm log} d_{(j)})}
 for $j=1,...,k$ where $w_{j}$ are the efficacy responses observed at dose $j$ given that no DLT is observed. 
 
 This gain function is represented as the expected efficacy responses times the probability of the occurrence of a DLTs. Both the components for the efficacy and DLTs responses are presented in one equation to reflect the trade-off between efficacy and safety. The maximum dose level which gives the maximum gain value and satisfies the safety constraints will be administer to next or next cohort of subjects. We also let $g^*$ be the dose which gives the maximum gain value. 
-In other words, the minimum of the posterior estimate of $d^{**}$ and $g^*$ will be selected. The maximum dose level closest to the selected quantity will be the next dose to be administered. At the end of the trial, the maximum dose level closest to, the minimum of the posterior estimate of the $d^*$ and $g^*$, will be recommended for subsequent trials.\\
+In other words, the minimum of the posterior estimate of $d^{**}$ and $g^*$ will be selected. The maximum dose level closest to the selected quantity will be the next dose to be administered. At the end of the trial, the maximum dose level closest to, the minimum of the posterior estimate of the $d^*$ and $g^*$, will be recommended for subsequent trials. (SE approach \cite{yeung2015})\\
 
 \textbf{Corresponding NextBest classes in crmPack package}\\
 
-In this package, all escalation rules are contained in the \texttt{NextBest} class. There are two main types of rules: either only the binary DLTs responses are incorporated or both the binary DLTs and the continuous efficacy response are incorporated. In particular, classes \texttt{NextBestTD}, \texttt{NextBestTDSamples}, \texttt{NextBestMaxGain} and \texttt{NextBestMaxGainSamples} can be used with dose-responses models defined under \texttt{ModelPseudo} class. The first two classes relates to escalation rule based only on the DLTs response using the safety constraints only as esclation rules. We set $\gamma^*=0.3$ and $\gamma^{**}=0.35$ as the two safety limits.
+In this package, all escalation rules are contained in the \texttt{NextBest} class. There are two main types of rules: either only the binary DLTs responses are incorporated or both the binary DLTs and the continuous efficacy response are incorporated. In particular, classes \texttt{NextBestTD}, \texttt{NextBestTDSamples}, \texttt{NextBestMaxGain} and \texttt{NextBestMaxGainSamples} can be used with dose-responses models defined under \texttt{ModelPseudo} class. The first two classes relates to escalation rule based only on the DLTs response using the safety constraints only as escalation rules where \texttt{NextBestTDSamples}is a rule when DLT samples are involved in the escalation procedure. We set $\gamma^*=0.3$ and $\gamma^{**}=0.35$ as the two safety limits.
 
-When DLTs and efficacy responses are both incorporated into the procedure, \texttt{NextBestMaxGain} is the rule when no DLTs and efficacy samples are involved in the escalation while \texttt{NextBestMaxGainSamples} is the rule when both DLTs and efficacy samples are involved.
+When DLTs and efficacy responses are both incorporated into the procedure, the escalation rules \texttt{NextBestMaxGain} and \texttt{NextBestMaxGainSamples} can be used and the later rule refers to the procedure when both DLT and efficacy samples are involved. 
 
 <<NextBestGain>>=
 GainNextBest <-NextBestMaxGain(DLEDuringTrialtarget=0.35,
@@ -533,9 +533,9 @@ GainsamplesNextBest <- NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(Gstarsamples,prob=0.5)})
 @
 
-Both the target probability of the occurrence of a DLTs to be used during, \code{DLEDuringTrialtarget} slot and at the end of the trial, slot \code{DLEEndOfTrialtarget} need to be specified. When DLTs and efficacy samples are involved, two further functions have to be specified in the corresponding class. Based on posterior samples generated, one function, slot \code{TDderive}, will be use to derive the estimates of dose corresponds to the target probability of DLTs to be used during and at the end of the trial, and the other , slot \code{Gstarderive}, will be used to derive the estimates of Gstar, the dose which gives the maximum gain value. In here, we will recommend 30\% posterior quantile of the samples to be estimates for the doses corresponding to the \code{DLEtargetDuringTrialtarget} and \code{DLEEndOfTrialtarget} doses and 50\% posterior quantile of the samples to be estimates for the doses corresponding to the Gstar, the dose which gives the maximum gain value.
+Both the target probability of the occurrence of a DLTs to be used during, \code{DLEDuringTrialtarget} slot and at the end of the trial, slot \code{DLEEndOfTrialtarget} need to be specified. When DLTs and efficacy samples are involved, two further functions have to be specified in the corresponding class. Based on posterior samples generated, one function, slot \code{TDderive}, will be use to derive the estimates of dose corresponds to the target probability of DLTs to be used during and at the end of the trial, and the other, slot \code{Gstarderive}, will be used to derive the estimates of Gstar, the dose which gives the maximum gain value. In here, we will recommend 30\% posterior quantile of the samples to be estimates for the doses corresponding to the \code{DLEtargetDuringTrialtarget} and \code{DLEEndOfTrialtarget} doses and 50\% posterior quantile of the samples to be estimates for the doses corresponding to the Gstar, the dose which gives the maximum gain value.
 
-In general under our package, we can apply the method \code{nextBest} to any of the classes defined under the parent \texttt{NextBest} class, in order to compute the next best dose for our study.
+In this package, the method \code{nextBest} can be applied to any of the classes defined under the parent \texttt{NextBest} class, to compute the next best dose during the study.
 
 <<nextBest>>=
 doseRecGain <- nextBest(GainNextBest,
@@ -546,27 +546,30 @@ doseRecGain <- nextBest(GainNextBest,
 
 @
 
-This is an example when no DLT and efficacy samples are involved. For cases where samples are involved, additional slots of \code{samples} for DLT samples and \code{Effsamples} have to be specified in the \code{nextBest} method. From the example above, the escalation rule \texttt{GainNextBest}, the maximum dose in slot \code{doselimit}, the DLT model in slot \code{model}, the efficacy model in slot \code{Effmodel} and the data in slot \code{data} have to specified for the \code{nextBest} method. In addition, we can use the \verb|@| and \verb|$| operator to look at the structure or to obtain output value and plots. For example,
-<<doseRecommendation>>=
+This is an example when no DLT and efficacy samples are involved. For cases where samples are involved, additional slots of \code{samples} for DLT samples and \code{Effsamples} have to be specified in the \code{nextBest} method. From the example above, the escalation rule (Class) is \texttt{GainNextBest}, the maximum allowable dose is specified in slot \code{doselimit}, the DLT model in slot \code{model}, the efficacy model in slot \code{Effmodel} and the data set in slot \code{data}. In addition, we can use the \verb|$| operator to look at specific content from the results. For example,
+<<doseRecommendation>>=?
+#What is the next dose
 doseRecGain$nextdose
+#What is estimate of the maximum dose that is safe
 doseRecGain$TDtargetDuringTrialEstimate
+#What is the estimate of Gstar
 doseRecGain$GstarEstimate
-
+#Plot to show what is the next dose
 print(doseRecGain$plot)
 @
 
-We can see that the estimates for Gstar is 79.4 and 52.3 for the dose with probability of DLTs equals to 0.35(DLEtargetDuringTrial). From our rule, we will select a dose which is safe and gives the maximum gain value.  In other words, we will select the dose at dose grid less than or equal to the minimum of 79.4 and 52.3, 50mg for the next cohort of subject as shown in above for next dose. Furthermore from the plot, the red, blue and green curves are the corresponding estimated curves for DLTs, efficacy and gain. From vertical lines in the plot show what will be the next and maximum dose allowable dose for the next cohort of subject, The circle, square and triangle symbols also show the estimates of the dose at target probability if DLTs during or end of trial and at maximum gain value.
+We can see that the estimates for Gstar is 79.4 and 52.3 for the dose with probability of DLTs equals to 0.35(DLEtargetDuringTrial). From our rule, we will select a dose which is safe and gives the maximum gain value. In other words, we will select the dose at dose grid less than or equal to the minimum of 79.4 and 52.3, which is 50mg for the next cohort of subject as shown above for next dose. Furthermore from the plot, the red, blue and green curves are the corresponding estimated curves for DLTs, efficacy and gain. From vertical lines in the plot show what will be the next and maximum dose allowable dose for the next cohort of subject, The circle, square and triangle symbols also show the estimates of the dose at target probability if DLTs during or end of trial and at maximum gain value.
 
 
 \texttt{Stopping rules}
 
-Subjects are treated sequentially in a study and the trial will stop if a the pre-specified number of subjects are treated or has met the criteria for any of the stopping rules. When we model the two endpoints separately with two dose-response models, one of the stopping rules that can be applied is when we obtain an 'accurate enough' estimates of the dose to recommend for subsequent trial. Based on the above escalation rule, the dose to recommend is the maximum dose level of the selected quantity, the minimum of $d^*$ and $g^*$.
+Subjects are treated sequentially in a study and the trial will stop if a fixed sample size is reached or one of the stopping criteria is fulfilled. We will applied the stopping rule described in \cite{yeung2015}. The idea of this stopping rule is that the trial will be stopped when we obtain an 'accurate enough' estimates of the dose to be recommended for subsequent trial which will be the final estimate of $d^*$ or the final estimate of the minimum of $d^*$ and $g^*$.
 
-In particular, we can obtain the 95\% credibility interval (CI) of the selected quantity after each or each cohort of subjects treated. Hence, using this CI to decide whether we have obtain an 'accurate enough' estimate. The wider this CI, the less accurate of this CI. More specifically, the ratio of the upper to the lower limit of this CI is calculated. If this calculated ratio is less than or equal to a pre-specified value, the target ratio, the trial will stop. The smaller the value of the calculated ratio, the more accurate of the estimate. The smaller the value we specify for the target ratio, the more precise the estimate we can obtain to stop the trial. To note, the number of subjects to recruit in a study will increase when a more precise estimation of the estimates are required.\\
+In particular, the 95\% credibility interval (CI) of the selected quantity obtained after each cohort of subjects treated will be used to decide if we have already obtained an 'accurate enough' estimate. The wider the CI, the less accurate of this CI. More specifically, the ratio of the upper to the lower limit of this CI is calculated. If this calculated ratio is less than or equal to a pre-specified value, the target ratio, the trial will stop. The smaller the value of the calculated ratio, the more accurate of the estimate. Therefore, the smaller the value we specify for the target ratio, the more precise the estimate we can obtain. To note, the number of subjects to recruit in a study will increase when more precise estimation are required.\\
 
 \textbf{Corresponding Stopping classes in crmPack package}\\
 
-All of the stopping rules classes inherit directly from the \texttt{Stopping} class. The trial will stop if a fixed sample size is reached or one of the stopping criteria is fulfilled. The classes \texttt{StoppingTDCIRatio} and \texttt{StoppingTDSamplesCIRatio} are stopping rules when only DLTs response are incorporated. Under these two rules, the trial will stop if the ratio of the upper and the lower 95\% CI of the posterior estimate of $d^*$ is less than or equal to the pre-specified target ratio. The former class relates to escalation procedure when sample are not involved while the later relates to escalation when samples are involved. Similarly for \texttt{StoppingGstarCIRatio} and \texttt{StoppingGstarsamplesCIRatio} of having to calculate the ratio of the CI of the selected quantity (minimum of the posterior estimate of $d^*$ and $g^*$). They can be defined as
+All of the stopping rules classes inherit directly from the \texttt{Stopping} class. The class \texttt{StoppingTDCIRatio} is the stopping rule when only DLTs response are incorporated. The trial will stop if the ratio of the upper and the lower 95\% CI of the posterior estimate of $d^*$ is less than or equal to the pre-specified target ratio. Similarly for \texttt{StoppingGstarCIRatio} is the stopping class when DLTs and efficacy responses are incorporated into the study for which the estimated ratio of the CI of the selected quantity (minimum of the posterior estimate of $d^*$ and $g^*$) will be used as a criteria. For example, 
 
 <<Stopping>>=
 myStopping1 <- StoppingMinPatients(nPatients=20)
@@ -574,26 +577,26 @@ myStopping2 <- StoppingGstarCIRatio(targetRatio=5,
                                     targetEndOfTrial = 0.3)
 @
 
-The \texttt{StoppingMinPatients} class objects can be used to stop the dose escalation if a minimum overall number of patients of 20 have been enrolled. The \texttt{StoppingGstarCIRatio} is the class object that can be used to stop the trial when the ratio of the upper to the lower 95\% CI of the selected quantity (minimum of $d^*$ and $g^*$) is less than equal to 5, specified in the \code{targetRatio} slot. In addition, the slot \code{targetEndOfTrial} for the target probability of DLTs to be used at the end of the trial are also specified with the value 0.3. There are more \texttt{Stopping} classes defined in this package. Please refer to the examples presented in the vignettes or in the help pages for further details.\\
+The \texttt{StoppingMinPatients} class objects can be used to stop the trial if 20 patients have already been enrolled. For  \texttt{StoppingGstarCIRatio}, the value of the target ratio have to be specified in the \code{targetRatio} slot and slot \code{targetEndOfTrial} for the value of the target probability of DLTs to be used at the end of the trial is also required. There are more \texttt{Stopping} classes defined in this package. Please refer to the help pages for further details.\\
 
 \textbf{Simulations}\\
 
-In order to access the operating characteristics of the dose-escalation procedure, we can simulate a trial for large number of times and examine the results obtained from simulations. Before we run simulations, We need to build a specific design under our package. The design will consists of model(s), the escalation rules, starting data, a cohort size and a starting dose. Especially for the escalation rule, we have to specify the \texttt{Increments}, the maximum allowable increments between doses; \texttt{NextBest}, the rule to derive the next best dose; \texttt{CohortSize}, the number of subjects treated each time; and \texttt{Stopping}, the stopping rule to stop the dose-escalation procedure. All increments rules in this package are contained in the \texttt{Increments} class.
+In order to access the operating characteristics of the dose-escalation procedure, we can simulate a trial for large number of times and examine the results obtained from simulations. In our package, a design has to be built before running the simulations. The design consists of model(s), the escalation rules, starting data, a cohort size and a starting dose. In particular for the escalation rule, we have to specify the \texttt{Increments}, the maximum allowable increments between doses; \texttt{NextBest}, the rule to derive the next best dose; \texttt{CohortSize}, the number of subjects treated each time; and \texttt{Stopping}, the stopping rule to stop the dose-escalation procedure. All increments rules in this package are contained in the \texttt{Increments} class.
 <<Increments>>=
 myIncrements <- IncrementsRelative(intervals=c(25,300),
                                  increments=c(2,2))
 @
 
-The \texttt{IncrementsRelative} is one of the class object under \texttt{Increments} class. This is a class where we have the maximum relative increments will be calculated based on the current dose. In the example, we specify a maximum increase 200\% for doses up to 25mg and 200\% for dose above 25mg. Since we are looking into doses ranging from 25 to 300 mg in our example, in order words we defined a maximum of 3-fold increase in our study.
+The \texttt{IncrementsRelative} is one of the class object under \texttt{Increments} class. This is a class where the maximum relative increments will be calculated based on the current dose. In the example, we specify a maximum increase 200\% for doses up to 25mg and 200\% for dose above 25mg. In other words, this specification means a maximum of 3-fold increase for dose levels between 25 to 300 mg are defined.
 
-We also need to define the cohort size in our study and will use a size of 3 in our example. We can use \texttt{CohortSizeConst} class object if a fixed cohort size will be used throughout the study.
+We also need to define the cohort size for our study and a size of 3  will be used in our example. We can use \texttt{CohortSizeConst} class object if a fixed cohort size is used throughout the study.
 <<cohortsize>>=
 mySize <- CohortSizeConst(size=3)
 @
 
-Please also refer to the vignettes example or the help pages for details about other class defined under \texttt{CohortSize} within our package.
+Please also refer to the help pages for further details about other classes defined under \texttt{CohortSize}.
 
-Then now we can define the design for the simulations. The class objects \texttt{TDDesign}, \texttt{TDsamplesDesign}, \texttt{DualResponsesDesign} and \texttt{DualResponsesSamplesDesign} can be used with models defined under \texttt{ModelPseudo} class with or without samples involved. We will show an example on how we define a design when both DLTs and efficacy responses are incorporated into the escalation procedure and the \texttt{DualResponsesDesign} class object will be used. We want to start the simulations with an empty data set and start with the lowest dose 25 mg
+Then the design for the simulations can be defined. The class objects \texttt{TDDesign}, \texttt{TDsamplesDesign}, \texttt{DualResponsesDesign} and \texttt{DualResponsesSamplesDesign} can be used with models defined under \texttt{ModelPseudo} class. We will show an example on how we define a design when both DLTs and efficacy responses are incorporated into the procedure such that the \texttt{DualResponsesDesign} class object will be used. We want to start the simulations with an empty data set and start with the lowest dose 25 mg
 
 <<design>>=
 design1 <- DualResponsesDesign(nextBest=GainNextBest,
@@ -605,8 +608,7 @@ design1 <- DualResponsesDesign(nextBest=GainNextBest,
                                cohortSize=mySize,
                                startingDose=25)
 @
-
-We have used here all rules defined previously. Next we have to specify the scenario for the simulation particular, the true DLTs and efficacy model to used used.
+From the example, the dose escalation rule, \code{GainNextBest}; the DLT model, \code{DLTmodel}; the efficacy mode, \code{Effmodel}; the data set, \code{data2}, the stopping rule, \code{myStopping1}, the increment rule, \code{myIncrements}, the cohort size, \code{mySize} and the starting dose 25mg, have to be all specified in corresponding slots of the \texttt{DualResponsesDesign} class function. Then we have to specify the scenario for the simulation, that is the true DLT and efficacy curves that we will using.
 
 <<scenario>>=
 myTruthDLT<- function(dose)
@@ -622,7 +624,7 @@ myTruthGain <- function(dose)
 @
 Functions such as \code{curve} and \code{plot} can always be used to draw the real DLT, efficacy and gain curves.
 
-After establishing the real scenario, the trial can be simulated. The function \code{simulate} is used to simulate trial based a a specified scenario.
+After establishing the real scenario and the design, the trial can be simulated. The function \code{simulate} is used to simulate trial(s) based a a specified scenario.
 
 <<simulate>>=
 Sim1 <- simulate(object=design1,
@@ -637,7 +639,7 @@ class(Sim1)
 
 @
 
-From the example, we specify the true precision (\code{trueNu}) of the efficacy response be 1/0.025 which also means using a variance of true value 0.025. The argument \code{arg} could contain additional arguments for the \code{trueDLE} or \code{trueEff} function and default as \code{NULL}. The number of simulations are specify with \code{nsim} and the random number generator seed with \code{seed}. The argument \code{parallel} can be used to enable running the simulations in parallel with all processors in the computer. The results \code{Sim1} will be put into one of the sub-class defined under the parent class \texttt{GeneralSimulations} within the package. Using the function \code{class}, we can see that the simulated results is a \texttt{PseudoDualSimulations} class object. This is a subclass of \texttt{PseudoSimulations} class object which is also a subclass of the \texttt{GeneralSimulations} class object. The descriptions of slots contains in the simulated results can be found at help pages of the corresponding class objects. In particular, the \code{data} slot contain a list of data produced of the simulated trial. For example, we can plot the course of the fourth simulated trial and find the final recommended dose of this trial by
+From the example, we specify the true value of the precision (\code{trueNu}) of the efficacy response as 1/0.025 which is a true variance of value 0.025. The slot \code{arg} could contain additional arguments for the \code{trueDLE} or \code{trueEff} function and default as \code{NULL}. The number of simulations are specified in \code{nsim} and the random number generator seed in \code{seed}. The slot \code{parallel} can be used to enable running the simulations in parallel with all processors in the computer. The results \code{Sim1} will be put into one of the sub-class defined under the parent class \texttt{GeneralSimulations}. Using the function \code{class}, we will know that the simulated results is of \texttt{PseudoDualSimulations} class object. This class is a subclass of \texttt{PseudoSimulations} class object which is a subclass of \texttt{GeneralSimulations} class object. The descriptions of slots contains in the simulated results can be found at help pages of the corresponding class objects. In particular, the \code{data} slot contain a list of data produced of the simulated trial. For example, we can plot the course of the fourth simulated trial and find the final recommended dose of this trial by
 <<plot-sim>>=
 print(plot(Sim1@data[[4]]))
 Sim1@doses[4]
@@ -654,7 +656,7 @@ SUM1
 print(plot(SUM1))
 @
 
-The plot for \code{Sim1} gives an overview of the final dose recommendations, trial trajectories and a box plot of the efficacy variance. A textual summary is given using the \code{summary} function given the \code{trueDLE} and \code{trueEff}. Finally, summary of our simulations can also be shown graphically by applying \code{plot} to the summary. The plots of the summary gives an overview of the frequency (in percentage) for the total number of subject treated, the MTD estimates, proportion of DLTs observed and number of subjects treated above target across the simulated trials. The average estimated DLTs and efficacy curve are also given to compare to their corresponding real curves.
+The plot for \code{Sim1} gives an overview of the final dose recommendations, trial trajectories and a box plot of the efficacy variance. A textual summary is given using the \code{summary} function given the \code{trueDLE} and \code{trueEff}. The summary of our simulations can also be shown graphically by applying \code{plot} to the summary. The plots of the summary gives an overview of the frequency (in percentage) for the total number of subject treated, the MTD estimates, proportion of DLTs observed and number of subjects treated above target across the simulated trials. The average estimated DLTs and efficacy curve are also given to compare to their corresponding real curves.
 
 \subsubsection{Two Endpoints are jointly modeled}
 
@@ -674,15 +676,14 @@ todo Daniel/Winnie:
 - example how new models / stopping rules can be implemented by the user -> important!
 
 
-As described, the \pkg{crmPack} is constructed using S4 classes and methods. This allows users to extend our package easily by constructing their own codes to set up new S4 classes and corresponding methods that can be used in junction with other existing classes and methods within the package.
+As described, the \pkg{crmPack} is constructed using S4 classes and methods. This allows users to extend our package easily by constructing their own codes by setting up new S4 classes and corresponding methods that can be used in junction with other existing classes and methods defined in the package.
 
-One of the main framework of the S4 classes and methods defined in this package is \texttt{Model}. In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses of \texttt{AllModels}, \texttt{GeneralModel} or \texttt{ModelPseudo}. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}.
+In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses of \texttt{AllModels}, \texttt{GeneralModel} or \texttt{ModelPseudo}. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}. 
 
+In \citep{oquigley1990}, the continual reassessment method (CRM) is proposed. This is one of the most well-known procedures used for phase I dose-escalation trials. Assuming the risk of DLTs increases with doses, a one-parameter model is often assumed under the CRM to describe the relationship between the binary DLT responses and their corresponding dose levels.
+In the current version of the \pkg{crmPack}, only the two parameter logistic regression model of class \texttt{LogisticIndepBeta} are defined under \texttt{ModelTox} class. An example will be given to demonstrate how the one-parameter model can be implemented in \pkg{crmPack}. Users can use similar techniques to set up their own S4 classes and methods to implement into the package. 
 
-In \citep{oquigley1990}, the continual reassessment method (CRM) is proposed. This is one of the most well-known procedure used for phase I dose-escalation trials. Assuming the risk of DLTs increases with doses, a one-parameter model is often assumed under CRM to describe the relationship between the binary DLT responses and their corresponding dose levels.
-In the current version of the \pkg{crmPack}, only the two parameter logistic regression model of class \texttt{LogisticIndepBeta} are defined under \texttt{ModelTox} class. An example will now be given to demonstrate how to implement the one-parameter model in \pkg{crmPack}. Other implementations can be customized by users in a similar way to allow easy extension of the package.
-
-For dose levels $d_{(1)} < ...< d_{(k)}$, the prior guess of corresponding probabilities of the occurrence of DLTs at dose $d_{(j)}$ is denoted by $\pi_j$ such that $\pi_1 < ...<\pi_k$. The one-parameter power model introduced in \citep{oquigley1990} will be used such that the probability of the occurrence of DLTs, $p(d_{(j)})$ at dose $j$ will be given as \begin{equation}
+Suppose there are dose levels $d_{(1)} < ...< d_{(k)}$, the prior guess of corresponding probabilities of the occurrence of DLTs at dose $d_{(j)}$ is denoted by $\pi_j$ such that $\pi_1 < ...<\pi_k$. The one-parameter power model introduced in \citep{oquigley1990} will be used such that the probability of the occurrence of DLTs, $p(d_{(j)})$ at dose $j$ will be given as \begin{equation}
 p(d_{(j)}) = \pi^{\theta}_j
 \end{equation}
 for $j=1,...,k$. An exponential distribution with distribution parameter $\lambda$ will be imposed as the prior distribution of the unknown parameter $\theta$. In particular, fix $\lambda=1$,  the prior is denoted by $\theta \sim {\rm Exp}(1)$
@@ -734,7 +735,7 @@ The code for defining this model class \texttt{OneParaExponential} consists of t
 %\end{CodeInput}
 %\end{CodeChunk}
 
-This class \texttt{OneParaExponential} is defined as extending the \texttt{ModelTox}. In other words, class \texttt{OneParaExponential} inherits all methods and slots from \texttt{ModelTox} class. The slots can be defined by users using \code{representation} and the initial value of these slots can also be specified using \code{prototype}.
+This class \texttt{OneParaExponential} is contained in the \texttt{ModelTox} class and inherits all methods and slots from \texttt{ModelTox} class. The slots can be defined by users within \code{representation} and the initial value of these slots can also be specified within \code{prototype}.
 
 Then a function has to be defined for this class and are given as follow.
 
@@ -815,14 +816,14 @@ dose(prob=0.55,model=OneParaModel)
 prob(dose=50,model=OneParaModel)
 @
 
-Users can also customized or set up other methods corresponds to this model class using the \code{setMethod} commands.
+Users can also customized or set up other methods corresponds to a class using the \code{setMethod} commands.
 -- May need to demonstrate here how the user can set up their method using setMethod? may be something about stopping method?
 
 
 
 \section{Summary}\label{sec:discussion}
 
-In this paper we have introduced the \proglang{R} package \pkg{crmPack} for analysing and evaluating dose-escalation trials. Unlike existing software the package is written to make full use of a class structure enabling easy extensions to user-specific dose-response models, prior distributions, escalation and stopping rules. The package does, however, already include a wide range of model-based and algorithmic dose-escalation procedures providing end-users easy access to these approaches without the need for further coding. Another unique feature of the package is the inclusion of approaches that allow placebo data, which are routinely collected in healthy volunteer studies, to be utilized. Finally some methods \cite[e.g.][]{bekele2005,yeung2015} for dose-finding incorporating safety and efficacy are readily implemented already in the package and the underlying structure to extend to novel dual endpoint methods is provided. Simulation facilities for all approaches and relevant graphical displays are also provided.\\
+In this paper we have introduced the \proglang{R} package \pkg{crmPack} for analyzing and evaluating dose-escalation trials. Unlike existing software the package is written to make full use of a class structure enabling easy extensions to user-specific dose-response models, prior distributions, escalation and stopping rules. The package does, however, already include a wide range of model-based and algorithmic dose-escalation procedures providing end-users easy access to these approaches without the need for further coding. Another unique feature of the package is the inclusion of approaches that allow placebo data, which are routinely collected in healthy volunteer studies, to be utilized. Finally some methods \cite[e.g.][]{bekele2005,yeung2015} for dose-finding incorporating safety and efficacy are readily implemented already in the package and the underlying structure to extend to novel dual endpoint methods is provided. Simulation facilities for all approaches and relevant graphical displays are also provided.\\
 
 Future extensions of \pkg{crmPack} will include model-based combination dose-escalation designs, see for example \cite{Riviere2014} for a recent review. Furthermore, data-augmentation CRM designs \citep{Liu2013} that allow for shorter trial lengths when DLEs occur shortly after the first drug administration will be included.
 \\
