@@ -41,7 +41,7 @@ data <-DataDual(x=c(25,50,25,50,75,300,250,150),
 ##plot the dose-efficacy curve with samples using the model from 'ModelEff' 
 ##class e.g. 'Effloglog' class model
 ##define the model (see Effloglog example)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
 ## define the samples obtained using the 'Effloglog' model (see details in 'Samples' example)
 ##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)

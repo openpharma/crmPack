@@ -61,7 +61,7 @@ data<-DataDual(x=c(25,50,25,50,75,300,250,150),
 DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 
 ## Efficacy model must be from 'ModelEff' class e.g using 'Effloglog' model
-Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=0.025,b=1),data=data)
+Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data)
 ## samples must be from 'Samples' class (object slot in fit)
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##set up the same data set in class 'Data' for MCMC sampling for DLE

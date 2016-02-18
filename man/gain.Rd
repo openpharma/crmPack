@@ -58,7 +58,7 @@ DLEsamples <- mcmc(data, DLEmodel, McmcOptions(burnin=100,step=2,samples=200))
 
 ##The efficacy model must be from 'ModelEff' class (Effmodel slot)
 ## The DLE and efficayc samples must be from 'Samples' class (DLEsamples and Effsamples slot)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
 Effsamples <- mcmc(data, Effmodel, McmcOptions(burnin=100,step=2,samples=200))
 
 ## Given a dose level 75,
@@ -87,7 +87,7 @@ data<-Data(doseGrid=seq(25,300,25))
 
 DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##The efficacy model must be from 'Effloglog' class  (Effmodel slot)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=0.025,b=1),data=emptydata)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=emptydata)
 ## Given a dose level 75,
 gain(dose=75,DLEmodel=DLEmodel,Effmodel=Effmodel)
 }

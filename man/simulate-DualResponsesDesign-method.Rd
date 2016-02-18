@@ -66,7 +66,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
 
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class 
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
-                    nu=c(a=0.025,b=1),data=data)
+                    nu=c(a=1,b=0.025),data=data)
 
 ##The escalation rule using the 'NextBestMaxGain' class
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,

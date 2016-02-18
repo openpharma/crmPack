@@ -181,7 +181,7 @@ data<-DataDual(x=c(25,50,25,50,75,300,250,150),
                w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
                doseGrid=seq(25,300,25))
 ## model must be from 'ModelEff' e.g using 'Effloglog' class
-Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=0.025,b=1),data=data)
+Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data)
 ## samples must be from 'Samples' class (object slot in fit)
 options<-McmcOptions(burnin=100,step=2,samples=200)
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
