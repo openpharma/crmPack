@@ -2,16 +2,14 @@ Version 0.1.8
 --------------------------------------------------------------------------------
 
 * The value of the 95% CI of the final estimates 
-  will be display in results when using 'stopTrial'  
+  will be displayed in results when using 'stopTrial'  
   
-* Bugfix: improved graphical display in plots for nextBest dose 
-
-* Bugfix: Stopping rules can now also be freely combined using the and/or operators    
-  with the dual endpoint design stopping rules not using MCMC samples.
-
-* Bugfix: Improved methodology to compute Gstar
-
-* Bugfix: Warning are removed when using nextBest in simulations
+* Bugfixes for dual endpoint designs: 
+  - Improved graphical display in plots for nextBest dose 
+  - Improved methodology to compute Gstar
+  - Warnings are removed when using nextBest in simulations
+  - Stopping rules can now also be freely combined using the and/or operators    
+    with the dual endpoint design stopping rules not using MCMC samples.
 
 Version 0.1.6
 --------------------------------------------------------------------------------
