@@ -204,27 +204,6 @@ crmPackHelp <- function()
 }
 
 
-## todo: This is required for backwards compatibility with
-## older versions of grid etc. Can be deleted at some point
-##' Plots arrange objects
-##'
-##' @method plot arrange
-##' @param x the arrange object
-##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
-##'
-##' @importFrom grid grid.draw
-##' @export
-plot.arrange <- function(x, ...)
-{
-    grid::grid.draw(x, ...)
-}
-
-##' @export
-print.arrange <- function(x, ...)
-{
-    plot.arrange(x, ...)
-}
-
 ## this is the new version, working on the gtable objects:
 ##' Plots gtable objects
 ##'
@@ -246,19 +225,59 @@ print.gtable <- function(x, ...)
 }
 
 
-## todo: use this function layOut (orig from wq package)?
-## function (...)
-## {
-##     require(grid)
-##     x <- list(...)
-##     n <- max(sapply(x, function(x) max(x[[2]])))
-##     p <- max(sapply(x, function(x) max(x[[3]])))
-##     pushViewport(viewport(layout = grid.layout(n, p)))
-##     for (i in seq_len(length(x))) {
-##         print(x[[i]][[1]], vp = viewport(layout.pos.row = x[[i]][[2]],
-##             layout.pos.col = x[[i]][[3]]))
-##     }
-## }
+#' Multiple plot function
+#'
+#' ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects).
+#' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+#' then plot 1 will go in the upper left, 2 will go in the upper right, and
+#' 3 will go all the way across the bottom.
+#' 
+#' @param \dots Objects to be passed 
+#' @param plotlist a list of additional objects
+#' @param rows Number of rows in layout
+#' @param layout A matrix specifying the layout. If present, \code{rows} 
+#' is ignored.
+#'
+#' @return Used for the side effect of plotting
+#' @importFrom grid grid.newpage pushViewport viewport
+#' @export
+multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
+{
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots <- length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, rows * ceiling(numPlots/rows)),
+                     nrow = rows, ncol = ceiling(numPlots/rows),
+                     byrow=TRUE)
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid::grid.newpage()
+    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), 
+                                                                 ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in seq_len(numPlots)) 
+    {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = grid::viewport(layout.pos.row = matchidx$row,
+                                            layout.pos.col = matchidx$col))
+    }
+  }
+}
 
 ##' Taken from utils package (print.vignette)
 ##'
