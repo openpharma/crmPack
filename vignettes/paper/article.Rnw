@@ -210,7 +210,7 @@ $
 
 \section{Using crmPack}\label{sec:using}
 
-\subsection{Implementing a CRM trial}\label{crmtrial}
+\subsection{Implementing a CRM trial}\label{subsec:crmtrial}
 
 We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd. For each subject, one response each of DLT and efficacy was observed. The DLT response is equal to 1 if any abnormal symptom is observed and 0 otherwise. In this Section we will show how to implement a CRM design for dose-escalation based on safety only.
 
@@ -420,7 +420,7 @@ The precision $\nu=\sigma^{-2}$, can be specified with a fixed value or gamma di
 
 The \texttt{ModelPseudo} class contains all model classes where their prior are specified in terms of pseudo data and when standard maximum likelihood procedures are used to obtain prior and posterior estimates. All models included in this package will contains in either the \texttt{GeneralModel} or \texttt{ModelPseudo} class. In particular, when the two endpoints are modeled separately, all corresponding dose-responses models are contained in \texttt{ModelPseudo} class.
 
-There are two sub-classes under \texttt{ModelPseudo} class are the \texttt{ModelTox} class which contains all DLTs models and the \texttt{ModelEff} class which includes all efficacy models. The two-parameter dose-DLTs model described is defined as \texttt{LogisticIndepBeta} class model in the package and contained in \texttt{ModelTox} class. The linear log-log  described are defined as \texttt{Effloglog} class model contained in \texttt{ModelEff} class. Now we will demonstrate how we define these models based on the same example used in Section \cite{crmtrial} and \cite{yeung2015}. The binary DLTs endpoint considered was described in Section \cite{crmtrial} and the continuous efficacy endpoint considered is a transformed form of the DPP4 activity described in \cite{yeung2015}. 
+There are two sub-classes under \texttt{ModelPseudo} class are the \texttt{ModelTox} class which contains all DLTs models and the \texttt{ModelEff} class which includes all efficacy models. The two-parameter dose-DLTs model described is defined as \texttt{LogisticIndepBeta} class model in the package and contained in \texttt{ModelTox} class. The linear log-log  described are defined as \texttt{Effloglog} class model contained in \texttt{ModelEff} class. Now we will demonstrate how we define these models based on the same example used in Sub-Section \ref{subsec:crmtrial} and \cite{yeung2015}. The binary DLTs endpoint considered was described in Sub-Section \ref{subsec:crmtrial} and the continuous efficacy endpoint considered is a transformed form of the DPP4 activity described in \cite{yeung2015}. 
 
 
 %An indication of efficacy is expressed via Dipeptidyl peptidase-4 (DPP4), which is an enzyme found on the surface of cells that plays a key role in glucose metabolism. The drug under investigation is intended to inhibit the DPP4 activity. A transform form of the DPP4 activity is used as the continuous efficacy endpoint. For subject $i$, the efficacy responses is defined as $$y_i=-{\rm log}\left(\frac{\textrm{DPP4 activity at hour 0, day 9}}{\textrm{DPP4 activity at hour 0, day 1}}\right).$$
