@@ -4,7 +4,7 @@ License: GPL (>= 2)
 Title: Object-Oriented Implementation of CRM Designs
 LazyLoad: yes
 Author: Daniel Sabanes Bove <sabanesd@roche.com>,
-    Wai Yin Yeung <w.yeung1@lancaster.ac.uk>,
+    Wai Yin Yeung <winnie.yeung@roche.com>,
     Giuseppe Palermo <giuseppe.palermo@roche.com>,
     Thomas Jaki <jaki.thomas@gmail.com>
 Description: Implements a wide range of model-based dose
@@ -17,7 +17,7 @@ Description: Implements a wide range of model-based dose
     package is written in a modular form in the S4 class system, making it very
     flexible for adaptation to new models, escalation or stopping rules.
 Version: 0.1.9
-Date: 2016-02-29
+Date: 2016-03-08
 Copyright: F. Hoffmann-La Roche Ltd
 Depends:
     R (>= 3.0.0),
