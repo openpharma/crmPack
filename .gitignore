@@ -1,9 +1,7 @@
 .Rhistory
-
 *-Ex.R
-
 .Rdata
-
 *~
-
 vignettes/.build.timestamp
+.Rproj.user
+.Rbuildignore
