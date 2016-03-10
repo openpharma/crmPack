@@ -713,8 +713,8 @@ setMethod("plot",
                   whichDrug <- match(focus, possibleDrugNames)
 
                   newSamples <- Samples(data=
-                                            list(alpha0=x@alpha0[, whichDrug],
-                                                 alpha1=x@alpha1[, whichDrug]),
+                                            list(alpha0=x@data$alpha0[, whichDrug],
+                                                 alpha1=x@data$alpha1[, whichDrug]),
                                         options=x@options)
                   newModel <- y@singlePriors[[focus]]
                   newData <- Data(x=data@x[, focus],

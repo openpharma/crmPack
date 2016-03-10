@@ -66,19 +66,19 @@
 
                 ## [1] helper for prob function for class ComboLogistic:
                 ## crmPackCppProbComboLogistic
+                ## // dose is a matrix, with each row corresponding to a
+#               // different combination (combis x drugs)
+#               //
+#                 // alpha0 and alpha1 are matrices (samples x drugs)
+#               //
+#                 // and eta is a vector (length samples)
+#               //
+#                 // refDose is vector of reference doses.
+#               //
+#                 // function shall return matrix of sample probabilities
+#               // for each of the drug combinations (samples x combis).
+#               //
                 cppFunction("
-// dose is a matrix, with each row corresponding to a
-// different combination. (combis x drugs)
-//
-// alpha0 and alpha1 are matrices (samples x drugs)
-//
-// and eta is a vector (length samples)
-//
-// refDose is vector of reference doses.
-//
-// function shall return matrix of sample probabilities
-// for each of the drug combinations (samples x combis).
-//
 NumericVector crmPackCppProbComboLogistic( NumericMatrix dose,
                                  NumericMatrix alpha0,
                                  NumericMatrix alpha1,

@@ -430,12 +430,15 @@ validObject(.DataCombo())
 ##'
 ##' @export
 ##' @keywords programming
-DataCombo <- function(x,
-                      y,
+DataCombo <- function(x=
+                        matrix(nrow=0, ncol=2,
+                               data=NA,
+                               dimnames=list(NULL, names(doseGrid))),
+                      y=integer(),
                       ID,
                       cohort,
-                      doseGrid){
-
+                      doseGrid)
+{
     ## checks
     stopifnot(is.matrix(x),
               is.list(doseGrid),
@@ -452,32 +455,32 @@ DataCombo <- function(x,
                        function(x) as.numeric(sort(unique(x))))
 
     ## check IDs
-    if((missing(ID) || length(ID) == 0) && (nObs > 0))
+    if(missing(ID) || length(ID) == 0)
     {
         warning("Used default patient IDs!")
         ID <- seq_len(nObs)
     }
 
     ## check cohort indices
-    if((missing(cohort) || length(cohort) == 0) && (nObs > 0))
+    if(missing(cohort) || length(cohort) == 0)
     {
         warning("Used best guess cohort indices!")
         ## This is just assuming that consecutive patients
         ## in the data set are in the same cohort if they
         ## have the same dose. Note that this could be wrong,
         ## if two subsequent cohorts are at the same dose.
-        cohort <- as.integer(c(1, 1 + cumsum(rowSums(abs(diff(x))) != 0)))
+        cohort <- 
+          if(nObs == 0L) integer() else 
+            as.integer(c(1, 1 + cumsum(rowSums(abs(diff(x))) != 0)))
     }
 
     ## get xLevel matrix
-    xLevel <- NULL
+    xLevel <- x
     for(k in drugNames)
     {
-        xLevel <- cbind(xLevel,
-                        match(x=x[,k],
-                              table=doseGrid[[k]]))
+        xLevel[, k] <- match(x=x[, k],
+                             table=doseGrid[[k]])
     }
-    colnames(xLevel) <- drugNames
 
     ## then initialize the DataCombo object
     ## (in this case just putting arguments into slots)

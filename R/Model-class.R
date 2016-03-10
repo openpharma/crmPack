@@ -2585,7 +2585,7 @@ probComboLogistic <- function(dose,
     {
         ## either C++
         crmPackCppProbComboLogistic(dose, alpha0, alpha1, eta,
-                                    modelspecs$refDose)
+                                    refDose)
     } else {
         ## or R
 
@@ -2709,10 +2709,16 @@ ComboLogistic <- function(singlePriors,
                 ## step function here to avoid numeric problems:
                 ## if linpred < -20, it will be set to -20,
                 ## if linpred > 20, it will be set to 20.
-                lin[i, j] <- linpred[i, j] +
-                    step(-20 - linpred[i,j]) * (-20 - linpred[i,j]) +
-                        step(linpred[i,j] - 20) * (20 - linpred[i,j])
-                ## note if StandDoses[i,j]=0, then linpred[i,j]=-Inf, and
+                ## old code:
+#                 lin[i, j] <- linpred[i, j] +
+#                     step(-20 - linpred[i,j]) * (-20 - linpred[i,j]) +
+#                         step(linpred[i,j] - 20) * (20 - linpred[i,j])
+                ## new code:
+                lin[i, j] <- 
+                  step(20 - linpred[i, j]) * step(20 + linpred[i,j]) * linpred[i,j] +
+                  step(-20 - linpred[i,j]) * (-20) +
+                  step(linpred[i,j] - 20) * (20)
+                ## with this new code, if StandDoses[i,j]=0, then linpred[i,j]=-Inf, and
                 ## lin[i,j] = -20.
                 linpred[i, j] <- alpha0[j] + alpha1[j] * log(StandDoses[i, j])
             }
