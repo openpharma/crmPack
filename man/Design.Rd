@@ -4,7 +4,7 @@
 \alias{Design}
 \title{Initialization function for "Design"}
 \usage{
-Design(model, stopping, increments, ...)
+Design(model, stopping, increments, PLcohortSize = CohortSizeConst(1), ...)
 }
 \arguments{
 \item{model}{see \code{\linkS4class{Design}}}
@@ -12,6 +12,8 @@ Design(model, stopping, increments, ...)
 \item{stopping}{see \code{\linkS4class{Design}}}
 
 \item{increments}{see \code{\linkS4class{Design}}}
+
+\item{PLcohortSize}{see \code{\linkS4class{Design}}}
 
 \item{\dots}{additional arguments for \code{\link{RuleDesign}}}
 }

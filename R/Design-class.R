@@ -99,6 +99,8 @@ RuleDesign <- function(nextBest,
 ##' \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels,
 ##' an object of class \code{\linkS4class{Increments}}
+##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
+##' an object of class \code{\linkS4class{CohortSize}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -106,11 +108,13 @@ RuleDesign <- function(nextBest,
     setClass(Class="Design",
              representation(model="Model",
                             stopping="Stopping",
-                            increments="Increments"),
+                            increments="Increments",
+                            PLcohortSize="CohortSize"),
              prototype(model=.LogisticNormal(),
                        nextBest=.NextBestNCRM(),
                        stopping=.StoppingMinPatients(),
-                       increments=.IncrementsRelative()),
+                       increments=.IncrementsRelative(),
+                       PLcohortSize=CohortSizeConst(1)),
              contains=list("RuleDesign"))
 validObject(.Design())
 
@@ -120,6 +124,7 @@ validObject(.Design())
 ##' @param model see \code{\linkS4class{Design}}
 ##' @param stopping see \code{\linkS4class{Design}}
 ##' @param increments see \code{\linkS4class{Design}}
+##' @param PLcohortSize see \code{\linkS4class{Design}}
 ##' @param \dots additional arguments for \code{\link{RuleDesign}}
 ##' @return the \code{\linkS4class{Design}} object
 ##'
@@ -128,13 +133,15 @@ validObject(.Design())
 Design <- function(model,
                    stopping,
                    increments,
+                   PLcohortSize=CohortSizeConst(1),
                    ...)
 {
     start <- RuleDesign(...)
     .Design(start,
             model=model,
             stopping=stopping,
-            increments=increments)
+            increments=increments,
+            PLcohortSize=PLcohortSize)
 }
 
 

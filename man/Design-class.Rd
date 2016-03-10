@@ -20,6 +20,9 @@ objects of this class contain:
 
 \item{\code{increments}}{how to control increments between dose levels,
 an object of class \code{\linkS4class{Increments}}}
+
+\item{\code{PLcohortSize}}{rules for the cohort sizes for placebo, if any planned
+an object of class \code{\linkS4class{CohortSize}}}
 }}
 \keyword{classes}
 

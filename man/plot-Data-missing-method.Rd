@@ -5,7 +5,7 @@
 \alias{plot,Data,missing-method}
 \title{Plot method for the "Data" class}
 \usage{
-\S4method{plot}{Data,missing}(x, y, ...)
+\S4method{plot}{Data,missing}(x, y, blind = FALSE, ...)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{Data}} object we want to plot}

@@ -197,8 +197,8 @@ NextBestThreePlusThree <- function()
 ##'
 ##' @slot target the biomarker target range, relative to the maximum, that
 ##' needs to be reached. For example, (0.8, 1.0) means we target a dose
-##' with at least 80% of maximum biomarker level. As an other example,
-##' (0.5, 0.8) would mean that we target a dose between 50% and 80% of
+##' with at least 80\% of maximum biomarker level. As an other example,
+##' (0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
 ##' the maximum biomarker level.
 ##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
 ##' limit included)

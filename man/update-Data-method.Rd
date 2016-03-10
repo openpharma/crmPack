@@ -6,7 +6,7 @@
 \title{Update method for the "Data" class}
 \usage{
 \S4method{update}{Data}(object, x, y, ID = (if (length(object@ID))
-  max(object@ID) else 0L) + seq_along(y), ...)
+  max(object@ID) else 0L) + seq_along(y), newCohort = TRUE, ...)
 }
 \arguments{
 \item{object}{the old \code{\linkS4class{Data}} object}
@@ -16,6 +16,9 @@
 \item{y}{the DLT vector (0/1 vector), for all patients in this cohort}
 
 \item{ID}{the patient IDs}
+
+\item{newCohort}{logical: if TRUE (default) the new data are assigned
+to a new cohort}
 
 \item{\dots}{not used}
 }

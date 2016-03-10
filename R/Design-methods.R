@@ -218,6 +218,11 @@ setMethod("simulate",
 
                   ## start the simulated data with the provided one
                   thisData <- object@data
+                  
+                  # In case there are placebo
+                  if(thisData@placebo)
+                      ## what is the probability for tox. at placebo?
+                      thisProb.PL <- thisTruth(object@data@doseGrid[1])
 
                   ## shall we stop the trial?
                   ## First, we want to continue with the starting dose.
@@ -238,6 +243,14 @@ setMethod("simulate",
                       thisSize <- size(cohortSize=object@cohortSize,
                                        dose=thisDose,
                                        data=thisData)
+                      
+                      ## In case there are placebo
+                      if(thisData@placebo)
+                          thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                              dose=thisDose,
+                                              data=thisData)
+                      
+                          
 
                       ## simulate DLTs: depends on whether we
                       ## separate the first patient or not.
@@ -247,6 +260,12 @@ setMethod("simulate",
                           thisDLTs <- rbinom(n=1L,
                                              size=1L,
                                              prob=thisProb)
+                          
+                          if(thisData@placebo)
+                              thisDLTs.PL <- rbinom(n=1L,
+                                                    size=1L,
+                                                    prob=thisProb.PL)    
+                          
                           ## if there is no DLT:
                           if(thisDLTs == 0)
                           {
@@ -255,19 +274,45 @@ setMethod("simulate",
                                             rbinom(n=thisSize - 1L,
                                                    size=1L,
                                                    prob=thisProb))
+                              
+                              if(thisData@placebo && (thisSize.PL > 1L))
+                                  thisDLTs.PL <- c(thisDLTs.PL,
+                                                   rbinom(n=thisSize.PL - 1L,
+                                                          size=1L,
+                                                          prob=thisProb.PL))
                           }
+                          
                       } else {
                           ## we can directly dose all patients
                           thisDLTs <- rbinom(n=thisSize,
                                              size=1L,
                                              prob=thisProb)
+                          
+                          if(thisData@placebo)
+                              thisDLTs.PL <- rbinom(n=thisSize.PL,
+                                                    size=1L,
+                                                    prob=thisProb.PL)    
                       }
 
-                      ## update the data with this cohort
-                      thisData <- update(object=thisData,
-                                         x=thisDose,
-                                         y=thisDLTs)
-
+                      ## update the data with this placebo (if any) cohort and then with active dose
+                      if(thisData@placebo){
+                          thisData <- update(object=thisData,
+                                             x=object@data@doseGrid[1],
+                                             y=thisDLTs.PL)
+                      
+                          ## update the data with active dose
+                          thisData <- update(object=thisData,
+                                             x=thisDose,
+                                             y=thisDLTs,
+                                             newCohort=FALSE)
+                      }else{
+                          ## update the data with this cohort
+                          thisData <- update(object=thisData,
+                                             x=thisDose,
+                                             y=thisDLTs)      
+                      }
+                      
+                      
                       ## what is the dose limit?
                       doselimit <- maxDose(object@increments,
                                            data=thisData)
@@ -615,6 +660,17 @@ setMethod("simulate",
                   ## what is the next dose to be used?
                   ## initialize with starting dose
                   thisDose <- object@startingDose
+                  
+                  # In case there are placebo, extract true Toxicity and Efficacy for placebo
+                  if(thisData@placebo){
+                      
+                      ## what is the probability for tox. at placebo?
+                      thisProb.PL <- thisTrueTox(object@data@doseGrid[1])
+                      thisMeanZ.PL <- qlogis(thisProb.PL)
+                      
+                      ## what is the biomarker mean at placebo?
+                      thisMeanBiomarker.PL <- thisTrueBiomarker(object@data@doseGrid[1])
+                  }
 
                   ## inside this loop we simulate the whole trial, until stopping
                   while(! stopit)
@@ -631,6 +687,14 @@ setMethod("simulate",
                       thisSize <- size(cohortSize=object@cohortSize,
                                        dose=thisDose,
                                        data=thisData)
+                      
+                      ## In case there are placebo
+                      ## what is the cohort size at this dose for Placebo?
+                      if(thisData@placebo)     
+                          thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                              dose=thisDose,
+                                              data=thisData)
+                      
 
                       ## simulate tox and biomarker response: depends on whether we
                       ## separate the first patient or not.
@@ -643,6 +707,15 @@ setMethod("simulate",
                                                            c(thisMeanBiomarker,
                                                              thisMeanZ),
                                                            sigma=trueCov)
+                              
+                              if(thisData@placebo)
+                                  tmpStart.PL <- mvtnorm::rmvnorm(n=1,
+                                                                  mean=
+                                                                   c(thisMeanBiomarker.PL,
+                                                                     thisMeanZ.PL),
+                                                                  sigma=trueCov)  
+                              
+                              
                               ## if there is no DLT:
                               if(tmpStart[, 2] < 0)
                               {
@@ -654,26 +727,75 @@ setMethod("simulate",
                                                              c(thisMeanBiomarker,
                                                                thisMeanZ),
                                                              sigma=trueCov))
+                                  
+                                  if(thisData@placebo && (thisSize.PL > 1L))
+                                    tmpStart.PL <-
+                                      rbind(tmpStart.PL,
+                                            mvtnorm::rmvnorm(n=thisSize.PL - 1,
+                                                             mean=
+                                                                 c(thisMeanBiomarker.PL,
+                                                                   thisMeanZ.PL),
+                                                             sigma=trueCov))
+                                  
                               }
-                              tmpStart
-                          } else {
+                              
+                              if(thisData@placebo){
+                                  list(tmpStart=tmpStart, tmpStart.PL=tmpStart.PL)
+                              }else{
+                                  list(tmpStart=tmpStart)  
+                              }
+                              
+                          }else {
+                              
                               ## we can directly dose all patients
-                              mvtnorm::rmvnorm(n=thisSize,
-                                               mean=
-                                               c(thisMeanBiomarker,
-                                                 thisMeanZ),
-                                               sigma=trueCov)
+                              tmpStart <- mvtnorm::rmvnorm(n=thisSize,
+                                                           mean=c(thisMeanBiomarker,
+                                                                  thisMeanZ),
+                                                           sigma=trueCov)
+                              
+                              if(thisData@placebo)
+                                  tmpStart.PL <- mvtnorm::rmvnorm(n=thisSize.PL,
+                                                                  mean=
+                                                                      c(thisMeanBiomarker.PL,
+                                                                        thisMeanZ.PL),
+                                                                  sigma=trueCov)
+                              
+                              
+                              if(thisData@placebo){
+                                list(tmpStart=tmpStart, tmpStart.PL=tmpStart.PL)
+                              }else{
+                                list(tmpStart=tmpStart)  
+                              }
                           }
 
                       ## extract biomarker and DLT samples
-                      thisBiomarkers <- tmp[, 1]
-                      thisDLTs <- as.integer(tmp[, 2] > 0)
-
-                      ## update the data with this cohort
-                      thisData <- update(object=thisData,
-                                         x=thisDose,
-                                         y=thisDLTs,
-                                         w=thisBiomarkers)
+                      thisBiomarkers <- tmp$tmpStart[, 1]
+                      thisDLTs <- as.integer(tmp$tmpStart[, 2] > 0)
+                      
+                      # in case there are placebo
+                      if(thisData@placebo){
+                          
+                          thisBiomarkers.PL <- tmp$tmpStart.PL[, 1]
+                          thisDLTs.PL <- as.integer(tmp$tmpStart.PL[, 2] > 0)
+                          
+                          ## update the data first with placebo...
+                          thisData <- update(object=thisData,
+                                             x=object@data@doseGrid[1],
+                                             y=thisDLTs.PL,
+                                             w=thisBiomarkers.PL)
+                          
+                          ### ... and then with active dose
+                          thisData <- update(object=thisData,
+                                             x=thisDose,
+                                             y=thisDLTs,
+                                             w=thisBiomarkers,
+                                             newCohort=FALSE)
+                      }else{
+                          thisData <- update(object=thisData,
+                                             x=thisDose,
+                                             y=thisDLTs,
+                                             w=thisBiomarkers)
+                      }
 
                       ## what is the dose limit?
                       doselimit <- maxDose(object@increments,
