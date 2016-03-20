@@ -1901,7 +1901,7 @@ setMethod("simulate",
                                                 size=1L,
                                                 prob=thisProb.PL))
                        thisEff.PL <- c(thisMeanEff.PL,
-                                       rborm(n=thisSize.PL-1L,
+                                       rnorm(n=thisSize.PL-1L,
                                              mean=thisMeanEff,
                                              sd=sqrt(trueSigma2)))
                       }
