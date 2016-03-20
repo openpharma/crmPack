@@ -1243,6 +1243,12 @@ setMethod("simulate",
                 ## start the simulated data with the provided one
                 thisData <- object@data
                 
+                # In case there are placebo
+                if(thisData@placebo)
+                  ## what is the probability for tox. at placebo?
+                  thisProb.PL <- thisTruth(object@data@doseGrid[1])
+                
+                
                 ## shall we stop the trial?
                 ## First, we want to continue with the starting dose.
                 ## This variable is updated after each cohort in the loop.
@@ -1264,6 +1270,13 @@ setMethod("simulate",
                                    dose=thisDose,
                                    data=thisData)
                   
+                  ## In case there are placebo
+                  if(thisData@placebo)
+                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                        dose=thisDose,
+                                        data=thisData)
+                  
+                  
                   
                   ## simulate DLTs: depends on whether we
                   ## separate the first patient or not.
@@ -1273,6 +1286,12 @@ setMethod("simulate",
                     thisDLTs <- rbinom(n=1L,
                                        size=1L,
                                        prob=thisProb)
+                    
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=1L,
+                                            size=1L,
+                                            prob=thisProb.PL)
+                    
                     ## if there is no DLT:
                     if(thisDLTs == 0)
                     {
@@ -1281,18 +1300,42 @@ setMethod("simulate",
                                     rbinom(n=thisSize - 1L,
                                            size=1L,
                                            prob=thisProb))
+                      
+                      if( thisData@placebo && (thisSize.PL > 1L) )
+                        thisDLTs.PL <- c(thisDLTs.PL,
+                                         rbinom(n=thisSize.PL - 1L,
+                                                size=1L,
+                                                prob=thisProb.PL))
                     }
                   } else {
                     ## we can directly dose all patients
                     thisDLTs <- rbinom(n=thisSize,
                                        size=1L,
-                                       prob=thisProb)    
+                                       prob=thisProb)  
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=thisSize.PL,
+                                            size=1L,
+                                            prob=thisProb.PL)
                   }
+                  
+                  ## update the data with this placebo (if any) cohort and then with active dose
+                  if(thisData@placebo){
+                    thisData <- update(object=thisData,
+                                       x=object@data@doseGrid[1],
+                                       y=thisDLTs.PL)
+                    
+                    ## update the data with active dose
+                    thisData <- update(object=thisData,
+                                       x=thisDose,
+                                       y=thisDLTs,
+                                       newCohort=FALSE)
+                  } else {
                   
                   ## update the data with this cohort
                   thisData <- update(object=thisData,
                                      x=thisDose,
                                      y=thisDLTs)
+                  }
                   
                   ##Update the model with thisData
                   thisModel <- update(object@model,
@@ -1481,6 +1524,11 @@ setMethod("simulate",
                 ## start the simulated data with the provided one
                 thisData <- object@data
                 
+                # In case there are placebo
+                if(thisData@placebo)
+                  ## what is the probability for tox. at placebo?
+                  thisProb.PL <- thisTruth(object@data@doseGrid[1])
+                
                 ## shall we stop the trial?
                 ## First, we want to continue with the starting dose.
                 ## This variable is updated after each cohort in the loop.
@@ -1501,6 +1549,12 @@ setMethod("simulate",
                                    dose=thisDose,
                                    data=thisData)
                   
+                  ## In case there are placebo
+                  if(thisData@placebo)
+                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                        dose=thisDose,
+                                        data=thisData)
+                  
                   ## simulate DLTs: depends on whether we
                   ## separate the first patient or not.
                   if(firstSeparate && (thisSize > 1L))
@@ -1509,6 +1563,12 @@ setMethod("simulate",
                     thisDLTs <- rbinom(n=1L,
                                        size=1L,
                                        prob=thisProb)
+                    
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=1L,
+                                            size=1L,
+                                            prob=thisProb.PL)
+                    
                     ## if there is no DLT:
                     if(thisDLTs == 0)
                     {
@@ -1517,19 +1577,44 @@ setMethod("simulate",
                                     rbinom(n=thisSize - 1L,
                                            size=1L,
                                            prob=thisProb))
+                      
+                      if( thisData@placebo && (thisSize.PL > 1L) )
+                        thisDLTs.PL <- c(thisDLTs.PL,
+                                         rbinom(n=thisSize.PL - 1L,
+                                                size=1L,
+                                                prob=thisProb.PL))
                     }
                   } else {
                     ## we can directly dose all patients
                     thisDLTs <- rbinom(n=thisSize,
                                        size=1L,
                                        prob=thisProb)
+                    
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=thisSize.PL,
+                                            size=1L,
+                                            prob=thisProb.PL) 
+                    
                   }
+                  
+                  ## update the data with this placebo (if any) cohort and then with active dose
+                  if(thisData@placebo){
+                    thisData <- update(object=thisData,
+                                       x=object@data@doseGrid[1],
+                                       y=thisDLTs.PL)
+                    
+                    ## update the data with active dose
+                    thisData <- update(object=thisData,
+                                       x=thisDose,
+                                       y=thisDLTs,
+                                       newCohort=FALSE)
+                  } else {
                   
                   ## update the data with this cohort
                   thisData <- update(object=thisData,
                                      x=thisDose,
                                      y=thisDLTs)
-                  
+                  }
                   
                   ##Update model estimates with thisData
                   thisModel <- update(object@model,
@@ -1734,6 +1819,13 @@ setMethod("simulate",
                 ##start the simulated data with the provided one
                 thisData <- object@data
                 
+                if(thisData@placebo){
+                  ## what is the probability for tox. at placebo?  
+                  thisProb.PL <- thisTruthDLE(object@data@doseGrid[1])
+                  
+                  ## what is the mean efficacy at placebo?
+                  thisMeanEff.PL <- thisTruthEff(object@data@doseGrid[1])
+                }
                 
                 ## shall we stop the trial?
                 ## First, we want to continue with the starting dose.
@@ -1749,12 +1841,21 @@ setMethod("simulate",
                 {
                   ## what is the probability for tox. at this dose?
                   thisDLEProb <- thisTruthDLE(thisDose)
-                  thisEff<-thisTruthEff(thisDose)
+                  thisMeanEff<-thisTruthEff(thisDose)
                   
                   ## what is the cohort size at this dose?
                   thisSize <- size(cohortSize=object@cohortSize,
                                    dose=thisDose,
                                    data=thisData)
+                  
+                  
+                  ## In case there are placebo
+                  ## what is the cohort size at this dose for Placebo?
+                  if(thisData@placebo)
+                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                        dose=thisDose,
+                                        data=thisData)
+                  
                   
                   ## simulate DLTs: depends on whether we
                   ## separate the first patient or not.
@@ -1764,9 +1865,21 @@ setMethod("simulate",
                     thisDLTs <- rbinom(n=1L,
                                        size=1L,
                                        prob=thisDLEProb)
+                    
+                    
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=1L,
+                                            size=1L,
+                                            prob=thisProb.PL)
+                    
                     thisEff <- rnorm(n=1L,
-                                     mean=thisEff,
+                                     mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
+                    
+                    if (thisData@placebo)
+                      thisEff.PL <- rnorm(n=1L,
+                                    mean=thisMeanEff.PL,
+                                    sd=sqrt(trueSigma2))
                     
                     ## if there is no DLT:
                     if(thisDLTs == 0)
@@ -1776,10 +1889,23 @@ setMethod("simulate",
                                     rbinom(n=thisSize - 1L,
                                            size=1L,
                                            prob=thisDLEProb))
+                      
                       thisEff<-c(thisEff,
                                  rnorm(n=thisSize - 1L,
-                                       mean=thisEff,
+                                       mean=thisMeanEff,
                                        sd=sqrt(trueSigma2)))
+                      
+                      if( thisData@placebo && (thisSize.PL > 1L) ) {
+                        thisDLTs.PL <- c(thisDLTs.PL,
+                                         rbinom(n=thisSize.PL - 1L,
+                                                size=1L,
+                                                prob=thisProb.PL))
+                       thisEff.PL <- c(thisMeanEff.PL,
+                                       rborm(n=thisSize.PL-1L,
+                                             mean=thisMeanEff,
+                                             sd=sqrt(trueSigma2)))
+                      }
+                      
                     }
                   } else {
                     ## we can directly dose all patients
@@ -1787,11 +1913,33 @@ setMethod("simulate",
                                        size=1L,
                                        prob=thisDLEProb)
                     thisEff <- rnorm(n=thisSize,
-                                     mean=thisEff,
+                                     mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
+                    
+                    if (thisData@placebo){
+                           thisDLTs.PL <- rbinom(n=thisSize.PL,
+                                                 size=1L,
+                                                 prob=thisProb.PL)
+                           thisEff.PL <- rnorm(n=thisSize.PL,
+                                               mean=thisMeanEff,
+                                               sd=sqrt(trueSigma2))
+                    }
                   }
                   
-                  
+                  ## update the data with this placebo (if any) cohort and then with active dose
+                  if(thisData@placebo){
+                    thisData <- update(object=thisData,
+                                       x=object@data@doseGrid[1],
+                                       y=thisDLTs.PL,
+                                       w=thisEff.PL)
+                    
+                    ## update the data with active dose
+                    thisData <- update(object=thisData,
+                                       x=thisDose,
+                                       y=thisDLTs,
+                                       w=thisEff,
+                                       newCohort=FALSE)
+                  } else {               
                   
                   ## update the data with this cohort
                   thisData <- update(object=thisData,
@@ -1799,7 +1947,7 @@ setMethod("simulate",
                                      y=thisDLTs,
                                      w=thisEff)
                   
-                  
+                  }
                   ##Update model estimate in DLE and Eff models
                   thisDLEModel <- update(object=object@model,
                                          data=thisData)
