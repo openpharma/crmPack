@@ -2643,7 +2643,7 @@ setMethod("stopTrial",
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste("95% CI is (",CI[1], "," , CI[2], "), Ratio =",ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+              text <- paste("95% CI is (",round(CI[1],4), "," , round(CI[2],4), "), Ratio =",round(ratio,4), "is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
@@ -2694,7 +2694,7 @@ setMethod("stopTrial",
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste("95% CI is (",CI[1], "," , CI[2], "), Ratio =", ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+              text <- paste("95% CI is (",round(CI[1],4), "," , round(CI[2],4), "), Ratio =", round(ratio,4), "is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
               ##return both
               return(structure(doStop,
@@ -2773,40 +2773,40 @@ setMethod("stopTrial",
               ##Find the Gstar estimate
               
               Gstar <- Gstarderive(GstarSamples)
+              ##Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
+              CIGstar <- quantile(GstarSamples, prob=c(0.025,0.975))
+              ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
               
-              ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
+              ##Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
+              CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+              ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
+
+            ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
               
               if (TDtargetEndOfTrialEstimate <= Gstar){
                 
-                ##Find the upper and lower limit of the 95% credibility interval
-                CI <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
-                CITDEOT <- CI
+                ##Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
+                CI <- CITDEOT 
+                ratio <- ratioTDEOT
                 chooseTD <- TRUE} else {
                   
-                  CI <- quantile(GstarSamples, prob=c(0.025,0.975))
-                  CIGstar <- CI
+                  CI <- CIGstar
+                  ratio <- ratioGstar
                   chooseTD <- FALSE}
-              
-              ##The ratio of the upper to the lower 95% credibility interval of optimal dose
-              ## smaller of the TDtargetEndOfTrial and Gstar
-              ratio <- as.numeric(CI[2]/CI[1]) 
-              
-              ##The ratio of the upper to the lower 95% credibility interval of TDtargetEndOfTrial
-              ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
-              ##The ratio of the upper to the lower 95% credibility interval of Gstar
-              ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
               
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
               ##generate messgae
-              text <- paste("Gstar estimate is", Gstar, "with 95% CI (", CIGstar[1], ",", CIGstar[2], 
+              text1 <- paste("Gstar estimate is", round(Gstar,4), "with 95% CI (", round(CIGstar[1],4), ",", round(CIGstar[2],4), 
                             ") and its ratio =", 
-                            ratioGstar, "TDtargetEndOfTrial estimate is ", TDtargetEndOfTrialEstimate, 
-                            "with 95% CI(", CITDEOT[1],",", CITDEOT[2], ") and its ratio=", 
-                            ratioTDEOT,
-                            ifelse(chooseTD,"TDatrgetEndOfTrial estimate","Gstar estimate"), "is smaller with ratio =", 
-                            ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+                            round(ratioGstar,4))
+              text2 <- paste("TDtargetEndOfTrial estimate is ", round(TDtargetEndOfTrialEstimate,4), 
+                            "with 95% CI (", round(CITDEOT[1],4),",",round(CITDEOT[2],4), ") and its ratio=", 
+                            round(ratioTDEOT,4))
+              text3 <- paste(ifelse(chooseTD,"TDatrgetEndOfTrial estimate","Gstar estimate"), "is smaller with ratio =", 
+                            round(ratio,4), " which is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
+              text <- c(text1,text2,text3)
               ##return both
               return(structure(doStop,
                                messgae=text))
@@ -2849,8 +2849,7 @@ setMethod("stopTrial",
               logGstar <- log(Gstar)
               
               
-              if (Gstar <= TDtargetEndOfTrial){
-                chooseTD <- FALSE
+             
                 ##From paper
                 
                 meanEffGstar <- Effmodel@theta1+Effmodel@theta2*log(logGstar)
@@ -2887,19 +2886,13 @@ setMethod("stopTrial",
                 
                 
                 
-                ##Find the upper and lower limit of the 95% credibility interval
-                CI <- c()
-                CI[2] <- exp(logGstar + 1.96* sqrt(varlogGstar))
-                CI[1] <- exp(logGstar - 1.96* sqrt(varlogGstar))
-                ##CI for Gstar
+                ##Find the upper and lower limit of the 95% credibility interval of Gstar
                 CIGstar <-c()
-                CIGstar[2] <- CI[2]
-                CIGstar[1] <- CI[1]
+                CIGstar[2] <- exp(logGstar + 1.96* sqrt(varlogGstar))
+                CIGstar[1] <- exp(logGstar - 1.96* sqrt(varlogGstar))
                 
                 ##The ratio of the upper to the lower 95% credibility interval
-                ratio <- as.numeric(CI[2]/CI[1]) 
-                ratioGstar <- ratio} else {
-                  chooseTD <- TRUE 
+                ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1]) 
                   
                   ##Find the variance of the log of the TDtargetEndOfTrial(eta)
                   M1 <- matrix(c(-1/(model@phi2), - (log(targetEndOfTrial/(1-targetEndOfTrial))-model@phi1)/(model@phi2)^2),1,2)
@@ -2907,32 +2900,39 @@ setMethod("stopTrial",
                   
                   varEta <- M1%*%M2%*%t(M1)
                   
-                  ##Find the upper and lower limit of the 95% credibility interval
-                  CI <- c()
-                  CI[2] <- exp(log(TDtargetEndOfTrial) + 1.96* sqrt(varEta))
-                  CI[1] <- exp(log(TDtargetEndOfTrial) - 1.96* sqrt(varEta))
-                  ##CI for TDtargetEndOfTrial
-                  CITDEOT <- C()
-                  CITDEOT[2] <- CI[2]
-                  CITDEOT[1] <- CI[1]
+                  ##Find the upper and lower limit of the 95% credibility interval of
+                  ##TDtargetEndOfTrial
+                  CITDEOT <- c()
+                  CITDEOT[2] <- exp(log(TDtargetEndOfTrial) + 1.96* sqrt(varEta))
+                  CITDEOT[1] <- exp(log(TDtargetEndOfTrial) - 1.96* sqrt(varEta))
                   ##The ratio of the upper to the lower 95% credibility interval
-                  ratio <- as.numeric(CI[2]/CI[1])
-                  ratioTDEOT <- ratio
-                  
-                } 
-              
-              
+                  ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
+                 
+              if (Gstar <= TDtargetEndOfTrial)
+              {chooseTD <- FALSE
+              CI <- c()
+              CI[2] <- CIGstar[2]
+              CI[1] <- CIGstar[1]
+              ratio <- ratioGstar} else {chooseTD <- TRUE
+              CI <- c()
+              CI[2] <- CITDEOT[2]
+              CI[1] <- CITDEOT[1]
+              ratio <- ratioTDEOT
+              }
               ##so can we stop? 
               doStop <- ratio <= stopping@targetRatio
-              ##generate messgae
-              text <- paste("Gstar estimate is", Gstar, "with 95% CI (", CIGstar[1], ",", CIGstar[2], 
+              ##generate message
+              
+              text1 <- paste("Gstar estimate is", round(Gstar,4), "with 95% CI (", round(CIGstar[1],4), ",", round(CIGstar[2],4), 
                             ") and its ratio =", 
-                            ratioGstar, "TDtargetEndOfTrial estimate is ", TDtargetEndOfTrialEstimate, 
-                            "with 95% CI(", CITDEOT[1],",", CITDEOT[2], ") and its ratio=", 
-                            ratioTDEOT,
-                            ifelse(chooseTD,"TDatrgetEndOfTrial estimate","Gstar estimate"), "is smaller with ratio =", 
-                            ratio, "is " , ifelse(doStop,"is less than or equal to","greater than"),
+                            round(ratioGstar,4))
+              text2 <- paste("TDtargetEndOfTrial estimate is ", round(TDtargetEndOfTrial,4), 
+                            "with 95% CI (", round(CITDEOT[1],4),",", round(CITDEOT[2],4), ") and its ratio=", 
+                            round(ratioTDEOT,4))
+              text3 <- paste(ifelse(chooseTD,"TDatrgetEndOfTrial estimate","Gstar estimate"), "is smaller with ratio =", 
+                            round(ratio,4), "which is " , ifelse(doStop,"is less than or equal to","greater than"),
                             "targetRatio =", stopping@targetRatio)
+              text <- c(text1,text2,text3)
               ##return both
               return(structure(doStop,
                                message=text))
