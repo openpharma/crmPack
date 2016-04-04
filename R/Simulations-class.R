@@ -302,6 +302,15 @@ DualSimulations <- function(rhoEst,
 ##' @slot fit list of the final values. If samples are involved, these are the final fitted values.
 ##' If no samples are involved, these are included the final modal estimates of the model parameters
 ##' and the posterior estimates of the probabilities of the occurrence of a DLE.
+##' @slot FinalTDtargetDuringTrialEstimates list of all final estimates (the last estimate of) the TDtargetDuringTrial at the end 
+##' of each simultaions/when each trial stops
+##' @slot FinalTDtargetEndOfTrialEstimates list of all final estimates/the last estimate of the TDtargetEndOfTrial when each trial 
+##' stops
+##' @slot FinalTDtargetDuringTrialAtDoseGrid list of the dose levels at dose grid closest below the final TDtargetDuringTrial estimates
+##' @slot FinalTDtargetEndOfTrialAtDoseGrid list of  the dose levels at dose grid closest below the final TDtargetEndOfTrial estimates
+##' @slot FinalCIs list of all the final 95% credibility intervals of the TDtargetEndofTrial estimates when each trial stops
+##' @slot FinalRatios list of all the final ratios, the ratios of the upper to the lower 95% credibility interval of the 
+##' final estimates of the TDtargetEndOfTrial
 ##' @slot stopReasons todo: add slot description 
 ##' 
 ##' @export
@@ -309,6 +318,12 @@ DualSimulations <- function(rhoEst,
 .PseudoSimulations <-
   setClass(Class="PseudoSimulations",
            representation(fit="list",
+                          FinalTDtargetDuringTrialEstimates="list",
+                          FinalTDtargetEndOfTrialEstimates = "list",
+                          FinalTDtargetDuringTrialAtDoseGrid="list",
+                          FinalTDtargetEndOfTrialAtDoseGrid ="list",
+                          FinalCIs="list",
+                          FinalRatios="list",
                           stopReasons="list"),
            ## note: this prototype is put together with the prototype
            ## for GeneralSimulations
@@ -329,6 +344,12 @@ validObject(.PseudoSimulations())
 
 ##' Initialization function of the 'PseudoSimulations' class
 ##' @param fit please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param FinalTDtargetDuringTrialEstimates please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param FinalTDtargetEndOfTrialEstimates please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param FinalTDtargetDuringTrialAtDoseGrid please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param FinalTDtargetEndOfTrialAtDoseGrid please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param FinalCIs please refer to \code{\linkS4class{PseudoSimulations}} class object
+##' @param FinalRatios please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param stopReasons please refer to \code{\linkS4class{PseudoSimulations}} class object
 ##' @param \dots additional parameters from \code{\linkS4class{GeneralSimulations}}
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
@@ -336,12 +357,24 @@ validObject(.PseudoSimulations())
 ##' @export
 ##' @keywords methods
 PseudoSimulations <- function(fit,
+                              FinalTDtargetDuringTrialEstimates,
+                              FinalTDtargetEndOfTrialEstimates,
+                              FinalTDtargetDuringTrialAtDoseGrid,
+                              FinalTDtargetEndOfTrialAtDoseGrid,
+                              FinalCIs,
+                              FinalRatios,
                               stopReasons,
                               ...)
 {
   start <- GeneralSimulations(...)
   .PseudoSimulations(start,
                      fit=fit,
+                     FinalTDtargetDuringTrialEstimates=FinalTDtargetDuringTrialEstimates,
+                     FinalTDtargetEndOfTrialEstimates=FinalTDtargetEndOfTrialEstimates,
+                     FinalTDtargetDuringTrialAtDoseGrid=FinalTDtargetDuringTrialAtDoseGrid,
+                     FinalTDtargetEndOfTrialAtDoseGrid= FinalTDtargetEndOfTrialAtDoseGrid,
+                     FinalCIs=FinalCIs,
+                     FinalRatios=FinalRatios,
                      stopReasons=stopReasons)
 }
 
@@ -361,7 +394,9 @@ PseudoSimulations <- function(fit,
 ##' @slot fitEff list of the final values. If DLE and efficacy samples are gerneated, it contains the
 ##' final fitted values. If no DLE and efficacy samples are used, it contains the modal estimates of the
 ##' parameters in the two models and the posterior estimates of the probabilities of the occurrence of a
-##' DLE and the expected efficacy responses. 
+##' DLE and the expected efficacy responses.
+##' @slot FinalGstarEstimates a list of the final estimates of Gstar at the end of each simulations.
+##'  
 ##' @slot sigma2est the vector of the final posterior mean sigma2 estimates
 ##' 
 ##' @export
@@ -369,6 +404,12 @@ PseudoSimulations <- function(fit,
 .PseudoDualSimulations <- 
   setClass(Class="PseudoDualSimulations",
            representation(fitEff="list",
+                          FinalGstarEstimates="list",
+                          FinalGstarAtDoseGrid="list",
+                          FinalTDtargetDuringTrialEstimates=TDtargetDuringTrialList,
+                          FinalTDtargetEndOfTrialEstimates=TDtargetEndOfTrialList,
+                          FinalCIs=CIList,
+                          FinalRatios=ratioList,
                           sigma2est="numeric"),
            prototype(sigma2est= c(0.001,0.002)),
            contains="PseudoSimulations",

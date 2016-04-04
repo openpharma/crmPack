@@ -1367,6 +1367,8 @@ setMethod("simulate",
                   
                   thisTDtargetEndOfTrial<- NEXT$TDtargetEndOfTrialEstimate
                   
+                  thisratioTDEOT <- NEXT$ratioTDEOT
+                  thisCITDEOT <- NEXT$CITDEOT
                   
                   
                   thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialAtDoseGrid
@@ -1394,6 +1396,9 @@ setMethod("simulate",
                        TDtargetDuringTrial=thisTDtargetDuringTrial,
                        TDtargetEndOfTrial=thisTDtargetEndOfTrial,
                        TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
+                       TDtargetDuringTrialatdoseGrid=thisDose,
+                       CITDEOT=thisCITDEOT,
+                       ratioTDEOT= thisratioTDEOT,
                        fit=
                          subset(thisFit,
                                 select=c(middle, lower, upper)),
@@ -1419,9 +1424,29 @@ setMethod("simulate",
               
               ## setup the list for the simulated data objects
               dataList <- lapply(resultList, "[[", "data")
+            
+              ##set up list for the final TD during Trial Estimate
+              TDtargetDuringTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrial"))
+              
+              ##set up list for the final TD End of Trial Estimate
+              TDtargetEndOfTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrial"))
+              
+              ## set up list for the final TD during Trial estimate at dose Grid
+              TDtargetDuringTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrialatdoseGrid"))
+              
+              ## set up list for the final TD End Of Trial estimate at dose Grid
+              TDtargetEndOfTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
+              
               
               ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
+              
+              ##Set up the list for the final 95% CI obtained
+              CIList <- lapply(resultList,"[[","CITDEOT")
+              
+              ##Set up the list for the final ratios obtained
+              ratioList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
+              
               
               ## setup the list for the final fits
               fitList <- lapply(resultList, "[[", "fit")
@@ -1433,6 +1458,12 @@ setMethod("simulate",
               ret <- PseudoSimulations(data=dataList,
                                  doses=recommendedDoses,
                                  fit=fitList,
+                                 FinalTDtargetDuringTrialEstimates=TDtargetDuringTrialList,
+                                 FinalTDtargetEndOfTrialEstimates=TDtargetEndOfTrialList,
+                                 FinalTDtargetDuringTrialAtDoseGrid=TDtargetDuringTrialDoseGridList,
+                                 FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
+                                 FinalCIs=CIList,
+                                 FinalRatios=ratioList,
                                  stopReasons=stopReasons,
                                  seed=RNGstate)
               
@@ -1639,6 +1670,9 @@ setMethod("simulate",
                   
                   thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialatdoseGrid
                   
+                  thisCITDEOT <- NEXT$CITFEOT
+                  thisratioTDEOT <- NEXT$ratioTDEOT
+                  
                   
                   ## evaluate stopping rules
                   stopit <- stopTrial(object@stopping,
@@ -1660,6 +1694,9 @@ setMethod("simulate",
                        TDtargetDuringTrial=thisTDtargetDuringTrial,
                        TDtargetEndOfTrial=thisTDtargetEndOfTrial,
                        TDtargetEndOfTrialatdoseGrid=thisTDtargetEndOfTrialatdoseGrid,
+                       TDtargetDuringTrialatdoseGrid=thisDose,
+                       CITDEOT=thisCITDEOT,
+                       ratioTDEOT= thisratioTDEOT,
                        fit=thisFit,
                        stop=
                          attr(stopit,
@@ -1687,6 +1724,29 @@ setMethod("simulate",
               ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
               
+              ##set up list for the final TD during Trial Estimate
+              TDtargetDuringTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrial"))
+              
+              ##set up list for the final TD End of Trial Estimate
+              TDtargetEndOfTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrial"))
+              
+              ## set up list for the final TD during Trial estimate at dose Grid
+              TDtargetDuringTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrialatdoseGrid"))
+              
+              ## set up list for the final TD End Of Trial estimate at dose Grid
+              TDtargetEndOfTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
+              
+              
+              ## the vector of the final dose recommendations
+              recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
+              
+              ##Set up the list for the final 95% CI obtained
+              CIList <- lapply(resultList,"[[","CITDEOT")
+              
+              ##Set up the list for the final ratios obtained
+              ratioList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
+              
+              
               ##set up the list for the final fits
               
               fitList <- lapply(resultList,"[[", "fit")
@@ -1697,7 +1757,13 @@ setMethod("simulate",
               ## return the results in the Simulations class object
               ret <- PseudoSimulations(data=dataList,
                                        doses=recommendedDoses,
-                                      fit=fitList,
+                                       fit=fitList,
+                                       FinalTDtargetDuringTrialEstimates=TDtargetDuringTrialList,
+                                       FinalTDtargetEndOfTrialEstimates=TDtargetEndOfTrialList,
+                                       FinalTDtargetDuringTrialAtDoseGrid=TDtargetDuringTrialDoseGridList,
+                                       FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
+                                       FinalCIs=CIList,
+                                       FinalRatios=ratioList,
                                        stopReasons=stopReasons,
                                        seed=RNGstate)
               
@@ -1991,6 +2057,20 @@ setMethod("simulate",
                   
                   Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
                   
+                  ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
+                  
+                  thisCITDEOT <- NEXT$CITDEOT
+                  thisratioTDEOT <- NEXT$ratioTDEOT
+                  thisCIGstar <- NEXT$CIGstar
+                  thisratioGstar <- NEXT$ratioGstar
+                  ## Find the optimal dose
+                  OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
+                  
+                  if (OptimalDose==thisGstar){
+                    thisratio <- thisratioGstar
+                    thisCI<- thisCIGstar
+                  } else { thisratio <- thisratioTDEOT
+                           thisCI <- thisCITDEOT}
                   
                   ## evaluate stopping rules
                   stopit <- stopTrial(object@stopping,
@@ -2022,6 +2102,13 @@ setMethod("simulate",
                                    Gstar=thisGstar,
                                    GstarAtDoseGrid=thisGstarAtDoseGrid,
                                    Recommend=Recommend,
+                                   OptimalDose=OptimalDose,
+                                   ratio=thisratio,
+                                   CI=thisCI,
+                                   ratioGstar=thisratioGstar,
+                                   CIGstar=thisCIGstar,
+                                   ratioTDEOT=thisratioTDEOT,
+                                   CITDEOT=thisCITDEOT,
                                    fitDLE=thisDLEFit,
                                    fitEff=thisEffFit,
                                    sigma2est=thisSigma2,
@@ -2378,6 +2465,21 @@ setMethod("simulate",
                     
                     Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
                     
+                    ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
+                    
+                    thisCITDEOT <- NEXT$CITDEOT
+                    thisratioTDEOT <- NEXT$ratioTDEOT
+                    thisCIGstar <- NEXT$CIGstar
+                    thisratioGstar <- NEXT$ratioGstar
+                    ## Find the optimal dose
+                    OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
+                    
+                    if (OptimalDose==thisGstar){
+                      thisratio <- thisratioGstar
+                      thisCI<- thisCIGstar
+                    } else { thisratio <- thisratioTDEOT
+                    thisCI <- thisCITDEOT}
+                    
                     
                     ## evaluate stopping rules
                     stopit <- stopTrial(object@stopping,
@@ -2413,6 +2515,13 @@ setMethod("simulate",
                          Gstar=thisGstar,
                          GstarAtDoseGrid=thisGstarAtDoseGrid,
                          Recommend=Recommend,
+                         OptimalDose=OptimalDose,
+                         ratio=thisratio,
+                         CI=thisCI,
+                         ratioGstar=thisratioGstar,
+                         CIGstar=thisCIGstar,
+                         ratioTDEOT=thisratioTDEOT,
+                         CITDEOT=thisCITDEOT,
                          fitDLE=subset(thisDLEFit,
                                        select=
                                          c(middle,lower,upper)),
@@ -2706,6 +2815,20 @@ setMethod("simulate",
                   
                   
                   Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
+                  ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
+                  
+                  thisCITDEOT <- NEXT$CITDEOT
+                  thisratioTDEOT <- NEXT$ratioTDEOT
+                  thisCIGstar <- NEXT$CIGstar
+                  thisratioGstar <- NEXT$ratioGstar
+                  ## Find the optimal dose
+                  OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
+                  
+                  if (OptimalDose==thisGstar){
+                    thisratio <- thisratioGstar
+                    thisCI<- thisCIGstar
+                  } else { thisratio <- thisratioTDEOT
+                  thisCI <- thisCITDEOT}
                   
                   
                   ## evaluate stopping rules
@@ -2740,6 +2863,13 @@ setMethod("simulate",
                                    Gstar=thisGstar,
                                    GstarAtDoseGrid=thisGstarAtDoseGrid,
                                    Recommend=Recommend,
+                                   OptimalDose=OptimalDose,
+                                   ratio=thisratio,
+                                   CI=thisCI,
+                                   ratioGstar=thisratioGstar,
+                                   CIGstar=thisCIGstar,
+                                   ratioTDEOT=thisratioTDEOT,
+                                   CITDEOT=thisCITDEOT,
                                    fitDLE=subset(thisDLEFit,
                                                  select=
                                                    c(middle,lower,upper)),

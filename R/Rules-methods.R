@@ -1774,6 +1774,11 @@ setMethod("nextBest",
               index1 <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               ret1 <- data@doseGrid[dosesOK][index1]
               
+              CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975))
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
+              
               
               ## produce plot
               plot1 <- ggplot() +
@@ -1829,8 +1834,9 @@ setMethod("nextBest",
                           TDtargetDuringTrialEstimate=TDtargetDuringTrialEstimate,
                           targetEndOfTrial=nextBest@targetEndOfTrial,
                           TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
-                          
                           TDtargetEndOfTrialAtDoseGrid=ret1,
+                          CITDEOT=CITDEOT,
+                          ratioTDEOT=ratioTDEOT,
                           plot=plot1))
             })
 ## -------------------------------------------------------------------------------
@@ -1896,6 +1902,23 @@ setMethod("nextBest",
               index <- suppressWarnings(max(which((TDEfourdg - data@doseGrid[dosesOK]) >= 0)))
               retTDE <- data@doseGrid[dosesOK][index]
               
+              
+              ##Find the variance of the log of the TDtargetEndOfTrial(eta)
+              M1 <- matrix(c(-1/(model@phi2), - (log(targetEndOfTrial/(1-targetEndOfTrial))-model@phi1)/(model@phi2)^2),1,2)
+              M2 <- model@Pcov
+              
+              varEta <- M1%*%M2%*%t(M1)
+              
+              ##Find the upper and lower limit of the 95% credibility interval
+              CITDEOT <- c()
+              CITDEOT[2] <- exp(log(TDtargetEndOfTrialEstimate) + 1.96* sqrt(varEta))
+              CITDEOT[1] <- exp(log(TDtargetEndOfTrialEstimate) - 1.96* sqrt(varEta))
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
+              
+              
+              
               plotData <- data.frame(dose=data@doseGrid,
                                      probDLE=prob(dose=data@doseGrid,
                                                   model=model))
@@ -1958,6 +1981,8 @@ setMethod("nextBest",
                           targetEndOfTrial=targetEndOfTrial,
                           TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
                           TDtargetEndOfTrialatdoseGrid=retTDE,
+                          CITDEOT=CITDEOT,
+                          ratioTDEOT=ratioTDEOT,
                           plot=plot1))
             })
 
@@ -2051,6 +2076,60 @@ setMethod("nextBest",
               
               Gstarret <- data@doseGrid[Gstarindex]
               
+              logGstar <- log(Gstar)
+              
+              
+              
+              ##From paper (Yeung et. al 2015)
+              
+              meanEffGstar <- Effmodel@theta1+Effmodel@theta2*log(logGstar)
+              
+              denom <- (model@phi2)*(meanEffGstar)*(1+logGstar*model@phi2)
+              
+              dgphi1 <- -(meanEffGstar*logGstar*model@phi2-Effmodel@theta2)/denom
+              
+              dgphi2 <- -((meanEffGstar)*logGstar+meanEffGstar*(logGstar)^2*model@phi2-Effmodel@theta2*logGstar)/denom
+              
+              dgtheta1 <- -(logGstar*model@phi2)/denom
+              
+              dgtheta2 <- -(logGstar*exp(model@phi1+model@phi2*logGstar)*model@phi2*log(logGstar)-1-exp(model@phi1+model@phi2*logGstar))/denom
+              
+              deltaG <- matrix(c(dgphi1,dgphi2,dgtheta1,dgtheta2),4,1)
+              
+              
+              ##Find the variance of the log Gstar
+              ##First find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
+              ## such that phi1 and phi2 and independent of theta1 and theta2
+              emptyMatrix <- matrix(0,2,2)
+              covBETA <-  cbind(rbind(model@Pcov,emptyMatrix),rbind(emptyMatrix,Effmodel@Pcov))
+              varlogGstar <- t(deltaG)%*%covBETA%*%deltaG
+              
+              
+              
+              ##Find the upper and lower limit of the 95% credibility interval of Gstar
+              CIGstar <-c()
+              CIGstar[2] <- exp(logGstar + 1.96* sqrt(varlogGstar))
+              CIGstar[1] <- exp(logGstar - 1.96* sqrt(varlogGstar))
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
+              
+              
+              
+              ##Find the variance of the log of the TDtargetEndOfTrial(eta)
+              M1 <- matrix(c(-1/(model@phi2), - (log(EndOfTrialtargetprob/(1-EndOfTrialtargetprob))-model@phi1)/(model@phi2)^2),1,2)
+              M2 <- model@Pcov
+              
+              varEta <- M1%*%M2%*%t(M1)
+              
+              ##Find the upper and lower limit of the 95% credibility interval of
+              ##TDtargetEndOfTrial
+              CITDEOT <- c()
+              CITDEOT[2] <- exp(log(TDtargetEndOfTrialEstimate) + 1.96* sqrt(varEta))
+              CITDEOT[1] <- exp(log(TDtargetEndOfTrialEstimate) - 1.96* sqrt(varEta))
+              
+              ##The ratio of the upper to the lower 95% credibility interval
+              ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
               
               plotData<-data.frame(dose=rep(data@doseGrid,3),
                                    values=c(prob(dose=data@doseGrid,
@@ -2136,6 +2215,10 @@ setMethod("nextBest",
                           TDtargetEndOfTrialAtDoseGrid=retE,
                           GstarEstimate=Gstar,
                           GstarAtDoseGrid=Gstarret,
+                          CITDEOT=CITDEOT,
+                          ratioTDEOT=ratioTDEOT,
+                          CIGstar=CIGstar,
+                          ratioGstar=ratioGstar,
                           plot=plot1))
             })
 ## =====================================================================================
@@ -2294,6 +2377,13 @@ setMethod("nextBest",
               
               Gstarret <- data@doseGrid[Gstarindex]
               
+              ##Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
+              CIGstar <- quantile(GstarSamples, prob=c(0.025,0.975))
+              ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
+              
+              ##Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
+              CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+              ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
               
               
               plotData<-data.frame(dose=rep(data@doseGrid,3),
@@ -2385,6 +2475,10 @@ setMethod("nextBest",
                           TDtargetEndOfTrialAtDoseGrid=retE,
                           GstarEstimate=Gstar,
                           GstarAtDoseGrid=Gstarret,
+                          CITDEOT=CITDEOT,
+                          ratioTDEOT=ratioTDEOT,
+                          CIGstar=CIGstar,
+                          ratioGstar=ratioGstar,
                           plot=plot1))
               } else if(is(Effmodel, "EffFlexi")) {
               
@@ -2505,6 +2599,13 @@ setMethod("nextBest",
                 
                 Gstarret <- data@doseGrid[Gstarindex]
                 
+                ##Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
+                CIGstar <- quantile(GstarSamples, prob=c(0.025,0.975))
+                ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
+                
+                ##Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
+                CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+                ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
                 
                 
                 plotData<-data.frame(dose=rep(data@doseGrid,3),
@@ -2596,6 +2697,10 @@ setMethod("nextBest",
                             TDtargetEndOfTrialAtDoseGrid=retE,
                             GstarEstimate=Gstar,
                             GstarAtDoseGrid=Gstarret,
+                            CITDEOT=CITDEOT,
+                            ratioTDEOT=ratioTDEOT,
+                            CIGstar=CIGstar,
+                            ratioGstar=ratioGstar,
                             plot=plot1))
                 
             } else stop("Effmodel needs to be of class Effloglog or EffFlexi")
@@ -2809,7 +2914,7 @@ setMethod("stopTrial",
               text <- c(text1,text2,text3)
               ##return both
               return(structure(doStop,
-                               messgae=text))
+                               message=text))
             })
 
 ## -----------------------------------------------------------------------------------------------
@@ -2850,7 +2955,7 @@ setMethod("stopTrial",
               
               
              
-                ##From paper
+                ##From paper (Yeung et. al 2015)
                 
                 meanEffGstar <- Effmodel@theta1+Effmodel@theta2*log(logGstar)
                 
