@@ -248,7 +248,9 @@ getMinInfBeta <- function(p, q)
 ##' quantile of the beta distribution and hence \eqn{p_{1} = 0.95}. Likewise,
 ##' \code{threshmax} is the probability threshold \eqn{q_{J}}, such that any
 ##' probability of DLT smaller than \eqn{q_{J}} has only 5\% probability
-##' (\eqn{p_{J} = 0.05}). Subsequently, for all doses supplied in the
+##' (\eqn{p_{J} = 0.05}). The probabilities \eqn{1 - p_{1}} and \eqn{p_{J}} can be 
+##' controlled with the arguments \code{probmin} and \code{probmax}, respectively. 
+##' Subsequently, for all doses supplied in the
 ##' \code{dosegrid} argument, beta distributions are set up from the assumption
 ##' that the prior medians are linear in log-dose on the logit scale, and
 ##' \code{\link{Quantiles2LogisticNormal}} is used to transform the resulting
@@ -256,16 +258,16 @@ getMinInfBeta <- function(p, q)
 ##' \code{\linkS4class{LogisticLogNormal}}) model. Note that the reference dose
 ##' is not required for these computations.
 ##' 
-##' Warning: Please note that at the moment, the results are not fully reproducible
-##' even when setting a RNG seed before. Therefore it is advised to save the result
-##' when you would like to use the same one later on.
-##'
 ##' @param dosegrid the dose grid
 ##' @param refDose the reference dose
 ##' @param threshmin Any toxicity probability above this threshold would
-##' be very unlikely (5\%) at the minimum dose (default: 0.2)
+##' be very unlikely (see \code{probmin}) at the minimum dose (default: 0.2)
 ##' @param threshmax Any toxicity probability below this threshold would
-##' be very unlikely (5\%) at the maximum dose (default: 0.3)
+##' be very unlikely (see \code{probmax}) at the maximum dose (default: 0.3)
+##' @param probmin the prior probability of exceeding \code{threshmin} at the
+##' minimum dose (default: 0.05)
+##' @param probmax the prior probability of being below \code{threshmax} at the
+##' maximum dose (default: 0.05)
 ##' @param \dots additional arguments for computations, see
 ##' \code{\link{Quantiles2LogisticNormal}}, e.g. \code{refDose} and
 ##' \code{logNormal=TRUE} to obtain a minimal informative log normal prior.
@@ -278,21 +280,25 @@ MinimalInformative <- function(dosegrid,
                                refDose,
                                threshmin=0.2,
                                threshmax=0.3,
+                               probmin=0.05,
+                               probmax=0.05,
                                ...)
 {
     ## extracts and checks
     nDoses <- length(dosegrid)
     stopifnot(! is.unsorted(dosegrid, strictly=TRUE),
               is.probability(threshmin, bounds=FALSE),
-              is.probability(threshmax, bounds=FALSE))
+              is.probability(threshmax, bounds=FALSE),
+              is.probability(probmin, bounds=FALSE),
+              is.probability(probmax, bounds=FALSE))
     xmin <- dosegrid[1]
     xmax <- dosegrid[nDoses]
 
     ## derive the beta distributions at the lowest and highest dose
     betaAtMin <- getMinInfBeta(q=threshmin,
-                               p=0.95)
+                               p=1 - probmin)
     betaAtMax <- getMinInfBeta(q=threshmax,
-                               p=0.05)
+                               p=probmax)
 
     ## get the medians of those beta distributions
     medianMin <- with(betaAtMin,
