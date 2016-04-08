@@ -1757,8 +1757,8 @@ setMethod("nextBest",
               
               ## then derive the prior/posterior mean of the above two samples
               
-              TDtargetDuringTrialEstimate <- nextBest@derive(TDsamples=TDtargetDuringTrialSamples)
-              TDtargetEndOfTrialEstimate <- nextBest@derive(TDsamples=TDtargetEndOfTrialSamples)
+              TDtargetDuringTrialEstimate <- as.numeric(nextBest@derive(TDsamples=TDtargetDuringTrialSamples))
+              TDtargetEndOfTrialEstimate <- as.numeric(nextBest@derive(TDsamples=TDtargetEndOfTrialSamples))
               
               ## be sure which doses are ok with respect to maximum
               ## possible dose
@@ -1774,7 +1774,7 @@ setMethod("nextBest",
               index1 <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate,digits=4) - data@doseGrid[dosesOK]) >= 0)))
               ret1 <- data@doseGrid[dosesOK][index1]
               
-              CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975))
+              CITDEOT <- as.numeric(quantile(TDtargetEndOfTrialSamples, probs=c(0.025,0.975)))
               
               ##The ratio of the upper to the lower 95% credibility interval
               ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
@@ -2284,12 +2284,12 @@ setMethod("nextBest",
               ## Find the TDtarget Estimate for During Trial and End of trial
               
               
-              TDtargetEndOfTrialEstimate <- nextBest@TDderive(TDtargetEndOfTrialSamples)
+              TDtargetEndOfTrialEstimate <- as.numeric(nextBest@TDderive(TDtargetEndOfTrialSamples))
               ## Ensure the estimate is within dose range
               #TDtargetEndOfTrialEstimate <- min(TDtargetEndOfTrialEstimate,max(data@doseGrid))
               
               
-              TDtargetDuringTrialEstimate<-nextBest@TDderive(TDtargetDuringTrialSamples)
+              TDtargetDuringTrialEstimate<-as.numeric(nextBest@TDderive(TDtargetDuringTrialSamples))
               
               ## Ensure the estimate is within dose range
               #TDtargetDuringTrialEstimate <- min(TDtargetDuringTrialEstimate,max(data@doseGrid))
@@ -2336,8 +2336,8 @@ setMethod("nextBest",
               IndexG <- apply(GainSamples,1,which.max)
               GstarSamples <- data@doseGrid[IndexG]
               
-              ##Obtain the Gstar estimate which is the 50th percentile of the Gstar samples
-              Gstar <- nextBest@Gstarderive(GstarSamples)
+              ##Obtain the Gstar estimate which is the nth percentile of the Gstar samples
+              Gstar <- as.numeric(nextBest@Gstarderive(GstarSamples))
               ##Ensure the estimate is within dose range
               
               #Gstar <- min(Gstar,max(data@doseGrid))
@@ -2378,11 +2378,11 @@ setMethod("nextBest",
               Gstarret <- data@doseGrid[Gstarindex]
               
               ##Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-              CIGstar <- quantile(GstarSamples, prob=c(0.025,0.975))
+              CIGstar <- as.numeric(quantile(GstarSamples, probs=c(0.025,0.975)))
               ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
               
               ##Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-              CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+              CITDEOT <- as.numeric(quantile(TDtargetEndOfTrialSamples, probs=c(0.025,0.975)))
               ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
               
               
@@ -2518,12 +2518,12 @@ setMethod("nextBest",
                 ## Find the TDtarget Estimate for During Trial and End of trial
                 
                 
-                TDtargetEndOfTrialEstimate <- nextBest@TDderive(TDtargetEndOfTrialSamples)
+                TDtargetEndOfTrialEstimate <- as.numeric(nextBest@TDderive(TDtargetEndOfTrialSamples))
                 ## Ensure the estimate is within dose range
                 #TDtargetEndOfTrialEstimate <- min(TDtargetEndOfTrialEstimate,max(data@doseGrid))
                 
                 
-                TDtargetDuringTrialEstimate<-nextBest@TDderive(TDtargetDuringTrialSamples)
+                TDtargetDuringTrialEstimate<-as.numeric(nextBest@TDderive(TDtargetDuringTrialSamples))
                 
                 ## Ensure the estimate is within dose range
                 #TDtargetDuringTrialEstimate <- min(TDtargetDuringTrialEstimate,max(data@doseGrid))
@@ -2559,7 +2559,7 @@ setMethod("nextBest",
                 GstarSamples <- data@doseGrid[IndexG]
                 
                 ##Obtain the Gstar estimate which is the 50th percentile of the Gstar samples
-                Gstar <- nextBest@Gstarderive(GstarSamples)
+                Gstar <- as.numeric(nextBest@Gstarderive(GstarSamples))
                 ##Ensure the estimate is within dose range
                 
                 #Gstar <- min(Gstar,max(data@doseGrid))
@@ -2600,11 +2600,11 @@ setMethod("nextBest",
                 Gstarret <- data@doseGrid[Gstarindex]
                 
                 ##Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-                CIGstar <- quantile(GstarSamples, prob=c(0.025,0.975))
+                CIGstar <- as.numeric(quantile(GstarSamples, probs=c(0.025,0.975)))
                 ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
                 
                 ##Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-                CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+                CITDEOT <- as.numeric(quantile(TDtargetEndOfTrialSamples, probs=c(0.025,0.975)))
                 ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
                 
                 
@@ -2693,7 +2693,7 @@ setMethod("nextBest",
                             TDtargetDuringTrialEstimate=TDtargetDuringTrialEstimate,
                             TDtargetDuringTrialAtDoseGrid=retD,
                             DLEEndOfTrialtarget=EndOfTrialtargetprob,
-                            TDtargetEndEstimate=TDtargetEndOfTrialEstimate,
+                            TDtargetEndOfTrialEstimate=TDtargetEndOfTrialEstimate,
                             TDtargetEndOfTrialAtDoseGrid=retE,
                             GstarEstimate=Gstar,
                             GstarAtDoseGrid=Gstarret,
@@ -2739,7 +2739,7 @@ setMethod("stopTrial",
                                                 samples=samples)
               
               ##Find the upper and lower limit of the 95% credibility interval
-              CI <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975))
+              CI <- quantile(TDtargetEndOfTrialSamples, probs=c(0.025,0.975))
               
               ##The ratio of the upper to the lower 95% credibility interval
               ratio <- as.numeric(CI[2]/CI[1])
@@ -2879,11 +2879,11 @@ setMethod("stopTrial",
               
               Gstar <- Gstarderive(GstarSamples)
               ##Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-              CIGstar <- quantile(GstarSamples, prob=c(0.025,0.975))
+              CIGstar <- quantile(GstarSamples, probs=c(0.025,0.975))
               ratioGstar <- as.numeric(CIGstar[2]/CIGstar[1])
               
               ##Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-              CITDEOT <- quantile(TDtargetEndOfTrialSamples, prob=c(0.025,0.975)) 
+              CITDEOT <- quantile(TDtargetEndOfTrialSamples, probs=c(0.025,0.975)) 
               ratioTDEOT <- as.numeric(CITDEOT[2]/CITDEOT[1])
 
             ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)

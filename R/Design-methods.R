@@ -1368,7 +1368,9 @@ setMethod("simulate",
                   thisTDtargetEndOfTrial<- NEXT$TDtargetEndOfTrialEstimate
                   
                   thisratioTDEOT <- NEXT$ratioTDEOT
-                  thisCITDEOT <- NEXT$CITDEOT
+                  
+                  thisCITDEOT <- list(lower=NEXT$CITDEOT[1],
+                                      upper=NEXT$CITDEOT[2])
                   
                   
                   thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialAtDoseGrid
@@ -1670,7 +1672,9 @@ setMethod("simulate",
                   
                   thisTDtargetEndOfTrialatdoseGrid <- NEXT$TDtargetEndOfTrialatdoseGrid
                   
-                  thisCITDEOT <- NEXT$CITFEOT
+                  thisCITDEOT <- list(lower=NEXT$CITFEOT[1],
+                                      upper=NEXT$CITFEOT[2])
+                  
                   thisratioTDEOT <- NEXT$ratioTDEOT
                   
                   
@@ -1721,8 +1725,6 @@ setMethod("simulate",
               ## setup the list for the simulated data objects
               dataList <- lapply(resultList, "[[", "data")
               
-              ## the vector of the final dose recommendations
-              recommendedDoses <- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialatdoseGrid"))
               
               ##set up list for the final TD during Trial Estimate
               TDtargetDuringTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrial"))
@@ -2059,9 +2061,14 @@ setMethod("simulate",
                   
                   ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
                   
-                  thisCITDEOT <- NEXT$CITDEOT
+                  thisCITDEOT <- list(lower=NEXT$CITDEOT[1],
+                                      upper=NEXT$CITDEOT[2])
+                  
                   thisratioTDEOT <- NEXT$ratioTDEOT
-                  thisCIGstar <- NEXT$CIGstar
+                  
+                  thisCIGstar <- list(lower=NEXT$CIGstar[1],
+                                      upper=NEXT$CIGstar[2])
+                  
                   thisratioGstar <- NEXT$ratioGstar
                   ## Find the optimal dose
                   OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
@@ -2103,6 +2110,7 @@ setMethod("simulate",
                                    GstarAtDoseGrid=thisGstarAtDoseGrid,
                                    Recommend=Recommend,
                                    OptimalDose=OptimalDose,
+                                   OptimalDoseAtDoseGrid=Recommend,
                                    ratio=thisratio,
                                    CI=thisCI,
                                    ratioGstar=thisratioGstar,
@@ -2141,6 +2149,51 @@ setMethod("simulate",
               ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "Recommend"))
               
+              
+              ##set up list for the final TD during Trial Estimate
+              TDtargetDuringTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrial"))
+              
+              ##set up list for the final TD End of Trial Estimate
+              TDtargetEndOfTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrial"))
+              
+              ## set up list for the final TD during Trial estimate at dose Grid
+              TDtargetDuringTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrialAtDoseGrid"))
+              
+              ## set up list for the final TD End Of Trial estimate at dose Grid
+              TDtargetEndOfTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialAtDoseGrid"))
+              
+              ##set up list for the final Gstar estimates
+              GstarList <- as.numeric(sapply(resultList,"[[","Gstar"))
+              
+              ##set up list for the final Gstar estimates at dose grid
+              GstarAtDoseGridList <- as.numeric(sapply(resultList,"[[","GstarAtDoseGrid"))
+              
+              ##set up list for final optimal dose estimates
+              OptimalDoseList <- as.numeric(sapply(resultList,"[[","OptimalDose"))
+              
+              ##set up list for final optimal dose estimates at dose Grid
+              OptimalDoseAtDoseGridList <- as.numeric(sapply(resultList,"[[","Recommend"))
+              
+              ##Set up the list for the final 95% CI obtained
+              CIList <- lapply(resultList,"[[","CI")
+              
+              ##Set up the list for the final ratios obtained
+              ratioList<- as.numeric(sapply(resultList, "[[", "ratio"))
+              
+              ##Set up the list for the final 95% CI of the TDtarget End Of Trial obtained
+              CITDEOTList <- lapply(resultList,"[[","CITDEOT")
+              
+              ##Set up the list for the final ratios of the TDtarget End Of Trial obtained
+              ratioTDEOTList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
+              
+              ##Set up the list for the final 95% CI of the Gstar obtained
+              CIGstarList <- lapply(resultList,"[[","CIGstar")
+              
+              ##Set up the list for the final ratios of the Gstar obtained
+              ratioGstarList<- as.numeric(sapply(resultList, "[[", "ratioGstar"))
+              
+              
+              
               ##set up the list for the final fits
               fitDLEList <- lapply(resultList,"[[","fitDLE")
               fitEffList <- lapply(resultList,"[[","fitEff")
@@ -2155,6 +2208,20 @@ setMethod("simulate",
               ## return the results in the Simulations class object
               ret <- PseudoDualSimulations(data=dataList,
                                            doses=recommendedDoses,
+                                           FinalTDtargetDuringTrialEstimates=TDtargetDuringTrialList,
+                                           FinalTDtargetEndOfTrialEstimates=TDtargetEndOfTrialList,
+                                           FinalTDtargetDuringTrialAtDoseGrid=TDtargetDuringTrialDoseGridList,
+                                           FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
+                                           FinalCIs=CIList,
+                                           FinalRatios=ratioList,
+                                           FinalGstarEstimates=GstarList,
+                                           FinalGstarAtDoseGrid=GstarAtDoseGridList,
+                                           FinalGstarCIs=CIGstarList,
+                                           FinalGstarRatios=ratioGstarList,
+                                           FinalTDEOTCIs=CITDEOTList,
+                                           FinalTDEOTRatios=ratioTDEOTList,
+                                           FinalOptimalDose=OptimalDoseList,
+                                           FinalOptimalDoseAtDoseGrid= OptimalDoseAtDoseGridList,
                                            fit=fitDLEList,
                                            fitEff=fitEffList,
                                            sigma2est=sigma2Estimates,
@@ -2467,9 +2534,13 @@ setMethod("simulate",
                     
                     ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
                     
-                    thisCITDEOT <- NEXT$CITDEOT
+                    thisCITDEOT <- list(lower=NEXT$CITDEOT[1],
+                                        upper=NEXT$CITDEOT[2])
+                    
                     thisratioTDEOT <- NEXT$ratioTDEOT
-                    thisCIGstar <- NEXT$CIGstar
+                    thisCIGstar <- list(lower=NEXT$CIGstar[1],
+                                        upper=NEXT$CIGstar[2])
+                    
                     thisratioGstar <- NEXT$ratioGstar
                     ## Find the optimal dose
                     OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
@@ -2516,6 +2587,7 @@ setMethod("simulate",
                          GstarAtDoseGrid=thisGstarAtDoseGrid,
                          Recommend=Recommend,
                          OptimalDose=OptimalDose,
+                         OptimalDoseAtDoseGrid=Recommend,
                          ratio=thisratio,
                          CI=thisCI,
                          ratioGstar=thisratioGstar,
@@ -2571,6 +2643,47 @@ setMethod("simulate",
                 ## the vector of sigma2betaW estimates
                 sigma2betaWEstimates <- as.numeric(sapply(resultList, "[[", "sigma2betaWest"))
                 
+                ##set up list for the final TD during Trial Estimate
+                TDtargetDuringTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrial"))
+                
+                ##set up list for the final TD End of Trial Estimate
+                TDtargetEndOfTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrial"))
+                
+                ## set up list for the final TD during Trial estimate at dose Grid
+                TDtargetDuringTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrialAtDoseGrid"))
+                
+                ## set up list for the final TD End Of Trial estimate at dose Grid
+                TDtargetEndOfTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialAtDoseGrid"))
+                
+                ##set up list for the final Gstar estimates
+                GstarList <- as.numeric(sapply(resultList,"[[","Gstar"))
+                
+                ##set up list for the final Gstar estimates at dose grid
+                GstarAtDoseGridList <- as.numeric(sapply(resultList,"[[","GstarAtDoseGrid"))
+                
+                ##set up list for final optimal dose estimates
+                OptimalDoseList <- as.numeric(sapply(resultList,"[[","OptimalDose"))
+                
+                ##set up list for final optimal dose estimates at dose Grid
+                OptimalDoseAtDoseGridList <- as.numeric(sapply(resultList,"[[","Recommend"))
+                
+                ##Set up the list for the final 95% CI obtained
+                CIList <- lapply(resultList,"[[","CI")
+                
+                ##Set up the list for the final ratios obtained
+                ratioList<- as.numeric(sapply(resultList, "[[", "ratio"))
+                
+                ##Set up the list for the final 95% CI of the TDtarget End Of Trial obtained
+                CITDEOTList <- lapply(resultList,"[[","CITDEOT")
+                
+                ##Set up the list for the final ratios of the TDtarget End Of Trial obtained
+                ratioTDEOTList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
+                
+                ##Set up the list for the final 95% CI of the Gstar obtained
+                CIGstarList <- lapply(resultList,"[[","CIGstar")
+                
+                ##Set up the list for the final ratios of the Gstar obtained
+                ratioGstarList<- as.numeric(sapply(resultList, "[[", "ratioGstar"))
                 
                 ## the reasons for stopping
                 stopReasons <- lapply(resultList, "[[", "stop")
@@ -2578,6 +2691,20 @@ setMethod("simulate",
                 ## return the results in the Simulations class object
                 ret <- PseudoDualFlexiSimulations(data=dataList,
                                                   doses=recommendedDoses,
+                                                  FinalTDtargetDuringTrialEstimates=TDtargetDuringTrialList,
+                                                  FinalTDtargetEndOfTrialEstimates=TDtargetEndOfTrialList,
+                                                  FinalTDtargetDuringTrialAtDoseGrid=TDtargetDuringTrialDoseGridList,
+                                                  FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
+                                                  FinalCIs=CIList,
+                                                  FinalRatios=ratioList,
+                                                  FinalGstarEstimates=GstarList,
+                                                  FinalGstarAtDoseGrid=GstarAtDoseGridList,
+                                                  FinalGstarCIs=CIGstarList,
+                                                  FinalGstarRatios=ratioGstarList,
+                                                  FinalTDEOTCIs=CITDEOTList,
+                                                  FinalTDEOTRatios=ratioTDEOTList,
+                                                  FinalOptimalDose=OptimalDoseList,
+                                                  FinalOptimalDoseAtDoseGrid= OptimalDoseAtDoseGridList,
                                                   fit=fitDLEList,
                                                   fitEff=fitEffList,
                                                   sigma2est=sigma2Estimates,
@@ -2817,9 +2944,14 @@ setMethod("simulate",
                   Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
                   ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
                   
-                  thisCITDEOT <- NEXT$CITDEOT
+                  thisCITDEOT <- list(lower=NEXT$CITDEOT[1],
+                                      upper=NEXT$CITDEOT[2])
+                  
                   thisratioTDEOT <- NEXT$ratioTDEOT
-                  thisCIGstar <- NEXT$CIGstar
+                  
+                  thisCIGstar <- list(lower=NEXT$CIGstar[1],
+                                      upper=NEXT$CIGstar[2])
+                  
                   thisratioGstar <- NEXT$ratioGstar
                   ## Find the optimal dose
                   OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
@@ -2864,6 +2996,7 @@ setMethod("simulate",
                                    GstarAtDoseGrid=thisGstarAtDoseGrid,
                                    Recommend=Recommend,
                                    OptimalDose=OptimalDose,
+                                   OptimalDoseAtDoseGrid=Recommend,
                                    ratio=thisratio,
                                    CI=thisCI,
                                    ratioGstar=thisratioGstar,
@@ -2906,6 +3039,48 @@ setMethod("simulate",
               ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "Recommend"))
               
+              ##set up list for the final TD during Trial Estimate
+              TDtargetDuringTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrial"))
+              
+              ##set up list for the final TD End of Trial Estimate
+              TDtargetEndOfTrialList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrial"))
+              
+              ## set up list for the final TD during Trial estimate at dose Grid
+              TDtargetDuringTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetDuringTrialAtDoseGrid"))
+              
+              ## set up list for the final TD End Of Trial estimate at dose Grid
+              TDtargetEndOfTrialDoseGridList<- as.numeric(sapply(resultList, "[[", "TDtargetEndOfTrialAtDoseGrid"))
+              
+              ##set up list for the final Gstar estimates
+              GstarList <- as.numeric(sapply(resultList,"[[","Gstar"))
+              
+              ##set up list for the final Gstar estimates at dose grid
+              GstarAtDoseGridList <- as.numeric(sapply(resultList,"[[","GstarAtDoseGrid"))
+              
+              ##set up list for final optimal dose estimates
+              OptimalDoseList <- as.numeric(sapply(resultList,"[[","OptimalDose"))
+              
+              ##set up list for final optimal dose estimates at dose Grid
+              OptimalDoseAtDoseGridList <- as.numeric(sapply(resultList,"[[","Recommend"))
+              
+              ##Set up the list for the final 95% CI obtained
+              CIList <- lapply(resultList,"[[","CI")
+              
+              ##Set up the list for the final ratios obtained
+              ratioList<- as.numeric(sapply(resultList, "[[", "ratio"))
+              
+              ##Set up the list for the final 95% CI of the TDtarget End Of Trial obtained
+              CITDEOTList <- lapply(resultList,"[[","CITDEOT")
+              
+              ##Set up the list for the final ratios of the TDtarget End Of Trial obtained
+              ratioTDEOTList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
+              
+              ##Set up the list for the final 95% CI of the Gstar obtained
+              CIGstarList <- lapply(resultList,"[[","CIGstar")
+              
+              ##Set up the list for the final ratios of the Gstar obtained
+              ratioGstarList<- as.numeric(sapply(resultList, "[[", "ratioGstar"))
+              
               ##set up the list for the final fits for both DLE and efficacy
               fitDLEList <- lapply(resultList,"[[","fitDLE")
               fitEffList <- lapply(resultList,"[[","fitEff") 
@@ -2918,6 +3093,20 @@ setMethod("simulate",
               ## return the results in the Simulations class object
               ret <- PseudoDualSimulations(data=dataList,
                                            doses=recommendedDoses,
+                                           FinalTDtargetDuringTrialEstimates=TDtargetDuringTrialList,
+                                           FinalTDtargetEndOfTrialEstimates=TDtargetEndOfTrialList,
+                                           FinalTDtargetDuringTrialAtDoseGrid=TDtargetDuringTrialDoseGridList,
+                                           FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
+                                           FinalCIs=CIList,
+                                           FinalRatios=ratioList,
+                                           FinalGstarEstimates=GstarList,
+                                           FinalGstarAtDoseGrid=GstarAtDoseGridList,
+                                           FinalGstarCIs=CIGstarList,
+                                           FinalGstarRatios=ratioGstarList,
+                                           FinalTDEOTCIs=CITDEOTList,
+                                           FinalTDEOTRatios=ratioTDEOTList,
+                                           FinalOptimalDose=OptimalDoseList,
+                                           FinalOptimalDoseAtDoseGrid=OptimalDoseAtDoseGridList,
                                            fit=fitDLEList,
                                            fitEff=fitEffList,
                                            sigma2est=sigma2Estimates,
