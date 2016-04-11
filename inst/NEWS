@@ -1,5 +1,9 @@
-version 0.2.0
+Version 0.2.0
 --------------------------------------------------------------------------------
+
+* Added arguments probmin and probmax to MinimalInformative in order to control
+  the probability threshold at the minimum and maximum dose for the minimally 
+  informative prior
 
 * Values of 95% CI and the corresponding ratio of the upper to the lower limit of this CI
   are displayed in results when using 'nextBest'
