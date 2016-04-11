@@ -1192,6 +1192,21 @@ setMethod("summary",
               ##Find the dose corresponding to the target does end of trial
               targetDoseDuringTrial <- as.numeric(TD(targetDuringTrial))
               
+              ##Find the dose at doseGrid corresponding to the above two quantities
+              targetDoseEndOfTrialAtDoseGrid <- doseGrid[max(which(targetDoseEndOfTrial-doseGrid >= 0))]
+              targetDoseDuringTrialAtDoseGrid <- doseGrid[max(which(targetDoseDuringTrial-doseGrid >= 0))]
+              
+              ##A summary for all TDtargetEndOfTrial dose obtained
+              TDEOTSummary <- summary(object@FinalTDtargetEndOfTrialEstimates)
+              
+              FinalDoseRecSummary <- TDEOTSummary
+              
+              ratioTDEOTSummary <- summary(object@FinalTDEOTRatios)
+              FinalRatioSummary <- ratioTDEOTSummary
+              
+              
+              ##A summary for all TDtargetDuringTrial dose obtained
+              TDDTSummary <- summary(object@FinalTDtargetDuringTrialEstimates)
               ##what are the levels above target End of Trial?
               xAboveTargetEndOfTrial <- which(trueDLE > targetEndOfTrial)
               
@@ -1219,6 +1234,9 @@ setMethod("summary",
               ## dose most often selected as MTD
               doseMostSelected <-
                 as.numeric(names(which.max(table(doseSelected))))
+              
+              #doseRec <- doseMostSelected
+              
               xMostSelected <-
                 match(doseMostSelected,
                       table=doseGrid)
@@ -1261,13 +1279,12 @@ setMethod("summary",
               
               
               ## Proportion of trials selecting target TDEndOfTrial and TDDuringTrial
-              TDtargetEndOfTrialAtDoseGrid<- doseGrid[max(which(targetDoseEndOfTrial-doseGrid >=0))]
-              
-              TDtargetDuringTrialAtDoseGrid<- doseGrid[max(which(targetDoseDuringTrial-doseGrid >=0))]
               nsim <- length(object@data)
               
-              propAtTargetEndOfTrial <- (length(which(object@doses==TDtargetEndOfTrialAtDoseGrid)))/nsim
-              propAtTargetDuringTrial <- (length(which(object@doses==TDtargetDuringTrialAtDoseGrid)))/nsim
+              propAtTargetEndOfTrial <- (length(which(object@doses==targetDoseEndOfTrialAtDoseGrid)))/nsim
+              propAtTargetDuringTrial <- (length(which(object@doses==targetDoseDuringTrialAtDoseGrid)))/nsim
+              
+              RecDoseSummary <- TDEOTSummary
               
               ##fitted probDLE at dose most often selected
               ##find names in the fit list (check it is with or without samples)
@@ -1326,11 +1343,19 @@ setMethod("summary",
                 targetDoseEndOfTrial=targetDoseEndOfTrial,
                 targetDuringTrial=targetDuringTrial,
                 targetDoseDuringTrial=targetDoseDuringTrial,
+                targetDoseEndOfTrialAtDoseGrid=targetDoseEndOfTrialAtDoseGrid,
+                targetDoseDuringTrialAtDoseGrid=targetDoseDuringTrialAtDoseGrid,
+                TDEOTSummary=TDEOTSummary,
+                TDDTSummary=TDDTSummary,
+                FinalDoseRecSummary=FinalDoseRecSummary,
+                ratioTDEOTSummary=ratioTDEOTSummary,
+                FinalRatioSummary=FinalRatioSummary,
                 nsim=length(object@data),
                 propDLE=propDLE,
                 meanToxRisk=meanToxRisk,
                 doseSelected=doseSelected,
                 doseMostSelected=doseMostSelected,
+                #doseRec=doseRec,
                 obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
                 nObs=nObs,
                 nAboveTargetEndOfTrial=nAboveTargetEndOfTrial,
@@ -1371,55 +1396,66 @@ setMethod("show",
                   r$dfSave(object@nsim, "nsim"),
                   "simulations\n\n")
               
-              cat("Target prob of DLE End of trial was",
+              cat("Target probability of DLE p(DLE) used at the end of a trial was",
                   r$dfSave(object@targetEndOfTrial * 100,
                            "targetEndOfTrial"),"%\n")
               
-              cat("Target dose End of Trial was",
+              cat("The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was",
                   r$dfSave(object@targetDoseEndOfTrial,
                            "targetDoseEndOfTrial"),"\n")
+              cat("TDEOT at dose Grid was",
+                  r$dfSave(object@targetDoseEndOfTrialAtDoseGrid,
+                           "targetDoseEndOfTrialAtDoseGrid"),"\n")
               
-              cat("Target prob of DLE during trial was",
+              cat("Target p(DLE) used during a trial was",
                   r$dfSave(object@targetDuringTrial * 100,
                            "targetDuringTrial"),"%\n")
               
-              cat("Target dose during Trial was",
+              cat("The dose level corresponds to the target p(DLE) used during a trial, TDDT, was",
                   r$dfSave(object@targetDoseDuringTrial,
                            "targetDoseDuringTrial"),"\n")
+              
+              cat("TDDT at dose Grid was",
+                  r$dfSave(object@targetDoseDuringTrialAtDoseGrid,
+                           "targetDoseDuringTrialAtDoseGrid"),"\n")
               
               r$report("nObs",
                        "Number of patients overall",
                        percent=FALSE)
               r$report("nAboveTargetEndOfTrial",
-                       "Number of patients treated above target End of Trial",
+                       "Number of patients treated above the target p(DLE) used at the end of a trial",
                        percent=FALSE)
               
               r$report("nAboveTargetDuringTrial",
-                       "Number of patients treated above target during trial",
+                       "Number of patients treated above the target p(DLE) used during a trial",
                        percent=FALSE)
               
               r$report("propDLE",
-                       "Proportions of DLE in the trials")
+                       "Proportions of observed DLT in the trials")
               r$report("meanToxRisk",
                        "Mean toxicity risks for the patients")
               r$report("doseSelected",
-                       "Doses selected as MTD (TD End of Trial)",
+                       "Doses selected as TDEOT",
                        percent=FALSE, digits=1)
-              r$report("toxAtDosesSelected",
-                       "True toxicity at doses selected")
+              #r$report("doseRec",
+              #         "Doses to recommend to subsequent study",
+              #         percent=FALSE, digits=1)
               
-              cat("Proportion of trials selecting target End of Trial:",
+              r$report("toxAtDosesSelected",
+                       "True toxicity at TDEOT")
+              
+              cat("Proportion of trials selecting the TDEOT:",
                   r$dfSave(object@propAtTargetEndOfTrial * 100,
                            "percentAtTarget"),
                   "%\n")
+            
               
-              
-              cat("Proportion of trials selecting target During Trial:",
+              cat("Proportion of trials selecting the TDDT:",
                   r$dfSave(object@propAtTargetDuringTrial * 100,
                            "percentAtTarget"),
                   "%\n")
               
-              cat("Dose most often selected as MTD (TDEndOfTrial):",
+              cat("Dose most often selected as TDEOT:",
                   r$dfSave(object@doseMostSelected,
                            "doseMostSelected"),
                   "\n")
@@ -1430,6 +1466,71 @@ setMethod("show",
               r$report("fitAtDoseMostSelected",
                        "Fitted probabilities of DLE at dose most often selected")
               
+              TDEOTSum <- object@TDEOTSummary
+              
+              r$dfSave(as.numeric(TDEOTSum[1]),"TDEOTMin")
+              r$dfSave(as.numeric(TDEOTSum[2]),"TDEOTlower")
+              r$dfSave(as.numeric(TDEOTSum[3]),"TDEOTMedian")
+              r$dfSave(as.numeric(TDEOTSum[4]),"TDEOTMean")
+              r$dfSave(as.numeric(TDEOTSum[5]),"TDEOTUpper")
+              r$dfSave(as.numeric(TDEOTSum[6]),"TDEOTMax")
+              
+              cat("The summary table of the final TDEOT across all simulations\n",
+                  capture.output(TDEOTSum)[1],"\n",
+                  capture.output(TDEOTSum)[2],"\n")
+              
+              TDDTSum <- object@TDDTSummary
+              
+              r$dfSave(as.numeric(TDDTSum[1]),"TDDTMin")
+              r$dfSave(as.numeric(TDDTSum[2]),"TDDTlower")
+              r$dfSave(as.numeric(TDDTSum[3]),"TDDTMedian")
+              r$dfSave(as.numeric(TDDTSum[4]),"TDDTMean")
+              r$dfSave(as.numeric(TDDTSum[5]),"TDDTUpper")
+              r$dfSave(as.numeric(TDDTSum[6]),"TDDTMax")
+              
+              cat("The summary table of the final TDDT across all simulations\n",
+                  capture.output(TDDTSum)[1],"\n",
+                  capture.output(TDDTSum)[2],"\n")  
+              
+              FinalDoseRecSum <- object@FinalDoseRecSummary
+              
+              r$dfSave(as.numeric(FinalDoseRecSum[1]),"FinalDoseRecMin")
+              r$dfSave(as.numeric(FinalDoseRecSum[2]),"FinalDoseReclower")
+              r$dfSave(as.numeric(FinalDoseRecSum[3]),"FinalDoseRecMedian")
+              r$dfSave(as.numeric(FinalDoseRecSum[4]),"FinalDoseRecMean")
+              r$dfSave(as.numeric(FinalDoseRecSum[5]),"FinalDoseRecUpper")
+              r$dfSave(as.numeric(FinalDoseRecSum[6]),"FinalDoseRecMax")
+              
+              cat("The summary table of dose levels to recommend for subsequent study across all simulations\n",
+                  capture.output(FinalDoseRecSum)[1],"\n",
+                  capture.output(FinalDoseRecSum)[2],"\n")
+              
+              ratioTDEOTSum <-object@ratioTDEOTSummary
+              
+              r$dfSave(as.numeric(ratioTDEOTSum[1]),"ratioTDEOTMin")
+              r$dfSave(as.numeric(ratioTDEOTSum[2]),"ratioTDEOTlower")
+              r$dfSave(as.numeric(ratioTDEOTSum[3]),"ratioTDEOTMedian")
+              r$dfSave(as.numeric(ratioTDEOTSum[4]),"ratioTDEOTMean")
+              r$dfSave(as.numeric(ratioTDEOTSum[5]),"ratioTDEOTUpper")
+              r$dfSave(as.numeric(ratioTDEOTSum[6]),"ratioTDEOTMax")
+              
+              cat("The summary table of the final ratios of the TDEOT across all simulations\n",
+                  capture.output(ratioTDEOTSum)[1],"\n",
+                  capture.output(ratioTDEOTSum)[2],"\n")
+              
+              FinalratioSum <-object@FinalRatioSummary
+              
+              r$dfSave(as.numeric(FinalratioSum[1]),"FinalratioMin")
+              r$dfSave(as.numeric(FinalratioSum[2]),"Finalratiolower")
+              r$dfSave(as.numeric(FinalratioSum[3]),"FinalratioMedian")
+              r$dfSave(as.numeric(FinalratioSum[4]),"FinalratioMean")
+              r$dfSave(as.numeric(FinalratioSum[5]),"FinalratioUpper")
+              r$dfSave(as.numeric(FinalratioSum[6]),"FinalratioMax")
+              
+              cat("The summary table of the final ratios of the optimal dose for stopping across 
+                  all simulations\n",
+                  capture.output(FinalratioSum)[1],"\n",
+                  capture.output(FinalratioSum)[2],"\n\n")
               
               ## finally assign names to the df
               ## and return it invisibly
@@ -1881,6 +1982,8 @@ setMethod("summary",
               ## check if special case applies
               isTrueEffFx <- is.function(trueEff)
               
+              TDtargetEndOfTrial <- start@targetDoseEndOfTrial
+              
               
               if (isTrueEffFx) {
                 negtrueGainfn <- function(dose)
@@ -1894,6 +1997,13 @@ setMethod("summary",
               Gstar <- doseGrid[which.max(trueGain)]
               GstarAtDoseGrid <- Gstar
               }
+              
+              ##A summary for all final Gstar obtained
+              GstarSummary <- summary(object@FinalGstarEstimates)
+              ratioGstarSummary <- summary(object@FinalGstarRatios)
+              
+              FinalDoseRecSummary <- summary(object@FinalOptimalDose)
+              FinalRatioSummary <- summary(object@FinalRatios)
               
               
               
@@ -1952,6 +2062,10 @@ setMethod("summary",
                 start,
                 targetGstar=Gstar,
                 targetGstarAtDoseGrid=GstarAtDoseGrid,
+                GstarSummary=GstarSummary,
+                ratioGstarSummary=ratioGstarSummary,
+                FinalDoseRecSummary=FinalDoseRecSummary,
+                FinalRatioSummary=FinalRatioSummary,
                 EffFitAtDoseMostSelected=EffFitAtDoseMostSelected,
                 meanEffFit=meanEffFit)
               
@@ -2029,6 +2143,60 @@ def=
     cat("Target Gstar at dose Grid was",
         r$dfSave(object@targetGstarAtDoseGrid,
                  "targetGstarAtDoseGrid"),"\n")
+    
+    GstarSum <- object@GstarSummary
+    
+    r$dfSave(as.numeric(GstarSum[1]),"GstarMin")
+    r$dfSave(as.numeric(GstarSum[2]),"Gstarlower")
+    r$dfSave(as.numeric(GstarSum[3]),"GstarMedian")
+    r$dfSave(as.numeric(GstarSum[4]),"GstarMean")
+    r$dfSave(as.numeric(GstarSum[5]),"GstarUpper")
+    r$dfSave(as.numeric(GstarSum[6]),"GstarMax")
+    
+    cat("The summary table of the final Gstar across all simulations\n",
+        capture.output(GstarSum)[1],"\n",
+        capture.output(GstarSum)[2],"\n")  
+    
+    FinalDoseRecSum <- object@FinalDoseRecSummary
+    
+    r$dfSave(as.numeric(FinalDoseRecSum[1]),"FinalDoseRecMin")
+    r$dfSave(as.numeric(FinalDoseRecSum[2]),"FinalDoseReclower")
+    r$dfSave(as.numeric(FinalDoseRecSum[3]),"FinalDoseRecMedian")
+    r$dfSave(as.numeric(FinalDoseRecSum[4]),"FinalDoseRecMean")
+    r$dfSave(as.numeric(FinalDoseRecSum[5]),"FinalDoseRecUpper")
+    r$dfSave(as.numeric(FinalDoseRecSum[6]),"FinalDoseRecMax")
+    
+    cat("The summary table of dose levels to recommend for subsequent study across all simulations\n",
+        capture.output(FinalDoseRecSum)[1],"\n",
+        capture.output(FinalDoseRecSum)[2],"\n")
+    
+    ratioGstarSum <-object@ratioGstarSummary
+    
+    r$dfSave(as.numeric(ratioGstarSum[1]),"ratioGstarMin")
+    r$dfSave(as.numeric(ratioGstarSum[2]),"ratioGstarlower")
+    r$dfSave(as.numeric(ratioGstarSum[3]),"ratioGstarMedian")
+    r$dfSave(as.numeric(ratioGstarSum[4]),"ratioGstarMean")
+    r$dfSave(as.numeric(ratioGstarSum[5]),"ratioGstarUpper")
+    r$dfSave(as.numeric(ratioGstarSum[6]),"ratioGstarMax")
+    
+    cat("The summary table of the final ratios of the Gstar across all simulations\n",
+        capture.output(ratioGstarSum)[1],"\n",
+        capture.output(ratioGstarSum)[2],"\n")
+    
+    FinalratioSum <-object@FinalRatioSummary
+    
+    r$dfSave(as.numeric(FinalratioSum[1]),"FinalratioMin")
+    r$dfSave(as.numeric(FinalratioSum[2]),"Finalratiolower")
+    r$dfSave(as.numeric(FinalratioSum[3]),"FinalratioMedian")
+    r$dfSave(as.numeric(FinalratioSum[4]),"FinalratioMean")
+    r$dfSave(as.numeric(FinalratioSum[5]),"FinalratioUpper")
+    r$dfSave(as.numeric(FinalratioSum[6]),"FinalratioMax")
+    
+    cat("The summary table of the final ratios of the optimal dose for stopping across 
+        all simulations\n",
+        capture.output(FinalratioSum)[1],"\n",
+        capture.output(FinalratioSum)[2],"\n")
+    
             
     r$report("EffFitAtDoseMostSelected",
              "Fitted expected efficacy level at dose most often selected",

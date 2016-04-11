@@ -1449,6 +1449,11 @@ setMethod("simulate",
               ##Set up the list for the final ratios obtained
               ratioList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
               
+              ##Set up the list for the final TDEOT 95% CI obtained
+              CITDEOTList <- lapply(resultList,"[[","CITDEOT")
+              
+              ##Set up the list for the final TDEOT ratios obtained
+              ratioTDEOTList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
               
               ## setup the list for the final fits
               fitList <- lapply(resultList, "[[", "fit")
@@ -1466,6 +1471,8 @@ setMethod("simulate",
                                  FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
                                  FinalCIs=CIList,
                                  FinalRatios=ratioList,
+                                 FinalTDEOTCIs=CITDEOTList,
+                                 FinalTDEOTRatios=ratioTDEOTList,
                                  stopReasons=stopReasons,
                                  seed=RNGstate)
               
@@ -1748,7 +1755,11 @@ setMethod("simulate",
               ##Set up the list for the final ratios obtained
               ratioList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
               
+              ##Set up the list for the final TDEOT 95% CI obtained
+              CITDEOTList <- lapply(resultList,"[[","CITDEOT")
               
+              ##Set up the list for the final TDEOT ratios obtained
+              ratioTDEOTList<- as.numeric(sapply(resultList, "[[", "ratioTDEOT"))
               ##set up the list for the final fits
               
               fitList <- lapply(resultList,"[[", "fit")
@@ -1766,6 +1777,8 @@ setMethod("simulate",
                                        FinalTDtargetEndOfTrialAtDoseGrid=TDtargetEndOfTrialDoseGridList,
                                        FinalCIs=CIList,
                                        FinalRatios=ratioList,
+                                       FinalTDEOTCIs=CITDEOTList,
+                                       FinalTDEOTRatios=ratioTDEOTList,
                                        stopReasons=stopReasons,
                                        seed=RNGstate)
               
