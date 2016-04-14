@@ -5,7 +5,10 @@
 %% later to include the paper as vignette use:
 %% \documentclass[nojss]{jss}
 
-\usepackage{todonotes}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\presetkeys%
+    {todonotes}%
+    {inline,backgroundcolor=yellow}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -187,7 +190,7 @@ discussion (Section~\ref{sec:discussion}).
 For describing the framework of the package we will adapt the general notation
 in \cite{Thall2010}. Before we start, we have to install and subsequently load
 our package in R:
-<<start, echo=FALSE>>=
+<<start, warning=FALSE>>=
 library("crmPack")
 @
 As indicated in the startup message, try \code{crmPackHelp()} and
@@ -200,7 +203,7 @@ Let $x$ denote one specific treatment, chosen from the set
 of possible treatments ${\cal X}$. This could be one specific dose, but also
 more generally a vector, containing for example doses of multiple drugs in a
 combination trial. After giving treatment $x$ to a patient, the outcome $y$
-is observed, typically a safety measurement as e.g.\ the binary DLT $y \in \{0,
+is observed, typically a safety endpoint as e.g.\ the binary DLT $y \in \{0,
 1\}$. Grouping together $n_{j}$ patients in cohort $j$, generating the cohort
 $j$ data ${\cal C}_{j} = \{(x_{j}, y_{j,1}), \dotsc, (x_{j},
 y_{j,n_{j}})\}$, we can denote the data generated from the first $N$ cohorts as
@@ -224,8 +227,8 @@ hyperparameters $\xi$.
 In \pkg{crmPack} the virtual S4 class \code{AllModels} encapsulates this
 notion and subclasses implement concrete models.
 
-One popular example \citep{Neuenschwander2008} is the logistic regression model
-with
+For example, the class \code{LogisticLogNormal} implements
+the logistic regression model \citep{Neuenschwander2008} with
 \begin{equation}
 \label{eq:LogisticLogNormal}
 \mathrm{logit}(\Prob(Y=1 \given x,\theta))
@@ -233,7 +236,7 @@ with
 = \alpha + \beta \log\left(\frac{x}{x^*}\right),
 \end{equation}
 parameter vector $\theta = (\alpha,\beta)$, dose $x > 0$ and specified
-reference dose $x^{*}$. The prior $p(\theta \given \xi)$ is typically specified
+reference dose $x^{*}$. The prior $p(\theta \given \xi)$ is specified
 via a bivariate normal distribution on a transformation of $\theta$ to ensure
 $\beta > 0$:
 \begin{equation}
@@ -242,28 +245,12 @@ $\beta > 0$:
 \end{equation}
 with hyperparameters $\xi = (\mu, \Sigma)$ consisting of the prior mean vector
 $\mu$ and the prior covariance matrix $\Sigma$.
-%
-In \pkg{crmPack} the class \code{LogisticLogNormal} can be used, for example:
-<<Model-example>>=
-model <- LogisticLogNormal(mean = c(-0.85, 1),
-                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           refDose = 50)
-@
-Note that, as always, the initialization function is used to create the object.
-Here \code{refDose} takes the reference dose $x^{*} = 50$, \code{mean} the prior
-mean vector $\mu = (-0.85, 1)$ and \code{cov} the prior covariance matrix
-$\Sigma=
-\left(\begin{smallmatrix}
-  1 & -0.5 \\
-  -0.5 & 1
-\end{smallmatrix}\right).
-$
 
 \paragraph{Decision making for the next dose}
 \label{sec:frame:decision-making}
 %
 The other core elements of a dose escalation design concern the decision making
-for the next dose $x_{N+1}$ to be tested in the next cohort. In the
+for the next dose $x_{N+1}$ to be tested in the next cohort $N+1$. In the
 \cite{Thall2010} notation, the function $\alpha$ is mapping the currently
 accumulated data $\mathcal{D}_{N}$ to the dose space $\mathcal{X}$ (or to dose
 $0$, meaning to stop the trial because all doses are too toxic):
@@ -272,9 +259,9 @@ $0$, meaning to stop the trial because all doses are too toxic):
 \end{equation}
 This mapping is commonly specified via the combination of two elements:
 The first element is a function $\tau$ for the maximum increments between dose
-levels, which can calculate from the current data $\mathcal{D}_{N}$ and current
-dose $x_{N}$ the maximum possible next dose $t_{N+1}=\tau(\mathcal{D}_{N},
-x_{N})$ for the next cohort. The second element is a rule $\nu$ indirectly
+levels, which can calculate from the current data $\mathcal{D}_{N}$ (including the
+current dose $x_{N}$) the maximum possible next dose $t_{N+1}=\tau(\mathcal{D}_{N})$ 
+for the next cohort. The second element is a rule $\nu$ indirectly
 acting on the current data through the posterior distribution $p(\theta \given
 \mathcal{D}_{N})$ and the maximum possible dose $t_{N+1}$ to finally give the
 next dose $x_{N+1} = \nu(p(\theta \given \mathcal{D}_{N}), t_{N+1})$.
@@ -297,8 +284,12 @@ As noted in \cite{Thall2010}, the operating characteristics of such a complex
 dose escalation design can only be evaluated by simulations. This can be done
 using the \code{simulate} methods for the design classes, and is recommended to
 be performed for a multitude of different scenarios in order to stress-test the
-design and to convince oneself of its properties. In addition, the
-\code{examine} method evaluates hypothetical trial outcomes and lists the
+design and to convince oneself of its properties.
+%
+In particular, the operating characteristics reveal whether the MTD can be 
+estimated well by the designs. 
+%
+In addition, the \code{examine} method evaluates hypothetical trial outcomes and lists the
 resulting trial decisions (dose for the next cohort and trial end).
 
 In order to illustrate the use of this object-oriented framework, the next
@@ -307,10 +298,9 @@ as an example for creating new extensions.
 
 \section{Using crmPack}\label{sec:using}
 
-We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd.
-\todo{do we need a reference here?} For each patient, we observed a binary
-safety (DLT) and a continuous efficacy outcome.
-% The DLT response is equal to 1 if any abnormal symptom is observed and 0 otherwise.
+We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd.\ 
+\todo{do we need a reference here?} in order to illustrate the functionality.
+For each patient, we observed a binary safety (DLT) and a continuous efficacy outcome.
 In Section~\ref{subsec:crmtrial} we will show how to implement a CRM design for
 dose escalation based on the safety endpoint only, while in
 Section~\ref{subsec:dualendpoint} also the efficacy endpoint is considered.
@@ -322,20 +312,18 @@ functionality.
 
 Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a
 novel agent are available, defining our dose grid $\mathcal{X} = \{25, 50,
-\dotsc, 300\}$, with $x_{1} = 25$ mg being our starting dose. Our primary
-objective in conducting the dose escalation study is to characterize the
-dose-toxicity relationship and to estimate the MTD. We choose to use in this
+\dotsc, 300\}$, with $x_{1} = 25$ mg being our starting dose. We choose to use in this
 case a logistic regression with likelihood~\eqref{eq:LogisticLogNormal} and
 prior~\eqref{eq:bivariateNormal}.
 
-\paragraph{Logistic regression model with minimally informative prior}
+\paragraph{Minimally informative prior}
 %% A fundamental component of any Bayesian approach is the \emph{Prior}
 %% distribution for the model parameters, in this case $\alpha$ and $\beta$, which
 %% need to be defined.
-If previous studies on the same or similar compounds are available, one could
-think of using an informative prior, and specify the prior parameters manually
-as shown in Section~\ref{sec:frame:model}. Here we assume only very limited
-information is available and we use a \emph{minimally informative prior}
+% If previous studies on the same or similar compounds are available, one could
+% think of using an informative prior, and specify the prior parameters manually
+% as shown in Section~\ref{sec:frame:model}. 
+Here we assume not enough prior information is available on the dose-toxicity relationship, and hence would like to use a \emph{minimally informative prior}
 \citep{Neuenschwander2008} which can be easily obtained with the function
 \code{MinimalInformative}: \todo{Below max.time=1. Once the paper is finalized
   we could change it into max.time=300}
@@ -350,11 +338,10 @@ minInfModel <-
                      threshmin=0.1, threshmax=0.2, seed=432,
                      control=list(threshold.stop=0.05,max.time=1))
 model <- minInfModel$model
-model@mean
-model@cov
+class(model)
 @
 
-The resulting model with prior parameters $\mu = (\Sexpr{round(model@mean[1], 2)},
+The resulting \code{model} with prior parameters $\mu = (\Sexpr{round(model@mean[1], 2)},
 \Sexpr{round(model@mean[2], 2)})$ and
 $\Sigma=
 \left(\begin{smallmatrix}
@@ -365,8 +352,7 @@ $
 will approximately have 5\% probability each for the DLT
 rate to exceed 10\% (\code{threshmin} argument) at the 25~mg dose and to be below 20\%
 (\code{threshmax}) at the 300~mg dose. Since stochastic optimization is used
-internally, setting of a seed is highly recommended.
-
+internally, setting of a seed is required for reproducibility.
 %% The result \texttt{minInfModel} is a list with the element \code{model} being an
 %% object of class \code{LogisticLogNormal}.$
 
@@ -374,12 +360,12 @@ internally, setting of a seed is highly recommended.
 In this simple case of a univariate dose $x$ resulting in binary DLT
 observations $y$, the S4 class \code{Data} can be used. Objects of this class
 can be created by calling the accompanying initialization function of the same
-name:
+name (which is a general convention in \pkg{crmPack}):
 
 <<init-Data>>=
-data <- Data(x=c(25,25,25,50,50,50,100,100,100),
-             y=c(0,0,0,0,0,0,0,0,1),
-             cohort=c(1,1,1,2,2,2,3,3,3),
+data <- Data(x=c(25, 25, 25, 50, 50, 50, 100, 100, 100),
+             y=c(0, 0, 0, 0, 0, 0, 0, 0, 1),
+             cohort=c(1, 1, 1, 2, 2, 2, 3, 3, 3),
              doseGrid=seq(25, 300, 25),
              ID=1:9)
 @
@@ -411,11 +397,10 @@ set.seed(94)
 samples <- mcmc(data, model, options)
 @
 
-On the DLT rate scale the distribution can be visualized by supplying
-the samples, model and data to the generic \code{plot} function, which generates
-the posterior mean curve and 95\% equi-tailed credible intervals at each point
-of the dose grid. Note that you can also produce a similar plot without any
-data, which is giving the prior:
+The posterior mean curve and 95\% equi-tailed credible interval curves for the 
+DLT rates can be obtained by supplying
+the samples, model and data to the generic \code{plot} function. Similarly we can 
+also produce a similar plot without any data, which is giving the prior:
 
 <<plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center'>>=
 plot(samples, model, data) + ggtitle("Posterior")
@@ -424,59 +409,59 @@ emptydata <- Data(doseGrid=data@doseGrid)
 priorsamples <- mcmc(emptydata, model, options)
 plot(priorsamples, model, emptydata) + ggtitle("Prior")
 @
+As illustrated here, the plots can be customized by using the \pkg{ggplot2} 
+functionality.
 
 
-\subsubsection*{Rules for dose escalation}
-In this section we present rules for dose escalation, including how to choose the dose for the next cohort and how to decide when to stop the study.
-
-We start by defining our \texttt{increment} rules, with the function \code{IncrementsRelative}, and we decide to allow maximum dose increase of: 100\% for doses below 100 mg, 50\% for doses in the range [100,200) and 33\% for doses equal or above 200 mg. Based on this rule, the maximum allowed dose increase, given our current data, can be obtained with the function \code{maxDose}:
-
+\paragraph{Decision making for the next dose}
+We can specify the function $\tau$ with maximum relative increments of 100\% for last doses below 100 mg, 50\% for last doses in the range from 100 mg to 200 mg, and 33\% for last doses equal or above 200 mg with the class \code{IncrementsRelative}:
 <<rel-incrs>>=
 myIncrements <- IncrementsRelative(intervals=c(0,100,200), increments=c(1,0.5,0.33))
-nextMaxDose  <- maxDose(myIncrements,data)
-nextMaxDose
+@
+This specific rule can then be evaluated on the current dataset ${\cal D}_{N}$ by 
+the \code{maxDose} function to obtain the maximum next dose $t_{N+1} = \tau({\cal D}_{N})$:
+<<rel-incrs-eval>>=
+(nextMaxDose <- maxDose(myIncrements,data))
 @
 
-We then define the rule for selecting a dose for the next cohort. In this case we would like to select the dose which maximize the probability of the toxicity rate being in the target toxicity range [0.2,0.35], but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}. This rule can be created with the function \code{NextBestNCRM}. Based on this rule, the dose for the next cohort, given our current data, the maximum allowed dose increase as well the posterior samples and the model, can be obtained with the function \code{nextBest}, which would also produce a plot highlighting the next suggested dose:
-
-<<nextBest-ncrm,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
+We then define the function $\nu$ for selecting a dose for the next cohort. In this case we would like to select the dose which maximizes the probability of the DLT rate being in the target toxicity range $[0.2, 0.35]$, but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}, using the \code{NextBestNCRM} class: 
+<<nextBest-ncrm-def>>=
 myNextBest <- NextBestNCRM(target=c(0.2,0.35), overdose=c(0.35, 1),
                            maxOverdoseProb=0.25)
-nextDose <- nextBest(myNextBest,nextMaxDose, samples, model, data)
-nextDose$plot
+@
+This rule can then be evaluated with the function \code{nextBest} to obtain the next dose $x_{N+1}=\nu({\cal D}_{N}, t_{N+1})$:
+<<nextBest-ncrm-eval>>=
+nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
+(nextDoseVal <- nextDoseRes$value)
+@
+The returned list also contains an accompanying plot, showing the target probabilities as green bars, the overdose probabilities as red bars, the maximum dose as vertical dashed black line, the maximum dose with respect to overdosing as vertical dashed red line, and the final dose recommendation with a red triangle:
+<<nextBest-ncrm,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
+nextDoseRes$plot
 @
 
-The number of patients in the next cohort (cohort size) can be defined with rules inheriting from the class \code{CohortSize}. In this case we will use a \texttt{fixed} cohort size of 3 patients throughout the all study with the class \code{CohortSizeConst}. The function \code{size}, provided with the cohort-size rule, the suggested next dose and current data, will then output the size of the next cohort.
-
-<<size-rules>>=
-mySize <- CohortSizeConst(3)
-size(mySize,nextDose$value,data)
+\paragraph{Adaptive stopping of the trial}
+We would like to stop the dose escalation adaptively if the maximum sample size of $n=30$ patients
+has been reached already, or if we have sufficient precision for the MTD estimate, i.e.\ if the probability that the next dose $x_{N+1}$ is in the target toxicity range is above 50\% and for example 9 patients were already dosed within +/- 20\% of it. The corresponding \code{Stopping} class object is constructed by combining the atomic rules with logical operators as follows:
+<<stop-rules-def>>=
+myStopping1 <- StoppingMinPatients(nPatients=30)
+myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
+myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
+myStopping <- myStopping1 | (myStopping2 & myStopping3)
 @
-
-Finally before dosing the next cohort of 3 patients at the recommended next dose of 100 mg, we want to check if the dose escalation can actually be terminated based on our stopping rules. This can be achieved by calling the function \code{stopTrial} requiring an object of class \code{Stopping} containing our stopping rules which we define below. \\
-We would like to stop if:
-
-\begin{itemize}
-  \item 30 patients were already dosed \textbf{OR}
-  \item the probability to be in the target toxicity range is above 50\% \textbf{OR}
-  \item 6 cohorts were already dosed \textbf{AND} 9 patients were dosed within +/- 20\% of the recommended next dose
-\end{itemize}
-
-The output of \code{stopTrial} is of class \code{logical} and in this is case equals \code{FALSE}, meaning that based on our stopping rules the study should continue with the next cohort of 3 patients receiving a dose of 100 mg.
-
-<<stop-rules,results='hide'>>=
-myStopping1 <- StoppingMinCohorts(nCohorts=6)
-myStopping2 <- StoppingMinPatients(nPatients=30)
-myStopping3 <- StoppingTargetProb(target=c(0.2, 0.35),prob=0.5)
-myStopping4 <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
-
-myStopping <- myStopping2 | myStopping3 | (myStopping1 & myStopping4)
-stopTrial(myStopping, nextDose$value, samples, model, data)
+Again, this specific rule can be evaluated by a function, here called \code{stopTrial}, for a specific situation:
+<<stop-rules-eval>>=
+stopTrial(myStopping, nextDoseVal, samples, model, data)
 @
+The result \code{FALSE} means that we cannot yet stop the trial, with the attribute vector giving the results from the atomic stopping rules.
 
+
+% DSB: continue here
 \subsubsection*{Deriving the Operating Characteristic of our CRM Design}
 In the last topic of this section, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class \code{Design}. It contains our model, our rules for dose escalation (\code{Increments}, \code{nextBest}, \code{Stopping} and \code{cohortSize}), the dose grid (in the example below through the object \code{emptydata}) and our starting dose.
-
+In this case we will use a fixed cohort size of 3 patients throughout the study:
+<<size-rules>>=
+mySize <- CohortSizeConst(3)
+@
 <<design-setup>>=
 design <- Design(model=model, nextBest=myNextBest, stopping=myStopping,
                  increments=myIncrements, cohortSize=mySize,
