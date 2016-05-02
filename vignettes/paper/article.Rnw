@@ -311,10 +311,11 @@ functionality.
 \label{subsec:crmtrial}
 
 Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a
-novel agent are available, defining our dose grid $\mathcal{X} = \{25, 50,
-\dotsc, 300\}$, with $x_{1} = 25$ mg being our starting dose. We choose to use in this
-case a logistic regression with likelihood~\eqref{eq:LogisticLogNormal} and
-prior~\eqref{eq:bivariateNormal}.
+novel agent are available in addition to placebo, defining our dose grid 
+$\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}$, with $x_{1} = 0.001$ mg representing 
+placebo (we used a very small dose for placebo instead of zero, since we considered here a 
+logistic regression with likelihood~\eqref{eq:LogisticLogNormal} and
+prior~\eqref{eq:bivariateNormal}) and  $x_{2} = 0.25$ being our starting dose.
 
 \paragraph{Minimally informative prior}
 %% A fundamental component of any Bayesian approach is the \emph{Prior}
@@ -363,24 +364,29 @@ can be created by calling the accompanying initialization function of the same
 name (which is a general convention in \pkg{crmPack}):
 
 <<init-Data>>=
-data <- Data(x=c(25, 25, 25, 50, 50, 50, 100, 100, 100),
-             y=c(0, 0, 0, 0, 0, 0, 0, 0, 1),
-             cohort=c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-             doseGrid=seq(25, 300, 25),
-             ID=1:9)
+PL <- 0.001
+data <- Data(x=c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
+             y=c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),
+             cohort=c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
+             doseGrid=c(PL,seq(25, 300, 25)),
+             ID=1:12, 
+             placebo=TRUE)
 @
 
-The argument \code{x} takes the doses $x_{1}=25, x_{2} = 50, x_{3} = 100$ (note
+The argument \code{x} takes the doses $x_{1}=0.001, $x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
 the repetition to match the outcome variables $y_{j,k}$) where \code{doseGrid}
 captures the set ${\cal X}$ of all possible doses, \code{y} takes the binary
 DLTs (here $y_{3, 3} = 1$ denotes the only DLT having been observed in the 3rd
 patient in the 3rd cohort), while \code{cohort} groups the patients together in
-cohorts (here $N=3$). Patient IDs can be given optionally in the \code{ID}
-argument. The data can then be visualized by simply applying the \code{plot}
-function to the object:
+cohorts (here $N=3$). The option \code{placebo} is used to specify that this is a 
+placebo controlled study, with placebo patients included in each cohort (by definition
+the first dose $x_{1}$ is considered to represent placebo). Patient IDs can be given 
+optionally in the \code{ID} argument. The data can then be visualized by simply applying 
+the \code{plot} function to the object, which allow also to produce a blinded plot with the option \code{blind}:
 
-<<plot-data,fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
+<<plot-data,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center'>>=
 plot(data)
+plot(data,blind=TRUE)
 @
 
 \paragraph{Sampling from the prior and posterior}
@@ -405,7 +411,7 @@ also produce a similar plot without any data, which is giving the prior:
 <<plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center'>>=
 plot(samples, model, data) + ggtitle("Posterior")
 
-emptydata <- Data(doseGrid=data@doseGrid)
+emptydata <- Data(doseGrid=data@doseGrid, placebo=TRUE)
 priorsamples <- mcmc(emptydata, model, options)
 plot(priorsamples, model, emptydata) + ggtitle("Prior")
 @
@@ -458,13 +464,15 @@ The result \code{FALSE} means that we cannot yet stop the trial, with the attrib
 % DSB: continue here
 \subsubsection*{Deriving the Operating Characteristic of our CRM Design}
 In the last topic of this section, we want to show how to assess the performance of a given CRM design. We first need to specify our design by creating an object of class \code{Design}. It contains our model, our rules for dose escalation (\code{Increments}, \code{nextBest}, \code{Stopping} and \code{cohortSize}), the dose grid (in the example below through the object \code{emptydata}) and our starting dose.
-In this case we will use a fixed cohort size of 3 patients throughout the study:
+In this case we will use a fixed cohort size of 3 patients on active and 1 patient on placebo (3+1) throughout the study:
 <<size-rules>>=
 mySize <- CohortSizeConst(3)
+mySize.PL <- CohortSizeConst(1)
 @
 <<design-setup>>=
 design <- Design(model=model, nextBest=myNextBest, stopping=myStopping,
-                 increments=myIncrements, cohortSize=mySize,
+                 increments=myIncrements, 
+                 cohortSize=mySize, PLcohortSize=mySize.PL,
                  data=emptydata,startingDose=25)
 @
 
@@ -478,7 +486,7 @@ examine(design,options)
 For the \texttt{many trials} operating characteristics, we have to define a true scenario, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. Here we use the function contained in the slot \code{prob} of the object \code{model}, for which the dose-toxicity curve is shown below.
 
 <<true-def,fig.width=4,fig.height=4,out.width='.4\\linewidth',fig.align='center'>>=
-myTruth <- function(dose){ model@prob(dose, alpha0=7, alpha1=8)}
+myTruth <- function(dose){ model@prob(dose, alpha0=4.5, alpha1=8)}
 curve(myTruth(x), from=0, to=80, ylim=c(0, 1)) # Plot the True Curve
 @
 
