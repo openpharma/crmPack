@@ -5,6 +5,8 @@
 %% later to include the paper as vignette use:
 %% \documentclass[nojss]{jss}
 
+\newcommand{\tj}[1]{\textcolor{red}{#1}}
+
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \presetkeys%
     {todonotes}%
@@ -20,6 +22,7 @@ options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
 Sys.setenv(TEXINPUTS=getwd(),
            BIBINPUTS=getwd(),
            BSTINPUTS=getwd())
+opts_chunk$set(cache=TRUE)  # to prevent rerunning the code every time
 @
 
 
@@ -58,13 +61,13 @@ Sys.setenv(TEXINPUTS=getwd(),
   (EWOC) designs with possibly advanced prior specifications with e.g. mixtures
   and minimal informative priors, crmPack currently features dual-endpoint
   (safety and biomarker) designs and two-part (SAD followed by MAD part)
-  designs.
+  designs. \tj{I'd also highlight the option for placebo here}
 We introduce crmPack by outlining the design framework and show how easy it is
 to specify a design, run simulations, and report dose recommendations during the
 trial.
 }
-\Keywords{CRM, dose escalation, dual-endpoint design, \proglang{R}}
-\Plainkeywords{CRM, dose escalation, dual-endpoint design, R} %% without formatting
+\Keywords{CRM, model based dose escalation, dual-endpoint design, \proglang{R}, object oriented}
+\Plainkeywords{CRM, model based dose escalation, dual-endpoint design, R, object oriented} %% without formatting
 %% at least one keyword must be supplied
 
 %% publication information
@@ -141,7 +144,7 @@ model-based dose escalation designs like the continual reassessment method
 more efficient and informative Phase I trials. These designs are based in
 statistical inference, with dose-toxicity regression models as the backbone, and
 are therefore flexible for adaptation to various complex trial designs.
-Importantly, they avoid fixing only a few dose levels in advance.
+Importantly, they avoid fixing only a few dose levels in advance. For a wider comparison of algorithmic and model based designs see e.g. \cite{jaki2013}.
 
 However, the wide-spread implementation of such designs has been hindered by the
 need for either licensing specialized commercial software (thus losing
@@ -167,7 +170,6 @@ time-to-event CRM (TITE-CRM) \citep{cheung2000}. Finally the \pkg{bcrm} package
 \citep{sweeting2013} offers a wide range of different dose escalation designs.
 It implements a variety of one and two parameter models, facilitates different
 ways to specify prior distributions, escalation and stopping rules.
-\todo{Thomas: Explicit comparison against R-package bcrm - do we need more here?}
 
 In this paper we introduce the \proglang{R} package \pkg{crmPack} for
 dose escalation studies. This package differs from existing implementations in
