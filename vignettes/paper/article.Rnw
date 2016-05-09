@@ -167,7 +167,7 @@ time-to-event CRM (TITE-CRM) \citep{cheung2000}. Finally the \pkg{bcrm} package
 \citep{sweeting2013} offers a wide range of different dose escalation designs.
 It implements a variety of one and two parameter models, facilitates different
 ways to specify prior distributions, escalation and stopping rules.
-\todo{Thomas: Explicit comparison against R-package bcrm - do we need more here?}
+%% \todo{Thomas: Explicit comparison against R-package bcrm - do we need more here?} -> leave it with that for now
 
 In this paper we introduce the \proglang{R} package \pkg{crmPack} for
 dose escalation studies. This package differs from existing implementations in
@@ -183,18 +183,12 @@ In Section~\ref{sec:framework} we describe the underlying structure of the
 package while Section~\ref{sec:using} provides some examples of the usage of the
 package including how to add a custom method before we conclude with a
 discussion (Section~\ref{sec:discussion}).
-\todo{rework this paragraph in the end}
+\todo{rework this paragraph in the end - or consider dropping it completely}
 
 \section{Framework}\label{sec:framework}
 
 For describing the framework of the package we will adapt the general notation
-in \cite{Thall2010}. Before we start, we have to install and subsequently load
-our package in R:
-<<start, warning=FALSE>>=
-library("crmPack")
-@
-As indicated in the startup message, try \code{crmPackHelp()} and
-\code{crmPackExample()} to open the help page and the package vignette.
+in \cite{Thall2010}. 
 
 \paragraph{Data}
 \label{sec:frame:model}
@@ -298,6 +292,7 @@ as an example for creating new extensions.
 
 \section{Using crmPack}\label{sec:using}
 
+
 We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd.\ 
 \todo{do we need a reference here?} in order to illustrate the functionality.
 For each patient, we observed a binary safety (DLT) and a continuous efficacy outcome.
@@ -306,6 +301,14 @@ dose escalation based on the safety endpoint only, while in
 Section~\ref{subsec:dualendpoint} also the efficacy endpoint is considered.
 Section~\ref{subsec:extending} gives an example on extending the \pkg{crmPack}
 functionality.
+Before we start, we have to install and subsequently load
+our package in R:
+<<start, warning=FALSE>>=
+library("crmPack")
+@
+As indicated in the startup message, try \code{crmPackHelp()} and
+\code{crmPackExample()} to open the help page and the package vignette.
+
 
 \subsection{Implementing a CRM trial}
 \label{subsec:crmtrial}
@@ -315,6 +318,8 @@ novel agent are available, defining our dose grid $\mathcal{X} = \{25, 50,
 \dotsc, 300\}$, with $x_{1} = 25$ mg being our starting dose. We choose to use in this
 case a logistic regression with likelihood~\eqref{eq:LogisticLogNormal} and
 prior~\eqref{eq:bivariateNormal}.
+
+\todo{Giuseppe: use placebo in this Example - stick with the log(dose)}
 
 \paragraph{Minimally informative prior}
 %% A fundamental component of any Bayesian approach is the \emph{Prior}
@@ -521,6 +526,7 @@ A plot of the summary results, giving a bit more details than the textual summar
 
 In this section, the dose escalation procedures where two, the safety and efficacy endpoints are incorporated into the study will be introduced. The safety endpoint is the binary DLTs (dose-limiting toxicity) responses and the efficacy endpoint is the continuous biomarker/efficacy response. In this package, either these two responses are modeled jointly, using a single model class and assuming correlation; or are modeled separately using two separate model classes and assuming no correlation. The procedure where the two endpoints are modeled separately will be described now.
 
+\todo{this is enough, we don't need joint model as well}
 \textbf{Two Endpoints modeled with two dose-response models}
 
 The procedures described below are proposed in \cite{yeung2015}. Two models were used to describe the relationship between the responses and their corresponding dose levels. Assume that a total of $k$ dose levels are considered and they are of ascending order such that $d_{(1)} < ... < d_{(k)}$.\\
