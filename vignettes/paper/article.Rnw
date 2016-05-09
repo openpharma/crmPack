@@ -706,45 +706,21 @@ The results of the simulation can then be plotted and summarized as shown before
 
 One of the big advantages of \pkg{crmPack} over existing implementation in R is its constructed using S4 classes. This allows users to extend the package easily to the specific needs of the study while still being able to utilize the existing classes and methods defined in the package.
 
-In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses of \texttt{AllModels}, \texttt{GeneralModel} or \texttt{ModelPseudo}. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}.
+%In this package, all dose-response models are contained in \texttt{AllModels} class and in either of the two subclasses of \texttt{AllModels}, \texttt{GeneralModel} or \texttt{ModelPseudo}. The models (classes) defined under \texttt{GeneralModel} involved MCMC sampling to obtain estimates for their model parameters where model parameters of models defined under \texttt{ModelPseudo} can be obtained without involving MCMC sampling. Two further subclasses, \texttt{ModelTox}, a class which contains all models for dose-toxicity relationship and \texttt{ModelEff}, a class which contains all model for dose-efficacy relationship are defined under \texttt{ModelPseudo}.
 
-In \citep{oquigley1990}, the continual reassessment method (CRM) is proposed. This is one of the most well-known procedures used in phase I dose escalation trials. Assuming risk of DLTs increases with increasing doses, a one-parameter model is assumed under the CRM to describe the relationship between the binary DLT responses and their corresponding dose levels.
-In the current version of the \pkg{crmPack}, only the two parameter logistic regression model of class \texttt{LogisticIndepBeta} are defined under \texttt{ModelTox} class. An example will be given to demonstrate how the one-parameter model can be implemented into the \pkg{crmPack}. 
-%Users can use similar techniques to set up their own S4 classes and methods to implement into the package.
+In the original continual reassessment method \citep[CRM,][]{oquigley1990} a one-parameter model is used to describe the relationship between the binary DLT responses and their corresponding dose levels. In the current version of the \pkg{crmPack}, only the two parameter logistic regression model of class \texttt{LogisticIndepBeta} is defined in the \texttt{ModelTox} class. Here we will show how the one-parameter model can be added to the package.
 
-Assume $k$ dose levels $d_{(1)} < ...< d_{(k)}$ are considered, the prior guess of the probability of the occurrence of DLTs at dose $d_{(j)}$ for any $j=1,...,k$ is denoted by $\pi_j$ such that $\pi_1 < ...<\pi_k$. The one-parameter power model introduced in \citep{oquigley1990} suggested that the probability of the occurrence of DLTs, $p(d_{(j)})$ at dose $j$ will be given as \begin{equation}
+Assume $k$ dose levels $d_{(1)} < ...< d_{(k)}$ are considered, a prior guess of the probability of the occurrence of DLTs at dose $d_{(j)}$ for any $j=1,...,k$ is denoted by $\pi_j$ such that $\pi_1 < ...<\pi_k$. A one-parameter power model \begin{equation}
 p(d_{(j)}) = \pi^{\theta}_j
 \end{equation}
-for $j=1,...,k$. An exponential distribution with distribution parameter $\lambda$ will be imposed as the prior distribution of the unknown parameter $\theta$. In particular, fixing $\lambda=1$,  the prior is denoted by $\theta \sim {\rm Exp}(1)$
-%with the prior probability density function denoted as
-%\begin{equation}
-%h_0(\theta)= e^{-\theta}
-%\end{equation}.
-In addition, the prior expectation $E_0(\theta)=1/\lambda= 1$ will be taken as the prior estimate of $\theta$.
+for $j=1,...,k$ is used to describe the dose DLE relationship and an exponential distribution with parameter $\lambda=1$ is be imposed as the prior distribution of the unknown parameter $\theta$. In addition, the prior expectation $E_0(\theta)=1/\lambda= 1$ will be taken as the prior estimate of $\theta$.
 
-Given more binary DLT observations and the likelihood function of the prior and the observed DLT responses are known, the posterior likelihood density can be computed using Bayes theorem and is conjugate to the prior.
-Let $\boldsymbol y$ be the vector contain all DLT responses observed.
-%The likelihood of the observation $\boldsymbol y= (y_1,...,y_s)$ for subjects $1,...,s$ % given $\theta$ is given by \begin{equation*}
-%f(\boldsymbol \textbf{y};\theta)= \prod^s_{i=1} (\pi_{d_{(i)}}^{\theta})^{y_i} (1- \pi_{d_{(i)}}^{\theta})^{(1-y_i)}.
-%\end{equation*}
-%By Bayes theorem, we can deduce the probability density function of $\theta$ given the observations $\boldsymbol y$ which is written as
-%\begin{equation*}
-%h(\theta; \boldsymbol y)=\frac{h_0(\theta) f(\boldsymbol y;\theta)}{\int^{\infty}_0 h_0(\theta) f(\boldsymbol y;\theta) \,d\theta}.
-%\end{equation*}
-%This is called the posterior probability density function of $\theta$ given the observations $\boldsymbol y$. `
-%The posterior expectation is then easily deduced from the above expressions as
-%\begin{equation*}
-%E(\theta; \boldsymbol y)=\int^{\infty}_{0} \theta h(\theta;\boldsymbol y) \,d\theta ,
-%\end{equation*}
-
-Then by integrating $\theta$ times the posterior density of $\theta$, the expectation $E(\theta; \boldsymbol y)$ of $\theta$ can be obtained and will be used as the posterior estimate of $\theta$. The posterior probabilities of the occurrence of DLT at each dose levels can be updated using the following equation
+Once DLT status is obtained for patients (denote $\boldsymbol y$) the posterior likelihood density can be computed using Bayes theorem and is conjugate to the prior. From that we can obtain the expectation of $\theta$, $E(\theta; \boldsymbol y)$ and be used as the posterior estimate of $\theta$. The posterior probabilities of a DLT at each dose levels is then updated as
 \begin{equation}
-p(d_{(j)} ; \boldsymbol y) = \pi_j^ {E(\theta; \boldsymbol y)}
+p(d_{(j)} ; \boldsymbol y) = \pi_j^ {E(\theta; \boldsymbol y)} \qquad j=1, \dots, k
 \end{equation}
-for dose $j=1,...,k$.
 
-Then in order to implement the one-parameter model in \pkg{crmPack}, an appropriate class has to be defined. This model will be defined under \texttt{ModelTox} such that instead of using MCMC sampling, the Bayes theorem will be used to obtain posterior estimates.
-The code for defining this model class \texttt{OneParaExponential} consists of the following two sets of codes. First, a S4 model class has to be set up using \code{setClass} command
+To implement this one-parameter model in \pkg{crmPack} we first need to define an appropriate class. We define the model under the \texttt{ModelTox} class so that we can utilize the Bayes theorem will be used to obtain posterior estimates instead of relying on MCMC sampling. \tj{Is this important? How does that impact on simulating?} We can first define the new S4 model class using \code{setClass}
 %\begin{CodeChunk}
 %\begin{CodeInput}
 <<classOnePara>>=
@@ -763,9 +739,9 @@ The code for defining this model class \texttt{OneParaExponential} consists of t
 %\end{CodeInput}
 %\end{CodeChunk}
 
-As \texttt{OneParaExponential} class model is contained in the \texttt{ModelTox} class, it inherits all methods and slots from \texttt{ModelTox} class. The slots for this model have to be defined by users in \code{representation} and the initial value of these slots can also be specified in \code{prototype}.
+Note that since we define the \texttt{OneParaExponential} class to be contained in the \texttt{ModelTox} class, it will inherit all methods and slots from \texttt{ModelTox} class. The slots for this model have to be defined by users in \code{representation} and the initial value of these slots can also be specified in \code{prototype}. \tj{these two should probably also be shown.}
 
-Then a function for this class has to be defined and is given as follow.
+Then a function defining how objects of this class operate \tj{ to do what? This is not the initialisation is it?} for this class has to be defined and is given in the following. \tj{I think this would be greatly simplified if MCMC would be used which for illustrative purposes is probably fine.}
 
 %\begin{CodeChunk}
 %\begin{CodeInput}
@@ -782,25 +758,26 @@ OneParaExponential<- function(priorprobDLT,
     probDLT <- (priorprobDLT)^priormeanTheta
     meanTheta <- priormeanTheta
     } else {
-             f <- function(theta){
-             a1 <- length(data@x)
-             f0 <-1
-             for (j in 1:a1){
-                f0 <- f0 * 
-                      ((priorprobDLT[which(data@x[j]==data@doseGrid)])^theta)^data@y[j] *
-(((1- priorprobDLT[which(data@x[j]==data@doseGrid)])^theta)^(1-data@y[j]))                         }
-                        return(f0)}
-                     ##posterior denisty of theta
-                H <- function(theta){h0(theta)*f(theta)}
-                ##using Bayes theorem to obtain new estimate of the mean theta
-                     ##denominator of the Bayes theorem
-                     denom <- integrate(H,0,Inf)
-                     ##Then for numerator
-                     H2<- function(theta){H(theta)*theta}
-                     numer <- integrate(H2,0,Inf)
-                     meanTheta <- numer$value/denom$value
-                     probDLT <- priorprobDLT^meanTheta
-                     }
+      f <- function(theta){
+      a1 <- length(data@x)
+      f0 <-1
+      for (j in 1:a1){
+        f0 <- f0 * 
+              ((priorprobDLT[which(data@x[j]==data@doseGrid)])^theta)^data@y[j] *
+              (((1- priorprobDLT[which(data@x[j]==data@doseGrid)])^theta)^(1-data@y[j]))                         }
+       return(f0)
+      }
+      ##posterior denisty of theta
+      H <- function(theta){h0(theta)*f(theta)}
+      ##using Bayes theorem to obtain new estimate of the mean theta
+      ##denominator of the Bayes theorem
+     denom <- integrate(H,0,Inf)
+     ##Then for numerator
+     H2<- function(theta){H(theta)*theta}
+     numer <- integrate(H2,0,Inf)
+     meanTheta <- numer$value/denom$value
+     probDLT <- priorprobDLT^meanTheta
+   }
 .OneParaExponential(datanames=c("nObs","y","x"),
                     data=data,
                     priorprobDLT=priorprobDLT,
