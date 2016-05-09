@@ -1479,6 +1479,19 @@ setMethod("show",
                   capture.output(TDEOTSum)[1],"\n",
                   capture.output(TDEOTSum)[2],"\n")
               
+              ratioTDEOTSum <-object@ratioTDEOTSummary
+              
+              r$dfSave(as.numeric(ratioTDEOTSum[1]),"ratioTDEOTMin")
+              r$dfSave(as.numeric(ratioTDEOTSum[2]),"ratioTDEOTlower")
+              r$dfSave(as.numeric(ratioTDEOTSum[3]),"ratioTDEOTMedian")
+              r$dfSave(as.numeric(ratioTDEOTSum[4]),"ratioTDEOTMean")
+              r$dfSave(as.numeric(ratioTDEOTSum[5]),"ratioTDEOTUpper")
+              r$dfSave(as.numeric(ratioTDEOTSum[6]),"ratioTDEOTMax")
+              
+              cat("The summary table of the final ratios of the TDEOT across all simulations\n",
+                  capture.output(ratioTDEOTSum)[1],"\n",
+                  capture.output(ratioTDEOTSum)[2],"\n")
+              
               TDDTSum <- object@TDDTSummary
               
               r$dfSave(as.numeric(TDDTSum[1]),"TDDTMin")
@@ -1501,22 +1514,10 @@ setMethod("show",
               r$dfSave(as.numeric(FinalDoseRecSum[5]),"FinalDoseRecUpper")
               r$dfSave(as.numeric(FinalDoseRecSum[6]),"FinalDoseRecMax")
               
-              cat("The summary table of dose levels to recommend for subsequent study across all simulations\n",
+              cat("The summary table of dose levels, the optimal dose\n to recommend for subsequent study across all simulations\n",
                   capture.output(FinalDoseRecSum)[1],"\n",
                   capture.output(FinalDoseRecSum)[2],"\n")
               
-              ratioTDEOTSum <-object@ratioTDEOTSummary
-              
-              r$dfSave(as.numeric(ratioTDEOTSum[1]),"ratioTDEOTMin")
-              r$dfSave(as.numeric(ratioTDEOTSum[2]),"ratioTDEOTlower")
-              r$dfSave(as.numeric(ratioTDEOTSum[3]),"ratioTDEOTMedian")
-              r$dfSave(as.numeric(ratioTDEOTSum[4]),"ratioTDEOTMean")
-              r$dfSave(as.numeric(ratioTDEOTSum[5]),"ratioTDEOTUpper")
-              r$dfSave(as.numeric(ratioTDEOTSum[6]),"ratioTDEOTMax")
-              
-              cat("The summary table of the final ratios of the TDEOT across all simulations\n",
-                  capture.output(ratioTDEOTSum)[1],"\n",
-                  capture.output(ratioTDEOTSum)[2],"\n")
               
               FinalratioSum <-object@FinalRatioSummary
               
@@ -2155,20 +2156,7 @@ def=
     
     cat("The summary table of the final Gstar across all simulations\n",
         capture.output(GstarSum)[1],"\n",
-        capture.output(GstarSum)[2],"\n")  
-    
-    FinalDoseRecSum <- object@FinalDoseRecSummary
-    
-    r$dfSave(as.numeric(FinalDoseRecSum[1]),"FinalDoseRecMin")
-    r$dfSave(as.numeric(FinalDoseRecSum[2]),"FinalDoseReclower")
-    r$dfSave(as.numeric(FinalDoseRecSum[3]),"FinalDoseRecMedian")
-    r$dfSave(as.numeric(FinalDoseRecSum[4]),"FinalDoseRecMean")
-    r$dfSave(as.numeric(FinalDoseRecSum[5]),"FinalDoseRecUpper")
-    r$dfSave(as.numeric(FinalDoseRecSum[6]),"FinalDoseRecMax")
-    
-    cat("The summary table of dose levels to recommend for subsequent study across all simulations\n",
-        capture.output(FinalDoseRecSum)[1],"\n",
-        capture.output(FinalDoseRecSum)[2],"\n")
+        capture.output(GstarSum)[2],"\n") 
     
     ratioGstarSum <-object@ratioGstarSummary
     
@@ -2182,6 +2170,19 @@ def=
     cat("The summary table of the final ratios of the Gstar across all simulations\n",
         capture.output(ratioGstarSum)[1],"\n",
         capture.output(ratioGstarSum)[2],"\n")
+    
+    FinalDoseRecSum <- object@FinalDoseRecSummary
+    
+    r$dfSave(as.numeric(FinalDoseRecSum[1]),"FinalDoseRecMin")
+    r$dfSave(as.numeric(FinalDoseRecSum[2]),"FinalDoseReclower")
+    r$dfSave(as.numeric(FinalDoseRecSum[3]),"FinalDoseRecMedian")
+    r$dfSave(as.numeric(FinalDoseRecSum[4]),"FinalDoseRecMean")
+    r$dfSave(as.numeric(FinalDoseRecSum[5]),"FinalDoseRecUpper")
+    r$dfSave(as.numeric(FinalDoseRecSum[6]),"FinalDoseRecMax")
+    
+    cat("The summary table of dose levels, the optimal dose\n to recommend for subsequent study across all simulations\n",
+        capture.output(FinalDoseRecSum)[1],"\n",
+        capture.output(FinalDoseRecSum)[2],"\n")
     
     FinalratioSum <-object@FinalRatioSummary
     
