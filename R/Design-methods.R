@@ -976,19 +976,41 @@ setMethod("examine",
                       thisSize <- size(cohortSize=object@cohortSize,
                                        dose=thisDose,
                                        data=baseData)
+                      
+                      if(baseData@placebo)
+                        thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                            dose=thisDose,
+                                            data=baseData)
 
                       ## for all possible number of DLTs:
                       for(numDLTs in 0:thisSize)
                       {
                           ## update data with corresponding DLT vector
-                          thisData <-
-                              update(object=baseData,
+                          if(baseData@placebo){
+                            thisData <- update(object=baseData,
+                                               x=baseData@doseGrid[1],
+                                               y=rep(0,thisSize.PL))
+                            
+                            thisData <-
+                              update(object=thisData,
                                      x=thisDose,
                                      y=
-                                         rep(x=c(0, 1),
-                                             times=
-                                                 c(thisSize - numDLTs,
-                                                   numDLTs)))
+                                       rep(x=c(0, 1),
+                                           times=
+                                             c(thisSize - numDLTs,
+                                               numDLTs)),
+                                     newCohort=FALSE)
+                            
+                          }else{
+                            thisData <-
+                                update(object=baseData,
+                                       x=thisDose,
+                                       y=
+                                           rep(x=c(0, 1),
+                                               times=
+                                                   c(thisSize - numDLTs,
+                                                     numDLTs)))
+                          }
 
                           ## what is the dose limit?
                           doselimit <- maxDose(object@increments,
@@ -1027,10 +1049,24 @@ setMethod("examine",
                       }
 
                       ## change base data
-                      baseData <-
+                      if(baseData@placebo){
+                        baseData <-
+                          update(object=baseData,
+                                 x=baseData@doseGrid[1],
+                                 y=rep(0, thisSize.PL))
+                        
+                        baseData <-
                           update(object=baseData,
                                  x=thisDose,
-                                 y=rep(0, thisSize))
+                                 y=rep(0, thisSize),
+                                 newCohort=FALSE)
+                        
+                      }else{
+                        baseData <-
+                            update(object=baseData,
+                                   x=thisDose,
+                                   y=rep(0, thisSize))
+                      }
 
                       ## what is the new dose according to table?
                       newDose <- as.numeric(subset(tail(ret, thisSize + 1),
