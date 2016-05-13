@@ -225,6 +225,11 @@ setMethod("plot",
           def=
           function(x, y, select=head(x@drugNames, 2L), shorten=0.03, ...){
 
+            if(x@nObs == 0)
+            {
+              return()
+            }
+            
               ## make sure select contains drug names
               select <- match.arg(select, choices=x@drugNames,
                                   several.ok=TRUE)

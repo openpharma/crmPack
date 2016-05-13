@@ -17,14 +17,14 @@ source("../R/Data-class.R")
 
 ## create some test data
 data <- DataCombo(x=
-                      cbind(a=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-                            b=c(20, 20, 20, 40, 40, 40, 50, 50)),
-                  y=c(0, 0, 0, 1, 0, 0, 1, 1),
+                      cbind(a=c(0, 0, 0, 0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 30, 30, 30),
+                            b=c(10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50, 50, 50, 60, 60, 60)),
+                  y=c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1),
                   doseGrid=
                       list(a=
-                               c(0.1, 0.5, 1.5, 3, 6,
+                               c(0, 0.1, 0.5, 1.5, 3, 6,
                                  seq(from=10, to=80, by=2)),
-                           b=seq(from=10, to=80, by=10)))
+                           b=seq(from=0, to=80, by=10)))
 
 data
 data@nGrid
@@ -36,12 +36,12 @@ source("../R/Data-methods.R")
 ## updating:
 data2 <- update(data,
                 x=c(a=0.5, b=30),
-                y=c(0, 1, 0, 0))
+                y=c(0, 0, 0, 0))
 
 ## plotting:
 library(ggplot2)
 x11()
-plot(data)
+grid::grid.draw(plot(data2))
 
 ## load model code
 source("../R/Model-class.R")
@@ -56,8 +56,13 @@ model <- ComboLogistic(singlePriors=
                                     LogisticLogNormal(mean=c(1, 2),
                                                       cov=diag(2),
                                                       refDose=20)),
-                       gamma=0,
-                       tau=0.4)
+                       gamma=2,
+                       tau=1)
+
+## what is the distribution on the interaction parameter eta?
+curve(dnorm(x, 2, 1), from=-3, to=3,
+      xlab="eta", ylab="prior density")
+abline(v=0, col="gray")
 
 
 ## try sampling from the model:
@@ -77,6 +82,15 @@ source("../R/Samples-class.R")
 ## obtain the samples
 library(rjags)
 
+## if sampling from prior:
+data <- DataCombo(doseGrid=
+                    list(a=
+                           c(0.1, 0.5, 1.5, 3, 6,
+                             seq(from=10, to=80, by=2)),
+                         b=seq(from=10, to=80, by=10)))
+
+plot(data)
+
 samples <- mcmc(data, model, options, verbose=TRUE)
 
 str(samples)
@@ -93,7 +107,9 @@ ggs_traceplot(alpha0samples)
 alpha1samples <- get(samples, "alpha1")
 ggs_traceplot(alpha1samples)
 
-ggs_traceplot(get(samples, "eta"))
+etasamples <- get(samples, "eta")
+ggs_traceplot(etasamples)
+
 
 ## ok now we want to plot the fit:
 source("../R/Model-methods.R")
@@ -104,16 +120,18 @@ library(Rcpp)
 
 cppFunction('
 int fibonacci(const int x) {
-if (x < 2)
-return x;
-else
-return (fibonacci(x - 1)) + fibonacci(x - 2);
+if (x < 2) {
+return x; } else {
+return (fibonacci(x - 1)) + fibonacci(x - 2); }
 }
 ')
 fibonacci(5)
 
 
-## todo: cont here
+
+source("../R/crmPack-package.R")
+.onLoad("", "")
+## options(crmPackUsesCpp=FALSE)
 system.time(print(plot(samples, model, data, focus=c("a", "b"))))
 
 ## old:
@@ -131,9 +149,43 @@ system.time(print(plot(samples, model, data, focus=c("a", "b"))))
 
 ## ==> ~15 times faster with C++!
 ## nice!
+## todo: later when pushing to GRAN/CRAN include C code properly in src,
+## instead of loading via cppFunction.
 
-x11()
-plot(samples, model, data, extrapolate=FALSE)
+## focus on single agent:
+system.time(print(plot(samples, model, data, focus=c("a"))))
+system.time(print(plot(samples, model, data, focus=c("b"))))
+
+## compare single agent model results with marginal from combo model:
+
+## only drug b here:
+data <- DataCombo(x=
+                    cbind(a=rep(0, 10),
+                          b=c(10, 10, 10, 20, 20, 20, 40, 40, 40, 50)),
+                  y=c(0, 0, 0, 0, 0, 0, 0, 0, 1, 1),
+                  doseGrid=
+                    list(a=
+                           c(0, 0.1, 0.5, 1.5, 3, 6,
+                             seq(from=10, to=80, by=2)),
+                         b=seq(from=0, to=80, by=10)))
+samples <- mcmc(data, model, options, verbose=TRUE)
+plot(samples, model, data, focus=c("b"))
+
+## now with the single agent data and model:
+datab <- Data(x=data@x[, "b"],
+              y=data@y,
+              doseGrid=data@doseGrid$b)
+modelb <- model@singlePriors$b
+samplesb <- mcmc(datab, modelb, options)
+plot(samplesb, modelb, datab)
+## perfect!
+
+## todo: cont here
+## Next step: 
+## Maximum increments
+## nextBest functionality, including plots
+
+
 
 betaModList <- list(betaMod = rbind(c(1,1), c(1.5,0.75), c(0.8,2.5), c(0.4,0.9)))
 plotModels(betaModList, c(0,1), base = 0, maxEff = 1, scal = 1.2)
