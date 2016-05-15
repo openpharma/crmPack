@@ -152,6 +152,51 @@ NextBestNCRM <- function(target,
                   maxOverdoseProb=maxOverdoseProb)
 }
 
+
+## --------------------------------------------------
+## Next best dose combinations based on NCRM rules
+## --------------------------------------------------
+
+##' The class with the input for finding the next best dose combinations
+##'
+##' This class extends the \code{\linkS4class{NextBestNCRM}} class to
+##' combination dose escalation. The important difference is that in combination
+##' dose escalation multiple MTDs exist. Currently this is only defined
+##' for two drugs. This rule will return the next best dose combinations
+##' according to the following algorithm: First, conditional on the first drug
+##' doses, the doses of the second drug which are admissible and maximize the
+##' target toxicity probabilities are recorded. Second, conditional on the 
+##' second drug doses the same is done for the first drug doses. The union
+##' of both sets of drug combinations is returned. 
+##' (The same numerical approach as in \code{\linkS4class{NextBestNCRM}} is used
+##' to avoid numerical problems with too small target probabilities.)
+##'
+##' @export
+##' @keywords classes
+.NextBestNCRMCombo <-
+  setClass(Class="NextBestNCRMCombo",
+           contains=list("NextBestNCRM"))
+validObject(.NextBestNCRMCombo())
+
+
+##' Initialization function for "NextBestNCRMCombo"
+##'
+##' @param target see \code{\linkS4class{NextBestNCRM}}
+##' @param overdose see \code{\linkS4class{NextBestNCRM}}
+##' @param maxOverdoseProb see \code{\linkS4class{NextBestNCRM}}
+##' @return the \code{\linkS4class{NextBestNCRM}} object
+##'
+##' @export
+##' @keywords methods
+NextBestNCRMCombo <- function(target,
+                         overdose,
+                         maxOverdoseProb)
+{
+  .NextBestNCRMCombo(target=target,
+                overdose=overdose,
+                maxOverdoseProb=maxOverdoseProb)
+}
+
 ## --------------------------------------------------
 ## Next best dose based on 3+3 rule
 ## --------------------------------------------------
