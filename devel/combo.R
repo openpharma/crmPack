@@ -56,13 +56,13 @@ model <- ComboLogistic(singlePriors=
                                     LogisticLogNormal(mean=c(1, 2),
                                                       cov=diag(2),
                                                       refDose=20)),
-                       gamma=2,
-                       tau=1)
+                       gamma=1,
+                       tau=10,
+                       logNormalEta=TRUE)
 
 ## what is the distribution on the interaction parameter eta?
-curve(dnorm(x, 2, 1), from=-3, to=3,
+curve(dlnorm(x, 1, 10), from=0, to=20,
       xlab="eta", ylab="prior density")
-abline(v=0, col="gray")
 
 
 ## try sampling from the model:

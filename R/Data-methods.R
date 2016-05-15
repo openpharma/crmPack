@@ -562,7 +562,9 @@ setMethod("update",
 ##' @param object the old \code{\linkS4class{DataCombo}} object
 ##' @param x the dose levels vector (one dose level combination only!)
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
-##' @param ID the patient IDs
+##' @param time the time vector for these patients (default: consecutive time
+##' point)
+##' @param ID the patient IDs (default: consecutive IDs)
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataCombo}} object
 ##'
@@ -575,6 +577,7 @@ setMethod("update",
           function(object,
                    x,
                    y,
+                   time=(if(length(object@time)) max(object@time) else 0L) + rep(1L, length(y)),
                    ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
                    ...){
 
@@ -618,6 +621,9 @@ setMethod("update",
 
               ## add ID
               object@ID <- c(object@ID, ID)
+              
+              ## add time
+              object@time <- c(object@time, time)
 
               ## add cohort number
               object@cohort <- c(object@cohort,
