@@ -38,6 +38,12 @@ data2 <- update(data,
                 x=c(a=0.5, b=30),
                 y=c(0, 0, 0, 0))
 
+## try to add another cohort at the same time at a different combination:
+data2 <- update(data2,
+                x=c(a=1.5, b=20),
+                y=c(0, 1, 0, 0),
+                time=rep(11, 4)) # need to have vector here of same length 
+
 ## plotting:
 library(ggplot2)
 x11()
@@ -180,10 +186,23 @@ samplesb <- mcmc(datab, modelb, options)
 plot(samplesb, modelb, datab)
 ## perfect!
 
-## todo: cont here
-## Next step: 
-## Maximum increments
-## nextBest functionality, including plots
+source("../R/Rules-class.R")
+myNextBest <- NextBestNCRMCombo(target=c(0.16, 0.33),
+                                overdose=c(0.33, 1),
+                                maxOverdoseProb = 0.25)
+
+source("../R/Rules-methods.R")
+nb <- nextBest(myNextBest,
+               doselimit=c(a=20, b=30),
+               samples,
+               model,
+               data)
+
+str(nb, 1)
+grid::grid.draw(nb$plot)
+nb$value
+nb$probTargetSelected
+
 
 
 

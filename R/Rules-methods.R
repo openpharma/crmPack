@@ -35,6 +35,9 @@
 ##' @param doselimit The maximum allowed next dose. If this is an empty (length
 ##' 0) vector, then no dose limit will be applied in the course of dose
 ##' recommendation calculation, and a corresponding warning is given.
+##' For combination dose escalation, this must be a vector of the \code{nDrugs}
+##' length, so the maximum dose is given for each drug independently. The names
+##' of the vector must correspond to the drug names.
 ##' @param samples the \code{\linkS4class{Samples}} object
 ##' @param model The model input, an object of class \code{\linkS4class{Model}}
 ##' @param data The data input, an object of class \code{\linkS4class{Data}}
@@ -328,6 +331,194 @@ setMethod("nextBest",
                   callNextMethod(nextBest, doselimit, samples, model, data, ...)
               }
           })
+
+
+
+
+
+## --------------------------------------------------
+## The NCRMCombo method
+## --------------------------------------------------
+
+##' @describeIn nextBest Find the next best dose combination 
+##' based on the NCRM method
+##'
+##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
+##' geom_hline geom_point
+##' @importFrom gridExtra arrangeGrob
+setMethod("nextBest",
+          signature=
+            signature(nextBest="NextBestNCRMCombo",
+                      doselimit="numeric",
+                      samples="Samples",
+                      model="ComboLogistic",
+                      data="DataCombo"),
+          def=
+            function(nextBest, doselimit, samples, model, data, ...){
+              
+              if(identical(length(doselimit), 0L))
+              {
+                warning("doselimit is empty, therefore no dose limit will be applied")
+              } else {
+                ## check length and names
+                stopifnot(identical(length(doselimit),
+                                    data@nDrugs),
+                          identical(sort(names(doselimit)),
+                                    sort(data@drugNames)))
+                
+                ## sort it according to the names
+                doselimit <- doselimit[data@drugNames]
+              }
+              
+              ## grid of points for evaluation
+              points <- as.matrix(expand.grid(data@doseGrid))
+              
+              ## evaluate the probs, for all samples.
+              probSamples <- prob(dose=points,
+                                  model,
+                                  samples)
+              
+              ## Now compute probabilities to be in target and
+              ## overdose tox interval
+              probTarget <-
+                colMeans((probSamples >= nextBest@target[1]) &
+                           (probSamples <= nextBest@target[2]))
+              
+              probOverdose <-
+                colMeans((probSamples > nextBest@overdose[1]) &
+                           (probSamples <= nextBest@overdose[2]))
+              
+              ## which dose combinations are eligible after accounting
+              ## for maximum possible dose and  discarding overdoses?
+              dosesBelowLimit <-
+                if(length(doselimit))
+                  apply(X= (points <= matrix(data=doselimit,
+                                            nrow=nrow(points),
+                                            ncol=length(doselimit),
+                                            byrow=TRUE)),
+                        MARGIN=1L,
+                        FUN=all)
+              else
+                rep(TRUE, nrow(points))
+              
+              ok <- dosesBelowLimit &
+                (probOverdose < nextBest@maxOverdoseProb)
+              
+              ## merge to matrix of OK points
+              ok <- matrix(data=ok,
+                           nrow=data@nGrid[1],
+                           ncol=data@nGrid[2])
+              
+              ## check if there are doses that are OK
+              if(any(ok))
+              {
+                ## create a matrix of target probs for OK points:
+                probTargetOkMatrix <- matrix(data=ifelse(ok, probTarget, 0), 
+                                             nrow=data@nGrid[1],
+                                             ncol=data@nGrid[2])
+                
+                ## what are the recommended dose levels now?
+                recommendedDoseLevels <- list()
+                
+                ## 1) fix the first dose
+                i <- 1L
+                for(first in which(apply(ok, 1L, any)))
+                {
+                  impliedSecond <- 
+                    ## if maximum target probability is higher than 
+                    ## some numerical threshold (here 0.05), then take 
+                    ## that level, otherwise stick to the
+                    ## maximum level that is OK:
+                    if(any(probTargetOkMatrix[first, ] > 0.05))
+                    {
+                      which.max(probTargetOkMatrix[first, ])
+                    } else {
+                      max(which(ok[first, ]))
+                    }
+                  recommendedDoseLevels[[i]] <- c(first, impliedSecond)
+                  i <- i + 1
+                }
+                
+                ## 2) fix the second dose
+                for(second in which(apply(ok, 2L, any)))
+                {
+                  impliedFirst <- 
+                    ## if maximum target probability is higher than 
+                    ## some numerical threshold (here 0.05), then take 
+                    ## that level, otherwise stick to the
+                    ## maximum level that is OK:
+                    if(any(probTargetOkMatrix[, second] > 0.05))
+                    {
+                      which.max(probTargetOkMatrix[, second])
+                    } else {
+                      max(which(ok[, second]))
+                    }
+                  recommendedDoseLevels[[i]] <- c(impliedFirst, second)
+                  i <- i + 1
+                }
+                
+                ## finally discard duplicates and go back to doses.
+                ## also look up the target probs
+                recommendedDoseLevels <- unique(recommendedDoseLevels)
+                ret <- cbind(data@doseGrid[[1]][sapply(recommendedDoseLevels, "[", 1L)],
+                             data@doseGrid[[2]][sapply(recommendedDoseLevels, "[", 2L)])
+                
+              } else {
+                ## if none of the dose combinations is OK:
+                recommendedDoseLevels <- NA
+                ret <- NA
+              }
+              
+              ## start with the target plot
+              plot1 <- myTileplot(points=points,
+                                  probs=probTarget,
+                                  lowcolor="#ffffff",
+                                  highcolor="#336600") + 
+                ggtitle("Target dosing probabilities")
+              
+              if(length(doselimit))
+              {
+                plot1 <- plot1 +
+                  geom_vline(xintercept=doselimit[1],
+                             lwd=1.1,
+                             lty=2,
+                             colour="black") +
+                  geom_hline(yintercept = doselimit[2],
+                             lwd=1.1,
+                             lty=2,
+                             colour="black")
+              }
+              
+              if(length(recommendedDoseLevels))
+              {
+                plot1 <- plot1 +
+                  geom_point(data=
+                               data.frame(x=ret[, 1],
+                                          y=ret[, 2]),
+                             aes(x=x, y=y),
+                             size=3,
+                             pch=20,
+                             col="blue")
+              }
+              
+              ## second for the overdosing probability
+              plot2 <- myTileplot(points=points,
+                                  probs=probOverdose,
+                                  lowcolor="#ffffff",
+                                  highcolor="#ff0000") + 
+                ggtitle("Overdosing probabilities")
+              
+              ## now plot them next to each other
+              plotJoint <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
+              
+              ## return value and plot
+              return(list(value=ret,
+                          probTargetSelected=
+                            probTarget[match(apply(ret, 1L, paste, collapse=","), apply(points, 1L, paste, collapse=","))],
+                          plot=plotJoint,
+                          ok=ok))
+            })
+
 
 
 ## --------------------------------------------------

@@ -2477,7 +2477,7 @@ validObject(LogisticNormalFixedMixture(components=
 
 ##' Combo model with logistic regression
 ##'
-##' Currently, this model is for double combination dose escalation trials.
+##' Currently, this model is only for double combination dose escalation trials.
 ##'
 ##' todo: Later, it will be extended to higher-order combinations. The model and
 ##' code is building on the work by Simon Wandel et al (Novartis).

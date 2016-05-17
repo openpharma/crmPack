@@ -205,7 +205,7 @@ setMethod("plot",
 
 ##' Plot method for the "DataCombo" class
 ##'
-##' @param x the \code{\linkS4class{DataDual}} object we want to plot
+##' @param x the \code{\linkS4class{DataCombo}} object we want to plot
 ##' @param y missing
 ##' @param select two drug names that we want to use for plotting. Defaults
 ##' to the first two drug names.
@@ -584,7 +584,9 @@ setMethod("update",
               ## checks
               stopifnot(is.numeric(x),
                         identical(length(x), object@nDrugs),
-                        identical(names(x), object@drugNames))
+                        identical(names(x), object@drugNames),
+                        identical(length(y), length(time)),
+                        identical(length(y), length(ID)))
 
               ## which grid levels are the doses?
               gridLevels <- integer(object@nDrugs)
@@ -617,13 +619,13 @@ setMethod("update",
                                        byrow=TRUE))
 
               ## add DLT data
-              object@y <- c(object@y, as.integer(y))
+              object@y <- c(object@y, safeInteger(y))
 
               ## add ID
-              object@ID <- c(object@ID, ID)
+              object@ID <- c(object@ID, safeInteger(ID))
               
               ## add time
-              object@time <- c(object@time, time)
+              object@time <- c(object@time, safeInteger(time))
 
               ## add cohort number
               object@cohort <- c(object@cohort,

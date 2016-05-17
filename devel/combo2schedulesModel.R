@@ -62,7 +62,12 @@ probCombo2SchedulesLogistic <- function(doses,
     }
     
     odds0 <- rowSums(singleOdds) + apply(singleOdds, 1L, prod)
-    odds <- odds0 * exp(gamma * apply(standDoses[[schedule]], 1L, prod))
+    
+    ## todo: here one can try out the simpler vs. more complicate
+    ## forms
+    
+    ## odds <- odds0 * exp(gamma * apply(standDoses[[schedule]], 1L, prod))
+    odds <- odds0 * exp(gamma)
     
     ## so the final prob vector is:
     ret[[schedule]] <- odds / (1 + odds)
@@ -78,8 +83,8 @@ doses <- list(low=dosegrid,
               high=dosegrid)
 str(doses,1)
 
-intercepts <- c(0.5, 0.5)
-slopes <- c(0.5, 0.5)
+intercepts <- c(-2, -2)
+slopes <- c(0.25, 0.25)
 gamma <- 1
 rho <- 2
 refDose <- c(50, 300)
@@ -121,7 +126,8 @@ for(schedule in names(doses))
     xlab(drugNames[1]) + ylab(drugNames[2]) +
     scale_fill_gradientn(colours=colors,
                          breaks=breaks,
-                         labels=format(breaks))
+                         labels=format(breaks),
+                         limits=c(0, 1))
   
   ## save the plot
   plots[[schedule]] <- ret
