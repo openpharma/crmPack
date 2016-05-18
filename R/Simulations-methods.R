@@ -789,6 +789,7 @@ setMethod("show",
 ##' to plot from
 ##' @param y missing
 ##' @param type the types of plots you want to obtain.
+##' @param bin binwidth of the histograms (default: 1)
 ##' @param \dots not used
 ##' @return A single \code{\link[ggplot2]{ggplot2}} object if a single plot is
 ##' asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
@@ -810,17 +811,20 @@ setMethod("plot",
                      "doseSelected",
                      "propDLTs",
                      "nAboveTarget"),
+                   bin=1,
                    ...){
 
               ## convenience function to make histograms
+              nsim <- x@nsim
               myHist <- function(x, description)
               {
                   dat <- data.frame(x=x)
                   ggplot() +
-                      geom_histogram(aes(x=x, y=100*..density..),
-                                     data=dat, binwidth=1, origin=-0.5) +
+                      geom_histogram(aes(x=x, y=..count../nsim),
+                                     data=dat, binwidth=bin, boundary=-0.5) +
                                          xlab(description)+
-                                             ylab("Percent")
+                                             ylab("Percent")+
+                    xlim(min(x)*0.95, max(x)*1.05)
               }
 
 

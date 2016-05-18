@@ -294,3 +294,58 @@ Validate <-
                         if(length(msg) > 0) msg else TRUE
                     }))
 
+
+#' Helper function to make tile plot
+#'
+#' @param points dataframe of twodimensional points (first dimension varies
+#' before second dimension)
+#' @param probs probabilities vector
+#' @param lowcolor color for 0
+#' @param highcolor color for 1
+#'
+#' @return the plot object
+#' 
+#' @importFrom ggplot2
+myTileplot <- function(points, 
+                       probs, 
+                       lowcolor,
+                       highcolor)
+{
+  ## arrange the data for the plots
+  plotData <- cbind(points, probs)
+  colnames(plotData) <- c("x1", "x2", "probs")
+  plotData <- as.data.frame(plotData)
+  
+  dosegridx1 <- sort(unique(plotData$x1))
+  dosegridx2 <- sort(unique(plotData$x2))
+  
+  ## in order to have the correct tiles we need
+  ## to trick a bit:
+  width <- diff(dosegridx1)
+  width <- c(width, width[length(width)])
+  height <- diff(dosegridx2)
+  height <- c(height, height[length(height)])
+  
+  plotData$width <- rep(width, length.out=nrow(plotData))
+  plotData$height <- rep(height, each=length(dosegridx1))
+  
+  ## produce plot:
+  ret <- ggplot2::ggplot(plotData[, c("x1", "x2", "probs",
+                                      "width", "height")],
+                         aes(x1,x2, probs)) +
+    geom_tile(aes(fill=probs, width=width, height=height))
+
+  breaks <- seq(from=0, to=1, by=0.1)
+  ret <- ret +
+    stat_contour(aes(x1,x2,z=probs),
+                 colour="black", size=0.3,
+                 breaks=breaks) +
+    scale_fill_gradient(low=lowcolor,
+                        high=highcolor,
+                        limits=c(0, 1),
+                        breaks=breaks,
+                        labels=format(breaks)) +
+    xlab(colnames(points)[1]) + ylab(colnames(points)[2])
+  
+  return(ret)
+}

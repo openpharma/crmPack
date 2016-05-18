@@ -2477,7 +2477,7 @@ validObject(LogisticNormalFixedMixture(components=
 
 ##' Combo model with logistic regression
 ##'
-##' Currently, this model is for double combination dose escalation trials.
+##' Currently, this model is only for double combination dose escalation trials.
 ##'
 ##' todo: Later, it will be extended to higher-order combinations. The model and
 ##' code is building on the work by Simon Wandel et al (Novartis).
@@ -2495,7 +2495,9 @@ validObject(LogisticNormalFixedMixture(components=
 ##' interaction, and negative values correspond to antagonistic toxicity). A
 ##' normal prior
 ##' \deqn{\eta \sim Normal(\gamma, \tau^-1)}
-##' is used.
+##' or log-normal prior 
+##' \deqn{\log(\eta) \sim Normal(\gamma, \tau^-1)}
+##' is used, depending on the option \code{logNormalEta}.
 ##' Under no interaction with \eqn{\eta=0}, this reduces the probability
 ##' \eqn{\eta{odds(p(x_1, x_2))}} to
 ##' \deqn{p_0(x_1, x_2) = p(x_1) + p(x_2) - p(x_1)p(x_2) = 1 - (1 - p(x_1))(1 -
@@ -2526,6 +2528,8 @@ validObject(LogisticNormalFixedMixture(components=
 ##' calling the \code{prob} function).
 ##' @slot gamma the mean for the interaction parameter
 ##' @slot tau the precision for the interaction parameter
+##' @slot logNormalEta should a log-normal prior be used for the interaction
+##' parameter, ensuring that only syngergy is possible? (default: \code{FALSE})
 ##' @slot prob function calculating the probability of toxicity for a specific
 ##' dose combination, based on the model parameters (see the details above)
 ##'
@@ -2536,12 +2540,14 @@ validObject(LogisticNormalFixedMixture(components=
              representation(singlePriors="list",
                             gamma="numeric",
                             tau="numeric",
+                            logNormalEta="logical",
                             prob="function"),
              prototype(singlePriors=
                            list(a=.LogisticLogNormal(),
                                 b=.LogisticLogNormal()),
                        gamma=0,
-                       tau=1),
+                       tau=1,
+                       logNormalEta=FALSE),
              contains="GeneralModel",
              validity=
                  function(object){
@@ -2556,6 +2562,8 @@ validObject(LogisticNormalFixedMixture(components=
                              "gamma must be scalar")
                      o$check(is.scalar(object@tau) && (object@tau > 0),
                              "tau must be positive scalar")
+                     o$check(is.bool(object@logNormalEta),
+                             "logNormalEta must be boolean")
 
                      o$result()
                  })
@@ -2650,14 +2658,17 @@ probComboLogistic <- function(dose,
 ##' \code{\linkS4class{LogisticLogNormal}} object, specifying the prior for this
 ##' drug. The list names are the drug names.
 ##' @param gamma see \code{\linkS4class{ComboLogistic}}
-##' @param tau see \code{\linkS4class{ComboLogistic}}
+##' @param tau 
+##' @param logNormalEta see \code{\linkS4class{ComboLogistic}}
+##' (default: \code{FALSE})
 ##' @return the \code{\linkS4class{ComboLogistic}} object
 ##'
 ##' @export
 ##' @keywords methods
 ComboLogistic <- function(singlePriors,
                           gamma,
-                          tau)
+                          tau,
+                          logNormalEta=FALSE)
 {
     ## checks:
     stopifnot(is.list(singlePriors),
@@ -2731,9 +2742,6 @@ ComboLogistic <- function(singlePriors,
     ## prior model:
     priormodel <- function()
     {
-        ## normal prior on interaction parameter eta:
-        eta ~ dnorm(gamma, tau)
-
         for(j in 1:nDrugs)
         {
             ## the multivariate normal prior on the
@@ -2748,10 +2756,31 @@ ComboLogistic <- function(singlePriors,
             alpha1[j] <- exp(theta[2, j])
         }
     }
-
+    
+    etaPrior <- 
+      if(logNormalEta)
+      {
+        function()
+        {
+          ## log-normal prior on interaction parameter eta:
+          eta ~ dlnorm(gamma, tau)
+        }
+      } else {
+        function()
+        {
+          ## normal prior on interaction parameter eta:
+          eta ~ dnorm(gamma, tau)
+        }
+      }
+    
+    ## add the eta prior to the prior specs:
+    priormodel <- joinModels(etaPrior, priormodel)
+    
+    ## finally call the constructor
     .ComboLogistic(singlePriors=singlePriors,
                    gamma=gamma,
                    tau=tau,
+                   logNormalEta=logNormalEta,
                    datamodel=datamodel,
                    priormodel=priormodel,
                    datanames=
@@ -2795,7 +2824,7 @@ ComboLogistic <- function(singlePriors,
                                            data=
                                                rep(c(0, 1),
                                                    nDrugs)),
-                                eta=0)
+                                eta=0.5)
                        },
                    sample=
                        c("alpha0", "alpha1", "eta"))

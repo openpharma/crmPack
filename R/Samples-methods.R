@@ -321,21 +321,6 @@ setMethod("fit",
                   stop("only dual combo supported right now")
               }
 
-              ## first we have to get samples from the dose-tox
-              ## surface at the points.
-              ## probSamples <- matrix(nrow=sampleSize(object@options),
-              ##                       ncol=nrow(points))
-
-              ## ## evaluate the probs, for all samples.
-              ## for(i in seq_len(nrow(points)))
-              ## {
-              ##     ## Now we want to evaluate for the
-              ##     ## following dose:
-              ##     probSamples[, i] <- prob(dose=points[i, ],
-              ##                              model,
-              ##                              object)
-              ## }
-
               ## evaluate the probs, for all samples.
               probSamples <- prob(dose=points,
                                   model,
@@ -771,7 +756,8 @@ setMethod("plot",
                                    xlab(focus[1]) + ylab(focus[2]) +
                                        scale_fill_gradientn(colours=colors,
                                                             breaks=breaks,
-                                                            labels=format(breaks))
+                                                            labels=format(breaks),
+                                                            limits=c(0, 1))
               ret
               ## todo: add plots for lower/upper quantiles?
 

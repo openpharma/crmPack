@@ -335,6 +335,8 @@ validObject(DataParts())
 ##' @slot x a matrix with the doses of all \code{nDrugs} drugs (columns) for the
 ##' \code{nObs} patients (rows). The column names are the \code{drugNames}.
 ##' @slot y the vector of toxicity events (0 or 1 integers)
+##' @slot time integer vector of time indices of the enclosed patients. This is 
+##' necessary in order to model parallel cohorts in combination dose escalation.
 ##' @slot doseGrid a list containing a vector of all possible doses (sorted) for
 ##' each of the \code{nDrugs} drugs (named with \code{drugNames}).
 ##' @slot nDrugs number of drugs
@@ -349,6 +351,7 @@ validObject(DataParts())
     setClass(Class="DataCombo",
              representation(x="matrix",
                             y="integer",
+                            time="integer",
                             doseGrid="list",
                             nDrugs="integer",
                             drugNames="character",
@@ -358,6 +361,7 @@ validObject(DataParts())
                            cbind(a=numeric(),
                                  b=numeric()),
                        y=integer(),
+                       time=integer(),
                        doseGrid=
                            list(a=numeric(),
                                 b=numeric()),
@@ -418,7 +422,7 @@ validObject(DataParts())
                                            object@doseGrid[[k]][object@xLevel[,k]]),
                                  paste("xLevel for drug", k, "not matching x"))
                      }
-                     for(thisSlot in c("y"))
+                     for(thisSlot in c("y", "time"))
                          o$check(identical(object@nObs, length(slot(object, thisSlot))),
                                  paste(thisSlot, "must have length nObs"))
 
@@ -438,6 +442,7 @@ validObject(.DataCombo())
 ##' \code{cbind(drugA=..., drugB=...)} to create this matrix.
 ##' @param y the vector of toxicity events (0 or 1 integers). You can also
 ##' normal numeric vectors, but these will then be converted to integers.
+##' @param time integer vector of time indices
 ##' @param ID unique patient IDs (integer vector)
 ##' @param cohort the cohort indices (sorted values from 0, 1, 2, ...)
 ##' @param doseGrid the list with vectors of all possible doses for each of the
@@ -451,6 +456,7 @@ DataCombo <- function(x=
                                data=NA,
                                dimnames=list(NULL, names(doseGrid))),
                       y=integer(),
+                      time,
                       ID,
                       cohort,
                       doseGrid)
@@ -489,6 +495,15 @@ DataCombo <- function(x=
           if(nObs == 0L) integer() else 
             as.integer(c(1, 1 + cumsum(rowSums(abs(diff(x))) != 0)))
     }
+    
+    ## check cohort indices
+    if(missing(time) || length(time) == 0)
+    {
+      warning("Used best guess time indices!")
+      ## This is just assuming that patients in the same cohort
+      ## were recruited at the same time. Note that this could be wrong
+      time <- cohort 
+    }
 
     ## get xLevel matrix
     xLevel <- x
@@ -502,6 +517,7 @@ DataCombo <- function(x=
     ## (in this case just putting arguments into slots)
     ret <- .DataCombo(x=x,
                       y=safeInteger(y),
+                      time=safeInteger(time),
                       ID=safeInteger(ID),
                       cohort=safeInteger(cohort),
                       doseGrid=doseGrid,

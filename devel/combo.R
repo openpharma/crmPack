@@ -38,6 +38,12 @@ data2 <- update(data,
                 x=c(a=0.5, b=30),
                 y=c(0, 0, 0, 0))
 
+## try to add another cohort at the same time at a different combination:
+data2 <- update(data2,
+                x=c(a=1.5, b=20),
+                y=c(0, 1, 0, 0),
+                time=rep(11, 4)) # need to have vector here of same length 
+
 ## plotting:
 library(ggplot2)
 x11()
@@ -56,13 +62,13 @@ model <- ComboLogistic(singlePriors=
                                     LogisticLogNormal(mean=c(1, 2),
                                                       cov=diag(2),
                                                       refDose=20)),
-                       gamma=2,
-                       tau=1)
+                       gamma=1,
+                       tau=10,
+                       logNormalEta=TRUE)
 
 ## what is the distribution on the interaction parameter eta?
-curve(dnorm(x, 2, 1), from=-3, to=3,
+curve(dlnorm(x, 1, 10), from=0, to=20,
       xlab="eta", ylab="prior density")
-abline(v=0, col="gray")
 
 
 ## try sampling from the model:
@@ -180,181 +186,23 @@ samplesb <- mcmc(datab, modelb, options)
 plot(samplesb, modelb, datab)
 ## perfect!
 
-## todo: cont here
-## Next step: 
-## Maximum increments
-## nextBest functionality, including plots
-
-
-
-betaModList <- list(betaMod = rbind(c(1,1), c(1.5,0.75), c(0.8,2.5), c(0.4,0.9)))
-plotModels(betaModList, c(0,1), base = 0, maxEff = 1, scal = 1.2)
-
-
-## now on to the rules:
-source("../R/helpers.R")
 source("../R/Rules-class.R")
+myNextBest <- NextBestNCRMCombo(target=c(0.16, 0.33),
+                                overdose=c(0.33, 1),
+                                maxOverdoseProb = 0.25)
+
 source("../R/Rules-methods.R")
+nb <- nextBest(myNextBest,
+               doselimit=c(a=20, b=30),
+               samples,
+               model,
+               data)
 
-## target level is 90% of maximum biomarker level
-## overdose tox interval is 35%+
-myNextBest <- new("NextBestDualEndpoint",
-                  target=0.9,
-                  overdose=c(0.35, 1),
-                  maxOverdoseProb=0.25)
-
-nextDose <- nextBest(myNextBest, doselimit=50, samples=samples, model=model, data=data)
-nextDose$plot
-nextDose$value
-data
+str(nb, 1)
+grid::grid.draw(nb$plot)
+nb$value
+nb$probTargetSelected
 
 
-## stopping rule:
-## min 3 cohorts and at least 50% prob in for targeting biomarker,
-## or max 20 patients
-myStopping1 <- new("StoppingMinCohorts",
-                   nCohorts=3L)
-myStopping2 <- new("StoppingMaxPatients",
-                   nPatients=50L)
-myStopping3 <- new("StoppingTargetBiomarker",
-                   target=0.9,
-                   prob=0.5)
-
-## you can either write this:
-myStopping <- new("StoppingAny",
-                  stopList=
-                  list(new("StoppingAll",
-                           stopList=
-                           list(myStopping1,
-                                myStopping3)),
-                       myStopping2))
-
-## or much more intuitively:
-myStoppingEasy <- (myStopping1 & myStopping3) | myStopping2
-myStoppingEasy
-identical(myStopping, myStoppingEasy)
-
-
-stopTrial(myStopping, dose=nextDose$value,
-          samples, model, data)
-
-## relative increments:
-myIncrements <- new("IncrementsRelative",
-                    intervals=c(0, 20, Inf),
-                    increments=c(1, 0.33))
-
-## test design
-source("../R/Design-class.R")
-design <- new("DualDesign",
-              model=model,
-              nextBest=myNextBest,
-              stopping=myStopping,
-              increments=myIncrements,
-              data=
-              new("DataDual",
-                  x=numeric(),
-                  y=integer(),
-                  w=numeric(),
-                  doseGrid=
-                  c(0.1, 0.5, 1.5, 3, 6,
-                    seq(from=10, to=80, by=2))),
-              cohortSize=new("CohortSizeConst", size=3L),
-              startingDose=6)
-
-
-
-## for testing the simulate function:
-## object <- design
-## truth <- model@prob
-## ## args <- list(rho0=0.1,
-## ##              gamma=20)
-## args <- list(alpha0=0,
-##              alpha1=1)
-## nsim <- 10L
-mcmcOptions <- new("McmcOptions")
-seed <- 23
-
-## iterSim <- 1L
-
-
-source("../R/Simulations-class.R")
-source("../R/Design-methods.R")
-
-betaMod <-
-    function (dose, e0, eMax, delta1, delta2, scal)
-{
-    maxDens <- (delta1^delta1) * (delta2^delta2)/((delta1 + delta2)^(delta1 +
-                                                                     delta2))
-    dose <- dose/scal
-    e0 + eMax/maxDens * (dose^delta1) * (1 - dose)^delta2
-}
-##trace(simulate, browser, signature=c("DualDesign"))
-trueTox <- function(dose){
-    pnorm((dose-60)/10)
-}
-trueBiomarker <- function(dose){
-    betaMod(dose, e0=0.2, eMax=0.6, delta1=5, delta2=5 * 0.5 / 0.5, scal=100)
-}
-mySims <- simulate(design,
-                   trueTox=trueTox,
-                   trueBiomarker=trueBiomarker,
-                   sigma2W=0.001,
-                   rho=0,
-                   nsim=3L,
-                   firstSeparate=FALSE,
-                   parallel=FALSE,
-                   seed=3)
-
-source("../R/Simulations-methods.R")
-
-str(mySims, 2)
-str(mySims@fitBiomarker, 2)
-identical(mySims@fitBiomarker[[1]],
-          mySims@fitBiomarker[[2]])
-identical(mySims@fitBiomarker[[2]],
-          mySims@fitBiomarker[[3]])
-
-plot(mySims@fitBiomarker[[1]]$middleBiomarker, type="l")
-
-mySims@stopReasons
-plot(mySims, type=c("dose", "rho"))
-plot(mySims)
-
-
-## look at simulated trial outcomes:
-plot(mySims@data[[2]])
-mySims@stopReasons[[3]]
-
-## final MTDs
-mySims@doses
-
-
-
-## extract operating characteristics
-
-
-## the truth we want to compare it with:
-sumOut <- summary(mySims,
-                  trueTox=trueTox,
-                  trueBiomarker=trueBiomarker)
-sumOut
-
-mySims@doses
-
-
-## make nice plots for simulation output:
-## first from the summary object
-str(sumOut)
-
-plot(sumOut)
-
-plot(sumOut, type="meanFit")
-
-plot(sumOut, type=c("nObs", "meanFit"))
-
-## now from the raw simulation output
-str(mySims@data)
-
-plot(mySims)
 
 
