@@ -555,18 +555,7 @@ For both models the prior will be expressed in form of pseudo data, some imagina
 
 The \texttt{ModelPseudo} class contains all model classes where the priors are specified in terms of pseudo data and when standard maximum likelihood procedures are used to obtain prior and posterior estimates. Models for the DLT data are captured in the \texttt{ModelTox} class while the efficacy models are in the \texttt{ModelEff}.
 
-To define a design that finds the optimal dose level which represents the best trade-off between the DLTs and efficacy response for the study above using a two-parameter logistic model for DLTs and a linear log-log model for efficacy we define the data via:
-<<Data>>=
-data1 <- Data(doseGrid=seq(25,300,25))
-data2 <- DataDual(doseGrid=seq(25,300,25))
-##new observations availabe and out in a data3
-data3 <-DataDual(x=c(25,50,50,75,100,100,225,300),
-y=c(0,0,0,0,1,1,1,1),
-w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-doseGrid=seq(25,300,25))
-@
-
-Both \code{data1} and \code{data2} are empty data set \tj{why?}. If only DLTs response is incorporated into the escalation process, empty data set \code{data1} of class \texttt{Data} can be used. If both DLTs and efficacy responses are incorporated into the procedure, empty data set \code{data2} of class \texttt{DataDual} can be used. \tj{previous 2 sentences unclear}
+To define a design that finds the optimal dose level which represents the best trade-off between the DLTs and efficacy response for the study above using a two-parameter logistic model for DLTs and a linear log-log model for efficacy.
 
 
 The pseudo-data for the prior of the DLTS are described as follows: Assuming 3 subjects each are treated at the lowest (25mg) and the highest (300mg) dose level and clinical pharmacologists' opinions for the number of DLTs observed are 1.05 and 1.8 at these two dose levels. That is the probability of a DLTs occurring at 25 and 300 mg are 0.35 and 0.6, respectively.
@@ -575,20 +564,21 @@ The number of DLTs 1.05 and 1.8 are non-integer values, which is allowed in the 
 DLTmodel <- LogisticIndepBeta(binDLE= c(1.05,1.8),
                               DLEweights=c(3,3),
                               DLEdose=c(25,300),
-                              data=data1)
+                              data=emptydata)
 @
 
 The slot \code{DLEdose} represented the two dose levels at which pseudo data are imagined while \code{DLEweights} specifies how many subjects this information is worth (here 3 subjects per dose level) while \code{binDLE} sets the total number of DLEs observed at these dose levels. Since no actual observations are available before the trial start, we specify the \code{data} slot of this model with the empty data set \code{data1} of class \texttt{Data}. Note that, pseudo responses at two different dose levels are need to obtain the prior modal estimate of the intercept and the slope of the model.
 
 The efficacy model can similarly be specified as
 <<Effmodel>>=
+data2 <- DataDual(doseGrid=seq(25,300,25))
 Effmodel <- Effloglog(Eff= c(1.223,2.513),
                       Effdose=c(25,300),
                       nu=c(a=1,b=0.025),
                       data=data2)
 @
 
-The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels and are given by assuming one subject is treated at each of these dose levels. \\
+The slot \code{Eff} represents the vector of pseudo efficacy responses at the two fixed dose levels and are given by assuming one subject is treated at each of these dose levels. Note here, the data set for this model has to be from \texttt{DualData} class\\
 
 \textit{Safety Constraints}\\
 
@@ -611,6 +601,10 @@ can be used where \code{DLEDuringTrialtarget} specifies the maximum DLT rate dur
 The method \code{nextBest} can be applied to any of the classes defined under the parent \texttt{NextBest} class, to compute the next best dose during the study. Therefore we can, assuming we have some observations capture in data set \texttt{data3}, we can obtain the next recommended dose based on the gain function in the following way.
 
 <<nextBest>>=
+data3 <-DataDual(x=c(25,50,50,75,100,100,225,300),
+y=c(0,0,0,0,1,1,1,1),
+w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
+doseGrid=seq(25,300,25))
 newDLTmodel <- update(object=DLTmodel, data=data3)
 newEffmodel <- update(object=Effmodel, data=data3)
 doseRecGain <- nextBest(GainNextBest,
@@ -621,37 +615,33 @@ doseRecGain <- nextBest(GainNextBest,
 
 @
 
-Firstly the model parameters are updated with the \texttt{update} function and subsequently the next recommended dose found via \texttt{nextBest} specifying the rule to use the gain function (\texttt{GainNextBest}). The \verb|$| operator can be used to extract specific content from the results.\tj{I think this is pretty standard for R so I think those examples can go. I assume the figure can also be created useing plot(doseRecGain)? as the graph ought to stay and be described.} For example,
+Firstly the model parameters are updated with the \texttt{update} function and subsequently the next recommended dose found via \texttt{nextBest} specifying the rule to use the gain function (\texttt{GainNextBest}). 
+
+For example,
 <<doseRecommendation>>=?
-#What is the next dose
-doseRecGain$nextdose
-#What is estimate of the maximum dose that is safe
-doseRecGain$TDtargetDuringTrialEstimate
-#What is the estimate of Gstar
-doseRecGain$GstarEstimate
-#Plot to show what is the next dose
 print(doseRecGain$plot)
 @
 
-\tj{I'd just discuss the graph and leave everything else out}. We can see that the estimates for Gstar is 79.4 and 52.3 for the dose with probability of DLTs equals to 0.35(DLEtargetDuringTrial). From our rule, we will select a dose which is safe and gives the maximum gain value. In other words, we will select the dose at dose grid less than or equal to the minimum of 79.4 and 52.3, which is 50mg for the next cohort of subject as shown above for next dose. Furthermore from the plot, the red, blue and green curves are the corresponding estimated curves for DLTs, efficacy and gain. From vertical lines in the plot show what will be the next and maximum dose allowable dose for the next cohort of subject, The circle, square and triangle symbols also show the estimates of the dose at target probability if DLTs during or end of trial and at maximum gain value.\\
+
+The plot for the next dose allocation is produced. The red, blue and green curves are the corresponding estimated curves for DLTs, efficacy and gain. From vertical lines in the plot show what will be the next and maximum dose allowable dose for the next cohort of subject, The circle, square and triangle symbols also show the estimates of the dose at target probability if DLTs during or end of trial and at maximum gain value.\\
 
 
-\texttt{Stopping rules}
+%\texttt{Stopping rules}
 
-\tj{not sure we need that section. it has been specified before how to do stopping rules so other than presenting a new rule this does not add anything I think.} Subjects are treated sequentially in a study and the trial will stop if a fixed sample size is reached or one of the stopping criteria is fulfilled. We will applied the stopping rule described in \cite{yeung2015}. The idea of this stopping rule is that the trial will be stopped when we obtain an 'accurate enough' estimates of the dose to be recommended for subsequent trial which will be the final estimate of $d^*$ or the final estimate of the minimum of $d^*$ and $g^*$.
+%\tj{not sure we need that section. it has been specified before how to do stopping rules so other than presenting a new rule this does not add anything I think.} Subjects are treated sequentially in a study and the trial will stop if a fixed sample size is reached or one of the stopping criteria is fulfilled. We will applied the stopping rule described in \cite{yeung2015}. The idea of this stopping rule is that the trial will be stopped when we obtain an 'accurate enough' estimates of the dose to be recommended for subsequent trial which will be the final estimate of $d^*$ or the final estimate of the minimum of $d^*$ and $g^*$.
 
-In particular, the 95\% credibility interval (CI) of the selected quantity obtained after each cohort of subjects treated will be used to assess if we have already obtained an 'accurate enough' estimate. The wider the CI, the less accurate of this CI. More specifically, the ratio of the upper to the lower limit of this CI is calculated. If this ratio is less than or equal to a pre-specified value, the target ratio, the trial will stop. The smaller the value of the calculated ratio, the more accurate of the estimate. Therefore, the smaller the value we specify for the target ratio, the more precise the estimate we can obtain. To note, the number of subjects to recruit in a study will increase when more precise estimation are required.\\
+%In particular, the 95\% credibility interval (CI) of the selected quantity obtained after each cohort of subjects treated will be used to assess if we have already obtained an 'accurate enough' estimate. The wider the CI, the less accurate of this CI. More specifically, the ratio of the upper to the lower limit of this CI is calculated. If this ratio is less than or equal to a pre-specified value, the target ratio, the trial will stop. The smaller the value of the calculated ratio, the more accurate of the estimate. Therefore, the smaller the value we specify for the target ratio, the more precise the estimate we can obtain. To note, the number of subjects to recruit in a study will increase when more precise estimation are required.\\
 
-\textbf{Corresponding Stopping classes in crmPack package}\\
+%\textbf{Corresponding Stopping classes in crmPack package}\\
 
-All of the stopping rules classes inherit directly from the \texttt{Stopping} class. The class \texttt{StoppingTDCIRatio} is the stopping rule when only DLTs response are incorporated. The trial will stop if the ratio of the upper and the lower 95\% CI of the posterior estimate of $d^*$ is less than or equal to the pre-specified target ratio. Similarly for \texttt{StoppingGstarCIRatio} is the stopping class when DLTs and efficacy responses are incorporated into the study for which the estimated ratio of the CI of the selected quantity (minimum of the posterior estimate of $d^*$ and $g^*$) will be used as a criteria. For example,
+%All of the stopping rules classes inherit directly from the \texttt{Stopping} class. The class \texttt{StoppingTDCIRatio} is the stopping rule when only DLTs response are incorporated. The trial will stop if the ratio of the upper and the lower 95\% CI of the posterior estimate of $d^*$ is less than or equal to the pre-specified target ratio. Similarly for \texttt{StoppingGstarCIRatio} is the stopping class when DLTs and efficacy responses are incorporated into the study for which the estimated ratio of the CI of the selected quantity (minimum of the posterior estimate of $d^*$ and $g^*$) will be used as a criteria. For example,
 
-<<Stopping>>=
-myStopping2 <- StoppingGstarCIRatio(targetRatio=5,
-                                    targetEndOfTrial = 0.3)
-@
+%<<Stopping>>=
+%myStopping2 <- StoppingGstarCIRatio(targetRatio=5,
+%                                    targetEndOfTrial = 0.3)
+%@
 
-For  \texttt{StoppingGstarCIRatio}, the value of the target ratio have to be specified in the \code{targetRatio} slot and slot \code{targetEndOfTrial} for the value of the target probability of DLTs to be used at the end of the trial is also required. There are more \texttt{Stopping} classes defined in this package. Please refer to the help pages for further details.\\
+%For \texttt{StoppingGstarCIRatio}, the value of the target ratio have to be specified in the \code{targetRatio} slot and slot \code{targetEndOfTrial} for the value of the target probability of DLTs to be used at the end of the trial is also required. There are more \texttt{Stopping} classes defined in this package. Please refer to the help pages for further details.\\
 
 \textbf{Simulations}\\
 
