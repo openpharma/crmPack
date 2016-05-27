@@ -549,14 +549,11 @@ for $1=1,...,s$ with $ s \leq n$, the total number of subjects and $d_i$ represe
 
 For both models the prior will be expressed in form of pseudo data, some imaginary data as if for some observations we already had before the trial starts \citep[see][for details]{yeung2015}. Based on the pseudo-data, the prior modal estimates of the model parameters are the same as the maximum likelihood estimates which can be computed using standard statistical software fits. When more DLTs observations are available, standard software fits can also be used to obtain posterior modal estimates for the model parameters \citep{w06}. The precision $\nu=\sigma^{-2}$ for the efficacy model, can be specified with a fixed value or having a gamma distribution.
 
-
-
 \textbf{Corresponding Model classes in crmPack package}
 
 The \texttt{ModelPseudo} class contains all model classes where the priors are specified in terms of pseudo data and when standard maximum likelihood procedures are used to obtain prior and posterior estimates. Models for the DLT data are captured in the \texttt{ModelTox} class while the efficacy models are in the \texttt{ModelEff}.
 
 To define a design that finds the optimal dose level which represents the best trade-off between the DLTs and efficacy response for the study above using a two-parameter logistic model for DLTs and a linear log-log model for efficacy.
-
 
 The pseudo-data for the prior of the DLTS are described as follows: Assuming 3 subjects each are treated at the lowest (25mg) and the highest (300mg) dose level and clinical pharmacologists' opinions for the number of DLTs observed are 1.05 and 1.8 at these two dose levels. That is the probability of a DLTs occurring at 25 and 300 mg are 0.35 and 0.6, respectively.
 The number of DLTs 1.05 and 1.8 are non-integer values, which is allowed in the imaginary nature of the pseudo-data. Then we can defined the two-parameter logistic DLT model using the \texttt{LogisticIndepBeta} class model as
@@ -591,6 +588,7 @@ A gain function to reflect the trade-off between efficacy and safety is used to 
 G_{(j)}=\frac{E(w_{(j)})}{1+{\rm exp}(\phi_1+\phi_2 {\rm log} d_{(j)})}
 \end{equation}
 for $j=1,...,k$ where $w_{j}$ are the efficacy responses observed at dose $j$ given that no DLT is observed. To utilize this gain function to select the next dose 
+
 <<NextBestGain>>=
 GainNextBest <-NextBestMaxGain(DLEDuringTrialtarget=0.35,
                                DLEEndOfTrialtarget=0.3)
@@ -615,16 +613,13 @@ doseRecGain <- nextBest(GainNextBest,
 
 @
 
-Firstly the model parameters are updated with the \texttt{update} function and subsequently the next recommended dose found via \texttt{nextBest} specifying the rule to use the gain function (\texttt{GainNextBest}). 
+Firstly the model parameters are updated with the \texttt{update} function and subsequently the next recommended dose found via \texttt{nextBest} specifying the rule to use the gain function (\texttt{GainNextBest}). For example,
 
-For example,
 <<doseRecommendation>>=?
 print(doseRecGain$plot)
 @
 
-
 The plot for the next dose allocation is produced. The red, blue and green curves are the corresponding estimated curves for DLTs, efficacy and gain. From vertical lines in the plot show what will be the next and maximum dose allowable dose for the next cohort of subject, The circle, square and triangle symbols also show the estimates of the dose at target probability if DLTs during or end of trial and at maximum gain value.\\
-
 
 %\texttt{Stopping rules}
 
@@ -645,12 +640,13 @@ The plot for the next dose allocation is produced. The red, blue and green curve
 
 \textbf{Simulations}\\
 
-To simulate the operating characteristics a design has to be built. Here we will specify our increment restriction as
-<<Increments>>=
-myIncrements <- IncrementsRelative(intervals=c(25,300),
-                                 increments=c(2,2))
-@
-which means a maximum of 3-fold increase for dose levels between 25 to 300 mg are defined. The design for the simulations can then be defined using the \texttt{DualResponsesDesign} class. We want to start the simulations with an empty data set and start with the lowest dose 25 mg. \tj{if stopping rules go this probably need changing to reuse a previous stopping rule.}
+To simulate the operating characteristics a design has to be built. 
+%Here we will specify our increment restriction as
+%<<Increments>>=
+%myIncrements <- IncrementsRelative(intervals=c(25,300),
+%                                 increments=c(2,2))
+%@
+%which means a maximum of 3-fold increase for dose levels between 25 to 300 mg are defined. The design for the simulations can then be defined using the \texttt{DualResponsesDesign} class. We want to start the simulations with an empty data set and start with the lowest dose 25 mg. \tj{if stopping rules go this probably need changing to reuse a previous stopping rule.}
 
 <<design>>=
 design1 <- DualResponsesDesign(nextBest=GainNextBest,
