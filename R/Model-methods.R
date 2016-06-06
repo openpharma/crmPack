@@ -39,7 +39,7 @@ setGeneric("dose",
            },
            valueClass="numeric")
 
-##' @describeIn dose
+##' @rdname dose
 ##' @example examples/Model-method-dose.R
 setMethod("dose",
           signature=
@@ -147,7 +147,7 @@ setGeneric("prob",
 ## todo: simplify this to always vectorize internally over points -> always
 ## take/return matrix
 
-##' @describeIn prob
+##' @rdname prob
 ##' @example examples/Model-method-prob.R
 setMethod("prob",
           signature=
@@ -383,7 +383,7 @@ setGeneric("gain",
              },
            valueClass="numeric")
 
-##' @describeIn gain
+##' @rdname gain
 ##' @example examples/Model-method-gain.R
 setMethod("gain",
           signature=

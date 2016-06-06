@@ -404,7 +404,7 @@ setGeneric("getEff",
              standardGeneric("getEff")},
            valueClass="list")
 
-##' @describeIn getEff
+##' @rdname getEff
 ##' @param x todo
 ##' @param y todo
 ##' @param w todo
