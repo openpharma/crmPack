@@ -7,6 +7,7 @@
 
 \newcommand{\tj}[1]{\textcolor{red}{#1}}
 
+
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \presetkeys%
     {todonotes}%
@@ -43,7 +44,6 @@ Sys.setenv(TEXINPUTS=getwd(),
 
 %% an abstract and keywords
 \Abstract{
-  \todo{Abstract and keywords to be refined, only as a placeholder for now!}
   Model-based dose escalation designs have gained increasing interest due to the
   need for more efficient and informative Phase I trials. The wide-spread
   implementation of such designs has been hindered by the need for either
@@ -61,10 +61,11 @@ Sys.setenv(TEXINPUTS=getwd(),
   (EWOC) designs with possibly advanced prior specifications with e.g. mixtures
   and minimal informative priors, crmPack currently features dual-endpoint
   (safety and biomarker) designs and two-part (SAD followed by MAD part)
-  designs. \tj{I'd also highlight the option for placebo here}
-We introduce crmPack by outlining the design framework and show how easy it is
-to specify a design, run simulations, and report dose recommendations during the
-trial.
+  designs. Optional assignment of a small number of patients in each cohort to 
+  placebo instead of treatment enables the use in non-Oncology trials. 
+%   We introduce crmPack by outlining the design framework and show how easy it is
+% to specify a design, run simulations, and report dose recommendations during the
+% trial.
 }
 \Keywords{CRM, model based dose escalation, dual-endpoint design, \proglang{R}, object oriented}
 \Plainkeywords{CRM, model based dose escalation, dual-endpoint design, R, object oriented} %% without formatting
@@ -172,25 +173,36 @@ It implements a variety of one and two parameter models, facilitates different
 ways to specify prior distributions, escalation and stopping rules.
 
 In this paper we introduce the \proglang{R} package \pkg{crmPack} for
-dose escalation studies. This package differs from existing implementations in
+dose escalation studies. This package differs from the above existing implementations in
 three fundamental ways. Firstly, it is written using S4 classes and methods
 \citep{Chambers2008}, which allows customized methodology to be added to the
-package while still being able to use the existing supporting functionalities.
+package while still being able to use the existing backbone functionalities.
 Secondly, methods for studies with a placebo group (e.g. for healthy volunteer
 studies) are readily implemented. Thirdly, dual endpoint dose escalation methods
 that incorporate both safety and efficacy and allow determination of an optimal
-biological dose are available.\\
+biological dose are already available. The package is actively developed further
+and new methods will be added soon, including combination designs \citep[see]{Sweeting2012} 
+and data augmentation CRMs \citep[see]{Liu2013}.
 
-In Section~\ref{sec:framework} we describe the underlying structure of the
-package while Section~\ref{sec:using} provides some examples of the usage of the
-package including how to add a custom method before we conclude with a
-discussion (Section~\ref{sec:discussion}).
-\todo{rework this paragraph in the end - or consider dropping it completely}
+% In Section~\ref{sec:framework} we describe the underlying structure of the
+% package while Section~\ref{sec:using} provides some examples of the usage of the
+% package including how to add a custom method before we conclude with a
+% discussion (Section~\ref{sec:discussion}).
+% \todo{rework this paragraph in the end - or consider dropping it completely}
 
 \section{Framework}\label{sec:framework}
 
 For describing the framework of the package we will adapt the general notation
-in \cite{Thall2010}. 
+for early phase trials from \cite{Thall2010}. Figure~\ref{fig:schematic} summarizes
+the framework in a schematic.
+
+\begin{figure}
+\centering 
+\includegraphics[width=.8\linewidth]{schematic.pdf} 
+\caption{Schematic of the framework. Separate design objects (gray boxes) belong to
+classes and are bundled together in the \code{Design} object, and can be used with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods.} 
+\label{fig:schematic}
+\end{figure}
 
 \paragraph{Data}
 \label{sec:frame:model}
@@ -245,7 +257,7 @@ $\mu$ and the prior covariance matrix $\Sigma$.
 \paragraph{Decision making for the next dose}
 \label{sec:frame:decision-making}
 %
-Another core element of a dose escalation design concern the decision making
+Another core element of a dose escalation design concerns the decision making
 for the next dose $x_{N+1}$ to be tested in the next cohort $N+1$. In the
 \cite{Thall2010} notation, the function $\alpha$ is mapping the currently
 accumulated data $\mathcal{D}_{N}$ to the dose space $\mathcal{X}$ (or to dose
@@ -291,7 +303,7 @@ resulting trial decisions (dose for the next cohort and trial end).
 In order to illustrate the use of this object-oriented framework, the next
 section contains practical examples on use of the existing functionality as well
 as an example for creating new extensions.
-\tj{I think this section could use an illustrative graph of the underlying structure. E.g Data with subclasses goes into Model with subclasses and so on. A short paragraph at the beginning to highlight this structure before talking specifics would be useful for readability} 
+% \tj{I think this section could use an illustrative graph of the underlying structure. E.g Data with subclasses goes into Model with subclasses and so on. A short paragraph at the beginning to highlight this structure before talking specifics would be useful for readability} 
 
 \section{Using crmPack}\label{sec:using}
 
