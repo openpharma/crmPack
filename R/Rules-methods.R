@@ -925,19 +925,23 @@ setMethod("|",
 ##' @keywords methods
 setGeneric("stopTrial",
            def=
-           function(stopping, dose, samples, model, data, ...){
+             function(stopping, dose, samples, model, data, ...){
                ## if the recommended next dose is NA,
                ## stop in any case.
                if(is.na(dose))
                {
-                   return(structure(TRUE,
-                                    message="Recommended next best dose is NA"))
+                 return(structure(TRUE,
+                                  message="Recommended next best dose is NA"))
+               } else if(data@placebo && dose == min(data@doseGrid))
+               {
+                 return(structure(TRUE,
+                                  message="Recommended next best dose is placebo dose"))
                }
-
+               
                ## there should be no default method,
                ## therefore just forward to next method!
                standardGeneric("stopTrial")
-           },
+             },
            valueClass="logical")
 
 
