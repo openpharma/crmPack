@@ -772,8 +772,6 @@ setMethod("show",
           })
 
 
-##' Plot summaries of the general simulations
-##'
 ##' Graphical display of the general simulation summary
 ##'
 ##' This plot method can be applied to
@@ -823,14 +821,17 @@ setMethod("plot",
                    ...){
 
               ## convenience function to make histograms
+              nsim <- x@nsim
               myHist <- function(x, description)
               {
-                  dat <- data.frame(x=x)
-                  ggplot() +
-                      geom_histogram(aes(x=x, y=100*..density..),
-                                     data=dat, binwidth=1, origin=-0.5) +
-                                         xlab(description)+
-                                             ylab("Percent")
+                bin <- min(diff(x)) / 2
+                dat <- data.frame(x=x)
+                ggplot() +
+                  geom_histogram(aes(x=x, y=..count../nsim),
+                                 data=dat, binwidth=bin, origin=-0.5) +
+                  xlab(description) +
+                  ylab("Percent") +
+                  xlim(min(x)*0.95, max(x)*1.05)
               }
 
 
@@ -1580,14 +1581,17 @@ setMethod("plot",
                      ...){
               
               ## convenience function to make histograms
+              nsim <- x@nsim
               myHist <- function(x, description)
               {
+                bin <- min(diff(x)) / 2
                 dat <- data.frame(x=x)
                 ggplot() +
-                  geom_histogram(aes(x=x, y=100*..density..),
-                                 data=dat, binwidth=1, origin=-0.5) +
-                  xlab(description)+
-                  ylab("Percent")
+                  geom_histogram(aes(x=x, y=..count../nsim),
+                                 data=dat, binwidth=bin, origin=-0.5) +
+                  xlab(description) +
+                  ylab("Percent") +
+                  xlim(min(x)*0.95, max(x)*1.05)
               }
               
               
