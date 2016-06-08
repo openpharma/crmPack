@@ -158,7 +158,7 @@ setMethod("plot",
                                    aes(x=dose, y=perc),
                                    stat="identity",
                                    position="identity",
-                                   width=1) +
+                                   width=min(diff(x@data[[1]]@doseGrid)) / 2) +
                                        xlab("Dose level") +
                                            ylab("Average proportion [%]")
               }

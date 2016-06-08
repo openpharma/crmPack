@@ -236,7 +236,7 @@ setMethod("nextBest",
                            aes(x=x, y=y),
                            stat="identity",
                            position="identity",
-                           width=1,
+                           width=min(diff(data@doseGrid)) / 2,
                            colour="darkgreen",
                            fill="darkgreen") +
                                xlab("Dose") +
@@ -280,7 +280,7 @@ setMethod("nextBest",
                            aes(x=x, y=y),
                            stat="identity",
                            position="identity",
-                           width=1,
+                           width=min(diff(data@doseGrid)) / 2,
                            colour="red",
                            fill="red") +
                                xlab("Dose") +
@@ -550,7 +550,7 @@ setMethod("nextBest",
                            aes(x=x, y=y),
                            stat="identity",
                            position="identity",
-                           width=1,
+                           width=min(diff(data@doseGrid)) / 2,
                            colour="darkgreen",
                            fill="darkgreen") +
                                xlab("Dose") +
@@ -594,7 +594,7 @@ setMethod("nextBest",
                            aes(x=x, y=y),
                            stat="identity",
                            position="identity",
-                           width=1,
+                           width=min(diff(data@doseGrid)) / 2,
                            colour="red",
                            fill="red") +
                                xlab("Dose") +
