@@ -411,3 +411,29 @@ rinvGamma <- function(n,
           shape=a,
           rate=b)
 }
+
+
+#' Convenience function to make barplots of percentages
+#'
+#' @param x vector of samples
+#' @param description xlab string
+#'
+#' @return the ggplot2 object
+#'
+#' @keywords internal
+#' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
+#' @example examples/myBarplot.R
+myBarplot <- function(x, description)
+{
+  tabx <- table(x) / length(x)
+  dat <- data.frame(x=as.numeric(names(tabx)), perc=as.numeric(tabx) * 100)
+  ggplot() +
+    geom_bar(aes(x=x, y=perc),
+             data=dat, 
+             stat="identity",
+             position="identity",
+             width=min(diff(dat$x)) / 2) +
+    xlab(description) +
+    ylab("Percent") 
+}
+

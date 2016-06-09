@@ -820,21 +820,6 @@ setMethod("plot",
                      "nAboveTarget"),
                    ...){
 
-              ## convenience function to make histograms
-              nsim <- x@nsim
-              myHist <- function(x, description)
-              {
-                bin <- min(diff(x)) / 2
-                dat <- data.frame(x=x)
-                ggplot() +
-                  geom_histogram(aes(x=x, y=..count../nsim),
-                                 data=dat, binwidth=bin, origin=-0.5) +
-                  xlab(description) +
-                  ylab("Percent") +
-                  xlim(min(x)*0.95, max(x)*1.05)
-              }
-
-
               ## which plots should be produced?
               type <- match.arg(type,
                                 several.ok=TRUE)
@@ -848,7 +833,7 @@ setMethod("plot",
               if("nObs" %in% type)
               {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
-                      myHist(x=x@nObs,
+                      myBarplot(x=x@nObs,
                              description="Number of patients in total")
               }
 
@@ -856,7 +841,7 @@ setMethod("plot",
               if("doseSelected" %in% type)
               {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
-                      myHist(x=x@doseSelected,
+                      myBarplot(x=x@doseSelected,
                              description="MTD estimate")
               }
 
@@ -864,7 +849,7 @@ setMethod("plot",
               if("propDLTs" %in% type)
               {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
-                      myHist(x=x@propDLTs * 100,
+                      myBarplot(x=x@propDLTs * 100,
                              description="Proportion of DLTs [%]")
               }
 
@@ -872,7 +857,7 @@ setMethod("plot",
               if("nAboveTarget" %in% type)
               {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
-                      myHist(x=x@nAboveTarget,
+                      myBarplot(x=x@nAboveTarget,
                              description="Number of patients above target")
               }
 
@@ -1580,21 +1565,6 @@ setMethod("plot",
                          "meanFit"),
                      ...){
               
-              ## convenience function to make histograms
-              nsim <- x@nsim
-              myHist <- function(x, description)
-              {
-                bin <- min(diff(x)) / 2
-                dat <- data.frame(x=x)
-                ggplot() +
-                  geom_histogram(aes(x=x, y=..count../nsim),
-                                 data=dat, binwidth=bin, origin=-0.5) +
-                  xlab(description) +
-                  ylab("Percent") +
-                  xlim(min(x)*0.95, max(x)*1.05)
-              }
-              
-              
               ## which plots should be produced?
               type <- match.arg(type,
                                 several.ok=TRUE)
@@ -1608,7 +1578,7 @@ setMethod("plot",
               if("nObs" %in% type)
               {
                 plotList[[plotIndex <- plotIndex + 1L]] <-
-                  myHist(x=x@nObs,
+                  myBarplot(x=x@nObs,
                          description="Number of patients in total")
               }
               
@@ -1616,7 +1586,7 @@ setMethod("plot",
               if("doseSelected" %in% type)
               {
                 plotList[[plotIndex <- plotIndex + 1L]] <-
-                  myHist(x=x@doseSelected,
+                  myBarplot(x=x@doseSelected,
                          description="MTD estimate")
               }
               
@@ -1624,7 +1594,7 @@ setMethod("plot",
               if("propDLE" %in% type)
               {
                 plotList[[plotIndex <- plotIndex + 1L]] <-
-                  myHist(x=x@propDLE * 100,
+                  myBarplot(x=x@propDLE * 100,
                          description="Proportion of DLE [%]")
               }
               
@@ -1632,7 +1602,7 @@ setMethod("plot",
               if("nAboveTargetEndOfTrial" %in% type)
               {
                 plotList[[plotIndex <- plotIndex + 1L]] <-
-                  myHist(x=x@nAboveTargetEndOfTrial,
+                  myBarplot(x=x@nAboveTargetEndOfTrial,
                          description="Number of patients above target")
               }
               
