@@ -3097,8 +3097,8 @@ Effloglog<-function(Eff,
                     Effdose,
                     nu,
                     data)
-{if (!all(data@doseGrid >=1))
-  stop("doseGrid in data must be greater or equal to 1 for Effloglog model")
+{if (!all(data@doseGrid > 0))
+  stop("doseGrid in data must be greater than 0 for Effloglog model")
   ##No observed Efficacy response
   if (length(data@w)==0){
     w1<-Eff
