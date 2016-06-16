@@ -23,10 +23,6 @@
 ##' This function uses generalised simulated annealing to optimise
 ##' a \code{\linkS4class{LogisticNormal}} model to be as close as possible
 ##' to the given prior quantiles.
-##' 
-##' Warning: Please note that at the moment, the results are not fully reproducible
-##' even when setting a RNG seed before. Therefore it is advised to save the result
-##' when you would like to use the same one later on.
 ##'
 ##' @param dosegrid the dose grid
 ##' @param refDose the reference dose

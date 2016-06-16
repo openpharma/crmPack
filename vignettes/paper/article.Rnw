@@ -260,15 +260,15 @@ the logistic regression model \citep{Neuenschwander2008} with
 \label{eq:LogisticLogNormal}
 \mathrm{logit}(\Prob(Y=1 \given x,\theta))
 \equiv \mathrm{logit}(\pi(x,\theta))
-= \alpha + \beta \log\left(\frac{x}{x^*}\right),
+= \alpha_{0} + \alpha_{1} \log\left(\frac{x}{x^*}\right),
 \end{equation}
-parameter vector $\theta = (\alpha,\beta)$, dose $x > 0$ and specified
+parameter vector $\theta = (\alpha_{0},\alpha_{1})$, dose $x > 0$ and specified
 reference dose $x^{*}$. The prior $p(\theta \given \xi)$ is specified
 via a bivariate normal distribution on a transformation of $\theta$ to ensure
-$\beta > 0$:
+$\alpha_{1} > 0$:
 \begin{equation}
   \label{eq:bivariateNormal}
-  (\alpha, \log(\beta)) \given \xi \sim \mathcal{N}_{2} (\mu, \Sigma)
+  (\alpha_{0}, \log(\alpha_{1})) \given \xi \sim \mathcal{N}_{2} (\mu, \Sigma)
 \end{equation}
 with hyperparameters $\xi = (\mu, \Sigma)$ consisting of the prior mean vector
 $\mu$ and the prior covariance matrix $\Sigma$.
@@ -349,7 +349,7 @@ As indicated in the startup message, try \code{crmPackHelp()} and
 Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a
 novel agent are available in addition to placebo, defining our dose grid 
 $\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}$, with $x_{1} = 0.001$ mg representing 
-placebo and  $x_{2} = 0.25$ being our starting dose. Note that here we used a very small dose instead of zero 
+placebo and  $x_{2} = 25$ being our starting dose. Note that here we used a very small dose instead of zero 
 for $x_{1}$, since we consider here the regression model~\eqref{eq:LogisticLogNormal}
 with a log transformation of the dose $x$ (with $x^{*} = 100$ chosen as reference dose). 
 
@@ -357,12 +357,14 @@ with a log transformation of the dose $x$ (with $x^{*} = 100$ chosen as referenc
 Here we assume not enough prior information is available on the dose-toxicity 
 relationship, and hence would like to use a \emph{minimally informative prior}
 \citep{Neuenschwander2008} which can be easily obtained with the function
-\code{MinimalInformative}: \todo{Below max.time=1. Once the paper is finalized
+\code{MinimalInformative}. Since stochastic optimization is used
+internally, setting of a seed is required for reproducibility. 
+Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
+\todo{Below max.time=1. Once the paper is finalized
   we could delete the control option as it might be confusing}
 
 <<min-inf,warning=FALSE,message=FALSE>>=
 coarseGrid <- c(25, 50, 100, 200, 300)
-set.seed(912)
 model <-
   MinimalInformative(dosegrid=coarseGrid, refDose=100, logNormal=TRUE,
                      threshmin=0.1, threshmax=0.2, seed=432,
@@ -380,8 +382,7 @@ $\Sigma=
 $
 and will approximately have 5\% probability each for the DLT
 rate to exceed 10\% (\code{threshmin} argument) at the 25~mg dose and to be below 20\%
-(\code{threshmax}) at the 300~mg dose. Since stochastic optimization is used
-internally, setting of a seed is required for reproducibility.
+(\code{threshmax}) at the 300~mg dose. 
 
 \paragraph{Data object definition and visualization}
 In this simple case of a univariate dose $x$ resulting in binary DLT
@@ -405,8 +406,7 @@ captures the set ${\cal X}$ of all possible doses, \code{y} takes the binary
 DLTs (here $y_{3, 3} = 1$ denotes the only DLT having been observed in the 3rd
 patient in the 3rd cohort), while \code{cohort} groups the patients together in
 cohorts (here $N=3$). The option \code{placebo} is used to specify that this is a 
-placebo controlled study, with placebo patients included in each cohort (by definition
-the first dose $x_{1}$ is considered to represent placebo). Patient IDs can be given 
+placebo controlled study, with placebo patients included in each cohort. The lowest dose $x_{1}$ is then interpreted internally as the placebo dose. Patient IDs can be given 
 optionally in the \code{ID} argument. The data can then be visualized by simply applying 
 the \code{plot} function to the object, which also allows to produce a blinded plot (hiding patient
 IDs and placebo/treatment assignment) with the option \code{blind}:
@@ -472,7 +472,8 @@ This rule can then be evaluated with the function \code{nextBest} to obtain the 
 nextDoseRes <- nextBest(myNextBest, nextMaxDose, samples, model, data)
 (nextDoseVal <- nextDoseRes$value)
 @
-The returned list also contains an accompanying plot, showing the target probabilities as green bars, the overdose probabilities as red bars, the maximum dose as vertical dashed black line, the maximum dose with respect to overdosing as vertical dashed red line, and the final dose recommendation with a red triangle:
+The returned list also contains an accompanying plot, showing the target probabilities as green bars, the overdose probabilities as red bars, the maximum next dose $t_{N+1}$ as vertical dashed black line, the highest dose with probability
+of overdosing not exceeding 25\% as vertical dashed red line, and the final dose recommendation with a red triangle:
 <<nextBest-ncrm,fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
 nextDoseRes$plot
 @
@@ -483,7 +484,7 @@ has been reached already, or if we have sufficient precision for the MTD estimat
 <<stop-rules-def>>=
 myStopping1 <- StoppingMinPatients(nPatients=30)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
-myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 0.2)
+myStopping3 <- StoppingPatientsNearDose(nPatients = 9, percentage = 20)
 myStopping <- myStopping1 | (myStopping2 & myStopping3)
 @
 Again, this specific rule can be evaluated by a function, here called \code{stopTrial}, for a specific situation:
@@ -506,7 +507,7 @@ design <- Design(model=model, nextBest=myNextBest, stopping=myStopping,
                  data=emptydata,startingDose=25)
 @
 We can then start by looking at the \emph{single trial} operating characteristics of the dose escalation design with the function \code{examine}, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25~mg, we would
-need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs:
+need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250~mg cohort, the maximum considered dose of 300~mg dose can be reached in the next cohort if also no DLTs are observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150~mg, respectively.  
 <<design-examine, abbreviate=5>>=
 set.seed(23)
 examine(design, options)
@@ -533,7 +534,7 @@ The result is an object of class \code{Simulations} containing multiple slots, w
 mySims@data[[3]]@nObs    # number of patients in the third simulated trial
 mySims@doses[3]          # MTD at the end of the third simulated trial
 @
-Furthermore, with this object, we can apply two methods. First, we can plot it:
+Furthermore, we can plot the \code{Simulations} object:
 <<sim-plot, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
 plot(mySims)
 @
