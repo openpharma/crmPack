@@ -3035,7 +3035,10 @@ LogisticIndepBeta <- function(binDLE,
 ##' in the output (see details from above)
 ##' @slot vecY is the column vector either contains the pseudo efficay responses or all the observed efficacy 
 ##' responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)
-##' 
+##' @slot c is a constant value greater or equal to 1. If the dose level considered is less than 1, 
+##' a special form for the efficacy linear log-log model will be considered as described in Yeung et al. (2015).
+##' This constant c is a value to add to the dose level for the model for computational purpose. Default
+##' value of c is 1. 
 ##' 
 ##'@example examples/Model-class-Effloglog.R
 ##'@export
@@ -3052,11 +3055,13 @@ LogisticIndepBeta <- function(binDLE,
                           vecmu="matrix",
                           matX="matrix",
                           matQ="matrix",
-                          vecY="matrix"),
+                          vecY="matrix",
+                          c="numeric"),
            prototype(Eff=c(0,0),
                      Effdose=c(1,1),
                      nu=1/0.025,
-                     useFixed=TRUE),
+                     useFixed=TRUE,
+                     c=1),
            contains="ModelEff",
            validity=
              function(object){
@@ -3088,6 +3093,8 @@ validObject(.Effloglog())
 ##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
 ##' @param nu the precision (inverse of the variance) of the efficacy responses
 ##' @param data the input data of \code{\linkS4class{DataDual}} class to update model estimates
+##' @param x the constant value added to the dose level when the dose level value is less than or
+##' equal to 1 and a special form of the linear log-log has to applied (Yeung et al. (2015).).
 ##' @return the \code{\linkS4class{Effloglog}} object
 ##' 
 ##' @importFrom MASS ginv
@@ -3096,19 +3103,38 @@ validObject(.Effloglog())
 Effloglog<-function(Eff,
                     Effdose,
                     nu,
-                    data)
-{if (!all(data@doseGrid > 1))
-  stop("doseGrid in data must be greater than 1 for Effloglog model")
+                    data,
+                    c=1)
+
+{if (!all(data@doseGrid > 0))
+  stop("doseGrid in data must be greater than 0 for Effloglog model")
+
   ##No observed Efficacy response
   if (length(data@w)==0){
     w1<-Eff
-    x1<-Effdose} else {##Combine pseudo data and Observed Efficacy without DLE
+    x1<-Effdose
+    ##add the constant value c in when dose level(s) has value less than or equal to 1
+    if (!all(x1>1)){
+    x1Ixbelow1 <- which(x1 <= 1)
+    x1[x1Ixbelow1] <- x1[x1Ixbelow1]+c
+    }
+    } else {##Combine pseudo data and Observed Efficacy without DLE
       w1<-c(Eff,getEff(data)$wNoDLE)
       x1<-c(Effdose,getEff(data)$xNoDLE)
+      ##add the constant value c in when dose level(s) has value less than or equal to 1
+      if (!all(x1>1)){
+        x1Ixbelow1 <- which(x1 <= 1)
+        x1[x1Ixbelow1] <- x1[x1Ixbelow1]+c
+      }
       w2<-getEff(data)$wNoDLE
-      x2<-getEff(data)$xNoDLE} 
-  
-  
+      x2<-getEff(data)$xNoDLE
+      ##add the constant value c in when dose level(s) has value less than or equal to 1
+      if (!all(x2>1)){
+        x2Ixbelow1 <- which(x2 <= 1)
+        x2[x2Ixbelow1] <- x2[x2Ixbelow1]+c
+      }
+      } 
+ 
   ##Check if sigma2/nu is a fixed contant
   
   useFixed <- identical(length(nu), 1L)
