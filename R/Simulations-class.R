@@ -225,6 +225,7 @@ DualSimulations <- function(rhoEst,
 ##' @slot nObs number of patients overall
 ##' @slot nAboveTarget number of patients treated above target tox interval
 ##' @slot doseGrid the dose grid that has been used
+##' @slot placebo set to TRUE (default is FALSE) for a design with placebo
 ##'
 ##' @export
 ##' @keywords classes
@@ -233,16 +234,17 @@ DualSimulations <- function(rhoEst,
              representation(target="numeric",
                             targetDoseInterval="numeric",
                             nsim="integer",
-                            propDLTs="numeric",
+                            propDLTs="ANY",
                             meanToxRisk="numeric",
                             doseSelected="numeric",
                             toxAtDosesSelected="numeric",
                             propAtTarget="numeric",
                             doseMostSelected="numeric",
                             obsToxRateAtDoseMostSelected="numeric",
-                            nObs="integer",
+                            nObs="ANY",
                             nAboveTarget="integer",
-                            doseGrid="numeric"))
+                            doseGrid="numeric",
+                            placebo="logical"))
 
 
 ##' Class for the summary of model-based simulations output

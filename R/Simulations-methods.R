@@ -65,17 +65,26 @@ setMethod("plot",
               ## start the plot list
               plotList <- list()
               plotIndex <- 0L
-
+      
+              
               ## summary of the trajectories
               if("trajectory" %in% type)
               {
                   ## get a matrix of the simulated dose trajectories,
                   ## where the rows correspond to the simulations and
                   ## the columns to the patient index:
-
-                  simDoses <- lapply(x@data,
-                                     slot,
-                                     "x")
+                  
+                  ## If design with placebo, then exclude placebo Patients
+                  if(x@data[[1]]@placebo){
+                    PL <- x@data[[1]]@doseGrid[1] 
+                    simDoses <- lapply(x@data,
+                                       function(y){ y@x[y@x != PL]})
+                    
+                  }else{
+                    simDoses <- lapply(x@data,
+                                       slot,
+                                       "x")  
+                  }
 
                   maxPatients <- max(sapply(simDoses, length))
 
@@ -115,6 +124,11 @@ setMethod("plot",
                           "Maximum"= 4)
 
                   ## save the plot
+                  if(x@data[[1]]@placebo){
+                    myTitle <- "Patient (placebo were excluded)"
+                  }else{
+                    myTitle <- "Patient"
+                  }
                   plotList[[plotIndex <- plotIndex + 1L]] <-
                       ggplot() +
                           geom_step(aes(x=patient,
@@ -123,7 +137,7 @@ setMethod("plot",
                                         linetype=Statistic),
                                     size=1.2, colour="blue", data=traj.df) +
                                         ## scale_linetype_manual(values=lt) +
-                                            xlab("Patient") + ylab("Dose Level")
+                                            xlab(myTitle) + ylab("Dose Level")
               }
 
               ## average distribution of the doses tried
@@ -341,16 +355,33 @@ setMethod("summary",
               xAboveTarget <- which(trueTox > target[2])
 
               ## proportion of DLTs in a trial:
-              propDLTs <- sapply(object@data,
-                                 function(d){
-                                     mean(d@y)
-                                 })
+              if(object@data[[1]]@placebo){
+                propDLTs <- sapply(object@data,
+                                   function(d){
+                                     tapply(d@y,
+                                            factor(d@x == d@doseGrid[1], 
+                                                   labels=c("ACTV","PLCB")), 
+                                            mean)
+                                   })
+              }else{
+                propDLTs <- sapply(object@data,
+                                   function(d){
+                                     mean(d@y)   
+                                   })
+              }
 
               ## mean toxicity risk
-              meanToxRisk <- sapply(object@data,
-                                    function(d){
+              if(object@data[[1]]@placebo){
+                meanToxRisk <- sapply(object@data,
+                                      function(d){
+                                          mean(trueTox[d@xLevel[d@xLevel != 1]])
+                                      })
+              }else{
+                meanToxRisk <- sapply(object@data,
+                                      function(d){
                                         mean(trueTox[d@xLevel])
-                                    })
+                                      })
+              }
 
               ## doses selected for MTD
               doseSelected <- object@doses
@@ -383,9 +414,19 @@ setMethod("summary",
                   mean(tmp["nDLTatThisDose",]) / mean(tmp["nAtThisDose",])
 
               ## number of patients overall
-              nObs <- sapply(object@data,
-                             slot,
-                             "nObs")
+              if(object@data[[1]]@placebo){
+                nObs <- sapply(object@data,
+                               function(x){
+                                 data.frame(n.ACTV = sum(x@xLevel != 1L),
+                                            n.PLCB = sum(x@xLevel == 1L))
+                               })
+                nObs <- matrix(unlist(nObs), dim(nObs))
+              }else{
+                nObs <- sapply(object@data,
+                               slot,
+                               "nObs")
+              }
+              
 
               ## number of patients treated above target tox interval
               nAboveTarget <- sapply(object@data,
@@ -400,21 +441,23 @@ setMethod("summary",
 
               ## give back an object of class GeneralSimulationsSummary,
               ## for which we then define a print / plot method
-              ret <-
+                ret <-
                   .GeneralSimulationsSummary(
-                      target=target,
-                      targetDoseInterval=targetDoseInterval,
-                      nsim=length(object@data),
-                      propDLTs=propDLTs,
-                      meanToxRisk=meanToxRisk,
-                      doseSelected=doseSelected,
-                      doseMostSelected=doseMostSelected,
-                      obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
-                      nObs=nObs,
-                      nAboveTarget=nAboveTarget,
-                      toxAtDosesSelected=toxAtDoses,
-                      propAtTarget=propAtTarget,
-                      doseGrid=doseGrid)
+                    target=target,
+                    targetDoseInterval=targetDoseInterval,
+                    nsim=length(object@data),
+                    propDLTs=propDLTs,
+                    meanToxRisk=meanToxRisk,
+                    doseSelected=doseSelected,
+                    doseMostSelected=doseMostSelected,
+                    obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
+                    nObs=nObs,
+                    nAboveTarget=nAboveTarget,
+                    toxAtDosesSelected=toxAtDoses,
+                    propAtTarget=propAtTarget,
+                    doseGrid=doseGrid,
+                    placebo=object@data[[1]]@placebo)  
+              
 
               return(ret)
           })
@@ -597,8 +640,14 @@ Report <-
                          description,
                          percent=TRUE,
                          digits=0,
-                         quantiles=c(0.1, 0.9)) {
+                         quantiles=c(0.1, 0.9),
+                         subset=FALSE,
+                         sum=FALSE) {
                     vals <- slot(object, name=slotName)
+                    if(subset)
+                      vals <- vals[subset,]  
+                    if(sum)
+                      vals <- apply(vals,2,sum)  
                     if(percent)
                     {
                         unit <- " %"
@@ -666,16 +715,41 @@ setMethod("show",
               cat("Intervals are corresponding to",
                   "10 and 90 % quantiles\n\n")
 
-              r$report("nObs",
-                       "Number of patients overall",
-                       percent=FALSE)
+              if(object@placebo){
+                r$report("nObs",
+                         "Number of patients on placebo",
+                         percent=FALSE,
+                         subset=2)
+                r$report("nObs",
+                         "Number of patients on active treatment",
+                         percent=FALSE,
+                         subset=1)
+                r$report("nObs",
+                         "Number of patients overall",
+                         percent=FALSE,
+                         sum=TRUE)
+              }else{
+                r$report("nObs",
+                         "Number of patients overall",
+                         percent=FALSE)
+              }
               r$report("nAboveTarget",
                        "Number of patients treated above target tox interval",
                        percent=FALSE)
-              r$report("propDLTs",
-                       "Proportions of DLTs in the trials")
+              
+              if(object@placebo){
+                r$report("propDLTs",
+                         "Proportions of DLTs in the trials for patients on placebo",
+                         subset=2)
+                r$report("propDLTs",
+                        "Proportions of DLTs in the trials for patients on active treatment",
+                        subset=1)
+              }else{
+                r$report("propDLTs",
+                         "Proportions of DLTs in the trials")  
+              }
               r$report("meanToxRisk",
-                       "Mean toxicity risks for the patients")
+                       "Mean toxicity risks for the patients on active treatment")
               r$report("doseSelected",
                        "Doses selected as MTD",
                        percent=FALSE, digits=1)
@@ -830,11 +904,20 @@ setMethod("plot",
               plotIndex <- 0L
 
               ## distribution of overall sample size
-              if("nObs" %in% type)
-              {
+              if(x@placebo){
+                if("nObs" %in% type)
+                {
+                    plotList[[plotIndex <- plotIndex + 1L]] <-
+                        myBarplot(x=x@nObs[2,],
+                               description="Number of patients on active treatment in total")
+                }
+              }else{
+                if("nObs" %in% type)
+                {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
-                      myBarplot(x=x@nObs,
-                             description="Number of patients in total")
+                    myBarplot(x=x@nObs,
+                              description="Number of patients in total")
+                }  
               }
 
               ## distribution of final MTD estimate
@@ -846,11 +929,20 @@ setMethod("plot",
               }
 
               ## distribution of proportion of DLTs
-              if("propDLTs" %in% type)
-              {
+              if(x@placebo){
+                if("propDLTs" %in% type)
+                {
+                    plotList[[plotIndex <- plotIndex + 1L]] <-
+                        myBarplot(x=x@propDLTs[1,] * 100,
+                               description="Proportion of DLTs [%] on active treatment")
+                }
+              }else{
+                if("propDLTs" %in% type)
+                {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
-                      myBarplot(x=x@propDLTs * 100,
-                             description="Proportion of DLTs [%]")
+                    myBarplot(x=x@propDLTs * 100,
+                              description="Proportion of DLTs [%]")
+                }
               }
 
               ## distribution of number of patients treated at too much tox
