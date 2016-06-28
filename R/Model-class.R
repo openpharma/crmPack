@@ -2891,7 +2891,7 @@ validObject(.ModelEff)
              })
 validObject(.LogisticIndepBeta())  
 
-##' Intialization function for "LogisticIndepBeta" class
+##' Initialization function for "LogisticIndepBeta" class
 ##' @param binDLE the number of subjects observed with a DLE, the pseudo DLE responses
 ##' @param DLEdose the corresponding dose levels for the pseudo DLE responses, pseudo dose levels
 ##' @param DLEweights the total number of subjects treated at each of the dose levels, pseudo weights
@@ -2906,13 +2906,17 @@ LogisticIndepBeta <- function(binDLE,
                               DLEweights,
                               data)
 {##if no observed DLE(data)
-  if (length(data@y)==0){
+  if (length(data@y)==0)
+  {
     w1<-DLEweights
     y1<-binDLE
-    x1<-DLEdose} else {w1<-c(DLEweights,rep(1,data@nObs))
+    x1<-DLEdose
+  } else {
+    w1<-c(DLEweights,rep(1,data@nObs))
     ##combine pseudo and observed
     y1<-c(binDLE,data@y)
-    x1<-c(DLEdose,data@x)}
+    x1<-c(DLEdose,data@x)
+  }
   ##Fit the pseudo data and DLE responses with their corresponding dose levels
   FitDLE<-suppressWarnings(glm(y1/w1~log(x1),family=binomial(link="logit"),weights=w1))
   SFitDLE<-summary(FitDLE)

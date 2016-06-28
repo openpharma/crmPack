@@ -543,11 +543,11 @@ The resulting plot shows on the top panel a summary of the trial trajectories. O
 Second, we can summarize the simulation results, and obtain a textual description of the 
 results: 
 <<sim-summary, abbreviate=3>>=
-simSum <- summary(mySims,truth=myTruth)
+simSum <- summary(mySims, truth=myTruth)
 simSum
 @
 A plot of the summary results can also be produced:
-<<sim-summary-plot, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center', warning=FALSE>>=
+<<sim-summary-plot, fig.width=6,fig.height=6,out.width='.6\\linewidth',fig.align='center', warning=FALSE>>=
 plot(simSum)
 @
 
@@ -557,7 +557,7 @@ plot(simSum)
 In this section, dose escalation designs incorporating both safety (as binary DLT) and efficacy endpoints (continuous response) will be introduced. Dual endpoint datasets
 are implemented with the \code{DualData} class:
 <<data-dual, warning=FALSE>>=
-data3 <- DataDual(x=c(25, 50, 50, 75, 100, 100, 225, 300), 
+data3 <- DataDual(x=c(25, 50, 50, 75, 100, 100, 200, 200), 
                   y=c(0, 0, 0, 0, 1, 1, 1, 1), 
                   w=c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
                   doseGrid=seq(25, 300, 25))
@@ -590,11 +590,13 @@ DLTmodel <- LogisticIndepBeta(binDLE=c(1.05, 1.8),
 
 The efficacy model can similarly be specified as
 <<Effmodel>>=
-data2 <- DataDual(doseGrid=seq(25, 300, 25))
+emptydata2 <- DataDual(doseGrid=seq(25, 300, 25))
+## todo: ideally we want here 
+## emptydata2 <- DataDual(doseGrid=emptydata@doseGrid)
 Effmodel <- Effloglog(Eff=c(1.223, 2.513),
                       Effdose=c(25, 300),
                       nu=c(a=1, b=0.025),
-                      data=data2)
+                      data=emptydata2)
 @
 Here the argument \code{Eff} takes the vector of pseudo efficacy responses at the two fixed dose levels, assuming one subject is treated at each of these dose levels. 
 
@@ -610,32 +612,40 @@ posterior modal estimates using the \code{update} method:
 newDLTmodel <- update(object=DLTmodel, data=data3)
 newEffmodel <- update(object=Effmodel, data=data3)
 @
-With \pkg{crmPack} we can implement it as follows:
+With \pkg{crmPack} we can implement the next best dose recommendation 
+based on maximizing the gain function as follows:
 <<NextBestGain>>=
 GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget=0.35,
                                 DLEEndOfTrialtarget=0.3)
 @
-where safety rules are included (\code{DLEDuringTrialtarget} specifies the maximum DLT rate tolerated during the study and \code{DLEEndOfTrialtarget} the maximum DLT rate tolerated at the end of the study). 
-As in Section~\ref{subsec:crmtrial} the rule can be evaluated with \code{nextBest}:
+where \code{DLEDuringTrialtarget} specifies the maximum estimated DLT rate tolerated 
+during the study and \code{DLEEndOfTrialtarget} the maximum estimated DLT rate tolerated 
+at the end of the study. 
+As in Section~\ref{subsec:crmtrial} this rule $\nu$ can be evaluated using 
+\code{nextBest} to obtain $x_{N+1}$, after evaluating the maximum increments rule 
+$\tau$ using \code{maxDose} to obtain $t_{N+1}$:
 <<nextBest>>=
+(nextMaxDose <- maxDose(myIncrements, data3))
 doseRecGain <- nextBest(GainNextBest,
-                        doselimit=max(data3@doseGrid),
+                        doselimit=nextMaxDose,
                         model=newDLTmodel,
                         Effmodel=newEffmodel,
                         data=data3)
+(nextDoseVal <- doseRecGain$nextdose)
 @
 The plot for the next dose allocation is:
 <<doseRecommendation, fig.width=7,fig.height=4,out.width='.5\\linewidth',fig.align='center'>>=
 print(doseRecGain$plot)
 @
-The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical lines in the plot show the maximum possible dose $t_{N+1}$ and the next dose $x_{N+1}$. The circle, square and triangle symbols mark the estimated doses with target toxicity (during the trial and at the end of trial) and the maximum gain value. 
+The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = \Sexpr{nextMaxDose}$~mg and the vertical violet line shows the next dose $x_{N+1} = \Sexpr{nextDoseVal}$~mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (\Sexpr{doseRecGain$TDtargetDuringTrialAtDoseGrid}~mg for 35\% DLT probability during the trial and \Sexpr{doseRecGain$TDtargetEndOfTrialAtDoseGrid}~mg for 30\% DLT probability at the end of trial) and the estimated dose with maximum gain, \Sexpr{doseRecGain$GstarAtDoseGrid}~mg. The numbers
+can be obtained from the \code{doseRecGain} list.
 
 \paragraph{Simulations} To simulate the operating characteristics, first a design has to be built: 
 <<design>>=
 design1 <- DualResponsesDesign(nextBest=GainNextBest,
                                model=DLTmodel,
                                Effmodel=Effmodel,
-                               data=data2,
+                               data=emptydata2,
                                stopping=myStopping1,
                                increments=myIncrements,
                                cohortSize=mySize,
@@ -842,7 +852,8 @@ newMyNextBest <- NextBestMinDist(target=0.3)
 (newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, 
                             newSamples, newModel, data)$value)
 @
-So using this CRM, we could escalate to 150~mg, instead of just 100~mg above.
+So using this CRM, we could escalate to \Sexpr{newNextDoseVal}~mg, instead 
+of just 100~mg above.
 
 \paragraph{Using the new functionality} These were the only necessary additions
 of code that we needed to implement the one-parameter CRM with a greedy next 

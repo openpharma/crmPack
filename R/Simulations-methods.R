@@ -641,13 +641,13 @@ Report <-
                          percent=TRUE,
                          digits=0,
                          quantiles=c(0.1, 0.9),
-                         subset=FALSE,
-                         sum=FALSE) {
+                         subset=NULL,
+                         doSum=FALSE) {
                     vals <- slot(object, name=slotName)
-                    if(subset)
+                    if(! is.null(subset))
                       vals <- vals[subset,]  
-                    if(sum)
-                      vals <- apply(vals,2,sum)  
+                    if(doSum)
+                      vals <- apply(vals, 2, sum)  
                     if(percent)
                     {
                         unit <- " %"
@@ -721,13 +721,13 @@ setMethod("show",
                          percent=FALSE,
                          subset=2)
                 r$report("nObs",
-                         "Number of patients on active treatment",
+                         "Number of patients on active",
                          percent=FALSE,
                          subset=1)
                 r$report("nObs",
                          "Number of patients overall",
                          percent=FALSE,
-                         sum=TRUE)
+                         doSum=TRUE)
               }else{
                 r$report("nObs",
                          "Number of patients overall",
@@ -742,14 +742,14 @@ setMethod("show",
                          "Proportions of DLTs in the trials for patients on placebo",
                          subset=2)
                 r$report("propDLTs",
-                        "Proportions of DLTs in the trials for patients on active treatment",
+                        "Proportions of DLTs in the trials for patients on active",
                         subset=1)
               }else{
                 r$report("propDLTs",
                          "Proportions of DLTs in the trials")  
               }
               r$report("meanToxRisk",
-                       "Mean toxicity risks for the patients on active treatment")
+                       "Mean toxicity risks for the patients on active")
               r$report("doseSelected",
                        "Doses selected as MTD",
                        percent=FALSE, digits=1)
@@ -909,7 +909,7 @@ setMethod("plot",
                 {
                     plotList[[plotIndex <- plotIndex + 1L]] <-
                         myBarplot(x=x@nObs[2,],
-                               description="Number of patients on active treatment in total")
+                               description="Number of patients on active in total")
                 }
               }else{
                 if("nObs" %in% type)
@@ -934,14 +934,16 @@ setMethod("plot",
                 {
                     plotList[[plotIndex <- plotIndex + 1L]] <-
                         myBarplot(x=x@propDLTs[1,] * 100,
-                               description="Proportion of DLTs [%] on active treatment")
+                               description="Proportion of DLTs [%] on active",
+                               xaxisround=1)
                 }
               }else{
                 if("propDLTs" %in% type)
                 {
                   plotList[[plotIndex <- plotIndex + 1L]] <-
                     myBarplot(x=x@propDLTs * 100,
-                              description="Proportion of DLTs [%]")
+                              description="Proportion of DLTs [%]",
+                              xaxisround=1)
                 }
               }
 
@@ -1687,7 +1689,8 @@ setMethod("plot",
               {
                 plotList[[plotIndex <- plotIndex + 1L]] <-
                   myBarplot(x=x@propDLE * 100,
-                         description="Proportion of DLE [%]")
+                         description="Proportion of DLE [%]",
+                         xaxisround=1)
               }
               
               ## distribution of number of patients treated at too much tox
