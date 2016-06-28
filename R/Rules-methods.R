@@ -1128,8 +1128,7 @@ setMethod("stopTrial",
                             stopping@percentage,
                             "% of the next best dose ",
                             dose,
-                            ", i.e. in the interval (", round(lower, 1),", ",
-                            round(upper, 1), "). This ",
+                            ". This ",
                             ifelse(doStop, "reached", "is below"),
                             " the required ",
                             stopping@nCohorts,
@@ -1175,8 +1174,7 @@ setMethod("stopTrial",
                             stopping@percentage,
                             "% of the next best dose ",
                             dose,
-                            ", i.e. in the interval (", round(lower, 1),", ",
-                            round(upper, 1), "). This ",
+                            ". This ",
                             ifelse(doStop, "reached", "is below"),
                             " the required ",
                             stopping@nPatients,
@@ -1941,11 +1939,11 @@ setMethod("nextBest",
                 ylab(paste("Probability of DLE")) + ylim(c(0,1)) + xlim(c(0,max(data@doseGrid))) +
                 geom_line(colour=I("red"), size=1.5)
               
-              if(data@placebo) {
-                n <- length(data@doseGrid)
-                LowestDose <- sort(data@doseGrid)[2]} else {
+              #if(data@placebo) {
+                #n <- length(data@doseGrid)
+                #LowestDose <- sort(data@doseGrid)[2]} else {
                   LowestDose <- min(data@doseGrid)
-                }
+                #}
               
               if ((TDDfourdg < LowestDose)|(TDDfourdg > max(data@doseGrid))) {
                 if (SIM==FALSE){
@@ -2047,11 +2045,11 @@ setMethod("nextBest",
                 -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
               }
               
-              if(data@placebo) {
-                n <- length(data@doseGrid)
-                LowestDose <- sort(data@doseGrid)[2]} else {
+              #if(data@placebo) {
+                #n <- length(data@doseGrid)
+                #LowestDose <- sort(data@doseGrid)[2]} else {
                   LowestDose <- min(data@doseGrid)
-                }
+                #}
               ##Find the dose which gives the maximum gain
               Gstar<-(optim(LowestDose,Gainfun, method = "L-BFGS-B", lower=LowestDose,upper=max(data@doseGrid))$par)
               ##Find the maximum gain value
@@ -2426,11 +2424,11 @@ setMethod("nextBest",
                 xlab("Gstar")+ xlim(c(0,max(data@doseGrid)))+
                 ylab("Posterior density")
               
-              if(data@placebo) {
-                n <- length(data@doseGrid)
-                LowestDose <- sort(data@doseGrid)[2]} else {
+              #if(data@placebo) {
+                #n <- length(data@doseGrid)
+                #LowestDose <- sort(data@doseGrid)[2]} else {
                   LowestDose <- min(data@doseGrid)
-                }
+                #}
               
               
               if (signif(TDtargetDuringTrialEstimate,4) < LowestDose |signif(TDtargetDuringTrialEstimate,4) > max(data@doseGrid)) {
@@ -2655,11 +2653,11 @@ setMethod("nextBest",
                   xlab("Gstar")+ xlim(c(0,max(data@doseGrid)))+
                   ylab("Posterior density")
                 
-                if(data@placebo) {
-                  n <- length(data@doseGrid)
-                  LowestDose <- sort(data@doseGrid)[2]} else {
+                #if(data@placebo) {
+                  #n <- length(data@doseGrid)
+                  #LowestDose <- sort(data@doseGrid)[2]} else {
                     LowestDose <- min(data@doseGrid)
-                  }
+                  #}
                 
                 
                 if (signif(TDtargetDuringTrialEstimate,4) < LowestDose |signif(TDtargetDuringTrialEstimate,4) > max(data@doseGrid)) {
@@ -2979,11 +2977,11 @@ setMethod("stopTrial",
                 -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
               }
               
-              if(data@placebo) {
-                n <- length(data@doseGrid)
-                LowestDose <- sort(data@doseGrid)[2]} else {
+              #if(data@placebo) {
+                #n <- length(data@doseGrid)
+                #LowestDose <- sort(data@doseGrid)[2]} else {
                   LowestDose <- min(data@doseGrid)
-                }
+                #}
               
               Gstar<-(optim(LowestDose,Gainfun,method = "L-BFGS-B",lower=LowestDose,upper=max(data@doseGrid))$par)
               MaxGain<--(optim(LowestDose,Gainfun,method = "L-BFGS-B",lower=LowestDose,upper=max(data@doseGrid))$value)
