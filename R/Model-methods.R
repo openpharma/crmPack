@@ -572,20 +572,13 @@ setMethod("update",
             function(object,
                      data,
                      ...){
-              ##Get Pseudo Eff responses (prior) of the model
-              
-              PseudoEff<-object@Eff
-              
-              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoEffdose<- object@Effdose
-              
-              ## Get the initial values of parameters for nu (if it is not fixed)
-              ##OR get the fixed value of nu
-              PseudoNu<- object@nu
-              
               
               ##update the model estimates with data
-              model<- Effloglog(Eff=PseudoEff,Effdose=PseudoEffdose,nu=PseudoNu,data=data)
+              model <- Effloglog(Eff=object@Eff,
+                                 Effdose=object@Effdose,
+                                 nu=object@nu,
+                                 c=object@c,
+                                 data=data)
               
               ##return the updated model
               return(model)

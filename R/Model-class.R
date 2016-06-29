@@ -3035,10 +3035,10 @@ LogisticIndepBeta <- function(binDLE,
 ##' in the output (see details from above)
 ##' @slot vecY is the column vector either contains the pseudo efficay responses or all the observed efficacy 
 ##' responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)
-##' @slot c is a constant value greater or equal to 1. If the dose level considered is less than 1, 
-##' a special form for the efficacy linear log-log model will be considered as described in Yeung et al. (2015).
-##' This constant c is a value to add to the dose level for the model for computational purpose. Default
-##' value of c is 1. 
+##' @slot c is a constant value greater or equal to 0, with the default 0 leading
+##' to the model form described above. In general, the model has the form
+##' \eqn{y_i=\theta_1 +theta_2 log(log(d_i + c))+\epsilon_i}, such that dose levels
+##' greater than \eqn{1-c} can be considered as described in Yeung et al. (2015). 
 ##' 
 ##'@example examples/Model-class-Effloglog.R
 ##'@export
@@ -3061,7 +3061,7 @@ LogisticIndepBeta <- function(binDLE,
                      Effdose=c(1,1),
                      nu=1/0.025,
                      useFixed=TRUE,
-                     c=1),
+                     c=0),
            contains="ModelEff",
            validity=
              function(object){
@@ -3093,7 +3093,7 @@ validObject(.Effloglog())
 ##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
 ##' @param nu the precision (inverse of the variance) of the efficacy responses
 ##' @param data the input data of \code{\linkS4class{DataDual}} class to update model estimates
-##' @param x the constant value added to the dose level when the dose level value is less than or
+##' @param c the constant value added to the dose level when the dose level value is less than or
 ##' equal to 1 and a special form of the linear log-log has to applied (Yeung et al. (2015).).
 ##' @return the \code{\linkS4class{Effloglog}} object
 ##' 
@@ -3104,43 +3104,30 @@ Effloglog<-function(Eff,
                     Effdose,
                     nu,
                     data,
-                    c=1)
+                    c=0)
 
-{if (!all(data@doseGrid > 0))
-  stop("doseGrid in data must be greater than 0 for Effloglog model")
+{if (!all(data@doseGrid > 1 - c))
+  stop("doseGrid in data must be greater than 1 - c for Effloglog model")
 
   ##No observed Efficacy response
   if (length(data@w)==0){
-    w1<-Eff
-    x1<-Effdose
-    ##add the constant value c in when dose level(s) has value less than or equal to 1
-    if (!all(x1>1)){
-    x1Ixbelow1 <- which(x1 <= 1)
-    x1[x1Ixbelow1] <- x1[x1Ixbelow1]+c
-    }
-    } else {##Combine pseudo data and Observed Efficacy without DLE
-      w1<-c(Eff,getEff(data)$wNoDLE)
-      x1<-c(Effdose,getEff(data)$xNoDLE)
-      ##add the constant value c in when dose level(s) has value less than or equal to 1
-      if (!all(x1>1)){
-        x1Ixbelow1 <- which(x1 <= 1)
-        x1[x1Ixbelow1] <- x1[x1Ixbelow1]+c
-      }
-      w2<-getEff(data)$wNoDLE
-      x2<-getEff(data)$xNoDLE
-      ##add the constant value c in when dose level(s) has value less than or equal to 1
-      if (!all(x2>1)){
-        x2Ixbelow1 <- which(x2 <= 1)
-        x2[x2Ixbelow1] <- x2[x2Ixbelow1]+c
-      }
-      } 
- 
+    w1 <- Eff
+    ## always add the constant value c (default is 0)
+    x1 <- Effdose + c
+  } else {##Combine pseudo data and Observed Efficacy without DLE
+    w1<-c(Eff,getEff(data)$wNoDLE)
+    x1<-c(Effdose,getEff(data)$xNoDLE + c)
+    
+    w2<-getEff(data)$wNoDLE
+    x2<-getEff(data)$xNoDLE + c
+  } 
+  
   ##Check if sigma2/nu is a fixed contant
   
   useFixed <- identical(length(nu), 1L)
   ##Fit pseudo and observed efficacy
-  FitEff<-suppressWarnings(glm(w1~log(log(x1)),family=gaussian))
-  SFitEff<-summary(FitEff)
+  FitEff <- suppressWarnings(glm(w1~log(log(x1)),family=gaussian))
+  SFitEff <- summary(FitEff)
   ##Obtain paramter estimates
   theta1<-coef(SFitEff)[1,1]
   theta2<-coef(SFitEff)[2,1]
@@ -3150,7 +3137,7 @@ Effloglog<-function(Eff,
   if (length(nu)==2){
     mu0<-matrix(c(theta1,theta2),2,1)
     vecmu<-mu0
-    X0<-matrix(c(1,1,log(log(Effdose[1])),log(log(Effdose[2]))),2,2)
+    X0<-matrix(c(1,1,log(log(Effdose[1] + c)),log(log(Effdose[2] + c))),2,2)
     matX<-X0
     Q0=t(X0)%*%X0
     matQ<-Q0
@@ -3177,25 +3164,20 @@ Effloglog<-function(Eff,
              data=data,
              dose=function(ExpEff,theta1,theta2){
                LogDose<-exp((ExpEff-theta1)/theta2)
-               return(exp(LogDose))},
-             
-             ExpEff=function(dose,theta1,theta2,c=1){
-               IdL1 <- which(dose <= 1)
-               IdL2 <- which(dose > 1)
-               dose1 <- dose[IdL1]
-               dose2 <- dose[IdL2]
-               if (length(IdL1)==0){
-                 return(theta1+theta2*log(log(dose)))} else {
-                   return(c(theta1+theta2*log(log(dose1+c)), theta1+theta2*log(log(dose2))))
-                 }
-               },
+               return(exp(LogDose) - c)
+             },
+             ExpEff=function(dose,theta1,theta2){
+               dose <- dose + c
+               return(theta1+theta2*log(log(dose)))
+             },
              theta1=theta1,
              theta2=theta2,
              Pcov=Pcov,
              vecmu=vecmu,
              matX=matX,
              matQ=matQ,
-             vecY=vecY
+             vecY=vecY,
+             c=c
   )}
 
 ## =========================================================================================

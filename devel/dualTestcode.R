@@ -11,14 +11,21 @@ DLTmodel <- LogisticIndepBeta(binDLE=c(1.05, 1.8),
                                DLEweights=c(3, 3),
                                DLEdose=c(25, 300),
                                data=emptydata)
-data2 <- DataDual(doseGrid=c(PL, seq(25, 300, 25)),
+data2 <- DataDual(doseGrid=data@doseGrid,
                   placebo=TRUE)
 
+## this gives an error message:
 Effmodel <- Effloglog(Eff=c(1.223, 2.513),
                        Effdose=c(25, 300),
                        nu=c(a=1, b=0.025),
                        data=data2)
 
+## but we can correct with setting c>=1:
+Effmodel <- Effloglog(Eff=c(1.223, 2.513),
+                      Effdose=c(25, 300),
+                      nu=c(a=1, b=0.025),
+                      data=data2,
+                      c=2)
 
 
 data3 <- DataDual(x=c(PL, 25, 25, 25, PL, 100, 100, 100, PL, 300, 300, 300),
@@ -26,7 +33,7 @@ data3 <- DataDual(x=c(PL, 25, 25, 25, PL, 100, 100, 100, PL, 300, 300, 300),
                    w=c(0, 0.2, 0.5, 1, 0, 1.9, 2.2, 2, 
                        0.03, 2.7, 2.6, 3),
                    cohort=c(1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3),
-                   doseGrid=c(PL, seq(25, 300, 25)),
+                   doseGrid=data@doseGrid,
                    ID=1:12,
                    placebo=TRUE)
 newEffmodel <- update(object=Effmodel, data=data3)
@@ -46,6 +53,18 @@ Eff <- ExpEff(data3@doseGrid,newEffmodel)
 
 ##calculate gain values at each dose levels including the placebo
 gain(data3@doseGrid,DLEmodel=newDLTmodel,Effmodel=newEffmodel)
+
+## plot continuously:
+plotgrid <- seq(from=0.001, to=300, length=300)
+gainvals <- gain(plotgrid, 
+                 DLEmodel=newDLTmodel, 
+                 Effmodel=newEffmodel)
+effvals <- ExpEff(plotgrid, newEffmodel)
+dlevals <- prob(plotgrid,newDLTmodel)
+
+plot(plotgrid, effvals, type="l", col="blue")
+lines(plotgrid, gainvals, col="black")
+lines(plotgrid, dlevals, col="red")
 
 ##The follwoing is the same
 Eff*(1-DLE)
