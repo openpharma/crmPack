@@ -573,7 +573,9 @@ The endpoints can be modelled jointly or separately. For joint modelling derived
 \begin{equation}\label{eq:loglog}
 \E(w(x)) = \gamma + \delta \log\{\log(x + c)\} 
 \end{equation}
-where $c=2$ will be chosen as constant such that doses $x$ close to 0 can be used and $w(x) \sim N(\E(w(x)), \sigma^2)$. 
+such that $w(x) \sim N(\E(w(x)), \sigma^2)$. 
+$c$ is an integer constant. The default value is $c=0$ and it can be chosen for $c \geq 1$ when any of the doses considered are less than or equal to 1. Throughtout the examples in this paper, we will use $c=1$.
+
 For both the safety and efficacy models, the prior will be expressed in form of imaginary pseudo data \citep[see][for details]{yeung2015}. Prior and posterior modal estimates of the model parameters can then be obtained as the maximum likelihood estimates from the data set combining pseudo data with observed data \citep{w06}. The variance $\sigma^{2}$ can be fixed or assigned an inverse gamma prior.
 
 \paragraph{Model classes}
