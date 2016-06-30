@@ -241,6 +241,8 @@ ThreePlusThreeDesign <- function(doseGrid)
 ##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels, an object class of 
 ##' \code{\linkS4class{Increments}}
+##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
+##' an object of class \code{\linkS4class{CohortSize}}
 ##' 
 ##' @example examples/design-class-TDsamplesDesign.R
 ##' @export
@@ -249,11 +251,13 @@ ThreePlusThreeDesign <- function(doseGrid)
   setClass(Class="TDsamplesDesign",
            representation(model="ModelTox",
                           stopping="Stopping",
-                          increments="Increments"),
+                          increments="Increments",
+                          PLcohortSize="CohortSize"),
            prototype(model=.LogisticIndepBeta(),
                      nextBest=.NextBestTDsamples(),
                      stopping=.StoppingMinPatients(),
-                     increments=.IncrementsRelative()),
+                     increments=.IncrementsRelative(),
+                     PLcohortSize=CohortSizeConst(1)),
            contains=list("RuleDesign"))
 
 validObject(.TDsamplesDesign())
@@ -262,14 +266,15 @@ validObject(.TDsamplesDesign())
 ##' @param model see \code{\linkS4class{TDsamplesDesign}}
 ##' @param stopping see \code{\linkS4class{TDsamplesDesign}}
 ##' @param increments see \code{\linkS4class{TDsamplesDesign}}
+##' @param PLcohortSize see \code{\linkS4class{TDsamplesDesign}}
 ##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
 ##' @return the \code{\linkS4class{TDsamplesDesign}} class object
 ##' 
 ##' @export
 ##' @keywords methods
-TDsamplesDesign<-function(model,stopping,increments,...){
+TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst(1),...){
   start<-RuleDesign(...)
-  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments)
+  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments,PLcohortSize=PLcohortSize)
 }
 
 ## =============================================================================
@@ -286,6 +291,8 @@ TDsamplesDesign<-function(model,stopping,increments,...){
 ##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels, an object class of 
 ##' \code{\linkS4class{Increments}}
+##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
+##' an object of class \code{\linkS4class{CohortSize}}
 ##' 
 ##' @example examples/design-class-TDDesign.R
 ##' @export
@@ -294,11 +301,13 @@ TDsamplesDesign<-function(model,stopping,increments,...){
   setClass(Class="TDDesign",
            representation(model="ModelTox",
                           stopping="Stopping",
-                          increments="Increments"),
+                          increments="Increments",
+                          PLcohortSize="CohortSize"),
            prototype(model=.LogisticIndepBeta(),
                      nextBest=.NextBestTD(),
                      stopping=.StoppingMinPatients(),
-                     increments=.IncrementsRelative()),
+                     increments=.IncrementsRelative(),
+                     PLcohortSize=CohortSizeConst(1)),
            contains=list("RuleDesign"))
 
 validObject(.TDDesign())
@@ -307,6 +316,7 @@ validObject(.TDDesign())
 ##' @param model please refer to \code{\linkS4class{TDDesign}} class object
 ##' @param stopping please refer to \code{\linkS4class{TDDesign}} class object
 ##' @param increments please refer to \code{\linkS4class{TDDesign}} class object
+##' @param PLcohortSize see \code{\linkS4class{TDDesign}}
 ##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
 ##' @return the \code{\linkS4class{TDDesign}} class object
 ##' 
