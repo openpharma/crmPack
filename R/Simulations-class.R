@@ -571,7 +571,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' final optimal doses, which is either the TDEOT when only DLE response are incorporated into 
 ##' the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 ##' incorporated, across all simulations
-##' @slot ratioTDEOT the six-number summary table of the final ratios of the upper to the lower 95\%
+##' @slot ratioTDEOTSummary the six-number summary table of the final ratios of the upper to the lower 95\%
 ##' credibility intervals of the final TDEOTs across all simulations
 ##' @slot FinalRatioSummary the six-number summary table of the final ratios of the upper to the lower 95\%
 ##' credibility intervals of the final optimal doses across all simulations

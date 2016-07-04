@@ -360,15 +360,13 @@ relationship, and hence would like to use a \emph{minimally informative prior}
 \code{MinimalInformative}. Since stochastic optimization is used
 internally, setting of a seed is required for reproducibility. 
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
-\todo{Below max.time=1. Once the paper is finalized
-  we could delete the control option as it might be confusing}
 
-<<min-inf,warning=FALSE,message=FALSE>>=
+<<min-inf, warning=FALSE, message=FALSE, results="hide">>=
 coarseGrid <- c(25, 50, 100, 200, 300)
 model <-
   MinimalInformative(dosegrid=coarseGrid, refDose=100, logNormal=TRUE,
                      threshmin=0.1, threshmax=0.2, seed=432,
-                     control=list(threshold.stop=0.05,max.time=1))$model
+                     control=list(max.time=30))$model
 @
 
 The resulting \code{model} (which is an object of class \code{LogisticLogNormal}) 
@@ -400,7 +398,7 @@ data <- Data(x=c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
              placebo=TRUE)
 @
 
-The argument \code{x} takes the doses $x_{1}=0.001, $x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
+The argument \code{x} takes the doses $x_{1}=\Sexpr{PL}, $x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
 the repetition to match the outcome variables $y_{j,k}$) where \code{doseGrid}
 captures the set ${\cal X}$ of all possible doses, \code{y} takes the binary
 DLTs (here $y_{3, 3} = 1$ denotes the only DLT having been observed in the 3rd
@@ -516,18 +514,17 @@ examine(design, options)
 \paragraph{Simulating operating characteristics} For the \emph{many trials} operating characteristics, we first have to define true scenarios, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. As an example we use here the function contained in the slot \code{prob} of the object \code{model}:
 %, for which the dose-toxicity curve is shown below.
 <<true-def>>=
-myTruth <- function(dose){ model@prob(dose, alpha0=4.5, alpha1=8)}
+myTruth <- function(dose){model@prob(dose, alpha0=4.5, alpha1=8)}
 @
 Now we can proceed to the simulations using the function \code{simulate}:
-\todo{need to change to 100 simulations at the end}
 <<run-sims>>=
 mySimsTime <- 
   system.time(mySims <- 
-                simulate(design, truth=myTruth, nsim=10,
+                simulate(design, truth=myTruth, nsim=100,
                          seed=819,mcmcOptions=options,parallel=FALSE))[3]
 @
 The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we 
-needed \Sexpr{round(mySimsTime)}~seconds for 100~simulated trials.
+needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials.
 
 The result is an object of class \code{Simulations} containing multiple slots, with e.g.\ the \code{data} slot containing the list of simulated trials. The slots \code{doses} and \code{stopReasons} contain information about the final MTD and the stopping reason for each trial. We can  e.g.\ investigate the third simulated trial:
 <<third-trial, fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
@@ -574,7 +571,7 @@ The endpoints can be modelled jointly or separately. For joint modelling derived
 \E(w(x)) = \gamma + \delta \log\{\log(x + c)\} 
 \end{equation}
 such that $w(x) \sim N(\E(w(x)), \sigma^2)$. 
-$c$ is an integer constant. The default value is $c=0$ and it can be chosen for $c \geq 1$ when any of the doses considered are less than or equal to 1. Throughtout the examples in this paper, we will use $c=1$.
+$c \geq 0$ is a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow the placebo dose $x=\Sexpr{PL}$ which is close to 0. 
 
 For both the safety and efficacy models, the prior will be expressed in form of imaginary pseudo data \citep[see][for details]{yeung2015}. Prior and posterior modal estimates of the model parameters can then be obtained as the maximum likelihood estimates from the data set combining pseudo data with observed data \citep{w06}. The variance $\sigma^{2}$ can be fixed or assigned an inverse gamma prior.
 
@@ -643,13 +640,24 @@ print(doseRecGain$plot)
 @
 The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = \Sexpr{nextMaxDose}$~mg and the vertical violet line shows the next dose $x_{N+1} = \Sexpr{nextDoseVal}$~mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (\Sexpr{doseRecGain$TDtargetDuringTrialAtDoseGrid}~mg for 35\% DLT probability during the trial and \Sexpr{doseRecGain$TDtargetEndOfTrialAtDoseGrid}~mg for 30\% DLT probability at the end of trial) and the estimated dose with maximum gain, \Sexpr{doseRecGain$GstarAtDoseGrid}~mg. The numbers can be obtained from the \code{doseRecGain} list.
 
+\paragraph{Stopping rules} In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum
+gain:
+<<newdualstopping-rule>>=
+myStopping4 <- 
+  StoppingGstarCIRatio(targetRatio = 5,
+                       targetEndOfTrial = GainNextBest@DLEEndOfTrialtarget)
+myStoppingDual <- myStopping1 | myStopping4
+@
+This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less 
+than~\Sexpr{myStopping4@targetRatio}.
+
 \paragraph{Simulations} To simulate the operating characteristics, first a design has to be built: 
 <<design>>=
 design2 <- DualResponsesDesign(nextBest=GainNextBest,
                                model=DLTmodel,
                                Effmodel=Effmodel,
                                data=emptydata2,
-                               stopping=myStopping,
+                               stopping=myStoppingDual,
                                increments=myIncrements,
                                cohortSize=mySize,
                                startingDose=25)
@@ -675,6 +683,7 @@ Sim1 <- simulate(object=design2,
 @
 Note that the fixed precision \code{nu} $1/\sigma^{2}$ is specified instead of the
 variance $\sigma^{2}$.
+%
 The results of the simulation can then be plotted and summarized as shown before.
 
 \subsection{Extending crmPack functionality}

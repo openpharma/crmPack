@@ -1015,6 +1015,103 @@ StoppingAny <- function(stopList)
 }
 
 
+##-------------------------------------------------------------------------------------------------------------------
+## Stopping based on a target ratio of the 95% credibility interval
+## ---------------------------------------------------------------------------------------------------------------
+
+##' Stop based on a target ratio, the ratio of the upper to the lower
+##' 95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target 
+##' probability of DLE used at the end of a trial
+##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
+##' estimate that required to stop a trial
+##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
+##' 
+##' @example examples/Rules-class-StoppingTDCIRatio.R
+##' @export
+##' @keywords classes 
+.StoppingTDCIRatio <- 
+  setClass(Class="StoppingTDCIRatio",
+           representation(targetRatio="numeric",
+                          targetEndOfTrial="numeric"),
+           prototype(targetRatio=5,
+                     targetEndOfTrial=0.3),
+           contains="Stopping",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
+                       "targetRatio must be a positive numerical number")
+               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
+                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
+               o$result()
+             })
+
+validObject(.StoppingTDCIRatio())
+
+##' Initialization function for "StoppingTDCIRatio"
+##' 
+##' @param targetRatio please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
+##' @return the \code{\linkS4class{StoppingTDCIRatio}} class object
+##' 
+##' @export
+##' @keywords methods
+StoppingTDCIRatio <- function(targetRatio,
+                              targetEndOfTrial)
+{
+  .StoppingTDCIRatio(targetRatio=targetRatio,
+                     targetEndOfTrial=targetEndOfTrial)
+}
+
+## ----------------------------------------------------------------------------------------------------------------
+##' Stop based on a target ratio, the ratio of the upper to the lower
+##' 95\% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and 
+##' the TD end of trial, the dose with probability of DLE equals to the target 
+##' probability of DLE used at the end of a trial.
+##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
+##' estimate that required to stop a trial
+##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
+##' 
+##' @example examples/Rules-class-StoppingGstarCIRatio.R
+##' @export
+##' @keywords classes 
+.StoppingGstarCIRatio <- 
+  setClass(Class="StoppingGstarCIRatio",
+           representation(targetRatio="numeric",
+                          targetEndOfTrial="numeric"),
+           prototype(targetRatio=5,
+                     targetEndOfTrial=0.3),
+           contains="Stopping",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
+                       "targetRatio must be a positive numerical number")
+               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
+                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
+               o$result()
+             })
+
+validObject(.StoppingGstarCIRatio())
+
+##' Initialization function for "StoppingGstarCIRatio"
+##' 
+##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
+##' @return the \code{\linkS4class{StoppingGstarCIRatio}} class object
+##' 
+##' @export
+##' @keywords methods
+StoppingGstarCIRatio <- function(targetRatio,
+                                 targetEndOfTrial)
+{
+  .StoppingGstarCIRatio(targetRatio=targetRatio,
+                        targetEndOfTrial=targetEndOfTrial)
+}
+
+
 
 ## ============================================================
 
@@ -1345,28 +1442,30 @@ CohortSizeMin <- function(cohortSizeList)
 ## ------------------------------------------------------------------------------------
 ## Class for next best based on Pseudo DLE Model with samples
 ## -----------------------------------------------------------------------------------------
+
+##' Next best dose based on Pseudo DLE Model with samples
 ##'
 ##' The class is to find the next best dose for allocation and the dose for final recommendation 
 ##' at the end of a trial. There are two input target probabilities of the occurrence of a DLE 
 ##' used during trial and used at the end of trial to find the two doses. For this class, only
 ##' DLE response will be incorporated for the dose allocation and DLEsamples
 ##' must be used to obtain the next dose for allocation.
-##'  @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
-##'  during the trial
-##'  @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
-##'  of the trial. This target is particularly used to recommend the dose at the end of a trial
-##'  for which its posterior 
-##'  probability of the occurrence of a DLE is equal to this target
-##'  @slot derive the function which derives from the input, a vector of the posterior samples called 
-##'  \code{TDsamples} of the dose
-##'  which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-##'  targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
-##'  occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##' 
+##' @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose at the end of a trial
+##' for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##' @slot derive the function which derives from the input, a vector of the posterior samples called 
+##' \code{TDsamples} of the dose
+##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
 ##'  
 ##' @example examples/Rules-class-NextBestTDsamples.R
 ##' @export
 ##' @keywords class
-
 .NextBestTDsamples<-
   setClass(Class="NextBestTDsamples",
            representation(targetDuringTrial="numeric",
@@ -1394,27 +1493,30 @@ CohortSizeMin <- function(cohortSizeList)
                o$result()
              })
 validObject(.NextBestTDsamples())
+
 ## ---------------------------------------------------------------------------
 ##' Initialization function for class "NextBestTDsamples"
 ##' 
-##'  @param targetDuringTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
-##'  @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
-##'  @param derive please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##' @param targetDuringTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##' @param derive please refer to \code{\linkS4class{NextBestTDsamples}} class object
 ##' @return the \code{\linkS4class{NextBestTDsamples}} class object
 ##' 
 ##' @export
 ##' @keywords methods
-
 NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 {
   .NextBestTDsamples(targetDuringTrial=targetDuringTrial,
                      targetEndOfTrial=targetEndOfTrial,
                      derive=derive)
 }
+
 ## ------------------------------------------------------------------------------
 ## class for nextBest based on Pseudo DLE model without sample
 ## -----------------------------------------------------------------------------
 
+##' Next best dose based on Pseudo DLE model without sample
+##' 
 ##' The class is to find the next best dose for allocation and the dose for final recommendation 
 ##' at the end of a trial without involving any samples. This is a class for which only
 ##'  DLE response will be incorporated for the dose-allocation.
@@ -1425,11 +1527,12 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 ##' and used at the end of trial, for finding the next best dose for allocation and the dose 
 ##' for recommendation at the end of the trial.
 ##' It is only suitable to use with the model specified in \code{ModelTox} class.
-##'  @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
-##'  during the trial
-##'  @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
-##'  of the trial. This target is particularly used to recommend the dose for which its posterior 
-##'  probability of the occurrence of a DLE is equal to this target
+##' 
+##' @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
 ##' 
 ##' @example examples/Rules-class-NextBestTD.R
 ##' @export
@@ -1457,6 +1560,7 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 validObject(.NextBestTD())
 
 ##' Initialization function for the class "NextBestTD"
+##' 
 ##' @param targetDuringTrial please refer to \code{\linkS4class{NextBestTD}} class object
 ##' @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTD}} class object
 ##' @return the \code{\linkS4class{NextBestTD}} class object
@@ -1472,6 +1576,8 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
 ##------------------------------------------------------------------------------------------------------
 ## Class for next best with maximum gain value based on a pseudo DLE and efficacy model without samples
 ## ----------------------------------------------------------------------------------------------------
+##' Next best dose with maximum gain value based on a pseudo DLE and efficacy model without samples
+##' 
 ##' This is a class for which to find the next dose which is safe and give the maximum gain value 
 ##' for allocation. This is a class where no DLE and efficacy samples are involved. This is only based 
 ##' on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
@@ -1482,13 +1588,13 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
 ##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
 ##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
 ##' class
+##' 
 ##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
 ##' during the trial
 ##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end 
 ##' of the trial. This target is particularly used to recommend the dose for which its posterior 
 ##' probability of the occurrence of a DLE is equal to this target
-##' 
-##'   
+##'    
 ##' @example examples/Rules-class-NextBestMaxGain.R
 ##' @export
 ##' @keywords class
@@ -1509,7 +1615,9 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
                o$result()
              })
 validObject(.NextBestMaxGain())
+
 ##' Initialization function for the class 'NextBestMaxGain'
+##' 
 ##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
 ##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
 ##' @return the \code{\linkS4class{NextBestMaxGain}} class object
@@ -1524,6 +1632,8 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
 ##------------------------------------------------------------------------------------------------------
 ## Class for next best with maximum gain value based on a pseudo DLE and efficacy model with samples
 ## ----------------------------------------------------------------------------------------------------
+##' Next best dose with maximum gain value based on a pseudo DLE and efficacy model with samples
+##' 
 ##' This is a class for which to find the next dose which is safe and give the maximum gain value 
 ##' for allocation. This is a class where DLE and efficacy samples are involved.
 ##' There are two inputs which are the two target 
@@ -1581,6 +1691,7 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
 validObject(.NextBestMaxGainSamples)
 
 ##' Initialization function for class "NextBestMaxGainSamples"
+##' 
 ##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
 ##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
 ##' @param TDderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
@@ -1595,102 +1706,7 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 {.NextBestMaxGainSamples(DLEDuringTrialtarget=DLEDuringTrialtarget,
                          DLEEndOfTrialtarget=DLEEndOfTrialtarget,
                          TDderive=TDderive,
-                         Gstarderive=Gstarderive)}
-
-
-##-------------------------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the 95% credibility interval
-## ---------------------------------------------------------------------------------------------------------------
-
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target 
-##' probability of DLE used at the end of a trial
-##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##' 
-##' @example examples/Rules-class-StoppingTDCIRatio.R
-##' @export
-##' @keywords classes 
-.StoppingTDCIRatio <- 
-  setClass(Class="StoppingTDCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
-               
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
-
-validObject(.StoppingTDCIRatio())
-
-##' Initialization function for "StoppingTDCIRatio"
-##' 
-##' @param targetRatio please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingTDCIRatio}} class object
-##' 
-##' @export
-##' @keywords methods
-StoppingTDCIRatio <- function(targetRatio,
-                              targetEndOfTrial)
-{
-  .StoppingTDCIRatio(targetRatio=targetRatio,
-                     targetEndOfTrial=targetEndOfTrial)
+                         Gstarderive=Gstarderive)
 }
 
-## ----------------------------------------------------------------------------------------------------------------
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95\% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and 
-##' the TD end of trial, the dose with probability of DLE equals to the target 
-##' probability of DLE used at the end of a trial.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##' 
-##' @example examples/Rules-class-StoppingGstarCIRatio.R
-##' @export
-##' @keywords classes 
-.StoppingGstarCIRatio <- 
-  setClass(Class="StoppingGstarCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
-               
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
 
-validObject(.StoppingGstarCIRatio())
-
-##' Initialization function for "StoppingGstarCIRatio"
-##' 
-##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' 
-##' @export
-##' @keywords methods
-StoppingGstarCIRatio <- function(targetRatio,
-                                 targetEndOfTrial)
-{
-  .StoppingGstarCIRatio(targetRatio=targetRatio,
-                        targetEndOfTrial=targetEndOfTrial)
-}
-## --------------------------------------------------------------------------------------------------------------------

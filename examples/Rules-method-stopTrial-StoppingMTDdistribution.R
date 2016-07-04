@@ -49,5 +49,6 @@ myStopping <- StoppingMTDdistribution(target = 0.33,
 stopTrial(stopping=myStopping, 
           dose=doseRecommendation$value,
           samples=samples,
-          model=model)
+          model=model,
+          data=data)
 

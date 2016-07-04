@@ -311,6 +311,7 @@ TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst
            contains=list("RuleDesign"))
 
 validObject(.TDDesign())
+
 ##' Initialization function for 'TDDesign' class
 ##' 
 ##' @param model please refer to \code{\linkS4class{TDDesign}} class object
@@ -322,9 +323,15 @@ validObject(.TDDesign())
 ##' 
 ##' @export
 ##' @keywords methods
-TDDesign<-function(model,stopping,increments,...){
+TDDesign<-function(model,
+                   stopping,
+                   increments,
+                   PLcohortSize=CohortSizeConst(1),
+                   ...){
   start<-RuleDesign(...)
-  .TDDesign(start,model=model,stopping=stopping,increments=increments)}
+  .TDDesign(start,model=model,stopping=stopping,increments=increments,
+            PLcohortSize=PLcohortSize)
+  }
 
 
 

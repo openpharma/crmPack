@@ -47,5 +47,6 @@ myStopping <- StoppingTargetProb(target=c(0.2, 0.35),
 stopTrial(stopping=myStopping, 
           dose=doseRecommendation$value,
           samples=samples,
-          model=model)
+          model=model,
+          data=data)
 

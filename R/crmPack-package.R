@@ -93,4 +93,7 @@ globalVariables(c("log.betaZ",
                   "upperBiomarker",
                   "nObsshare",
                   "xshare",
-                  "yshare"))
+                  "yshare", 
+                  "thisProb.PL",
+                  "thisMeanEff.PL",
+                  "thisSize.PL"))
