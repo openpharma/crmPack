@@ -78,19 +78,19 @@ knit_hooks$set(output = function(x, options) {
   simulations from scratch for each project. Therefore we developed the
   R-package \pkg{crmPack}, which is now publicly available on CRAN. By providing
   a simple and unified object-oriented structure for model-based dose escalation
-  designs, crmPack enables the use of standard designs, full flexibility to
+  designs, \pkg{crmPack} enables the use of standard designs, full flexibility to
   adapt designs to the project, and easy extension to new designs. The framework
-  for the designs comprises the data structure, regression model and prior
+  for the designs comprises the data structure, model and prior
   distribution specification, maximum increment rules, derivation of the next
   best dose, stopping rules for adaptive sample size, adaptive cohort sizes, and
   starting dose and dose grid specification. In addition to the classic
   continual reassessment method (CRM) and escalation with overdose control
   (EWOC) designs with possibly advanced prior specifications with e.g. mixtures
-  and minimal informative priors, crmPack currently features dual-endpoint
+  and minimal informative priors, \pkg{crmPack} currently features dual-endpoint
   (safety and biomarker) designs and two-part (SAD followed by MAD part)
   designs. Optional assignment of a small number of patients in each cohort to 
-  placebo instead of treatment enables the use in non-Oncology trials. 
-%   We introduce crmPack by outlining the design framework and show how easy it is
+  placebo instead of treatment enables the use in trials outside Oncology. 
+%   We introduce \pkg{crmPack} by outlining the design framework and show how easy it is
 % to specify a design, run simulations, and report dose recommendations during the
 % trial.
 }
@@ -340,8 +340,8 @@ our package in R:
 <<start, warning=FALSE>>=
 library("crmPack")
 @
-As indicated in the startup message, try \code{crmPackHelp()} and
-\code{crmPackExample()} to open the help page and the package vignette.
+% As indicated in the startup message, try \code{crmPackHelp()} and
+% \code{crmPackExample()} to open the help page and the package vignette.
 
 \subsection{Implementing a CRM trial}
 \label{subsec:crmtrial}
@@ -354,7 +354,7 @@ for $x_{1}$, since we consider here the regression model~\eqref{eq:LogisticLogNo
 with a log transformation of the dose $x$ (with $x^{*} = 100$ chosen as reference dose). 
 
 \paragraph{Minimally informative prior}
-Here we assume not enough prior information is available on the dose-toxicity 
+Here we assume that limited prior information is available on the dose-toxicity 
 relationship, and hence would like to use a \emph{minimally informative prior}
 \citep{Neuenschwander2008} which can be easily obtained with the function
 \code{MinimalInformative}. Since stochastic optimization is used
@@ -524,7 +524,8 @@ mySimsTime <-
                          seed=819,mcmcOptions=options,parallel=FALSE))[3]
 @
 The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we 
-needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials.
+needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials
+on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class \code{Simulations} containing multiple slots, with e.g.\ the \code{data} slot containing the list of simulated trials. The slots \code{doses} and \code{stopReasons} contain information about the final MTD and the stopping reason for each trial. We can  e.g.\ investigate the third simulated trial:
 <<third-trial, fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
@@ -570,10 +571,9 @@ The endpoints can be modelled jointly or separately. For joint modelling derived
 \begin{equation}\label{eq:loglog}
 \E(w(x)) = \gamma + \delta \log\{\log(x + c)\} 
 \end{equation}
-such that $w(x) \sim N(\E(w(x)), \sigma^2)$. 
-$c \geq 0$ is a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow the placebo dose $x=\Sexpr{PL}$ which is close to 0. 
+such that $w(x) \sim N(\E(w(x)), \sigma^2)$ with $c \geq 0$ as a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow for the placebo dose $x=\Sexpr{PL}$ which is close to 0. 
 
-For both the safety and efficacy models, the prior will be expressed in form of imaginary pseudo data \citep[see][for details]{yeung2015}. Prior and posterior modal estimates of the model parameters can then be obtained as the maximum likelihood estimates from the data set combining pseudo data with observed data \citep{w06}. The variance $\sigma^{2}$ can be fixed or assigned an inverse gamma prior.
+For both the safety and efficacy models, the prior will be expressed in form of imaginary pseudo data \citep[see][for details]{yeung2015}. Prior and posterior modal estimates of the model parameters can then be obtained as the maximum likelihood estimates from the data set combining pseudo data with observed data \citep{w06}. The variance $\sigma^{2}$ can be fixed or assigned an inverse gamma prior distribution.
 
 \paragraph{Model classes}
 The \code{ModelPseudo} class contains all model classes where the priors are specified in terms of pseudo data, with subclasses for safety (\code{ModelTox}) and efficacy (\code{ModelEff}).
@@ -590,6 +590,7 @@ DLTmodel <- LogisticIndepBeta(binDLE=c(1.05, 1.8),
 @
 
 The efficacy model can similarly be specified as
+\todo{Can we replace Eff by w and Effdose by x for consistency?}
 <<Effmodel>>=
 emptydata2 <- DataDual(doseGrid=emptydata@doseGrid,
                        placebo=TRUE)
@@ -615,6 +616,8 @@ newEffmodel <- update(object=Effmodel, data=data2)
 @
 With \pkg{crmPack} we can implement the next best dose recommendation 
 based on maximizing the gain function as follows:
+\todo{can we make this more general to take a gain function in DLT probability and
+expected efficacy outcome?}
 <<NextBestGain>>=
 GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget=0.35,
                                 DLEEndOfTrialtarget=0.3)
@@ -875,14 +878,6 @@ best dose rule - from now on we can use the new classes in the same way as
 classes already contained in \pkg{crmPack}! For example, we can create a 
 corresponding new \code{Design} object, examine its hypothetical trial course
 and run simulations. In particular, the placebo convention automatically carries over.
-This example demonstrated that:
-\begin{enumerate}
-\item New functionality can be added - without changing the package.
-\item Only the new functionality needs to be coded in one place - no side effects
-need to be considered.
-\item Templates for new designs can be found by looking at the existing
-code in the package - only minimal S4 and JAGS knowledge is required.
-\end{enumerate}
 
 \section{Summary}
 \label{sec:discussion}
@@ -891,14 +886,22 @@ In this paper we have introduced the \proglang{R} package \pkg{crmPack} for
 analyzing and evaluating dose escalation trials. Unlike existing software the
 package is written to make full use of a class structure enabling easy
 extensions to user-specific dose-response models, prior distributions,
-escalation and stopping rules. The package does, however, already include a wide
+escalation and stopping rules. The example in Section~\ref{subsec:extending} demonstrated that:
+\begin{enumerate}
+\item New functionality can be added - without changing the package.
+\item Only the new functionality needs to be coded in one place - no side effects
+need to be considered.
+\item Templates for new designs can be found by looking at the existing
+code in the package - only minimal S4 and JAGS knowledge is required.
+\end{enumerate}
+The package does, however, already include a wide
 range of model-based and algorithmic dose escalation procedures providing
 end-users easy access to these approaches without the need for further coding.
 Another unique feature of the package is the inclusion of approaches that allow
 placebo data, which are routinely collected in healthy volunteer studies, to be
 utilized. Finally some methods \cite[e.g.][]{bekele2005,yeung2015} for
 dose-finding incorporating safety and efficacy are implemented already
-in the package. As for all designs, the underlying structure to extend to novel dual endpoint methods is hence provided. Simulation facilities for all approaches and relevant
+in the package. As for all designs, the underlying structure to extend to novel dual endpoint methods is  provided. Simulation facilities for all approaches and relevant
 graphical displays are also available.
 
 The package is actively developed further and new methods will be added.
