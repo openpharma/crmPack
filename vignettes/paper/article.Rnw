@@ -590,7 +590,6 @@ DLTmodel <- LogisticIndepBeta(binDLE=c(1.05, 1.8),
 @
 
 The efficacy model can similarly be specified as
-\todo{Can we replace Eff by w and Effdose by x for consistency?}
 <<Effmodel>>=
 emptydata2 <- DataDual(doseGrid=emptydata@doseGrid,
                        placebo=TRUE)
@@ -616,8 +615,6 @@ newEffmodel <- update(object=Effmodel, data=data2)
 @
 With \pkg{crmPack} we can implement the next best dose recommendation 
 based on maximizing the gain function as follows:
-\todo{can we make this more general to take a gain function in DLT probability and
-expected efficacy outcome?}
 <<NextBestGain>>=
 GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget=0.35,
                                 DLEEndOfTrialtarget=0.3)
@@ -910,6 +907,10 @@ escalation designs, see for example \cite{Sweeting2012} and \cite{Riviere2014}
 for recent reviews. Furthermore, data-augmentation CRM designs \citep[see][]{Liu2013} 
 that allow for a decoupling of inter-cohort waiting times and DLT time windows, hence
 speeding up dose escalation trials, will be included.
+
+\section*{Acknowledgments}
+
+todo: insert acknowledgments
 
 \bibliography{article}
 
