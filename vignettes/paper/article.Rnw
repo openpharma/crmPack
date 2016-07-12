@@ -910,9 +910,8 @@ speeding up dose escalation trials, will be included.
 
 \section*{Acknowledgments}
 
-This report is funded by the Roche Postdoctoral Fellowship programme (RPF-234) and research arising from Prof Jaki’s Senior Research Fellowship (NIHR-SRF-2015-08-001) supported by the National Institute for Health Research. The views expressed in this publication are those of the authors and not necessarily those of the NHS, the National Institute for Health Research or the Department of Health.
-
-todo: insert acknowledgments
+We would like to thank Francesca Michielin and Peter Dutton for their valuable comments 
+on an earlier draft of the manuscript. This report is funded by the Roche Postdoctoral Fellowship programme (RPF-234) and research arising from Prof Jaki’s Senior Research Fellowship (NIHR-SRF-2015-08-001) supported by the National Institute for Health Research. The views expressed in this publication are those of the authors and not necessarily those of the NHS, the National Institute for Health Research or the Department of Health. 
 
 \bibliography{article}
 
