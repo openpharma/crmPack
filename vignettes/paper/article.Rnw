@@ -59,7 +59,7 @@ knit_hooks$set(output = function(x, options) {
         Wai Yin Yeung\\Hoffmann-La Roche Ltd \And
         Giuseppe Palermo\\Hoffmann-La Roche Ltd \And
         Thomas Jaki\\Lancaster University}
-\title{Model-based Dose Escalation Designs in R with \pkg{crmPack}}
+\title{Model-based Dose Escalation Designs in \proglang{R} with \pkg{crmPack}}
 
 %% for pretty printing and a nice hypersummary also set:
 \Plainauthor{Daniel Saban\'es Bov\'e,
@@ -75,10 +75,9 @@ knit_hooks$set(output = function(x, options) {
   need for more efficient and informative Phase I trials. The wide-spread
   implementation of such designs has been hindered by the need for either
   licensing specialized commercial software or programming the design and
-  simulations from scratch for each project. Therefore we developed the
-  R-package \pkg{crmPack}, which is now publicly available on CRAN. By providing
+  simulations from scratch for each project. By providing
   a simple and unified object-oriented structure for model-based dose escalation
-  designs, \pkg{crmPack} enables the use of standard designs, full flexibility to
+  designs, the \proglang{R}-package \pkg{crmPack} enables the use of standard designs, full flexibility to
   adapt designs to the project, and easy extension to new designs. The framework
   for the designs comprises the data structure, model and prior
   distribution specification, maximum increment rules, derivation of the next
@@ -133,7 +132,6 @@ knit_hooks$set(output = function(x, options) {
 
 
 \begin{document}
-%\SweaveOpts{concordance=TRUE}
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
@@ -179,29 +177,30 @@ need for either licensing specialized commercial software (thus losing
 flexibility) or programming the design and simulations from scratch for each
 project (thus losing efficiency). While the models underlying most model-based
 dose escalation procedures can easily be fit in standard software with the
-capability to fit generalized linear models (e.g. \code{PROC MIXED} in
-\proglang{SAS}, \code{glm} in \proglang{Stata} or \proglang{R}), there are still
-only few software solutions available dedicated to dose escalation studies.
+capability to fit generalized linear models, e.g. \code{PROC MIXED} in
+\proglang{SAS} \citep{SAS2003}, \code{glm} in \proglang{Stata} \citep{Stata2015} or \proglang{R} \citep{R2016}, 
+there are still only few software solutions available dedicated to dose escalation studies.
 
-The commercial packages \proglang{East} (Cytel, Cambridge, MA) and
-\proglang{ADDPLAN} (ICON, Dublin, Ireland) both offer extensions to their basic
+The commercial packages \proglang{East} \citep{East2016} and
+\proglang{ADDPLAN} \citep{Addplan2016} both offer extensions to their basic
 design software for dose escalation studies (\pkg{ESCALATE} in \proglang{East}
-and \pkg{df} in \proglang{Addplan}) implementing the algorithmic 3+3 design and
+and \pkg{df} in \proglang{ADDPLAN}) implementing the algorithmic 3+3 design and
 various versions of the CRM. Similarly \proglang{FACTS} \citep{FACTS} also
 offers different common dose escalation methods. Due to the commercial nature of
 these implementations there is, however, a limitation on how much the designs
 can be tailored towards the individual needs of the study. Similarly static
 implementations of methods for dose escalation are available in the
 \proglang{Stata} module \pkg{crm} \citep{StataCRM} which implements the CRM and
-the  \pkg{dfcrm} package in \proglang{R} which additionally implements the
+the  \pkg{dfcrm} package \citep{dfcrm2013} in \proglang{R} which additionally implements the
 time-to-event CRM (TITE-CRM) \citep{cheung2000}. Finally the \pkg{bcrm} package
 \citep{sweeting2013} offers a wide range of different dose escalation designs.
 It implements a variety of one and two parameter models, facilitates different
 ways to specify prior distributions, escalation and stopping rules.
 
-In this paper we introduce the \proglang{R} package \pkg{crmPack} for
-dose escalation studies. This package differs from the above existing implementations in
-three fundamental ways. Firstly, it is written using S4 classes and methods
+In this paper we introduce the \proglang{R}-package \pkg{crmPack} \citep{crmPack} for
+dose escalation studies, which is publicly available on CRAN. 
+This package differs from the above existing implementations in
+three fundamental ways. Firstly, it is written using \proglang{} classes and methods
 \citep{Chambers2008}, which allows customized methodology to be added to the
 package while still being able to use the existing backbone functionalities.
 Secondly, methods for studies with a placebo group (e.g. for healthy volunteer
@@ -236,7 +235,7 @@ $j$ data ${\cal C}_{j} = \{(x_{j}, y_{j,1}), \dotsc, (x_{j},
 y_{j,n_{j}})\}$, we can denote the data generated from the first $N$ cohorts as
 ${\cal D}_{N}= {\cal C}_{1} \cup \dotsb \cup {\cal C}_{N}$.
 %
-In \pkg{crmPack} the S4 class \code{GeneralData} encapsulates this
+In \pkg{crmPack} the \proglang{S4} class \code{GeneralData} encapsulates this
 notion and subclasses implement concrete data structures.
 
 \paragraph{Model}
@@ -251,7 +250,7 @@ a patient who receives treatment $x$ assuming the parameter (vector) $\theta$,
 and secondly the prior $p(\theta \given \xi)$ for $\theta$ given fixed
 hyperparameters $\xi$.
 %
-In \pkg{crmPack} the virtual S4 class \code{AllModels} encapsulates this
+In \pkg{crmPack} the virtual \proglang{S4} class \code{AllModels} encapsulates this
 notion and subclasses implement concrete models.
 
 For example, the class \code{LogisticLogNormal} implements
@@ -324,6 +323,7 @@ section contains practical examples on use of the existing functionality as well
 as an example for creating new extensions.
 % \tj{I think this section could use an illustrative graph of the underlying structure. E.g Data with subclasses goes into Model with subclasses and so on. A short paragraph at the beginning to highlight this structure before talking specifics would be useful for readability} 
 
+\pagebreak
 \section{Using crmPack}\label{sec:using}
 
 We consider a trial in Type II diabetes carried out by Hoffmann-La Roche Ltd.\
@@ -384,7 +384,7 @@ rate to exceed 10\% (\code{threshmin} argument) at the 25~mg dose and to be belo
 
 \paragraph{Data object definition and visualization}
 In this simple case of a univariate dose $x$ resulting in binary DLT
-observations $y$, the S4 class \code{Data} can be used. Objects of this class
+observations $y$, the \proglang{S4} class \code{Data} can be used. Objects of this class
 can be created by calling the accompanying initialization function of the same
 name (which is a general convention in \pkg{crmPack}):
 
@@ -690,7 +690,7 @@ The results of the simulation can then be plotted and summarized as shown before
 \label{subsec:extending}
 
 One of the big advantages of \pkg{crmPack} over existing \prog{R} implementations is its flexible
-framework based on the S4 classes and methods system \citep{Chambers2008} and JAGS \citep{JAGS}
+framework based on the \proglang{S4} classes and methods system \citep{Chambers2008} and \pkg{JAGS} \citep{JAGS}
 for Bayesian computations. Here we will therefore illustrate how users can extend 
 the existing functionality easily to the specific needs of the study.
 
@@ -708,7 +708,7 @@ dose grid is often called ``skeleton'' of the CRM. An exponential distribution w
 The next dose should then be chosen such that the distance of the posterior mean estimated DLT probability to a predefined target toxicity level is minimized.  
 
 \paragraph{Creating a new model} 
-To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack} we first need to define an appropriate S4 class inheriting from the general model class \code{Model}:
+To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack} we first need to define an appropriate \proglang{S4} class inheriting from the general model class \code{Model}:
 <<classOnePara>>=
 .OneParExp <-
     setClass(Class="OneParExp",
@@ -721,7 +721,7 @@ Here we specify that the new class is called \code{OneParExp} and contains
 two additional slots containing the function $f(x)$, the resulting skeleton
 prior probabilities and the prior parameter $\lambda$. 
 Second we have to create a convenient initialization function, which specifies
-the likelihood and prior distributions in the underlying \code{Model} in JAGS.
+the likelihood and prior distributions in the underlying \code{Model} in \pkg{JAGS}.
 We choose to let the user supply just the skeleton probabilities along with the
 intended dose grid to use. Then internally we will create a function $f(x)$ 
 interpolating between the grid points, in order to obtain a general \prog{R} function
@@ -889,7 +889,7 @@ escalation and stopping rules. The example in Section~\ref{subsec:extending} dem
 \item Only the new functionality needs to be coded in one place - no side effects
 need to be considered.
 \item Templates for new designs can be found by looking at the existing
-code in the package - only minimal S4 and JAGS knowledge is required.
+code in the package - only minimal \proglang{S4} and \pkg{JAGS} knowledge is required.
 \end{enumerate}
 The package does, however, already include a wide
 range of model-based and algorithmic dose escalation procedures providing
@@ -911,8 +911,9 @@ speeding up dose escalation trials, will be included.
 \section*{Acknowledgments}
 
 We would like to thank Francesca Michielin and Peter Dutton for their valuable comments 
-on an earlier draft of the manuscript. This report is funded by the Roche Postdoctoral Fellowship programme (RPF-234) and research arising from Prof Jaki’s Senior Research Fellowship (NIHR-SRF-2015-08-001) supported by the National Institute for Health Research. The views expressed in this publication are those of the authors and not necessarily those of the NHS, the National Institute for Health Research or the Department of Health. 
+on an earlier draft of the manuscript. This report is funded by the Roche Postdoctoral Fellowship programme (RPF-234) and research arising from Prof Jaki's Senior Research Fellowship (NIHR-SRF-2015-08-001) supported by the National Institute for Health Research. The views expressed in this publication are those of the authors and not necessarily those of the NHS, the National Institute for Health Research or the Department of Health. 
 
+\bibstyle{jss}
 \bibliography{article}
 
 \end{document}
