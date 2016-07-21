@@ -223,7 +223,7 @@ classes and are bundled together in the \code{Design} object, and can be used wi
 \end{figure}
 
 \paragraph{Data}
-\label{sec:frame:model}
+\label{sec:frame:data}
 %
 Let $x$ denote one specific treatment, chosen from the set
 of possible treatments ${\cal X}$. This could be one specific dose, but also
