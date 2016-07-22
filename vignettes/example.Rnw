@@ -31,7 +31,6 @@
   \begin{tabular}{!{\kern\tabcolsep\usebeamertemplate{itemize item}}#1@{}}#2\end{tabular}}
 
 \begin{document} 
-\SweaveOpts{concordance=TRUE}
 
 %% reduce the height of the plots
 \setkeys{Gin}{width=0.65\textwidth}

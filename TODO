@@ -3,13 +3,11 @@ BUGFIXES:
 - make it possible to sample from prior for DualEndpointRW model,
   see report by Giuseppe in devel/dualEndpointRWbug.R
   
-- merge in fixes from the Stash / Daniel's local branch.
-
-- why do new stopping rules for dual endpoint models not work with "and"/"or"
-  operators?
 
 ----------------------------------------------------------------
 IMPROVEMENTS:
+
+- include the submitted JSS manuscript as additional vignette in the package
 
 - also optimize refDose for quantile->logistic functions
 
@@ -33,8 +31,6 @@ NEW FEATURES:
 
 - be able to run simulations on a cluster
 
-- allow placebos in the cohorts for CNS
-
 - production of Word output tables from simulation summaries
 
 - minimal informative prior construction for other model(s)
@@ -43,7 +39,4 @@ NEW FEATURES:
 
 - historical data prior,
   pseudodata prior
-
-- implement one-parameter CRM with skeleton probabilities?
-  -> perhaps also with random effects per doses (proposed by David)
 
