@@ -1,9 +1,9 @@
 ##Update the 'Effloglog' model with new data
 ## first define the data and the model
-emptydata<-DataDual(doseGrid=seq(25,300,25))
+emptydata<-DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
 data<-emptydata
 
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
 
 ##Then we have some new observations data
 data<-DataDual(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),

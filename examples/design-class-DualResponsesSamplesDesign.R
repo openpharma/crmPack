@@ -3,7 +3,7 @@
 ##a cohort size and a starting dose
 ##Define your data set first using an empty data set 
 ## with dose levels from 25 to 300 with increments 25
-data <- DataDual(doseGrid=seq(25,300,25))
+data <- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
 
 ## First for the DLE model and DLE samples
 ## The DLE model must be of 'ModelTox' 
@@ -14,7 +14,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),
                               DLEdose=c(25,300),data=data)
 DLEsamples<-mcmc(data,DLEmodel,options)
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class and the efficacy samples
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
 Effsamples<-mcmc(data,Effmodel,options)
 ##The escalation rule using the 'NextBestMaxGainSamples' class
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,

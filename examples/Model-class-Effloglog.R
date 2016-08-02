@@ -1,7 +1,7 @@
 ##Obtain prior modal estimates for the Effloglog model (efficacy model) given the pseudo data.
 ##First define an empty data set by only define the dose levels used in the study,
 ## 12 dose levels are usesd from 25 to 300 mg with increments of 25.
-emptydata<-DataDual(doseGrid=seq(25,300,25))
+emptydata<-DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
 data<-emptydata
 ## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in 
 ## (Effdose slot).
@@ -11,7 +11,7 @@ data<-emptydata
 ## specifying the shape (a) and the rate (b) parameters for the gamma distribution in (nu slot).
 ## Then specify all data currentl available in (data slot).
 
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
 
 ##Obtain posterior modal estimates and other estimates from the model given some observed responses
 ## If there is some observations available
