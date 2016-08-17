@@ -1984,19 +1984,19 @@ setMethod("simulate",
                                        prob=thisDLEProb)
                     
                     
-                    if(thisData@placebo)
+                    if(thisData@placebo) {
                       thisDLTs.PL <- rbinom(n=1L,
                                             size=1L,
-                                            prob=thisProb.PL)
+                                            prob=thisProb.PL)}
                     
                     thisEff <- rnorm(n=1L,
                                      mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
                     
-                    if (thisData@placebo)
+                    if (thisData@placebo){
                       thisEff.PL <- rnorm(n=1L,
                                     mean=thisMeanEff.PL,
-                                    sd=sqrt(trueSigma2))
+                                    sd=sqrt(trueSigma2))}
                     
                     ## if there is no DLT:
                     if(thisDLTs == 0)
@@ -2019,7 +2019,7 @@ setMethod("simulate",
                                                 prob=thisProb.PL))
                        thisEff.PL <- c(thisMeanEff.PL,
                                        rnorm(n=thisSize.PL-1L,
-                                             mean=thisMeanEff,
+                                             mean=thisMeanEff.PL,
                                              sd=sqrt(trueSigma2)))
                       }
                       
@@ -2038,7 +2038,7 @@ setMethod("simulate",
                                                  size=1L,
                                                  prob=thisProb.PL)
                            thisEff.PL <- rnorm(n=thisSize.PL,
-                                               mean=thisMeanEff,
+                                               mean=thisMeanEff.PL,
                                                sd=sqrt(trueSigma2))
                     }
                   }
