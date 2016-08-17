@@ -2480,7 +2480,7 @@ setMethod("simulate",
                                                   prob=thisProb.PL))
                           thisEff.PL <- c(thisMeanEff.PL,
                                           rnorm(n=thisSize.PL-1L,
-                                                mean=thisMeanEff,
+                                                mean=thisMeanEff.PL,
                                                 sd=sqrt(trueSigma2)))
                         }
                       }
@@ -2498,7 +2498,7 @@ setMethod("simulate",
                                               size=1L,
                                               prob=thisProb.PL)
                         thisEff.PL <- rnorm(n=thisSize.PL,
-                                            mean=thisMeanEff,
+                                            mean=thisMeanEff.PL,
                                             sd=sqrt(trueSigma2))
                       }
                     }
@@ -2889,7 +2889,7 @@ setMethod("simulate",
                                                 prob=thisProb.PL))
                         thisEff.PL <- c(thisMeanEff.PL,
                                         rnorm(n=thisSize.PL-1L,
-                                              mean=thisMeanEff,
+                                              mean=thisMeanEff.PL,
                                               sd=sqrt(trueSigma2)))
                       }
                       
@@ -2908,7 +2908,7 @@ setMethod("simulate",
                                             size=1L,
                                             prob=thisProb.PL)
                       thisEff.PL <- rnorm(n=thisSize.PL,
-                                          mean=thisMeanEff,
+                                          mean=thisMeanEff.PL,
                                           sd=sqrt(trueSigma2))
                     }
                   }
