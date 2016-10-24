@@ -6,6 +6,11 @@ BUGFIXES:
 - resolve strange behavior of dual endpoint models when using placebo doses
   (Winnie's email)
   
+- examine function:
+  Is that correct that also the check to see 'if there is no improvement in dose
+  over the last cohort' should be added
+  (Giuseppe's email)
+  
 
 ----------------------------------------------------------------
 IMPROVEMENTS:
