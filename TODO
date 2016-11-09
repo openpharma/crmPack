@@ -9,7 +9,13 @@ BUGFIXES:
 - examine function:
   Is that correct that also the check to see 'if there is no improvement in dose
   over the last cohort' should be added
-  (Giuseppe's email)
+  (Giuseppe's email) --> no, instead count number of times the same dose is 
+  recommended contiguously and break after e.g. default 10000 times (can be option
+  in examine function) to avoid infinite loop and issue a corresponding warning
+  if this condition is met.
+  
+- cohort size of 0 for placebo should work in the simulations
+  (see Charles' email)
   
 
 ----------------------------------------------------------------
