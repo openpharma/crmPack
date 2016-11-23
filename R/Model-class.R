@@ -1382,6 +1382,11 @@ validObject(DualEndpoint(mu=c(0, 1),
 ##' Usually this modelling will only make sense if a regular dose grid is used,
 ##' with equidistant grid points ensuring that the distance \eqn{x_{i} -
 ##' x_{i-1}} is the same for all grid positions \eqn{i}.
+##' 
+##' Please note that due to impropriety of the RW prior distributions, it is 
+##' not possible to produce MCMC samples with empty data objects (i.e., sample
+##' from the prior). This is not a bug, but a theoretical feature of this
+##' model.
 ##'
 ##' @slot sigma2betaW Contains the prior variance factor of the random walk
 ##' prior for the biomarker model. If it is not a single number, it can also

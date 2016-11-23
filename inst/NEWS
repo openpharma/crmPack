@@ -3,6 +3,9 @@ Version 0.2.1
 
 * Added back the example vignette, so that it can be opened with crmPackExample()
 
+* Clarified that for the DualEndpointRW model samples from the prior cannot be 
+  obtained due to impropriety of the RW prior (added to model class description).
+
 
 Version 0.2.0
 --------------------------------------------------------------------------------
