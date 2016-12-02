@@ -125,6 +125,9 @@ setMethod("mcmc",
                   do.call(model@init,
                           as.list(data)[names(formals(model@init))])
               stopifnot(is.list(inits))
+              
+              ## need to select only initial values with positive length
+              inits <- inits[sapply(inits, length) > 0]
 
               ## get the model specs
               ## by evaluating the modelspecs function from the model object.

@@ -172,6 +172,18 @@ logit <- function(x)
     qlogis(x)
 }
 
+##' Shorthand for probit function
+##'
+##' @param x the function argument
+##' @return the probit(x)
+##'
+##' @export
+##' @keywords programming
+probit <- function(x)
+{
+  qnorm(x)
+}
+
 ##' Open the example pdf for crmPack
 ##'
 ##' Calling this helper function should open the example.pdf document,

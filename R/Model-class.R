@@ -311,6 +311,117 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 
 ## ============================================================
 
+##' Probit model with bivariate log normal prior
+##'
+##' This is probit regression model with a bivariate normal prior on
+##' the intercept and log slope. 
+##' The covariate is the dose \eqn{x} itself for this class:
+##'
+##' \deqn{probit[p(x)] = \alpha + \beta \cdot x}
+##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
+##' \eqn{x}.
+##'
+##' The prior is
+##' \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}
+##'
+##' The slots of this class contain the mean vector and the covariance matrix of
+##' the bivariate normal distribution, as well as the reference dose.
+##' Note that the parametrization inside the class uses alpha0 and alpha1.
+##' 
+##' This model is also used in the \code{\linkS4class{DualEndpoint}} classes,
+##' so this class can be used to check the prior assumptions on the dose-toxicity
+##' model - even when sampling from the prior distribution of the dual endpoint model
+##' is not possible.
+##'
+##' @slot mu the prior mean vector \eqn{\mu}
+##' @slot Sigma the prior covariance matrix \eqn{\Sigma}
+##'
+##' @example examples/Model-class-ProbitLogNormal.R
+##' @export
+##' @keywords classes
+.ProbitLogNormal <-
+  setClass(Class="ProbitLogNormal",
+           representation(mu="numeric",
+                          Sigma="matrix"),
+           prototype(mu=c(0, 1),
+                     Sigma=diag(2)),
+           contains="Model",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(length(object@mu) == 2,
+                       "mu must have length 2")
+               o$check(identical(dim(object@Sigma), c(2L, 2L)) &&
+                         ! is.null(chol(object@Sigma)),
+                       "Sigma must be positive-definite 2x2 covariance matrix")
+               
+               o$result()
+             })
+validObject(.ProbitLogNormal())
+
+
+##' Initialization function for the "ProbitLogNormal" class
+##'
+##' @param mu the prior mean vector
+##' @param Sigma the prior covariance matrix
+##' @return the \code{\linkS4class{ProbitLogNormal}} object
+##'
+##' @export
+##' @keywords methods
+ProbitLogNormal <- function(mu,
+                            Sigma)
+{
+  .ProbitLogNormal(mu=mu,
+                     Sigma=Sigma,
+                     datamodel=
+                       function(){
+                         ## the Probit likelihood
+                         for (i in 1:nObs)
+                         {
+                           y[i] ~ dbern(p[i])
+                           probit(p[i]) <- alpha0 + alpha1 * x[i]
+                         }
+                       },
+                     priormodel=
+                       function(){
+                         ## the multivariate normal prior on the (transformed)
+                         ## coefficients
+                         priorPrec[1:2,1:2] <- inverse(priorCov[,])
+                         theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                         ## extract actual coefficients
+                         alpha0 <- theta[1]
+                         alpha1 <- exp(theta[2])
+                       },
+                     datanames=c("nObs", "y", "x"),
+                     modelspecs=
+                       function(){
+                         list(priorCov=Sigma,
+                              priorMean=mu)
+                       },
+                     dose=
+                       function(prob, alpha0, alpha1){
+                         dose <- (probit(prob) - alpha0) / alpha1
+                         return(dose)
+                       },
+                     prob=
+                       function(dose, alpha0, alpha1){
+                         return(pnorm(alpha0 + alpha1 * dose))
+                       },
+                     init=
+                       ## todo: find better starting values
+                       function(){
+                         list(theta=c(0, 1))
+                       },
+                     sample=
+                       c("alpha0", "alpha1"))
+}
+validObject(ProbitLogNormal(mu=c(0, 1),
+                              Sigma=diag(2)))
+
+
+## ============================================================
+
 
 ##' Standard logistic model with bivariate (log) normal prior with substractive
 ##' dose standardization
