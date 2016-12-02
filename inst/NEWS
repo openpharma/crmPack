@@ -5,6 +5,13 @@ Version 0.2.1
 
 * Clarified that for the DualEndpointRW model samples from the prior cannot be 
   obtained due to impropriety of the RW prior (added to model class description).
+  
+* Added ProbitLogNormal model
+
+* For DualEndpointRW models, it is now possible to have non-equidistant grid points,
+  and obtain sensible results. (But still needs to be thouroughly tested though.)
+  
+* For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.
 
 
 Version 0.2.0

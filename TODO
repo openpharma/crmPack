@@ -44,7 +44,8 @@ NEW FEATURES:
 
 - production of Word output tables from simulation summaries
 
-- minimal informative prior construction for other model(s)
+- minimal informative prior construction for other model(s), especially the probit model
+  to allow construction for the dual endpoint models.
 
 - other prior in the Kadane model -> how?
 
