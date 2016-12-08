@@ -1163,7 +1163,7 @@ setClass(Class="CohortSize",
                      o$check(identical(length(object@cohortSize),
                                        length(object@intervals)),
                              "cohortSize must have same length as intervals")
-                     o$check(all(object@cohortSize > 0),
+                     o$check(all(object@cohortSize >= 0),
                              "cohortSize must only contain positive integers")
                      o$check(! is.unsorted(object@intervals, strictly=TRUE),
                              "intervals has to be sorted and have unique values")
@@ -1215,7 +1215,7 @@ CohortSizeRange <- function(intervals,
                      o$check(identical(length(object@cohortSize),
                                        length(object@DLTintervals)),
                              "cohortSize must have same length as DLTintervals")
-                     o$check(all(object@cohortSize > 0),
+                     o$check(all(object@cohortSize >= 0),
                              "cohortSize must only contain positive integers")
                      o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
                              "DLTintervals has to be sorted and have unique values")
@@ -1264,7 +1264,7 @@ CohortSizeDLT <- function(DLTintervals,
                  function(object){
                      o <- Validate()
 
-                     o$check(is.scalar(object@size) && (object@size > 0),
+                     o$check(is.scalar(object@size) && (object@size >= 0),
                              "size needs to be positive scalar")
 
                      o$result()

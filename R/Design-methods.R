@@ -263,7 +263,7 @@ setMethod("simulate",
                                              size=1L,
                                              prob=thisProb)
                           
-                          if(thisData@placebo)
+                          if( thisData@placebo && (thisSize.PL > 0L) )
                               thisDLTs.PL <- rbinom(n=1L,
                                                     size=1L,
                                                     prob=thisProb.PL)
@@ -290,14 +290,14 @@ setMethod("simulate",
                                              size=1L,
                                              prob=thisProb)
                           
-                          if(thisData@placebo)
+                          if( thisData@placebo && (thisSize.PL > 0L) )
                               thisDLTs.PL <- rbinom(n=thisSize.PL,
                                                     size=1L,
                                                     prob=thisProb.PL) 
                       }
                       
                       ## update the data with this placebo (if any) cohort and then with active dose
-                      if(thisData@placebo){
+                      if( thisData@placebo && (thisSize.PL > 0L) ){
                           thisData <- update(object=thisData,
                                              x=object@data@doseGrid[1],
                                              y=thisDLTs.PL)
@@ -710,7 +710,7 @@ setMethod("simulate",
                                                              thisMeanZ),
                                                            sigma=trueCov)
                               
-                              if(thisData@placebo)
+                              if( thisData@placebo && (thisSize.PL > 0L) )
                                   tmpStart.PL <- mvtnorm::rmvnorm(n=1,
                                                                   mean=
                                                                     c(thisMeanBiomarker.PL,
@@ -730,7 +730,7 @@ setMethod("simulate",
                                                                thisMeanZ),
                                                              sigma=trueCov))
                                   
-                                  if(thisData@placebo && (thisSize.PL > 1L))
+                                  if( thisData@placebo && (thisSize.PL > 1L) )
                                     tmpStart.PL <-
                                       rbind(tmpStart.PL,
                                             mvtnorm::rmvnorm(n=thisSize.PL - 1,
@@ -740,7 +740,7 @@ setMethod("simulate",
                                                              sigma=trueCov))
                               }
                               
-                              if(thisData@placebo){
+                              if(thisData@placebo && (thisSize.PL > 0L) ){
                                 list(tmpStart=tmpStart, tmpStart.PL=tmpStart.PL)
                               }else{
                                 list(tmpStart=tmpStart)
@@ -754,14 +754,14 @@ setMethod("simulate",
                                                                thisMeanZ),
                                                            sigma=trueCov)
                               
-                              if(thisData@placebo)
+                              if(thisData@placebo && (thisSize.PL > 0L) )
                                   tmpStart.PL <- mvtnorm::rmvnorm(n=thisSize.PL,
                                                                   mean=
                                                                     c(thisMeanBiomarker.PL,
                                                                       thisMeanZ.PL),
                                                                   sigma=trueCov)
                               
-                              if(thisData@placebo){
+                              if(thisData@placebo && (thisSize.PL > 0L) ){
                                   list(tmpStart=tmpStart, tmpStart.PL=tmpStart.PL)
                               }else{
                                   list(tmpStart=tmpStart)
@@ -774,7 +774,7 @@ setMethod("simulate",
                       thisDLTs <- as.integer(tmp$tmpStart[, 2] > 0)
                       
                       # in case there are placebo
-                      if(thisData@placebo){
+                      if(thisData@placebo && (thisSize.PL > 0L) ){
                           thisBiomarkers.PL <- tmp$tmpStart.PL[, 1]
                           thisDLTs.PL <- as.integer(tmp$tmpStart.PL[, 2] > 0)
                           
@@ -986,7 +986,7 @@ setMethod("examine",
                       for(numDLTs in 0:thisSize)
                       {
                           ## update data with corresponding DLT vector
-                          if(baseData@placebo){
+                          if(baseData@placebo && (thisSize.PL > 0L) ){
                             thisData <- update(object=baseData,
                                                x=baseData@doseGrid[1],
                                                y=rep(0,thisSize.PL))
@@ -1049,7 +1049,7 @@ setMethod("examine",
                       }
 
                       ## change base data
-                      if(baseData@placebo){
+                      if(baseData@placebo && (thisSize.PL > 0L) ){
                         baseData <-
                           update(object=baseData,
                                  x=baseData@doseGrid[1],
@@ -1323,7 +1323,7 @@ setMethod("simulate",
                                        size=1L,
                                        prob=thisProb)
                     
-                    if(thisData@placebo)
+                    if(thisData@placebo && (thisSize.PL > 0L) )
                       thisDLTs.PL <- rbinom(n=1L,
                                             size=1L,
                                             prob=thisProb.PL)
@@ -1348,14 +1348,14 @@ setMethod("simulate",
                     thisDLTs <- rbinom(n=thisSize,
                                        size=1L,
                                        prob=thisProb)  
-                    if(thisData@placebo)
+                    if(thisData@placebo && (thisSize.PL > 0L) )
                       thisDLTs.PL <- rbinom(n=thisSize.PL,
                                             size=1L,
                                             prob=thisProb.PL)
                   }
                   
                   ## update the data with this placebo (if any) cohort and then with active dose
-                  if(thisData@placebo){
+                  if(thisData@placebo && (thisSize.PL > 0L) ){
                     thisData <- update(object=thisData,
                                        x=object@data@doseGrid[1],
                                        y=thisDLTs.PL)
@@ -1640,7 +1640,7 @@ setMethod("simulate",
                                        size=1L,
                                        prob=thisProb)
                     
-                    if(thisData@placebo)
+                    if(thisData@placebo && (thisSize.PL > 0L) )
                       thisDLTs.PL <- rbinom(n=1L,
                                             size=1L,
                                             prob=thisProb.PL)
@@ -1666,7 +1666,7 @@ setMethod("simulate",
                                        size=1L,
                                        prob=thisProb)
                     
-                    if(thisData@placebo)
+                    if(thisData@placebo && (thisSize.PL > 0L) )
                       thisDLTs.PL <- rbinom(n=thisSize.PL,
                                             size=1L,
                                             prob=thisProb.PL) 
@@ -1674,7 +1674,7 @@ setMethod("simulate",
                   }
                   
                   ## update the data with this placebo (if any) cohort and then with active dose
-                  if(thisData@placebo){
+                  if(thisData@placebo && (thisSize.PL > 0L) ){
                     thisData <- update(object=thisData,
                                        x=object@data@doseGrid[1],
                                        y=thisDLTs.PL)
@@ -1984,7 +1984,7 @@ setMethod("simulate",
                                        prob=thisDLEProb)
                     
                     
-                    if(thisData@placebo) {
+                    if(thisData@placebo && (thisSize.PL > 0L) ) {
                       thisDLTs.PL <- rbinom(n=1L,
                                             size=1L,
                                             prob=thisProb.PL)}
@@ -1993,7 +1993,7 @@ setMethod("simulate",
                                      mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
                     
-                    if (thisData@placebo){
+                    if (thisData@placebo && (thisSize.PL > 0L) ){
                       thisEff.PL <- rnorm(n=1L,
                                     mean=thisMeanEff.PL,
                                     sd=sqrt(trueSigma2))}
@@ -2033,7 +2033,7 @@ setMethod("simulate",
                                      mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
                     
-                    if (thisData@placebo){
+                    if (thisData@placebo && (thisSize.PL > 0L) ){
                            thisDLTs.PL <- rbinom(n=thisSize.PL,
                                                  size=1L,
                                                  prob=thisProb.PL)
@@ -2044,7 +2044,7 @@ setMethod("simulate",
                   }
                   
                   ## update the data with this placebo (if any) cohort and then with active dose
-                  if(thisData@placebo){
+                  if(thisData@placebo && (thisSize.PL > 0L) ){
                     thisData <- update(object=thisData,
                                        x=object@data@doseGrid[1],
                                        y=thisDLTs.PL,
@@ -2447,7 +2447,7 @@ setMethod("simulate",
                                          size=1L,
                                          prob=thisDLEProb)
                       
-                      if(thisData@placebo)
+                      if(thisData@placebo && (thisSize.PL > 0L) )
                         thisDLTs.PL <- rbinom(n=1L,
                                               size=1L,
                                               prob=thisProb.PL)
@@ -2456,7 +2456,7 @@ setMethod("simulate",
                                        mean=thisMeanEff,
                                        sd=sqrt(trueSigma2))
                       
-                      if (thisData@placebo)
+                      if (thisData@placebo && (thisSize.PL > 0L) )
                         thisEff.PL <- rnorm(n=1L,
                                             mean=thisMeanEff.PL,
                                             sd=sqrt(trueSigma2))
@@ -2493,7 +2493,7 @@ setMethod("simulate",
                       thisEff <- rnorm(n=thisSize,
                                        mean=thisMeanEff,
                                        sd=sqrt(trueSigma2))
-                      if (thisData@placebo){
+                      if (thisData@placebo && (thisSize.PL > 0L) ){
                         thisDLTs.PL <- rbinom(n=thisSize.PL,
                                               size=1L,
                                               prob=thisProb.PL)
@@ -2504,7 +2504,7 @@ setMethod("simulate",
                     }
                     
                     ## update the data with this placebo (if any) cohort and then with active dose
-                    if(thisData@placebo){
+                    if(thisData@placebo && (thisSize.PL > 0L) ){
                       thisData <- update(object=thisData,
                                          x=object@data@doseGrid[1],
                                          y=thisDLTs.PL,
@@ -2854,7 +2854,7 @@ setMethod("simulate",
                                        size=1L,
                                        prob=thisDLEProb)
                     
-                    if(thisData@placebo)
+                    if(thisData@placebo && (thisSize.PL > 0L) )
                       thisDLTs.PL <- rbinom(n=1L,
                                             size=1L,
                                             prob=thisProb.PL)
@@ -2863,7 +2863,7 @@ setMethod("simulate",
                                      mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
                     
-                    if (thisData@placebo)
+                    if (thisData@placebo && (thisSize.PL > 0L) )
                       thisEff.PL <- rnorm(n=1L,
                                           mean=thisMeanEff.PL,
                                           sd=sqrt(trueSigma2))
@@ -2903,7 +2903,7 @@ setMethod("simulate",
                                      mean=thisMeanEff,
                                      sd=sqrt(trueSigma2))
                     
-                    if (thisData@placebo){
+                    if (thisData@placebo && (thisSize.PL > 0L) ){
                       thisDLTs.PL <- rbinom(n=thisSize.PL,
                                             size=1L,
                                             prob=thisProb.PL)
@@ -2916,7 +2916,7 @@ setMethod("simulate",
                   
                   
                   ## update the data with this placebo (if any) cohort and then with active dose
-                  if(thisData@placebo){
+                  if(thisData@placebo && (thisSize.PL > 0L) ){
                     thisData <- update(object=thisData,
                                        x=object@data@doseGrid[1],
                                        y=thisDLTs.PL,

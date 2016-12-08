@@ -356,13 +356,20 @@ setMethod("summary",
 
               ## proportion of DLTs in a trial:
               if(object@data[[1]]@placebo){
-                propDLTs <- sapply(object@data,
-                                   function(d){
-                                     tapply(d@y,
-                                            factor(d@x == d@doseGrid[1], 
-                                                   labels=c("ACTV","PLCB")), 
-                                            mean)
-                                   })
+                if( sum(object@data[[1]]@x == doseGrid[1]) ){
+                  propDLTs <- sapply(object@data,
+                                     function(d){
+                                         tapply(d@y,
+                                                factor(d@x == d@doseGrid[1], 
+                                                       labels=c("ACTV","PLCB")), 
+                                                mean)
+                                     })
+                }else{
+                  propDLTs <- sapply(object@data,
+                                     function(d){
+                                       c('ACTV' = mean(d@y),'PLCB' = NA)   
+                                     }) 
+                }
               }else{
                 propDLTs <- sapply(object@data,
                                    function(d){
