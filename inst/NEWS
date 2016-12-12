@@ -13,6 +13,9 @@ Version 0.2.1
   
 * For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.
 
+* Cohort size of 0 for placebo is now possible - e.g. to only start with patients and
+  then later move to larger cohorts also including placebo subjects.
+  
 
 Version 0.2.0
 --------------------------------------------------------------------------------

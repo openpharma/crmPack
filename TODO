@@ -11,10 +11,6 @@ BUGFIXES:
   in examine function) to avoid infinite loop and issue a corresponding warning
   if this condition is met.
   
-- cohort size of 0 for placebo should work in the simulations
-  (see Charles' email)
-  
-
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
