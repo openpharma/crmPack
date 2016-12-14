@@ -43,7 +43,8 @@
 ##' @param \dots possible additional arguments without method dispatch
 ##' @return a list with the next best dose (element \code{value})
 ##' on the grid defined in \code{data}, and a plot depicting this recommendation
-##' (element \code{plot})
+##' (element \code{plot}). Also additional list elements describing the outcome
+##' of the rule can be contained.
 ##'
 ##' @export
 ##' @keywords methods
@@ -146,7 +147,10 @@ setMethod("nextBest",
 ## The NCRM method
 ## --------------------------------------------------
 
-##' @describeIn nextBest Find the next best dose based on the NCRM method
+##' @describeIn nextBest Find the next best dose based on the NCRM method. The
+##' additional list element \code{probs} contains the target and overdosing
+##' probabilities (across all doses in the dose grid) 
+##' used in the derivation of the next best dose.
 ##'
 ##' @example examples/Rules-method-NextBestNCRM.R
 ##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
@@ -298,7 +302,10 @@ setMethod("nextBest",
 
               ## return value and plot
               return(list(value=ret,
-                          plot=plotJoint))
+                          plot=plotJoint,
+                          probs=cbind(dose=data@doseGrid,
+                                      target=probTarget,
+                                      overdose=probOverdose)))
           })
 
 

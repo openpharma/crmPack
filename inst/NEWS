@@ -16,6 +16,9 @@ Version 0.2.1
 * Cohort size of 0 for placebo is now possible - e.g. to only start with patients and
   then later move to larger cohorts also including placebo subjects.
   
+* NextBestNCRM now returns the matrix of target and overdosing probabilities as
+  additional list element "probs" in the result of "nextBest" applied.
+  
 
 Version 0.2.0
 --------------------------------------------------------------------------------

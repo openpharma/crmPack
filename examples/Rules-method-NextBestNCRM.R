@@ -38,3 +38,7 @@ doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
+# Look at the probabilities
+doseRecommendation$probs
+
+
