@@ -277,9 +277,9 @@ setMethod("simulate",
                                                    size=1L,
                                                    prob=thisProb))
                               
-                              if( thisData@placebo && (thisSize.PL > 1L) )
+                              if( thisData@placebo && (thisSize.PL > 0L) )
                                   thisDLTs.PL <- c(thisDLTs.PL,
-                                                   rbinom(n=thisSize.PL - 1L,
+                                                   rbinom(n=thisSize.PL,
                                                           size=1L,
                                                           prob=thisProb.PL))
                           }
@@ -730,10 +730,10 @@ setMethod("simulate",
                                                                thisMeanZ),
                                                              sigma=trueCov))
                                   
-                                  if( thisData@placebo && (thisSize.PL > 1L) )
+                                  if( thisData@placebo && (thisSize.PL > 0L) )
                                     tmpStart.PL <-
                                       rbind(tmpStart.PL,
-                                            mvtnorm::rmvnorm(n=thisSize.PL - 1,
+                                            mvtnorm::rmvnorm(n=thisSize.PL,
                                                              mean=
                                                                c(thisMeanBiomarker.PL,
                                                                  thisMeanZ.PL),
@@ -1337,9 +1337,9 @@ setMethod("simulate",
                                            size=1L,
                                            prob=thisProb))
                       
-                      if( thisData@placebo && (thisSize.PL > 1L) )
+                      if( thisData@placebo && (thisSize.PL > 0L) )
                         thisDLTs.PL <- c(thisDLTs.PL,
-                                         rbinom(n=thisSize.PL - 1L,
+                                         rbinom(n=thisSize.PL,
                                                 size=1L,
                                                 prob=thisProb.PL))
                     }
@@ -1654,9 +1654,9 @@ setMethod("simulate",
                                            size=1L,
                                            prob=thisProb))
                       
-                      if( thisData@placebo && (thisSize.PL > 1L) )
+                      if( thisData@placebo && (thisSize.PL > 0L) )
                         thisDLTs.PL <- c(thisDLTs.PL,
-                                         rbinom(n=thisSize.PL - 1L,
+                                         rbinom(n=thisSize.PL,
                                                 size=1L,
                                                 prob=thisProb.PL))
                     }
@@ -2012,13 +2012,13 @@ setMethod("simulate",
                                        mean=thisMeanEff,
                                        sd=sqrt(trueSigma2)))
                       
-                      if( thisData@placebo && (thisSize.PL > 1L) ) {
+                      if( thisData@placebo && (thisSize.PL > 0L) ) {
                         thisDLTs.PL <- c(thisDLTs.PL,
-                                         rbinom(n=thisSize.PL - 1L,
+                                         rbinom(n=thisSize.PL,
                                                 size=1L,
                                                 prob=thisProb.PL))
                        thisEff.PL <- c(thisMeanEff.PL,
-                                       rnorm(n=thisSize.PL-1L,
+                                       rnorm(n=thisSize.PL,
                                              mean=thisMeanEff.PL,
                                              sd=sqrt(trueSigma2)))
                       }
@@ -2473,13 +2473,13 @@ setMethod("simulate",
                                    rnorm(n=thisSize - 1L,
                                          mean=thisMeanEff,
                                          sd=sqrt(trueSigma2)))
-                        if( thisData@placebo && (thisSize.PL > 1L) ) {
+                        if( thisData@placebo && (thisSize.PL > 0L) ) {
                           thisDLTs.PL <- c(thisDLTs.PL,
-                                           rbinom(n=thisSize.PL - 1L,
+                                           rbinom(n=thisSize.PL,
                                                   size=1L,
                                                   prob=thisProb.PL))
                           thisEff.PL <- c(thisMeanEff.PL,
-                                          rnorm(n=thisSize.PL-1L,
+                                          rnorm(n=thisSize.PL,
                                                 mean=thisMeanEff.PL,
                                                 sd=sqrt(trueSigma2)))
                         }
@@ -2882,13 +2882,13 @@ setMethod("simulate",
                                        sd=sqrt(trueSigma2)))
                       
                       
-                      if( thisData@placebo && (thisSize.PL > 1L) ) {
+                      if( thisData@placebo && (thisSize.PL > 0L) ) {
                         thisDLTs.PL <- c(thisDLTs.PL,
-                                         rbinom(n=thisSize.PL - 1L,
+                                         rbinom(n=thisSize.PL,
                                                 size=1L,
                                                 prob=thisProb.PL))
                         thisEff.PL <- c(thisMeanEff.PL,
-                                        rnorm(n=thisSize.PL-1L,
+                                        rnorm(n=thisSize.PL,
                                               mean=thisMeanEff.PL,
                                               sd=sqrt(trueSigma2)))
                       }
