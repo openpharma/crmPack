@@ -1,32 +1,39 @@
 Version 0.2.1
 --------------------------------------------------------------------------------
 
-* Added back the example vignette, so that it can be opened with crmPackExample()
+New features:
 
-* Clarified that for the DualEndpointRW model samples from the prior cannot be 
-  obtained due to impropriety of the RW prior (added to model class description).
-  
 * Added ProbitLogNormal model
-
-* For DualEndpointRW models, it is now possible to have non-equidistant grid points,
-  and obtain sensible results. (But still needs to be thouroughly tested though.)
-  
-* For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.
 
 * In the NextBestDualEndpoint class, the additional option "scale" now allows to also
   specify absolute biomarker target ranges. In the corresponding method evaluation,
   the safety samples are now no longer included in the evaluation of the biomarker
   target probability, such that now the description is consistent with the computations.
+  
+* NextBestNCRM and NextBestDualEndpoint now return the matrix of target and overdosing 
+  probabilities as additional list element "probs" in the result of "nextBest" applied.
+  
+
+Bugfixes:
+
+* Added back the example vignette, so that it can be opened with crmPackExample()
+
+* Clarified that for the DualEndpointRW model samples from the prior cannot be 
+  obtained due to impropriety of the RW prior (added to model class description).
+  
+* For DualEndpointRW models, it is now possible to have non-equidistant grid points,
+  and obtain sensible results. (But still needs to be thouroughly tested though.)
+  
+* For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.
 
 * Cohort size of 0 for placebo is now possible - e.g. to only start with patients and
   then later move to larger cohorts also including placebo subjects.
   
-* NextBestNCRM now returns the matrix of target and overdosing probabilities as
-  additional list element "probs" in the result of "nextBest" applied.
-  
 * When simulating with firstSeparate=TRUE and placebo, now the first (sentinel) cohort
   includes one active and one placebo patients, and the next patients use the cohort
   size for the active and placebo arms, respectively.
+  
+* Barplots work now also when there was only one observed value in all simulations
   
 
 Version 0.2.0

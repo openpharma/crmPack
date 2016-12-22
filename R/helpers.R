@@ -453,7 +453,7 @@ myBarplot <- function(x, description, xaxisround=0)
              data=dat, 
              stat="identity",
              position="identity",
-             width=min(diff(dat$x)) / 2) +
+             width=ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)) +
     xlab(description) +
     ylab("Percent") +
     scale_x_continuous(breaks=
