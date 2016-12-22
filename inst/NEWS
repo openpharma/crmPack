@@ -13,11 +13,20 @@ Version 0.2.1
   
 * For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.
 
+* In the NextBestDualEndpoint class, the additional option "scale" now allows to also
+  specify absolute biomarker target ranges. In the corresponding method evaluation,
+  the safety samples are now no longer included in the evaluation of the biomarker
+  target probability, such that now the description is consistent with the computations.
+
 * Cohort size of 0 for placebo is now possible - e.g. to only start with patients and
   then later move to larger cohorts also including placebo subjects.
   
 * NextBestNCRM now returns the matrix of target and overdosing probabilities as
   additional list element "probs" in the result of "nextBest" applied.
+  
+* When simulating with firstSeparate=TRUE and placebo, now the first (sentinel) cohort
+  includes one active and one placebo patients, and the next patients use the cohort
+  size for the active and placebo arms, respectively.
   
 
 Version 0.2.0

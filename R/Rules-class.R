@@ -195,16 +195,21 @@ NextBestThreePlusThree <- function()
 ##' \code{maxOverdoseProb} of having an overdose toxicity, as specified by the
 ##' overdose interval \code{overdose}. Then, it picks under the remaining
 ##' admissible doses the one that maximizes the probability to be in the
-##' \code{target} biomarker range, relative to the maximum biomarker level
+##' \code{target} biomarker range, by default relative to the maximum biomarker level
 ##' across the dose grid or relative to the Emax parameter in case a parametric
 ##' model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
-##' \code{\linkS4class{DualEndpointEmax}}))
+##' \code{\linkS4class{DualEndpointEmax}})) However, is \code{scale} is set to
+##' "absolute" then the natural absolute biomarker scale can be used to set a target.
 ##'
-##' @slot target the biomarker target range, relative to the maximum, that
-##' needs to be reached. For example, (0.8, 1.0) means we target a dose
+##' @slot target the biomarker target range, that
+##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"} 
+##' means we target a dose
 ##' with at least 80\% of maximum biomarker level. As an other example,
 ##' (0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
 ##' the maximum biomarker level.
+##' @slot scale either \code{relative} (default, then the \code{target} is interpreted 
+##' relative to the maximum, so must be a probability range) or \code{absolute}
+##' (then the \code{target} is interpreted as absolute biomarker range)
 ##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
 ##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
@@ -215,9 +220,11 @@ NextBestThreePlusThree <- function()
 .NextBestDualEndpoint <-
     setClass(Class="NextBestDualEndpoint",
              representation(target="numeric",
+                            scale="character",
                             overdose="numeric",
                             maxOverdoseProb="numeric"),
              prototype(target=c(0.9,1),
+                       scale="relative",
                        overdose=c(0.35, 1),
                        maxOverdoseProb=0.25),
              contains=list("NextBest"),
@@ -225,8 +232,16 @@ NextBestThreePlusThree <- function()
                  function(object){
                      o <- Validate()
 
-                     o$check(is.probRange(object@target),
-                             "target has to be a probability range")
+                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
+                             "scale must be either 'relative' or 'absolute'")
+                     if(object@scale == "relative")
+                     {
+                       o$check(is.probRange(object@target),
+                               "target has to be a probability range when scale='relative'")
+                     } else {
+                       o$check(is.range(object@target),
+                               "target must be a numeric range")
+                     }
                      o$check(is.probRange(object@overdose),
                              "overdose has to be a probability range")
                      o$check(is.probability(object@maxOverdoseProb),
@@ -239,6 +254,7 @@ validObject(.NextBestDualEndpoint())
 ##' Initialization function for "NextBestDualEndpoint"
 ##'
 ##' @param target see \code{\linkS4class{NextBestDualEndpoint}}
+##' @param scale see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @param overdose see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @param maxOverdoseProb see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @return the \code{\linkS4class{NextBestDualEndpoint}} object
@@ -246,12 +262,15 @@ validObject(.NextBestDualEndpoint())
 ##' @export
 ##' @keywords methods
 NextBestDualEndpoint <- function(target,
+                                 scale=c("relative", "absolute"),
                                  overdose,
                                  maxOverdoseProb)
 {
-    .NextBestDualEndpoint(target=target,
-                          overdose=overdose,
-                          maxOverdoseProb=maxOverdoseProb)
+  scale <- match.arg(scale)
+  .NextBestDualEndpoint(target=target,
+                        scale=scale,
+                        overdose=overdose,
+                        maxOverdoseProb=maxOverdoseProb)
 }
 
 
@@ -782,8 +801,12 @@ StoppingMTDdistribution <- function(target,
 
 ##' Stop based on probability of target biomarker
 ##'
-##' @slot target the biomarker target range, relative to the maximum, that
-##' needs to be reached. So this must be a probability range (1 is allowed here)
+##' @slot target the biomarker target range, that
+##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"} 
+##' means we target a dose with at least 80\% of maximum biomarker level. 
+##' @slot scale either \code{relative} (default, then the \code{target} is interpreted 
+##' relative to the maximum, so must be a probability range) or \code{absolute}
+##' (then the \code{target} is interpreted as absolute biomarker range)
 ##' @slot prob required target probability for reaching sufficient precision
 ##' 
 ##' @example examples/Rules-class-StoppingTargetBiomarker.R
@@ -792,16 +815,26 @@ StoppingMTDdistribution <- function(target,
 .StoppingTargetBiomarker <-
     setClass(Class="StoppingTargetBiomarker",
              representation(target="numeric",
+                            scale="character",
                             prob="numeric"),
              prototype(target=c(0.9, 1),
+                       scale="relative",
                        prob=0.3),
              contains="Stopping",
              validity=
                  function(object){
                      o <- Validate()
-
-                     o$check(is.probRange(object@target),
-                             "target has to be a probability range")
+                     
+                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
+                             "scale must be either 'relative' or 'absolute'")
+                     if(object@scale == "relative")
+                     {
+                       o$check(is.probRange(object@target),
+                               "target has to be a probability range when scale='relative'")
+                     } else {
+                       o$check(is.range(object@target),
+                               "target must be a numeric range")
+                     }
                      o$check(is.probability(object@prob,
                                             bounds=FALSE),
                              "prob must be probability > 0 and < 1")
@@ -814,15 +847,19 @@ validObject(.StoppingTargetBiomarker())
 ##' Initialization function for "StoppingTargetBiomarker"
 ##'
 ##' @param target see \code{\linkS4class{StoppingTargetBiomarker}}
+##' @param scale see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
 ##'
 ##' @export
 ##' @keywords methods
 StoppingTargetBiomarker <- function(target,
+                                    scale=c("relative", "absolute"),
                                     prob)
 {
+  scale <- match.arg(scale)
     .StoppingTargetBiomarker(target=target,
+                             scale=scale,
                              prob=prob)
 }
 

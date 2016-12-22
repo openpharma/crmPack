@@ -140,6 +140,18 @@ is.probability <- function(x,
            })
 }
 
+##' Predicate checking for a numeric range
+##'
+##' @param x the object being checked
+##' @return Returns \code{TRUE} if \code{x} is a numeric range
+##'
+##' @keywords internal
+is.range <- function(x)
+{
+  return(identical(length(x), 2L) &&
+           x[1] < x[2])
+}
+
 ##' Predicate checking for a probability range
 ##'
 ##' @param x the object being checked
@@ -150,13 +162,8 @@ is.probability <- function(x,
 is.probRange <- function(x,
                          bounds=TRUE)
 {
-    return(identical(length(x), 2L) &&
-           x[1] < x[2] &&
-           if(bounds){
-               0 <= x[1] && 1 >= x[2]
-           } else {
-               0 < x[1] && 1 > x[2]
-           })
+    return(is.range(x) && 
+             all(sapply(x, is.probability, bounds=bounds)))
 }
 
 

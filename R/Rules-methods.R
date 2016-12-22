@@ -421,7 +421,9 @@ setMethod("nextBest",
 ## --------------------------------------------------
 
 ##' @describeIn nextBest Find the next best dose based on the dual endpoint
-##' model
+##' model. The additional list element \code{probs} contains the target and 
+##' overdosing probabilities (across all doses in the dose grid) used in the 
+##' derivation of the next best dose. 
 ##' @example examples/Rules-method-NextBestDualEndpoint.R
 ##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
 ##' geom_hline geom_point
@@ -474,37 +476,55 @@ setMethod("nextBest",
                                            samples)
               }
 
-              # If there is an 'Emax' parameter, target biomarker level will
-              # be relative to 'Emax', otherwise will be relative to the
-              # maximum biomarker level achieved in the given dose range.
-              if("Emax" %in% names(samples@data)){
-
+              ## if target is relative to maximum
+              if(nextBest@scale == "relative")
+              {
+                
+                # If there is an 'Emax' parameter, target biomarker level will
+                # be relative to 'Emax', otherwise will be relative to the
+                # maximum biomarker level achieved in the given dose range.
+                if("Emax" %in% names(samples@data)){
+                  
                   ## For each sample, look which dose is maximizing the
                   ## simultaneous probability to be in the target biomarker
                   ## range and below overdose toxicity
                   probTarget <- numeric(ncol(biomLevelSamples))
                   probTarget <- sapply(seq(1,ncol(biomLevelSamples)),
                                        function(x){
-                                           sum(biomLevelSamples[, x] >= nextBest@target[1]*samples@data$Emax &
-                                               biomLevelSamples[, x] <= nextBest@target[2]*samples@data$Emax &
-                                               probSamples[, x] <= nextBest@overdose[1]) / nrow(biomLevelSamples)
+                                         sum(biomLevelSamples[, x] >= nextBest@target[1] * samples@data$Emax &
+                                               biomLevelSamples[, x] <= nextBest@target[2] * samples@data$Emax) / 
+                                           nrow(biomLevelSamples)
                                        })
-              }else{
-
+                }else{
+                  
                   ## For each sample, look which was the minimum dose giving
                   ## relative target level
                   targetIndex <- apply(biomLevelSamples, 1L,
                                        function(x){
-                                           rnx <- range(x)
-                                           min(which((x >= nextBest@target[1] * diff(rnx) + rnx[1]) &
+                                         rnx <- range(x)
+                                         min(which((x >= nextBest@target[1] * diff(rnx) + rnx[1]) &
                                                      (x <= nextBest@target[2] * diff(rnx) + rnx[1] + 1e-10))
-                                              )
+                                         )
                                        })
-
+                  
                   probTarget <- numeric(ncol(biomLevelSamples))
                   tab <- table(targetIndex)
                   probTarget[as.numeric(names(tab))] <- tab
                   probTarget <- probTarget / nrow(biomLevelSamples)
+                }
+              } else {
+                ## otherwise target is absolute
+                
+                ## For each sample, look which dose is maximizing the
+                ## simultaneous probability to be in the target biomarker
+                ## range and below overdose toxicity
+                probTarget <- numeric(ncol(biomLevelSamples))
+                probTarget <- sapply(seq(1, ncol(biomLevelSamples)),
+                                     function(x){
+                                       sum(biomLevelSamples[, x] >= nextBest@target[1] &
+                                             biomLevelSamples[, x] <= nextBest@target[2]) / 
+                                         nrow(biomLevelSamples)
+                                     })
               }
 
               ## Now compute probabilities to be in
@@ -619,7 +639,10 @@ setMethod("nextBest",
 
               ## return value and plot
               return(list(value=ret,
-                          plot=plotJoint))
+                          plot=plotJoint,
+                          probs=cbind(dose=data@doseGrid,
+                                      target=probTarget,
+                                      overdose=probOverdose)))
           })
 
 
@@ -1399,6 +1422,10 @@ setMethod("stopTrial",
                                                      samples)
               }
 
+              ## if target is relative to maximum
+              if(stopping@scale == "relative")
+              {
+                
               ## If there is an 'Emax' parameter, target biomarker level will
               ## be relative to 'Emax', otherwise will be relative to the
               ## maximum biomarker level achieved in the given dose range.
@@ -1430,6 +1457,21 @@ setMethod("stopTrial",
                   tab <- table(targetIndex)
                   probTarget[as.numeric(names(tab))] <- tab
                   probTarget <- probTarget / nrow(biomLevelSamples)
+              }
+                
+              } else {
+                ## otherwise target is absolute
+                
+                # For each sample, look which dose is maximizing the
+                ## simultaneous probability to be in the target biomarker
+                ## range and below overdose toxicity
+                probTarget <- numeric(ncol(biomLevelSamples))
+                probTarget <- sapply(seq(1, ncol(biomLevelSamples)),
+                                     function(x){
+                                       sum(biomLevelSamples[, x] >= stopping@target[1] &
+                                             biomLevelSamples[, x] <= stopping@target[2]) / 
+                                         nrow(biomLevelSamples)
+                                     })
               }
 
               ## so for this dose we have:
