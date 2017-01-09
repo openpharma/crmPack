@@ -547,6 +547,12 @@ setMethod("nextBest",
               ## check if there are doses that are OK
               if(length(dosesOK))
               {
+                  ## For placebo design, if safety allow, exclude placebo from 
+                  ## the recommended next doses
+                  if(data@placebo & (length(dosesOK) > 1L) ){
+                    dosesOK <- dosesOK[-1]  
+                  }  
+                
                   ## what is the recommended dose level?
 
                   ## if maximum target probability is higher than some numerical
