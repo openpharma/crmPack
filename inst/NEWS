@@ -34,6 +34,10 @@ Bugfixes:
   size for the active and placebo arms, respectively.
   
 * Barplots work now also when there was only one observed value in all simulations
+
+* NextBestDualEndpoint now only takes into account active doses when optimizing the biomarker
+  outcome for the next best dose among admissible doses, thus avoiding early stopping
+  at the placebo dose level.
   
 
 Version 0.2.0
