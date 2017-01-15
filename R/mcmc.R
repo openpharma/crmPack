@@ -319,6 +319,22 @@ setMethod("mcmc",
           })
 
 
+## --------------------------------------------------
+## The method for DataMixture usage
+## --------------------------------------------------
+
+##' @describeIn mcmc Method for DataMixture with different fromPrior default
+setMethod("mcmc",
+          signature=
+            signature(data="DataMixture",
+                      model="GeneralModel",
+                      options="McmcOptions"),
+          def=
+            function(data, model, options,
+                     fromPrior=data@nObs == 0L & data@nObsshare == 0L,
+                     ...){
+              callNextMethod(data, model, options, fromPrior=fromPrior, ...)
+            })
 
 ## --------------------------------------------------
 ## The fast method for the LogisticNormal class
