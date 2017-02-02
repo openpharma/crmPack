@@ -2115,6 +2115,12 @@ setMethod("nextBest",
               
               dosesOK <- which(data@doseGrid <= doselimit)
               
+              ## For placebo design, if safety allow, exclude placebo from 
+              ## the recommended next doses
+              if(data@placebo & (length(dosesOK) > 1L) ){
+                dosesOK <- dosesOK[-1]  
+              }  
+              
               ##FIND the next dose which is the minimum between TDtargetDuringTrial and Gstar
               nextdose<-min(TDtargetDuringTrialEstimate,Gstar)
               
@@ -2415,6 +2421,12 @@ setMethod("nextBest",
               
               dosesOK <- which(data@doseGrid <= doselimit)
               
+              ## For placebo design, if safety allow, exclude placebo from 
+              ## the recommended next doses
+              if(data@placebo & (length(dosesOK) > 1L) ){
+                dosesOK <- dosesOK[-1]  
+              }  
+              
               ##FIND the next dose which is the minimum between TDtargetDuringTrial and Gstar
               nextdose<-min(TDtargetDuringTrialEstimate,Gstar)
               
@@ -2643,6 +2655,12 @@ setMethod("nextBest",
                 gainvalues <- apply(GainSamples,2,FUN=nextBest@Gstarderive)
                 
                 dosesOK <- which(data@doseGrid <= doselimit)
+                
+                ## For placebo design, if safety allow, exclude placebo from 
+                ## the recommended next doses
+                if(data@placebo & (length(dosesOK) > 1L) ){
+                  dosesOK <- dosesOK[-1]  
+                }  
                 
                 ##FIND the next dose which is the minimum between TDtargetDuringTrial and Gstar
                 nextdose<-min(TDtargetDuringTrialEstimate,Gstar)
