@@ -14,6 +14,9 @@ BUGFIXES:
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
+- add a customized simulation summary function for the dual endpoint models,
+  which also reports the frequency of simulated trials selecting the correct OBD
+
 - include the submitted JSS manuscript as additional vignette in the package
 
 - also optimize refDose for quantile->logistic functions
