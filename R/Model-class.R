@@ -1634,7 +1634,7 @@ DualEndpointRW <- function(sigma2betaW,
 
                            ## the iid second oder differences:
                            for (j in 1:(nGrid-2)) {
-                               delta2[j] ~ dnorm(0, precBetaW / (doseGrid[j+2] - doseGrid[j]))
+                               delta2[j] ~ dnorm(0, 2 * precBetaW / (doseGrid[j+2] - doseGrid[j]))
                              ## todo: not sure if this makes sense, please check
                            }
 
