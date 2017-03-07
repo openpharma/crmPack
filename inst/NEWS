@@ -3,6 +3,9 @@ Version 0.2.1
 
 New features:
 
+* Option targetThresh for NextBestDualEndpoint allows to tune from which target probability
+  onwards it will be used to derive the next best dose (before this was fixed to 0.05)
+
 * Added ProbitLogNormal model
 
 * In the NextBestDualEndpoint class, the additional option "scale" now allows to also

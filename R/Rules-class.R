@@ -213,6 +213,8 @@ NextBestThreePlusThree <- function()
 ##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
 ##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
+##' @slot targetThresh which target probability threshold needs to be fulfilled before the 
+##' target probability will be used for deriving the next best dose (default: 0.01)
 ##' 
 ##' @example examples/Rules-class-NextBestDualEndpoint.R
 ##' @export
@@ -222,11 +224,13 @@ NextBestThreePlusThree <- function()
              representation(target="numeric",
                             scale="character",
                             overdose="numeric",
-                            maxOverdoseProb="numeric"),
+                            maxOverdoseProb="numeric",
+                            targetThresh="numeric"),
              prototype(target=c(0.9,1),
                        scale="relative",
                        overdose=c(0.35, 1),
-                       maxOverdoseProb=0.25),
+                       maxOverdoseProb=0.25,
+                       targetThresh=0.01),
              contains=list("NextBest"),
              validity=
                  function(object){
@@ -246,6 +250,8 @@ NextBestThreePlusThree <- function()
                              "overdose has to be a probability range")
                      o$check(is.probability(object@maxOverdoseProb),
                              "maxOverdoseProb has to be a probability")
+                     o$check(is.probability(object@targetThresh),
+                             "targetThresh has to be a probability")
 
                      o$result()
                  })
@@ -257,6 +263,7 @@ validObject(.NextBestDualEndpoint())
 ##' @param scale see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @param overdose see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @param maxOverdoseProb see \code{\linkS4class{NextBestDualEndpoint}}
+##' @param targetThresh see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @return the \code{\linkS4class{NextBestDualEndpoint}} object
 ##'
 ##' @export
@@ -264,13 +271,15 @@ validObject(.NextBestDualEndpoint())
 NextBestDualEndpoint <- function(target,
                                  scale=c("relative", "absolute"),
                                  overdose,
-                                 maxOverdoseProb)
+                                 maxOverdoseProb,
+                                 targetThresh=0.01)
 {
   scale <- match.arg(scale)
   .NextBestDualEndpoint(target=target,
                         scale=scale,
                         overdose=overdose,
-                        maxOverdoseProb=maxOverdoseProb)
+                        maxOverdoseProb=maxOverdoseProb,
+                        targetThresh=targetThresh)
 }
 
 

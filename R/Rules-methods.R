@@ -555,11 +555,11 @@ setMethod("nextBest",
                 
                   ## what is the recommended dose level?
 
-                  ## if maximum target probability is higher than some numerical
+                  ## if maximum target probability is higher than the numerical
                   ## threshold, then take that level, otherwise stick to the
                   ## maximum level that is OK:
                   doseLevel <-
-                      if(max(probTarget[dosesOK]) > 0.05)
+                      if(max(probTarget[dosesOK]) > nextBest@targetThresh)
                       {
                           which.max(probTarget[dosesOK])
                       } else {
