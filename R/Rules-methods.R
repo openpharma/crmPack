@@ -1444,8 +1444,7 @@ setMethod("stopTrial",
                   probTarget <- sapply(seq(1,ncol(biomLevelSamples)),
                                        function(x){
                                            sum(biomLevelSamples[, x] >= stopping@target[1]*samples@data$Emax &
-                                               biomLevelSamples[, x] <= stopping@target[2]*samples@data$Emax &
-                                               probSamples[, x] <= stopping@overdose[1]) / nrow(biomLevelSamples)
+                                               biomLevelSamples[, x] <= stopping@target[2]*samples@data$Emax) / nrow(biomLevelSamples)
                                        })
               }else{
 

@@ -16,6 +16,9 @@ New features:
 * NextBestNCRM and NextBestDualEndpoint now return the matrix of target and overdosing 
   probabilities as additional list element "probs" in the result of "nextBest" applied.
   
+* Note that in the StoppingTargetBiomarker evaluation, the toxicity is no longer
+  a part of the biomarker target probability.
+  
 
 Bugfixes:
 
