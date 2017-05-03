@@ -96,4 +96,5 @@ globalVariables(c("log.betaZ",
                   "yshare", 
                   "thisProb.PL",
                   "thisMeanEff.PL",
-                  "thisSize.PL"))
+                  "thisSize.PL",
+                  "probit<-"))

@@ -2,15 +2,14 @@
 # Setting up a minimal informative prior 
 # max.time is quite small only for the purpose of showing the example. They 
 # should be increased for a real case.
-set.seed(432)
+set.seed(132)
 coarseGrid <- c(0.1, 10, 30, 60, 100)
 minInfModel <- MinimalInformative(dosegrid = coarseGrid,
                                   refDose=50,
                                   threshmin=0.2,
                                   threshmax=0.3,
                                   control=## for real case: leave out control 
-                                    list(threshold.stop=0.05, ## or decrease
-                                         max.time=10)) ## and increase these
+                                    list(max.time=0.1)) 
 
 # Plotting the result
 matplot(x=coarseGrid,

@@ -1,8 +1,5 @@
 BUGFIXES:
 
-- resolve strange behavior of dual endpoint models when using placebo doses
-  (Winnie's email)
-  
 - examine function:
   Is that correct that also the check to see 'if there is no improvement in dose
   over the last cohort' should be added
@@ -33,6 +30,8 @@ request)
 - mixture prior: add documentation in vignette
 
 - allow different x values (doses) to be specified in simulate() to be passed to fit()
+
+- remove WinBUGS since not really used anyway
 
 ----------------------------------------------------------------
 NEW FEATURES:

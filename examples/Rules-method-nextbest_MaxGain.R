@@ -11,7 +11,7 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 
 ## using the 'ModelEff' class efficacy model 
 ## Effmodel e.g 'Effloglog' class
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,C=0)
+Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
 
 ##target probabilities of the occurrence of a DLE during trial and at the
 ## end of trial are defined as
