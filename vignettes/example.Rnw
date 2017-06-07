@@ -3,10 +3,10 @@
 %%\VignettePackage{crmPack}
 %%\VignetteDepends{crmPack,ggmcmc,grid}
 
-\documentclass[UKenglish]{scrartcl}
+\documentclass[british]{scrartcl}
 
 \usepackage[utf8]{inputenc}
-\usepackage[UKenglish]{babel}
+\usepackage[british]{babel}
 \usepackage[T1]{fontenc}
 \usepackage{textcomp}
 \usepackage{hyperref}
