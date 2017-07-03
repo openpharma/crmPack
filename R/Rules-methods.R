@@ -814,6 +814,35 @@ setMethod("maxDose",
           })
 
 
+## --------------------------------------------------
+## The maximum allowable relative increments in terms of DLTs
+## --------------------------------------------------
+
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' multiple increment rules (taking the minimum across individual increments).
+##' 
+##' @example examples/Rules-method-maxDose-IncrementMin.R
+setMethod("maxDose",
+          signature=
+            signature(increments="IncrementMin",
+                      data="Data"),
+          def=
+            function(increments, data, ...){
+              
+              ## apply the multiple increment rules
+              individualResults <-
+                sapply(increments@IncrementsList,
+                       maxDose,
+                       data=data,
+                       ...)
+              
+              ## so the maximum increment is the minimum across the individual increments 
+              ret <- min(individualResults)
+              
+              return(ret)
+            })
+
+
 ## ============================================================
 
 ## --------------------------------------------------

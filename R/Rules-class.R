@@ -491,6 +491,62 @@ IncrementsRelativeDLT <- function(DLTintervals,
 }
 
 
+
+## -----------------------------------------------------------
+## Max increment based on minimum of multiple increment rules
+## -----------------------------------------------------------
+
+##' Max increment based on minimum of multiple increment rules
+##'
+##' This class can be used to combine multiple increment rules with the MIN
+##' operation.
+##'
+##' \code{IncrementsList} contains all increment rules, which are again
+##' objects of class \code{\linkS4class{Increments}}. The minimum of these
+##' individual increments is taken to give the final maximum increment.
+##'
+##' @slot IncrementsList list of increment rules
+##'
+##' @example examples/Rules-class-IncrementMin.R
+##' @keywords classes
+##' @export
+.IncrementMin <-
+  setClass(Class="IncrementMin",
+           representation(IncrementsList="list"),
+           prototype(IncrementsList=
+                       list(IncrementsRelativeDLT(DLTintervals=as.integer(c(0, 1)),
+                                                  increments=c(2, 1)),
+                            IncrementsRelative(intervals=c(0, 2),
+                                               increments=c(2, 1)))),
+           contains="Increments",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(all(sapply(object@IncrementsList, is,
+                                  "Increments")),
+                       "all IncrementsList elements have to be Increments objects")
+               
+               o$result()
+             })
+validObject(.IncrementMin())
+
+
+##' Initialization function for "IncrementMin"
+##'
+##' @param IncrementsList see \code{\linkS4class{IncrementMin}}
+##' @return the \code{\linkS4class{IncrementMin}} object
+##'
+##' @export
+##' @keywords methods
+IncrementMin <- function(IncrementsList)
+{
+  .IncrementMin(IncrementsList=IncrementsList)
+}
+
+
+
+
 ## ============================================================
 
 ## --------------------------------------------------
