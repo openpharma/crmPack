@@ -16,7 +16,7 @@ Description: Implements a wide range of model-based dose
     designs for comparison or models with non-Bayesian estimation. The whole
     package is written in a modular form in the S4 class system, making it very
     flexible for adaptation to new models, escalation or stopping rules.
-Version: 0.2.2
+Version: 0.2.3
 Date: 2017-06-07
 Copyright: F. Hoffmann-La Roche Ltd
 Depends:

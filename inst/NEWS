@@ -1,3 +1,13 @@
+
+Version 0.2.3
+--------------------------------------------------------------------------------
+
+New features:
+
+* New increment class "IncrementMin" has been added which allows to combine multiple 
+  increment rules with the MIN operation
+
+
 Version 0.2.1
 --------------------------------------------------------------------------------
 
