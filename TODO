@@ -8,8 +8,19 @@ BUGFIXES:
   in examine function) to avoid infinite loop and issue a corresponding warning
   if this condition is met.
   
+- documentation: in the DualEndpoint description fix the \left problem in the
+  formula (Paul Jordan)
+  
 ----------------------------------------------------------------
 IMPROVEMENTS:
+
+- possible to input dose levels that fall outside the pre-specified dose grid? (Charles Warne)
+We would need to think about the tradeoff to force a sensible Data object with the x values forced to be in the dose grid vs. the flexibility to have in reality doses that are off the dose grid. In the latter case usually I just changed the dose grid to reflect that I "agree" with this different dose value.
+
+- simple way to specify within the statement 'print(nextDose)' the dose range over which this type of plot is produced (Charles Warne)
+
+- DualEndpoint: have additional option to use log(x/x*) instead of x itself in the 
+safety model, to make it comparable with the single endpoint models (Paul Jordan request)
 
 - add a customized simulation summary function for the dual endpoint models,
   which also reports the frequency of simulated trials selecting the correct OBD
