@@ -315,14 +315,21 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 ##'
 ##' This is probit regression model with a bivariate normal prior on
 ##' the intercept and log slope. 
-##' The covariate is the dose \eqn{x} itself for this class:
+##' The covariate is the dose \eqn{x} itself, potentially divided
+##' by a reference dose \eqn{x^{*}}, or the logarithm of it:
 ##'
-##' \deqn{probit[p(x)] = \alpha + \beta \cdot x}
-##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
+##' \deqn{probit[p(x)] = \alpha + \beta 
+##' \cdot x/x^{*}}{probit[p(x)] = alpha + beta * x/x*}
+##' or
+##' \deqn{probit[p(x)] = \alpha + \beta 
+##' \cdot \log(x/x^{*})}{probit[p(x)] = alpha + beta * log(x/x*)}
+##' in case that the option \code{useLogDose} is \code{TRUE}.
+##' Here \eqn{p(x)} is the probability of observing a DLT for a given dose
 ##' \eqn{x}.
 ##'
 ##' The prior is
-##' \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}
+##' \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}{
+##' (alpha, beta) ~ Normal(mu, Sigma)}
 ##'
 ##' The slots of this class contain the mean vector and the covariance matrix of
 ##' the bivariate normal distribution, as well as the reference dose.
@@ -335,6 +342,8 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 ##'
 ##' @slot mu the prior mean vector \eqn{\mu}
 ##' @slot Sigma the prior covariance matrix \eqn{\Sigma}
+##' @slot refDose the reference dose \eqn{x^{*}}
+##' @slot useLogDose should the log of (standardized) dose be used?
 ##'
 ##' @example examples/Model-class-ProbitLogNormal.R
 ##' @export
@@ -342,9 +351,13 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 .ProbitLogNormal <-
   setClass(Class="ProbitLogNormal",
            representation(mu="numeric",
-                          Sigma="matrix"),
+                          Sigma="matrix",
+                          refDose="numeric",
+                          useLogDose="logical"),
            prototype(mu=c(0, 1),
-                     Sigma=diag(2)),
+                     Sigma=diag(2),
+                     refDose=1,
+                     useLogDose=TRUE),
            contains="Model",
            validity=
              function(object){
@@ -355,6 +368,11 @@ validObject(LogisticLogNormal(mean=c(0, 1),
                o$check(identical(dim(object@Sigma), c(2L, 2L)) &&
                          ! is.null(chol(object@Sigma)),
                        "Sigma must be positive-definite 2x2 covariance matrix")
+               o$check(is.scalar(object@refDose) &&
+                         (object@refDose > 0),
+                       "refDose must be positive scalar")
+               o$check(is.bool(object@useLogDose),
+                       "useLogDose must be TRUE or FALSE")
                
                o$result()
              })
@@ -365,24 +383,40 @@ validObject(.ProbitLogNormal())
 ##'
 ##' @param mu the prior mean vector
 ##' @param Sigma the prior covariance matrix
+##' @slot refDose the reference dose \eqn{x^{*}}, default 1 (no standardization)
+##' @slot useLogDose should the log of (standardized) dose be used? (not default)
 ##' @return the \code{\linkS4class{ProbitLogNormal}} object
 ##'
 ##' @export
 ##' @keywords methods
 ProbitLogNormal <- function(mu,
-                            Sigma)
+                            Sigma,
+                            refDose=1,
+                            useLogDose=FALSE)
 {
   .ProbitLogNormal(mu=mu,
-                     Sigma=Sigma,
+                   Sigma=Sigma,
+                   refDose=refDose,
+                   useLogDose=useLogDose,
                      datamodel=
+                     if(useLogDose){
+                       function(){
+                         ## the Probit likelihood with log dose
+                         for (i in 1:nObs)
+                         {
+                           y[i] ~ dbern(p[i])
+                           probit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                           StandLogDose[i] <- log(x[i] / refDose)
+                         }
+                       }} else {
                        function(){
                          ## the Probit likelihood
                          for (i in 1:nObs)
                          {
                            y[i] ~ dbern(p[i])
-                           probit(p[i]) <- alpha0 + alpha1 * x[i]
+                           probit(p[i]) <- alpha0 + alpha1 * x[i] / refDose
                          }
-                       },
+                       }},
                      priormodel=
                        function(){
                          ## the multivariate normal prior on the (transformed)
@@ -397,17 +431,27 @@ ProbitLogNormal <- function(mu,
                      modelspecs=
                        function(){
                          list(priorCov=Sigma,
-                              priorMean=mu)
+                              priorMean=mu,
+                              refDose=refDose)
                        },
                      dose=
+                     if(useLogDose){
                        function(prob, alpha0, alpha1){
                          dose <- (probit(prob) - alpha0) / alpha1
-                         return(dose)
-                       },
+                         return(exp(dose) * refDose)
+                       }} else {
+                         function(prob, alpha0, alpha1){
+                           dose <- (probit(prob) - alpha0) / alpha1
+                           return(dose * refDose)
+                         }},
                      prob=
+                     if(useLogDose){
                        function(dose, alpha0, alpha1){
-                         return(pnorm(alpha0 + alpha1 * dose))
-                       },
+                         return(pnorm(alpha0 + alpha1 * log(dose / refDose)))
+                       }} else {
+                         function(dose, alpha0, alpha1){
+                           return(pnorm(alpha0 + alpha1 * dose / refDose))
+                         }},
                      init=
                        ## todo: find better starting values
                        function(){
@@ -417,7 +461,9 @@ ProbitLogNormal <- function(mu,
                        c("alpha0", "alpha1"))
 }
 validObject(ProbitLogNormal(mu=c(0, 1),
-                              Sigma=diag(2)))
+                            Sigma=diag(2),
+                            refDose=1,
+                            useLogDose=TRUE))
 
 
 ## ============================================================
@@ -820,6 +866,7 @@ LogisticKadane <- function(theta,
 ##' vector with elements \code{a} and \code{b} for the Beta prior on the
 ##' transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
 ##' \code{a=1,b=1} leads to a uniform prior on rho.
+##' 
 ##' @slot useRW1 for specifying the random walk prior on the biomarker level: if
 ##' \code{TRUE}, RW1 is used, otherwise RW2.
 ##' @slot useFixed a list with logical value for each of the three parameters
@@ -1208,15 +1255,21 @@ setMethod("initialize",
 ##' of it during the construction of subclass objects.)
 ##'
 ##' Currently a probit regression model
-##' \deqn{\Phi^{-1}[p(x)] = \beta_{Z1} + \beta_{Z2} \cdot x}
-##' is used, where \eqn{p(x)} is the probability of observing a DLT for a given
-##' dose \eqn{x}, and \eqn{\Phi} is the standard normal cdf. This could later be
-##' generalized to have a reference dose or a log transformation for the dose.
-##' The prior is
-##' \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right) \sim Normal(\mu, \Sigma)}.
+##' \deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2} 
+##' \cdot x/x^{*}}{probit[p(x)] = beta_Z1 + beta_Z2 * x/x*}
+##' or
+##' \deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2} 
+##' \cdot \log(x/x^{*})}{probit[p(x)] = beta_Z1 + beta_Z2 * log(x/x*)}
+##' in case that the option \code{useLogDose} is \code{TRUE}.
+##' Here \eqn{p(x)} is the probability of observing a DLT for a given
+##' dose \eqn{x}, \eqn{\Phi} is the standard normal cdf, and \eqn{x^{*}} is
+##' the reference dose.
+##' 
+##' The prior is \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right) 
+##' \sim Normal(\mu, \Sigma)}{(beta_Z1, log(beta_Z2)) ~ Normal(mu, Sigma)}.
 ##'
 ##' For the biomarker response w at a dose x, we assume
-##' \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}
+##' \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}{w(x) ~ Normal(f(x), sigma^2_W)}
 ##' and \eqn{f(x)} is a function of the dose x, which is further specified in
 ##' the subclasses. The biomarker variance \eqn{\sigma^{2}_{W}} can be fixed or
 ##' assigned an inverse gamma prior distribution; see the details below under
@@ -1235,6 +1288,9 @@ setMethod("initialize",
 ##' vector
 ##' @slot Sigma For the probit toxicity model, contains the prior covariance
 ##' matrix
+##' @slot refDose For the probit toxicity model, the reference dose
+##' @slot useLogDose For the probit toxicity model, whether a log transformation
+##' of the (standardized) dose should be used?
 ##' @slot sigma2W Either a fixed value for the biomarker variance, or a vector
 ##' with elements \code{a} and \code{b} for the inverse-gamma prior parameters.
 ##' @slot rho Either a fixed value for the correlation (between -1 and 1), or a
@@ -1253,11 +1309,15 @@ setMethod("initialize",
     setClass(Class="DualEndpoint",
              representation(mu="numeric",
                             Sigma="matrix",
+                            refDose="numeric",
+                            useLogDose="logical",
                             sigma2W="numeric",
                             rho="numeric",
                             useFixed="list"),
              prototype(mu=c(0, 1),
                        Sigma=diag(2),
+                       refDose=1,
+                       useLogDose=FALSE,
                        sigma2W=1,
                        rho=0,
                        useFixed=
@@ -1302,6 +1362,13 @@ setMethod("initialize",
                                  ! is.null(chol(object@Sigma)),
                              "Sigma must be positive-definite 2x2 covariance matrix")
 
+                     ## check reference dose and log parameter
+                     o$check(is.scalar(object@refDose) &&
+                               (object@refDose > 0),
+                             "refDose must be positive scalar")
+                     o$check(is.bool(object@useLogDose),
+                             "useLogDose must be TRUE or FALSE")
+                     
                      o$result()
                  })
 validObject(.DualEndpoint())
@@ -1310,6 +1377,9 @@ validObject(.DualEndpoint())
 ##'
 ##' @param mu see \code{\linkS4class{DualEndpoint}}
 ##' @param Sigma see \code{\linkS4class{DualEndpoint}}
+##' @param refDose see \code{\linkS4class{DualEndpoint}} (default: 1)
+##' @param useLogDose see \code{\linkS4class{DualEndpoint}} 
+##' (default: \code{FALSE})
 ##' @param sigma2W see \code{\linkS4class{DualEndpoint}}
 ##' @param rho see \code{\linkS4class{DualEndpoint}}
 ##' @return the \code{\linkS4class{DualEndpoint}} object
@@ -1318,6 +1388,8 @@ validObject(.DualEndpoint())
 ##' @keywords methods
 DualEndpoint <- function(mu,
                          Sigma,
+                         refDose=1,
+                         useLogDose=FALSE,
                          sigma2W,
                          rho)
 {
@@ -1337,7 +1409,8 @@ DualEndpoint <- function(mu,
 
     modelspecs <-
         list(mu=mu,
-             PrecBetaZ=solve(Sigma)## ,
+             PrecBetaZ=solve(Sigma),
+             refDose=refDose## ,
              ## low=c(-10000, 0),
              ## high=c(0, 10000)
              )
@@ -1417,26 +1490,48 @@ DualEndpoint <- function(mu,
                   rho=rho,
                   useFixed=useFixed,
                   datamodel=
-                  function(){
-                      ## the likelihood
-                      for (i in 1:nObs)
-                      {
+                    if(useLogDose){
+                      function(){
+                        ## the Probit likelihood with log dose
+                        for (i in 1:nObs)
+                        {
                           ## the toxicity model
                           ## z[i] ~ dnorm(meanZ[i], 1) %_%
                           ##     I(low[y[i] + 1], high[y[i] + 1])
                           y[i] ~ dinterval(z[i], 0)
                           z[i] ~ dnorm(meanZ[i], 1)
-
+                          
                           ## the conditional biomarker model
                           w[i] ~ dnorm(condMeanW[i], condPrecW)
-
-                          ## the moments
-                          meanZ[i] <- betaZ[1] + betaZ[2] * x[i]
+                          
+                          ## the moments - here with log dose
+                          StandLogDose[i] <- log(x[i] / refDose)
+                          meanZ[i] <- betaZ[1] + betaZ[2] * StandLogDose[i]
                           condMeanW[i] <- betaW[xLevel[i]] +
-                              rho / sqrt(precW) * (z[i] - meanZ[i])
+                            rho / sqrt(precW) * (z[i] - meanZ[i])
                           ## betaW needs to be defined in subclasses!
-                      }
-                  },
+                        }}} else {
+                          function(){
+                            ## the likelihood
+                            for (i in 1:nObs)
+                            {
+                              ## the toxicity model
+                              ## z[i] ~ dnorm(meanZ[i], 1) %_%
+                              ##     I(low[y[i] + 1], high[y[i] + 1])
+                              y[i] ~ dinterval(z[i], 0)
+                              z[i] ~ dnorm(meanZ[i], 1)
+                              
+                              ## the conditional biomarker model
+                              w[i] ~ dnorm(condMeanW[i], condPrecW)
+                              
+                              ## the moments - here just standardized dose
+                              StandDose[i] <- x[i] / refDose
+                              meanZ[i] <- betaZ[1] + betaZ[2] * StandDose[i]
+                              condMeanW[i] <- betaW[xLevel[i]] +
+                                rho / sqrt(precW) * (z[i] - meanZ[i])
+                              ## betaW needs to be defined in subclasses!
+                            }
+                          }},
                   priormodel=priormodel,
                   datanames=
                   c("nObs", "w", "x", "xLevel", "y", "nGrid"),
@@ -1445,15 +1540,25 @@ DualEndpoint <- function(mu,
                       modelspecs
                   },
                   dose=
-                  function(prob, betaZ){
-                      ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
-                      return(ret)
-                  },
+                    if(useLogDose){
+                      function(prob, betaZ){
+                        ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+                        return(exp(ret) * refDose)
+                      }} else {
+                        function(prob, betaZ){
+                          ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+                          return(ret * refDose)
+                        }},
                   prob=
-                  function(dose, betaZ){
-                      ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose)
-                      return(ret)
-                  },
+                    if(useLogDose){
+                      function(dose, betaZ){
+                        ret <- pnorm(betaZ[, 1] + betaZ[, 2] * log(dose / refDose))
+                        return(ret)
+                      }} else {
+                        function(dose, betaZ){
+                          ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose / refDose)
+                          return(ret)
+                        }},
                   init=
                   function(y, w, nGrid){
                       c(initlist,
@@ -1730,7 +1835,8 @@ validObject(DualEndpointRW(sigma2betaW=1,
 ##' @slot Emax either a fixed number or the two uniform distribution parameters
 ##' @slot delta1 either a fixed number or the two uniform distribution parameters
 ##' @slot mode either a fixed number or the two uniform distribution parameters
-##' @slot refDose the reference dose \eqn{x^{*}}
+##' @slot refDoseBeta the reference dose \eqn{x^{*}} (note that this is different from
+##' the \code{refDose} in the inherited \code{\linkS4class{DualEndpoint}} model)
 ##'
 ##' @example examples/Model-class-DualEndpointBeta.R
 ##' @export
@@ -1741,12 +1847,12 @@ validObject(DualEndpointRW(sigma2betaW=1,
                             Emax="numeric",
                             delta1="numeric",
                             mode="numeric",
-                            refDose="numeric"),
+                            refDoseBeta="numeric"),
              prototype(E0=c(0, 100),
                        Emax=c(0, 500),
                        delta1=c(0, 5),
                        mode=c(1, 15),
-                       refDose=1000,
+                       refDoseBeta=1000,
                        useFixed=
                        list(sigma2W=TRUE,
                             rho=TRUE,
@@ -1801,9 +1907,9 @@ validObject(DualEndpointRW(sigma2betaW=1,
                          }
                      }
 
-                     ## check the refDose
-                     o$check(object@refDose > 0,
-                             "refDose must be positive")
+                     ## check the refDoseBeta
+                     o$check(object@refDoseBeta > 0,
+                             "refDoseBeta must be positive")
 
                      o$result()
                  })
@@ -1815,7 +1921,7 @@ validObject(.DualEndpointBeta())
 ##' @param Emax see \code{\linkS4class{DualEndpointBeta}}
 ##' @param delta1 see \code{\linkS4class{DualEndpointBeta}}
 ##' @param mode see \code{\linkS4class{DualEndpointBeta}}
-##' @param refDose see \code{\linkS4class{DualEndpointBeta}}
+##' @param refDoseBeta see \code{\linkS4class{DualEndpointBeta}}
 ##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
 ##' @return the \code{\linkS4class{DualEndpointBeta}} object
 ##'
@@ -1825,7 +1931,7 @@ DualEndpointBeta <- function(E0,
                              Emax,
                              delta1,
                              mode,
-                             refDose,
+                             refDoseBeta,
                              ...)
 {
     ## call the initialize function from DualEndpoint
@@ -1851,8 +1957,8 @@ DualEndpointBeta <- function(E0,
     start@priormodel <-
         joinModels(start@priormodel,
                    function(){
-                       ## delta2 <- delta1 * (1 - (mode/refDose)) / (mode/refDose)
-                       delta2 <- delta1 * (refDose/mode - 1)
+                       ## delta2 <- delta1 * (1 - (mode/refDoseBeta)) / (mode/refDoseBeta)
+                       delta2 <- delta1 * (refDoseBeta/mode - 1)
                        ## betafun <- (delta1 + delta2)^(delta1 + delta2) *
                        ##     delta1^(- delta1) * delta2^(- delta2)
                        betafun <- (1 + delta2 / delta1)^delta1 *
@@ -1860,7 +1966,7 @@ DualEndpointBeta <- function(E0,
 
                        for (j in 1:nGrid)
                        {
-                           StandDose[j] <- doseGrid[j] / refDose
+                           StandDose[j] <- doseGrid[j] / refDoseBeta
                            betaW[j] <- E0 + (Emax - E0) * betafun *
                                StandDose[j]^delta1 * (1 - StandDose[j])^delta2
                        }
@@ -1871,7 +1977,7 @@ DualEndpointBeta <- function(E0,
     start@sample <- c(start@sample,
                       "betaW")
     newInits <- list()
-    newModelspecs <- list(refDose=refDose)
+    newModelspecs <- list(refDoseBeta=refDoseBeta)
 
     ## for E0:
     if(! start@useFixed[["E0"]])
@@ -1973,13 +2079,13 @@ DualEndpointBeta <- function(E0,
                       Emax=Emax,
                       delta1=delta1,
                       mode=mode,
-                      refDose=refDose)
+                      refDoseBeta=refDoseBeta)
 }
 validObject(DualEndpointBeta(E0=10,
                              Emax=50,
                              delta1=c(1, 5),
                              mode=c(3, 10),
-                             refDose=10,
+                             refDoseBeta=10,
                              mu=c(0, 1),
                              Sigma=diag(2),
                              sigma2W=1,
@@ -2006,7 +2112,7 @@ validObject(DualEndpointBeta(E0=10,
 ##' @slot E0 either a fixed number or the two uniform distribution parameters
 ##' @slot Emax either a fixed number or the two uniform distribution parameters
 ##' @slot ED50 either a fixed number or the two uniform distribution parameters
-##' @slot refDose the reference dose \eqn{x^{*}}
+##' @slot refDoseEmax the reference dose \eqn{x^{*}}
 ##'
 ##' @example examples/Model-class-DualEndpointEmax.R
 ##' @export
@@ -2016,11 +2122,11 @@ validObject(DualEndpointBeta(E0=10,
              representation(E0="numeric",
                             Emax="numeric",
                             ED50="numeric",
-                            refDose="numeric"),
+                            refDoseEmax="numeric"),
              prototype(E0=c(0, 100),
                        Emax=c(0, 500),
                        ED50=c(0,500),
-                       refDose=1000,
+                       refDoseEmax=1000,
                        useFixed=
                            list(sigma2W=TRUE,
                                 rho=TRUE,
@@ -2050,9 +2156,9 @@ validObject(DualEndpointBeta(E0=10,
                          }
                      }
 
-                     ## check the refDose
-                     o$check(object@refDose > 0,
-                             "refDose must be positive")
+                     ## check the refDoseEmax
+                     o$check(object@refDoseEmax > 0,
+                             "refDoseEmax must be positive")
 
                      o$result()
                  })
@@ -2063,7 +2169,7 @@ validObject(.DualEndpointEmax())
 ##' @param E0 see \code{\linkS4class{DualEndpointEmax}}
 ##' @param Emax see \code{\linkS4class{DualEndpointEmax}}
 ##' @param ED50 see \code{\linkS4class{DualEndpointEmax}}
-##' @param refDose see \code{\linkS4class{DualEndpointEmax}}
+##' @param refDoseEmax see \code{\linkS4class{DualEndpointEmax}}
 ##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
 ##' @return the \code{\linkS4class{DualEndpointEmax}} object
 ##'
@@ -2072,7 +2178,7 @@ validObject(.DualEndpointEmax())
 DualEndpointEmax <- function(E0,
                              Emax,
                              ED50,
-                             refDose,
+                             refDoseEmax,
                              ...)
 {
     ## call the initialize function from DualEndpoint
@@ -2101,7 +2207,7 @@ DualEndpointEmax <- function(E0,
 
                        for (j in 1:nGrid)
                        {
-                           StandDose[j] <- doseGrid[j] / refDose
+                           StandDose[j] <- doseGrid[j] / refDoseEmax
                            betaW[j] <- E0 + (Emax - E0) * StandDose[j] /
                                             (ED50 + StandDose[j])
                        }
@@ -2112,7 +2218,7 @@ DualEndpointEmax <- function(E0,
     start@sample <- c(start@sample,
                       "betaW")
     newInits <- list()
-    newModelspecs <- list(refDose=refDose)
+    newModelspecs <- list(refDoseEmax=refDoseEmax)
 
     ## for E0:
     if(! start@useFixed[["E0"]])
@@ -2195,12 +2301,12 @@ DualEndpointEmax <- function(E0,
                       E0=E0,
                       Emax=Emax,
                       ED50=ED50,
-                      refDose=refDose)
+                      refDoseEmax=refDoseEmax)
 }
 validObject(DualEndpointEmax(E0=10,
                              Emax=50,
                              ED50=20,
-                             refDose=10,
+                             refDoseEmax=10,
                              mu=c(0, 1),
                              Sigma=diag(2),
                              sigma2W=1,

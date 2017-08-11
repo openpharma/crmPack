@@ -45,3 +45,10 @@ doseRecommendation <- nextBest(myNextBest,
                                model=model,
                                data=data)
 
+## joint plot
+print(doseRecommendation$plot)
+
+## show customization of single plot
+variant1 <- doseRecommendation$singlePlots$plot1 + xlim(0, 20)
+print(variant1)
+

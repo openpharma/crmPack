@@ -43,7 +43,9 @@
 ##' @param \dots possible additional arguments without method dispatch
 ##' @return a list with the next best dose (element \code{value})
 ##' on the grid defined in \code{data}, and a plot depicting this recommendation
-##' (element \code{plot}). Also additional list elements describing the outcome
+##' (element \code{plot}). In case of multiple plots also an element \code{singlePlots}
+##' is included which returns the list of single plots, which allows for further
+##' customization of these. Also additional list elements describing the outcome
 ##' of the rule can be contained.
 ##'
 ##' @export
@@ -303,6 +305,8 @@ setMethod("nextBest",
               ## return value and plot
               return(list(value=ret,
                           plot=plotJoint,
+                          singlePlots=list(plot1=plot1,
+                                           plot2=plot2),
                           probs=cbind(dose=data@doseGrid,
                                       target=probTarget,
                                       overdose=probOverdose)))
@@ -646,6 +650,8 @@ setMethod("nextBest",
               ## return value and plot
               return(list(value=ret,
                           plot=plotJoint,
+                          singlePlots=list(plot1=plot1,
+                                          plot2=plot2),
                           probs=cbind(dose=data@doseGrid,
                                       target=probTarget,
                                       overdose=probOverdose)))

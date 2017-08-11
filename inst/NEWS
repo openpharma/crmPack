@@ -1,4 +1,23 @@
+Version 0.2.4
+--------------------------------------------------------------------------------
 
+New features:
+
+* In case of multiple nextBest plots these are now also returned as original plots
+  in the list singlePlots, to allow for further customization, before jointly plotting them. 
+* ProbitLogNormal: Now also this model allows for a reference dose and a log transformation
+  of the (standardized) dose. This can be specified with options refDose and useLogDose.
+* DualEndpoint: Same additional options as for ProbitLogNormal are now available for the
+  DualEndpoint models. As a consequence, the parameter "refDose" for class 
+  DualEndpointBeta needed to be renamed to "refDoseBeta", and the parameter "refDose" for
+  class DualEndpointEmax renamed to "refDoseEmax".
+
+
+Bugfixes:
+
+* documentation: in the DualEndpoint description fixed the \left problem in the
+  formula 
+  
 Version 0.2.3
 --------------------------------------------------------------------------------
 
