@@ -11,6 +11,9 @@ BUGFIXES:
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
+- add warning if the MinimalInformative prior or similar return a prior variance
+  that is very low (to prevent undeliberately strong priors!)
+
 - add a customized simulation summary function for the dual endpoint models,
   which also reports the frequency of simulated trials selecting the correct OBD
 
@@ -38,7 +41,8 @@ NEW FEATURES:
 
 - add slide production with ReporteRs package examples (to demo folder?)
 
-- be able to run simulations on a cluster
+- be able to run simulations on a cluster: use the BatchJobs package that is installed
+  on the new Roche HPC - potentially as different fork of the package??
 
 - production of Word output tables from simulation summaries
 
