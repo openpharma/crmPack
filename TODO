@@ -7,19 +7,6 @@ BUGFIXES:
   recommended contiguously and break after e.g. default 10000 times (can be option
   in examine function) to avoid infinite loop and issue a corresponding warning
   if this condition is met.
-
-- As reported from YJ Choi, the code below would fail:
-    myDose <- c(rep(0.030, 6), rep(0.050, 3), rep(0.075, 4), rep(0.1, 9), rep(0.15, 7))
-    doseGrid <- seq(from = .025, to = .15, by = .005)
-    mydata <- Data(x = myDose, y = c(rep(0, 6+3+4), 1, rep(0, 8), 1, 1, rep(0, 5)), 
-                   doseGrid = doseGrid)
-  This is because of the %in% function that we use to check (in .Data())   
-  all(myDose %in% doseGrid)
-  A fix could be to use instead %~% defined below:
-    `%~%` <- function(x,y) sapply(x, function(.x) {
-    any(sapply(y, function(.y) isTRUE(all.equal(.x, .y, tolerance=1e-10))))
-    })
-    all(myDose %~% doseGrid)
   
 ----------------------------------------------------------------
 IMPROVEMENTS:

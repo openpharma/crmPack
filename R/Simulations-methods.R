@@ -400,7 +400,7 @@ setMethod("summary",
               doseMostSelected <-
                   as.numeric(names(which.max(table(doseSelected))))
               xMostSelected <-
-                  match(doseMostSelected,
+                  matchTolerance(doseMostSelected,
                         table=doseGrid)
 
               ## observed toxicity rate at dose most often selected
@@ -503,7 +503,7 @@ setMethod("summary",
 
               ## dose level most often selected as MTD
               xMostSelected <-
-                  match(start@doseMostSelected,
+                  matchTolerance(start@doseMostSelected,
                         table=doseGrid)
 
               ## fitted toxicity rate at dose most often selected
@@ -583,7 +583,7 @@ setMethod("summary",
 
               ## dose level most often selected as MTD
               xMostSelected <-
-                  match(start@doseMostSelected,
+                  matchTolerance(start@doseMostSelected,
                         table=doseGrid)
 
               ## fitted biomarker level at dose most often selected
@@ -1325,7 +1325,7 @@ setMethod("summary",
               #doseRec <- doseMostSelected
               
               xMostSelected <-
-                match(doseMostSelected,
+                matchTolerance(doseMostSelected,
                       table=doseGrid)
               
               ## observed toxicity rate at dose most often selected
@@ -2052,7 +2052,7 @@ setMethod("summary",
               
               ## ## dose level most often selected as MTD (TDtargetEnd of Trial)
               xMostSelected <-
-                match(start@doseMostSelected,
+                matchTolerance(start@doseMostSelected,
                       table=doseGrid)
               
               ##check if true Eff is a function

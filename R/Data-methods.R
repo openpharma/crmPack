@@ -244,7 +244,7 @@ setMethod("update",
                         all(y %in% c(0, 1)))
 
               ## which grid level is the dose?
-              gridLevel <- match(x, object@doseGrid)
+              gridLevel <- matchTolerance(x, object@doseGrid)
 
               ## add it to the data
               if(is.na(gridLevel))

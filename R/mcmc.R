@@ -598,7 +598,7 @@ setMethod("mcmc",
                   w1<-c(thismodel@Eff,getEff(data)$wNoDLE)
                   x1<-c(thismodel@Effdose,getEff(data)$xNoDLE)
                 }
-              x1Level <- match(x1,data@doseGrid)
+              x1Level <- matchTolerance(x1,data@doseGrid)
               ##betaW is constant, the average of the efficacy values
               betaW <- rep(mean(w1), data@nGrid)
               ##sigma2betaW use fixed value or prior mean

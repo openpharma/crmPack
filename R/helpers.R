@@ -17,6 +17,36 @@
 #####################################################################################
 
 
+##' Helper function for value matching with tolerance
+##'
+##' This is a modified version of \code{match} that supports tolerance.
+##'
+##' @param x the values to be matched
+##' @param table the values to be matched against
+##' @return A vector of the same length as \code{x}
+##'
+##' @export
+##' @keywords programming
+##' @example examples/matching-tolerance.R
+matchTolerance <- function(x, table) 
+{
+  as.integer(sapply(x, function(.x) {
+    which(sapply(table, function(.table) isTRUE(all.equal(.x, .table, 
+                                                          tolerance=1e-10,
+                                                          check.names=FALSE,
+                                                          check.attributes=FALSE))))[1]
+  }))
+}
+
+##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
+##' @export
+`%~%` <- function(x, table) 
+{
+  ! is.na(matchTolerance(x=x, table=table))
+}
+
+
+
 ##' Helper function to join two function bodies
 ##'
 ##' @param body1 first body

@@ -1,10 +1,18 @@
 Version 0.2.5
 --------------------------------------------------------------------------------
 
+New features:
+
+* matching of doses with the dose grid now includes a tolerance of 1e-10, in order
+  to make it more user-friendly (thanks to YJ Choi and Giuseppe for investigating)
+
 Bugfixes:
 
 * documentation: 
   - minor fix for alpha1 description in LogisticLogNormal-class
+  
+* minor fix on scale_colour_manual import from ggplot2 reported by R-Core
+
 
 Version 0.2.4
 --------------------------------------------------------------------------------

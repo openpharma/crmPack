@@ -58,8 +58,8 @@
 
                      o$check(is.scalar(object@startingDose),
                              "startingDose must be scalar")
-                     o$check(object@startingDose %in% object@data@doseGrid,
-                             "startingDose must be included in data@doseGrid")
+                     o$check(object@startingDose %~% object@data@doseGrid,
+                             "startingDose must be included in data@doseGrid (tolerance 1e-10)")
 
                      o$result()
                  })

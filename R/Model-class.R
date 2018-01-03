@@ -383,8 +383,8 @@ validObject(.ProbitLogNormal())
 ##'
 ##' @param mu the prior mean vector
 ##' @param Sigma the prior covariance matrix
-##' @slot refDose the reference dose \eqn{x^{*}}, default 1 (no standardization)
-##' @slot useLogDose should the log of (standardized) dose be used? (not default)
+##' @param refDose the reference dose \eqn{x^{*}}, default 1 (no standardization)
+##' @param useLogDose should the log of (standardized) dose be used? (not default)
 ##' @return the \code{\linkS4class{ProbitLogNormal}} object
 ##'
 ##' @export
@@ -3576,7 +3576,7 @@ EffFlexi <- function(Eff,
       x1<-c(Effdose,getEff(data)$xNoDLE)
     }
   ## Match dose levels in x1 with the all dose levels for evaluations
-  x1Level <- match(x1,data@doseGrid)
+  x1Level <- matchTolerance(x1,data@doseGrid)
   smooth<-match.arg(smooth)
   useRW1<- smooth == "RW1"
   useFixed<-list()
@@ -3621,10 +3621,10 @@ EffFlexi <- function(Eff,
             ExpEff=function(dose,data,Effsamples){
               ##Find the ExpEff with a given dose level
               ##Check if given dose is in doseGrid
-              DoseInGrid<-!is.na(match(dose,data@doseGrid))
+              DoseInGrid<-!is.na(matchTolerance(dose,data@doseGrid))
               if (DoseInGrid==TRUE){
                 ##Find which dose is this in the dose Grid
-                EIx<-which(dose==data@doseGrid)
+                EIx<-matchTolerance(dose,data@doseGrid)
                 ##Return corresponding expected efficacy values from mcmc samples
                 return(Effsamples@data$ExpEff[,EIx])} else {##if dose not in doseGrid do linear Interploation
                   ## check if this dose is within doseGrid

@@ -750,7 +750,7 @@ setMethod("maxDose",
 
                   ## what dose level (index) has the highest dose
                   ## so far?
-                  lastDoseLevel <- match(max(data@x),
+                  lastDoseLevel <- matchTolerance(max(data@x),
                                          data@part1Ladder)
 
                   ## determine the next maximum dose
@@ -2100,6 +2100,7 @@ setMethod("nextBest",
 ##' 
 ##' @example examples/Rules-method-nextbest_MaxGain.R
 ##' 
+##' @importFrom ggplot2 scale_colour_manual
 ##' @export
 ##' @keywords methods
 setMethod("nextBest",
@@ -2261,7 +2262,7 @@ setMethod("nextBest",
                           ))
               
               plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
-                ggplot2:::scale_colour_manual(name="curves",values=c("blue","green3","red"))+
+                ggplot2::scale_colour_manual(name="curves",values=c("blue","green3","red"))+
                 xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
                 ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
               

@@ -120,8 +120,8 @@ validObject(.GeneralData())
                                "There must be only one dose level, other than placebo, per cohort. In addition a cohort with only placebo is not allowed")
                      }
                      
-                     o$check(all(object@x %in% object@doseGrid),
-                             "dose values in x must be from doseGrid")
+                     o$check(all(object@x %~% object@doseGrid),
+                             "dose values in x must be from doseGrid (tolerance 1e-10)")
                      o$check(! is.unsorted(object@doseGrid,
                                            strictly=TRUE),
                              "doseGrid must be sorted and without duplicate values")
@@ -130,9 +130,12 @@ validObject(.GeneralData())
                                  paste(thisSlot, "must have length nObs"))
                      o$check(identical(object@nGrid, length(object@doseGrid)),
                              "doseGrid must have length nGrid")
-                     o$check(identical(object@x,
-                                       object@doseGrid[object@xLevel]),
-                             "x must be doseGrid[xLevel]")
+                     o$check(all.equal(object@x,
+                                       object@doseGrid[object@xLevel],
+                                       tolerance=1e-10,
+                                       check.names=FALSE,
+                                       check.attributes=FALSE),
+                             "x must be doseGrid[xLevel] (tolerance 1e-10)")
 
                      o$result()
                  })
@@ -196,7 +199,7 @@ Data <- function(x=numeric(),
                  doseGrid=doseGrid,
                  nObs=length(x),
                  nGrid=length(doseGrid),
-                 xLevel=match(x=x, table=doseGrid),
+                 xLevel=matchTolerance(x=x, table=doseGrid),
                  placebo=placebo)
     return(ret)
 }
