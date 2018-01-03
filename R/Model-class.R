@@ -198,7 +198,7 @@ validObject(.Model())
 ##' because the non-linearity of the exp transformation. The log-normal
 ##' distribution on Wikipedia gives the formula for computing the prior mean of
 ##' exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
-##' paper. alpha1 is identical to \eqn{\log(\beta)} above and equals the beta
+##' paper. alpha1 is identical to \eqn{\beta} above and equals the beta
 ##' in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
 ##' between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
 ##' log-normal distribution in the LogisticLogNormal model in order to ensure
