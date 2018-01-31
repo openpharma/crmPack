@@ -336,62 +336,8 @@ setMethod("mcmc",
               callNextMethod(data, model, options, fromPrior=fromPrior, ...)
             })
 
-## --------------------------------------------------
-## The fast method for the LogisticNormal class
-## --------------------------------------------------
-
-##' @describeIn mcmc The fast method for the LogisticNormal class
-##'
-##' @importFrom BayesLogit logit
-##' @example examples/mcmc.R
-setMethod("mcmc",
-          signature=
-          signature(data="Data",
-                    model="LogisticNormal",
-                    options="McmcOptions"),
-          def=
-          function(data, model, options,
-                   verbose=FALSE,
-                   ...){
-
-              ## decide whether we sample from the prior or not
-              fromPrior <- data@nObs == 0L
-
-              if(fromPrior)
-              {
-                  ## sample from the bivariate normal prior for theta
-                  tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
-                                          mean=model@mean,
-                                          sigma=model@cov)
-                  samples <- list(alpha0=tmp[, 1],
-                                  alpha1=tmp[, 2])
-              } else {
-
-                  ## set up design matrix
-                  X <- cbind(1, log(data@x / model@refDose))
-
-                  ## use fast special sampler here
-                  initRes <- BayesLogit::logit(y=data@y,
-                                               X=X,
-                                               m0=model@mean,
-                                               P0=model@prec,
-                                               samp=sampleSize(options),
-                                               burn=options@burnin)
-
-                  ## then form the samples list
-                  samples <- list(alpha0=initRes$beta[,1],
-                                  alpha1=initRes$beta[,2])
-              }
-
-              ## form a Samples object for return:
-              ret <- Samples(data=samples,
-                             options=options)
-
-              return(ret)
-          })
-
 ## ----------------------------------------------------------------------------------
-## Obtain postrior samples for the two-parameter logistic pseudo DLE model
+## Obtain posterior samples for the two-parameter logistic pseudo DLE model
 ## -------------------------------------------------------------------------------
 
 

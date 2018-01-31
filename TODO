@@ -8,6 +8,8 @@ BUGFIXES:
   in examine function) to avoid infinite loop and issue a corresponding warning
   if this condition is met.
   
+- remove dependency on BayesLogit - in mcmc.R  
+  
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
