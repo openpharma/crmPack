@@ -7,9 +7,7 @@ BUGFIXES:
   recommended contiguously and break after e.g. default 10000 times (can be option
   in examine function) to avoid infinite loop and issue a corresponding warning
   if this condition is met.
-  
-- remove dependency on BayesLogit - in mcmc.R  
-  
+
 ----------------------------------------------------------------
 IMPROVEMENTS:
 

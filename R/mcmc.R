@@ -351,7 +351,7 @@ setMethod("mcmc",
 ##' Williamson (1998) is used.
 ##' 
 ##' @importFrom mvtnorm rmvnorm
-##' @importFrom BayesLogit logit
+##' @importFrom MCMCpack MCMClogit
 ##' @example examples/mcmc-LogisticIndepBeta.R
 setMethod("mcmc",
           signature=
@@ -394,9 +394,7 @@ setMethod("mcmc",
                                 phi2=tmp[, 2])
               } else {
                 
-                ## set up design matrix
-                X <- cbind(1, log(data@x))
-                
+               
                 weights<-rep(1,length(data@y))
                 ##probabilities of risk of DLE at all dose levels
                 pi<-(data@y)/weights
@@ -416,16 +414,26 @@ setMethod("mcmc",
              
                 ## todo: to discuss - is this correct?
                 ## use fast special sampler here
-                initRes <- BayesLogit::logit(y=data@y,
-                                             X=X,
-                                             m0=c(priorphi1,priorphi2),
-                                             P0=precision,
-                                             samp=sampleSize(options),
-                                             burn=options@burnin)
+                ## set up design matrix
+                # X <- cbind(1, log(data@x))
+                # initRes <- BayesLogit::logit(y=data@y,
+                #                              X=X,
+                #                              m0=c(priorphi1,priorphi2),
+                #                              P0=precision,
+                #                              samp=sampleSize(options),
+                #                              burn=options@burnin)
+                tempData <- data.frame(y=data@y,
+                                       logx=log(data@x))
+                initRes <- MCMCpack::MCMClogit(formula = y ~ 1 + logx,
+                                               data=tempData,
+                                               b0=c(priorphi1,priorphi2), BO=precision, 
+                                               mcmc=options@iterations - options@burnin,
+                                               burnin=options@burnin,
+                                               thin=options@step)
                 
                 ## then form the samples list
-                samples <- list(phi1=initRes$beta[,1],
-                                phi2=initRes$beta[,2])
+                samples <- list(phi1=initRes[,1],
+                                phi2=initRes[,2])
               }
               
               ## form a Samples object for return:

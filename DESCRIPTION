@@ -30,7 +30,7 @@ Imports:
     GenSA,
     mvtnorm,
     parallel,
-    BayesLogit,
+    MCMCpack,
     rjags,
     utils,
     tools,
