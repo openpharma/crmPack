@@ -336,6 +336,115 @@ setMethod("mcmc",
               callNextMethod(data, model, options, fromPrior=fromPrior, ...)
             })
 
+
+## --------------------------------------------------
+## Replacement for BayesLogit::logit
+## --------------------------------------------------
+
+#' Do MCMC sampling for Bayesian logistic regression model
+#'
+#' @param y 0/1 vector of responses
+#' @param X design matrix
+#' @param m0 prior mean vector
+#' @param P0 precision matrix
+#' @param options McmcOptions object
+#'
+#' @importFrom rjags jags.model jags.samples
+#' @return the matrix of samples (samples x parameters)
+#' @keywords internal
+myBayesLogit <- function(y,  
+                         X,  
+                         m0,  
+                         P0,  
+                         options)  
+{
+  ## assertions
+  p <- length(m0)
+  nObs <- length(y)
+  stopifnot(is.vector(y),
+            all(y %in% c(0, 1)),
+            is.matrix(P0),
+            identical(dim(P0), c(p, p)),
+            is.matrix(X),
+            identical(dim(X), c(nObs, p)),
+            is(options, "McmcOptions"))
+  
+  ## get or set the seed
+  rSeed <- try(get(".Random.seed", envir = .GlobalEnv),
+               silent=TRUE)
+  if(is(rSeed, "try-error"))
+  {
+    set.seed(floor(runif(n=1, min=0, max=1e4)))
+    rSeed <- get(".Random.seed", envir = .GlobalEnv)
+  }
+  ## .Random.seed contains two leading integers where the second
+  ## gives the position in the following 624 long vector (see
+  ## ?set.seed). Take the current position and ensure positivity
+  rSeed <- abs(rSeed[-c(1:2)][rSeed[2]])
+  
+  ## get a temp directory
+  bugsTempDir <- file.path(tempdir(), "bugs")
+  ## don't warn, because the temp dir often exists (which is OK)
+  dir.create(bugsTempDir, showWarnings=FALSE)
+  
+  ## build the model according to whether we sample from prior 
+  ## or not:
+  bugsModel <- function()
+  {
+    for (i in 1:nObs)
+    {
+      y[i] ~ dbern(p[i])
+      logit(p[i]) <- mu[i]
+    }
+    
+    mu <- X[,] %*% beta
+    
+    ## the multivariate normal prior on the coefficients
+    beta ~ dmnorm(priorMean[], priorPrec[,])
+  }
+  
+  ## write the model file into it
+  modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
+  writeModel(bugsModel, modelFileName)
+  
+  jagsModel <- rjags::jags.model(modelFileName,
+                                 data = list('X' = X,
+                                             'y' = y,
+                                             'nObs' = nObs,
+                                             priorMean = m0,
+                                             priorPrec = P0),
+                                 quiet=TRUE,
+                                 inits=
+                                   ## add the RNG seed to the inits list:
+                                   ## (use Mersenne Twister as per R
+                                   ## default)
+                                   list(.RNG.name="base::Mersenne-Twister",
+                                        .RNG.seed=rSeed),
+                                 n.chains = 1,
+                                 n.adapt = 0)
+  ## burn in
+  update(jagsModel,
+         n.iter=options@burnin,
+         progress.bar="none")
+  
+  ## samples
+  samplesCode <- "samples <-
+    rjags::jags.samples(model=jagsModel,
+                        variable.names='beta',
+                        n.iter=
+                          (options@iterations - options@burnin),
+                        thin=options@step,
+                        progress.bar='none')"
+  
+  ## this is necessary because some outputs
+  ## are written directly from the JAGS compiled
+  ## code to the outstream
+  capture.output(eval(parse(text=samplesCode)))
+  
+  return(t(samples$beta[, , 1L]))
+}
+
+
 ## ----------------------------------------------------------------------------------
 ## Obtain posterior samples for the two-parameter logistic pseudo DLE model
 ## -------------------------------------------------------------------------------
@@ -351,7 +460,6 @@ setMethod("mcmc",
 ##' Williamson (1998) is used.
 ##' 
 ##' @importFrom mvtnorm rmvnorm
-##' @importFrom MCMCpack MCMClogit
 ##' @example examples/mcmc-LogisticIndepBeta.R
 setMethod("mcmc",
           signature=
@@ -415,21 +523,18 @@ setMethod("mcmc",
                 ## todo: to discuss - is this correct?
                 ## use fast special sampler here
                 ## set up design matrix
-                # X <- cbind(1, log(data@x))
+                X <- cbind(1, log(data@x))
                 # initRes <- BayesLogit::logit(y=data@y,
                 #                              X=X,
                 #                              m0=c(priorphi1,priorphi2),
                 #                              P0=precision,
                 #                              samp=sampleSize(options),
                 #                              burn=options@burnin)
-                tempData <- data.frame(y=data@y,
-                                       logx=log(data@x))
-                initRes <- MCMCpack::MCMClogit(formula = y ~ 1 + logx,
-                                               data=tempData,
-                                               b0=c(priorphi1,priorphi2), BO=precision, 
-                                               mcmc=options@iterations - options@burnin,
-                                               burnin=options@burnin,
-                                               thin=options@step)
+                initRes <- myBayesLogit(y=data@y,
+                                        X=X,
+                                        m0=c(priorphi1,priorphi2),
+                                        P0=precision,
+                                        options=options)
                 
                 ## then form the samples list
                 samples <- list(phi1=initRes[,1],

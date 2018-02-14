@@ -30,7 +30,6 @@ Imports:
     GenSA,
     mvtnorm,
     parallel,
-    MCMCpack,
     rjags,
     utils,
     tools,

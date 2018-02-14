@@ -3,7 +3,7 @@ Version 0.2.6
 
 Bugfixes:
 
-* Replaced BayesLogit dependency by MCMCPack, since BayesLogit was taken off CRAN.
+* Replaced BayesLogit dependency by JAGS code, since BayesLogit was taken off CRAN.
 
 
 Version 0.2.5
