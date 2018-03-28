@@ -665,9 +665,10 @@ LogisticNormal <- function (mean,
                             cov,
                             refDose)
 {
+  prec <- solve(cov)
     .LogisticNormal(mean=mean,
                     cov=cov,
-                    prec=solve(cov),
+                    prec=prec,
                     refDose=refDose,
                     datamodel=
                         function(){

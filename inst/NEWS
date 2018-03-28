@@ -1,9 +1,19 @@
+Version 0.2.7
+--------------------------------------------------------------------------------
+
+Bugfixes:
+
+* LogisticNormal now works again - "prec" was not found before.
+
+
 Version 0.2.6
 --------------------------------------------------------------------------------
 
 Bugfixes:
 
 * Replaced BayesLogit dependency by JAGS code, since BayesLogit was taken off CRAN.
+
+* Speed up one example to pass CRAN check.
 
 
 Version 0.2.5

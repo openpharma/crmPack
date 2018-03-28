@@ -1,0 +1,45 @@
+JSS 2762: 	Daniel Sabanes Bove
+
+Model-based Dose Escalation Designs in R with crmPack
+---------------------------------------------------------
+For further instructions on JSS style requirements please see the Style Files (in particular section 2.1 Style Checklist of jss.pdf) and FAQ at http://www.jstatsoft.org/about/submissions.
+
+For further examples please see RECENT JSS papers.
+---------------------------------------------------------
+
+Manuscript style comments:
+
+o Please only introduce an abbreviation within the abstract if it is needed again within the abstract. Otherwise, please introduce it within the body of the manuscript.
+
+o For the code layout in R publications, we typically distinguish input/output using Sinput/Soutput (or equivalently CodeInput/CodeOutput). Unless there are special reasons to format it differently, the input should use the text width (up to 76 or 77 characters) and be indented by two spaces, e.g.,
+
+begin{Sinput}
+R> example_model <- lm(response ~ variable1 + variable2 + variable3, 
++    weights = w, data = mydata)
+\end{Sinput}
+
+o If using "e.g." and "i.e." add a comma after the period to keep LaTeX from interpreting them as the end of a sentence, i.e.: "e.g., " and "i.e., ".
+
+o In all cases, code input/output must fit within the normal text width of the manuscript.  Thus, code input should have appropriate line breaks and code output should preferably be generated with a suitable width (or otherwise edited).
+
+o Do not use additional formatting for specific words unless explicitly required by the JSS style guide, e.g.,
+
+o As a reminder, please make sure that:
+	- \proglang, \pkg and \code have been used for highlighting throughout the paper (including titles and references), except where explicitly escaped.
+
+
+References:
+
+
+
+o As a reminder,
+	- Please make sure that all software packages are \cite{}'d properly.
+
+	- All references should be in title style.
+
+	- See FAQ for specific reference instructions.
+
+
+Code:
+
+o As a reminder, please make sure that the files needed to replicate all code/examples within the manuscript are included in a standalone replication script.
