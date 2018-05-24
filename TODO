@@ -13,6 +13,12 @@ BUGFIXES:
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
+-   not use "Depends" in DESCRIPTION, as it can cause name clashes, and poor interaction with other packages. Use "Imports" instead.
+- omit "Date" in DESCRIPTION. It is not required and it gets invalid quite often. A build date will     be added to the package when you perform `R CMD build` on it.
+- add a "URL" field to DESCRIPTION. It helps users find information about your package online. If your package does not have a homepage, add an URL to GitHub, or the CRAN package page.
+- Add a "BugReports" field to DESCRIPTION, and point it to a bug tracker. Many online code hosting
+    services provide bug trackers for free, https://github.com, https://gitlab.com, etc.
+
 - include option to specify how many cores should be used when parallel=TRUE is used 
 
 - add warning if the MinimalInformative prior or similar return a prior variance
