@@ -63,10 +63,10 @@ setGeneric("mcmc",
 ## The standard method
 ## --------------------------------------------------
 
-##' @describeIn mcmc Standard method which uses JAGS/BUGS
+##' @describeIn mcmc Standard method which uses JAGS
 ##'
-##' @param program the program which shall be used: either \dQuote{JAGS} (default),
-##' \dQuote{OpenBUGS} or \dQuote{WinBUGS}
+##' @param program the program which shall be used: currently only \dQuote{JAGS}
+##' is supported
 ##' @param verbose shall progress bar and messages be printed? (not default)
 ##' @param fromPrior sample from the prior only? Defaults to checking if nObs is
 ##' 0. For some models it might be necessary to specify it manually here though.
@@ -82,7 +82,7 @@ setMethod("mcmc",
                     options="McmcOptions"),
           def=
           function(data, model, options,
-                   program=c("JAGS", "OpenBUGS", "WinBUGS"),
+                   program=c("JAGS"),
                    verbose=FALSE,
                    fromPrior=data@nObs == 0L,
                    ...){
@@ -260,57 +260,7 @@ setMethod("mcmc",
                                     x
                                 })
 
-              } else {
-                  ## here we use OpenBUGS or WinBUGS.
-                  require("R2WinBUGS")
-
-                  ## Obtain MCMC samples:
-                  bugsResult <-
-                      try(R2WinBUGS::bugs(data=
-                                          ## combine the *required* data (as list)
-                                          ## with the model specs
-                                          if(fromPrior) modelspecs else
-                                          c(requiredData,
-                                            modelspecs),
-                                          inits=
-                                          ## currently only have one chain
-                                          ## in this inits list
-                                          list(inits),
-                                          parameters.to.save=
-                                          ## which parameters should be saved?
-                                          model@sample,
-                                          ## don't save DIC because we also want
-                                          ## to sample from prior without any
-                                          ## data
-                                          DIC=FALSE,
-                                          model=
-                                          ## supply the model file
-                                          "bugsModel.txt",
-                                          working.directory=
-                                          ## and the working directory
-                                          bugsTempDir,
-                                          ## supply MCMC options
-                                          program=program,
-                                          n.burnin=options@burnin,
-                                          n.iter=options@iterations,
-                                          n.thin=options@step,
-                                          n.chains=1,
-                                          bugs.seed=2L),
-                          silent=TRUE)
-
-                  ## catch possible error here
-                  if(is(bugsResult, "try-error"))
-                  {
-                      ## give the log file output
-                      stop(paste(readLines(file.path(bugsTempDir, "log.txt")),
-                                 collapse="\n"))
-                  }
-
-                  ## extract the samples (really only save the parameters we wanted
-                  ## to sample)
-                  ret <- bugsResult$sims.list[model@sample]
-
-              }
+              } 
 
               ## form a Samples object for return
               ret <- Samples(data=ret,

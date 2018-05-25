@@ -923,6 +923,8 @@ setMethod("simulate",
 ##'
 ##' @param object the design (\code{\linkS4class{Design}} or
 ##' \code{\linkS4class{RuleDesign}} object) we want to examine
+##' @param maxNoIncrement maximum number of contiguous next doses at 0 
+##' DLTs that are the same as before, i.e. no increment (default to 100)
 ##' @param \dots additional arguments (see methods)
 ##'
 ##' @return The data frame
@@ -931,10 +933,14 @@ setMethod("simulate",
 ##' @keywords methods regression
 setGeneric("examine",
            def=
-           function(object, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("examine")
+           function(object, maxNoIncrement=100L, ...){
+             
+             ## check maxNoIncrement argument
+             stopifnot(is.scalar(maxNoIncrement) && maxNoIncrement > 0)  
+             
+             ## there should be no default method,
+             ## therefore just forward to next method!
+             standardGeneric("examine")
            },
            valueClass="data.frame")
 
@@ -950,7 +956,10 @@ setMethod("examine",
           signature=
               signature(object="Design"),
           def=
-              function(object, mcmcOptions=McmcOptions(), ...){
+              function(object, 
+                       maxNoIncrement,
+                       mcmcOptions=McmcOptions(), 
+                       ...){
 
                   ## start with the empty table
                   ret <- data.frame(dose=numeric(),
@@ -964,6 +973,10 @@ setMethod("examine",
 
                   ## are we finished and can stop?
                   stopit <- FALSE
+                  
+                  ## counter how many contiguous doses at 0 DLTs with 
+                  ## no increment
+                  noIncrementCounter <- 0L
 
                   ## what is the next dose to be used?
                   ## initialize with starting dose
@@ -1079,18 +1092,33 @@ setMethod("examine",
                       ## what is the difference to the previous dose?
                       doseDiff <- newDose - thisDose
                       
+                      ## update the counter for no increments of the dose
+                      if(doseDiff == 0)
+                      {
+                        noIncrementCounter <- noIncrementCounter + 1L
+                      } else {
+                        noIncrementCounter <- 0L
+                      }
+                      
                       ## would stopping rule be fulfilled already?
                       stopAlready <- resultsNoDLTs$stop
 
                       ## update dose
                       thisDose <- newDose
-
+                      
+                      ## too many times no increment?
+                      stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
+                      if(stopNoIncrement) 
+                        warning(paste("Stopping because", 
+                                      noIncrementCounter,
+                                      "times no increment vs. previous dose"))
+                      
                       ## check if we can stop:
                       ## either when we have reached the highest dose in the
                       ## next cohort, or when the stopping rule is already 
-                      ## fulfilled
+                      ## fulfilled, or when too many times no increment
                       stopit <- (thisDose >= max(object@data@doseGrid)) ||
-                        stopAlready
+                        stopAlready || stopNoIncrement
                   }
 
                   return(ret)
@@ -1104,7 +1132,9 @@ setMethod("examine",
           signature=
               signature(object="RuleDesign"),
           def=
-              function(object, ...){
+              function(object, 
+                       maxNoIncrement,
+                       ...){
 
                   ## start with the empty table
                   ret <- data.frame(dose=numeric(),
@@ -1118,6 +1148,10 @@ setMethod("examine",
 
                   ## are we finished and can stop?
                   stopit <- FALSE
+                  
+                  ## counter how many contiguous doses at 0 DLTs with 
+                  ## no increment
+                  noIncrementCounter <- 0L
 
                   ## what is the next dose to be used?
                   ## initialize with starting dose
@@ -1180,18 +1214,33 @@ setMethod("examine",
                       ## what is the difference to the previous dose?
                       doseDiff <- newDose - thisDose
                       
+                      ## update the counter for no increments of the dose
+                      if(doseDiff == 0)
+                      {
+                        noIncrementCounter <- noIncrementCounter + 1L
+                      } else {
+                        noIncrementCounter <- 0L
+                      }
+                      
                       ## would stopping rule be fulfilled already?
                       stopAlready <- resultsNoDLTs$stop
                       
                       ## update dose
                       thisDose <- newDose
                       
+                      ## too many times no increment?
+                      stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
+                      if(stopNoIncrement) 
+                        warning(paste("Stopping because", 
+                                      noIncrementCounter,
+                                      "times no increment vs. previous dose"))
+                      
                       ## check if we can stop:
                       ## either when we have reached the highest dose in the
                       ## next cohort, or when the stopping rule is already 
-                      ## fulfilled
+                      ## fulfilled, or when too many times no increment
                       stopit <- (thisDose >= max(object@data@doseGrid)) ||
-                        stopAlready
+                        stopAlready || stopNoIncrement
                   }
 
                   return(ret)

@@ -67,7 +67,7 @@ options(continue="  ")                  # use two blanks instead of "+" for
 
 Many models in \texttt{crmPack} rely on \href{http://mcmc-jags.sourceforge.net/}{JAGS}
 (please click on the link for going to the webpage of the project) for the
-internal MCMC computations. A WinBUGS installation is not required. 
+internal MCMC computations. WinBUGS is not required or supported anymore.
 
 \section{Getting started}
 \label{sec:getting-started}
@@ -464,11 +464,6 @@ The \texttt{mcmc} function takes the data object, the model and the MCMC
 options. By default, JAGS is used for obtaining the samples. Use the option
 \texttt{verbose=TRUE} to show a progress bar and detailed JAGS messages.
 
-You could specify \texttt{program="WinBUGS"} to use WinBUGS instead. This will
-dynamically try to load the \texttt{R}-package \texttt{R2WinBUGS} to interface
-with WinBUGS. Therefore you must have installed both WinBUGS and the R-package
-\texttt{R2WinBUGS} in order to use this option.
-
 Finally, it is good practice to check graphically that the Markov chain has
 really converged to the posterior distribution. To this end, \texttt{crmPack}
 provides an interface to the convenient \texttt{R}-package \texttt{ggmcmc}. With
@@ -527,9 +522,7 @@ DLTpostsamples <- mcmc(data=data3,model=DLTmodel,options=options)
 Similarly, \texttt{DLTpostsamples} now contains the posterior samples of the model parameters. 
 %Since an output message as seen from the above example will be display after each MCMC sampling when some observed data are involved, the \texttt{suppressMessages} function is used from now and throughout this document to avoid showing all of these message in this document 
 
-This \texttt{mcmc} function also takes the data object, model and the MCMC options. This is not using JAGS or \texttt{WinBUGS} but just using R for computation purpose. 
-%TODO: modify next sentence
-In addition, the  R-package \texttt{BayesLogit} is used for this function.
+This \texttt{mcmc} function also takes the data object, model and the MCMC options. This is not using JAGS but just R for the computations. 
 
 Under this \texttt{DLTmodel}, we will obtain samples of $\phi_1$ and $\phi_2$. Using what has been described earlier in this section , we can also look at the structure using function \texttt{str}, extracting model parameters samples with \texttt{get} and produce plots with \texttt{ggs\_traceplot} and \texttt{ggs\_autocorrelation} 
 for each of the model parameters.

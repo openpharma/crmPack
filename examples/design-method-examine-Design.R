@@ -46,5 +46,29 @@ set.seed(4235)
 # MCMC parameters are set to small values only to show this example. They should be
 # increased for a real case.
 options <- McmcOptions(burnin=10,step=1,samples=20)
-examine(design,options=options)
+examine(design,mcmcOptions=options)
   
+## example where examine stops because stopping rule already fulfilled
+myStopping4 <- StoppingMinPatients(nPatients=3)
+myStopping <- (myStopping1 & myStopping2) | myStopping4
+design <- Design(model=model,
+                 nextBest=myNextBest,
+                 stopping=myStopping,
+                 increments=myIncrements,
+                 cohortSize=mySize,
+                 data=emptydata,
+                 startingDose=3)
+examine(design,mcmcOptions=options)
+
+## example where examine stops because infinite looping
+myIncrements <- IncrementsRelative(intervals=c(0, 20),
+                                   increments=c(1, 0.00001))
+myStopping <- (myStopping1 & myStopping2) 
+design <- Design(model=model,
+                 nextBest=myNextBest,
+                 stopping=myStopping,
+                 increments=myIncrements,
+                 cohortSize=mySize,
+                 data=emptydata,
+                 startingDose=3)
+examine(design,mcmcOptions=options)

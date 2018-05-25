@@ -7,10 +7,31 @@ Bugfixes:
   initialization (instead of 1 before - but note that this did not have
   effect on erroneous simulations, due to option being set in Data class)
 
-* The "examine"" function also stops when the stopping rules are fulfilled 
+* The "examine" function also stops when the stopping rules are fulfilled 
   already in case of no DLTs occurring. This was not the case beforehand and 
   could lead to infinite looping (thanks to John Kirkpatrick for reporting 
   the bug)
+  
+* Removed RW2 warnings in "DualEndpointRW" - it seems to work nicely now 
+  (thanks to Charles Warne for reporting!)
+  
+* Removed WinBUGS since it was not used anyway (and paper does not describe
+  it)
+  
+
+New features:
+  
+* The "examine" function now counts the number of times the same dose is 
+  recommended contiguously and break after e.g. the default 100 times 
+  (can be specified in a new option of "examine") to further avoid infinite 
+  loops and issues a corresponding warning if this condition is met
+  
+* New "Increments" class "IncrementsNumDoseLevels" that works directly on
+  the number of dose levels in the dose grid that can be incremented to
+  from the current to the next cohort (thanks to John Kirkpatrick for the 
+  suggestion). This can for example be used in order to force the design 
+  not to skip any dose level when escalating.
+  
   
 
 Version 0.2.7

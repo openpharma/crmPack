@@ -359,6 +359,51 @@ IncrementsRelative <- function(intervals,
 }
 
 ## --------------------------------------------------
+## Increments control based on number of dose levels 
+## --------------------------------------------------
+
+##' Increments control based on number of dose levels
+##'
+##' @slot maxLevels scalar positive integer for the number of maximum 
+##' dose levels to increment for the next dose. It defaults to 1, 
+##' which means that no dose skipping is allowed - the next dose 
+##' can be maximum one level higher than the current dose.
+##' 
+##' @example examples/Rules-class-IncrementsNumDoseLevels.R
+##' @export
+##' @keywords classes
+.IncrementsNumDoseLevels <-
+  setClass(Class="IncrementsNumDoseLevels",
+           representation(maxLevels="integer"),
+           prototype(maxLevels=1L),
+           contains="Increments",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.scalar(object@maxLevels) && 
+                         is.integer(object@maxLevels) && 
+                         object@maxLevels > 0,
+                       "maxLevels must be scalar positive integer")
+               
+               o$result()
+             })
+validObject(.IncrementsNumDoseLevels())
+
+##' Initialization function for "IncrementsNumDoseLevels"
+##'
+##' @param maxLevels see \code{\linkS4class{IncrementsNumDoseLevels}}
+##' @return the \code{\linkS4class{IncrementsNumDoseLevels}} object
+##'
+##' @export
+##' @keywords methods
+IncrementsNumDoseLevels <- function(maxLevels=1)
+{
+  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels))
+}
+
+
+## --------------------------------------------------
 ## Increments control based on relative differences in intervals,
 ## with special rules for part 1 and beginning of part 2
 ## --------------------------------------------------

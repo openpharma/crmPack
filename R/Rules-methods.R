@@ -723,6 +723,35 @@ setMethod("maxDose",
 
 
 ## --------------------------------------------------
+## The maximum allowable number of dose levels method
+## --------------------------------------------------
+
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' maximum dose levels to increment for the next dose
+##' 
+##' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
+setMethod("maxDose",
+          signature=
+            signature(increments="IncrementsNumDoseLevels",
+                      data="Data"),
+          def=
+            function(increments, data, ...){
+              ## determine what was the level of the last dose
+              lastDoseLevel <- tail(data@xLevel, 1)
+              
+              ## determine the maximum next dose level
+              maxNextDoseLevel <- min(length(data@doseGrid),
+                                      lastDoseLevel + increments@maxLevels)
+              
+              ## so the maximum next dose is
+              ret <- data@doseGrid[maxNextDoseLevel]
+              
+              return(ret)
+            })
+
+
+
+## --------------------------------------------------
 ## The maximum allowable relative increments, with special rules for
 ## part 1 and beginning of part 2, method method
 ## --------------------------------------------------

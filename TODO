@@ -1,21 +1,10 @@
 BUGFIXES:
 
-- examine function:
-  Is that correct that also the check to see 'if there is no improvement in dose
-  over the last cohort' should be added
-  (Giuseppe's email) --> no, instead count number of times the same dose is 
-  recommended contiguously and break after e.g. default 10000 times (can be option
-  in examine function) to avoid infinite loop and issue a corresponding warning
-  if this condition is met.
-  
-- remove RW2 warnings - it seems to work nicely now.
+none
 
 ----------------------------------------------------------------
 IMPROVEMENTS:
 
--   not use "Depends" in DESCRIPTION, as it can cause name clashes, and poor interaction with other packages. Use "Imports" instead.
-- omit "Date" in DESCRIPTION. It is not required and it gets invalid quite often. A build date will     be added to the package when you perform `R CMD build` on it.
-- add a "URL" field to DESCRIPTION. It helps users find information about your package online. If your package does not have a homepage, add an URL to GitHub, or the CRAN package page.
 - Add a "BugReports" field to DESCRIPTION, and point it to a bug tracker. Many online code hosting
     services provide bug trackers for free, https://github.com, https://gitlab.com, etc.
 
@@ -43,8 +32,6 @@ request)
 - mixture prior: add documentation in vignette
 
 - allow different x values (doses) to be specified in simulate() to be passed to fit()
-
-- remove WinBUGS since not really used anyway
 
 ----------------------------------------------------------------
 NEW FEATURES:

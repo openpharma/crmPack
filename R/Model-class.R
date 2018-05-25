@@ -1581,8 +1581,7 @@ validObject(DualEndpoint(mu=c(0, 1),
 ##'
 ##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
 ##' dose-biomarker relationship \eqn{f(x)} is modelled by a non-parametric
-##' random-walk of first (RW1) or second order (RW2) (todo: warning: at the
-##' moment only the first order random walk produces useful results).
+##' random-walk of first (RW1) or second order (RW2).
 ##'
 ##' That means, for the RW1 we assume
 ##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim Normal(0, (x_{i} - x_{i-1}) \sigma^{2}_{\beta_{W}}),}
@@ -1679,11 +1678,6 @@ DualEndpointRW <- function(sigma2betaW,
     ## Find out RW choice
     smooth <- match.arg(smooth)
     useRW1 <- smooth == "RW1"
-
-    if(! useRW1)
-    {
-        warning("todo: Currently only the RW1 model produces useful results!")
-    }
 
     ## Find out which of the additional parameters are fixed
     for(parName in c("sigma2betaW"))
