@@ -19,6 +19,7 @@ Description: Implements a wide range of model-based dose
 Version: 0.2.8
 Copyright: F. Hoffmann-La Roche Ltd
 URL: https://CRAN.R-project.org/package=crmPack
+VignetteBuilder: knitr
 Depends:
     R (>= 3.0.0),
     ggplot2 (>= 2.0.0),
@@ -36,6 +37,7 @@ Imports:
     MASS
 Suggests:
     ggmcmc,
+    knitr,
     Rcpp,
     RcppArmadillo
 Collate:

@@ -32,6 +32,8 @@ New features:
   suggestion). This can for example be used in order to force the design 
   not to skip any dose level when escalating.
   
+* Included the JSS manuscript as a new vignette.
+  
   
 
 Version 0.2.7
