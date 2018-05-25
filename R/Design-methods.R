@@ -1208,6 +1208,10 @@ setMethod("examine",
                                  x=thisDose,
                                  y=rep(0, thisSize))
 
+                      ## what are the results if 0 DLTs?
+                      resultsNoDLTs <- subset(tail(ret, thisSize + 1),
+                                              dose==thisDose & DLTs==0)
+                      
                       ## what is the new dose then accordingly?
                       newDose <- as.numeric(resultsNoDLTs$nextDose)
                       
