@@ -1,3 +1,18 @@
+Version 0.2.8
+--------------------------------------------------------------------------------
+
+Bugfixes:
+
+* PLcohortSize now defaults to 0 placebo patients upon Design class 
+  initialization (instead of 1 before - but note that this did not have
+  effect on erroneous simulations, due to option being set in Data class)
+
+* The "examine"" function also stops when the stopping rules are fulfilled 
+  already in case of no DLTs occurring. This was not the case beforehand and 
+  could lead to infinite looping (thanks to John Kirkpatrick for reporting 
+  the bug)
+  
+
 Version 0.2.7
 --------------------------------------------------------------------------------
 

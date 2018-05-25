@@ -103,7 +103,8 @@ RuleDesign <- function(nextBest,
 ##' @slot increments how to control increments between dose levels,
 ##' an object of class \code{\linkS4class{Increments}}
 ##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
-##' an object of class \code{\linkS4class{CohortSize}}
+##' an object of class \code{\linkS4class{CohortSize}} (defaults to constant
+##' 0 placebo patients)
 ##'
 ##' @example examples/design-class-Design.R
 ##' @export
@@ -118,7 +119,7 @@ RuleDesign <- function(nextBest,
                        nextBest=.NextBestNCRM(),
                        stopping=.StoppingMinPatients(),
                        increments=.IncrementsRelative(),
-                       PLcohortSize=CohortSizeConst(1)),
+                       PLcohortSize=CohortSizeConst(0L)),
              contains=list("RuleDesign"))
 validObject(.Design())
 
@@ -137,7 +138,7 @@ validObject(.Design())
 Design <- function(model,
                    stopping,
                    increments,
-                   PLcohortSize=CohortSizeConst(1),
+                   PLcohortSize=CohortSizeConst(0L),
                    ...)
 {
     start <- RuleDesign(...)
@@ -257,7 +258,7 @@ ThreePlusThreeDesign <- function(doseGrid)
                      nextBest=.NextBestTDsamples(),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative(),
-                     PLcohortSize=CohortSizeConst(1)),
+                     PLcohortSize=CohortSizeConst(0L)),
            contains=list("RuleDesign"))
 
 validObject(.TDsamplesDesign())
@@ -272,7 +273,7 @@ validObject(.TDsamplesDesign())
 ##' 
 ##' @export
 ##' @keywords methods
-TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst(1),...){
+TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst(0L),...){
   start<-RuleDesign(...)
   .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments,PLcohortSize=PLcohortSize)
 }
@@ -307,7 +308,7 @@ TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst
                      nextBest=.NextBestTD(),
                      stopping=.StoppingMinPatients(),
                      increments=.IncrementsRelative(),
-                     PLcohortSize=CohortSizeConst(1)),
+                     PLcohortSize=CohortSizeConst(0L)),
            contains=list("RuleDesign"))
 
 validObject(.TDDesign())
@@ -326,7 +327,7 @@ validObject(.TDDesign())
 TDDesign<-function(model,
                    stopping,
                    increments,
-                   PLcohortSize=CohortSizeConst(1),
+                   PLcohortSize=CohortSizeConst(0L),
                    ...){
   start<-RuleDesign(...)
   .TDDesign(start,model=model,stopping=stopping,increments=increments,

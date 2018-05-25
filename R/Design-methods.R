@@ -909,7 +909,8 @@ setMethod("simulate",
 ##' showing the beginning of several hypothetical trial courses under
 ##' the design. This means, from the generated dataframe one can read off:
 ##' - how many cohorts are required in the optimal case (no DLTs observed) in
-##'   order to reach the highest dose of the specified dose grid
+##'   order to reach the highest dose of the specified dose grid (or until
+##'   the stopping rule is fulfilled)
 ##' - assuming no DLTs are observed until a certain dose level, what the next
 ##'   recommended dose is for all possible number of DLTs observed
 ##' - the actual relative increments that will be used in these cases
@@ -1068,22 +1069,28 @@ setMethod("examine",
                                    y=rep(0, thisSize))
                       }
 
-                      ## what is the new dose according to table?
-                      newDose <- as.numeric(subset(tail(ret, thisSize + 1),
-                                                   dose==thisDose & DLTs==0,
-                                                   select=nextDose))
-
+                      ## what are the results if 0 DLTs?
+                      resultsNoDLTs <- subset(tail(ret, thisSize + 1),
+                                              dose==thisDose & DLTs==0)
+                      
+                      ## what is the new dose then accordingly?
+                      newDose <- as.numeric(resultsNoDLTs$nextDose)
+                      
                       ## what is the difference to the previous dose?
                       doseDiff <- newDose - thisDose
+                      
+                      ## would stopping rule be fulfilled already?
+                      stopAlready <- resultsNoDLTs$stop
 
                       ## update dose
                       thisDose <- newDose
 
                       ## check if we can stop:
                       ## either when we have reached the highest dose in the
-                      ## next cohort, or when there is no improvement in dose
-                      ## over the last cohort
-                      stopit <- (thisDose >= max(object@data@doseGrid))
+                      ## next cohort, or when the stopping rule is already 
+                      ## fulfilled
+                      stopit <- (thisDose >= max(object@data@doseGrid)) ||
+                        stopAlready
                   }
 
                   return(ret)
@@ -1167,22 +1174,24 @@ setMethod("examine",
                                  x=thisDose,
                                  y=rep(0, thisSize))
 
-                      ## what is the new dose according to table?
-                      newDose <- as.numeric(subset(tail(ret, thisSize + 1),
-                                                   dose==thisDose & DLTs==0,
-                                                   select=nextDose))
-
+                      ## what is the new dose then accordingly?
+                      newDose <- as.numeric(resultsNoDLTs$nextDose)
+                      
                       ## what is the difference to the previous dose?
                       doseDiff <- newDose - thisDose
-
+                      
+                      ## would stopping rule be fulfilled already?
+                      stopAlready <- resultsNoDLTs$stop
+                      
                       ## update dose
                       thisDose <- newDose
-
+                      
                       ## check if we can stop:
                       ## either when we have reached the highest dose in the
-                      ## next cohort, or when there is no improvement in dose
-                      ## over the last cohort
-                      stopit <- (thisDose >= max(object@data@doseGrid))
+                      ## next cohort, or when the stopping rule is already 
+                      ## fulfilled
+                      stopit <- (thisDose >= max(object@data@doseGrid)) ||
+                        stopAlready
                   }
 
                   return(ret)
