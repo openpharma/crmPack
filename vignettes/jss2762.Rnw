@@ -30,16 +30,16 @@
 
 %% to get the default layout:
 <<echo=FALSE>>=
-render_sweave()
+knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", width = 76, useFancyQuotes = FALSE)
-opts_chunk$set(abbreviate=0, wrap=FALSE)
+knitr::opts_chunk$set(abbreviate=0, wrap=FALSE)
 Sys.setenv(TEXINPUTS=getwd(),
            BIBINPUTS=getwd(),
            BSTINPUTS=getwd())
 ## opts_chunk$set(cache=TRUE)  # to prevent rerunning the code every time
 
-oh <- knit_hooks$get("output")
-knit_hooks$set(output = function(x, options) {
+oh <- knitr::knit_hooks$get("output")
+knitr::knit_hooks$set(output = function(x, options) {
   ## do we need to abbreviate the output?
   if(options$abbreviate > 0)
   {
@@ -513,7 +513,7 @@ We can then start by looking at the single trial operating characteristics of th
 need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250~mg cohort, the maximum considered dose of 300~mg dose can be reached in the next cohort if also no DLTs are observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150~mg, respectively.  
 <<design-examine, abbreviate=5>>=
 set.seed(23)
-examine(design, options)
+examine(design, mcmcOptions=options)
 @
 
 \paragraph{Simulating operating characteristics} For the many trials operating characteristics, we first have to define true scenarios, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. As an example we use here the function contained in the slot \code{prob} of the object \code{model}:

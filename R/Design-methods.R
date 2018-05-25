@@ -923,9 +923,9 @@ setMethod("simulate",
 ##'
 ##' @param object the design (\code{\linkS4class{Design}} or
 ##' \code{\linkS4class{RuleDesign}} object) we want to examine
+##' @param \dots additional arguments (see methods)
 ##' @param maxNoIncrement maximum number of contiguous next doses at 0 
 ##' DLTs that are the same as before, i.e. no increment (default to 100)
-##' @param \dots additional arguments (see methods)
 ##'
 ##' @return The data frame
 ##'
@@ -933,7 +933,7 @@ setMethod("simulate",
 ##' @keywords methods regression
 setGeneric("examine",
            def=
-           function(object, maxNoIncrement=100L, ...){
+           function(object, ..., maxNoIncrement=100L){
              
              ## check maxNoIncrement argument
              stopifnot(is.scalar(maxNoIncrement) && maxNoIncrement > 0)  
@@ -957,9 +957,9 @@ setMethod("examine",
               signature(object="Design"),
           def=
               function(object, 
-                       maxNoIncrement,
                        mcmcOptions=McmcOptions(), 
-                       ...){
+                       ...,
+                       maxNoIncrement){
 
                   ## start with the empty table
                   ret <- data.frame(dose=numeric(),
@@ -1133,8 +1133,8 @@ setMethod("examine",
               signature(object="RuleDesign"),
           def=
               function(object, 
-                       maxNoIncrement,
-                       ...){
+                       ...,
+                       maxNoIncrement){
 
                   ## start with the empty table
                   ret <- data.frame(dose=numeric(),

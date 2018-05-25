@@ -2,5 +2,6 @@
 ^\.Rproj\.user$
 devel
 examples
-vignettes
+vignettes/JSSstyle
+vignettes/paper
 TODO
