@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+devel
+examples
+vignettes
+TODO
