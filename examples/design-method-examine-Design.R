@@ -61,6 +61,8 @@ design <- Design(model=model,
 examine(design,mcmcOptions=options)
 
 ## example where examine stops because infinite looping
+## (note that here a very low threshold is used for the parameter
+## "maxNoIncrement" in "examine" to keep the execution time short)
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
                                    increments=c(1, 0.00001))
 myStopping <- (myStopping1 & myStopping2) 
@@ -71,4 +73,4 @@ design <- Design(model=model,
                  cohortSize=mySize,
                  data=emptydata,
                  startingDose=3)
-examine(design,mcmcOptions=options)
+examine(design, mcmcOptions=options, maxNoIncrement = 2)
