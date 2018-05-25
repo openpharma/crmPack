@@ -19,6 +19,9 @@ IMPROVEMENTS:
 - Add a "BugReports" field to DESCRIPTION, and point it to a bug tracker. Many online code hosting
     services provide bug trackers for free, https://github.com, https://gitlab.com, etc.
 
+- should the examine function also stop when the stopping rules are
+fulfilled?
+
 - include option to specify how many cores should be used when parallel=TRUE is used 
 
 - add warning if the MinimalInformative prior or similar return a prior variance
