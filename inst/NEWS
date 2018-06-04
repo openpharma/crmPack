@@ -33,6 +33,9 @@ New features:
   not to skip any dose level when escalating.
   
 * Included the JSS manuscript as a new vignette.
+
+* It is now possible to specify how many cores should be used when parallel
+  computations are used.
   
   
 

@@ -77,6 +77,8 @@ setSeed <- function(seed=NULL)
 ##' @param nsim number of simulations to be conducted
 ##' @param vars names of the variables
 ##' @param parallel shall the iterations be parallelized across the cores?
+##' if NULL, then no parallelization will be done. If scalar positive number, 
+##' then so many cores will be used.
 ##' @return the list with all simulation results (one iteration corresponds
 ##' to one list element)
 ##'
@@ -86,17 +88,21 @@ setSeed <- function(seed=NULL)
 getResultList <- function(fun,
                           nsim,
                           vars,
-                          parallel)
+                          parallel=NULL)
 {
     ret <-
-        if(! parallel)
+        if(is.null(parallel))
         {
             lapply(X=seq_len(nsim),
                    FUN=fun)
         } else {
 
+            ## check that parallel parameter makes sense
+            stopifnot(is.scalar(parallel), parallel > 0)
+          
             ## now process all simulations
-            cores <- parallel::detectCores()
+            cores <- min(safeInteger(parallel),
+                         parallel::detectCores())
 
             ## start the cluster
             cl <- parallel::makeCluster(cores)
@@ -161,12 +167,15 @@ getResultList <- function(fun,
 ##' the standard options are used
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
 ##'
 ##' @example examples/design-method-simulate-Design.R
 ##' @export
+##' @importFrom parallel detectCores
 ##' @keywords methods
 setMethod("simulate",
           signature=
@@ -177,7 +186,8 @@ setMethod("simulate",
               function(object, nsim=1L, seed=NULL,
                        truth, args=NULL, firstSeparate=FALSE,
                        mcmcOptions=McmcOptions(),
-                       parallel=FALSE, ...){
+                       parallel=FALSE, nCores=parallel::detectCores(),
+                       ...){
 
               nsim <- safeInteger(nsim)
 
@@ -186,7 +196,9 @@ setMethod("simulate",
                         is.bool(firstSeparate),
                         is.scalar(nsim),
                         nsim > 0,
-                        is.bool(parallel))
+                        is.bool(parallel),
+                        is.scalar(nCores),
+                        nCores > 0)
 
               args <- as.data.frame(args)
               nArgs <- max(nrow(args), 1L)
@@ -366,7 +378,7 @@ setMethod("simulate",
                                             "truth",
                                             "object",
                                             "mcmcOptions"),
-                                          parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
 
               ## put everything in the Simulations format:
 
