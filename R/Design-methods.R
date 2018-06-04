@@ -422,6 +422,8 @@ setMethod("simulate",
 ##' simulations.
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##'
 ##' @return an object of class \code{\linkS4class{GeneralSimulations}}
@@ -437,7 +439,9 @@ setMethod("simulate",
           def=
               function(object, nsim=1L, seed=NULL,
                        truth, args=NULL,
-                       parallel=FALSE, ...){
+                       parallel=FALSE, 
+                       nCores=parallel::detectCores(),
+                       ...){
 
               nsim <- safeInteger(nsim)
 
@@ -535,7 +539,7 @@ setMethod("simulate",
                                             "nArgs",
                                             "truth",
                                             "object"),
-                                          parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
 
               ## put everything in the GeneralSimulations format:
 
@@ -581,6 +585,8 @@ setMethod("simulate",
 ##' the standard options are used
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
@@ -598,7 +604,9 @@ setMethod("simulate",
                        sigma2W, rho=0,
                        firstSeparate=FALSE,
                        mcmcOptions=McmcOptions(),
-                       parallel=FALSE, ...){
+                       parallel=FALSE, 
+                       nCores=parallel::detectCores(),
+                       ...){
 
               nsim <- safeInteger(nsim)
 
@@ -873,7 +881,7 @@ setMethod("simulate",
                                             "trueCov",
                                             "object",
                                             "mcmcOptions"),
-                                          parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
 
               ## put everything in the Simulations format:
 
@@ -1290,6 +1298,8 @@ setMethod("examine",
 ##' the standard options are used
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateTDsamplesDesign.R
@@ -1307,7 +1317,8 @@ setMethod("simulate",
             function(object, nsim=1L, seed=NULL,
                      truth, args=NULL, firstSeparate=FALSE,
                      mcmcOptions=McmcOptions(),
-                     parallel=FALSE, ...){
+                     parallel=FALSE, nCores=parallel::detectCores(),
+                     ...){
               
               nsim <- safeInteger(nsim)
               
@@ -1530,7 +1541,7 @@ setMethod("simulate",
                                             "truth",
                                             "object",
                                             "mcmcOptions"),
-                                            parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
               
               ## put everything in the Simulations format:
               
@@ -1613,6 +1624,8 @@ setMethod("simulate",
 ##' in this patient.
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateTDDesign.R
@@ -1629,7 +1642,8 @@ setMethod("simulate",
           def=
             function(object, nsim=1L, seed=NULL,
                      truth, args=NULL, firstSeparate=FALSE,
-                     parallel=FALSE, ...){
+                     parallel=FALSE, nCores=parallel::detectCores(),
+                     ...){
               
               nsim <- safeInteger(nsim)
               
@@ -1835,7 +1849,7 @@ setMethod("simulate",
                                                         "firstSeparate",
                                                         "truth",
                                                         "object"),
-                                                    parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
               
               ## put everything in the Simulations format:
               
@@ -1921,6 +1935,8 @@ setMethod("simulate",
 ##' in this patient.
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateDualResponsesDesign.R
@@ -1939,7 +1955,8 @@ setMethod("simulate",
             function(object, nsim=1L, seed=NULL,
                      trueDLE, trueEff, trueNu,
                      args=NULL, firstSeparate=FALSE,
-                     parallel=FALSE, ...){
+                     parallel=FALSE, nCores=parallel::detectCores(),
+                     ...){
               
               nsim <- safeInteger(nsim)
               
@@ -2261,7 +2278,7 @@ setMethod("simulate",
                                                         "trueEff",
                                                         "trueNu",
                                                         "object"),
-                                                    parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
               
               
               ## put everything in the Simulations format:
@@ -2395,6 +2412,8 @@ setMethod("simulate",
 ##' the standard options are used
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateDualResponsesSamplesDesign.R
@@ -2415,7 +2434,8 @@ setMethod("simulate",
                      trueSigma2=NULL,trueSigma2betaW=NULL,
                      args=NULL, firstSeparate=FALSE,
                      mcmcOptions=McmcOptions(),
-                     parallel=FALSE, ...){
+                     parallel=FALSE, nCores=parallel::detectCores(),
+                     ...){
 
               nsim <- safeInteger(nsim)
               
@@ -2745,7 +2765,7 @@ setMethod("simulate",
                                                 "trueSigma2betaW",
                                                 "object",
                                                 "mcmcOptions"),
-                                            parallel=parallel)
+                                            parallel=if(parallel) nCores else NULL)
                 
                 ## put everything in the Simulations format:
                 
@@ -3151,7 +3171,7 @@ setMethod("simulate",
                                                         "trueEff",
                                                         "trueNu",
                                                         "object"),
-                                                    parallel=parallel)
+                                          parallel=if(parallel) nCores else NULL)
               
               
               ## put everything in the Simulations format:
