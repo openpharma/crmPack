@@ -21,9 +21,14 @@
 ## @useDynLib crmPack
 ##  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
 ##  cpp_coxfit
-##' @importFrom graphics plot hist
+##' @importFrom graphics plot hist legend lines matlines matplot
 ##' @importFrom methods setClass setOldClass setGeneric setMethod representation
-##' signature prototype initialize new is
+##' signature prototype initialize new is .valueClassTest as callNextMethod slot 
+##' slotNames show
+##' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
+##' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
+##' rnorm runif uniroot var vcov
+##' @importFrom utils data head tail
 ##' @keywords package
 {}
 
@@ -32,8 +37,64 @@
 {
     packageStartupMessage(
         "Type crmPackHelp() to open help browser\n",
-        "Type crmPackExample() to open example\n",
-        "Type crmPackUpgrade() to upgrade crmPack to latest version\n",
-        "Please visit https://roche.jiveon.com/projects/crmpack for more\n")
+        "Type crmPackExample() to open example\n")
 }
 
+## need to declare global variable / function
+## names in order to avoid R CMD check notes:
+globalVariables(c("log.betaZ",
+                  "precW",
+                  "pow",
+                  "nObs",
+                  "betaZ",
+                  "x",
+                  "betaW",
+                  "xLevel",
+                  "precW",
+                  "z",
+                  "nGrid",
+                  "doseGrid",
+                  "betaWintercept",
+                  "delta",
+                  "deltaStart",
+                  "delta2",
+                  "Effsamples",
+                  "logit<-",
+                  "rho0",
+                  "alpha0",
+                  "alpha1",
+                  "inverse",
+                  "priorCov",
+                  "theta",
+                  "comp0",
+                  "w",
+                  "DLTs",
+                  "y",
+                  "group",
+                  "annotate",
+                  "probSamples",
+                  "prec",
+                  "nu",
+                  "samples",
+                  "Type",
+                  "patient",
+                  "toxicity",
+                  "ID",
+                  "biomarker",
+                  "traj",
+                  "Statistic",
+                  "perc",
+                  "..density..",
+                  "middle",
+                  "lower",
+                  "upper",
+                  "middleBiomarker",
+                  "lowerBiomarker",
+                  "upperBiomarker",
+                  "nObsshare",
+                  "xshare",
+                  "yshare", 
+                  "thisProb.PL",
+                  "thisMeanEff.PL",
+                  "thisSize.PL",
+                  "probit<-"))

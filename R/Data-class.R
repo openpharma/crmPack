@@ -15,6 +15,8 @@
 ##' @include helpers.R
 {}
 
+## ============================================================
+
 
 ## --------------------------------------------------
 ## Class for general data input
@@ -57,6 +59,9 @@
 validObject(.GeneralData())
 
 
+## ============================================================
+
+
 ## --------------------------------------------------
 ## Class for the data input
 ## --------------------------------------------------
@@ -72,7 +77,10 @@ validObject(.GeneralData())
 ##' grid
 ##' @slot nGrid number of gridpoints
 ##' @slot xLevel the levels for the doses the patients have been given
-##'
+##' @slot placebo logical value: if TRUE the first dose level in the grid is
+##' considered as PLACEBO
+##' 
+##' @example examples/Data-class.R
 ##' @export
 ##' @keywords classes
 .Data <-
@@ -81,12 +89,14 @@ validObject(.GeneralData())
                             y="integer",
                             doseGrid="numeric",
                             nGrid="integer",
-                            xLevel="integer"),
+                            xLevel="integer",
+                            placebo="logical"),
              prototype(x=numeric(),
                        y=integer(),
                        doseGrid=numeric(),
                        nGrid=0L,
-                       xLevel=integer()),
+                       xLevel=integer(),
+                       placebo=FALSE),
              contains="GeneralData",
              validity=
                  function(object){
@@ -94,13 +104,24 @@ validObject(.GeneralData())
 
                      o$check(all(object@y %in% c(0, 1)),
                              "DLT vector y can only have 0 or 1 values")
-                     o$check(all(tapply(X=object@x,
-                                        INDEX=object@cohort,
-                                        FUN=
+                     if(!object@placebo){
+                        o$check(all(tapply(X=object@x,
+                                           INDEX=object@cohort,
+                                           FUN=
                                             function(doses){length(unique(doses))}) == 1),
                              "there must be only one dose level per cohort")
-                     o$check(all(object@x %in% object@doseGrid),
-                             "dose values in x must be from doseGrid")
+                     }else{
+                        o$check(all(tapply(X=object@x,
+                                          INDEX=object@cohort,
+                                          FUN=
+                                            function(doses){
+                                              doses <- doses[doses != object@doseGrid[1]]
+                                              length(unique(doses))}) == 1),
+                               "There must be only one dose level, other than placebo, per cohort. In addition a cohort with only placebo is not allowed")
+                     }
+                     
+                     o$check(all(object@x %~% object@doseGrid),
+                             "dose values in x must be from doseGrid (tolerance 1e-10)")
                      o$check(! is.unsorted(object@doseGrid,
                                            strictly=TRUE),
                              "doseGrid must be sorted and without duplicate values")
@@ -109,9 +130,12 @@ validObject(.GeneralData())
                                  paste(thisSlot, "must have length nObs"))
                      o$check(identical(object@nGrid, length(object@doseGrid)),
                              "doseGrid must have length nGrid")
-                     o$check(identical(object@x,
-                                       object@doseGrid[object@xLevel]),
-                             "x must be doseGrid[xLevel]")
+                     o$check(all.equal(object@x,
+                                       object@doseGrid[object@xLevel],
+                                       tolerance=1e-10,
+                                       check.names=FALSE,
+                                       check.attributes=FALSE),
+                             "x must be doseGrid[xLevel] (tolerance 1e-10)")
 
                      o$result()
                  })
@@ -131,6 +155,8 @@ validObject(.Data())
 ##' @param ID unique patient IDs (integer vector)
 ##' @param cohort the cohort indices (sorted values from 0, 1, 2, ...)
 ##' @param doseGrid the vector of all possible doses
+##' @param placebo logical value: if TRUE the first dose level in the grid is 
+##' considered as PLACEBO
 ##' @param \dots not used
 ##' @return the initialized \code{\linkS4class{Data}} object
 ##'
@@ -141,6 +167,7 @@ Data <- function(x=numeric(),
                  ID=integer(),
                  cohort=integer(),
                  doseGrid=numeric(),
+                 placebo=FALSE,
                  ...){
     ## sort the dose grid
     doseGrid <- as.numeric(sort(unique(doseGrid)))
@@ -172,12 +199,14 @@ Data <- function(x=numeric(),
                  doseGrid=doseGrid,
                  nObs=length(x),
                  nGrid=length(doseGrid),
-                 xLevel=match(x=x, table=doseGrid))
+                 xLevel=matchTolerance(x=x, table=doseGrid),
+                 placebo=placebo)
     return(ret)
 }
 validObject(Data())
 
 
+## ============================================================
 
 
 ## --------------------------------------------------
@@ -191,7 +220,8 @@ validObject(Data())
 ##' values.
 ##'
 ##' @slot w the continuous vector of biomarker values
-##'
+##' 
+##' @example examples/Data-class-DataDual.R
 ##' @export
 ##' @keywords classes
 .DataDual <-
@@ -229,6 +259,8 @@ DataDual <- function(w=numeric(),
 }
 validObject(DataDual())
 
+## ============================================================
+
 
 ## --------------------------------------------------
 ## Subclass with additional two parts information
@@ -245,6 +277,7 @@ validObject(DataDual())
 ##' @slot part1Ladder sorted numeric vector; what is the escalation ladder for
 ##' part 1? This shall be a subset of the \code{doseGrid}.
 ##'
+##' @example examples/Data-class-DataParts.R
 ##' @export
 ##' @keywords classes
 .DataParts <-
@@ -305,5 +338,73 @@ DataParts <- function(part=integer(),
 }
 validObject(DataParts())
 
+## ============================================================
 
+## --------------------------------------------------
+## Subclass with additional data for mixture
+## --------------------------------------------------
+
+
+##' Class for the data with mixture sharing
+##' 
+##' @slot xshare the doses for the share patients
+##' @slot yshare the vector of toxicity events (0 or 1 integers) for the share
+##' patients
+##' @slot nObsshare number of share patients
+##'
+##' @seealso \code{\linkS4class{LogisticLogNormalMixture}} for the explanation
+##' how to use this data class
+##' @export
+##' @example examples/Model-class-LogisticLogNormalMixture.R
+##' @keywords classes
+.DataMixture <-
+  setClass(Class="DataMixture",
+           representation(xshare="numeric",
+                          yshare="integer",
+                          nObsshare="integer"),
+           prototype(xshare=numeric(),
+                     yshare=integer(),
+                     nObsshare=0L),
+           contains="Data",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(all(object@yshare %in% c(0, 1)),
+                       "DLT vector yshare can only have 0 or 1 values")
+               o$check(all(object@xshare %in% object@doseGrid),
+                       "dose values in xshare must be from doseGrid")
+               for(thisSlot in c("xshare", "yshare"))
+                 o$check(identical(object@nObsshare, length(slot(object, thisSlot))),
+                         paste(thisSlot, "must have length nObs"))
+               
+               o$result()
+             })
+validObject(.DataMixture())
+
+##' Initialization function for the "DataMixture" class
+##'
+##' This is the function for initializing a "DataMixture" class object.
+##'
+##' @param xshare see \code{\linkS4class{DataMixture}}
+##' @param yshare see \code{\linkS4class{DataMixture}}
+##' @param \dots additional arguments for the underlying Data slots
+##' 
+##' @return the initialized \code{\linkS4class{DataMixture}} object
+##'
+##' @export
+##' @keywords programming
+DataMixture <- function(xshare=numeric(),
+                        yshare=integer(),
+                        ...){
+  start <- Data(...)
+  ret <- .DataMixture(start,
+                      xshare=as.numeric(xshare),
+                      yshare=safeInteger(yshare),
+                      nObsshare=length(xshare))
+  return(ret)
+}
+validObject(DataMixture())
+
+## ============================================================
 

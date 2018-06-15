@@ -1,0 +1,165 @@
+DualEndpoint : priormodel: no visible binding for global variable
+'log.betaZ'
+DualEndpoint : priormodel: no visible binding for global variable
+'precW'
+DualEndpoint : priormodel: no visible global function definition for
+'pow'
+DualEndpoint : <anonymous>: no visible binding for global variable
+'nObs'
+DualEndpoint : <anonymous>: no visible binding for global variable
+'betaZ'
+DualEndpoint : <anonymous>: no visible binding for global variable 'x'
+DualEndpoint : <anonymous>: no visible binding for global variable
+'betaW'
+DualEndpoint : <anonymous>: no visible binding for global variable
+'xLevel'
+DualEndpoint : <anonymous>: no visible binding for global variable
+'precW'
+DualEndpoint : <anonymous>: no visible binding for global variable 'z'
+DualEndpointBeta : <anonymous>: no visible binding for global variable
+'nGrid'
+DualEndpointBeta : <anonymous>: no visible binding for global variable
+'doseGrid'
+DualEndpointEmax : <anonymous>: no visible binding for global variable
+'nGrid'
+DualEndpointEmax : <anonymous>: no visible binding for global variable
+'doseGrid'
+DualEndpointRW : <anonymous>: no visible binding for global variable
+'betaWintercept'
+DualEndpointRW : <anonymous>: no visible binding for global variable
+'nGrid'
+DualEndpointRW : <anonymous>: no visible binding for global variable
+'delta'
+DualEndpointRW : <anonymous>: no visible binding for global variable
+'deltaStart'
+DualEndpointRW : <anonymous>: no visible binding for global variable
+'delta2'
+EffFlexi : <anonymous>: no visible binding for global variable
+'Effsamples'
+LogisticKadane : <anonymous>: no visible binding for global variable
+'nObs'
+LogisticKadane : <anonymous>: no visible global function definition for
+'logit<-'
+LogisticKadane : <anonymous>: no visible binding for global variable
+'rho0'
+LogisticKadane : <anonymous>: no visible binding for global variable
+'x'
+LogisticLogNormal : <anonymous>: no visible binding for global variable
+'nObs'
+LogisticLogNormal : <anonymous>: no visible global function definition
+for 'logit<-'
+LogisticLogNormal : <anonymous>: no visible binding for global variable
+'alpha0'
+LogisticLogNormal : <anonymous>: no visible binding for global variable
+'alpha1'
+LogisticLogNormal : <anonymous>: no visible binding for global variable
+'x'
+LogisticLogNormal : <anonymous>: no visible global function definition
+for 'inverse'
+LogisticLogNormal : <anonymous>: no visible binding for global variable
+'priorCov'
+LogisticLogNormal : <anonymous>: no visible binding for global variable
+'theta'
+LogisticLogNormalSub : <anonymous>: no visible binding for global
+variable 'nObs'
+LogisticLogNormalSub : <anonymous>: no visible global function
+definition for 'logit<-'
+LogisticLogNormalSub : <anonymous>: no visible binding for global
+variable 'alpha0'
+LogisticLogNormalSub : <anonymous>: no visible binding for global
+variable 'alpha1'
+LogisticLogNormalSub : <anonymous>: no visible binding for global
+variable 'x'
+LogisticLogNormalSub : <anonymous>: no visible global function
+definition for 'inverse'
+LogisticLogNormalSub : <anonymous>: no visible binding for global
+variable 'priorCov'
+LogisticLogNormalSub : <anonymous>: no visible binding for global
+variable 'theta'
+LogisticNormal : <anonymous>: no visible binding for global variable
+'nObs'
+LogisticNormal : <anonymous>: no visible global function definition for
+'logit<-'
+LogisticNormal : <anonymous>: no visible binding for global variable
+'alpha0'
+LogisticNormal : <anonymous>: no visible binding for global variable
+'alpha1'
+LogisticNormal : <anonymous>: no visible binding for global variable
+'x'
+LogisticNormal : <anonymous>: no visible binding for global variable
+'theta'
+LogisticNormal : <anonymous>: no visible binding for global variable
+'prec'
+LogisticNormalFixedMixture : <anonymous>: no visible binding for global
+variable 'nObs'
+LogisticNormalFixedMixture : <anonymous>: no visible global function
+definition for 'logit<-'
+LogisticNormalFixedMixture : <anonymous>: no visible binding for global
+variable 'alpha0'
+LogisticNormalFixedMixture : <anonymous>: no visible binding for global
+variable 'alpha1'
+LogisticNormalFixedMixture : <anonymous>: no visible binding for global
+variable 'x'
+LogisticNormalFixedMixture : <anonymous>: no visible binding for global
+variable 'theta'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'nObs'
+LogisticNormalMixture : <anonymous>: no visible global function
+definition for 'logit<-'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'alpha0'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'alpha1'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'x'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'comp0'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'w'
+LogisticNormalMixture : <anonymous>: no visible binding for global
+variable 'theta'
+examine,RuleDesign: no visible binding for global variable 'DLTs'
+nextBest,NextBestDualEndpoint-numeric-Samples-DualEndpoint-Data: no
+visible binding for global variable 'x'
+nextBest,NextBestDualEndpoint-numeric-Samples-DualEndpoint-Data: no
+visible binding for global variable 'y'
+nextBest,NextBestMTD-numeric-Samples-Model-Data: no visible binding for
+global variable 'x'
+nextBest,NextBestNCRM-numeric-Samples-Model-Data: no visible binding
+for global variable 'x'
+nextBest,NextBestNCRM-numeric-Samples-Model-Data: no visible binding
+for global variable 'y'
+nextBest,NextBestTD-numeric-missing-LogisticIndepBeta-Data: no visible
+binding for global variable 'x'
+nextBest,NextBestTD-numeric-missing-LogisticIndepBeta-Data: no visible
+binding for global variable 'y'
+nextBest,NextBestTD-numeric-missing-LogisticIndepBeta-Data: no visible
+binding for global variable 'group'
+nextBest,NextBestTD-numeric-missing-LogisticIndepBeta-Data: no visible
+global function definition for 'annotate'
+nextBest,NextBestTDsamples-numeric-Samples-LogisticIndepBeta-Data: no
+visible binding for global variable 'x'
+nextBest,NextBestTDsamples-numeric-Samples-LogisticIndepBeta-Data: no
+visible global function definition for 'annotate'
+plotDualResponses,ModelTox-missing-ModelEff-missing: no visible binding
+for global variable 'x'
+plotDualResponses,ModelTox-missing-ModelEff-missing: no visible binding
+for global variable 'y'
+plotDualResponses,ModelTox-missing-ModelEff-missing: no visible binding
+for global variable 'group'
+plotGain,ModelTox-Samples-ModelEff-Samples: no visible binding for
+global variable 'x'
+plotGain,ModelTox-Samples-ModelEff-Samples: no visible binding for
+global variable 'y'
+plotGain,ModelTox-Samples-ModelEff-Samples: no visible binding for
+global variable 'group'
+plotGain,ModelTox-missing-ModelEff-missing: no visible binding for
+global variable 'x'
+plotGain,ModelTox-missing-ModelEff-missing: no visible binding for
+global variable 'y'
+plotGain,ModelTox-missing-ModelEff-missing: no visible binding for
+global variable 'group'
+plotGain,ModelTox-missing-ModelEff-missing: no visible global function
+definition for 'annotate'
+stopTrial,StoppingTargetBiomarker-numeric-Samples-DualEndpoint-ANY :
+  <anonymous>: no visible binding for global variable 'probSamples'

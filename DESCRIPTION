@@ -1,16 +1,28 @@
 Package: crmPack
 Maintainer: Daniel Sabanes Bove <sabanesd@roche.com>
 License: GPL (>= 2)
-Title: Object-oriented implementation of CRM designs
+Title: Object-Oriented Implementation of CRM Designs
 LazyLoad: yes
 Author: Daniel Sabanes Bove <sabanesd@roche.com>,
-    Giuseppe Palermo <giuseppe.palermo@roche.com>
-Description: Object-oriented implementation of CRM designs
-Version: 0.1.2
-Date: 2015-06-19
+    Wai Yin Yeung <winnie.yeung@roche.com>,
+    Giuseppe Palermo <giuseppe.palermo@roche.com>,
+    Thomas Jaki <jaki.thomas@gmail.com>
+Description: Implements a wide range of model-based dose
+    escalation designs, ranging from classical and modern continual
+    reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
+    dual-endpoint designs taking into account a biomarker/efficacy outcome. The
+    focus is on Bayesian inference, making it very easy to setup a new design
+    with its own JAGS code. However, it is also possible to implement 3+3
+    designs for comparison or models with non-Bayesian estimation. The whole
+    package is written in a modular form in the S4 class system, making it very
+    flexible for adaptation to new models, escalation or stopping rules.
+Version: 0.2.8
+Copyright: F. Hoffmann-La Roche Ltd
+URL: https://CRAN.R-project.org/package=crmPack
+VignetteBuilder: knitr
 Depends:
     R (>= 3.0.0),
-    ggplot2,
+    ggplot2 (>= 2.0.0),
     graphics
 Imports:
     methods,
@@ -19,14 +31,13 @@ Imports:
     GenSA,
     mvtnorm,
     parallel,
-    BayesLogit,
     rjags,
     utils,
     tools,
-    httr
+    MASS
 Suggests:
     ggmcmc,
-    R2WinBUGS,
+    knitr,
     Rcpp,
     RcppArmadillo
 Collate:
@@ -49,4 +60,4 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
-    'crmUpgrade.R'
+RoxygenNote: 6.0.1

@@ -1,9 +1,7 @@
+.Rproj.user
 .Rhistory
-
-*-Ex.R
-
-.Rdata
-
-*~
-
-vignettes/.build.timestamp
+.RData
+.Ruserdata
+NAMESPACE
+man
+crmpack.Rproj

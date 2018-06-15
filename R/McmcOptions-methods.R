@@ -16,6 +16,7 @@
 ##' @param mcmcOptions the \code{\linkS4class{McmcOptions}} object
 ##' @return the resulting sample size
 ##'
+##' @example examples/McmcOptions-methods-sampleSize.R
 ##' @export
 ##' @keywords programming
 sampleSize <-
@@ -33,6 +34,7 @@ sampleSize <-
 ##' @param mcmcOptions  the \code{\linkS4class{McmcOptions}} object
 ##' @return Logical value, if we should save this sample
 ##'
+##' @example examples/McmcOptions-methods-saveSample.R
 ##' @export
 ##' @keywords programming internal
 saveSample <-

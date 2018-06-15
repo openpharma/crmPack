@@ -1,7 +1,7 @@
-.gitignore
-R/.Rhistory
-inst/.Rhistory
-vignettes/.Rhistory
-vignettes/.build.timestamp
-.git
+^.*\.Rproj$
+^\.Rproj\.user$
 devel
+examples
+vignettes/JSSstyle
+vignettes/paper
+TODO

@@ -17,6 +17,36 @@
 #####################################################################################
 
 
+##' Helper function for value matching with tolerance
+##'
+##' This is a modified version of \code{match} that supports tolerance.
+##'
+##' @param x the values to be matched
+##' @param table the values to be matched against
+##' @return A vector of the same length as \code{x}
+##'
+##' @export
+##' @keywords programming
+##' @example examples/matching-tolerance.R
+matchTolerance <- function(x, table) 
+{
+  as.integer(sapply(x, function(.x) {
+    which(sapply(table, function(.table) isTRUE(all.equal(.x, .table, 
+                                                          tolerance=1e-10,
+                                                          check.names=FALSE,
+                                                          check.attributes=FALSE))))[1]
+  }))
+}
+
+##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
+##' @export
+`%~%` <- function(x, table) 
+{
+  ! is.na(matchTolerance(x=x, table=table))
+}
+
+
+
 ##' Helper function to join two function bodies
 ##'
 ##' @param body1 first body
@@ -140,6 +170,18 @@ is.probability <- function(x,
            })
 }
 
+##' Predicate checking for a numeric range
+##'
+##' @param x the object being checked
+##' @return Returns \code{TRUE} if \code{x} is a numeric range
+##'
+##' @keywords internal
+is.range <- function(x)
+{
+  return(identical(length(x), 2L) &&
+           x[1] < x[2])
+}
+
 ##' Predicate checking for a probability range
 ##'
 ##' @param x the object being checked
@@ -150,13 +192,8 @@ is.probability <- function(x,
 is.probRange <- function(x,
                          bounds=TRUE)
 {
-    return(identical(length(x), 2L) &&
-           x[1] < x[2] &&
-           if(bounds){
-               0 <= x[1] && 1 >= x[2]
-           } else {
-               0 < x[1] && 1 > x[2]
-           })
+    return(is.range(x) && 
+             all(sapply(x, is.probability, bounds=bounds)))
 }
 
 
@@ -170,6 +207,18 @@ is.probRange <- function(x,
 logit <- function(x)
 {
     qlogis(x)
+}
+
+##' Shorthand for probit function
+##'
+##' @param x the function argument
+##' @return the probit(x)
+##'
+##' @export
+##' @keywords programming
+probit <- function(x)
+{
+  qnorm(x)
 }
 
 ##' Open the example pdf for crmPack
@@ -204,39 +253,80 @@ crmPackHelp <- function()
 }
 
 
-##' Plots arrange objects
+## this is the new version, working on the gtable objects:
+##' Plots gtable objects
 ##'
-##' @method plot arrange
-##' @param x the arrange object
+##' @method plot gtable
+##' @param x the gtable object
 ##' @param \dots additional parameters for \code{\link[grid]{grid.draw}}
 ##'
 ##' @importFrom grid grid.draw
 ##' @export
-plot.arrange <- function(x, ...)
+plot.gtable <- function(x, ...)
 {
-    grid::grid.draw(x, ...)
+  grid::grid.draw(x, ...)
 }
 
 ##' @export
-print.arrange <- function(x, ...)
+print.gtable <- function(x, ...)
 {
-    plot.arrange(x, ...)
+  plot.gtable(x, ...)
 }
 
 
-## todo: use this function layOut (orig from wq package)?
-## function (...)
-## {
-##     require(grid)
-##     x <- list(...)
-##     n <- max(sapply(x, function(x) max(x[[2]])))
-##     p <- max(sapply(x, function(x) max(x[[3]])))
-##     pushViewport(viewport(layout = grid.layout(n, p)))
-##     for (i in seq_len(length(x))) {
-##         print(x[[i]][[1]], vp = viewport(layout.pos.row = x[[i]][[2]],
-##             layout.pos.col = x[[i]][[3]]))
-##     }
-## }
+#' Multiple plot function
+#'
+#' ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects).
+#' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+#' then plot 1 will go in the upper left, 2 will go in the upper right, and
+#' 3 will go all the way across the bottom.
+#' 
+#' @param \dots Objects to be passed 
+#' @param plotlist a list of additional objects
+#' @param rows Number of rows in layout
+#' @param layout A matrix specifying the layout. If present, \code{rows} 
+#' is ignored.
+#'
+#' @return Used for the side effect of plotting
+#' @importFrom grid grid.newpage pushViewport viewport
+#' @export
+multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
+{
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots <- length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, rows * ceiling(numPlots/rows)),
+                     nrow = rows, ncol = ceiling(numPlots/rows),
+                     byrow=TRUE)
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid::grid.newpage()
+    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), 
+                                                                 ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in seq_len(numPlots)) 
+    {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = grid::viewport(layout.pos.row = matchidx$row,
+                                            layout.pos.col = matchidx$col))
+    }
+  }
+}
 
 ##' Taken from utils package (print.vignette)
 ##'
@@ -293,4 +383,110 @@ Validate <-
                     function() {
                         if(length(msg) > 0) msg else TRUE
                     }))
+
+##' Compute the density of Inverse gamma distribution
+##' @param x vector of quantiles
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' @param log logical; if TRUE, probabilities p are given as log(p)
+##' @param normalize logical; if TRUE, the output will be normalized
+##' 
+##' @keywords internal
+dinvGamma <- function (x,
+                       a,
+                       b,
+                       log=FALSE,
+                       normalize=TRUE)
+{ ret<- -(a+1)*log(x)-b /x
+if (normalize)
+  ret <- ret +a*log(b)-lgamma(a)
+if (log)
+  return (ret)
+else
+  return (exp(ret))
+}
+
+##' Compute the distribution function of Inverse gamma distribution
+##' @param q vector of quantiles
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
+##' @param logical; FLASE (default) if TRUE, probabilities/densities p are returned as log(p)
+##' 
+##' @keywords internal
+pinvGamma <- function(q,
+                      a,
+                      b,
+                      lower.tail =TRUE,
+                      log.p = FALSE)
+{
+  pgamma(q=1/q,
+         shape=a,
+         rate=b,
+         lower.tail= !lower.tail,
+         log.p =log.p)
+}
+
+##' Compute the quantile function of Inverse gamma distribution
+##' @param p vector of probabilities
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
+##' @param logical; FLASE (default) if TRUE, probabilities/densities p are returned as log(p)
+##' 
+##' @keywords internal
+qinvGamma <- function(p,
+                      a,
+                      b,
+                      lower.tail =TRUE,
+                      log.p = FALSE)
+{
+  1/qgamma(p = p,
+           shape=a,
+           rate=b,
+           lower.tail= !lower.tail,
+           log.p =log.p)
+}
+##' The random generation of the Inverse gamma distribution
+##' @param n the number of observations
+##' @param a the shape parameter of the inverse gamma distribution
+##' @param b the scale parameter of the inverse gamm distribution
+##' 
+##' @keywords internal
+rinvGamma <- function(n,
+                      a,
+                      b)
+{1/rgamma(n,
+          shape=a,
+          rate=b)
+}
+
+
+#' Convenience function to make barplots of percentages
+#'
+#' @param x vector of samples
+#' @param description xlab string
+#' @param xaxisround rounding for xaxis labels (default: 0, i.e. integers will
+#' be used)
+#'
+#' @return the ggplot2 object
+#'
+#' @keywords internal
+#' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
+#' @example examples/myBarplot.R
+myBarplot <- function(x, description, xaxisround=0)
+{
+  tabx <- table(x) / length(x)
+  dat <- data.frame(x=as.numeric(names(tabx)), perc=as.numeric(tabx) * 100)
+  ggplot() +
+    geom_bar(aes(x=x, y=perc),
+             data=dat, 
+             stat="identity",
+             position="identity",
+             width=ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)) +
+    xlab(description) +
+    ylab("Percent") +
+    scale_x_continuous(breaks=
+                         round(dat$x, xaxisround))
+}
 

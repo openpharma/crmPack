@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [ w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Design-class.R] by DSB Son 18/01/2015 21:35>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 12/02/2014   file creation
+## 10/07/2015  adding designs for Pseudo models
 #####################################################################################
 
 ##' @include Model-class.R
@@ -37,6 +39,7 @@
 ##' @slot startingDose what is the starting dose? Must lie on the grid in
 ##' \code{data}
 ##'
+##' @example examples/design-class-RuleDesign.R
 ##' @export
 ##' @keywords classes
 .RuleDesign <-
@@ -55,8 +58,8 @@
 
                      o$check(is.scalar(object@startingDose),
                              "startingDose must be scalar")
-                     o$check(object@startingDose %in% object@data@doseGrid,
-                             "startingDose must be included in data@doseGrid")
+                     o$check(object@startingDose %~% object@data@doseGrid,
+                             "startingDose must be included in data@doseGrid (tolerance 1e-10)")
 
                      o$result()
                  })
@@ -99,18 +102,24 @@ RuleDesign <- function(nextBest,
 ##' \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels,
 ##' an object of class \code{\linkS4class{Increments}}
+##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
+##' an object of class \code{\linkS4class{CohortSize}} (defaults to constant
+##' 0 placebo patients)
 ##'
+##' @example examples/design-class-Design.R
 ##' @export
 ##' @keywords classes
 .Design <-
     setClass(Class="Design",
              representation(model="Model",
                             stopping="Stopping",
-                            increments="Increments"),
+                            increments="Increments",
+                            PLcohortSize="CohortSize"),
              prototype(model=.LogisticNormal(),
                        nextBest=.NextBestNCRM(),
                        stopping=.StoppingMinPatients(),
-                       increments=.IncrementsRelative()),
+                       increments=.IncrementsRelative(),
+                       PLcohortSize=CohortSizeConst(0L)),
              contains=list("RuleDesign"))
 validObject(.Design())
 
@@ -120,6 +129,7 @@ validObject(.Design())
 ##' @param model see \code{\linkS4class{Design}}
 ##' @param stopping see \code{\linkS4class{Design}}
 ##' @param increments see \code{\linkS4class{Design}}
+##' @param PLcohortSize see \code{\linkS4class{Design}}
 ##' @param \dots additional arguments for \code{\link{RuleDesign}}
 ##' @return the \code{\linkS4class{Design}} object
 ##'
@@ -128,13 +138,15 @@ validObject(.Design())
 Design <- function(model,
                    stopping,
                    increments,
+                   PLcohortSize=CohortSizeConst(0L),
                    ...)
 {
     start <- RuleDesign(...)
     .Design(start,
             model=model,
             stopping=stopping,
-            increments=increments)
+            increments=increments,
+            PLcohortSize=PLcohortSize)
 }
 
 
@@ -153,6 +165,7 @@ Design <- function(model,
 ##' comparison with recommendation methods that don't use the
 ##' biomarker information.
 ##'
+##' @example examples/design-class-DualDesign.R
 ##' @export
 ##' @keywords classes
 .DualDesign <-
@@ -197,6 +210,7 @@ DualDesign <- function(model,
 ##' @return the object of class \code{\linkS4class{RuleDesign}} with the
 ##' 3+3 design
 ##'
+##' @example examples/design-class-ThreePlusThreeDesign.R
 ##' @export
 ##' @keywords programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
@@ -213,3 +227,210 @@ ThreePlusThreeDesign <- function(doseGrid)
 
     return(design)
 }
+
+## ===================================================================================
+## -------------------------------------------------------------------------------
+## Design class using DLE responses only based on the pseudo DLE model with samples
+## ---------------------------------------------------------------------------
+##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
+##' and DLE samples are also used. 
+##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
+##' objects of this class contain:
+##' 
+##' @slot model the pseudo DLE model to be used, an object class of 
+##' \code{\linkS4class{ModelTox}}
+##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
+##' @slot increments how to control increments between dose levels, an object class of 
+##' \code{\linkS4class{Increments}}
+##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
+##' an object of class \code{\linkS4class{CohortSize}}
+##' 
+##' @example examples/design-class-TDsamplesDesign.R
+##' @export
+##' @keywords class
+.TDsamplesDesign <-
+  setClass(Class="TDsamplesDesign",
+           representation(model="ModelTox",
+                          stopping="Stopping",
+                          increments="Increments",
+                          PLcohortSize="CohortSize"),
+           prototype(model=.LogisticIndepBeta(),
+                     nextBest=.NextBestTDsamples(),
+                     stopping=.StoppingMinPatients(),
+                     increments=.IncrementsRelative(),
+                     PLcohortSize=CohortSizeConst(0L)),
+           contains=list("RuleDesign"))
+
+validObject(.TDsamplesDesign())
+##' Initialization function for 'TDsamplesDesign' class
+##' 
+##' @param model see \code{\linkS4class{TDsamplesDesign}}
+##' @param stopping see \code{\linkS4class{TDsamplesDesign}}
+##' @param increments see \code{\linkS4class{TDsamplesDesign}}
+##' @param PLcohortSize see \code{\linkS4class{TDsamplesDesign}}
+##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
+##' @return the \code{\linkS4class{TDsamplesDesign}} class object
+##' 
+##' @export
+##' @keywords methods
+TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst(0L),...){
+  start<-RuleDesign(...)
+  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments,PLcohortSize=PLcohortSize)
+}
+
+## =============================================================================
+## -------------------------------------------------------------------------------
+##' Design class using DLE responses only based on the pseudo DLE model without sample
+##'
+##' This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
+##' are used without samples.
+##' In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
+##' objects of this class contain:
+##' 
+##' @slot model the pseudo DLE model to be used, an object class of 
+##' \code{\linkS4class{ModelTox}}
+##' @slot stopping stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}
+##' @slot increments how to control increments between dose levels, an object class of 
+##' \code{\linkS4class{Increments}}
+##' @slot PLcohortSize rules for the cohort sizes for placebo, if any planned
+##' an object of class \code{\linkS4class{CohortSize}}
+##' 
+##' @example examples/design-class-TDDesign.R
+##' @export
+##' @keywords class 
+.TDDesign <-
+  setClass(Class="TDDesign",
+           representation(model="ModelTox",
+                          stopping="Stopping",
+                          increments="Increments",
+                          PLcohortSize="CohortSize"),
+           prototype(model=.LogisticIndepBeta(),
+                     nextBest=.NextBestTD(),
+                     stopping=.StoppingMinPatients(),
+                     increments=.IncrementsRelative(),
+                     PLcohortSize=CohortSizeConst(0L)),
+           contains=list("RuleDesign"))
+
+validObject(.TDDesign())
+
+##' Initialization function for 'TDDesign' class
+##' 
+##' @param model please refer to \code{\linkS4class{TDDesign}} class object
+##' @param stopping please refer to \code{\linkS4class{TDDesign}} class object
+##' @param increments please refer to \code{\linkS4class{TDDesign}} class object
+##' @param PLcohortSize see \code{\linkS4class{TDDesign}}
+##' @param \dots additional arguments for \code{\linkS4class{RuleDesign}}
+##' @return the \code{\linkS4class{TDDesign}} class object
+##' 
+##' @export
+##' @keywords methods
+TDDesign<-function(model,
+                   stopping,
+                   increments,
+                   PLcohortSize=CohortSizeConst(0L),
+                   ...){
+  start<-RuleDesign(...)
+  .TDDesign(start,model=model,stopping=stopping,increments=increments,
+            PLcohortSize=PLcohortSize)
+  }
+
+
+
+## ---------------------------------------------------------------------------------------------------
+## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
+##----------------------------------------------------------------------------------------------------
+##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model 
+##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
+##' with DLE and efficacy samples.It contain all slots in 
+##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object
+##' 
+##' @slot data the data set of \code{\linkS4class{DataDual}} class object
+##' @slot Effmodel the pseudo efficacy model to be used, an object class of 
+##' \code{\linkS4class{ModelEff}}
+##' 
+##' @example examples/design-class-DualResponsesSamplesDesign.R
+##' @export
+##' @keywords class 
+##' 
+.DualResponsesSamplesDesign <-
+setClass(Class="DualResponsesSamplesDesign",
+         representation(Effmodel="ModelEff",
+                        data="DataDual"),
+         prototype(nextBest=.NextBestMaxGainSamples(),
+                   data=DataDual(doseGrid=1:2),
+                   startingDose=1,
+                   model=.LogisticIndepBeta()),
+         contains=list("TDsamplesDesign")
+           )
+validObject(.DualResponsesSamplesDesign())
+
+##' Initialization function for 'DualResponsesSamplesDesign"
+##' @param data please refer to \code{\linkS4class{DualResponsesSamplesDesign}} class object
+##' @param Effmodel please refer to \code{\linkS4class{DualResponsesSamplesDesign}} class object
+##' @param \dots additional arguments for \code{\link{TDsamplesDesign}}
+##' 
+##' @return the \code{\linkS4class{DualResponsesSamplesDesign}} class object
+##' 
+##' @export
+##' @keywords methods
+DualResponsesSamplesDesign <- function(Effmodel,
+                                data,
+                                ...)
+  
+{
+  
+  start <- TDsamplesDesign(data=data,...)
+  .DualResponsesSamplesDesign(start,
+                              Effmodel=Effmodel,
+                              data=data)
+}
+
+## ---------------------------------------------------------------------------------------------------
+## class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
+##----------------------------------------------------------------------------------------------------
+##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model 
+##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
+##' without DLE and efficacy samples. It contain all slots in 
+##' \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDDesign}} class object
+##' 
+##' @slot data the data set of \code{\linkS4class{DataDual}} class object
+##' @slot Effmodel the pseudo efficacy model to be used, an object class of 
+##' \code{\linkS4class{ModelEff}}
+##' 
+##' @example examples/design-class-DualResponsesDesign.R
+##' @export
+##' @keywords class 
+.DualResponsesDesign <-
+  setClass(Class="DualResponsesDesign",
+           representation(Effmodel="ModelEff",
+                          data="DataDual"),
+           prototype(nextBest=.NextBestMaxGain(),
+                     data=DataDual(doseGrid=1:2),
+                     startingDose=1,
+                     model=.LogisticIndepBeta()),
+           contains=list("TDDesign")
+  )
+validObject(.DualResponsesDesign())
+
+
+##' Initialization function for 'DualResponsesDesign"
+##' @param data please refer to \code{\linkS4class{DualResponsesDesign}} class object
+##' @param Effmodel please refer to \code{\linkS4class{DualResponsesDesign}} class object
+##' @param \dots additional arguments for \code{\link{TDDesign}}
+##' @return the \code{\linkS4class{DualResponsesDesign}} class object
+##' 
+##' @export
+##' @keywords methods
+DualResponsesDesign <- function(Effmodel,
+                                data,
+                                ...)
+  
+{
+  
+  start <- TDDesign(data=data,...)
+  .DualResponsesDesign(start,
+                       Effmodel=Effmodel,
+                       data=data)
+}
+
+  ## ===============================================================================

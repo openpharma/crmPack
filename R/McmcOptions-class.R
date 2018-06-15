@@ -24,6 +24,7 @@
 ##' @slot burnin number of burn-in iterations which are not saved
 ##' @slot step only every step-th iteration is saved after the burn-in
 ##'
+##' @example examples/McmcOptions-class-McmcOptions.R
 ##' @export
 ##' @keywords classes
 .McmcOptions <-

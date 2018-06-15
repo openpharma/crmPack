@@ -1,5 +1,6 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
+##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
 ## Project: Object-oriented implementation of CRM designs
 ##
 ## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
@@ -9,6 +10,7 @@
 ##
 ## History:
 ## 07/02/2014   file creation
+## 10/07/2014   Added further rule classs
 ###################################################################################
 
 ##' @include helpers.R
@@ -43,7 +45,8 @@ setClass(Class="NextBest",
 ##' @slot derive the function which derives from the input, a vector of
 ##' posterior MTD samples called \code{mtdSamples}, the final next best MTD
 ##' estimate.
-##'
+##' 
+##' @example examples/Rules-class-NextBestMTD.R
 ##' @export
 ##' @keywords classes
 .NextBestMTD <-
@@ -107,6 +110,7 @@ NextBestMTD <- function(target,
 ##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
 ##'
+##' @example examples/Rules-class-NextBestNCRM.R
 ##' @export
 ##' @keywords classes
 .NextBestNCRM <-
@@ -160,7 +164,8 @@ NextBestNCRM <- function(target,
 ##'
 ##' Implements the classical 3+3 dose recommendation.
 ##' No input is required, hence this class has no slots.
-##'
+##' 
+##' @example examples/Rules-class-NextBestThreePlusThree.R
 ##' @export
 ##' @keywords classes
 .NextBestThreePlusThree <-
@@ -190,41 +195,63 @@ NextBestThreePlusThree <- function()
 ##' \code{maxOverdoseProb} of having an overdose toxicity, as specified by the
 ##' overdose interval \code{overdose}. Then, it picks under the remaining
 ##' admissible doses the one that maximizes the probability to be in the
-##' \code{target} biomarker range, relative to the maximum biomarker level
+##' \code{target} biomarker range, by default relative to the maximum biomarker level
 ##' across the dose grid or relative to the Emax parameter in case a parametric
 ##' model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
-##' \code{\linkS4class{DualEndpointEmax}}))
+##' \code{\linkS4class{DualEndpointEmax}})) However, is \code{scale} is set to
+##' "absolute" then the natural absolute biomarker scale can be used to set a target.
 ##'
-##' @slot target the biomarker target range, relative to the maximum, that
-##' needs to be reached. For example, (0.8, 1.0) means we target a dose
-##' with at least 80% of maximum biomarker level. As an other example,
-##' (0.5, 0.8) would mean that we target a dose between 50% and 80% of
+##' @slot target the biomarker target range, that
+##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"} 
+##' means we target a dose
+##' with at least 80\% of maximum biomarker level. As an other example,
+##' (0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
 ##' the maximum biomarker level.
+##' @slot scale either \code{relative} (default, then the \code{target} is interpreted 
+##' relative to the maximum, so must be a probability range) or \code{absolute}
+##' (then the \code{target} is interpreted as absolute biomarker range)
 ##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
 ##' limit included)
 ##' @slot maxOverdoseProb maximum overdose probability that is allowed
-##'
+##' @slot targetThresh which target probability threshold needs to be fulfilled before the 
+##' target probability will be used for deriving the next best dose (default: 0.01)
+##' 
+##' @example examples/Rules-class-NextBestDualEndpoint.R
 ##' @export
 ##' @keywords classes
 .NextBestDualEndpoint <-
     setClass(Class="NextBestDualEndpoint",
              representation(target="numeric",
+                            scale="character",
                             overdose="numeric",
-                            maxOverdoseProb="numeric"),
+                            maxOverdoseProb="numeric",
+                            targetThresh="numeric"),
              prototype(target=c(0.9,1),
+                       scale="relative",
                        overdose=c(0.35, 1),
-                       maxOverdoseProb=0.25),
+                       maxOverdoseProb=0.25,
+                       targetThresh=0.01),
              contains=list("NextBest"),
              validity=
                  function(object){
                      o <- Validate()
 
-                     o$check(is.probRange(object@target),
-                             "target has to be a probability range")
+                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
+                             "scale must be either 'relative' or 'absolute'")
+                     if(object@scale == "relative")
+                     {
+                       o$check(is.probRange(object@target),
+                               "target has to be a probability range when scale='relative'")
+                     } else {
+                       o$check(is.range(object@target),
+                               "target must be a numeric range")
+                     }
                      o$check(is.probRange(object@overdose),
                              "overdose has to be a probability range")
                      o$check(is.probability(object@maxOverdoseProb),
                              "maxOverdoseProb has to be a probability")
+                     o$check(is.probability(object@targetThresh),
+                             "targetThresh has to be a probability")
 
                      o$result()
                  })
@@ -233,19 +260,26 @@ validObject(.NextBestDualEndpoint())
 ##' Initialization function for "NextBestDualEndpoint"
 ##'
 ##' @param target see \code{\linkS4class{NextBestDualEndpoint}}
+##' @param scale see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @param overdose see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @param maxOverdoseProb see \code{\linkS4class{NextBestDualEndpoint}}
+##' @param targetThresh see \code{\linkS4class{NextBestDualEndpoint}}
 ##' @return the \code{\linkS4class{NextBestDualEndpoint}} object
 ##'
 ##' @export
 ##' @keywords methods
 NextBestDualEndpoint <- function(target,
+                                 scale=c("relative", "absolute"),
                                  overdose,
-                                 maxOverdoseProb)
+                                 maxOverdoseProb,
+                                 targetThresh=0.01)
 {
-    .NextBestDualEndpoint(target=target,
-                          overdose=overdose,
-                          maxOverdoseProb=maxOverdoseProb)
+  scale <- match.arg(scale)
+  .NextBestDualEndpoint(target=target,
+                        scale=scale,
+                        overdose=overdose,
+                        maxOverdoseProb=maxOverdoseProb,
+                        targetThresh=targetThresh)
 }
 
 
@@ -284,7 +318,8 @@ setClass(Class="Increments",
 ##' @slot intervals a vector with the left bounds of the relevant intervals
 ##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{intervals}
-##'
+##' 
+##' @example examples/Rules-class-IncrementsRelative.R
 ##' @export
 ##' @keywords classes
 .IncrementsRelative <-
@@ -324,6 +359,51 @@ IncrementsRelative <- function(intervals,
 }
 
 ## --------------------------------------------------
+## Increments control based on number of dose levels 
+## --------------------------------------------------
+
+##' Increments control based on number of dose levels
+##'
+##' @slot maxLevels scalar positive integer for the number of maximum 
+##' dose levels to increment for the next dose. It defaults to 1, 
+##' which means that no dose skipping is allowed - the next dose 
+##' can be maximum one level higher than the current dose.
+##' 
+##' @example examples/Rules-class-IncrementsNumDoseLevels.R
+##' @export
+##' @keywords classes
+.IncrementsNumDoseLevels <-
+  setClass(Class="IncrementsNumDoseLevels",
+           representation(maxLevels="integer"),
+           prototype(maxLevels=1L),
+           contains="Increments",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.scalar(object@maxLevels) && 
+                         is.integer(object@maxLevels) && 
+                         object@maxLevels > 0,
+                       "maxLevels must be scalar positive integer")
+               
+               o$result()
+             })
+validObject(.IncrementsNumDoseLevels())
+
+##' Initialization function for "IncrementsNumDoseLevels"
+##'
+##' @param maxLevels see \code{\linkS4class{IncrementsNumDoseLevels}}
+##' @return the \code{\linkS4class{IncrementsNumDoseLevels}} object
+##'
+##' @export
+##' @keywords methods
+IncrementsNumDoseLevels <- function(maxLevels=1)
+{
+  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels))
+}
+
+
+## --------------------------------------------------
 ## Increments control based on relative differences in intervals,
 ## with special rules for part 1 and beginning of part 2
 ## --------------------------------------------------
@@ -349,6 +429,7 @@ IncrementsRelative <- function(intervals,
 ##' then the relative increment rules will be applied to find the next maximum
 ##' dose level.
 ##'
+##' @example examples/Rules-class-IncrementsRelative-DataParts.R
 ##' @export
 ##' @keywords classes
 .IncrementsRelativeParts <-
@@ -412,6 +493,7 @@ IncrementsRelativeParts <- function(dltStart,
 ##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{DLTintervals}
 ##'
+##' @example examples/Rules-class-IncrementsRelativeDLT.R
 ##' @export
 ##' @keywords classes
 .IncrementsRelativeDLT <-
@@ -454,6 +536,62 @@ IncrementsRelativeDLT <- function(DLTintervals,
 }
 
 
+
+## -----------------------------------------------------------
+## Max increment based on minimum of multiple increment rules
+## -----------------------------------------------------------
+
+##' Max increment based on minimum of multiple increment rules
+##'
+##' This class can be used to combine multiple increment rules with the MIN
+##' operation.
+##'
+##' \code{IncrementsList} contains all increment rules, which are again
+##' objects of class \code{\linkS4class{Increments}}. The minimum of these
+##' individual increments is taken to give the final maximum increment.
+##'
+##' @slot IncrementsList list of increment rules
+##'
+##' @example examples/Rules-class-IncrementMin.R
+##' @keywords classes
+##' @export
+.IncrementMin <-
+  setClass(Class="IncrementMin",
+           representation(IncrementsList="list"),
+           prototype(IncrementsList=
+                       list(IncrementsRelativeDLT(DLTintervals=as.integer(c(0, 1)),
+                                                  increments=c(2, 1)),
+                            IncrementsRelative(intervals=c(0, 2),
+                                               increments=c(2, 1)))),
+           contains="Increments",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(all(sapply(object@IncrementsList, is,
+                                  "Increments")),
+                       "all IncrementsList elements have to be Increments objects")
+               
+               o$result()
+             })
+validObject(.IncrementMin())
+
+
+##' Initialization function for "IncrementMin"
+##'
+##' @param IncrementsList see \code{\linkS4class{IncrementMin}}
+##' @return the \code{\linkS4class{IncrementMin}} object
+##'
+##' @export
+##' @keywords methods
+IncrementMin <- function(IncrementsList)
+{
+  .IncrementMin(IncrementsList=IncrementsList)
+}
+
+
+
+
 ## ============================================================
 
 ## --------------------------------------------------
@@ -469,7 +607,8 @@ IncrementsRelativeDLT <- function(DLTintervals,
 ##' \code{\linkS4class{StoppingMinPatients}},
 ##' \code{\linkS4class{StoppingTargetProb}}
 ##' \code{\linkS4class{StoppingMTDdistribution}},
-##' \code{\linkS4class{StoppingTargetBiomarker}}
+##' \code{\linkS4class{StoppingTargetBiomarker}},
+##' \code{\linkS4class{StoppingHighestDose}}
 ##'
 ##' @export
 ##' @keywords classes
@@ -486,7 +625,8 @@ setClass(Class="Stopping",
 ##' @slot nCohorts number of required cohorts
 ##' @slot percentage percentage (between 0 and 100) within the next best dose
 ##' the cohorts must lie
-##'
+##' 
+##' @example examples/Rules-class-StoppingCohortsNearDose.R
 ##' @keywords classes
 ##' @export
 .StoppingCohortsNearDose <-
@@ -531,7 +671,8 @@ StoppingCohortsNearDose <- function(nCohorts,
 ##' @slot nPatients number of required patients
 ##' @slot percentage percentage (between 0 and 100) within the next best dose
 ##' the patients must lie
-##'
+##' 
+##' @example examples/Rules-class-StoppingPatientsNearDose.R
 ##' @keywords classes
 ##' @export
 .StoppingPatientsNearDose <-
@@ -577,7 +718,8 @@ StoppingPatientsNearDose <- function(nPatients,
 ##' Stop based on minimum number of cohorts
 ##'
 ##' @slot nCohorts minimum required number of cohorts
-##'
+##' 
+##' @example examples/Rules-class-StoppingMinCohorts.R
 ##' @keywords classes
 ##' @export
 .StoppingMinCohorts <-
@@ -617,7 +759,8 @@ StoppingMinCohorts <- function(nCohorts)
 ##' Stop based on minimum number of patients
 ##'
 ##' @slot nPatients minimum allowed number of patients
-##'
+##' 
+##' @example examples/Rules-class-StoppingMinPatients.R
 ##' @keywords classes
 ##' @export
 .StoppingMinPatients <-
@@ -657,7 +800,8 @@ StoppingMinPatients <- function(nPatients)
 ##' @slot target the target toxicity interval, e.g. \code{c(0.2, 0.35)}
 ##' @slot prob required target toxicity probability (e.g. \code{0.4})
 ##' for reaching sufficient precision
-##'
+##' 
+##' @example examples/Rules-class-StoppingTargetProb.R
 ##' @keywords classes
 ##' @export
 .StoppingTargetProb <-
@@ -710,7 +854,8 @@ StoppingTargetProb <- function(target,
 ##' @slot target the target toxicity probability (e.g. 0.33) defining the MTD
 ##' @slot thresh the threshold relative to the MTD (e.g. 0.5)
 ##' @slot prob required probability (e.g. 0.9)
-##'
+##' 
+##' @example examples/Rules-class-StoppingMTDdistribution.R
 ##' @keywords classes
 ##' @export
 .StoppingMTDdistribution <-
@@ -766,25 +911,40 @@ StoppingMTDdistribution <- function(target,
 
 ##' Stop based on probability of target biomarker
 ##'
-##' @slot target the biomarker target range, relative to the maximum, that
-##' needs to be reached. So this must be a probability range (1 is allowed here)
+##' @slot target the biomarker target range, that
+##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"} 
+##' means we target a dose with at least 80\% of maximum biomarker level. 
+##' @slot scale either \code{relative} (default, then the \code{target} is interpreted 
+##' relative to the maximum, so must be a probability range) or \code{absolute}
+##' (then the \code{target} is interpreted as absolute biomarker range)
 ##' @slot prob required target probability for reaching sufficient precision
-##'
+##' 
+##' @example examples/Rules-class-StoppingTargetBiomarker.R
 ##' @keywords classes
 ##' @export
 .StoppingTargetBiomarker <-
     setClass(Class="StoppingTargetBiomarker",
              representation(target="numeric",
+                            scale="character",
                             prob="numeric"),
              prototype(target=c(0.9, 1),
+                       scale="relative",
                        prob=0.3),
              contains="Stopping",
              validity=
                  function(object){
                      o <- Validate()
-
-                     o$check(is.probRange(object@target),
-                             "target has to be a probability range")
+                     
+                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
+                             "scale must be either 'relative' or 'absolute'")
+                     if(object@scale == "relative")
+                     {
+                       o$check(is.probRange(object@target),
+                               "target has to be a probability range when scale='relative'")
+                     } else {
+                       o$check(is.range(object@target),
+                               "target must be a numeric range")
+                     }
                      o$check(is.probability(object@prob,
                                             bounds=FALSE),
                              "prob must be probability > 0 and < 1")
@@ -797,17 +957,47 @@ validObject(.StoppingTargetBiomarker())
 ##' Initialization function for "StoppingTargetBiomarker"
 ##'
 ##' @param target see \code{\linkS4class{StoppingTargetBiomarker}}
+##' @param scale see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
 ##'
 ##' @export
 ##' @keywords methods
 StoppingTargetBiomarker <- function(target,
+                                    scale=c("relative", "absolute"),
                                     prob)
 {
+  scale <- match.arg(scale)
     .StoppingTargetBiomarker(target=target,
+                             scale=scale,
                              prob=prob)
 }
+
+## --------------------------------------------------
+## Stopping when the highest dose is reached
+## --------------------------------------------------
+
+##' Stop when the highest dose is reached
+##' 
+##' @example examples/Rules-class-StoppingHighestDose.R
+##' @keywords classes
+##' @export
+.StoppingHighestDose <-
+  setClass(Class="StoppingHighestDose",
+           contains="Stopping")
+validObject(.StoppingHighestDose())
+
+##' Initialization function for "StoppingHighestDose"
+##'
+##' @return the \code{\linkS4class{StoppingHighestDose}} object
+##'
+##' @export
+##' @keywords methods
+StoppingHighestDose <- function()
+{
+  .StoppingHighestDose()
+}
+
 
 ## --------------------------------------------------
 ## Stopping based on multiple stopping rules
@@ -827,7 +1017,8 @@ StoppingTargetBiomarker <- function(target,
 ##' @slot stopList list of stopping rules
 ##' @slot summary the summary function to combine the results of the stopping
 ##' rules into a single result
-##'
+##' 
+##' @example examples/Rules-class-StoppingList.R
 ##' @keywords classes
 ##' @export
 .StoppingList <-
@@ -886,6 +1077,7 @@ StoppingList <- function(stopList,
 ##'
 ##' @slot stopList list of stopping rules
 ##'
+##' @example examples/Rules-class-StoppingAll.R
 ##' @keywords classes
 ##' @export
 .StoppingAll <-
@@ -934,7 +1126,8 @@ StoppingAll <- function(stopList)
 ##' order that the result of this rule is to stop.
 ##'
 ##' @slot stopList list of stopping rules
-##'
+##' 
+##' @example examples/Rules-class-StoppingAny.R
 ##' @keywords classes
 ##' @export
 .StoppingAny <-
@@ -966,6 +1159,103 @@ validObject(.StoppingAny())
 StoppingAny <- function(stopList)
 {
     .StoppingAny(stopList=stopList)
+}
+
+
+##-------------------------------------------------------------------------------------------------------------------
+## Stopping based on a target ratio of the 95% credibility interval
+## ---------------------------------------------------------------------------------------------------------------
+
+##' Stop based on a target ratio, the ratio of the upper to the lower
+##' 95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target 
+##' probability of DLE used at the end of a trial
+##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
+##' estimate that required to stop a trial
+##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
+##' 
+##' @example examples/Rules-class-StoppingTDCIRatio.R
+##' @export
+##' @keywords classes 
+.StoppingTDCIRatio <- 
+  setClass(Class="StoppingTDCIRatio",
+           representation(targetRatio="numeric",
+                          targetEndOfTrial="numeric"),
+           prototype(targetRatio=5,
+                     targetEndOfTrial=0.3),
+           contains="Stopping",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
+                       "targetRatio must be a positive numerical number")
+               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
+                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
+               o$result()
+             })
+
+validObject(.StoppingTDCIRatio())
+
+##' Initialization function for "StoppingTDCIRatio"
+##' 
+##' @param targetRatio please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
+##' @return the \code{\linkS4class{StoppingTDCIRatio}} class object
+##' 
+##' @export
+##' @keywords methods
+StoppingTDCIRatio <- function(targetRatio,
+                              targetEndOfTrial)
+{
+  .StoppingTDCIRatio(targetRatio=targetRatio,
+                     targetEndOfTrial=targetEndOfTrial)
+}
+
+## ----------------------------------------------------------------------------------------------------------------
+##' Stop based on a target ratio, the ratio of the upper to the lower
+##' 95\% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and 
+##' the TD end of trial, the dose with probability of DLE equals to the target 
+##' probability of DLE used at the end of a trial.
+##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the 
+##' estimate that required to stop a trial
+##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
+##' 
+##' @example examples/Rules-class-StoppingGstarCIRatio.R
+##' @export
+##' @keywords classes 
+.StoppingGstarCIRatio <- 
+  setClass(Class="StoppingGstarCIRatio",
+           representation(targetRatio="numeric",
+                          targetEndOfTrial="numeric"),
+           prototype(targetRatio=5,
+                     targetEndOfTrial=0.3),
+           contains="Stopping",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
+                       "targetRatio must be a positive numerical number")
+               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
+                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
+               o$result()
+             })
+
+validObject(.StoppingGstarCIRatio())
+
+##' Initialization function for "StoppingGstarCIRatio"
+##' 
+##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
+##' @return the \code{\linkS4class{StoppingGstarCIRatio}} class object
+##' 
+##' @export
+##' @keywords methods
+StoppingGstarCIRatio <- function(targetRatio,
+                                 targetEndOfTrial)
+{
+  .StoppingGstarCIRatio(targetRatio=targetRatio,
+                        targetEndOfTrial=targetEndOfTrial)
 }
 
 
@@ -1002,7 +1292,8 @@ setClass(Class="CohortSize",
 ##' @slot intervals a vector with the left bounds of the relevant dose intervals
 ##' @slot cohortSize an integer vector of the same length with the cohort
 ##' sizes in the \code{intervals}
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeRange.R
 ##' @export
 ##' @keywords classes
 .CohortSizeRange <-
@@ -1019,7 +1310,7 @@ setClass(Class="CohortSize",
                      o$check(identical(length(object@cohortSize),
                                        length(object@intervals)),
                              "cohortSize must have same length as intervals")
-                     o$check(all(object@cohortSize > 0),
+                     o$check(all(object@cohortSize >= 0),
                              "cohortSize must only contain positive integers")
                      o$check(! is.unsorted(object@intervals, strictly=TRUE),
                              "intervals has to be sorted and have unique values")
@@ -1053,7 +1344,8 @@ CohortSizeRange <- function(intervals,
 ##' DLT intervals
 ##' @slot cohortSize an integer vector of the same length with the cohort
 ##' sizes in the \code{DLTintervals}
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeDLT.R
 ##' @export
 ##' @keywords classes
 .CohortSizeDLT <-
@@ -1070,7 +1362,7 @@ CohortSizeRange <- function(intervals,
                      o$check(identical(length(object@cohortSize),
                                        length(object@DLTintervals)),
                              "cohortSize must have same length as DLTintervals")
-                     o$check(all(object@cohortSize > 0),
+                     o$check(all(object@cohortSize >= 0),
                              "cohortSize must only contain positive integers")
                      o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
                              "DLTintervals has to be sorted and have unique values")
@@ -1106,7 +1398,8 @@ CohortSizeDLT <- function(DLTintervals,
 ##' This class is used when the cohort size should be kept constant.
 ##'
 ##' @slot size the constant integer size
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeConst.R
 ##' @keywords classes
 ##' @export
 .CohortSizeConst <-
@@ -1118,7 +1411,7 @@ CohortSizeDLT <- function(DLTintervals,
                  function(object){
                      o <- Validate()
 
-                     o$check(is.scalar(object@size) && (object@size > 0),
+                     o$check(is.scalar(object@size) && (object@size >= 0),
                              "size needs to be positive scalar")
 
                      o$result()
@@ -1152,6 +1445,7 @@ CohortSizeConst <- function(size)
 ##' @slot sizes the two sizes for part 1 and part 2
 ##'
 ##' @keywords classes
+##' @example examples/Rules-class-CohortSizeParts.R
 ##' @export
 .CohortSizeParts <-
     setClass(Class="CohortSizeParts",
@@ -1198,7 +1492,8 @@ CohortSizeParts <- function(sizes)
 ##' individual cohort sizes is taken to give the final cohort size.
 ##'
 ##' @slot cohortSizeList list of cohort size rules
-##'
+##' 
+##' @example examples/Rules-class-CohortSizeMax.R
 ##' @keywords classes
 ##' @export
 .CohortSizeMax <-
@@ -1251,6 +1546,7 @@ CohortSizeMax <- function(cohortSizeList)
 ##'
 ##' @slot cohortSizeList list of cohort size rules
 ##'
+##' @example examples/Rules-class-CohortSizeMin.R
 ##' @keywords classes
 ##' @export
 .CohortSizeMin <-
@@ -1289,4 +1585,275 @@ CohortSizeMin <- function(cohortSizeList)
 
 
 
-## ============================================================
+## ==========================================================================================
+## ------------------------------------------------------------------------------------
+## Class for next best based on Pseudo DLE Model with samples
+## -----------------------------------------------------------------------------------------
+
+##' Next best dose based on Pseudo DLE Model with samples
+##'
+##' The class is to find the next best dose for allocation and the dose for final recommendation 
+##' at the end of a trial. There are two input target probabilities of the occurrence of a DLE 
+##' used during trial and used at the end of trial to find the two doses. For this class, only
+##' DLE response will be incorporated for the dose allocation and DLEsamples
+##' must be used to obtain the next dose for allocation.
+##' 
+##' @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose at the end of a trial
+##' for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##' @slot derive the function which derives from the input, a vector of the posterior samples called 
+##' \code{TDsamples} of the dose
+##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##'  
+##' @example examples/Rules-class-NextBestTDsamples.R
+##' @export
+##' @keywords class
+.NextBestTDsamples<-
+  setClass(Class="NextBestTDsamples",
+           representation(targetDuringTrial="numeric",
+                          targetEndOfTrial="numeric",
+                          derive="function"),
+           ##targetDuringTrial is the target DLE probability during the trial
+           ##targetEndOfTrial is the target DLE probability at the End of the trial
+           prototype(targetDuringTrial=0.35,
+                     targetEndOfTrial=0.3,
+                     derive=function(TDsamples){
+                       quantile(TDsamples,prob=0.3)}),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o<-Validate()
+               o$check(is.probability(object@targetDuringTrial,
+                                      bounds=FALSE),
+                       "targetDuringTrial must be probability > 0 and < 1")
+               o$check(is.probability(object@targetEndOfTrial,
+                                      bounds=FALSE),
+                       "targetEndOfTrial must be probability > 0 and < 1")
+               o$check(identical(names(formals(object@derive)),
+                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
+               
+               o$result()
+             })
+validObject(.NextBestTDsamples())
+
+## ---------------------------------------------------------------------------
+##' Initialization function for class "NextBestTDsamples"
+##' 
+##' @param targetDuringTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##' @param derive please refer to \code{\linkS4class{NextBestTDsamples}} class object
+##' @return the \code{\linkS4class{NextBestTDsamples}} class object
+##' 
+##' @export
+##' @keywords methods
+NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
+{
+  .NextBestTDsamples(targetDuringTrial=targetDuringTrial,
+                     targetEndOfTrial=targetEndOfTrial,
+                     derive=derive)
+}
+
+## ------------------------------------------------------------------------------
+## class for nextBest based on Pseudo DLE model without sample
+## -----------------------------------------------------------------------------
+
+##' Next best dose based on Pseudo DLE model without sample
+##' 
+##' The class is to find the next best dose for allocation and the dose for final recommendation 
+##' at the end of a trial without involving any samples. This is a class for which only
+##'  DLE response will be incorporated for the dose-allocation.
+##' This is only based on the probabilities of
+##' the occurrence of a DLE obtained by using the modal estimates of the model paramters.
+##' There are two inputs inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose for allocation and the dose 
+##' for recommendation at the end of the trial.
+##' It is only suitable to use with the model specified in \code{ModelTox} class.
+##' 
+##' @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##' 
+##' @example examples/Rules-class-NextBestTD.R
+##' @export
+##' @keywords class
+.NextBestTD<-
+  setClass(Class="NextBestTD",
+           representation(targetDuringTrial="numeric",
+                          targetEndOfTrial="numeric"),
+           ##targetDuringTrial is the target DLE probability during the trial
+           ##targetEndOfTrial is the target DLE probability at the End of the trial
+           prototype(targetDuringTrial=0.35,
+                     targetEndOfTrial=0.3),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o<-Validate()
+               o$check(is.probability(object@targetDuringTrial,
+                                      bounds=FALSE),
+                       "targetDuringTrial must be probability > 0 and < 1")
+               o$check(is.probability(object@targetEndOfTrial,
+                                      bounds=FALSE),
+                       "targetEndOfTrial must be probability > 0 and < 1")
+               o$result()
+             })
+validObject(.NextBestTD())
+
+##' Initialization function for the class "NextBestTD"
+##' 
+##' @param targetDuringTrial please refer to \code{\linkS4class{NextBestTD}} class object
+##' @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTD}} class object
+##' @return the \code{\linkS4class{NextBestTD}} class object
+##' 
+##' @export
+##' @keywords methods
+NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
+{
+  .NextBestTD(targetDuringTrial=targetDuringTrial,
+              targetEndOfTrial=targetEndOfTrial)
+}
+
+##------------------------------------------------------------------------------------------------------
+## Class for next best with maximum gain value based on a pseudo DLE and efficacy model without samples
+## ----------------------------------------------------------------------------------------------------
+##' Next best dose with maximum gain value based on a pseudo DLE and efficacy model without samples
+##' 
+##' This is a class for which to find the next dose which is safe and give the maximum gain value 
+##' for allocation. This is a class where no DLE and efficacy samples are involved. This is only based 
+##' on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
+##' obtained by using the modal estimates of the DLE and efficacy model parameters.
+##' There are two inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
+##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
+##' class
+##' 
+##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##'    
+##' @example examples/Rules-class-NextBestMaxGain.R
+##' @export
+##' @keywords class
+.NextBestMaxGain<-
+  setClass(Class="NextBestMaxGain",
+           representation(DLEDuringTrialtarget="numeric",
+                          DLEEndOfTrialtarget="numeric"),
+           prototype(DLEDuringTrialtarget=0.35,
+                     DLEEndOfTrialtarget=0.3),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o <- Validate()
+               o$check(is.probability(object@DLEDuringTrialtarget),
+                       "DLE DuringTrialtarget has to be a probability")
+               o$check(is.probability(object@DLEEndOfTrialtarget),
+                       "DLE EndOfTrialtarget has to be a probability")
+               o$result()
+             })
+validObject(.NextBestMaxGain())
+
+##' Initialization function for the class 'NextBestMaxGain'
+##' 
+##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
+##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
+##' @return the \code{\linkS4class{NextBestMaxGain}} class object
+##' 
+##' @export
+##' @keywords methods
+NextBestMaxGain <- function(DLEDuringTrialtarget,
+                            DLEEndOfTrialtarget)
+{.NextBestMaxGain(DLEDuringTrialtarget=DLEDuringTrialtarget,
+                  DLEEndOfTrialtarget=DLEEndOfTrialtarget)}
+
+##------------------------------------------------------------------------------------------------------
+## Class for next best with maximum gain value based on a pseudo DLE and efficacy model with samples
+## ----------------------------------------------------------------------------------------------------
+##' Next best dose with maximum gain value based on a pseudo DLE and efficacy model with samples
+##' 
+##' This is a class for which to find the next dose which is safe and give the maximum gain value 
+##' for allocation. This is a class where DLE and efficacy samples are involved.
+##' There are two inputs which are the two target 
+##' probabilities of the occurrence of a DLE used during trial
+##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
+##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
+##' class
+##'
+##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' during the trial
+##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end 
+##' of the trial. This target is particularly used to recommend the dose for which its posterior 
+##' probability of the occurrence of a DLE is equal to this target
+##' @slot TDderive the function which derives from the input, a vector of the posterior samples called 
+##' \code{TDsamples} of the dose
+##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
+##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
+##' @slot Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
+##' which gives the maximum gain value) samples 
+##' called \code{Gstarsamples}, the final next best Gstar estimate.
+##' 
+##' @example examples/Rules-class-NextBestMaxGainSamples.R
+##' 
+##' @export
+##' @keywords class
+.NextBestMaxGainSamples<-
+  setClass(Class="NextBestMaxGainSamples",
+           representation(DLEDuringTrialtarget="numeric",
+                          DLEEndOfTrialtarget="numeric",
+                          TDderive="function",
+                          Gstarderive="function"),
+           prototype(DLEDuringTrialtarget=0.35,
+                     DLEEndOfTrialtarget=0.3,
+                     TDderive=function(TDsamples){
+                       quantile(TDsamples,prob=0.3)},
+                     Gstarderive=function(Gstarsamples){
+                       quantile(Gstarsamples,prob=0.5)}),
+           contains=list("NextBest"),
+           validity=
+             function(object){
+               o <- Validate()
+               o$check(is.probability(object@DLEDuringTrialtarget),
+                       "DLE DuringTrialtarget has to be a probability")
+               o$check(is.probability(object@DLEEndOfTrialtarget),
+                       "DLE EndOfTrialtarget has to be a probability")
+               o$check(identical(names(formals(object@TDderive)),
+                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
+               o$check(identical(names(formals(object@Gstarderive)),
+                                 c("Gstarsamples")),"derive must have as single argument 'Gstarsamples'")
+               
+               o$result()
+             })
+validObject(.NextBestMaxGainSamples)
+
+##' Initialization function for class "NextBestMaxGainSamples"
+##' 
+##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' @param TDderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' @param Gstarderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' 
+##' @return the \code{\linkS4class{NextBestMaxGainSamples}} class object
+##' 
+##' @export
+##' @keywords methods
+NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
+                                   DLEEndOfTrialtarget,TDderive,Gstarderive)
+{.NextBestMaxGainSamples(DLEDuringTrialtarget=DLEDuringTrialtarget,
+                         DLEEndOfTrialtarget=DLEEndOfTrialtarget,
+                         TDderive=TDderive,
+                         Gstarderive=Gstarderive)
+}
+
+
