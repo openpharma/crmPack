@@ -1857,3 +1857,187 @@ NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
 }
 
 
+## ============================================================
+
+## --------------------------------------------------
+## Virtual class for safety window
+## --------------------------------------------------
+
+##' The virtual class for safety window
+##'
+##' @seealso \code{\linkS4class{SafetyWindowSize}},
+##' \code{\linkS4class{SafetyWindowConst}},
+##'
+##' @export
+##' @keywords classes
+setClass(Class="SafetyWindow",
+         contains=list("VIRTUAL"))
+
+
+## ============================================================
+
+
+## --------------------------------------------------
+## Safety window length based on cohort size
+## --------------------------------------------------
+
+##' Safety window length based on cohort size. 
+##' This class is used to decide the rolling rule from the clinical perspective.
+##'
+##' \code{patientGap} is to be used as follows. If for example, the 
+##' cohort size is 4 and we want to specify three time intervals between these
+##' four patients: The interval between the 1st and 2nd patient = 7 units of time
+##' , the interval between the 2nd and 3rd patient = 5 units of time, the interval 
+##' between the 3rd and 4th patient = 3 units of time, then we specify
+##' \code{patientGap} to be \code{c(7,5,3)}. Sometimes, we only think the interval
+##' between the 1st and 2nd patient should be increased for the safety consideration
+##' , and the rest time intervals can be the same, whatever the cohort size is, then
+##' we specify \code{patientGap} to be \code{c(7,3)}. The package will automaticly
+##' repeat the last element of the vector for the rest time intervals. 
+##' 
+##' Note that \code{sizeIntervals} is to be read as follows. For instance, When we
+##' want to change the patientGap based on the cohort size, i.e. the time interval
+##' between the 1st and 2nd patient = 9 units of time and the rest time intervals are
+##' 5 units of time when the cohort size is equal or larger than 4. And the time 
+##' interval between the 1st and 2nd patient = 7 units of time and the rest time 
+##' intervals are 3 units of time when the cohort size is smaller than 4, then we
+##' specify \code{sizeIntervals} to be \code{c(0, 4)}. That means, the right
+##' bound of the intervals are exclusive to the interval, and the last interval
+##' goes from the last value until infinity.
+##'  
+##' @slot patientGap Observed period of the previous patient before the next patient
+##' can be dosed
+##' @slot sizeIntervals An integer vector with the left bounds of the relevant 
+##' cohort size intervals
+##' @slot patientFollow The period of time that each patient in the cohort needs to be 
+##' followed before the next cohort open
+##' @slot patientFollowMin At least one patient in the cohort needs to be followed at
+##' the minimal follow up time
+##' 
+##' @example examples/Rules-class-SafetyWindowSize.R
+##' @export
+##' @keywords classes
+.SafetyWindowSize <-
+  setClass(Class="SafetyWindowSize",
+           representation(patientGap="list",
+                          sizeIntervals="numeric",
+                          patientFollow="numeric",
+                          patientFollowMin="numeric"),
+           prototype(patientGap=list(0),
+                     sizeIntervals=as.integer(c(1L,3L)),
+                     patientFollow=1,
+                     patientFollowMin=1),
+           contains="SafetyWindow",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               o$check(all(sapply(object@patientGap,function(x){x>=0})),
+                       "patientGap should be non-negative number")
+               o$check(all(object@sizeIntervals > 0),
+                       "sizeIntervals must only contain positive integers")
+               o$check(all(object@patientFollow > 0),
+                       "patientFollow should be positive number")
+               o$check(all(object@patientFollowMin > 0),
+                       "patientFollowMin should be positive number")
+               
+               o$result()
+             })
+validObject(.SafetyWindowSize())
+
+##' Initialization function for "SafetyWindowSize"
+##'
+##' @param patientGap see \code{\linkS4class{SafetyWindowSize}}
+##' @param sizeIntervals see \code{\linkS4class{SafetyWindowSize}}
+##' @param patientFollow see \code{\linkS4class{SafetyWindowSize}}
+##' @param patientFollowMin see \code{\linkS4class{SafetyWindowSize}}
+##' 
+##' @return the \code{\linkS4class{SafetyWindowSize}} object
+##'
+##' @export
+##' @keywords methods
+SafetyWindowSize <- function(patientGap,
+                             sizeIntervals,
+                             patientFollow,
+                             patientFollowMin)
+{
+  if(patientFollow > patientFollowMin)
+  {
+    warning("the value of patientFollowMin is typically larger than the value of patientFollow")
+  }
+  .SafetyWindowSize(patientGap=patientGap,
+                    sizeIntervals=sizeIntervals,
+                    patientFollow=patientFollow,
+                    patientFollowMin=patientFollowMin)
+}
+
+
+## ============================================================
+
+
+## --------------------------------------------------
+## Constant safety window length
+## --------------------------------------------------
+
+##' Constant safety window length
+##'
+##' This class is used when the patientGap should be keeped constant.
+##'
+##' @slot size the constant integer size
+##' todo: doc needs to be updated with different slots!
+##' 
+##' @example examples/Rules-class-SafetyWindowConst.R
+##' @keywords classes
+##' @export
+.SafetyWindowConst <-
+  setClass(Class="SafetyWindowConst",
+           representation(patientGap="numeric",
+                          patientFollow="numeric",
+                          patientFollowMin="numeric"),
+           prototype(patientGap=0,
+                     patientFollow=1,
+                     patientFollowMin=1),
+           contains="SafetyWindow",
+           validity=
+             function(object){
+               o <- crmPack:::Validate()
+               
+               o$check(all(object@patientGap >= 0),
+                       "patientGap should be non-negative number")
+               o$check(all(object@patientFollow > 0),
+                       "cohort should be positive number")
+               o$check(all(object@patientFollowMin > 0),
+                       "patientFollowMin should be positive number")
+               
+               o$result()
+             })
+validObject(.SafetyWindowConst())
+
+
+##' Initialization function for "SafetyWindowConst"
+##'
+##' @param patientGap see \code{\linkS4class{SafetyWindowConst}}
+##' @param patientFollow see \code{\linkS4class{SafetyWindowConst}}
+##' @param patientFollowMin see \code{\linkS4class{SafetyWindowConst}}
+##' 
+##' @return the \code{\linkS4class{SafetyWindowConst}} object
+##'
+##' @export
+##' @keywords methods
+SafetyWindowConst <- function(patientGap,
+                              patientFollow,
+                              patientFollowMin)
+{
+  if(patientFollow>patientFollowMin)
+  {
+    warning("the value of patientFollowMin is typically larger than the value of patientFollow")
+  }
+  .SafetyWindowConst(patientGap=patientGap,
+                     patientFollow=patientFollow,
+                     patientFollowMin=patientFollowMin)
+}
+
+
+## ============================================================
+
+

@@ -3218,3 +3218,100 @@ setMethod("stopTrial",
                                message=text))
             })
 
+
+## ============================================================
+
+## -----------------------------------------------------
+## Determine the safety window length of the next cohort
+## -----------------------------------------------------
+
+##' Determine the safety window length of the next cohort
+##'
+##' This function determines the safety window length of
+##' the next cohort.
+##'
+##' @param safetyWindow The rule, an object of class
+##' \code{\linkS4class{SafetyWindow}}
+##' @param size The next cohort size
+##' @param data The data input, an object of class \code{\linkS4class{DAData}}
+##' @param \dots additional arguments
+##'
+##' @return the windowLength as a list of safety window parameters
+##' (patientGap, patientFollow, patientFollowMin) 
+##'
+##' @export
+##' @keywords methods
+setGeneric("windowLength",
+           def=
+             function(safetyWindow, size, ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("windowLength")
+             },
+           valueClass="list")
+
+
+## ============================================================
+
+## --------------------------------------------------
+## The SafetyWindowSize method
+## --------------------------------------------------
+
+##' @describeIn windowLength Determine safety window length based 
+##' on the cohort size
+##' 
+##' @example examples/Rules-method-windowLength-SafetyWindowSize.R
+setMethod("windowLength",
+          signature=
+            signature(safetyWindow="SafetyWindowSize",
+                      size="ANY"),
+          def=
+            function(safetyWindow, size, data, ...){
+              
+              ## determine in which interval the next size is
+              interval <-
+                findInterval(x=size,
+                             vec=safetyWindow@sizeIntervals)
+              
+              ## so the safety window length is
+              patientGap <- head(c(0,safetyWindow@patientGap[[interval]],
+                                   rep(tail(safetyWindow@patientGap[[interval]],1),100)),size)
+              patientFollow <- safetyWindow@patientFollow
+              patientFollowMin <- safetyWindow@patientFollowMin
+              
+              ret <- list(patientGap=patientGap,patientFollow=patientFollow,patientFollowMin=patientFollowMin)
+              
+              return(ret)
+            })
+
+
+## ============================================================
+
+## --------------------------------------------------
+## Constant safety window length
+## --------------------------------------------------
+
+##' @describeIn windowLength Constant safety window length
+##' @example examples/Rules-method-windowLength-SafetyWindowConst.R
+setMethod("windowLength",
+          signature=
+            signature(safetyWindow="SafetyWindowConst",
+                      size="ANY"),
+          def=
+            function(safetyWindow, size, ...){
+              
+              ##first element should be 0.
+              patientGap <- head(c(0,safetyWindow@patientGap,
+                                   rep(tail(safetyWindow@patientGap,1),100)),size)
+              patientFollow <- safetyWindow@patientFollow
+              patientFollowMin <- safetyWindow@patientFollowMin
+              
+              ret <- list(patientGap=patientGap,patientFollow=patientFollow,patientFollowMin=patientFollowMin)
+              
+              return(ret)
+            })
+
+
+## ============================================================
+
+
