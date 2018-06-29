@@ -448,9 +448,10 @@ setMethod("getEff",
 ##' Update observations in the \code{\linkS4class{DataDA}} object
 ##'
 ##' @param object the old \code{\linkS4class{DataDA}} object
-##' @param x the dose level (one level only!)
-##' @param y the DLT vector (0/1 vector), for all patients in this cohort
-##' @param u the DLT free survival information
+##' @param factDLTs the simulated DLT outcome for all patients
+##' @param factSurv the simulated DLT time for all patients 
+##' @param factT0 the time that patients start DLT observation window
+##' @param thisDose the current dose of the cohort
 ##' @param ID the patient IDs
 ##' @param newCohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort

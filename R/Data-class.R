@@ -423,6 +423,7 @@ validObject(DataMixture())
 ##' @slot u the continuous vector of DLT free survival values
 ##' @slot npiece the number of pieces in the PEM
 ##' DSB: todo: can npiece go to the model slots?
+##' JZ: reply: seems npiece is quite embeded in many functions, may take some time to move it to model.
 ##' @slot Tmax the DLT observation period
 ##' @slot t0 time of initial dosing for each patient
 ##' 
