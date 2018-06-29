@@ -3638,3 +3638,214 @@ EffFlexi <- function(Eff,
             RWmatRank=RWmatRank)}
 ## ---------------------------------------------------------------------------------------------------------
 
+
+##' Logistic model with bivariate (log) normal prior and data augmentation
+##'
+##' This is a modified data augmented CRM with logistic regression model using
+##' a bivariate normal prior on the intercept and log slope parameters.
+##' This class inherits from the normal logistic model class.
+##'
+##' todo: need to include here formula for the lambda prior.
+##'
+##' @slot l a vector used in the lambda prior
+##' @slot C_par a parameter used in the lambda prior, 
+##' according to Liu's paper, C_par=2 is recommended
+##' todo: cite "Liu's paper" here (should be dedicated Roxygen tag for that)
+##' @slot conditionalPEM is a conditional piecewise-exponential model used?
+##' (default) Otherwise an unconditional model is used.
+##'
+##' @example examples/Model-class-DALogisticLogNormal.R
+##' @export
+##' @keywords classes
+.DALogisticLogNormal <-
+  setClass(Class="DALogisticLogNormal",
+           representation(l="numeric",
+                          C_par="numeric",
+                          conditionalPEM="logical"),
+           prototype(l=0.5,
+                     C_par=2, #according to Liu's paper, C_par=2 is recommended
+                     conditionalPEM=TRUE),
+           contains="LogisticLogNormal", 
+           validity=
+             function(object){
+               o <-  Validate()
+               
+               o$check(all(object@l >= 0),
+                       "l, prior parameter of lambda must be positive scalar")
+               
+               ## DSB: Todo: need to check C_par
+               
+               o$check(is.scalar(object@conditionalPEM))
+               
+               o$result()
+             })
+validObject(.DALogisticLogNormal())
+
+
+##' Initialization function for the "DALogisticLogNormal" class
+##'
+##' @param l see \code{\linkS4class{DALogisticLogNormal}}
+##' @param C_par see \code{\linkS4class{DALogisticLogNormal}}
+##' @slot conditionalPEM see \code{\linkS4class{DALogisticLogNormal}}
+##' 
+##' @param \dots additional parameters from \code{\link{LogisticLogNormal}}
+##' @return the \code{\linkS4class{DALogisticLogNormal}} object
+##'
+##' @export
+##' @keywords programming
+DALogisticLogNormal <- function(l,
+                                C_par=2,
+                                conditionalPEM=TRUE,
+                                ...)
+{
+  start <- LogisticLogNormal(...)
+  
+  .DALogisticLogNormal(start,
+                       l=l,
+                       C_par=C_par,
+                       conditionalPEM=conditionalPEM,
+                       datamodel=
+                         function(){
+                           #todo: user be able to specified time interval and number of pieces;
+                           #time intervals of peicewise expernential distribution;
+                           ## DSB: has this been done already?
+                           for (i in 1:nObs) #for each patient
+                           {
+                             #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i] 
+                             #  NOTE: In the original r2JAGs code, the notation "y[i]" was "event[i]" and "DLT[i]" was "y[i]";
+                             #other notations: t[i]-- the true DLT time of patient i if he/she has DLT eventually;
+                             #                 u[i]-- DLT free survival
+                             
+                             #Part I: describe the logistic model of DLTs vs dose;            
+                             logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                             StandLogDose[i] <- log(x[i] / refDose)
+                             
+                             #Part II: describe the piecewise exponential; 
+                             #please notice:
+                             #when y=1             -> DLT=1 and u=<T;
+                             #when y=0 & T<t (u=T) -> DLT=0;
+                             #when y=0 & T>t (u<T) -> DLT=NA/missing;
+                             
+                             #when indx=0 -> censored, i.e u<T and event=0;
+                             #when indx=1 -> not censored, i.e. u>=T or event=1;
+                             indx[i]<-1-step(Tmax-u[i]-eps)*(1-y[i])  
+                             
+                             #a loop which goes through all pieces
+                             for  (j in 1:npiece){  
+                               #When not censored, i.e DLT!=NA & t[i]=u[i];
+                               #if t[i]<h[j], d[i,j]=0;
+                               #if h[j]<t[i]=<h[j+1], d[i,j]=1
+                               #if h[j+1]<t[i], d[i,j]=0
+                               
+                               #When censored t[i]>u[i] -> d[i,j]=0             
+                               d[i,j]<-y[i]*step(u[i]-h[j]-eps)*step(h[j+1]-u[i])
+                               
+                               #DLT free survival(time) for patient i in interval I(j); 
+                               #if t[i]<h[j], s[i,j]=0;
+                               #if h[j]<t[i]<=h[j+1], s[i,j]=t[i]-h[j]
+                               #if h[j+1]<=t[i], s[i,j]=h[j+1]-h[j]
+                               s[i,j]<-min(u[i]-h[j],h[j+1]-h[j])*step(u[i]-h[j])
+                               
+                               #piecewise exponential hazard rate lambda[j];
+                               mu_u[i,j] <- lambda[j]*s[i,j]
+                               mu[i,j]<- d[i,j]*log(lambda[j])-y[i]*mu_u[i,j]
+                             }
+                             
+                             #apply zero trick in JAGS;
+                             zeros[i]~dpois(phi[i])
+                             
+                             phi[i]<- -log(L[i]) + cadj
+                             
+                             #the likelihood function;
+                             L[i]<- pow(L_obs[i],indx[i])*pow(L_miss[i],1-indx[i])
+                             #not censored
+                             L_obs[i]<-exp(sum(mu[i,]))*pow(p[i]/A[i],y[i])*pow(1-p[i],1-y[i])
+                             #censored
+                             L_miss[i]<- 1-p[i]*(1-exp(-sum(mu_u[i,])))/A[i]
+                             
+                           }
+                           
+                         },
+                       
+                       priormodel=
+                         joinModels(start@priormodel,
+                                    function(){
+                                      # ## the multivariate normal prior on the (transformed)
+                                      # ## coefficients
+                                      # priorPrec[1:2,1:2] <- inverse(priorCov[,])
+                                      # theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                                      # ## extract actual coefficients
+                                      # alpha0 <- theta[1]
+                                      # alpha1 <- exp(theta[2])
+                                      # 
+                                      # ## dummy to use refDose here.
+                                      # ## It is contained in the modelspecs list below,
+                                      # ## so it must occur here
+                                      # bla <- refDose + 1
+                                      
+                                      ## the piecewise exponential prior;
+                                      g_beta<- 1/C_par   
+                                      
+                                      for  (j in 1:npiece){
+                                        
+                                        muT[j]<- lambda[j]*sT[j]
+                                        
+                                        sT[j]<-h[j+1]-h[j]
+                                        
+                                        #prior of lambda ;
+                                        
+                                        g_alpha[j]<-l[j]/C_par
+                                        
+                                        lambda_p[j]~dgamma(g_alpha[j],g_beta)
+                                        
+                                        lambda[j]<-lambda_p[j]  
+                                      }
+                                      
+                                      ## for conditional:
+                                      sum_muT[i]<-sum(muT[])
+                                      
+                                      ## If cond = 1, then conditional PEM is used and this
+                                      ## is defined as the probability to have DLT, i.e. t<T
+                                      ## otherwise cond = 0 and it is just 1 (so no
+                                      ## impact in likelihood)
+                                      A[i]<- cond * (1-exp(-sum_muT[i])) + (1 - cond)
+                                      
+                                    }),
+                       
+                       datanames=c("nObs", "y", "x", "u","npiece",
+                                   "Tmax"), 
+                       modelspecs=
+                         function(nObs, Tmax, npiece){
+                           list(refDose=start@refDose,
+                                priorCov=start@cov,
+                                priorMean=start@mean,
+                                l=l,
+                                C_par=C_par,
+                                zeros=rep(0, nObs),
+                                eps=1e-10,
+                                cadj=1e10,
+                                h=seq(from=0L, to=Tmax, length=npiece + 1),
+                                cond=as.integer(conditionalPEM) ## here pass the option to JAGS code
+                           )
+                         },
+                       sample=
+                         c("alpha0", "alpha1", "lambda")
+                       
+  )
+  
+  ## DSB: todo: sample here also the interval probabilities
+  ## for having a DLT. This can also be nicely summarized
+  ## later. -> put the additional parameter name in "sample"
+  
+  ##JZ: the interval probs are calcualted in the plot step. 
+  ##Added it here will save computation. to be done.
+  
+  
+}
+validObject(DALogisticLogNormal(mean=c(0, 1),
+                                cov=diag(2),
+                                refDose=1,
+                                l=0.5,
+                                C_par=2))
+
+## ============================================================

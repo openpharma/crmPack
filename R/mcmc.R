@@ -145,17 +145,28 @@ setMethod("mcmc",
               requiredData <-
                   if(fromPrior)
                   {
+                    ## todo: this is a workaround for mDA-CRM. can we do this better?
+                    if("npiece" %in% names(tmp))
+                    {
+                      as.list(data)[c("npiece")]   
+
+                    } else {
+                      
                       ## in this case requiredData will not be used
                       NULL
+                    }
                   } else if(data@nObs == 1L) {
                       ## here we need to modify!!
                       tmp <- as.list(data)[model@datanames]
 
                       ## get the names where to add dummy entries:
-                      addWhere <- which(! (names(tmp) %in% c("nObs", "nGrid",
+                      addWhere <- which(! (names(tmp) %in% c("nObs", 
+                                                             "nGrid",
                                                              "nObsshare", 
                                                              "yshare",
-                                                             "xshare")))
+                                                             "xshare",
+                                                             "npiece",
+                                                             "Tmax")))
                       ## all names that are not referring to the scalars
                       ## nObs and nGrid
 
@@ -196,10 +207,8 @@ setMethod("mcmc",
                   ## specify the JAGS model
                   jagsModel <-
                       rjags::jags.model(file=modelFileName,
-                                        data=
-                                        if(fromPrior) modelspecs else
-                                        c(requiredData,
-                                          modelspecs),
+                                        data=c(requiredData,
+                                               modelspecs),
                                         inits=
                                         ## add the RNG seed to the inits list:
                                         ## (use Mersenne Twister as per R

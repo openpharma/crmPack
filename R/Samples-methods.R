@@ -1541,9 +1541,356 @@ setMethod("plotDualResponses",
             })
 ## =======================================================================================================
 
+## ----------------------------------------------------------------
+## Get fitted DLT free survival (piecewise exponential model) based on 
+## the DA-CRM model
+## -----------------------------------------------------------------
+##' Get the fitted DLT free survival (piecewise exponential model).
+##' This function returns a data frame with dose, middle, lower and upper 
+##' quantiles for the PEM curve. If hazard=TRUE, 
+##' @param object mcmc samples
+##' @param model the mDA-CRM model
+##' @param data the data input, a \code{\linkS4class{DataDA}} class object
+##' @param npiece the number of pieces in the PEM 
+##' todo: do we need this param?
+##' @param Tmax the DLT observation period
+##' todo: do we need this param?
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##' @param hazard should the the hazard over time be plotted based on the PEM? (not default)
+##' Otherwise (default) todo: what will be plotted?...
+##' @param \dots additional arguments for methods
+##' 
+##' @export
+##' @keywords methods
+setGeneric("fitPEM",
+           def=
+             function(object,
+                      model,
+                      data,
+                      npiece=data@npiece,
+                      Tmax=data@Tmax,
+                      quantiles=c(0.025, 0.975),
+                      middle=mean,
+                      hazard=FALSE,
+                      ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("fitPEM")},
+           valueClass="data.frame")
 
 
+#' Likelihood of DLTs in each interval
+#'
+#' This is a helper function for the fitPEM methods below.
+#'
+#' @param lambda the vector of piecewise hazards
+#' @param Tmax the end of the time interval for DLTs
+#' @return vector with the probabilities for DLTs within the intervals.
+#'
+#' @keywords internal
+DLTLikelihood <- function(lambda,
+                          Tmax)
+{
+  npiece <-length(lambda)
+  h=seq(from=0L, to=Tmax, length=npiece + 1)
+  
+  #Length of each time interval;
+  sT<-rep(0,npiece)
+  
+  
+  for(i in 1:npiece){
+    
+    sT[i]<-h[i+1]-h[i]
+    
+  }
+  
+  
+  #calculate the exponential part of the distribution:
+  s_ij<-function(t,j)
+  {
+    if(t>h[j])
+    {
+      
+      min(t-h[j],h[j+1]-h[j])
+      
+    } else {
+      
+      0
+    }
+  }
+  
+  
+  #The cumulative hazard function
+  expNmu <- function(t, npiece=npiece)
+  {
+    
+    expNmu<-1
+    
+    for(j in 1:npiece)
+    {
+      
+      expNmu<-expNmu*exp(-lambda[j]*s_ij(t,j))
+    }
+    
+    return(expNmu)
+  }
+  
+  
+  #CDF of the piecewise exponential   
+  
+  piece_exp.cdf<-function(x){
+    
+    1-expNmu(x)
+    
+  }  
+  
+  DLTFreeS<-function(x)
+  {
+    
+    (expNmu(x)-expNmu(Tmax))/piece_exp.cdf(Tmax)
+    
+  }
+  
+  pDLT<-rep(0,npiece+1)
+  
+  for(i in 1:(npiece)){
+    
+    pDLT[i] <- DLTFreeS(h[i]) - DLTFreeS(h[i+1])
+  }
+  
+  return(pDLT)
+}
 
+## --------------------------------------------------------------------
+## Get fitted DLT free survival (piecewise exponential model) based on 
+## the DA-CRM model
+## -------------------------------------------------------------
+##' @describeIn fitPEM This method works for the \code{\linkS4class{DALogisticLogNormal}} 
+##' model class.
+##' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
+setMethod("fitPEM",
+          signature=
+            signature(object="Samples",
+                      model="DALogisticLogNormal",
+                      data="DataDA"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     npiece=data@npiece,
+                     Tmax=data@Tmax,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     hazard=FALSE,
+                     ...){
+              
+              ## some checks
+              stopifnot(is.probRange(quantiles),
+                        is.numeric(Tmax),
+                        is.numeric(npiece))
+              
+              ##Plot points
+              #points<-seq(0,Tmax_,length=npiece_*3+1)
+              points<-seq(0,Tmax,length=npiece+1)
+              ## first we have to get samples from the PEM
+              ## at intercept points and 2 middel points between 
+              ## intercepts.
+              PEMSamples <- matrix(nrow=sampleSize(object@options),
+                                   ncol=length(points))
+              
+              i_max<-max(seq_along(points))
+              ## evaluate the probs, for all samples.
+              
+              #The PEM
+              if(hazard==FALSE){
+                #                                   PEMSamples[,i]<-apply(object@data$lambda,1,function(x){
+                #                                           fit<-DLTFreeS(x,Tmax_)
+                #                                           return(fit(points[i]))
+                #                                   })
+                PEMSamples<-t(apply(object@data$lambda,1,function(x){
+                  fit<-DLTLikelihood(x,Tmax)
+                  return(fit)
+                }))
+                
+                
+              }else if(hazard==TRUE){
+                for(i in seq_along(points))
+                {
+                  #numeric method
+                  #                                           PEMSamples[,i]<-apply(object@data$lambda,1,function(x){
+                  #                                                   fit<-DLTFreeS(x,Tmax_)
+                  #                                                   return(-1*grad(fit,points[i]))
+                  #                                           
+                  #                                           
+                  #                                           })    
+                  #close form
+                  #assume a evenly cut piecewise exp;#todo: make it more robust;
+                  #                                           if (i==i_max){PEMSamples[,i_max]<-object@data$lambda[,npiece_]}else{
+                  #                                           PEMSamples[,i]<-object@data$lambda[,sum(points[i]>=seq(0,Tmax_,length=npiece_+1))]
+                  #                                           } 
+                  if(i==i_max){
+                    PEMSamples[,i_max]<-object@data$lambda[,npiece]}else{
+                      PEMSamples[,i]<-object@data$lambda[,i]}
+                }
+                
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(PEMSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(PEMSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(time=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)})
+
+## =======================================================================================================
+
+
+## --------------------------------------------------
+## plot survival curve fit over time
+## --------------------------------------------------
+
+## DSB: todo: better to use directly the plot method from superclass,
+## and then add to that. See e.g. DualEndpoints plot method as example.
+## todo: add example file
+##' Plotting dose-toxicity model fits
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{Model}} object
+##' @param data the \code{\linkS4class{Data}} object
+##' @param xlab the x axis label
+##' @param ylab the y axis label
+##' @param showLegend should the legend be shown? (default)
+##' @param \dots not used
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object for the dose-toxicity model fit
+##'
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+##' @importFrom gridExtra arrangeGrob
+setMethod("plot",
+          signature=
+            signature(x="Samples",
+                      y="DALogisticLogNormal"
+            ),
+          def=
+            function(x, y, data, hazard=FALSE, ...,
+                     
+                     showLegend=TRUE){
+              
+              ## check args
+              stopifnot(is.bool(showLegend))
+              
+              ## get the fit
+              plotData <- fit(x,
+                              model=y,
+                              data=data,
+                              quantiles=c(0.025, 0.975),
+                              middle=mean)
+              
+              plotDataS <- fitPEM(x,
+                                  model=y,
+                                  data=data,
+                                  quantiles=c(0.025,0.975),
+                                  middle=mean,
+                                  hazard=hazard)
+              
+              ## make the plot
+              gdata <-
+                with(plotData,
+                     data.frame(x=rep(dose, 3),
+                                y=c(middle, lower, upper) * 100,
+                                group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotData)),
+                                Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotData)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotData) * 2)),
+                                         levels=
+                                           c("Estimate",
+                                             "95% Credible Interval"))))
+              
+              
+              #Tpoints<-seq(0,data@Tmax,length=data@npiece*3+1)
+              Tpoints<-seq(0,data@Tmax,length=data@npiece+1)
+              gdataS <-
+                with(plotDataS,
+                     data.frame(x=rep(Tpoints, 3),
+                                y=c(middle, lower, upper) * 100,
+                                group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(plotDataS)),
+                                Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(plotDataS)),
+                                           rep("95% Credible Interval",
+                                               nrow(plotDataS) * 2)),
+                                         levels=
+                                           c("Estimate",
+                                             "95% Credible Interval"))))
+              
+              
+              if(hazard==FALSE){
+                
+                ret2 <- qplot(x=x,
+                              y=y,
+                              data=gdataS,
+                              group=group,
+                              linetype=Type,
+                              colour=I("blue"),
+                              geom="step",
+                              xlab="Time",
+                              # ylab="Probability of no DLT [%]",
+                              ylab="Probability of DLT [%]",
+                              ylim=c(0, 100))
+                
+              }else if(hazard==TRUE){
+                
+                
+                ret2 <- qplot(x=x,
+                              y=y,
+                              data=gdataS,
+                              group=group,
+                              linetype=Type,
+                              colour=I("blue"),
+                              geom="step",
+                              xlab="Time",
+                              ylab="Hazard rate*100",
+                              ylim=range(gdataS$y))
+              }
+              
+              ret1 <- qplot(x=x,
+                            y=y,
+                            data=gdata,
+                            group=group,
+                            linetype=Type,
+                            colour=I("red"),
+                            geom="line",
+                            xlab="Dose",
+                            ylab="Probability of DLT [%]",
+                            ylim=c(0, 100))
+              
+              
+              
+              ret <- gridExtra::arrangeGrob(ret1, ret2, ncol=2)
+              return(ret)
+            })
+
+
+## =======================================================================================================
 
 
 
