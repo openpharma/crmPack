@@ -11,3 +11,6 @@ r:
 
 apt_packages:
 - r-cran-rjags
+
+r_check_args: "--no-vignettes"
+r_build_args: "--no-build-vignettes"

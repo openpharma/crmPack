@@ -11,4 +11,6 @@ navbar:
     href: https://github.com/roche/crmPack
 
 development:
-  mode: release
+  mode: development
+  
+  
