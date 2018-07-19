@@ -1,5 +1,4 @@
-Version 0.2.8
---------------------------------------------------------------------------------
+# Version 0.2.8
 
 ### Bugfixes:
 
@@ -39,16 +38,14 @@ Version 0.2.8
   
   
 
-Version 0.2.7
---------------------------------------------------------------------------------
+# Version 0.2.7
 
 ### Bugfixes:
 
 * LogisticNormal now works again - "prec" was not found before.
 
 
-Version 0.2.6
---------------------------------------------------------------------------------
+# Version 0.2.6
 
 ### Bugfixes:
 
@@ -57,8 +54,7 @@ Version 0.2.6
 * Speed up one example to pass CRAN check.
 
 
-Version 0.2.5
---------------------------------------------------------------------------------
+# Version 0.2.5
 
 ### New features:
 
@@ -73,8 +69,7 @@ Version 0.2.5
 * minor fix on scale_colour_manual import from ggplot2 reported by R-Core
 
 
-Version 0.2.4
---------------------------------------------------------------------------------
+# Version 0.2.4
 
 ### New features:
 
@@ -92,9 +87,9 @@ Version 0.2.4
 
 * documentation: in the DualEndpoint description fixed the \left problem in the
   formula 
+
   
-Version 0.2.3
---------------------------------------------------------------------------------
+# Version 0.2.3
 
 ### New features:
 
@@ -102,8 +97,7 @@ Version 0.2.3
   increment rules with the MIN operation
 
 
-Version 0.2.1
---------------------------------------------------------------------------------
+# Version 0.2.1
 
 ### New features:
 
@@ -153,8 +147,7 @@ Version 0.2.1
   the shared data object contains any data.
   
 
-Version 0.2.0
---------------------------------------------------------------------------------
+# Version 0.2.0
 
 * Added arguments probmin and probmax to MinimalInformative in order to control
   the probability threshold at the minimum and maximum dose for the minimally 
@@ -179,8 +172,7 @@ Version 0.2.0
   
 
 
-Version 0.1.8
---------------------------------------------------------------------------------
+# Version 0.1.8
 
 * The value of the 95% CI of the final estimates 
   will be displayed in results when using 'stopTrial'  
@@ -192,8 +184,7 @@ Version 0.1.8
   - Stopping rules can now also be freely combined using the and/or operators    
     with the dual endpoint design stopping rules not using MCMC samples.
 
-Version 0.1.6
---------------------------------------------------------------------------------
+# Version 0.1.6
 
 * New model class "LogisticLogNormalMixture" has been added, for use with the 
   new data class "DataMixture".
@@ -218,14 +209,12 @@ Version 0.1.6
 
 * Bugfix: Compatibility of help file links with new ggplot2 package version.
 
-Version 0.1.5
---------------------------------------------------------------------------------
+# Version 0.1.5
 
 * Bugfix: In newer versions of grid the plotting of simulation objects did no 
   longer work. This was fixed.
 
-Version 0.1.2
---------------------------------------------------------------------------------
+# Version 0.1.2
 
 * Bugfix: The MinimalInformative function previously produced too uninformative
   prior quantiles, which were not fulfilling the requirements in the function's
@@ -233,8 +222,7 @@ Version 0.1.2
   (2008) publication) prior quantiles are specified and then approximated with
   logistic (log) normal priors.
 
-Version 0.1.1
---------------------------------------------------------------------------------
+# Version 0.1.1
 
 * Bugfix: Previously, it could happen with NextBestNCRM rule, that higher doses
   lead to decreasing probability of overdosing, only because for some doses
@@ -242,8 +230,7 @@ Version 0.1.1
   clarified in the rules documentation and fixed in the rule method, that the
   right limit of the overdose interval vector will be inclusive.
 
-Version 0.1.0
---------------------------------------------------------------------------------
+# Version 0.1.0
 
 * Added examine function to generate a table of hypothetical trial courses
   for model-based and rule-based DLT-endpoint designs
@@ -266,8 +253,7 @@ Version 0.1.0
   GeneralData class, from which the class Data for single agent derives,
   separately from that will be the subclass DataCombo (in a future version).
 
-Version 0.0.23
---------------------------------------------------------------------------------
+# Version 0.0.23
 
 * Fixed bug in mcmc function which led to error
   "all data elements must have as many rows as the sample size was" and slightly
@@ -277,8 +263,7 @@ Version 0.0.23
 * Reduced number of MCMC samples for dual-endpoint example in vignette to be
   able to plot the vignette
 
-Version 0.0.22
---------------------------------------------------------------------------------
+# Version 0.0.22
 
 * simulate function has been fixed (specification of arguments)
 
@@ -328,7 +313,6 @@ Version 0.0.22
 * showLegend argument for model fit plotting functions, in order to show the
   legend or not.
 
-Version 0.0.21
---------------------------------------------------------------------------------
+# Version 0.0.21
 
 no NEWS until this version
