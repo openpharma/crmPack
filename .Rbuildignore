@@ -5,3 +5,9 @@ examples
 vignettes/JSSstyle
 vignettes/paper
 TODO
+^docs$
+^_pkgdown\.yml$
+^\.github$
+^README\.Rmd$
+^README-.*\.png$
+^\.travis\.yml$

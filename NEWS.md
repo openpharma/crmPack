@@ -1,7 +1,7 @@
 Version 0.2.8
 --------------------------------------------------------------------------------
 
-Bugfixes:
+### Bugfixes:
 
 * PLcohortSize now defaults to 0 placebo patients upon Design class 
   initialization (instead of 1 before - but note that this did not have
@@ -19,7 +19,7 @@ Bugfixes:
   it)
   
 
-New features:
+### New features:
   
 * The "examine" function now counts the number of times the same dose is 
   recommended contiguously and break after e.g. the default 100 times 
@@ -42,7 +42,7 @@ New features:
 Version 0.2.7
 --------------------------------------------------------------------------------
 
-Bugfixes:
+### Bugfixes:
 
 * LogisticNormal now works again - "prec" was not found before.
 
@@ -50,7 +50,7 @@ Bugfixes:
 Version 0.2.6
 --------------------------------------------------------------------------------
 
-Bugfixes:
+### Bugfixes:
 
 * Replaced BayesLogit dependency by JAGS code, since BayesLogit was taken off CRAN.
 
@@ -60,12 +60,12 @@ Bugfixes:
 Version 0.2.5
 --------------------------------------------------------------------------------
 
-New features:
+### New features:
 
 * matching of doses with the dose grid now includes a tolerance of 1e-10, in order
   to make it more user-friendly (thanks to YJ Choi and Giuseppe for investigating)
 
-Bugfixes:
+### Bugfixes:
 
 * documentation: 
   - minor fix for alpha1 description in LogisticLogNormal-class
@@ -76,7 +76,7 @@ Bugfixes:
 Version 0.2.4
 --------------------------------------------------------------------------------
 
-New features:
+### New features:
 
 * In case of multiple nextBest plots these are now also returned as original plots
   in the list singlePlots, to allow for further customization, before jointly plotting them. 
@@ -88,7 +88,7 @@ New features:
   class DualEndpointEmax renamed to "refDoseEmax".
 
 
-Bugfixes:
+### Bugfixes:
 
 * documentation: in the DualEndpoint description fixed the \left problem in the
   formula 
@@ -96,7 +96,7 @@ Bugfixes:
 Version 0.2.3
 --------------------------------------------------------------------------------
 
-New features:
+### New features:
 
 * New increment class "IncrementMin" has been added which allows to combine multiple 
   increment rules with the MIN operation
@@ -105,7 +105,7 @@ New features:
 Version 0.2.1
 --------------------------------------------------------------------------------
 
-New features:
+### New features:
 
 * Option targetThresh for NextBestDualEndpoint allows to tune from which target probability
   onwards it will be used to derive the next best dose (before this was fixed to 0.05)
@@ -124,7 +124,7 @@ New features:
   a part of the biomarker target probability.
   
 
-Bugfixes:
+### Bugfixes:
 
 * Added back the example vignette, so that it can be opened with crmPackExample()
 

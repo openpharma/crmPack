@@ -73,22 +73,10 @@
     <loc>https://github.com/roche/crmPack/reference/crmPackHelp.html</loc>
   </url>
   <url>
-    <loc>https://github.com/roche/crmPack/reference/DALogisticLogNormal-class.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/DALogisticLogNormal.html</loc>
-  </url>
-  <url>
     <loc>https://github.com/roche/crmPack/reference/Data-class.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/Data.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/DataDA-class.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/DataDA.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/DataDual-class.html</loc>
@@ -116,9 +104,6 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/dinvGamma.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/DLTLikelihood.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/dose.html</loc>
@@ -200,9 +185,6 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/fitGain.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/fitPEM.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/gain.html</loc>
@@ -466,9 +448,6 @@
     <loc>https://github.com/roche/crmPack/reference/plot-Data-ModelTox-method.html</loc>
   </url>
   <url>
-    <loc>https://github.com/roche/crmPack/reference/plot-DataDA-missing-method.html</loc>
-  </url>
-  <url>
     <loc>https://github.com/roche/crmPack/reference/plot-DataDual-missing-method.html</loc>
   </url>
   <url>
@@ -497,9 +476,6 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/plot-Samples-DALogisticLogNormal-method.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/plot-Samples-DualEndpoint-method.html</loc>
@@ -767,9 +743,6 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/update-Data-method.html</loc>
-  </url>
-  <url>
-    <loc>https://github.com/roche/crmPack/reference/update-DataDA-method.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/update-DataDual-method.html</loc>
