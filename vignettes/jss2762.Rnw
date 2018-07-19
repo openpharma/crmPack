@@ -404,7 +404,7 @@ data <- Data(x = c(PL, 25, 25, 25, PL, 50, 50, 50, PL, 100, 100, 100),
              placebo = TRUE)
 @
 
-The argument \code{x} takes the doses $x_{1}=\Sexpr{PL}, $x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
+The argument \code{x} takes the doses $x_{1}=\Sexpr{PL}, x_{2}=25, x_{3} = 50, x_{4} = 100$ (note
 the repetition to match the outcome variables $y_{j,k}$) where \code{doseGrid}
 captures the set ${\cal X}$ of all possible doses, \code{y} takes the binary
 DLTs (here $y_{3, 3} = 1$ denotes the only DLT having been observed in the 3rd
