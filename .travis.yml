@@ -10,7 +10,10 @@ r:
 - devel
 
 apt_packages:
-- r-cran-rjags
+- jags
 
-r_check_args: "--no-vignettes"
+r_packages:
+- RcppArmadillo
+
+r_check_args: "--no-vignettes --as-cran"
 r_build_args: "--no-build-vignettes"
