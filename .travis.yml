@@ -15,3 +15,4 @@ r_packages:
 
 r_check_args: "--no-vignettes --as-cran"
 r_build_args: "--no-build-vignettes"
+warnings_are_errors: false
