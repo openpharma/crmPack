@@ -102,7 +102,7 @@ getResultList <- function(fun,
           
             ## now process all simulations
             cores <- min(safeInteger(parallel),
-                         parallel::detectCores())
+                         min(parallel::detectCores(), 5))
 
             ## start the cluster
             cl <- parallel::makeCluster(cores)
@@ -186,7 +186,8 @@ setMethod("simulate",
               function(object, nsim=1L, seed=NULL,
                        truth, args=NULL, firstSeparate=FALSE,
                        mcmcOptions=McmcOptions(),
-                       parallel=FALSE, nCores=parallel::detectCores(),
+                       parallel=FALSE, nCores=
+                       min(parallel::detectCores(), 5),
                        ...){
 
               nsim <- safeInteger(nsim)
@@ -440,7 +441,8 @@ setMethod("simulate",
               function(object, nsim=1L, seed=NULL,
                        truth, args=NULL,
                        parallel=FALSE, 
-                       nCores=parallel::detectCores(),
+                       nCores=
+                       min(parallel::detectCores(), 5),
                        ...){
 
               nsim <- safeInteger(nsim)
@@ -605,7 +607,8 @@ setMethod("simulate",
                        firstSeparate=FALSE,
                        mcmcOptions=McmcOptions(),
                        parallel=FALSE, 
-                       nCores=parallel::detectCores(),
+                       nCores=
+                       min(parallel::detectCores(), 5),
                        ...){
 
               nsim <- safeInteger(nsim)
@@ -1317,7 +1320,8 @@ setMethod("simulate",
             function(object, nsim=1L, seed=NULL,
                      truth, args=NULL, firstSeparate=FALSE,
                      mcmcOptions=McmcOptions(),
-                     parallel=FALSE, nCores=parallel::detectCores(),
+                     parallel=FALSE, nCores=
+                     min(parallel::detectCores(), 5),
                      ...){
               
               nsim <- safeInteger(nsim)
@@ -1642,7 +1646,8 @@ setMethod("simulate",
           def=
             function(object, nsim=1L, seed=NULL,
                      truth, args=NULL, firstSeparate=FALSE,
-                     parallel=FALSE, nCores=parallel::detectCores(),
+                     parallel=FALSE, nCores=
+                     min(parallel::detectCores(), 5),
                      ...){
               
               nsim <- safeInteger(nsim)
@@ -1955,7 +1960,8 @@ setMethod("simulate",
             function(object, nsim=1L, seed=NULL,
                      trueDLE, trueEff, trueNu,
                      args=NULL, firstSeparate=FALSE,
-                     parallel=FALSE, nCores=parallel::detectCores(),
+                     parallel=FALSE, nCores=
+                     min(parallel::detectCores(), 5),
                      ...){
               
               nsim <- safeInteger(nsim)
@@ -2434,7 +2440,8 @@ setMethod("simulate",
                      trueSigma2=NULL,trueSigma2betaW=NULL,
                      args=NULL, firstSeparate=FALSE,
                      mcmcOptions=McmcOptions(),
-                     parallel=FALSE, nCores=parallel::detectCores(),
+                     parallel=FALSE, nCores=
+                     min(parallel::detectCores(), 5),
                      ...){
 
               nsim <- safeInteger(nsim)

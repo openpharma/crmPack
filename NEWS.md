@@ -1,3 +1,9 @@
+# Version 0.2.9
+
+* By default only use 5 cores and not all available cores on a machine. Note that
+  this value can also be changed by the user.
+  
+
 # Version 0.2.8
 
 ### Bugfixes:
