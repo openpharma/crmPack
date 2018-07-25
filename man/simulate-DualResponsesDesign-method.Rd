@@ -11,7 +11,7 @@ process}
 \usage{
 \S4method{simulate}{DualResponsesDesign}(object, nsim = 1L, seed = NULL,
   trueDLE, trueEff, trueNu, args = NULL, firstSeparate = FALSE,
-  parallel = FALSE, nCores = parallel::detectCores(), ...)
+  parallel = FALSE, nCores = min(parallel::detectCores(), 5), ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{DualResponsesDesign}} object we want to simulate the data from}
@@ -41,7 +41,7 @@ in this patient.}
 clusters of the computer? (not default)}
 
 \item{nCores}{how many cores should be used for parallel computing?
-Defaults to the number of cores on the machine.}
+Defaults to the number of cores on the machine, maximum 5.}
 
 \item{\dots}{not used}
 }

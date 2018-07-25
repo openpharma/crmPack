@@ -7,7 +7,7 @@
 \usage{
 \S4method{simulate}{Design}(object, nsim = 1L, seed = NULL, truth,
   args = NULL, firstSeparate = FALSE, mcmcOptions = McmcOptions(),
-  parallel = FALSE, nCores = parallel::detectCores(), ...)
+  parallel = FALSE, nCores = min(parallel::detectCores(), 5), ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{Design}} object we want to simulate
@@ -41,7 +41,7 @@ the standard options are used}
 clusters of the computer? (not default)}
 
 \item{nCores}{how many cores should be used for parallel computing?
-Defaults to the number of cores on the machine.}
+Defaults to the number of cores on the machine, maximum 5.}
 
 \item{\dots}{not used}
 }

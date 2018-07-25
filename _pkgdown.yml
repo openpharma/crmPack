@@ -1,8 +1,5 @@
-url: https://github.com/roche/crmPack
-
-template:
-  params:
-    bootswatch: cerulean
+home:
+  strip_header: true
 
 navbar:
   type: default
@@ -11,6 +8,16 @@ navbar:
     href: https://github.com/roche/crmPack
 
 development:
-  mode: development
+  mode: devel
+
+url: https://github.com/roche/crmPack
+
+template:
+  params:
+    bootswatch: cerulean
+
+
+
+
   
   

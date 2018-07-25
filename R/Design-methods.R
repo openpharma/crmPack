@@ -168,7 +168,7 @@ getResultList <- function(fun,
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##'
 ##' @return an object of class \code{\linkS4class{Simulations}}
@@ -424,7 +424,7 @@ setMethod("simulate",
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##'
 ##' @return an object of class \code{\linkS4class{GeneralSimulations}}
@@ -588,7 +588,7 @@ setMethod("simulate",
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##'
 ##' @return an object of class \code{\linkS4class{DualSimulations}}
@@ -1302,7 +1302,7 @@ setMethod("examine",
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateTDsamplesDesign.R
@@ -1629,7 +1629,7 @@ setMethod("simulate",
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateTDDesign.R
@@ -1941,7 +1941,7 @@ setMethod("simulate",
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateDualResponsesDesign.R
@@ -2419,7 +2419,7 @@ setMethod("simulate",
 ##' @param parallel should the simulation runs be parallelized across the
 ##' clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
-##' Defaults to the number of cores on the machine.
+##' Defaults to the number of cores on the machine, maximum 5.
 ##' @param \dots not used
 ##' 
 ##' @example examples/design-method-simulateDualResponsesSamplesDesign.R

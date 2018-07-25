@@ -1,0 +1,61 @@
+---
+title: "Guidelines for developers and maintainer"
+author: "Daniel Sabanes Bove"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+## crmPack Development workflow (all developers)
+  
+1. Pull changes from github before starting to work
+2. As you make a change in functionality (either a bugfix or a new feature), please update the NEWS.md      file accordingly (otherwise it is usually forgotten at the end)
+3. Run R CMD check locally
+4. Frequently push changes to github after finishing pieces of work, using informative comments.
+
+## crmPack Release workflow (maintainer)
+  
+1. Increment version number in DESCRIPTION file to "x.y.z"" format (was „x.y.z.w" before for development, or "x.y.z-1" if submitted to CRAN and came back with comments)
+2. Consider updating README.Rmd.
+    - If yes, after updating, need to knit the document (e.g. via pressing the button in RStudio) to create an updated README.md file
+3. Consider updating the vignette (in vignettes/example.Rnw), especially if new features have been introduced in this release.
+    - If yes, can be checked by "Compile PDF" button in RStudio before the package build
+4. Regenerate the documentation and NAMESPACE files with Roxygen2:
+    - In RStudio, click in the right-hand upper panel: Build -> More -> Document
+5. Build the package and check it:
+  - Open a new terminal in RStudio
+  - go to the directory below the package directory
+  - then type "R CMD build crmPack"
+  - Afterwards type "R CMD check --as-cran crmPack\_x.y.z.tar.gz" where you would replace x.y.z with the package version just built.
+  - Correct any errors, warnings and if possible notes and iterate the check/correction cycle (also including numbers 1-3 above if Readme, vignettes or documentation/NAMESPACE were touched).
+  - Commit and push changes to git repository, to trigger Travis-CI testing:
+    + Check [https://travis-ci.org/Roche/crmPack](https://travis-ci.org/Roche/crmPack) to see if the package successfully builds
+    + Note that vignettes are not checked here (since they take too long to build)
+6. If this release is for CRAN, then submit the package to CRAN:
+  - Go to [https://cran.r-project.org/submit.html](https://cran.r-project.org/submit.html)
+  - Enter your name, email address
+  - Upload the package ("crmPack\_x.y.z.tar.gz") –
+    note that it is important that the version is higher than the version you submitted the last time to     CRAN, even if it is intended for the same release and had errors in last version.
+  - Confirm that you checked everything.
+  - Wait for feedback and iterate steps 1-5 after taking into account CRAN feedback.
+7. Generate website:
+  - Change "mode: devel" to "mode: release" in \_pkgdown.yml
+  - Run "pkgdown::build\_site()" in the R console to build the website
+  - Commit and push changes to git repository to release the new website
+8. Create a tag for this release:
+  - Go to [https://github.com/roche/crmPack](https://github.com/roche/crmPack) and click on "releases" (top line, next to "commits", "branches" on the left and "contributor" on the right)
+  - Click "Create a new release"
+  - Type a version number for your release – this should be "v" followed immediately without blank by the package version number "x.y.z", i.e. e.g. "v1.0.3"
+  - Select the master branch.
+  - Type a title and description that describes your release. Copy and paste the contents of the relevant NEWS.md section into the release notes.
+  - If the release is unstable, select "This is a pre-release" to notify users that it's not ready for production.
+  -  If you're ready to publicize your release, click Publish release. Otherwise, click Save draft to work on it later.
+9. Go back to development mode:
+  - Change  "mode: release"  to "mode: devel" in \_pkgdown.yml
+  - Increment the version number (e.g. x.y.z+1.1) in the DESCRIPTION file (so an additional digit after the first 3 numbers to clarify that this is a development version)
+  - Commit and push changes to git repository
