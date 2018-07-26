@@ -3233,7 +3233,7 @@ setMethod("stopTrial",
 ##' @param safetyWindow The rule, an object of class
 ##' \code{\linkS4class{SafetyWindow}}
 ##' @param size The next cohort size
-##' @param data The data input, an object of class \code{\linkS4class{DAData}}
+##' @param data The data input, an object of class \code{\linkS4class{DataDA}}
 ##' @param \dots additional arguments
 ##'
 ##' @return the windowLength as a list of safety window parameters

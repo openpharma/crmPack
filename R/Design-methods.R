@@ -1270,6 +1270,347 @@ setMethod("examine",
                   return(ret)
               })
 
+##' @describeIn examine Examine a model-based CRM
+##' Warning:  this code takes long time to run! I use code "savePlot" to output 
+##' the result for each loop, which can be removed. I have marked those places 
+##' where I output the plots--Jiawen;
+##'
+##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
+##' giving the MCMC options for each evaluation in the trial. By default,
+##' the standard options are used
+##' 
+##' @example examples/design-method-examine-DADesign.R  
+setMethod("examine",
+          signature=
+            signature(object="DADesign"),
+          def=
+            function(object, mcmcOptions=McmcOptions(), ...,
+                     maxNoIncrement){
+              
+              #A function to return follow up fulfull yes (TRUE) vs no (FALSE);
+              ready_to_open<-function(day,window, thisSurv){
+                size<-length(thisSurv)  
+                #the date the patient starts;
+                start_time<-apply(rbind(thisSurv[-size],window$patientGap[-1]),2,min)
+                #the relative time for each patient on the specified "date";
+                individule_check<-day-cumsum(c(0,start_time))
+                #the minial number should be 0;
+                individule_check[individule_check<0]<-0
+                follow_up<-apply(rbind(thisSurv,individule_check),2,min)
+                return(all((follow_up-apply(rbind(window$patientFollow,thisSurv),2,min))>=0) & (max(follow_up)>=min(window$patientFollowMin,max(thisSurv))))
+              }
+              
+              ##assume we have surfficient patients, i.e. patient can be immediately enrolled 
+              ##once the trial accumulation is open. This function will tell you when to open 
+              ##the next cohort;
+              #this function applys to all trials;
+              nextOpen<-function(window,thisSurv){
+                
+                size<-length(thisSurv)  
+                
+                window$patientGap<-window$patientGap[1:size]    ##if length(window$pt)>length(thisSurv), assume the first length(thisSurv) patients were enrolled;
+                ##if the DLT happens before the end of DLT window, then the next 
+                ##cohort/enrollment of the next patient would happened earlier;
+                start_time<-apply(rbind(thisSurv[-size],window$patientGap[-1]),2,min)
+                #duration of the cohort (all DLT windows finished);
+                maxT<-max(thisSurv+cumsum(c(0,start_time)))
+                
+                meetrequire<-sapply(1:maxT,function(i){ready_to_open(i,window,thisSurv)})
+                if (sum(meetrequire)>0){
+                  #the earliest time that the require is met;
+                  time<-min(c(1:maxT)[meetrequire])}else{
+                    time<-maxT
+                  }
+                
+                return(time)
+                
+              }
+              
+              ## start with the empty table
+              ret <- data.frame(DLTsearly_1=integer(),  ##JZ: add a cohort index;
+                                dose=numeric(),
+                                DLTs=integer(),
+                                nextDose=numeric(),
+                                stop=logical(),
+                                increment=integer())
+              
+              ## start the base data with the provided one 
+              baseData <- object@data
+              
+              ## are we finished and can stop?
+              stopit <- FALSE
+              
+              ## what is the next dose to be used?
+              ## initialize with starting dose
+              thisDose <- object@startingDose
+              
+              ##initial {fact} variables;
+              factDLTs  <- baseData@y
+              factSurv <- baseData@u
+              factT0   <- baseData@t0
+              
+              ##Initiate "trialtime" which is zero. This is the global time for studies; 
+              trialtime <- 0
+              
+              ##when the current cohort open?
+              pretime<-0
+              
+              ##the duration of DLT window
+              Tmax<-baseData@Tmax
+              
+              ##number of patients with un-completed DLT window;
+              ##assume no patient is under DLT observation period at the beginning;
+              preSize<-0
+              
+              ## inside this loop we continue filling up the table, until
+              ## stopping
+              while(! stopit)
+              {
+                
+                ## what is the cohort size at this dose?
+                thisSize <- size(cohortSize=object@cohortSize,
+                                 dose=thisDose,
+                                 data=baseData)
+                
+                ## what's the safetywindow
+                thisSafetywindow<-windowLength(object@safetyWindow,thisSize)
+                
+                
+                #initial parameters
+                thisT0   <- trialtime+cumsum(thisSafetywindow$patientGap)
+                
+                factDLTs  <- c(factDLTs,rep(0, thisSize))
+                
+                factSurv <- c(factSurv, rep(Tmax,thisSize))  
+                
+                factT0   <- c(factT0, thisT0)
+                
+                ##The time that the next cohort open
+                trialtime <-trialtime+nextOpen(window=thisSafetywindow
+                                               ,thisSurv=rep(Tmax,thisSize))
+                
+                ##In the DA-CRM, we should count the number of patients who is still within the DLT window;
+                ##Thus the loop for numDLTs should be 0:nFollow;
+                nFollow<- thisSize+preSize
+                
+                ##Identify the censored patients;
+                ##"thiscensored" will be used in the cases that numDLTs>0;
+                npt<-length(baseData@x) #total number of patients
+                
+                thiscensored<-c(c(1:npt)[(trialtime-baseData@t0)<baseData@Tmax & baseData@y==0],(npt+1):(npt+thisSize))
+                
+                
+                
+                ## for all possible number of DLTs:
+                for(numDLTs in 0:nFollow)
+                {
+                  
+                  ##If numDLTs>0, two extreme cases will be examinated;
+                  ##(1) DLTs occur on patients with the longer follow ups;
+                  ##(2) DLTs occur on patients with the shorter follow ups;
+                  
+                  
+                  
+                  
+                  
+                  
+                  if(numDLTs==0){
+                    
+                    
+                    
+                    baseData <- update(object=baseData,
+                                       factDLTs= factDLTs,  ####the x will be constantly updated according to u 
+                                       factSurv=factSurv,
+                                       factT0=factT0,
+                                       thisDose=thisDose,
+                                       trialtime=trialtime)  ####the u will be constantly updated 
+                    
+                    
+                    
+                    ## what is the dose limit?
+                    doselimit <- maxDose(object@increments,
+                                         data=baseData)
+                    
+                    ## generate samples from the model
+                    thisSamples <- mcmc(data=baseData,
+                                        model=object@model,
+                                        options=mcmcOptions)
+                    
+                    ## => what is the next best dose?
+                    nextDose <- nextBest(object@nextBest,
+                                         doselimit=doselimit,
+                                         samples=thisSamples,
+                                         model=object@model,
+                                         data=baseData)$value
+                    
+                    # ##remove savePlot                                                   
+                    #                                                   
+                    #                                                   savePlot(plot(baseData),name=paste("Dose",thisDose,0,"DLT",nextDose,sep="_"))
+                    #                                                                                                     
+                    ## compute relative increment in percent
+                    thisIncrement <-
+                      round((nextDose - thisDose) / thisDose * 100)
+                    
+                    ## evaluate stopping rules
+                    stopThisTrial <- stopTrial(object@stopping,
+                                               dose=nextDose,
+                                               samples=thisSamples,
+                                               model=object@model,
+                                               data=baseData)
+                    
+                    ## append information to the data frame 
+                    ret <- rbind(ret,
+                                 list(DLTsearly_1=0,
+                                      dose=thisDose,
+                                      DLTs=numDLTs,
+                                      nextDose=nextDose,
+                                      stop=stopThisTrial,
+                                      increment=as.integer(thisIncrement)))
+                    ###comment here to show only no DLTs;
+                    #                                            }                                                      
+                  }else{
+                    
+                    
+                    
+                    for(DLTsearly in 1:2){
+                      
+                      #Update current {fact} variables
+                      thisDLTs<-factDLTs
+                      thisSurv<-factSurv 
+                      
+                      if(DLTsearly==1){
+                        #scenario 1: The patients with longest follow up have DLTs
+                        
+                        thisDLTs[thiscensored][1:numDLTs]<-rep(1,rep(numDLTs))
+                        
+                        thisSurv[thiscensored][1:numDLTs] <- apply(rbind(rep(Tmax,numDLTs),c(trialtime-factT0[thiscensored][1:numDLTs])),2,min)
+                        
+                        
+                        thisData <- update(object=baseData,
+                                           factDLTs= thisDLTs,  ####the y will be updated according to u 
+                                           factSurv=thisSurv,
+                                           factT0=factT0,
+                                           thisDose=thisDose,
+                                           trialtime=trialtime)  ####the u will be updated 
+                        
+                      }else {
+                        
+                        
+                        #scenario 2: The patients with shortest follow up have DLTs
+                        
+                        thisDLTs[rev(thiscensored)][1:numDLTs]<-rep(1,rep(numDLTs))
+                        
+                        thisSurv[rev(thiscensored)][1:numDLTs] <- c(apply(rbind(rep(1,numDLTs),pretime+1-factT0[rev(thiscensored)][1:numDLTs]),2,max))
+                        
+                        if (numDLTs>=thisSize){thistime<-1+max(thisT0)}else{
+                          thistime<-trialtime
+                        }
+                        
+                        thisData <- update(object=baseData,
+                                           factDLTs= thisDLTs,  ####the y will be updated according to u 
+                                           factSurv=thisSurv,
+                                           factT0=factT0,
+                                           thisDose=thisDose,
+                                           trialtime=thistime)  ####the u will be updated 
+                        
+                      }
+                      
+                      
+                      ## what is the dose limit?
+                      doselimit <- maxDose(object@increments,
+                                           data=thisData)
+                      
+                      ## generate samples from the model
+                      thisSamples <- mcmc(data=thisData,
+                                          model=object@model,
+                                          options=mcmcOptions)
+                      
+                      ## => what is the next best dose?
+                      nextDose <- nextBest(object@nextBest,
+                                           doselimit=doselimit,
+                                           samples=thisSamples,
+                                           model=object@model,
+                                           data=thisData)$value
+                      
+                      # ##remove savePlot  
+                      #                                                   savePlot(plot(thisData),name=paste("Dose",thisDose,numDLTs,"DLT",DLTsearly,nextDose,sep="_"))
+                      #                                                   
+                      ## compute relative increment in percent
+                      thisIncrement <-
+                        round((nextDose - thisDose) / thisDose * 100)
+                      
+                      ## evaluate stopping rules
+                      stopThisTrial <- stopTrial(object@stopping,
+                                                 dose=nextDose,
+                                                 samples=thisSamples,
+                                                 model=object@model,
+                                                 data=thisData)
+                      
+                      ## append information to the data frame
+                      ret <- rbind(ret,
+                                   list(DLTsearly_1=DLTsearly,
+                                        dose=thisDose,
+                                        DLTs=numDLTs,
+                                        nextDose=nextDose,
+                                        stop=stopThisTrial,
+                                        increment=as.integer(thisIncrement)))
+                    }   
+                    
+                  }
+                  
+                  
+                }
+                
+                ##update pretime
+                pretime<-trialtime
+                
+                ## what are the results if 0 DLTs?
+                resultsNoDLTs <- subset(ret,
+                                        dose==thisDose & DLTs==0)
+                
+                ## what is the new dose according to table?
+                newDose <- as.numeric(resultsNoDLTs$nextDose)
+                
+                ## what is the difference to the previous dose?
+                doseDiff <- newDose - thisDose
+                
+                ## would stopping rule be fulfilled already?
+                stopAlready <- resultsNoDLTs$stop
+                
+                ## update dose
+                thisDose <- newDose
+                
+                ##number of patients with un-completed DLT window;
+                preSize<-sum(baseData@u[baseData@y==0]<baseData@Tmax)
+                
+                ## update the counter for no increments of the dose
+                if(doseDiff == 0)
+                {
+                  noIncrementCounter <- noIncrementCounter + 1L
+                } else {
+                  noIncrementCounter <- 0L
+                }
+
+                
+                ## too many times no increment?
+                stopNoIncrement <- (noIncrementCounter >= maxNoIncrement)
+                if(stopNoIncrement)
+                  warning(paste("Stopping because",
+                                noIncrementCounter,
+                                "times no increment vs. previous dose"))
+
+                ## check if we can stop:
+                ## either when we have reached the highest dose in the
+                ## next cohort, or when the stopping rule is already
+                ## fulfilled, or when too many times no increment
+                stopit <- (thisDose >= max(object@data@doseGrid)) ||
+                  stopAlready || stopNoIncrement
+                
+              }
+              
+              return(ret)
+            })
+
 ## ===================================================================================
 ## ----------------------------------------------------------------------------------------
 ##  Simulate design using DLE responses only with DLE samples (pseudo DLE model)
@@ -3261,3 +3602,556 @@ setMethod("simulate",
             })
 
 ## --------------------------------------------------------------------------
+
+##' Simulate outcomes from a mDA-CRM design
+##'
+##' @param object the \code{\linkS4class{DADesign}} object we want to simulate
+##' data from
+##' @param nsim the number of simulations (default: 1)
+##' @param seed see \code{\link{setSeed}}
+##' @param truthTox a function which takes as input a dose (vector) and returns the
+##' true probability (vector) for toxicity and the time DLT occurs. Additional 
+##' arguments can be supplied in \code{args}.
+##' @param truthSurv a CDF which takes as input a time (vector) and returns
+##' the true cumulative probability (vector) that the DLT would occur conditioning on the patient
+##' has DLTs.
+##' @param trueTmax todo documentation here
+##' @param args data frame with arguments for the \code{truth} function. The
+##' column names correspond to the argument names, the rows to the values of the
+##' arguments. The rows are appropriately recycled in the \code{nsim}
+##' simulations. In order to produce outcomes from the posterior predictive
+##' distribution, e.g, pass an \code{object} that contains the data observed so
+##' far, \code{truth} contains the \code{prob} function from the model in
+##' \code{object}, and \code{args} contains posterior samples from the model.
+##' @param firstSeparate enroll the first patient separately from the rest of
+##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##' in this patient.
+##' @param deescalate de-escalation when a DLT occurs in cohorts with lower dose 
+##' level  #todo: there could be errors if DLT occurs between the 2-3 patients, 
+##' when the 3rd patient has't been dosed yet;
+##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
+##' giving the MCMC options for each evaluation in the trial. By default,
+##' the standard options are used
+##' @param DA todo document or rename this parameter to make it more meaningful
+##' @param parallel should the simulation runs be parallelized across the
+##' clusters of the computer? (not default)
+##' @param nCores how many cores should be used for parallel computing?
+##' Defaults to the number of cores on the machine (maximum 5)
+##' @param \dots not used
+##'
+##' @return an object of class \code{\linkS4class{Simulations}}
+##'
+##' @example examples/design-method-simulate-DADesign.R  
+##' @export
+##' @keywords methods
+##' 
+##'  #JZ: todo adjust the placebo cases;
+setMethod("simulate",
+          signature=
+            signature(object="DADesign",
+                      nsim="ANY",
+                      seed="ANY"),
+          def=
+            function(object, nsim=1L, seed=NULL,
+                     truthTox,truthSurv, trueTmax=NULL, args=NULL, firstSeparate=FALSE,
+                     deescalate=TRUE,
+                     mcmcOptions=McmcOptions(),
+                     DA=TRUE,
+                     parallel=FALSE, nCores=min(parallel::detectCores(), 5),
+                     ...){
+              
+              nsim <- safeInteger(nsim)   ##remove  in the future
+              
+              ## checks and extracts
+              stopifnot(is.function(truthTox),
+                        is.function(truthSurv),
+                        is.bool(firstSeparate), ##remove  in the future
+                        is.scalar(nsim),        ##remove  in the future
+                        nsim > 0,
+                        is.bool(parallel),
+                        is.scalar(nCores),
+                        nCores > 0)
+              
+              args <- as.data.frame(args)
+              nArgs <- max(nrow(args), 1L)
+              
+              ## seed handling
+              RNGstate <- setSeed(seed)
+              
+              ## from this,
+              ## generate the individual seeds for the simulation runs
+              simSeeds <- sample(x=seq_len(1e5), size=nsim)
+              
+              ##Define functions which are useful in DLT Surv generation
+              inverse = function (f, lower = -100, upper = 100) {
+                
+                function (y) uniroot((function (x) f(x) - y), 
+                                     lower = lower, upper = upper)[1]$root
+                
+              }
+              
+              ##The DLT window length
+              thisData <- object@data
+              Tmax <- thisData@Tmax
+              
+              if(is.null(trueTmax)){
+                
+                trueTmax=Tmax
+                
+              }else if(trueTmax<Tmax){
+                
+                warning("trueTmax < Tmax! trueTmax is set to Tmax")
+                trueTmax=Tmax
+              }
+              
+              ##Calculate the inverse function of Surv to DLT CDF
+              itruthSurv <- inverse(truthSurv, 0, trueTmax)
+              
+              ##generate random variable of Surv to DLT data; return Tmax when no
+              ##DLT
+              rtruthSurv<-function(DLT,Tmax_,itruthSurv=itruthSurv){
+                
+                
+                
+                u_i<-rep(-100,length(DLT)) #remember to check this
+                
+                if(sum(DLT==0)>0){  
+                  u_i[DLT==0]=Tmax_ }
+                
+                if(sum(DLT==1)>0){
+                  
+                  u_i[DLT==1]=unlist(lapply(runif(sum(DLT==1),0,1),itruthSurv) )}
+                
+                return(u_i)
+              }
+              
+              #A function to return follow up fulfull yes (TRUE) vs no (FALSE);
+              ready_to_open<-function(day,window, thisSurv){
+                size<-length(thisSurv)  
+                #the date the patient starts;
+                start_time<-apply(rbind(thisSurv[-size],window$patientGap[-1]),2,min)
+                #the relative time for each patient on the specified "date";
+                individule_check<-day-cumsum(c(0,start_time))
+                #the minial number should be 0;
+                individule_check[individule_check<0]<-0
+                follow_up<-apply(rbind(thisSurv,individule_check),2,min)
+                return(all((follow_up-apply(rbind(window$patientFollow,thisSurv),2,min))>=0) & (max(follow_up)>=min(window$patientFollowMin,max(thisSurv))))
+              }
+              
+              ##assume we have surfficient patients, i.e. patient can be immediately enrolled 
+              ##once the trial accumulation is open. This function will tell you when to open 
+              ##the next cohort;
+              #this function applys to all trials;
+              nextOpen<-function(window,thisSurv){
+                
+                size<-length(thisSurv)  
+                
+                window$patientGap<-window$patientGap[1:size]    ##if length(window$pt)>length(thisSurv), assume the first length(thisSurv) patients were enrolled;
+                ##if the DLT happens before the end of DLT window, then the next 
+                ##cohort/enrollment of the next patient would happened earlier;
+                start_time<-apply(rbind(thisSurv[-size],window$patientGap[-1]),2,min)
+                #duration of the cohort (all DLT windows finished);
+                maxT<-max(thisSurv+cumsum(c(0,start_time)))
+                
+                meetrequire<-sapply(1:maxT,function(i){ready_to_open(i,window,thisSurv)})
+                if (sum(meetrequire)>0){
+                  #the earliest time that the require is met;
+                  time<-min(c(1:maxT)[meetrequire])}else{
+                    time<-maxT
+                  }
+                
+                return(time)
+                
+              }
+              
+              ## the function to produce the run a single simulation
+              ## with index "iterSim"
+              runSim <- function(iterSim)
+              {
+                ## set the seed for this run
+                set.seed(simSeeds[iterSim])
+                
+                #check<<-simSeeds[iterSim]
+                ## what is now the argument for the truth?
+                ## (appropriately recycled)
+                thisArgs <- args[(iterSim - 1) %% nArgs + 1, , drop=FALSE]
+                
+                ## so this truth is...
+                thisTruth <- function(dose)
+                {
+                  do.call(truthTox,
+                          ## First argument: the dose
+                          c(dose,
+                            ## Following arguments
+                            thisArgs))
+                }
+                
+                ## start the simulated data with the provided one
+                thisData <- object@data
+                
+                # In case there are placebo
+                if(thisData@placebo)
+                  ## what is the probability for tox. at placebo?
+                  thisProb.PL <- thisTruth(object@data@doseGrid[1])
+                
+                ## shall we stop the trial?
+                ## First, we want to continue with the starting dose.
+                ## This variable is updated after each cohort in the loop.
+                stopit <- FALSE
+                
+                ## the time clock for the study, set to 0 when the first simulated 
+                ##patient initially dosed;
+                trialtime <- 0
+                
+                #initiate the true DLT, true DLT Surv and the C1/D1 for each patients
+                factDLTs  <- thisData@y
+                factSurv <- thisData@u
+                factT0   <- thisData@t0
+                
+                ## what is the next dose to be used?
+                ## initialize with starting dose
+                thisDose <- object@startingDose
+                
+                ## inside this loop we simulate the whole trial, until stopping
+                while(! stopit)
+                {
+                  
+                  ## what is the probability for tox. at this dose?
+                  thisProb <- thisTruth(thisDose)
+                  
+                  ## what is the cohort size at this dose?
+                  thisSize <- size(cohortSize=object@cohortSize,
+                                   dose=thisDose,
+                                   data=thisData)
+                  
+                  thisSafetywindow<-windowLength(object@safetyWindow,thisSize) 
+                  #todo: add a checkpoint in safetywindow--dim(safetywindow$pt)==thisSize;
+                  
+                  ## In case there are placebo
+                  if(thisData@placebo)
+                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                                        dose=thisDose,
+                                        data=thisData)
+                  
+                  
+                  ## simulate DLTs: depends on whether we
+                  ## separate the first patient or not.
+                  ##amended on May 24: if any patient had DLT before the 
+                  ##first patient finished a staggered window
+                  ##further enrollment will be stopped;
+                  
+                  if(firstSeparate && (thisSize > 1L))
+                  {
+                    ## dose the first patient
+                    thisDLTs <- rbinom(n=1L,
+                                       size=1L,
+                                       prob=thisProb)
+                    
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=1L,
+                                            size=1L,
+                                            prob=thisProb.PL)
+                    
+                    thisSurv <- ceiling(rtruthSurv(DLT=thisDLTs,Tmax_=trueTmax,itruthSurv=itruthSurv))
+                    
+                    if(Tmax<trueTmax){
+                      
+                      thisDLTs[thisDLTs==1 & thisSurv>Tmax]<-0
+                      
+                      thisSurv<-apply(rbind(thisSurv,rep(Tmax,length(thisSurv))),2,min)      
+                    }
+                    
+                    thisT0   <-trialtime
+                    
+                    ## if there is no DLT during Safety window:
+                    ## and no DLTs of previous patients-->
+                    
+                    
+                    #need to update the DataDA object
+                    tempData <- update(object=thisData,
+                                       factDLTs= c(factDLTs,thisDLTs),  ####the y will be updated according to u 
+                                       factSurv= c(factSurv,thisSurv),
+                                       factT0= c(factT0,thisT0),
+                                       thisDose= thisDose,
+                                       trialtime= trialtime+thisSafetywindow$patientGap[2])  ####the u will be updated over time 
+                    
+                    temptime<-(tempData@u+tempData@t0)[tempData@y==1 & tempData@x<=thisDose]
+                    
+                    
+                    #identify number of DLTs occurs during the thisSafetywindow$pt[2]
+                    #if(thisSurv>thisSafetywindow$pt[2])
+                    if(sum(temptime>trialtime)==0)
+                    {
+                      ## enroll the remaining patients
+                      thisDLTs <- c(thisDLTs,
+                                    rbinom(n=thisSize - 1L,
+                                           size=1L,
+                                           prob=thisProb))
+                      
+                      thisSurv <- c(thisSurv, 
+                                    ceiling(rtruthSurv(thisDLTs[-1],trueTmax,itruthSurv=itruthSurv)))
+                      
+                      if(Tmax<trueTmax){
+                        
+                        thisDLTs[thisDLTs==1 & thisSurv>Tmax]<-0
+                        
+                        thisSurv<-apply(rbind(thisSurv,rep(Tmax,length(thisSurv))),2,min)      
+                      }
+                      
+                      #in case any DLT happens before the end of the safety window;
+                      real_window<-apply(rbind(thisSurv[-thisSize],thisSafetywindow$patientGap[-1]),2,min)
+                      
+                      
+                      thisT0   <- trialtime+c(0,cumsum(real_window))
+                      
+                      if( thisData@placebo && (thisSize.PL > 1L) )
+                        thisDLTs.PL <- c(thisDLTs.PL,
+                                         rbinom(n=thisSize.PL - 1L,
+                                                size=1L,
+                                                prob=thisProb.PL))
+                    }
+                    
+                    rm(tempData)
+                    rm(temptime)
+                    
+                  } else {
+                    ## we can directly dose all patients
+                    thisDLTs <- rbinom(n=thisSize,
+                                       size=1L,
+                                       prob=thisProb)
+                    
+                    thisSurv <- ceiling(rtruthSurv(thisDLTs,trueTmax,itruthSurv=itruthSurv))  
+                    ##should return a vector with a same dimention as thisDLTs
+                    if(Tmax<trueTmax){
+                      
+                      thisDLTs[thisDLTs==1 & thisSurv>Tmax]<-0
+                      
+                      thisSurv<-apply(rbind(thisSurv,rep(Tmax,length(thisSurv))),2,min)      
+                    }
+                    #in case any DLT happens before the end of the safety window;
+                    real_window<-apply(rbind(thisSurv[-thisSize],thisSafetywindow$patientGap[-1]),2,min)
+                    
+                    thisT0   <- trialtime+c(0,cumsum(real_window))
+                    ##should return a vector with a same dimention as thisDLTs
+                    
+                    if(thisData@placebo)
+                      thisDLTs.PL <- rbinom(n=thisSize.PL,
+                                            size=1L,
+                                            prob=thisProb.PL) 
+                  }
+                  
+                  
+                  ## update the data with this placebo (if any) 
+                  ## cohort and then with active dose
+                  if(thisData@placebo){
+                    thisData <- update(object=thisData,
+                                       x=object@data@doseGrid[1],
+                                       y=thisDLTs.PL)
+                    
+                    ## update the data with active dose
+                    thisData <- update(object=thisData,
+                                       x=thisDose,
+                                       y=thisDLTs,
+                                       newCohort=FALSE)
+                    
+                    ##JZ: additional part for DADesign--when to start the next cohort
+                    trialtime <- trialtime+nextOpen(window=thisSafetywindow,
+                                                    thisSurv=thisSurv)
+                    
+                  }else{
+                    ##JZ: since the whole y and u column need update. 
+                    ##factDLTs and factSuev get update and then calculate the y and u value in
+                    ##thisData object
+                    #                                                   
+                    #                                                   ## update the data with this cohort
+                    #                                                   thisData <- update(object=thisData,
+                    #                                                                      x=thisDose,  ####the x will be constantly updated according to u 
+                    #                                                                      y=thisDLTs,
+                    #                                                                      u=thisSurv)  ####the u will be constantly updated 
+                    
+                    factDLTs  <- c(factDLTs,thisDLTs)
+                    
+                    factSurv <- c(factSurv, thisSurv) #todo: check the data type of factSurv and thisSurv; 
+                    
+                    factT0   <- c(factT0, thisT0)
+                    
+                    
+                    tempnext <- nextOpen(window=thisSafetywindow,
+                                         thisSurv=thisSurv)
+                    
+                    #####if there are DLTs, patients in the higher cohorts will be dosed a lower dose or discontinue.
+                    if(deescalate==TRUE){
+                      
+                      newDLTid<-((factSurv+factT0)>trialtime & (factSurv+factT0-trialtime) <= tempnext & factDLTs==1)
+                      
+                      newDLTnum<-c(1:length(factDLTs))[newDLTid]
+                      
+                      newDLTnum<-newDLTnum[newDLTnum<=(length(factDLTs)-length(thisDLTs))]
+                      
+                      #if(ifelse(sum(newDLTnum)==0,Inf,min(newDLTnum))<=(length(factDLTs)-length(thisDLTs))){
+                      if(length(newDLTnum)>0){
+                        
+                        for(DLT_loop in newDLTnum){
+                          
+                          newDLTtime<- (factSurv+factT0)[DLT_loop]
+                          
+                          #identify higher dose--impacted patients:
+                          deescalateID<-c(DLT_loop:length(factDLTs))[c(thisData@x,rep(thisDose,length(thisDLTs)))[DLT_loop:length(factDLTs)]> thisData@x[DLT_loop]]
+                          
+                          
+                          ## DLT will be observed once the followup time >= the time to DLT
+                          factDLTs[deescalateID]<- as.integer(factDLTs*(newDLTtime>=factT0+factSurv))[deescalateID]
+                          
+                          ##update DLT free survival time
+                          factSurv[deescalateID]<- apply(rbind(factSurv,newDLTtime-factT0),2,min)[deescalateID]
+                          
+                        }  
+                        
+                        tempnext <- min(tempnext,max((factSurv+factT0)[(length(factDLTs)-length(thisDLTs)+1):length(factDLTs)])-trialtime)
+                      }
+                      
+                      
+                    }
+                    
+                    
+                    
+                    
+                    
+                    
+                    ##JZ: future work: additional part for DADesign--when to start the next cohort
+                    ##nextOpen can be modified to incoporate different patient enrollment rate;
+                    ##currently assume we have surfficient patients;
+                    ##If there is a gap between cohorts for cohort manager meeting, it can be
+                    ##added to here;
+                    
+                    trialtime <- trialtime+tempnext
+                    
+                    
+                    
+                    ##Update thisData
+                    ##according to what can be observed by the time when the next cohort open;
+                    
+                    
+                    thisData <- update(object=thisData,
+                                       factDLTs= factDLTs,  ####the y will be updated according to u 
+                                       factSurv=factSurv,
+                                       factT0=factT0,
+                                       thisDose=thisDose,
+                                       trialtime=trialtime)  ####the u will be updated over time 
+                    
+                    try(if(length(thisData@x)!=length(thisData@u) || length(thisData@u)!=length(thisData@y)) 
+                      stop("x,y,u dimention error")) 
+                  }
+                  
+                  
+                  #testthisdata<<-thisData
+                  
+                  ## what is the dose limit? #JZ should 
+                  ## still work for the DataDA object
+                  doselimit <- maxDose(object@increments,
+                                       data=thisData)
+                  
+                  
+                  
+                  ## generate samples from the model
+                  if(DA==TRUE){
+                    thisSamples <- mcmc(data=thisData,
+                                        model=object@model,
+                                        options=mcmcOptions)
+                  } else if(DA==FALSE) {
+                    
+                    temp_model<-LogisticLogNormal(mean=object@model@mean,
+                                                  cov=object@model@cov,
+                                                  refDose=object@model@refDose) 
+                    
+                    trunk_Data<-Data(x = thisData@x,y =thisData@y,
+                                     doseGrid= thisData@doseGrid, 
+                                     cohort=thisData@cohort,
+                                     ID=thisData@ID)
+                    
+                    thisSamples <- mcmc(data=trunk_Data,
+                                        model= temp_model,
+                                        options=mcmcOptions)              
+                    
+                  }
+                  
+                  ## => what is the next best dose?
+                  thisDose <- nextBest(object@nextBest,
+                                       doselimit=doselimit,
+                                       samples=thisSamples,
+                                       model=object@model,
+                                       data=thisData)$value
+                  
+                  ## evaluate stopping rules
+                  stopit <- stopTrial(object@stopping,
+                                      dose=thisDose,
+                                      samples=thisSamples,
+                                      model=object@model,
+                                      data=thisData)
+                }
+                
+                ## get the fit
+                thisFit <- fit(object=thisSamples,
+                               model=object@model,
+                               data=thisData)
+                
+                ## return the results
+                thisResult <-
+                  list(data=thisData,
+                       dose=thisDose,
+                       duration=trialtime,
+                       fit=
+                         subset(thisFit,
+                                select=c(middle, lower, upper)),
+                       stop=
+                         attr(stopit,
+                              "message"))
+                return(thisResult)
+              }
+              
+              resultList <-  getResultList(fun=runSim,   ##remove  
+                                                     nsim=nsim,
+                                                     vars=
+                                                       c("simSeeds",
+                                                         "args",
+                                                         "nArgs",
+                                                         "firstSeparate",
+                                                         "truthTox",
+                                                         "truthSurv",
+                                                         "object",
+                                                         "mcmcOptions",
+                                                         "nextOpen",
+                                                         "ready_to_open"),
+                                           parallel=if(parallel) nCores else NULL)
+              
+              ## put everything in the Simulations format:
+              
+              ## setup the list for the simulated data objects
+              dataList <- lapply(resultList, "[[", "data")
+              
+              
+              ## the vector of the final dose recommendations
+              recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
+              
+              ## the vector of the final trial duration;
+              trialduration <- as.numeric(sapply(resultList, "[[", "duration"))
+              
+              ## setup the list for the final fits
+              fitList <- lapply(resultList, "[[", "fit")
+              
+              ## the reasons for stopping
+              stopReasons <- lapply(resultList, "[[", "stop")
+              
+              ## return the results in the Simulations class object
+              ret <- DASimulations(data=dataList,
+                                   doses=recommendedDoses,
+                                   fit=fitList,
+                                   trialduration=trialduration,
+                                   stopReasons=stopReasons,
+                                   seed=RNGstate)
+              
+              return(ret)
+            })
+
+## --------------------------------------------------------------------------
+

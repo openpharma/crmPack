@@ -481,7 +481,7 @@ setMethod("update",
                      ...){
               
               ## some checks
-              stopifnot(crmPack:::is.scalar(thisDose),
+              stopifnot(is.scalar(thisDose),
                         all(factSurv >0),
                         all(factDLTs %in% c(0, 1)),
                         length(factDLTs) == length(factSurv),

@@ -1,12 +1,25 @@
+----------------------------------------------------------------
+ROLLING CRM:
+
+- issue a warning if t0=0 in DataDA?
+
+- Using an informative Gamma prior for lambda did not produce stable results. 
+  How could this be done? would need proper documentation in help files/vignette
+  
+- C_par needs better documentation and potentially a change of name
+
+- write a vignette (in Rmd format?) for rolling CRM, to make it easier
+  to start with this kind of design
+
+
+----------------------------------------------------------------
 BUGFIXES:
 
 none
 
+
 ----------------------------------------------------------------
 IMPROVEMENTS:
-
-- Add a "BugReports" field to DESCRIPTION, and point it to a bug tracker. Many online code hosting
-    services provide bug trackers for free, https://github.com, https://gitlab.com, etc.
 
 - add warning if the MinimalInformative prior or similar return a prior variance
   that is very low (to prevent undeliberately strong priors!)

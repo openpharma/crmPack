@@ -2000,7 +2000,7 @@ SafetyWindowSize <- function(patientGap,
            contains="SafetyWindow",
            validity=
              function(object){
-               o <- crmPack:::Validate()
+               o <- Validate()
                
                o$check(all(object@patientGap >= 0),
                        "patientGap should be non-negative number")

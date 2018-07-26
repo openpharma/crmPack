@@ -433,4 +433,63 @@ DualResponsesDesign <- function(Effmodel,
                        data=data)
 }
 
-  ## ===============================================================================
+## ===============================================================================
+
+
+##' Class for the mDA-CRM design
+##'
+##' This class has special requirements for the \code{model} and \code{data}
+##' slots in comparison to the parent class \code{\linkS4class{Design}}:
+##'
+##' @slot model the model to be used, an object of class
+##' \code{\linkS4class{DALogisticLogNormal}}
+##' @slot data what is the dose grid, any previous data, etc., contained
+##' in an object of class \code{\linkS4class{DataDA}}
+##' @slot safetyWindow todo
+##'
+##' @example examples/design-class-DADesign.R 
+##' @export
+##' @keywords classes
+##' 
+## todo: make nextOpen a part of the DAdesign object
+.DADesign <-
+  setClass(Class="DADesign",
+           representation(model="DALogisticLogNormal",
+                          data="DataDA",
+                          safetyWindow="SafetyWindow"),
+           prototype(model=.DALogisticLogNormal(),
+                     nextBest=.NextBestNCRM(),
+                     data=DataDA(doseGrid=1:2),
+                     startingDose=1,
+                     safetyWindow=.SafetyWindowConst()
+           ),
+           contains=list("Design"))
+validObject(.DADesign())
+
+
+##' Initialization function for "DADesign"
+##'
+##' @param model see \code{\linkS4class{DADesign}}
+##' @param data see \code{\linkS4class{DADesign}}
+##' @param safetyWindow see \code{\linkS4class{DADesign}}
+##' @param \dots additional arguments for \code{\link{Design}}
+##' @return the \code{\linkS4class{DADesign}} object
+##'
+##' @export
+##' @keywords methods
+DADesign <- function(model,
+                     data,
+                     safetyWindow,
+                     ...)
+{
+  start <- Design(data=data,
+                  model=model,
+                  ...)
+  .DADesign(start,
+            safetyWindow=safetyWindow)
+}
+
+
+
+
+## ===============================================================================

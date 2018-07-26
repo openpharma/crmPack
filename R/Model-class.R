@@ -3759,9 +3759,9 @@ DALogisticLogNormal <- function(l,
                              #the likelihood function;
                              L[i]<- pow(L_obs[i],indx[i])*pow(L_miss[i],1-indx[i])
                              #not censored
-                             L_obs[i]<-exp(sum(mu[i,]))*pow(p[i]/A[i],y[i])*pow(1-p[i],1-y[i])
+                             L_obs[i]<-exp(sum(mu[i,]))*pow(p[i]/A,y[i])*pow(1-p[i],1-y[i])
                              #censored
-                             L_miss[i]<- 1-p[i]*(1-exp(-sum(mu_u[i,])))/A[i]
+                             L_miss[i]<- 1-p[i]*(1-exp(-sum(mu_u[i,])))/A
                              
                            }
                            
@@ -3802,14 +3802,13 @@ DALogisticLogNormal <- function(l,
                                       }
                                       
                                       ## for conditional:
-                                      sum_muT[i]<-sum(muT[])
+                                      sum_muT <- sum(muT[])
                                       
                                       ## If cond = 1, then conditional PEM is used and this
                                       ## is defined as the probability to have DLT, i.e. t<T
                                       ## otherwise cond = 0 and it is just 1 (so no
                                       ## impact in likelihood)
-                                      A[i]<- cond * (1-exp(-sum_muT[i])) + (1 - cond)
-                                      
+                                      A <- cond * (1-exp(-sum_muT)) + (1 - cond)
                                     }),
                        
                        datanames=c("nObs", "y", "x", "u","npiece",
