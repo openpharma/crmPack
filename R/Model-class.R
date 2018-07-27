@@ -3647,6 +3647,7 @@ EffFlexi <- function(Eff,
 ##'
 ##' todo: need to include here formula for the lambda prior.
 ##'
+##' @slot npiece the number of pieces in the PEM
 ##' @slot l a vector used in the lambda prior
 ##' @slot C_par a parameter used in the lambda prior, 
 ##' according to Liu's paper, C_par=2 is recommended
@@ -3659,10 +3660,12 @@ EffFlexi <- function(Eff,
 ##' @keywords classes
 .DALogisticLogNormal <-
   setClass(Class="DALogisticLogNormal",
-           representation(l="numeric",
+           representation(npiece="numeric",
+                          l="numeric",
                           C_par="numeric",
                           conditionalPEM="logical"),
-           prototype(l=0.5,
+           prototype(npiece=3,
+                     l=0.5,
                      C_par=2, #according to Liu's paper, C_par=2 is recommended
                      conditionalPEM=TRUE),
            contains="LogisticLogNormal", 
@@ -3684,16 +3687,17 @@ validObject(.DALogisticLogNormal())
 
 ##' Initialization function for the "DALogisticLogNormal" class
 ##'
+##' @param npiece see \code{\linkS4class{DALogisticLogNormal}}
 ##' @param l see \code{\linkS4class{DALogisticLogNormal}}
 ##' @param C_par see \code{\linkS4class{DALogisticLogNormal}}
-##' @slot conditionalPEM see \code{\linkS4class{DALogisticLogNormal}}
-##' 
+##' @param conditionalPEM see \code{\linkS4class{DALogisticLogNormal}}
 ##' @param \dots additional parameters from \code{\link{LogisticLogNormal}}
 ##' @return the \code{\linkS4class{DALogisticLogNormal}} object
 ##'
 ##' @export
 ##' @keywords programming
-DALogisticLogNormal <- function(l,
+DALogisticLogNormal <- function(npiece=3,
+                                l,
                                 C_par=2,
                                 conditionalPEM=TRUE,
                                 ...)
@@ -3701,6 +3705,7 @@ DALogisticLogNormal <- function(l,
   start <- LogisticLogNormal(...)
   
   .DALogisticLogNormal(start,
+                       npiece=safeInteger(npiece),
                        l=l,
                        C_par=C_par,
                        conditionalPEM=conditionalPEM,
@@ -3811,13 +3816,13 @@ DALogisticLogNormal <- function(l,
                                       A <- cond * (1-exp(-sum_muT)) + (1 - cond)
                                     }),
                        
-                       datanames=c("nObs", "y", "x", "u","npiece",
-                                   "Tmax"), 
+                       datanames=c("nObs", "y", "x", "u", "Tmax"), 
                        modelspecs=
-                         function(nObs, Tmax, npiece){
+                         function(nObs, Tmax){
                            list(refDose=start@refDose,
                                 priorCov=start@cov,
                                 priorMean=start@mean,
+                                npiece=npiece,
                                 l=l,
                                 C_par=C_par,
                                 zeros=rep(0, nObs),
@@ -3844,7 +3849,157 @@ DALogisticLogNormal <- function(l,
 validObject(DALogisticLogNormal(mean=c(0, 1),
                                 cov=diag(2),
                                 refDose=1,
+                                npiece=3,
                                 l=0.5,
                                 C_par=2))
 
 ## ============================================================
+
+##' Standard logistic model with bivariate (log) normal prior (for TITE-CRM use)
+##' 
+##' This is a TITE-CRM based on a logistic regression model using
+##' a bivariate normal prior on the intercept and log slope parameters.
+##' This class inherits from the normal logistic model class.
+##'
+##' @slot weightMethod weight function method: linear or addaptive 
+##' (this was used in Liu, Yin and Yuan's paper)
+##'
+##' @export
+##' @keywords classes
+.TITELogisticLogNormal <-
+  setClass(Class="TITELogisticLogNormal",
+           representation(weightMethod="character"),
+           prototype(weightMethod="linear"),
+           contains="LogisticLogNormal",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               allweightMethod <- c("linear", "adaptive")
+               
+               o$check(all((object@weightMethod) %in%
+                             allweightMethod),
+                       "weightMethod must be either linear or adaptive")
+               
+               o$check(identical(length(object@weightMethod), 1L),
+                       "weightMethod must have length 1")
+             })
+validObject(.TITELogisticLogNormal())
+
+
+##' Initialization function for the "TITELogisticLogNormal" class
+##'
+##' @param weightMethod see \code{\linkS4class{TITELogisticLogNormal}}
+##' @param \dots see \code{\linkS4class{LogisticLogNormal}}
+##' @return the \code{\linkS4class{TITELogisticLogNormal}} object
+##'
+##' @export
+##' @keywords methods
+TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
+                                  ...)
+{
+  weightMethod <- match.arg(weightMethod)
+  
+  start <- LogisticLogNormal(...)
+  
+  .TITELogisticLogNormal(start,
+                         weightMethod=weightMethod,
+                         datamodel=
+                           function(){
+                             for (i in 1:nObs) #for each patient
+                             {
+                               #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
+                               
+                               #  NOTE: In the original r2JAGs code, the notation "y[i]" was "event[i]"
+                               #        and "DLT[i]" was "y[i]";
+                               #  Other notations: t[i]-- the true DLT time of patient i if he/she has 
+                               #                          DLT eventually;
+                               #                   u[i]-- DLT free survival
+                               
+                               
+                               #Part I: describe the logistic model of DLTs vs dose;
+                               
+                               logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+                               StandLogDose[i] <- log(x[i] / refDose)
+                               
+                               #Part II: describe the piecewise exponential; 
+                               #please notice:
+                               #when y=1             -> DLT=1 and u=<T;
+                               #when y=0 & T<t (u=T) -> DLT=0;
+                               #when y=0 & T>t (u<T) -> DLT=NA/missing;
+                               
+                               #when indx=0 -> censored, i.e u<T and event=0;
+                               #when indx=1 -> not censored, i.e. u>=T or event=1;
+                               
+                               
+                               #apply zero trick in JAGS;
+                               zeros[i]~dpois(phi[i])
+                               phi[i]<- -log(L[i]) + cadj
+                               
+                               #the likelihood function;
+                               L[i]<- pow(p[i],y[i])*pow((1-w[i]*p[i]),(1-y[i]))
+                             }
+                           },
+                         
+                         datanames=c("nObs", "y", "x", "u", "Tmax"),
+                         
+                         modelspecs=
+                           function(nObs, u, Tmax, y){
+                             
+                             ## calculate weightw w based on the input data
+                             if(length(u)){
+                               
+                               if(weightMethod=="linear"){
+                                 w<-u/Tmax
+                               }
+                               else if(weightMethod=="adaptive"){
+                                 
+                                 w <- NA
+                                 support <- sort(u[y == 1])
+                                 totalToxic <- sum(y)
+                                 
+                                 if (totalToxic) {
+                                   for (i in 1:length(u)) {
+                                     m <- length(support[support <= u[i]])
+                                     if (!m){
+                                       w[i] <- u[i]/support[1]/(totalToxic + 1)
+                                     }
+                                     
+                                     else if (m == totalToxic){
+                                       w[i] <- (totalToxic + (u[i] - support[totalToxic])/(Tmax+0.00000001 - 
+                                                                                             support[totalToxic]))/(totalToxic + 1)
+                                     } 
+                                     
+                                     else {
+                                       w[i] <- (m + (u[i] - support[m])/(support[m + 1] - support[m]))/(totalToxic + 1)
+                                     }
+                                   }
+                                 }
+                                 else{
+                                   w <- u/Tmax
+                                 }
+                               }
+                             }
+                             else{
+                               w <- 1
+                             }
+                             w[y == 1] <- 1
+                             w[u==Tmax] <- 1
+                             
+                             
+                             list(refDose=refDose,
+                                  priorCov=cov,
+                                  priorMean=mean,
+                                  zeros=rep(0, nObs),
+                                  cadj=1e10,
+                                  w=w)
+                           })
+                         
+}
+validObject(TITELogisticLogNormal(mean=c(0, 1),
+                                  cov=diag(2),
+                                  refDose=1,
+                                  weightMethod="linear"))
+
+## ============================================================
+

@@ -145,16 +145,9 @@ setMethod("mcmc",
               requiredData <-
                   if(fromPrior)
                   {
-                    ## todo: this is a workaround for mDA-CRM. can we do this better?
-                    if("npiece" %in% names(tmp))
-                    {
-                      as.list(data)[c("npiece")]   
-
-                    } else {
-                      
                       ## in this case requiredData will not be used
                       NULL
-                    }
+                    
                   } else if(data@nObs == 1L) {
                       ## here we need to modify!!
                       tmp <- as.list(data)[model@datanames]
@@ -165,7 +158,6 @@ setMethod("mcmc",
                                                              "nObsshare", 
                                                              "yshare",
                                                              "xshare",
-                                                             "npiece",
                                                              "Tmax")))
                       ## all names that are not referring to the scalars
                       ## nObs and nGrid

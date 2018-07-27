@@ -6,18 +6,19 @@ data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                    seq(from=10, to=80, by=2)),
                u=c(42,30,15,5,20,25,30,60),
                t0=c(0,-15,-30,-40,-55,-70,-75,-85),
-               Tmax=60,
-               npiece=10)
+               Tmax=60)
 
 # Initialize the CRM model used to model the data
+npiece_ <- 10
 lambda_prior<-function(k){
-  data@npiece/(data@Tmax*(data@npiece-k+0.5))
+  npiece_/(data@Tmax*(npiece_-k+0.5))
 }
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
                            refDose=56,
-                           l=as.numeric(t(apply(as.matrix(c(1:data@npiece),1,data@npiece),2,lambda_prior))),
+                           npiece=npiece_,
+                           l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
 
 # Set-up some MCMC parameters and generate samples from the posterior

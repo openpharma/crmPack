@@ -436,13 +436,16 @@ DualResponsesDesign <- function(Effmodel,
 ## ===============================================================================
 
 
-##' Class for the mDA-CRM design
+##' Class for the time-to-DLT augmented CRM design
 ##'
 ##' This class has special requirements for the \code{model} and \code{data}
 ##' slots in comparison to the parent class \code{\linkS4class{Design}}:
 ##'
-##' @slot model the model to be used, an object of class
-##' \code{\linkS4class{DALogisticLogNormal}}
+##' @slot model the model to be used, an object of or inheriting from class
+##' \code{\linkS4class{LogisticLogNormal}}, see in particular
+##' \code{\linkS4class{DALogisticLogNormal}} and 
+##' \code{\linkS4class{TITELogisticLogNormal}} which make use of the 
+##' time-to-DLT data
 ##' @slot data what is the dose grid, any previous data, etc., contained
 ##' in an object of class \code{\linkS4class{DataDA}}
 ##' @slot safetyWindow todo
@@ -454,13 +457,12 @@ DualResponsesDesign <- function(Effmodel,
 ## todo: make nextOpen a part of the DAdesign object
 .DADesign <-
   setClass(Class="DADesign",
-           representation(model="DALogisticLogNormal",
+           representation(model="LogisticLogNormal",
                           data="DataDA",
                           safetyWindow="SafetyWindow"),
            prototype(model=.DALogisticLogNormal(),
                      nextBest=.NextBestNCRM(),
                      data=DataDA(doseGrid=1:2),
-                     startingDose=1,
                      safetyWindow=.SafetyWindowConst()
            ),
            contains=list("Design"))
@@ -488,8 +490,15 @@ DADesign <- function(model,
   .DADesign(start,
             safetyWindow=safetyWindow)
 }
-
-
+validObject(DADesign(model=.DALogisticLogNormal(),
+                     data=DataDA(doseGrid=1:2),
+                     safetyWindow=.SafetyWindowConst(),
+                     nextBest=.NextBestNCRM(),
+                     startingDose=1,
+                     cohortSize=CohortSizeConst(3),
+                     stopping=StoppingMinCohorts(10),
+                     increments=IncrementsNumDoseLevels(2)))
+          
 
 
 ## ===============================================================================

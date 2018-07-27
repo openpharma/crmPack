@@ -13,6 +13,10 @@ ROLLING CRM:
   
 - empty data, there was a problem to produce probability plot for time to DLT
 
+- Convert TITE CRM demo file to vignette in Rmd format (same as for rolling CRM
+  demo). Reason is that vignettes are routinely checked and easier to find
+  than demos.
+
 
 ----------------------------------------------------------------
 BUGFIXES:

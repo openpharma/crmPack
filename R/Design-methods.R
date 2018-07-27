@@ -3603,7 +3603,7 @@ setMethod("simulate",
 
 ## --------------------------------------------------------------------------
 
-##' Simulate outcomes from a mDA-CRM design
+##' Simulate outcomes from a time-to-DLT augmented CRM design (DADesign)
 ##'
 ##' @param object the \code{\linkS4class{DADesign}} object we want to simulate
 ##' data from

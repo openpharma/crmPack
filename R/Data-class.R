@@ -412,7 +412,7 @@ validObject(DataMixture())
 ## Subclass with DLT free survival
 ## --------------------------------------------------
 
-##' Class for the mDA-CRM data input
+##' Class for the time-to-DLT augmented data input
 ##'
 ##' This is a subclass of \code{\linkS4class{Data}}, so contains all
 ##' slots from \code{\linkS4class{Data}}, and in addition DLT free survival
@@ -421,9 +421,6 @@ validObject(DataMixture())
 ##' deaths.)
 ##'
 ##' @slot u the continuous vector of DLT free survival values
-##' @slot npiece the number of pieces in the PEM
-##' DSB: todo: can npiece go to the model slots?
-##' JZ: reply: seems npiece is quite embeded in many functions, may take some time to move it to model.
 ##' @slot Tmax the DLT observation period
 ##' @slot t0 time of initial dosing for each patient
 ##' 
@@ -435,7 +432,6 @@ validObject(DataMixture())
            representation=
              representation(u="numeric",
                             t0="numeric",
-                            npiece="numeric",
                             Tmax="numeric"),
            contains="Data",
            validity=
@@ -473,8 +469,6 @@ validObject(.DataDA())
 ##' This is the function for initializing a "DataDA" class object.
 ##'
 ##' @param u the continuous vector of DLT free survival values
-##' @param npiece the number of pieces in the PEM
-##' DSB: todo: same here
 ##' @param Tmax the DLT observation period
 ##' @param t0 time of initial dosing for each patient (default: 0)
 ##' @param \dots additional parameters from \code{\link{Data}}
@@ -484,7 +478,6 @@ validObject(.DataDA())
 ##' @keywords programming
 ###todo: make event,u and y input consistent;-JZ y is used to replace event; 
 DataDA <- function(u=numeric(),
-                   npiece=numeric(),
                    Tmax=numeric(),
                    t0=numeric(),
                    ...)
@@ -500,10 +493,11 @@ DataDA <- function(u=numeric(),
   .DataDA(start,
           u = as.numeric(u),
           t0 = t0,
-          npiece = safeInteger(npiece),
           Tmax = as.numeric(Tmax))
 }
 validObject(DataDA())
 
+
 ## ============================================================
+
 

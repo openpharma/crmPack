@@ -1,16 +1,19 @@
-###two examples of using crmPack to run a mDA-CRM design with overdose control
-# getwd()
-# setwd("C:/Temp/crmpack")
-library("crmPack")
-source("R/safetywindow.r")
-source("R/mDA-CRM-model.r")
-source("R/mDA-CRM-design.r")
+---
+title: "Rolling CRM Example"
+author: "Jiawen Zhu, Daniel Sabanes Bove"
+date: "27 Juli 2018"
+output: html_document
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-##Example 1: recommend a dose for the next cohort;
+## Example 1: Recommend a dose for the next cohort
 
-#1) Data
+### Setting up the data
 
+```{r Data}
 data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10), 
                y=c(0, 0, 1, 1, 0, 0, 1, 0),
                doseGrid=
@@ -18,20 +21,16 @@ data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                    seq(from=10, to=80, by=2)),
                u=c(42,30,15,5,20,25,30,60),
                t0=c(0,-15,-30,-40,-55,-70,-75,-85),
-               Tmax=60,  #DLT window length;
-               npiece=10)
+               Tmax=60)
 
 emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
-                               seq(from=10, to=80, by=2)),Tmax=60,npiece=10)
+                               seq(from=10, to=80, by=2)),
+                    Tmax=60)
+```
 
-#2) Structure of the model class
-#mean=c(-0.85,1)
-#cov=matrix(c(1,-0.5,-0.5,1),nrow=2)
-#refDose=56
-#non-inforamtive prior for lambdas (number of pieces=npiece_)
-#l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior)))
+### Structure of the model class
 
-##need to fill in
+```{r Model}
 npiece_=10
 Tmax_=60
 
@@ -42,46 +41,61 @@ lambda_prior<-function(k){
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
                            refDose=56,
+                           npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
 
-#3) Obtain the posterior
+```
 
+### Obtain the posterior
+
+```{r Posterior}
 options <- McmcOptions(burnin=10,
                        step=2,
                        samples=1e2)
 
 set.seed(94)
 samples <- mcmc (data,model,options)
+```
 
-#4) use ggmcmc to diagnose
 
+### Use ggmcmc to diagnose
+
+```{r Diagnose}
 library(ggmcmc)
-alpha0samples=get(samples,"alpha0")
+alpha0samples <- get(samples,"alpha0")
 
 print(ggs_traceplot(alpha0samples))
 
 print(ggs_autocorrelation(alpha0samples))
+```
 
+### Plot the model fit
 
-#5) plot the model fit
-
+```{r Fit}
 plot(samples, model,data,hazard=TRUE)
 
 plot(samples, model,data,hazard=FALSE)
+```
 
-#prior mean curve
+
+### prior mean curve
+
+```{r Prior}
 emptydata <- DataDA(doseGrid=c(0.1, 0.5, 1.5, 3, 6,
-                               seq(from=10, to=80, by=2)),Tmax=60,npiece=10)
+                               seq(from=10, to=80, by=2)),Tmax=60)
 
 Priorsamples <- mcmc (emptydata,model,options)
 
 plot(Priorsamples, model,emptydata,hazard=FALSE)
+```
 
 
-#6) Escalation rules
+### Escalation rules
 
-##need to fill in (use the same rule in the section 8 of "using the package crmPack: introductory examples")
+Need to fill in (use the same rule in the section 8 of "using the package crmPack: introductory examples")
+
+```{r Rules}
 myIncrements <- IncrementsRelative(intervals=c(0,20),
                                    increments=c(1,0.33))
 
@@ -102,10 +116,11 @@ myStopping1 <- StoppingTargetProb(target=c(0.2, 0.35),
 myStopping2 <- StoppingMinPatients(nPatients=50)
 
 myStopping <- (myStopping1 | myStopping2)
+```
 
+### Recommended dose for the next cohort
 
-#7) recommended dose for the next cohort
-
+```{r Recommend}
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples,
@@ -115,12 +130,14 @@ doseRecommendation <- nextBest(myNextBest,
 
 doseRecommendation$plot
 doseRecommendation$value
+```
 
-##Example 2: run a simulation to evaluate design operating characters;
+## Example 2: Run a simulation to evaluate operating characteristics
 
-#1) set up safety window and DADesign
-##to be completed
-mysafetywindow=SafetyWindowConst(c(6,2),7,7)
+### Set up safety window and DADesign to be completed
+
+```{r Window}
+mysafetywindow <- SafetyWindowConst(c(6,2),7,7)
 
 design <- DADesign(model=model,
                    increments=myIncrements,
@@ -131,9 +148,12 @@ design <- DADesign(model=model,
                    safetyWindow=mysafetywindow,
                    startingDose=3)
 
+```
 
-#2)set up truth curves
 
+### Set up true curves
+
+```{r Truth}
 myTruth<-function(dose){
   
   model@prob(dose,alpha0=2,alpha1=3)
@@ -144,17 +164,19 @@ curve(myTruth(x), from=0, to=100, ylim=c(0, 1))
 
 
 
-onset=15
+onset <- 15
 
 exp_cond.cdf<-function(x){
   
   1-(pexp(x,1/onset,lower.tail=FALSE)-pexp(28,1/onset,lower.tail=FALSE))/pexp(28,1/onset)
   
 }
+```
 
 
-#3) set up simulation settings
+### Perform the simulations
 
+```{r Simulate}
 mySims <- simulate(design,
                    args=NULL,
                    truthTox=myTruth,
@@ -166,31 +188,24 @@ mySims <- simulate(design,
                    firstSeparate=TRUE,
                    deescalate=FALSE,
                    parallel=FALSE)
-
-# system.time(simulate(design,
-#                      args=NULL,
-#                      truthTox=myTruth,
-#                      truthSurv=exp_cond.cdf,#piece_exp_cond.cdf,
-#                      trueTmax=80,
-#                      nsim=500,
-#                      seed=819,
-#                      mcmcOptions=options,
-#                      firstSeparate=TRUE,
-#                      deescalate=FALSE,
-#                      parallel=FALSE))
+```
 
 
-#4) interprate simulation result
-#use a similar way as section 9.2 in the "using the package crmPack: introductory examples" document
-a=summary(mySims,truth=myTruth)
-b=mySims@data[[1]]
+### Interprate the simulation results
+
+Use a similar way as section 9.2 in the "using the package crmPack: introductory examples" document 
+
+```{r Interpret}
+a <- summary(mySims,truth=myTruth)
+b <- mySims@data[[1]]
 
 plot(mySims)
 plot(b)
 
 mySims@stopReasons[[2]]
+```
 
-savePlot <- function(myPlot,name) {
-  png(filename = paste(Sys.Date(),"C:/Users/liaoz4/Documents/R/simulation_result/",name,".png",sep=""), width = 480, height = 480)
-  print(myPlot)
-  dev.off()}
+
+
+
+

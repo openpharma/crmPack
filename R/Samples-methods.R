@@ -1551,10 +1551,6 @@ setMethod("plotDualResponses",
 ##' @param object mcmc samples
 ##' @param model the mDA-CRM model
 ##' @param data the data input, a \code{\linkS4class{DataDA}} class object
-##' @param npiece the number of pieces in the PEM 
-##' todo: do we need this param?
-##' @param Tmax the DLT observation period
-##' todo: do we need this param?
 ##' @param quantiles the quantiles to be calculated (default: 0.025 and
 ##' 0.975)
 ##' @param middle the function for computing the middle point. Default:
@@ -1570,8 +1566,6 @@ setGeneric("fitPEM",
              function(object,
                       model,
                       data,
-                      npiece=data@npiece,
-                      Tmax=data@Tmax,
                       quantiles=c(0.025, 0.975),
                       middle=mean,
                       hazard=FALSE,
@@ -1680,21 +1674,17 @@ setMethod("fitPEM",
             function(object,
                      model,
                      data,
-                     npiece=data@npiece,
-                     Tmax=data@Tmax,
                      quantiles=c(0.025, 0.975),
                      middle=mean,
                      hazard=FALSE,
                      ...){
               
               ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(Tmax),
-                        is.numeric(npiece))
+              stopifnot(is.probRange(quantiles))
               
               ##Plot points
               #points<-seq(0,Tmax_,length=npiece_*3+1)
-              points<-seq(0,Tmax,length=npiece+1)
+              points<-seq(0, data@Tmax, length=model@npiece+1)
               ## first we have to get samples from the PEM
               ## at intercept points and 2 middel points between 
               ## intercepts.
@@ -1711,7 +1701,7 @@ setMethod("fitPEM",
                 #                                           return(fit(points[i]))
                 #                                   })
                 PEMSamples<-t(apply(object@data$lambda,1,function(x){
-                  fit<-DLTLikelihood(x,Tmax)
+                  fit<-DLTLikelihood(x, data@Tmax)
                   return(fit)
                 }))
                 
@@ -1732,7 +1722,7 @@ setMethod("fitPEM",
                   #                                           PEMSamples[,i]<-object@data$lambda[,sum(points[i]>=seq(0,Tmax_,length=npiece_+1))]
                   #                                           } 
                   if(i==i_max){
-                    PEMSamples[,i_max]<-object@data$lambda[,npiece]}else{
+                    PEMSamples[,i_max]<-object@data$lambda[, model@npiece]}else{
                       PEMSamples[,i]<-object@data$lambda[,i]}
                 }
                 
@@ -1824,8 +1814,8 @@ setMethod("plot",
                                              "95% Credible Interval"))))
               
               
-              #Tpoints<-seq(0,data@Tmax,length=data@npiece*3+1)
-              Tpoints<-seq(0,data@Tmax,length=data@npiece+1)
+              #Tpoints<-seq(0,data@Tmax,length=y@npiece*3+1)
+              Tpoints<-seq(0,data@Tmax,length=y@npiece+1)
               gdataS <-
                 with(plotDataS,
                      data.frame(x=rep(Tpoints, 3),
