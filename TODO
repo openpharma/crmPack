@@ -10,6 +10,8 @@ ROLLING CRM:
 
 - write a vignette (in Rmd format?) for rolling CRM, to make it easier
   to start with this kind of design
+  
+- empty data, there was a problem to produce probability plot for time to DLT
 
 
 ----------------------------------------------------------------
