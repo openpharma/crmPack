@@ -10,11 +10,11 @@ a DLE sample, a given efficacy pseudo model and an efficacy sample}
 \usage{
 plotGain(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 
-\S4method{plotGain}{ModelTox,Samples,ModelEff,Samples}(DLEmodel, DLEsamples,
-  Effmodel, Effsamples, data, ...)
+\S4method{plotGain}{ModelTox,Samples,ModelEff,Samples}(DLEmodel,
+  DLEsamples, Effmodel, Effsamples, data, ...)
 
-\S4method{plotGain}{ModelTox,missing,ModelEff,missing}(DLEmodel, DLEsamples,
-  Effmodel, Effsamples, data, ...)
+\S4method{plotGain}{ModelTox,missing,ModelEff,missing}(DLEmodel,
+  DLEsamples, Effmodel, Effsamples, data, ...)
 }
 \arguments{
 \item{DLEmodel}{the dose-DLE model of \code{\linkS4class{ModelTox}} class object}

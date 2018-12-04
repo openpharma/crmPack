@@ -5,7 +5,8 @@
 \alias{summary,Simulations-method}
 \title{Summarize the model-based design simulations, relative to a given truth}
 \usage{
-\S4method{summary}{Simulations}(object, truth, target = c(0.2, 0.35), ...)
+\S4method{summary}{Simulations}(object, truth, target = c(0.2, 0.35),
+  ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{Simulations}} object we want to

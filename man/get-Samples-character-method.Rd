@@ -5,8 +5,8 @@
 \alias{get,Samples,character-method}
 \title{Get specific parameter samples and produce a data.frame}
 \usage{
-\S4method{get}{Samples,character}(x, pos = -1L, envir = NULL, mode = NULL,
-  inherits = NULL)
+\S4method{get}{Samples,character}(x, pos = -1L, envir = NULL,
+  mode = NULL, inherits = NULL)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{Samples}} object}

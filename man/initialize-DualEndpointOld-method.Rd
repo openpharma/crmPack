@@ -5,8 +5,8 @@
 \alias{initialize,DualEndpointOld-method}
 \title{Initialization method for the "DualEndpointOld" class}
 \usage{
-\S4method{initialize}{DualEndpointOld}(.Object, mu, Sigma, sigma2betaW, sigma2W,
-  rho, smooth = c("RW1", "RW2"), ...)
+\S4method{initialize}{DualEndpointOld}(.Object, mu, Sigma, sigma2betaW,
+  sigma2W, rho, smooth = c("RW1", "RW2"), ...)
 }
 \arguments{
 \item{.Object}{the \code{\linkS4class{DualEndpointOld}} we want to

@@ -16,13 +16,14 @@
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMTD,numeric,Samples,Model,Data}(nextBest, doselimit,
-  samples, model, data, ...)
+\S4method{nextBest}{NextBestMTD,numeric,Samples,Model,Data}(nextBest,
+  doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,Data}(nextBest,
   doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,DataParts}(nextBest,
+
+  \S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,DataParts}(nextBest,
   doselimit, samples, model, data, ...)
 
 
@@ -47,7 +48,8 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 
   \S4method{nextBest}{NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual}(nextBest,
-  doselimit, samples, model, data, Effmodel, Effsamples, SIM = FALSE, ...)
+  doselimit, samples, model, data, Effmodel, Effsamples, SIM = FALSE,
+  ...)
 }
 \arguments{
 \item{nextBest}{The rule, an object of class \code{\linkS4class{NextBest}}}

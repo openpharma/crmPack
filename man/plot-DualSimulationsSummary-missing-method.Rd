@@ -6,8 +6,8 @@
 \title{Plot summaries of the dual-endpoint design simulations}
 \usage{
 \S4method{plot}{DualSimulationsSummary,missing}(x, y, type = c("nObs",
-  "doseSelected", "propDLTs", "nAboveTarget", "meanFit", "meanBiomarkerFit"),
-  ...)
+  "doseSelected", "propDLTs", "nAboveTarget", "meanFit",
+  "meanBiomarkerFit"), ...)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{DualSimulationsSummary}} object we want

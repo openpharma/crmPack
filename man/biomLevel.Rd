@@ -8,8 +8,8 @@
 \usage{
 biomLevel(dose, model, samples, ...)
 
-\S4method{biomLevel}{numeric,DualEndpoint,Samples}(dose, model, samples, xLevel,
-  ...)
+\S4method{biomLevel}{numeric,DualEndpoint,Samples}(dose, model, samples,
+  xLevel, ...)
 }
 \arguments{
 \item{dose}{the dose}

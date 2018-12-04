@@ -6,10 +6,10 @@
 normal model}
 \usage{
 Quantiles2LogisticNormal(dosegrid, refDose, lower, median, upper,
-  level = 0.95, logNormal = FALSE, parstart = NULL, parlower = c(-10,
-  -10, 0, 0, -0.95), parupper = c(10, 10, 10, 10, 0.95), seed = 12345,
-  verbose = TRUE, control = list(threshold.stop = 0.01, maxit = 50000,
-  temperature = 50000, max.time = 600))
+  level = 0.95, logNormal = FALSE, parstart = NULL,
+  parlower = c(-10, -10, 0, 0, -0.95), parupper = c(10, 10, 10, 10,
+  0.95), seed = 12345, verbose = TRUE, control = list(threshold.stop
+  = 0.01, maxit = 50000, temperature = 50000, max.time = 600))
 }
 \arguments{
 \item{dosegrid}{the dose grid}

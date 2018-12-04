@@ -16,7 +16,8 @@ maxDose(increments, data, ...)
 
 \S4method{maxDose}{IncrementsNumDoseLevels,Data}(increments, data, ...)
 
-\S4method{maxDose}{IncrementsRelativeParts,DataParts}(increments, data, ...)
+\S4method{maxDose}{IncrementsRelativeParts,DataParts}(increments, data,
+  ...)
 
 \S4method{maxDose}{IncrementsRelativeDLT,Data}(increments, data, ...)
 

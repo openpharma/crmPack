@@ -13,19 +13,23 @@
 fit(object, model, data, ...)
 
 \S4method{fit}{Samples,Model,Data}(object, model, data,
-  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean,
+  ...)
 
 \S4method{fit}{Samples,DualEndpoint,DataDual}(object, model, data,
   quantiles = c(0.025, 0.975), middle = mean, ...)
 
 \S4method{fit}{Samples,LogisticIndepBeta,Data}(object, model, data,
-  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean,
+  ...)
 
 \S4method{fit}{Samples,Effloglog,DataDual}(object, model, data,
-  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean,
+  ...)
 
 \S4method{fit}{Samples,EffFlexi,DataDual}(object, model, data,
-  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean, ...)
+  points = data@doseGrid, quantiles = c(0.025, 0.975), middle = mean,
+  ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{Samples}} object}

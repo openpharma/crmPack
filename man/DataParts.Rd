@@ -4,7 +4,8 @@
 \alias{DataParts}
 \title{Initialization function for the "DataParts" class}
 \usage{
-DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
+DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(),
+  ...)
 }
 \arguments{
 \item{part}{which part does each of the patients belong to?}

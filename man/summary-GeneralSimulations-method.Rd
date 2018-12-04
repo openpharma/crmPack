@@ -5,8 +5,8 @@
 \alias{summary,GeneralSimulations-method}
 \title{Summarize the simulations, relative to a given truth}
 \usage{
-\S4method{summary}{GeneralSimulations}(object, truth, target = c(0.2, 0.35),
-  ...)
+\S4method{summary}{GeneralSimulations}(object, truth, target = c(0.2,
+  0.35), ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{GeneralSimulations}} object we want to

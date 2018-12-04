@@ -4,7 +4,8 @@
 \alias{Design}
 \title{Initialization function for "Design"}
 \usage{
-Design(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...)
+Design(model, stopping, increments, PLcohortSize = CohortSizeConst(0L),
+  ...)
 }
 \arguments{
 \item{model}{see \code{\linkS4class{Design}}}

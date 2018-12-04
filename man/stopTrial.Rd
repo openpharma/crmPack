@@ -31,10 +31,12 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingAny,ANY,ANY,ANY,ANY}(stopping, dose, samples,
   model, data, ...)
 
-\S4method{stopTrial}{StoppingCohortsNearDose,numeric,ANY,ANY,Data}(stopping,
+
+  \S4method{stopTrial}{StoppingCohortsNearDose,numeric,ANY,ANY,Data}(stopping,
   dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingPatientsNearDose,numeric,ANY,ANY,Data}(stopping,
+
+  \S4method{stopTrial}{StoppingPatientsNearDose,numeric,ANY,ANY,Data}(stopping,
   dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMinCohorts,ANY,ANY,ANY,Data}(stopping, dose,
@@ -43,7 +45,8 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingMinPatients,ANY,ANY,ANY,Data}(stopping, dose,
   samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingTargetProb,numeric,Samples,Model,ANY}(stopping,
+
+  \S4method{stopTrial}{StoppingTargetProb,numeric,Samples,Model,ANY}(stopping,
   dose, samples, model, data, ...)
 
 
@@ -54,18 +57,19 @@ stopTrial(stopping, dose, samples, model, data, ...)
   \S4method{stopTrial}{StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY}(stopping,
   dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingHighestDose,numeric,ANY,ANY,Data}(stopping, dose,
-  samples, model, data, ...)
+\S4method{stopTrial}{StoppingHighestDose,numeric,ANY,ANY,Data}(stopping,
+  dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingTDCIRatio,ANY,Samples,ModelTox,ANY}(stopping, dose,
-  samples, model, data, ...)
+\S4method{stopTrial}{StoppingTDCIRatio,ANY,Samples,ModelTox,ANY}(stopping,
+  dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingTDCIRatio,ANY,missing,ModelTox,ANY}(stopping, dose,
-  samples, model, data, ...)
+\S4method{stopTrial}{StoppingTDCIRatio,ANY,missing,ModelTox,ANY}(stopping,
+  dose, samples, model, data, ...)
 
 
   \S4method{stopTrial}{StoppingGstarCIRatio,ANY,Samples,ModelTox,DataDual}(stopping,
-  dose, samples, model, data, TDderive, Effmodel, Effsamples, Gstarderive, ...)
+  dose, samples, model, data, TDderive, Effmodel, Effsamples, Gstarderive,
+  ...)
 
 
   \S4method{stopTrial}{StoppingGstarCIRatio,ANY,missing,ModelTox,DataDual}(stopping,

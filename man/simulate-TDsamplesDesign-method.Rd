@@ -7,9 +7,10 @@
 This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model used are of
 \code{\linkS4class{ModelTox}} class object DLE samples are also used}
 \usage{
-\S4method{simulate}{TDsamplesDesign}(object, nsim = 1L, seed = NULL, truth,
-  args = NULL, firstSeparate = FALSE, mcmcOptions = McmcOptions(),
-  parallel = FALSE, nCores = min(parallel::detectCores(), 5), ...)
+\S4method{simulate}{TDsamplesDesign}(object, nsim = 1L, seed = NULL,
+  truth, args = NULL, firstSeparate = FALSE,
+  mcmcOptions = McmcOptions(), parallel = FALSE,
+  nCores = min(parallel::detectCores(), 5), ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{TDsamplesDesign}} object we want to simulate the data from}

@@ -5,10 +5,10 @@
 \alias{simulate,DualDesign-method}
 \title{Simulate outcomes from a dual-endpoint design}
 \usage{
-\S4method{simulate}{DualDesign}(object, nsim = 1L, seed = NULL, trueTox,
-  trueBiomarker, args = NULL, sigma2W, rho = 0, firstSeparate = FALSE,
-  mcmcOptions = McmcOptions(), parallel = FALSE,
-  nCores = min(parallel::detectCores(), 5), ...)
+\S4method{simulate}{DualDesign}(object, nsim = 1L, seed = NULL,
+  trueTox, trueBiomarker, args = NULL, sigma2W, rho = 0,
+  firstSeparate = FALSE, mcmcOptions = McmcOptions(),
+  parallel = FALSE, nCores = min(parallel::detectCores(), 5), ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{DualDesign}} object we want to simulate

@@ -5,8 +5,8 @@
 \title{Initialization function for 'DualPseudoSimulations' class}
 \usage{
 PseudoDualSimulations(fitEff, FinalGstarEstimates, FinalGstarAtDoseGrid,
-  FinalGstarCIs, FinalGstarRatios, FinalOptimalDose, FinalOptimalDoseAtDoseGrid,
-  sigma2est, ...)
+  FinalGstarCIs, FinalGstarRatios, FinalOptimalDose,
+  FinalOptimalDoseAtDoseGrid, sigma2est, ...)
 }
 \arguments{
 \item{fitEff}{please refer to \code{\linkS4class{PseudoDualSimulations}} class object}

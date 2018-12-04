@@ -4,7 +4,8 @@
 \alias{EffFlexi}
 \title{Initialization function for the "EffFlexi" class}
 \usage{
-EffFlexi(Eff, Effdose, sigma2, sigma2betaW, smooth = c("RW1", "RW2"), data)
+EffFlexi(Eff, Effdose, sigma2, sigma2betaW, smooth = c("RW1", "RW2"),
+  data)
 }
 \arguments{
 \item{Eff}{the pseudo efficacy responses}

@@ -5,8 +5,8 @@
 \alias{summary,PseudoSimulations-method}
 \title{Summarize the simulations, relative to a given truth}
 \usage{
-\S4method{summary}{PseudoSimulations}(object, truth, targetEndOfTrial = 0.3,
-  targetDuringTrial = 0.35, ...)
+\S4method{summary}{PseudoSimulations}(object, truth,
+  targetEndOfTrial = 0.3, targetDuringTrial = 0.35, ...)
 }
 \arguments{
 \item{object}{the \code{\linkS4class{PseudoSimulations}} object we want to

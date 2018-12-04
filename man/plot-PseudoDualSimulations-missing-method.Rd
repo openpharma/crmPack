@@ -5,8 +5,8 @@
 \alias{plot,PseudoDualSimulations,missing-method}
 \title{Plot simulations}
 \usage{
-\S4method{plot}{PseudoDualSimulations,missing}(x, y, type = c("trajectory",
-  "dosesTried", "sigma2"), ...)
+\S4method{plot}{PseudoDualSimulations,missing}(x, y,
+  type = c("trajectory", "dosesTried", "sigma2"), ...)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{PseudoDualSimulations}} object we want

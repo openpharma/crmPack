@@ -5,9 +5,9 @@
 \alias{plot,PseudoDualSimulationsSummary,missing-method}
 \title{Plot the summary of Pseudo Dual Simulations summary}
 \usage{
-\S4method{plot}{PseudoDualSimulationsSummary,missing}(x, y, type = c("nObs",
-  "doseSelected", "propDLE", "nAboveTargetEndOfTrial", "meanFit", "meanEffFit"),
-  ...)
+\S4method{plot}{PseudoDualSimulationsSummary,missing}(x, y,
+  type = c("nObs", "doseSelected", "propDLE", "nAboveTargetEndOfTrial",
+  "meanFit", "meanEffFit"), ...)
 }
 \arguments{
 \item{x}{the \code{\linkS4class{PseudoDualSimulationsSummary}} object we want to plot from}

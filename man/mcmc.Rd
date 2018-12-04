@@ -13,12 +13,14 @@
 mcmc(data, model, options, ...)
 
 \S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options,
-  program = c("JAGS"), verbose = FALSE, fromPrior = data@nObs == 0L, ...)
+  program = c("JAGS"), verbose = FALSE, fromPrior = data@nObs == 0L,
+  ...)
 
 \S4method{mcmc}{DataMixture,GeneralModel,McmcOptions}(data, model, options,
   fromPrior = data@nObs == 0L & data@nObsshare == 0L, ...)
 
-\S4method{mcmc}{Data,LogisticIndepBeta,McmcOptions}(data, model, options, ...)
+\S4method{mcmc}{Data,LogisticIndepBeta,McmcOptions}(data, model, options,
+  ...)
 
 \S4method{mcmc}{DataDual,Effloglog,McmcOptions}(data, model, options, ...)
 
