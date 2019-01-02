@@ -17,7 +17,8 @@ Description: Implements a wide range of model-based dose
     package is written in a modular form in the S4 class system, making it very
     flexible for adaptation to new models, escalation or stopping rules.
 Version: 0.2.8
-Copyright: F. Hoffmann-La Roche Ltd
+Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 
+    Daniel Sabanes Bove after 6 August 2018
 URL: https://CRAN.R-project.org/package=crmPack
 VignetteBuilder: knitr
 Depends:
@@ -60,4 +61,4 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

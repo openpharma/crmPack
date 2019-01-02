@@ -136,6 +136,12 @@ setMethod("mcmc",
                   do.call(model@modelspecs,
                           as.list(data)[names(formals(model@modelspecs))])
               stopifnot(is.list(modelspecs))
+              
+              if(fromPrior)
+              {
+                # remove some list elements to avoid Jags error of unused variables
+                modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
+              }
 
               ## prepare the required data.
               ## This is necessary, because if there is only one observation,

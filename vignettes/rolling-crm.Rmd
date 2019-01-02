@@ -1,8 +1,13 @@
 ---
 title: "Rolling CRM Example"
 author: "Jiawen Zhu, Daniel Sabanes Bove"
-date: "27 Juli 2018"
-output: html_document
+date: "02 January 2019"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rolling CRM Example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{crmPack}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
@@ -14,6 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Setting up the data
 
 ```{r Data}
+library(crmPack)
 data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10), 
                y=c(0, 0, 1, 1, 0, 0, 1, 0),
                doseGrid=
@@ -85,7 +91,7 @@ plot(samples, model,data,hazard=FALSE)
 emptydata <- DataDA(doseGrid=c(0.1, 0.5, 1.5, 3, 6,
                                seq(from=10, to=80, by=2)),Tmax=60)
 
-Priorsamples <- mcmc (emptydata,model,options)
+Priorsamples <- mcmc(emptydata, model, options)
 
 plot(Priorsamples, model,emptydata,hazard=FALSE)
 ```

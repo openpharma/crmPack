@@ -1589,7 +1589,7 @@ DLTLikelihood <- function(lambda,
                           Tmax)
 {
   npiece <-length(lambda)
-  h=seq(from=0L, to=Tmax, length=npiece + 1)
+  h <- seq(from=0L, to=Tmax, length=npiece + 1)
   
   #Length of each time interval;
   sT<-rep(0,npiece)
@@ -1603,9 +1603,9 @@ DLTLikelihood <- function(lambda,
   
   
   #calculate the exponential part of the distribution:
-  s_ij<-function(t,j)
+  s_ij <- function(t, j)
   {
-    if(t>h[j])
+    if(t > h[j])
     {
       
       min(t-h[j],h[j+1]-h[j])
@@ -1618,18 +1618,18 @@ DLTLikelihood <- function(lambda,
   
   
   #The cumulative hazard function
-  expNmu <- function(t, npiece=npiece)
+  expNmu <- function(t)
   {
     
-    expNmu<-1
+    ret <- 1
     
     for(j in 1:npiece)
     {
       
-      expNmu<-expNmu*exp(-lambda[j]*s_ij(t,j))
+      ret <-ret * exp(- lambda[j] * s_ij(t, j))
     }
     
-    return(expNmu)
+    return(ret)
   }
   
   
@@ -1748,21 +1748,18 @@ setMethod("fitPEM",
 
 
 ## --------------------------------------------------
-## plot survival curve fit over time
+## Plot survival curve fit over time
 ## --------------------------------------------------
 
-## DSB: todo: better to use directly the plot method from superclass,
-## and then add to that. See e.g. DualEndpoints plot method as example.
 ## todo: add example file
 ##' Plotting dose-toxicity model fits
 ##'
 ##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{Model}} object
-##' @param data the \code{\linkS4class{Data}} object
-##' @param xlab the x axis label
-##' @param ylab the y axis label
-##' @param showLegend should the legend be shown? (default)
+##' @param y the \code{\linkS4class{DALogisticLogNormal}} object
+##' @param data the \code{\linkS4class{DataDA}} object
+##' @param hazard see \code{\link{fitPEM}} for the explanation
 ##' @param \dots not used
+##' @param showLegend should the legend be shown? (default)
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object for the dose-toxicity model fit
 ##'
@@ -1782,100 +1779,46 @@ setMethod("plot",
               ## check args
               stopifnot(is.bool(showLegend))
               
-              ## get the fit
-              plotData <- fit(x,
-                              model=y,
-                              data=data,
-                              quantiles=c(0.025, 0.975),
-                              middle=mean)
+              ## call the superclass method, to get the toxicity plot
+              plot1 <- callNextMethod(x, y, data, showLegend=showLegend, ...)
               
-              plotDataS <- fitPEM(x,
-                                  model=y,
-                                  data=data,
-                                  quantiles=c(0.025,0.975),
-                                  middle=mean,
-                                  hazard=hazard)
+              ## get the fit
+              fitData <- fitPEM(x,
+                                model=y,
+                                data=data,
+                                quantiles=c(0.025,0.975),
+                                middle=mean,
+                                hazard=hazard)
               
               ## make the plot
-              gdata <-
-                with(plotData,
-                     data.frame(x=rep(dose, 3),
-                                y=c(middle, lower, upper) * 100,
-                                group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotData)),
-                                Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotData) * 2)),
-                                         levels=
-                                           c("Estimate",
-                                             "95% Credible Interval"))))
-              
-              
-              #Tpoints<-seq(0,data@Tmax,length=y@npiece*3+1)
               Tpoints<-seq(0,data@Tmax,length=y@npiece+1)
-              gdataS <-
-                with(plotDataS,
+              plotData <-
+                with(fitData,
                      data.frame(x=rep(Tpoints, 3),
                                 y=c(middle, lower, upper) * 100,
                                 group=
                                   rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotDataS)),
+                                      each=nrow(fitData)),
                                 Type=
                                   factor(c(rep("Estimate",
-                                               nrow(plotDataS)),
+                                               nrow(fitData)),
                                            rep("95% Credible Interval",
-                                               nrow(plotDataS) * 2)),
+                                               nrow(fitData) * 2)),
                                          levels=
                                            c("Estimate",
                                              "95% Credible Interval"))))
+              plot2 <- qplot(x=x,
+                             y=y,
+                             data=plotData,
+                             group=group,
+                             linetype=Type,
+                             colour=I("blue"),
+                             geom="step",
+                             xlab="Time",
+                             ylab=if(hazard) "Hazard rate*100" else "Probability of DLT [%]",
+                             ylim=if(hazard) range(plotData$y) else c(0, 100))
               
-              
-              if(hazard==FALSE){
-                
-                ret2 <- qplot(x=x,
-                              y=y,
-                              data=gdataS,
-                              group=group,
-                              linetype=Type,
-                              colour=I("blue"),
-                              geom="step",
-                              xlab="Time",
-                              # ylab="Probability of no DLT [%]",
-                              ylab="Probability of DLT [%]",
-                              ylim=c(0, 100))
-                
-              }else if(hazard==TRUE){
-                
-                
-                ret2 <- qplot(x=x,
-                              y=y,
-                              data=gdataS,
-                              group=group,
-                              linetype=Type,
-                              colour=I("blue"),
-                              geom="step",
-                              xlab="Time",
-                              ylab="Hazard rate*100",
-                              ylim=range(gdataS$y))
-              }
-              
-              ret1 <- qplot(x=x,
-                            y=y,
-                            data=gdata,
-                            group=group,
-                            linetype=Type,
-                            colour=I("red"),
-                            geom="line",
-                            xlab="Dose",
-                            ylab="Probability of DLT [%]",
-                            ylim=c(0, 100))
-              
-              
-              
-              ret <- gridExtra::arrangeGrob(ret1, ret2, ncol=2)
+              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
               return(ret)
             })
 

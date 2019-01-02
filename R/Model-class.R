@@ -3788,6 +3788,10 @@ DALogisticLogNormal <- function(npiece=3,
                                       # ## so it must occur here
                                       # bla <- refDose + 1
                                       
+                                      # dummies to use eps and cadj. Otherwise
+                                      # empty data sampling fails.
+                                      blu <- eps + cadj
+                                      
                                       ## the piecewise exponential prior;
                                       g_beta<- 1/C_par   
                                       
@@ -3906,6 +3910,10 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                          weightMethod=weightMethod,
                          datamodel=
                            function(){
+                             # here need to dummy use u and Tmax from the DataDA object
+                             use_u <- u + 1
+                             use_Tmax <- Tmax + 1
+                             
                              for (i in 1:nObs) #for each patient
                              {
                                #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
@@ -3946,7 +3954,7 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                          modelspecs=
                            function(nObs, u, Tmax, y){
                              
-                             ## calculate weightw w based on the input data
+                             ## calculate weight w based on the input data
                              if(length(u)){
                                
                                if(weightMethod=="linear"){
@@ -3987,9 +3995,9 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                              w[u==Tmax] <- 1
                              
                              
-                             list(refDose=refDose,
-                                  priorCov=cov,
-                                  priorMean=mean,
+                             list(refDose=start@refDose,
+                                  priorCov=start@cov,
+                                  priorMean=start@mean,
                                   zeros=rep(0, nObs),
                                   cadj=1e10,
                                   w=w)

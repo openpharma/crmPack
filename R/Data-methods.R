@@ -482,7 +482,7 @@ setMethod("update",
               
               ## some checks
               stopifnot(is.scalar(thisDose),
-                        all(factSurv >0),
+                        all(factSurv > 0),
                         all(factDLTs %in% c(0, 1)),
                         length(factDLTs) == length(factSurv),
                         length(factDLTs) == length(factT0)
