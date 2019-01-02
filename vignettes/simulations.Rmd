@@ -44,13 +44,13 @@ if(onset==30) {
 
 Here the the dose escalation designs are defined: in this example the TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM.
 
-```{r definition designs}
 Tmax_ <- 42
 
 model <- TITELogisticLogNormal(mean=c(1.33,1.49),
                            cov=matrix(c(1.826,0.0209,0.0209,0.0245),nrow=2),
                            refDose=56
                            )
+
 
 myIncrements <- IncrementsRelative(intervals=c(0,20),
                                    increments=c(10,3))
@@ -65,11 +65,12 @@ myStopping <- StoppingMinPatients(nPatients=48)
 
 mySize <- CohortSizeConst(size=3)
 
-emptydata <- DataDA(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_)
+emptydata <- DataTITE(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_,weightMethod = "adaptive")
+
 
 mysafetywindow <- SafetyWindowConst(c(7,7),7,7)
 
-design <- DADesign(model=model,
+design <- TITEDesign(model=model,
                    increments=myIncrements,
                    nextBest=myNextBest,
                    stopping=myStopping,
@@ -77,6 +78,8 @@ design <- DADesign(model=model,
                    data=emptydata,
                    safetyWindow=mysafetywindow,
                    startingDose=8)
+
+
 ```
 
 
@@ -91,14 +94,18 @@ options <- McmcOptions(burnin=20,
 mySims <- simulate(design,
                    args=NULL,
                    truthTox=myTruth,
-                   truthSurv=exp_cond.cdf,#piece_exp_cond.cdf,
+                   truthSurv=exp_cond.cdf,
                    trueTmax=42,
                    nsim=10,
                    seed=819,
                    mcmcOptions=options,
                    parallel=FALSE)
+
 ```
 
 
+
+
 todo: we need to show here how to get the plots from the manuscript
+Jiawen: I have 2 seperate R files for all the plots in the manuscript. the plots will use multiple simulation results though. 
 
