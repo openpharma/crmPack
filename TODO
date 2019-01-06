@@ -1,17 +1,16 @@
 ----------------------------------------------------------------
 ROLLING CRM:
 
-- issue a warning if t0=0 in DataDA?
-
-- Using an informative Gamma prior for lambda did not produce stable results. 
+- Not critical but worth to check - could be known limitation for PEMs: 
+  Using an informative Gamma prior for lambda did not produce stable results. 
   How could this be done? would need proper documentation in help files/vignette
   
-- C_par needs better documentation and potentially a change of name
+- Still todo before submission: C_par needs better documentation (name is OK)
 
-- write a vignette (in Rmd format?) for rolling CRM, to make it easier
+- Later: write a vignette (in Rmd format?) for rolling CRM, to make it easier
   to start with this kind of design
   
-- Convert TITE CRM demo file to vignette in Rmd format (same as for rolling CRM
+- Later: Convert TITE CRM demo file to vignette in Rmd format (same as for rolling CRM
   demo). Reason is that vignettes are routinely checked and easier to find
   than demos.
 
