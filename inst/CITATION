@@ -1,0 +1,20 @@
+bibentry(bibtype = "Article",
+  title        = "Model-Based Dose Escalation Designs in {R} with {crmPack}",
+  author       = c(person(given = "Daniel",
+                          family = c("Saban\\'es", "Bov\\'e")),
+                   person(given = c("Wai", "Yin"),
+                          family = "Yeung"),
+                   person(given = "Giuseppe",
+                          family = "Palermo"),
+                   person(given = "Thomas",
+                          family = "Jaki")),
+  journal      = "Journal of Statistical Software",
+  year         = "2019",
+  volume       = "89",
+  number       = "10",
+  pages        = "1--22",
+  doi          = "10.18637/jss.v089.i10",
+
+  header       = "To cite crmPack in publications use:"
+)
+

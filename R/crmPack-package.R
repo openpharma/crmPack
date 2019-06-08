@@ -17,7 +17,10 @@
 ##' @aliases crmPack
 ##' @docType package
 ##' @title Object-oriented implementation of CRM designs
-##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
+##' @author Daniel Sabanes Bove \email{daniel.sabanesbove@@gmx.net}, W
+##' Wai Yin Yeung \email{winnie.yeung@@roche.com}
+##' Giuseppe Palermo \email{giuseppe.palermo@@roche.com},
+##' Thomas Jaki \email{jaki.thomas@@gmail.com}
 ## @useDynLib crmPack
 ##  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
 ##  cpp_coxfit
@@ -30,6 +33,10 @@
 ##' rnorm runif uniroot var vcov
 ##' @importFrom utils data head tail
 ##' @keywords package
+##' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
+##' "Model-Based Dose Escalation Designs in R with crmPack."
+##' Journal of Statistical Software, 89(10), 1-22. 
+##' doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
 {}
 
 ##' @keywords internal

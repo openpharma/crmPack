@@ -1,3 +1,7 @@
+# Version 1.0.0
+
+* Reference JSS publication.
+
 # Version 0.2.9
 
 * By default only use 5 cores and not all available cores on a machine. Note that
