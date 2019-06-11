@@ -128,7 +128,7 @@ knitr::knit_hooks$set(output = function(x, options) {
 %% Fax: +43/512/507-2851
 
 %% for those who use Sweave please include the following line (with % symbols):
-\usepackage{Sweave}
+%% need no \usepackage{Sweave.sty}
 
 %% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
