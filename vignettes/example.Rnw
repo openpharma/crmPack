@@ -16,7 +16,6 @@
 \usepackage[caption = true]{subfig}
 \usepackage[longnamesfirst,round]{natbib}
 \usepackage{tikz}
-\usepackage[nogin]{mySweave}            % use the customized Sweave style
 \usepackage{tikz,array}
 \usetikzlibrary{positioning-plus,arrows,shapes.multipart}
 \tikzset{
