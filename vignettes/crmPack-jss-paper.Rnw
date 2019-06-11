@@ -1,4 +1,4 @@
-%%\VignetteIndexEntry{Model-based Dose Escalation Designs in R with crmPack (JSS manuscript 2762)}
+%%\VignetteIndexEntry{Model-based Dose Escalation Designs in R with crmPack (JSS manuscript)}
 %%\VignetteKeywords{continual reassessment method, model based dose escalation, dual-endpoint design, R, object oriented}
 %%\VignettePackage{crmPack}
 %%\VignetteDepends{crmPack,grid}

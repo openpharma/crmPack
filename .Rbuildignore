@@ -4,6 +4,10 @@ devel
 examples
 vignettes/JSSstyle
 vignettes/paper
+vignettes/Sweave.sty
+vignettes/*.aux
+vignettes/*.log
+vignettes/*.out
 TODO
 ^docs$
 ^_pkgdown\.yml$
