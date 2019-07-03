@@ -1961,9 +1961,9 @@ DualEndpointBeta <- function(E0,
 
                        for (j in 1:nGrid)
                        {
-                           StandDose[j] <- doseGrid[j] / refDoseBeta
+                           StandDoseBeta[j] <- doseGrid[j] / refDoseBeta
                            betaW[j] <- E0 + (Emax - E0) * betafun *
-                               StandDose[j]^delta1 * (1 - StandDose[j])^delta2
+                               StandDoseBeta[j]^delta1 * (1 - StandDoseBeta[j])^delta2
                        }
                    })
 
