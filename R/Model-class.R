@@ -2202,9 +2202,9 @@ DualEndpointEmax <- function(E0,
 
                        for (j in 1:nGrid)
                        {
-                           StandDose[j] <- doseGrid[j] / refDoseEmax
-                           betaW[j] <- E0 + (Emax - E0) * StandDose[j] /
-                                            (ED50 + StandDose[j])
+                           StandDoseEmax[j] <- doseGrid[j] / refDoseEmax
+                           betaW[j] <- E0 + (Emax - E0) * StandDoseEmax[j] /
+                                            (ED50 + StandDoseEmax[j])
                        }
                    })
 
