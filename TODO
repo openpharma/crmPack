@@ -1,6 +1,6 @@
 BUGFIXES:
 
-none
+no current known bugs
 
 ----------------------------------------------------------------
 IMPROVEMENTS:
@@ -18,7 +18,7 @@ IMPROVEMENTS:
 
 - make sure that it is clear in the documentation that the log transformation
   only applies to the slope (beta) and not to the intercept (alpha)
-  
+
 - the minimalInformative function should already produce a graph comparing the
   required and the resulting quantiles, instead of the user having to do it.
 
