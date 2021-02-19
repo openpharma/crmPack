@@ -4152,8 +4152,8 @@ FractionalCRM <- function(...) {
         }
 
         list(
-          skeletonProbs = skeletonProbs,
-          sigma2 = sigma2,
+          skeletonProbs = start@skeletonProbs,
+          sigma2 = start@sigma2,
           zeros = rep(0, nObs),
           cadj = 1e10,
           yhat = yhat
