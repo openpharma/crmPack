@@ -4065,7 +4065,7 @@ OneParExpNormalPrior <- function(skeletonProbs, doseGrid, sigma2)
     datanames = c("nObs", "y", "xLevel"),
     prob = function(dose, alpha){ skeletonFun(dose)^exp(alpha) },
     dose = function(prob, alpha){ invSkeletonFun(prob^(1 / exp(alpha))) },
-    priormodel = function(){ alpha ~ dnorm(0, sigma2) },
+    priormodel = function(){ alpha ~ dnorm(0, 1 / sigma2) },
     modelspecs = function(){ list(skeletonProbs = skeletonProbs,
                                   sigma2 = sigma2) },
     init = function(){ list(alpha = 1) }, sample = "alpha")
