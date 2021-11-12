@@ -6,11 +6,11 @@
 \alias{.NextBestMaxGainSamples}
 \title{Next best dose with maximum gain value based on a pseudo DLE and efficacy model with samples}
 \description{
-This is a class for which to find the next dose which is safe and give the maximum gain value 
+This is a class for which to find the next dose which is safe and give the maximum gain value
 for allocation. This is a class where DLE and efficacy samples are involved.
-There are two inputs which are the two target 
+There are two inputs which are the two target
 probabilities of the occurrence of a DLE used during trial
-and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+and used at the end of trial, for finding the next best dose that is safe and gives the maximum
 gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
 specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
 class
@@ -21,18 +21,18 @@ class
 \item{\code{DLEDuringTrialtarget}}{the target probability of the occurrrence of a DLE to be used
 during the trial}
 
-\item{\code{DLEEndOfTrialtarget}}{the target probability of the occurrence of a DLE to be used at the end 
-of the trial. This target is particularly used to recommend the dose for which its posterior 
+\item{\code{DLEEndOfTrialtarget}}{the target probability of the occurrence of a DLE to be used at the end
+of the trial. This target is particularly used to recommend the dose for which its posterior
 probability of the occurrence of a DLE is equal to this target}
 
-\item{\code{TDderive}}{the function which derives from the input, a vector of the posterior samples called 
+\item{\code{TDderive}}{the function which derives from the input, a vector of the posterior samples called
 \code{TDsamples} of the dose
 which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
 occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.}
 
 \item{\code{Gstarderive}}{the function which derives from the input, a vector of the posterior Gstar (the dose
-which gives the maximum gain value) samples 
+which gives the maximum gain value) samples
 called \code{Gstarsamples}, the final next best Gstar estimate.}
 }}
 

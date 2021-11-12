@@ -21,13 +21,13 @@ model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
 
 \describe{
 \item{\code{target}}{the biomarker target range, that
-needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"} 
+needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
 means we target a dose
 with at least 80\% of maximum biomarker level. As an other example,
 (0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
 the maximum biomarker level.}
 
-\item{\code{scale}}{either \code{relative} (default, then the \code{target} is interpreted 
+\item{\code{scale}}{either \code{relative} (default, then the \code{target} is interpreted
 relative to the maximum, so must be a probability range) or \code{absolute}
 (then the \code{target} is interpreted as absolute biomarker range)}
 
@@ -36,7 +36,7 @@ limit included)}
 
 \item{\code{maxOverdoseProb}}{maximum overdose probability that is allowed}
 
-\item{\code{targetThresh}}{which target probability threshold needs to be fulfilled before the 
+\item{\code{targetThresh}}{which target probability threshold needs to be fulfilled before the
 target probability will be used for deriving the next best dose (default: 0.01)}
 }}
 

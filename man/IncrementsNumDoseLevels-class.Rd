@@ -11,9 +11,9 @@ Increments control based on number of dose levels
 \section{Slots}{
 
 \describe{
-\item{\code{maxLevels}}{scalar positive integer for the number of maximum 
-dose levels to increment for the next dose. It defaults to 1, 
-which means that no dose skipping is allowed - the next dose 
+\item{\code{maxLevels}}{scalar positive integer for the number of maximum
+dose levels to increment for the next dose. It defaults to 1,
+which means that no dose skipping is allowed - the next dose
 can be maximum one level higher than the current dose.}
 }}
 

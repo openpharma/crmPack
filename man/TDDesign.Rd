@@ -4,8 +4,7 @@
 \alias{TDDesign}
 \title{Initialization function for 'TDDesign' class}
 \usage{
-TDDesign(model, stopping, increments, PLcohortSize = CohortSizeConst(0L),
-  ...)
+TDDesign(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...)
 }
 \arguments{
 \item{model}{please refer to \code{\linkS4class{TDDesign}} class object}

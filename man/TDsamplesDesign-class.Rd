@@ -5,24 +5,24 @@
 \alias{TDsamplesDesign-class}
 \alias{.TDsamplesDesign}
 \title{This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-and DLE samples are also used. 
+and DLE samples are also used.
 In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
 objects of this class contain:}
 \description{
 This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-and DLE samples are also used. 
+and DLE samples are also used.
 In addition to the slots in the more simple \code{\linkS4class{RuleDesign}},
 objects of this class contain:
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the pseudo DLE model to be used, an object class of 
+\item{\code{model}}{the pseudo DLE model to be used, an object class of
 \code{\linkS4class{ModelTox}}}
 
 \item{\code{stopping}}{stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}}
 
-\item{\code{increments}}{how to control increments between dose levels, an object class of 
+\item{\code{increments}}{how to control increments between dose levels, an object class of
 \code{\linkS4class{Increments}}}
 
 \item{\code{PLcohortSize}}{rules for the cohort sizes for placebo, if any planned

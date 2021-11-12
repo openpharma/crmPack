@@ -13,7 +13,7 @@ LogisticIndepBeta(binDLE, DLEdose, DLEweights, data)
 
 \item{DLEweights}{the total number of subjects treated at each of the dose levels, pseudo weights}
 
-\item{data}{the input data to update estimates of model parameters and 
+\item{data}{the input data to update estimates of model parameters and
 follow the \code{\linkS4class{Data}} object class specification}
 }
 \value{

@@ -9,9 +9,9 @@ Standard logistic model with prior in form of pseudo data}
 \description{
 This is a class for the two-parameter logistic regression DLE model with prior expressed
 in form of pseudo data. This model describe the relationhship of the binary DLE (dose-limiting
-events) responses and the dose levels. More specifically, this DLE model reprsents the relationship 
+events) responses and the dose levels. More specifically, this DLE model reprsents the relationship
 of the probabilities of the occurrence of a DLE with their corresponding dose levels in log scale.
-This model is specified as 
+This model is specified as
 \deqn{p(d_{(j)})= \frac{exp(\phi_1+\phi_2 log(d_{(j)}))}{1+exp(\phi_1+\phi_2 log(d_{(j)}))}}
 for any dose j where \eqn{p(d_{(j)})} is the probability of the occurrence of a DLE at dose j.
 The two parameters of this model is the intercept \eqn{\phi_1} and the slope \eqn{\phi_2}
@@ -22,61 +22,62 @@ The pseudo data can be interpreted as as if we obtain some observations before t
 These pseudo data can be used to express our prior, the initial beliefs for the model parameter(s).
 The pseudo data are expressed in the following way. First, fix at least two dose levels which are
 Then ask for experts' opinion how many subjects are to be treated at each of these dose levels and
-the number of subjects observed with DLE are observed. At each dose level, the number of subjects 
-observed with a DLE divided by the total number of subjects treated is the probability of the 
+the number of subjects observed with DLE are observed. At each dose level, the number of subjects
+observed with a DLE divided by the total number of subjects treated is the probability of the
 occurrence of a DLE at that particular dose level. The probabilities of the occurrence of a DLE
-based on these pseudo data are independent Beta distributions. Therefore, the joint prior probability 
-density function of all these probabilities can be obtained. Hence, by a change of variable, the 
+based on these pseudo data are independent Beta distributions. Therefore, the joint prior probability
+density function of all these probabilities can be obtained. Hence, by a change of variable, the
 joint prior probability density function of the two parameters in this model can also be obtained.
 In addition, a conjugate joint perior density function of the two paramaters in the model is used.
-For details about the form of all these joint prior and posterior probability density function, please 
+For details about the form of all these joint prior and posterior probability density function, please
 refers to Whitehead and Willamson (1998).
 
+
 When expressing the pseudo data, \code{binDLE},\code{DLEdose} and \code{DLEweights} are used.
-The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary 
+The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary
 nature of the pseudo data, the number of subjects observed wtih DLE is not necesssary to be integer(s)
 but any scalar value.
-The \code{DLEdose} represents the dose levels at which the pseudo DLE responses (\code{binDLE}) are 
+The \code{DLEdose} represents the dose levels at which the pseudo DLE responses (\code{binDLE}) are
 observed.
 The \code{DLEweights} represents the total number of subjects treated.
-Since at least two DLE pseudo responses are needed to obtain prior modal estimates (same as the maximum 
+Since at least two DLE pseudo responses are needed to obtain prior modal estimates (same as the maximum
 likelihood estimates) for the model parameters. \code{binDLE}, \code{DLEdose} and \code{DLEweights} must
-all be vectors of at least length 2. Since given one pseudo DLE responses, the number of subjects observed 
+all be vectors of at least length 2. Since given one pseudo DLE responses, the number of subjects observed
 with a DLE relates to at which dose level they are treated and the total number of of subjects treated at
-this dose level. Therefore, each of the elements in any of the vectors of \code{binDLE}, \code{DLEdose} and 
+this dose level. Therefore, each of the elements in any of the vectors of \code{binDLE}, \code{DLEdose} and
 \code{DLEweights} must have a corresponding elements in the other two vectors. A set of three values with
-one of each in the vectors of \code{binDLE}, \code{DLEdose} and \code{DLEweights}. In this model, each of 
-these three values must be specified in the same position as in each of the vector of \code{binDLE}, 
-\code{DLEdose} and \code{DLEweights}. The order of the values or elements in one of the vector \code{binDLE}, 
-\code{DLEdose} and \code{DLEweights} must corresponds to the values or elements specified in the other two 
+one of each in the vectors of \code{binDLE}, \code{DLEdose} and \code{DLEweights}. In this model, each of
+these three values must be specified in the same position as in each of the vector of \code{binDLE},
+\code{DLEdose} and \code{DLEweights}. The order of the values or elements in one of the vector \code{binDLE},
+\code{DLEdose} and \code{DLEweights} must corresponds to the values or elements specified in the other two
 vectors.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{binDLE}}{represents the vector of pseudo DLE responses. This must be at least f length 2 and the 
-order of its elements must corresponds to values specified in \code{DLEdose} and \code{DLEweights}. 
+\item{\code{binDLE}}{represents the vector of pseudo DLE responses. This must be at least f length 2 and the
+order of its elements must corresponds to values specified in \code{DLEdose} and \code{DLEweights}.
 (see details from above)}
 
-\item{\code{DLEdose}}{represents the vector of the corresponding dose levels observed at each of the 
+\item{\code{DLEdose}}{represents the vector of the corresponding dose levels observed at each of the
 pseudo DLE responses (\code{binDLE}). This mus be at least of length 2 and the order of its elements
 must corresponds to values specified in \code{binDLE} and \code{DLEweights}.
 (see details from above)}
 
-\item{\code{DLEweights}}{refers to the total number of subjects treated at each of the pseudo dose level 
+\item{\code{DLEweights}}{refers to the total number of subjects treated at each of the pseudo dose level
 (\code{DLEdose}). This must be of length of at least 2 and the oreder of its elements must corresponds
 to values specified in \code{binDLE} and \code{DLEdose}. (see details from above)}
 
-\item{\code{phi1}}{refers the intercept of the model. This slot is used in output to display the resulting prior 
-or posterior modal estimate of the intercept obtained based on the pseudo data and (if any) 
+\item{\code{phi1}}{refers the intercept of the model. This slot is used in output to display the resulting prior
+or posterior modal estimate of the intercept obtained based on the pseudo data and (if any)
 observed data/responses.}
 
-\item{\code{phi2}}{refers to slope of the model. This slot is used in output to display the resulting prior or 
+\item{\code{phi2}}{refers to slope of the model. This slot is used in output to display the resulting prior or
 posterior modal estimate of the slope obtained based on the pseudo data and (if any) the observed data/responses.}
 
-\item{\code{Pcov}}{refers to the covariance matrix of the intercept (phi1) and the slope parameters (phi2) of the 
-model. This is used in output to display the resulting prior and posterior covariance matrix of phi1 and 
-phi2 obtained, based on the pseudo data and (if any) the observed data and responses. This slot is needed for 
+\item{\code{Pcov}}{refers to the covariance matrix of the intercept (phi1) and the slope parameters (phi2) of the
+model. This is used in output to display the resulting prior and posterior covariance matrix of phi1 and
+phi2 obtained, based on the pseudo data and (if any) the observed data and responses. This slot is needed for
 internal purposes.}
 }}
 

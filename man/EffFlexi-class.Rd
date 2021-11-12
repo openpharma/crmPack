@@ -7,72 +7,72 @@
 \title{Class for the efficacy model in flexible form for prior expressed in form of pseudo data}
 \description{
 This is a class where a flexible form is used to describe the realtionship between the efficacy
-responses and the dose levels. This flexible form aims to capture different shape for the 
+responses and the dose levels. This flexible form aims to capture different shape for the
 dose-efficacy curve and the mean efficacy responses at each dose level are estimated using MCMC.
-In addition, the first (RW1) or second order (RW2) random walk model can be used for smoothing data. That is 
-the random walk model is used to model the first or the second order differnece of the mean 
+In addition, the first (RW1) or second order (RW2) random walk model can be used for smoothing data. That is
+the random walk model is used to model the first or the second order differnece of the mean
 efficacy responses to its neighbouring dose levels of their mean efficacy responses.
-The flexible form is specified as 
+The flexible form is specified as
 \deqn{\mathbf{W}\vert\boldsymbol{\beta_w}, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol{\beta_w}, \sigma^2 \mathbf{I})}
 where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol{\beta_w}}
-is th column vector of the mean efficacy responses for all dose levels, \eqn{\mathbf{X_w}} is the 
-design matrix with entries \eqn{I_{i(j)}} which gives a value 1 if subject i is allocated to 
+is th column vector of the mean efficacy responses for all dose levels, \eqn{\mathbf{X_w}} is the
+design matrix with entries \eqn{I_{i(j)}} which gives a value 1 if subject i is allocated to
 dose j. The \eqn{\sigma^2} (sigma2) is the variance of the efficacy responses which can be either fixed or from
 an inverse gamma distribution.
 }
 \details{
-The RW1 model is given as 
+The RW1 model is given as
 \deqn{\beta_{W,(j)} - \beta_{W,(j-1)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
 where \eqn{\beta_{W,(j)}} is the mean efficacy responses at dose j
-For the RW2 is given as 
+For the RW2 is given as
 \deqn{\beta_{W,(j-2)} - 2 \beta_{W,(j-1)} + \beta_{W,(j)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
-The variance parameter \eqn{\sigma^{2}_{\beta_{W}}}. The variance \eqn{\sigma^{2}_{\beta_{W}}} 
+The variance parameter \eqn{\sigma^{2}_{\beta_{W}}}. The variance \eqn{\sigma^{2}_{\beta_{W}}}
 (sigma2betaW) will be the same at all dose levels and can
 either be fixed or assigned an inverse gamma prior distribution.
 
-The \code{Eff} and \code{Effdose} are the pseduo efficacy responses and dose levels at which these 
+The \code{Eff} and \code{Effdose} are the pseduo efficacy responses and dose levels at which these
 pseudo efficacy responses are observed at. (see more details for \code{\linkS4class{Effloglog}} class)
 \code{Eff} and \code{Effdose} must be vector of at least length 2. The values or elements in vectors
-\code{Eff} or \code{Effdose} must put in the same position with its corresponding value in the other 
+\code{Eff} or \code{Effdose} must put in the same position with its corresponding value in the other
 vector. The \code{sigma2} is the prior variance of the flexible efficacy form. The variance is either specified
-with a single scalar value (fixed) or postive scalar value have to be specified for the \code{a} shape and 
-\code{b} slope parameter for th inverse gamme distribtuion. Similarly, \code{sigma2betaW} is the prior variance 
-of the random walk model which can be specified with a single scalar (fixed) value or specifying positive 
-scalar values for the shape \code{a} and rate \code{b} parameters for the inverse gamma distributions. 
+with a single scalar value (fixed) or postive scalar value have to be specified for the \code{a} shape and
+\code{b} slope parameter for th inverse gamme distribtuion. Similarly, \code{sigma2betaW} is the prior variance
+of the random walk model which can be specified with a single scalar (fixed) value or specifying positive
+scalar values for the shape \code{a} and rate \code{b} parameters for the inverse gamma distributions.
 This model will output the updated value or the updated values of the paramters of the inverse gamma
 distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (sigma2betaW)
 }
 \section{Slots}{
 
 \describe{
-\item{\code{Eff}}{the pseudo efficacy responses. A vector of at least length 2 with the elements here and its 
+\item{\code{Eff}}{the pseudo efficacy responses. A vector of at least length 2 with the elements here and its
 corresponding value in \code{Effdose} must be specified in the same position. (see dtails above)}
 
-\item{\code{Effdose}}{the dose levels at which the pseudo efficacy responses are observed. This is a vector of at 
+\item{\code{Effdose}}{the dose levels at which the pseudo efficacy responses are observed. This is a vector of at
 least length 2 and the elements here and its corrresponding value in \code{Eff} must be specified in the
 same postion. (see details from above)}
 
 \item{\code{sigma2}}{the prior variance of the flexible efficacy form. It can be specified with a single positive
-scalar or specifying \code{a}, the shape and \code{b}, the rate parameter of the inverse gamma 
+scalar or specifying \code{a}, the shape and \code{b}, the rate parameter of the inverse gamma
 distribution. (see details from above)}
 
 \item{\code{sigma2betaW}}{the prior variance of the random walk model for the mean efficact responses. A single
-positve scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of 
+positve scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of
 the inverse gamma distribution (see details from above)}
 
 \item{\code{useFixed}}{a list of with logical value to each of the parameters \code{sigma2} and \code{sigma2betaw}
 indicating whether a fixed value is used or not; this slot is needed for internal purposes and not to
 be touched by the user.}
 
-\item{\code{useRW1}}{for specifying the random walk model for the mean efficacy responses; if \code{TRUE}, 
+\item{\code{useRW1}}{for specifying the random walk model for the mean efficacy responses; if \code{TRUE},
 first order random walk model is used, otherwise the second-order random walk model.}
 
-\item{\code{designW}}{is the design matrix for the efficacy responses. If only the pseudo efficacy responses 
+\item{\code{designW}}{is the design matrix for the efficacy responses. If only the pseudo efficacy responses
 are used, this will be the design matrix of the pseudo efficacy responses. If there are some observed
 efficacy responses available. It will be the design matrix based on both the pseudo and the observed
 efficacy responses.}
 
-\item{\code{RWmat}}{is the the difference matrix for the random walk model. This slot is needed for internal 
+\item{\code{RWmat}}{is the the difference matrix for the random walk model. This slot is needed for internal
 purposes and not to be touched by the user.}
 
 \item{\code{RWmatRank}}{is the rank of the difference matrix. This slot is needed for internal purposes and not

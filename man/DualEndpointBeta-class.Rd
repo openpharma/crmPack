@@ -23,7 +23,7 @@ levels, respectively. For ease of interpretation, we parametrize with
 and multiplying this with \eqn{x^{*}} gives the mode on the dose grid.
 
 All parameters can currently be assigned uniform distributions or be fixed
-in advance. Note that \code{E0} and \code{Emax} can have negative values or uniform 
+in advance. Note that \code{E0} and \code{Emax} can have negative values or uniform
 distributions reaching into negative range, while \code{delta1} and \code{mode}
 must be positive or have uniform distributions in the positive range.
 }

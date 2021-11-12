@@ -4,8 +4,15 @@
 \alias{MinimalInformative}
 \title{Construct a minimally informative prior}
 \usage{
-MinimalInformative(dosegrid, refDose, threshmin = 0.2, threshmax = 0.3,
-  probmin = 0.05, probmax = 0.05, ...)
+MinimalInformative(
+  dosegrid,
+  refDose,
+  threshmin = 0.2,
+  threshmax = 0.3,
+  probmin = 0.05,
+  probmax = 0.05,
+  ...
+)
 }
 \arguments{
 \item{dosegrid}{the dose grid}

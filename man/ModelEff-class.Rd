@@ -7,43 +7,43 @@
 \title{No Initialization function
 class for Efficacy models using pseudo data prior}
 \description{
-This is a class of which contains all efficacy models for which their prior are specified in 
+This is a class of which contains all efficacy models for which their prior are specified in
 form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
 }
 \details{
-The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value 
+The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value
 which is targeted. Additional arguements are model parameters. It computes using modal estimate(s)
 or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
 of the model parameters are used, the function must vectorize over the model parameters.
 
-The \code{ExpEff} function has a first argument \code{dose}, a scalar dose level which is targeted. 
+The \code{ExpEff} function has a first argument \code{dose}, a scalar dose level which is targeted.
 Additional arguments are model parameters. It computes using modal estimates or samples of the
 model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
 of the model parameter(s) are used, the function must vectorize over the model parameters.
 
-The \code{data} must obey the covention that the data input is called exactly in the 
-\code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses 
-(\code{w} in 
+The \code{data} must obey the covention that the data input is called exactly in the
+\code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses
+(\code{w} in
 \code{\linkS4class{DataDual}} class), the dose (levels) (\code{x} in \code{\linkS4class{DataDual}} or
 \code{Data} class)
 at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
-in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in 
+in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in
 \code{\linkS4class{DataDual}}
 class that can be used to generate prior or
 posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
 at least \code{doseGrid} in \code{\linkS4class{DataDual}} has to be specified in \code{data} slot
-for which prior modal estimates or samples can be obtained for model parameters based on 
+for which prior modal estimates or samples can be obtained for model parameters based on
 the specified pseudo data.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{dose}}{a function computing the dose reaching a specific target value of expected efficacy, based
-on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified 
+on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified
 in form of pseudo data and if any together with any observed responses (see details above)}
 
-\item{\code{ExpEff}}{a function computing the expected efficacy (value) for a specific dose, based on model 
-parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any) 
+\item{\code{ExpEff}}{a function computing the expected efficacy (value) for a specific dose, based on model
+parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any)
 with observed responses (see details above)}
 
 \item{\code{data}}{refers to the data input specification in \code{\linkS4class{DataDual}} class which are used to

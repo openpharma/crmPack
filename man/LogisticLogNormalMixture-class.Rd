@@ -15,12 +15,12 @@ of a DLT at dose \eqn{x} is given by
 \deqn{p(x) = \pi p_{1}(x) + (1 - \pi) p_{2}(x)}
 
 where \eqn{\pi} is the probability for the model \eqn{p(x)} being the same
-as the model \eqn{p_{1}(x)} - this is 
-the informative component of the prior. From this model data arises in 
-parallel: at doses \code{xshare}, DLT information \code{yshare} is observed, 
+as the model \eqn{p_{1}(x)} - this is
+the informative component of the prior. From this model data arises in
+parallel: at doses \code{xshare}, DLT information \code{yshare} is observed,
 in total \code{nObsshare} data points, see \code{\linkS4class{DataMixture}}.
 On the other hand, \eqn{1 - \pi}
-is the probability of a separate model \eqn{p_{2}(x)}. Both components 
+is the probability of a separate model \eqn{p_{2}(x)}. Both components
 have the same log normal prior distribution, which can be specified by the
 user, and which is inherited from the \code{\linkS4class{LogisticLogNormal}}
 class.

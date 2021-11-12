@@ -15,7 +15,7 @@ single parameter the iteration index}
 \item{vars}{names of the variables}
 
 \item{parallel}{shall the iterations be parallelized across the cores?
-if NULL, then no parallelization will be done. If scalar positive number, 
+if NULL, then no parallelization will be done. If scalar positive number,
 then so many cores will be used.}
 }
 \value{

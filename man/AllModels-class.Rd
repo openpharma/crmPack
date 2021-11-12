@@ -13,7 +13,7 @@ This is a class where all models inherit.
 \section{Slots}{
 
 \describe{
-\item{\code{datanames}}{The names of all data slots that are used in all models. 
+\item{\code{datanames}}{The names of all data slots that are used in all models.
 In particularly, those are also used in the \code{datamodel} and/or
 \code{priormodel} definition for \code{\linkS4class{GeneralModel}}.}
 }}
