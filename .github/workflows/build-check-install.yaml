@@ -87,7 +87,7 @@ jobs:
 
       - name: Build R package
         run: |
-          R CMD build ${{ github.event.repository.name }}
+          R CMD build --no-manual ${{ github.event.repository.name }}
           echo "PKGBUILD=$(echo *.tar.gz)" >> $GITHUB_ENV
         shell: bash
 
