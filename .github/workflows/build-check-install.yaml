@@ -87,13 +87,13 @@ jobs:
 
       - name: Build R package
         run: |
-          R CMD build --no-manual ${{ github.event.repository.name }}
+          R CMD build --no-manual --no-build-vignettes ${{ github.event.repository.name }}
           echo "PKGBUILD=$(echo *.tar.gz)" >> $GITHUB_ENV
         shell: bash
 
       - name: Run R CMD CHECK
         run: |
-          R CMD check --no-manual ${{ env.PKGBUILD }}
+          R CMD check --no-manual --no-vignettes ${{ env.PKGBUILD }}
         shell: bash
         continue-on-error: true
         env:
