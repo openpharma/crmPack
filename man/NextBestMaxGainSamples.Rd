@@ -4,8 +4,12 @@
 \alias{NextBestMaxGainSamples}
 \title{Initialization function for class "NextBestMaxGainSamples"}
 \usage{
-NextBestMaxGainSamples(DLEDuringTrialtarget, DLEEndOfTrialtarget, TDderive,
-  Gstarderive)
+NextBestMaxGainSamples(
+  DLEDuringTrialtarget,
+  DLEEndOfTrialtarget,
+  TDderive,
+  Gstarderive
+)
 }
 \arguments{
 \item{DLEDuringTrialtarget}{please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object}
