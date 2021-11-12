@@ -4,8 +4,15 @@
 \alias{Data}
 \title{Initialization function for the "Data" class}
 \usage{
-Data(x = numeric(), y = integer(), ID = integer(),
-  cohort = integer(), doseGrid = numeric(), placebo = FALSE, ...)
+Data(
+  x = numeric(),
+  y = integer(),
+  ID = integer(),
+  cohort = integer(),
+  doseGrid = numeric(),
+  placebo = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{the doses for the patients}

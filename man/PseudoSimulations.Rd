@@ -4,10 +4,19 @@
 \alias{PseudoSimulations}
 \title{Initialization function of the 'PseudoSimulations' class}
 \usage{
-PseudoSimulations(fit, FinalTDtargetDuringTrialEstimates,
-  FinalTDtargetEndOfTrialEstimates, FinalTDtargetDuringTrialAtDoseGrid,
-  FinalTDtargetEndOfTrialAtDoseGrid, FinalTDEOTCIs, FinalTDEOTRatios,
-  FinalCIs, FinalRatios, stopReasons, ...)
+PseudoSimulations(
+  fit,
+  FinalTDtargetDuringTrialEstimates,
+  FinalTDtargetEndOfTrialEstimates,
+  FinalTDtargetDuringTrialAtDoseGrid,
+  FinalTDtargetEndOfTrialAtDoseGrid,
+  FinalTDEOTCIs,
+  FinalTDEOTRatios,
+  FinalCIs,
+  FinalRatios,
+  stopReasons,
+  ...
+)
 }
 \arguments{
 \item{fit}{please refer to \code{\linkS4class{PseudoSimulations}} class object}

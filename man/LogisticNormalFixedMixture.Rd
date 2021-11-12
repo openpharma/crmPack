@@ -4,8 +4,7 @@
 \alias{LogisticNormalFixedMixture}
 \title{Initialization function for the "LogisticNormalFixedMixture" class}
 \usage{
-LogisticNormalFixedMixture(components, weights, refDose,
-  logNormal = FALSE)
+LogisticNormalFixedMixture(components, weights, refDose, logNormal = FALSE)
 }
 \arguments{
 \item{components}{the specifications of the mixture components: a list with

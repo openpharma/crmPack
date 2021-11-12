@@ -30,7 +30,8 @@ density function of all these probabilities can be obtained. Hence, by a change 
 joint prior probability density function of the two parameters in this model can also be obtained.
 In addition, a conjugate joint perior density function of the two paramaters in the model is used.
 For details about the form of all these joint prior and posterior probability density function, please 
-refers to Whitehead and Willamson (1998).
+refers to Whitehead and Willamson (1998). 
+
 
 When expressing the pseudo data, \code{binDLE},\code{DLEdose} and \code{DLEweights} are used.
 The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary 

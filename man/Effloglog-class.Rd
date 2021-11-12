@@ -42,6 +42,7 @@ shape and rate parameter of the gamma distribution. If there are some observed e
 in the output, \code{nu} will display the updated value of the precision or the updated values for the 
 parameters of the gamma distribution.
 
+
 Given the variance of the pseudo efficacy responses, the joint prior distribution of the intercept \eqn{\theta_1}
 (theta1) and the slope \eqn{\theta_2} (theta2) of this model is a bivariate normal distribution. 
 A conjugate posterior joint distribution is also used for theta1 and theta2. The joint prior bivariate 
