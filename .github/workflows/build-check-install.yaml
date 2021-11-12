@@ -67,7 +67,7 @@ jobs:
         shell: bash
 
       - name: Install missing LaTeX packages
-        run: tlmgr install soul todonotes koma-script subfig bookmark babel-english
+        run: tlmgr install soul todonotes koma-script subfig bookmark babel-english caption
         shell: bash
 
       - name: Build R package
