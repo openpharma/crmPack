@@ -1,0 +1,111 @@
+---
+title: "Simulation study example"
+author: "Ziwei Liao, Daniel Sabanes Bove"
+date: "02 January 2019"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulation study example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{crmPack}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simulation setting
+
+Here the simulation study setting is defined.
+
+```{r simulation setting}
+id <- 1
+onset <- 3
+a0 <- 2
+a1 <- 3
+
+# True dose-DLT relationship
+myTruth <- function(dose){
+  model@prob(dose,alpha0=a0,alpha1=a1)
+}
+
+# The conditional CDF of the PEM
+if(onset==30) {
+  onset=15
+  exp_cond.cdf<-function(x){
+    (pexp(42-x,1/onset,lower.tail=FALSE)-pexp(Tmax_,1/onset,lower.tail=FALSE))/pexp(Tmax_,1/onset)
+  }
+} else{ exp_cond.cdf<-function(x){
+  1-(pexp(x,1/onset,lower.tail=FALSE)-pexp(Tmax_,1/onset,lower.tail=FALSE))/pexp(Tmax_,1/onset)
+}}
+```
+
+## Design definition
+
+Here the the dose escalation designs are defined: in this example the TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM.
+
+Tmax_ <- 42
+
+model <- TITELogisticLogNormal(mean=c(1.33,1.49),
+                           cov=matrix(c(1.826,0.0209,0.0209,0.0245),nrow=2),
+                           refDose=56
+                           )
+
+
+myIncrements <- IncrementsRelative(intervals=c(0,20),
+                                   increments=c(10,3))
+
+myNextBest <- NextBestMTD(target=0.3,
+                          derive=
+                            function(mtdSamples){
+                              mean(mtdSamples)
+                            })
+
+myStopping <- StoppingMinPatients(nPatients=48)
+
+mySize <- CohortSizeConst(size=3)
+
+emptydata <- DataTITE(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_,weightMethod = "adaptive")
+
+
+mysafetywindow <- SafetyWindowConst(c(7,7),7,7)
+
+design <- TITEDesign(model=model,
+                   increments=myIncrements,
+                   nextBest=myNextBest,
+                   stopping=myStopping,
+                   cohortSize=mySize,
+                   data=emptydata,
+                   safetyWindow=mysafetywindow,
+                   startingDose=8)
+
+
+```
+
+
+## Simulation run
+
+In order to obtain stable results, increase the simulation parameters appropriately (step, samples, nsim).
+
+```{r simulation run}
+options <- McmcOptions(burnin=20,
+                       step=1,
+                       samples=50)
+mySims <- simulate(design,
+                   args=NULL,
+                   truthTox=myTruth,
+                   truthSurv=exp_cond.cdf,
+                   trueTmax=42,
+                   nsim=10,
+                   seed=819,
+                   mcmcOptions=options,
+                   parallel=FALSE)
+
+```
+
+
+
+
+todo: we need to show here how to get the plots from the manuscript
+Jiawen: I have 2 seperate R files for all the plots in the manuscript. the plots will use multiple simulation results though. 
+

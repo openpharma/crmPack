@@ -136,6 +136,12 @@ setMethod("mcmc",
                   do.call(model@modelspecs,
                           as.list(data)[names(formals(model@modelspecs))])
               stopifnot(is.list(modelspecs))
+              
+              if(fromPrior)
+              {
+                # remove some list elements to avoid Jags error of unused variables
+                modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
+              }
 
               ## prepare the required data.
               ## This is necessary, because if there is only one observation,
@@ -147,15 +153,18 @@ setMethod("mcmc",
                   {
                       ## in this case requiredData will not be used
                       NULL
+                    
                   } else if(data@nObs == 1L) {
                       ## here we need to modify!!
                       tmp <- as.list(data)[model@datanames]
 
                       ## get the names where to add dummy entries:
-                      addWhere <- which(! (names(tmp) %in% c("nObs", "nGrid",
+                      addWhere <- which(! (names(tmp) %in% c("nObs", 
+                                                             "nGrid",
                                                              "nObsshare", 
                                                              "yshare",
-                                                             "xshare")))
+                                                             "xshare",
+                                                             "Tmax")))
                       ## all names that are not referring to the scalars
                       ## nObs and nGrid
 
@@ -196,10 +205,8 @@ setMethod("mcmc",
                   ## specify the JAGS model
                   jagsModel <-
                       rjags::jags.model(file=modelFileName,
-                                        data=
-                                        if(fromPrior) modelspecs else
-                                        c(requiredData,
-                                          modelspecs),
+                                        data=c(requiredData,
+                                               modelspecs),
                                         inits=
                                         ## add the RNG seed to the inits list:
                                         ## (use Mersenne Twister as per R

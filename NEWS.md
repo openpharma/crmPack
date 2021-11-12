@@ -32,6 +32,9 @@
 
 ### New features:
   
+* The modified data-augmented CRM is now included in the package. 
+  todo: add more details on mDA-CRM here
+  
 * The "examine" function now counts the number of times the same dose is 
   recommended contiguously and break after e.g. the default 100 times 
   (can be specified in a new option of "examine") to further avoid infinite 

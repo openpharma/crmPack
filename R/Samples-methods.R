@@ -1541,9 +1541,289 @@ setMethod("plotDualResponses",
             })
 ## =======================================================================================================
 
+## ----------------------------------------------------------------
+## Get fitted DLT free survival (piecewise exponential model) based on 
+## the DA-CRM model
+## -----------------------------------------------------------------
+##' Get the fitted DLT free survival (piecewise exponential model).
+##' This function returns a data frame with dose, middle, lower and upper 
+##' quantiles for the PEM curve. If hazard=TRUE, 
+##' @param object mcmc samples
+##' @param model the mDA-CRM model
+##' @param data the data input, a \code{\linkS4class{DataDA}} class object
+##' @param quantiles the quantiles to be calculated (default: 0.025 and
+##' 0.975)
+##' @param middle the function for computing the middle point. Default:
+##' \code{\link{mean}}
+##' @param hazard should the the hazard over time be plotted based on the PEM? (not default)
+##' Otherwise (default) todo: what will be plotted?...
+##' @param \dots additional arguments for methods
+##' 
+##' @export
+##' @keywords methods
+setGeneric("fitPEM",
+           def=
+             function(object,
+                      model,
+                      data,
+                      quantiles=c(0.025, 0.975),
+                      middle=mean,
+                      hazard=FALSE,
+                      ...){
+               ## there should be no default method,
+               ## therefore just forward to next method!
+               standardGeneric("fitPEM")},
+           valueClass="data.frame")
 
 
+#' Likelihood of DLTs in each interval
+#'
+#' This is a helper function for the fitPEM methods below.
+#'
+#' @param lambda the vector of piecewise hazards
+#' @param Tmax the end of the time interval for DLTs
+#' @return vector with the probabilities for DLTs within the intervals.
+#'
+#' @keywords internal
+DLTLikelihood <- function(lambda,
+                          Tmax)
+{
+  npiece <-length(lambda)
+  h <- seq(from=0L, to=Tmax, length=npiece + 1)
+  
+  #Length of each time interval;
+  sT<-rep(0,npiece)
+  
+  
+  for(i in 1:npiece){
+    
+    sT[i]<-h[i+1]-h[i]
+    
+  }
+  
+  
+  #calculate the exponential part of the distribution:
+  s_ij <- function(t, j)
+  {
+    if(t > h[j])
+    {
+      
+      min(t-h[j],h[j+1]-h[j])
+      
+    } else {
+      
+      0
+    }
+  }
+  
+  
+  #The cumulative hazard function
+  expNmu <- function(t)
+  {
+    
+    ret <- 1
+    
+    for(j in 1:npiece)
+    {
+      
+      ret <-ret * exp(- lambda[j] * s_ij(t, j))
+    }
+    
+    return(ret)
+  }
+  
+  
+  #CDF of the piecewise exponential   
+  
+  piece_exp.cdf<-function(x){
+    
+    1-expNmu(x)
+    
+  }  
+  
+  DLTFreeS<-function(x)
+  {
+    
+    (expNmu(x)-expNmu(Tmax))/piece_exp.cdf(Tmax)
+    
+  }
+  
+  pDLT<-rep(0,npiece+1)
+  
+  for(i in 1:(npiece)){
+    
+    pDLT[i] <- DLTFreeS(h[i]) - DLTFreeS(h[i+1])
+  }
+  
+  return(pDLT)
+}
 
+## --------------------------------------------------------------------
+## Get fitted DLT free survival (piecewise exponential model) based on 
+## the DA-CRM model
+## -------------------------------------------------------------
+##' @describeIn fitPEM This method works for the \code{\linkS4class{DALogisticLogNormal}} 
+##' model class.
+##' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
+setMethod("fitPEM",
+          signature=
+            signature(object="Samples",
+                      model="DALogisticLogNormal",
+                      data="DataDA"),
+          def=
+            function(object,
+                     model,
+                     data,
+                     quantiles=c(0.025, 0.975),
+                     middle=mean,
+                     hazard=FALSE,
+                     ...){
+              
+              ## some checks
+              stopifnot(is.probRange(quantiles))
+              
+              ##Plot points
+              #points<-seq(0,Tmax_,length=npiece_*3+1)
+              points<-seq(0, data@Tmax, length=model@npiece+1)
+              ## first we have to get samples from the PEM
+              ## at intercept points and 2 middel points between 
+              ## intercepts.
+              PEMSamples <- matrix(nrow=sampleSize(object@options),
+                                   ncol=length(points))
+              
+              i_max<-max(seq_along(points))
+              ## evaluate the probs, for all samples.
+              
+              #The PEM
+              if(hazard==FALSE){
+                #                                   PEMSamples[,i]<-apply(object@data$lambda,1,function(x){
+                #                                           fit<-DLTFreeS(x,Tmax_)
+                #                                           return(fit(points[i]))
+                #                                   })
+                PEMSamples<-t(apply(object@data$lambda,1,function(x){
+                  fit<-DLTLikelihood(x, data@Tmax)
+                  return(fit)
+                }))
+                
+                
+              }else if(hazard==TRUE){
+                for(i in seq_along(points))
+                {
+                  #numeric method
+                  #                                           PEMSamples[,i]<-apply(object@data$lambda,1,function(x){
+                  #                                                   fit<-DLTFreeS(x,Tmax_)
+                  #                                                   return(-1*grad(fit,points[i]))
+                  #                                           
+                  #                                           
+                  #                                           })    
+                  #close form
+                  #assume a evenly cut piecewise exp;#todo: make it more robust;
+                  #                                           if (i==i_max){PEMSamples[,i_max]<-object@data$lambda[,npiece_]}else{
+                  #                                           PEMSamples[,i]<-object@data$lambda[,sum(points[i]>=seq(0,Tmax_,length=npiece_+1))]
+                  #                                           } 
+                  if(i==i_max){
+                    PEMSamples[,i_max]<-object@data$lambda[, model@npiece]}else{
+                      PEMSamples[,i]<-object@data$lambda[,i]}
+                }
+                
+              }
+              
+              ## extract middle curve
+              middleCurve <- apply(PEMSamples, 2L, FUN=middle)
+              
+              ## extract quantiles
+              quantCurve <- apply(PEMSamples, 2L, quantile,
+                                  prob=quantiles)
+              
+              ## now create the data frame
+              ret <- data.frame(time=points,
+                                middle=middleCurve,
+                                lower=quantCurve[1, ],
+                                upper=quantCurve[2, ])
+              
+              ## return it
+              return(ret)})
+
+## =======================================================================================================
+
+
+## --------------------------------------------------
+## Plot survival curve fit over time
+## --------------------------------------------------
+
+## todo: add example file
+##' Plotting dose-toxicity model fits
+##'
+##' @param x the \code{\linkS4class{Samples}} object
+##' @param y the \code{\linkS4class{DALogisticLogNormal}} object
+##' @param data the \code{\linkS4class{DataDA}} object
+##' @param hazard see \code{\link{fitPEM}} for the explanation
+##' @param \dots not used
+##' @param showLegend should the legend be shown? (default)
+##' @return This returns the \code{\link[ggplot2]{ggplot}}
+##' object for the dose-toxicity model fit
+##'
+##' @export
+##' @importFrom ggplot2 qplot scale_linetype_manual
+##' @importFrom gridExtra arrangeGrob
+setMethod("plot",
+          signature=
+            signature(x="Samples",
+                      y="DALogisticLogNormal"
+            ),
+          def=
+            function(x, y, data, hazard=FALSE, ...,
+                     
+                     showLegend=TRUE){
+              
+              ## check args
+              stopifnot(is.bool(showLegend))
+              
+              ## call the superclass method, to get the toxicity plot
+              plot1 <- callNextMethod(x, y, data, showLegend=showLegend, ...)
+              
+              ## get the fit
+              fitData <- fitPEM(x,
+                                model=y,
+                                data=data,
+                                quantiles=c(0.025,0.975),
+                                middle=mean,
+                                hazard=hazard)
+              
+              ## make the plot
+              Tpoints<-seq(0,data@Tmax,length=y@npiece+1)
+              plotData <-
+                with(fitData,
+                     data.frame(x=rep(Tpoints, 3),
+                                y=c(middle, lower, upper) * 100,
+                                group=
+                                  rep(c("mean", "lower", "upper"),
+                                      each=nrow(fitData)),
+                                Type=
+                                  factor(c(rep("Estimate",
+                                               nrow(fitData)),
+                                           rep("95% Credible Interval",
+                                               nrow(fitData) * 2)),
+                                         levels=
+                                           c("Estimate",
+                                             "95% Credible Interval"))))
+              plot2 <- qplot(x=x,
+                             y=y,
+                             data=plotData,
+                             group=group,
+                             linetype=Type,
+                             colour=I("blue"),
+                             geom="step",
+                             xlab="Time",
+                             ylab=if(hazard) "Hazard rate*100" else "Probability of DLT [%]",
+                             ylim=if(hazard) range(plotData$y) else c(0, 100))
+              
+              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
+              return(ret)
+            })
+
+
+## =======================================================================================================
 
 
 

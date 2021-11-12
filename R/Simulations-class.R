@@ -661,3 +661,54 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
                             ratioGstarSummary="table",
                             EffFitAtDoseMostSelected="numeric",
                             meanEffFit="list"))
+
+## ---------------------------------------------------------------------------------------------
+
+##' Class for the simulations output from DA based designs
+##'
+##' This class captures the trial simulations from DA based
+##' designs. In comparison to the parent class \code{\linkS4class{Simulations}},
+##' it contains additional slots to capture the time to DLT fits, additional 
+##' parameters and the trial duration.
+##'
+##' @slot trialduration the vector of trial durations
+##'
+##' @export
+##' @keywords classes
+.DASimulations <-
+  setClass(Class="DASimulations",
+           representation(trialduration="numeric"),
+           prototype(trialduration=rep(0,2)),
+           contains="Simulations",
+           validity=
+             function(object){
+               o <- Validate()
+               
+               nSims <- length(object@data)
+               
+               o$check(identical(length(object@trialduration), nSims),
+                       "trialduration vector has to have same length as data")
+               
+               o$result()
+             })
+validObject(.DASimulations())
+
+
+##' Initialization function for "DASimulations"
+##'
+##' @param trialdurationt see \code{\linkS4class{DASimulations}}
+##' @param \dots additional parameters from \code{\link{Simulations}}
+##' @return the \code{\linkS4class{DASimulations}} object
+##'
+##' @export
+##' @keywords methods
+DASimulations <- function(trialduration,
+                          ...)
+{
+  start <- Simulations(...)
+  .DASimulations(start,
+                 trialduration=trialduration)
+}
+
+
+## ---------------------------------------------------------------------------------------------
