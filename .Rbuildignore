@@ -15,4 +15,3 @@ TODO
 ^README\.Rmd$
 ^README-.*\.png$
 ^\.travis\.yml$
-design/*
