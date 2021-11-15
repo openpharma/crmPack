@@ -4,11 +4,7 @@
 \name{PseudoSimulations-class}
 \alias{PseudoSimulations-class}
 \alias{.PseudoSimulations}
-\title{This is a class which captures the trial simulations from designs using
-pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
-class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
-Additional slots fit and stopReasons compared to the general class
-\code{\linkS4class{GeneralSimulations}}.}
+\title{Class \code{PseudoSimulations}}
 \description{
 This is a class which captures the trial simulations from designs using
 pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
@@ -48,4 +44,3 @@ incorporated) after each simulations}
 \item{\code{stopReasons}}{add slot description}
 }}
 
-\keyword{class}

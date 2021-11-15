@@ -940,7 +940,7 @@ StoppingMTDdistribution <- function(target,
 ##' @slot prob required target probability for reaching sufficient precision
 ##'
 ##' @example examples/Rules-class-StoppingTargetBiomarker.R
-##' @keywords classes
+##'
 ##' @export
 .StoppingTargetBiomarker <-
     setClass(Class="StoppingTargetBiomarker",
@@ -974,7 +974,7 @@ StoppingMTDdistribution <- function(target,
 validObject(.StoppingTargetBiomarker())
 
 
-##' Initialization function for "StoppingTargetBiomarker"
+##' Initialization function for `StoppingTargetBiomarker`
 ##'
 ##' @param target see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @param scale see \code{\linkS4class{StoppingTargetBiomarker}}
@@ -982,7 +982,6 @@ validObject(.StoppingTargetBiomarker())
 ##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
 ##'
 ##' @export
-##' @keywords methods
 StoppingTargetBiomarker <- function(target,
                                     scale=c("relative", "absolute"),
                                     prob)

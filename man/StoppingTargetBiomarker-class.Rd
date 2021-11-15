@@ -32,4 +32,3 @@ myStopping <- StoppingTargetBiomarker(target = c(0.9, 1),
                                       prob = 0.5)
 
 }
-\keyword{classes}

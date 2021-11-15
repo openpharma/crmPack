@@ -4,14 +4,7 @@
 \name{PseudoDualSimulations-class}
 \alias{PseudoDualSimulations-class}
 \alias{.PseudoDualSimulations}
-\title{This is a class which captures the trial simulations design using both the
-DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
-class and the efficacy model from \code{\linkS4class{ModelEff}} class
-(except \code{\linkS4class{EffFlexi}} class). It contains all slots from
-\code{\linkS4class{GeneralSimulations}} and \code{\linkS4class{PseudoSimulations}} object.
-In comparison to the parent class \code{\linkS4class{PseudoSimulations}},
-it contains additional slots to
-capture the dose-efficacy curve and the sigma2 estimates.}
+\title{Class \code{PseudoDualSimulations}}
 \description{
 This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
@@ -48,4 +41,3 @@ and Gstar estimates at dose Grid}
 \item{\code{sigma2est}}{the vector of the final posterior mean sigma2 estimates}
 }}
 
-\keyword{class}

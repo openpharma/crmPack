@@ -47,4 +47,3 @@ the \code{\linkS4class{PseudoSimulations}} object
 \description{
 Initialization function of the 'PseudoSimulations' class
 }
-\keyword{methods}

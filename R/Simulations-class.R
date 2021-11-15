@@ -295,6 +295,9 @@ DualSimulations <- function(rhoEst,
 ## -------------------------------------------------------------------------------
 ## class for simulation using pseudo models
 ## ------------------------------------------------------------------------
+
+##' Class `PseudoSimulations`
+##'
 ##' This is a class which captures the trial simulations from designs using
 ##' pseudo model. The design for DLE only responses and model from \code{\linkS4class{ModelTox}}
 ##' class object. It contains all slots from \code{\linkS4class{GeneralSimulations}} object.
@@ -321,7 +324,6 @@ DualSimulations <- function(rhoEst,
 ##' @slot stopReasons add slot description
 ##'
 ##' @export
-##' @keywords class
 .PseudoSimulations <-
   setClass(Class="PseudoSimulations",
            representation(fit="list",
@@ -374,7 +376,6 @@ validObject(.PseudoSimulations())
 ##' @return the \code{\linkS4class{PseudoSimulations}} object
 ##'
 ##' @export
-##' @keywords methods
 PseudoSimulations <- function(fit,
                               FinalTDtargetDuringTrialEstimates,
                               FinalTDtargetEndOfTrialEstimates,
@@ -405,6 +406,9 @@ PseudoSimulations <- function(fit,
 ## -------------------------------------------------------------------------------
 ## Class for Pseudo simulation using DLE and efficacy responses (Pseudo models except 'EffFlexi' model)
 ## -----------------------------------------------------------------------------------
+
+##' Class `PseudoDualSimulations`
+##'
 ##' This is a class which captures the trial simulations design using both the
 ##' DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
 ##' class and the efficacy model from \code{\linkS4class{ModelEff}} class
@@ -430,7 +434,6 @@ PseudoSimulations <- function(fit,
 ##' @slot sigma2est the vector of the final posterior mean sigma2 estimates
 ##'
 ##' @export
-##' @keywords class
 .PseudoDualSimulations <-
   setClass(Class="PseudoDualSimulations",
            representation(fitEff="list",
