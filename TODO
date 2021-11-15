@@ -56,6 +56,9 @@ ROLLING CRM:
    between early-onset and late-onset toxicity. Under this assumption, the hazard at the middle of
    the kth partition is caluclated as the `lambda_prior` function.
 
+- `DADesign`: The `examine` method does not work. See the example script
+  `design-method-examine-DADesign.R`.
+
 ----------------------------------------------------------------
 BUGFIXES:
 

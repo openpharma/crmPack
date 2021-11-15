@@ -61,7 +61,7 @@ options <- McmcOptions(burnin=10,
                        samples=1e2)
 
 set.seed(94)
-samples <- mcmc (data,model,options)
+samples <- mcmc(data, model, options)
 ```
 
 
