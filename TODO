@@ -59,6 +59,8 @@ ROLLING CRM:
 - `DADesign`: The `examine` method does not work. See the example script
   `design-method-examine-DADesign.R`.
 
+-  Add demos, see design folder for one example.
+
 ----------------------------------------------------------------
 BUGFIXES:
 
