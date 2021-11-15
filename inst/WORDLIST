@@ -27,6 +27,7 @@ betaW
 binDLE
 biomarker
 Biomarker
+Bov
 Bove
 Brezger
 bugfix
@@ -132,8 +133,8 @@ gridpoint
 gridpoints
 Gstar
 Gstarderive
-Guosheng
 gtable
+Guosheng
 gz
 Hoffmann
 http
@@ -151,8 +152,8 @@ intialization
 Intialization
 Intitialization
 investigational
-javascript
 Jaki
+javascript
 Jiawen
 Jouni
 jss
@@ -255,6 +256,7 @@ PRs
 pseduo
 PseudoDualFlexiSimulations
 PseudoSimulations
+quartile
 rcode
 Rcpp
 RcppArmadillo
@@ -277,6 +279,7 @@ Roxygen
 RStudio
 RuleDesign
 RW
+Saban
 Sabanes
 sabanesd
 SDTM
@@ -311,6 +314,7 @@ str
 STUDYID
 subclasses
 subfolder
+subtractive
 swimlane
 targetDoseDuringTrial
 targetDoseEndOfTrial

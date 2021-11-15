@@ -467,7 +467,7 @@ DualResponsesDesign <- function(Effmodel,
 validObject(.DADesign())
 
 
-##' Initialization function for "DADesign"
+##' Initialization function for `DADesign`
 ##'
 ##' @param model see \code{\linkS4class{DADesign}}
 ##' @param data see \code{\linkS4class{DADesign}}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Design-class.R
 \name{DADesign}
 \alias{DADesign}
-\title{Initialization function for "DADesign"}
+\title{Initialization function for \code{DADesign}}
 \usage{
 DADesign(model, data, safetyWindow, ...)
 }
@@ -19,6 +19,6 @@ DADesign(model, data, safetyWindow, ...)
 the \code{\linkS4class{DADesign}} object
 }
 \description{
-Initialization function for "DADesign"
+Initialization function for \code{DADesign}
 }
 \keyword{methods}

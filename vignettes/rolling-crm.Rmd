@@ -197,7 +197,7 @@ mySims <- simulate(design,
 ```
 
 
-### Interprete the simulation results
+### Interpret the simulation results
 
 Use a similar way as section 9.2 in the "using the package crmPack: introductory examples" document 
 

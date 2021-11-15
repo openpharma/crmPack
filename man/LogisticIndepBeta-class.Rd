@@ -64,7 +64,7 @@ must corresponds to values specified in \code{binDLE} and \code{DLEweights}.
 (see details from above)}
 
 \item{\code{DLEweights}}{refers to the total number of subjects treated at each of the pseudo dose level
-(\code{DLEdose}). This must be of length of at least 2 and the oreder of its elements must corresponds
+(\code{DLEdose}). This must be of length of at least 2 and the order of its elements must corresponds
 to values specified in \code{binDLE} and \code{DLEdose}. (see details from above)}
 
 \item{\code{phi1}}{refers the intercept of the model. This slot is used in output to display the resulting prior

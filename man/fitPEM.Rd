@@ -5,7 +5,7 @@
 \alias{fitPEM,Samples,DALogisticLogNormal,DataDA-method}
 \title{Get the fitted DLT free survival (piecewise exponential model).
 This function returns a data frame with dose, middle, lower and upper
-quantiles for the PEM curve. If hazard=TRUE,}
+quantiles for the \code{PEM} curve. If hazard=TRUE,}
 \usage{
 fitPEM(
   object,
@@ -40,7 +40,7 @@ fitPEM(
 \item{middle}{the function for computing the middle point. Default:
 \code{\link{mean}}}
 
-\item{hazard}{should the the hazard over time be plotted based on the PEM? (not default)
+\item{hazard}{should the the hazard over time be plotted based on the \code{PEM}? (not default)
 Otherwise ...}
 
 \item{\dots}{additional arguments for methods}
@@ -48,7 +48,7 @@ Otherwise ...}
 \description{
 Get the fitted DLT free survival (piecewise exponential model).
 This function returns a data frame with dose, middle, lower and upper
-quantiles for the PEM curve. If hazard=TRUE,
+quantiles for the \code{PEM} curve. If hazard=TRUE,
 }
 \section{Functions}{
 \itemize{

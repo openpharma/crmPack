@@ -1547,7 +1547,7 @@ setMethod("plotDualResponses",
 ## -----------------------------------------------------------------
 ##' Get the fitted DLT free survival (piecewise exponential model).
 ##' This function returns a data frame with dose, middle, lower and upper
-##' quantiles for the PEM curve. If hazard=TRUE,
+##' quantiles for the `PEM` curve. If hazard=TRUE,
 ##' @param object mcmc samples
 ##' @param model the mDA-CRM model
 ##' @param data the data input, a \code{\linkS4class{DataDA}} class object
@@ -1555,7 +1555,7 @@ setMethod("plotDualResponses",
 ##' 0.975)
 ##' @param middle the function for computing the middle point. Default:
 ##' \code{\link{mean}}
-##' @param hazard should the the hazard over time be plotted based on the PEM? (not default)
+##' @param hazard should the the hazard over time be plotted based on the `PEM`? (not default)
 ##'   Otherwise ...
 ##' @param \dots additional arguments for methods
 ##'

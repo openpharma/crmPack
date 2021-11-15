@@ -3083,7 +3083,7 @@ validObject(.ModelEff)
 ##' must corresponds to values specified in \code{binDLE} and \code{DLEweights}.
 ##' (see details from above)
 ##' @slot DLEweights refers to the total number of subjects treated at each of the pseudo dose level
-##' (\code{DLEdose}). This must be of length of at least 2 and the oreder of its elements must corresponds
+##' (\code{DLEdose}). This must be of length of at least 2 and the order of its elements must corresponds
 ##' to values specified in \code{binDLE} and \code{DLEdose}. (see details from above)
 ##' @slot phi1 refers the intercept of the model. This slot is used in output to display the resulting prior
 ##' or posterior modal estimate of the intercept obtained based on the pseudo data and (if any)
@@ -3636,7 +3636,7 @@ EffFlexi <- function(Eff,
 ##' a bivariate normal prior on the intercept and log slope parameters.
 ##' This class inherits from the normal logistic model class.
 ##'
-##' todo: need to include here formula for the lambda prior.
+##' We still need to include here formula for the lambda prior.
 ##'
 ##' @slot npiece the number of pieces in the `PEM`
 ##' @slot l a vector used in the lambda prior

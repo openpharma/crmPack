@@ -11,7 +11,7 @@ a bivariate normal prior on the intercept and log slope parameters.
 This class inherits from the normal logistic model class.
 }
 \details{
-todo: need to include here formula for the lambda prior.
+We still need to include here formula for the lambda prior.
 }
 \section{Slots}{
 

@@ -20,7 +20,7 @@ repeat the last element of the vector for the rest time intervals.
 }
 \details{
 Note that \code{sizeIntervals} is to be read as follows. For instance, When we
-want to change the patientGap based on the cohort size, i.e. the time interval
+want to change the \code{patientGap} based on the cohort size, i.e. the time interval
 between the 1st and 2nd patient = 9 units of time and the rest time intervals are
 5 units of time when the cohort size is equal or larger than 4. And the time
 interval between the 1st and 2nd patient = 7 units of time and the rest time

@@ -1274,9 +1274,6 @@ setMethod("examine",
               })
 
 ##' @describeIn examine Examine a model-based CRM
-##' Warning:  this code takes long time to run! I use code "savePlot" to output
-##' the result for each loop, which can be removed. I have marked those places
-##' where I output the plots--Jiawen;
 ##'
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
 ##' giving the MCMC options for each evaluation in the trial. By default,
