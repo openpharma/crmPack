@@ -5,17 +5,17 @@
 \alias{StoppingTDCIRatio-class}
 \alias{.StoppingTDCIRatio}
 \title{Stop based on a target ratio, the ratio of the upper to the lower
-95\\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
+95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
 probability of DLE used at the end of a trial}
 \description{
 Stop based on a target ratio, the ratio of the upper to the lower
-95\\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
+95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
 probability of DLE used at the end of a trial
 }
 \section{Slots}{
 
 \describe{
-\item{\code{targetRatio}}{the target ratio of the upper to the lower of the 95\\% credibility interval of the
+\item{\code{targetRatio}}{the target ratio of the upper to the lower of the 95\% credibility interval of the
 estimate that required to stop a trial}
 
 \item{\code{targetEndOfTrial}}{the target probability of DLE to be used at the end of a trial}

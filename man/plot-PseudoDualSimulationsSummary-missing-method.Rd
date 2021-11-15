@@ -31,7 +31,7 @@ to summarize them graphically. Possible \code{type} of plots at the moment are t
 \code{\link{plot,PseudoSimulationsSummary,missing-method}} plus:
 \describe{\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no samples are involved, only the
 average fitted dose-efficacy curve across the trials will be plotted. If samples (DLE and efficacy) are involved,
-the average fitted dose-efficacy curve across the trials, together with the 95\\% credibility interval; and comparison
+the average fitted dose-efficacy curve across the trials, together with the 95\% credibility interval; and comparison
 with the assumed truth (as specified by the \code{trueEff} argument to
 \code{\link{summary,PseudoDualSimulations-method}})}}
 You can specify any subset of these in the \code{type} argument.

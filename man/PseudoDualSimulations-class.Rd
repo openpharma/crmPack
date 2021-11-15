@@ -27,9 +27,9 @@ DLE and the expected efficacy responses.}
 
 \item{\code{FinalGstarAtDoseGrid}}{is a vector of the final estimates of Gstar at dose Grid at the end of each simulations}
 
-\item{\code{FinalGstarCIs}}{is the list of all 95\\% credibility interval of the final estimates of Gstar}
+\item{\code{FinalGstarCIs}}{is the list of all 95\% credibility interval of the final estimates of Gstar}
 
-\item{\code{FinalGstarRatios}}{is the vector of the ratios of the CI, the ratio of the upper to the lower 95\\% credibility interval
+\item{\code{FinalGstarRatios}}{is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility interval
 of the final estimates of Gstar}
 
 \item{\code{FinalOptimalDose}}{is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates and Gstar

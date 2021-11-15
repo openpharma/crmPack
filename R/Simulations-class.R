@@ -313,12 +313,12 @@ DualSimulations <- function(rhoEst,
 ##' stops
 ##' @slot FinalTDtargetDuringTrialAtDoseGrid vector of the dose levels at dose grid closest below the final TDtargetDuringTrial estimates
 ##' @slot FinalTDtargetEndOfTrialAtDoseGrid vector of  the dose levels at dose grid closest below the final TDtargetEndOfTrial estimates
-##' @slot FinalTDEOTCIs is the list of all 95\% credibility interval of the final estimates of the TDtargetEndOfTrial
-##' @slot FinalTDEOTRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility intervals
+##' @slot FinalTDEOTCIs is the list of all 95% credibility interval of the final estimates of the TDtargetEndOfTrial
+##' @slot FinalTDEOTRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95% credibility intervals
 ##' of the final estimates of the TDtargetEndOfTrial
-##' @slot FinalCIs list of all the final 95\% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
+##' @slot FinalCIs list of all the final 95% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
 ##' estimates when DLE and efficacy responses are incorporated after each simulations
-##' @slot FinalRatios vector of all the final ratios, the ratios of the upper to the lower 95\% credibility interval of the
+##' @slot FinalRatios vector of all the final ratios, the ratios of the upper to the lower 95% credibility interval of the
 ##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 ##' incorporated) after each simulations
 ##' @slot stopReasons add slot description
@@ -424,8 +424,8 @@ PseudoSimulations <- function(fit,
 ##' DLE and the expected efficacy responses.
 ##' @slot FinalGstarEstimates a vector of the final estimates of Gstar at the end of each simulations.
 ##' @slot FinalGstarAtDoseGrid is a vector of the final estimates of Gstar at dose Grid at the end of each simulations
-##' @slot FinalGstarCIs is the list of all 95\% credibility interval of the final estimates of Gstar
-##' @slot FinalGstarRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility interval
+##' @slot FinalGstarCIs is the list of all 95% credibility interval of the final estimates of Gstar
+##' @slot FinalGstarRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95% credibility interval
 ##' of the final estimates of Gstar
 ##' @slot FinalOptimalDose is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates and Gstar
 ##' estimates
@@ -574,9 +574,9 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 ##' the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 ##' incorporated, across all simulations
-##' @slot ratioTDEOTSummary the six-number summary table of the final ratios of the upper to the lower 95\%
+##' @slot ratioTDEOTSummary the six-number summary table of the final ratios of the upper to the lower 95%
 ##' credibility intervals of the final TDEOTs across all simulations
-##' @slot FinalRatioSummary the six-number summary table of the final ratios of the upper to the lower 95\%
+##' @slot FinalRatioSummary the six-number summary table of the final ratios of the upper to the lower 95%
 ##' credibility intervals of the final optimal doses across all simulations
 ##' #@slot doseRec the dose level that will be recommend for subsequent study
 ##' @slot nsim number of simulations
@@ -645,7 +645,7 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @slot targetGstarAtDoseGrid the dose level at dose Grid closest and below Gstar
 ##' @slot GstarSummary the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
 ##' and highest value) of the final Gstar values obtained across all simulations
-##' @slot ratioGstarSummary the six-number summary table of the ratios of the upper to the lower 95\%
+##' @slot ratioGstarSummary the six-number summary table of the ratios of the upper to the lower 95%
 ##' credibility intervals of the final Gstar across all simulations
 ##' @slot EffFitAtDoseMostSelected fitted expected mean efficacy value at dose most often
 ##' selected

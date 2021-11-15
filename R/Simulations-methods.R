@@ -308,7 +308,7 @@ setMethod("plot",
 ##' summarize
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity
-##' @param target the target toxicity interval (default: 20-35\%) used for the
+##' @param target the target toxicity interval (default: 20-35%) used for the
 ##' computations
 ##' @param \dots Additional arguments can be supplied here for \code{truth}
 ##' @return an object of class \code{\linkS4class{GeneralSimulationsSummary}}
@@ -476,7 +476,7 @@ setMethod("summary",
 ##' summarize
 ##' @param truth a function which takes as input a dose (vector) and returns the
 ##' true probability (vector) for toxicity
-##' @param target the target toxicity interval (default: 20-35\%) used for the
+##' @param target the target toxicity interval (default: 20-35%) used for the
 ##' computations
 ##' @param \dots Additional arguments can be supplied here for \code{truth}
 ##' @return an object of class \code{\linkS4class{SimulationsSummary}}
@@ -554,7 +554,7 @@ setMethod("summary",
 ##' true probability (vector) for toxicity.
 ##' @param trueBiomarker a function which takes as input a dose (vector) and
 ##' returns the true biomarker level (vector).
-##' @param target the target toxicity interval (default: 20-35\%) used for the
+##' @param target the target toxicity interval (default: 20-35%) used for the
 ##' computations
 ##' @param \dots Additional arguments can be supplied here for \code{trueTox}
 ##' and \code{trueBiomarker}
@@ -994,7 +994,7 @@ setMethod("plot",
 ##' \code{\link{plot,GeneralSimulationsSummary,missing-method}} plus:
 ##' \describe{
 ##' \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
-##' the trials, together with 95\% credible intervals, and comparison with the
+##' the trials, together with 95% credible intervals, and comparison with the
 ##' assumed truth (as specified by the \code{truth} argument to
 ##' \code{\link{summary,Simulations-method}})}
 ##' }
@@ -1117,7 +1117,7 @@ setMethod("plot",
 ##' \code{\link{plot,SimulationsSummary,missing-method}} plus:
 ##' \describe{
 ##' \item{meanBiomarkerFit}{Plot showing the average fitted dose-biomarker curve across
-##' the trials, together with 95\% credible intervals, and comparison with the
+##' the trials, together with 95% credible intervals, and comparison with the
 ##' assumed truth (as specified by the \code{trueBiomarker} argument to
 ##' \code{\link{summary,DualSimulations-method}})}
 ##' }
@@ -2292,7 +2292,7 @@ def=
 ##' \code{\link{plot,PseudoSimulationsSummary,missing-method}} plus:
 ##' \describe{\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no samples are involved, only the
 ##' average fitted dose-efficacy curve across the trials will be plotted. If samples (DLE and efficacy) are involved,
-##' the average fitted dose-efficacy curve across the trials, together with the 95\% credibility interval; and comparison
+##' the average fitted dose-efficacy curve across the trials, together with the 95% credibility interval; and comparison
 ##' with the assumed truth (as specified by the \code{trueEff} argument to
 ##' \code{\link{summary,PseudoDualSimulations-method}})}}
 ##' You can specify any subset of these in the \code{type} argument.

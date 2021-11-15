@@ -240,10 +240,10 @@ getMinInfBeta <- function(p, q)
 ##' Appendix A.1 of that paper) and the maximum value (\eqn{d_{J}}) of the dose
 ##' grid supplied to this function. Then \code{threshmin} is the probability
 ##' threshold \eqn{q_{1}}, such that any probability of DLT larger than
-##' \eqn{q_{1}} has only 5\% probability. Therefore \eqn{q_{1}} is the 95\%
+##' \eqn{q_{1}} has only 5% probability. Therefore \eqn{q_{1}} is the 95%
 ##' quantile of the beta distribution and hence \eqn{p_{1} = 0.95}. Likewise,
 ##' \code{threshmax} is the probability threshold \eqn{q_{J}}, such that any
-##' probability of DLT smaller than \eqn{q_{J}} has only 5\% probability
+##' probability of DLT smaller than \eqn{q_{J}} has only 5% probability
 ##' (\eqn{p_{J} = 0.05}). The probabilities \eqn{1 - p_{1}} and \eqn{p_{J}} can be
 ##' controlled with the arguments \code{probmin} and \code{probmax}, respectively.
 ##' Subsequently, for all doses supplied in the

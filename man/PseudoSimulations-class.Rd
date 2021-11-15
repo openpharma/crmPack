@@ -29,15 +29,15 @@ stops}
 
 \item{\code{FinalTDtargetEndOfTrialAtDoseGrid}}{vector of  the dose levels at dose grid closest below the final TDtargetEndOfTrial estimates}
 
-\item{\code{FinalTDEOTCIs}}{is the list of all 95\\% credibility interval of the final estimates of the TDtargetEndOfTrial}
+\item{\code{FinalTDEOTCIs}}{is the list of all 95\% credibility interval of the final estimates of the TDtargetEndOfTrial}
 
-\item{\code{FinalTDEOTRatios}}{is the vector of the ratios of the CI, the ratio of the upper to the lower 95\\% credibility intervals
+\item{\code{FinalTDEOTRatios}}{is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility intervals
 of the final estimates of the TDtargetEndOfTrial}
 
-\item{\code{FinalCIs}}{list of all the final 95\\% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
+\item{\code{FinalCIs}}{list of all the final 95\% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
 estimates when DLE and efficacy responses are incorporated after each simulations}
 
-\item{\code{FinalRatios}}{vector of all the final ratios, the ratios of the upper to the lower 95\\% credibility interval of the
+\item{\code{FinalRatios}}{vector of all the final ratios, the ratios of the upper to the lower 95\% credibility interval of the
 final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 incorporated) after each simulations}
 

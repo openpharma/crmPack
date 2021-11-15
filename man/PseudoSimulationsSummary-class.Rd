@@ -44,10 +44,10 @@ final optimal doses, which is either the TDEOT when only DLE response are incorp
 the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 incorporated, across all simulations}
 
-\item{\code{ratioTDEOTSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\\%
+\item{\code{ratioTDEOTSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\%
 credibility intervals of the final TDEOTs across all simulations}
 
-\item{\code{FinalRatioSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\\%
+\item{\code{FinalRatioSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\%
 credibility intervals of the final optimal doses across all simulations
 #@slot doseRec the dose level that will be recommend for subsequent study}
 

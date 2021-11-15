@@ -11,7 +11,7 @@ implemented as follows: First admissible doses are found, which are those
 with probability to fall in \code{overdose} category being below
 \code{maxOverdoseProb}. Next, within the admissible doses, the maximum
 probability to fall in the \code{target} category is calculated. If that is
-above 5\\% (i.e., it is not just numerical error), then the corresponding
+above 5\% (i.e., it is not just numerical error), then the corresponding
 dose is the next recommended dose. Otherwise, the highest admissible dose is
 the next recommended dose.
 }

@@ -24,7 +24,7 @@ is provided for this class.
 \item{\code{GstarSummary}}{the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
 and highest value) of the final Gstar values obtained across all simulations}
 
-\item{\code{ratioGstarSummary}}{the six-number summary table of the ratios of the upper to the lower 95\\%
+\item{\code{ratioGstarSummary}}{the six-number summary table of the ratios of the upper to the lower 95\%
 credibility intervals of the final Gstar across all simulations}
 
 \item{\code{EffFitAtDoseMostSelected}}{fitted expected mean efficacy value at dose most often

@@ -6,7 +6,7 @@
 \alias{.StoppingMTDdistribution}
 \title{Stop based on MTD distribution}
 \description{
-Has 90\\% probability above a threshold of 50\\% of the current
+Has 90\% probability above a threshold of 50\% of the current
 MTD been reached? This class is used for this question.
 }
 \section{Slots}{

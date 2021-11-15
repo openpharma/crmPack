@@ -101,7 +101,7 @@ NextBestMTD <- function(target,
 ##' with probability to fall in \code{overdose} category being below
 ##' \code{maxOverdoseProb}. Next, within the admissible doses, the maximum
 ##' probability to fall in the \code{target} category is calculated. If that is
-##' above 5\% (i.e., it is not just numerical error), then the corresponding
+##' above 5% (i.e., it is not just numerical error), then the corresponding
 ##' dose is the next recommended dose. Otherwise, the highest admissible dose is
 ##' the next recommended dose.
 ##'
@@ -204,8 +204,8 @@ NextBestThreePlusThree <- function()
 ##' @slot target the biomarker target range, that
 ##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
 ##' means we target a dose
-##' with at least 80\% of maximum biomarker level. As an other example,
-##' (0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
+##' with at least 80% of maximum biomarker level. As an other example,
+##' (0.5, 0.8) would mean that we target a dose between 50% and 80% of
 ##' the maximum biomarker level.
 ##' @slot scale either \code{relative} (default, then the \code{target} is interpreted
 ##' relative to the maximum, so must be a probability range) or \code{absolute}
@@ -869,7 +869,7 @@ StoppingTargetProb <- function(target,
 
 ##' Stop based on MTD distribution
 ##'
-##' Has 90\% probability above a threshold of 50\% of the current
+##' Has 90% probability above a threshold of 50% of the current
 ##' MTD been reached? This class is used for this question.
 ##'
 ##' @slot target the target toxicity probability (e.g. 0.33) defining the MTD
@@ -934,7 +934,7 @@ StoppingMTDdistribution <- function(target,
 ##'
 ##' @slot target the biomarker target range, that
 ##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
-##' means we target a dose with at least 80\% of maximum biomarker level.
+##' means we target a dose with at least 80% of maximum biomarker level.
 ##' @slot scale either \code{relative} (default, then the \code{target} is interpreted
 ##' relative to the maximum, so must be a probability range) or \code{absolute}
 ##' (then the \code{target} is interpreted as absolute biomarker range)
@@ -1187,9 +1187,9 @@ StoppingAny <- function(stopList)
 ## ---------------------------------------------------------------------------------------------------------------
 
 ##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
+##' 95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
 ##' probability of DLE used at the end of a trial
-##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the
+##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
 ##' estimate that required to stop a trial
 ##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
 ##'
@@ -1233,10 +1233,10 @@ StoppingTDCIRatio <- function(targetRatio,
 
 ## ----------------------------------------------------------------------------------------------------------------
 ##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95\% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
+##' 95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
 ##' the TD end of trial, the dose with probability of DLE equals to the target
 ##' probability of DLE used at the end of a trial.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95\% credibility interval of the
+##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
 ##' estimate that required to stop a trial
 ##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
 ##'
