@@ -33,6 +33,7 @@ Imports:
     mvtnorm,
     parallel,
     rjags,
+    survival,
     tools,
     utils
 Suggests:
