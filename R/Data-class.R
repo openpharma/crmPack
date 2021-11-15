@@ -79,7 +79,7 @@ validObject(.GeneralData())
 ##' @slot xLevel the levels for the doses the patients have been given
 ##' @slot placebo logical value: if TRUE the first dose level in the grid is
 ##' considered as PLACEBO
-##' 
+##'
 ##' @example examples/Data-class.R
 ##' @export
 ##' @keywords classes
@@ -119,7 +119,7 @@ validObject(.GeneralData())
                                               length(unique(doses))}) == 1),
                                "There must be only one dose level, other than placebo, per cohort. In addition a cohort with only placebo is not allowed")
                      }
-                     
+
                      o$check(all(object@x %~% object@doseGrid),
                              "dose values in x must be from doseGrid (tolerance 1e-10)")
                      o$check(! is.unsorted(object@doseGrid,
@@ -155,7 +155,7 @@ validObject(.Data())
 ##' @param ID unique patient IDs (integer vector)
 ##' @param cohort the cohort indices (sorted values from 0, 1, 2, ...)
 ##' @param doseGrid the vector of all possible doses
-##' @param placebo logical value: if TRUE the first dose level in the grid is 
+##' @param placebo logical value: if TRUE the first dose level in the grid is
 ##' considered as PLACEBO
 ##' @param \dots not used
 ##' @return the initialized \code{\linkS4class{Data}} object
@@ -220,7 +220,7 @@ validObject(Data())
 ##' values.
 ##'
 ##' @slot w the continuous vector of biomarker values
-##' 
+##'
 ##' @example examples/Data-class-DataDual.R
 ##' @export
 ##' @keywords classes
@@ -346,7 +346,7 @@ validObject(DataParts())
 
 
 ##' Class for the data with mixture sharing
-##' 
+##'
 ##' @slot xshare the doses for the share patients
 ##' @slot yshare the vector of toxicity events (0 or 1 integers) for the share
 ##' patients
@@ -369,7 +369,7 @@ validObject(DataParts())
            validity=
              function(object){
                o <- Validate()
-               
+
                o$check(all(object@yshare %in% c(0, 1)),
                        "DLT vector yshare can only have 0 or 1 values")
                o$check(all(object@xshare %in% object@doseGrid),
@@ -377,7 +377,7 @@ validObject(DataParts())
                for(thisSlot in c("xshare", "yshare"))
                  o$check(identical(object@nObsshare, length(slot(object, thisSlot))),
                          paste(thisSlot, "must have length nObs"))
-               
+
                o$result()
              })
 validObject(.DataMixture())
@@ -389,7 +389,7 @@ validObject(.DataMixture())
 ##' @param xshare see \code{\linkS4class{DataMixture}}
 ##' @param yshare see \code{\linkS4class{DataMixture}}
 ##' @param \dots additional arguments for the underlying Data slots
-##' 
+##'
 ##' @return the initialized \code{\linkS4class{DataMixture}} object
 ##'
 ##' @export
@@ -416,15 +416,15 @@ validObject(DataMixture())
 ##'
 ##' This is a subclass of \code{\linkS4class{Data}}, so contains all
 ##' slots from \code{\linkS4class{Data}}, and in addition DLT free survival
-##' values. (Note that \dQuote{survival} values here refers to the time that 
-##' the subject did not experience any DLT yet, and is not referring to 
+##' values. (Note that \dQuote{survival} values here refers to the time that
+##' the subject did not experience any DLT yet, and is not referring to
 ##' deaths.)
 ##'
 ##' @slot u the continuous vector of DLT free survival values
 ##' @slot Tmax the DLT observation period
 ##' @slot t0 time of initial dosing for each patient
-##' 
-##' @example examples/Data-class-DataDA.R  
+##'
+##' @example examples/Data-class-DataDA.R
 ##' @export
 ##' @keywords classes
 .DataDA <-
@@ -437,36 +437,36 @@ validObject(DataMixture())
            validity=
              function(object){
                o <- Validate()
-               
+
                o$check(identical(object@nObs, length(object@u)),
                        "u must have length nObs")
-               
+
                o$check(identical(object@nObs, length(object@t0)),
                        "t0 must have length nObs")
-               
+
                o$check(all(object@u <= object @Tmax),
                        "u entries must not be larger than Tmax")
                ## (this has to be because the hazard
                ## at Tmax is infinity -> all individuals stop
                ## there)
-               
+
                o$check(all(object@u >= 0),
                        "u entries must be non-negative")
-               
+
                ## DSB: why check not required?
                #                                  o$check(all(object@t0 >= 0),
                #                                          "t0 entries must be non-negative")
-               #                                  
+               #
                o$check(all(object@Tmax > 0),
                        "DLT window needs to be greater than 0")
-               
+
                o$result()
              })
 validObject(.DataDA())
 
-##' Initialization function for the "DataDA" class
+##' Initialization function for the `DataDA` class
 ##'
-##' This is the function for initializing a "DataDA" class object.
+##' This is the function for initializing a `DataDA` class object.
 ##'
 ##' @param u the continuous vector of DLT free survival values
 ##' @param Tmax the DLT observation period
@@ -476,20 +476,20 @@ validObject(.DataDA())
 ##'
 ##' @export
 ##' @keywords programming
-###todo: make event,u and y input consistent;-JZ y is used to replace event; 
+###todo: make event,u and y input consistent;-JZ y is used to replace event;
 DataDA <- function(u=numeric(),
                    Tmax=numeric(),
                    t0=numeric(),
                    ...)
 {
-  
+
   start <- Data(...)
-  
+
   if(missing(t0))
   {
     t0 <- rep(0, length(u))
   }
-  
+
   .DataDA(start,
           u = as.numeric(u),
           t0 = t0,

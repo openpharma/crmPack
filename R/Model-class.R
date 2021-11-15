@@ -3685,7 +3685,7 @@ EffFlexi <- function(Eff,
 validObject(.DALogisticLogNormal())
 
 
-##' Initialization function for the "DALogisticLogNormal" class
+##' Initialization function for the `DALogisticLogNormal` class
 ##'
 ##' @param npiece see \code{\linkS4class{DALogisticLogNormal}}
 ##' @param l see \code{\linkS4class{DALogisticLogNormal}}
@@ -3865,7 +3865,7 @@ validObject(DALogisticLogNormal(mean=c(0, 1),
 ##' a bivariate normal prior on the intercept and log slope parameters.
 ##' This class inherits from the normal logistic model class.
 ##'
-##' @slot weightMethod weight function method: linear or addaptive
+##' @slot weightMethod weight function method: linear or adaptive
 ##' (this was used in Liu, Yin and Yuan's paper)
 ##'
 ##' @export

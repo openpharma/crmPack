@@ -140,7 +140,7 @@ doseRecommendation$value
 
 ## Example 2: Run a simulation to evaluate operating characteristics
 
-### Set up safety window and DADesign to be completed
+### Set up safety window and `DADesign` to be completed
 
 ```{r Window}
 mysafetywindow <- SafetyWindowConst(c(6,2),7,7)

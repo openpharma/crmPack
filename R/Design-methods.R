@@ -440,7 +440,7 @@ setMethod("simulate",
           def=
               function(object, nsim=1L, seed=NULL,
                        truth, args=NULL,
-                       parallel=FALSE, 
+                       parallel=FALSE,
                        nCores=
                        min(parallel::detectCores(), 5),
                        ...){
@@ -606,7 +606,7 @@ setMethod("simulate",
                        sigma2W, rho=0,
                        firstSeparate=FALSE,
                        mcmcOptions=McmcOptions(),
-                       parallel=FALSE, 
+                       parallel=FALSE,
                        nCores=
                        min(parallel::detectCores(), 5),
                        ...){
@@ -3610,38 +3610,37 @@ setMethod("simulate",
 
 ## --------------------------------------------------------------------------
 
-##' Simulate outcomes from a time-to-DLT augmented CRM design (DADesign)
+##' Simulate outcomes from a time-to-DLT augmented CRM design (`DADesign`)
 ##'
 ##' @param object the \code{\linkS4class{DADesign}} object we want to simulate
-##' data from
+##'   data from
 ##' @param nsim the number of simulations (default: 1)
 ##' @param seed see \code{\link{setSeed}}
 ##' @param truthTox a function which takes as input a dose (vector) and returns the
-##' true probability (vector) for toxicity and the time DLT occurs. Additional
-##' arguments can be supplied in \code{args}.
+##'   true probability (vector) for toxicity and the time DLT occurs. Additional
+##'   arguments can be supplied in \code{args}.
 ##' @param truthSurv a CDF which takes as input a time (vector) and returns
-##' the true cumulative probability (vector) that the DLT would occur conditioning on the patient
-##' has DLTs.
-##' @param trueTmax todo documentation here
+##'   the true cumulative probability (vector) that the DLT would occur conditioning on the patient
+##'   has DLTs.
+##' @param trueTmax add documentation here
 ##' @param args data frame with arguments for the \code{truth} function. The
-##' column names correspond to the argument names, the rows to the values of the
-##' arguments. The rows are appropriately recycled in the \code{nsim}
-##' simulations. In order to produce outcomes from the posterior predictive
-##' distribution, e.g, pass an \code{object} that contains the data observed so
-##' far, \code{truth} contains the \code{prob} function from the model in
-##' \code{object}, and \code{args} contains posterior samples from the model.
+##'   column names correspond to the argument names, the rows to the values of the
+##'   arguments. The rows are appropriately recycled in the \code{nsim}
+##'   simulations. In order to produce outcomes from the posterior predictive
+##'   distribution, e.g, pass an \code{object} that contains the data observed so
+##'   far, \code{truth} contains the \code{prob} function from the model in
+##'   \code{object}, and \code{args} contains posterior samples from the model.
 ##' @param firstSeparate enroll the first patient separately from the rest of
-##' the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
-##' in this patient.
-##' @param deescalate de-escalation when a DLT occurs in cohorts with lower dose
-##' level  #todo: there could be errors if DLT occurs between the 2-3 patients,
-##' when the 3rd patient has't been dosed yet;
+##'   the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
+##'   in this patient.
+##' @param deescalate deescalation when a DLT occurs in cohorts with lower dose
+##'   level.
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
-##' giving the MCMC options for each evaluation in the trial. By default,
-##' the standard options are used
+##'   giving the MCMC options for each evaluation in the trial. By default,
+##'   the standard options are used.
 ##' @param DA todo document or rename this parameter to make it more meaningful
 ##' @param parallel should the simulation runs be parallelized across the
-##' clusters of the computer? (not default)
+##'   clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
 ##' Defaults to the number of cores on the machine (maximum 5)
 ##' @param \dots not used
@@ -3651,8 +3650,6 @@ setMethod("simulate",
 ##' @example examples/design-method-simulate-DADesign.R
 ##' @export
 ##' @keywords methods
-##'
-##'  #JZ: todo adjust the placebo cases;
 setMethod("simulate",
           signature=
             signature(object="DADesign",

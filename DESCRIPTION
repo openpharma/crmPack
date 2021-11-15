@@ -64,4 +64,5 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

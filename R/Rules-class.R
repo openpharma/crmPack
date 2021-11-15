@@ -1912,7 +1912,7 @@ setClass(Class="SafetyWindow",
 ##' \code{patientGap} to be \code{c(7,5,3)}. Sometimes, we only think the interval
 ##' between the 1st and 2nd patient should be increased for the safety consideration
 ##' , and the rest time intervals can be the same, whatever the cohort size is, then
-##' we specify \code{patientGap} to be \code{c(7,3)}. The package will automaticly
+##' we specify \code{patientGap} to be \code{c(7,3)}. The package will automatically
 ##' repeat the last element of the vector for the rest time intervals.
 ##'
 ##' Note that \code{sizeIntervals} is to be read as follows. For instance, When we

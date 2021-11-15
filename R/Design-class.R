@@ -453,8 +453,6 @@ DualResponsesDesign <- function(Effmodel,
 ##' @example examples/design-class-DADesign.R
 ##' @export
 ##' @keywords classes
-##'
-## todo: make nextOpen a part of the DAdesign object
 .DADesign <-
   setClass(Class="DADesign",
            representation(model="Model",

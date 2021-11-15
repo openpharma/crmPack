@@ -86,18 +86,18 @@ setMethod("plot",
                                toxicity=ifelse(x@y==1, "Yes", "No"),
                                ID=paste(" ", x@ID))
               cols <- c("No" = "black","Yes" = "red")
-              
+
               # If there are placebo, consider this a y=0.0 for the plot
               if(x@placebo & !blind)
                 df$dose[df$dose == x@doseGrid[1]] <- 0.0
-              
+
               # This is to blind the data
               # For each cohort, the placebo is set to the active dose level for that cohort.
               # In addition, all DLTs are assigned to the first subjects in the cohort
               if(x@placebo & blind){
                 cohort.id <- unique(x@cohort)
                 for(iCoh in seq(a=cohort.id)){
-                  filter.coh <- which(x@cohort == cohort.id[iCoh]) 
+                  filter.coh <- which(x@cohort == cohort.id[iCoh])
                   df[filter.coh,"dose"] <- max(df[filter.coh,"dose"])
                   df[filter.coh,"toxicity"] <- sort(df[filter.coh,"toxicity"],
                                                     decreasing=TRUE)
@@ -125,13 +125,13 @@ setMethod("plot",
 
               a <- a + scale_x_continuous(breaks=df$patient,
                                           minor_breaks=numeric())
-              
+
               # add a vertical lines separating sub-sequent cohorts
               if(x@placebo & length(unique(x@cohort)) > 1)
-                a <- a + geom_vline(xintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5, 
+                a <- a + geom_vline(xintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5,
                                     colour="green",
                                     linetype = "longdash")
-              
+
               return(a)
           })
 
@@ -168,18 +168,18 @@ setMethod("plot",
                                biomarker=x@w,
                                toxicity=ifelse(x@y==1, "Yes", "No"))
               cols <- c("No" = "black","Yes" = "red")
-              
+
               # If there are placebo, consider this a y=0.0 for the plot
               if(x@placebo & !blind)
-                df$dose[df$dose == x@doseGrid[1]] <- 0.0 
+                df$dose[df$dose == x@doseGrid[1]] <- 0.0
               if(x@placebo & blind){
-                  cohort.id <- unique(x@cohort)   
+                  cohort.id <- unique(x@cohort)
                   for(iCoh in seq(a=cohort.id)){
-                      filter.coh <- which(x@cohort == cohort.id[iCoh])  
+                      filter.coh <- which(x@cohort == cohort.id[iCoh])
                       df[filter.coh,"dose"] <- max(df[filter.coh,"dose"])
                   }
               }
-              
+
               # This is to blind the data
               # For each cohort, the placebo is set to the active dose level for that cohort.
 
@@ -190,7 +190,7 @@ setMethod("plot",
                              size=3) +
                       scale_colour_manual(values=cols) +
                           xlab("Dose Level") + ylab("Biomarker")
-              
+
               if(!blind)
                 plot2 <- plot2 +
                   geom_text(data=df,
@@ -354,7 +354,7 @@ setMethod("update",
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
 ##' @param w the biomarker vector, for all patients in this cohort
 ##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned 
+##' @param newCohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataDual}} object
@@ -375,7 +375,7 @@ setMethod("update",
                    ...){
 
               ## first do the usual things as for Data objects
-              object <- callNextMethod(object=object, x=x, y=y, ID=ID, 
+              object <- callNextMethod(object=object, x=x, y=y, ID=ID,
                                        newCohort=newCohort, ...)
 
               ## update the biomarker information
@@ -391,12 +391,12 @@ setMethod("update",
 ## ---------------------------------------------------------------------------------
 
 ##' Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-##' efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding 
+##' efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
 ##' dose levels treated at in two categories (with or without DLE)
-##' 
+##'
 ##' @param object for data input from \code{\linkS4class{DataDual}} object
 ##' @param \dots unused
-##' 
+##'
 ##' @export
 ##' @keywords methods
 setGeneric("getEff",
@@ -441,15 +441,13 @@ setMethod("getEff",
 ## Update a DataDA object
 ## --------------------------------------------------
 
-##todo: need to do like in DataParts, i.e. use underlying Data update
-## method first and then more changes according to DataDA.
-##' Update method for the "DataDA" class
+##' Update method for the `DataDA` class
 ##'
 ##' Update observations in the \code{\linkS4class{DataDA}} object
 ##'
 ##' @param object the old \code{\linkS4class{DataDA}} object
 ##' @param factDLTs the simulated DLT outcome for all patients
-##' @param factSurv the simulated DLT time for all patients 
+##' @param factSurv the simulated DLT time for all patients
 ##' @param factT0 the time that patients start DLT observation window
 ##' @param thisDose the current dose of the cohort
 ##' @param ID the patient IDs
@@ -479,7 +477,7 @@ setMethod("update",
                      ID=NULL,
                      newCohort=TRUE,
                      ...){
-              
+
               ## some checks
               stopifnot(is.scalar(thisDose),
                         all(factSurv > 0),
@@ -487,51 +485,51 @@ setMethod("update",
                         length(factDLTs) == length(factSurv),
                         length(factDLTs) == length(factT0)
               )
-              
+
               ## which grid level is the dose?
               gridLevel <- match(thisDose, object@doseGrid)
-              
+
               ## add it to the data
               if(is.na(gridLevel))
               {
                 stop("dose is not on grid")
-              } 
-              
+              }
+
               ## increment sample size
               object@nObs <- length(factDLTs)
-              
+
               ##How many additional patients
               size<-length(factDLTs)-length(object@x)
-              
+
               ## add dose
               object@x <- c(object@x,
                             rep(thisDose,
                                 size))
-              
+
               #update xLevel
               object@xLevel <- match(object@x,
                                      object@doseGrid)
-              
+
               ##update DLT free survival time
               object@u<- apply(rbind(factSurv,trialtime-factT0),2,min)
-              
+
               ## DLT will be observed once the followup time >= the time to DLT
-              object@y <- as.integer(factDLTs*(trialtime>=factT0+factSurv)) 
-              
+              object@y <- as.integer(factDLTs*(trialtime>=factT0+factSurv))
+
               ##t0 will be updated;
-              object@t0 <- factT0 
-              
+              object@t0 <- factT0
+
               ## add ID
               if(size>0)
               {
                 if(is.null(ID))
                 {
                   object@ID <-c(object@ID,
-                                (if(length(object@ID)) max(object@ID) else 0L) + 
+                                (if(length(object@ID)) max(object@ID) else 0L) +
                                   1:size)
                 }
               }
-              
+
               ## add cohort number
               if(newCohort)
               {
@@ -543,7 +541,7 @@ setMethod("update",
                                    rep(max(tail(object@cohort, 1L), 0L),
                                        size))
               }
-              
+
               ## return the object
               return(object)
             })
@@ -553,8 +551,7 @@ setMethod("update",
 ## Plot a DataDA object
 ## --------------------------------------------------
 
-##' Plot method for the "DataDA" class
-##' todo: insert example code in below file (empty still)
+##' Plot method for the `DataDA` class
 ##'
 ##' @param x the \code{\linkS4class{DataDA}} object we want to plot
 ##' @param y missing
@@ -572,11 +569,11 @@ setMethod("plot",
           signature=
             signature(x="DataDA", y="missing"),
           def=
-            function(x, y, blind=FALSE, 
+            function(x, y, blind=FALSE,
                      ...){
               ## call the superclass method, to get the first plot
               plot1 <- callNextMethod(x, blind=blind, ...)
-              
+
               ## now to get the second plot
               df <- data.frame(patient=seq_along(x@x),
                                u=x@u,
@@ -584,64 +581,64 @@ setMethod("plot",
                                t0=x@t0,
                                ID=paste(" ", x@ID)
               )
-              
+
               cols <- c("No" = "black",
                         "Yes" = "red")
-              
+
               cols2 <- c("Yes" = "red",
                          "No" = "black",
                          "Start" = "black",
                          "Censored" = "black")
-              
+
               shape2 <- c("Yes" = 17,
                          "No" = 16,
                          "Start" = 1,
                          "Censored" = 4)
-              
-              df$censored <- ifelse(df$u < x@Tmax & df$toxicity==0, 
+
+              df$censored <- ifelse(df$u < x@Tmax & df$toxicity==0,
                                   1,
                                   0)
-              
+
               df$tend <- df$t0 + df$u
-              
+
               df<-df[ , !(names(df) %in% "u")]
-              
+
               ## restructure data for plot:
-              mdata <- reshape(df, 
+              mdata <- reshape(df,
                                direction = "long",
                                idvar="patient",
                                varying =c("t0","tend"),
                                v.names="value",
                                timevar = "variable",
                                times=c("t0","tend"))
-              
-              
-              mdata$mark<-ifelse(mdata$variable=="t0", 
-                                 3, 
+
+
+              mdata$mark<-ifelse(mdata$variable=="t0",
+                                 3,
                                  ifelse(mdata$toxicity,
                                         1,
                                         ifelse(mdata$censored,
                                                4,
                                                2)))
-              
-              mdata$timepoint<-ifelse(mdata$variable=="t0", 
-                                      "Start", 
+
+              mdata$timepoint<-ifelse(mdata$variable=="t0",
+                                      "Start",
                                       ifelse(mdata$toxicity,
                                              "Yes",
                                              ifelse(mdata$censored,
                                                     "Censored",
                                                     "No")))
-              
+
               plot2 <- ggplot(mdata, aes(x=value, y=patient))
-              
+
               plot2 <- plot2 +
-                geom_line(aes(group = patient)) + 
+                geom_line(aes(group = patient)) +
                 geom_point(aes(shape=timepoint, colour=timepoint),
                            size=3) +
                 scale_colour_manual(values=cols2) +
                 scale_shape_manual(values=shape2)+
                 xlab("Time") + ylab("Patient")
-              
+
               if(! blind)
               {
                 plot2 <- plot2 + geom_text(aes(label=ID, size=2),size=3,
@@ -650,19 +647,19 @@ setMethod("plot",
                                            angle=0, colour=I("black"),
                                            show.legend = FALSE)
               }
-              
+
               plot2 <- plot2 + scale_y_continuous(breaks=mdata$patient,
                                                   minor_breaks=numeric())
-              
+
               # add vertical lines separating sub-sequent cohorts
               if(x@placebo & length(unique(x@cohort)) > 1)
               {
-                plot2 <- plot2 + 
-                  geom_hline(yintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5, 
+                plot2 <- plot2 +
+                  geom_hline(yintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5,
                              colour="green",
                              linetype = "longdash")
               }
-              
+
               ## arrange both plots side by side
               ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=1)
               return(ret)
