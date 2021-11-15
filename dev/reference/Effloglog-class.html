@@ -40,14 +40,14 @@
 
 
 <meta property="og:title" content="Class for the linear log-log efficacy model using pseudo data prior — Effloglog-class" />
-<meta property="og:description" content="This is the efficacy model which describe the relationship of the continuous efficacy responses and 
-the dose levels. More specifically, this is a model to describe the linear relationship between the 
-continuous efficacy responses and its coressponding dose level in log-log scale. 
-The efficacy log-log model is given as 
+<meta property="og:description" content="This is the efficacy model which describe the relationship of the continuous efficacy responses and
+the dose levels. More specifically, this is a model to describe the linear relationship between the
+continuous efficacy responses and its coressponding dose level in log-log scale.
+The efficacy log-log model is given as
 $$y_i=\theta_1 +theta_2 log(log(d_i))+\epsilon_i$$
 where \(y_i\) is the efficacy responses
-for subject i, \(d_i\) is the dose level treated for subject i and \(\epsilon_i\) is the random error 
-term of efficacy model at subject i such that \(\epsilon_i\) has a normal distribution of mean 0 and 
+for subject i, \(d_i\) is the dose level treated for subject i and \(\epsilon_i\) is the random error
+term of efficacy model at subject i such that \(\epsilon_i\) has a normal distribution of mean 0 and
 variance \(\sigma^2=\nu^{-1}\). This variance is assumed to be the same for all subjects." />
 
 
@@ -80,7 +80,7 @@ variance \(\sigma^2=\nu^{-1}\). This variance is assumed to be the same for all 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -104,6 +104,12 @@ variance \(\sigma^2=\nu^{-1}\). This variance is assumed to be the same for all 
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -137,14 +143,14 @@ variance \(\sigma^2=\nu^{-1}\). This variance is assumed to be the same for all 
     </div>
 
     <div class="ref-description">
-    <p>This is the efficacy model which describe the relationship of the continuous efficacy responses and 
-the dose levels. More specifically, this is a model to describe the linear relationship between the 
-continuous efficacy responses and its coressponding dose level in log-log scale. 
-The efficacy log-log model is given as 
+    <p>This is the efficacy model which describe the relationship of the continuous efficacy responses and
+the dose levels. More specifically, this is a model to describe the linear relationship between the
+continuous efficacy responses and its coressponding dose level in log-log scale.
+The efficacy log-log model is given as
 $$y_i=\theta_1 +theta_2 log(log(d_i))+\epsilon_i$$
 where \(y_i\) is the efficacy responses
-for subject i, \(d_i\) is the dose level treated for subject i and \(\epsilon_i\) is the random error 
-term of efficacy model at subject i such that \(\epsilon_i\) has a normal distribution of mean 0 and 
+for subject i, \(d_i\) is the dose level treated for subject i and \(\epsilon_i\) is the random error
+term of efficacy model at subject i such that \(\epsilon_i\) has a normal distribution of mean 0 and
 variance \(\sigma^2=\nu^{-1}\). This variance is assumed to be the same for all subjects.</p>
     </div>
 
@@ -152,48 +158,47 @@ variance \(\sigma^2=\nu^{-1}\). This variance is assumed to be the same for all 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>There are three parameters in this model which is to intercept \(\theta_1\), the slope \(\theta_2\) 
-and the precision \(\nu\) of the efficay responses.
+    <p>There are three parameters in this model which is to intercept \(\theta_1\), the slope \(\theta_2\)
+and the precision \(\nu\) of the efficacy responses.
 It inherit all slots from <code><a href='ModelEff-class.html'>ModelEff</a></code></p>
 <p>The prior of this model is specified in form of pseudo data. First at least two dose levels are fixed.
 Then ask for experts' opinion about the efficacy values that can be obtained at each of the dose levels
-if one subject is treated at each of these dose levels. The prior modal estimates (same as the maximum 
+if one subject is treated at each of these dose levels. The prior modal estimates (same as the maximum
 likelihood estimates) can be obtained for the intercept and slope paramters in this model.</p>
-<p>The <code>Eff</code> and <code>Effdose</code> are used to represent the prior in form of the pseudo data. 
+<p>The <code>Eff</code> and <code>Effdose</code> are used to represent the prior in form of the pseudo data.
 The <code>Eff</code> represents the pseudo scalar efficacy values. The <code>Effdose</code> represents the dose levels
-at which these pseudo efficacy values are observed. These pseudo efficay values are always specified by
-assuming one subject are treated in each of the dose levels. Since at least 2 pseudo efficacy values are 
+at which these pseudo efficacy values are observed. These pseudo efficacy values are always specified by
+assuming one subject are treated in each of the dose levels. Since at least 2 pseudo efficacy values are
 needed to obtain modal estimates of the intercept and slope parameters, both <code>Eff</code> and <code>Effdose</code>
 must be vector of at least length 2. The position of the values or elements specified in <code>Eff</code> or
 <code>Effdose</code> must be corresponds to the same elements or values in the other vector.</p>
-<p>The <code>nu</code> represents the prior presion \(\nu\) of the pseudo efficacy responses. It is also known as the inverse 
-of the variance of the pseduo efficacy responses. The precision can be a fixed constant or having a gamma
-distribution. Therefore, single scalar value, a fixed 
-value of the precision can be specified. If not, two positive scalar values must be specified as the 
+<p>The <code>nu</code> represents the prior precision \(\nu\) of the pseudo efficacy responses. It is also known as the inverse
+of the variance of the pseudo efficacy responses. The precision can be a fixed constant or having a gamma
+distribution. Therefore, single scalar value, a fixed
+value of the precision can be specified. If not, two positive scalar values must be specified as the
 shape and rate parameter of the gamma distribution. If there are some observed efficacy responses available,
-in the output, <code>nu</code> will display the updated value of the precision or the updated values for the 
+in the output, <code>nu</code> will display the updated value of the precision or the updated values for the
 parameters of the gamma distribution.</p>
-
 <p>Given the variance of the pseudo efficacy responses, the joint prior distribution of the intercept \(\theta_1\)
-(theta1) and the slope \(\theta_2\) (theta2) of this model is a bivariate normal distribution. 
-A conjugate posterior joint distribution is also used for theta1 and theta2. The joint prior bivariate 
-normal distribution has 
-mean \(\boldsymbol\mu_0\) and covariance matrix \((\nu \mathbf{Q}_0)^{-1}\). \(\boldsymbol\mu_0\) is a 
+(theta1) and the slope \(\theta_2\) (theta2) of this model is a bivariate normal distribution.
+A conjugate posterior joint distribution is also used for theta1 and theta2. The joint prior bivariate
+normal distribution has
+mean \(\boldsymbol\mu_0\) and covariance matrix \((\nu \mathbf{Q}_0)^{-1}\). \(\boldsymbol\mu_0\) is a
 \(2 \times 1\)
-column vector contains the prior modal estimates of the intercept (theta1) and the slope (theta2). Based on 
-\(r\) for \(r \geq 2\) pseudo efficacy responses specified, \(\mathbf{X}_0\) will be the 
-\(r \times 2\) design matrix 
-obtained for these pseudo efficacy responses. the matrix \(\mathbf{Q}_0\) will be calculated by 
+column vector contains the prior modal estimates of the intercept (theta1) and the slope (theta2). Based on
+\(r\) for \(r \geq 2\) pseudo efficacy responses specified, \(\mathbf{X}_0\) will be the
+\(r \times 2\) design matrix
+obtained for these pseudo efficacy responses. the matrix \(\mathbf{Q}_0\) will be calculated by
 \(\mathbf{Q}_0=\mathbf{X}_0 \mathbf{X}^T_0\) where \(\nu\) is the precision of the pseudo efficacy responses.
-For the joint posterior bivariate distribution, we have \(\boldsymbol{\mu}\) as the mean and 
-\((\nu\mathbf{Q}_0)^{-1}\) as the covariance matrix. Here, \(\boldsymbol\mu\) is the column vector containing the 
+For the joint posterior bivariate distribution, we have \(\boldsymbol{\mu}\) as the mean and
+\((\nu\mathbf{Q}_0)^{-1}\) as the covariance matrix. Here, \(\boldsymbol\mu\) is the column vector containing the
 posterior modal estimates
-of the intercept (theta1) and the slope (theta2). The design matrix \(\mathbf{X}\) obtained based only on 
-observed efficacy responses will give \(\mathbf{Q}=\mathbf{X}\mathbf{X}^T\) with \(\nu\) as the precision of 
-the observed efficay responses. If no observed efficay responses are availble (i.e only pseudo 
-efficay responses are used), the <code>vecmu</code>, <code>matX</code>, <code>matQ</code> and <code>vecY</code> represents 
-\(\boldsymbol\mu_0\), \(\mathbf{X}_0\), \(\mathbf{Q}_0\) and the column vector of pseudo efficay responses,
-respectively. If there are some observed efficacy responses, <code>vecmu</code>, <code>matX</code>, <code>matQ</code> 
+of the intercept (theta1) and the slope (theta2). The design matrix \(\mathbf{X}\) obtained based only on
+observed efficacy responses will give \(\mathbf{Q}=\mathbf{X}\mathbf{X}^T\) with \(\nu\) as the precision of
+the observed efficacy responses. If no observed efficacy responses are available (i.e only pseudo
+efficacy responses are used), the <code>vecmu</code>, <code>matX</code>, <code>matQ</code> and <code>vecY</code> represents
+\(\boldsymbol\mu_0\), \(\mathbf{X}_0\), \(\mathbf{Q}_0\) and the column vector of pseudo efficacy responses,
+respectively. If there are some observed efficacy responses, <code>vecmu</code>, <code>matX</code>, <code>matQ</code>
 and <code>vecY</code> will represent \(\boldsymbol\mu\), \(\mathbf{X}\), \(\mathbf{Q}\) and the column vector contains
 all observed efficacy responses, respectively. (see details in about the form of prior and posterior distribution)</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
@@ -201,46 +206,46 @@ all observed efficacy responses, respectively. (see details in about the form of
     
 
 <dl>
-<dt><code>Eff</code></dt><dd><p>the pseudo efficacy response, the scalar efficacy values. This must be a vector of at least 
+<dt><code>Eff</code></dt><dd><p>the pseudo efficacy response, the scalar efficacy values. This must be a vector of at least
 length 2. Each element or value here must represents responses treated based on one subject. The order
- of its elements must corresponds to the values presented in vector <code>Effdose</code> (see details above)</p></dd>
+of its elements must corresponds to the values presented in vector <code>Effdose</code> (see details above)</p></dd>
 
-<dt><code>Effdose</code></dt><dd><p>the pseudo efficacy dose level. This is the dose levels at which the pseudo efficacy 
-responses are observed at. This must be a vector of at least length 2 and the orde of its elements must
-corresponds to values presented in vector <code>Eff</code> (see detial above)</p></dd>
+<dt><code>Effdose</code></dt><dd><p>the pseudo efficacy dose level. This is the dose levels at which the pseudo efficacy
+responses are observed at. This must be a vector of at least length 2 and the order of its elements must
+corresponds to values presented in vector <code>Eff</code> (see details above)</p></dd>
 
-<dt><code>nu</code></dt><dd><p>refers to the prior precision of pseudo efficacy responses. This is either a fixed value or a 
-vector of elements <code>a</code>, a positive scalar for the shape parameter, and <code>b</code>, a positive scalar 
-for the rate parameter for the gamma dsitribution. (see detail from above)</p></dd>
+<dt><code>nu</code></dt><dd><p>refers to the prior precision of pseudo efficacy responses. This is either a fixed value or a
+vector of elements <code>a</code>, a positive scalar for the shape parameter, and <code>b</code>, a positive scalar
+for the rate parameter for the gamma distribution. (see detail from above)</p></dd>
 
-<dt><code>useFixed</code></dt><dd><p>a logical value if <code>nu</code> specified is a fixed value or not. This slot is needed for 
+<dt><code>useFixed</code></dt><dd><p>a logical value if <code>nu</code> specified is a fixed value or not. This slot is needed for
 internal purposes and not to be touched by the user.</p></dd>
 
 <dt><code>theta1</code></dt><dd><p>The intercept \(\theta_1\) parameter of this efficacy log-log model. This slot is used in output to display
-the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the 
+the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the
 observed data/ responses.</p></dd>
 
-<dt><code>theta2</code></dt><dd><p>The slope \(theta_2\) parameter of the efficacy log-lgo model. This slot is used in output to display 
-the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the 
+<dt><code>theta2</code></dt><dd><p>The slope \(theta_2\) parameter of the efficacy log-log model. This slot is used in output to display
+the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the
 observed data/ responses.</p></dd>
 
-<dt><code>Pcov</code></dt><dd><p>refers to the covariance matrix of the intercept (phi1) and slope (phi2) paramters of this model.
+<dt><code>Pcov</code></dt><dd><p>refers to the covariance matrix of the intercept (phi1) and slope (phi2) parameters of this model.
 This slot is used in output to display the covariance matrix obtained based on the pseudo data and (if any)
 the observed data/responses. This slot is needed for internal purposes.</p></dd>
 
-<dt><code>vecmu</code></dt><dd><p>is the column vector of the prior or the posterior modal estimates of the intercept (phi1) and 
+<dt><code>vecmu</code></dt><dd><p>is the column vector of the prior or the posterior modal estimates of the intercept (phi1) and
 the slope (phi2).
-This slot is used in output to display as the mean of the prior or posterior bivariate normal distribtuion
+This slot is used in output to display as the mean of the prior or posterior bivariate normal distribution
 for phi1 and phi2. (see details from above)</p></dd>
 
-<dt><code>matX</code></dt><dd><p>is the design matrix based on either the pseudo or all observed efficacy response. This is used in 
+<dt><code>matX</code></dt><dd><p>is the design matrix based on either the pseudo or all observed efficacy response. This is used in
 output to display the design matrix for the pseudo or the observed efficacy responses (see details from above)</p></dd>
 
-<dt><code>matQ</code></dt><dd><p>is the square matrix of multiplying the the design matrix with its transponse. This is represented 
-either using the only the pseudo efficay responses or only with the observed efficacy responses. This is display 
+<dt><code>matQ</code></dt><dd><p>is the square matrix of multiplying the the design matrix with its transponse. This is represented
+either using the only the pseudo efficacy responses or only with the observed efficacy responses. This is display
 in the output (see details from above)</p></dd>
 
-<dt><code>vecY</code></dt><dd><p>is the column vector either contains the pseudo efficay responses or all the observed efficacy 
+<dt><code>vecY</code></dt><dd><p>is the column vector either contains the pseudo efficacy responses or all the observed efficacy
 responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)</p></dd>
 
 <dt><code>c</code></dt><dd><p>is a constant value greater or equal to 0, with the default 0 leading
@@ -256,13 +261,13 @@ greater than \(1-c\) can be considered as described in Yeung et al. (2015).</p><
 <span class='co'>## 12 dose levels are usesd from 25 to 300 mg with increments of 25.</span>
 <span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-<span class='co'>## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in </span>
+<span class='co'>## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in</span>
 <span class='co'>## (Effdose slot).</span>
-<span class='co'>## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and </span>
+<span class='co'>## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and</span>
 <span class='co'>## specified in (Eff slot).</span>
-<span class='co'>## The prior precision of the pseudo efficay responses. This can be either a fixed value of </span>
+<span class='co'>## The prior precision of the pseudo efficacy responses. This can be either a fixed value of</span>
 <span class='co'>## specifying the shape (a) and the rate (b) parameters for the gamma distribution in (nu slot).</span>
-<span class='co'>## Then specify all data currentl available in (data slot).</span>
+<span class='co'>## Then specify all data currently available in (data slot).</span>
 
 <span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
 
@@ -288,7 +293,7 @@ greater than \(1-c\) can be considered as described in Yeung et al. (2015).</p><
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

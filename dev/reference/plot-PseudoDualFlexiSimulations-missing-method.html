@@ -11,9 +11,9 @@ objects in order to summarize them graphically. Possible types of
 plots at the moment are: 
 trajectorySummary of the
 trajectory of the simulated trials dosesTriedAverage proportions of
-the doses tested in patients sigma2The variance of the efficacy responses 
+the doses tested in patients sigma2The variance of the efficacy responses
 sigma2betaWThe variance of the random walk model
- 
+
 You can specify one or both of these in the
 type argument. — plot,PseudoDualFlexiSimulations,missing-method • crmPack</title>
 
@@ -53,9 +53,9 @@ objects in order to summarize them graphically. Possible types of
 plots at the moment are: 
 trajectorySummary of the
 trajectory of the simulated trials dosesTriedAverage proportions of
-the doses tested in patients sigma2The variance of the efficacy responses 
+the doses tested in patients sigma2The variance of the efficacy responses
 sigma2betaWThe variance of the random walk model
- 
+
 You can specify one or both of these in the
 type argument. — plot,PseudoDualFlexiSimulations,missing-method" />
 <meta property="og:description" content="This plot method can be applied to PseudoDualFlexiSimulations
@@ -63,7 +63,7 @@ objects in order to summarize them graphically. Possible types of
 plots at the moment are:
 trajectorySummary of the
 trajectory of the simulated trials dosesTriedAverage proportions of
-the doses tested in patients sigma2The variance of the efficacy responses 
+the doses tested in patients sigma2The variance of the efficacy responses
 sigma2betaWThe variance of the random walk model
 You can specify one or both of these in the
 type argument." />
@@ -98,7 +98,7 @@ type argument." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -122,6 +122,12 @@ type argument." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -154,9 +160,9 @@ objects in order to summarize them graphically. Possible <code>type</code>s of
 plots at the moment are: <dl>
 <dt>trajectory</dt><dd><p>Summary of the
 trajectory of the simulated trials</p></dd> <dt>dosesTried</dt><dd><p>Average proportions of
-the doses tested in patients</p></dd> <dt>sigma2</dt><dd><p>The variance of the efficacy responses</p></dd> 
+the doses tested in patients</p></dd> <dt>sigma2</dt><dd><p>The variance of the efficacy responses</p></dd>
 <dt>sigma2betaW</dt><dd><p>The variance of the random walk model</p></dd>
-</dl> 
+</dl>
 You can specify one or both of these in the
 <code>type</code> argument.</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Simulations-methods.R'><code>R/Simulations-methods.R</code></a></small>
@@ -169,7 +175,7 @@ objects in order to summarize them graphically. Possible <code>type</code>s of
 plots at the moment are:</p><dl>
 <dt>trajectory</dt><dd><p>Summary of the
 trajectory of the simulated trials</p></dd> <dt>dosesTried</dt><dd><p>Average proportions of
-the doses tested in patients</p></dd> <dt>sigma2</dt><dd><p>The variance of the efficacy responses</p></dd> 
+the doses tested in patients</p></dd> <dt>sigma2</dt><dd><p>The variance of the efficacy responses</p></dd>
 <dt>sigma2betaW</dt><dd><p>The variance of the random walk model</p></dd>
 </dl><p>You can specify one or both of these in the
 <code>type</code> argument.</p>
@@ -281,9 +287,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
                 parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='co'>##plot this simulated results</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>mySim</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Note: method with signature ‘PseudoSimulations#missing’ chosen for function ‘plot’,</span>
-#&gt; <span class='message'> target signature ‘PseudoDualSimulations#missing’.</span>
-#&gt; <span class='message'> "GeneralSimulations#missing" would also be valid</span></div><div class='img'><img src='plot-PseudoDualFlexiSimulations-missing-method-1.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='plot-PseudoDualFlexiSimulations-missing-method-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -295,7 +299,7 @@ asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

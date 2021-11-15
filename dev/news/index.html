@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -95,6 +95,12 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -126,6 +132,15 @@
       <small>Source: <a href='https://github.com/roche/crmPack/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-109000" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.9000">
+<a href="#version-109000" class="anchor"></a>Version 1.0.9000<small> Unreleased </small>
+</h1>
+<ul>
+<li>Include rolling CRM design, which was previously only available in a separate GitHub branch.</li>
+<li>Additional authors and change of maintainer.</li>
+</ul>
+</div>
     <div id="version-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#version-100" class="anchor"></a>Version 1.0.0<small> 2019-06-13 </small>
@@ -176,7 +191,8 @@
 <h3 class="hasAnchor">
 <a href="#bugfixes-1" class="anchor"></a>Bugfixes:</h3>
 <ul>
-<li>LogisticNormal now works again - “prec” was not found before.</li>
+<li>
+<code>LogisticNormal</code> now works again - <code>prec</code> was not found before.</li>
 </ul>
 </div>
 </div>
@@ -188,7 +204,7 @@
 <h3 class="hasAnchor">
 <a href="#bugfixes-2" class="anchor"></a>Bugfixes:</h3>
 <ul>
-<li><p>Replaced BayesLogit dependency by JAGS code, since BayesLogit was taken off CRAN.</p></li>
+<li><p>Replaced <code>BayesLogit</code> dependency by JAGS code, since <code>BayesLogit</code> was taken off CRAN.</p></li>
 <li><p>Speed up one example to pass CRAN check.</p></li>
 </ul>
 </div>
@@ -271,7 +287,7 @@
 <ul>
 <li><p>Added back the example vignette, so that it can be opened with crmPackExample()</p></li>
 <li><p>Clarified that for the DualEndpointRW model samples from the prior cannot be obtained due to impropriety of the RW prior (added to model class description).</p></li>
-<li><p>For DualEndpointRW models, it is now possible to have non-equidistant grid points, and obtain sensible results. (But still needs to be thouroughly tested though.)</p></li>
+<li><p>For DualEndpointRW models, it is now possible to have non-equidistant grid points, and obtain sensible results. (But still needs to be thoroughly tested though.)</p></li>
 <li><p>For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.</p></li>
 <li><p>Cohort size of 0 for placebo is now possible - e.g. to only start with patients and then later move to larger cohorts also including placebo subjects.</p></li>
 <li><p>When simulating with firstSeparate=TRUE and placebo, now the first (sentinel) cohort includes one active and one placebo patients, and the next patients use the cohort size for the active and placebo arms, respectively.</p></li>
@@ -411,7 +427,7 @@ with the dual endpoint design stopping rules not using MCMC samples.</li>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

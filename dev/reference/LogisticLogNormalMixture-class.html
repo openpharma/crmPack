@@ -75,7 +75,7 @@ of a DLT at dose \(x\) is given by" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -99,6 +99,12 @@ of a DLT at dose \(x\) is given by" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -144,12 +150,12 @@ of a DLT at dose \(x\) is given by</p>
 
     <p>$$p(x) = \pi p_{1}(x) + (1 - \pi) p_{2}(x)$$</p>
 <p>where \(\pi\) is the probability for the model \(p(x)\) being the same
-as the model \(p_{1}(x)\) - this is 
-the informative component of the prior. From this model data arises in 
-parallel: at doses <code>xshare</code>, DLT information <code>yshare</code> is observed, 
+as the model \(p_{1}(x)\) - this is
+the informative component of the prior. From this model data arises in
+parallel: at doses <code>xshare</code>, DLT information <code>yshare</code> is observed,
 in total <code>nObsshare</code> data points, see <code><a href='DataMixture-class.html'>DataMixture</a></code>.
 On the other hand, \(1 - \pi\)
-is the probability of a separate model \(p_{2}(x)\). Both components 
+is the probability of a separate model \(p_{2}(x)\). Both components
 have the same log normal prior distribution, which can be specified by the
 user, and which is inherited from the <code><a href='LogisticLogNormal-class.html'>LogisticLogNormal</a></code>
 class.</p>
@@ -213,7 +219,7 @@ class.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

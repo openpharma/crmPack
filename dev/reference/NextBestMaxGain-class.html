@@ -40,13 +40,13 @@
 
 
 <meta property="og:title" content="Next best dose with maximum gain value based on a pseudo DLE and efficacy model without samples — NextBestMaxGain-class" />
-<meta property="og:description" content="This is a class for which to find the next dose which is safe and give the maximum gain value 
-for allocation. This is a class where no DLE and efficacy samples are involved. This is only based 
+<meta property="og:description" content="This is a class for which to find the next dose which is safe and give the maximum gain value
+for allocation. This is a class where no DLE and efficacy samples are involved. This is only based
 on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
 obtained by using the modal estimates of the DLE and efficacy model parameters.
-There are two inputs which are the two target 
+There are two inputs which are the two target
 probabilities of the occurrence of a DLE used during trial
-and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+and used at the end of trial, for finding the next best dose that is safe and gives the maximum
 gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
 specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
 class" />
@@ -81,7 +81,7 @@ class" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -105,6 +105,12 @@ class" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -138,13 +144,13 @@ class" />
     </div>
 
     <div class="ref-description">
-    <p>This is a class for which to find the next dose which is safe and give the maximum gain value 
-for allocation. This is a class where no DLE and efficacy samples are involved. This is only based 
+    <p>This is a class for which to find the next dose which is safe and give the maximum gain value
+for allocation. This is a class where no DLE and efficacy samples are involved. This is only based
 on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
 obtained by using the modal estimates of the DLE and efficacy model parameters.
-There are two inputs which are the two target 
+There are two inputs which are the two target
 probabilities of the occurrence of a DLE used during trial
-and used at the end of trial, for finding the next best dose that is safe and gives the maximum 
+and used at the end of trial, for finding the next best dose that is safe and gives the maximum
 gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
 specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
 class</p>
@@ -157,11 +163,11 @@ class</p>
     
 
 <dl>
-<dt><code>DLEDuringTrialtarget</code></dt><dd><p>the target probability of the occurrrence of a DLE to be used
+<dt><code>DLEDuringTrialtarget</code></dt><dd><p>the target probability of the occurrence of a DLE to be used
 during the trial</p></dd>
 
-<dt><code>DLEEndOfTrialtarget</code></dt><dd><p>the target probability of the occurrence of a DLE to be used at the end 
-of the trial. This target is particularly used to recommend the dose for which its posterior 
+<dt><code>DLEEndOfTrialtarget</code></dt><dd><p>the target probability of the occurrence of a DLE to be used at the end
+of the trial. This target is particularly used to recommend the dose for which its posterior
 probability of the occurrence of a DLE is equal to this target</p></dd>
 
 </dl>
@@ -185,7 +191,7 @@ probability of the occurrence of a DLE is equal to this target</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

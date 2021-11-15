@@ -42,7 +42,7 @@ class for Efficacy models using pseudo data prior — ModelEff-class • crmPack
 
 <meta property="og:title" content="No Initialization function
 class for Efficacy models using pseudo data prior — ModelEff-class" />
-<meta property="og:description" content="This is a class of which contains all efficacy models for which their prior are specified in 
+<meta property="og:description" content="This is a class of which contains all efficacy models for which their prior are specified in
 form of pseudo data. It inherits all slots from ModelPseudo" />
 
 
@@ -75,7 +75,7 @@ form of pseudo data. It inherits all slots from ModelPseudo" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -99,6 +99,12 @@ form of pseudo data. It inherits all slots from ModelPseudo" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -133,7 +139,7 @@ class for Efficacy models using pseudo data prior</h1>
     </div>
 
     <div class="ref-description">
-    <p>This is a class of which contains all efficacy models for which their prior are specified in 
+    <p>This is a class of which contains all efficacy models for which their prior are specified in
 form of pseudo data. It inherits all slots from <code><a href='ModelPseudo-class.html'>ModelPseudo</a></code></p>
     </div>
 
@@ -141,26 +147,26 @@ form of pseudo data. It inherits all slots from <code><a href='ModelPseudo-class
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>dose</code> function has a first argument <code>ExpEff</code>, a scalar expected efficacy value 
-which is targeted. Additional arguements are model parameters. It computes using modal estimate(s)
+    <p>The <code>dose</code> function has a first argument <code>ExpEff</code>, a scalar expected efficacy value
+which is targeted. Additional arguments are model parameters. It computes using modal estimate(s)
 or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
 of the model parameters are used, the function must vectorize over the model parameters.</p>
-<p>The <code>ExpEff</code> function has a first argument <code>dose</code>, a scalar dose level which is targeted. 
+<p>The <code>ExpEff</code> function has a first argument <code>dose</code>, a scalar dose level which is targeted.
 Additional arguments are model parameters. It computes using modal estimates or samples of the
 model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
 of the model parameter(s) are used, the function must vectorize over the model parameters.</p>
-<p>The <code>data</code> must obey the covention that the data input is called exactly in the 
-<code><a href='DataDual-class.html'>DataDual</a></code> class. This refers to any observed Efficacy/biomarker responses 
-(<code>w</code> in 
+<p>The <code>data</code> must obey the convention that the data input is called exactly in the
+<code><a href='DataDual-class.html'>DataDual</a></code> class. This refers to any observed Efficacy/biomarker responses
+(<code>w</code> in
 <code><a href='DataDual-class.html'>DataDual</a></code> class), the dose (levels) (<code>x</code> in <code><a href='DataDual-class.html'>DataDual</a></code> or
 <code>Data</code> class)
 at which these responses are observed, all dose levels considered in the study (<code>doseGrid</code>
-in <code><a href='DataDual-class.html'>DataDual</a></code> or <code>Data</code>) class and other specifications in 
+in <code><a href='DataDual-class.html'>DataDual</a></code> or <code>Data</code>) class and other specifications in
 <code><a href='DataDual-class.html'>DataDual</a></code>
 class that can be used to generate prior or
-posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
 at least <code>doseGrid</code> in <code><a href='DataDual-class.html'>DataDual</a></code> has to be specified in <code>data</code> slot
-for which prior modal estimates or samples can be obtained for model parameters based on 
+for which prior modal estimates or samples can be obtained for model parameters based on
 the specified pseudo data.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
@@ -168,15 +174,15 @@ the specified pseudo data.</p>
 
 <dl>
 <dt><code>dose</code></dt><dd><p>a function computing the dose reaching a specific target value of expected efficacy, based
-on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified 
+on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified
 in form of pseudo data and if any together with any observed responses (see details above)</p></dd>
 
-<dt><code>ExpEff</code></dt><dd><p>a function computing the expected efficacy (value) for a specific dose, based on model 
-parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any) 
+<dt><code>ExpEff</code></dt><dd><p>a function computing the expected efficacy (value) for a specific dose, based on model
+parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any)
 with observed responses (see details above)</p></dd>
 
 <dt><code>data</code></dt><dd><p>refers to the data input specification in <code><a href='DataDual-class.html'>DataDual</a></code> class which are used to
-obtain model paramters estimates or samples (see details above)</p></dd>
+obtain model parameters estimates or samples (see details above)</p></dd>
 
 </dl>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -195,7 +201,7 @@ obtain model paramters estimates or samples (see details above)</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

@@ -7,12 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the DualResponsesSamplesDesign where DLEmodel 
+This is a method based on the DualResponsesSamplesDesign where DLEmodel
 used are of
-ModelTox class object and efficacy model used are of 
+ModelTox class object and efficacy model used are of
 ModelEff
-class object (special case is EffFlexi class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is EffFlexi class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process — simulate,DualResponsesSamplesDesign-method • crmPack</title>
 
 
@@ -47,20 +47,20 @@ process — simulate,DualResponsesSamplesDesign-method • crmPack</title>
 
 
 <meta property="og:title" content="This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the DualResponsesSamplesDesign where DLEmodel 
+This is a method based on the DualResponsesSamplesDesign where DLEmodel
 used are of
-ModelTox class object and efficacy model used are of 
+ModelTox class object and efficacy model used are of
 ModelEff
-class object (special case is EffFlexi class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is EffFlexi class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process — simulate,DualResponsesSamplesDesign-method" />
 <meta property="og:description" content="This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the DualResponsesSamplesDesign where DLEmodel 
+This is a method based on the DualResponsesSamplesDesign where DLEmodel
 used are of
-ModelTox class object and efficacy model used are of 
+ModelTox class object and efficacy model used are of
 ModelEff
-class object (special case is EffFlexi class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is EffFlexi class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process" />
 
 
@@ -93,7 +93,7 @@ process" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -117,6 +117,12 @@ process" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -145,12 +151,12 @@ process" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the <code><a href='DualResponsesSamplesDesign-class.html'>DualResponsesSamplesDesign</a></code> where DLEmodel 
+This is a method based on the <code><a href='DualResponsesSamplesDesign-class.html'>DualResponsesSamplesDesign</a></code> where DLEmodel
 used are of
-<code><a href='ModelTox-class.html'>ModelTox</a></code> class object and efficacy model used are of 
+<code><a href='ModelTox-class.html'>ModelTox</a></code> class object and efficacy model used are of
 <code><a href='ModelEff-class.html'>ModelEff</a></code>
-class object (special case is <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Design-methods.R'><code>R/Design-methods.R</code></a></small>
     <div class="hidden name"><code>simulate-DualResponsesSamplesDesign-method.Rd</code></div>
@@ -158,12 +164,12 @@ process</h1>
 
     <div class="ref-description">
     <p>This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the <code><a href='DualResponsesSamplesDesign-class.html'>DualResponsesSamplesDesign</a></code> where DLEmodel 
+This is a method based on the <code><a href='DualResponsesSamplesDesign-class.html'>DualResponsesSamplesDesign</a></code> where DLEmodel
 used are of
-<code><a href='ModelTox-class.html'>ModelTox</a></code> class object and efficacy model used are of 
+<code><a href='ModelTox-class.html'>ModelTox</a></code> class object and efficacy model used are of
 <code><a href='ModelEff-class.html'>ModelEff</a></code>
-class object (special case is <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process</p>
     </div>
 
@@ -190,7 +196,7 @@ process</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>the <code><a href='DualResponsesSamplesDesign-class.html'>DualResponsesSamplesDesign</a></code> object we want to 
+      <td><p>the <code><a href='DualResponsesSamplesDesign-class.html'>DualResponsesSamplesDesign</a></code> object we want to
 simulate the data from</p></td>
     </tr>
     <tr>
@@ -208,23 +214,23 @@ simulate the data from</p></td>
     </tr>
     <tr>
       <th>trueEff</th>
-      <td><p>a function which takes as input a dose (vector) and returns the expected 
+      <td><p>a function which takes as input a dose (vector) and returns the expected
 efficacy responses (vector). Additional arguments can be supplied in <code>args</code>.</p></td>
     </tr>
     <tr>
       <th>trueNu</th>
-      <td><p>(not with code<a href='EffFlexi-class.html'>EffFlexi</a>) the precision, the inverse of the 
+      <td><p>(not with code<a href='EffFlexi-class.html'>EffFlexi</a>) the precision, the inverse of the
 variance of the efficacy responses</p></td>
     </tr>
     <tr>
       <th>trueSigma2</th>
-      <td><p>(only with code<a href='EffFlexi-class.html'>EffFlexi</a>) the true variance of the efficacy 
+      <td><p>(only with code<a href='EffFlexi-class.html'>EffFlexi</a>) the true variance of the efficacy
 responses which must be a single positive scalar.</p></td>
     </tr>
     <tr>
       <th>trueSigma2betaW</th>
-      <td><p>(only with code<a href='EffFlexi-class.html'>EffFlexi</a>) the true variance for the 
-random walk model used for smoothing. This must be a single postive scalar.</p></td>
+      <td><p>(only with code<a href='EffFlexi-class.html'>EffFlexi</a>) the true variance for the
+random walk model used for smoothing. This must be a single positive scalar.</p></td>
     </tr>
     <tr>
       <th>args</th>
@@ -396,7 +402,7 @@ Defaults to the number of cores on the machine, maximum 5.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

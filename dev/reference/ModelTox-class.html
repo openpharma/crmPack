@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>No intialization function
-Class for DLE models using pseudo data prior. 
-This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models 
+Class for DLE models using pseudo data prior.
+This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
 for which their prior are specified in form of pseudo data (as if there is some data before
 the trial starts). It inherits all slots from ModelPseudo — ModelTox-class • crmPack</title>
 
@@ -44,18 +44,18 @@ the trial starts). It inherits all slots from ModelPseudo — ModelTox-class •
 
 
 <meta property="og:title" content="No intialization function
-Class for DLE models using pseudo data prior. 
-This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models 
+Class for DLE models using pseudo data prior.
+This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
 for which their prior are specified in form of pseudo data (as if there is some data before
 the trial starts). It inherits all slots from ModelPseudo — ModelTox-class" />
-<meta property="og:description" content="The dose function has a first argument prob, a scalar a probability of 
-the occurrence of a DLE which is targeted. Additional arguments are models parameters. 
-It computes, using the model parameter(s)/ model parameter(s) samples, the resulting dose. 
-Note that the model parameters are called exactly as in the model. The model estimates 
+<meta property="og:description" content="The dose function has a first argument prob, a scalar a probability of
+the occurrence of a DLE which is targeted. Additional arguments are models parameters.
+It computes, using the model parameter(s)/ model parameter(s) samples, the resulting dose.
+Note that the model parameters are called exactly as in the model. The model estimates
 generated can be single values of the maximum likelihodd estimates (prior or posterior modal
 estimates) or samples of the model estimates generated. If samples of the model estimates are
 generated, the model parameters (samples) must be included in the samples vector.
-The vectors of all samples for these model paramters will be supplied to the function such 
+The vectors of all samples for these model parameters will be supplied to the function such
 that the function will be able to process vectors of model parameters." />
 
 
@@ -88,7 +88,7 @@ that the function will be able to process vectors of model parameters." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -112,6 +112,12 @@ that the function will be able to process vectors of model parameters." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -140,8 +146,8 @@ that the function will be able to process vectors of model parameters." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>No intialization function
-Class for DLE models using pseudo data prior. 
-This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models 
+Class for DLE models using pseudo data prior.
+This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
 for which their prior are specified in form of pseudo data (as if there is some data before
 the trial starts). It inherits all slots from <code><a href='ModelPseudo-class.html'>ModelPseudo</a></code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Model-class.R'><code>R/Model-class.R</code></a></small>
@@ -149,14 +155,14 @@ the trial starts). It inherits all slots from <code><a href='ModelPseudo-class.h
     </div>
 
     <div class="ref-description">
-    <p>The <code>dose</code> function has a first argument <code>prob</code>, a scalar a probability of 
-the occurrence of a DLE which is targeted. Additional arguments are models parameters. 
-It computes, using the model parameter(s)/ model parameter(s) samples, the resulting dose. 
-Note that the model parameters are called exactly as in the <code>model</code>. The model estimates 
+    <p>The <code>dose</code> function has a first argument <code>prob</code>, a scalar a probability of
+the occurrence of a DLE which is targeted. Additional arguments are models parameters.
+It computes, using the model parameter(s)/ model parameter(s) samples, the resulting dose.
+Note that the model parameters are called exactly as in the <code>model</code>. The model estimates
 generated can be single values of the maximum likelihodd estimates (prior or posterior modal
 estimates) or samples of the model estimates generated. If samples of the model estimates are
 generated, the model parameters (samples) must be included in the <code>samples</code> vector.
-The vectors of all samples for these model paramters will be supplied to the function such 
+The vectors of all samples for these model parameters will be supplied to the function such
 that the function will be able to process vectors of model parameters.</p>
     </div>
 
@@ -165,37 +171,37 @@ that the function will be able to process vectors of model parameters.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The <code>prob</code> function has a first argument <code>dose</code>, a scalar dose level which is targeted.
-Additional arguments are model paramters. It computes using model paramter(s) (samples), the 
-resulting probabilities of a DLE occuring at the target dose level. If samples of model parameters
+Additional arguments are model parameters. It computes using model parameter(s) (samples), the
+resulting probabilities of a DLE occurring at the target dose level. If samples of model parameters
 are generated, the function must vectorize over the model parameters.</p>
 <p>Note that <code>dose</code> and <code>prob</code> are the inverse functions of each other.</p>
-<p>The <code>data</code> must obey the covention that the data input is called exactly in the 
-<code><a href='Data-class.html'>Data</a></code> class. This refers to any observed DLE responses (<code>y</code> in 
+<p>The <code>data</code> must obey the convention that the data input is called exactly in the
+<code><a href='Data-class.html'>Data</a></code> class. This refers to any observed DLE responses (<code>y</code> in
 <code><a href='Data-class.html'>Data</a></code> class), the dose (levels) (<code>x</code> in <code><a href='Data-class.html'>Data</a></code> class)
 at which these responses are observed, all dose levels considered in the study (<code>doseGrid</code>
 in <code><a href='Data-class.html'>Data</a></code>) class and other specifications in <code><a href='Data-class.html'>Data</a></code>
 class that can be used to generate prior or
-posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
 at least <code>doseGrid</code> in <code><a href='Data-class.html'>Data</a></code> has to be specified in <code>data</code> slot for which
-prior modal estimates or samples can be obtained for model parameters based on the specified pseudo 
+prior modal estimates or samples can be obtained for model parameters based on the specified pseudo
 data.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl>
-<dt><code>dose</code></dt><dd><p>a function computing the dose level reaching a specific target probabilty of the occurrence 
-of a DLE, based on the model parameters. The model paramters (samples)are obtained based on the prior 
+<dt><code>dose</code></dt><dd><p>a function computing the dose level reaching a specific target probability of the occurrence
+of a DLE, based on the model parameters. The model parameters (samples)are obtained based on the prior
 specified in form of pseudo data and together with (if any) the observed
 DLE responses and their corresponding dose levels (see details above)</p></dd>
 
-<dt><code>prob</code></dt><dd><p>a function computing the probability of the occurrence of a DLEat a specidfied dose level, 
-based on the model parameters. The model paramters (samples) are obtained the prior specified in form 
-of pseudo data and together with (if any) the observed DLE responses and their 
-corresponding dose levels (see dtails above)</p></dd>
+<dt><code>prob</code></dt><dd><p>a function computing the probability of the occurrence of a DLE at a specified dose level,
+based on the model parameters. The model parameters (samples) are obtained the prior specified in form
+of pseudo data and together with (if any) the observed DLE responses and their
+corresponding dose levels (see details above)</p></dd>
 
 <dt><code>data</code></dt><dd><p>refers to the data input specification in <code><a href='Data-class.html'>Data</a></code> class which are used to
-obtain model paramters estimates or samples (see details above)</p></dd>
+obtain model parameters estimates or samples (see details above)</p></dd>
 
 </dl>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -215,7 +221,7 @@ obtain model paramters estimates or samples (see details above)</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

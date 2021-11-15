@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Next best dose based on Pseudo DLE Model with samples — NextBestTDsamples-class" />
-<meta property="og:description" content="The class is to find the next best dose for allocation and the dose for final recommendation 
-at the end of a trial. There are two input target probabilities of the occurrence of a DLE 
+<meta property="og:description" content="The class is to find the next best dose for allocation and the dose for final recommendation
+at the end of a trial. There are two input target probabilities of the occurrence of a DLE
 used during trial and used at the end of trial to find the two doses. For this class, only
 DLE response will be incorporated for the dose allocation and DLEsamples
 must be used to obtain the next dose for allocation." />
@@ -76,7 +76,7 @@ must be used to obtain the next dose for allocation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -100,6 +100,12 @@ must be used to obtain the next dose for allocation." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -133,8 +139,8 @@ must be used to obtain the next dose for allocation." />
     </div>
 
     <div class="ref-description">
-    <p>The class is to find the next best dose for allocation and the dose for final recommendation 
-at the end of a trial. There are two input target probabilities of the occurrence of a DLE 
+    <p>The class is to find the next best dose for allocation and the dose for final recommendation
+at the end of a trial. There are two input target probabilities of the occurrence of a DLE
 used during trial and used at the end of trial to find the two doses. For this class, only
 DLE response will be incorporated for the dose allocation and DLEsamples
 must be used to obtain the next dose for allocation.</p>
@@ -147,18 +153,18 @@ must be used to obtain the next dose for allocation.</p>
     
 
 <dl>
-<dt><code>targetDuringTrial</code></dt><dd><p>the target probability of the occurrrence of a DLE to be used
+<dt><code>targetDuringTrial</code></dt><dd><p>the target probability of the occurrence of a DLE to be used
 during the trial</p></dd>
 
-<dt><code>targetEndOfTrial</code></dt><dd><p>the target probability of the occurrence of a DLE to be used at the end 
+<dt><code>targetEndOfTrial</code></dt><dd><p>the target probability of the occurrence of a DLE to be used at the end
 of the trial. This target is particularly used to recommend the dose at the end of a trial
-for which its posterior 
+for which its posterior
 probability of the occurrence of a DLE is equal to this target</p></dd>
 
-<dt><code>derive</code></dt><dd><p>the function which derives from the input, a vector of the posterior samples called 
+<dt><code>derive</code></dt><dd><p>the function which derives from the input, a vector of the posterior samples called
 <code>TDsamples</code> of the dose
 which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the 
+targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
 occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.</p></dd>
 
 </dl>
@@ -185,7 +191,7 @@ occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimat
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

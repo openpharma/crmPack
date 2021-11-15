@@ -6,14 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>This is a class which captures the trial simulations design using both the
-DLE and efficacy responses. The design of model from ModelTox
-class and the efficacy model from ModelEff class 
-(except EffFlexi class). It contains all slots from 
-GeneralSimulations and PseudoSimulations object.
-In comparison to the parent class PseudoSimulations, 
-it contains additional slots to 
-capture the dose-efficacy curve and the sigma2 estimates. — PseudoDualSimulations-class • crmPack</title>
+<title>Class PseudoDualSimulations — PseudoDualSimulations-class • crmPack</title>
 
 
 <!-- jquery -->
@@ -46,21 +39,14 @@ capture the dose-efficacy curve and the sigma2 estimates. — PseudoDualSimulati
 
 
 
-<meta property="og:title" content="This is a class which captures the trial simulations design using both the
-DLE and efficacy responses. The design of model from ModelTox
-class and the efficacy model from ModelEff class 
-(except EffFlexi class). It contains all slots from 
-GeneralSimulations and PseudoSimulations object.
-In comparison to the parent class PseudoSimulations, 
-it contains additional slots to 
-capture the dose-efficacy curve and the sigma2 estimates. — PseudoDualSimulations-class" />
+<meta property="og:title" content="Class PseudoDualSimulations — PseudoDualSimulations-class" />
 <meta property="og:description" content="This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from ModelTox
-class and the efficacy model from ModelEff class 
-(except EffFlexi class). It contains all slots from 
+class and the efficacy model from ModelEff class
+(except EffFlexi class). It contains all slots from
 GeneralSimulations and PseudoSimulations object.
-In comparison to the parent class PseudoSimulations, 
-it contains additional slots to 
+In comparison to the parent class PseudoSimulations,
+it contains additional slots to
 capture the dose-efficacy curve and the sigma2 estimates." />
 
 
@@ -93,7 +79,7 @@ capture the dose-efficacy curve and the sigma2 estimates." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -117,6 +103,12 @@ capture the dose-efficacy curve and the sigma2 estimates." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -144,14 +136,7 @@ capture the dose-efficacy curve and the sigma2 estimates." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>This is a class which captures the trial simulations design using both the
-DLE and efficacy responses. The design of model from <code><a href='ModelTox-class.html'>ModelTox</a></code>
-class and the efficacy model from <code><a href='ModelEff-class.html'>ModelEff</a></code> class 
-(except <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class). It contains all slots from 
-<code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code> and <code><a href='PseudoSimulations-class.html'>PseudoSimulations</a></code> object.
-In comparison to the parent class <code><a href='PseudoSimulations-class.html'>PseudoSimulations</a></code>, 
-it contains additional slots to 
-capture the dose-efficacy curve and the sigma2 estimates.</h1>
+    <h1>Class <code>PseudoDualSimulations</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Simulations-class.R'><code>R/Simulations-class.R</code></a></small>
     <div class="hidden name"><code>PseudoDualSimulations-class.Rd</code></div>
     </div>
@@ -159,11 +144,11 @@ capture the dose-efficacy curve and the sigma2 estimates.</h1>
     <div class="ref-description">
     <p>This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from <code><a href='ModelTox-class.html'>ModelTox</a></code>
-class and the efficacy model from <code><a href='ModelEff-class.html'>ModelEff</a></code> class 
-(except <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class). It contains all slots from 
+class and the efficacy model from <code><a href='ModelEff-class.html'>ModelEff</a></code> class
+(except <code><a href='EffFlexi-class.html'>EffFlexi</a></code> class). It contains all slots from
 <code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code> and <code><a href='PseudoSimulations-class.html'>PseudoSimulations</a></code> object.
-In comparison to the parent class <code><a href='PseudoSimulations-class.html'>PseudoSimulations</a></code>, 
-it contains additional slots to 
+In comparison to the parent class <code><a href='PseudoSimulations-class.html'>PseudoSimulations</a></code>,
+it contains additional slots to
 capture the dose-efficacy curve and the sigma2 estimates.</p>
     </div>
 
@@ -174,14 +159,14 @@ capture the dose-efficacy curve and the sigma2 estimates.</p>
     
 
 <dl>
-<dt><code>fitEff</code></dt><dd><p>list of the final values. If DLE and efficacy samples are gerneated, it contains the
+<dt><code>fitEff</code></dt><dd><p>list of the final values. If DLE and efficacy samples are generated, it contains the
 final fitted values. If no DLE and efficacy samples are used, it contains the modal estimates of the
 parameters in the two models and the posterior estimates of the probabilities of the occurrence of a
 DLE and the expected efficacy responses.</p></dd>
 
 <dt><code>FinalGstarEstimates</code></dt><dd><p>a vector of the final estimates of Gstar at the end of each simulations.</p></dd>
 
-<dt><code>FinalGstarAtDoseGrid</code></dt><dd><p>is a vectorof the final estimates of Gstar at dose Grid at the end of each simulations</p></dd>
+<dt><code>FinalGstarAtDoseGrid</code></dt><dd><p>is a vector of the final estimates of Gstar at dose Grid at the end of each simulations</p></dd>
 
 <dt><code>FinalGstarCIs</code></dt><dd><p>is the list of all 95% credibility interval of the final estimates of Gstar</p></dd>
 
@@ -191,7 +176,7 @@ of the final estimates of Gstar</p></dd>
 <dt><code>FinalOptimalDose</code></dt><dd><p>is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates and Gstar
 estimates</p></dd>
 
-<dt><code>FinalOptimalDoseAtDoseGrid</code></dt><dd><p>is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates 
+<dt><code>FinalOptimalDoseAtDoseGrid</code></dt><dd><p>is the vector of the final optimal dose, the minimum of the final TDtargetEndOfTrial estimates
 and Gstar estimates at dose Grid</p></dd>
 
 <dt><code>sigma2est</code></dt><dd><p>the vector of the final posterior mean sigma2 estimates</p></dd>
@@ -209,7 +194,7 @@ and Gstar estimates at dose Grid</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

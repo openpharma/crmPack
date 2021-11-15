@@ -74,7 +74,7 @@ LogisticLogNormal) object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -98,6 +98,12 @@ LogisticLogNormal) object." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -200,8 +206,8 @@ threshold \(q_{1}\), such that any probability of DLT larger than
 quantile of the beta distribution and hence \(p_{1} = 0.95\). Likewise,
 <code>threshmax</code> is the probability threshold \(q_{J}\), such that any
 probability of DLT smaller than \(q_{J}\) has only 5% probability
-(\(p_{J} = 0.05\)). The probabilities \(1 - p_{1}\) and \(p_{J}\) can be 
-controlled with the arguments <code>probmin</code> and <code>probmax</code>, respectively. 
+(\(p_{J} = 0.05\)). The probabilities \(1 - p_{1}\) and \(p_{J}\) can be
+controlled with the arguments <code>probmin</code> and <code>probmax</code>, respectively.
 Subsequently, for all doses supplied in the
 <code>dosegrid</code> argument, beta distributions are set up from the assumption
 that the prior medians are linear in log-dose on the logit scale, and
@@ -223,7 +229,7 @@ is not required for these computations.</p>
                                   threshmax<span class='op'>=</span><span class='fl'>0.3</span>,
                                   control<span class='op'>=</span><span class='co'>## for real case: leave out control </span>
                                     <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>max.time<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span> 
-</div><div class='output co'>#&gt; It: 1, obj value: 0.6732911061</div><div class='input'>
+</div><div class='output co'>#&gt; It: 1, obj value: 0.6727662311</div><div class='input'>
 <span class='co'># Plotting the result</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/matplot.html'>matplot</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>coarseGrid</span>,
         y<span class='op'>=</span><span class='va'>minInfModel</span><span class='op'>$</span><span class='va'>required</span>,
@@ -251,7 +257,7 @@ is not required for these computations.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

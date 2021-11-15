@@ -78,7 +78,7 @@ of it during the construction of subclass objects.)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -102,6 +102,12 @@ of it during the construction of subclass objects.)" />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -149,16 +155,16 @@ of it during the construction of subclass objects.)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Currently a probit regression model
-$$probit[p(x)] = \beta_{Z1} + \beta_{Z2} 
+$$probit[p(x)] = \beta_{Z1} + \beta_{Z2}
 \cdot x/x^{*}$$
 or
-$$probit[p(x)] = \beta_{Z1} + \beta_{Z2} 
+$$probit[p(x)] = \beta_{Z1} + \beta_{Z2}
 \cdot \log(x/x^{*})$$
 in case that the option <code>useLogDose</code> is <code>TRUE</code>.
 Here \(p(x)\) is the probability of observing a DLT for a given
 dose \(x\), \(\Phi\) is the standard normal cdf, and \(x^{*}\) is
 the reference dose.</p>
-<p>The prior is $$\left( \beta_{Z1} , log(\beta_{Z2}) \right) 
+<p>The prior is $$\left( \beta_{Z1} , log(\beta_{Z2}) \right)
 \sim Normal(\mu, \Sigma)$$.</p>
 <p>For the biomarker response w at a dose x, we assume
 $$w(x) \sim Normal(f(x), \sigma^{2}_{W})$$
@@ -218,7 +224,7 @@ internal purposes and not to be touched by the user.</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

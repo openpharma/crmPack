@@ -82,7 +82,7 @@ DualEndpointEmax)) However, is scale is set to
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -106,6 +106,12 @@ DualEndpointEmax)) However, is scale is set to
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -159,13 +165,13 @@ model was selected (e.g. <code><a href='DualEndpointBeta-class.html'>DualEndpoin
 
 <dl>
 <dt><code>target</code></dt><dd><p>the biomarker target range, that
-needs to be reached. For example, (0.8, 1.0) and <code>scale="relative"</code> 
+needs to be reached. For example, (0.8, 1.0) and <code>scale="relative"</code>
 means we target a dose
 with at least 80% of maximum biomarker level. As an other example,
 (0.5, 0.8) would mean that we target a dose between 50% and 80% of
 the maximum biomarker level.</p></dd>
 
-<dt><code>scale</code></dt><dd><p>either <code>relative</code> (default, then the <code>target</code> is interpreted 
+<dt><code>scale</code></dt><dd><p>either <code>relative</code> (default, then the <code>target</code> is interpreted
 relative to the maximum, so must be a probability range) or <code>absolute</code>
 (then the <code>target</code> is interpreted as absolute biomarker range)</p></dd>
 
@@ -174,7 +180,7 @@ limit included)</p></dd>
 
 <dt><code>maxOverdoseProb</code></dt><dd><p>maximum overdose probability that is allowed</p></dd>
 
-<dt><code>targetThresh</code></dt><dd><p>which target probability threshold needs to be fulfilled before the 
+<dt><code>targetThresh</code></dt><dd><p>which target probability threshold needs to be fulfilled before the
 target probability will be used for deriving the next best dose (default: 0.01)</p></dd>
 
 </dl>
@@ -206,7 +212,7 @@ target probability will be used for deriving the next best dose (default: 0.01)<
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

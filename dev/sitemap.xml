@@ -46,10 +46,37 @@
     <loc>https://github.com/roche/crmPack/reference/CohortSizeRange.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/DADesign-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DADesign.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DALogisticLogNormal-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DALogisticLogNormal.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DASimulations-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DASimulations.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DLTLikelihood.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/Data-class.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/Data.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DataDA-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/DataDA.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/DataDual-class.html</loc>
@@ -143,6 +170,9 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/ExpEff.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/FractionalCRM-class.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/GeneralData-class.html</loc>
@@ -289,6 +319,9 @@
     <loc>https://github.com/roche/crmPack/reference/NextBestMaxGainSamples.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/NextBestMinDist-class.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/NextBestNCRM-class.html</loc>
   </url>
   <url>
@@ -311,6 +344,9 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/NextBestThreePlusThree.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/OneParExpNormalPrior-class.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/ProbitLogNormal-class.html</loc>
@@ -353,6 +389,21 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/RuleDesign.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/SafetyWindow-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/SafetyWindowConst-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/SafetyWindowConst.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/SafetyWindowSize-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/SafetyWindowSize.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/Samples-class.html</loc>
@@ -463,6 +514,12 @@
     <loc>https://github.com/roche/crmPack/reference/TDsamplesDesign.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/TITELogisticLogNormal-class.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/TITELogisticLogNormal.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/ThreePlusThreeDesign.html</loc>
   </url>
   <url>
@@ -509,6 +566,9 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/fitGain.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/fitPEM.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/gain.html</loc>
@@ -604,6 +664,9 @@
     <loc>https://github.com/roche/crmPack/reference/plot-Data-missing-method.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/plot-DataDA-missing-method.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/plot-DataDual-ModelEff-method.html</loc>
   </url>
   <url>
@@ -632,6 +695,9 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/plot-PseudoSimulationsSummary-missing-method.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/plot-Samples-DALogisticLogNormal-method.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/plot-Samples-DualEndpoint-method.html</loc>
@@ -700,6 +766,9 @@
     <loc>https://github.com/roche/crmPack/reference/show-SimulationsSummary-method.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/simulate-DADesign-method.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/simulate-Design-method.html</loc>
   </url>
   <url>
@@ -748,6 +817,9 @@
     <loc>https://github.com/roche/crmPack/reference/update-Data-method.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/update-DataDA-method.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/update-DataDual-method.html</loc>
   </url>
   <url>
@@ -763,9 +835,18 @@
     <loc>https://github.com/roche/crmPack/reference/update-LogisticIndepBeta-method.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/windowLength.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/writeModel.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/articles/guidelines.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/articles/rolling-crm.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/articles/simulations.html</loc>
   </url>
 </urlset>

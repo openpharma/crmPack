@@ -12,16 +12,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Object-Oriented Implementation of CRM Designs">
-<meta property="og:description" content="Implements a wide range of model-based dose escalation
-    designs, ranging from classical and modern continual reassessment
-    methods (CRMs) based on dose-limiting toxicity endpoints to
-    dual-endpoint designs taking into account a biomarker/efficacy
-    outcome. The focus is on Bayesian inference, making it very easy to
-    setup a new design with its own JAGS code. However, it is also
-    possible to implement 3+3 designs for comparison or models with
-    non-Bayesian estimation. The whole package is written in a modular
-    form in the S4 class system, making it very flexible for adaptation to
-    new models, escalation or stopping rules.">
+<meta property="og:description" content="Implements a wide range of model-based dose
+    escalation designs, ranging from classical and modern continual
+    reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
+    dual-endpoint designs taking into account a biomarker/efficacy outcome. The
+    focus is on Bayesian inference, making it very easy to setup a new design
+    with its own JAGS code. However, it is also possible to implement 3+3
+    designs for comparison or models with non-Bayesian estimation. The whole
+    package is written in a modular form in the S4 class system, making it very
+    flexible for adaptation to new models, escalation or stopping rules.">
 <meta name="robots" content="noindex">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -41,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -65,6 +64,12 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -218,10 +223,12 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Daniel Sabanes Bove <br><small class="roles"> Author </small>  </li>
+<li>Daniel Sabanes Bove <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Wai Yin Yeung <br><small class="roles"> Author </small>  </li>
-<li>Giuseppe Palermo <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Giuseppe Palermo <br><small class="roles"> Author </small>  </li>
 <li>Thomas Jaki <br><small class="roles"> Author </small>  </li>
+<li>Jiawen Zhu <br><small class="roles"> Author </small>  </li>
+<li>Ziwei Liao <br><small class="roles"> Author </small>  </li>
 </ul>
 </div>
 
@@ -236,7 +243,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

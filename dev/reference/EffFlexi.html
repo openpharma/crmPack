@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -96,6 +96,12 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -147,25 +153,25 @@
     </tr>
     <tr>
       <th>sigma2</th>
-      <td><p>the prior variance of the efficacy responses which can be specified 
-with a single positive scalar or with two positive scalar values fot the shape <code>a</code> and 
-the rate <code>b</code> parameters of the inverse gamma distribtuion.</p></td>
+      <td><p>the prior variance of the efficacy responses which can be specified
+with a single positive scalar or with two positive scalar values for the shape <code>a</code> and
+the rate <code>b</code> parameters of the inverse gamma distribution.</p></td>
     </tr>
     <tr>
       <th>sigma2betaW</th>
       <td><p>the prior variance of the random walk model used for smoothing which can be
-specified with a single postive scalar or with two positive scalars representing the shape <code>a</code>
+specified with a single positive scalar or with two positive scalars representing the shape <code>a</code>
 and the rate <code>b</code> parameter of the inverse gamma distribution.</p></td>
     </tr>
     <tr>
       <th>smooth</th>
-      <td><p>used for smoothing data for this efficacy model. That is either the "RW1", the 
+      <td><p>used for smoothing data for this efficacy model. That is either the "RW1", the
 first-order random walk model or "RW2", the second-order random walk model is used of the mean
 efficacy responses.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>the input data to update estimates of model parameters and 
+      <td><p>the input data to update estimates of model parameters and
 follow the <code><a href='DataDual-class.html'>DataDual</a></code> object class specification</p></td>
     </tr>
     </table>
@@ -185,7 +191,7 @@ follow the <code><a href='DataDual-class.html'>DataDual</a></code> object class 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

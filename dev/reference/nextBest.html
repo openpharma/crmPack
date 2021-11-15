@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -96,6 +96,12 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -147,6 +153,9 @@
 <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>nextBest</span>, <span class='va'>doselimit</span>, <span class='va'>samples</span>, <span class='va'>model</span>, <span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data</span>
+<span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>nextBest</span>, <span class='va'>doselimit</span>, <span class='va'>samples</span>, <span class='va'>model</span>, <span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S4 method for NextBestMinDist,numeric,Samples,Model,Data</span>
 <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>nextBest</span>, <span class='va'>doselimit</span>, <span class='va'>samples</span>, <span class='va'>model</span>, <span class='va'>data</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data</span>
@@ -234,29 +243,32 @@ corresponding rule <code>nextBest</code>, the posterior <code>samples</code> fro
 <li><p><code>nextBest,NextBestMTD,numeric,Samples,Model,Data-method</code>: Find the next best dose based on the MTD rule</p></li>
 <li><p><code>nextBest,NextBestNCRM,numeric,Samples,Model,Data-method</code>: Find the next best dose based on the NCRM method. The
 additional list element <code>probs</code> contains the target and overdosing
-probabilities (across all doses in the dose grid) 
+probabilities (across all doses in the dose grid)
 used in the derivation of the next best dose.</p></li>
 <li><p><code>nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method</code>: Find the next best dose based on the NCRM method when
-two parts trial is used - todo: need an example here for DataParts</p></li>
+two parts trial is used.</p></li>
 <li><p><code>nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method</code>: Find the next best dose based on the 3+3 method</p></li>
 <li><p><code>nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method</code>: Find the next best dose based on the dual endpoint
-model. The additional list element <code>probs</code> contains the target and 
-overdosing probabilities (across all doses in the dose grid) used in the 
+model. The additional list element <code>probs</code> contains the target and
+overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.</p></li>
+<li><p><code>nextBest,NextBestMinDist,numeric,Samples,Model,Data-method</code>: Method for <code>NextBestMinDist</code> class, which will give
+the dose which is below the dose limit and has an estimated DLT probability
+which is closest to the target dose.</p></li>
 <li><p><code>nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method</code>: Find the next best dose based on the 'NextBestTDsamples'
-class rule. This a method based only on the DLE responses and for 
+class rule. This a method based only on the DLE responses and for
 <code><a href='LogisticIndepBeta-class.html'>LogisticIndepBeta</a></code> model class object involving DLE samples</p></li>
 <li><p><code>nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method</code>: Find the next best dose based on the 'NextBestTD'
-class rule. This a method based only on the DLE responses and for 
+class rule. This a method based only on the DLE responses and for
 <code><a href='LogisticIndepBeta-class.html'>LogisticIndepBeta</a></code> model class object without DLE samples</p></li>
-<li><p><code>nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method</code>: for slots <code>nextBest</code>,<code>doselimit</code>, <code>data</code> and <code>SIM</code>. This is 
+<li><p><code>nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method</code>: for slots <code>nextBest</code>,<code>doselimit</code>, <code>data</code> and <code>SIM</code>. This is
 a function to find the next best dose based on the 'NextBestMaxGain'
-class rule. This a method based on the DLE responses and efficacy responses without DLE and 
+class rule. This a method based on the DLE responses and efficacy responses without DLE and
 efficacy samples.</p></li>
-<li><p><code>nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method</code>: for slots <code>nextBest</code>,<code>doselimit</code>, <code>data</code> and <code>SIM</code>. This is 
+<li><p><code>nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method</code>: for slots <code>nextBest</code>,<code>doselimit</code>, <code>data</code> and <code>SIM</code>. This is
 a function to find the next best dose based on the 'NextBestMaxGainSamples'
-class rule. This a method based on the DLE responses and efficacy responses with DLE and 
-efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'>Effloglog</a></code> or  
+class rule. This a method based on the DLE responses and efficacy responses with DLE and
+efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'>Effloglog</a></code> or
 <code><a href='EffFlexi-class.html'>EffFlexi</a></code>.</p></li>
 </ul>
 
@@ -637,7 +649,7 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

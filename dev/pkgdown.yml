@@ -3,7 +3,9 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   guidelines: guidelines.html
-last_built: 2021-11-12T18:05Z
+  rolling-crm: rolling-crm.html
+  simulations: simulations.html
+last_built: 2021-11-15T21:26Z
 urls:
   reference: https://github.com/roche/crmPack/reference
   article: https://github.com/roche/crmPack/articles

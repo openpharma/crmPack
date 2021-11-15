@@ -6,11 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>This is a class which captures the trial simulations from designs using 
-pseudo model. The design for DLE only responses and model from ModelTox
-class object. It contains all slots from GeneralSimulations object.
-Additional slots fit and stopReasons compared to the general class 
-GeneralSimulations. — PseudoSimulations-class • crmPack</title>
+<title>Class PseudoSimulations — PseudoSimulations-class • crmPack</title>
 
 
 <!-- jquery -->
@@ -43,15 +39,11 @@ GeneralSimulations. — PseudoSimulations-class • crmPack</title>
 
 
 
-<meta property="og:title" content="This is a class which captures the trial simulations from designs using 
+<meta property="og:title" content="Class PseudoSimulations — PseudoSimulations-class" />
+<meta property="og:description" content="This is a class which captures the trial simulations from designs using
 pseudo model. The design for DLE only responses and model from ModelTox
 class object. It contains all slots from GeneralSimulations object.
-Additional slots fit and stopReasons compared to the general class 
-GeneralSimulations. — PseudoSimulations-class" />
-<meta property="og:description" content="This is a class which captures the trial simulations from designs using 
-pseudo model. The design for DLE only responses and model from ModelTox
-class object. It contains all slots from GeneralSimulations object.
-Additional slots fit and stopReasons compared to the general class 
+Additional slots fit and stopReasons compared to the general class
 GeneralSimulations." />
 
 
@@ -84,7 +76,7 @@ GeneralSimulations." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -108,6 +100,12 @@ GeneralSimulations." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -135,20 +133,16 @@ GeneralSimulations." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>This is a class which captures the trial simulations from designs using 
-pseudo model. The design for DLE only responses and model from <code><a href='ModelTox-class.html'>ModelTox</a></code>
-class object. It contains all slots from <code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code> object.
-Additional slots fit and stopReasons compared to the general class 
-<code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code>.</h1>
+    <h1>Class <code>PseudoSimulations</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Simulations-class.R'><code>R/Simulations-class.R</code></a></small>
     <div class="hidden name"><code>PseudoSimulations-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is a class which captures the trial simulations from designs using 
+    <p>This is a class which captures the trial simulations from designs using
 pseudo model. The design for DLE only responses and model from <code><a href='ModelTox-class.html'>ModelTox</a></code>
 class object. It contains all slots from <code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code> object.
-Additional slots fit and stopReasons compared to the general class 
+Additional slots fit and stopReasons compared to the general class
 <code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code>.</p>
     </div>
 
@@ -163,10 +157,10 @@ Additional slots fit and stopReasons compared to the general class
 If no samples are involved, these are included the final modal estimates of the model parameters
 and the posterior estimates of the probabilities of the occurrence of a DLE.</p></dd>
 
-<dt><code>FinalTDtargetDuringTrialEstimates</code></dt><dd><p>the vector of all final estimates (the last estimate of) the TDtargetDuringTrial at the end 
-of each simultaions/when each trial stops</p></dd>
+<dt><code>FinalTDtargetDuringTrialEstimates</code></dt><dd><p>the vector of all final estimates (the last estimate of) the TDtargetDuringTrial at the end
+of each simulations/when each trial stops</p></dd>
 
-<dt><code>FinalTDtargetEndOfTrialEstimates</code></dt><dd><p>vector of all final estimates or the last estimate of the TDtargetEndOfTrial when each trial 
+<dt><code>FinalTDtargetEndOfTrialEstimates</code></dt><dd><p>vector of all final estimates or the last estimate of the TDtargetEndOfTrial when each trial
 stops</p></dd>
 
 <dt><code>FinalTDtargetDuringTrialAtDoseGrid</code></dt><dd><p>vector of the dose levels at dose grid closest below the final TDtargetDuringTrial estimates</p></dd>
@@ -175,17 +169,17 @@ stops</p></dd>
 
 <dt><code>FinalTDEOTCIs</code></dt><dd><p>is the list of all 95% credibility interval of the final estimates of the TDtargetEndOfTrial</p></dd>
 
-<dt><code>FinalTDEOTRatios</code></dt><dd><p>is the vector of the ratios of the CI, the raatio of the upper to the lower 95% credibility intervals 
+<dt><code>FinalTDEOTRatios</code></dt><dd><p>is the vector of the ratios of the CI, the ratio of the upper to the lower 95% credibility intervals
 of the final estimates of the TDtargetEndOfTrial</p></dd>
 
-<dt><code>FinalCIs</code></dt><dd><p>list of all the final 95% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose 
+<dt><code>FinalCIs</code></dt><dd><p>list of all the final 95% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
 estimates when DLE and efficacy responses are incorporated after each simulations</p></dd>
 
-<dt><code>FinalRatios</code></dt><dd><p>vector of all the final ratios, the ratios of the upper to the lower 95% credibility interval of the 
-final estimates of the TDtargetEndOfTrial or of the final optimal dose estiamtes (when DLE and efficacy responses are
+<dt><code>FinalRatios</code></dt><dd><p>vector of all the final ratios, the ratios of the upper to the lower 95% credibility interval of the
+final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 incorporated) after each simulations</p></dd>
 
-<dt><code>stopReasons</code></dt><dd><p>todo: add slot description</p></dd>
+<dt><code>stopReasons</code></dt><dd><p>add slot description</p></dd>
 
 </dl>
 
@@ -200,7 +194,7 @@ incorporated) after each simulations</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

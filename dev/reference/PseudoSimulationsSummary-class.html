@@ -73,7 +73,7 @@ initialization function is provided for this class." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -97,6 +97,12 @@ initialization function is provided for this class." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -157,19 +163,19 @@ wanted during the trial. TDDT</p></dd>
 <dt><code>targetDoseDuringTrialAtDoseGrid</code></dt><dd><p>the dose level at dose grid corresponds to the target probability
 of DLE wanted during a trial</p></dd>
 
-<dt><code>TDEOTSummary</code></dt><dd><p>the six-number table summary, include the lowest, the 25th precentile (lower quatile), 
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the 
+<dt><code>TDEOTSummary</code></dt><dd><p>the six-number table summary, include the lowest, the 25th precentile (lower quartile),
+the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want at the end of a trial across all simulations</p></dd>
 
-<dt><code>TDDTSummary</code></dt><dd><p>the six-number table summary, include the lowest, the 25th precentile (lower quatile), 
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the 
+<dt><code>TDDTSummary</code></dt><dd><p>the six-number table summary, include the lowest, the 25th precentile (lower quartile),
+the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want during a trial across all simulations</p></dd>
 
-<dt><code>FinalDoseRecSummary</code></dt><dd><p>the six-number table summary, include the lowest, the 25th precentile (lower quatile), 
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the 
-final optimal doses, which is either the TDEOT when only DLE response are incorporated into 
+<dt><code>FinalDoseRecSummary</code></dt><dd><p>the six-number table summary, include the lowest, the 25th precentile (lower quartile),
+the 50th percentile (median), the mean, the 27th percentile and the highest values of the
+final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 incorporated, across all simulations</p></dd>
 
@@ -190,10 +196,10 @@ credibility intervals of the final optimal doses across all simulations
 
 <dt><code>toxAtDosesSelected</code></dt><dd><p>true toxicity at doses selected</p></dd>
 
-<dt><code>propAtTargetEndOfTrial</code></dt><dd><p>Proportion of trials selecting at the doseGrid closest below the MTD, the 
+<dt><code>propAtTargetEndOfTrial</code></dt><dd><p>Proportion of trials selecting at the doseGrid closest below the MTD, the
 targetDoseEndOfTrial</p></dd>
 
-<dt><code>propAtTargetDuringTrial</code></dt><dd><p>Proportion of trials selecting at the doseGrid closest below the 
+<dt><code>propAtTargetDuringTrial</code></dt><dd><p>Proportion of trials selecting at the doseGrid closest below the
 targetDoseDuringTrial</p></dd>
 
 <dt><code>doseMostSelected</code></dt><dd><p>dose most often selected as MTD</p></dd>
@@ -211,7 +217,7 @@ selected</p></dd>
 
 <dt><code>fitAtDoseMostSelected</code></dt><dd><p>fitted toxicity rate at dose most often selected</p></dd>
 
-<dt><code>meanFit</code></dt><dd><p>list with the average, lower (2.5<!-- %) and upper (97.5%) -->
+<dt><code>meanFit</code></dt><dd><p>list with the average, lower (2.5%) and upper (97.5%)
 quantiles of the mean fitted toxicity at each dose level</p></dd>
 
 </dl>
@@ -227,7 +233,7 @@ quantiles of the mean fitted toxicity at each dose level</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

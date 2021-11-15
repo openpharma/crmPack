@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -95,6 +95,12 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -233,6 +239,42 @@ This is a class where all models inherit.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="DADesign-class.html">DADesign-class</a></code> </p>
+        </td>
+        <td><p>Class for the time-to-DLT augmented CRM design</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DADesign.html">DADesign()</a></code> </p>
+        </td>
+        <td><p>Initialization function for <code>DADesign</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DALogisticLogNormal-class.html">DALogisticLogNormal-class</a></code> </p>
+        </td>
+        <td><p>Logistic model with bivariate (log) normal prior and data augmentation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DALogisticLogNormal.html">DALogisticLogNormal()</a></code> </p>
+        </td>
+        <td><p>Initialization function for the <code>DALogisticLogNormal</code> class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DASimulations-class.html">DASimulations-class</a></code> </p>
+        </td>
+        <td><p>Class for the simulations output from DA based designs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DASimulations.html">DASimulations()</a></code> </p>
+        </td>
+        <td><p>Initialization function for <code>DASimulations</code></p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="Data-class.html">Data-class</a></code> </p>
         </td>
         <td><p>Class for the data input</p></td>
@@ -242,6 +284,18 @@ This is a class where all models inherit.</p></td>
           <p><code><a href="Data.html">Data()</a></code> </p>
         </td>
         <td><p>Initialization function for the "Data" class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DataDA-class.html">DataDA-class</a></code> </p>
+        </td>
+        <td><p>Class for the time-to-DLT augmented data input</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DataDA.html">DataDA()</a></code> </p>
+        </td>
+        <td><p>Initialization function for the <code>DataDA</code> class</p></td>
       </tr><tr>
         
         <td>
@@ -355,9 +409,9 @@ This is a class where all models inherit.</p></td>
         <td>
           <p><code><a href="DualResponsesDesign-class.html">DualResponsesDesign-class</a></code> </p>
         </td>
-        <td><p>This is a class of design based on DLE responses using the <code>LogisticIndepBeta</code> model 
+        <td><p>This is a class of design based on DLE responses using the <code>LogisticIndepBeta</code> model
 model and efficacy responses using <code>ModelEff</code>  model class
-without DLE and efficacy samples. It contain all slots in 
+without DLE and efficacy samples. It contain all slots in
 <code>RuleDesign</code> and <code>TDDesign</code> class object</p></td>
       </tr><tr>
         
@@ -370,9 +424,9 @@ without DLE and efficacy samples. It contain all slots in
         <td>
           <p><code><a href="DualResponsesSamplesDesign-class.html">DualResponsesSamplesDesign-class</a></code> </p>
         </td>
-        <td><p>This is a class of design based on DLE responses using the <code>LogisticIndepBeta</code> model 
+        <td><p>This is a class of design based on DLE responses using the <code>LogisticIndepBeta</code> model
 model and efficacy responses using <code>ModelEff</code>  model class
-with DLE and efficacy samples.It contain all slots in 
+with DLE and efficacy samples.It contain all slots in
 <code>RuleDesign</code> and <code>TDsamplesDesign</code> class object</p></td>
       </tr><tr>
         
@@ -427,8 +481,14 @@ with DLE and efficacy samples.It contain all slots in
         <td>
           <p><code><a href="ExpEff.html">ExpEff()</a></code> </p>
         </td>
-        <td><p>Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given 
+        <td><p>Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given
 efficacy sample</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="FractionalCRM-class.html">FractionalCRM()</a></code> </p>
+        </td>
+        <td><p>Fractional CRM following paper and code by Guosheng Yin et al</p></td>
       </tr><tr>
         
         <td>
@@ -581,7 +641,7 @@ Standard logistic model with prior in form of pseudo data</p></td>
         <td>
           <p><code><a href="LogisticLogNormalSub-class.html">LogisticLogNormalSub-class</a></code> </p>
         </td>
-        <td><p>Standard logistic model with bivariate (log) normal prior with substractive
+        <td><p>Standard logistic model with bivariate (log) normal prior with subtractive
 dose standardization</p></td>
       </tr><tr>
         
@@ -668,8 +728,8 @@ class for Efficacy models using pseudo data prior</p></td>
           <p><code><a href="ModelTox-class.html">ModelTox-class</a></code> </p>
         </td>
         <td><p>No intialization function
-Class for DLE models using pseudo data prior. 
-This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models 
+Class for DLE models using pseudo data prior.
+This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
 for which their prior are specified in form of pseudo data (as if there is some data before
 the trial starts). It inherits all slots from <code>ModelPseudo</code></p></td>
       </tr><tr>
@@ -730,6 +790,12 @@ based on the dual endpoint model</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="NextBestMinDist-class.html">NextBestMinDist()</a></code> </p>
+        </td>
+        <td><p>Class for Next Best Dose based on Minimum Distance to Target Probability</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="NextBestNCRM-class.html">NextBestNCRM-class</a></code> </p>
         </td>
         <td><p>The class with the input for finding the next dose in target interval</p></td>
@@ -778,6 +844,12 @@ based on the dual endpoint model</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="OneParExpNormalPrior-class.html">OneParExpNormalPrior()</a></code> </p>
+        </td>
+        <td><p>CRM Model with Skeleton Prior Probabilities</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="ProbitLogNormal-class.html">ProbitLogNormal-class</a></code> </p>
         </td>
         <td><p>Probit model with bivariate log normal prior</p></td>
@@ -794,12 +866,12 @@ based on the dual endpoint model</p></td>
         </td>
         <td><p>This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from <code>ModelTox</code>
-class and the efficacy model from <code>EffFlexi</code> class 
- It contains all slots from 
-<code>GeneralSimulations</code>, <code>PseudoSimulations</code> 
+class and the efficacy model from <code>EffFlexi</code> class
+It contains all slots from
+<code>GeneralSimulations</code>, <code>PseudoSimulations</code>
 and <code>PseudoDualSimulations</code> object.
-In comparison to the parent class <code>PseudoDualSimulations</code>, 
-it contains additional slots to 
+In comparison to the parent class <code>PseudoDualSimulations</code>,
+it contains additional slots to
 capture the sigma2betaW estimates.</p></td>
       </tr><tr>
         
@@ -812,14 +884,7 @@ capture the sigma2betaW estimates.</p></td>
         <td>
           <p><code><a href="PseudoDualSimulations-class.html">PseudoDualSimulations-class</a></code> </p>
         </td>
-        <td><p>This is a class which captures the trial simulations design using both the
-DLE and efficacy responses. The design of model from <code>ModelTox</code>
-class and the efficacy model from <code>ModelEff</code> class 
-(except <code>EffFlexi</code> class). It contains all slots from 
-<code>GeneralSimulations</code> and <code>PseudoSimulations</code> object.
-In comparison to the parent class <code>PseudoSimulations</code>, 
-it contains additional slots to 
-capture the dose-efficacy curve and the sigma2 estimates.</p></td>
+        <td><p>Class <code>PseudoDualSimulations</code></p></td>
       </tr><tr>
         
         <td>
@@ -837,11 +902,7 @@ capture the dose-efficacy curve and the sigma2 estimates.</p></td>
         <td>
           <p><code><a href="PseudoSimulations-class.html">PseudoSimulations-class</a></code> </p>
         </td>
-        <td><p>This is a class which captures the trial simulations from designs using 
-pseudo model. The design for DLE only responses and model from <code>ModelTox</code>
-class object. It contains all slots from <code>GeneralSimulations</code> object.
-Additional slots fit and stopReasons compared to the general class 
-<code>GeneralSimulations</code>.</p></td>
+        <td><p>Class <code>PseudoSimulations</code></p></td>
       </tr><tr>
         
         <td>
@@ -879,6 +940,37 @@ normal model</p></td>
           <p><code><a href="RuleDesign.html">RuleDesign()</a></code> </p>
         </td>
         <td><p>Initialization function for "RuleDesign"</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SafetyWindow-class.html">SafetyWindow-class</a></code> </p>
+        </td>
+        <td><p>The virtual class for safety window</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SafetyWindowConst-class.html">SafetyWindowConst-class</a></code> </p>
+        </td>
+        <td><p>Constant safety window length</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SafetyWindowConst.html">SafetyWindowConst()</a></code> </p>
+        </td>
+        <td><p>Initialization function for <code>SafetyWindowConst</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SafetyWindowSize-class.html">SafetyWindowSize-class</a></code> </p>
+        </td>
+        <td><p>Safety window length based on cohort size.
+This class is used to decide the rolling rule from the clinical perspective.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SafetyWindowSize.html">SafetyWindowSize()</a></code> </p>
+        </td>
+        <td><p>Initialization function for <code>SafetyWindowSize</code></p></td>
       </tr><tr>
         
         <td>
@@ -920,7 +1012,7 @@ normal model</p></td>
         <td>
           <p><code><a href="StoppingAll-class.html">StoppingAll-class</a></code> </p>
         </td>
-        <td><p>Stop based on fullfillment of all multiple stopping rules</p></td>
+        <td><p>Stop based on fulfillment of all multiple stopping rules</p></td>
       </tr><tr>
         
         <td>
@@ -932,7 +1024,7 @@ normal model</p></td>
         <td>
           <p><code><a href="StoppingAny-class.html">StoppingAny-class</a></code> </p>
         </td>
-        <td><p>Stop based on fullfillment of any stopping rule</p></td>
+        <td><p>Stop based on fulfillment of any stopping rule</p></td>
       </tr><tr>
         
         <td>
@@ -957,8 +1049,8 @@ normal model</p></td>
           <p><code><a href="StoppingGstarCIRatio-class.html">StoppingGstarCIRatio-class</a></code> </p>
         </td>
         <td><p>Stop based on a target ratio, the ratio of the upper to the lower
-95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and 
-the TD end of trial, the dose with probability of DLE equals to the target 
+95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
+the TD end of trial, the dose with probability of DLE equals to the target
 probability of DLE used at the end of a trial.</p></td>
       </tr><tr>
         
@@ -1044,7 +1136,7 @@ probability of DLE used at the end of a trial.</p></td>
           <p><code><a href="StoppingTDCIRatio-class.html">StoppingTDCIRatio-class</a></code> </p>
         </td>
         <td><p>Stop based on a target ratio, the ratio of the upper to the lower
-95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target 
+95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
 probability of DLE used at the end of a trial</p></td>
       </tr><tr>
         
@@ -1063,7 +1155,7 @@ probability of DLE used at the end of a trial</p></td>
         <td>
           <p><code><a href="StoppingTargetBiomarker.html">StoppingTargetBiomarker()</a></code> </p>
         </td>
-        <td><p>Initialization function for "StoppingTargetBiomarker"</p></td>
+        <td><p>Initialization function for <code>StoppingTargetBiomarker</code></p></td>
       </tr><tr>
         
         <td>
@@ -1094,7 +1186,7 @@ probability of DLE used at the end of a trial</p></td>
           <p><code><a href="TDsamplesDesign-class.html">TDsamplesDesign-class</a></code> </p>
         </td>
         <td><p>This is a class of design based only on DLE responses using the 'LogisticIndepBeta' class model
-and DLE samples are also used. 
+and DLE samples are also used.
 In addition to the slots in the more simple <code>RuleDesign</code>,
 objects of this class contain:</p></td>
       </tr><tr>
@@ -1103,6 +1195,18 @@ objects of this class contain:</p></td>
           <p><code><a href="TDsamplesDesign.html">TDsamplesDesign()</a></code> </p>
         </td>
         <td><p>Initialization function for 'TDsamplesDesign' class</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="TITELogisticLogNormal-class.html">TITELogisticLogNormal-class</a></code> </p>
+        </td>
+        <td><p>Standard logistic model with bivariate (log) normal prior (for TITE-CRM use)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="TITELogisticLogNormal.html">TITELogisticLogNormal()</a></code> </p>
+        </td>
+        <td><p>Initialization function for the <code>TITELogisticLogNormal</code> class</p></td>
       </tr><tr>
         
         <td>
@@ -1192,16 +1296,24 @@ objects of this class contain:</p></td>
         <td>
           <p><code><a href="fitGain.html">fitGain()</a></code> </p>
         </td>
-        <td><p>Get the fiited values for the gain values at all dose levels based on 
-a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample 
-and data. This method returns a data frame with dose, middle, lower and upper quantiles 
+        <td><p>Get the fitted values for the gain values at all dose levels based on
+a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
+and data. This method returns a data frame with dose, middle, lower and upper quantiles
 of the gain value samples</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="fitPEM.html">fitPEM()</a></code> </p>
+        </td>
+        <td><p>Get the fitted DLT free survival (piecewise exponential model).
+This function returns a data frame with dose, middle, lower and upper
+quantiles for the <code>PEM</code> curve. If hazard=TRUE,</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="gain.html">gain()</a></code> </p>
         </td>
-        <td><p>Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample, 
+        <td><p>Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample,
 a pseudo Efficacy log-log model and a Efficacy sample</p></td>
       </tr><tr>
         
@@ -1215,7 +1327,7 @@ a pseudo Efficacy log-log model and a Efficacy sample</p></td>
           <p><code><a href="getEff.html">getEff()</a></code> </p>
         </td>
         <td><p>Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding 
+efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
 dose levels treated at in two categories (with or without DLE)</p></td>
       </tr><tr>
         
@@ -1310,6 +1422,12 @@ dose levels treated at in two categories (with or without DLE)</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plot-DataDA-missing-method.html">plot(<i>&lt;DataDA&gt;</i>,<i>&lt;missing&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot method for the <code>DataDA</code> class</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plot-DataDual-ModelEff-method.html">plot(<i>&lt;DataDual&gt;</i>,<i>&lt;ModelEff&gt;</i>)</a></code> </p>
         </td>
         <td><p>Plot of the fitted dose-efficacy based with a given pseudo efficacy model and data without samples</p></td>
@@ -1353,9 +1471,9 @@ objects in order to summarize them graphically. Possible <code>type</code>s of
 plots at the moment are: <dl>
 <dt>trajectory</dt><dd><p>Summary of the
 trajectory of the simulated trials</p></dd> <dt>dosesTried</dt><dd><p>Average proportions of
-the doses tested in patients</p></dd> <dt>sigma2</dt><dd><p>The variance of the efficacy responses</p></dd> 
+the doses tested in patients</p></dd> <dt>sigma2</dt><dd><p>The variance of the efficacy responses</p></dd>
 <dt>sigma2betaW</dt><dd><p>The variance of the random walk model</p></dd>
-</dl> 
+</dl>
 You can specify one or both of these in the
 <code>type</code> argument.</p></td>
       </tr><tr>
@@ -1379,6 +1497,12 @@ You can specify one or both of these in the
       </tr><tr>
         
         <td>
+          <p><code><a href="plot-Samples-DALogisticLogNormal-method.html">plot(<i>&lt;Samples&gt;</i>,<i>&lt;DALogisticLogNormal&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plotting dose-toxicity model fits</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plot-Samples-DualEndpoint-method.html">plot(<i>&lt;Samples&gt;</i>,<i>&lt;DualEndpoint&gt;</i>)</a></code> </p>
         </td>
         <td><p>Plotting dose-toxicity and dose-biomarker model fits</p></td>
@@ -1393,7 +1517,7 @@ You can specify one or both of these in the
         <td>
           <p><code><a href="plot-Samples-ModelEff-method.html">plot(<i>&lt;Samples&gt;</i>,<i>&lt;ModelEff&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Plot the fitted dose-effcacy curve using a model from <code>ModelEff</code> class
+        <td><p>Plot the fitted dose-efficacy curve using a model from <code>ModelEff</code> class
 with samples</p></td>
       </tr><tr>
         
@@ -1484,6 +1608,12 @@ a DLE sample, a given efficacy pseudo model and an efficacy sample</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="simulate-DADesign-method.html">simulate(<i>&lt;DADesign&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Simulate outcomes from a time-to-DLT augmented CRM design (<code>DADesign</code>)</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="simulate-Design-method.html">simulate(<i>&lt;Design&gt;</i>)</a></code> </p>
         </td>
         <td><p>Simulate outcomes from a CRM design</p></td>
@@ -1501,7 +1631,7 @@ a DLE sample, a given efficacy pseudo model and an efficacy sample</p></td>
         <td><p>This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
 This is a method based on the <code>DualResponsesDesign</code> where DLEmodel used are of
 <code>ModelTox</code> class object and efficacy model used are of <code>ModelEff</code>
-class object. In addition, no DLE and efficacy samples are involved or generated in the simulation 
+class object. In addition, no DLE and efficacy samples are involved or generated in the simulation
 process</p></td>
       </tr><tr>
         
@@ -1509,12 +1639,12 @@ process</p></td>
           <p><code><a href="simulate-DualResponsesSamplesDesign-method.html">simulate(<i>&lt;DualResponsesSamplesDesign&gt;</i>)</a></code> </p>
         </td>
         <td><p>This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the <code>DualResponsesSamplesDesign</code> where DLEmodel 
+This is a method based on the <code>DualResponsesSamplesDesign</code> where DLEmodel
 used are of
-<code>ModelTox</code> class object and efficacy model used are of 
+<code>ModelTox</code> class object and efficacy model used are of
 <code>ModelEff</code>
-class object (special case is <code>EffFlexi</code> class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is <code>EffFlexi</code> class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process</p></td>
       </tr><tr>
         
@@ -1574,7 +1704,7 @@ dose-toxicity and dose-biomarker curves</p></td>
         <td>
           <p><code><a href="summary-PseudoDualSimulations-method.html">summary(<i>&lt;PseudoDualSimulations&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model 
+        <td><p>Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model
 (except the EffFlexi class model)</p></td>
       </tr><tr>
         
@@ -1597,6 +1727,12 @@ dose-toxicity and dose-biomarker curves</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="update-DataDA-method.html">update(<i>&lt;DataDA&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Update method for the <code>DataDA</code> class</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="update-DataDual-method.html">update(<i>&lt;DataDual&gt;</i>)</a></code> </p>
         </td>
         <td><p>Update method for the "DataDual" class</p></td>
@@ -1611,9 +1747,9 @@ dose-toxicity and dose-biomarker curves</p></td>
         <td>
           <p><code><a href="update-EffFlexi-method.html">update(<i>&lt;EffFlexi&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Update method for the 'EffFlexi' Model class. This is a method to update 
+        <td><p>Update method for the 'EffFlexi' Model class. This is a method to update
 estimates both for the flexible form model and the random walk model (see details in
-<code>EffFlexi</code> class object) when new data 
+<code>EffFlexi</code> class object) when new data
 or new observations of responses are available and added in.</p></td>
       </tr><tr>
         
@@ -1621,8 +1757,8 @@ or new observations of responses are available and added in.</p></td>
           <p><code><a href="update-Effloglog-method.html">update(<i>&lt;Effloglog&gt;</i>)</a></code> </p>
         </td>
         <td><p>Update method for the 'Effloglog' Model class. This is a method to update the modal
-estimates of the model parameters \(\theta_1\) (theta1), \(\theta_2\) (theta2)  and \(\nu\) 
-(nu, the precision of the efficacy responses) when new data 
+estimates of the model parameters \(\theta_1\) (theta1), \(\theta_2\) (theta2)  and \(\nu\)
+(nu, the precision of the efficacy responses) when new data
 or new observations of responses are available and added in.</p></td>
       </tr><tr>
         
@@ -1630,8 +1766,14 @@ or new observations of responses are available and added in.</p></td>
           <p><code><a href="update-LogisticIndepBeta-method.html">update(<i>&lt;LogisticIndepBeta&gt;</i>)</a></code> </p>
         </td>
         <td><p>Update method for the 'LogisticIndepBeta'Model class. This is a method to update the modal
-estimates of the model parameters \(\phi_1\) (phi1) and \(\phi_2\) (phi2) when new data 
+estimates of the model parameters \(\phi_1\) (phi1) and \(\phi_2\) (phi2) when new data
 or new observations of responses are available and added in.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="windowLength.html">windowLength()</a></code> </p>
+        </td>
+        <td><p>Determine the safety window length of the next cohort</p></td>
       </tr><tr>
         
         <td>
@@ -1653,7 +1795,7 @@ or new observations of responses are available and added in.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">

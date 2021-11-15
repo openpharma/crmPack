@@ -78,7 +78,7 @@ ModelTox class object and no samples are involved." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crmPack</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.0</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.0.9000</span>
       </span>
     </div>
 
@@ -102,6 +102,12 @@ ModelTox class object and no samples are involved." />
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/guidelines.html">Guidelines for developers and maintainer</a>
+    </li>
+    <li>
+      <a href="../articles/rolling-crm.html">Rolling CRM Example</a>
+    </li>
+    <li>
+      <a href="../articles/simulations.html">Simulation study example</a>
     </li>
   </ul>
 </li>
@@ -172,7 +178,7 @@ This is a method based on the <code><a href='TDDesign-class.html'>TDDesign</a></
     </tr>
     <tr>
       <th>truth</th>
-      <td><p>a function which takes as input a dose (vector) and returns the true probability 
+      <td><p>a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in <code>args</code>.</p></td>
     </tr>
     <tr>
@@ -211,7 +217,7 @@ Defaults to the number of cores on the machine, maximum 5.</p></td>
 
     <p>an object of class <code><a href='PseudoSimulations-class.html'>PseudoSimulations</a></code></p>
 <p>@export
- @keywords methods</p>
+@keywords methods</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>##Simulate dose-escalation procedure based only on DLE responses and no DLE samples are used</span>
@@ -232,7 +238,7 @@ Defaults to the number of cores on the machine, maximum 5.</p></td>
                              doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,
                              model<span class='op'>=</span><span class='va'>model</span>,
                              data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "TD 30 = 14.3714101936776  not within dose Grid"</div><div class='input'><span class='co'>##Then the starting data, an empty data set</span>
+</div><div class='output co'>#&gt; [1] "TD 30 = 14.3714101936777  not within dose Grid"</div><div class='input'><span class='co'>##Then the starting data, an empty data set</span>
 <span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
 <span class='co'>## The cohort size, size of 3 subjects</span>
 <span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
@@ -281,7 +287,7 @@ Defaults to the number of cores on the machine, maximum 5.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki.</p>
+  <p>Developed by Daniel Sabanes Bove, Wai Yin Yeung, Giuseppe Palermo, Thomas Jaki, Jiawen Zhu, Ziwei Liao.</p>
 </div>
 
 <div class="pkgdown">
