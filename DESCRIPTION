@@ -41,6 +41,8 @@ Suggests:
     knitr,
     Rcpp,
     RcppArmadillo
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 VignetteBuilder: 
     knitr
 Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 
@@ -67,5 +69,3 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
