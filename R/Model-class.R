@@ -4025,8 +4025,8 @@ validObject(.OneParExpNormalPrior())
 
 ##' @describeIn OneParExpNormalPrior-class Initialization function for the
 ##'   `OneParExpNormalPrior` class.
-##' @param skeletonFun function to calculate the prior DLT probabilities.
 ##' @param skeletonProbs skeleton prior probabilities.
+##' @param doseGrid dose grid.
 ##' @param sigma2 prior variance of log power parameter alpha.
 ##'
 ##' @export

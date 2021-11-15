@@ -12,9 +12,9 @@ OneParExpNormalPrior(skeletonProbs, doseGrid, sigma2)
 \arguments{
 \item{skeletonProbs}{skeleton prior probabilities.}
 
-\item{sigma2}{prior variance of log power parameter alpha.}
+\item{doseGrid}{dose grid.}
 
-\item{skeletonFun}{function to calculate the prior DLT probabilities.}
+\item{sigma2}{prior variance of log power parameter alpha.}
 }
 \description{
 This is a standard CRM with a normal prior on the log power parameter
