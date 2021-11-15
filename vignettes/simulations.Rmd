@@ -44,6 +44,7 @@ if(onset==30) {
 
 Here the the dose escalation designs are defined: in this example the TITE-CRM is used. Similarly the code can be adapted for the rolling-CRM.
 
+```{r dose_definition}
 Tmax_ <- 42
 
 model <- TITELogisticLogNormal(mean=c(1.33,1.49),
