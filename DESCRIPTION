@@ -1,7 +1,5 @@
 Package: crmPack
-License: GPL (>= 2)
 Title: Object-Oriented Implementation of CRM Designs
-LazyLoad: yes
 Authors@R: c(
   person("Daniel", "Sabanes Bove", email = "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
   person("Wai", "Yin Yeung", email = "winnie.yeung@roche.com", role = "aut"),
@@ -20,30 +18,36 @@ Description: Implements a wide range of model-based dose
     flexible for adaptation to new models, escalation or stopping rules.
 Version: 1.0.9000
 BugReports: https://github.com/roche/crmPack/issues
-Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 
-    Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
-URL: https://CRAN.R-project.org/package=crmPack
-VignetteBuilder: knitr
+License: GPL (>= 2)
+URL: https://github.com/roche/crmPack
+BugReports: https://github.com/roche/crmPack/issues
 Depends:
-    R (>= 3.0.0),
     ggplot2 (>= 2.0.0),
-    graphics
+    graphics,
+    R (>= 3.0.0)
 Imports:
-    methods,
+    GenSA,
     grid,
     gridExtra,
-    GenSA,
+    MASS,
+    methods,
     mvtnorm,
     parallel,
     rjags,
-    utils,
     tools,
-    MASS
+    utils
 Suggests:
     ggmcmc,
     knitr,
     Rcpp,
     RcppArmadillo
+VignetteBuilder: 
+    knitr
+Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 
+    Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
+Language: en-US
+LazyLoad: yes
+RoxygenNote: 7.1.2
 Collate:
     'helpers.R'
     'Data-class.R'

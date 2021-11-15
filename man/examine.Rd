@@ -55,9 +55,6 @@ listed.
 \item \code{examine,RuleDesign-method}: Examine a rule-based design
 
 \item \code{examine,DADesign-method}: Examine a model-based CRM
-Warning:  this code takes long time to run! I use code "savePlot" to output
-the result for each loop, which can be removed. I have marked those places
-where I output the plots--Jiawen;
 }}
 
 \examples{
