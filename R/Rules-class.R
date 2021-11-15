@@ -300,6 +300,7 @@ NextBestDualEndpoint <- function(target,
 validObject(.NextBestMinDist())
 
 #' @describeIn NextBestMinDist-class Initialization function for `NextBestMinDist`.
+#' @param target target DLT probability.
 #' @export
 NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
 validObject(NextBestMinDist(0.1))
@@ -2002,7 +2003,9 @@ SafetyWindowSize <- function(patientGap,
 ##'
 ##' This class is used when the `patientGap` should be kept constant.
 ##'
-##' @slot size the constant integer size
+##' @slot patientGap the constant gap between patients.
+##' @slot patientFollow how long to follow each patient.
+##' @slot patientFollowMin minimum follow up.
 ##'
 ##' @example examples/Rules-class-SafetyWindowConst.R
 ##' @keywords classes
@@ -2023,7 +2026,7 @@ SafetyWindowSize <- function(patientGap,
                o$check(all(object@patientGap >= 0),
                        "patientGap should be non-negative number")
                o$check(all(object@patientFollow > 0),
-                       "cohort should be positive number")
+                       "patientFollow should be positive number")
                o$check(all(object@patientFollowMin > 0),
                        "patientFollowMin should be positive number")
 
@@ -2046,7 +2049,7 @@ SafetyWindowConst <- function(patientGap,
                               patientFollow,
                               patientFollowMin)
 {
-  if(patientFollow>patientFollowMin)
+  if(patientFollow > patientFollowMin)
   {
     warning("the value of patientFollowMin is typically larger than the value of patientFollow")
   }

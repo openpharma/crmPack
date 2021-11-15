@@ -3328,7 +3328,11 @@ setMethod("windowLength",
               patientFollow <- safetyWindow@patientFollow
               patientFollowMin <- safetyWindow@patientFollowMin
 
-              ret <- list(patientGap=patientGap,patientFollow=patientFollow,patientFollowMin=patientFollowMin)
+              ret <- list(
+                patientGap=patientGap,
+                patientFollow=patientFollow,
+                patientFollowMin=patientFollowMin
+              )
 
               return(ret)
             })

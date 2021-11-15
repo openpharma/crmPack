@@ -21,7 +21,4 @@ the \code{\link[ggplot2]{ggplot}} object
 \description{
 Plot method for the \code{DataDA} class
 }
-\examples{
-
-}
 \keyword{methods}

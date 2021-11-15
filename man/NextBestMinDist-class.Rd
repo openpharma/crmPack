@@ -9,6 +9,9 @@
 \usage{
 NextBestMinDist(target)
 }
+\arguments{
+\item{target}{target DLT probability.}
+}
 \description{
 This is typically used for CRM designs where a single target DLT probability
 is targeted.

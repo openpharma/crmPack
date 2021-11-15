@@ -407,11 +407,14 @@ else
 }
 
 ##' Compute the distribution function of Inverse gamma distribution
+##'
 ##' @param q vector of quantiles
 ##' @param a the shape parameter of the inverse gamma distribution
 ##' @param b the scale parameter of the inverse gamma distribution
-##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
-##' @param logical; FALSE (default) if TRUE, probabilities/densities p are returned as log(p)
+##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
+##'   otherwise, `P(X <= x)`.
+##' @param logical; FALSE (default) if TRUE, probabilities/densities p
+##'   are returned as `log(p)`
 ##'
 ##' @keywords internal
 pinvGamma <- function(q,
@@ -431,8 +434,10 @@ pinvGamma <- function(q,
 ##' @param p vector of probabilities
 ##' @param a the shape parameter of the inverse gamma distribution
 ##' @param b the scale parameter of the inverse gamma distribution
-##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
-##' @param logical; FALSE (default) if TRUE, probabilities/densities p are returned as log(p)
+##' @param lower.tail logical; if TRUE (default), probabilities are `P(X  > x)`,
+##'   otherwise, `P(X <= x)`.
+##' @param logical; FALSE (default) if TRUE, probabilities/densities p are
+##'   returned as `log(p)`
 ##'
 ##' @keywords internal
 qinvGamma <- function(p,

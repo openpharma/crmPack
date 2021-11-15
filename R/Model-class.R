@@ -4025,10 +4025,15 @@ validObject(.OneParExpNormalPrior())
 
 ##' @describeIn OneParExpNormalPrior-class Initialization function for the
 ##'   `OneParExpNormalPrior` class.
+##' @param skeletonFun function to calculate the prior DLT probabilities.
+##' @param skeletonProbs skeleton prior probabilities.
+##' @param sigma2 prior variance of log power parameter alpha.
 ##'
 ##' @export
 ##' @keywords methods
-OneParExpNormalPrior <- function(skeletonProbs, doseGrid, sigma2)
+OneParExpNormalPrior <- function(skeletonProbs,
+                                 doseGrid,
+                                 sigma2)
 {
   skeletonFun <- approxfun(x = doseGrid, y = skeletonProbs, rule = 2)
   invSkeletonFun <- approxfun(x = skeletonProbs, y = doseGrid, rule = 1)
@@ -4078,7 +4083,8 @@ validObject(OneParExpNormalPrior(
 validObject(.FractionalCRM())
 
 ##' @describeIn FractionalCRM-class Initialization function for the fractional CRM.
-##'   Takes the same arguments as \code{\link{OneParExpNormalPrior}}
+##'   Takes the same arguments as [OneParExpNormalPrior()].
+##' @param \dots inputs as in [OneParExpNormalPrior()].
 ##' @importFrom survival survfit Surv
 ##' @export
 FractionalCRM <- function(...) {

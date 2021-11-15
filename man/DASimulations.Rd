@@ -7,9 +7,9 @@
 DASimulations(trialduration, ...)
 }
 \arguments{
-\item{\dots}{additional parameters from \code{\link{Simulations}}}
+\item{trialduration}{see \code{\linkS4class{DASimulations}}}
 
-\item{trialdurationt}{see \code{\linkS4class{DASimulations}}}
+\item{\dots}{additional parameters from \code{\link{Simulations}}}
 }
 \value{
 the \code{\linkS4class{DASimulations}} object

@@ -9,6 +9,9 @@
 \usage{
 FractionalCRM(...)
 }
+\arguments{
+\item{\dots}{inputs as in \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior()}}.}
+}
 \description{
 This is a fractional CRM model based on a one parameter CRM (with normal
 prior on the log-power parameter) as well as Kaplan-Meier based estimation
@@ -18,7 +21,7 @@ observations.
 \section{Functions}{
 \itemize{
 \item \code{FractionalCRM}: Initialization function for the fractional CRM.
-Takes the same arguments as \code{\link{OneParExpNormalPrior}}
+Takes the same arguments as \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior()}}.
 }}
 
 \keyword{classes}

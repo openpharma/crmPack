@@ -699,7 +699,7 @@ validObject(.DASimulations())
 
 ##' Initialization function for `DASimulations`
 ##'
-##' @param trialdurationt see \code{\linkS4class{DASimulations}}
+##' @param trialduration see \code{\linkS4class{DASimulations}}
 ##' @param \dots additional parameters from \code{\link{Simulations}}
 ##' @return the \code{\linkS4class{DASimulations}} object
 ##'

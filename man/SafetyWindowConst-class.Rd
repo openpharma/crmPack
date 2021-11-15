@@ -11,7 +11,11 @@ This class is used when the \code{patientGap} should be kept constant.
 \section{Slots}{
 
 \describe{
-\item{\code{size}}{the constant integer size}
+\item{\code{patientGap}}{the constant gap between patients.}
+
+\item{\code{patientFollow}}{how long to follow each patient.}
+
+\item{\code{patientFollowMin}}{minimum follow up.}
 }}
 
 \examples{

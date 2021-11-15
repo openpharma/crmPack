@@ -453,6 +453,7 @@ setMethod("getEff",
 ##' @param ID the patient IDs
 ##' @param newCohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort
+##' @param trialtime current time in the trial.
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataDA}} object
 ##'
@@ -561,7 +562,6 @@ setMethod("update",
 ##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
 ##' @importFrom gridExtra arrangeGrob
 ##'
-##' @example examples/Data-method-plot-DAData.R
 ##' @export
 ##' @keywords methods
 setMethod("plot",

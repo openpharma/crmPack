@@ -27,6 +27,8 @@
 
 \item{thisDose}{the current dose of the cohort}
 
+\item{trialtime}{current time in the trial.}
+
 \item{ID}{the patient IDs}
 
 \item{newCohort}{logical: if TRUE (default) the new data are assigned
