@@ -3,14 +3,14 @@
 ## 12 dose levels are usesd from 25 to 300 mg with increments of 25.
 emptydata<-DataDual(doseGrid=seq(25,300,25))
 data<-emptydata
-## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and 
+## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and
 ## specified in (Effdose slot).
-## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and 
+## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and
 ## specified in (Eff slot).
-## The prior variance of the pseudo efficay responses. This can be either a fixed value of 
-## specifying the shape (a) and the rate (b) parameters for the inverse gamma distribution 
-## in (sigma2 slot). The prior variance of the random walk model which can be a fixed value or 
-## two value for the shape (a) and rate (b) parameter of the inverse gamma distribution in 
+## The prior variance of the pseudo efficacy responses. This can be either a fixed value of
+## specifying the shape (a) and the rate (b) parameters for the inverse gamma distribution
+## in (sigma2 slot). The prior variance of the random walk model which can be a fixed value or
+## two value for the shape (a) and rate (b) parameter of the inverse gamma distribution in
 ## (sigma2betaW slot). The data are specified in (data slot)
 
 

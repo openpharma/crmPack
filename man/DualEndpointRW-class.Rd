@@ -26,7 +26,7 @@ either be fixed or assigned an inverse gamma prior distribution.
 Non-equidistant dose grids can be used now, because the difference
 \eqn{x_{i} - x_{i-1}} is included in the modelling assumption above.
 
-Please note that due to impropriety of the RW prior distributions, it is 
+Please note that due to impropriety of the RW prior distributions, it is
 not possible to produce MCMC samples with empty data objects (i.e., sample
 from the prior). This is not a bug, but a theoretical feature of this
 model.

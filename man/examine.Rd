@@ -4,6 +4,7 @@
 \alias{examine}
 \alias{examine,Design-method}
 \alias{examine,RuleDesign-method}
+\alias{examine,DADesign-method}
 \title{Obtain hypothetical trial course table for a design}
 \usage{
 examine(object, ..., maxNoIncrement = 100L)
@@ -11,6 +12,8 @@ examine(object, ..., maxNoIncrement = 100L)
 \S4method{examine}{Design}(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement)
 
 \S4method{examine}{RuleDesign}(object, ..., maxNoIncrement = 100L)
+
+\S4method{examine}{DADesign}(object, mcmcOptions = McmcOptions(), ..., maxNoIncrement)
 }
 \arguments{
 \item{object}{the design (\code{\linkS4class{Design}} or
@@ -18,7 +21,7 @@ examine(object, ..., maxNoIncrement = 100L)
 
 \item{\dots}{additional arguments (see methods)}
 
-\item{maxNoIncrement}{maximum number of contiguous next doses at 0 
+\item{maxNoIncrement}{maximum number of contiguous next doses at 0
 DLTs that are the same as before, i.e. no increment (default to 100)}
 
 \item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
@@ -32,24 +35,28 @@ The data frame
 This generic function takes a design and generates a dataframe
 showing the beginning of several hypothetical trial courses under
 the design. This means, from the generated dataframe one can read off:
-- how many cohorts are required in the optimal case (no DLTs observed) in
-  order to reach the highest dose of the specified dose grid (or until
-  the stopping rule is fulfilled)
-- assuming no DLTs are observed until a certain dose level, what the next
-  recommended dose is for all possible number of DLTs observed
-- the actual relative increments that will be used in these cases
-- whether the trial would stop at a certain cohort
+\itemize{
+\item how many cohorts are required in the optimal case (no DLTs observed) in
+order to reach the highest dose of the specified dose grid (or until
+the stopping rule is fulfilled)
+\item assuming no DLTs are observed until a certain dose level, what the next
+recommended dose is for all possible number of DLTs observed
+\item the actual relative increments that will be used in these cases
+\item whether the trial would stop at a certain cohort
 Examining the "single trial" behavior of a dose escalation design is
 the first important step in evaluating a design, and cannot be replaced by
 studying solely the operating characteristics in "many trials". The cohort
 sizes are also taken from the design, assuming no DLTs occur until the dose
 listed.
 }
+}
 \section{Functions}{
 \itemize{
 \item \code{examine,Design-method}: Examine a model-based CRM
 
 \item \code{examine,RuleDesign-method}: Examine a rule-based design
+
+\item \code{examine,DADesign-method}: Examine a model-based CRM
 }}
 
 \examples{
@@ -143,6 +150,66 @@ myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
 # Examine the design
 set.seed(4235)
 examine(myDesign)
+# Define the dose-grid and PEM parameters
+emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
+                               seq(from=10, to=80, by=2)),Tmax=60)
+# Initialize the mDA-CRM model
+npiece_=10
+Tmax_=60
+
+lambda_prior<-function(k){
+  npiece_/(Tmax_*(npiece_-k+0.5))
+}
+
+model<-DALogisticLogNormal(mean=c(-0.85,1),
+                           cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
+                           refDose=56,
+                           npiece=npiece_,
+                           l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
+                           C_par=2)
+# Choose the rule for dose increments
+myIncrements <- IncrementsRelative(intervals=c(0,20),
+                                   increments=c(1,0.33))
+# Choose the rule for selecting the next dose
+nextMaxDose <- maxDose(myIncrements,data=emptydata)
+
+myNextBest <- NextBestNCRM(target=c(0.2,0.35),
+                           overdose=c(0.35,1),
+                           maxOverdoseProb=0.25)
+
+# Choose the rule for the cohort-size
+mySize1 <- CohortSizeRange(intervals=c(0, 30),
+                           cohortSize=c(1, 3))
+mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
+                         cohortSize=c(1, 3))
+mySize <- maxSize(mySize1, mySize2)
+
+# Choose the rule for stopping
+myStopping1 <- StoppingTargetProb(target=c(0.2, 0.35),
+                                  prob=0.5)
+myStopping2 <- StoppingMinPatients(nPatients=50)
+
+myStopping <- (myStopping1 | myStopping2)
+
+# Choose the safety window
+mysafetywindow=SafetyWindowConst(c(6,2),7,7)
+
+# Initialize the design
+design <- DADesign(model=model,
+                   increments=myIncrements,
+                   nextBest=myNextBest,
+                   stopping=myStopping,
+                   cohortSize=mySize,
+                   data=emptydata,
+                   safetyWindow=mysafetywindow,
+                   startingDose=3)
+
+set.seed(4235)
+# MCMC parameters are set to small values only to show this example. They should be
+# increased for a real case.
+# This procedure will take a while.
+options <- McmcOptions(burnin=10,step=1,samples=100)
+# examine(design, mcmcOptions=options)
 }
 \keyword{methods}
 \keyword{regression}

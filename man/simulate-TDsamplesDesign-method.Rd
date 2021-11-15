@@ -26,7 +26,7 @@ This is a method based on the \code{\linkS4class{TDsamplesDesign}} where model u
 
 \item{seed}{see \code{\link{setSeed}}}
 
-\item{truth}{a function which takes as input a dose (vector) and returns the true probability 
+\item{truth}{a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}
 
 \item{args}{data frame with arguments for the \code{truth} function. The
@@ -56,8 +56,8 @@ Defaults to the number of cores on the machine, maximum 5.}
 \value{
 an object of class \code{\linkS4class{PseudoSimulations}}
 
- @export
- @keywords methods
+@export
+@keywords methods
 }
 \description{
 This is a methods to simulate dose escalation procedure only using the DLE responses.

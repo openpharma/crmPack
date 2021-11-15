@@ -3,3 +3,17 @@
 .RData
 .Ruserdata
 crmpack.Rproj
+Rplots.pdf
+*.Rproj
+vignettes/*.html
+vignettes/*.aux
+vignettes/*.log
+vignettes/*.out
+vignettes/*.tex
+vignettes/*.bbl
+vignettes/*.blg
+vignettes/*.pdf
+vignettes/*.R
+vignettes/*.pdf
+vignettes/figure/*.pdf
+

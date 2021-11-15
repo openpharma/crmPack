@@ -6,8 +6,8 @@
 \alias{.PseudoDualSimulationsSummary}
 \title{Class for the summary of the dual responses simulations using pseudo models}
 \description{
-It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to 
-the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains four 
+It contains all slots from \code{\linkS4class{PseudoSimulationsSummary}} object. In addition to
+the slots in the parent class \code{\linkS4class{PseudoSimulationsSummary}}, it contains four
 more slots for the efficacy model fit information.
 }
 \details{
@@ -21,7 +21,7 @@ is provided for this class.
 
 \item{\code{targetGstarAtDoseGrid}}{the dose level at dose Grid closest and below Gstar}
 
-\item{\code{GstarSummary}}{the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean 
+\item{\code{GstarSummary}}{the six-number table summary (lowest, 25th, 50th (median), 75th percentile, mean
 and highest value) of the final Gstar values obtained across all simulations}
 
 \item{\code{ratioGstarSummary}}{the six-number summary table of the ratios of the upper to the lower 95\%
@@ -30,7 +30,7 @@ credibility intervals of the final Gstar across all simulations}
 \item{\code{EffFitAtDoseMostSelected}}{fitted expected mean efficacy value at dose most often
 selected}
 
-\item{\code{meanEffFit}}{list with mean, lower (2.5%) and upper (97.5%) quantiles of the fitted expected 
+\item{\code{meanEffFit}}{list with mean, lower (2.5\%) and upper (97.5\%) quantiles of the fitted expected
 efficacy value at each dose level.}
 }}
 

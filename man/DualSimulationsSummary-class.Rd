@@ -19,7 +19,7 @@ initialization function is provided for this class.
 \describe{
 \item{\code{biomarkerFitAtDoseMostSelected}}{fitted biomarker level at dose most often selected}
 
-\item{\code{meanBiomarkerFit}}{list with the average, lower (2.5%) and upper (97.5%)
+\item{\code{meanBiomarkerFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted biomarker level at each dose level}
 }}
 

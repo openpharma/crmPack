@@ -4,14 +4,14 @@
 \name{DualResponsesSamplesDesign-class}
 \alias{DualResponsesSamplesDesign-class}
 \alias{.DualResponsesSamplesDesign}
-\title{This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model 
+\title{This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
 model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-with DLE and efficacy samples.It contain all slots in 
+with DLE and efficacy samples.It contain all slots in
 \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object}
 \description{
-This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model 
+This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
 model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
-with DLE and efficacy samples.It contain all slots in 
+with DLE and efficacy samples.It contain all slots in
 \code{\linkS4class{RuleDesign}} and \code{\linkS4class{TDsamplesDesign}} class object
 }
 \section{Slots}{
@@ -19,7 +19,7 @@ with DLE and efficacy samples.It contain all slots in
 \describe{
 \item{\code{data}}{the data set of \code{\linkS4class{DataDual}} class object}
 
-\item{\code{Effmodel}}{the pseudo efficacy model to be used, an object class of 
+\item{\code{Effmodel}}{the pseudo efficacy model to be used, an object class of
 \code{\linkS4class{ModelEff}}}
 }}
 

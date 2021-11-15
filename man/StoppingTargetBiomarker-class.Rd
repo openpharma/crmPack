@@ -12,10 +12,10 @@ Stop based on probability of target biomarker
 
 \describe{
 \item{\code{target}}{the biomarker target range, that
-needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"} 
+needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
 means we target a dose with at least 80\% of maximum biomarker level.}
 
-\item{\code{scale}}{either \code{relative} (default, then the \code{target} is interpreted 
+\item{\code{scale}}{either \code{relative} (default, then the \code{target} is interpreted
 relative to the maximum, so must be a probability range) or \code{absolute}
 (then the \code{target} is interpreted as absolute biomarker range)}
 
@@ -32,4 +32,3 @@ myStopping <- StoppingTargetBiomarker(target = c(0.9, 1),
                                       prob = 0.5)
 
 }
-\keyword{classes}

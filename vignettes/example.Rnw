@@ -29,7 +29,7 @@
 \newcommand*{\itemizeTabular}[2][l]{%
   \begin{tabular}{!{\kern\tabcolsep\usebeamertemplate{itemize item}}#1@{}}#2\end{tabular}}
 
-\begin{document} 
+\begin{document}
 
 %% reduce the height of the plots
 \setkeys{Gin}{width=0.65\textwidth}
@@ -43,7 +43,7 @@ library(crmPack)
 crmPackVersion <- as.character(packageVersion("crmPack"))
 @
 \title{Using the package \texttt{crmPack}:\\ introductory examples}
-\author{Daniel Saban\'es Bov\'e \\
+\author{Daniel {Saban\'es} {Bov\'e} \\
 Wai Yin Yeung}
 \date{\today\\Package version \Sexpr{crmPackVersion}}
 \maketitle
@@ -81,14 +81,14 @@ browser interface with
 <<webinterface, eval=FALSE>>=
 crmPackHelp()
 @
-This gives you the list of all help pages available for the package. 
+This gives you the list of all help pages available for the package.
 The whole R-package is built in a modular form, by using S4 classes and methods. Please have a look at the help page "Methods" to read an introduction into the S4 object framework of R, by typing \texttt{?Methods} in the R console. In the next sections we will therefore go one by one through the important building blocks (S4 classes and corresponding methods) of CRM designs with \texttt{crmPack}.
 
 \section{Data}
 \label{sec:data}
 
 Figure \ref{fig:data} shows the structure of the data classes included in this package
-\begin{figure} 
+\begin{figure}
 \centering
 \begin{tikzpicture}[node distance=1cm, thick, >=stealth]
 \node[block] (step1) {%
@@ -117,7 +117,7 @@ implementation of the dose-escalation designs. There is the convention that
 class initialization functions have the same name as the class, and all class
 names are capitalized. Note that in order to create this \texttt{Data} object, we use the initialization function of the same name, and give it as parameters the contents of the object to be constructed.
 At least the \texttt{doseGrid} parameter, which contains all possible dose levels to be potentially used in the trial, must be specified in a call of the \text{Data()} initialization function.
-            
+
 If you are in the middle of a trial and you would like to recommend the next
 dose, then you have data from the previous patients for input into the model.
 This data can also be captured in a \texttt{Data} object. For example:
@@ -132,7 +132,7 @@ data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
 @
 
 Most important are \texttt{x} (the doses) and \texttt{y} (the DLTs, 0 for no DLT
-and 1 for DLT), and we are using the same dose grid \texttt{doseGrid} as before. 
+and 1 for DLT), and we are using the same dose grid \texttt{doseGrid} as before.
 All computations are using the dose grid specified in the \texttt{Data} object. So for example,
 except for patient number 7, all patients were free of DLTs.
 
@@ -160,7 +160,7 @@ print(plot(data))
 \label{sec:modelstructure}
 
 Figure \ref{fig:model} show the structure of the model class defined in this package. The \texttt{AllModels}
- is the parent class, from which all model classes inherit. There are two sub-classes: First, the \texttt{GeneralModel} class from which all models inherit that are using \texttt{JAGS} to specify the model and the prior distribution and will then be estimated by MCMC later on. Then, the second subclass is the \texttt{ModelPseudo} class for which the prior of the models are specified in terms of pseudo data and standard maximum likelihood routines from R will be used for 
+ is the parent class, from which all model classes inherit. There are two sub-classes: First, the \texttt{GeneralModel} class from which all models inherit that are using \texttt{JAGS} to specify the model and the prior distribution and will then be estimated by MCMC later on. Then, the second subclass is the \texttt{ModelPseudo} class for which the prior of the models are specified in terms of pseudo data and standard maximum likelihood routines from R will be used for
 computational purposes. All models included in this package will have a parent class of either the \texttt{GeneralModel} or the \texttt{ModelPseudo} classes. There are two further classes under \texttt{ModelPseudo} which are the \texttt{ModelTox} class include all DLT (the occurrence of a dose-limiting toxicity) class models, and class \texttt{ModelEff} which includes all efficacy class models.
 
 
@@ -197,7 +197,7 @@ Effloglog
 EffFlexi
 };
 
-  
+
 \path[->] (step1) edge (step2a)
            (step1) edge (step2b)
            (step2a) edge (step2aa)
@@ -270,11 +270,11 @@ additional specific model classes that are sub-classes of the \texttt{Model}
 class, namely \texttt{LogisticLogNormalSub}, \texttt{LogisticNormal},
 \texttt{LogisticKadane} and \texttt{DualEndpoint}.
 
-Next, we will show an example of setting up a model of the \texttt{ModelPseudo} class, the 
+Next, we will show an example of setting up a model of the \texttt{ModelPseudo} class, the
 \texttt{LogisticIndepBeta} model. More specifically, this is also a model in \texttt{ModelTox} class.
 
-The \texttt{LogisticIndepBeta} model is a two-parameter logistic regression model to describe the relationship between the probability of the occurrence of DLT and its corresponding log dose levels. The model parameters are $\phi_1$, for the intercept and $\phi_2$, the slope. 
-This is also a model for which its prior is expressed in form of pseudo data. 
+The \texttt{LogisticIndepBeta} model is a two-parameter logistic regression model to describe the relationship between the probability of the occurrence of DLT and its corresponding log dose levels. The model parameters are $\phi_1$, for the intercept and $\phi_2$, the slope.
+This is also a model for which its prior is expressed in form of pseudo data.
 
 Here it is important that the data set has to be defined before defining any models from \texttt{ModelPseudo} class. This is to ensure we obtained the updated estimates for the model parameters using all currently available observations.
 Either an empty data set or a data set that contains all currently available observations is needed.
@@ -283,26 +283,26 @@ Therefore, let's assume an empty data set is set up. For example, we will use 12
 <<emptydata>>=
 emptydata <- Data(doseGrid=
                    seq(from=25, to=300, by=25))
-data1 <- emptydata                 
+data1 <- emptydata
 @
-Then we express our prior in form of pseudo data. The idea is as follows. 
-First fix two dose level $d_{(-1)}$ and $d_{(0)}$, which are usually the 
-lowest and the highest dose level, so here we choose 25 and 300 mg. Then 
-we elicit from experts or clinicians the probability of the occurrence of 
-DLT, $p_{(-1)}$ and $p_{(0)}$ at these two dose levels. That is, assuming 
-$n_{(l)}$ subjectsare treated at each of these two dose levels, $l=-1,0$, 
-$t_{(l)}$ out of $n{(l)}$ subjects are expected to be observed with a DLT such 
-that $p_{(l)} = t_{(l)}/n_{(l)}$. Let $\tilde{p}_{(l)}$ be the probability of 
-the occurrence of a DLT at dose $l$ for dose $l=-1,0$. $\tilde{p}_{(l)}$ will 
-follow independent Beta distributions and the joint probability density function 
-of $p_{(l)}$ can be obtained. Therefore, this model is called 
-\texttt{LogisticIndepBeta}.  We expressed the prior as if we have some data 
-(pseudo data) before the trial start. The prior modal estimates of $\phi_1$ and 
+Then we express our prior in form of pseudo data. The idea is as follows.
+First fix two dose level $d_{(-1)}$ and $d_{(0)}$, which are usually the
+lowest and the highest dose level, so here we choose 25 and 300 mg. Then
+we elicit from experts or clinicians the probability of the occurrence of
+DLT, $p_{(-1)}$ and $p_{(0)}$ at these two dose levels. That is, assuming
+$n_{(l)}$ subjects are treated at each of these two dose levels, $l=-1,0$,
+$t_{(l)}$ out of $n{(l)}$ subjects are expected to be observed with a DLT such
+that $p_{(l)} = t_{(l)}/n_{(l)}$. Let $\tilde{p}_{(l)}$ be the probability of
+the occurrence of a DLT at dose $l$ for dose $l=-1,0$. $\tilde{p}_{(l)}$ will
+follow independent Beta distributions and the joint probability density function
+of $p_{(l)}$ can be obtained. Therefore, this model is called
+\texttt{LogisticIndepBeta}.  We expressed the prior as if we have some data
+(pseudo data) before the trial start. The prior modal estimates of $\phi_1$ and
 $\phi_2$, which is also equivalent to the maximum likelihood estimators,
 can be obtained with the R function \texttt{glm}.
-Please refer to \cite{WhiteheadWilliamson1998} for details about the 
-form of the prior and posterior density of the model parameters $\phi_1$ and 
-$\phi_2$. 
+Please refer to \cite{WhiteheadWilliamson1998} for details about the
+form of the prior and posterior density of the model parameters $\phi_1$ and
+$\phi_2$.
 
 With the following commands, we create the model of class \texttt{LogisticIndepBeta}, with the prior specified in form of pseudo data.
 
@@ -315,7 +315,7 @@ DLTmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),
 
 For the model specified, we have fixed two dose levels (25 and 300 mg) and represented them in the \texttt{DLEdose} slot. Then we assume that 3 subjects are treated at each of the dose levels, represented in the \texttt{DLEweights} slot. We have 1.05 subjects out of the 3 subjects treated at 25 mg observed with a DLT and 1.8 subjects out of the 3 subjects treated at 300 mg observed with a DLT and this is represented in the \texttt{binDLE} slot. Input to the \texttt{data} slot is also need to ensure the all currently available observations will be incorporated in the model to obtain updated modal estimates of the model parameters.
 If an empty data set is used in the \texttt{data} slot, the prior modal estimates of the model parameters,
-$\phi_1$ for the intercept and $\phi_2$ for the slope, can be obtained. If a data set with observations, e.g data1 in the DLTmodel above is used, we can obtaine the posterior modal estimates for the model parameters.
+$\phi_1$ for the intercept and $\phi_2$ for the slope, can be obtained. If a data set with observations, e.g data1 in the DLTmodel above is used, we can obtain the posterior modal estimates for the model parameters.
 In addition, the pseudo data can be expressed by using more than 2 dose levels. On the other hand, at least two dose levels of pseudo information are needed to obtain modal estimates of the intercept and the slope parameter. Therefore, \texttt{binDLE},\texttt{DLEweights}, \texttt{DLEdose} must be vectors of at least length 2 and with their corresponding values specified at the same position in the other two vectors.
 
 Since the imaginary nature of the pseudo data, the value $t_l$ for the number of subjects observed with DLT can be non-integer values. In principle, $n_l$ can also be non-integer values.
@@ -325,7 +325,7 @@ Then we can look at the structure of this model:
 <<strLogisticIndepBeta>>=
 str(DLTmodel)
 @
- 
+
 
 There are in total 10 slots and their names are given. Remember that they can be accessed with the \verb|@| operator (similarly as for lists
 the \verb|$| operator), for example we can extract the \texttt{phi1} slot:
@@ -333,7 +333,7 @@ the \verb|$| operator), for example we can extract the \texttt{phi1} slot:
 <<phi1>>=
 DLTmodel@phi1
 @
-This gives the updated modal estimate of the intercept parameter $\phi_1$. Please find out other slots using the \verb|@| operator and looking at the help page for \texttt{ModelPseudo}, \texttt{ModelTox} and \texttt{LogisticIndepBeta} classes. 
+This gives the updated modal estimate of the intercept parameter $\phi_1$. Please find out other slots using the \verb|@| operator and looking at the help page for \texttt{ModelPseudo}, \texttt{ModelTox} and \texttt{LogisticIndepBeta} classes.
 
 
 
@@ -502,14 +502,14 @@ You can find other useful plotting functions in the package information:
 help(package="ggmcmc", help_type="html")
 @
 
-Similarly, using models from \texttt{ModelPseudo} class, we can also obtain the prior and posterior samples of the model parameters via MCMC. 
+Similarly, using models from \texttt{ModelPseudo} class, we can also obtain the prior and posterior samples of the model parameters via MCMC.
 
 For example, using the DLTmodel, data1, the empty data set and options specified in earlier examples.
 <<mcmc-DLTsamples, results=hide>>=
 DLTsamples <- mcmc(data=data1,model=DLTmodel,options=options)
 @
 
-The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}. 
+The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}.
 
 <<mcmc-postDLTsamples, results=hide>>==
 data3 <-Data(x=c(25,50,50,75,100,100,225,300),
@@ -518,12 +518,12 @@ data3 <-Data(x=c(25,50,50,75,100,100,225,300),
 DLTpostsamples <- mcmc(data=data3,model=DLTmodel,options=options)
 @
 
-Similarly, \texttt{DLTpostsamples} now contains the posterior samples of the model parameters. 
-%Since an output message as seen from the above example will be display after each MCMC sampling when some observed data are involved, the \texttt{suppressMessages} function is used from now and throughout this document to avoid showing all of these message in this document 
+Similarly, \texttt{DLTpostsamples} now contains the posterior samples of the model parameters.
+%Since an output message as seen from the above example will be display after each MCMC sampling when some observed data are involved, the \texttt{suppressMessages} function is used from now and throughout this document to avoid showing all of these message in this document
 
-This \texttt{mcmc} function also takes the data object, model and the MCMC options. This is not using JAGS but just R for the computations. 
+This \texttt{mcmc} function also takes the data object, model and the MCMC options. This is not using JAGS but just R for the computations.
 
-Under this \texttt{DLTmodel}, we will obtain samples of $\phi_1$ and $\phi_2$. Using what has been described earlier in this section , we can also look at the structure using function \texttt{str}, extracting model parameters samples with \texttt{get} and produce plots with \texttt{ggs\_traceplot} and \texttt{ggs\_autocorrelation} 
+Under this \texttt{DLTmodel}, we will obtain samples of $\phi_1$ and $\phi_2$. Using what has been described earlier in this section , we can also look at the structure using function \texttt{str}, extracting model parameters samples with \texttt{get} and produce plots with \texttt{ggs\_traceplot} and \texttt{ggs\_autocorrelation}
 for each of the model parameters.
 
 
@@ -537,7 +537,7 @@ newDLTmodel@phi1
 newDLTmodel@phi2
 @
 
-In the example, the \texttt{update} function is used to obtain the posterior modal estimates of the model parameters, $\phi_1$ and $\phi_2$, which can then be extracted using the \verb|@| operator on the updated result \texttt{newDLTmodel}. 
+In the example, the \texttt{update} function is used to obtain the posterior modal estimates of the model parameters, $\phi_1$ and $\phi_2$, which can then be extracted using the \verb|@| operator on the updated result \texttt{newDLTmodel}.
 
 \section{Plotting the model fit}
 \label{sec:plot-fit}
@@ -616,7 +616,7 @@ Figure \ref{fig:increments} shows the structure of the \texttt{Increments} class
  };
 \path[->] (step1) edge (step2a)
            (step1) edge (step2b)
-           
+
            (step2a) edge (step3)
 
 ;
@@ -659,7 +659,7 @@ In the following example the dose escalation will be restricted to a 3-fold (= 2
 myIncrements1 <- IncrementsRelative(intervals=c(25),
                                    increments=c(2))
 @
-From all doses (since the dose grid starts at 25 mg) there is a maximum increase of 200\% here. 
+From all doses (since the dose grid starts at 25 mg) there is a maximum increase of 200\% here.
 
 The \texttt{IncrementsRelativeDLT} class works similarly, taking the number of DLTs in the whole trial so far as the basis for the maximum increments instead of the last dose.
 
@@ -693,11 +693,11 @@ NextBestMaxGain
 \node[block, below right=0.0001cm and 3.5cm of step1](step2h){
 NextBestMaxGainSamples
 };
-  
-  
+
+
 \path[->] (step1) edge (step2a)
            (step1) edge (step2b)
-           
+
            (step1) edge (step2c)
 (step1) edge (step2d)
 (step1) edge (step2e)
@@ -762,8 +762,8 @@ TDsamplesNextBest <- NextBestTDsamples(targetDuringTrial=0.35,
 
 @
 
-The slot for \texttt{targetDuringTrial} and \texttt{targetEndOfTrial} are specified in the same way as in the last example given the value of 0.35 and 0.3, respectively. The \texttt{derive} slot should always be specified with a function. 
-% First, define the dose level for which its probability of the occurrence of a DLT during trial called the TDtargetDuringTrial and similarly, for TDtargetEndOfTrial. With this class and samples involved, we can obtain the TDtargetDuringTrial samples and TDtargetEndOfTrial samples. 
+The slot for \texttt{targetDuringTrial} and \texttt{targetEndOfTrial} are specified in the same way as in the last example given the value of 0.35 and 0.3, respectively. The \texttt{derive} slot should always be specified with a function.
+% First, define the dose level for which its probability of the occurrence of a DLT during trial called the TDtargetDuringTrial and similarly, for TDtargetEndOfTrial. With this class and samples involved, we can obtain the TDtargetDuringTrial samples and TDtargetEndOfTrial samples.
 In this example, using the function specified in the \texttt{derive} slot says that we will recommend the 30\% posterior quantiles of the samples to be the estimates for the doses corresponding to the \texttt{targetDuringTrial} and \texttt{targetEndOfTrial} doses.
 
 During the study, in order to derive the next best dose, we supply the generic
@@ -852,7 +852,7 @@ Figure \ref{fig:CohortSize} shows the inheritance structure of the classes inher
  };
 \path[->] (step1) edge (step2a)
            (step1) edge (step2b)
-           
+
            (step1) edge (step2c)
            (step1) edge (step2d)
            (step1) edge (step2e)
@@ -947,7 +947,7 @@ Stopping rules are often quite complex, because they are built from "and/or" com
 multiple atomic stopping rules can be combined easily. For example, let's assume
 we would like to stop the trial if there are at least 3 cohorts and at least
 50\% probability in the target toxicity interval $(20\%, 35\%)$, or the maximum
-sample size of 20 patients has been reached. 
+sample size of 20 patients has been reached.
 
 Then we start by creating the three
 pieces the rule is composed of:
@@ -966,9 +966,9 @@ myStopping <- (myStopping1 & myStopping2) | myStopping3
 @
 
 We can also stop the trial when the current estimate of the quantity of interest, such as the TD30 given in earlier examples, is 'accurate' enough.
-The accuracy of the current estimate of TD30 is quantified by the width of the associated 95\% credibility interval. The wider the interval, the less accurate the estimate is. In particular, the ratio of the upper to the lower limit of this 95\% credibility interval is used. The smaller the ratio, the more accurate is the estimate. 
+The accuracy of the current estimate of TD30 is quantified by the width of the associated 95\% credibility interval. The wider the interval, the less accurate the estimate is. In particular, the ratio of the upper to the lower limit of this 95\% credibility interval is used. The smaller the ratio, the more accurate is the estimate.
 
-For example, we will stop our trial if we obtain a ratio of less than 5 for the 95\% credibility interval of the TD30 estimate in this case, deciding that we have obtained an estimate which is 'accurate' enough. 
+For example, we will stop our trial if we obtain a ratio of less than 5 for the 95\% credibility interval of the TD30 estimate in this case, deciding that we have obtained an estimate which is 'accurate' enough.
 The \texttt{StoppingTDCIRatio} function can be  used in both cases when no DLT samples or DLT samples are involved:
 <<rules2-bits>>=
 myStopping4 <- StoppingTDCIRatio(targetRatio=5,
@@ -976,7 +976,7 @@ myStopping4 <- StoppingTDCIRatio(targetRatio=5,
 
 @
 
-% In the above two examples, the \texttt{targetRatio} and \texttt{targetEndOfTrial} has to be specified. 
+% In the above two examples, the \texttt{targetRatio} and \texttt{targetEndOfTrial} has to be specified.
 
 During the dose escalation study, any (atomic or combined) stopping rule can be used by the function \texttt{stopTrial} to determine if the rule has already been fulfilled. For example in our case:
 
@@ -1001,7 +1001,7 @@ stopTrial(stopping= myStopping4, dose=doseRecDLTSamples$nextdose,
 stopTrial(stopping= myStopping4, dose=doseRecDLT$nextdose,
           model=newDLTmodel,data=data3)
 @
-% when DLT samples or no DLT samples are involved. 
+% when DLT samples or no DLT samples are involved.
 Note that at the moment the "and" operator \texttt{\&} and the ``or''
 operator \verb-|- cannot be used together with \texttt{StoppingTDCIRatio} class objects. This is still under development.
 
@@ -1040,7 +1040,7 @@ The structure of the design classes in this package is shown in figure \ref{fig:
 
 \path[->] (step1) edge (step2a)
            (step1) edge (step2b)
-           
+
            (step1) edge (step2c)
            (step2a) edge (step3a)
            (step2b) edge (step3b)
@@ -1299,24 +1299,24 @@ DLTsampSim <- simulate(DLTsamplesDesign,
                        args=NULL,
                        truth=TrueDLT,
                        nsim=10,
-                       seed=819, 
+                       seed=819,
                        mcmcOptions=options,
                        parallel=FALSE)
 @
 
-The meaning of these arguments are the same as those defined and explained above in the \texttt{simulate} example for the \texttt{Design} class. 
-% With slots \texttt{args} to specify any additional arguments for the \texttt{truth} function, \texttt{truth} for the real DLT scenario to simulate responses from, \texttt{nsim} for the number of simulations, \texttt{seed}, the random generator seed and \texttt{parallel} to specify whether parallel computing is to be used for running the simulations. 
+The meaning of these arguments are the same as those defined and explained above in the \texttt{simulate} example for the \texttt{Design} class.
+% With slots \texttt{args} to specify any additional arguments for the \texttt{truth} function, \texttt{truth} for the real DLT scenario to simulate responses from, \texttt{nsim} for the number of simulations, \texttt{seed}, the random generator seed and \texttt{parallel} to specify whether parallel computing is to be used for running the simulations.
 
-Similarly, the results of individual simulations can be obtained graphically using the \texttt{plot} function. 
-%' Again for example we want to look at the results of the third trial. Since the \texttt{data} slot of the simulations contains a list of data obtained in the simulated trial, the plots of the simulated results of the third trial for these two simulations are given as 
+Similarly, the results of individual simulations can be obtained graphically using the \texttt{plot} function.
+%' Again for example we want to look at the results of the third trial. Since the \texttt{data} slot of the simulations contains a list of data obtained in the simulated trial, the plots of the simulated results of the third trial for these two simulations are given as
 %' <<plotDLTSimdata,fig=TRUE>>=
 %' print(plot(DLTSim@data[[3]]))
 %' @
-%' 
+%'
 %' <<plotDLTsampSimdata,fig=TRUE>>=
 %' print(plot(DLTsampSim@data[[3]]))
 %' @
-%' 
+%'
 The dose level for recommendation that is the dose levels closest below the final estimated TD30 (the
 final estimates of the dose level with probability of DLT equals to the target end of trial) was
 
@@ -1357,7 +1357,7 @@ DLTsimSum <- summary(DLTSim,
 print(plot(DLTsimSum))
 @
 
-and 
+and
 <<DLTsampSim-plotsummary,fig=TRUE>>=
 DLTsimsampSum <- summary(DLTsampSim,
                 truth=TrueDLT)
@@ -1457,7 +1457,7 @@ trial.
 \section{Simulating 3+3 design outcomes}
 \label{sec:simul-3+3-design}
 
-While \texttt{crmPack} focuses on model-based dose-escalation designs, it also 
+While \texttt{crmPack} focuses on model-based dose-escalation designs, it also
 includes the 3+3 design in order to allow for convenient comparisons. Note that
 actually no simulations would be required for the 3+3 design, because all
 possible outcomes can be enumerated, however we still rely here on simulations
@@ -1516,9 +1516,9 @@ print(plot(threeSimsSum))
 \label{sec:dual-end}
 
 In this section, we will look into dose-escalation procedures included in this package where two end points are incorporated into the study.
-% Assume that two endpoints/responses of observations will be collected from each subject. 
+% Assume that two endpoints/responses of observations will be collected from each subject.
 The first endpoint is the binary DLT response that we discussed already in the last sections. The second endpoint is the continuous biomarker/efficacy response. In this package, we can either model these two responses jointly (using a single model class, assuming correlation) or separately (using two separate model classes, assuming no correlation).
-% For the former, a correlation between the two responses can be assumed where the latter no correlation between the two responses are assumed. 
+% For the former, a correlation between the two responses can be assumed where the latter no correlation between the two responses are assumed.
 Now we will first describe how we model the two responses jointly.
 
 \subsection{Dual-endpoint designs with a joint model}
@@ -1792,13 +1792,13 @@ print(plot(sumOut))
 
 We see that the average biomarker fit is not too bad in the range up to 50~mg,
 but the toxicity curve fit is bad --- probably a result of the very low
-frequency of DLTs. 
+frequency of DLTs.
 
 Again the warning here: the dual-endpoint designs are still
 experimental!
 
 
-% Next we will talk about dose escalation designs where the two endpoints are modelled separately. 
+% Next we will talk about dose escalation designs where the two endpoints are modelled separately.
 
 \subsection{Dual-endpoint designs with separate models}
 \label{subsec:dualresponses}
@@ -1820,21 +1820,21 @@ In this example, \texttt{data2} is the empty data set where 12 dose levels, from
 
 Similarly, we can also obtain a plot of the data sets using the \texttt{plot} function as described in the last subsection.
 
-As described, we will model the two responses separately. In order to do so, we will only use models inheriting from the \texttt{ModelPseudo} class. 
+As described, we will model the two responses separately. In order to do so, we will only use models inheriting from the \texttt{ModelPseudo} class.
 
 For the binary DLT responses, we can use any of the models inheriting from the \texttt{ModelTox} class. In the example below we will use models inheriting from the \texttt{LogisticIndepBeta} class which is the variable \texttt{DLTmodel} (or \texttt{newDLTmodel} with observations) given in previous examples.
 
 For the continuous efficacy responses, we can use any models inheriting from the \texttt{ModelEff} class. In the current version of the package, there are two model classes, the \texttt{Effloglog} and the \texttt{EffFlexi} model, inheriting from the \texttt{ModelEff} class. Since \texttt{ModelEff} is also inheriting from the \texttt{ModelPseudo} class, the prior for this efficacy model also needs to be specified in the form of pseudo data. (Please refer to \ref{fig:model} for the structure of model classes defined in this package.)
 
 
-The following commands show how we set up the \texttt{Effloglog} model. This is an efficacy model to describe the relationship between the efficacy responses to their corresponding dose levels on a double logarithmic ("log-log") scale. This refers to a linear model with three unknown parameters: the intercept $\theta_1$, the slope $\theta_2$ and the precision $\nu$ (inverse of the variance) of the efficacy responses. 
+The following commands show how we set up the \texttt{Effloglog} model. This is an efficacy model to describe the relationship between the efficacy responses to their corresponding dose levels on a double logarithmic ("log-log") scale. This refers to a linear model with three unknown parameters: the intercept $\theta_1$, the slope $\theta_2$ and the precision $\nu$ (inverse of the variance) of the efficacy responses.
 Similarly to other pseudo models, the data set has to be specified before setting up the model:
 
 <<modelEff>>=
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data2)
 @
 
-For the specification of the prior pseudo data, two dose levels 25 and 300 mg are fixed and specified in the \texttt{Effdose} slot. After eliciting the prior expected efficacy values at these two dose levels (e.g. by asking for experts'), these are specified in the \texttt{Eff}  slot. Here for example, 1.223 is the expected efficacy value for subjects treated at dose 25 mg and 2.513 is the expected efficacy value for subjects treated at 300 mg. The slot \texttt{nu} represents the prior precision of the efficacy responses. In this example, two positive scalars for $a$ and $b$ are specified suggesting the prior distribution of the precision is gamma with shape parameter $a=1$ and rate parameter $b=0.025$. Note here, since a gamma distribution is used as the prior distribution of $\nu$, the posterior distribution will again be a gamma distribution, because the gamma prior on the precision is conjugate to the normal likelihood. 
+For the specification of the prior pseudo data, two dose levels 25 and 300 mg are fixed and specified in the \texttt{Effdose} slot. After eliciting the prior expected efficacy values at these two dose levels (e.g. by asking for experts'), these are specified in the \texttt{Eff}  slot. Here for example, 1.223 is the expected efficacy value for subjects treated at dose 25 mg and 2.513 is the expected efficacy value for subjects treated at 300 mg. The slot \texttt{nu} represents the prior precision of the efficacy responses. In this example, two positive scalars for $a$ and $b$ are specified suggesting the prior distribution of the precision is gamma with shape parameter $a=1$ and rate parameter $b=0.025$. Note here, since a gamma distribution is used as the prior distribution of $\nu$, the posterior distribution will again be a gamma distribution, because the gamma prior on the precision is conjugate to the normal likelihood.
 If a fixed value of the precision is preferred, a single positive scalar can also be specified in \texttt{nu} slot. Finally the \texttt{data} slot is specified either with an empty data set or a data set with all currently available observations.
 
 Similarly, we can also look at the structure of the Effmodel by applying the \texttt{str} function:
@@ -1842,13 +1842,13 @@ Similarly, we can also look at the structure of the Effmodel by applying the \te
 str(Effmodel)
 @
 
-There are 15 slots, which can be accessed with the \verb|@| operator. From this efficacy model, we can obtain the prior (if using an empty data set) or the posterior modal estimates of model parameters $\theta_1$ (intercept) and $\theta_2$ (slope). In addition, if a gamma prior distribution is used for $\nu$ and we have some observations (data) available, then we can obtain the updated values of the shape $a$ and the rate $b$ parameters for the gamma distribution, via the model. The joint prior and posterior density functions of $\theta_1$ and $\theta_2$ are described in details in \citep{wy15}.  
+There are 15 slots, which can be accessed with the \verb|@| operator. From this efficacy model, we can obtain the prior (if using an empty data set) or the posterior modal estimates of model parameters $\theta_1$ (intercept) and $\theta_2$ (slope). In addition, if a gamma prior distribution is used for $\nu$ and we have some observations (data) available, then we can obtain the updated values of the shape $a$ and the rate $b$ parameters for the gamma distribution, via the model. The joint prior and posterior density functions of $\theta_1$ and $\theta_2$ are described in details in \citep{wy15}.
 
 
 Next, we will describe an example when a flexible semi-parametric function is used to describe the relationship between the efficacy values and their corresponding dose levels. The differences of the mean efficacy responses of neighboring dose levels are modeled by the either first or second order random walk models. This flexible model aims to capture different shapes of the dose-efficacy curve. We will estimate the mean efficacy responses obtained at each of the dose levels by MCMC sampling.
-% will be involved to obtain the prior and posterior distribution of all these mean efficacy responses. 
+% will be involved to obtain the prior and posterior distribution of all these mean efficacy responses.
 
-This flexible form can be specified by using the \texttt{EffFlexi} class object. The \texttt{EffFlexi} 
+This flexible form can be specified by using the \texttt{EffFlexi} class object. The \texttt{EffFlexi}
 class is inheriting from the \texttt{ModelEff} class and its prior is also specified with pseudo data:
 
 <<modelEffFlexi>>=
@@ -1935,7 +1935,7 @@ plotDualResponses(DLEmodel=DLTmodel,DLEsamples=DLTsamples,
 
 Next we will talk about the dose escalation rules when two separate models are used for the dual responses. All \texttt{Increments}, \texttt{CohortSize} and the \texttt{Stopping} rules classes described earlier can be applied here. We will now look into additional \texttt{NextBest} and \texttt{Stopping} classes rules that we can use in this situation.
 
-In here, the decision of choosing the next best dose for administration is based on a gain function we defined \citep{wy15}. This gain function represents a trade-off between the DLT and efficacy responses such that we will allocate the dose which gives the best trade-off between these responses. In other words, the dose which gives the maximum gain value will be the dose allocated to the next cohort of subjects. The basic ideas of this rules are as follows. 
+In here, the decision of choosing the next best dose for administration is based on a gain function we defined \citep{wy15}. This gain function represents a trade-off between the DLT and efficacy responses such that we will allocate the dose which gives the best trade-off between these responses. In other words, the dose which gives the maximum gain value will be the dose allocated to the next cohort of subjects. The basic ideas of this rules are as follows.
 % old text: Assume that no DLT is observed in a subject, the gain value observed at a particular dose level is obtained by multiplying the probability of no DLT observed at this dose levels and all expected efficacy responses when no DLT is observed at this particular dose level.
 %new:
 The gain value at a particular dose level is obtained by multiplying the probability of no DLT at this dose level and the expected efficacy response at this dose level. As the data accumulates in the trial, the estimate of the gain function will improve.
@@ -1984,9 +1984,9 @@ GainsamplesNextBest <- NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(TDsamples,prob=0.3)},
                                    Gstarderive=function(Gstarsamples){
                                      quantile(Gstarsamples,prob=0.5)})
-@ 
+@
 Note that the two functions, \texttt{TDderive} and \texttt{Gstarderive} have to be specified to derive the corresponding estimates from the posterior samples.
- 
+
 Again, the generic function \texttt{nextBest} will be used together with this rule object to derive the next best dose:
 
 <<nextbest-NextBestMaxGainSamples>>=
@@ -2006,10 +2006,10 @@ doseRecGainSamples$plot
 In this plot, the posterior distribution of Gstar is shown as a histogram. The vertical lines on the plot show all current estimates of TD30, TD35 and Gstar. In addition, the next dose and the maximum allowable dose are also given in blue and red lines, respectively.
 
 
-Next, we will introduce some further \texttt{Stopping} rules that can be applied to the above two classes of escalation rules. 
-After the escalation based on two responses and two separate pseudo DLT and efficacy models, we will select one dose, which is the minimum of the estimate of TD30 (TDtargetEndOfTrial) and the optimal gain dose (Gstar)  as the recommended dose for potential further clinical trials. The main feature of these stopping rules is that the trial could be stopped if the current estimates of this selected quantity is 'accurate' enough. In particular, we will also consider the ratio of the 95\% credibility interval bounds of its current estimate. The smaller this ratio, the more accurate is the estimate. 
+Next, we will introduce some further \texttt{Stopping} rules that can be applied to the above two classes of escalation rules.
+After the escalation based on two responses and two separate pseudo DLT and efficacy models, we will select one dose, which is the minimum of the estimate of TD30 (TDtargetEndOfTrial) and the optimal gain dose (Gstar)  as the recommended dose for potential further clinical trials. The main feature of these stopping rules is that the trial could be stopped if the current estimates of this selected quantity is 'accurate' enough. In particular, we will also consider the ratio of the 95\% credibility interval bounds of its current estimate. The smaller this ratio, the more accurate is the estimate.
 
-For example, we would like to stop our trial if the ratio is less than or equal to 5. The functions \texttt{StoppingGstarCIRatio} is  used for this purpose: 
+For example, we would like to stop our trial if the ratio is less than or equal to 5. The functions \texttt{StoppingGstarCIRatio} is  used for this purpose:
 
 <<StoppingGstarCIratio>>=
 myStopping7 <- StoppingGstarCIRatio(targetRatio = 5,
@@ -2039,7 +2039,7 @@ stopTrial(stopping=myStopping7,
           Gstarderive=function(Gstarsamples){
             quantile(Gstarsamples,prob=0.5)})
 @
-% For cases when either no or DLT and efficacy samples are involved. 
+% For cases when either no or DLT and efficacy samples are involved.
 
 Next, we will now look at how to construct the design objects. We will also start with an empty data set, the object \texttt{data3} of the \texttt{DataDual} class introduced in earlier examples.
 
@@ -2076,8 +2076,8 @@ design3 <- DualResponsesSamplesDesign(nextBest=GainsamplesNextBest,
                                       cohortSize=mySize,
                                       startingDose=25)
 @
- 
-We specified the above three designs using all previous rules for nextBest (the escalation rule), stopping, increments and cohort size. 
+
+We specified the above three designs using all previous rules for nextBest (the escalation rule), stopping, increments and cohort size.
 
 Next, we have to specify the scenarios for simulations. For example, for simulations using the DLT model and efficacy model from the \texttt{LogisticIndepBeta} and \texttt{Effloglog} objects, respectively, we can specify the scenario as below:
 
@@ -2118,13 +2118,13 @@ pch=c(15,16,17,NA,NA,NA),lty=c(NA,NA,NA,1,1,1),col=c('violet','violet','green3',
 
 @
 
-Using all the above commands, we can obtained the DLT (red), efficacy(blue) and gain (green) curves and also their corresponding true values for the TD30 (TDtargetEndOfTrial), TD35 (TDtargetDuringTrial) and the Gstar. In addition, the above scenario for DLT and efficacy can be used for both cases (modal estimates or MCMC samples). 
+Using all the above commands, we can obtained the DLT (red), efficacy(blue) and gain (green) curves and also their corresponding true values for the TD30 (TDtargetEndOfTrial), TD35 (TDtargetDuringTrial) and the Gstar. In addition, the above scenario for DLT and efficacy can be used for both cases (modal estimates or MCMC samples).
 
 If the \texttt{EffFlexi} class object will be used for the simulations. Using the same DLT scenario and a new efficacy scenario will be specified such that
 
 <<TruecurveswithFlexi>>=
-myTruthEff1<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,  
-               0.9333009  ,1.0687031,  1.1793942 , 1.2726408 , 
+myTruthEff1<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
+               0.9333009  ,1.0687031,  1.1793942 , 1.2726408 ,
                1.3529598 , 1.4233411 , 1.4858613 , 1.5420182)
 
 d1 <- data2@doseGrid
@@ -2171,7 +2171,7 @@ Sim1 <- simulate(object=design1,
 @
 
 
-The \texttt{simulate} function is used in all cases to simulate trials with specified scenarios. From the above, we specified the true precision (\texttt{trueNu}) of the efficacy responses be 1/0.025. In other words, we used a value of 0.025 as the true variance of the efficacy responses in this simulation. For the arguments \texttt{args},\texttt{nsim}, \texttt{seed} and \texttt{parallel}, please refer to earlier examples for details for their specification and description details. 
+The \texttt{simulate} function is used in all cases to simulate trials with specified scenarios. From the above, we specified the true precision (\texttt{trueNu}) of the efficacy responses be 1/0.025. In other words, we used a value of 0.025 as the true variance of the efficacy responses in this simulation. For the arguments \texttt{args},\texttt{nsim}, \texttt{seed} and \texttt{parallel}, please refer to earlier examples for details for their specification and description details.
 
 
 When MCMC samples are used, we can also specify the simulations in a similar way with an additional argument \texttt{mcmcOptions} such that we have
@@ -2247,18 +2247,18 @@ print(plot(Sum3))
 @
 
 
-In the first simulation, \texttt{Sim1} the trial will only stop when the ratio of the 95\% credibility interval bounds of the current estimate of the minimum between TD30(TDtargetEndOfTrial) and Gstar is less than or equal to 5. The last two simulations, \texttt{Sim2} and \texttt{Sim3}, use trials which only stop either when a maximum of 72 patients has been treated or when the ratio of the 95\% credibility interval is less than or equal to 5. We can see that in all of the above simulations all trials require a total of around 60 patients for a study. 
+In the first simulation, \texttt{Sim1} the trial will only stop when the ratio of the 95\% credibility interval bounds of the current estimate of the minimum between TD30(TDtargetEndOfTrial) and Gstar is less than or equal to 5. The last two simulations, \texttt{Sim2} and \texttt{Sim3}, use trials which only stop either when a maximum of 72 patients has been treated or when the ratio of the 95\% credibility interval is less than or equal to 5. We can see that in all of the above simulations all trials require a total of around 60 patients for a study.
 
 As a reminder, for the dual endpoint dose escalation design which uses two separate models to describe the dose-responses relationship, the gain function is used to determine the next best dose and the final recommended dose at the end of a trial. More specifically at the end of a trial, we will recommend the dose level closest below  which is the minimum of final estimate of the TD30 (TDtargetEndOfTrial) and Gstar.
 
-The DLT and efficacy scenario that we used for the first, \texttt{Sim1} and the second simulations, \texttt{Sim2} are the same. The real TD30 (TDtargetEndOfTrial) is given in the summary and is 152.6125 mg and the dose level at doseGrid which is closest and below this real TD30 is 150 mg. The real Gstar is 130.0097 mg and the dose level in the dose grid closest to this Gstar is 125 mg. 
+The DLT and efficacy scenario that we used for the first, \texttt{Sim1} and the second simulations, \texttt{Sim2} are the same. The real TD30 (TDtargetEndOfTrial) is given in the summary and is 152.6125 mg and the dose level at doseGrid which is closest and below this real TD30 is 150 mg. The real Gstar is 130.0097 mg and the dose level in the dose grid closest to this Gstar is 125 mg.
 
-In this case, the real Gstar is less than the real TD30 and we will expect most of the recommendations to be made at a dose level close to the real Gstar. In other words, under this scenario, we will expect most of the recommendations made at 125 mg. We can see that the simulated results agrees to what we are expecting. From the summaries and the plots of the summaries, 125 mg is the dose level which is selected most often in both of these simulations.  
+In this case, the real Gstar is less than the real TD30 and we will expect most of the recommendations to be made at a dose level close to the real Gstar. In other words, under this scenario, we will expect most of the recommendations made at 125 mg. We can see that the simulated results agrees to what we are expecting. From the summaries and the plots of the summaries, 125 mg is the dose level which is selected most often in both of these simulations.
 
 For the scenario of last simulation, \texttt{Sim3}, we have the same real TD30 and the real Gstar is 125 mg. Since the real TD30 is greater than the real Gstar, we will also expect recommendations should be made close to the real Gstar under this scenario. We can see that from the simulated results in the summary or the plot of summary, the procedure also recommends 125 mg most often in the simulations, which agrees with our real scenario.
 
-Now, we will also look at the fitted dose-DLT and dose-efficacy curves obtained under all these three simulations. From the plots of summaries, 
-we can see that in all cases, the fitted dose-DLT curves (solid-red curve) do not approximate very well to the real dose-DLT curve (solid-black curve). The 95\% credibility interval of the DLT curve (broken-red curves) is also given when MCMC samples are involved in the simulation. In contrast, we can see that the fitted efficacy curve (solid-blue curve) gives a very good fit to the real efficacy curve (solid-black) in all cases. The approximation to the real efficacy curve is better when the linear linear log-log model, \texttt{Effloglog} is used, compared to when the flexible form , \texttt{EffFlexi} is used. In addition, we can also see the 95\% credibility interval of the efficacy curve (broken-blue line) when MCMC sampling of the efficacy responses is involved.   
+Now, we will also look at the fitted dose-DLT and dose-efficacy curves obtained under all these three simulations. From the plots of summaries,
+we can see that in all cases, the fitted dose-DLT curves (solid-red curve) do not approximate very well to the real dose-DLT curve (solid-black curve). The 95\% credibility interval of the DLT curve (broken-red curves) is also given when MCMC samples are involved in the simulation. In contrast, we can see that the fitted efficacy curve (solid-blue curve) gives a very good fit to the real efficacy curve (solid-black) in all cases. The approximation to the real efficacy curve is better when the linear linear log-log model, \texttt{Effloglog} is used, compared to when the flexible form , \texttt{EffFlexi} is used. In addition, we can also see the 95\% credibility interval of the efficacy curve (broken-blue line) when MCMC sampling of the efficacy responses is involved.
 
 
 

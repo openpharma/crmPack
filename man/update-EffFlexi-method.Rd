@@ -2,9 +2,9 @@
 % Please edit documentation in R/Model-methods.R
 \name{update,EffFlexi-method}
 \alias{update,EffFlexi-method}
-\title{Update method for the 'EffFlexi' Model class. This is a method to update 
+\title{Update method for the 'EffFlexi' Model class. This is a method to update
 estimates both for the flexible form model and the random walk model (see details in
-\code{\linkS4class{EffFlexi}} class object) when new data 
+\code{\linkS4class{EffFlexi}} class object) when new data
 or new observations of responses are available and added in.}
 \usage{
 \S4method{update}{EffFlexi}(object, data, ...)
@@ -21,9 +21,9 @@ class object}
 the new \code{\linkS4class{EffFlexi}} class object
 }
 \description{
-Update method for the 'EffFlexi' Model class. This is a method to update 
+Update method for the 'EffFlexi' Model class. This is a method to update
 estimates both for the flexible form model and the random walk model (see details in
-\code{\linkS4class{EffFlexi}} class object) when new data 
+\code{\linkS4class{EffFlexi}} class object) when new data
 or new observations of responses are available and added in.
 }
 \examples{

@@ -14,12 +14,12 @@ objects of this class contain:
 \section{Slots}{
 
 \describe{
-\item{\code{model}}{the pseudo DLE model to be used, an object class of 
+\item{\code{model}}{the pseudo DLE model to be used, an object class of
 \code{\linkS4class{ModelTox}}}
 
 \item{\code{stopping}}{stopping rule(s) for the trial, an object class of \code{\linkS4class{Stopping}}}
 
-\item{\code{increments}}{how to control increments between dose levels, an object class of 
+\item{\code{increments}}{how to control increments between dose levels, an object class of
 \code{\linkS4class{Increments}}}
 
 \item{\code{PLcohortSize}}{rules for the cohort sizes for placebo, if any planned

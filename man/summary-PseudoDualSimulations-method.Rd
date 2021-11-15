@@ -2,7 +2,7 @@
 % Please edit documentation in R/Simulations-methods.R
 \name{summary,PseudoDualSimulations-method}
 \alias{summary,PseudoDualSimulations-method}
-\title{Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model 
+\title{Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model
 (except the EffFlexi class model)}
 \usage{
 \S4method{summary}{PseudoDualSimulations}(
@@ -32,7 +32,7 @@ of DLE}
 an object of class \code{\linkS4class{PseudoDualSimulationsSummary}}
 }
 \description{
-Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model 
+Summary for Pseudo Dual responses simulations, relative to a given pseudo DLE and efficacy model
 (except the EffFlexi class model)
 }
 \examples{

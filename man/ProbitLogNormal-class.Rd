@@ -7,15 +7,15 @@
 \title{Probit model with bivariate log normal prior}
 \description{
 This is probit regression model with a bivariate normal prior on
-the intercept and log slope. 
+the intercept and log slope.
 The covariate is the dose \eqn{x} itself, potentially divided
 by a reference dose \eqn{x^{*}}, or the logarithm of it:
 }
 \details{
-\deqn{probit[p(x)] = \alpha + \beta 
+\deqn{probit[p(x)] = \alpha + \beta
 \cdot x/x^{*}}{probit[p(x)] = alpha + beta * x/x*}
 or
-\deqn{probit[p(x)] = \alpha + \beta 
+\deqn{probit[p(x)] = \alpha + \beta
 \cdot \log(x/x^{*})}{probit[p(x)] = alpha + beta * log(x/x*)}
 in case that the option \code{useLogDose} is \code{TRUE}.
 Here \eqn{p(x)} is the probability of observing a DLT for a given dose

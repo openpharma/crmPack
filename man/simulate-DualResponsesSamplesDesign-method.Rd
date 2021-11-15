@@ -3,12 +3,12 @@
 \name{simulate,DualResponsesSamplesDesign-method}
 \alias{simulate,DualResponsesSamplesDesign-method}
 \title{This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the \code{\linkS4class{DualResponsesSamplesDesign}} where DLEmodel 
+This is a method based on the \code{\linkS4class{DualResponsesSamplesDesign}} where DLEmodel
 used are of
-\code{\linkS4class{ModelTox}} class object and efficacy model used are of 
+\code{\linkS4class{ModelTox}} class object and efficacy model used are of
 \code{\linkS4class{ModelEff}}
-class object (special case is \code{\linkS4class{EffFlexi}} class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is \code{\linkS4class{EffFlexi}} class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process}
 \usage{
 \S4method{simulate}{DualResponsesSamplesDesign}(
@@ -29,7 +29,7 @@ process}
 )
 }
 \arguments{
-\item{object}{the \code{\linkS4class{DualResponsesSamplesDesign}} object we want to 
+\item{object}{the \code{\linkS4class{DualResponsesSamplesDesign}} object we want to
 simulate the data from}
 
 \item{nsim}{the number of simulations (default :1)}
@@ -39,17 +39,17 @@ simulate the data from}
 \item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}
 
-\item{trueEff}{a function which takes as input a dose (vector) and returns the expected 
+\item{trueEff}{a function which takes as input a dose (vector) and returns the expected
 efficacy responses (vector). Additional arguments can be supplied in \code{args}.}
 
-\item{trueNu}{(not with code{\linkS4class{EffFlexi}}) the precision, the inverse of the 
+\item{trueNu}{(not with code{\linkS4class{EffFlexi}}) the precision, the inverse of the
 variance of the efficacy responses}
 
-\item{trueSigma2}{(only with code{\linkS4class{EffFlexi}}) the true variance of the efficacy 
+\item{trueSigma2}{(only with code{\linkS4class{EffFlexi}}) the true variance of the efficacy
 responses which must be a single positive scalar.}
 
-\item{trueSigma2betaW}{(only with code{\linkS4class{EffFlexi}}) the true variance for the 
-random walk model used for smoothing. This must be a single postive scalar.}
+\item{trueSigma2betaW}{(only with code{\linkS4class{EffFlexi}}) the true variance for the
+random walk model used for smoothing. This must be a single positive scalar.}
 
 \item{args}{data frame with arguments for the \code{trueDLE} and
 \code{trueEff} function. The column names correspond to the argument
@@ -78,12 +78,12 @@ an object of class \code{\linkS4class{PseudoDualSimulations}} or
 }
 \description{
 This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
-This is a method based on the \code{\linkS4class{DualResponsesSamplesDesign}} where DLEmodel 
+This is a method based on the \code{\linkS4class{DualResponsesSamplesDesign}} where DLEmodel
 used are of
-\code{\linkS4class{ModelTox}} class object and efficacy model used are of 
+\code{\linkS4class{ModelTox}} class object and efficacy model used are of
 \code{\linkS4class{ModelEff}}
-class object (special case is \code{\linkS4class{EffFlexi}} class model object). 
-In addition, DLE and efficacy samples are involved or generated in the simulation 
+class object (special case is \code{\linkS4class{EffFlexi}} class model object).
+In addition, DLE and efficacy samples are involved or generated in the simulation
 process
 }
 \examples{

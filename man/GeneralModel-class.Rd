@@ -7,8 +7,8 @@
 \title{No Intitialization function for this
 General class for model input}
 \description{
-This is the general model class, from which all other specific models for 
-involving BUGS (the software) for computing result. 
+This is the general model class, from which all other specific models for
+involving BUGS (the software) for computing result.
 It inherits all slots from \code{\linkS4class{AllModels}}
 }
 \details{

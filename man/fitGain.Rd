@@ -3,9 +3,9 @@
 \name{fitGain}
 \alias{fitGain}
 \alias{fitGain,ModelTox,Samples,ModelEff,Samples,DataDual-method}
-\title{Get the fiited values for the gain values at all dose levels based on 
-a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample 
-and data. This method returns a data frame with dose, middle, lower and upper quantiles 
+\title{Get the fitted values for the gain values at all dose levels based on
+a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
+and data. This method returns a data frame with dose, middle, lower and upper quantiles
 of the gain value samples}
 \usage{
 fitGain(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
@@ -45,14 +45,14 @@ grid}
 \code{\link{mean}}}
 }
 \description{
-Get the fiited values for the gain values at all dose levels based on 
-a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample 
-and data. This method returns a data frame with dose, middle, lower and upper quantiles 
+Get the fitted values for the gain values at all dose levels based on
+a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
+and data. This method returns a data frame with dose, middle, lower and upper quantiles
 of the gain value samples
 }
 \section{Functions}{
 \itemize{
-\item \code{fitGain,ModelTox,Samples,ModelEff,Samples,DataDual-method}: This method returns a data frame with dose, middle, lower, upper quantiles for 
+\item \code{fitGain,ModelTox,Samples,ModelEff,Samples,DataDual-method}: This method returns a data frame with dose, middle, lower, upper quantiles for
 the gain values obtained given the DLE and the efficacy samples
 }}
 

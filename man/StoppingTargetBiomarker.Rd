@@ -2,7 +2,7 @@
 % Please edit documentation in R/Rules-class.R
 \name{StoppingTargetBiomarker}
 \alias{StoppingTargetBiomarker}
-\title{Initialization function for "StoppingTargetBiomarker"}
+\title{Initialization function for \code{StoppingTargetBiomarker}}
 \usage{
 StoppingTargetBiomarker(target, scale = c("relative", "absolute"), prob)
 }
@@ -17,6 +17,5 @@ StoppingTargetBiomarker(target, scale = c("relative", "absolute"), prob)
 the \code{\linkS4class{StoppingTargetBiomarker}} object
 }
 \description{
-Initialization function for "StoppingTargetBiomarker"
+Initialization function for \code{StoppingTargetBiomarker}
 }
-\keyword{methods}

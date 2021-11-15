@@ -33,7 +33,7 @@ Compute the probability for a given dose, given model and samples
 }
 \section{Functions}{
 \itemize{
-\item \code{prob,numeric,ModelTox,Samples-method}: Compute the probability for a given dose, 
+\item \code{prob,numeric,ModelTox,Samples-method}: Compute the probability for a given dose,
 given Pseudo DLE model and samples
 
 \item \code{prob,numeric,ModelTox,missing-method}: Compute the probability for a given dose, given Pseudo DLE model without samples

@@ -13,7 +13,7 @@ DualEndpoint(mu, Sigma, refDose = 1, useLogDose = FALSE, sigma2W, rho)
 
 \item{refDose}{see \code{\linkS4class{DualEndpoint}} (default: 1)}
 
-\item{useLogDose}{see \code{\linkS4class{DualEndpoint}} 
+\item{useLogDose}{see \code{\linkS4class{DualEndpoint}}
 (default: \code{FALSE})}
 
 \item{sigma2W}{see \code{\linkS4class{DualEndpoint}}}

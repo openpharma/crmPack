@@ -3,8 +3,8 @@
 \name{update,Effloglog-method}
 \alias{update,Effloglog-method}
 \title{Update method for the 'Effloglog' Model class. This is a method to update the modal
-estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu} 
-(nu, the precision of the efficacy responses) when new data 
+estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu}
+(nu, the precision of the efficacy responses) when new data
 or new observations of responses are available and added in.}
 \usage{
 \S4method{update}{Effloglog}(object, data, ...)
@@ -22,8 +22,8 @@ the new \code{\linkS4class{Effloglog}} class object
 }
 \description{
 Update method for the 'Effloglog' Model class. This is a method to update the modal
-estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu} 
-(nu, the precision of the efficacy responses) when new data 
+estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu}
+(nu, the precision of the efficacy responses) when new data
 or new observations of responses are available and added in.
 }
 \examples{

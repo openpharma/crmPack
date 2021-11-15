@@ -1,22 +1,22 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.0
 Authors@R: c(
-    person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = "aut"),
-    person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
-    person("Giuseppe", "Palermo", , "giuseppe.palermo@roche.com", role = c("aut", "cre")),
-    person("Thomas", "Jaki", , "jaki.thomas@gmail.com", role = "aut")
-  )
-Description: Implements a wide range of model-based dose escalation
-    designs, ranging from classical and modern continual reassessment
-    methods (CRMs) based on dose-limiting toxicity endpoints to
-    dual-endpoint designs taking into account a biomarker/efficacy
-    outcome. The focus is on Bayesian inference, making it very easy to
-    setup a new design with its own JAGS code. However, it is also
-    possible to implement 3+3 designs for comparison or models with
-    non-Bayesian estimation. The whole package is written in a modular
-    form in the S4 class system, making it very flexible for adaptation to
-    new models, escalation or stopping rules.
+  person("Daniel", "Sabanes Bove", email = "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
+  person("Wai", "Yin Yeung", email = "winnie.yeung@roche.com", role = "aut"),
+  person("Giuseppe", "Palermo", email = "giuseppe.palermo@roche.com", role = "aut"),
+  person("Thomas", "Jaki", email = "jaki.thomas@gmail.com", role = "aut"),
+  person("Jiawen", "Zhu", email = "zhu.jiawen@gene.com", role = "aut"),
+  person("Ziwei", "Liao", email = "ziwei.liao.fdu@gmail.com", role = "aut"))
+Description: Implements a wide range of model-based dose
+    escalation designs, ranging from classical and modern continual
+    reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
+    dual-endpoint designs taking into account a biomarker/efficacy outcome. The
+    focus is on Bayesian inference, making it very easy to setup a new design
+    with its own JAGS code. However, it is also possible to implement 3+3
+    designs for comparison or models with non-Bayesian estimation. The whole
+    package is written in a modular form in the S4 class system, making it very
+    flexible for adaptation to new models, escalation or stopping rules.
+Version: 1.0.9000
 License: GPL (>= 2)
 URL: https://github.com/roche/crmPack
 BugReports: https://github.com/roche/crmPack/issues
@@ -33,6 +33,7 @@ Imports:
     mvtnorm,
     parallel,
     rjags,
+    survival,
     tools,
     utils
 Suggests:
@@ -40,13 +41,14 @@ Suggests:
     knitr,
     Rcpp,
     RcppArmadillo
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 VignetteBuilder: 
     knitr
-Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions
-    by Daniel Sabanes Bove after 6 August 2018
+Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 
+    Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
 Language: en-US
 LazyLoad: yes
-RoxygenNote: 7.1.2
 Collate:
     'helpers.R'
     'Data-class.R'

@@ -29,10 +29,10 @@ Compute the doses for a given probability, given model and samples
 }
 \section{Functions}{
 \itemize{
-\item \code{dose,numeric,ModelTox,Samples-method}: Compute the doses for a given probability, given 
+\item \code{dose,numeric,ModelTox,Samples-method}: Compute the doses for a given probability, given
 Pseudo DLE model with samples
 
-\item \code{dose,numeric,ModelTox,missing-method}: Compute the dose for a given probability and a given 
+\item \code{dose,numeric,ModelTox,missing-method}: Compute the dose for a given probability and a given
 Pseudo DLE model without samples
 }}
 

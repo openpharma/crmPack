@@ -5,7 +5,7 @@
 \title{This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
 This is a method based on the \code{\linkS4class{DualResponsesDesign}} where DLEmodel used are of
 \code{\linkS4class{ModelTox}} class object and efficacy model used are of \code{\linkS4class{ModelEff}}
-class object. In addition, no DLE and efficacy samples are involved or generated in the simulation 
+class object. In addition, no DLE and efficacy samples are involved or generated in the simulation
 process}
 \usage{
 \S4method{simulate}{DualResponsesDesign}(
@@ -29,7 +29,7 @@ process}
 
 \item{seed}{see \code{\link{setSeed}}}
 
-\item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability 
+\item{trueDLE}{a function which takes as input a dose (vector) and returns the true probability
 (vector) of the occurrence of a DLE. Additional arguments can be supplied in \code{args}.}
 
 \item{trueEff}{a function which takes as input a dose (vector) and returns the expected efficacy
@@ -61,7 +61,7 @@ an object of class \code{\linkS4class{PseudoDualSimulations}}
 This is a methods to simulate dose escalation procedure using both DLE and efficacy responses.
 This is a method based on the \code{\linkS4class{DualResponsesDesign}} where DLEmodel used are of
 \code{\linkS4class{ModelTox}} class object and efficacy model used are of \code{\linkS4class{ModelEff}}
-class object. In addition, no DLE and efficacy samples are involved or generated in the simulation 
+class object. In addition, no DLE and efficacy samples are involved or generated in the simulation
 process
 }
 \examples{

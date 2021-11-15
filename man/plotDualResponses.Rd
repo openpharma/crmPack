@@ -49,12 +49,12 @@ object with the dose-toxicity and dose-efficacy model fits
 Plot of the DLE and efficacy curve side by side given a DLE pseudo model,
 a DLE sample, an efficacy pseudo model and a given efficacy sample
 
-Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model 
+Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
 and a given pseudo efficacy model without DLE and efficacy samples
 }
 \section{Functions}{
 \itemize{
-\item \code{plotDualResponses,ModelTox,Samples,ModelEff,Samples-method}: function todo
+\item \code{plotDualResponses,ModelTox,Samples,ModelEff,Samples-method}: function still to be documented
 
 \item \code{plotDualResponses,ModelTox,missing,ModelEff,missing-method}: Plot the DLE and efficacy curve side by side given a DLE model
 and an efficacy model without any samples

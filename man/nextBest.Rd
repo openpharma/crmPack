@@ -7,6 +7,7 @@
 \alias{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
+\alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
@@ -24,6 +25,8 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \S4method{nextBest}{NextBestThreePlusThree,missing,missing,missing,Data}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit, samples, model, data, ...)
+
+\S4method{nextBest}{NextBestMinDist,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit, samples, model, data, ...)
 
@@ -86,36 +89,40 @@ corresponding rule \code{nextBest}, the posterior \code{samples} from the
 
 \item \code{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}: Find the next best dose based on the NCRM method. The
 additional list element \code{probs} contains the target and overdosing
-probabilities (across all doses in the dose grid) 
+probabilities (across all doses in the dose grid)
 used in the derivation of the next best dose.
 
 \item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: Find the next best dose based on the NCRM method when
-two parts trial is used - todo: need an example here for DataParts
+two parts trial is used.
 
 \item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: Find the next best dose based on the 3+3 method
 
 \item \code{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}: Find the next best dose based on the dual endpoint
-model. The additional list element \code{probs} contains the target and 
-overdosing probabilities (across all doses in the dose grid) used in the 
+model. The additional list element \code{probs} contains the target and
+overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
+\item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: Method for \code{NextBestMinDist} class, which will give
+the dose which is below the dose limit and has an estimated DLT probability
+which is closest to the target dose.
+
 \item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTDsamples'
-class rule. This a method based only on the DLE responses and for 
+class rule. This a method based only on the DLE responses and for
 \code{\linkS4class{LogisticIndepBeta}} model class object involving DLE samples
 
 \item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTD'
-class rule. This a method based only on the DLE responses and for 
+class rule. This a method based only on the DLE responses and for
 \code{\linkS4class{LogisticIndepBeta}} model class object without DLE samples
 
-\item \code{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}: for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is 
+\item \code{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}: for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is
 a function to find the next best dose based on the 'NextBestMaxGain'
-class rule. This a method based on the DLE responses and efficacy responses without DLE and 
+class rule. This a method based on the DLE responses and efficacy responses without DLE and
 efficacy samples.
 
-\item \code{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}: for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is 
+\item \code{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}: for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is
 a function to find the next best dose based on the 'NextBestMaxGainSamples'
-class rule. This a method based on the DLE responses and efficacy responses with DLE and 
-efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or  
+class rule. This a method based on the DLE responses and efficacy responses with DLE and
+efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or
 \code{\linkS4class{EffFlexi}}.
 }}
 

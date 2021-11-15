@@ -6,8 +6,8 @@
 objects in order to summarize them graphically. Possible \code{type}s of
 plots at the moment are: \describe{ \item{trajectory}{Summary of the
 trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-the doses tested in patients} \item{sigma2}{The variance of the efficacy responses} 
-\item{sigma2betaW}{The variance of the random walk model}} 
+the doses tested in patients} \item{sigma2}{The variance of the efficacy responses}
+\item{sigma2betaW}{The variance of the random walk model}}
 You can specify one or both of these in the
 \code{type} argument.}
 \usage{
@@ -32,8 +32,8 @@ This plot method can be applied to \code{\linkS4class{PseudoDualFlexiSimulations
 objects in order to summarize them graphically. Possible \code{type}s of
 plots at the moment are: \describe{ \item{trajectory}{Summary of the
 trajectory of the simulated trials} \item{dosesTried}{Average proportions of
-the doses tested in patients} \item{sigma2}{The variance of the efficacy responses} 
-\item{sigma2betaW}{The variance of the random walk model}} 
+the doses tested in patients} \item{sigma2}{The variance of the efficacy responses}
+\item{sigma2betaW}{The variance of the random walk model}}
 You can specify one or both of these in the
 \code{type} argument.
 }

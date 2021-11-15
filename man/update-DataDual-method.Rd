@@ -23,7 +23,7 @@
 
 \item{w}{the biomarker vector, for all patients in this cohort}
 
-\item{newCohort}{logical: if TRUE (default) the new data are assigned 
+\item{newCohort}{logical: if TRUE (default) the new data are assigned
 to a new cohort}
 
 \item{ID}{the patient IDs}

@@ -4,7 +4,7 @@
 \name{LogisticLogNormalSub-class}
 \alias{LogisticLogNormalSub-class}
 \alias{.LogisticLogNormalSub}
-\title{Standard logistic model with bivariate (log) normal prior with substractive
+\title{Standard logistic model with bivariate (log) normal prior with subtractive
 dose standardization}
 \description{
 This is the usual logistic regression model with a bivariate normal prior on

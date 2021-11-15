@@ -16,17 +16,17 @@ of it during the construction of subclass objects.)
 }
 \details{
 Currently a probit regression model
-\deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2} 
+\deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2}
 \cdot x/x^{*}}{probit[p(x)] = beta_Z1 + beta_Z2 * x/x*}
 or
-\deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2} 
+\deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2}
 \cdot \log(x/x^{*})}{probit[p(x)] = beta_Z1 + beta_Z2 * log(x/x*)}
 in case that the option \code{useLogDose} is \code{TRUE}.
 Here \eqn{p(x)} is the probability of observing a DLT for a given
 dose \eqn{x}, \eqn{\Phi} is the standard normal cdf, and \eqn{x^{*}} is
 the reference dose.
 
-The prior is \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right) 
+The prior is \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right)
 \sim Normal(\mu, \Sigma)}{(beta_Z1, log(beta_Z2)) ~ Normal(mu, Sigma)}.
 
 For the biomarker response w at a dose x, we assume

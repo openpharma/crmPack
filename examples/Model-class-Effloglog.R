@@ -3,13 +3,13 @@
 ## 12 dose levels are usesd from 25 to 300 mg with increments of 25.
 emptydata<-DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
 data<-emptydata
-## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in 
+## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in
 ## (Effdose slot).
-## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and 
+## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and
 ## specified in (Eff slot).
-## The prior precision of the pseudo efficay responses. This can be either a fixed value of 
+## The prior precision of the pseudo efficacy responses. This can be either a fixed value of
 ## specifying the shape (a) and the rate (b) parameters for the gamma distribution in (nu slot).
-## Then specify all data currentl available in (data slot).
+## Then specify all data currently available in (data slot).
 
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
 

@@ -11,7 +11,7 @@ rinvGamma(n, a, b)
 
 \item{a}{the shape parameter of the inverse gamma distribution}
 
-\item{b}{the scale parameter of the inverse gamm distribution}
+\item{b}{the scale parameter of the inverse gamma distribution}
 }
 \description{
 The random generation of the Inverse gamma distribution

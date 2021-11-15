@@ -63,7 +63,7 @@ as well as the final \code{parameters} (which could be used for running the
 algorithm a second time)
 }
 \description{
-This function uses generalised simulated annealing to optimise
+This function uses generalized simulated annealing to optimize
 a \code{\linkS4class{LogisticNormal}} model to be as close as possible
 to the given prior quantiles.
 }
