@@ -3,7 +3,7 @@
 \name{update,LogisticIndepBeta-method}
 \alias{update,LogisticIndepBeta-method}
 \title{Update method for the 'LogisticIndepBeta'Model class. This is a method to update the modal
-estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data 
+estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data
 or new observations of responses are available and added in.}
 \usage{
 \S4method{update}{LogisticIndepBeta}(object, data, ...)
@@ -11,7 +11,7 @@ or new observations of responses are available and added in.}
 \arguments{
 \item{object}{the model of \code{\linkS4class{LogisticIndepBeta}} class object}
 
-\item{data}{all currently availabvle of \code{\linkS4class{Data}} class object}
+\item{data}{all currently available of \code{\linkS4class{Data}} class object}
 
 \item{\dots}{unused}
 }
@@ -20,7 +20,7 @@ the new \code{\linkS4class{LogisticIndepBeta}} class object
 }
 \description{
 Update method for the 'LogisticIndepBeta'Model class. This is a method to update the modal
-estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data 
+estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data
 or new observations of responses are available and added in.
 }
 \examples{

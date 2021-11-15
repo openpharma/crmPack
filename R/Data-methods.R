@@ -405,9 +405,9 @@ setGeneric("getEff",
            valueClass="list")
 
 ##' @rdname getEff
-##' @param x todo
-##' @param y todo
-##' @param w todo
+##' @param x first
+##' @param y second
+##' @param w third
 ##' @example examples/Data-method-getEff.R
 setMethod("getEff",
           signature=
@@ -464,7 +464,6 @@ setMethod("update",
             signature(object="DataDA"),
           def=
             function(object,
-                     ## todo: based on doc, expect this instead of below params:
                      # x,
                      # y,
                      # u,
@@ -480,7 +479,7 @@ setMethod("update",
 
               ## some checks
               stopifnot(is.scalar(thisDose),
-                        all(factSurv > 0),
+                        all(factSurv >= 0),
                         all(factDLTs %in% c(0, 1)),
                         length(factDLTs) == length(factSurv),
                         length(factDLTs) == length(factT0)

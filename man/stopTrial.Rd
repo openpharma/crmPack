@@ -125,20 +125,20 @@ dose
 \item \code{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}: Stop when the highest dose is reached
 
 \item \code{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}: Stop based on 'StoppingTDCIRatio' class when
-reaching the target ratio of the upper to the lower 95% credibility
+reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
 DLE responses and DLE samples are given
 
 \item \code{stopTrial,StoppingTDCIRatio,ANY,missing,ModelTox,ANY-method}: Stop based on 'StoppingTDCIRatio' class
-when reaching the target ratio of the upper to the lower 95% credibility
+when reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
 DLE responses and no DLE samples are involved
 
-\item \code{stopTrial,StoppingGstarCIRatio,ANY,Samples,ModelTox,DataDual-method}: Stop based on reaching the target ratio of the upper to the lower 95% credibility
+\item \code{stopTrial,StoppingGstarCIRatio,ANY,Samples,ModelTox,DataDual-method}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
 incorporate DLE and efficacy responses and DLE and efficacy samples are also used.
 
-\item \code{stopTrial,StoppingGstarCIRatio,ANY,missing,ModelTox,DataDual-method}: Stop based on reaching the target ratio of the upper to the lower 95% credibility
+\item \code{stopTrial,StoppingGstarCIRatio,ANY,missing,ModelTox,DataDual-method}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
 incorporate DLE and efficacy responses without DLE and efficacy samples involved.
 }}

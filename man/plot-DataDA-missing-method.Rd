@@ -2,8 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,DataDA,missing-method}
 \alias{plot,DataDA,missing-method}
-\title{Plot method for the "DataDA" class
-todo: insert example code in below file (empty still)}
+\title{Plot method for the \code{DataDA} class}
 \usage{
 \S4method{plot}{DataDA,missing}(x, y, blind = FALSE, ...)
 }
@@ -20,8 +19,7 @@ todo: insert example code in below file (empty still)}
 the \code{\link[ggplot2]{ggplot}} object
 }
 \description{
-Plot method for the "DataDA" class
-todo: insert example code in below file (empty still)
+Plot method for the \code{DataDA} class
 }
 \examples{
 

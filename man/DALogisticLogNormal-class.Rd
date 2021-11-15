@@ -16,13 +16,12 @@ todo: need to include here formula for the lambda prior.
 \section{Slots}{
 
 \describe{
-\item{\code{npiece}}{the number of pieces in the PEM}
+\item{\code{npiece}}{the number of pieces in the \code{PEM}}
 
 \item{\code{l}}{a vector used in the lambda prior}
 
 \item{\code{C_par}}{a parameter used in the lambda prior,
-according to Liu's paper, C_par=2 is recommended
-todo: cite "Liu's paper" here (should be dedicated Roxygen tag for that)}
+according to Liu's paper, \code{C_par=2} is recommended.}
 
 \item{\code{conditionalPEM}}{is a conditional piecewise-exponential model used?
 (default) Otherwise an unconditional model is used.}
@@ -36,12 +35,6 @@ lambda_prior <- function(k)
 {
   npiece / (Tmax * (npiece - k + 0.5))
 }
-
-## todo_with_reply: need to explain why "l" is defined like that.
-## reply: using the same assumption in Liu, Yin, Yuan 2013, it is assumed that a priori toxicity occurs 
-## uniformly throughout the assessment period (0, Tmax), which represents a neutral prior opinion
-## between early-onset and late-onset toxicity. Under this assumption, the hazard at the middle of 
-## the kth partition is caluclated as the lambda_prior function;
 
 model <- DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1, -0.5, -0.5, 1),

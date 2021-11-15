@@ -297,7 +297,6 @@ LogisticLogNormal <- function(mean,
                            return(plogis(alpha0 + alpha1 * StandLogDose))
                        },
                        init=
-                       ## todo: find better starting values
                        function(){
                            list(theta=c(0, 1))
                        },
@@ -453,7 +452,6 @@ ProbitLogNormal <- function(mu,
                            return(pnorm(alpha0 + alpha1 * dose / refDose))
                          }},
                      init=
-                       ## todo: find better starting values
                        function(){
                          list(theta=c(0, 1))
                        },
@@ -469,7 +467,7 @@ validObject(ProbitLogNormal(mu=c(0, 1),
 ## ============================================================
 
 
-##' Standard logistic model with bivariate (log) normal prior with substractive
+##' Standard logistic model with bivariate (log) normal prior with subtractive
 ##' dose standardization
 ##'
 ##' This is the usual logistic regression model with a bivariate normal prior on
@@ -580,7 +578,6 @@ LogisticLogNormalSub <- function (mean,
                                   return(plogis(alpha0 + alpha1 * StandDose))
                               },
                           init=
-                              ## todo: find better starting values
                               function(){
                                   list(theta=c(0, -20))
                               },
@@ -711,7 +708,6 @@ LogisticNormal <- function (mean,
                                  return(plogis(alpha0 + alpha1 * StandLogDose))
                         },
                     init=
-                        ## todo: find better starting values
                         function(){
                             list(theta=c(0, 1))
                         },
@@ -850,8 +846,6 @@ LogisticKadane <- function(theta,
 
 
 ##' Dual endpoint model
-##'
-##' todo: describe the model
 ##'
 ##' @slot mu For the probit toxicity model, \code{mu} contains the prior mean
 ##' vector
@@ -1070,7 +1064,7 @@ setMethod("initialize",
 
                   ## tox
                   designZ <- cbind(1, x)
-                  ## todo: note that this is the easiest case here.
+                  ## note that this is the easiest case here.
                   ## we could in principle employ any probit regression model
                   ## for the toxicity! So later on, we can extend this
                   ## to make it more flexible.
@@ -1735,7 +1729,6 @@ DualEndpointRW <- function(sigma2betaW,
                            ## the iid second oder differences:
                            for (j in 1:(nGrid-2)) {
                                delta2[j] ~ dnorm(0, 2 * precBetaW / (doseGrid[j+2] - doseGrid[j]))
-                             ## todo: not sure if this makes sense, please check
                            }
 
                            ## the first 1st order difference:
@@ -2489,7 +2482,6 @@ LogisticNormalMixture <- function(comp1,
                                    return(plogis(alpha0 + alpha1 * StandLogDose))
                                },
                            init=
-                               ## todo: find better starting values
                                function(){
                                    list(theta=c(0, 1))
                                },
@@ -2877,7 +2869,6 @@ LogisticNormalFixedMixture <- function(components,
                                         return(plogis(alpha0 + alpha1 * StandLogDose))
                                     },
                                 init=
-                                    ## todo: find better starting values
                                     function(){
                                         list(theta=c(0, 1))
                                     },
@@ -2930,39 +2921,39 @@ validObject(.ModelPseudo)
 ##' generated can be single values of the maximum likelihodd estimates (prior or posterior modal
 ##' estimates) or samples of the model estimates generated. If samples of the model estimates are
 ##' generated, the model parameters (samples) must be included in the \code{samples} vector.
-##' The vectors of all samples for these model paramters will be supplied to the function such
+##' The vectors of all samples for these model parameters will be supplied to the function such
 ##' that the function will be able to process vectors of model parameters.
 ##'
 ##' The \code{prob} function has a first argument \code{dose}, a scalar dose level which is targeted.
-##' Additional arguments are model paramters. It computes using model paramter(s) (samples), the
-##' resulting probabilities of a DLE occuring at the target dose level. If samples of model parameters
+##' Additional arguments are model parameters. It computes using model parameter(s) (samples), the
+##' resulting probabilities of a DLE occurring at the target dose level. If samples of model parameters
 ##' are generated, the function must vectorize over the model parameters.
 ##'
 ##' Note that \code{dose} and \code{prob} are the inverse functions of each other.
 ##'
-##' The \code{data} must obey the covention that the data input is called exactly in the
+##' The \code{data} must obey the convention that the data input is called exactly in the
 ##' \code{\linkS4class{Data}} class. This refers to any observed DLE responses (\code{y} in
 ##' \code{\linkS4class{Data}} class), the dose (levels) (\code{x} in \code{\linkS4class{Data}} class)
 ##' at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
 ##' in \code{\linkS4class{Data}}) class and other specifications in \code{\linkS4class{Data}}
 ##' class that can be used to generate prior or
-##' posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+##' posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
 ##' at least \code{doseGrid} in \code{\linkS4class{Data}} has to be specified in \code{data} slot for which
 ##' prior modal estimates or samples can be obtained for model parameters based on the specified pseudo
 ##' data.
 ##'
 ##'
 ##'
-##' @slot dose a function computing the dose level reaching a specific target probabilty of the occurrence
-##' of a DLE, based on the model parameters. The model paramters (samples)are obtained based on the prior
+##' @slot dose a function computing the dose level reaching a specific target probability of the occurrence
+##' of a DLE, based on the model parameters. The model parameters (samples)are obtained based on the prior
 ##' specified in form of pseudo data and together with (if any) the observed
 ##' DLE responses and their corresponding dose levels (see details above)
-##' @slot prob a function computing the probability of the occurrence of a DLEat a specidfied dose level,
-##' based on the model parameters. The model paramters (samples) are obtained the prior specified in form
+##' @slot prob a function computing the probability of the occurrence of a DLE at a specified dose level,
+##' based on the model parameters. The model parameters (samples) are obtained the prior specified in form
 ##' of pseudo data and together with (if any) the observed DLE responses and their
-##' corresponding dose levels (see dtails above)
+##' corresponding dose levels (see details above)
 ##' @slot data refers to the data input specification in \code{\linkS4class{Data}} class which are used to
-##' obtain model paramters estimates or samples (see details above)
+##' obtain model parameters estimates or samples (see details above)
 ##'
 ##'
 ##' @seealso \code{\linkS4class{LogisticIndepBeta}},
@@ -2989,7 +2980,7 @@ validObject(.ModelTox)
 ##' form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
 ##'
 ##' The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value
-##' which is targeted. Additional arguements are model parameters. It computes using modal estimate(s)
+##' which is targeted. Additional arguments are model parameters. It computes using modal estimate(s)
 ##' or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
 ##' of the model parameters are used, the function must vectorize over the model parameters.
 ##'
@@ -2998,7 +2989,7 @@ validObject(.ModelTox)
 ##' model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
 ##' of the model parameter(s) are used, the function must vectorize over the model parameters.
 ##'
-##' The \code{data} must obey the covention that the data input is called exactly in the
+##' The \code{data} must obey the convention that the data input is called exactly in the
 ##' \code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses
 ##' (\code{w} in
 ##' \code{\linkS4class{DataDual}} class), the dose (levels) (\code{x} in \code{\linkS4class{DataDual}} or
@@ -3007,7 +2998,7 @@ validObject(.ModelTox)
 ##' in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in
 ##' \code{\linkS4class{DataDual}}
 ##' class that can be used to generate prior or
-##' posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+##' posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
 ##' at least \code{doseGrid} in \code{\linkS4class{DataDual}} has to be specified in \code{data} slot
 ##' for which prior modal estimates or samples can be obtained for model parameters based on
 ##' the specified pseudo data.
@@ -3021,7 +3012,7 @@ validObject(.ModelTox)
 ##' with observed responses (see details above)
 ##'
 ##' @slot data refers to the data input specification in \code{\linkS4class{DataDual}} class which are used to
-##' obtain model paramters estimates or samples (see details above)
+##' obtain model parameters estimates or samples (see details above)
 ##'
 ##' @seealso \code{\linkS4class{Effloglog}},
 ##' \code{\linkS4class{EffFlexi}}
@@ -3041,8 +3032,8 @@ validObject(.ModelEff)
 ##' Standard logistic model with prior in form of pseudo data
 ##'
 ##' This is a class for the two-parameter logistic regression DLE model with prior expressed
-##' in form of pseudo data. This model describe the relationhship of the binary DLE (dose-limiting
-##' events) responses and the dose levels. More specifically, this DLE model reprsents the relationship
+##' in form of pseudo data. This model describe the relationship of the binary DLE (dose-limiting
+##' events) responses and the dose levels. More specifically, this DLE model represents the relationship
 ##' of the probabilities of the occurrence of a DLE with their corresponding dose levels in log scale.
 ##' This model is specified as
 ##' \deqn{p(d_{(j)})= \frac{exp(\phi_1+\phi_2 log(d_{(j)}))}{1+exp(\phi_1+\phi_2 log(d_{(j)}))}}
@@ -3060,14 +3051,14 @@ validObject(.ModelEff)
 ##' based on these pseudo data are independent Beta distributions. Therefore, the joint prior probability
 ##' density function of all these probabilities can be obtained. Hence, by a change of variable, the
 ##' joint prior probability density function of the two parameters in this model can also be obtained.
-##' In addition, a conjugate joint perior density function of the two paramaters in the model is used.
+##' In addition, a conjugate joint prior density function of the two parameters in the model is used.
 ##' For details about the form of all these joint prior and posterior probability density function, please
 ##' refers to Whitehead and Willamson (1998).
 ##'
 ##'
 ##' When expressing the pseudo data, \code{binDLE},\code{DLEdose} and \code{DLEweights} are used.
 ##' The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary
-##' nature of the pseudo data, the number of subjects observed wtih DLE is not necesssary to be integer(s)
+##' nature of the pseudo data, the number of subjects observed with DLE is not necessary to be integer(s)
 ##' but any scalar value.
 ##' The \code{DLEdose} represents the dose levels at which the pseudo DLE responses (\code{binDLE}) are
 ##' observed.
@@ -3204,7 +3195,7 @@ LogisticIndepBeta <- function(binDLE,
 ##' variance \eqn{\sigma^2=\nu^{-1}}. This variance is assumed to be the same for all subjects.
 ##'
 ##' There are three parameters in this model which is to intercept \eqn{\theta_1}, the slope \eqn{\theta_2}
-##' and the precision \eqn{\nu} of the efficay responses.
+##' and the precision \eqn{\nu} of the efficacy responses.
 ##' It inherit all slots from \code{\linkS4class{ModelEff}}
 ##'
 ##' The prior of this model is specified in form of pseudo data. First at least two dose levels are fixed.
@@ -3214,14 +3205,14 @@ LogisticIndepBeta <- function(binDLE,
 ##'
 ##' The \code{Eff} and \code{Effdose} are used to represent the prior in form of the pseudo data.
 ##' The \code{Eff} represents the pseudo scalar efficacy values. The \code{Effdose} represents the dose levels
-##' at which these pseudo efficacy values are observed. These pseudo efficay values are always specified by
+##' at which these pseudo efficacy values are observed. These pseudo efficacy values are always specified by
 ##' assuming one subject are treated in each of the dose levels. Since at least 2 pseudo efficacy values are
 ##' needed to obtain modal estimates of the intercept and slope parameters, both \code{Eff} and \code{Effdose}
 ##' must be vector of at least length 2. The position of the values or elements specified in \code{Eff} or
 ##' \code{Effdose} must be corresponds to the same elements or values in the other vector.
 ##'
-##' The \code{nu} represents the prior presion \eqn{\nu} of the pseudo efficacy responses. It is also known as the inverse
-##' of the variance of the pseduo efficacy responses. The precision can be a fixed constant or having a gamma
+##' The \code{nu} represents the prior precision \eqn{\nu} of the pseudo efficacy responses. It is also known as the inverse
+##' of the variance of the pseudo efficacy responses. The precision can be a fixed constant or having a gamma
 ##' distribution. Therefore, single scalar value, a fixed
 ##' value of the precision can be specified. If not, two positive scalar values must be specified as the
 ##' shape and rate parameter of the gamma distribution. If there are some observed efficacy responses available,
@@ -3245,9 +3236,9 @@ LogisticIndepBeta <- function(binDLE,
 ##' posterior modal estimates
 ##' of the intercept (theta1) and the slope (theta2). The design matrix \eqn{\mathbf{X}} obtained based only on
 ##' observed efficacy responses will give \eqn{\mathbf{Q}=\mathbf{X}\mathbf{X}^T} with \eqn{\nu} as the precision of
-##' the observed efficay responses. If no observed efficay responses are availble (i.e only pseudo
-##' efficay responses are used), the \code{vecmu}, \code{matX}, \code{matQ} and \code{vecY} represents
-##' \eqn{\boldsymbol\mu_0}, \eqn{\mathbf{X}_0}, \eqn{\mathbf{Q}_0} and the column vector of pseudo efficay responses,
+##' the observed efficacy responses. If no observed efficacy responses are available (i.e only pseudo
+##' efficacy responses are used), the \code{vecmu}, \code{matX}, \code{matQ} and \code{vecY} represents
+##' \eqn{\boldsymbol\mu_0}, \eqn{\mathbf{X}_0}, \eqn{\mathbf{Q}_0} and the column vector of pseudo efficacy responses,
 ##' respectively. If there are some observed efficacy responses, \code{vecmu}, \code{matX}, \code{matQ}
 ##' and \code{vecY} will represent \eqn{\boldsymbol\mu}, \eqn{\mathbf{X}}, \eqn{\mathbf{Q}} and the column vector contains
 ##' all observed efficacy responses, respectively. (see details in about the form of prior and posterior distribution)
@@ -3256,32 +3247,32 @@ LogisticIndepBeta <- function(binDLE,
 ##' length 2. Each element or value here must represents responses treated based on one subject. The order
 ##'  of its elements must corresponds to the values presented in vector \code{Effdose} (see details above)
 ##' @slot Effdose the pseudo efficacy dose level. This is the dose levels at which the pseudo efficacy
-##' responses are observed at. This must be a vector of at least length 2 and the orde of its elements must
-##' corresponds to values presented in vector \code{Eff} (see detial above)
+##' responses are observed at. This must be a vector of at least length 2 and the order of its elements must
+##' corresponds to values presented in vector \code{Eff} (see details above)
 ##' @slot nu refers to the prior precision of pseudo efficacy responses. This is either a fixed value or a
 ##' vector of elements \code{a}, a positive scalar for the shape parameter, and \code{b}, a positive scalar
-##' for the rate parameter for the gamma dsitribution. (see detail from above)
+##' for the rate parameter for the gamma distribution. (see detail from above)
 ##' @slot useFixed a logical value if \code{nu} specified is a fixed value or not. This slot is needed for
 ##' internal purposes and not to be touched by the user.
 ##' @slot theta1 The intercept \eqn{\theta_1} parameter of this efficacy log-log model. This slot is used in output to display
 ##' the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the
 ##' observed data/ responses.
-##' @slot theta2 The slope \eqn{theta_2} parameter of the efficacy log-lgo model. This slot is used in output to display
+##' @slot theta2 The slope \eqn{theta_2} parameter of the efficacy log-log model. This slot is used in output to display
 ##' the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the
 ##' observed data/ responses.
-##' @slot Pcov refers to the covariance matrix of the intercept (phi1) and slope (phi2) paramters of this model.
+##' @slot Pcov refers to the covariance matrix of the intercept (phi1) and slope (phi2) parameters of this model.
 ##' This slot is used in output to display the covariance matrix obtained based on the pseudo data and (if any)
 ##' the observed data/responses. This slot is needed for internal purposes.
 ##' @slot vecmu is the column vector of the prior or the posterior modal estimates of the intercept (phi1) and
 ##' the slope (phi2).
-##' This slot is used in output to display as the mean of the prior or posterior bivariate normal distribtuion
+##' This slot is used in output to display as the mean of the prior or posterior bivariate normal distribution
 ##' for phi1 and phi2. (see details from above)
 ##' @slot matX is the design matrix based on either the pseudo or all observed efficacy response. This is used in
 ##' output to display the design matrix for the pseudo or the observed efficacy responses (see details from above)
 ##' @slot matQ is the square matrix of multiplying the the design matrix with its transponse. This is represented
-##' either using the only the pseudo efficay responses or only with the observed efficacy responses. This is display
+##' either using the only the pseudo efficacy responses or only with the observed efficacy responses. This is display
 ##' in the output (see details from above)
-##' @slot vecY is the column vector either contains the pseudo efficay responses or all the observed efficacy
+##' @slot vecY is the column vector either contains the pseudo efficacy responses or all the observed efficacy
 ##' responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)
 ##' @slot c is a constant value greater or equal to 0, with the default 0 leading
 ##' to the model form described above. In general, the model has the form
@@ -3323,7 +3314,7 @@ LogisticIndepBeta <- function(binDLE,
                        "length of Eff and Effdose must be equal")
                if (object@useFixed == "TRUE"){
                  o$check((length(object@nu)==1)&&(object@nu > 0),
-                         "nu must be a single postive real number")} else {
+                         "nu must be a single positive real number")} else {
                            o$check(identical(names(slot(object,"nu")),c("a","b")),
                                    "nu must have names 'a' and 'b' ")
                            o$check(all(slot(object,"nu") > 0),
@@ -3431,12 +3422,12 @@ Effloglog<-function(Eff,
 ## =========================================================================================
 ##' Class for the efficacy model in flexible form for prior expressed in form of pseudo data
 ##'
-##' This is a class where a flexible form is used to describe the realtionship between the efficacy
+##' This is a class where a flexible form is used to describe the relationship between the efficacy
 ##' responses and the dose levels. This flexible form aims to capture different shape for the
 ##' dose-efficacy curve and the mean efficacy responses at each dose level are estimated using MCMC.
 ##' In addition, the first (RW1) or second order (RW2) random walk model can be used for smoothing data. That is
-##' the random walk model is used to model the first or the second order differnece of the mean
-##' efficacy responses to its neighbouring dose levels of their mean efficacy responses.
+##' the random walk model is used to model the first or the second order difference of the mean
+##' efficacy responses to its neighboring dose levels of their mean efficacy responses.
 ##' The flexible form is specified as
 ##' \deqn{\mathbf{W}\vert\boldsymbol{\beta_w}, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol{\beta_w}, \sigma^2 \mathbf{I})}
 ##' where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol{\beta_w}}
@@ -3454,28 +3445,28 @@ Effloglog<-function(Eff,
 ##' (sigma2betaW) will be the same at all dose levels and can
 ##' either be fixed or assigned an inverse gamma prior distribution.
 ##'
-##' The \code{Eff} and \code{Effdose} are the pseduo efficacy responses and dose levels at which these
+##' The \code{Eff} and \code{Effdose} are the pseudo efficacy responses and dose levels at which these
 ##' pseudo efficacy responses are observed at. (see more details for \code{\linkS4class{Effloglog}} class)
 ##' \code{Eff} and \code{Effdose} must be vector of at least length 2. The values or elements in vectors
 ##' \code{Eff} or \code{Effdose} must put in the same position with its corresponding value in the other
 ##' vector. The \code{sigma2} is the prior variance of the flexible efficacy form. The variance is either specified
-##' with a single scalar value (fixed) or postive scalar value have to be specified for the \code{a} shape and
-##' \code{b} slope parameter for th inverse gamme distribtuion. Similarly, \code{sigma2betaW} is the prior variance
+##' with a single scalar value (fixed) or positive scalar value have to be specified for the \code{a} shape and
+##' \code{b} slope parameter for th inverse gamma distribution. Similarly, \code{sigma2betaW} is the prior variance
 ##' of the random walk model which can be specified with a single scalar (fixed) value or specifying positive
 ##' scalar values for the shape \code{a} and rate \code{b} parameters for the inverse gamma distributions.
-##' This model will output the updated value or the updated values of the paramters of the inverse gamma
-##' distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (sigma2betaW)
+##' This model will output the updated value or the updated values of the parameters of the inverse gamma
+##' distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (`sigma2betaW`)
 ##'
 ##' @slot Eff the pseudo efficacy responses. A vector of at least length 2 with the elements here and its
-##' corresponding value in \code{Effdose} must be specified in the same position. (see dtails above)
+##' corresponding value in \code{Effdose} must be specified in the same position. (see details above)
 ##' @slot Effdose the dose levels at which the pseudo efficacy responses are observed. This is a vector of at
-##' least length 2 and the elements here and its corrresponding value in \code{Eff} must be specified in the
-##' same postion. (see details from above)
+##' least length 2 and the elements here and its corresponding value in \code{Eff} must be specified in the
+##' same position. (see details from above)
 ##' @slot sigma2 the prior variance of the flexible efficacy form. It can be specified with a single positive
 ##' scalar or specifying \code{a}, the shape and \code{b}, the rate parameter of the inverse gamma
 ##' distribution. (see details from above)
-##' @slot sigma2betaW the prior variance of the random walk model for the mean efficact responses. A single
-##' positve scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of
+##' @slot sigma2betaW the prior variance of the random walk model for the mean efficacy responses. A single
+##' positive scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of
 ##' the inverse gamma distribution (see details from above)
 ##' @slot useFixed a list of with logical value to each of the parameters \code{sigma2} and \code{sigma2betaw}
 ##' indicating whether a fixed value is used or not; this slot is needed for internal purposes and not to
@@ -3540,10 +3531,10 @@ validObject(.EffFlexi())
 ##' @param Eff the pseudo efficacy responses
 ##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
 ##' @param sigma2 the prior variance of the efficacy responses which can be specified
-##' with a single positive scalar or with two positive scalar values fot the shape \code{a} and
-##' the rate \code{b} parameters of the inverse gamma distribtuion.
+##' with a single positive scalar or with two positive scalar values for the shape \code{a} and
+##' the rate \code{b} parameters of the inverse gamma distribution.
 ##' @param sigma2betaW the prior variance of the random walk model used for smoothing which can be
-##' specified with a single postive scalar or with two positive scalars representing the shape \code{a}
+##' specified with a single positive scalar or with two positive scalars representing the shape \code{a}
 ##' and the rate \code{b} parameter of the inverse gamma distribution.
 ##' @param smooth used for smoothing data for this efficacy model. That is either the "RW1", the
 ##' first-order random walk model or "RW2", the second-order random walk model is used of the mean
@@ -3647,11 +3638,10 @@ EffFlexi <- function(Eff,
 ##'
 ##' todo: need to include here formula for the lambda prior.
 ##'
-##' @slot npiece the number of pieces in the PEM
+##' @slot npiece the number of pieces in the `PEM`
 ##' @slot l a vector used in the lambda prior
 ##' @slot C_par a parameter used in the lambda prior,
-##' according to Liu's paper, C_par=2 is recommended
-##' todo: cite "Liu's paper" here (should be dedicated Roxygen tag for that)
+##' according to Liu's paper, `C_par=2` is recommended.
 ##' @slot conditionalPEM is a conditional piecewise-exponential model used?
 ##' (default) Otherwise an unconditional model is used.
 ##'
@@ -3676,7 +3666,7 @@ EffFlexi <- function(Eff,
                o$check(all(object@l >= 0),
                        "l, prior parameter of lambda must be positive scalar")
 
-               ## DSB: Todo: need to check C_par
+               ## need to check C_par here.
 
                o$check(is.scalar(object@conditionalPEM))
 
@@ -3711,9 +3701,9 @@ DALogisticLogNormal <- function(npiece=3,
                        conditionalPEM=conditionalPEM,
                        datamodel=
                          function(){
-                           #todo: user be able to specified time interval and number of pieces;
-                           #time intervals of peicewise expernential distribution;
-                           ## DSB: has this been done already?
+                           # user should be able to specified time interval and number of pieces;
+                           #time intervals of piecewise exponential distribution;
+                           ## has this been done already?
                            for (i in 1:nObs) #for each patient
                            {
                              #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
@@ -3840,15 +3830,6 @@ DALogisticLogNormal <- function(npiece=3,
                          c("alpha0", "alpha1", "lambda")
 
   )
-
-  ## DSB: todo: sample here also the interval probabilities
-  ## for having a DLT. This can also be nicely summarized
-  ## later. -> put the additional parameter name in "sample"
-
-  ##JZ: the interval probs are calcualted in the plot step.
-  ##Added it here will save computation. to be done.
-
-
 }
 validObject(DALogisticLogNormal(mean=c(0, 1),
                                 cov=diag(2),
@@ -3891,7 +3872,7 @@ validObject(DALogisticLogNormal(mean=c(0, 1),
 validObject(.TITELogisticLogNormal())
 
 
-##' Initialization function for the "TITELogisticLogNormal" class
+##' Initialization function for the `TITELogisticLogNormal` class
 ##'
 ##' @param weightMethod see \code{\linkS4class{TITELogisticLogNormal}}
 ##' @param \dots see \code{\linkS4class{LogisticLogNormal}}
@@ -4043,7 +4024,7 @@ validObject(TITELogisticLogNormal(mean=c(0, 1),
 validObject(.OneParExpNormalPrior())
 
 ##' @describeIn OneParExpNormalPrior-class Initialization function for the
-##'   "OneParExpNormalPrior" class.
+##'   `OneParExpNormalPrior` class.
 ##'
 ##' @export
 ##' @keywords methods

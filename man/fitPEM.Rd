@@ -4,7 +4,7 @@
 \alias{fitPEM}
 \alias{fitPEM,Samples,DALogisticLogNormal,DataDA-method}
 \title{Get the fitted DLT free survival (piecewise exponential model).
-This function returns a data frame with dose, middle, lower and upper 
+This function returns a data frame with dose, middle, lower and upper
 quantiles for the PEM curve. If hazard=TRUE,}
 \usage{
 fitPEM(
@@ -41,18 +41,18 @@ fitPEM(
 \code{\link{mean}}}
 
 \item{hazard}{should the the hazard over time be plotted based on the PEM? (not default)
-Otherwise (default) todo: what will be plotted?...}
+Otherwise ...}
 
 \item{\dots}{additional arguments for methods}
 }
 \description{
 Get the fitted DLT free survival (piecewise exponential model).
-This function returns a data frame with dose, middle, lower and upper 
+This function returns a data frame with dose, middle, lower and upper
 quantiles for the PEM curve. If hazard=TRUE,
 }
 \section{Functions}{
 \itemize{
-\item \code{fitPEM,Samples,DALogisticLogNormal,DataDA-method}: This method works for the \code{\linkS4class{DALogisticLogNormal}} 
+\item \code{fitPEM,Samples,DALogisticLogNormal,DataDA-method}: This method works for the \code{\linkS4class{DALogisticLogNormal}}
 model class.
 }}
 

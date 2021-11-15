@@ -8,8 +8,8 @@
 Standard logistic model with prior in form of pseudo data}
 \description{
 This is a class for the two-parameter logistic regression DLE model with prior expressed
-in form of pseudo data. This model describe the relationhship of the binary DLE (dose-limiting
-events) responses and the dose levels. More specifically, this DLE model reprsents the relationship
+in form of pseudo data. This model describe the relationship of the binary DLE (dose-limiting
+events) responses and the dose levels. More specifically, this DLE model represents the relationship
 of the probabilities of the occurrence of a DLE with their corresponding dose levels in log scale.
 This model is specified as
 \deqn{p(d_{(j)})= \frac{exp(\phi_1+\phi_2 log(d_{(j)}))}{1+exp(\phi_1+\phi_2 log(d_{(j)}))}}
@@ -28,14 +28,13 @@ occurrence of a DLE at that particular dose level. The probabilities of the occu
 based on these pseudo data are independent Beta distributions. Therefore, the joint prior probability
 density function of all these probabilities can be obtained. Hence, by a change of variable, the
 joint prior probability density function of the two parameters in this model can also be obtained.
-In addition, a conjugate joint perior density function of the two paramaters in the model is used.
+In addition, a conjugate joint prior density function of the two parameters in the model is used.
 For details about the form of all these joint prior and posterior probability density function, please
 refers to Whitehead and Willamson (1998).
 
-
 When expressing the pseudo data, \code{binDLE},\code{DLEdose} and \code{DLEweights} are used.
 The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary
-nature of the pseudo data, the number of subjects observed wtih DLE is not necesssary to be integer(s)
+nature of the pseudo data, the number of subjects observed with DLE is not necessary to be integer(s)
 but any scalar value.
 The \code{DLEdose} represents the dose levels at which the pseudo DLE responses (\code{binDLE}) are
 observed.

@@ -1,5 +1,3 @@
-## todo adapt demo to R-package
-
 ###two examples of using crmPack to run a TITE-CRM design with overdose control
 
 library("crmPack")
@@ -125,9 +123,9 @@ design <- TITEDesign(model=model,
 #2)set up truth curves
 
 myTruth<-function(dose){
-  
+
   model@prob(dose,alpha0=2,alpha1=3)
-  
+
 }
 
 curve(myTruth(x), from=0, to=100, ylim=c(0, 1))
@@ -137,9 +135,9 @@ curve(myTruth(x), from=0, to=100, ylim=c(0, 1))
 onset=15
 
 exp_cond.cdf<-function(x){
-  
+
   1-(pexp(x,1/onset,lower.tail=FALSE)-pexp(28,1/onset,lower.tail=FALSE))/pexp(28,1/onset)
-  
+
 }
 
 

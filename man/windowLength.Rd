@@ -23,8 +23,8 @@ windowLength(safetyWindow, size, ...)
 \item{data}{The data input, an object of class \code{\linkS4class{DataDA}}}
 }
 \value{
-the windowLength as a list of safety window parameters
-(patientGap, patientFollow, patientFollowMin)
+the \code{windowLength} as a list of safety window parameters
+(\code{patientGap}, \code{patientFollow}, \code{patientFollowMin})
 }
 \description{
 This function determines the safety window length of

@@ -35,18 +35,20 @@ The data frame
 This generic function takes a design and generates a dataframe
 showing the beginning of several hypothetical trial courses under
 the design. This means, from the generated dataframe one can read off:
-- how many cohorts are required in the optimal case (no DLTs observed) in
-  order to reach the highest dose of the specified dose grid (or until
-  the stopping rule is fulfilled)
-- assuming no DLTs are observed until a certain dose level, what the next
-  recommended dose is for all possible number of DLTs observed
-- the actual relative increments that will be used in these cases
-- whether the trial would stop at a certain cohort
+\itemize{
+\item how many cohorts are required in the optimal case (no DLTs observed) in
+order to reach the highest dose of the specified dose grid (or until
+the stopping rule is fulfilled)
+\item assuming no DLTs are observed until a certain dose level, what the next
+recommended dose is for all possible number of DLTs observed
+\item the actual relative increments that will be used in these cases
+\item whether the trial would stop at a certain cohort
 Examining the "single trial" behavior of a dose escalation design is
 the first important step in evaluating a design, and cannot be replaced by
 studying solely the operating characteristics in "many trials". The cohort
 sizes are also taken from the design, assuming no DLTs occur until the dose
 listed.
+}
 }
 \section{Functions}{
 \itemize{
@@ -55,6 +57,9 @@ listed.
 \item \code{examine,RuleDesign-method}: Examine a rule-based design
 
 \item \code{examine,DADesign-method}: Examine a model-based CRM
+Warning:  this code takes long time to run! I use code "savePlot" to output
+the result for each loop, which can be removed. I have marked those places
+where I output the plots--Jiawen;
 }}
 
 \examples{

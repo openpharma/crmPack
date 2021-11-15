@@ -16,7 +16,7 @@ for the skeleton prior probabilities.
 \section{Functions}{
 \itemize{
 \item \code{OneParExpNormalPrior}: Initialization function for the
-"OneParExpNormalPrior" class.
+\code{OneParExpNormalPrior} class.
 }}
 
 \section{Slots}{

@@ -89,14 +89,14 @@ lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
 "Biomarker") curves, for all grid points (Note that currently only the grid
 points can be used, because the DualEndpointRW models only allow that)
 
-\item \code{fit,Samples,LogisticIndepBeta,Data-method}: This method return a data frame with dose, middle lower and upper quantiles 
+\item \code{fit,Samples,LogisticIndepBeta,Data-method}: This method return a data frame with dose, middle lower and upper quantiles
 for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
 
-\item \code{fit,Samples,Effloglog,DataDual-method}: This method returns a data frame with dose, middle, lower, upper quantiles for 
+\item \code{fit,Samples,Effloglog,DataDual-method}: This method returns a data frame with dose, middle, lower, upper quantiles for
 the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
 
-\item \code{fit,Samples,EffFlexi,DataDual-method}: This method returns a data frame with dose, middle, lower and upper 
-quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi} 
+\item \code{fit,Samples,EffFlexi,DataDual-method}: This method returns a data frame with dose, middle, lower and upper
+quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
 model class
 }}
 

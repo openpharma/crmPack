@@ -11,7 +11,7 @@ dinvGamma(x, a, b, log = FALSE, normalize = TRUE)
 
 \item{a}{the shape parameter of the inverse gamma distribution}
 
-\item{b}{the scale parameter of the inverse gamm distribution}
+\item{b}{the scale parameter of the inverse gamma distribution}
 
 \item{log}{logical; if TRUE, probabilities p are given as log(p)}
 

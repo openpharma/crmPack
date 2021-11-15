@@ -28,10 +28,10 @@
 ##' @export
 ##' @keywords programming
 ##' @example examples/matching-tolerance.R
-matchTolerance <- function(x, table) 
+matchTolerance <- function(x, table)
 {
   as.integer(sapply(x, function(.x) {
-    which(sapply(table, function(.table) isTRUE(all.equal(.x, .table, 
+    which(sapply(table, function(.table) isTRUE(all.equal(.x, .table,
                                                           tolerance=1e-10,
                                                           check.names=FALSE,
                                                           check.attributes=FALSE))))[1]
@@ -40,7 +40,7 @@ matchTolerance <- function(x, table)
 
 ##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
 ##' @export
-`%~%` <- function(x, table) 
+`%~%` <- function(x, table)
 {
   ! is.na(matchTolerance(x=x, table=table))
 }
@@ -192,7 +192,7 @@ is.range <- function(x)
 is.probRange <- function(x,
                          bounds=TRUE)
 {
-    return(is.range(x) && 
+    return(is.range(x) &&
              all(sapply(x, is.probability, bounds=bounds)))
 }
 
@@ -280,11 +280,11 @@ print.gtable <- function(x, ...)
 #' If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
 #' then plot 1 will go in the upper left, 2 will go in the upper right, and
 #' 3 will go all the way across the bottom.
-#' 
-#' @param \dots Objects to be passed 
+#'
+#' @param \dots Objects to be passed
 #' @param plotlist a list of additional objects
 #' @param rows Number of rows in layout
-#' @param layout A matrix specifying the layout. If present, \code{rows} 
+#' @param layout A matrix specifying the layout. If present, \code{rows}
 #' is ignored.
 #'
 #' @return Used for the side effect of plotting
@@ -294,9 +294,9 @@ multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
 {
   # Make a list from the ... arguments and plotlist
   plots <- c(list(...), plotlist)
-  
+
   numPlots <- length(plots)
-  
+
   # If layout is NULL, then use 'cols' to determine layout
   if (is.null(layout)) {
     # Make the panel
@@ -306,22 +306,22 @@ multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
                      nrow = rows, ncol = ceiling(numPlots/rows),
                      byrow=TRUE)
   }
-  
+
   if (numPlots==1) {
     print(plots[[1]])
-    
+
   } else {
     # Set up the page
     grid::grid.newpage()
-    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout), 
+    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout),
                                                                  ncol(layout))))
-    
+
     # Make each plot, in the correct location
-    for (i in seq_len(numPlots)) 
+    for (i in seq_len(numPlots))
     {
       # Get the i,j matrix positions of the regions that contain this subplot
       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
+
       print(plots[[i]], vp = grid::viewport(layout.pos.row = matchidx$row,
                                             layout.pos.col = matchidx$col))
     }
@@ -387,10 +387,10 @@ Validate <-
 ##' Compute the density of Inverse gamma distribution
 ##' @param x vector of quantiles
 ##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamm distribution
+##' @param b the scale parameter of the inverse gamma distribution
 ##' @param log logical; if TRUE, probabilities p are given as log(p)
 ##' @param normalize logical; if TRUE, the output will be normalized
-##' 
+##'
 ##' @keywords internal
 dinvGamma <- function (x,
                        a,
@@ -409,10 +409,10 @@ else
 ##' Compute the distribution function of Inverse gamma distribution
 ##' @param q vector of quantiles
 ##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamm distribution
+##' @param b the scale parameter of the inverse gamma distribution
 ##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
-##' @param logical; FLASE (default) if TRUE, probabilities/densities p are returned as log(p)
-##' 
+##' @param logical; FALSE (default) if TRUE, probabilities/densities p are returned as log(p)
+##'
 ##' @keywords internal
 pinvGamma <- function(q,
                       a,
@@ -430,10 +430,10 @@ pinvGamma <- function(q,
 ##' Compute the quantile function of Inverse gamma distribution
 ##' @param p vector of probabilities
 ##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamm distribution
+##' @param b the scale parameter of the inverse gamma distribution
 ##' @param lower.tail logical; if TRUE (default), probabilities are P[X  > x], otherwise, P[X <= x].
-##' @param logical; FLASE (default) if TRUE, probabilities/densities p are returned as log(p)
-##' 
+##' @param logical; FALSE (default) if TRUE, probabilities/densities p are returned as log(p)
+##'
 ##' @keywords internal
 qinvGamma <- function(p,
                       a,
@@ -450,8 +450,8 @@ qinvGamma <- function(p,
 ##' The random generation of the Inverse gamma distribution
 ##' @param n the number of observations
 ##' @param a the shape parameter of the inverse gamma distribution
-##' @param b the scale parameter of the inverse gamm distribution
-##' 
+##' @param b the scale parameter of the inverse gamma distribution
+##'
 ##' @keywords internal
 rinvGamma <- function(n,
                       a,
@@ -480,7 +480,7 @@ myBarplot <- function(x, description, xaxisround=0)
   dat <- data.frame(x=as.numeric(names(tabx)), perc=as.numeric(tabx) * 100)
   ggplot() +
     geom_bar(aes(x=x, y=perc),
-             data=dat, 
+             data=dat,
              stat="identity",
              position="identity",
              width=ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)) +

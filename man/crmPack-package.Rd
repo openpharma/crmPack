@@ -9,9 +9,9 @@
 Object-oriented implementation of CRM designs
 }
 \references{
-Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
+Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019).
 "Model-Based Dose Escalation Designs in R with crmPack."
-Journal of Statistical Software, 89(10), 1-22. 
+Journal of Statistical Software, 89(10), 1-22.
 doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
 }
 \author{

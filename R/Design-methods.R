@@ -2746,7 +2746,7 @@ setMethod("simulate",
 ##' @param trueSigma2 (only with code{\linkS4class{EffFlexi}}) the true variance of the efficacy
 ##' responses which must be a single positive scalar.
 ##' @param trueSigma2betaW (only with code{\linkS4class{EffFlexi}}) the true variance for the
-##' random walk model used for smoothing. This must be a single postive scalar.
+##' random walk model used for smoothing. This must be a single positive scalar.
 ##' @param args data frame with arguments for the \code{trueDLE} and
 ##' \code{trueEff} function. The column names correspond to the argument
 ##' names, the rows to the values of the arguments. The rows are appropriately
@@ -3638,7 +3638,7 @@ setMethod("simulate",
 ##' @param mcmcOptions object of class \code{\linkS4class{McmcOptions}},
 ##'   giving the MCMC options for each evaluation in the trial. By default,
 ##'   the standard options are used.
-##' @param DA todo document or rename this parameter to make it more meaningful
+##' @param DA document or rename this parameter to make it more meaningful
 ##' @param parallel should the simulation runs be parallelized across the
 ##'   clusters of the computer? (not default)
 ##' @param nCores how many cores should be used for parallel computing?
@@ -3833,7 +3833,7 @@ setMethod("simulate",
                                    data=thisData)
 
                   thisSafetywindow<-windowLength(object@safetyWindow,thisSize)
-                  #todo: add a checkpoint in safetywindow--dim(safetywindow$pt)==thisSize;
+                  #better: add a checkpoint in safetywindow--dim(safetywindow$pt)==thisSize;
 
                   ## In case there are placebo
                   if(thisData@placebo)
@@ -3979,7 +3979,7 @@ setMethod("simulate",
 
                     factDLTs  <- c(factDLTs,thisDLTs)
 
-                    factSurv <- c(factSurv, thisSurv) #todo: check the data type of factSurv and thisSurv;
+                    factSurv <- c(factSurv, thisSurv) #better: check the data type of factSurv and thisSurv;
 
                     factT0   <- c(factT0, thisT0)
 

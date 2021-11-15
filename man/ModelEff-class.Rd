@@ -12,7 +12,7 @@ form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
 }
 \details{
 The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value
-which is targeted. Additional arguements are model parameters. It computes using modal estimate(s)
+which is targeted. Additional arguments are model parameters. It computes using modal estimate(s)
 or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
 of the model parameters are used, the function must vectorize over the model parameters.
 
@@ -21,7 +21,7 @@ Additional arguments are model parameters. It computes using modal estimates or 
 model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
 of the model parameter(s) are used, the function must vectorize over the model parameters.
 
-The \code{data} must obey the covention that the data input is called exactly in the
+The \code{data} must obey the convention that the data input is called exactly in the
 \code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses
 (\code{w} in
 \code{\linkS4class{DataDual}} class), the dose (levels) (\code{x} in \code{\linkS4class{DataDual}} or
@@ -30,7 +30,7 @@ at which these responses are observed, all dose levels considered in the study (
 in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in
 \code{\linkS4class{DataDual}}
 class that can be used to generate prior or
-posterior modal estimates or samples estimates for model parmater(s). If no responses is observed,
+posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
 at least \code{doseGrid} in \code{\linkS4class{DataDual}} has to be specified in \code{data} slot
 for which prior modal estimates or samples can be obtained for model parameters based on
 the specified pseudo data.
@@ -47,7 +47,7 @@ parameter(s). The model parameter(s) (samples) are obtained based on pseudo data
 with observed responses (see details above)}
 
 \item{\code{data}}{refers to the data input specification in \code{\linkS4class{DataDual}} class which are used to
-obtain model paramters estimates or samples (see details above)}
+obtain model parameters estimates or samples (see details above)}
 }}
 
 \seealso{

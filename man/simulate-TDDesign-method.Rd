@@ -51,8 +51,8 @@ Defaults to the number of cores on the machine, maximum 5.}
 \value{
 an object of class \code{\linkS4class{PseudoSimulations}}
 
- @export
- @keywords methods
+@export
+@keywords methods
 }
 \description{
 This is a methods to simulate dose escalation procedure only using the DLE responses.

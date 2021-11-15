@@ -18,7 +18,7 @@ class
 \section{Slots}{
 
 \describe{
-\item{\code{DLEDuringTrialtarget}}{the target probability of the occurrrence of a DLE to be used
+\item{\code{DLEDuringTrialtarget}}{the target probability of the occurrence of a DLE to be used
 during the trial}
 
 \item{\code{DLEEndOfTrialtarget}}{the target probability of the occurrence of a DLE to be used at the end

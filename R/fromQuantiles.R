@@ -20,7 +20,7 @@
 ##' Convert prior quantiles (lower, median, upper) to logistic (log)
 ##' normal model
 ##'
-##' This function uses generalised simulated annealing to optimise
+##' This function uses generalized simulated annealing to optimize
 ##' a \code{\linkS4class{LogisticNormal}} model to be as close as possible
 ##' to the given prior quantiles.
 ##'
@@ -244,8 +244,8 @@ getMinInfBeta <- function(p, q)
 ##' quantile of the beta distribution and hence \eqn{p_{1} = 0.95}. Likewise,
 ##' \code{threshmax} is the probability threshold \eqn{q_{J}}, such that any
 ##' probability of DLT smaller than \eqn{q_{J}} has only 5\% probability
-##' (\eqn{p_{J} = 0.05}). The probabilities \eqn{1 - p_{1}} and \eqn{p_{J}} can be 
-##' controlled with the arguments \code{probmin} and \code{probmax}, respectively. 
+##' (\eqn{p_{J} = 0.05}). The probabilities \eqn{1 - p_{1}} and \eqn{p_{J}} can be
+##' controlled with the arguments \code{probmin} and \code{probmax}, respectively.
 ##' Subsequently, for all doses supplied in the
 ##' \code{dosegrid} argument, beta distributions are set up from the assumption
 ##' that the prior medians are linear in log-dose on the logit scale, and
@@ -253,7 +253,7 @@ getMinInfBeta <- function(p, q)
 ##' quantiles into an approximating \code{\linkS4class{LogisticNormal}} (or
 ##' \code{\linkS4class{LogisticLogNormal}}) model. Note that the reference dose
 ##' is not required for these computations.
-##' 
+##'
 ##' @param dosegrid the dose grid
 ##' @param refDose the reference dose
 ##' @param threshmin Any toxicity probability above this threshold would

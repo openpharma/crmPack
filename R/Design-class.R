@@ -448,7 +448,7 @@ DualResponsesDesign <- function(Effmodel,
 ##' time-to-DLT data
 ##' @slot data what is the dose grid, any previous data, etc., contained
 ##' in an object of class \code{\linkS4class{DataDA}}
-##' @slot safetyWindow todo
+##' @slot safetyWindow still to be documented.
 ##'
 ##' @example examples/design-class-DADesign.R
 ##' @export

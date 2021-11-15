@@ -8,7 +8,7 @@
 \description{
 The class is to find the next best dose for allocation and the dose for final recommendation
 at the end of a trial without involving any samples. This is a class for which only
- DLE response will be incorporated for the dose-allocation.
+DLE response will be incorporated for the dose-allocation.
 This is only based on the probabilities of
 the occurrence of a DLE obtained by using the modal estimates of the model paramters.
 There are two inputs inputs which are the two target
@@ -20,7 +20,7 @@ It is only suitable to use with the model specified in \code{ModelTox} class.
 \section{Slots}{
 
 \describe{
-\item{\code{targetDuringTrial}}{the target probability of the occurrrence of a DLE to be used
+\item{\code{targetDuringTrial}}{the target probability of the occurrence of a DLE to be used
 during the trial}
 
 \item{\code{targetEndOfTrial}}{the target probability of the occurrence of a DLE to be used at the end

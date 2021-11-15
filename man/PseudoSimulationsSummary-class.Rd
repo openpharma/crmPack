@@ -28,26 +28,26 @@ wanted during the trial. TDDT}
 \item{\code{targetDoseDuringTrialAtDoseGrid}}{the dose level at dose grid corresponds to the target probability
 of DLE wanted during a trial}
 
-\item{\code{TDEOTSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quatile), 
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the 
+\item{\code{TDEOTSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quartile),
+the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want at the end of a trial across all simulations}
 
-\item{\code{TDDTSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quatile), 
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the 
+\item{\code{TDDTSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quartile),
+the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 final dose levels obtained corresponds to the target probability of DLE
 want during a trial across all simulations}
 
-\item{\code{FinalDoseRecSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quatile), 
-the 50th percentile (median), the mean, the 27th percentile and the highest values of the 
-final optimal doses, which is either the TDEOT when only DLE response are incorporated into 
+\item{\code{FinalDoseRecSummary}}{the six-number table summary, include the lowest, the 25th precentile (lower quartile),
+the 50th percentile (median), the mean, the 27th percentile and the highest values of the
+final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are
 incorporated, across all simulations}
 
-\item{\code{ratioTDEOTSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\%
+\item{\code{ratioTDEOTSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\\%
 credibility intervals of the final TDEOTs across all simulations}
 
-\item{\code{FinalRatioSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\%
+\item{\code{FinalRatioSummary}}{the six-number summary table of the final ratios of the upper to the lower 95\\%
 credibility intervals of the final optimal doses across all simulations
 #@slot doseRec the dose level that will be recommend for subsequent study}
 
@@ -61,10 +61,10 @@ credibility intervals of the final optimal doses across all simulations
 
 \item{\code{toxAtDosesSelected}}{true toxicity at doses selected}
 
-\item{\code{propAtTargetEndOfTrial}}{Proportion of trials selecting at the doseGrid closest below the MTD, the 
+\item{\code{propAtTargetEndOfTrial}}{Proportion of trials selecting at the doseGrid closest below the MTD, the
 targetDoseEndOfTrial}
 
-\item{\code{propAtTargetDuringTrial}}{Proportion of trials selecting at the doseGrid closest below the 
+\item{\code{propAtTargetDuringTrial}}{Proportion of trials selecting at the doseGrid closest below the
 targetDoseDuringTrial}
 
 \item{\code{doseMostSelected}}{dose most often selected as MTD}
@@ -82,7 +82,7 @@ selected}
 
 \item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
 
-\item{\code{meanFit}}{list with the average, lower (2.5%) and upper (97.5%)
+\item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 }}
 

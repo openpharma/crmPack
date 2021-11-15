@@ -23,8 +23,8 @@ model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
 \item{\code{target}}{the biomarker target range, that
 needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
 means we target a dose
-with at least 80\% of maximum biomarker level. As an other example,
-(0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
+with at least 80\\% of maximum biomarker level. As an other example,
+(0.5, 0.8) would mean that we target a dose between 50\\% and 80\\% of
 the maximum biomarker level.}
 
 \item{\code{scale}}{either \code{relative} (default, then the \code{target} is interpreted

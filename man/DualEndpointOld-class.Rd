@@ -5,7 +5,7 @@
 \alias{DualEndpointOld-class}
 \title{Dual endpoint model}
 \description{
-todo: describe the model
+Dual endpoint model
 }
 \section{Slots}{
 

@@ -314,7 +314,7 @@ setMethod("nextBest",
 
 
 ##' @describeIn nextBest Find the next best dose based on the NCRM method when
-##' two parts trial is used - todo: need an example here for DataParts
+##' two parts trial is used.
 ##' @example examples/Rules-method-NextBestNCRM-DataParts.R
 setMethod("nextBest",
           signature=
@@ -658,7 +658,7 @@ setMethod("nextBest",
           })
 
 
-##' @describeIn nextBest Method for "NextBestMinDist" class, which will give
+##' @describeIn nextBest Method for `NextBestMinDist` class, which will give
 ##'   the dose which is below the dose limit and has an estimated DLT probability
 ##'   which is closest to the target dose.
 ##' @export
@@ -3258,8 +3258,8 @@ setMethod("stopTrial",
 ##' @param data The data input, an object of class \code{\linkS4class{DataDA}}
 ##' @param \dots additional arguments
 ##'
-##' @return the windowLength as a list of safety window parameters
-##' (patientGap, patientFollow, patientFollowMin)
+##' @return the `windowLength` as a list of safety window parameters
+##' (`patientGap`, `patientFollow`, `patientFollowMin`)
 ##'
 ##' @export
 ##' @keywords methods

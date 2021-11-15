@@ -35,7 +35,7 @@ plots at the moment are those listed in
 \code{\link{plot,GeneralSimulationsSummary,missing-method}} plus:
 \describe{
 \item{meanFit}{Plot showing the average fitted dose-toxicity curve across
-the trials, together with 95\% credible intervals, and comparison with the
+the trials, together with 95\\% credible intervals, and comparison with the
 assumed truth (as specified by the \code{truth} argument to
 \code{\link{summary,Simulations-method}})}
 }

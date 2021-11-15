@@ -8,13 +8,13 @@
 \description{
 This class captures the trial simulations from DA based
 designs. In comparison to the parent class \code{\linkS4class{Simulations}},
-it contains additional slots to capture the time to DLT fits, additional 
+it contains additional slots to capture the time to DLT fits, additional
 parameters and the trial duration.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{trialduration}}{the vector of trial durations}
+\item{\code{trialduration}}{the vector of trial duration values for all simulations.}
 }}
 
 \keyword{classes}

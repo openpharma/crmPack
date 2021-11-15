@@ -2,7 +2,7 @@
 % Please edit documentation in R/Model-class.R
 \name{TITELogisticLogNormal}
 \alias{TITELogisticLogNormal}
-\title{Initialization function for the "TITELogisticLogNormal" class}
+\title{Initialization function for the \code{TITELogisticLogNormal} class}
 \usage{
 TITELogisticLogNormal(weightMethod = c("linear", "adaptive"), ...)
 }
@@ -15,6 +15,6 @@ TITELogisticLogNormal(weightMethod = c("linear", "adaptive"), ...)
 the \code{\linkS4class{TITELogisticLogNormal}} object
 }
 \description{
-Initialization function for the "TITELogisticLogNormal" class
+Initialization function for the \code{TITELogisticLogNormal} class
 }
 \keyword{methods}

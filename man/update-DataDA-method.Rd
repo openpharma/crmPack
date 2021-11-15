@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataDA-method}
 \alias{update,DataDA-method}
-\title{Update method for the "DataDA" class}
+\title{Update method for the \code{DataDA} class}
 \usage{
 \S4method{update}{DataDA}(
   object,
@@ -51,7 +51,7 @@ thisData <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                    Tmax=60)
 
 
-## todo: update this example with new function call structure 
+## later update this example with new function call structure
 factDLTs <- thisData@y
 factSurv <- thisData@u
 factT0   <- thisData@t0
@@ -61,10 +61,10 @@ thisDLTs <- 0
 thisSurv <- 20
 
 tempData <- update(object=thisData,
-                   factDLTs= c(factDLTs,thisDLTs),  ####the y will be updated according to u 
+                   factDLTs= c(factDLTs,thisDLTs),  ####the y will be updated according to u
                    factSurv= c(factSurv,thisSurv),
                    factT0= c(factT0,thisT0),
                    thisDose= thisDose,
-                   trialtime= 8)  ####this is the globle timeline for a trial 
+                   trialtime= 8)  ####this is the globle timeline for a trial
 }
 \keyword{methods}

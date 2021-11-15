@@ -12,6 +12,9 @@ ROLLING CRM:
 - `DADesign` simulations: there could be errors if DLT occurs between the 2-3 patients,
     when the 3rd patient has't been dosed yet.
 
+- `simulations.Rmd`: Fix the problem with `factSurv` being negative and
+  then reenable simulation runs.
+
 - Later: write a vignette (in Rmd format?) for rolling CRM, to make it easier
   to start with this kind of design
 
@@ -23,8 +26,35 @@ ROLLING CRM:
 
 - update method for `DataDA`: need to do like in `DataParts`, i.e. use underlying Data update
   method first and then more changes according to `DataDA`.
+  Also we would expect arguments `x`, `y`, `u`, and `ID`.
 
 - plot method for `DataDA`: insert example code in example file (still empty)
+
+- update `SafetyWindowConst`with different slots
+
+- `NextBestNCRM`: need an example here for `DataParts`.
+
+- Document `safetyWindow` in `DADesign`.
+
+- `prob`: simplify this to always vectorize internally over points so that we
+  always take/return matrix.
+
+- Finish documenting `plotDualResponses`.
+
+- `fitPEM`: Document `hazard` completely.
+
+- `PseudoSimulations`: Document `stopReasons`.
+
+- `DALogisticLogNormal`: Better would be to sample here also the interval probabilities
+   for having a DLT. This can also be nicely summarized later. We can then
+   put the additional parameter name in `sample`. Currently they are
+   calculated in the plot step.
+
+   Also explain why `l` is defined as is. Starting point:
+   Using the same assumption in Liu, Yin, Yuan 2013, it is assumed that a priori toxicity occurs
+   uniformly throughout the assessment period (0, Tmax), which represents a neutral prior opinion
+   between early-onset and late-onset toxicity. Under this assumption, the hazard at the middle of
+   the kth partition is caluclated as the `lambda_prior` function.
 
 ----------------------------------------------------------------
 BUGFIXES:

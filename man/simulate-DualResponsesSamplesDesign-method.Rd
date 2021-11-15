@@ -49,7 +49,7 @@ variance of the efficacy responses}
 responses which must be a single positive scalar.}
 
 \item{trueSigma2betaW}{(only with code{\linkS4class{EffFlexi}}) the true variance for the
-random walk model used for smoothing. This must be a single postive scalar.}
+random walk model used for smoothing. This must be a single positive scalar.}
 
 \item{args}{data frame with arguments for the \code{trueDLE} and
 \code{trueEff} function. The column names correspond to the argument

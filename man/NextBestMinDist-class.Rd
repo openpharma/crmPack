@@ -15,7 +15,7 @@ is targeted.
 }
 \section{Functions}{
 \itemize{
-\item \code{NextBestMinDist}: Initialization function for "NextBestMinDist".
+\item \code{NextBestMinDist}: Initialization function for \code{NextBestMinDist}.
 }}
 
 \section{Slots}{

@@ -12,11 +12,11 @@ EffFlexi(Eff, Effdose, sigma2, sigma2betaW, smooth = c("RW1", "RW2"), data)
 \item{Effdose}{the corresponding dose levels for the pseudo efficacy responses}
 
 \item{sigma2}{the prior variance of the efficacy responses which can be specified
-with a single positive scalar or with two positive scalar values fot the shape \code{a} and
-the rate \code{b} parameters of the inverse gamma distribtuion.}
+with a single positive scalar or with two positive scalar values for the shape \code{a} and
+the rate \code{b} parameters of the inverse gamma distribution.}
 
 \item{sigma2betaW}{the prior variance of the random walk model used for smoothing which can be
-specified with a single postive scalar or with two positive scalars representing the shape \code{a}
+specified with a single positive scalar or with two positive scalars representing the shape \code{a}
 and the rate \code{b} parameter of the inverse gamma distribution.}
 
 \item{smooth}{used for smoothing data for this efficacy model. That is either the "RW1", the

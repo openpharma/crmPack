@@ -19,7 +19,7 @@ initialization function is provided for this class.
 \describe{
 \item{\code{fitAtDoseMostSelected}}{fitted toxicity rate at dose most often selected}
 
-\item{\code{meanFit}}{list with the average, lower (2.5%) and upper (97.5%)
+\item{\code{meanFit}}{list with the average, lower (2.5\%) and upper (97.5\%)
 quantiles of the mean fitted toxicity at each dose level}
 }}
 

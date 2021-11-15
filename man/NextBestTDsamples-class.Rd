@@ -15,7 +15,7 @@ must be used to obtain the next dose for allocation.
 \section{Slots}{
 
 \describe{
-\item{\code{targetDuringTrial}}{the target probability of the occurrrence of a DLE to be used
+\item{\code{targetDuringTrial}}{the target probability of the occurrence of a DLE to be used
 during the trial}
 
 \item{\code{targetEndOfTrial}}{the target probability of the occurrence of a DLE to be used at the end

@@ -305,20 +305,20 @@ DualSimulations <- function(rhoEst,
 ##' If no samples are involved, these are included the final modal estimates of the model parameters
 ##' and the posterior estimates of the probabilities of the occurrence of a DLE.
 ##' @slot FinalTDtargetDuringTrialEstimates the vector of all final estimates (the last estimate of) the TDtargetDuringTrial at the end
-##' of each simultaions/when each trial stops
+##' of each simulations/when each trial stops
 ##' @slot FinalTDtargetEndOfTrialEstimates vector of all final estimates or the last estimate of the TDtargetEndOfTrial when each trial
 ##' stops
 ##' @slot FinalTDtargetDuringTrialAtDoseGrid vector of the dose levels at dose grid closest below the final TDtargetDuringTrial estimates
 ##' @slot FinalTDtargetEndOfTrialAtDoseGrid vector of  the dose levels at dose grid closest below the final TDtargetEndOfTrial estimates
 ##' @slot FinalTDEOTCIs is the list of all 95\% credibility interval of the final estimates of the TDtargetEndOfTrial
-##' @slot FinalTDEOTRatios is the vector of the ratios of the CI, the raatio of the upper to the lower 95\% credibility intervals
+##' @slot FinalTDEOTRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility intervals
 ##' of the final estimates of the TDtargetEndOfTrial
 ##' @slot FinalCIs list of all the final 95\% credibility intervals of the TDtargetEndofTrial estimates or of the final optimal dose
 ##' estimates when DLE and efficacy responses are incorporated after each simulations
 ##' @slot FinalRatios vector of all the final ratios, the ratios of the upper to the lower 95\% credibility interval of the
-##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estiamtes (when DLE and efficacy responses are
+##' final estimates of the TDtargetEndOfTrial or of the final optimal dose estimates (when DLE and efficacy responses are
 ##' incorporated) after each simulations
-##' @slot stopReasons todo: add slot description
+##' @slot stopReasons add slot description
 ##'
 ##' @export
 ##' @keywords class
@@ -414,12 +414,12 @@ PseudoSimulations <- function(fit,
 ##' it contains additional slots to
 ##' capture the dose-efficacy curve and the sigma2 estimates.
 ##'
-##' @slot fitEff list of the final values. If DLE and efficacy samples are gerneated, it contains the
+##' @slot fitEff list of the final values. If DLE and efficacy samples are generated, it contains the
 ##' final fitted values. If no DLE and efficacy samples are used, it contains the modal estimates of the
 ##' parameters in the two models and the posterior estimates of the probabilities of the occurrence of a
 ##' DLE and the expected efficacy responses.
 ##' @slot FinalGstarEstimates a vector of the final estimates of Gstar at the end of each simulations.
-##' @slot FinalGstarAtDoseGrid is a vectorof the final estimates of Gstar at dose Grid at the end of each simulations
+##' @slot FinalGstarAtDoseGrid is a vector of the final estimates of Gstar at dose Grid at the end of each simulations
 ##' @slot FinalGstarCIs is the list of all 95\% credibility interval of the final estimates of Gstar
 ##' @slot FinalGstarRatios is the vector of the ratios of the CI, the ratio of the upper to the lower 95\% credibility interval
 ##' of the final estimates of Gstar
@@ -558,15 +558,15 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' wanted during the trial. TDDT
 ##' @slot targetDoseDuringTrialAtDoseGrid the dose level at dose grid corresponds to the target probability
 ##' of DLE wanted during a trial
-##' @slot TDEOTSummary the six-number table summary, include the lowest, the 25th precentile (lower quatile),
+##' @slot TDEOTSummary the six-number table summary, include the lowest, the 25th precentile (lower quartile),
 ##' the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 ##' final dose levels obtained corresponds to the target probability of DLE
 ##' want at the end of a trial across all simulations
-##' @slot TDDTSummary the six-number table summary, include the lowest, the 25th precentile (lower quatile),
+##' @slot TDDTSummary the six-number table summary, include the lowest, the 25th precentile (lower quartile),
 ##' the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 ##' final dose levels obtained corresponds to the target probability of DLE
 ##' want during a trial across all simulations
-##' @slot FinalDoseRecSummary the six-number table summary, include the lowest, the 25th precentile (lower quatile),
+##' @slot FinalDoseRecSummary the six-number table summary, include the lowest, the 25th precentile (lower quartile),
 ##' the 50th percentile (median), the mean, the 27th percentile and the highest values of the
 ##' final optimal doses, which is either the TDEOT when only DLE response are incorporated into
 ##' the escalation procedure or the minimum of the TDEOT and Gstar when DLE and efficacy responses are

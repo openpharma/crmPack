@@ -2,6 +2,7 @@
 
 * Include rolling CRM design, which was previously only available in a separate
   GitHub branch.
+* Additional authors and change of maintainer.
 
 # Version 1.0.0
 
@@ -37,9 +38,6 @@
 
 ### New features:
   
-* The modified data-augmented CRM is now included in the package. 
-  todo: add more details on mDA-CRM here
-  
 * The "examine" function now counts the number of times the same dose is 
   recommended contiguously and break after e.g. the default 100 times 
   (can be specified in a new option of "examine") to further avoid infinite 
@@ -55,21 +53,20 @@
 
 * It is now possible to specify how many cores should be used when parallel
   computations are used.
-  
-  
+
 
 # Version 0.2.7
 
 ### Bugfixes:
 
-* LogisticNormal now works again - "prec" was not found before.
+* `LogisticNormal` now works again - `prec` was not found before.
 
 
 # Version 0.2.6
 
 ### Bugfixes:
 
-* Replaced BayesLogit dependency by JAGS code, since BayesLogit was taken off CRAN.
+* Replaced `BayesLogit` dependency by JAGS code, since `BayesLogit` was taken off CRAN.
 
 * Speed up one example to pass CRAN check.
 
@@ -146,7 +143,7 @@
   obtained due to impropriety of the RW prior (added to model class description).
   
 * For DualEndpointRW models, it is now possible to have non-equidistant grid points,
-  and obtain sensible results. (But still needs to be thouroughly tested though.)
+  and obtain sensible results. (But still needs to be thoroughly tested though.)
   
 * For DualEndpointBeta model, it is now possible to have negative E0 and Emax parameters.
 

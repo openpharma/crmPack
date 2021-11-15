@@ -21,7 +21,7 @@ time-to-DLT data}
 \item{\code{data}}{what is the dose grid, any previous data, etc., contained
 in an object of class \code{\linkS4class{DataDA}}}
 
-\item{\code{safetyWindow}}{todo}
+\item{\code{safetyWindow}}{still to be documented.}
 }}
 
 \examples{

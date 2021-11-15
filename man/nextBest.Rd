@@ -93,7 +93,7 @@ probabilities (across all doses in the dose grid)
 used in the derivation of the next best dose.
 
 \item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: Find the next best dose based on the NCRM method when
-two parts trial is used - todo: need an example here for DataParts
+two parts trial is used.
 
 \item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: Find the next best dose based on the 3+3 method
 
@@ -102,7 +102,7 @@ model. The additional list element \code{probs} contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: Method for "NextBestMinDist" class, which will give
+\item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: Method for \code{NextBestMinDist} class, which will give
 the dose which is below the dose limit and has an estimated DLT probability
 which is closest to the target dose.
 

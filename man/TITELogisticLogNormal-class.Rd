@@ -13,7 +13,7 @@ This class inherits from the normal logistic model class.
 \section{Slots}{
 
 \describe{
-\item{\code{weightMethod}}{weight function method: linear or addaptive
+\item{\code{weightMethod}}{weight function method: linear or adaptive
 (this was used in Liu, Yin and Yuan's paper)}
 }}
 

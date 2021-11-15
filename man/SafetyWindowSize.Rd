@@ -2,7 +2,7 @@
 % Please edit documentation in R/Rules-class.R
 \name{SafetyWindowSize}
 \alias{SafetyWindowSize}
-\title{Initialization function for "SafetyWindowSize"}
+\title{Initialization function for \code{SafetyWindowSize}}
 \usage{
 SafetyWindowSize(patientGap, sizeIntervals, patientFollow, patientFollowMin)
 }
@@ -19,6 +19,6 @@ SafetyWindowSize(patientGap, sizeIntervals, patientFollow, patientFollowMin)
 the \code{\linkS4class{SafetyWindowSize}} object
 }
 \description{
-Initialization function for "SafetyWindowSize"
+Initialization function for \code{SafetyWindowSize}
 }
 \keyword{methods}

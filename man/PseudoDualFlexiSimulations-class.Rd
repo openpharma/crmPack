@@ -6,22 +6,22 @@
 \alias{.PseudoDualFlexiSimulations}
 \title{This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
-class and the efficacy model from \code{\linkS4class{EffFlexi}} class 
- It contains all slots from 
-\code{\linkS4class{GeneralSimulations}}, \code{\linkS4class{PseudoSimulations}} 
+class and the efficacy model from \code{\linkS4class{EffFlexi}} class
+It contains all slots from
+\code{\linkS4class{GeneralSimulations}}, \code{\linkS4class{PseudoSimulations}}
 and \code{\linkS4class{PseudoDualSimulations}} object.
-In comparison to the parent class \code{\linkS4class{PseudoDualSimulations}}, 
-it contains additional slots to 
+In comparison to the parent class \code{\linkS4class{PseudoDualSimulations}},
+it contains additional slots to
 capture the sigma2betaW estimates.}
 \description{
 This is a class which captures the trial simulations design using both the
 DLE and efficacy responses. The design of model from \code{\linkS4class{ModelTox}}
-class and the efficacy model from \code{\linkS4class{EffFlexi}} class 
- It contains all slots from 
-\code{\linkS4class{GeneralSimulations}}, \code{\linkS4class{PseudoSimulations}} 
+class and the efficacy model from \code{\linkS4class{EffFlexi}} class
+It contains all slots from
+\code{\linkS4class{GeneralSimulations}}, \code{\linkS4class{PseudoSimulations}}
 and \code{\linkS4class{PseudoDualSimulations}} object.
-In comparison to the parent class \code{\linkS4class{PseudoDualSimulations}}, 
-it contains additional slots to 
+In comparison to the parent class \code{\linkS4class{PseudoDualSimulations}},
+it contains additional slots to
 capture the sigma2betaW estimates.
 }
 \section{Slots}{

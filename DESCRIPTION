@@ -17,7 +17,6 @@ Description: Implements a wide range of model-based dose
     package is written in a modular form in the S4 class system, making it very
     flexible for adaptation to new models, escalation or stopping rules.
 Version: 1.0.9000
-BugReports: https://github.com/roche/crmPack/issues
 License: GPL (>= 2)
 URL: https://github.com/roche/crmPack
 BugReports: https://github.com/roche/crmPack/issues
@@ -47,7 +46,6 @@ Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by
     Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
 Language: en-US
 LazyLoad: yes
-RoxygenNote: 7.1.2
 Collate:
     'helpers.R'
     'Data-class.R'

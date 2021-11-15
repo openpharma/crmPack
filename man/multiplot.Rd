@@ -13,7 +13,7 @@ multiplot(..., plotlist = NULL, rows = 1, layout = NULL)
 
 \item{rows}{Number of rows in layout}
 
-\item{layout}{A matrix specifying the layout. If present, \code{rows} 
+\item{layout}{A matrix specifying the layout. If present, \code{rows}
 is ignored.}
 }
 \value{

@@ -766,7 +766,7 @@ setMethod("fit",
 ## ----------------------------------------------------------------
 ## Get fitted values at all dose levels from gain samples
 ## -----------------------------------------------------------------
-##' Get the fiited values for the gain values at all dose levels based on
+##' Get the fitted values for the gain values at all dose levels based on
 ##' a given pseudo DLE model, DLE sample, a pseudo efficacy model, a Efficacy sample
 ##' and data. This method returns a data frame with dose, middle, lower and upper quantiles
 ##' of the gain value samples
@@ -938,7 +938,7 @@ setMethod("plot",
 ## --------------------------------------------------------------------------------------------
 ## Plot the fitted dose-efficacy curve using a pseudo efficacy model with samples
 ## -------------------------------------------------------------------------------------------
-##' Plot the fitted dose-effcacy curve using a model from \code{\linkS4class{ModelEff}} class
+##' Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
 ##' with samples
 ##'
 ##' @param x the \code{\linkS4class{Samples}} object
@@ -1344,7 +1344,7 @@ setGeneric("plotDualResponses",
                       data,...){
                standardGeneric("plotDualResponses")})
 
-##' @describeIn plotDualResponses function todo
+##' @describeIn plotDualResponses function still to be documented
 setMethod("plotDualResponses",
           signature=
             signature(DLEmodel="ModelTox",
@@ -1556,7 +1556,7 @@ setMethod("plotDualResponses",
 ##' @param middle the function for computing the middle point. Default:
 ##' \code{\link{mean}}
 ##' @param hazard should the the hazard over time be plotted based on the PEM? (not default)
-##' Otherwise (default) todo: what will be plotted?...
+##'   Otherwise ...
 ##' @param \dots additional arguments for methods
 ##'
 ##' @export
@@ -1683,7 +1683,6 @@ setMethod("fitPEM",
               stopifnot(is.probRange(quantiles))
 
               ##Plot points
-              #points<-seq(0,Tmax_,length=npiece_*3+1)
               points<-seq(0, data@Tmax, length=model@npiece+1)
               ## first we have to get samples from the PEM
               ## at intercept points and 2 middel points between
@@ -1696,10 +1695,6 @@ setMethod("fitPEM",
 
               #The PEM
               if(hazard==FALSE){
-                #                                   PEMSamples[,i]<-apply(object@data$lambda,1,function(x){
-                #                                           fit<-DLTFreeS(x,Tmax_)
-                #                                           return(fit(points[i]))
-                #                                   })
                 PEMSamples<-t(apply(object@data$lambda,1,function(x){
                   fit<-DLTLikelihood(x, data@Tmax)
                   return(fit)
@@ -1709,18 +1704,6 @@ setMethod("fitPEM",
               }else if(hazard==TRUE){
                 for(i in seq_along(points))
                 {
-                  #numeric method
-                  #                                           PEMSamples[,i]<-apply(object@data$lambda,1,function(x){
-                  #                                                   fit<-DLTFreeS(x,Tmax_)
-                  #                                                   return(-1*grad(fit,points[i]))
-                  #
-                  #
-                  #                                           })
-                  #close form
-                  #assume a evenly cut piecewise exp;#todo: make it more robust;
-                  #                                           if (i==i_max){PEMSamples[,i_max]<-object@data$lambda[,npiece_]}else{
-                  #                                           PEMSamples[,i]<-object@data$lambda[,sum(points[i]>=seq(0,Tmax_,length=npiece_+1))]
-                  #                                           }
                   if(i==i_max){
                     PEMSamples[,i_max]<-object@data$lambda[, model@npiece]}else{
                       PEMSamples[,i]<-object@data$lambda[,i]}

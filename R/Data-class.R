@@ -476,7 +476,6 @@ validObject(.DataDA())
 ##'
 ##' @export
 ##' @keywords programming
-###todo: make event,u and y input consistent;-JZ y is used to replace event;
 DataDA <- function(u=numeric(),
                    Tmax=numeric(),
                    t0=numeric(),

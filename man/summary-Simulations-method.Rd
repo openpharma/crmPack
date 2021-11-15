@@ -13,7 +13,7 @@ summarize}
 \item{truth}{a function which takes as input a dose (vector) and returns the
 true probability (vector) for toxicity}
 
-\item{target}{the target toxicity interval (default: 20-35\%) used for the
+\item{target}{the target toxicity interval (default: 20-35\\%) used for the
 computations}
 
 \item{\dots}{Additional arguments can be supplied here for \code{truth}}

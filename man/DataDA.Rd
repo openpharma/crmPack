@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-class.R
 \name{DataDA}
 \alias{DataDA}
-\title{Initialization function for the "DataDA" class}
+\title{Initialization function for the \code{DataDA} class}
 \usage{
 DataDA(u = numeric(), Tmax = numeric(), t0 = numeric(), ...)
 }
@@ -19,6 +19,6 @@ DataDA(u = numeric(), Tmax = numeric(), t0 = numeric(), ...)
 the initialized \code{\linkS4class{DataDA}} object
 }
 \description{
-This is the function for initializing a "DataDA" class object.
+This is the function for initializing a \code{DataDA} class object.
 }
 \keyword{programming}

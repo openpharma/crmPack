@@ -299,7 +299,7 @@ NextBestDualEndpoint <- function(target,
                              representation(target = "numeric"))
 validObject(.NextBestMinDist())
 
-#' @describeIn NextBestMinDist-class Initialization function for "NextBestMinDist".
+#' @describeIn NextBestMinDist-class Initialization function for `NextBestMinDist`.
 #' @export
 NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
 validObject(NextBestMinDist(0.1))
@@ -1086,7 +1086,7 @@ StoppingList <- function(stopList,
 ## Stopping based on fulfillment of all multiple stopping rules
 ## --------------------------------------------------
 
-##' Stop based on fullfillment of all multiple stopping rules
+##' Stop based on fulfillment of all multiple stopping rules
 ##'
 ##' This class can be used to combine multiple stopping rules with an AND
 ##' operator.
@@ -1136,7 +1136,7 @@ StoppingAll <- function(stopList)
 ## Stopping based on fulfillment of any stopping rule
 ## --------------------------------------------------
 
-##' Stop based on fullfillment of any stopping rule
+##' Stop based on fulfillment of any stopping rule
 ##'
 ##' This class can be used to combine multiple stopping rules with an OR
 ##' operator.
@@ -1618,7 +1618,7 @@ CohortSizeMin <- function(cohortSizeList)
 ##' DLE response will be incorporated for the dose allocation and DLEsamples
 ##' must be used to obtain the next dose for allocation.
 ##'
-##' @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##' @slot targetDuringTrial the target probability of the occurrence of a DLE to be used
 ##' during the trial
 ##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end
 ##' of the trial. This target is particularly used to recommend the dose at the end of a trial
@@ -1695,7 +1695,7 @@ NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
 ##' for recommendation at the end of the trial.
 ##' It is only suitable to use with the model specified in \code{ModelTox} class.
 ##'
-##' @slot targetDuringTrial the target probability of the occurrrence of a DLE to be used
+##' @slot targetDuringTrial the target probability of the occurrence of a DLE to be used
 ##' during the trial
 ##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end
 ##' of the trial. This target is particularly used to recommend the dose for which its posterior
@@ -1756,7 +1756,7 @@ NextBestTD <- function(targetDuringTrial,targetEndOfTrial)
 ##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
 ##' class
 ##'
-##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' @slot DLEDuringTrialtarget the target probability of the occurrence of a DLE to be used
 ##' during the trial
 ##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end
 ##' of the trial. This target is particularly used to recommend the dose for which its posterior
@@ -1810,7 +1810,7 @@ NextBestMaxGain <- function(DLEDuringTrialtarget,
 ##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
 ##' class
 ##'
-##' @slot DLEDuringTrialtarget the target probability of the occurrrence of a DLE to be used
+##' @slot DLEDuringTrialtarget the target probability of the occurrence of a DLE to be used
 ##' during the trial
 ##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end
 ##' of the trial. This target is particularly used to recommend the dose for which its posterior
@@ -1965,7 +1965,7 @@ setClass(Class="SafetyWindow",
              })
 validObject(.SafetyWindowSize())
 
-##' Initialization function for "SafetyWindowSize"
+##' Initialization function for `SafetyWindowSize`
 ##'
 ##' @param patientGap see \code{\linkS4class{SafetyWindowSize}}
 ##' @param sizeIntervals see \code{\linkS4class{SafetyWindowSize}}
@@ -2001,10 +2001,9 @@ SafetyWindowSize <- function(patientGap,
 
 ##' Constant safety window length
 ##'
-##' This class is used when the patientGap should be keeped constant.
+##' This class is used when the `patientGap` should be kept constant.
 ##'
 ##' @slot size the constant integer size
-##' todo: doc needs to be updated with different slots!
 ##'
 ##' @example examples/Rules-class-SafetyWindowConst.R
 ##' @keywords classes
@@ -2034,7 +2033,7 @@ SafetyWindowSize <- function(patientGap,
 validObject(.SafetyWindowConst())
 
 
-##' Initialization function for "SafetyWindowConst"
+##' Initialization function for `SafetyWindowConst`
 ##'
 ##' @param patientGap see \code{\linkS4class{SafetyWindowConst}}
 ##' @param patientFollow see \code{\linkS4class{SafetyWindowConst}}

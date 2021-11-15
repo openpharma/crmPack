@@ -2,7 +2,7 @@
 % Please edit documentation in R/Model-class.R
 \name{DALogisticLogNormal}
 \alias{DALogisticLogNormal}
-\title{Initialization function for the "DALogisticLogNormal" class}
+\title{Initialization function for the \code{DALogisticLogNormal} class}
 \usage{
 DALogisticLogNormal(npiece = 3, l, C_par = 2, conditionalPEM = TRUE, ...)
 }
@@ -21,6 +21,6 @@ DALogisticLogNormal(npiece = 3, l, C_par = 2, conditionalPEM = TRUE, ...)
 the \code{\linkS4class{DALogisticLogNormal}} object
 }
 \description{
-Initialization function for the "DALogisticLogNormal" class
+Initialization function for the \code{DALogisticLogNormal} class
 }
 \keyword{programming}

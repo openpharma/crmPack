@@ -66,12 +66,12 @@ myStopping <- StoppingMinPatients(nPatients=48)
 
 mySize <- CohortSizeConst(size=3)
 
-emptydata <- DataTITE(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_,weightMethod = "adaptive")
+emptydata <- DataDA(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_,weightMethod = "adaptive")
 
 
 mysafetywindow <- SafetyWindowConst(c(7,7),7,7)
 
-design <- TITEDesign(model=model,
+design <- DADesign(model=model,
                    increments=myIncrements,
                    nextBest=myNextBest,
                    stopping=myStopping,
@@ -88,7 +88,7 @@ design <- TITEDesign(model=model,
 
 In order to obtain stable results, increase the simulation parameters appropriately (step, samples, nsim).
 
-```{r simulation run}
+```{r simulation run, eval = FALSE}
 options <- McmcOptions(burnin=20,
                        step=1,
                        samples=50)
@@ -103,10 +103,3 @@ mySims <- simulate(design,
                    parallel=FALSE)
 
 ```
-
-
-
-
-todo: we need to show here how to get the plots from the manuscript
-Jiawen: I have 2 seperate R files for all the plots in the manuscript. the plots will use multiple simulation results though. 
-

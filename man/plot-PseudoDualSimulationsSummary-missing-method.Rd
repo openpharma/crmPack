@@ -28,11 +28,11 @@ asked for, otherwise a \code{\link{gridExtra}{gTree}} object.
 \description{
 This plot method can be applied to \code{\linkS4class{PseudoDualSimulationsSummary}} objects in order
 to summarize them graphically. Possible \code{type} of plots at the moment are those listed in
-\code{\link{plot,PseudoSimulationsSummary,missing-method}} plus: 
+\code{\link{plot,PseudoSimulationsSummary,missing-method}} plus:
 \describe{\item{meanEffFit}{Plot showing the fitted dose-efficacy curve. If no samples are involved, only the
-average fitted dose-efficacy curve across the trials will be ploted. If samples (DLE and efficacy) are involved, 
-the average fitted dose-efficacy curve across the trials, together with the 95\% credibility interval; and comparison 
-with the assumed truth (as specified by the \code{trueEff} argument to 
+average fitted dose-efficacy curve across the trials will be plotted. If samples (DLE and efficacy) are involved,
+the average fitted dose-efficacy curve across the trials, together with the 95\\% credibility interval; and comparison
+with the assumed truth (as specified by the \code{trueEff} argument to
 \code{\link{summary,PseudoDualSimulations-method}})}}
 You can specify any subset of these in the \code{type} argument.
 }

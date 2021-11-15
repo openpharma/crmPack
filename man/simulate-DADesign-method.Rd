@@ -2,7 +2,7 @@
 % Please edit documentation in R/Design-methods.R
 \name{simulate,DADesign-method}
 \alias{simulate,DADesign-method}
-\title{Simulate outcomes from a time-to-DLT augmented CRM design (DADesign)}
+\title{Simulate outcomes from a time-to-DLT augmented CRM design (\code{DADesign})}
 \usage{
 \S4method{simulate}{DADesign}(
   object,
@@ -37,7 +37,7 @@ arguments can be supplied in \code{args}.}
 the true cumulative probability (vector) that the DLT would occur conditioning on the patient
 has DLTs.}
 
-\item{trueTmax}{todo documentation here}
+\item{trueTmax}{add documentation here}
 
 \item{args}{data frame with arguments for the \code{truth} function. The
 column names correspond to the argument names, the rows to the values of the
@@ -51,15 +51,14 @@ far, \code{truth} contains the \code{prob} function from the model in
 the cohort? (not default) If yes, the cohort will be closed if a DLT occurs
 in this patient.}
 
-\item{deescalate}{de-escalation when a DLT occurs in cohorts with lower dose
-level  #todo: there could be errors if DLT occurs between the 2-3 patients,
-when the 3rd patient has't been dosed yet;}
+\item{deescalate}{deescalation when a DLT occurs in cohorts with lower dose
+level.}
 
 \item{mcmcOptions}{object of class \code{\linkS4class{McmcOptions}},
 giving the MCMC options for each evaluation in the trial. By default,
-the standard options are used}
+the standard options are used.}
 
-\item{DA}{todo document or rename this parameter to make it more meaningful}
+\item{DA}{document or rename this parameter to make it more meaningful}
 
 \item{parallel}{should the simulation runs be parallelized across the
 clusters of the computer? (not default)}
@@ -73,7 +72,7 @@ Defaults to the number of cores on the machine (maximum 5)}
 an object of class \code{\linkS4class{Simulations}}
 }
 \description{
-Simulate outcomes from a time-to-DLT augmented CRM design (DADesign)
+Simulate outcomes from a time-to-DLT augmented CRM design (\code{DADesign})
 }
 \examples{
 # Define the dose-grid and PEM parameters
@@ -169,10 +168,4 @@ mySims <- simulate(design,
                    parallel=TRUE,
                    nCores=2)
 }
-\keyword{#JZ:}
-\keyword{adjust}
-\keyword{cases;}
 \keyword{methods}
-\keyword{placebo}
-\keyword{the}
-\keyword{todo}

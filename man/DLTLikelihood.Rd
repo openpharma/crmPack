@@ -15,6 +15,6 @@ DLTLikelihood(lambda, Tmax)
 vector with the probabilities for DLTs within the intervals.
 }
 \description{
-This is a helper function for the fitPEM methods below.
+This is a helper function for the \code{fitPEM} methods below.
 }
 \keyword{internal}

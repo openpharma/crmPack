@@ -6,13 +6,12 @@
 \alias{.SafetyWindowConst}
 \title{Constant safety window length}
 \description{
-This class is used when the patientGap should be keeped constant.
+This class is used when the \code{patientGap} should be kept constant.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{size}}{the constant integer size
-todo: doc needs to be updated with different slots!}
+\item{\code{size}}{the constant integer size}
 }}
 
 \examples{

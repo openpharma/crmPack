@@ -6,12 +6,12 @@
 \alias{.EffFlexi}
 \title{Class for the efficacy model in flexible form for prior expressed in form of pseudo data}
 \description{
-This is a class where a flexible form is used to describe the realtionship between the efficacy
+This is a class where a flexible form is used to describe the relationship between the efficacy
 responses and the dose levels. This flexible form aims to capture different shape for the
 dose-efficacy curve and the mean efficacy responses at each dose level are estimated using MCMC.
 In addition, the first (RW1) or second order (RW2) random walk model can be used for smoothing data. That is
-the random walk model is used to model the first or the second order differnece of the mean
-efficacy responses to its neighbouring dose levels of their mean efficacy responses.
+the random walk model is used to model the first or the second order difference of the mean
+efficacy responses to its neighboring dose levels of their mean efficacy responses.
 The flexible form is specified as
 \deqn{\mathbf{W}\vert\boldsymbol{\beta_w}, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol{\beta_w}, \sigma^2 \mathbf{I})}
 where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol{\beta_w}}
@@ -30,34 +30,34 @@ The variance parameter \eqn{\sigma^{2}_{\beta_{W}}}. The variance \eqn{\sigma^{2
 (sigma2betaW) will be the same at all dose levels and can
 either be fixed or assigned an inverse gamma prior distribution.
 
-The \code{Eff} and \code{Effdose} are the pseduo efficacy responses and dose levels at which these
+The \code{Eff} and \code{Effdose} are the pseudo efficacy responses and dose levels at which these
 pseudo efficacy responses are observed at. (see more details for \code{\linkS4class{Effloglog}} class)
 \code{Eff} and \code{Effdose} must be vector of at least length 2. The values or elements in vectors
 \code{Eff} or \code{Effdose} must put in the same position with its corresponding value in the other
 vector. The \code{sigma2} is the prior variance of the flexible efficacy form. The variance is either specified
-with a single scalar value (fixed) or postive scalar value have to be specified for the \code{a} shape and
-\code{b} slope parameter for th inverse gamme distribtuion. Similarly, \code{sigma2betaW} is the prior variance
+with a single scalar value (fixed) or positive scalar value have to be specified for the \code{a} shape and
+\code{b} slope parameter for th inverse gamma distribution. Similarly, \code{sigma2betaW} is the prior variance
 of the random walk model which can be specified with a single scalar (fixed) value or specifying positive
 scalar values for the shape \code{a} and rate \code{b} parameters for the inverse gamma distributions.
-This model will output the updated value or the updated values of the paramters of the inverse gamma
-distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (sigma2betaW)
+This model will output the updated value or the updated values of the parameters of the inverse gamma
+distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (\code{sigma2betaW})
 }
 \section{Slots}{
 
 \describe{
 \item{\code{Eff}}{the pseudo efficacy responses. A vector of at least length 2 with the elements here and its
-corresponding value in \code{Effdose} must be specified in the same position. (see dtails above)}
+corresponding value in \code{Effdose} must be specified in the same position. (see details above)}
 
 \item{\code{Effdose}}{the dose levels at which the pseudo efficacy responses are observed. This is a vector of at
-least length 2 and the elements here and its corrresponding value in \code{Eff} must be specified in the
-same postion. (see details from above)}
+least length 2 and the elements here and its corresponding value in \code{Eff} must be specified in the
+same position. (see details from above)}
 
 \item{\code{sigma2}}{the prior variance of the flexible efficacy form. It can be specified with a single positive
 scalar or specifying \code{a}, the shape and \code{b}, the rate parameter of the inverse gamma
 distribution. (see details from above)}
 
-\item{\code{sigma2betaW}}{the prior variance of the random walk model for the mean efficact responses. A single
-positve scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of
+\item{\code{sigma2betaW}}{the prior variance of the random walk model for the mean efficacy responses. A single
+positive scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of
 the inverse gamma distribution (see details from above)}
 
 \item{\code{useFixed}}{a list of with logical value to each of the parameters \code{sigma2} and \code{sigma2betaw}
@@ -85,14 +85,14 @@ to be touched by the user.}
 ## 12 dose levels are usesd from 25 to 300 mg with increments of 25.
 emptydata<-DataDual(doseGrid=seq(25,300,25))
 data<-emptydata
-## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and 
+## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and
 ## specified in (Effdose slot).
-## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and 
+## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and
 ## specified in (Eff slot).
-## The prior variance of the pseudo efficay responses. This can be either a fixed value of 
-## specifying the shape (a) and the rate (b) parameters for the inverse gamma distribution 
-## in (sigma2 slot). The prior variance of the random walk model which can be a fixed value or 
-## two value for the shape (a) and rate (b) parameter of the inverse gamma distribution in 
+## The prior variance of the pseudo efficacy responses. This can be either a fixed value of
+## specifying the shape (a) and the rate (b) parameters for the inverse gamma distribution
+## in (sigma2 slot). The prior variance of the random walk model which can be a fixed value or
+## two value for the shape (a) and rate (b) parameter of the inverse gamma distribution in
 ## (sigma2betaW slot). The data are specified in (data slot)
 
 

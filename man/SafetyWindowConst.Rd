@@ -2,7 +2,7 @@
 % Please edit documentation in R/Rules-class.R
 \name{SafetyWindowConst}
 \alias{SafetyWindowConst}
-\title{Initialization function for "SafetyWindowConst"}
+\title{Initialization function for \code{SafetyWindowConst}}
 \usage{
 SafetyWindowConst(patientGap, patientFollow, patientFollowMin)
 }
@@ -17,6 +17,6 @@ SafetyWindowConst(patientGap, patientFollow, patientFollowMin)
 the \code{\linkS4class{SafetyWindowConst}} object
 }
 \description{
-Initialization function for "SafetyWindowConst"
+Initialization function for \code{SafetyWindowConst}
 }
 \keyword{methods}

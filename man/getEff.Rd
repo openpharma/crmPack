@@ -4,7 +4,7 @@
 \alias{getEff}
 \alias{getEff,DataDual-method}
 \title{Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding 
+efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
 dose levels treated at in two categories (with or without DLE)}
 \usage{
 getEff(object, ...)
@@ -16,15 +16,15 @@ getEff(object, ...)
 
 \item{\dots}{unused}
 
-\item{x}{todo}
+\item{x}{first}
 
-\item{y}{todo}
+\item{y}{second}
 
-\item{w}{todo}
+\item{w}{third}
 }
 \description{
 Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding 
+efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
 dose levels treated at in two categories (with or without DLE)
 }
 \examples{

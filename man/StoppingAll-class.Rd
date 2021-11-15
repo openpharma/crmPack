@@ -4,7 +4,7 @@
 \name{StoppingAll-class}
 \alias{StoppingAll-class}
 \alias{.StoppingAll}
-\title{Stop based on fullfillment of all multiple stopping rules}
+\title{Stop based on fulfillment of all multiple stopping rules}
 \description{
 This class can be used to combine multiple stopping rules with an AND
 operator.

@@ -4,7 +4,7 @@
 \name{StoppingAny-class}
 \alias{StoppingAny-class}
 \alias{.StoppingAny}
-\title{Stop based on fullfillment of any stopping rule}
+\title{Stop based on fulfillment of any stopping rule}
 \description{
 This class can be used to combine multiple stopping rules with an OR
 operator.

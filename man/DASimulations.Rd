@@ -2,7 +2,7 @@
 % Please edit documentation in R/Simulations-class.R
 \name{DASimulations}
 \alias{DASimulations}
-\title{Initialization function for "DASimulations"}
+\title{Initialization function for \code{DASimulations}}
 \usage{
 DASimulations(trialduration, ...)
 }
@@ -15,6 +15,6 @@ DASimulations(trialduration, ...)
 the \code{\linkS4class{DASimulations}} object
 }
 \description{
-Initialization function for "DASimulations"
+Initialization function for \code{DASimulations}
 }
 \keyword{methods}

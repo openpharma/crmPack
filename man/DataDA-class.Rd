@@ -8,8 +8,8 @@
 \description{
 This is a subclass of \code{\linkS4class{Data}}, so contains all
 slots from \code{\linkS4class{Data}}, and in addition DLT free survival
-values. (Note that \dQuote{survival} values here refers to the time that 
-the subject did not experience any DLT yet, and is not referring to 
+values. (Note that \dQuote{survival} values here refers to the time that
+the subject did not experience any DLT yet, and is not referring to
 deaths.)
 }
 \section{Slots}{

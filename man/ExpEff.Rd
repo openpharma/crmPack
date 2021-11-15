@@ -5,7 +5,7 @@
 \alias{ExpEff,numeric,Effloglog,Samples-method}
 \alias{ExpEff,numeric,Effloglog,missing-method}
 \alias{ExpEff,numeric,EffFlexi,Samples-method}
-\title{Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given 
+\title{Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given
 efficacy sample}
 \usage{
 ExpEff(dose, model, samples, ...)
@@ -21,13 +21,13 @@ ExpEff(dose, model, samples, ...)
 
 \item{model}{the \code{\linkS4class{Effloglog}} class object}
 
-\item{samples}{the \code{\linkS4class{Samples}} class object 
+\item{samples}{the \code{\linkS4class{Samples}} class object
 (can also be missing)}
 
 \item{\dots}{unused}
 }
 \description{
-Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given 
+Compute the expected efficacy based on a given dose, a given pseudo Efficacy log-log model and a given
 efficacy sample
 }
 \section{Functions}{
@@ -37,7 +37,7 @@ efficacy sample
 \item \code{ExpEff,numeric,Effloglog,missing-method}: Compute the Expected Efficacy based a given dose and a given Pseudo Efficacy log log model without
 samples
 
-\item \code{ExpEff,numeric,EffFlexi,Samples-method}: Compute the Expected Efficacy based a given dose, Efficacy 
+\item \code{ExpEff,numeric,EffFlexi,Samples-method}: Compute the Expected Efficacy based a given dose, Efficacy
 Flexible model with samples
 }}
 

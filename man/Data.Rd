@@ -26,7 +26,7 @@ normal numeric vectors, but these will then be converted to integers.}
 
 \item{doseGrid}{the vector of all possible doses}
 
-\item{placebo}{logical value: if TRUE the first dose level in the grid is 
+\item{placebo}{logical value: if TRUE the first dose level in the grid is
 considered as PLACEBO}
 
 \item{\dots}{not used}
