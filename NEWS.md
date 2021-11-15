@@ -1,3 +1,8 @@
+# Version 1.0.9000
+
+* Include rolling CRM design, which was previously only available in a separate
+  GitHub branch.
+
 # Version 1.0.0
 
 * Reference JSS publication.
