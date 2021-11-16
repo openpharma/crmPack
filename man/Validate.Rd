@@ -5,6 +5,8 @@
 \alias{Validate}
 \title{A Reference Class to help programming validation for new S4 classes}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Starting from an empty \code{msg} vector, with each check that is returning
 FALSE the vector gets a new element - the string explaining the failure of
 the validation
