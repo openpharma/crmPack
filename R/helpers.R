@@ -358,6 +358,9 @@ printVignette <- function (x, ...)
 
 
 ##' A Reference Class to help programming validation for new S4 classes
+##' 
+##'
+##' @description `r lifecycle::badge("experimental")`
 ##'
 ##' Starting from an empty \code{msg} vector, with each check that is returning
 ##' FALSE the vector gets a new element - the string explaining the failure of
