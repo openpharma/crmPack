@@ -1,5 +1,6 @@
 # Version 1.0.9000
 
+* Added lifecycle package.
 * Include rolling CRM design, which was previously only available in a separate
   GitHub branch.
 * Additional authors and change of maintainer.

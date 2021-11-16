@@ -32,6 +32,7 @@
 ##' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
 ##' rnorm runif uniroot var vcov
 ##' @importFrom utils data head tail
+##' @importFrom lifecycle badge
 ##' @keywords package
 ##' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
 ##' "Model-Based Dose Escalation Designs in R with crmPack."
