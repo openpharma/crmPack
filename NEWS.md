@@ -1,5 +1,5 @@
 # Version 1.0.9000
-
+* Set up the package to use testthat.
 * Added lifecycle package.
 * Include rolling CRM design, which was previously only available in a separate
   GitHub branch.
