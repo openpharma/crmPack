@@ -2,9 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-crmpack.Rproj
 Rplots.pdf
-*.Rproj
 vignettes/*.html
 vignettes/*.aux
 vignettes/*.log

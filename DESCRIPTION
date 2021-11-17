@@ -38,6 +38,7 @@ Imports:
     tools,
     utils
 Suggests:
+    testthat (>= 3.0.0),
     ggmcmc,
     knitr,
     Rcpp,
@@ -70,3 +71,4 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+Config/testthat/edition: 3
