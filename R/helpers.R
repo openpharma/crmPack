@@ -356,36 +356,41 @@ printVignette <- function (x, ...)
     invisible(x)
 }
 
+# Validate-class ----
 
-##' A Reference Class to help programming validation for new S4 classes
-##' 
-##'
-##' @description `r lifecycle::badge("stable")`
-##'
-##' Starting from an empty \code{msg} vector, with each check that is returning
-##' FALSE the vector gets a new element - the string explaining the failure of
-##' the validation
-##'
-##' @name Validate
-##' @field msg the message character vector
-Validate <-
-    setRefClass("Validate",
-                fields =
-                list(msg = "character"),
-                methods = list(
-                check =
-                    function(test,
-                             string){
-                        if(test)
-                        {} else {
-                            msg <<- c(msg,
-                                      string)
-                        }
-                    },
-                result =
-                    function() {
-                        if(length(msg) > 0) msg else TRUE
-                    }))
+#' `Validate`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The [`Validate`] class is a Reference Class
+#' to help programming validation for new S4 classes.
+#'
+#' @details Starting from an empty \code{msg} vector, with each check
+#' that is returning `FALSE` the vector gets a new element - the string
+#' explaining the failure of the validation.
+#'
+#' @name Validate
+#' @field msg the message character vector
+Validate <- setRefClass(
+  Class = "Validate",
+  fields = list(msg = "character"),
+  methods = list(
+    check = function(test, string) {
+      if (test) {
+        NULL
+      } else {
+        msg <<- c(msg, string)
+      }
+    },
+    result = function() {
+      if (length(msg) > 0) {
+        msg
+      } else {
+        TRUE
+      }
+    }
+  )
+)
 
 ##' Compute the density of Inverse gamma distribution
 ##' @param x vector of quantiles

@@ -3,13 +3,17 @@
 \docType{class}
 \name{Validate}
 \alias{Validate}
-\title{A Reference Class to help programming validation for new S4 classes}
+\title{\code{Validate}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Starting from an empty \code{msg} vector, with each check that is returning
-FALSE the vector gets a new element - the string explaining the failure of
-the validation
+The \code{\link{Validate}} class is a Reference Class
+to help programming validation for new S4 classes.
+}
+\details{
+Starting from an empty \code{msg} vector, with each check
+that is returning \code{FALSE} the vector gets a new element - the string
+explaining the failure of the validation.
 }
 \section{Fields}{
 
