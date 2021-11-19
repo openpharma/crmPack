@@ -10,7 +10,7 @@ vignettes/*.log
 vignettes/*.out
 TODO
 ^docs$
-^_pkgdown\.yml$
+^_pkgdown\.yaml$
 ^\.github$
 ^README\.Rmd$
 ^README-.*\.png$

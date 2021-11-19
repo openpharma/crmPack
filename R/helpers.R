@@ -375,9 +375,11 @@ Validate <- setRefClass(
   Class = "Validate",
   fields = list(msg = "character"),
   methods = list(
-    check = function(test, string) {
+    check = function(test, string = "") {
       "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}. 
       Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
+      assert_flag(test)
+      assert_string(string)
       if (test) {
         NULL
       } else {
