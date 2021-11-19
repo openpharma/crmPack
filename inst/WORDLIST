@@ -51,6 +51,7 @@ CohortSizeParts
 CohortSizeRange
 colour
 ComboLogistic
+contains
 coressponding
 corrresponding
 cov
@@ -316,6 +317,7 @@ STUDYID
 subclasses
 subfolder
 subtractive
+succesull
 swimlane
 targetDoseDuringTrial
 targetDoseEndOfTrial
