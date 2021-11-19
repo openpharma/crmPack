@@ -11,33 +11,34 @@
 ## 29/01/2014   file creation
 #####################################################################################
 
-##' Object-oriented implementation of CRM designs
-##'
-##' @name crmPack-package
-##' @aliases crmPack
-##' @docType package
-##' @title Object-oriented implementation of CRM designs
-##' @author Daniel Sabanes Bove \email{daniel.sabanesbove@@gmx.net}, W
-##' Wai Yin Yeung \email{winnie.yeung@@roche.com}
-##' Giuseppe Palermo \email{giuseppe.palermo@@roche.com},
-##' Thomas Jaki \email{jaki.thomas@@gmail.com}
-## @useDynLib crmPack
-##  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
-##  cpp_coxfit
-##' @importFrom graphics plot hist legend lines matlines matplot
-##' @importFrom methods setClass setOldClass setGeneric setMethod representation
-##' signature prototype initialize new is .valueClassTest as callNextMethod slot 
-##' slotNames show
-##' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
-##' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
-##' rnorm runif uniroot var vcov
-##' @importFrom utils data head tail
-##' @importFrom lifecycle badge
-##' @keywords package
-##' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
-##' "Model-Based Dose Escalation Designs in R with crmPack."
-##' Journal of Statistical Software, 89(10), 1-22. 
-##' doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
+#' Object-oriented implementation of CRM designs
+#'
+#' @name crmPack-package
+#' @aliases crmPack
+#' @docType package
+#' @title Object-oriented implementation of CRM designs
+#' @author Daniel Sabanes Bove \email{daniel.sabanesbove@@gmx.net}, W
+#' Wai Yin Yeung \email{winnie.yeung@@roche.com}
+#' Giuseppe Palermo \email{giuseppe.palermo@@roche.com},
+#' Thomas Jaki \email{jaki.thomas@@gmail.com}
+# @useDynLib crmPack
+#  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
+#  cpp_coxfit
+#' @import checkmate
+#' @importFrom graphics plot hist legend lines matlines matplot
+#' @importFrom methods setClass setOldClass setGeneric setMethod representation
+#' signature prototype initialize new is .valueClassTest as callNextMethod slot 
+#' slotNames show
+#' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
+#' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
+#' rnorm runif uniroot var vcov
+#' @importFrom utils data head tail
+#' @importFrom lifecycle badge
+#' @keywords package
+#' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
+#' "Model-Based Dose Escalation Designs in R with crmPack."
+#' Journal of Statistical Software, 89(10), 1-22. 
+#' doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
 {}
 
 ##' @keywords internal

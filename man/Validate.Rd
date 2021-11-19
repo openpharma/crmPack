@@ -3,18 +3,32 @@
 \docType{class}
 \name{Validate}
 \alias{Validate}
-\title{A Reference Class to help programming validation for new S4 classes}
+\title{\code{Validate}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Starting from an empty \code{msg} vector, with each check that is returning
-FALSE the vector gets a new element - the string explaining the failure of
-the validation
+The \code{\link{Validate}} class is a Reference Class
+to help programming validation for new S4 classes.
+}
+\details{
+Starting from an empty \code{msg} vector, with each check
+that is returning \code{FALSE} the vector gets a new element - the string
+explaining the failure of the validation.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{msg}}{the message character vector}
+\item{\code{msg}}{(\code{character})\cr the cumulative messages.}
 }}
 
+\section{Methods}{
+
+\describe{
+\item{\code{check(test, string = "")}}{Check whether the \code{test} is \code{TRUE}; if so, return \code{NULL}. 
+Otherwise, add the \code{string} message into the cumulative messages vector \code{msg}.}
+
+\item{\code{result()}}{Return either cumulative messages vector \code{msg}
+(which contains the error messages from all the checks),
+or \code{NULL}, if \code{msg} is empty (i.e. all the checks were successful).}
+}}
 

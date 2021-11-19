@@ -1,0 +1,44 @@
+url: https://github.com/roche/crmPack
+
+template:
+  params:
+    bootswatch: cerulean
+
+home:
+  strip_header: true
+
+navbar:
+  type: default
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/roche/crmPack
+
+development:
+  mode: devel
+  
+reference:
+  - title: Package
+    contents:
+      - crmPack-package
+  - title: Classes
+    contents:
+      - Validate
+  - title: Constructors
+    contents:
+      - Validate
+  - title: Internal Helper Functions
+    contents:
+  - title: Internal Validation Functions
+    contents:
+  - title: Example Data
+    contents:
+  - title: Methods
+    contents:
+  - title: Functions
+    contents:
+  - title: Graphs
+    contents:
+  - title: Control Functions
+    contents:
+  - title: Assertions
+    contents:

@@ -25,6 +25,7 @@ Depends:
     graphics,
     R (>= 3.0.0)
 Imports:
+    checkmate,
     lifecycle,
     GenSA,
     grid,
