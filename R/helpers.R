@@ -370,12 +370,14 @@ printVignette <- function (x, ...)
 #' explaining the failure of the validation.
 #'
 #' @name Validate
-#' @field msg the message character vector
+#' @field msg (`character`)\cr the cumulative messages.
 Validate <- setRefClass(
   Class = "Validate",
   fields = list(msg = "character"),
   methods = list(
     check = function(test, string) {
+      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}. 
+      Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
       if (test) {
         NULL
       } else {
@@ -383,6 +385,9 @@ Validate <- setRefClass(
       }
     },
     result = function() {
+      "Return either cumulative messages vector \\code{msg}
+      (which containts the error messages from all the checks),
+      or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were succesull)."
       if (length(msg) > 0) {
         msg
       } else {
