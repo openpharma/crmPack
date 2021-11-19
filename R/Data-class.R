@@ -1,71 +1,34 @@
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Data-class.R] by DSB Mon 11/05/2015 17:42>
-##
-## Description:
+## Description: 
 ## Encapsulate the data input in formal classes.
-##
-## History:
-## 29/01/2014   file creation
-## 07/02/2014   add cohort indices
 ###################################################################################
 
-##' @include helpers.R
-{}
+#' @include helpers.R Data-validity.R
+NULL
 
-## ============================================================
+# GeneralData-class ----
 
-
-## --------------------------------------------------
-## Class for general data input
-## --------------------------------------------------
-
-
-##' Class for general data input
-##'
-##' @slot ID unique patient IDs (integer vector)
-##' @slot cohort the cohort indices (sorted values from 0, 1, 2, ...)
-##' @slot nObs number of observations
-##'
-##' @export
-##' @keywords classes
-.GeneralData <-
-    setClass(Class="GeneralData",
-             representation(ID="integer",
-                            cohort="integer",
-                            nObs="integer"),
-             prototype(ID=integer(),
-                       cohort=integer(),
-                       nObs=0L),
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(all(! duplicated(object@ID)),
-                             "IDs must be unique")
-                     o$check(all(object@cohort >= 0),
-                             "cohort indices must be non-negative")
-                     o$check(! is.unsorted(object@cohort,
-                                           strictly=FALSE),
-                             "cohort indices must be sorted")
-                     for(thisSlot in c("cohort", "ID"))
-                         o$check(identical(object@nObs, length(slot(object, thisSlot))),
-                                 paste(thisSlot, "must have length nObs"))
-
-                     o$result()
-                 })
+#' `GeneralData`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The [`GeneralData`] class is a class for general data input.
+#'
+#' @slot ID (`integer`)\cr unique patient IDs.
+#' @slot cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
+#' @slot nObs (`integer`)\cr number of observations, a single value.
+#'
+#' @export
+#' @keywords classes
+.GeneralData <- setClass(
+  Class = "GeneralData",
+  slots = c(ID = "integer", cohort = "integer", nObs = "integer"),
+  prototype = prototype(ID = integer(), cohort = integer(), nObs = 0L),
+  validity = validate_subjects
+)
 validObject(.GeneralData())
-
-
-## ============================================================
-
-
-## --------------------------------------------------
-## Class for the data input
-## --------------------------------------------------
-
 
 ##' Class for the data input
 ##'
