@@ -28,7 +28,7 @@ explaining the failure of the validation.
 Otherwise, add the \code{string} message into the cumulative messages vector \code{msg}.}
 
 \item{\code{result()}}{Return either cumulative messages vector \code{msg}
-(which containts the error messages from all the checks),
-or \code{NULL}, if \code{msg} is empty (i.e. all the checks were succesull).}
+(which contains the error messages from all the checks),
+or \code{NULL}, if \code{msg} is empty (i.e. all the checks were successful).}
 }}
 
