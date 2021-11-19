@@ -18,8 +18,7 @@ NULL
 validate_subjects <- function(object) {
   o <- Validate()
   
-  o$check(is.integer(object@nObs), "nObs must be of type integer")
-  o$check(length(object@nObs) == 1L, "nObs must be of length 1")
+  o$check(test_int(object@nObs), "nObs must be of type integer of length 1")
   
   o$check(is.integer(object@ID), "ID must be of type integer")
   o$check(all(!duplicated(object@ID)), "IDs must be unique")
