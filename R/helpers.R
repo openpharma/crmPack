@@ -388,7 +388,7 @@ Validate <- setRefClass(
     },
     result = function() {
       "Return either cumulative messages vector \\code{msg}
-      (which containts the error messages from all the checks),
+      (which contains the error messages from all the checks),
       or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were succesull)."
       if (length(msg) > 0) {
         msg
