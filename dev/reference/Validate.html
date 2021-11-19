@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A Reference Class to help programming validation for new S4 classes — Validate • crmPack</title>
+<title>Validate — Validate • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="A Reference Class to help programming validation for new S4 classes — Validate" />
+<meta property="og:title" content="Validate — Validate" />
 <meta property="og:description" content="
-Starting from an empty msg vector, with each check that is returning
-FALSE the vector gets a new element - the string explaining the failure of
-the validation" />
+The Validate class is a Reference Class
+to help programming validation for new S4 classes." />
 
 
 <meta name="robots" content="noindex">
@@ -132,26 +131,43 @@ the validation" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A Reference Class to help programming validation for new S4 classes</h1>
+    <h1><code>Validate</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/helpers.R'><code>R/helpers.R</code></a></small>
     <div class="hidden name"><code>Validate.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
-<p>Starting from an empty <code>msg</code> vector, with each check that is returning
-FALSE the vector gets a new element - the string explaining the failure of
-the validation</p>
+<p>The <code>Validate</code> class is a Reference Class
+to help programming validation for new S4 classes.</p>
     </div>
 
 
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Starting from an empty <code>msg</code> vector, with each check
+that is returning <code>FALSE</code> the vector gets a new element - the string
+explaining the failure of the validation.</p>
     <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
 
     
 
 <dl>
-<dt><code>msg</code></dt><dd><p>the message character vector</p></dd>
+<dt><code>msg</code></dt><dd><p>(<code>character</code>)<br /> the cumulative messages.</p></dd>
+
+</dl>
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+
+<dl>
+<dt><code><a href='https://rdrr.io/r/utils/PkgUtils.html'>check(test, string = "")</a></code></dt><dd><p>Check whether the <code>test</code> is <code>TRUE</code>; if so, return <code>NULL</code>. 
+Otherwise, add the <code>string</code> message into the cumulative messages vector <code>msg</code>.</p></dd>
+
+<dt><code>result()</code></dt><dd><p>Return either cumulative messages vector <code>msg</code>
+(which contains the error messages from all the checks),
+or <code>NULL</code>, if <code>msg</code> is empty (i.e. all the checks were successful).</p></dd>
 
 </dl>
 
