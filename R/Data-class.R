@@ -14,7 +14,7 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' The [`GeneralData`] class is a class for general data input.
+#' The [`GeneralData-class`] is a class for general data input.
 #'
 #' @slot ID (`integer`)\cr unique patient IDs.
 #' @slot cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).

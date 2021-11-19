@@ -3,7 +3,7 @@
 \name{validate_data}
 \alias{validate_data}
 \alias{validate_subjects}
-\title{Internal Helper Functions for Validation of \code{GeneralData} Objects}
+\title{Internal Helper Functions for Validation of \code{GeneralData} Objects.}
 \usage{
 validate_subjects(object)
 }
@@ -15,12 +15,14 @@ A character vector with the validation failure messages,
 or \code{TRUE} in case validation passes.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 These functions are only used internally to validate the format of an input
-\code{\link{GeneralData}} object and therefore not exported.
+\code{\linkS4class{GeneralData}} object and therefore not exported.
 }
 \section{Functions}{
 \itemize{
-\item \code{validate_subjects}: validates that the \code{\link{GeneralData}} object contains
+\item \code{validate_subjects}: validates that the \code{\linkS4class{GeneralData}} object contains
 unique \code{ID}, non-negative \code{cohort} indices and
 \code{ID} and \code{cohort} vectors are of the same length equal to \code{nObs}.
 }}

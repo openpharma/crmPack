@@ -1,7 +1,9 @@
-#' Internal Helper Functions for Validation of `GeneralData` Objects
+#' Internal Helper Functions for Validation of `GeneralData` Objects.
 #'
+#' @description `r lifecycle::badge("stable")`
+#' 
 #' These functions are only used internally to validate the format of an input
-#' [`GeneralData`] object and therefore not exported.
+#' [`GeneralData-class`] object and therefore not exported.
 #'
 #' @name validate_data
 #' @param object (`GeneralData`)\cr object to validate.
@@ -9,10 +11,9 @@
 #' or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_data validates that the [`GeneralData`] object contains
+#' @describeIn validate_data validates that the [`GeneralData-class`] object contains
 #'   unique `ID`, non-negative `cohort` indices and
 #'   `ID` and `cohort` vectors are of the same length equal to `nObs`.
-#' @param object (`GeneralData`)\cr object to validate.
 #'
 validate_subjects <- function(object) {
   assert_class(object, "GeneralData")
