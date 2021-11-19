@@ -1,10 +1,3 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-## Description: 
-## Encapsulate the data input in formal classes.
-###################################################################################
-
 #' @include helpers.R Data-validity.R
 NULL
 
@@ -24,11 +17,18 @@ NULL
 #' @keywords classes
 .GeneralData <- setClass(
   Class = "GeneralData",
-  slots = c(ID = "integer", cohort = "integer", nObs = "integer"),
-  prototype = prototype(ID = integer(), cohort = integer(), nObs = 0L),
+  slots = c(
+    ID = "integer",
+    cohort = "integer",
+    nObs = "integer"
+  ),
+  prototype = prototype(
+    ID = integer(),
+    cohort = integer(),
+    nObs = 0L
+  ),
   validity = validate_subjects
 )
-validObject(.GeneralData())
 
 ##' Class for the data input
 ##'

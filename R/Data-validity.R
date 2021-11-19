@@ -16,15 +16,18 @@ NULL
 #'   `ID` and `cohort` vectors are of the same length equal to `nObs`.
 #'
 validate_subjects <- function(object) {
-  assert_class(object, "GeneralData")
-  assert_integer(object@nObs, len = 1L)
-  assert_integer(object@ID)
-  assert_integer(object@cohort)
-  
   o <- Validate()
+  
+  o$check(is.integer(object@nObs), "nObs must be of type integer")
+  o$check(length(object@nObs) == 1L, "nObs must be of length 1")
+  
+  o$check(is.integer(object@ID), "ID must be of type integer")
   o$check(all(!duplicated(object@ID)), "IDs must be unique")
+  
+  o$check(is.integer(object@cohort), "cohort must be of type integer")
   o$check(all(object@cohort >= 0), "cohort indices must be non-negative")
   o$check(!is.unsorted(object@cohort, strictly = FALSE), "cohort indices must be sorted")
+  
   o$check(
     length(object@ID) == object@nObs && length(object@cohort) == object@nObs,
     "ID and cohort must be of the same length equal to nObs"
