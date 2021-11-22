@@ -1,4 +1,11 @@
-# Template for clean up issues in `crmPack`
+---
+name: Clean up issue
+about: General clean up issue template for `crmPack`.
+title: "... clean up "
+labels: ''
+assignees: ''
+
+---
 
 Please edit appropriately below if needed.
 
