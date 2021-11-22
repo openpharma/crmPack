@@ -7,8 +7,6 @@ assignees: ''
 
 ---
 
-# Template for clean up issues in `crmPack`
-
 Please edit appropriately below if needed.
 
 To do:
