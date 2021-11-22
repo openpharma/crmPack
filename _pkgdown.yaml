@@ -23,6 +23,7 @@ reference:
   - title: Classes
     contents:
       - Validate
+      - GeneralData
   - title: Constructors
     contents:
       - Validate
@@ -30,6 +31,7 @@ reference:
     contents:
   - title: Internal Validation Functions
     contents:
+      - validate_subjects
   - title: Example Data
     contents:
   - title: Methods

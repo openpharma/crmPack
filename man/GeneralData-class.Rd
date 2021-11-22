@@ -4,18 +4,20 @@
 \name{GeneralData-class}
 \alias{GeneralData-class}
 \alias{.GeneralData}
-\title{Class for general data input}
+\title{\code{GeneralData}}
 \description{
-Class for general data input
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+The \code{\linkS4class{GeneralData}} is a class for general data input.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{ID}}{unique patient IDs (integer vector)}
+\item{\code{ID}}{(\code{integer})\cr unique patient IDs.}
 
-\item{\code{cohort}}{the cohort indices (sorted values from 0, 1, 2, ...)}
+\item{\code{cohort}}{(\code{integer})\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).}
 
-\item{\code{nObs}}{number of observations}
+\item{\code{nObs}}{(\code{integer})\cr number of observations, a single value.}
 }}
 
 \keyword{classes}

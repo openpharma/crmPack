@@ -53,6 +53,7 @@ Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by
 Language: en-US
 LazyLoad: yes
 Collate:
+    'Data-validity.R'
     'helpers.R'
     'Data-class.R'
     'Data-methods.R'
