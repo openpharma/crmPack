@@ -1,3 +1,7 @@
+Template for clean up issues in `crmPack`
+
+Please edit appropriately below if needed.
+
 To do:
 
 - [ ] Revise documentation
@@ -7,7 +11,7 @@ To do:
   - [ ] Add to `pkgdown.yml`
   - [ ] remove file history and the timestamp in comments on top of file
 - [ ] Add unit tests
-  - [ ] for classes: 
+  - [ ] for classes:
     - [ ] test default constructor
     - [ ] for reference classes: test methods
   - [ ] for functions: as usual
