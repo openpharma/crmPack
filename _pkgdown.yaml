@@ -30,7 +30,7 @@ reference:
       - Validate
       - Data
   - title: Internal Helper Functions
-      contents:
+    contents:
       - h_is_dose_unique
     contents:
   - title: Internal Validation Functions
