@@ -32,7 +32,6 @@ reference:
   - title: Internal Helper Functions
     contents:
       - h_is_dose_unique
-    contents:
   - title: Internal Validation Functions
     contents:
       - validate_subjects
