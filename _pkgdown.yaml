@@ -24,14 +24,19 @@ reference:
     contents:
       - Validate
       - GeneralData
+      - Data
   - title: Constructors
     contents:
       - Validate
+      - Data
   - title: Internal Helper Functions
+      contents:
+      - h_is_dose_unique
     contents:
   - title: Internal Validation Functions
     contents:
       - validate_subjects
+      - validate_data
   - title: Example Data
     contents:
   - title: Methods

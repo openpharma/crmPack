@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-class.R
 \name{Data}
 \alias{Data}
-\title{Initialization function for the "Data" class}
+\title{\code{Data}}
 \usage{
 Data(
   x = numeric(),
@@ -15,29 +15,30 @@ Data(
 )
 }
 \arguments{
-\item{x}{the doses for the patients}
+\item{x}{(\code{numeric})\cr the doses for the patients.}
 
-\item{y}{the vector of toxicity events (0 or 1 integers). You can also
-normal numeric vectors, but these will then be converted to integers.}
+\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1 integers).
+You can also supply numeric vectors, but these will then be converted to integers.}
 
-\item{ID}{unique patient IDs (integer vector)}
+\item{ID}{(\code{integer})\cr unique patient IDs (integer vector).}
 
-\item{cohort}{the cohort indices (sorted values from 0, 1, 2, ...)}
+\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).}
 
-\item{doseGrid}{the vector of all possible doses}
+\item{doseGrid}{(\code{numeric})\cr the vector of all possible doses.}
 
-\item{placebo}{logical value: if TRUE the first dose level in the grid is
-considered as PLACEBO}
+\item{placebo}{(\code{logical})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid} is considered as PLACEBO.}
 
-\item{\dots}{not used}
+\item{\dots}{not used.}
 }
 \value{
-the initialized \code{\linkS4class{Data}} object
+the initialized \code{\linkS4class{Data}} object.
 }
 \description{
-This is the function for initializing a "Data" class object.
-}
-\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is the function for initializing a \code{\linkS4class{Data}} object.
+
 Note that \code{ID} and \code{cohort} can be missing, then a warning
 will be issued and the variables will be filled with default
 IDs and best guesses, respectively.

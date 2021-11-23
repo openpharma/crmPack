@@ -2,12 +2,21 @@
 % Please edit documentation in R/Data-validity.R
 \name{validate_data}
 \alias{validate_data}
+\alias{h_is_dose_unique}
 \alias{validate_subjects}
-\title{Internal Helper Functions for Validation of \code{GeneralData} Objects.}
+\title{Internal Helper Functions for Validation of \code{GeneralData} and \code{Data} Objects.}
 \usage{
+h_is_dose_unique(dose, cohort)
+
 validate_subjects(object)
+
+validate_data(object)
 }
 \arguments{
+\item{dose}{(\code{numeric})\cr vector of doses.}
+
+\item{cohort}{(\code{integer})\cr vector of cohorts corresponding to \code{doses}.}
+
 \item{object}{(\code{GeneralData})\cr object to validate.}
 }
 \value{
@@ -18,12 +27,18 @@ or \code{TRUE} in case validation passes.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 These functions are only used internally to validate the format of an input
-\code{\linkS4class{GeneralData}} object and therefore not exported.
+\code{\linkS4class{GeneralData}} and \code{\linkS4class{Data}} object and therefore not exported.
 }
 \section{Functions}{
 \itemize{
+\item \code{h_is_dose_unique}: helper function.
+It returns \code{TRUE} if \code{dose} is unique per \code{cohort}.
+
 \item \code{validate_subjects}: validates that the \code{\linkS4class{GeneralData}} object contains
 unique \code{ID}, non-negative \code{cohort} indices and
 \code{ID} and \code{cohort} vectors are of the same length equal to \code{nObs}.
+
+\item \code{validate_data}: validates that the \code{\linkS4class{Data}} object contains
+valid elements with respect to their types, dependency and length.
 }}
 

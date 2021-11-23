@@ -4,26 +4,30 @@
 \name{Data-class}
 \alias{Data-class}
 \alias{.Data}
-\title{Class for the data input}
+\title{\code{Data}}
 \description{
-This class inherits from \code{\linkS4class{GeneralData}}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+The \code{\linkS4class{Data}} is a class for the data input.
+It inherits from \code{\linkS4class{GeneralData}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{x}}{the doses for the patients}
+\item{\code{x}}{(\code{numeric})\cr the doses for the patients.}
 
-\item{\code{y}}{the vector of toxicity events (0 or 1 integers)}
+\item{\code{y}}{(\code{integer})\cr the vector of toxicity events (0 or 1 integers).}
 
-\item{\code{doseGrid}}{the vector of all possible doses (sorted), i.e. the dose
-grid}
+\item{\code{doseGrid}}{(\code{numeric})\cr the vector of all possible doses (sorted),
+i.e. the dose grid.}
 
-\item{\code{nGrid}}{number of gridpoints}
+\item{\code{nGrid}}{(\code{integer})\cr number of gridpoints.}
 
-\item{\code{xLevel}}{the levels for the doses the patients have been given}
+\item{\code{xLevel}}{(\code{integer})\cr the levels for the doses the patients have been given,
+w.r.t \code{doseGrid}.}
 
-\item{\code{placebo}}{logical value: if TRUE the first dose level in the grid is
-considered as PLACEBO}
+\item{\code{placebo}}{(\code{logical})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid}is considered as PLACEBO.}
 }}
 
 \examples{
