@@ -19,7 +19,7 @@ jobs:
           GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | sed 's/v//g')
           wget https://github.com/zricethezav/gitleaks/releases/download/v$GITLEAKS_VERSION/gitleaks\_$GITLEAKS_VERSION\_linux\_x64.tar.gz
           sudo mv gitleaks\_$GITLEAKS_VERSION\_linux_x64.tar.gz /usr/bin/gitleaks
-          tar -xvzf gitleaks\_$GITLEAKS_VERSION\_linux_x64.tar.gz
+          tar -xvzf /usr/bin/gitleaks/gitleaks\_$GITLEAKS_VERSION\_linux_x64.tar.gz
           chmod +x /usr/bin/gitleaks
-          gitleaks -v --path . --no-git
+          /usr/bin/gitleaks/gitleaks -v --path . --no-git
         shell: bash
