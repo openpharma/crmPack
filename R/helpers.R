@@ -521,7 +521,6 @@ myBarplot <- function(x, description, xaxisround=0)
 #' The default value is close to 1e-10.
 #' @return `TRUE` is `target` and `current` do not differ
 #' up to desired level of accuracy, `FALSE` otherwise.
-#' @importFrom checkmate test_flag
 #'
 all_equal <- function(target, current, tolerance = 1e-10, check.names = FALSE, check.attributes = FALSE) {
   res <- all.equal(
