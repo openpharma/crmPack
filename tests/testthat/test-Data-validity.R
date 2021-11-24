@@ -12,7 +12,7 @@ test_that("validate_subjects returns error message for non-valid object", {
 # validate_data ----
 
 test_that("validate_data returns TRUE for valid object", {
-  plcbacebo <- 0.001
+  plcb <- 0.001
   x <- c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100)
   dose_grid <- c(plcb, seq(25, 300, 25))
   object <- expect_silent(
@@ -22,7 +22,7 @@ test_that("validate_data returns TRUE for valid object", {
       doseGrid = dose_grid,
       nGrid = length(dose_grid),
       xLevel = matchTolerance(x = x, table = dose_grid),
-      plcbacebo = TRUE,
+      placebo = TRUE,
       ID = 1:12,
       cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
       nObs = 12L
@@ -42,7 +42,7 @@ test_that("validate_data returns error message for non-valid object
       doseGrid = dose_grid,
       nGrid = length(dose_grid),
       xLevel = matchTolerance(x = x, table = dose_grid),
-      plcbacebo = TRUE,
+      placebo = TRUE,
       ID = 1:12,
       cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
       nObs = 12L
@@ -63,7 +63,7 @@ test_that("validate_data returns error message for non-valid object
       doseGrid = dose_grid,
       nGrid = length(dose_grid),
       xLevel = matchTolerance(x = x, table = dose_grid),
-      plcbacebo = TRUE,
+      placebo = TRUE,
       ID = 1:12,
       cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
       nObs = 12L
@@ -84,7 +84,7 @@ test_that("validate_data returns error message for non-valid object
       doseGrid = dose_grid,
       nGrid = length(dose_grid),
       xLevel = c(2L, 2L, 2L, 2L, 1L, 3L, 3L, 3L, 1L, 5L, 5L, 5L),
-      plcbacebo = TRUE,
+      placebo = TRUE,
       ID = 1:12,
       cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
       nObs = 12L
