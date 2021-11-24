@@ -26,12 +26,12 @@ To do:
   - [ ] Code styling (indentation etc.) - install package `styler` and use corresponding add-in
   - [ ] Keep externally used names so that we don't break downstream code
   - [ ] Remove `keywords` tags
-  - [ ] For functions or methods: 
+  - [ ] For functions or methods:
     - [ ] Add assertions for arguments using `checkmate` functions
     - [ ] If it is too long, break up into pieces (rule of thumb: maximum 50 lines of code)
     - [ ] Consider renaming internal variables etc. if needed
     - [ ] Avoid explicit use of `return`
-  - [ ] For classes: 
+  - [ ] For classes:
     - [ ] move function definitions outside if possible (e.g. move validation function as `validity_subjects()` to `Data-validity.R` and have corresponding test file `test-Data-validity.R`)
     - [ ] In `setClass` function, just use the `slots` instead of outdated `representation`
     - [ ] Remove things like `validObject(.Data())`
