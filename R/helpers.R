@@ -510,26 +510,30 @@ myBarplot <- function(x, description, xaxisround=0)
                          round(dat$x, xaxisround))
 }
 
-#' Wrapper for all.equal
+#' Comparison with Numerical Tolerance and Without Name Comparison
 #'
-#' It ensures a default tolerance level equal to 1e-10,
-#' and ignores names and the other attributes (if any) by default.
-#' In contrast to [`base::all.equal`], it always returns a logical type object.
+#' @description `r lifecycle::badge("experimental")`
+#' 
+#' This helper function ensures a default tolerance level equal to `1e-10`,
+#' and ignores names and other attributes.
+#' In contrast to [base::all.equal()], it always returns a logical type object.
 #'
-#' @inheritParams base::all.equal
-#' @param tolerance numeric >= 0. Differences smaller than tolerance are not reported.
-#' The default value is close to 1e-10.
-#' @return `TRUE` is `target` and `current` do not differ
-#' up to desired level of accuracy, `FALSE` otherwise.
+#' @param target (`numeric`)\cr target values.
+#' @param current (`numeric`)\cr current values.
+#' @param tolerance (`number`) differences smaller than this are not reported.
+#' @return `TRUE` when `target` and `current` do not differ
+#'   up to desired tolerance and without looking at names or other attributes,
+#'   `FALSE` otherwise.
 #'
-all_equal <- function(target, current, tolerance = 1e-10, check.names = FALSE, check.attributes = FALSE) {
-  res <- all.equal(
+h_all_equivalent <- function(target, 
+                             current, 
+                             tolerance = 1e-10) {
+  tmp <- all.equal(
     target = target,
     current = current,
     tolerance = tolerance,
-    check.names = check.names,
-    check.attributes = check.attributes
+    check.names = FALSE,
+    check.attributes = FALSE
   )
-
-  test_flag(res) && res == TRUE
+  isTRUE(tmp)
 }

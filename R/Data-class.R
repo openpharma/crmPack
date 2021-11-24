@@ -7,12 +7,13 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' The [`GeneralData-class`] is a class for general data input.
+#' [`GeneralData`] is a class for general data input.
 #'
 #' @slot ID (`integer`)\cr unique patient IDs.
 #' @slot cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
 #' @slot nObs (`integer`)\cr number of observations, a single value.
 #'
+#' @aliases GeneralData
 #' @export
 .GeneralData <- setClass(
   Class = "GeneralData",
@@ -35,8 +36,8 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' The [`Data-class`] is a class for the data input.
-#' It inherits from [`GeneralData-class`].
+#' [`Data`] is a class for the data input.
+#' It inherits from [`GeneralData`].
 #'
 #' @slot x (`numeric`)\cr the doses for the patients.
 #' @slot y (`integer`)\cr the vector of toxicity events (0 or 1 integers).
@@ -48,9 +49,11 @@ NULL
 #' @slot placebo (`logical`)\cr if `TRUE` the first dose level
 #' in the `doseGrid`is considered as PLACEBO.
 #'
+#' @aliases Data
 #' @export
 .Data <- setClass(
   Class = "Data",
+  contains = "GeneralData",
   slots = c(
     x = "numeric",
     y = "integer",
@@ -67,32 +70,31 @@ NULL
     xLevel = integer(),
     placebo = FALSE
   ),
-  contains = "GeneralData",
-  validity = validate_data,
+  validity = validate_data
 )
 
 # Data-constructor ----
 
-#' Note that \code{ID} and \code{cohort} can be missing, then a warning
+#' @rdname Data-class
+
+#' @details The `cohort` can be missing if and only if `placebo` is equal to 
+#'   `FALSE`.
+#'
+#' @note `ID` and `cohort` can be missing, then a warning
 #' will be issued and the variables will be filled with default
 #' IDs and best guesses, respectively.
 #'
-#' @rdname Data-class
-#'
-#' @details In user constructor [`Data`], the \code{ID} or \code{cohort}
-#' can be missing, then a warning will be issued and the variables
-#' will be filled with default IDs and best guesses, respectively.
-#' The \code{cohort} can be missing if and only if `placebo` is equal to `FALSE`.
-#'
 #' @param x (`numeric`)\cr the doses for the patients.
-#' @param y (`integer`)\cr the vector of toxicity events (0 or 1 integers).
-#' You can also supply numeric vectors, but these will then be converted to integers.
-#' @param ID (`integer`)\cr unique patient IDs (integer vector).
-#' @param cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
-#' @param doseGrid (`numeric`)\cr the vector of all possible doses.
-#' @param placebo (`logical`)\cr if `TRUE` the first dose level
-#' in the `doseGrid` is considered as PLACEBO.
-#' @param \dots not used.
+#' @param y (`integer`)\cr the vector of toxicity events (0 or 1).
+#'   You can also supply `numeric` vectors, but these will then be converted to 
+#'   `integer` internally.
+#' @param ID (`integer`)\cr unique patient IDs.
+#' @param cohort (`integer`)\cr the cohort indices (sorted values from 
+#'   \{0, 1, 2, ...\}).
+#' @param doseGrid (`numeric`)\cr all possible doses.
+#' @param placebo (`flag`)\cr if `TRUE` the first dose level
+#'   in the `doseGrid` is considered as placebo.
+#' @param ... not used.
 #'
 #' @export
 #' @example examples/Data-class.R
@@ -103,28 +105,30 @@ Data <- function(x = numeric(),
                  doseGrid = numeric(),
                  placebo = FALSE,
                  ...) {
-  ## sort the dose grid
-  doseGrid <- as.numeric(sort(unique(doseGrid)))
+  assert_numeric(x)
+  assert_numeric(y)
+  assert_numeric(ID)
+  assert_numeric(cohort)
+  assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
+  assert_flag(placebo)
+  
+  doseGrid <- as.numeric(sort(doseGrid))
 
-  ## check IDs
   if (length(ID) == 0 && length(x) > 0) {
     warning("Used default patient IDs!")
     ID <- seq_along(x)
   }
 
-  ## check cohort indices
   if (!placebo && length(cohort) == 0 && length(x) > 0) {
     warning("Used best guess cohort indices!")
-    ## This is just assuming that consecutive patients
-    ## in the data set are in the same cohort if they
-    ## have the same dose. Note that this could be wrong,
-    ## if two subsequent cohorts are at the same dose.
+    # This is just assuming that consecutive patients
+    # in the data set are in the same cohort if they
+    # have the same dose. Note that this could be wrong,
+    # if two subsequent cohorts are at the same dose.
     cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
   }
 
-  ## then initialize the Data object
-  ## (in this case just putting arguments into slots)
-  ret <- .Data(
+  .Data(
     x = as.numeric(x),
     y = safeInteger(y),
     ID = safeInteger(ID),

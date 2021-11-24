@@ -20,31 +20,31 @@ Data(
 \arguments{
 \item{x}{(\code{numeric})\cr the doses for the patients.}
 
-\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1 integers).
-You can also supply numeric vectors, but these will then be converted to integers.}
+\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1).
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
-\item{ID}{(\code{integer})\cr unique patient IDs (integer vector).}
+\item{ID}{(\code{integer})\cr unique patient IDs.}
 
-\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).}
+\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from
+\{0, 1, 2, ...\}).}
 
-\item{doseGrid}{(\code{numeric})\cr the vector of all possible doses.}
+\item{doseGrid}{(\code{numeric})\cr all possible doses.}
 
-\item{placebo}{(\code{logical})\cr if \code{TRUE} the first dose level
-in the \code{doseGrid} is considered as PLACEBO.}
+\item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid} is considered as placebo.}
 
-\item{\dots}{not used.}
+\item{...}{not used.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-The \code{\linkS4class{Data}} is a class for the data input.
-It inherits from \code{\linkS4class{GeneralData}}.
+\code{\link{Data}} is a class for the data input.
+It inherits from \code{\link{GeneralData}}.
 }
 \details{
-In user constructor \code{\link{Data}}, the \code{ID} or \code{cohort}
-can be missing, then a warning will be issued and the variables
-will be filled with default IDs and best guesses, respectively.
-The \code{cohort} can be missing if and only if \code{placebo} is equal to \code{FALSE}.
+The \code{cohort} can be missing if and only if \code{placebo} is equal to
+\code{FALSE}.
 }
 \section{Slots}{
 
@@ -65,10 +65,18 @@ w.r.t \code{doseGrid}.}
 in the \code{doseGrid}is considered as PLACEBO.}
 }}
 
+\note{
+\code{ID} and \code{cohort} can be missing, then a warning
+will be issued and the variables will be filled with default
+IDs and best guesses, respectively.
+}
 \examples{
-# create some data from the class 'Data'
-my_data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-                y = c(0, 0, 0, 0, 0, 0, 1, 0),
-                doseGrid = c(0.1, 0.5, 1.5, 3, 6,
-                             seq(from = 10, to = 80, by = 2)))
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  )
+)
 }

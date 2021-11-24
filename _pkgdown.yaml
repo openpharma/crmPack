@@ -25,15 +25,10 @@ reference:
       - Validate
       - GeneralData
       - Data
-  - title: Constructors
-    contents:
-      - Validate
-      - Data
   - title: Internal Helper Functions
     contents:
-      - h_is_dose_unique
-      - h_get_data
-      - all_equal
+      - h_doses_unique_per_cohort
+      - h_all_equivalent
   - title: Internal Validation Functions
     contents:
       - validate_subjects
