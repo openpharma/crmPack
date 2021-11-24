@@ -105,13 +105,13 @@ Data <- function(x = numeric(),
                  ...) {
   ## sort the dose grid
   doseGrid <- as.numeric(sort(unique(doseGrid)))
-  
+
   ## check IDs
   if (length(ID) == 0 && length(x) > 0) {
     warning("Used default patient IDs!")
     ID <- seq_along(x)
   }
-  
+
   ## check cohort indices
   if (!placebo && length(cohort) == 0 && length(x) > 0) {
     warning("Used best guess cohort indices!")
@@ -121,7 +121,7 @@ Data <- function(x = numeric(),
     ## if two subsequent cohorts are at the same dose.
     cohort <- as.integer(c(1, 1 + cumsum(diff(x) != 0)))
   }
-  
+
   ## then initialize the Data object
   ## (in this case just putting arguments into slots)
   ret <- .Data(
