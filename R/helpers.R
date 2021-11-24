@@ -510,3 +510,27 @@ myBarplot <- function(x, description, xaxisround=0)
                          round(dat$x, xaxisround))
 }
 
+#' Wrapper for all.equal
+#'
+#' It ensures a default tolerance level equal to 1e-10,
+#' and ignores names and the other attributes (if any) by default.
+#' In contrast to [`base::all.equal`], it always returns a logical type object.
+#'
+#' @inheritParams base::all.equal
+#' @param tolerance numeric >= 0. Differences smaller than tolerance are not reported.
+#' The default value is close to 1e-10.
+#' @return `TRUE` is `target` and `current` do not differ
+#' up to desired level of accuracy, `FALSE` otherwise.
+#' @importFrom checkmate test_flag
+#'
+all_equal <- function(target, current, tolerance = 1e-10, check.names = FALSE, check.attributes = FALSE) {
+  res <- all.equal(
+    target = target,
+    current = current,
+    tolerance = tolerance,
+    check.names = check.names,
+    check.attributes = check.attributes
+  )
+
+  test_flag(res) && res == TRUE
+}

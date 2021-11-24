@@ -22,6 +22,8 @@ validate_data(object)
 \value{
 A character vector with the validation failure messages,
 or \code{TRUE} in case validation passes.
+
+\code{TRUE} if \code{dose} is unique per \code{cohort}, otherwise \code{FALSE}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -36,7 +38,7 @@ unique \code{ID}, non-negative \code{cohort} indices and
 \code{ID} and \code{cohort} vectors are of the same length equal to \code{nObs}.
 
 \item \code{h_is_dose_unique}: helper function.
-It returns \code{TRUE} if \code{dose} is unique per \code{cohort}.
+It verifies whether the \code{dose} is unique in each and every different \code{cohort}.
 
 \item \code{validate_data}: validates that the \code{\linkS4class{Data}} object contains
 valid elements with respect to their types, dependency and length.

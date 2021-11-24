@@ -48,7 +48,6 @@ NULL
 #' @slot placebo (`logical`)\cr if `TRUE` the first dose level
 #' in the `doseGrid`is considered as PLACEBO.
 #'
-#' @example examples/Data-class.R
 #' @export
 .Data <- setClass(
   Class = "Data",
@@ -74,15 +73,16 @@ NULL
 
 # Data-constructor ----
 
-#' `Data`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' This is the function for initializing a [`Data-class`] object.
-#'
 #' Note that \code{ID} and \code{cohort} can be missing, then a warning
 #' will be issued and the variables will be filled with default
 #' IDs and best guesses, respectively.
+#'
+#' @rdname Data-class
+#'
+#' @details In user constructor [`Data`], the \code{ID} or \code{cohort}
+#' can be missing, then a warning will be issued and the variables
+#' will be filled with default IDs and best guesses, respectively.
+#' The \code{cohort} can be missing if and only if `placebo` is equal to `FALSE`.
 #'
 #' @param x (`numeric`)\cr the doses for the patients.
 #' @param y (`integer`)\cr the vector of toxicity events (0 or 1 integers).
@@ -93,9 +93,9 @@ NULL
 #' @param placebo (`logical`)\cr if `TRUE` the first dose level
 #' in the `doseGrid` is considered as PLACEBO.
 #' @param \dots not used.
-#' @return the initialized [`Data-class`] object.
 #'
 #' @export
+#' @example examples/Data-class.R
 Data <- function(x = numeric(),
                  y = integer(),
                  ID = integer(),
@@ -113,7 +113,7 @@ Data <- function(x = numeric(),
   }
 
   ## check cohort indices
-  if (length(cohort) == 0 && length(x) > 0) {
+  if (!placebo && length(cohort) == 0 && length(x) > 0) {
     warning("Used best guess cohort indices!")
     ## This is just assuming that consecutive patients
     ## in the data set are in the same cohort if they
@@ -153,19 +153,23 @@ Data <- function(x = numeric(),
 ##' @export
 ##' @keywords classes
 .DataDual <-
-    setClass(Class="DataDual",
-             representation=
-                 representation(w="numeric"),
-             contains="Data",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "DataDual",
+    representation =
+      representation(w = "numeric"),
+    contains = "Data",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(identical(object@nObs, length(object@w)),
-                             "w must have length nObs")
+        o$check(
+          identical(object@nObs, length(object@w)),
+          "w must have length nObs"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.DataDual())
 
 ##' Initialization function for the "DataDual" class
@@ -178,12 +182,12 @@ validObject(.DataDual())
 ##'
 ##' @export
 ##' @keywords programming
-DataDual <- function(w=numeric(),
-                     ...)
-{
-    start <- Data(...)
-    .DataDual(start,
-              w=w)
+DataDual <- function(w = numeric(),
+                     ...) {
+  start <- Data(...)
+  .DataDual(start,
+    w = w
+  )
 }
 validObject(DataDual())
 
@@ -209,33 +213,50 @@ validObject(DataDual())
 ##' @export
 ##' @keywords classes
 .DataParts <-
-    setClass(Class="DataParts",
-             representation(part="integer",
-                            nextPart="integer",
-                            part1Ladder="numeric"),
-             prototype(part=integer(),
-                       nextPart=1L,
-                       part1Ladder=numeric()),
-             contains="Data",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "DataParts",
+    representation(
+      part = "integer",
+      nextPart = "integer",
+      part1Ladder = "numeric"
+    ),
+    prototype(
+      part = integer(),
+      nextPart = 1L,
+      part1Ladder = numeric()
+    ),
+    contains = "Data",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(identical(length(object@part), length(object@x)),
-                             "part and x must have same length")
-                     o$check(all(object@part %in% as.integer(c(1, 2))),
-                             "part must have entries 1 or 2")
-                     o$check(is.scalar(object@nextPart) &&
-                                 (object@nextPart %in% as.integer(c(1, 2))),
-                             "nextPart must be scalar 1 or 2")
-                     o$check(all(object@part1Ladder %in% object@doseGrid),
-                             "part1Ladder must have entries from doseGrid")
-                     o$check(! is.unsorted(object@part1Ladder,
-                                           strictly=TRUE),
-                             "part1Ladder must be sorted and have unique values")
+        o$check(
+          identical(length(object@part), length(object@x)),
+          "part and x must have same length"
+        )
+        o$check(
+          all(object@part %in% as.integer(c(1, 2))),
+          "part must have entries 1 or 2"
+        )
+        o$check(
+          is.scalar(object@nextPart) &&
+            (object@nextPart %in% as.integer(c(1, 2))),
+          "nextPart must be scalar 1 or 2"
+        )
+        o$check(
+          all(object@part1Ladder %in% object@doseGrid),
+          "part1Ladder must have entries from doseGrid"
+        )
+        o$check(
+          !is.unsorted(object@part1Ladder,
+            strictly = TRUE
+          ),
+          "part1Ladder must be sorted and have unique values"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.DataParts())
 
 
@@ -253,16 +274,16 @@ validObject(.DataParts())
 ##'
 ##' @export
 ##' @keywords programming
-DataParts <- function(part=integer(),
-                      nextPart=1L,
-                      part1Ladder=numeric(),
-                      ...)
-{
-    start <- Data(...)
-    .DataParts(start,
-               part=part,
-               nextPart=nextPart,
-               part1Ladder=part1Ladder)
+DataParts <- function(part = integer(),
+                      nextPart = 1L,
+                      part1Ladder = numeric(),
+                      ...) {
+  start <- Data(...)
+  .DataParts(start,
+    part = part,
+    nextPart = nextPart,
+    part1Ladder = part1Ladder
+  )
 }
 validObject(DataParts())
 
@@ -286,28 +307,41 @@ validObject(DataParts())
 ##' @example examples/Model-class-LogisticLogNormalMixture.R
 ##' @keywords classes
 .DataMixture <-
-  setClass(Class="DataMixture",
-           representation(xshare="numeric",
-                          yshare="integer",
-                          nObsshare="integer"),
-           prototype(xshare=numeric(),
-                     yshare=integer(),
-                     nObsshare=0L),
-           contains="Data",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "DataMixture",
+    representation(
+      xshare = "numeric",
+      yshare = "integer",
+      nObsshare = "integer"
+    ),
+    prototype(
+      xshare = numeric(),
+      yshare = integer(),
+      nObsshare = 0L
+    ),
+    contains = "Data",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               o$check(all(object@yshare %in% c(0, 1)),
-                       "DLT vector yshare can only have 0 or 1 values")
-               o$check(all(object@xshare %in% object@doseGrid),
-                       "dose values in xshare must be from doseGrid")
-               for(thisSlot in c("xshare", "yshare"))
-                 o$check(identical(object@nObsshare, length(slot(object, thisSlot))),
-                         paste(thisSlot, "must have length nObs"))
+        o$check(
+          all(object@yshare %in% c(0, 1)),
+          "DLT vector yshare can only have 0 or 1 values"
+        )
+        o$check(
+          all(object@xshare %in% object@doseGrid),
+          "dose values in xshare must be from doseGrid"
+        )
+        for (thisSlot in c("xshare", "yshare")) {
+          o$check(
+            identical(object@nObsshare, length(slot(object, thisSlot))),
+            paste(thisSlot, "must have length nObs")
+          )
+        }
 
-               o$result()
-             })
+        o$result()
+      }
+  )
 validObject(.DataMixture())
 
 ##' Initialization function for the "DataMixture" class
@@ -322,14 +356,15 @@ validObject(.DataMixture())
 ##'
 ##' @export
 ##' @keywords programming
-DataMixture <- function(xshare=numeric(),
-                        yshare=integer(),
-                        ...){
+DataMixture <- function(xshare = numeric(),
+                        yshare = integer(),
+                        ...) {
   start <- Data(...)
   ret <- .DataMixture(start,
-                      xshare=as.numeric(xshare),
-                      yshare=safeInteger(yshare),
-                      nObsshare=length(xshare))
+    xshare = as.numeric(xshare),
+    yshare = safeInteger(yshare),
+    nObsshare = length(xshare)
+  )
   return(ret)
 }
 validObject(DataMixture())
@@ -356,40 +391,54 @@ validObject(DataMixture())
 ##' @export
 ##' @keywords classes
 .DataDA <-
-  setClass(Class="DataDA",
-           representation=
-             representation(u="numeric",
-                            t0="numeric",
-                            Tmax="numeric"),
-           contains="Data",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "DataDA",
+    representation =
+      representation(
+        u = "numeric",
+        t0 = "numeric",
+        Tmax = "numeric"
+      ),
+    contains = "Data",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               o$check(identical(object@nObs, length(object@u)),
-                       "u must have length nObs")
+        o$check(
+          identical(object@nObs, length(object@u)),
+          "u must have length nObs"
+        )
 
-               o$check(identical(object@nObs, length(object@t0)),
-                       "t0 must have length nObs")
+        o$check(
+          identical(object@nObs, length(object@t0)),
+          "t0 must have length nObs"
+        )
 
-               o$check(all(object@u <= object @Tmax),
-                       "u entries must not be larger than Tmax")
-               ## (this has to be because the hazard
-               ## at Tmax is infinity -> all individuals stop
-               ## there)
+        o$check(
+          all(object@u <= object @Tmax),
+          "u entries must not be larger than Tmax"
+        )
+        ## (this has to be because the hazard
+        ## at Tmax is infinity -> all individuals stop
+        ## there)
 
-               o$check(all(object@u >= 0),
-                       "u entries must be non-negative")
+        o$check(
+          all(object@u >= 0),
+          "u entries must be non-negative"
+        )
 
-               ## DSB: why check not required?
-               #                                  o$check(all(object@t0 >= 0),
-               #                                          "t0 entries must be non-negative")
-               #
-               o$check(all(object@Tmax > 0),
-                       "DLT window needs to be greater than 0")
+        ## DSB: why check not required?
+        #                                  o$check(all(object@t0 >= 0),
+        #                                          "t0 entries must be non-negative")
+        #
+        o$check(
+          all(object@Tmax > 0),
+          "DLT window needs to be greater than 0"
+        )
 
-               o$result()
-             })
+        o$result()
+      }
+  )
 validObject(.DataDA())
 
 ##' Initialization function for the `DataDA` class
@@ -404,27 +453,23 @@ validObject(.DataDA())
 ##'
 ##' @export
 ##' @keywords programming
-DataDA <- function(u=numeric(),
-                   Tmax=numeric(),
-                   t0=numeric(),
-                   ...)
-{
-
+DataDA <- function(u = numeric(),
+                   Tmax = numeric(),
+                   t0 = numeric(),
+                   ...) {
   start <- Data(...)
 
-  if(missing(t0))
-  {
+  if (missing(t0)) {
     t0 <- rep(0, length(u))
   }
 
   .DataDA(start,
-          u = as.numeric(u),
-          t0 = t0,
-          Tmax = as.numeric(Tmax))
+    u = as.numeric(u),
+    t0 = t0,
+    Tmax = as.numeric(Tmax)
+  )
 }
 validObject(DataDA())
 
 
 ## ============================================================
-
-

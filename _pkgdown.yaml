@@ -32,6 +32,8 @@ reference:
   - title: Internal Helper Functions
     contents:
       - h_is_dose_unique
+      - h_get_data
+      - all_equal
   - title: Internal Validation Functions
     contents:
       - validate_subjects

@@ -37,9 +37,10 @@ validate_subjects <- function(object) {
 }
 
 #' @describeIn validate_data helper function.
-#' It returns `TRUE` if `dose` is unique per `cohort`.
+#' It verifies whether the `dose` is unique in each and every different `cohort`.
 #' @param dose (`numeric`)\cr vector of doses.
 #' @param cohort (`integer`)\cr vector of cohorts corresponding to `doses`.
+#' @return `TRUE` if `dose` is unique per `cohort`, otherwise `FALSE`.
 #'
 h_is_dose_unique <- function(dose, cohort) {
   all(tapply(dose, cohort, function(d) length(unique(d)) == 1L))
@@ -89,16 +90,8 @@ validate_data <- function(object) {
     "Dose values in x must be from doseGrid"
   )
 
-  x_eq_grid_xLev <- all.equal(
-    object@x,
-    object@doseGrid[object@xLevel],
-    tolerance = 1e-10,
-    check.names = FALSE,
-    check.attributes = FALSE
-  )
-
   o$check(
-    test_flag(x_eq_grid_xLev) && x_eq_grid_xLev == TRUE,
+    all_equal(object@x, object@doseGrid[object@xLevel]),
     "x must be equal to doseGrid[xLevel] (tolerance 1e-10)"
   )
 
