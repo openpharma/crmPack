@@ -29,4 +29,6 @@ To do:
   - [ ] if a function is too long, break up into pieces
   - [ ] for classes: move function definitions outside if possible (e.g. move validation function as `validity_subjects()` to `Data-validity.R` and have corresponding test file `test-Data-validity.R`)
   - [ ] in `setClass` function, just use the `slots` instead of outdated `representation`.
-  - [ ] Remove things like `validObject(.Data())`
+  - [ ] Remove things like `validObject(.Data())`.
+  - [ ] Remove `keywords` tags.
+  - [ ] Avoid explicit use of `return`.

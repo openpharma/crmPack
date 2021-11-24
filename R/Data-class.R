@@ -14,7 +14,6 @@ NULL
 #' @slot nObs (`integer`)\cr number of observations, a single value.
 #'
 #' @export
-#' @keywords classes
 .GeneralData <- setClass(
   Class = "GeneralData",
   slots = c(
@@ -51,7 +50,6 @@ NULL
 #'
 #' @example examples/Data-class.R
 #' @export
-#' @keywords classes
 .Data <- setClass(
   Class = "Data",
   slots = c(
@@ -98,7 +96,6 @@ NULL
 #' @return the initialized [`Data-class`] object.
 #'
 #' @export
-#' @keywords programming
 Data <- function(x = numeric(),
                  y = integer(),
                  ID = integer(),
@@ -138,8 +135,6 @@ Data <- function(x = numeric(),
     xLevel = matchTolerance(x = x, table = doseGrid),
     placebo = placebo
   )
-
-  return(ret)
 }
 
 ## --------------------------------------------------

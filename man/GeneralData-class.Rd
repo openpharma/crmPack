@@ -20,4 +20,3 @@ The \code{\linkS4class{GeneralData}} is a class for general data input.
 \item{\code{nObs}}{(\code{integer})\cr number of observations, a single value.}
 }}
 
-\keyword{classes}

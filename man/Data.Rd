@@ -43,4 +43,3 @@ Note that \code{ID} and \code{cohort} can be missing, then a warning
 will be issued and the variables will be filled with default
 IDs and best guesses, respectively.
 }
-\keyword{programming}

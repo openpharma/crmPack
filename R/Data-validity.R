@@ -1,4 +1,4 @@
-#' Internal Helper Functions for Validation of `GeneralData` and `Data` Objects.
+#' Internal Helper Functions for Validation of `GeneralData` Objects.
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -10,15 +10,6 @@
 #' @return A character vector with the validation failure messages,
 #' or `TRUE` in case validation passes.
 NULL
-
-#' @describeIn validate_data helper function.
-#' It returns `TRUE` if `dose` is unique per `cohort`.
-#' @param dose (`numeric`)\cr vector of doses.
-#' @param cohort (`integer`)\cr vector of cohorts corresponding to `doses`.
-#'
-h_is_dose_unique <- function(dose, cohort) {
-  all(tapply(dose, cohort, function(d) length(unique(d)) == 1L))
-}
 
 #' @describeIn validate_data validates that the [`GeneralData-class`] object contains
 #'   unique `ID`, non-negative `cohort` indices and
@@ -43,6 +34,15 @@ validate_subjects <- function(object) {
   o$check(!is.unsorted(object@cohort, strictly = FALSE), "cohort indices must be sorted")
 
   o$result()
+}
+
+#' @describeIn validate_data helper function.
+#' It returns `TRUE` if `dose` is unique per `cohort`.
+#' @param dose (`numeric`)\cr vector of doses.
+#' @param cohort (`integer`)\cr vector of cohorts corresponding to `doses`.
+#'
+h_is_dose_unique <- function(dose, cohort) {
+  all(tapply(dose, cohort, function(d) length(unique(d)) == 1L))
 }
 
 #' @describeIn validate_data validates that the [`Data-class`] object contains

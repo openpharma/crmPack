@@ -28,6 +28,7 @@ test_that("validate_data returns TRUE for valid object", {
       nObs = 12L
     )
   )
+  expect_true(validate_data(object))
 })
 
 test_that("validate_data returns error message for non-valid object
