@@ -1,3 +1,4 @@
+---
 name: gitleaks
 
 on:
@@ -6,20 +7,39 @@ on:
       - main
       - pre-release
   pull_request:
+    branches:
+      - main
+      - pre-release
+  workflow_call:
+    inputs:
+      additional_args:
+        description: Additional arguments to pass to gitleaks
+        required: false
+        type: string
+        default: ""
 
 jobs:
   gitleaks:
+    name: gitleaks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Run gitleaks
+      - name: Download and install gitleaks
         run: |
-          GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/zricethezav/gitleaks/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")' | sed 's/v//g')
-          wget https://github.com/zricethezav/gitleaks/releases/download/v$GITLEAKS_VERSION/gitleaks\_$GITLEAKS_VERSION\_linux\_x64.tar.gz
-          sudo mv \_$GITLEAKS_VERSION\_linux_x64.tar.gz /usr/bin/gitleaks
-          sudo tar -xf /usr/bin/gitleaks/gitleaks\_$GITLEAKS_VERSION\_linux_x64.tar.gz --directory /usr/bin/gitleaks
-          chmod +x /usr/bin/gitleaks/gitleaks
-          /usr/bin/gitleaks/gitleaks -v --path . --no-git
+          sudo wget -q \
+            "https://github.com/zricethezav/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            -O /tmp/gitleaks.tar.gz || \
+            (echo "Error downloading gitleaks ${GITLEAKS_VERSION} tarball" && exit 1)
+          sudo tar -xvzf /tmp/gitleaks.tar.gz || \
+            (echo "Error unarchiving gitleaks ${GITLEAKS_VERSION} tarball" && exit 1)
+          sudo mv gitleaks /usr/bin/. || \
+            (echo "Error moving gitleaks for /usr/bin" && exit 1)
+        shell: bash
+        env:
+          GITLEAKS_VERSION: 8.0.0
+
+      - name: Run gitleaks
+        run: gitleaks -v --no-git ${{ inputs.additional_args }} --path .
         shell: bash
