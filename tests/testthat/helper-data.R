@@ -12,7 +12,7 @@ h_get_data <- function() {
   x <- c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100)
   dose_grid <- c(plcb, seq(25, 300, 25))
 
-  data <- .Data(
+  .Data(
     x = x,
     y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
     doseGrid = dose_grid,
