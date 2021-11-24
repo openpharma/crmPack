@@ -5,9 +5,6 @@
 %% later to include the paper as vignette use:
 %% \documentclass[nojss]{jss}
 
-\newcommand{\tj}[1]{\textcolor{red}{#1}}
-
-
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \presetkeys%
     {todonotes}%
@@ -324,7 +321,7 @@ resulting trial decisions (dose for the next cohort and trial end).
 In order to illustrate the use of this object-oriented framework, the next
 section contains practical examples on use of the existing functionality as well
 as an example for creating new extensions.
-% \tj{I think this section could use an illustrative graph of the underlying structure. E.g Data with subclasses goes into Model with subclasses and so on. A short paragraph at the beginning to highlight this structure before talking specifics would be useful for readability} 
+% I think this section could use an illustrative graph of the underlying structure. E.g Data with subclasses goes into Model with subclasses and so on. A short paragraph at the beginning to highlight this structure before talking specifics would be useful for readability
 
 \pagebreak
 \section[Using crmPack]{Using \pkg{crmPack}}\label{sec:using}

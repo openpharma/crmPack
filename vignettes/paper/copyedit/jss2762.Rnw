@@ -5,9 +5,6 @@
 %% later to include the paper as vignette use:
 %% \documentclass[nojss]{jss}
 
-\newcommand{\tj}[1]{\textcolor{red}{#1}}
-
-
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \presetkeys%
     {todonotes}%

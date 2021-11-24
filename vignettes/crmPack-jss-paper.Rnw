@@ -8,9 +8,6 @@
 \usepackage[sumlimits, intlimits, namelimits]{amsmath}
 \usepackage{soul}
 
-\newcommand{\tj}[1]{\textcolor{red}{#1}}
-
-
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \presetkeys%
     {todonotes}%
