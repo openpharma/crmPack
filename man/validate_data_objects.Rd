@@ -6,6 +6,7 @@
 \alias{h_doses_unique_per_cohort}
 \alias{validate_data}
 \alias{validate_data_dual}
+\alias{validate_data_parts}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralData}} Objects}
 \usage{
 validate_subjects(object)
@@ -15,6 +16,8 @@ h_doses_unique_per_cohort(dose, cohort)
 validate_data(object)
 
 validate_data_dual(object)
+
+validate_data_parts(object)
 }
 \arguments{
 \item{object}{(\code{GeneralData})\cr object to validate.}
@@ -49,5 +52,8 @@ valid elements with respect to their types, dependency and length.
 
 \item \code{validate_data_dual}: validates that the \code{\link{DataDual}} object
 contains valid biomarker vector with respect to its type and the length.
+
+\item \code{validate_data_parts}: validates that the \code{\link{DataParts}} object
+contains valid elements with respect to their types, dependency and length.
 }}
 

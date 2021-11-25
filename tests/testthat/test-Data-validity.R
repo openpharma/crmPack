@@ -101,3 +101,59 @@ test_that("validate_data_dual returns error for biomarker vector of wrong length
     "Biomarker vector w must be of type double and length nObs"
   )
 })
+
+# validate_data_parts ----
+
+test_that("validate_data_parts passes for valid object", {
+  object <- h_get_data_parts()
+  expect_true(validate_data_parts(object))
+})
+
+test_that("validate_data_parts returns error for vector part of wrong length and values", {
+  object <- h_get_data_parts()
+
+  # We assign vector part of length different than object@nObs.
+  object@part <- 1:5
+
+  expect_equal(
+    validate_data_parts(object),
+    "vector part must be nObs long and contain 1 or 2 integers only"
+  )
+})
+
+test_that("validate_data_parts returns error for nextPart with wrong length, values and ordering", {
+  object <- h_get_data_parts()
+
+  # We assign vector nextPart of length different than 1,
+  # with not sorted values not only from {1, 2}.
+  object@nextPart <- c(1L, 3L, 3L, 2L)
+
+  expect_equal(
+    validate_data_parts(object),
+    "nextPart must be integer scalar 1 or 2"
+  )
+})
+
+test_that("validate_data_parts returns error for part1Ladder with not sorted and non-unique values", {
+  object <- h_get_data_parts()
+
+  # We assign vector part1Ladder with not sorted and non-unique values.
+  object@part1Ladder <- c(200, 300, 50, 225, 225)
+
+  expect_equal(
+    validate_data_parts(object),
+    "part1Ladder must be of type double and contain unique, sorted values"
+  )
+})
+
+test_that("validate_data_parts returns error for part1Ladder with wrong values", {
+  object <- h_get_data_parts()
+
+  # We assign vector part1Ladder with values not from object@doseGrid.
+  object@part1Ladder <- as.numeric(1:12)
+
+  expect_equal(
+    validate_data_parts(object),
+    "part1Ladder must have all entries from doseGrid"
+  )
+})

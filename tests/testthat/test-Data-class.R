@@ -80,14 +80,46 @@ test_that("DataDual object can be created with user constructor DataDual", {
 
 test_that("DataDual object can be created with custom values with DataDual constructor", {
   plcb <- 0.01
-  result <- expect_silent(DataDual(
-    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
-    x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
-    y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
-    ID = 1:12,
-    cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
-    doseGrid = c(plcb, seq(25, 300, 25)),
-    placebo = TRUE,
-  ))
+  result <- expect_silent(
+    DataDual(
+      w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
+      x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+      y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      doseGrid = c(plcb, seq(25, 300, 25)),
+      placebo = TRUE,
+    )
+  )
   expect_valid(result, "DataDual")
+})
+
+# DataParts-class ----
+
+test_that(".DataParts works as expected", {
+  result <- expect_silent(.DataParts())
+  expect_valid(result, "DataParts")
+})
+
+# DataParts-constructor ----
+
+test_that("DataParts object can be created with user constructor DataParts", {
+  result <- expect_silent(DataParts())
+  expect_valid(result, "DataParts")
+})
+
+test_that("DataParts object can be created with custom values with DataParts constructor", {
+  result <- expect_silent(
+    DataParts(
+      x = c(0.1, 0.5, 1.5),
+      y = c(0, 0, 0),
+      ID = 1:3,
+      cohort = 1:3,
+      doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+      part = c(1L, 1L, 1L),
+      nextPart = 1L,
+      part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+    )
+  )
+  expect_valid(result, "DataParts")
 })

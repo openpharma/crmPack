@@ -42,12 +42,12 @@ NULL
 #' @slot x (`numeric`)\cr the doses for the patients.
 #' @slot y (`integer`)\cr the vector of toxicity events (0 or 1 integers).
 #' @slot doseGrid (`numeric`)\cr the vector of all possible doses (sorted),
-#' i.e. the dose grid.
+#'   i.e. the dose grid.
 #' @slot nGrid (`integer`)\cr number of gridpoints.
 #' @slot xLevel (`integer`)\cr the levels for the doses the patients have been given,
-#' w.r.t `doseGrid`.
+#'   w.r.t `doseGrid`.
 #' @slot placebo (`logical`)\cr if `TRUE` the first dose level
-#' in the `doseGrid`is considered as PLACEBO.
+#'   in the `doseGrid`is considered as PLACEBO.
 #'
 #' @aliases Data
 #' @export
@@ -78,11 +78,11 @@ NULL
 #' @rdname Data-class
 #'
 #' @details The `cohort` can be missing if and only if `placebo` is equal to
-#' `FALSE`.
+#'   `FALSE`.
 #'
 #' @note `ID` and `cohort` can be missing, then a warning
-#' will be issued and the variables will be filled with default
-#' IDs and best guesses, respectively.
+#'   will be issued and the variables will be filled with default
+#'   IDs and best guesses, respectively.
 #'
 #' @param x (`numeric`)\cr the doses for the patients.
 #' @param y (`integer`)\cr the vector of toxicity events (0 or 1).
@@ -157,6 +157,7 @@ Data <- function(x = numeric(),
 .DataDual <- setClass(
   Class = "DataDual",
   slots = c(w = "numeric"),
+  prototype = prototype(w = numeric()),
   contains = "Data",
   validity = validate_data_dual
 )
@@ -178,83 +179,63 @@ DataDual <- function(w = numeric(),
   .DataDual(d, w = w)
 }
 
-## --------------------------------------------------
-## Subclass with additional two parts information
-## --------------------------------------------------
+# DataParts-class ----
 
-##' Class for the data with two study parts
-##'
-##' This is a subclass of \code{\linkS4class{Data}}, so contains all
-##' slots from \code{\linkS4class{Data}}, and in addition information on the two
-##' study parts.
-##'
-##' @slot part integer vector; which part does each of the patients belong to?
-##' @slot nextPart integer; what is the part for the next cohort?
-##' @slot part1Ladder sorted numeric vector; what is the escalation ladder for
-##' part 1? This shall be a subset of the \code{doseGrid}.
-##'
-##' @example examples/Data-class-DataParts.R
-##' @export
-##' @keywords classes
-.DataParts <-
-    setClass(Class="DataParts",
-             representation(part="integer",
-                            nextPart="integer",
-                            part1Ladder="numeric"),
-             prototype(part=integer(),
-                       nextPart=1L,
-                       part1Ladder=numeric()),
-             contains="Data",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `DataParts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DataParts`] is a class for the data with two study parts.
+#' It inherits from [`Data`] and it contains additional information
+#' on the two study parts.
+#'
+#' @slot part (`integer`)\cr which part does each of the patients belong to?
+#' @slot nextPart (`count`)\cr what is the part for the next cohort (1 or 2)?
+#' @slot part1Ladder (`numeric`)\cr what is the escalation ladder for
+#'   part 1? This shall be an ordered subset of the `doseGrid`.
+#'
+#' @aliases DataParts
+#' @export
+.DataParts <- setClass(
+  Class = "DataParts",
+  slots = c(
+    part = "integer",
+    nextPart = "integer",
+    part1Ladder = "numeric"
+  ),
+  prototype = prototype(
+    part = integer(),
+    nextPart = 1L,
+    part1Ladder = numeric()
+  ),
+  contains = "Data",
+  validity = validate_data_parts
+)
 
-                     o$check(identical(length(object@part), length(object@x)),
-                             "part and x must have same length")
-                     o$check(all(object@part %in% as.integer(c(1, 2))),
-                             "part must have entries 1 or 2")
-                     o$check(is.scalar(object@nextPart) &&
-                                 (object@nextPart %in% as.integer(c(1, 2))),
-                             "nextPart must be scalar 1 or 2")
-                     o$check(all(object@part1Ladder %in% object@doseGrid),
-                             "part1Ladder must have entries from doseGrid")
-                     o$check(! is.unsorted(object@part1Ladder,
-                                           strictly=TRUE),
-                             "part1Ladder must be sorted and have unique values")
+# DataParts-constructor ----
 
-                     o$result()
-                 })
-validObject(.DataParts())
-
-
-##' Initialization function for the "DataParts" class
-##'
-##' This is the function for initializing a \code{\linkS4class{DataParts}}
-##' object.
-##'
-##' @param part which part does each of the patients belong to?
-##' @param nextPart what is the part for the next cohort? (1 or 2)
-##' @param part1Ladder what is the escalation ladder for
-##' part 1?
-##' @param \dots additional parameters from \code{\link{Data}}
-##' @return the initialized \code{\linkS4class{DataParts}} object
-##'
-##' @export
-##' @keywords programming
-DataParts <- function(part=integer(),
-                      nextPart=1L,
-                      part1Ladder=numeric(),
-                      ...)
-{
-    start <- Data(...)
-    .DataParts(start,
-               part=part,
-               nextPart=nextPart,
-               part1Ladder=part1Ladder)
+#' @rdname DataParts-class
+#'
+#' @param part (`integer`)\cr which part does each of the patients belong to?
+#' @param nextPart (`count`)\cr what is the part for the next cohort (1 or 2)?
+#' @param part1Ladder (`numeric`)\cr what is the escalation ladder for part 1?
+#'   This shall be an ordered subset of the `doseGrid`.
+#' @param ... parameters passed to [Data()].
+#'
+#' @export
+#' @example examples/Data-class-DataParts.R
+DataParts <- function(part = integer(),
+                      nextPart = 1L,
+                      part1Ladder = numeric(),
+                      ...) {
+  d <- Data(...)
+  .DataParts(
+    d,
+    part = part,
+    nextPart = nextPart,
+    part1Ladder = part1Ladder
+  )
 }
-validObject(DataParts())
-
-## ============================================================
 
 ## --------------------------------------------------
 ## Subclass with additional data for mixture
