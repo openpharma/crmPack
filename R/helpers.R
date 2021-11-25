@@ -520,7 +520,7 @@ myBarplot <- function(x, description, xaxisround=0)
 #'
 #' @param target (`numeric`)\cr target values.
 #' @param current (`numeric`)\cr current values.
-#' @param tolerance (`number`) differences smaller than this are not reported.
+#' @param tolerance (`number`) relative differences smaller than this are not reported.
 #' @return `TRUE` when `target` and `current` do not differ
 #'   up to desired tolerance and without looking at names or other attributes,
 #'   `FALSE` otherwise.
@@ -528,6 +528,10 @@ myBarplot <- function(x, description, xaxisround=0)
 h_all_equivalent <- function(target, 
                              current, 
                              tolerance = 1e-10) {
+  assert_numeric(target)
+  assert_numeric(current)
+  assert_number(tolerance)
+  
   tmp <- all.equal(
     target = target,
     current = current,

@@ -11,13 +11,13 @@
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_data_objects validates that the [`GeneralData`] 
+#' @describeIn validate_data_objects validates that the [`GeneralData`]
 #'   object contains unique `ID`, non-negative `cohort` indices and
 #'   `ID` and `cohort` vectors which are of the same length `nObs`.
 validate_subjects <- function(object) {
   o <- Validate()
   o$check(
-    test_int(object@nObs), 
+    test_int(object@nObs),
     "nObs must be of type integer of length 1"
   )
   o$check(
@@ -25,12 +25,8 @@ validate_subjects <- function(object) {
     "ID must be of type integer and length nObs and unique"
   )
   o$check(
-    test_integer(object@cohort, len = object@nObs, any.missing = FALSE, lower = 0L),
-    "cohort must be of type integer and length nObs and non-negative"
-  )
-  o$check(
-    !is.unsorted(object@cohort, strictly = FALSE), 
-    "cohort indices must be sorted"
+    test_integer(object@cohort, lower = 0L, len = object@nObs, any.missing = FALSE, sorted = TRUE),
+    "cohort must be of type integer and length nObs and contain non-negative, sorted values"
   )
   o$result()
 }
@@ -41,9 +37,12 @@ validate_subjects <- function(object) {
 #' @param cohort (`integer`)\cr cohort indices parallel to `doses`.
 #' @return `TRUE` if `dose` is unique per `cohort`, otherwise `FALSE`.
 h_doses_unique_per_cohort <- function(dose, cohort) {
+  assert_numeric(dose)
+  assert_integer(cohort)
+  
   num_doses_per_cohort <- tapply(
-    X = dose, 
-    INDEX = cohort, 
+    X = dose,
+    INDEX = cohort,
     FUN = function(d) length(unique(d))
   )
   all(num_doses_per_cohort == 1L)
@@ -62,7 +61,7 @@ validate_data <- function(object) {
     "DLT vector y must be nObs long and contain 0 or 1 integers only"
   )
   o$check(
-    test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, sorted = TRUE, unique = TRUE),
+    test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, unique = TRUE, sorted = TRUE),
     "doseGrid must be of type double and length nGrid and contain unique, sorted values"
   )
   o$check(
@@ -74,7 +73,7 @@ validate_data <- function(object) {
     "Levels xLevel for the doses the patients have been given must be of type integer and length nObs"
   )
   o$check(
-    test_flag(object@placebo), 
+    test_flag(object@placebo),
     "The placebo flag must be scalar logical"
   )
   o$check(
@@ -94,6 +93,11 @@ validate_data <- function(object) {
     o$check(
       h_doses_unique_per_cohort(dose = object@x[!is_placebo], cohort = object@cohort[!is_placebo]),
       "There must be only one dose level, other than placebo, per cohort"
+    )
+  } else {
+    o$check(
+      h_doses_unique_per_cohort(dose = object@x, cohort = object@cohort),
+      "There must be only one dose level, per cohort"
     )
   }
   o$result()
