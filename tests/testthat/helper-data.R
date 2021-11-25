@@ -12,3 +12,16 @@ h_get_data <- function() {
     cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
   )
 }
+
+h_get_data_dual <- function() {
+  d <- h_get_data()
+  DataDual(
+    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
+  )
+}

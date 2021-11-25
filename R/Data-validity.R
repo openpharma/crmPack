@@ -39,7 +39,7 @@ validate_subjects <- function(object) {
 h_doses_unique_per_cohort <- function(dose, cohort) {
   assert_numeric(dose)
   assert_integer(cohort)
-  
+
   num_doses_per_cohort <- tapply(
     X = dose,
     INDEX = cohort,
@@ -100,5 +100,16 @@ validate_data <- function(object) {
       "There must be only one dose level, per cohort"
     )
   }
+  o$result()
+}
+
+#' @describeIn validate_data_objects validates that the [`DataDual`] object
+#' contains valid biomarker vector with respect to its type and the length.
+validate_data_dual <- function(object) {
+  o <- Validate()
+  o$check(
+    test_double(object@w, len = object@nObs, any.missing = FALSE),
+    "Biomarker vector w must be of type double and length nObs"
+  )
   o$result()
 }
