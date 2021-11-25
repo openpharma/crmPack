@@ -82,3 +82,22 @@ test_that("validate_data returns expected error when first xLevel does not match
     c("x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)")
   )
 })
+
+# validate_data_dual ----
+
+test_that("validate_data_dual passes for valid object", {
+  object <- h_get_data_dual()
+  expect_true(validate_data_dual(object))
+})
+
+test_that("validate_data_dual returns error for biomarker vector of wrong length", {
+  object <- h_get_data_dual()
+
+  # We assign biomarker vector of length different than object@nObs.
+  object@w <- object@w[1:5]
+
+  expect_equal(
+    validate_data_dual(object),
+    "Biomarker vector w must be of type double and length nObs"
+  )
+})

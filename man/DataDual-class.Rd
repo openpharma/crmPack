@@ -4,24 +4,36 @@
 \name{DataDual-class}
 \alias{DataDual-class}
 \alias{.DataDual}
-\title{Class for the dual endpoint data input}
+\alias{DataDual}
+\title{\code{DataDual}}
+\usage{
+DataDual(w = numeric(), ...)
+}
+\arguments{
+\item{w}{(\code{numeric})\cr the continuous vector of biomarker values.}
+
+\item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
+}
 \description{
-This is a subclass of \code{\linkS4class{Data}}, so contains all
-slots from \code{\linkS4class{Data}}, and in addition biomarker
-values.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DataDual}} is a class for the dual endpoint data.
+It inherits from \code{\link{Data}} and it contains additional biomarker information.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{w}}{the continuous vector of biomarker values}
+\item{\code{w}}{(\code{numeric})\cr the continuous vector of biomarker values.}
 }}
 
 \examples{
-# Create some data from the class 'DataDual'
-myData <- DataDual(x=c(0.1,0.5,1.5,3,6,10,10,10),
-                   y=c(0,0,0,0,0,0,1,0),
-                   w=rnorm(8),
-                   doseGrid=c(0.1,0.5,1.5,3,6,
-                              seq(from=10,to=80,by=2)))
+my_data <- DataDual(
+  w = rnorm(8),
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  )
+)
 }
-\keyword{classes}

@@ -76,9 +76,9 @@ NULL
 # Data-constructor ----
 
 #' @rdname Data-class
-
-#' @details The `cohort` can be missing if and only if `placebo` is equal to 
-#'   `FALSE`.
+#'
+#' @details The `cohort` can be missing if and only if `placebo` is equal to
+#' `FALSE`.
 #'
 #' @note `ID` and `cohort` can be missing, then a warning
 #' will be issued and the variables will be filled with default
@@ -86,10 +86,10 @@ NULL
 #'
 #' @param x (`numeric`)\cr the doses for the patients.
 #' @param y (`integer`)\cr the vector of toxicity events (0 or 1).
-#'   You can also supply `numeric` vectors, but these will then be converted to 
+#'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
 #' @param ID (`integer`)\cr unique patient IDs.
-#' @param cohort (`integer`)\cr the cohort indices (sorted values from 
+#' @param cohort (`integer`)\cr the cohort indices (sorted values from
 #'   \{0, 1, 2, ...\}).
 #' @param doseGrid (`numeric`)\cr all possible doses.
 #' @param placebo (`flag`)\cr if `TRUE` the first dose level
@@ -111,7 +111,7 @@ Data <- function(x = numeric(),
   assert_numeric(cohort)
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
   assert_flag(placebo)
-  
+
   doseGrid <- as.numeric(sort(doseGrid))
 
   if (length(ID) == 0 && length(x) > 0) {
@@ -141,58 +141,42 @@ Data <- function(x = numeric(),
   )
 }
 
-## --------------------------------------------------
-## Subclass with additional biomarker information
-## --------------------------------------------------
+# DataDual-class ----
 
-##' Class for the dual endpoint data input
-##'
-##' This is a subclass of \code{\linkS4class{Data}}, so contains all
-##' slots from \code{\linkS4class{Data}}, and in addition biomarker
-##' values.
-##'
-##' @slot w the continuous vector of biomarker values
-##'
-##' @example examples/Data-class-DataDual.R
-##' @export
-##' @keywords classes
-.DataDual <-
-    setClass(Class="DataDual",
-             representation=
-                 representation(w="numeric"),
-             contains="Data",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `DataDual`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DataDual`] is a class for the dual endpoint data.
+#' It inherits from [`Data`] and it contains additional biomarker information.
+#'
+#' @slot w (`numeric`)\cr the continuous vector of biomarker values.
+#'
+#' @aliases DataDual
+#' @export
+.DataDual <- setClass(
+  Class = "DataDual",
+  slots = c(w = "numeric"),
+  contains = "Data",
+  validity = validate_data_dual
+)
 
-                     o$check(identical(object@nObs, length(object@w)),
-                             "w must have length nObs")
+# DataDual-constructor ----
 
-                     o$result()
-                 })
-validObject(.DataDual())
+#' @rdname DataDual-class
+#'
+#' @param w (`numeric`)\cr the continuous vector of biomarker values.
+#' @param ... parameters passed to [Data()].
+#'
+#' @export
+#' @example examples/Data-class-DataDual.R
+DataDual <- function(w = numeric(),
+                     ...) {
+  assert_numeric(w)
 
-##' Initialization function for the "DataDual" class
-##'
-##' This is the function for initializing a "DataDual" class object.
-##'
-##' @param w the continuous vector of biomarker values
-##' @param \dots additional parameters from \code{\link{Data}}
-##' @return the initialized \code{\linkS4class{DataDual}} object
-##'
-##' @export
-##' @keywords programming
-DataDual <- function(w=numeric(),
-                     ...)
-{
-    start <- Data(...)
-    .DataDual(start,
-              w=w)
+  d <- Data(...)
+  .DataDual(d, w = w)
 }
-validObject(DataDual())
-
-## ============================================================
-
 
 ## --------------------------------------------------
 ## Subclass with additional two parts information
