@@ -151,7 +151,7 @@ closely S syntax. It is therefore possible to write most BUGS models as R
 functions.
 As a difference, BUGS syntax allows truncation specification like this:
 <code>dnorm(...) I(...)</code>  but this is illegal in R. To overcome this
-incompatibility, use dummy operator <code>%_%</code> before <code><a href='https://rdrr.io/r/base/AsIs.html'>I(...)</a></code>:
+incompatibility, use dummy operator <code>%_%</code> before <code>I(...)</code>:
 <code>dnorm(...) %_% I(...)</code>. The dummy operator <code>%_%</code> will be
 removed before the BUGS code is saved.
 In S-PLUS, a warning is generated when the model function is defined if the

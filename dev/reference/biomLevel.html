@@ -178,113 +178,116 @@ that in the samples</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>
-  x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>,
-      <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>50</span><span class='op'>)</span>,
-  y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>,
-      <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>, <span class='fl'>0.42</span>, <span class='fl'>0.59</span>, <span class='fl'>0.45</span>, <span class='fl'>0.6</span>, <span class='fl'>0.7</span>, <span class='fl'>0.55</span>, <span class='fl'>0.6</span>,
-      <span class='fl'>0.52</span>, <span class='fl'>0.54</span>, <span class='fl'>0.56</span>, <span class='fl'>0.43</span>, <span class='fl'>0.41</span>, <span class='fl'>0.39</span>, <span class='fl'>0.34</span>, <span class='fl'>0.38</span>, <span class='fl'>0.21</span><span class='op'>)</span>,
-  doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-             <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='co'># Initialize the Dual-Endpoint model (in this case RW1)</span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                        Sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,
-                        sigma2betaW <span class='op'>=</span> <span class='fl'>0.01</span>,
-                        sigma2W <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>, b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,
-                        rho <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>, b<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
-                        smooth <span class='op'>=</span> <span class='st'>"RW1"</span><span class='op'>)</span>
-
-<span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,
-                       step<span class='op'>=</span><span class='fl'>2</span>,
-                       samples<span class='op'>=</span><span class='fl'>500</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'># Obtain the biomarker level for a given dose, given model and samples</span>
-<span class='fu'>biomLevel</span><span class='op'>(</span>dose <span class='op'>=</span> <span class='fl'>0.5</span>,
-          model <span class='op'>=</span> <span class='va'>model</span>,
-          samples <span class='op'>=</span> <span class='va'>samples</span>,
-          xLevel <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1] 0.3412257 0.4511893 0.4100118 0.3177914 0.4102888 0.3271594 0.3747211
-#&gt;   [8] 0.3280259 0.3734932 0.4812452 0.5119077 0.5610039 0.5391303 0.6267090
-#&gt;  [15] 0.6051919 0.4054321 0.3486688 0.3055974 0.3464886 0.3205916 0.3928708
-#&gt;  [22] 0.3896353 0.4015330 0.3414020 0.3182786 0.3953586 0.5260424 0.6052579
-#&gt;  [29] 0.5642840 0.4903693 0.5588462 0.5411059 0.3374814 0.3767401 0.3482516
-#&gt;  [36] 0.2642937 0.2723321 0.3416249 0.3423557 0.3138930 0.2225213 0.3868370
-#&gt;  [43] 0.3714567 0.2909058 0.4740260 0.3381630 0.3830807 0.3590577 0.4578152
-#&gt;  [50] 0.4776328 0.4041741 0.4425049 0.4451686 0.5600513 0.4773984 0.4610554
-#&gt;  [57] 0.6600431 0.6172023 0.6058616 0.5755700 0.6442767 0.4977659 0.4055580
-#&gt;  [64] 0.3752760 0.4337687 0.3594405 0.3456583 0.3631882 0.2601785 0.4064486
-#&gt;  [71] 0.4072010 0.3960850 0.5075327 0.4276574 0.4230209 0.3173374 0.4084409
-#&gt;  [78] 0.3734788 0.3915154 0.5158758 0.4981245 0.4143443 0.4472123 0.3965523
-#&gt;  [85] 0.3755319 0.3823561 0.3932541 0.5008491 0.6245844 0.5676694 0.5026108
-#&gt;  [92] 0.5463812 0.5665831 0.4612893 0.4101536 0.3898886 0.3881579 0.3778156
-#&gt;  [99] 0.4608221 0.3610340 0.4371975 0.5204785 0.4751215 0.3132754 0.3412538
-#&gt; [106] 0.4723750 0.5098844 0.4113311 0.3904781 0.3453719 0.3847250 0.3321594
-#&gt; [113] 0.4183537 0.3726269 0.4367177 0.3284420 0.3439818 0.4300221 0.3575559
-#&gt; [120] 0.3220099 0.3815199 0.4029262 0.4741028 0.5263845 0.5207358 0.5407584
-#&gt; [127] 0.6202731 0.6681008 0.6241245 0.5178234 0.4178534 0.5118468 0.4292606
-#&gt; [134] 0.4247320 0.2946710 0.4292416 0.3799567 0.3499774 0.4022790 0.3654243
-#&gt; [141] 0.4645301 0.4996130 0.4415073 0.4032704 0.3926290 0.3853679 0.5161374
-#&gt; [148] 0.5235599 0.3588543 0.4402757 0.3130647 0.3348958 0.5251273 0.4354798
-#&gt; [155] 0.3842299 0.4688690 0.4282184 0.4739207 0.3830133 0.3795396 0.3100631
-#&gt; [162] 0.3510058 0.3172159 0.3708286 0.3912174 0.3126163 0.3763123 0.4393876
-#&gt; [169] 0.4161264 0.4420319 0.4667679 0.4702407 0.5049684 0.5586899 0.5530668
-#&gt; [176] 0.5327542 0.4336354 0.4202463 0.5014399 0.5038733 0.4771149 0.4503217
-#&gt; [183] 0.4807945 0.6140973 0.6329550 0.4829519 0.4341022 0.3863900 0.4564883
-#&gt; [190] 0.4893965 0.4376815 0.4495946 0.4482294 0.4290521 0.3192511 0.4548153
-#&gt; [197] 0.4505429 0.3732047 0.4040938 0.4749071 0.4648690 0.4347938 0.4085936
-#&gt; [204] 0.4265104 0.4140587 0.3509246 0.3840647 0.3380104 0.3847026 0.3712314
-#&gt; [211] 0.3594998 0.3638293 0.4351832 0.4313724 0.4280491 0.4523879 0.5067823
-#&gt; [218] 0.4687344 0.5145695 0.4726716 0.4762935 0.4437644 0.4833784 0.4450435
-#&gt; [225] 0.3970832 0.3783349 0.4413698 0.4878981 0.4648477 0.4252483 0.5442613
-#&gt; [232] 0.4722796 0.4141394 0.4945046 0.4048829 0.2246689 0.2389747 0.2855176
-#&gt; [239] 0.3246631 0.4059551 0.2990537 0.3552011 0.4210324 0.3445437 0.3737562
-#&gt; [246] 0.3307701 0.3759684 0.3552337 0.3150189 0.3055519 0.3381856 0.3688215
-#&gt; [253] 0.4458790 0.5396204 0.5278405 0.3305802 0.3864752 0.4125097 0.4583437
-#&gt; [260] 0.3071185 0.4271880 0.4610569 0.4269067 0.3620702 0.3672721 0.3926294
-#&gt; [267] 0.3758176 0.4143601 0.4897789 0.6110418 0.5492820 0.5121519 0.5047441
-#&gt; [274] 0.4081233 0.4396601 0.4206283 0.5025976 0.4069555 0.3716635 0.3122384
-#&gt; [281] 0.3422182 0.4367529 0.3783389 0.3243089 0.2844433 0.2626732 0.2791047
-#&gt; [288] 0.3756314 0.4440862 0.3872465 0.3717661 0.3601499 0.3975108 0.3806085
-#&gt; [295] 0.3427638 0.2522688 0.2847729 0.2739843 0.3625062 0.3389338 0.4308231
-#&gt; [302] 0.4004174 0.2265641 0.3466674 0.4427724 0.4507385 0.3002964 0.2027577
-#&gt; [309] 0.2856041 0.3464523 0.3657883 0.3471061 0.4050067 0.3958031 0.3539764
-#&gt; [316] 0.4523079 0.5241671 0.5169777 0.5005495 0.3699295 0.2440513 0.2810845
-#&gt; [323] 0.2541434 0.2948430 0.4816046 0.5183583 0.5411412 0.5415804 0.5831338
-#&gt; [330] 0.5135985 0.4909564 0.4254618 0.3431236 0.4122773 0.4089135 0.5294106
-#&gt; [337] 0.4763239 0.5169008 0.4659998 0.5312662 0.6597112 0.5754288 0.5377846
-#&gt; [344] 0.5096105 0.4478875 0.5184436 0.4573072 0.3685942 0.3397060 0.3242937
-#&gt; [351] 0.3356717 0.3876516 0.4232445 0.3514482 0.3993494 0.3819517 0.2829794
-#&gt; [358] 0.3339036 0.3978729 0.4112247 0.4778506 0.5986155 0.5104004 0.5532245
-#&gt; [365] 0.4573393 0.4881559 0.4515032 0.5217231 0.4915077 0.5388261 0.4813245
-#&gt; [372] 0.4690395 0.4642444 0.4631430 0.5355538 0.5182290 0.4203571 0.2353236
-#&gt; [379] 0.3855601 0.4551426 0.4983652 0.5361858 0.4640829 0.4740861 0.4826502
-#&gt; [386] 0.4380213 0.3601277 0.3547713 0.3540796 0.4255860 0.4999126 0.4760904
-#&gt; [393] 0.5070098 0.4813299 0.4719950 0.4944243 0.4564696 0.4365079 0.4427994
-#&gt; [400] 0.3373290 0.3411114 0.3089121 0.2712771 0.2287087 0.2203605 0.3555293
-#&gt; [407] 0.3358655 0.5179386 0.6260422 0.4525556 0.5242061 0.5594230 0.5115608
-#&gt; [414] 0.5176919 0.4411369 0.3807452 0.3953798 0.4505569 0.4904023 0.5323155
-#&gt; [421] 0.5827061 0.5863583 0.5818739 0.5392986 0.5249670 0.4493584 0.4545787
-#&gt; [428] 0.3654980 0.4993385 0.4866604 0.5277173 0.5261829 0.5167600 0.3806181
-#&gt; [435] 0.3925386 0.4013260 0.3631693 0.3596945 0.2761082 0.3413669 0.2643654
-#&gt; [442] 0.2794709 0.2138176 0.5459683 0.4654455 0.4550325 0.4022959 0.4656536
-#&gt; [449] 0.3899285 0.3945998 0.3642827 0.3738954 0.3828841 0.5201613 0.5381217
-#&gt; [456] 0.5272170 0.4126564 0.4293352 0.4139616 0.4118646 0.5004195 0.5072201
-#&gt; [463] 0.4965637 0.4785324 0.4638242 0.4464934 0.3513158 0.2615624 0.4080625
-#&gt; [470] 0.3319458 0.4092313 0.5391216 0.5063238 0.4344328 0.3480748 0.2813314
-#&gt; [477] 0.3696641 0.4262157 0.3219322 0.3048567 0.3244936 0.1772515 0.3232616
-#&gt; [484] 0.3163584 0.3144383 0.2737337 0.2949549 0.3698251 0.4458504 0.3888175
-#&gt; [491] 0.4099642 0.4077566 0.4485649 0.5223661 0.5704056 0.5262747 0.5053560
-#&gt; [498] 0.4475905 0.4815183 0.4108697</div><div class='input'>
-
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span></span>
+<span class='r-in'>  x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>,</span>
+<span class='r-in'>      <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>50</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>,</span>
+<span class='r-in'>      <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>  w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>, <span class='fl'>0.42</span>, <span class='fl'>0.59</span>, <span class='fl'>0.45</span>, <span class='fl'>0.6</span>, <span class='fl'>0.7</span>, <span class='fl'>0.55</span>, <span class='fl'>0.6</span>,</span>
+<span class='r-in'>      <span class='fl'>0.52</span>, <span class='fl'>0.54</span>, <span class='fl'>0.56</span>, <span class='fl'>0.43</span>, <span class='fl'>0.41</span>, <span class='fl'>0.39</span>, <span class='fl'>0.34</span>, <span class='fl'>0.38</span>, <span class='fl'>0.21</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>             <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the Dual-Endpoint model (in this case RW1)</span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        Sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        sigma2betaW <span class='op'>=</span> <span class='fl'>0.01</span>,</span>
+<span class='r-in'>                        sigma2W <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>, b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        rho <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>, b<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        smooth <span class='op'>=</span> <span class='st'>"RW1"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
+<span class='r-in'>                       step<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>500</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Obtain the biomarker level for a given dose, given model and samples</span></span>
+<span class='r-in'><span class='fu'>biomLevel</span><span class='op'>(</span>dose <span class='op'>=</span> <span class='fl'>0.5</span>,</span>
+<span class='r-in'>          model <span class='op'>=</span> <span class='va'>model</span>,</span>
+<span class='r-in'>          samples <span class='op'>=</span> <span class='va'>samples</span>,</span>
+<span class='r-in'>          xLevel <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1] 0.3412257 0.4511893 0.4100118 0.3177914 0.4102888 0.3271594 0.3747211</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [8] 0.3280259 0.3734932 0.4812452 0.5119077 0.5610039 0.5391303 0.6267090</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [15] 0.6051919 0.4054321 0.3486688 0.3055974 0.3464886 0.3205916 0.3928708</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [22] 0.3896353 0.4015330 0.3414020 0.3182786 0.3953586 0.5260424 0.6052579</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [29] 0.5642840 0.4903693 0.5588462 0.5411059 0.3374814 0.3767401 0.3482516</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [36] 0.2642937 0.2723321 0.3416249 0.3423557 0.3138930 0.2225213 0.3868370</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [43] 0.3714567 0.2909058 0.4740260 0.3381630 0.3830807 0.3590577 0.4578152</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [50] 0.4776328 0.4041741 0.4425049 0.4451686 0.5600513 0.4773984 0.4610554</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [57] 0.6600431 0.6172023 0.6058616 0.5755700 0.6442767 0.4977659 0.4055580</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [64] 0.3752760 0.4337687 0.3594405 0.3456583 0.3631882 0.2601785 0.4064486</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [71] 0.4072010 0.3960850 0.5075327 0.4276574 0.4230209 0.3173374 0.4084409</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [78] 0.3734788 0.3915154 0.5158758 0.4981245 0.4143443 0.4472123 0.3965523</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [85] 0.3755319 0.3823561 0.3932541 0.5008491 0.6245844 0.5676694 0.5026108</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [92] 0.5463812 0.5665831 0.4612893 0.4101536 0.3898886 0.3881579 0.3778156</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [99] 0.4608221 0.3610340 0.4371975 0.5204785 0.4751215 0.3132754 0.3412538</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [106] 0.4723750 0.5098844 0.4113311 0.3904781 0.3453719 0.3847250 0.3321594</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [113] 0.4183537 0.3726269 0.4367177 0.3284420 0.3439818 0.4300221 0.3575559</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [120] 0.3220099 0.3815199 0.4029262 0.4741028 0.5263845 0.5207358 0.5407584</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [127] 0.6202731 0.6681008 0.6241245 0.5178234 0.4178534 0.5118468 0.4292606</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [134] 0.4247320 0.2946710 0.4292416 0.3799567 0.3499774 0.4022790 0.3654243</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [141] 0.4645301 0.4996130 0.4415073 0.4032704 0.3926290 0.3853679 0.5161374</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [148] 0.5235599 0.3588543 0.4402757 0.3130647 0.3348958 0.5251273 0.4354798</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [155] 0.3842299 0.4688690 0.4282184 0.4739207 0.3830133 0.3795396 0.3100631</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [162] 0.3510058 0.3172159 0.3708286 0.3912174 0.3126163 0.3763123 0.4393876</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [169] 0.4161264 0.4420319 0.4667679 0.4702407 0.5049684 0.5586899 0.5530668</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [176] 0.5327542 0.4336354 0.4202463 0.5014399 0.5038733 0.4771149 0.4503217</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [183] 0.4807945 0.6140973 0.6329550 0.4829519 0.4341022 0.3863900 0.4564883</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [190] 0.4893965 0.4376815 0.4495946 0.4482294 0.4290521 0.3192511 0.4548153</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [197] 0.4505429 0.3732047 0.4040938 0.4749071 0.4648690 0.4347938 0.4085936</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [204] 0.4265104 0.4140587 0.3509246 0.3840647 0.3380104 0.3847026 0.3712314</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [211] 0.3594998 0.3638293 0.4351832 0.4313724 0.4280491 0.4523879 0.5067823</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [218] 0.4687344 0.5145695 0.4726716 0.4762935 0.4437644 0.4833784 0.4450435</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [225] 0.3970832 0.3783349 0.4413698 0.4878981 0.4648477 0.4252483 0.5442613</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [232] 0.4722796 0.4141394 0.4945046 0.4048829 0.2246689 0.2389747 0.2855176</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [239] 0.3246631 0.4059551 0.2990537 0.3552011 0.4210324 0.3445437 0.3737562</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [246] 0.3307701 0.3759684 0.3552337 0.3150189 0.3055519 0.3381856 0.3688215</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [253] 0.4458790 0.5396204 0.5278405 0.3305802 0.3864752 0.4125097 0.4583437</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [260] 0.3071185 0.4271880 0.4610569 0.4269067 0.3620702 0.3672721 0.3926294</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [267] 0.3758176 0.4143601 0.4897789 0.6110418 0.5492820 0.5121519 0.5047441</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [274] 0.4081233 0.4396601 0.4206283 0.5025976 0.4069555 0.3716635 0.3122384</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [281] 0.3422182 0.4367529 0.3783389 0.3243089 0.2844433 0.2626732 0.2791047</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [288] 0.3756314 0.4440862 0.3872465 0.3717661 0.3601499 0.3975108 0.3806085</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [295] 0.3427638 0.2522688 0.2847729 0.2739843 0.3625062 0.3389338 0.4308231</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [302] 0.4004174 0.2265641 0.3466674 0.4427724 0.4507385 0.3002964 0.2027577</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [309] 0.2856041 0.3464523 0.3657883 0.3471061 0.4050067 0.3958031 0.3539764</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [316] 0.4523079 0.5241671 0.5169777 0.5005495 0.3699295 0.2440513 0.2810845</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [323] 0.2541434 0.2948430 0.4816046 0.5183583 0.5411412 0.5415804 0.5831338</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [330] 0.5135985 0.4909564 0.4254618 0.3431236 0.4122773 0.4089135 0.5294106</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [337] 0.4763239 0.5169008 0.4659998 0.5312662 0.6597112 0.5754288 0.5377846</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [344] 0.5096105 0.4478875 0.5184436 0.4573072 0.3685942 0.3397060 0.3242937</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [351] 0.3356717 0.3876516 0.4232445 0.3514482 0.3993494 0.3819517 0.2829794</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [358] 0.3339036 0.3978729 0.4112247 0.4778506 0.5986155 0.5104004 0.5532245</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [365] 0.4573393 0.4881559 0.4515032 0.5217231 0.4915077 0.5388261 0.4813245</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [372] 0.4690395 0.4642444 0.4631430 0.5355538 0.5182290 0.4203571 0.2353236</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [379] 0.3855601 0.4551426 0.4983652 0.5361858 0.4640829 0.4740861 0.4826502</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [386] 0.4380213 0.3601277 0.3547713 0.3540796 0.4255860 0.4999126 0.4760904</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [393] 0.5070098 0.4813299 0.4719950 0.4944243 0.4564696 0.4365079 0.4427994</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [400] 0.3373290 0.3411114 0.3089121 0.2712771 0.2287087 0.2203605 0.3555293</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [407] 0.3358655 0.5179386 0.6260422 0.4525556 0.5242061 0.5594230 0.5115608</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [414] 0.5176919 0.4411369 0.3807452 0.3953798 0.4505569 0.4904023 0.5323155</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [421] 0.5827061 0.5863583 0.5818739 0.5392986 0.5249670 0.4493584 0.4545787</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [428] 0.3654980 0.4993385 0.4866604 0.5277173 0.5261829 0.5167600 0.3806181</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [435] 0.3925386 0.4013260 0.3631693 0.3596945 0.2761082 0.3413669 0.2643654</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [442] 0.2794709 0.2138176 0.5459683 0.4654455 0.4550325 0.4022959 0.4656536</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [449] 0.3899285 0.3945998 0.3642827 0.3738954 0.3828841 0.5201613 0.5381217</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [456] 0.5272170 0.4126564 0.4293352 0.4139616 0.4118646 0.5004195 0.5072201</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [463] 0.4965637 0.4785324 0.4638242 0.4464934 0.3513158 0.2615624 0.4080625</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [470] 0.3319458 0.4092313 0.5391216 0.5063238 0.4344328 0.3480748 0.2813314</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [477] 0.3696641 0.4262157 0.3219322 0.3048567 0.3244936 0.1772515 0.3232616</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [484] 0.3163584 0.3144383 0.2737337 0.2949549 0.3698251 0.4458504 0.3888175</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [491] 0.4099642 0.4077566 0.4485649 0.5223661 0.5704056 0.5262747 0.5053560</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [498] 0.4475905 0.4815183 0.4108697</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

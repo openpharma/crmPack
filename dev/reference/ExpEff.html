@@ -188,107 +188,110 @@ Flexible model with samples</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##Obtain the expected efficacy value for a given dose, a given pseudo </span>
-<span class='co'>## efficacy model and a given efficacy sample</span>
-<span class='co'>##The efficacy model must be from 'ModelEff' class (model slot)</span>
-<span class='co'>##The efficacy sample must be from 'Samples' class (sample slot)</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-<span class='va'>model</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                 sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>data</span>,model<span class='op'>=</span><span class='va'>model</span>,options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span>
-<span class='co'>## Given the dose 75 (dose slot)</span>
-<span class='fu'>ExpEff</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,model<span class='op'>=</span><span class='va'>model</span>,samples<span class='op'>=</span><span class='va'>samples</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1]  0.72488865 -0.08685259  3.76605880  4.41122529  2.21124533  3.28533186
-#&gt;   [7]  4.03047783  4.02251126 -0.18078773  1.35572495  3.08861928 -0.23879837
-#&gt;  [13]  0.61134920  0.50001343  3.21498360  0.75084009  2.55110910  6.86693476
-#&gt;  [19]  1.20003813 -0.34978871  2.73378371  4.52936850  0.08990067  0.02646707
-#&gt;  [25]  1.18974585 -1.09188416  2.00647231  4.15497137  1.46237023  3.67896175
-#&gt;  [31]  2.35483908  1.88020531  1.12814513 -0.05537586  4.46202145 -1.79519621
-#&gt;  [37]  0.98567917  2.24081829 -2.86950132  1.21469198  0.54801680  1.60487415
-#&gt;  [43]  2.77810653 -0.88865016  2.30150851  3.95382849 -0.91214369  0.19919601
-#&gt;  [49]  0.06567883  3.12221155  4.12189690  2.55762944  2.70009747  1.40073670
-#&gt;  [55]  1.73794674  1.45084629 -3.85082743  1.76074489 -1.74656264  2.82024366
-#&gt;  [61]  2.50859743 -1.08829026  2.22271505  0.30289744 -0.14371433  2.47868025
-#&gt;  [67]  6.66118766 -0.26326312  2.13615707  7.72762780 -0.95570907  3.37249142
-#&gt;  [73]  1.14190396 -0.26295347  0.29656507 -0.39183391 -0.37764168  0.74493239
-#&gt;  [79]  3.75517286  4.37653758  4.00025661  3.62947096  2.79075158 -0.06090732
-#&gt;  [85]  2.44543020  4.27997862  0.12530607  1.19057337  1.64960173  3.85347641
-#&gt;  [91] -0.31234144  2.76903060  1.42816906  4.84383134 -0.50018652  1.31226665
-#&gt;  [97]  2.06946087  1.00070970  3.36126935  3.15365906  1.06422109  3.56197624
-#&gt; [103]  1.00056044 -1.21738598  0.50577884  2.42706319  3.32124584 -0.86405129
-#&gt; [109]  2.09637047  1.57217829  0.97949640  3.76536049  5.70517528  1.62413330
-#&gt; [115] -0.22346690  2.05522764  2.29565587 -0.41847585  4.64906603  1.26157156
-#&gt; [121]  2.82682090 -1.04679248 -4.23475535  2.48281239 -4.43275835  0.21357622
-#&gt; [127]  1.96686349  3.01827667 -0.06066204  4.75881376  1.51877787  2.56836346
-#&gt; [133]  0.74266822  0.63478746  1.64655513  4.10667543  0.15720169  1.79271395
-#&gt; [139]  0.03063590  2.86864548  2.34861390  1.25907935  0.93945723  4.08732725
-#&gt; [145]  3.78982009  1.01548578 -0.42092504  4.01145058  1.61514646  3.91878139
-#&gt; [151] -0.58371344  5.45620325 -2.68963745  1.21836587 -2.17947065  1.09584508
-#&gt; [157]  1.58609091  4.71976702  1.84586054  1.28271629  2.76750031  5.38873925
-#&gt; [163]  3.22879986  3.24160191  2.78357793  1.81916379 -3.02044033 -0.29648451
-#&gt; [169] -0.90931488 -1.21997243  5.43102176  0.28602842  0.75837830  0.23090593
-#&gt; [175]  0.47137437 -0.69579477  1.12694449  3.76006878  3.24515394  3.06954604
-#&gt; [181] -0.36494208  1.64886233  2.86692651  1.45571974 -0.94297886  4.99888311
-#&gt; [187]  2.91878197  4.94585600  3.84389673  0.62591478  3.61834899  2.27429425
-#&gt; [193]  0.34314266 -0.10976882 -1.93320491  1.34208081  1.83324408  0.88478083
-#&gt; [199]  2.45218579 -0.08888344</div><div class='input'><span class='co'>##Obtain the expected efficacy value for a given dose and a given pseudo efficacy model </span>
-
-<span class='co'>##The efficacy model must be from 'ModelEff' class (model slot)</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-
-
-<span class='co'>## Given the dose 75 (dose slot)</span>
-<span class='fu'>ExpEff</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,model<span class='op'>=</span><span class='va'>model</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1.885121</div><div class='input'><span class='co'>##Obtain the expected efficacy value for a given dose, the 'EffFlexi' efficacy model and </span>
-<span class='co'>##samples generated from this efficacy model</span>
-<span class='co'>##The efficacy model must be from 'EffFlexi' class (model slot)</span>
-<span class='co'>##The efficacy samples must be from 'Samples' class (samples slot)</span>
-<span class='va'>model</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                 sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>data</span>,model<span class='op'>=</span><span class='va'>model</span>,options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span>
-<span class='co'>## Given the dose 75 (dose slot)</span>
-<span class='fu'>ExpEff</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,model<span class='op'>=</span><span class='va'>model</span>,samples<span class='op'>=</span><span class='va'>samples</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1]  0.72488865 -0.08685259  3.76605880  4.41122529  2.21124533  3.28533186
-#&gt;   [7]  4.03047783  4.02251126 -0.18078773  1.35572495  3.08861928 -0.23879837
-#&gt;  [13]  0.61134920  0.50001343  3.21498360  0.75084009  2.55110910  6.86693476
-#&gt;  [19]  1.20003813 -0.34978871  2.73378371  4.52936850  0.08990067  0.02646707
-#&gt;  [25]  1.18974585 -1.09188416  2.00647231  4.15497137  1.46237023  3.67896175
-#&gt;  [31]  2.35483908  1.88020531  1.12814513 -0.05537586  4.46202145 -1.79519621
-#&gt;  [37]  0.98567917  2.24081829 -2.86950132  1.21469198  0.54801680  1.60487415
-#&gt;  [43]  2.77810653 -0.88865016  2.30150851  3.95382849 -0.91214369  0.19919601
-#&gt;  [49]  0.06567883  3.12221155  4.12189690  2.55762944  2.70009747  1.40073670
-#&gt;  [55]  1.73794674  1.45084629 -3.85082743  1.76074489 -1.74656264  2.82024366
-#&gt;  [61]  2.50859743 -1.08829026  2.22271505  0.30289744 -0.14371433  2.47868025
-#&gt;  [67]  6.66118766 -0.26326312  2.13615707  7.72762780 -0.95570907  3.37249142
-#&gt;  [73]  1.14190396 -0.26295347  0.29656507 -0.39183391 -0.37764168  0.74493239
-#&gt;  [79]  3.75517286  4.37653758  4.00025661  3.62947096  2.79075158 -0.06090732
-#&gt;  [85]  2.44543020  4.27997862  0.12530607  1.19057337  1.64960173  3.85347641
-#&gt;  [91] -0.31234144  2.76903060  1.42816906  4.84383134 -0.50018652  1.31226665
-#&gt;  [97]  2.06946087  1.00070970  3.36126935  3.15365906  1.06422109  3.56197624
-#&gt; [103]  1.00056044 -1.21738598  0.50577884  2.42706319  3.32124584 -0.86405129
-#&gt; [109]  2.09637047  1.57217829  0.97949640  3.76536049  5.70517528  1.62413330
-#&gt; [115] -0.22346690  2.05522764  2.29565587 -0.41847585  4.64906603  1.26157156
-#&gt; [121]  2.82682090 -1.04679248 -4.23475535  2.48281239 -4.43275835  0.21357622
-#&gt; [127]  1.96686349  3.01827667 -0.06066204  4.75881376  1.51877787  2.56836346
-#&gt; [133]  0.74266822  0.63478746  1.64655513  4.10667543  0.15720169  1.79271395
-#&gt; [139]  0.03063590  2.86864548  2.34861390  1.25907935  0.93945723  4.08732725
-#&gt; [145]  3.78982009  1.01548578 -0.42092504  4.01145058  1.61514646  3.91878139
-#&gt; [151] -0.58371344  5.45620325 -2.68963745  1.21836587 -2.17947065  1.09584508
-#&gt; [157]  1.58609091  4.71976702  1.84586054  1.28271629  2.76750031  5.38873925
-#&gt; [163]  3.22879986  3.24160191  2.78357793  1.81916379 -3.02044033 -0.29648451
-#&gt; [169] -0.90931488 -1.21997243  5.43102176  0.28602842  0.75837830  0.23090593
-#&gt; [175]  0.47137437 -0.69579477  1.12694449  3.76006878  3.24515394  3.06954604
-#&gt; [181] -0.36494208  1.64886233  2.86692651  1.45571974 -0.94297886  4.99888311
-#&gt; [187]  2.91878197  4.94585600  3.84389673  0.62591478  3.61834899  2.27429425
-#&gt; [193]  0.34314266 -0.10976882 -1.93320491  1.34208081  1.83324408  0.88478083
-#&gt; [199]  2.45218579 -0.08888344</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##Obtain the expected efficacy value for a given dose, a given pseudo </span></span>
+<span class='r-in'><span class='co'>## efficacy model and a given efficacy sample</span></span>
+<span class='r-in'><span class='co'>##The efficacy model must be from 'ModelEff' class (model slot)</span></span>
+<span class='r-in'><span class='co'>##The efficacy sample must be from 'Samples' class (sample slot)</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                 sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>data</span>,model<span class='op'>=</span><span class='va'>model</span>,options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## Given the dose 75 (dose slot)</span></span>
+<span class='r-in'><span class='fu'>ExpEff</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,model<span class='op'>=</span><span class='va'>model</span>,samples<span class='op'>=</span><span class='va'>samples</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1]  0.72488865 -0.08685259  3.76605880  4.41122529  2.21124533  3.28533186</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [7]  4.03047783  4.02251126 -0.18078773  1.35572495  3.08861928 -0.23879837</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [13]  0.61134920  0.50001343  3.21498360  0.75084009  2.55110910  6.86693476</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [19]  1.20003813 -0.34978871  2.73378371  4.52936850  0.08990067  0.02646707</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [25]  1.18974585 -1.09188416  2.00647231  4.15497137  1.46237023  3.67896175</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [31]  2.35483908  1.88020531  1.12814513 -0.05537586  4.46202145 -1.79519621</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [37]  0.98567917  2.24081829 -2.86950132  1.21469198  0.54801680  1.60487415</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [43]  2.77810653 -0.88865016  2.30150851  3.95382849 -0.91214369  0.19919601</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [49]  0.06567883  3.12221155  4.12189690  2.55762944  2.70009747  1.40073670</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [55]  1.73794674  1.45084629 -3.85082743  1.76074489 -1.74656264  2.82024366</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [61]  2.50859743 -1.08829026  2.22271505  0.30289744 -0.14371433  2.47868025</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [67]  6.66118766 -0.26326312  2.13615707  7.72762780 -0.95570907  3.37249142</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [73]  1.14190396 -0.26295347  0.29656507 -0.39183391 -0.37764168  0.74493239</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [79]  3.75517286  4.37653758  4.00025661  3.62947096  2.79075158 -0.06090732</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [85]  2.44543020  4.27997862  0.12530607  1.19057337  1.64960173  3.85347641</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [91] -0.31234144  2.76903060  1.42816906  4.84383134 -0.50018652  1.31226665</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [97]  2.06946087  1.00070970  3.36126935  3.15365906  1.06422109  3.56197624</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [103]  1.00056044 -1.21738598  0.50577884  2.42706319  3.32124584 -0.86405129</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [109]  2.09637047  1.57217829  0.97949640  3.76536049  5.70517528  1.62413330</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [115] -0.22346690  2.05522764  2.29565587 -0.41847585  4.64906603  1.26157156</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [121]  2.82682090 -1.04679248 -4.23475535  2.48281239 -4.43275835  0.21357622</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [127]  1.96686349  3.01827667 -0.06066204  4.75881376  1.51877787  2.56836346</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [133]  0.74266822  0.63478746  1.64655513  4.10667543  0.15720169  1.79271395</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [139]  0.03063590  2.86864548  2.34861390  1.25907935  0.93945723  4.08732725</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [145]  3.78982009  1.01548578 -0.42092504  4.01145058  1.61514646  3.91878139</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [151] -0.58371344  5.45620325 -2.68963745  1.21836587 -2.17947065  1.09584508</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [157]  1.58609091  4.71976702  1.84586054  1.28271629  2.76750031  5.38873925</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [163]  3.22879986  3.24160191  2.78357793  1.81916379 -3.02044033 -0.29648451</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [169] -0.90931488 -1.21997243  5.43102176  0.28602842  0.75837830  0.23090593</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [175]  0.47137437 -0.69579477  1.12694449  3.76006878  3.24515394  3.06954604</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [181] -0.36494208  1.64886233  2.86692651  1.45571974 -0.94297886  4.99888311</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [187]  2.91878197  4.94585600  3.84389673  0.62591478  3.61834899  2.27429425</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [193]  0.34314266 -0.10976882 -1.93320491  1.34208081  1.83324408  0.88478083</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [199]  2.45218579 -0.08888344</span>
+<span class='r-in'><span class='co'>##Obtain the expected efficacy value for a given dose and a given pseudo efficacy model </span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The efficacy model must be from 'ModelEff' class (model slot)</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Given the dose 75 (dose slot)</span></span>
+<span class='r-in'><span class='fu'>ExpEff</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,model<span class='op'>=</span><span class='va'>model</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1.885121</span>
+<span class='r-in'><span class='co'>##Obtain the expected efficacy value for a given dose, the 'EffFlexi' efficacy model and </span></span>
+<span class='r-in'><span class='co'>##samples generated from this efficacy model</span></span>
+<span class='r-in'><span class='co'>##The efficacy model must be from 'EffFlexi' class (model slot)</span></span>
+<span class='r-in'><span class='co'>##The efficacy samples must be from 'Samples' class (samples slot)</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                 sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>data</span>,model<span class='op'>=</span><span class='va'>model</span>,options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## Given the dose 75 (dose slot)</span></span>
+<span class='r-in'><span class='fu'>ExpEff</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,model<span class='op'>=</span><span class='va'>model</span>,samples<span class='op'>=</span><span class='va'>samples</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1]  0.72488865 -0.08685259  3.76605880  4.41122529  2.21124533  3.28533186</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [7]  4.03047783  4.02251126 -0.18078773  1.35572495  3.08861928 -0.23879837</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [13]  0.61134920  0.50001343  3.21498360  0.75084009  2.55110910  6.86693476</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [19]  1.20003813 -0.34978871  2.73378371  4.52936850  0.08990067  0.02646707</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [25]  1.18974585 -1.09188416  2.00647231  4.15497137  1.46237023  3.67896175</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [31]  2.35483908  1.88020531  1.12814513 -0.05537586  4.46202145 -1.79519621</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [37]  0.98567917  2.24081829 -2.86950132  1.21469198  0.54801680  1.60487415</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [43]  2.77810653 -0.88865016  2.30150851  3.95382849 -0.91214369  0.19919601</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [49]  0.06567883  3.12221155  4.12189690  2.55762944  2.70009747  1.40073670</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [55]  1.73794674  1.45084629 -3.85082743  1.76074489 -1.74656264  2.82024366</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [61]  2.50859743 -1.08829026  2.22271505  0.30289744 -0.14371433  2.47868025</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [67]  6.66118766 -0.26326312  2.13615707  7.72762780 -0.95570907  3.37249142</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [73]  1.14190396 -0.26295347  0.29656507 -0.39183391 -0.37764168  0.74493239</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [79]  3.75517286  4.37653758  4.00025661  3.62947096  2.79075158 -0.06090732</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [85]  2.44543020  4.27997862  0.12530607  1.19057337  1.64960173  3.85347641</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [91] -0.31234144  2.76903060  1.42816906  4.84383134 -0.50018652  1.31226665</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [97]  2.06946087  1.00070970  3.36126935  3.15365906  1.06422109  3.56197624</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [103]  1.00056044 -1.21738598  0.50577884  2.42706319  3.32124584 -0.86405129</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [109]  2.09637047  1.57217829  0.97949640  3.76536049  5.70517528  1.62413330</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [115] -0.22346690  2.05522764  2.29565587 -0.41847585  4.64906603  1.26157156</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [121]  2.82682090 -1.04679248 -4.23475535  2.48281239 -4.43275835  0.21357622</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [127]  1.96686349  3.01827667 -0.06066204  4.75881376  1.51877787  2.56836346</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [133]  0.74266822  0.63478746  1.64655513  4.10667543  0.15720169  1.79271395</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [139]  0.03063590  2.86864548  2.34861390  1.25907935  0.93945723  4.08732725</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [145]  3.78982009  1.01548578 -0.42092504  4.01145058  1.61514646  3.91878139</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [151] -0.58371344  5.45620325 -2.68963745  1.21836587 -2.17947065  1.09584508</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [157]  1.58609091  4.71976702  1.84586054  1.28271629  2.76750031  5.38873925</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [163]  3.22879986  3.24160191  2.78357793  1.81916379 -3.02044033 -0.29648451</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [169] -0.90931488 -1.21997243  5.43102176  0.28602842  0.75837830  0.23090593</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [175]  0.47137437 -0.69579477  1.12694449  3.76006878  3.24515394  3.06954604</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [181] -0.36494208  1.64886233  2.86692651  1.45571974 -0.94297886  4.99888311</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [187]  2.91878197  4.94585600  3.84389673  0.62591478  3.61834899  2.27429425</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [193]  0.34314266 -0.10976882 -1.93320491  1.34208081  1.83324408  0.88478083</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [199]  2.45218579 -0.08888344</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

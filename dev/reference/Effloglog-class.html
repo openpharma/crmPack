@@ -256,32 +256,34 @@ greater than \(1-c\) can be considered as described in Yeung et al. (2015).</p><
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##Obtain prior modal estimates for the Effloglog model (efficacy model) given the pseudo data.</span>
-<span class='co'>##First define an empty data set by only define the dose levels used in the study,</span>
-<span class='co'>## 12 dose levels are usesd from 25 to 300 mg with increments of 25.</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-<span class='co'>## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in</span>
-<span class='co'>## (Effdose slot).</span>
-<span class='co'>## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and</span>
-<span class='co'>## specified in (Eff slot).</span>
-<span class='co'>## The prior precision of the pseudo efficacy responses. This can be either a fixed value of</span>
-<span class='co'>## specifying the shape (a) and the rate (b) parameters for the gamma distribution in (nu slot).</span>
-<span class='co'>## Then specify all data currently available in (data slot).</span>
-
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-
-<span class='co'>##Obtain posterior modal estimates and other estimates from the model given some observed responses</span>
-<span class='co'>## If there is some observations available</span>
-<span class='co'>## first specified the data</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>100</span>,<span class='fl'>100</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,
-               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,
-               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##Obtain prior modal estimates for the Effloglog model (efficacy model) given the pseudo data.</span></span>
+<span class='r-in'><span class='co'>##First define an empty data set by only define the dose levels used in the study,</span></span>
+<span class='r-in'><span class='co'>## 12 dose levels are usesd from 25 to 300 mg with increments of 25.</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span></span>
+<span class='r-in'><span class='co'>## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in</span></span>
+<span class='r-in'><span class='co'>## (Effdose slot).</span></span>
+<span class='r-in'><span class='co'>## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and</span></span>
+<span class='r-in'><span class='co'>## specified in (Eff slot).</span></span>
+<span class='r-in'><span class='co'>## The prior precision of the pseudo efficacy responses. This can be either a fixed value of</span></span>
+<span class='r-in'><span class='co'>## specifying the shape (a) and the rate (b) parameters for the gamma distribution in (nu slot).</span></span>
+<span class='r-in'><span class='co'>## Then specify all data currently available in (data slot).</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Obtain posterior modal estimates and other estimates from the model given some observed responses</span></span>
+<span class='r-in'><span class='co'>## If there is some observations available</span></span>
+<span class='r-in'><span class='co'>## first specified the data</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>100</span>,<span class='fl'>100</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
+<span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -193,99 +193,100 @@ to plot from</p></td>
 asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Define the dose-grid</span>
-<span class='va'>emptydata</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>25</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>80</span>, <span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Initialize the CRM model </span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                        Sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,
-                        sigma2betaW <span class='op'>=</span> <span class='fl'>0.01</span>,
-                        sigma2W <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>, b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,
-                        rho <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>, b<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
-                        smooth<span class='op'>=</span><span class='st'>"RW1"</span><span class='op'>)</span>
-
-<span class='co'># Choose the rule for selecting the next dose </span>
-<span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestDualEndpoint.html'>NextBestDualEndpoint</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                   overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                   maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>
-
-<span class='co'># Choose the rule for the cohort-size </span>
-<span class='va'>mySize1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeRange.html'>CohortSizeRange</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>30</span><span class='op'>)</span>,
-                           cohortSize<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>mySize2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeDLT.html'>CohortSizeDLT</a></span><span class='op'>(</span>DLTintervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                         cohortSize<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>mySize</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxSize.html'>maxSize</a></span><span class='op'>(</span><span class='va'>mySize1</span>, <span class='va'>mySize2</span><span class='op'>)</span>
-
-<span class='co'># Choose the rule for stopping</span>
-<span class='va'>myStopping4</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetBiomarker.html'>StoppingTargetBiomarker</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                       prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span>
-<span class='co'># only 10 patients here for illustration!</span>
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='va'>myStopping4</span> <span class='op'>|</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>
-
-<span class='co'># Choose the rule for dose increments</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,
-                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Initialize the design</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualDesign.html'>DualDesign</a></span><span class='op'>(</span>model <span class='op'>=</span> <span class='va'>model</span>,
-                     data <span class='op'>=</span> <span class='va'>emptydata</span>,
-                     nextBest <span class='op'>=</span> <span class='va'>myNextBest</span>,
-                     stopping <span class='op'>=</span> <span class='va'>myStopping</span>,
-                     increments <span class='op'>=</span> <span class='va'>myIncrements</span>,
-                     cohortSize <span class='op'>=</span> <span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,
-                     startingDose <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-  
-<span class='co'># define scenarios for the TRUE toxicity and efficacy profiles</span>
-<span class='va'>betaMod</span> <span class='op'>&lt;-</span> <span class='kw'>function</span> <span class='op'>(</span><span class='va'>dose</span>, <span class='va'>e0</span>, <span class='va'>eMax</span>, <span class='va'>delta1</span>, <span class='va'>delta2</span>, <span class='va'>scal</span><span class='op'>)</span>
-<span class='op'>{</span>
-  <span class='va'>maxDens</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>delta1</span><span class='op'>^</span><span class='va'>delta1</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>delta2</span><span class='op'>^</span><span class='va'>delta2</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='va'>delta1</span> <span class='op'>+</span> <span class='va'>delta2</span><span class='op'>)</span><span class='op'>^</span><span class='op'>(</span><span class='va'>delta1</span> <span class='op'>+</span> <span class='va'>delta2</span><span class='op'>)</span><span class='op'>)</span>
-  <span class='va'>dose</span> <span class='op'>&lt;-</span> <span class='va'>dose</span><span class='op'>/</span><span class='va'>scal</span>
-  <span class='va'>e0</span> <span class='op'>+</span> <span class='va'>eMax</span><span class='op'>/</span><span class='va'>maxDens</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>dose</span><span class='op'>^</span><span class='va'>delta1</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='va'>dose</span><span class='op'>)</span><span class='op'>^</span><span class='va'>delta2</span>
-<span class='op'>}</span>
-
-<span class='va'>trueBiomarker</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span>
-  <span class='fu'>betaMod</span><span class='op'>(</span><span class='va'>dose</span>, e0<span class='op'>=</span><span class='fl'>0.2</span>, eMax<span class='op'>=</span><span class='fl'>0.6</span>, delta1<span class='op'>=</span><span class='fl'>5</span>, delta2<span class='op'>=</span><span class='fl'>5</span> <span class='op'>*</span> <span class='fl'>0.5</span> <span class='op'>/</span> <span class='fl'>0.5</span>, scal<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>trueTox</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>pnorm</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='co'># Draw the TRUE profiles</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>trueTox</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, from<span class='op'>=</span><span class='fl'>0</span>, to<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>trueBiomarker</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, from<span class='op'>=</span><span class='fl'>0</span>, to<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span>
-</div><div class='input'>
-<span class='co'># Run the simulation on the desired design</span>
-<span class='co'># We only generate 1 trial outcome here for illustration, for the actual study</span>
-<span class='co'>##For illustration purpose we will use 5 burn-ins to generate 20 samples</span>
-<span class='co'># this should be increased of course</span>
-<span class='va'>mySims</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,
-                   trueTox<span class='op'>=</span><span class='va'>trueTox</span>,
-                   trueBiomarker<span class='op'>=</span><span class='va'>trueBiomarker</span>,
-                   sigma2W<span class='op'>=</span><span class='fl'>0.01</span>,
-                   rho<span class='op'>=</span><span class='fl'>0</span>,
-                   nsim<span class='op'>=</span><span class='fl'>1</span>,
-                   parallel<span class='op'>=</span><span class='cn'>FALSE</span>,
-                   seed<span class='op'>=</span><span class='fl'>3</span>,
-                   startingDose<span class='op'>=</span><span class='fl'>6</span>,
-                   mcmcOptions <span class='op'>=</span>
-                     <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>5</span>,
-                                 step<span class='op'>=</span><span class='fl'>1</span>,
-                                 samples<span class='op'>=</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Plot the summary of the Simulations</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySims</span>,
-             trueTox <span class='op'>=</span> <span class='va'>trueTox</span>,
-             trueBiomarker <span class='op'>=</span> <span class='va'>trueBiomarker</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='plot-DualSimulationsSummary-missing-method-1.png' alt='' width='700' height='433' /></div><div class='input'>
-
-
-  
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the dose-grid</span></span>
+<span class='r-in'><span class='va'>emptydata</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>25</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>80</span>, <span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the CRM model </span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        Sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        sigma2betaW <span class='op'>=</span> <span class='fl'>0.01</span>,</span>
+<span class='r-in'>                        sigma2W <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>, b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        rho <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>, b<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        smooth<span class='op'>=</span><span class='st'>"RW1"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Choose the rule for selecting the next dose </span></span>
+<span class='r-in'><span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestDualEndpoint.html'>NextBestDualEndpoint</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Choose the rule for the cohort-size </span></span>
+<span class='r-in'><span class='va'>mySize1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeRange.html'>CohortSizeRange</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>30</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           cohortSize<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mySize2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeDLT.html'>CohortSizeDLT</a></span><span class='op'>(</span>DLTintervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                         cohortSize<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mySize</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxSize.html'>maxSize</a></span><span class='op'>(</span><span class='va'>mySize1</span>, <span class='va'>mySize2</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Choose the rule for stopping</span></span>
+<span class='r-in'><span class='va'>myStopping4</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetBiomarker.html'>StoppingTargetBiomarker</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                       prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># only 10 patients here for illustration!</span></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='va'>myStopping4</span> <span class='op'>|</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Choose the rule for dose increments</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the design</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualDesign.html'>DualDesign</a></span><span class='op'>(</span>model <span class='op'>=</span> <span class='va'>model</span>,</span>
+<span class='r-in'>                     data <span class='op'>=</span> <span class='va'>emptydata</span>,</span>
+<span class='r-in'>                     nextBest <span class='op'>=</span> <span class='va'>myNextBest</span>,</span>
+<span class='r-in'>                     stopping <span class='op'>=</span> <span class='va'>myStopping</span>,</span>
+<span class='r-in'>                     increments <span class='op'>=</span> <span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                     cohortSize <span class='op'>=</span> <span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>                     startingDose <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'>  </span>
+<span class='r-in'><span class='co'># define scenarios for the TRUE toxicity and efficacy profiles</span></span>
+<span class='r-in'><span class='va'>betaMod</span> <span class='op'>&lt;-</span> <span class='kw'>function</span> <span class='op'>(</span><span class='va'>dose</span>, <span class='va'>e0</span>, <span class='va'>eMax</span>, <span class='va'>delta1</span>, <span class='va'>delta2</span>, <span class='va'>scal</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>maxDens</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>delta1</span><span class='op'>^</span><span class='va'>delta1</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>delta2</span><span class='op'>^</span><span class='va'>delta2</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='op'>(</span><span class='va'>delta1</span> <span class='op'>+</span> <span class='va'>delta2</span><span class='op'>)</span><span class='op'>^</span><span class='op'>(</span><span class='va'>delta1</span> <span class='op'>+</span> <span class='va'>delta2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>dose</span> <span class='op'>&lt;-</span> <span class='va'>dose</span><span class='op'>/</span><span class='va'>scal</span></span>
+<span class='r-in'>  <span class='va'>e0</span> <span class='op'>+</span> <span class='va'>eMax</span><span class='op'>/</span><span class='va'>maxDens</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>dose</span><span class='op'>^</span><span class='va'>delta1</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='fl'>1</span> <span class='op'>-</span> <span class='va'>dose</span><span class='op'>)</span><span class='op'>^</span><span class='va'>delta2</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>trueBiomarker</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span></span>
+<span class='r-in'>  <span class='fu'>betaMod</span><span class='op'>(</span><span class='va'>dose</span>, e0<span class='op'>=</span><span class='fl'>0.2</span>, eMax<span class='op'>=</span><span class='fl'>0.6</span>, delta1<span class='op'>=</span><span class='fl'>5</span>, delta2<span class='op'>=</span><span class='fl'>5</span> <span class='op'>*</span> <span class='fl'>0.5</span> <span class='op'>/</span> <span class='fl'>0.5</span>, scal<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>trueTox</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>pnorm</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>-</span><span class='fl'>60</span><span class='op'>)</span><span class='op'>/</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Draw the TRUE profiles</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>trueTox</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, from<span class='op'>=</span><span class='fl'>0</span>, to<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/curve.html'>curve</a></span><span class='op'>(</span><span class='fu'>trueBiomarker</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, from<span class='op'>=</span><span class='fl'>0</span>, to<span class='op'>=</span><span class='fl'>80</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Run the simulation on the desired design</span></span>
+<span class='r-in'><span class='co'># We only generate 1 trial outcome here for illustration, for the actual study</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose we will use 5 burn-ins to generate 20 samples</span></span>
+<span class='r-in'><span class='co'># this should be increased of course</span></span>
+<span class='r-in'><span class='va'>mySims</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,</span>
+<span class='r-in'>                   trueTox<span class='op'>=</span><span class='va'>trueTox</span>,</span>
+<span class='r-in'>                   trueBiomarker<span class='op'>=</span><span class='va'>trueBiomarker</span>,</span>
+<span class='r-in'>                   sigma2W<span class='op'>=</span><span class='fl'>0.01</span>,</span>
+<span class='r-in'>                   rho<span class='op'>=</span><span class='fl'>0</span>,</span>
+<span class='r-in'>                   nsim<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>                   parallel<span class='op'>=</span><span class='cn'>FALSE</span>,</span>
+<span class='r-in'>                   seed<span class='op'>=</span><span class='fl'>3</span>,</span>
+<span class='r-in'>                   startingDose<span class='op'>=</span><span class='fl'>6</span>,</span>
+<span class='r-in'>                   mcmcOptions <span class='op'>=</span></span>
+<span class='r-in'>                     <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>5</span>,</span>
+<span class='r-in'>                                 step<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>                                 samples<span class='op'>=</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plot the summary of the Simulations</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySims</span>,</span>
+<span class='r-in'>             trueTox <span class='op'>=</span> <span class='va'>trueTox</span>,</span>
+<span class='r-in'>             trueBiomarker <span class='op'>=</span> <span class='va'>trueBiomarker</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot-DualSimulationsSummary-missing-method-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'>  </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

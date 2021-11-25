@@ -182,168 +182,169 @@ to summarize them graphically. Possible <code>type</code> of plots at the moment
 asked for, otherwise a <code>gridExtra{gTree}</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##obtain the plot of the summary for the simulation results</span>
-<span class='co'>##If DLE and efficacy responses are considered in the simulations</span>
-<span class='co'>##Specified your simulations when no samples are used</span>
-<span class='co'>## we need a data object with doses &gt;= 1:</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='co'>##First for the DLE model </span>
-<span class='co'>##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class </span>
-<span class='va'>DLEmodel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,
-                              DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,
-                              DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                              data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>##The efficacy model of 'ModelEff' (e.g 'Effloglog') class </span>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                    nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-
-<span class='co'>##The escalation rule using the 'NextBestMaxGain' class</span>
-<span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGain.html'>NextBestMaxGain</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,
-                            DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span>
-
-
-<span class='co'>##The increments (see Increments class examples) </span>
-<span class='co'>## 200% allowable increase for dose below 300 and 200% increase for dose above 300</span>
-<span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>##cohort size of 3</span>
-<span class='va'>mySize</span><span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='co'>##Stop only when 10 subjects are treated (for illustration)</span>
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='co'>##Now specified the design with all the above information and starting with a dose of 25</span>
-
-<span class='co'>##Specified the design(for details please refer to the 'DualResponsesDesign' example)</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualResponsesDesign.html'>DualResponsesDesign</a></span><span class='op'>(</span>nextBest<span class='op'>=</span><span class='va'>mynextbest</span>,
-                              model<span class='op'>=</span><span class='va'>DLEmodel</span>,
-                              Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,
-                              stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                              increments<span class='op'>=</span><span class='va'>myIncrements</span>,
-                              cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                              data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
-<span class='co'>##Specify the true DLE and efficacy curves</span>
-<span class='va'>myTruthDLE</span><span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span> <span class='va'>DLEmodel</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>myTruthEff</span><span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span><span class='va'>Effmodel</span><span class='op'>@</span><span class='va'>ExpEff</span><span class='op'>(</span><span class='va'>dose</span>,theta1<span class='op'>=</span><span class='op'>-</span><span class='fl'>4.818429</span>,theta2<span class='op'>=</span><span class='fl'>3.653058</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='co'>## Then specified the simulations and generate the trial</span>
-<span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span>
-<span class='va'>mySim</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>design</span>,
-                 args<span class='op'>=</span><span class='cn'>NULL</span>,
-                 trueDLE<span class='op'>=</span><span class='va'>myTruthDLE</span>,
-                 trueEff<span class='op'>=</span><span class='va'>myTruthEff</span>,
-                 trueNu<span class='op'>=</span><span class='fl'>1</span><span class='op'>/</span><span class='fl'>0.025</span>,
-                 nsim<span class='op'>=</span><span class='fl'>1</span>,
-                 <span class='co'>## this would need to be increased in the real</span>
-                 <span class='co'>## application:</span>
-                 mcmcOptions<span class='op'>=</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>10</span>, step<span class='op'>=</span><span class='fl'>1</span>, samples<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,
-                 seed<span class='op'>=</span><span class='fl'>819</span>,
-                 parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='co'>##Then produce a summary of your simulations</span>
-<span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,
-                 trueDLE<span class='op'>=</span><span class='va'>myTruthDLE</span>,
-                 trueEff<span class='op'>=</span><span class='va'>myTruthEff</span><span class='op'>)</span>
-
-<span class='co'>##Then plot the summary of the simulations</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='plot-PseudoDualSimulationsSummary-missing-method-1.png' alt='' width='700' height='433' /></div><div class='input'>
-
-
-<span class='co'>##If DLE and efficacy samples are involved</span>
-<span class='co'>##Please refer to design-method 'simulate DualResponsesSamplesDesign' examples for details</span>
-<span class='co'>##specified the next best</span>
-<span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,
-                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,
-                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,
-                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-<span class='co'>##specified the design</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualResponsesSamplesDesign.html'>DualResponsesSamplesDesign</a></span><span class='op'>(</span>nextBest<span class='op'>=</span><span class='va'>mynextbest</span>,
-                                     cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                                     startingDose<span class='op'>=</span><span class='fl'>25</span>,
-                                     model<span class='op'>=</span><span class='va'>DLEmodel</span>,
-                                     Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,
-                                     data<span class='op'>=</span><span class='va'>data</span>,
-                                     stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                                     increments<span class='op'>=</span><span class='va'>myIncrements</span><span class='op'>)</span>
-<span class='co'>##options for MCMC</span>
-<span class='co'>##for illustration purpose we use 10 burn-in and generate 50 samples</span>
-<span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>10</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>
-<span class='co'>##The simulations</span>
-<span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span>
-<span class='co'># mySim&lt;-simulate(design,</span>
-<span class='co'>#                 args=NULL,</span>
-<span class='co'>#                 trueDLE=myTruthDLE,</span>
-<span class='co'>#                 trueEff=myTruthEff,</span>
-<span class='co'>#                 trueNu=1/0.025,</span>
-<span class='co'>#                 nsim=1,</span>
-<span class='co'>#                 mcmcOptions=options,</span>
-<span class='co'>#                 seed=819,</span>
-<span class='co'>#                 parallel=FALSE)</span>
-<span class='co'># </span>
-<span class='co'># ##Then produce a summary of your simulations</span>
-<span class='co'># MYSUM &lt;- summary(mySim,</span>
-<span class='co'>#                  trueDLE=myTruthDLE,</span>
-<span class='co'>#                  trueEff=myTruthEff)</span>
-<span class='co'># </span>
-<span class='co'># ##Then plot the summary of the simulations</span>
-<span class='co'># print(plot(MYSUM))</span>
-
-
-
-<span class='co'>##OR if the 'EffFlexi' class is used </span>
-<span class='co'>## for the efficacy model</span>
-
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                    sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>##Specified the design </span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualResponsesSamplesDesign.html'>DualResponsesSamplesDesign</a></span><span class='op'>(</span>nextBest<span class='op'>=</span><span class='va'>mynextbest</span>,
-                                     cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                                     startingDose<span class='op'>=</span><span class='fl'>25</span>,
-                                     model<span class='op'>=</span><span class='va'>DLEmodel</span>,
-                                     Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,
-                                     data<span class='op'>=</span><span class='va'>data</span>,
-                                     stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                                     increments<span class='op'>=</span><span class='va'>myIncrements</span><span class='op'>)</span>
-<span class='co'>##specified the true DLE curve and the true expected efficacy values at all dose levels</span>
-<span class='va'>myTruthDLE</span><span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span> <span class='va'>DLEmodel</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>myTruthEff</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.5478867</span>, <span class='fl'>0.1645417</span>,  <span class='fl'>0.5248031</span>,  <span class='fl'>0.7604467</span>,  
-               <span class='fl'>0.9333009</span>  ,<span class='fl'>1.0687031</span>,  <span class='fl'>1.1793942</span> , <span class='fl'>1.2726408</span> , 
-               <span class='fl'>1.3529598</span> , <span class='fl'>1.4233411</span> , <span class='fl'>1.4858613</span> , <span class='fl'>1.5420182</span><span class='op'>)</span>
-<span class='co'>##The true gain curve can also be seen</span>
-<span class='va'>myTruthGain</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span><span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='op'>(</span><span class='fu'>myTruthEff</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>+</span><span class='op'>(</span><span class='fu'>myTruthDLE</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='fu'>myTruthDLE</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>}</span>
-
-<span class='co'>##The simulations</span>
-<span class='co'># ##For illustration purpose only 1 simulation is produced (nsim=1). </span>
-<span class='co'># mySim&lt;-simulate(object=design,</span>
-<span class='co'>#                 args=NULL,</span>
-<span class='co'>#                 trueDLE=myTruthDLE,</span>
-<span class='co'>#                 trueEff=myTruthEff,</span>
-<span class='co'>#                 trueSigma2=0.025,</span>
-<span class='co'>#                 trueSigma2betaW=1,</span>
-<span class='co'>#                 nsim=1,</span>
-<span class='co'>#                 mcmcOptions=options,</span>
-<span class='co'>#                 seed=819,</span>
-<span class='co'>#                 parallel=FALSE)</span>
-<span class='co'># ##Then produce a summary of your simulations</span>
-<span class='co'># MYSUM &lt;- summary(mySim,</span>
-<span class='co'>#                  trueDLE=myTruthDLE,</span>
-<span class='co'>#                  trueEff=myTruthEff)</span>
-<span class='co'># </span>
-<span class='co'># ##Then plot the summary of the simulations</span>
-<span class='co'># print(plot(MYSUM))</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##obtain the plot of the summary for the simulation results</span></span>
+<span class='r-in'><span class='co'>##If DLE and efficacy responses are considered in the simulations</span></span>
+<span class='r-in'><span class='co'>##Specified your simulations when no samples are used</span></span>
+<span class='r-in'><span class='co'>## we need a data object with doses &gt;= 1:</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##First for the DLE model </span></span>
+<span class='r-in'><span class='co'>##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class </span></span>
+<span class='r-in'><span class='va'>DLEmodel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,</span>
+<span class='r-in'>                              DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>                              DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                              data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The efficacy model of 'ModelEff' (e.g 'Effloglog') class </span></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The escalation rule using the 'NextBestMaxGain' class</span></span>
+<span class='r-in'><span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGain.html'>NextBestMaxGain</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                            DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The increments (see Increments class examples) </span></span>
+<span class='r-in'><span class='co'>## 200% allowable increase for dose below 300 and 200% increase for dose above 300</span></span>
+<span class='r-in'><span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##cohort size of 3</span></span>
+<span class='r-in'><span class='va'>mySize</span><span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Stop only when 10 subjects are treated (for illustration)</span></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Now specified the design with all the above information and starting with a dose of 25</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Specified the design(for details please refer to the 'DualResponsesDesign' example)</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualResponsesDesign.html'>DualResponsesDesign</a></span><span class='op'>(</span>nextBest<span class='op'>=</span><span class='va'>mynextbest</span>,</span>
+<span class='r-in'>                              model<span class='op'>=</span><span class='va'>DLEmodel</span>,</span>
+<span class='r-in'>                              Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,</span>
+<span class='r-in'>                              stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                              increments<span class='op'>=</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                              cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                              data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Specify the true DLE and efficacy curves</span></span>
+<span class='r-in'><span class='va'>myTruthDLE</span><span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span> <span class='va'>DLEmodel</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myTruthEff</span><span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span><span class='va'>Effmodel</span><span class='op'>@</span><span class='va'>ExpEff</span><span class='op'>(</span><span class='va'>dose</span>,theta1<span class='op'>=</span><span class='op'>-</span><span class='fl'>4.818429</span>,theta2<span class='op'>=</span><span class='fl'>3.653058</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Then specified the simulations and generate the trial</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span></span>
+<span class='r-in'><span class='va'>mySim</span> <span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>design</span>,</span>
+<span class='r-in'>                 args<span class='op'>=</span><span class='cn'>NULL</span>,</span>
+<span class='r-in'>                 trueDLE<span class='op'>=</span><span class='va'>myTruthDLE</span>,</span>
+<span class='r-in'>                 trueEff<span class='op'>=</span><span class='va'>myTruthEff</span>,</span>
+<span class='r-in'>                 trueNu<span class='op'>=</span><span class='fl'>1</span><span class='op'>/</span><span class='fl'>0.025</span>,</span>
+<span class='r-in'>                 nsim<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>                 <span class='co'>## this would need to be increased in the real</span></span>
+<span class='r-in'>                 <span class='co'>## application:</span></span>
+<span class='r-in'>                 mcmcOptions<span class='op'>=</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>10</span>, step<span class='op'>=</span><span class='fl'>1</span>, samples<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,</span>
+<span class='r-in'>                 seed<span class='op'>=</span><span class='fl'>819</span>,</span>
+<span class='r-in'>                 parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,</span>
+<span class='r-in'>                 trueDLE<span class='op'>=</span><span class='va'>myTruthDLE</span>,</span>
+<span class='r-in'>                 trueEff<span class='op'>=</span><span class='va'>myTruthEff</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Then plot the summary of the simulations</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot-PseudoDualSimulationsSummary-missing-method-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##If DLE and efficacy samples are involved</span></span>
+<span class='r-in'><span class='co'>##Please refer to design-method 'simulate DualResponsesSamplesDesign' examples for details</span></span>
+<span class='r-in'><span class='co'>##specified the next best</span></span>
+<span class='r-in'><span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,</span>
+<span class='r-in'>                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##specified the design</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualResponsesSamplesDesign.html'>DualResponsesSamplesDesign</a></span><span class='op'>(</span>nextBest<span class='op'>=</span><span class='va'>mynextbest</span>,</span>
+<span class='r-in'>                                     cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                                     startingDose<span class='op'>=</span><span class='fl'>25</span>,</span>
+<span class='r-in'>                                     model<span class='op'>=</span><span class='va'>DLEmodel</span>,</span>
+<span class='r-in'>                                     Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,</span>
+<span class='r-in'>                                     data<span class='op'>=</span><span class='va'>data</span>,</span>
+<span class='r-in'>                                     stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                                     increments<span class='op'>=</span><span class='va'>myIncrements</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##options for MCMC</span></span>
+<span class='r-in'><span class='co'>##for illustration purpose we use 10 burn-in and generate 50 samples</span></span>
+<span class='r-in'><span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>10</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##The simulations</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span></span>
+<span class='r-in'><span class='co'># mySim&lt;-simulate(design,</span></span>
+<span class='r-in'><span class='co'>#                 args=NULL,</span></span>
+<span class='r-in'><span class='co'>#                 trueDLE=myTruthDLE,</span></span>
+<span class='r-in'><span class='co'>#                 trueEff=myTruthEff,</span></span>
+<span class='r-in'><span class='co'>#                 trueNu=1/0.025,</span></span>
+<span class='r-in'><span class='co'>#                 nsim=1,</span></span>
+<span class='r-in'><span class='co'>#                 mcmcOptions=options,</span></span>
+<span class='r-in'><span class='co'>#                 seed=819,</span></span>
+<span class='r-in'><span class='co'>#                 parallel=FALSE)</span></span>
+<span class='r-in'><span class='co'># </span></span>
+<span class='r-in'><span class='co'># ##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='co'># MYSUM &lt;- summary(mySim,</span></span>
+<span class='r-in'><span class='co'>#                  trueDLE=myTruthDLE,</span></span>
+<span class='r-in'><span class='co'>#                  trueEff=myTruthEff)</span></span>
+<span class='r-in'><span class='co'># </span></span>
+<span class='r-in'><span class='co'># ##Then plot the summary of the simulations</span></span>
+<span class='r-in'><span class='co'># print(plot(MYSUM))</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##OR if the 'EffFlexi' class is used </span></span>
+<span class='r-in'><span class='co'>## for the efficacy model</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Specified the design </span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualResponsesSamplesDesign.html'>DualResponsesSamplesDesign</a></span><span class='op'>(</span>nextBest<span class='op'>=</span><span class='va'>mynextbest</span>,</span>
+<span class='r-in'>                                     cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                                     startingDose<span class='op'>=</span><span class='fl'>25</span>,</span>
+<span class='r-in'>                                     model<span class='op'>=</span><span class='va'>DLEmodel</span>,</span>
+<span class='r-in'>                                     Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,</span>
+<span class='r-in'>                                     data<span class='op'>=</span><span class='va'>data</span>,</span>
+<span class='r-in'>                                     stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                                     increments<span class='op'>=</span><span class='va'>myIncrements</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##specified the true DLE curve and the true expected efficacy values at all dose levels</span></span>
+<span class='r-in'><span class='va'>myTruthDLE</span><span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span> <span class='va'>DLEmodel</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myTruthEff</span><span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.5478867</span>, <span class='fl'>0.1645417</span>,  <span class='fl'>0.5248031</span>,  <span class='fl'>0.7604467</span>,  </span>
+<span class='r-in'>               <span class='fl'>0.9333009</span>  ,<span class='fl'>1.0687031</span>,  <span class='fl'>1.1793942</span> , <span class='fl'>1.2726408</span> , </span>
+<span class='r-in'>               <span class='fl'>1.3529598</span> , <span class='fl'>1.4233411</span> , <span class='fl'>1.4858613</span> , <span class='fl'>1.5420182</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##The true gain curve can also be seen</span></span>
+<span class='r-in'><span class='va'>myTruthGain</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span><span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='op'>(</span><span class='fu'>myTruthEff</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>+</span><span class='op'>(</span><span class='fu'>myTruthDLE</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span><span class='op'>/</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>-</span><span class='fu'>myTruthDLE</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The simulations</span></span>
+<span class='r-in'><span class='co'># ##For illustration purpose only 1 simulation is produced (nsim=1). </span></span>
+<span class='r-in'><span class='co'># mySim&lt;-simulate(object=design,</span></span>
+<span class='r-in'><span class='co'>#                 args=NULL,</span></span>
+<span class='r-in'><span class='co'>#                 trueDLE=myTruthDLE,</span></span>
+<span class='r-in'><span class='co'>#                 trueEff=myTruthEff,</span></span>
+<span class='r-in'><span class='co'>#                 trueSigma2=0.025,</span></span>
+<span class='r-in'><span class='co'>#                 trueSigma2betaW=1,</span></span>
+<span class='r-in'><span class='co'>#                 nsim=1,</span></span>
+<span class='r-in'><span class='co'>#                 mcmcOptions=options,</span></span>
+<span class='r-in'><span class='co'>#                 seed=819,</span></span>
+<span class='r-in'><span class='co'>#                 parallel=FALSE)</span></span>
+<span class='r-in'><span class='co'># ##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='co'># MYSUM &lt;- summary(mySim,</span></span>
+<span class='r-in'><span class='co'>#                  trueDLE=myTruthDLE,</span></span>
+<span class='r-in'><span class='co'>#                  trueEff=myTruthEff)</span></span>
+<span class='r-in'><span class='co'># </span></span>
+<span class='r-in'><span class='co'># ##Then plot the summary of the simulations</span></span>
+<span class='r-in'><span class='co'># print(plot(MYSUM))</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

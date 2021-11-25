@@ -169,17 +169,20 @@ DLEs are always assigned to the firsts subjects.</p></td>
     <p>the <code><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></code> object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Create some data of class 'Data'</span>
-<span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span>,
-               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,
-               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,
-                          <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='co'># Plot the data</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myData</span><span class='op'>)</span>
-</div><div class='img'><img src='plot-Data-missing-method-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Create some data of class 'Data'</span></span>
+<span class='r-in'><span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,</span>
+<span class='r-in'>                          <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plot the data</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>myData</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot-Data-missing-method-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

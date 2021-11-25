@@ -179,23 +179,23 @@ called <code>Gstarsamples</code>, the final next best Gstar estimate.</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##define the NextBestMaxGainsamples class</span>
-<span class='co'>##specified the target probability of the occurrence of a DLE during the trial be 0.35</span>
-<span class='co'>##specified the target probability of the occurrence of a DLE at the end of trial be 0.3</span>
-<span class='co'>## we want the use the 30% posterior quantile (the 30th percentaile) of the TD35 </span>
-<span class='co'>## (the dose level with probability of DLE equals 0.35) and TD30 samples</span>
-<span class='co'>## For Gstar (the dose which gives tha maximum</span>
-<span class='co'>##gain) samples, we will use the 50% posterio quantile (the median or th 50th percentile) </span>
-<span class='co'>## of the Gstar sample</span>
-<span class='co'>##A function is then defined in the 'TDderive' slot for the TD30 and TD35 samples</span>
-<span class='co'>## and another function is defined in the 'Gstarderive' slot for Gstar samples</span>
-<span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,
-                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,
-                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,
-                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##define the NextBestMaxGainsamples class</span></span>
+<span class='r-in'><span class='co'>##specified the target probability of the occurrence of a DLE during the trial be 0.35</span></span>
+<span class='r-in'><span class='co'>##specified the target probability of the occurrence of a DLE at the end of trial be 0.3</span></span>
+<span class='r-in'><span class='co'>## we want the use the 30% posterior quantile (the 30th percentaile) of the TD35 </span></span>
+<span class='r-in'><span class='co'>## (the dose level with probability of DLE equals 0.35) and TD30 samples</span></span>
+<span class='r-in'><span class='co'>## For Gstar (the dose which gives tha maximum</span></span>
+<span class='r-in'><span class='co'>##gain) samples, we will use the 50% posterio quantile (the median or th 50th percentile) </span></span>
+<span class='r-in'><span class='co'>## of the Gstar sample</span></span>
+<span class='r-in'><span class='co'>##A function is then defined in the 'TDderive' slot for the TD30 and TD35 samples</span></span>
+<span class='r-in'><span class='co'>## and another function is defined in the 'Gstarderive' slot for Gstar samples</span></span>
+<span class='r-in'><span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,</span>
+<span class='r-in'>                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

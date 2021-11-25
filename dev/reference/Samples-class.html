@@ -154,19 +154,19 @@ of the parameter).</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Saving the mcmc options which were used to generate the samples</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>10000</span>,
-                       step<span class='op'>=</span><span class='fl'>2</span>,
-                       samples<span class='op'>=</span><span class='fl'>10000</span><span class='op'>)</span>
-
-<span class='co'># Create an object of class 'Samples'</span>
-<span class='co'># Here the parameters 'alpha' and 'beta' are randomly generated. Of coure in </span>
-<span class='co'># a real example these would come as an output from mcmc procedures</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Samples.html'>Samples</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>alpha<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10000</span><span class='op'>)</span>,beta<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10000</span><span class='op'>)</span><span class='op'>)</span>,
-                   options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Saving the mcmc options which were used to generate the samples</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>10000</span>,</span>
+<span class='r-in'>                       step<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>10000</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create an object of class 'Samples'</span></span>
+<span class='r-in'><span class='co'># Here the parameters 'alpha' and 'beta' are randomly generated. Of coure in </span></span>
+<span class='r-in'><span class='co'># a real example these would come as an output from mcmc procedures</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Samples.html'>Samples</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>alpha<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10000</span><span class='op'>)</span>,beta<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10000</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

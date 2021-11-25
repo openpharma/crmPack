@@ -179,89 +179,90 @@ objects in order to summarize them graphically. This can be used when only DLE r
 in the simulations. This also applied to results with or without samples generated during the simulations</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##obtain the plot for the simulation results</span>
-<span class='co'>##If only DLE responses are considered in the simulations</span>
-<span class='co'>##Specified your simulations when no DLE samples are used</span>
-<span class='co'>##Define your data set first using an empty data set </span>
-<span class='co'>## with dose levels from 25 to 300 with increments 25</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>##Then the escalation rule</span>
-<span class='va'>tdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,
-                         targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span>
-
-<span class='co'>## The cohort size, size of 3 subjects</span>
-<span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='co'>##Deifne the increments for the dose-escalation process</span>
-<span class='co'>##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span>
-<span class='co'>##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span>
-<span class='co'>##This is to specified a maximum of 3-fold restriction in dose-esclation</span>
-<span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span><span class='op'>)</span>, 
-                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>##Specified the stopping rule e.g stop when the maximum sample size of 12 patients has been reached</span>
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>12</span><span class='op'>)</span>
-<span class='co'>##Now specified the design with all the above information and starting with a dose of 25</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDDesign.html'>TDDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,
-                   nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,
-                   stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                   increments<span class='op'>=</span><span class='va'>myIncrements</span>,
-                   cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                  data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
-
-<span class='co'>##Specify the truth of the DLE responses</span>
-<span class='va'>myTruth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span> <span class='va'>model</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='co'>## Then specified the simulations and generate the trial </span>
-<span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span>
-<span class='co'>##The simulations</span>
-<span class='va'>mySim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,
-                  args<span class='op'>=</span><span class='cn'>NULL</span>,
-                  truth<span class='op'>=</span><span class='va'>myTruth</span>,
-                  nsim<span class='op'>=</span><span class='fl'>1</span>,
-                  seed<span class='op'>=</span><span class='fl'>819</span>,
-                  parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='co'>##Then produce a summary of your simulations</span>
-<span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,
-                 truth<span class='op'>=</span><span class='va'>myTruth</span><span class='op'>)</span>
-<span class='co'>##plot the summary of the simulations</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='plot-PseudoSimulationsSummary-missing-method-1.png' alt='' width='700' height='433' /></div><div class='input'>
-
-
-<span class='co'>##If DLE samples are involved</span>
-<span class='co'>##The escalation rule</span>
-<span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTDsamples.html'>NextBestTDsamples</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,
-                              targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span>,
-                              derive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,probs<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-<span class='co'>##specify the design</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDsamplesDesign.html'>TDsamplesDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,
-                          nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,
-                          stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                          increments<span class='op'>=</span><span class='va'>myIncrements</span>,
-                          cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                          data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
-<span class='co'>##options for MCMC</span>
-<span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span>
-<span class='co'>##The simulations</span>
-<span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span>
-<span class='co'># mySim &lt;- simulate(design,</span>
-<span class='co'>#                   args=NULL,</span>
-<span class='co'>#                   truth=myTruth,</span>
-<span class='co'>#                   nsim=1,</span>
-<span class='co'>#                   seed=819,</span>
-<span class='co'>#                   mcmcOptions=options,</span>
-<span class='co'>#                   parallel=FALSE)</span>
-<span class='co'># ##Then produce a summary of your simulations</span>
-<span class='co'># MYSUM &lt;- summary(mySim,</span>
-<span class='co'>#                  truth=myTruth)</span>
-<span class='co'># ##plot the summary of the simulations</span>
-<span class='co'># print(plot(MYSUM))</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##obtain the plot for the simulation results</span></span>
+<span class='r-in'><span class='co'>##If only DLE responses are considered in the simulations</span></span>
+<span class='r-in'><span class='co'>##Specified your simulations when no DLE samples are used</span></span>
+<span class='r-in'><span class='co'>##Define your data set first using an empty data set </span></span>
+<span class='r-in'><span class='co'>## with dose levels from 25 to 300 with increments 25</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Then the escalation rule</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                         targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## The cohort size, size of 3 subjects</span></span>
+<span class='r-in'><span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Deifne the increments for the dose-escalation process</span></span>
+<span class='r-in'><span class='co'>##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span></span>
+<span class='r-in'><span class='co'>##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span></span>
+<span class='r-in'><span class='co'>##This is to specified a maximum of 3-fold restriction in dose-esclation</span></span>
+<span class='r-in'><span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span><span class='op'>)</span>, </span>
+<span class='r-in'>                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Specified the stopping rule e.g stop when the maximum sample size of 12 patients has been reached</span></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>12</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Now specified the design with all the above information and starting with a dose of 25</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDDesign.html'>TDDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>                   nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,</span>
+<span class='r-in'>                   stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                   increments<span class='op'>=</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                   cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                  data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Specify the truth of the DLE responses</span></span>
+<span class='r-in'><span class='va'>myTruth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span> <span class='va'>model</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Then specified the simulations and generate the trial </span></span>
+<span class='r-in'><span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span></span>
+<span class='r-in'><span class='co'>##The simulations</span></span>
+<span class='r-in'><span class='va'>mySim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,</span>
+<span class='r-in'>                  args<span class='op'>=</span><span class='cn'>NULL</span>,</span>
+<span class='r-in'>                  truth<span class='op'>=</span><span class='va'>myTruth</span>,</span>
+<span class='r-in'>                  nsim<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>                  seed<span class='op'>=</span><span class='fl'>819</span>,</span>
+<span class='r-in'>                  parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,</span>
+<span class='r-in'>                 truth<span class='op'>=</span><span class='va'>myTruth</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##plot the summary of the simulations</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot-PseudoSimulationsSummary-missing-method-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##If DLE samples are involved</span></span>
+<span class='r-in'><span class='co'>##The escalation rule</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTDsamples.html'>NextBestTDsamples</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                              targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                              derive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,probs<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##specify the design</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDsamplesDesign.html'>TDsamplesDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>                          nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,</span>
+<span class='r-in'>                          stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                          increments<span class='op'>=</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                          cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                          data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##options for MCMC</span></span>
+<span class='r-in'><span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##The simulations</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span></span>
+<span class='r-in'><span class='co'># mySim &lt;- simulate(design,</span></span>
+<span class='r-in'><span class='co'>#                   args=NULL,</span></span>
+<span class='r-in'><span class='co'>#                   truth=myTruth,</span></span>
+<span class='r-in'><span class='co'>#                   nsim=1,</span></span>
+<span class='r-in'><span class='co'>#                   seed=819,</span></span>
+<span class='r-in'><span class='co'>#                   mcmcOptions=options,</span></span>
+<span class='r-in'><span class='co'>#                   parallel=FALSE)</span></span>
+<span class='r-in'><span class='co'># ##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='co'># MYSUM &lt;- summary(mySim,</span></span>
+<span class='r-in'><span class='co'>#                  truth=myTruth)</span></span>
+<span class='r-in'><span class='co'># ##plot the summary of the simulations</span></span>
+<span class='r-in'><span class='co'># print(plot(MYSUM))</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

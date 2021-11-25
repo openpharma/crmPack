@@ -152,10 +152,10 @@ cohort size is 4 and we want to specify three time intervals between these
 four patients: The interval between the 1st and 2nd patient = 7 units of time
 , the interval between the 2nd and 3rd patient = 5 units of time, the interval
 between the 3rd and 4th patient = 3 units of time, then we specify
-<code>patientGap</code> to be <code><a href='https://rdrr.io/r/base/c.html'>c(7,5,3)</a></code>. Sometimes, we only think the interval
+<code>patientGap</code> to be <code>c(7,5,3)</code>. Sometimes, we only think the interval
 between the 1st and 2nd patient should be increased for the safety consideration
 , and the rest time intervals can be the same, whatever the cohort size is, then
-we specify <code>patientGap</code> to be <code><a href='https://rdrr.io/r/base/c.html'>c(7,3)</a></code>. The package will automatically
+we specify <code>patientGap</code> to be <code>c(7,3)</code>. The package will automatically
 repeat the last element of the vector for the rest time intervals.</p>
     </div>
 
@@ -169,7 +169,7 @@ between the 1st and 2nd patient = 9 units of time and the rest time intervals ar
 5 units of time when the cohort size is equal or larger than 4. And the time
 interval between the 1st and 2nd patient = 7 units of time and the rest time
 intervals are 3 units of time when the cohort size is smaller than 4, then we
-specify <code>sizeIntervals</code> to be <code><a href='https://rdrr.io/r/base/c.html'>c(0, 4)</a></code>. That means, the right
+specify <code>sizeIntervals</code> to be <code>c(0, 4)</code>. That means, the right
 bound of the intervals are exclusive to the interval, and the last interval
 goes from the last value until infinity.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
@@ -192,15 +192,15 @@ the minimal follow up time</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># As example, here is the rule for: </span>
-<span class='co'>#   having patientGap as (7,3,3,3,...) for cohort size &lt;4</span>
-<span class='co'>#   and having patientGap as (9,5,5,5...) for cohort size &gt;=4</span>
-
-<span class='va'>myWindowLength</span> <span class='op'>&lt;-</span> <span class='fu'><a href='SafetyWindowSize.html'>SafetyWindowSize</a></span><span class='op'>(</span>patientGap <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>7</span>,<span class='fl'>3</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>9</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>,
-                                   sizeIntervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>4</span><span class='op'>)</span>,
-                                   patientFollow <span class='op'>=</span> <span class='fl'>7</span>,
-                                   patientFollowMin <span class='op'>=</span> <span class='fl'>14</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># As example, here is the rule for: </span></span>
+<span class='r-in'><span class='co'>#   having patientGap as (7,3,3,3,...) for cohort size &lt;4</span></span>
+<span class='r-in'><span class='co'>#   and having patientGap as (9,5,5,5...) for cohort size &gt;=4</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myWindowLength</span> <span class='op'>&lt;-</span> <span class='fu'><a href='SafetyWindowSize.html'>SafetyWindowSize</a></span><span class='op'>(</span>patientGap <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>7</span>,<span class='fl'>3</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>9</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   sizeIntervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>4</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   patientFollow <span class='op'>=</span> <span class='fl'>7</span>,</span>
+<span class='r-in'>                                   patientFollowMin <span class='op'>=</span> <span class='fl'>14</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

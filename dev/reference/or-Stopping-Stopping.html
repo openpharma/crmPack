@@ -159,19 +159,19 @@
     <p>The <code><a href='StoppingAny-class.html'>StoppingAny</a></code> object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## Example of combining two atomic stopping rules with an OR ('|') operator</span>
-
-<span class='va'>myStopping1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinCohorts.html'>StoppingMinCohorts</a></span><span class='op'>(</span>nCohorts<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>myStopping2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,
-                                  prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span>
-
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='va'>myStopping1</span> <span class='op'>|</span> <span class='va'>myStopping2</span> 
-
-
-
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'>## Example of combining two atomic stopping rules with an OR ('|') operator</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinCohorts.html'>StoppingMinCohorts</a></span><span class='op'>(</span>nCohorts<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>myStopping2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                  prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='va'>myStopping1</span> <span class='op'>|</span> <span class='va'>myStopping2</span> </span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

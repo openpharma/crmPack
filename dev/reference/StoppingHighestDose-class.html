@@ -142,28 +142,28 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## for example this can be used in the following way:</span>
-<span class='co'>## we would like to stop if:</span>
-<span class='co'>## - next proposed dose is highest dose</span>
-<span class='co'>## - there are already at least 3 patients on that dose</span>
-<span class='co'>## - we are sure that this dose is safe, e.g. the</span>
-<span class='co'>## probability to be in the interval (0%, 20%) of DLT</span>
-<span class='co'>## rate is above 50%.</span>
-<span class='co'>## This would be implemented as the following combination:</span>
-
-<span class='va'>stopHigh</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='StoppingHighestDose.html'>StoppingHighestDose</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>&amp;</span>
-  <span class='fu'><a href='StoppingPatientsNearDose.html'>StoppingPatientsNearDose</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>3</span>, percentage<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='op'>&amp;</span>
-  <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.2</span><span class='op'>)</span>,
-                     prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span>
-
-<span class='co'>## of course this rule would then need to be combined</span>
-<span class='co'>## with the other standard rules for when to stop</span>
-<span class='co'>## when the MTD is found based on being near</span>
-<span class='co'>## e.g. a 30% DLT probability or having reached maximal sample</span>
-<span class='co'>## size, in the manner of:</span>
-<span class='co'>## stopRule &lt;- stopHigh | stopLow | stopSamplesize</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>## for example this can be used in the following way:</span></span>
+<span class='r-in'><span class='co'>## we would like to stop if:</span></span>
+<span class='r-in'><span class='co'>## - next proposed dose is highest dose</span></span>
+<span class='r-in'><span class='co'>## - there are already at least 3 patients on that dose</span></span>
+<span class='r-in'><span class='co'>## - we are sure that this dose is safe, e.g. the</span></span>
+<span class='r-in'><span class='co'>## probability to be in the interval (0%, 20%) of DLT</span></span>
+<span class='r-in'><span class='co'>## rate is above 50%.</span></span>
+<span class='r-in'><span class='co'>## This would be implemented as the following combination:</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>stopHigh</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'><a href='StoppingHighestDose.html'>StoppingHighestDose</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>&amp;</span></span>
+<span class='r-in'>  <span class='fu'><a href='StoppingPatientsNearDose.html'>StoppingPatientsNearDose</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>3</span>, percentage<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span> <span class='op'>&amp;</span></span>
+<span class='r-in'>  <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                     prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## of course this rule would then need to be combined</span></span>
+<span class='r-in'><span class='co'>## with the other standard rules for when to stop</span></span>
+<span class='r-in'><span class='co'>## when the MTD is found based on being near</span></span>
+<span class='r-in'><span class='co'>## e.g. a 30% DLT probability or having reached maximal sample</span></span>
+<span class='r-in'><span class='co'>## size, in the manner of:</span></span>
+<span class='r-in'><span class='co'>## stopRule &lt;- stopHigh | stopLow | stopSamplesize</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

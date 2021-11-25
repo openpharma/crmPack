@@ -200,35 +200,35 @@ Defaults to the number of cores on the machine, maximum 5.</p></td>
     <p>an object of class <code><a href='GeneralSimulations-class.html'>GeneralSimulations</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Define the dose-grid</span>
-<span class='va'>emptydata</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>25</span>, <span class='fl'>35</span>, <span class='fl'>50</span>, <span class='fl'>80</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># inizialing a 3+3 design with constant cohort size of 3 and</span>
-<span class='co'># starting dose equal 5</span>
-<span class='va'>myDesign</span> <span class='op'>&lt;-</span> <span class='fu'><a href='RuleDesign.html'>RuleDesign</a></span><span class='op'>(</span>nextBest <span class='op'>=</span> <span class='fu'><a href='NextBestThreePlusThree.html'>NextBestThreePlusThree</a></span><span class='op'>(</span><span class='op'>)</span>,
-                       cohortSize <span class='op'>=</span> <span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3L</span><span class='op'>)</span>,
-                       data <span class='op'>=</span> <span class='va'>emptydata</span>,
-                       startingDose <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
-
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           cov <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,
-                           refDose <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
-  
-<span class='co'>## define the true function</span>
-<span class='va'>myTruth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span>
-  <span class='va'>model</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, alpha0<span class='op'>=</span><span class='fl'>7</span>, alpha1<span class='op'>=</span><span class='fl'>8</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='co'># Perform the simulation</span>
-<span class='co'>##For illustration purpose only 10 simulation is produced (nsim=10). </span>
-<span class='va'>threeSims</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>myDesign</span>,
-                      nsim<span class='op'>=</span><span class='fl'>10</span>,
-                      seed<span class='op'>=</span><span class='fl'>35</span>,
-                      truth<span class='op'>=</span><span class='va'>myTruth</span>,
-                      parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the dose-grid</span></span>
+<span class='r-in'><span class='va'>emptydata</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>25</span>, <span class='fl'>35</span>, <span class='fl'>50</span>, <span class='fl'>80</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># inizialing a 3+3 design with constant cohort size of 3 and</span></span>
+<span class='r-in'><span class='co'># starting dose equal 5</span></span>
+<span class='r-in'><span class='va'>myDesign</span> <span class='op'>&lt;-</span> <span class='fu'><a href='RuleDesign.html'>RuleDesign</a></span><span class='op'>(</span>nextBest <span class='op'>=</span> <span class='fu'><a href='NextBestThreePlusThree.html'>NextBestThreePlusThree</a></span><span class='op'>(</span><span class='op'>)</span>,</span>
+<span class='r-in'>                       cohortSize <span class='op'>=</span> <span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3L</span><span class='op'>)</span>,</span>
+<span class='r-in'>                       data <span class='op'>=</span> <span class='va'>emptydata</span>,</span>
+<span class='r-in'>                       startingDose <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           cov <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           refDose <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span></span>
+<span class='r-in'>  </span>
+<span class='r-in'><span class='co'>## define the true function</span></span>
+<span class='r-in'><span class='va'>myTruth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>model</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, alpha0<span class='op'>=</span><span class='fl'>7</span>, alpha1<span class='op'>=</span><span class='fl'>8</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Perform the simulation</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose only 10 simulation is produced (nsim=10). </span></span>
+<span class='r-in'><span class='va'>threeSims</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>myDesign</span>,</span>
+<span class='r-in'>                      nsim<span class='op'>=</span><span class='fl'>10</span>,</span>
+<span class='r-in'>                      seed<span class='op'>=</span><span class='fl'>35</span>,</span>
+<span class='r-in'>                      truth<span class='op'>=</span><span class='va'>myTruth</span>,</span>
+<span class='r-in'>                      parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

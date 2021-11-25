@@ -145,7 +145,7 @@
     
 
 <dl>
-<dt><code>target</code></dt><dd><p>the target toxicity interval, e.g. <code><a href='https://rdrr.io/r/base/c.html'>c(0.2, 0.35)</a></code></p></dd>
+<dt><code>target</code></dt><dd><p>the target toxicity interval, e.g. <code>c(0.2, 0.35)</code></p></dd>
 
 <dt><code>prob</code></dt><dd><p>required target toxicity probability (e.g. <code>0.4</code>)
 for reaching sufficient precision</p></dd>
@@ -153,13 +153,13 @@ for reaching sufficient precision</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># As example, here is the rule for: </span>
-<span class='co'>#   stopping the study if the posterior probability that [0.2 =&lt; Prob(DLT | dose) &lt;= 0.35] </span>
-<span class='co'>#   for the next best dose is above 0.5</span>
-
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,
-                                 prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># As example, here is the rule for: </span></span>
+<span class='r-in'><span class='co'>#   stopping the study if the posterior probability that [0.2 =&lt; Prob(DLT | dose) &lt;= 0.35] </span></span>
+<span class='r-in'><span class='co'>#   for the next best dose is above 0.5</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                 prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

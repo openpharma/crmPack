@@ -165,38 +165,38 @@ an object of class <code><a href='CohortSize-class.html'>CohortSize</a></code></
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##Specified the design to run simulations</span>
-<span class='co'>##The design comprises a model, the escalation rule, starting data, </span>
-<span class='co'>##a cohort size and a starting dose</span>
-<span class='co'>##Define your data set first using an empty data set </span>
-<span class='co'>## with dose levels from 25 to 300 with increments 25</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>##The design only incorporate DLE responses and no DLE samples are involved</span>
-<span class='co'>##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>##Then the escalation rule</span>
-<span class='va'>tdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,
-                         targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span>
-
-<span class='co'>## The cohort size, size of 3 subjects</span>
-<span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='co'>##Deifne the increments for the dose-escalation process</span>
-<span class='co'>##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span>
-<span class='co'>##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span>
-<span class='co'>##This is to specified a maximum of 3-fold restriction in dose-esclation</span>
-<span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span><span class='op'>)</span>, 
-                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached</span>
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span>
-<span class='co'>##Now specified the design with all the above information and starting with a dose of 25</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDDesign.html'>TDDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,
-                   nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,
-                   stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                   increments<span class='op'>=</span><span class='va'>myIncrements</span>,
-                   cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                   data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##Specified the design to run simulations</span></span>
+<span class='r-in'><span class='co'>##The design comprises a model, the escalation rule, starting data, </span></span>
+<span class='r-in'><span class='co'>##a cohort size and a starting dose</span></span>
+<span class='r-in'><span class='co'>##Define your data set first using an empty data set </span></span>
+<span class='r-in'><span class='co'>## with dose levels from 25 to 300 with increments 25</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The design only incorporate DLE responses and no DLE samples are involved</span></span>
+<span class='r-in'><span class='co'>##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Then the escalation rule</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                         targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## The cohort size, size of 3 subjects</span></span>
+<span class='r-in'><span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Deifne the increments for the dose-escalation process</span></span>
+<span class='r-in'><span class='co'>##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span></span>
+<span class='r-in'><span class='co'>##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span></span>
+<span class='r-in'><span class='co'>##This is to specified a maximum of 3-fold restriction in dose-esclation</span></span>
+<span class='r-in'><span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span><span class='op'>)</span>, </span>
+<span class='r-in'>                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached</span></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Now specified the design with all the above information and starting with a dose of 25</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDDesign.html'>TDDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>                   nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,</span>
+<span class='r-in'>                   stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                   increments<span class='op'>=</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                   cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                   data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

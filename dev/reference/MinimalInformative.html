@@ -217,35 +217,37 @@ quantiles into an approximating <code><a href='LogisticNormal-class.html'>Logist
 is not required for these computations.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Setting up a minimal informative prior </span>
-<span class='co'># max.time is quite small only for the purpose of showing the example. They </span>
-<span class='co'># should be increased for a real case.</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>132</span><span class='op'>)</span>
-<span class='va'>coarseGrid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>10</span>, <span class='fl'>30</span>, <span class='fl'>60</span>, <span class='fl'>100</span><span class='op'>)</span>
-<span class='va'>minInfModel</span> <span class='op'>&lt;-</span> <span class='fu'>MinimalInformative</span><span class='op'>(</span>dosegrid <span class='op'>=</span> <span class='va'>coarseGrid</span>,
-                                  refDose<span class='op'>=</span><span class='fl'>50</span>,
-                                  threshmin<span class='op'>=</span><span class='fl'>0.2</span>,
-                                  threshmax<span class='op'>=</span><span class='fl'>0.3</span>,
-                                  control<span class='op'>=</span><span class='co'>## for real case: leave out control </span>
-                                    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>max.time<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span> 
-</div><div class='output co'>#&gt; It: 1, obj value: 0.6732911061</div><div class='input'>
-<span class='co'># Plotting the result</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/matplot.html'>matplot</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>coarseGrid</span>,
-        y<span class='op'>=</span><span class='va'>minInfModel</span><span class='op'>$</span><span class='va'>required</span>,
-        type<span class='op'>=</span><span class='st'>"b"</span>, pch<span class='op'>=</span><span class='fl'>19</span>, col<span class='op'>=</span><span class='st'>"blue"</span>, lty<span class='op'>=</span><span class='fl'>1</span>,
-        xlab<span class='op'>=</span><span class='st'>"dose"</span>,
-        ylab<span class='op'>=</span><span class='st'>"prior probability of DLT"</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/matplot.html'>matlines</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>coarseGrid</span>,
-         y<span class='op'>=</span><span class='va'>minInfModel</span><span class='op'>$</span><span class='va'>quantiles</span>,
-         type<span class='op'>=</span><span class='st'>"b"</span>, pch<span class='op'>=</span><span class='fl'>19</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lty<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"right"</span>,
-       legend<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"quantiles"</span>, <span class='st'>"approximation"</span><span class='op'>)</span>,
-       col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"blue"</span>, <span class='st'>"red"</span><span class='op'>)</span>,
-       lty<span class='op'>=</span><span class='fl'>1</span>,
-       bty<span class='op'>=</span><span class='st'>"n"</span><span class='op'>)</span>
-</div><div class='img'><img src='MinimalInformative-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Setting up a minimal informative prior </span></span>
+<span class='r-in'><span class='co'># max.time is quite small only for the purpose of showing the example. They </span></span>
+<span class='r-in'><span class='co'># should be increased for a real case.</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>132</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>coarseGrid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>10</span>, <span class='fl'>30</span>, <span class='fl'>60</span>, <span class='fl'>100</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>minInfModel</span> <span class='op'>&lt;-</span> <span class='fu'>MinimalInformative</span><span class='op'>(</span>dosegrid <span class='op'>=</span> <span class='va'>coarseGrid</span>,</span>
+<span class='r-in'>                                  refDose<span class='op'>=</span><span class='fl'>50</span>,</span>
+<span class='r-in'>                                  threshmin<span class='op'>=</span><span class='fl'>0.2</span>,</span>
+<span class='r-in'>                                  threshmax<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                                  control<span class='op'>=</span><span class='co'>## for real case: leave out control </span></span>
+<span class='r-in'>                                    <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>max.time<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span><span class='op'>)</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> It: 1, obj value: 0.6727662311</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plotting the result</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/matplot.html'>matplot</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>coarseGrid</span>,</span>
+<span class='r-in'>        y<span class='op'>=</span><span class='va'>minInfModel</span><span class='op'>$</span><span class='va'>required</span>,</span>
+<span class='r-in'>        type<span class='op'>=</span><span class='st'>"b"</span>, pch<span class='op'>=</span><span class='fl'>19</span>, col<span class='op'>=</span><span class='st'>"blue"</span>, lty<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>        xlab<span class='op'>=</span><span class='st'>"dose"</span>,</span>
+<span class='r-in'>        ylab<span class='op'>=</span><span class='st'>"prior probability of DLT"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/matplot.html'>matlines</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>coarseGrid</span>,</span>
+<span class='r-in'>         y<span class='op'>=</span><span class='va'>minInfModel</span><span class='op'>$</span><span class='va'>quantiles</span>,</span>
+<span class='r-in'>         type<span class='op'>=</span><span class='st'>"b"</span>, pch<span class='op'>=</span><span class='fl'>19</span>, col<span class='op'>=</span><span class='st'>"red"</span>, lty<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"right"</span>,</span>
+<span class='r-in'>       legend<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"quantiles"</span>, <span class='st'>"approximation"</span><span class='op'>)</span>,</span>
+<span class='r-in'>       col<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"blue"</span>, <span class='st'>"red"</span><span class='op'>)</span>,</span>
+<span class='r-in'>       lty<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>       bty<span class='op'>=</span><span class='st'>"n"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='MinimalInformative-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

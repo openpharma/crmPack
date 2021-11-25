@@ -177,29 +177,30 @@ will be returned</p></td>
     <p>the data frame suitable for use with <code><a href='https://rdrr.io/pkg/ggmcmc/man/ggmcmc.html'>ggmcmc</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Create some data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
-             y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-                          <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-<span class='co'># Initialize a model </span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           cov <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,
-                           refDose <span class='op'>=</span> <span class='fl'>56</span><span class='op'>)</span>
-
-<span class='co'># Get posterior for all model parameters</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin <span class='op'>=</span> <span class='fl'>100</span>,
-                       step <span class='op'>=</span> <span class='fl'>2</span>,
-                       samples <span class='op'>=</span> <span class='fl'>2000</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'># now extract the alpha0 samples (intercept of the regression model)</span>
-<span class='va'>alpha0samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span><span class='op'>(</span><span class='va'>samples</span>, <span class='st'>"alpha0"</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Create some data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>                          <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize a model </span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           cov <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           refDose <span class='op'>=</span> <span class='fl'>56</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Get posterior for all model parameters</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin <span class='op'>=</span> <span class='fl'>100</span>,</span>
+<span class='r-in'>                       step <span class='op'>=</span> <span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples <span class='op'>=</span> <span class='fl'>2000</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># now extract the alpha0 samples (intercept of the regression model)</span></span>
+<span class='r-in'><span class='va'>alpha0samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span><span class='op'>(</span><span class='va'>samples</span>, <span class='st'>"alpha0"</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

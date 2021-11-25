@@ -225,33 +225,35 @@ internal purposes.</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##Obtain prior modal estimates given the pseudo data.</span>
-<span class='co'>##First we used an empty data set such that only the dose levels under investigations are given.</span>
-<span class='co'>##In total, 12 dose levels are under investigation ranging from 25 to 300 mg with increments of 25</span>
-<span class='co'>##(i.e 25, 50, 75, ..., 300).</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>##specified our data set is the empty data</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-<span class='co'>## Given the pseudo data such that</span>
-<span class='co'>## Fix two dose level 25 and 300 mg and specified in (DLEdose slot).</span>
-<span class='co'>## Total number of subjects treated in each of these levels is 3, specified in (DLEweights slot).</span>
-<span class='co'>## The number of subjects observed with a DLE is 1.05 at dose 25 mg and 1.8 at dose 300 mg, </span>
-<span class='co'>## and specified in (binDLE slot).</span>
-<span class='co'>## the data set we used in the emptydata set, and specified in (data slot).</span>
-<span class='co'>## Then to modal estimates of the model parameters.</span>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>##using a data set (see data -class example specification) with observed DLE responses </span>
-<span class='co'>##to obtain posterior modal estimates. </span>
-<span class='co'>##for the model given the pseudo data</span>
-
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>100</span>,<span class='fl'>100</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,
-           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##Obtain prior modal estimates given the pseudo data.</span></span>
+<span class='r-in'><span class='co'>##First we used an empty data set such that only the dose levels under investigations are given.</span></span>
+<span class='r-in'><span class='co'>##In total, 12 dose levels are under investigation ranging from 25 to 300 mg with increments of 25</span></span>
+<span class='r-in'><span class='co'>##(i.e 25, 50, 75, ..., 300).</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##specified our data set is the empty data</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span></span>
+<span class='r-in'><span class='co'>## Given the pseudo data such that</span></span>
+<span class='r-in'><span class='co'>## Fix two dose level 25 and 300 mg and specified in (DLEdose slot).</span></span>
+<span class='r-in'><span class='co'>## Total number of subjects treated in each of these levels is 3, specified in (DLEweights slot).</span></span>
+<span class='r-in'><span class='co'>## The number of subjects observed with a DLE is 1.05 at dose 25 mg and 1.8 at dose 300 mg, </span></span>
+<span class='r-in'><span class='co'>## and specified in (binDLE slot).</span></span>
+<span class='r-in'><span class='co'>## the data set we used in the emptydata set, and specified in (data slot).</span></span>
+<span class='r-in'><span class='co'>## Then to modal estimates of the model parameters.</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##using a data set (see data -class example specification) with observed DLE responses </span></span>
+<span class='r-in'><span class='co'>##to obtain posterior modal estimates. </span></span>
+<span class='r-in'><span class='co'>##for the model given the pseudo data</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>100</span>,<span class='fl'>100</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

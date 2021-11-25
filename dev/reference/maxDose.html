@@ -197,119 +197,125 @@ multiple increment rules (taking the minimum across individual increments).</p><
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-
-<span class='co'># In this example we define a rule for dose increments which would allow:</span>
-<span class='co'>#   - doubling the dose if the last dose was below 20</span>
-<span class='co'>#   - only increasing the dose by 1.33 if the last dose was equal or above 20</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,
-                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Based on the rule above, we then calculate the maximum dose allowed</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-
-<span class='co'># In this example we define a rule for dose increments which would allow:</span>
-<span class='co'># maximum skip one dose level, that is 2 dose levels higher is maximum</span>
-<span class='co'># increment</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsNumDoseLevels.html'>IncrementsNumDoseLevels</a></span><span class='op'>(</span>maxLevels<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-
-<span class='co'># Based on the rule above, we then calculate the maximum dose allowed</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-
-<span class='co'># create an object of class 'DataParts'</span>
-<span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataParts.html'>DataParts</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span><span class='op'>)</span>,
-                    y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,
-                    doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,
-                               <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,
-                    part<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1L</span>,<span class='fl'>1L</span><span class='op'>)</span>,
-                    nextPart<span class='op'>=</span><span class='fl'>1L</span>,
-                    part1Ladder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeParts.html'>IncrementsRelativeParts</a></span><span class='op'>(</span>dltStart<span class='op'>=</span><span class='fl'>0</span>,
-                                        cleanStart<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>myData</span><span class='op'>)</span>
-
-
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-
-<span class='co'># In this example we define a rule for dose increments which would allow:</span>
-<span class='co'>#   - doubling the dose if no DLTs were yet observed</span>
-<span class='co'>#   - only increasing the dose by 1.33 if 1 or 2 DLTs were already observed</span>
-<span class='co'>#   - only increasing the dose by 1.2 if at least 3 DLTs were already observed</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeDLT.html'>IncrementsRelativeDLT</a></span><span class='op'>(</span>DLTintervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span>,
-                                      increments <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Based on the rule above, we then calculate the maximum dose allowed</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-
-<span class='co'># As example, here we are combining 2 different increment rules. </span>
-
-<span class='co'># The first rule is the following: </span>
-<span class='co'>#      maximum doubling the dose if no DLTs were observed at the current dose</span>
-<span class='co'>#      or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose</span>
-<span class='co'>#      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed</span>
-
-<span class='co'># The second rule is the following: </span>
-<span class='co'>#   maximum doubling the dose if the current dose is &lt;20</span>
-<span class='co'>#   OR only maximum increasing the dose by 1.33 if the current dose is &gt;=20</span>
-
-<span class='va'>myIncrements1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeDLT.html'>IncrementsRelativeDLT</a></span><span class='op'>(</span>DLTintervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span>,
-                                       increments <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>myIncrements2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,
-                                    increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Now we combine the 2 rules</span>
-<span class='va'>combIncrement</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementMin.html'>IncrementMin</a></span><span class='op'>(</span>IncrementsList<span class='op'>=</span>
-                                <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>myIncrements1</span>,<span class='va'>myIncrements2</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Finally we then calculate the maximum dose allowed by taking the minimum of the two rules</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>combIncrement</span>, 
-                       <span class='va'>data</span><span class='op'>)</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># In this example we define a rule for dose increments which would allow:</span></span>
+<span class='r-in'><span class='co'>#   - doubling the dose if the last dose was below 20</span></span>
+<span class='r-in'><span class='co'>#   - only increasing the dose by 1.33 if the last dose was equal or above 20</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Based on the rule above, we then calculate the maximum dose allowed</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># In this example we define a rule for dose increments which would allow:</span></span>
+<span class='r-in'><span class='co'># maximum skip one dose level, that is 2 dose levels higher is maximum</span></span>
+<span class='r-in'><span class='co'># increment</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsNumDoseLevels.html'>IncrementsNumDoseLevels</a></span><span class='op'>(</span>maxLevels<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Based on the rule above, we then calculate the maximum dose allowed</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># create an object of class 'DataParts'</span></span>
+<span class='r-in'><span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataParts.html'>DataParts</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,</span>
+<span class='r-in'>                               <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    part<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1L</span>,<span class='fl'>1L</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    nextPart<span class='op'>=</span><span class='fl'>1L</span>,</span>
+<span class='r-in'>                    part1Ladder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeParts.html'>IncrementsRelativeParts</a></span><span class='op'>(</span>dltStart<span class='op'>=</span><span class='fl'>0</span>,</span>
+<span class='r-in'>                                        cleanStart<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>myData</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># In this example we define a rule for dose increments which would allow:</span></span>
+<span class='r-in'><span class='co'>#   - doubling the dose if no DLTs were yet observed</span></span>
+<span class='r-in'><span class='co'>#   - only increasing the dose by 1.33 if 1 or 2 DLTs were already observed</span></span>
+<span class='r-in'><span class='co'>#   - only increasing the dose by 1.2 if at least 3 DLTs were already observed</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeDLT.html'>IncrementsRelativeDLT</a></span><span class='op'>(</span>DLTintervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                      increments <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Based on the rule above, we then calculate the maximum dose allowed</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>8</span>, <span class='fl'>8</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>8</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># As example, here we are combining 2 different increment rules. </span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># The first rule is the following: </span></span>
+<span class='r-in'><span class='co'>#      maximum doubling the dose if no DLTs were observed at the current dose</span></span>
+<span class='r-in'><span class='co'>#      or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose</span></span>
+<span class='r-in'><span class='co'>#      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># The second rule is the following: </span></span>
+<span class='r-in'><span class='co'>#   maximum doubling the dose if the current dose is &lt;20</span></span>
+<span class='r-in'><span class='co'>#   OR only maximum increasing the dose by 1.33 if the current dose is &gt;=20</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myIncrements1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeDLT.html'>IncrementsRelativeDLT</a></span><span class='op'>(</span>DLTintervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                       increments <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myIncrements2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                    increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Now we combine the 2 rules</span></span>
+<span class='r-in'><span class='va'>combIncrement</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementMin.html'>IncrementMin</a></span><span class='op'>(</span>IncrementsList<span class='op'>=</span></span>
+<span class='r-in'>                                <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>myIncrements1</span>,<span class='va'>myIncrements2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Finally we then calculate the maximum dose allowed by taking the minimum of the two rules</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'>maxDose</span><span class='op'>(</span><span class='va'>combIncrement</span>, </span>
+<span class='r-in'>                       <span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

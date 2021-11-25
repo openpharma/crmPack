@@ -154,17 +154,17 @@ estimate.</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># In the example below the MTD is defined as the dose for which prob(DLE)=0.33 and</span>
-<span class='co'># we will use the 25th quantile of the posterior of MTD as our next best dose.</span>
-<span class='va'>mtdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestMTD.html'>NextBestMTD</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fl'>0.33</span>,
-                           derive<span class='op'>=</span>
-                             <span class='kw'>function</span><span class='op'>(</span><span class='va'>mtdSamples</span><span class='op'>)</span><span class='op'>{</span>
-                               <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>mtdSamples</span>, probs<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>
-                             <span class='op'>}</span><span class='op'>)</span>
-
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># In the example below the MTD is defined as the dose for which prob(DLE)=0.33 and</span></span>
+<span class='r-in'><span class='co'># we will use the 25th quantile of the posterior of MTD as our next best dose.</span></span>
+<span class='r-in'><span class='va'>mtdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestMTD.html'>NextBestMTD</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fl'>0.33</span>,</span>
+<span class='r-in'>                           derive<span class='op'>=</span></span>
+<span class='r-in'>                             <span class='kw'>function</span><span class='op'>(</span><span class='va'>mtdSamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                               <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>mtdSamples</span>, probs<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span></span>
+<span class='r-in'>                             <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

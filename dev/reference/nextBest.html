@@ -273,371 +273,391 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-<span class='co'># Initialize the CRM model used to model the data</span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           cov<span class='op'>=</span>
-                             <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                    nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,
-                           refDose<span class='op'>=</span><span class='fl'>56</span><span class='op'>)</span>
-
-<span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,
-                       step<span class='op'>=</span><span class='fl'>2</span>,
-                       samples<span class='op'>=</span><span class='fl'>2000</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,
-                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'># Define the rule which will be used to select the next best dose</span>
-<span class='co'># based on the class 'NextBestMTD'</span>
-<span class='va'>mtdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestMTD.html'>NextBestMTD</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fl'>0.33</span>,
-                           derive<span class='op'>=</span>
-                             <span class='kw'>function</span><span class='op'>(</span><span class='va'>mtdSamples</span><span class='op'>)</span><span class='op'>{</span>
-                               <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>mtdSamples</span>, probs<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>
-                             <span class='op'>}</span><span class='op'>)</span>
-
-<span class='co'># Calculate the next best dose</span>
-<span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mtdNextBest</span>,
-                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,
-                               samples<span class='op'>=</span><span class='va'>samples</span>, model<span class='op'>=</span><span class='va'>model</span>, data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-<span class='co'># Initialize the CRM model used to model the data</span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           cov<span class='op'>=</span>
-                             <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                    nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,
-                           refDose<span class='op'>=</span><span class='fl'>56</span><span class='op'>)</span>
-
-<span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,
-                       step<span class='op'>=</span><span class='fl'>2</span>,
-                       samples<span class='op'>=</span><span class='fl'>2000</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,
-                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'># Define the rule which will be used to select the next best dose</span>
-<span class='co'># based on the class 'NextBestNCRM'</span>
-<span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestNCRM.html'>NextBestNCRM</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,
-                           overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>
-
-<span class='co'># Calculate the next best dose</span>
-<span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,
-                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,
-                               samples<span class='op'>=</span><span class='va'>samples</span>, model<span class='op'>=</span><span class='va'>model</span>, data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'># Look at the probabilities</span>
-<span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>probs</span>
-</div><div class='output co'>#&gt;       dose target overdose
-#&gt;  [1,]  0.1 0.0015   0.0000
-#&gt;  [2,]  0.5 0.0090   0.0005
-#&gt;  [3,]  1.5 0.0225   0.0005
-#&gt;  [4,]  3.0 0.0365   0.0100
-#&gt;  [5,]  6.0 0.1195   0.0215
-#&gt;  [6,] 10.0 0.2175   0.0395
-#&gt;  [7,] 12.0 0.2735   0.0665
-#&gt;  [8,] 14.0 0.3120   0.0950
-#&gt;  [9,] 16.0 0.3400   0.1220
-#&gt; [10,] 18.0 0.3360   0.1625
-#&gt; [11,] 20.0 0.3255   0.2085
-#&gt; [12,] 22.0 0.3440   0.2505
-#&gt; [13,] 24.0 0.3585   0.2880
-#&gt; [14,] 26.0 0.3380   0.3320
-#&gt; [15,] 28.0 0.3485   0.3595
-#&gt; [16,] 30.0 0.3415   0.4015
-#&gt; [17,] 32.0 0.3260   0.4340
-#&gt; [18,] 34.0 0.3275   0.4630
-#&gt; [19,] 36.0 0.3190   0.4885
-#&gt; [20,] 38.0 0.3105   0.5265
-#&gt; [21,] 40.0 0.3025   0.5585
-#&gt; [22,] 42.0 0.2845   0.5915
-#&gt; [23,] 44.0 0.2740   0.6120
-#&gt; [24,] 46.0 0.2660   0.6375
-#&gt; [25,] 48.0 0.2655   0.6530
-#&gt; [26,] 50.0 0.2585   0.6670
-#&gt; [27,] 52.0 0.2460   0.6885
-#&gt; [28,] 54.0 0.2340   0.7060
-#&gt; [29,] 56.0 0.2220   0.7230
-#&gt; [30,] 58.0 0.2085   0.7435
-#&gt; [31,] 60.0 0.1860   0.7695
-#&gt; [32,] 62.0 0.1695   0.7885
-#&gt; [33,] 64.0 0.1630   0.7990
-#&gt; [34,] 66.0 0.1565   0.8095
-#&gt; [35,] 68.0 0.1455   0.8220
-#&gt; [36,] 70.0 0.1415   0.8295
-#&gt; [37,] 72.0 0.1260   0.8450
-#&gt; [38,] 74.0 0.1220   0.8500
-#&gt; [39,] 76.0 0.1165   0.8585
-#&gt; [40,] 78.0 0.1095   0.8665
-#&gt; [41,] 80.0 0.1025   0.8735</div><div class='input'>
-
-
-<span class='co'># create an object of class 'DataParts'</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataParts.html'>DataParts</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span><span class='op'>)</span>,
-                    y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,
-                    doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,
-                               <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,
-                    part<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1L</span>,<span class='fl'>1L</span><span class='op'>)</span>,
-                    nextPart<span class='op'>=</span><span class='fl'>1L</span>,
-                    part1Ladder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='co'># Initialize the CRM model used to model the data</span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           cov<span class='op'>=</span>
-                             <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                    nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,
-                           refDose<span class='op'>=</span><span class='fl'>56</span><span class='op'>)</span>
-
-<span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,
-                       step<span class='op'>=</span><span class='fl'>2</span>,
-                       samples<span class='op'>=</span><span class='fl'>2000</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeParts.html'>IncrementsRelativeParts</a></span><span class='op'>(</span>dltStart<span class='op'>=</span><span class='fl'>0</span>,
-                                        cleanStart<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'># Define the rule which will be used to select the next best dose</span>
-<span class='co'># based on the class 'NextBestNCRM'</span>
-<span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestNCRM.html'>NextBestNCRM</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,
-                           overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                           maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>
-
-<span class='co'># Calculate the next best dose</span>
-<span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,
-                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,
-                               samples<span class='op'>=</span><span class='va'>samples</span>, 
-                               model<span class='op'>=</span><span class='va'>model</span>, 
-                               data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
-             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-             doseGrid<span class='op'>=</span>
-               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>5</span>,
-                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='input'>
-
-<span class='co'># The rule to select the next best dose will be based on the 3+3 method</span>
-<span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestThreePlusThree.html'>NextBestThreePlusThree</a></span><span class='op'>(</span><span class='op'>)</span>
-
-<span class='co'># Calculate the next best dose</span>
-<span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,
-                               data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-
-<span class='co'># Create the data</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>
-  x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>,
-      <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>50</span><span class='op'>)</span>,
-  y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>,
-      <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>, <span class='fl'>0.42</span>, <span class='fl'>0.59</span>, <span class='fl'>0.45</span>, <span class='fl'>0.6</span>, <span class='fl'>0.7</span>, <span class='fl'>0.55</span>, <span class='fl'>0.6</span>,
-      <span class='fl'>0.52</span>, <span class='fl'>0.54</span>, <span class='fl'>0.56</span>, <span class='fl'>0.43</span>, <span class='fl'>0.41</span>, <span class='fl'>0.39</span>, <span class='fl'>0.34</span>, <span class='fl'>0.38</span>, <span class='fl'>0.21</span><span class='op'>)</span>,
-  doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-             <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='co'># Initialize the Dual-Endpoint model (in this case RW1)</span>
-<span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                        Sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,
-                        sigma2betaW <span class='op'>=</span> <span class='fl'>0.01</span>,
-                        sigma2W <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>, b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,
-                        rho <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>, b<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,
-                        smooth <span class='op'>=</span> <span class='st'>"RW1"</span><span class='op'>)</span>
-
-<span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,
-                       step<span class='op'>=</span><span class='fl'>2</span>,
-                       samples<span class='op'>=</span><span class='fl'>500</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span>
-<span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,
-                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,
-                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'># Define the rule which will be used to select the next best dose</span>
-<span class='co'># In this case target a dose achieving at least 0.9 of maximum biomarker level (efficacy)</span>
-<span class='co'># and with a probability below 0.25 that prob(DLT)&gt;0.35 (safety)</span>
-<span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestDualEndpoint.html'>NextBestDualEndpoint</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                   overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                   maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>
-
-<span class='co'># Calculate the next best dose</span>
-<span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,
-                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,
-                               samples<span class='op'>=</span><span class='va'>samples</span>,
-                               model<span class='op'>=</span><span class='va'>model</span>,
-                               data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>## joint plot</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>plot</span><span class='op'>)</span>
-</div><div class='img'><img src='nextBest-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'>## show customization of single plot</span>
-<span class='va'>variant1</span> <span class='op'>&lt;-</span> <span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>singlePlots</span><span class='op'>$</span><span class='va'>plot1</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.window.html'>xlim</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>variant1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 31 rows containing missing values (geom_bar).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 1 rows containing missing values (geom_vline).</span></div><div class='img'><img src='nextBest-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'>## we need a data object with doses &gt;= 1:</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>150</span>,<span class='fl'>200</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,
-           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,
-           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'><span class='co'>##The 'nextBest' method using NextBestTDsamples' rules class object</span>
-<span class='co'>## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples</span>
-<span class='co'>## model must be of 'LogisticIndepBeta' class</span>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>##Define the options for MCMC</span>
-<span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>1000</span><span class='op'>)</span>
-<span class='co'>##Then genreate the samples</span>
-<span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'>##target probabilities of the occurrence of a DLE during trial and at the end of trial are </span>
-<span class='co'>## defined as 0.35 and 0.3, respectively</span>
-<span class='co'>##Specified in 'derive' such that the 30% posterior quantile of the TD35 and TD30 samples </span>
-<span class='co'>## will be used as TD35 and TD30 estimates</span>
-<span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTDsamples.html'>NextBestTDsamples</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span>,
-                              derive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,probs<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-
-<span class='co'>##doselimit is the maximum allowable dose level to be given to subjects</span>
-<span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>tdNextBest</span>,doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,samples<span class='op'>=</span><span class='va'>samples</span>,
-                        model<span class='op'>=</span><span class='va'>model</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>## we need a data object with doses &gt;= 1:</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>150</span>,<span class='fl'>200</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,
-           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,
-           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'><span class='co'>##The 'nextBest' method using NextBestTD' rules class object</span>
-<span class='co'>## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples</span>
-<span class='co'>## model must be of 'LogisticIndepBeta' class</span>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>##target probabilities of the occurrence of a DLE during trial and at the end of trial </span>
-<span class='co'>## are defined as 0.35 and 0.3, respectively</span>
-<span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span>
-
-<span class='co'>##doselimit is the maximum allowable dose level to be given to subjects</span>
-<span class='va'>RecommendDose</span><span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>tdNextBest</span>,
-              doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,
-              model<span class='op'>=</span><span class='va'>model</span>,
-              data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>## we need a data object with doses &gt;= 1:</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>300</span>,<span class='fl'>250</span>,<span class='fl'>150</span><span class='op'>)</span>,
-               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,
-               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,
-               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-<span class='co'>##The 'nextBest' method using NextBestMaxGain' rules class object</span>
-<span class='co'>## using the 'ModelTox' class DLE model </span>
-<span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span>
-<span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>## using the 'ModelEff' class efficacy model </span>
-<span class='co'>## Effmodel e.g 'Effloglog' class</span>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-
-<span class='co'>##target probabilities of the occurrence of a DLE during trial and at the</span>
-<span class='co'>## end of trial are defined as</span>
-<span class='co'>## 0.35 and 0.3, respectively</span>
-<span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGain.html'>NextBestMaxGain</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span>
-
-<span class='co'>##doselimit is the maximum allowable dose level to be given to subjects</span>
-<span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mynextbest</span>,doselimit<span class='op'>=</span><span class='fl'>300</span>,model<span class='op'>=</span><span class='va'>DLEmodel</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>300</span>,<span class='fl'>250</span>,<span class='fl'>150</span><span class='op'>)</span>,
-                y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,
-                w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,
-                doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'><span class='co'>##The 'nextBest' method using NextBestMaxGainSamples' rules class object</span>
-<span class='co'>## using the 'ModelTox' class DLE model </span>
-<span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span>
-<span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>## using the 'ModelEff' class efficacy model </span>
-<span class='co'>## Effmodel e.g 'Effloglog' class</span>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-<span class='co'>##DLE and efficacy samples must be of 'Samples' Class</span>
-<span class='va'>DLEsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>DLEmodel</span>,<span class='va'>options</span><span class='op'>)</span>
-<span class='va'>Effsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>Effmodel</span>,<span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'>##target probabilities of the occurrence of a DLE during trial and at the end of trial </span>
-<span class='co'>## are defined as 0.35 and 0.3, respectively</span>
-<span class='co'>## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of TD35 and TD30, </span>
-<span class='co'>## function specified in TDderive slot</span>
-<span class='co'>## Using the 50% posterior quantile of the Gstar (the dose which gives the maxim gain value) </span>
-<span class='co'>## samples as Gstar estimate,function specified in Gstarderive slot </span>
-<span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,
-                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,
-                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,
-                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-
-<span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mynextbest</span>,doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,samples<span class='op'>=</span><span class='va'>DLEsamples</span>,model<span class='op'>=</span><span class='va'>DLEmodel</span>,
-                        data<span class='op'>=</span><span class='va'>data</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span>
-
-<span class='co'>## now using the 'EffFlexi' class efficacy model:</span>
-
-<span class='co'>##The 'nextBest' method using NextBestMaxGainSamples' rules class object for 'EffFlexi' model class</span>
-<span class='co'>## using the 'ModelTox' class DLE model </span>
-<span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                    sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,
-                    sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-
-<span class='co'>##DLE and efficacy samples must be of 'Samples' Class</span>
-<span class='va'>DLEsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>DLEmodel</span>,<span class='va'>options</span><span class='op'>)</span>
-<span class='va'>Effsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>Effmodel</span>,<span class='va'>options</span><span class='op'>)</span>
-
-<span class='co'>##target probabilities of the occurrence of a DLE during trial and at the </span>
-<span class='co'>## end of trial are defined as 0.35 and 0.3, respectively</span>
-<span class='co'>## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of </span>
-<span class='co'>## TD35 and TD30, function specified in TDderive slot</span>
-<span class='co'>## Using the 50% posterio quantile of the Gstar (the dose which gives the maximum </span>
-<span class='co'>## gain value) samples as Gstar estimate,function specified in Gstarderive slot </span>
-<span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,
-                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,
-                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,
-                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span>
-                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-
-<span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mynextbest</span>,doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,samples<span class='op'>=</span><span class='va'>DLEsamples</span>,
-                        model<span class='op'>=</span><span class='va'>DLEmodel</span>,
-                        data<span class='op'>=</span><span class='va'>data</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           cov<span class='op'>=</span></span>
+<span class='r-in'>                             <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                    nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           refDose<span class='op'>=</span><span class='fl'>56</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
+<span class='r-in'>                       step<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>2000</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule which will be used to select the next best dose</span></span>
+<span class='r-in'><span class='co'># based on the class 'NextBestMTD'</span></span>
+<span class='r-in'><span class='va'>mtdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestMTD.html'>NextBestMTD</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fl'>0.33</span>,</span>
+<span class='r-in'>                           derive<span class='op'>=</span></span>
+<span class='r-in'>                             <span class='kw'>function</span><span class='op'>(</span><span class='va'>mtdSamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                               <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>mtdSamples</span>, probs<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span></span>
+<span class='r-in'>                             <span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Calculate the next best dose</span></span>
+<span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mtdNextBest</span>,</span>
+<span class='r-in'>                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,</span>
+<span class='r-in'>                               samples<span class='op'>=</span><span class='va'>samples</span>, model<span class='op'>=</span><span class='va'>model</span>, data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>3</span>, <span class='fl'>4</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           cov<span class='op'>=</span></span>
+<span class='r-in'>                             <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                    nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           refDose<span class='op'>=</span><span class='fl'>56</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
+<span class='r-in'>                       step<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>2000</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule which will be used to select the next best dose</span></span>
+<span class='r-in'><span class='co'># based on the class 'NextBestNCRM'</span></span>
+<span class='r-in'><span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestNCRM.html'>NextBestNCRM</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Calculate the next best dose</span></span>
+<span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,</span>
+<span class='r-in'>                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,</span>
+<span class='r-in'>                               samples<span class='op'>=</span><span class='va'>samples</span>, model<span class='op'>=</span><span class='va'>model</span>, data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Look at the probabilities</span></span>
+<span class='r-in'><span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>probs</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       dose target overdose</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1,]  0.1 0.0015   0.0000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [2,]  0.5 0.0090   0.0005</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3,]  1.5 0.0225   0.0005</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4,]  3.0 0.0365   0.0100</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5,]  6.0 0.1195   0.0215</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6,] 10.0 0.2175   0.0395</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7,] 12.0 0.2735   0.0665</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8,] 14.0 0.3120   0.0950</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9,] 16.0 0.3400   0.1220</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10,] 18.0 0.3360   0.1625</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11,] 20.0 0.3255   0.2085</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [12,] 22.0 0.3440   0.2505</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13,] 24.0 0.3585   0.2880</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [14,] 26.0 0.3380   0.3320</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [15,] 28.0 0.3485   0.3595</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [16,] 30.0 0.3415   0.4015</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17,] 32.0 0.3260   0.4340</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [18,] 34.0 0.3275   0.4630</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19,] 36.0 0.3190   0.4885</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [20,] 38.0 0.3105   0.5265</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21,] 40.0 0.3025   0.5585</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [22,] 42.0 0.2845   0.5915</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [23,] 44.0 0.2740   0.6120</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [24,] 46.0 0.2660   0.6375</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25,] 48.0 0.2655   0.6530</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [26,] 50.0 0.2585   0.6670</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [27,] 52.0 0.2460   0.6885</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [28,] 54.0 0.2340   0.7060</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [29,] 56.0 0.2220   0.7230</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [30,] 58.0 0.2085   0.7435</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [31,] 60.0 0.1860   0.7695</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [32,] 62.0 0.1695   0.7885</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [33,] 64.0 0.1630   0.7990</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [34,] 66.0 0.1565   0.8095</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [35,] 68.0 0.1455   0.8220</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [36,] 70.0 0.1415   0.8295</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [37,] 72.0 0.1260   0.8450</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [38,] 74.0 0.1220   0.8500</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [39,] 76.0 0.1165   0.8585</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [40,] 78.0 0.1095   0.8665</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [41,] 80.0 0.1025   0.8735</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># create an object of class 'DataParts'</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataParts.html'>DataParts</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,</span>
+<span class='r-in'>                               <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    part<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1L</span>,<span class='fl'>1L</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    nextPart<span class='op'>=</span><span class='fl'>1L</span>,</span>
+<span class='r-in'>                    part1Ladder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           cov<span class='op'>=</span></span>
+<span class='r-in'>                             <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                    nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           refDose<span class='op'>=</span><span class='fl'>56</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
+<span class='r-in'>                       step<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>2000</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelativeParts.html'>IncrementsRelativeParts</a></span><span class='op'>(</span>dltStart<span class='op'>=</span><span class='fl'>0</span>,</span>
+<span class='r-in'>                                        cleanStart<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule which will be used to select the next best dose</span></span>
+<span class='r-in'><span class='co'># based on the class 'NextBestNCRM'</span></span>
+<span class='r-in'><span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestNCRM.html'>NextBestNCRM</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                           maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Calculate the next best dose</span></span>
+<span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,</span>
+<span class='r-in'>                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,</span>
+<span class='r-in'>                               samples<span class='op'>=</span><span class='va'>samples</span>, </span>
+<span class='r-in'>                               model<span class='op'>=</span><span class='va'>model</span>, </span>
+<span class='r-in'>                               data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>             y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>             cohort<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>             doseGrid<span class='op'>=</span></span>
+<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>5</span>,</span>
+<span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># The rule to select the next best dose will be based on the 3+3 method</span></span>
+<span class='r-in'><span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestThreePlusThree.html'>NextBestThreePlusThree</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Calculate the next best dose</span></span>
+<span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,</span>
+<span class='r-in'>                               data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Create the data</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span></span>
+<span class='r-in'>  x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>,</span>
+<span class='r-in'>      <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>50</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>,</span>
+<span class='r-in'>      <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>  w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>, <span class='fl'>0.42</span>, <span class='fl'>0.59</span>, <span class='fl'>0.45</span>, <span class='fl'>0.6</span>, <span class='fl'>0.7</span>, <span class='fl'>0.55</span>, <span class='fl'>0.6</span>,</span>
+<span class='r-in'>      <span class='fl'>0.52</span>, <span class='fl'>0.54</span>, <span class='fl'>0.56</span>, <span class='fl'>0.43</span>, <span class='fl'>0.41</span>, <span class='fl'>0.39</span>, <span class='fl'>0.34</span>, <span class='fl'>0.38</span>, <span class='fl'>0.21</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>             <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Initialize the Dual-Endpoint model (in this case RW1)</span></span>
+<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        Sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        sigma2betaW <span class='op'>=</span> <span class='fl'>0.01</span>,</span>
+<span class='r-in'>                        sigma2W <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>, b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        rho <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>, b<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                        smooth <span class='op'>=</span> <span class='st'>"RW1"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
+<span class='r-in'>                       step<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>500</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span></span>
+<span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Define the rule which will be used to select the next best dose</span></span>
+<span class='r-in'><span class='co'># In this case target a dose achieving at least 0.9 of maximum biomarker level (efficacy)</span></span>
+<span class='r-in'><span class='co'># and with a probability below 0.25 that prob(DLT)&gt;0.35 (safety)</span></span>
+<span class='r-in'><span class='va'>myNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestDualEndpoint.html'>NextBestDualEndpoint</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   overdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.35</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                   maxOverdoseProb<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Calculate the next best dose</span></span>
+<span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>myNextBest</span>,</span>
+<span class='r-in'>                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,</span>
+<span class='r-in'>                               samples<span class='op'>=</span><span class='va'>samples</span>,</span>
+<span class='r-in'>                               model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>                               data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## joint plot</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>plot</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='nextBest-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## show customization of single plot</span></span>
+<span class='r-in'><span class='va'>variant1</span> <span class='op'>&lt;-</span> <span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>singlePlots</span><span class='op'>$</span><span class='va'>plot1</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/lims.html'>xlim</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>variant1</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 31 rows containing missing values (geom_bar).</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Removed 1 rows containing missing values (geom_vline).</span>
+<span class='r-plt img'><img src='nextBest-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## we need a data object with doses &gt;= 1:</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>150</span>,<span class='fl'>200</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'><span class='co'>##The 'nextBest' method using NextBestTDsamples' rules class object</span></span>
+<span class='r-in'><span class='co'>## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples</span></span>
+<span class='r-in'><span class='co'>## model must be of 'LogisticIndepBeta' class</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Define the options for MCMC</span></span>
+<span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>1000</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Then genreate the samples</span></span>
+<span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##target probabilities of the occurrence of a DLE during trial and at the end of trial are </span></span>
+<span class='r-in'><span class='co'>## defined as 0.35 and 0.3, respectively</span></span>
+<span class='r-in'><span class='co'>##Specified in 'derive' such that the 30% posterior quantile of the TD35 and TD30 samples </span></span>
+<span class='r-in'><span class='co'>## will be used as TD35 and TD30 estimates</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTDsamples.html'>NextBestTDsamples</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                              derive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,probs<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##doselimit is the maximum allowable dose level to be given to subjects</span></span>
+<span class='r-in'><span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>tdNextBest</span>,doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,samples<span class='op'>=</span><span class='va'>samples</span>,</span>
+<span class='r-in'>                        model<span class='op'>=</span><span class='va'>model</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## we need a data object with doses &gt;= 1:</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>150</span>,<span class='fl'>200</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'><span class='co'>##The 'nextBest' method using NextBestTD' rules class object</span></span>
+<span class='r-in'><span class='co'>## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples</span></span>
+<span class='r-in'><span class='co'>## model must be of 'LogisticIndepBeta' class</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##target probabilities of the occurrence of a DLE during trial and at the end of trial </span></span>
+<span class='r-in'><span class='co'>## are defined as 0.35 and 0.3, respectively</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##doselimit is the maximum allowable dose level to be given to subjects</span></span>
+<span class='r-in'><span class='va'>RecommendDose</span><span class='op'>&lt;-</span> <span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>tdNextBest</span>,</span>
+<span class='r-in'>              doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,</span>
+<span class='r-in'>              model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>              data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## we need a data object with doses &gt;= 1:</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>300</span>,<span class='fl'>250</span>,<span class='fl'>150</span><span class='op'>)</span>,</span>
+<span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
+<span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The 'nextBest' method using NextBestMaxGain' rules class object</span></span>
+<span class='r-in'><span class='co'>## using the 'ModelTox' class DLE model </span></span>
+<span class='r-in'><span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span></span>
+<span class='r-in'><span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## using the 'ModelEff' class efficacy model </span></span>
+<span class='r-in'><span class='co'>## Effmodel e.g 'Effloglog' class</span></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##target probabilities of the occurrence of a DLE during trial and at the</span></span>
+<span class='r-in'><span class='co'>## end of trial are defined as</span></span>
+<span class='r-in'><span class='co'>## 0.35 and 0.3, respectively</span></span>
+<span class='r-in'><span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGain.html'>NextBestMaxGain</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##doselimit is the maximum allowable dose level to be given to subjects</span></span>
+<span class='r-in'><span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mynextbest</span>,doselimit<span class='op'>=</span><span class='fl'>300</span>,model<span class='op'>=</span><span class='va'>DLEmodel</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span><span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>300</span>,<span class='fl'>250</span>,<span class='fl'>150</span><span class='op'>)</span>,</span>
+<span class='r-in'>                y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
+<span class='r-in'>                doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'><span class='co'>##The 'nextBest' method using NextBestMaxGainSamples' rules class object</span></span>
+<span class='r-in'><span class='co'>## using the 'ModelTox' class DLE model </span></span>
+<span class='r-in'><span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span></span>
+<span class='r-in'><span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## using the 'ModelEff' class efficacy model </span></span>
+<span class='r-in'><span class='co'>## Effmodel e.g 'Effloglog' class</span></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##DLE and efficacy samples must be of 'Samples' Class</span></span>
+<span class='r-in'><span class='va'>DLEsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>DLEmodel</span>,<span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Effsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>Effmodel</span>,<span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##target probabilities of the occurrence of a DLE during trial and at the end of trial </span></span>
+<span class='r-in'><span class='co'>## are defined as 0.35 and 0.3, respectively</span></span>
+<span class='r-in'><span class='co'>## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of TD35 and TD30, </span></span>
+<span class='r-in'><span class='co'>## function specified in TDderive slot</span></span>
+<span class='r-in'><span class='co'>## Using the 50% posterior quantile of the Gstar (the dose which gives the maxim gain value) </span></span>
+<span class='r-in'><span class='co'>## samples as Gstar estimate,function specified in Gstarderive slot </span></span>
+<span class='r-in'><span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,</span>
+<span class='r-in'>                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mynextbest</span>,doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,samples<span class='op'>=</span><span class='va'>DLEsamples</span>,model<span class='op'>=</span><span class='va'>DLEmodel</span>,</span>
+<span class='r-in'>                        data<span class='op'>=</span><span class='va'>data</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## now using the 'EffFlexi' class efficacy model:</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The 'nextBest' method using NextBestMaxGainSamples' rules class object for 'EffFlexi' model class</span></span>
+<span class='r-in'><span class='co'>## using the 'ModelTox' class DLE model </span></span>
+<span class='r-in'><span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                    sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##DLE and efficacy samples must be of 'Samples' Class</span></span>
+<span class='r-in'><span class='va'>DLEsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>DLEmodel</span>,<span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Effsamples</span><span class='op'>&lt;-</span><span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>,<span class='va'>Effmodel</span>,<span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##target probabilities of the occurrence of a DLE during trial and at the </span></span>
+<span class='r-in'><span class='co'>## end of trial are defined as 0.35 and 0.3, respectively</span></span>
+<span class='r-in'><span class='co'>## Using 30% posterior quantile of the TD35 and TD30 samples as estimates of </span></span>
+<span class='r-in'><span class='co'>## TD35 and TD30, function specified in TDderive slot</span></span>
+<span class='r-in'><span class='co'>## Using the 50% posterio quantile of the Gstar (the dose which gives the maximum </span></span>
+<span class='r-in'><span class='co'>## gain value) samples as Gstar estimate,function specified in Gstarderive slot </span></span>
+<span class='r-in'><span class='va'>mynextbest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestMaxGainSamples.html'>NextBestMaxGainSamples</a></span><span class='op'>(</span>DLEDuringTrialtarget<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                                   DLEEndOfTrialtarget<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                                   TDderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,prob<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span>,</span>
+<span class='r-in'>                                   Gstarderive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>Gstarsamples</span><span class='op'>)</span><span class='op'>{</span></span>
+<span class='r-in'>                                     <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>Gstarsamples</span>,prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>RecommendDose</span><span class='op'>&lt;-</span><span class='fu'>nextBest</span><span class='op'>(</span><span class='va'>mynextbest</span>,doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,samples<span class='op'>=</span><span class='va'>DLEsamples</span>,</span>
+<span class='r-in'>                        model<span class='op'>=</span><span class='va'>DLEmodel</span>,</span>
+<span class='r-in'>                        data<span class='op'>=</span><span class='va'>data</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

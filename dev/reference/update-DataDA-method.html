@@ -198,32 +198,34 @@ to a new cohort</p></td>
     <p>the new <code><a href='DataDA-class.html'>DataDA</a></code> object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>thisData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
-                   y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,
-                   doseGrid<span class='op'>=</span>
-                     <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,
-                       <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,
-                   u<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>,<span class='fl'>30</span>,<span class='fl'>15</span>,<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,<span class='fl'>30</span>,<span class='fl'>60</span><span class='op'>)</span>,
-                   t0<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='op'>-</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>30</span>,<span class='op'>-</span><span class='fl'>40</span>,<span class='op'>-</span><span class='fl'>55</span>,<span class='op'>-</span><span class='fl'>70</span>,<span class='op'>-</span><span class='fl'>75</span>,<span class='op'>-</span><span class='fl'>85</span><span class='op'>)</span>,
-                   Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Used default patient IDs!</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Used best guess cohort indices!</span></div><div class='input'>
-
-<span class='co'>## later update this example with new function call structure</span>
-<span class='va'>factDLTs</span> <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>y</span>
-<span class='va'>factSurv</span> <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>u</span>
-<span class='va'>factT0</span>   <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>t0</span>
-<span class='va'>thisT0</span>   <span class='op'>&lt;-</span> <span class='fl'>5</span>
-<span class='va'>thisDose</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
-<span class='va'>thisDLTs</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>
-<span class='va'>thisSurv</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
-
-<span class='va'>tempData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>thisData</span>,
-                   factDLTs<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factDLTs</span>,<span class='va'>thisDLTs</span><span class='op'>)</span>,  <span class='co'>####the y will be updated according to u</span>
-                   factSurv<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factSurv</span>,<span class='va'>thisSurv</span><span class='op'>)</span>,
-                   factT0<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factT0</span>,<span class='va'>thisT0</span><span class='op'>)</span>,
-                   thisDose<span class='op'>=</span> <span class='va'>thisDose</span>,
-                   trialtime<span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>  <span class='co'>####this is the globle timeline for a trial</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>thisData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   doseGrid<span class='op'>=</span></span>
+<span class='r-in'>                     <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
+<span class='r-in'>                       <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   u<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>,<span class='fl'>30</span>,<span class='fl'>15</span>,<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,<span class='fl'>30</span>,<span class='fl'>60</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   t0<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='op'>-</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>30</span>,<span class='op'>-</span><span class='fl'>40</span>,<span class='op'>-</span><span class='fl'>55</span>,<span class='op'>-</span><span class='fl'>70</span>,<span class='op'>-</span><span class='fl'>75</span>,<span class='op'>-</span><span class='fl'>85</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## later update this example with new function call structure</span></span>
+<span class='r-in'><span class='va'>factDLTs</span> <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>y</span></span>
+<span class='r-in'><span class='va'>factSurv</span> <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>u</span></span>
+<span class='r-in'><span class='va'>factT0</span>   <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>t0</span></span>
+<span class='r-in'><span class='va'>thisT0</span>   <span class='op'>&lt;-</span> <span class='fl'>5</span></span>
+<span class='r-in'><span class='va'>thisDose</span> <span class='op'>&lt;-</span> <span class='fl'>20</span></span>
+<span class='r-in'><span class='va'>thisDLTs</span> <span class='op'>&lt;-</span> <span class='fl'>0</span></span>
+<span class='r-in'><span class='va'>thisSurv</span> <span class='op'>&lt;-</span> <span class='fl'>20</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>tempData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>thisData</span>,</span>
+<span class='r-in'>                   factDLTs<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factDLTs</span>,<span class='va'>thisDLTs</span><span class='op'>)</span>,  <span class='co'>####the y will be updated according to u</span></span>
+<span class='r-in'>                   factSurv<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factSurv</span>,<span class='va'>thisSurv</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   factT0<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factT0</span>,<span class='va'>thisT0</span><span class='op'>)</span>,</span>
+<span class='r-in'>                   thisDose<span class='op'>=</span> <span class='va'>thisDose</span>,</span>
+<span class='r-in'>                   trialtime<span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>  <span class='co'>####this is the globle timeline for a trial</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

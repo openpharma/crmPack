@@ -194,116 +194,119 @@ efficacy model of <code><a href='Effloglog-class.html'>Effloglog</a></code> clas
 </ul>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,</span>
-<span class='co'>## a pseudo efficacy model and an efficacy sample</span>
-<span class='co'>##The DLE model must be from 'ModelTox' class (DLEmodel slot)</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-<span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='va'>DLEsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>DLEmodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>##The efficacy model must be from 'ModelEff' class (Effmodel slot)</span>
-<span class='co'>## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)</span>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-<span class='va'>Effsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>Effmodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>## Given a dose level 75,</span>
-<span class='fu'>gain</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,DLEmodel<span class='op'>=</span><span class='va'>DLEmodel</span>,DLEsamples<span class='op'>=</span><span class='va'>DLEsamples</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1] 0.6408328 0.9328737 1.3317937 0.9755601 1.5632863 0.6305203 0.9138837
-#&gt;   [8] 1.3243097 1.6300890 0.6922057 0.6948791 1.1977047 0.7107659 1.3493244
-#&gt;  [15] 1.1315107 0.5192456 1.6181089 1.1255197 0.6139932 1.1130316 0.2994175
-#&gt;  [22] 0.7625404 0.2999797 0.8641572 1.2187100 1.2814324 0.3824490 0.9207420
-#&gt;  [29] 1.1403403 0.3695379 1.4697527 0.9047391 0.4072838 0.4086533 0.9336283
-#&gt;  [36] 1.0253846 1.2746207 1.2389333 1.5941384 1.1963421 0.5599394 0.5972302
-#&gt;  [43] 1.0144189 0.8002580 0.4502802 1.1163495 0.5809296 1.4244017 0.9590778
-#&gt;  [50] 1.2828274 1.5297917 0.8138715 0.7212816 1.4461675 1.0349981 0.7453069
-#&gt;  [57] 1.0210496 1.2419379 1.3741230 1.0986051 0.8758285 1.1735655 0.5976080
-#&gt;  [64] 0.8904322 1.6233541 0.8059716 1.4919759 1.1787462 1.0145394 1.3836082
-#&gt;  [71] 1.2268082 1.1704848 1.2750769 0.9169179 0.5963439 1.5454189 0.7963324
-#&gt;  [78] 1.7116639 0.9309376 0.9485817 0.9387339 1.1573696 0.6048362 0.9319197
-#&gt;  [85] 1.1612720 0.9907762 0.9403920 1.1415660 1.3232608 0.9664984 0.6543996
-#&gt;  [92] 0.9952130 0.8423264 1.0979808 0.7735316 1.0236896 0.3128155 0.7172526
-#&gt;  [99] 1.2987465 1.3156077 0.8861968 0.8041023 1.3887307 0.7626237 1.0574967
-#&gt; [106] 0.5654114 0.9387753 1.1332396 1.3187461 1.3750455 1.2840815 1.0980457
-#&gt; [113] 0.5106619 0.3654438 0.9253451 0.8131477 0.9423602 1.2746120 1.4926014
-#&gt; [120] 1.2882855 0.9578128 0.6690747 1.7255752 0.6915817 1.1805667 1.5462893
-#&gt; [127] 1.4799990 1.2547675 1.4885465 1.5331700 0.8000799 0.9242831 0.8972873
-#&gt; [134] 0.5822894 1.4211837 1.4711264 1.0189077 1.1383444 0.5706135 1.3398664
-#&gt; [141] 0.6468929 0.4029541 1.3724370 1.1276486 1.0439208 1.5059942 1.3998324
-#&gt; [148] 0.1770508 1.4076756 1.1154960 1.5349931 1.0484810 1.4391473 0.4710791
-#&gt; [155] 0.5403335 0.7005458 1.8050641 1.4848396 0.7156361 1.3325150 0.7362993
-#&gt; [162] 1.3438726 0.8285547 0.3849198 1.5678709 1.2341540 0.5106456 0.2668566
-#&gt; [169] 0.5504141 1.3424511 0.9247626 1.0576609 1.3647710 1.7021687 1.6352920
-#&gt; [176] 0.3140200 1.0421455 1.1013259 1.5020743 0.6462236 1.4313372 1.3540828
-#&gt; [183] 0.7369552 0.6403422 0.9502782 1.2130977 0.7939327 1.1204203 1.1277037
-#&gt; [190] 1.3037997 0.3774526 1.2877474 0.9799113 0.8576480 1.0937620 1.1248835
-#&gt; [197] 1.2573625 1.4749750 0.8422842 1.3569855</div><div class='input'><span class='co'>##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,</span>
-<span class='co'>## the 'EffFlexi' efficacy model and an efficacy sample</span>
-<span class='co'>##The DLE model must be from 'ModelTox' class (DLEmodel slot)</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span>
-<span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='va'>DLEsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>DLEmodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>##The efficacy model must be from 'EffFlexi' class (Effmodel slot)</span>
-<span class='co'>## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)</span>
-<span class='va'>EffFleximodel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,
-                     sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='va'>Effsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>EffFleximodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>## Given a dose level 75,</span>
-<span class='fu'>gain</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,DLEmodel<span class='op'>=</span><span class='va'>DLEmodel</span>,DLEsamples<span class='op'>=</span><span class='va'>DLEsamples</span>,Effmodel<span class='op'>=</span><span class='va'>EffFleximodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   [1]  0.706365395  2.392962405  1.137734982  1.233096228  0.798306524
-#&gt;   [6] -1.958688109  1.084975367 -0.726199165  1.389146922  2.189434328
-#&gt;  [11] -0.617444057  0.653391017  0.253850858 -0.057070525  1.764182999
-#&gt;  [16]  1.455402546 -0.216903003  1.320521214  5.096195467 -0.296848356
-#&gt;  [21]  2.346575320  0.339089600 -0.109591203  0.107819535 -0.314364131
-#&gt;  [26] -0.272042816  0.511398832  1.006187575  0.741281555  1.953600758
-#&gt;  [31]  1.910365010  2.111098821 -0.023224716  1.721120672  2.593389420
-#&gt;  [36]  0.081379314  0.837359306  1.362701564  1.451778846 -0.139754067
-#&gt;  [41]  1.873604177  0.659227341  2.000563266 -0.119671637  0.496583617
-#&gt;  [46]  1.186551182  0.594686247  1.685077812  2.720132884  0.792287629
-#&gt;  [51]  3.197209275  0.154667013 -0.232778313  0.098577985  1.608524617
-#&gt;  [56]  1.941824909 -0.526150122  1.199068129  0.652746692  0.396167632
-#&gt;  [61]  0.963019655  4.136937721  1.197888580 -0.169674362  1.703293793
-#&gt;  [66]  0.882192765 -0.343822085  2.359508196  0.452495993  1.462263147
-#&gt;  [71] -0.425253562 -2.280014019  0.765606092 -3.589483405  0.149556806
-#&gt;  [76]  0.722056844  2.136483358 -0.011754366  2.237479094  0.513902830
-#&gt;  [81]  0.892011928  0.154779532  0.242910871  1.127556167  2.792155351
-#&gt;  [86]  0.073381084  0.909502087  0.023768544  0.978197803  0.556404844
-#&gt;  [91]  0.715751698  0.545363929  2.150765895  2.182070916  0.704305007
-#&gt;  [96] -0.196564048  1.354320117  0.982870761  2.706938086 -0.481674791
-#&gt; [101]  3.879135269 -1.641877458  0.827498425 -1.502504540  0.813972046
-#&gt; [106]  0.209540325  1.057988460  1.482058219  0.233254933  2.120585004
-#&gt; [111]  3.301281744  1.937384360  1.709103420  1.721066923  1.200778025
-#&gt; [116] -0.911927923 -0.164510484 -0.437328310 -0.531561892  4.356128705
-#&gt; [121]  0.075912786  0.220662027  0.062547371  0.093335539 -0.362417620
-#&gt; [126]  0.412076343  0.911731811  1.987582663  0.578646448 -0.130523289
-#&gt; [131]  1.178243703  1.606058277  0.974629858 -0.649971288  1.708508297
-#&gt; [136]  1.912594634  3.731044634  2.285217831  0.384248169  2.328538705
-#&gt; [141]  0.909643520  0.190016931 -0.059740271 -0.857455891  0.404584814
-#&gt; [146]  1.338483201  0.494991814  0.816881957 -0.075916302  1.004123086
-#&gt; [151]  7.040577447 -0.909805467  3.407243060 -0.604550358  1.269735140
-#&gt; [156]  1.490998544  0.917573390  1.667180634 -1.201226936  0.401432420
-#&gt; [161]  2.076558313  1.780044087  1.479582726  2.232484833 -0.061694887
-#&gt; [166]  1.104451407  1.979259725  0.383928775  0.663816753  0.032832199
-#&gt; [171] -0.390962718  2.034785115  1.411856888  1.211541038  1.858485724
-#&gt; [176] -0.729934169 -0.530768495  1.087526957  1.484607049  0.758453604
-#&gt; [181] -0.056971043 -0.159410296  1.055073469  0.875742492  0.791460317
-#&gt; [186]  0.422082251  1.346204951  0.598675009  0.699915969  0.620701453
-#&gt; [191] -0.656085914  0.197413411 -0.786045432  1.295331257  0.240783113
-#&gt; [196]  0.004150992  2.552820184  0.878990885  1.019386662 -0.334493950</div><div class='input'><span class='co'>##Obtain the gain value for a given dose, a pseudo DLE model and  a pseudo efficacy model</span>
-<span class='co'>## without samples</span>
-<span class='co'>##The DLE model must be from 'ModelTox' class (DLEmodel slot)</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>##The efficacy model must be from 'Effloglog' class  (Effmodel slot)</span>
-<span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>emptydata</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span>
-<span class='co'>## Given a dose level 75,</span>
-<span class='fu'>gain</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,DLEmodel<span class='op'>=</span><span class='va'>DLEmodel</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1.020657</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,</span></span>
+<span class='r-in'><span class='co'>## a pseudo efficacy model and an efficacy sample</span></span>
+<span class='r-in'><span class='co'>##The DLE model must be from 'ModelTox' class (DLEmodel slot)</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span></span>
+<span class='r-in'><span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>DLEsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>DLEmodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The efficacy model must be from 'ModelEff' class (Effmodel slot)</span></span>
+<span class='r-in'><span class='co'>## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)</span></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Effsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>Effmodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Given a dose level 75,</span></span>
+<span class='r-in'><span class='fu'>gain</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,DLEmodel<span class='op'>=</span><span class='va'>DLEmodel</span>,DLEsamples<span class='op'>=</span><span class='va'>DLEsamples</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1] 0.6408328 0.9328737 1.3317937 0.9755601 1.5632863 0.6305203 0.9138837</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [8] 1.3243097 1.6300890 0.6922057 0.6948791 1.1977047 0.7107659 1.3493244</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [15] 1.1315107 0.5192456 1.6181089 1.1255197 0.6139932 1.1130316 0.2994175</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [22] 0.7625404 0.2999797 0.8641572 1.2187100 1.2814324 0.3824490 0.9207420</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [29] 1.1403403 0.3695379 1.4697527 0.9047391 0.4072838 0.4086533 0.9336283</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [36] 1.0253846 1.2746207 1.2389333 1.5941384 1.1963421 0.5599394 0.5972302</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [43] 1.0144189 0.8002580 0.4502802 1.1163495 0.5809296 1.4244017 0.9590778</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [50] 1.2828274 1.5297917 0.8138715 0.7212816 1.4461675 1.0349981 0.7453069</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [57] 1.0210496 1.2419379 1.3741230 1.0986051 0.8758285 1.1735655 0.5976080</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [64] 0.8904322 1.6233541 0.8059716 1.4919759 1.1787462 1.0145394 1.3836082</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [71] 1.2268082 1.1704848 1.2750769 0.9169179 0.5963439 1.5454189 0.7963324</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [78] 1.7116639 0.9309376 0.9485817 0.9387339 1.1573696 0.6048362 0.9319197</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [85] 1.1612720 0.9907762 0.9403920 1.1415660 1.3232608 0.9664984 0.6543996</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [92] 0.9952130 0.8423264 1.0979808 0.7735316 1.0236896 0.3128155 0.7172526</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [99] 1.2987465 1.3156077 0.8861968 0.8041023 1.3887307 0.7626237 1.0574967</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [106] 0.5654114 0.9387753 1.1332396 1.3187461 1.3750455 1.2840815 1.0980457</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [113] 0.5106619 0.3654438 0.9253451 0.8131477 0.9423602 1.2746120 1.4926014</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [120] 1.2882855 0.9578128 0.6690747 1.7255752 0.6915817 1.1805667 1.5462893</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [127] 1.4799990 1.2547675 1.4885465 1.5331700 0.8000799 0.9242831 0.8972873</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [134] 0.5822894 1.4211837 1.4711264 1.0189077 1.1383444 0.5706135 1.3398664</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [141] 0.6468929 0.4029541 1.3724370 1.1276486 1.0439208 1.5059942 1.3998324</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [148] 0.1770508 1.4076756 1.1154960 1.5349931 1.0484810 1.4391473 0.4710791</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [155] 0.5403335 0.7005458 1.8050641 1.4848396 0.7156361 1.3325150 0.7362993</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [162] 1.3438726 0.8285547 0.3849198 1.5678709 1.2341540 0.5106456 0.2668566</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [169] 0.5504141 1.3424511 0.9247626 1.0576609 1.3647710 1.7021687 1.6352920</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [176] 0.3140200 1.0421455 1.1013259 1.5020743 0.6462236 1.4313372 1.3540828</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [183] 0.7369552 0.6403422 0.9502782 1.2130977 0.7939327 1.1204203 1.1277037</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [190] 1.3037997 0.3774526 1.2877474 0.9799113 0.8576480 1.0937620 1.1248835</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [197] 1.2573625 1.4749750 0.8422842 1.3569855</span>
+<span class='r-in'><span class='co'>##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,</span></span>
+<span class='r-in'><span class='co'>## the 'EffFlexi' efficacy model and an efficacy sample</span></span>
+<span class='r-in'><span class='co'>##The DLE model must be from 'ModelTox' class (DLEmodel slot)</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='va'>emptydata</span></span>
+<span class='r-in'><span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>DLEsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>DLEmodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The efficacy model must be from 'EffFlexi' class (Effmodel slot)</span></span>
+<span class='r-in'><span class='co'>## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)</span></span>
+<span class='r-in'><span class='va'>EffFleximodel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='EffFlexi.html'>EffFlexi</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>, <span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
+<span class='r-in'>                     sigma2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>0.1</span>,b<span class='op'>=</span><span class='fl'>0.1</span><span class='op'>)</span>,sigma2betaW<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>20</span>,b<span class='op'>=</span><span class='fl'>50</span><span class='op'>)</span>,smooth<span class='op'>=</span><span class='st'>"RW2"</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Effsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>EffFleximodel</span>, <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## Given a dose level 75,</span></span>
+<span class='r-in'><span class='fu'>gain</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,DLEmodel<span class='op'>=</span><span class='va'>DLEmodel</span>,DLEsamples<span class='op'>=</span><span class='va'>DLEsamples</span>,Effmodel<span class='op'>=</span><span class='va'>EffFleximodel</span>,Effsamples<span class='op'>=</span><span class='va'>Effsamples</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [1]  0.706365395  2.392962405  1.137734982  1.233096228  0.798306524</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   [6] -1.958688109  1.084975367 -0.726199165  1.389146922  2.189434328</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [11] -0.617444057  0.653391017  0.253850858 -0.057070525  1.764182999</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [16]  1.455402546 -0.216903003  1.320521214  5.096195467 -0.296848356</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [21]  2.346575320  0.339089600 -0.109591203  0.107819535 -0.314364131</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [26] -0.272042816  0.511398832  1.006187575  0.741281555  1.953600758</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [31]  1.910365010  2.111098821 -0.023224716  1.721120672  2.593389420</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [36]  0.081379314  0.837359306  1.362701564  1.451778846 -0.139754067</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [41]  1.873604177  0.659227341  2.000563266 -0.119671637  0.496583617</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [46]  1.186551182  0.594686247  1.685077812  2.720132884  0.792287629</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [51]  3.197209275  0.154667013 -0.232778313  0.098577985  1.608524617</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [56]  1.941824909 -0.526150122  1.199068129  0.652746692  0.396167632</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [61]  0.963019655  4.136937721  1.197888580 -0.169674362  1.703293793</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [66]  0.882192765 -0.343822085  2.359508196  0.452495993  1.462263147</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [71] -0.425253562 -2.280014019  0.765606092 -3.589483405  0.149556806</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [76]  0.722056844  2.136483358 -0.011754366  2.237479094  0.513902830</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [81]  0.892011928  0.154779532  0.242910871  1.127556167  2.792155351</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [86]  0.073381084  0.909502087  0.023768544  0.978197803  0.556404844</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [91]  0.715751698  0.545363929  2.150765895  2.182070916  0.704305007</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [96] -0.196564048  1.354320117  0.982870761  2.706938086 -0.481674791</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [101]  3.879135269 -1.641877458  0.827498425 -1.502504540  0.813972046</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [106]  0.209540325  1.057988460  1.482058219  0.233254933  2.120585004</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [111]  3.301281744  1.937384360  1.709103420  1.721066923  1.200778025</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [116] -0.911927923 -0.164510484 -0.437328310 -0.531561892  4.356128705</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [121]  0.075912786  0.220662027  0.062547371  0.093335539 -0.362417620</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [126]  0.412076343  0.911731811  1.987582663  0.578646448 -0.130523289</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [131]  1.178243703  1.606058277  0.974629858 -0.649971288  1.708508297</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [136]  1.912594634  3.731044634  2.285217831  0.384248169  2.328538705</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [141]  0.909643520  0.190016931 -0.059740271 -0.857455891  0.404584814</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [146]  1.338483201  0.494991814  0.816881957 -0.075916302  1.004123086</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [151]  7.040577447 -0.909805467  3.407243060 -0.604550358  1.269735140</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [156]  1.490998544  0.917573390  1.667180634 -1.201226936  0.401432420</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [161]  2.076558313  1.780044087  1.479582726  2.232484833 -0.061694887</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [166]  1.104451407  1.979259725  0.383928775  0.663816753  0.032832199</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [171] -0.390962718  2.034785115  1.411856888  1.211541038  1.858485724</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [176] -0.729934169 -0.530768495  1.087526957  1.484607049  0.758453604</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [181] -0.056971043 -0.159410296  1.055073469  0.875742492  0.791460317</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [186]  0.422082251  1.346204951  0.598675009  0.699915969  0.620701453</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [191] -0.656085914  0.197413411 -0.786045432  1.295331257  0.240783113</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [196]  0.004150992  2.552820184  0.878990885  1.019386662 -0.334493950</span>
+<span class='r-in'><span class='co'>##Obtain the gain value for a given dose, a pseudo DLE model and  a pseudo efficacy model</span></span>
+<span class='r-in'><span class='co'>## without samples</span></span>
+<span class='r-in'><span class='co'>##The DLE model must be from 'ModelTox' class (DLEmodel slot)</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##The efficacy model must be from 'Effloglog' class  (Effmodel slot)</span></span>
+<span class='r-in'><span class='va'>Effmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='Effloglog.html'>Effloglog</a></span><span class='op'>(</span>Eff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.223</span>,<span class='fl'>2.513</span><span class='op'>)</span>,Effdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,nu<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span>,b<span class='op'>=</span><span class='fl'>0.025</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>emptydata</span>,c<span class='op'>=</span><span class='fl'>0</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## Given a dose level 75,</span></span>
+<span class='r-in'><span class='fu'>gain</span><span class='op'>(</span>dose<span class='op'>=</span><span class='fl'>75</span>,DLEmodel<span class='op'>=</span><span class='va'>DLEmodel</span>,Effmodel<span class='op'>=</span><span class='va'>Effmodel</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1.020657</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

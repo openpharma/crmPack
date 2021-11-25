@@ -159,22 +159,22 @@
     <p>The modified <code><a href='StoppingAll-class.html'>StoppingAll</a></code> object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'>## Example of combining an atomic stopping rule with a list of stopping rules</span>
-<span class='co'>## with an AND ('&amp;') operator</span>
-
-<span class='va'>myStopping1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinCohorts.html'>StoppingMinCohorts</a></span><span class='op'>(</span>nCohorts<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>myStopping2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,
-                                  prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span>
-
-<span class='va'>myStopping3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>20</span><span class='op'>)</span>
-
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span>  <span class='va'>myStopping3</span> <span class='op'>&amp;</span> <span class='op'>(</span><span class='va'>myStopping1</span> <span class='op'>|</span> <span class='va'>myStopping2</span> <span class='op'>)</span> 
-
-
-
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='co'>## Example of combining an atomic stopping rule with a list of stopping rules</span></span>
+<span class='r-in'><span class='co'>## with an AND ('&amp;') operator</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinCohorts.html'>StoppingMinCohorts</a></span><span class='op'>(</span>nCohorts<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>myStopping2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetProb.html'>StoppingTargetProb</a></span><span class='op'>(</span>target<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.35</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                  prob<span class='op'>=</span><span class='fl'>0.5</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping3</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>20</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span>  <span class='va'>myStopping3</span> <span class='op'>&amp;</span> <span class='op'>(</span><span class='va'>myStopping1</span> <span class='op'>|</span> <span class='va'>myStopping2</span> <span class='op'>)</span> </span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

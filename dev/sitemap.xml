@@ -70,9 +70,6 @@
     <loc>https://github.com/roche/crmPack/reference/Data-class.html</loc>
   </url>
   <url>
-    <loc>https://github.com/roche/crmPack/reference/Data.html</loc>
-  </url>
-  <url>
     <loc>https://github.com/roche/crmPack/reference/DataDA-class.html</loc>
   </url>
   <url>
@@ -586,6 +583,9 @@
     <loc>https://github.com/roche/crmPack/reference/getResultList.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/h_all_equivalent.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/initialize-DualEndpointOld-method.html</loc>
   </url>
   <url>
@@ -835,7 +835,7 @@
     <loc>https://github.com/roche/crmPack/reference/update-LogisticIndepBeta-method.html</loc>
   </url>
   <url>
-    <loc>https://github.com/roche/crmPack/reference/validate_data.html</loc>
+    <loc>https://github.com/roche/crmPack/reference/validate_data_objects.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/windowLength.html</loc>

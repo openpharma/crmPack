@@ -157,165 +157,167 @@ to print</p></td>
 appropriate column names</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>##obtain the plot for the simulation results</span>
-<span class='co'>##If only DLE responses are considered in the simulations</span>
-<span class='co'>##Specified your simulations when no DLE samples are used</span>
-<span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>##The design only incorporate DLE responses and DLE samples are involved</span>
-<span class='co'>##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span>
-<span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span>
-<span class='co'>##Then the escalation rule</span>
-<span class='va'>tdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,
-                         targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span>
-
-<span class='co'>##Then the starting data, an empty data set</span>
-<span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='Data.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>## The cohort size, size of 3 subjects</span>
-<span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span>
-<span class='co'>##Deifne the increments for the dose-escalation process</span>
-<span class='co'>##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span>
-<span class='co'>##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span>
-<span class='co'>##This is to specified a maximum of 3-fold restriction in dose-esclation</span>
-<span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span><span class='op'>)</span>, 
-                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='co'>##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached</span>
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span>
-
-
-<span class='co'>##Specified the design(for details please refer to the 'TDDesign' example)</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDDesign.html'>TDDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,
-                   nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,
-                   stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                   increments<span class='op'>=</span><span class='va'>myIncrements</span>,
-                   cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                   data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
-
-<span class='co'>##Specify the truth of the DLE responses</span>
-<span class='va'>myTruth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span>
-<span class='op'>{</span> <span class='va'>model</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='co'>##The simulations</span>
-<span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span>
-<span class='va'>mySim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,
-                  args<span class='op'>=</span><span class='cn'>NULL</span>,
-                  truth<span class='op'>=</span><span class='va'>myTruth</span>,
-                  nsim<span class='op'>=</span><span class='fl'>1</span>,
-                  seed<span class='op'>=</span><span class='fl'>819</span>,
-                  parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='co'>##Then produce a summary of your simulations</span>
-<span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,
-                 truth<span class='op'>=</span><span class='va'>myTruth</span><span class='op'>)</span>
-<span class='co'>##show the summary of the simulated results in a data frame</span>
-<span class='fu'>show</span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Summary of 1 simulations
-#&gt; 
-#&gt; Target probability of DLE p(DLE) used at the end of a trial was 30 %
-#&gt; The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-#&gt; TDEOT at dose Grid was 150 
-#&gt; Target p(DLE) used during a trial was 35 %
-#&gt; The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-#&gt; TDDT at dose Grid was 150 
-#&gt; Number of patients overall : mean 36 (36, 36) 
-#&gt; Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) 
-#&gt; Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) 
-#&gt; Proportions of observed DLT in the trials : mean 22 % (22 %, 22 %) 
-#&gt; Mean toxicity risks for the patients : mean 27 % (27 %, 27 %) 
-#&gt; Doses selected as TDEOT : mean 150 (150, 150) 
-#&gt; True toxicity at TDEOT : mean 26 % (26 %, 26 %) 
-#&gt; Proportion of trials selecting the TDEOT: 100 %
-#&gt; Proportion of trials selecting the TDDT: 100 %
-#&gt; Dose most often selected as TDEOT: 150 
-#&gt; Observed toxicity rate at dose most often selected: 33 %
-#&gt; Fitted probabilities of DLE at dose most often selected : mean 29 % (29 %, 29 %) 
-#&gt; The summary table of the final TDEOT across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    155.1   155.1   155.1   155.1   155.1   155.1  
-#&gt; The summary table of the final ratios of the TDEOT across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    2.405   2.405   2.405   2.405   2.405   2.405  
-#&gt; The summary table of the final TDDT across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    177.8   177.8   177.8   177.8   177.8   177.8  
-#&gt; The summary table of dose levels, the optimal dose
-#&gt;  to recommend for subsequent study across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    155.1   155.1   155.1   155.1   155.1   155.1  
-#&gt; The summary table of the final ratios of the optimal dose for stopping across
-#&gt;                   all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    2.405   2.405   2.405   2.405   2.405   2.405  
-#&gt; </div><div class='input'>
-
-
-<span class='co'>##If DLE samples are involved</span>
-<span class='co'>##The escalation rule</span>
-<span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTDsamples.html'>NextBestTDsamples</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,
-                              targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span>,
-                              derive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,probs<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span>
-<span class='co'>##The design</span>
-<span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDsamplesDesign.html'>TDsamplesDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,
-                          nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,
-                          stopping<span class='op'>=</span><span class='va'>myStopping</span>,
-                          increments<span class='op'>=</span><span class='va'>myIncrements</span>,
-                          cohortSize<span class='op'>=</span><span class='va'>mySize</span>,
-                          data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span>
-<span class='co'>##Options for MCMC</span>
-<span class='co'>##For illustration purpose, we will use 50 burn-ins to generate 200 samples and </span>
-<span class='co'>##only simulate for 2 trials (nsim=2)</span>
-<span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>50</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span>
-<span class='co'>##The simualtions</span>
-<span class='va'>mySim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,
-                  args<span class='op'>=</span><span class='cn'>NULL</span>,
-                  truth<span class='op'>=</span><span class='va'>myTruth</span>,
-                  nsim<span class='op'>=</span><span class='fl'>2</span>,
-                  seed<span class='op'>=</span><span class='fl'>819</span>,
-                  mcmcOptions<span class='op'>=</span><span class='va'>options</span>,
-                  parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='co'>##Then produce a summary of your simulations</span>
-<span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,
-         truth<span class='op'>=</span><span class='va'>myTruth</span><span class='op'>)</span>
-<span class='co'>##show the summary of the simulated results in a data frame</span>
-<span class='fu'>show</span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Summary of 2 simulations
-#&gt; 
-#&gt; Target probability of DLE p(DLE) used at the end of a trial was 30 %
-#&gt; The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 
-#&gt; TDEOT at dose Grid was 150 
-#&gt; Target p(DLE) used during a trial was 35 %
-#&gt; The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 
-#&gt; TDDT at dose Grid was 150 
-#&gt; Number of patients overall : mean 20 (6, 33) 
-#&gt; Number of patients treated above the target p(DLE) used at the end of a trial : mean 6 (1, 11) 
-#&gt; Number of patients treated above the target p(DLE) used during a trial : mean 6 (1, 11) 
-#&gt; Proportions of observed DLT in the trials : mean 11 % (2 %, 20 %) 
-#&gt; Mean toxicity risks for the patients : mean 16 % (3 %, 28 %) 
-#&gt; Doses selected as TDEOT : mean 50 (10, 90) 
-#&gt; True toxicity at TDEOT : mean 0 % (0 %, 0 %) 
-#&gt; Proportion of trials selecting the TDEOT: 0 %
-#&gt; Proportion of trials selecting the TDDT: 0 %
-#&gt; Dose most often selected as TDEOT: 0 
-#&gt; Observed toxicity rate at dose most often selected: NaN %
-#&gt; Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) 
-#&gt; The summary table of the final TDEOT across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    17.95   43.51   69.07   69.07   94.63  120.19  
-#&gt; The summary table of the final ratios of the TDEOT across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    473.5   781.3  1089.2  1089.2  1397.0  1704.8  
-#&gt; The summary table of the final TDDT across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    24.92   56.13   87.34   87.34  118.56  149.77  
-#&gt; The summary table of dose levels, the optimal dose
-#&gt;  to recommend for subsequent study across all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    17.95   43.51   69.07   69.07   94.63  120.19  
-#&gt; The summary table of the final ratios of the optimal dose for stopping across
-#&gt;                   all simulations
-#&gt;     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  
-#&gt;    473.5   781.3  1089.2  1089.2  1397.0  1704.8  
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>##obtain the plot for the simulation results</span></span>
+<span class='r-in'><span class='co'>##If only DLE responses are considered in the simulations</span></span>
+<span class='r-in'><span class='co'>##Specified your simulations when no DLE samples are used</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The design only incorporate DLE responses and DLE samples are involved</span></span>
+<span class='r-in'><span class='co'>##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model</span></span>
+<span class='r-in'><span class='va'>model</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Then the escalation rule</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='NextBestTD.html'>NextBestTD</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                         targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Then the starting data, an empty data set</span></span>
+<span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## The cohort size, size of 3 subjects</span></span>
+<span class='r-in'><span class='va'>mySize</span> <span class='op'>&lt;-</span><span class='fu'><a href='CohortSizeConst.html'>CohortSizeConst</a></span><span class='op'>(</span>size<span class='op'>=</span><span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Deifne the increments for the dose-escalation process</span></span>
+<span class='r-in'><span class='co'>##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid</span></span>
+<span class='r-in'><span class='co'>##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid</span></span>
+<span class='r-in'><span class='co'>##This is to specified a maximum of 3-fold restriction in dose-esclation</span></span>
+<span class='r-in'><span class='va'>myIncrements</span><span class='op'>&lt;-</span><span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span><span class='op'>)</span>, </span>
+<span class='r-in'>                                 increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached</span></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingMinPatients.html'>StoppingMinPatients</a></span><span class='op'>(</span>nPatients<span class='op'>=</span><span class='fl'>36</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Specified the design(for details please refer to the 'TDDesign' example)</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDDesign.html'>TDDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>                   nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,</span>
+<span class='r-in'>                   stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                   increments<span class='op'>=</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                   cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                   data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##Specify the truth of the DLE responses</span></span>
+<span class='r-in'><span class='va'>myTruth</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>dose</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span> <span class='va'>model</span><span class='op'>@</span><span class='va'>prob</span><span class='op'>(</span><span class='va'>dose</span>, phi1<span class='op'>=</span><span class='op'>-</span><span class='fl'>53.66584</span>, phi2<span class='op'>=</span><span class='fl'>10.50499</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##The simulations</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose only 1 simulation is produced (nsim=1). </span></span>
+<span class='r-in'><span class='va'>mySim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,</span>
+<span class='r-in'>                  args<span class='op'>=</span><span class='cn'>NULL</span>,</span>
+<span class='r-in'>                  truth<span class='op'>=</span><span class='va'>myTruth</span>,</span>
+<span class='r-in'>                  nsim<span class='op'>=</span><span class='fl'>1</span>,</span>
+<span class='r-in'>                  seed<span class='op'>=</span><span class='fl'>819</span>,</span>
+<span class='r-in'>                  parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,</span>
+<span class='r-in'>                 truth<span class='op'>=</span><span class='va'>myTruth</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##show the summary of the simulated results in a data frame</span></span>
+<span class='r-in'><span class='fu'>show</span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Summary of 1 simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Target probability of DLE p(DLE) used at the end of a trial was 30 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TDEOT at dose Grid was 150 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Target p(DLE) used during a trial was 35 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TDDT at dose Grid was 150 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of patients overall : mean 36 (36, 36) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of patients treated above the target p(DLE) used at the end of a trial : mean 9 (9, 9) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of patients treated above the target p(DLE) used during a trial : mean 9 (9, 9) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Proportions of observed DLT in the trials : mean 22 % (22 %, 22 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Mean toxicity risks for the patients : mean 27 % (27 %, 27 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Doses selected as TDEOT : mean 150 (150, 150) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> True toxicity at TDEOT : mean 26 % (26 %, 26 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Proportion of trials selecting the TDEOT: 100 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Proportion of trials selecting the TDDT: 100 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Dose most often selected as TDEOT: 150 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Observed toxicity rate at dose most often selected: 33 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Fitted probabilities of DLE at dose most often selected : mean 29 % (29 %, 29 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final TDEOT across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    155.1   155.1   155.1   155.1   155.1   155.1  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final ratios of the TDEOT across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    2.405   2.405   2.405   2.405   2.405   2.405  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final TDDT across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    177.8   177.8   177.8   177.8   177.8   177.8  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of dose levels, the optimal dose</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  to recommend for subsequent study across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    155.1   155.1   155.1   155.1   155.1   155.1  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final ratios of the optimal dose for stopping across</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                   all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    2.405   2.405   2.405   2.405   2.405   2.405  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>##If DLE samples are involved</span></span>
+<span class='r-in'><span class='co'>##The escalation rule</span></span>
+<span class='r-in'><span class='va'>tdNextBest</span><span class='op'>&lt;-</span><span class='fu'><a href='NextBestTDsamples.html'>NextBestTDsamples</a></span><span class='op'>(</span>targetDuringTrial<span class='op'>=</span><span class='fl'>0.35</span>,</span>
+<span class='r-in'>                              targetEndOfTrial<span class='op'>=</span><span class='fl'>0.3</span>,</span>
+<span class='r-in'>                              derive<span class='op'>=</span><span class='kw'>function</span><span class='op'>(</span><span class='va'>TDsamples</span><span class='op'>)</span><span class='op'>{</span><span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>TDsamples</span>,probs<span class='op'>=</span><span class='fl'>0.3</span><span class='op'>)</span><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##The design</span></span>
+<span class='r-in'><span class='va'>design</span> <span class='op'>&lt;-</span> <span class='fu'><a href='TDsamplesDesign.html'>TDsamplesDesign</a></span><span class='op'>(</span>model<span class='op'>=</span><span class='va'>model</span>,</span>
+<span class='r-in'>                          nextBest<span class='op'>=</span><span class='va'>tdNextBest</span>,</span>
+<span class='r-in'>                          stopping<span class='op'>=</span><span class='va'>myStopping</span>,</span>
+<span class='r-in'>                          increments<span class='op'>=</span><span class='va'>myIncrements</span>,</span>
+<span class='r-in'>                          cohortSize<span class='op'>=</span><span class='va'>mySize</span>,</span>
+<span class='r-in'>                          data<span class='op'>=</span><span class='va'>data</span>,startingDose<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Options for MCMC</span></span>
+<span class='r-in'><span class='co'>##For illustration purpose, we will use 50 burn-ins to generate 200 samples and </span></span>
+<span class='r-in'><span class='co'>##only simulate for 2 trials (nsim=2)</span></span>
+<span class='r-in'><span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>50</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##The simualtions</span></span>
+<span class='r-in'><span class='va'>mySim</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/simulate.html'>simulate</a></span><span class='op'>(</span><span class='va'>design</span>,</span>
+<span class='r-in'>                  args<span class='op'>=</span><span class='cn'>NULL</span>,</span>
+<span class='r-in'>                  truth<span class='op'>=</span><span class='va'>myTruth</span>,</span>
+<span class='r-in'>                  nsim<span class='op'>=</span><span class='fl'>2</span>,</span>
+<span class='r-in'>                  seed<span class='op'>=</span><span class='fl'>819</span>,</span>
+<span class='r-in'>                  mcmcOptions<span class='op'>=</span><span class='va'>options</span>,</span>
+<span class='r-in'>                  parallel<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##Then produce a summary of your simulations</span></span>
+<span class='r-in'><span class='va'>MYSUM</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>mySim</span>,</span>
+<span class='r-in'>         truth<span class='op'>=</span><span class='va'>myTruth</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>##show the summary of the simulated results in a data frame</span></span>
+<span class='r-in'><span class='fu'>show</span><span class='op'>(</span><span class='va'>MYSUM</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Summary of 2 simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Target probability of DLE p(DLE) used at the end of a trial was 30 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The dose level corresponds to the target p(DLE) used at the end of a trial, TDEOT, was 152.6195 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TDEOT at dose Grid was 150 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Target p(DLE) used during a trial was 35 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The dose level corresponds to the target p(DLE) used during a trial, TDDT, was 155.972 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TDDT at dose Grid was 150 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of patients overall : mean 20 (6, 33) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of patients treated above the target p(DLE) used at the end of a trial : mean 6 (1, 11) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of patients treated above the target p(DLE) used during a trial : mean 6 (1, 11) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Proportions of observed DLT in the trials : mean 11 % (2 %, 20 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Mean toxicity risks for the patients : mean 16 % (3 %, 28 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Doses selected as TDEOT : mean 50 (10, 90) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> True toxicity at TDEOT : mean 0 % (0 %, 0 %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Proportion of trials selecting the TDEOT: 0 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Proportion of trials selecting the TDDT: 0 %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Dose most often selected as TDEOT: 0 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Observed toxicity rate at dose most often selected: NaN %</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Fitted probabilities of DLE at dose most often selected : mean NA % (NA %, NA %) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final TDEOT across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    17.95   43.51   69.07   69.07   94.63  120.19  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final ratios of the TDEOT across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    473.5   781.3  1089.2  1089.2  1397.0  1704.8  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final TDDT across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    24.92   56.13   87.34   87.34  118.56  149.77  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of dose levels, the optimal dose</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  to recommend for subsequent study across all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    17.95   43.51   69.07   69.07   94.63  120.19  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> The summary table of the final ratios of the optimal dose for stopping across</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                   all simulations</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Min. 1st Qu.  Median    Mean 3rd Qu.    Max.  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    473.5   781.3  1089.2  1089.2  1397.0  1704.8  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

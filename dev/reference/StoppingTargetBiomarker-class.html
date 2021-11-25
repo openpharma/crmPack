@@ -158,15 +158,15 @@ relative to the maximum, so must be a probability range) or <code>absolute</code
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># As example, here is the rule for: </span>
-<span class='co'>#   stopping the study if there is at least 0.5 probability that the biomarker </span>
-<span class='co'>#   (efficacy) is within the biomarker target range of [0.9, 1.0] (relative to the</span>
-<span class='co'>#   maximum for the biomarker).</span>
-
-<span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetBiomarker.html'>StoppingTargetBiomarker</a></span><span class='op'>(</span>target <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,
-                                      prob <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># As example, here is the rule for: </span></span>
+<span class='r-in'><span class='co'>#   stopping the study if there is at least 0.5 probability that the biomarker </span></span>
+<span class='r-in'><span class='co'>#   (efficacy) is within the biomarker target range of [0.9, 1.0] (relative to the</span></span>
+<span class='r-in'><span class='co'>#   maximum for the biomarker).</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>myStopping</span> <span class='op'>&lt;-</span> <span class='fu'><a href='StoppingTargetBiomarker.html'>StoppingTargetBiomarker</a></span><span class='op'>(</span>target <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.9</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                      prob <span class='op'>=</span> <span class='fl'>0.5</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

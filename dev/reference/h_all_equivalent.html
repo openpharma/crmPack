@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Size based on minimum of multiple cohort size rules — CohortSizeMin-class • crmPack</title>
+<title>Comparison with Numerical Tolerance and Without Name Comparison — h_all_equivalent • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,11 @@
 
 
 
-<meta property="og:title" content="Size based on minimum of multiple cohort size rules — CohortSizeMin-class" />
-<meta property="og:description" content="This class can be used to combine multiple cohort size rules with the MIN
-operation." />
+<meta property="og:title" content="Comparison with Numerical Tolerance and Without Name Comparison — h_all_equivalent" />
+<meta property="og:description" content="
+This helper function ensures a default tolerance level equal to 1e-10,
+and ignores names and other attributes.
+In contrast to base::all.equal(), it always returns a logical type object." />
 
 
 <meta name="robots" content="noindex">
@@ -130,51 +132,43 @@ operation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Size based on minimum of multiple cohort size rules</h1>
-    <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Rules-class.R'><code>R/Rules-class.R</code></a></small>
-    <div class="hidden name"><code>CohortSizeMin-class.Rd</code></div>
+    <h1>Comparison with Numerical Tolerance and Without Name Comparison</h1>
+    <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/helpers.R'><code>R/helpers.R</code></a></small>
+    <div class="hidden name"><code>h_all_equivalent.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This class can be used to combine multiple cohort size rules with the MIN
-operation.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
+<p>This helper function ensures a default tolerance level equal to <code>1e-10</code>,
+and ignores names and other attributes.
+In contrast to <code><a href='https://rdrr.io/r/base/all.equal.html'>base::all.equal()</a></code>, it always returns a logical type object.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>h_all_equivalent</span><span class='op'>(</span><span class='va'>target</span>, <span class='va'>current</span>, tolerance <span class='op'>=</span> <span class='fl'>1e-10</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>target</th>
+      <td><p>(<code>numeric</code>)<br /> target values.</p></td>
+    </tr>
+    <tr>
+      <th>current</th>
+      <td><p>(<code>numeric</code>)<br /> current values.</p></td>
+    </tr>
+    <tr>
+      <th>tolerance</th>
+      <td><p>(<code>number</code>) relative differences smaller than this are not reported.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>cohortSizeList</code> contains all cohort size rules, which are again
-objects of class <code><a href='CohortSize-class.html'>CohortSize</a></code>. The minimum of these
-individual cohort sizes is taken to give the final cohort size.</p>
-    <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
+    <p><code>TRUE</code> when <code>target</code> and <code>current</code> do not differ
+up to desired tolerance and without looking at names or other attributes,
+<code>FALSE</code> otherwise.</p>
 
-    
-
-<dl>
-<dt><code>cohortSizeList</code></dt><dd><p>list of cohort size rules</p></dd>
-
-</dl>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'></span>
-<span class='r-in'><span class='co'># Rule for having cohort of size 1 for doses &lt;30</span></span>
-<span class='r-in'><span class='co'>#      and having cohort of size 3 for doses &gt;=30</span></span>
-<span class='r-in'><span class='va'>mySize1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeRange.html'>CohortSizeRange</a></span><span class='op'>(</span>intervals <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>                           cohortSize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Rule for having cohort of size 1 until no DLT were observed</span></span>
-<span class='r-in'><span class='co'>#      and having cohort of size 3 as soon as 1 DLT is observed</span></span>
-<span class='r-in'><span class='va'>mySize2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeDLT.html'>CohortSizeDLT</a></span><span class='op'>(</span>DLTintervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
-<span class='r-in'>                         cohortSize<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Create a list of cohort size rules of class 'CohortSizeMax' which will then be </span></span>
-<span class='r-in'><span class='co'># combined with the 'min' operation</span></span>
-<span class='r-in'><span class='va'>mySize</span> <span class='op'>&lt;-</span> <span class='fu'><a href='CohortSizeMin.html'>CohortSizeMin</a></span><span class='op'>(</span>cohortSizeList<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>mySize1</span>, </span>
-<span class='r-in'>                                            <span class='va'>mySize2</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'></span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
