@@ -185,7 +185,7 @@
     <pre class="examples"><span class='r-in'></span>
 <span class='r-in'><span class='co'>##If DLE and efficacy responses are considered in the simulations and the 'EffFlexi' class is used </span></span>
 <span class='r-in'><span class='co'>## we need a data object with doses &gt;= 1:</span></span>
-<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual-class.html'>DataDual</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='co'>##First for the DLE model </span></span>
 <span class='r-in'><span class='co'>##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class </span></span>
 <span class='r-in'><span class='va'>DLEmodel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,</span>
