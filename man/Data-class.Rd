@@ -4,33 +4,79 @@
 \name{Data-class}
 \alias{Data-class}
 \alias{.Data}
-\title{Class for the data input}
+\alias{Data}
+\title{\code{Data}}
+\usage{
+Data(
+  x = numeric(),
+  y = integer(),
+  ID = integer(),
+  cohort = integer(),
+  doseGrid = numeric(),
+  placebo = FALSE,
+  ...
+)
+}
+\arguments{
+\item{x}{(\code{numeric})\cr the doses for the patients.}
+
+\item{y}{(\code{integer})\cr the vector of toxicity events (0 or 1).
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
+
+\item{ID}{(\code{integer})\cr unique patient IDs.}
+
+\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from
+\{0, 1, 2, ...\}).}
+
+\item{doseGrid}{(\code{numeric})\cr all possible doses.}
+
+\item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid} is considered as placebo.}
+
+\item{...}{not used.}
+}
 \description{
-This class inherits from \code{\linkS4class{GeneralData}}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{Data}} is a class for the data input.
+It inherits from \code{\link{GeneralData}}.
+}
+\details{
+The \code{cohort} can be missing if and only if \code{placebo} is equal to
+\code{FALSE}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{x}}{the doses for the patients}
+\item{\code{x}}{(\code{numeric})\cr the doses for the patients.}
 
-\item{\code{y}}{the vector of toxicity events (0 or 1 integers)}
+\item{\code{y}}{(\code{integer})\cr the vector of toxicity events (0 or 1 integers).}
 
-\item{\code{doseGrid}}{the vector of all possible doses (sorted), i.e. the dose
-grid}
+\item{\code{doseGrid}}{(\code{numeric})\cr the vector of all possible doses (sorted),
+i.e. the dose grid.}
 
-\item{\code{nGrid}}{number of gridpoints}
+\item{\code{nGrid}}{(\code{integer})\cr number of gridpoints.}
 
-\item{\code{xLevel}}{the levels for the doses the patients have been given}
+\item{\code{xLevel}}{(\code{integer})\cr the levels for the doses the patients have been given,
+w.r.t \code{doseGrid}.}
 
-\item{\code{placebo}}{logical value: if TRUE the first dose level in the grid is
-considered as PLACEBO}
+\item{\code{placebo}}{(\code{logical})\cr if \code{TRUE} the first dose level
+in the \code{doseGrid}is considered as PLACEBO.}
 }}
 
-\examples{
-# create some data from the class 'Data'
-myData <- Data(x=c(0.1,0.5,1.5,3,6,10,10,10),
-               y=c(0,0,0,0,0,0,1,0),
-               doseGrid=c(0.1,0.5,1.5,3,6,
-                          seq(from=10,to=80,by=2)))
+\note{
+\code{ID} and \code{cohort} can be missing, then a warning
+will be issued and the variables will be filled with default
+IDs and best guesses, respectively.
 }
-\keyword{classes}
+\examples{
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  )
+)
+}
