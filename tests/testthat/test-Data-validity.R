@@ -93,7 +93,7 @@ test_that("validate_data_dual passes for valid object", {
 test_that("validate_data_dual returns error for biomarker vector of wrong length", {
   object <- h_get_data_dual()
 
-  # We assign biomarker vector of length different than object@nObs
+  # We assign biomarker vector of length different than object@nObs.
   object@w <- object@w[1:5]
 
   expect_equal(

@@ -12,7 +12,7 @@ DataDual(w = numeric(), ...)
 \arguments{
 \item{w}{(\code{numeric})\cr the continuous vector of biomarker values.}
 
-\item{...}{parameters passed to \code{\link{Data}}.}
+\item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

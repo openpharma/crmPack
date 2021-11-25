@@ -166,7 +166,7 @@ Data <- function(x = numeric(),
 #' @rdname DataDual-class
 #'
 #' @param w (`numeric`)\cr the continuous vector of biomarker values.
-#' @param ... parameters passed to [`Data`].
+#' @param ... parameters passed to [Data()].
 #'
 #' @export
 #' @example examples/Data-class-DataDual.R
