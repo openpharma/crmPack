@@ -157,3 +157,62 @@ test_that("validate_data_parts returns error for part1Ladder with wrong values",
     "part1Ladder must have all entries from doseGrid"
   )
 })
+
+# validate_data_mixture ----
+
+test_that("validate_data_mixture passes for valid object", {
+  object <- h_get_data_mixture()
+  expect_true(validate_data_mixture(object))
+})
+
+test_that("validate_data_mixture returns error for vector xshare of wrong length", {
+  object <- h_get_data_mixture()
+
+  # We assign vector xshare of length different than object@nObsshare
+  object@xshare <- c(100, 125)
+
+  expect_equal(
+    validate_data_mixture(object),
+    "Dose vector xshare must be of type double and length nObsshare"
+  )
+})
+
+test_that("validate_data_mixture returns error for vector xshare with wrong values", {
+  object <- h_get_data_mixture()
+
+  # We assign vector xshare with values not from object@doseGrid.
+  object@xshare <- as.numeric(1:4)
+
+  expect_equal(
+    validate_data_mixture(object),
+    "Dose values in xshare must be from doseGrid"
+  )
+})
+
+test_that("validate_data_mixture returns error for vector yshare of wrong length and values", {
+  object <- h_get_data_mixture()
+
+  # We assign vector yshare of length different than object@nObsshare
+  # and with values not from {0, 1}.
+  object@yshare <- c(11:20)
+
+  expect_equal(
+    validate_data_mixture(object),
+    "DLT vector yshare must be nObsshare long and contain 0 or 1 integers only"
+  )
+})
+
+test_that("validate_data_mixture returns error for nObsshare of wrong length", {
+  object <- h_get_data_mixture()
+
+  # We assign nObsshare of length different than 1,
+  object@nObsshare <- 1:5
+
+  # validate_data_mixture will throw the error here, which will be originated by
+  # test_* functions (used in validate_data_mixture) when the len parameter
+  # (initiated to object@nObsshare) is not a scalar.
+  expect_error(
+    validate_data_mixture(object),
+    regexp = "^Argument '[[:alnum:]]+' must have length 1$"
+  )
+})

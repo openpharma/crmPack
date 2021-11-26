@@ -40,3 +40,18 @@ h_get_data_parts <- function() {
     cohort = d@cohort
   )
 }
+
+h_get_data_mixture <- function() {
+  d <- h_get_data()
+  DataMixture(
+    xshare = seq(25, 100, 25),
+    yshare = c(0L, 1L, 1L, 1L),
+    nObsshare = 4L,
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
+  )
+}

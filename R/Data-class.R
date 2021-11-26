@@ -231,7 +231,7 @@ DataParts <- function(part = integer(),
   assert_integer(part)
   assert_int(nextPart)
   assert_numeric(part1Ladder)
-  
+
   d <- Data(...)
   .DataParts(
     d,
@@ -241,73 +241,64 @@ DataParts <- function(part = integer(),
   )
 }
 
-## --------------------------------------------------
-## Subclass with additional data for mixture
-## --------------------------------------------------
+# DataMixture-class ----
 
+#' `DataMixture`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DataMixture`] is a class for the data with mixture sharing.
+#' It inherits from [`Data`] and it contains additional information
+#' on the mixture sharing.
+#'
+#' @slot xshare (`numeric`)\cr the doses for the share patients.
+#' @slot yshare (`integer`)\cr the vector of toxicity events (0 or 1)
+#'   for the share patients.
+#' @slot nObsshare (`count`)\cr number of share patients.
+#'
+#' @aliases DataMixture
+#' @export
+.DataMixture <- setClass(
+  Class = "DataMixture",
+  slots = c(
+    xshare = "numeric",
+    yshare = "integer",
+    nObsshare = "integer"
+  ),
+  prototype = prototype(
+    xshare = numeric(),
+    yshare = integer(),
+    nObsshare = 0L
+  ),
+  contains = "Data",
+  validity = validate_data_mixture
+)
 
-##' Class for the data with mixture sharing
-##'
-##' @slot xshare the doses for the share patients
-##' @slot yshare the vector of toxicity events (0 or 1 integers) for the share
-##' patients
-##' @slot nObsshare number of share patients
-##'
-##' @seealso \code{\linkS4class{LogisticLogNormalMixture}} for the explanation
-##' how to use this data class
-##' @export
-##' @example examples/Model-class-LogisticLogNormalMixture.R
-##' @keywords classes
-.DataMixture <-
-  setClass(Class="DataMixture",
-           representation(xshare="numeric",
-                          yshare="integer",
-                          nObsshare="integer"),
-           prototype(xshare=numeric(),
-                     yshare=integer(),
-                     nObsshare=0L),
-           contains="Data",
-           validity=
-             function(object){
-               o <- Validate()
+# DataMixture-constructor ----
 
-               o$check(all(object@yshare %in% c(0, 1)),
-                       "DLT vector yshare can only have 0 or 1 values")
-               o$check(all(object@xshare %in% object@doseGrid),
-                       "dose values in xshare must be from doseGrid")
-               for(thisSlot in c("xshare", "yshare"))
-                 o$check(identical(object@nObsshare, length(slot(object, thisSlot))),
-                         paste(thisSlot, "must have length nObs"))
+#' @rdname DataMixture-class
+#'
+#' @param xshare (`numeric`)\cr the doses for the share patients.
+#' @param yshare (`integer`)\cr the vector of toxicity events (0 or 1)
+#'   for the share patients.
+#' @param ... parameters passed to [Data()].
+#'
+#' @export
+#' @example examples/Data-class-DataMixture.R
+DataMixture <- function(xshare = numeric(),
+                        yshare = integer(),
+                        ...) {
+  assert_numeric(xshare)
+  assert_integer(yshare, lower = 0, upper = 1)
 
-               o$result()
-             })
-validObject(.DataMixture())
-
-##' Initialization function for the "DataMixture" class
-##'
-##' This is the function for initializing a "DataMixture" class object.
-##'
-##' @param xshare see \code{\linkS4class{DataMixture}}
-##' @param yshare see \code{\linkS4class{DataMixture}}
-##' @param \dots additional arguments for the underlying Data slots
-##'
-##' @return the initialized \code{\linkS4class{DataMixture}} object
-##'
-##' @export
-##' @keywords programming
-DataMixture <- function(xshare=numeric(),
-                        yshare=integer(),
-                        ...){
-  start <- Data(...)
-  ret <- .DataMixture(start,
-                      xshare=as.numeric(xshare),
-                      yshare=safeInteger(yshare),
-                      nObsshare=length(xshare))
-  return(ret)
+  d <- Data(...)
+  .DataMixture(
+    d,
+    xshare = as.numeric(xshare),
+    yshare = safeInteger(yshare),
+    nObsshare = length(xshare)
+  )
 }
-validObject(DataMixture())
-
-## ============================================================
 
 ## --------------------------------------------------
 ## Subclass with DLT free survival

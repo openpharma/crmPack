@@ -136,3 +136,29 @@ validate_data_parts <- function(object) {
   )
   o$result()
 }
+
+#' @describeIn validate_data_objects validates that the [`DataMixture`] object
+#' contains valid elements with respect to their types, dependency and length.
+validate_data_mixture <- function(object) {
+  o <- Validate()
+  # This below check is a bit obsolete as below invocations to
+  # test_* throw an error when len parameter (here initiated to object@nObsshare)
+  # is not a scalar.
+  o$check(
+    test_int(object@nObsshare),
+    "nObsshare must be of type integer of length 1"
+  )
+  o$check(
+    test_numeric(object@xshare, len = object@nObsshare, any.missing = FALSE),
+    "Dose vector xshare must be of type double and length nObsshare"
+  )
+  o$check(
+    test_subset(object@xshare, object@doseGrid),
+    "Dose values in xshare must be from doseGrid"
+  )
+  o$check(
+    test_integer(object@yshare, lower = 0, upper = 1, len = object@nObsshare, any.missing = FALSE),
+    "DLT vector yshare must be nObsshare long and contain 0 or 1 integers only"
+  )
+  o$result()
+}

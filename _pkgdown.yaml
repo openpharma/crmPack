@@ -27,6 +27,7 @@ reference:
       - Data
       - DataDual
       - DataParts
+      - DataMixture
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -37,6 +38,7 @@ reference:
       - validate_data
       - validate_data_dual
       - validate_data_parts
+      - validate_data_mixture
   - title: Example Data
     contents:
   - title: Methods
