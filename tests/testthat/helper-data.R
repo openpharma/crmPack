@@ -32,7 +32,6 @@ h_get_data_parts <- function() {
     part = c(1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 2L, 2L),
     nextPart = 1L,
     part1Ladder = seq(25, 250, 25),
-    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
     x = d@x,
     y = d@y,
     doseGrid = d@doseGrid,
