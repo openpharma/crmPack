@@ -16,17 +16,22 @@ To do:
   - [ ] Add lifecycle badge (as a default take "stable" for existing functions or classes)
   - [ ] Replace `##'` by `#'`
   - [ ] Add to `pkgdown.yml`
-  - [ ] remove file history and the timestamp in comments on top of file
+  - [ ] Remove file history and the timestamp in comments on top of file
 - [ ] Add unit tests
-  - [ ] for classes:
-    - [ ] test default constructor
-    - [ ] for reference classes: test methods
-  - [ ] for functions: as usual
+  - [ ] For classes:
+    - [ ] Test default constructor
+    - [ ] For reference classes: test methods
+  - [ ] For functions: as usual
 - [ ] Refactor as needed
   - [ ] Code styling (indentation etc.) - install package `styler` and use corresponding add-in
-  - [ ] keep externally used names so that we don't break downstream code
-  - [ ] consider renaming internal variables etc. if needed
-  - [ ] if a function is too long, break up into pieces
-  - [ ] for classes: move function definitions outside if possible (e.g. move validation function as `validity_subjects()` to `Data-validity.R` and have corresponding test file `test-Data-validity.R`)
-  - [ ] in `setClass` function, just use the `slots` instead of outdated `representation`.
-  - [ ] Remove things like `validObject(.Data())`
+  - [ ] Keep externally used names so that we don't break downstream code
+  - [ ] Remove `keywords` tags
+  - [ ] For functions or methods:
+    - [ ] Add assertions for arguments using `checkmate` functions
+    - [ ] If it is too long, break up into pieces (rule of thumb: maximum 50 lines of code)
+    - [ ] Consider renaming internal variables etc. if needed
+    - [ ] Avoid explicit use of `return`
+  - [ ] For classes:
+    - [ ] move function definitions outside if possible (e.g. move validation function as `validity_subjects()` to `Data-validity.R` and have corresponding test file `test-Data-validity.R`)
+    - [ ] In `setClass` function, just use the `slots` instead of outdated `representation`
+    - [ ] Remove things like `validObject(.Data())`

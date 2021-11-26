@@ -510,3 +510,34 @@ myBarplot <- function(x, description, xaxisround=0)
                          round(dat$x, xaxisround))
 }
 
+#' Comparison with Numerical Tolerance and Without Name Comparison
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' 
+#' This helper function ensures a default tolerance level equal to `1e-10`,
+#' and ignores names and other attributes.
+#' In contrast to [base::all.equal()], it always returns a logical type object.
+#'
+#' @param target (`numeric`)\cr target values.
+#' @param current (`numeric`)\cr current values.
+#' @param tolerance (`number`) relative differences smaller than this are not reported.
+#' @return `TRUE` when `target` and `current` do not differ
+#'   up to desired tolerance and without looking at names or other attributes,
+#'   `FALSE` otherwise.
+#'
+h_all_equivalent <- function(target, 
+                             current, 
+                             tolerance = 1e-10) {
+  assert_numeric(target)
+  assert_numeric(current)
+  assert_number(tolerance)
+  
+  tmp <- all.equal(
+    target = target,
+    current = current,
+    tolerance = tolerance,
+    check.names = FALSE,
+    check.attributes = FALSE
+  )
+  isTRUE(tmp)
+}

@@ -24,14 +24,17 @@ reference:
     contents:
       - Validate
       - GeneralData
-  - title: Constructors
-    contents:
-      - Validate
+      - Data
+      - DataDual
   - title: Internal Helper Functions
     contents:
+      - h_doses_unique_per_cohort
+      - h_all_equivalent
   - title: Internal Validation Functions
     contents:
       - validate_subjects
+      - validate_data
+      - validate_data_dual
   - title: Example Data
     contents:
   - title: Methods

@@ -1,0 +1,27 @@
+h_get_data <- function() {
+  plcb <- 0.001
+  x <- c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100)
+  dose_grid <- c(plcb, seq(25, 300, 25))
+
+  Data(
+    x = x,
+    y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+    doseGrid = dose_grid,
+    placebo = TRUE,
+    ID = 1:12,
+    cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+  )
+}
+
+h_get_data_dual <- function() {
+  d <- h_get_data()
+  DataDual(
+    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
+  )
+}
