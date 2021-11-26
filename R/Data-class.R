@@ -228,6 +228,10 @@ DataParts <- function(part = integer(),
                       nextPart = 1L,
                       part1Ladder = numeric(),
                       ...) {
+  assert_integer(part)
+  assert_int(nextPart)
+  assert_numeric(part1Ladder)
+  
   d <- Data(...)
   .DataParts(
     d,
