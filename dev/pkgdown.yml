@@ -2,10 +2,9 @@ pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  guidelines: guidelines.html
   rolling-crm: rolling-crm.html
   simulations: simulations.html
-last_built: 2021-11-25T21:07Z
+last_built: 2021-11-28T16:08Z
 urls:
   reference: https://github.com/roche/crmPack/reference
   article: https://github.com/roche/crmPack/articles
