@@ -1,3 +1,0 @@
-Let's collect here all conventions for the paper:
-
-dose escalation (not: dose-escalation)

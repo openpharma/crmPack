@@ -14,4 +14,4 @@ vignettes/*.pdf
 vignettes/*.R
 vignettes/*.pdf
 vignettes/figure/*.pdf
-
+*.synctex.gz
