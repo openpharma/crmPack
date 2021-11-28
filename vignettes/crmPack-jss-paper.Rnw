@@ -24,6 +24,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{Red}{rgb}{1.0, 0.0, 0.0}
+\definecolor{Blue}{rgb}{0.0, 0.0, 1.0}
 
 %% to get the default layout:
 <<echo=FALSE>>=
