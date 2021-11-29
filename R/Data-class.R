@@ -106,7 +106,6 @@ Data <- function(x = numeric(),
                  placebo = FALSE,
                  ...) {
   assert_numeric(x)
-  assert_numeric(y)
   assert_numeric(ID)
   assert_numeric(cohort)
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
@@ -173,8 +172,6 @@ Data <- function(x = numeric(),
 #' @example examples/Data-class-DataDual.R
 DataDual <- function(w = numeric(),
                      ...) {
-  assert_numeric(w)
-
   d <- Data(...)
   .DataDual(d, w = w)
 }
@@ -228,10 +225,6 @@ DataParts <- function(part = integer(),
                       nextPart = 1L,
                       part1Ladder = numeric(),
                       ...) {
-  assert_integer(part)
-  assert_int(nextPart)
-  assert_numeric(part1Ladder)
-
   d <- Data(...)
   .DataParts(
     d,
@@ -288,9 +281,6 @@ DataParts <- function(part = integer(),
 DataMixture <- function(xshare = numeric(),
                         yshare = integer(),
                         ...) {
-  assert_numeric(xshare)
-  assert_integer(yshare, lower = 0, upper = 1)
-
   d <- Data(...)
   .DataMixture(
     d,

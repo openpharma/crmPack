@@ -1,6 +1,0 @@
-- JSS paper as R package vignette:
-  http://www.jstatsoft.org/style#q12
-
-- Useful comments for publishing R-package papers in JSS:
-  http://robjhyndman.com/hyndsight/jss-rpackages/
-

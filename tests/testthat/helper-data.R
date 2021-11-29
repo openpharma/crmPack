@@ -15,43 +15,28 @@ h_get_data <- function() {
 
 h_get_data_dual <- function() {
   d <- h_get_data()
-  DataDual(
-    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
+  .DataDual(
+    d,
+    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48)
   )
 }
 
 h_get_data_parts <- function() {
   d <- h_get_data()
-  DataParts(
+  .DataParts(
+    d,
     part = c(1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 2L, 2L),
     nextPart = 1L,
-    part1Ladder = seq(25, 250, 25),
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
+    part1Ladder = seq(25, 250, 25)
   )
 }
 
 h_get_data_mixture <- function() {
   d <- h_get_data()
-  DataMixture(
+  .DataMixture(
+    d,
     xshare = seq(25, 100, 25),
     yshare = c(0L, 1L, 1L, 1L),
-    nObsshare = 4L,
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
+    nObsshare = 4L
   )
 }

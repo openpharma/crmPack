@@ -8,9 +8,6 @@
 \usepackage[sumlimits, intlimits, namelimits]{amsmath}
 \usepackage{soul}
 
-\newcommand{\tj}[1]{\textcolor{red}{#1}}
-
-
 \usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 \presetkeys%
     {todonotes}%
@@ -27,6 +24,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{Red}{rgb}{1.0, 0.0, 0.0}
+\definecolor{Blue}{rgb}{0.0, 0.0, 1.0}
 
 %% to get the default layout:
 <<echo=FALSE>>=

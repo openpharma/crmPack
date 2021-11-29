@@ -16,10 +16,10 @@ NULL
 #'   `ID` and `cohort` vectors which are of the same length `nObs`.
 validate_subjects <- function(object) {
   o <- Validate()
-  o$check(
-    test_int(object@nObs),
-    "nObs must be of type integer of length 1"
-  )
+  if (!test_int(object@nObs)) { # in if clause so that below test_* won't fail
+    o$check(FALSE, "nObs must be of type integer of length 1")
+    return(o$result())
+  }
   o$check(
     test_integer(object@ID, len = object@nObs, any.missing = FALSE, unique = TRUE),
     "ID must be of type integer and length nObs and unique"
@@ -141,20 +141,18 @@ validate_data_parts <- function(object) {
 #' contains valid elements with respect to their types, dependency and length.
 validate_data_mixture <- function(object) {
   o <- Validate()
-  # This below check is a bit obsolete as below invocations to
-  # test_* throw an error when len parameter (here initiated to object@nObsshare)
-  # is not a scalar.
-  o$check(
-    test_int(object@nObsshare),
-    "nObsshare must be of type integer of length 1"
-  )
-  o$check(
-    test_numeric(object@xshare, len = object@nObsshare, any.missing = FALSE),
-    "Dose vector xshare must be of type double and length nObsshare"
-  )
+
   o$check(
     test_subset(object@xshare, object@doseGrid),
     "Dose values in xshare must be from doseGrid"
+  )
+  if (!test_int(object@nObsshare)) { # in if clause so that below test_* won't fail
+    o$check(FALSE, "nObsshare must be of type integer of length 1")
+    return(o$result())
+  }
+  o$check(
+    test_numeric(object@xshare, len = object@nObsshare, any.missing = FALSE),
+    "Dose vector xshare must be of type double and length nObsshare"
   )
   o$check(
     test_integer(object@yshare, lower = 0, upper = 1, len = object@nObsshare, any.missing = FALSE),
