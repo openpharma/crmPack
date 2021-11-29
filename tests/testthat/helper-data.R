@@ -30,3 +30,13 @@ h_get_data_parts <- function() {
     part1Ladder = seq(25, 250, 25)
   )
 }
+
+h_get_data_mixture <- function() {
+  d <- h_get_data()
+  .DataMixture(
+    d,
+    xshare = seq(25, 100, 25),
+    yshare = c(0L, 1L, 1L, 1L),
+    nObsshare = 4L
+  )
+}

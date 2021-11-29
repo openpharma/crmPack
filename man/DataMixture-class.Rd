@@ -4,60 +4,46 @@
 \name{DataMixture-class}
 \alias{DataMixture-class}
 \alias{.DataMixture}
-\title{Class for the data with mixture sharing}
+\alias{DataMixture}
+\title{\code{DataMixture}}
+\usage{
+DataMixture(xshare = numeric(), yshare = integer(), ...)
+}
+\arguments{
+\item{xshare}{(\code{numeric})\cr the doses for the share patients.}
+
+\item{yshare}{(\code{integer})\cr the vector of toxicity events (0 or 1)
+for the share patients.}
+
+\item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
+}
 \description{
-Class for the data with mixture sharing
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DataMixture}} is a class for the data with mixture sharing.
+It inherits from \code{\link{Data}} and it contains additional information
+on the mixture sharing.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{xshare}}{the doses for the share patients}
+\item{\code{xshare}}{(\code{numeric})\cr the doses for the share patients.}
 
-\item{\code{yshare}}{the vector of toxicity events (0 or 1 integers) for the share
-patients}
+\item{\code{yshare}}{(\code{integer})\cr the vector of toxicity events (0 or 1)
+for the share patients.}
 
-\item{\code{nObsshare}}{number of share patients}
+\item{\code{nObsshare}}{(\code{count})\cr number of share patients.}
 }}
 
 \examples{
-## decide on the dose grid:
-doseGrid <- 1:80
-
-## and MCMC options:
-options <- McmcOptions()
-
-## the classic model would be:
-model <- LogisticLogNormal(mean = c(-0.85, 1),
-                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           refDose = 50)
-
-nodata <- Data(doseGrid=doseGrid)
-
-priorSamples <- mcmc(nodata, model, options)
-plot(priorSamples, model, nodata)
-
-## set up the mixture model and data share object:
-modelShare <- LogisticLogNormalMixture(shareWeight=0.1,
-                                       mean = c(-0.85, 1),
-                                       cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                                       refDose = 50)
-
-nodataShare <- DataMixture(doseGrid=doseGrid,
-                           xshare=
-                             c(rep(10, 4),
-                               rep(20, 4),
-                               rep(40, 4)),
-                           yshare=
-                             c(rep(0L, 4),
-                               rep(0L, 4),
-                               rep(0L, 4)))
-
-## now compare with the resulting prior model:
-priorSamplesShare <- mcmc(nodataShare, modelShare, options)
-plot(priorSamplesShare, modelShare, nodataShare)
+my_data <- DataMixture(
+  xshare = c(12, 14, 16, 18.0),
+  yshare = c(0L, 1L, 1L, 1L),
+  nObsshare = 4L,
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  ID = 1:3,
+  cohort = 1:3,
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 }
-\seealso{
-\code{\linkS4class{LogisticLogNormalMixture}} for the explanation
-how to use this data class
-}
-\keyword{classes}
