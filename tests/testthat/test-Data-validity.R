@@ -168,7 +168,7 @@ test_that("validate_data_mixture passes for valid object", {
 test_that("validate_data_mixture returns error for vector xshare of wrong length", {
   object <- h_get_data_mixture()
 
-  # We assign vector xshare of length different than object@nObsshare
+  # We assign vector xshare of length different than object@nObsshare.
   object@xshare <- c(100, 125)
 
   expect_equal(
@@ -205,11 +205,69 @@ test_that("validate_data_mixture returns error for vector yshare of wrong length
 test_that("validate_data_mixture returns error for nObsshare of wrong length", {
   object <- h_get_data_mixture()
 
-  # We assign nObsshare of length different than 1,
+  # We assign nObsshare of length different than 1.
   object@nObsshare <- 1:5
 
   expect_equal(
     validate_data_mixture(object),
     "nObsshare must be of type integer of length 1"
+  )
+})
+
+# validate_data_DA ----
+
+test_that("validate_data_DA passes for valid object", {
+  object <- h_get_data_DA()
+  expect_true(validate_data_DA(object))
+})
+
+test_that("validate_data_DA returns error for vector u of wrong length and negative values", {
+  object <- h_get_data_DA()
+
+  # We assign vector u of length different than object@nObs and negative values.
+  object@u <- c(-1, -2)
+
+  expect_equal(
+    validate_data_DA(object),
+    "u must be of type double, nObs length, non-negative"
+  )
+})
+
+test_that("validate_data_DA returns error for vector u with values exceeding Tmax", {
+  object <- h_get_data_DA()
+
+  # We assign vector u with values greater than object@Tmax.
+  object@u <- as.numeric(71:82)
+
+  expect_equal(
+    validate_data_DA(object),
+    "u entries must not be larger than Tmax"
+  )
+})
+
+test_that("validate_data_DA returns error for vector t0 of wrong length", {
+  object <- h_get_data_DA()
+
+  # We assign vector t0 of length different than object@nObs.
+  object@t0 <- c(1, 2)
+
+  expect_equal(
+    validate_data_DA(object),
+    "t0 must be of type double and nObs length"
+  )
+})
+
+test_that("validate_data_DA returns error for Tmax with negative value", {
+  object <- h_get_data_DA()
+
+  # We assign Tmax with negative value.
+  object@Tmax <- -10
+
+  expect_equal(
+    validate_data_DA(object),
+    c(
+      "u entries must not be larger than Tmax",
+      "DLT window needs to be of type double and greater than 0"
+    )
   )
 })
