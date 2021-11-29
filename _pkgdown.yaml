@@ -26,6 +26,7 @@ reference:
       - GeneralData
       - Data
       - DataDual
+      - DataParts
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -35,6 +36,7 @@ reference:
       - validate_subjects
       - validate_data
       - validate_data_dual
+      - validate_data_parts
   - title: Example Data
     contents:
   - title: Methods

@@ -113,3 +113,26 @@ validate_data_dual <- function(object) {
   )
   o$result()
 }
+
+#' @describeIn validate_data_objects validates that the [`DataParts`] object
+#' contains valid elements with respect to their types, dependency and length.
+validate_data_parts <- function(object) {
+  o <- Validate()
+  o$check(
+    test_integer(object@part, lower = 1, upper = 2, len = object@nObs, any.missing = FALSE),
+    "vector part must be nObs long and contain 1 or 2 integers only"
+  )
+  o$check(
+    test_int(object@nextPart, lower = 1, upper = 2),
+    "nextPart must be integer scalar 1 or 2"
+  )
+  o$check(
+    test_numeric(object@part1Ladder, any.missing = FALSE, sorted = TRUE, unique = TRUE),
+    "part1Ladder must be of type double and contain unique, sorted values"
+  )
+  o$check(
+    test_subset(object@part1Ladder, object@doseGrid),
+    "part1Ladder must have all entries from doseGrid"
+  )
+  o$result()
+}

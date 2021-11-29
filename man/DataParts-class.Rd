@@ -4,31 +4,48 @@
 \name{DataParts-class}
 \alias{DataParts-class}
 \alias{.DataParts}
-\title{Class for the data with two study parts}
+\alias{DataParts}
+\title{\code{DataParts}}
+\usage{
+DataParts(part = integer(), nextPart = 1L, part1Ladder = numeric(), ...)
+}
+\arguments{
+\item{part}{(\code{integer})\cr which part does each of the patients belong to?}
+
+\item{nextPart}{(\code{count})\cr what is the part for the next cohort (1 or 2)?}
+
+\item{part1Ladder}{(\code{numeric})\cr what is the escalation ladder for part 1?
+This shall be an ordered subset of the \code{doseGrid}.}
+
+\item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
+}
 \description{
-This is a subclass of \code{\linkS4class{Data}}, so contains all
-slots from \code{\linkS4class{Data}}, and in addition information on the two
-study parts.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DataParts}} is a class for the data with two study parts.
+It inherits from \code{\link{Data}} and it contains additional information
+on the two study parts.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{part}}{integer vector; which part does each of the patients belong to?}
+\item{\code{part}}{(\code{integer})\cr which part does each of the patients belong to?}
 
-\item{\code{nextPart}}{integer; what is the part for the next cohort?}
+\item{\code{nextPart}}{(\code{count})\cr what is the part for the next cohort (1 or 2)?}
 
-\item{\code{part1Ladder}}{sorted numeric vector; what is the escalation ladder for
-part 1? This shall be a subset of the \code{doseGrid}.}
+\item{\code{part1Ladder}}{(\code{numeric})\cr what is the escalation ladder for
+part 1? This shall be an ordered subset of the \code{doseGrid}.}
 }}
 
 \examples{
-# create an object of class 'DataParts'
-myData <- DataParts(x=c(0.1,0.5,1.5),
-                    y=c(0,0,0),
-                    doseGrid=c(0.1,0.5,1.5,3,6,
-                               seq(from=10,to=80,by=2)),
-                    part=c(1L,1L,1L),
-                    nextPart=1L,
-                    part1Ladder=c(0.1,0.5,1.5,3,6,10))
+my_data <- DataParts(
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  ID = 1:3,
+  cohort = 1:3,
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  part = c(1L, 1L, 1L),
+  nextPart = 1L,
+  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+)
 }
-\keyword{classes}
