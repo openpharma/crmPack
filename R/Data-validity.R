@@ -16,9 +16,9 @@ NULL
 #'   `ID` and `cohort` vectors which are of the same length `nObs`.
 validate_subjects <- function(object) {
   o <- Validate()
-  if (!test_int(object@nObs)) { # in if clause so that below test_* won't fail
-    o$check(FALSE, "nObs must be of type integer of length 1")
-    return(o$result())
+  # In if clause so that below test_* won't fail.
+  if (!test_int(object@nObs)) {
+    return("nObs must be of type integer of length 1")
   }
   o$check(
     test_integer(object@ID, len = object@nObs, any.missing = FALSE, unique = TRUE),
@@ -142,13 +142,9 @@ validate_data_parts <- function(object) {
 validate_data_mixture <- function(object) {
   o <- Validate()
 
-  o$check(
-    test_subset(object@xshare, object@doseGrid),
-    "Dose values in xshare must be from doseGrid"
-  )
-  if (!test_int(object@nObsshare)) { # in if clause so that below test_* won't fail
-    o$check(FALSE, "nObsshare must be of type integer of length 1")
-    return(o$result())
+  # In if clause so that below test_* won't fail.
+  if (!test_int(object@nObsshare)) {
+    return("nObsshare must be of type integer of length 1")
   }
   o$check(
     test_numeric(object@xshare, len = object@nObsshare, any.missing = FALSE),
@@ -157,6 +153,10 @@ validate_data_mixture <- function(object) {
   o$check(
     test_integer(object@yshare, lower = 0, upper = 1, len = object@nObsshare, any.missing = FALSE),
     "DLT vector yshare must be nObsshare long and contain 0 or 1 integers only"
+  )
+  o$check(
+    test_subset(object@xshare, object@doseGrid),
+    "Dose values in xshare must be from doseGrid"
   )
   o$result()
 }

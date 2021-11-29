@@ -208,11 +208,8 @@ test_that("validate_data_mixture returns error for nObsshare of wrong length", {
   # We assign nObsshare of length different than 1,
   object@nObsshare <- 1:5
 
-  # validate_data_mixture will throw the error here, which will be originated by
-  # test_* functions (used in validate_data_mixture) when the len parameter
-  # (initiated to object@nObsshare) is not a scalar.
-  expect_error(
+  expect_equal(
     validate_data_mixture(object),
-    regexp = "^Argument '[[:alnum:]]+' must have length 1$"
+    "nObsshare must be of type integer of length 1"
   )
 })
