@@ -304,7 +304,7 @@ DataMixture <- function(xshare = numeric(),
 #'
 #' @slot u (`numeric`)\cr the continuous vector of DLT free survival times.
 #' @slot t0 (`numeric`)\cr time of initial dosing for each patient.
-#' @slot Tmax (`numeric`)\cr the DLT observation period.
+#' @slot Tmax (`number`)\cr the DLT observation period.
 #'
 #' @aliases DataDA
 #' @export
@@ -318,7 +318,7 @@ DataMixture <- function(xshare = numeric(),
   prototype = prototype(
     u = numeric(),
     t0 = numeric(),
-    Tmax = numeric()
+    Tmax = 0 + .Machine$double.xmin
   ),
   contains = "Data",
   validity = validate_data_DA
@@ -331,14 +331,14 @@ DataMixture <- function(xshare = numeric(),
 #' @param u (`numeric`)\cr the continuous vector of DLT free survival times.
 #' @param t0 (`numeric`)\cr time of initial dosing for each patient.
 #'   Default to vector of 0s of length equal to length of `u`.
-#' @param Tmax (`numeric`)\cr the DLT observation period.
+#' @param Tmax (`number`)\cr the DLT observation period.
 #' @param ... parameters passed to [Data()].
 #'
 #' @export
 #' @example examples/Data-class-DataDA.R
 DataDA <- function(u = numeric(),
                    t0 = numeric(length(u)),
-                   Tmax = numeric(),
+                   Tmax = 0 + .Machine$double.xmin,
                    ...) {
   d <- Data(...)
   .DataDA(

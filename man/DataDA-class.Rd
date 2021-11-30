@@ -7,7 +7,12 @@
 \alias{DataDA}
 \title{\code{DataDA}}
 \usage{
-DataDA(u = numeric(), t0 = numeric(length(u)), Tmax = numeric(), ...)
+DataDA(
+  u = numeric(),
+  t0 = numeric(length(u)),
+  Tmax = 0 + .Machine$double.xmin,
+  ...
+)
 }
 \arguments{
 \item{u}{(\code{numeric})\cr the continuous vector of DLT free survival times.}
@@ -15,7 +20,7 @@ DataDA(u = numeric(), t0 = numeric(length(u)), Tmax = numeric(), ...)
 \item{t0}{(\code{numeric})\cr time of initial dosing for each patient.
 Default to vector of 0s of length equal to length of \code{u}.}
 
-\item{Tmax}{(\code{numeric})\cr the DLT observation period.}
+\item{Tmax}{(\code{number})\cr the DLT observation period.}
 
 \item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
 }
@@ -32,7 +37,7 @@ It inherits from \code{\link{Data}} and it contains additional DLT free survival
 
 \item{\code{t0}}{(\code{numeric})\cr time of initial dosing for each patient.}
 
-\item{\code{Tmax}}{(\code{numeric})\cr the DLT observation period.}
+\item{\code{Tmax}}{(\code{number})\cr the DLT observation period.}
 }}
 
 \note{
@@ -42,7 +47,7 @@ did not experience any DLT, and is not referring to deaths.
 \examples{
 my_data <- DataDA(
   u = c(42, 30, 15, 5, 20, 25, 30, 60),
-  t0 = c(0, -15, -30, -40, -55, -70, -75, -85),
+  t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
   Tmax = 60,
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
   y = c(0, 0, 1, 1, 0, 0, 1, 0),

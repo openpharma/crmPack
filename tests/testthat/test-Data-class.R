@@ -172,7 +172,7 @@ test_that("DataDA object can be created with custom values with DataDA construct
   result <- expect_silent(
     DataDA(
       u = c(42, 30, 15),
-      t0 = c(0, -15, -30),
+      t0 = c(0, 15, 30),
       Tmax = 60,
       x = c(0.1, 0.5, 1.5),
       y = c(0, 0, 0),

@@ -41,12 +41,12 @@ h_get_data_mixture <- function() {
   )
 }
 
-h_get_data_DA <- function() { # nolintr
+h_get_data_augmented <- function() { # nolintr
   d <- h_get_data()
   .DataDA(
     d,
     u = c(42, 30, 15, 5, 20, 25, 30, 60, 25, 30, 35, 40),
-    t0 = c(0, -15, -30, -40, -55, -70, -75, -85, -95, -105, -120, -125),
+    t0 = c(0, 15, 30, 40, 55, 70, 75, 85, 95, 105, 120, 125),
     Tmax = 60
   )
 }
