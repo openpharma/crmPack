@@ -168,7 +168,7 @@ test_that("validate_data_mixture passes for valid object", {
 test_that("validate_data_mixture returns error for vector xshare of wrong length", {
   object <- h_get_data_mixture()
 
-  # We assign vector xshare of length different than object@nObsshare
+  # We assign vector xshare of length different than object@nObsshare.
   object@xshare <- c(100, 125)
 
   expect_equal(
@@ -205,11 +205,55 @@ test_that("validate_data_mixture returns error for vector yshare of wrong length
 test_that("validate_data_mixture returns error for nObsshare of wrong length", {
   object <- h_get_data_mixture()
 
-  # We assign nObsshare of length different than 1,
+  # We assign nObsshare of length different than 1.
   object@nObsshare <- 1:5
 
   expect_equal(
     validate_data_mixture(object),
     "nObsshare must be of type integer of length 1"
+  )
+})
+
+# validate_data_DA ----
+
+test_that("validate_data_DA passes for valid object", {
+  object <- h_get_data_augmented()
+  expect_true(validate_data_DA(object))
+})
+
+test_that("validate_data_DA returns error for Tmax of wrong length and negative values", {
+  object <- h_get_data_augmented()
+
+  # We assign Tmax of wrong length and negative values.
+  object@Tmax <- c(-10, -20)
+
+  expect_equal(
+    validate_data_DA(object),
+    "DLT window Tmax must be of type double of length 1 and greater than 0"
+  )
+})
+
+test_that("validate_data_DA returns error for vector u of wrong length and values", {
+  object <- h_get_data_augmented()
+
+  # We assign vector u of length different than object@nObs
+  # with some negative values and some other, greater than Tmax.
+  object@u <- c(-1, -2, 100)
+
+  expect_equal(
+    validate_data_DA(object),
+    "u must be of type double, nObs length, non-negative and not greater than Tmax"
+  )
+})
+
+test_that("validate_data_DA returns error for vector t0 of wrong length and negative values", {
+  object <- h_get_data_augmented()
+
+  # We assign vector t0 of length different than object@nObs and some negative values.
+  object@t0 <- c(1, -2)
+
+  expect_equal(
+    validate_data_DA(object),
+    "t0 must be of type double, nObs length, non-negative"
   )
 })

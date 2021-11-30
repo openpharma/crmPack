@@ -4,37 +4,59 @@
 \name{DataDA-class}
 \alias{DataDA-class}
 \alias{.DataDA}
-\title{Class for the time-to-DLT augmented data input}
+\alias{DataDA}
+\title{\code{DataDA}}
+\usage{
+DataDA(
+  u = numeric(),
+  t0 = numeric(length(u)),
+  Tmax = 0 + .Machine$double.xmin,
+  ...
+)
+}
+\arguments{
+\item{u}{(\code{numeric})\cr the continuous vector of DLT free survival times.}
+
+\item{t0}{(\code{numeric})\cr time of initial dosing for each patient.
+Default to vector of 0s of length equal to length of \code{u}.}
+
+\item{Tmax}{(\code{number})\cr the DLT observation period.}
+
+\item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
+}
 \description{
-This is a subclass of \code{\linkS4class{Data}}, so contains all
-slots from \code{\linkS4class{Data}}, and in addition DLT free survival
-values. (Note that \dQuote{survival} values here refers to the time that
-the subject did not experience any DLT yet, and is not referring to
-deaths.)
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DataDA}} is a class for the time-to-DLT augmented data.
+It inherits from \code{\link{Data}} and it contains additional DLT free survival times.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{u}}{the continuous vector of DLT free survival values}
+\item{\code{u}}{(\code{numeric})\cr the continuous vector of DLT free survival times.}
 
-\item{\code{Tmax}}{the DLT observation period}
+\item{\code{t0}}{(\code{numeric})\cr time of initial dosing for each patient.}
 
-\item{\code{t0}}{time of initial dosing for each patient}
+\item{\code{Tmax}}{(\code{number})\cr the DLT observation period.}
 }}
 
-\examples{
-data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-              y=c(0, 0, 1, 1, 0, 0, 1, 0),
-              doseGrid=
-                c(0.1, 0.5, 1.5, 3, 6,
-                  seq(from=10, to=80, by=2)),
-              u=c(42,30,15,5,20,25,30,60),
-              t0=c(0,-15,-30,-40,-55,-70,-75,-85),
-              Tmax=60)
-
-#set up an empty data set;
-
-emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
-                               seq(from=10, to=80, by=2)),Tmax=60)
+\note{
+\verb{survival time} here refers to the time period for which the subject
+did not experience any DLT, and is not referring to deaths.
 }
-\keyword{classes}
+\examples{
+my_data <- DataDA(
+  u = c(42, 30, 15, 5, 20, 25, 30, 60),
+  t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+  Tmax = 60,
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 1, 1, 0, 0, 1, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+
+# set up an empty data set
+empty_data <- DataDA(
+  doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  Tmax = 60
+)
+}

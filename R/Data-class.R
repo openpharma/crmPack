@@ -290,95 +290,61 @@ DataMixture <- function(xshare = numeric(),
   )
 }
 
-## --------------------------------------------------
-## Subclass with DLT free survival
-## --------------------------------------------------
+# DataDA-class ----
 
-##' Class for the time-to-DLT augmented data input
-##'
-##' This is a subclass of \code{\linkS4class{Data}}, so contains all
-##' slots from \code{\linkS4class{Data}}, and in addition DLT free survival
-##' values. (Note that \dQuote{survival} values here refers to the time that
-##' the subject did not experience any DLT yet, and is not referring to
-##' deaths.)
-##'
-##' @slot u the continuous vector of DLT free survival values
-##' @slot Tmax the DLT observation period
-##' @slot t0 time of initial dosing for each patient
-##'
-##' @example examples/Data-class-DataDA.R
-##' @export
-##' @keywords classes
-.DataDA <-
-  setClass(Class="DataDA",
-           representation=
-             representation(u="numeric",
-                            t0="numeric",
-                            Tmax="numeric"),
-           contains="Data",
-           validity=
-             function(object){
-               o <- Validate()
+#' `DataDA`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DataDA`] is a class for the time-to-DLT augmented data.
+#' It inherits from [`Data`] and it contains additional DLT free survival times.
+#'
+#' @note `survival time` here refers to the time period for which the subject
+#' did not experience any DLT, and is not referring to deaths.
+#'
+#' @slot u (`numeric`)\cr the continuous vector of DLT free survival times.
+#' @slot t0 (`numeric`)\cr time of initial dosing for each patient.
+#' @slot Tmax (`number`)\cr the DLT observation period.
+#'
+#' @aliases DataDA
+#' @export
+.DataDA <- setClass(
+  Class = "DataDA",
+  slots = c(
+    u = "numeric",
+    t0 = "numeric",
+    Tmax = "numeric"
+  ),
+  prototype = prototype(
+    u = numeric(),
+    t0 = numeric(),
+    Tmax = 0 + .Machine$double.xmin
+  ),
+  contains = "Data",
+  validity = validate_data_DA
+)
 
-               o$check(identical(object@nObs, length(object@u)),
-                       "u must have length nObs")
+# DataDA-constructor ----
 
-               o$check(identical(object@nObs, length(object@t0)),
-                       "t0 must have length nObs")
-
-               o$check(all(object@u <= object @Tmax),
-                       "u entries must not be larger than Tmax")
-               ## (this has to be because the hazard
-               ## at Tmax is infinity -> all individuals stop
-               ## there)
-
-               o$check(all(object@u >= 0),
-                       "u entries must be non-negative")
-
-               ## DSB: why check not required?
-               #                                  o$check(all(object@t0 >= 0),
-               #                                          "t0 entries must be non-negative")
-               #
-               o$check(all(object@Tmax > 0),
-                       "DLT window needs to be greater than 0")
-
-               o$result()
-             })
-validObject(.DataDA())
-
-##' Initialization function for the `DataDA` class
-##'
-##' This is the function for initializing a `DataDA` class object.
-##'
-##' @param u the continuous vector of DLT free survival values
-##' @param Tmax the DLT observation period
-##' @param t0 time of initial dosing for each patient (default: 0)
-##' @param \dots additional parameters from \code{\link{Data}}
-##' @return the initialized \code{\linkS4class{DataDA}} object
-##'
-##' @export
-##' @keywords programming
-DataDA <- function(u=numeric(),
-                   Tmax=numeric(),
-                   t0=numeric(),
-                   ...)
-{
-
-  start <- Data(...)
-
-  if(missing(t0))
-  {
-    t0 <- rep(0, length(u))
-  }
-
-  .DataDA(start,
-          u = as.numeric(u),
-          t0 = t0,
-          Tmax = as.numeric(Tmax))
+#' @rdname DataDA-class
+#'
+#' @param u (`numeric`)\cr the continuous vector of DLT free survival times.
+#' @param t0 (`numeric`)\cr time of initial dosing for each patient.
+#'   Default to vector of 0s of length equal to length of `u`.
+#' @param Tmax (`number`)\cr the DLT observation period.
+#' @param ... parameters passed to [Data()].
+#'
+#' @export
+#' @example examples/Data-class-DataDA.R
+DataDA <- function(u = numeric(),
+                   t0 = numeric(length(u)),
+                   Tmax = 0 + .Machine$double.xmin,
+                   ...) {
+  d <- Data(...)
+  .DataDA(
+    d,
+    u = as.numeric(u),
+    t0 = as.numeric(t0),
+    Tmax = as.numeric(Tmax)
+  )
 }
-validObject(DataDA())
-
-
-## ============================================================
-
-

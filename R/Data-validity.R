@@ -160,3 +160,23 @@ validate_data_mixture <- function(object) {
   )
   o$result()
 }
+
+#' @describeIn validate_data_objects validates that the [`DataDA`] object
+#' contains valid elements with respect to their types, dependency and length.
+validate_data_DA <- function(object) {
+  o <- Validate()
+  # In if clause so that below test_* won't fail.
+  if (!(test_number(object@Tmax) && object@Tmax > 0)) {
+    return("DLT window Tmax must be of type double of length 1 and greater than 0")
+  }
+  o$check(
+    test_numeric(object@u, upper = object@Tmax, len = object@nObs, any.missing = FALSE) &&
+      all(object@u > 0),
+    "u must be of type double, nObs length, non-negative and not greater than Tmax"
+  )
+  o$check(
+    test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE),
+    "t0 must be of type double, nObs length, non-negative"
+  )
+  o$result()
+}
