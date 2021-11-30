@@ -106,15 +106,6 @@ the next cohort." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -191,7 +182,7 @@ on the cohort size</p></li>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='co'># Create the data</span></span>
-<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA-class.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
 <span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
 <span class='r-in'>               doseGrid<span class='op'>=</span></span>
 <span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
@@ -201,6 +192,7 @@ on the cohort size</p></li>
 <span class='r-in'>               Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validObject(.Object):</span> invalid class “DataDA” object: t0 must be of type double, nObs length, non-negative</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>npiece_</span> <span class='op'>&lt;-</span> <span class='fl'>10</span></span>
@@ -214,6 +206,7 @@ on the cohort size</p></li>
 <span class='r-in'>                           npiece<span class='op'>=</span><span class='va'>npiece_</span>,</span>
 <span class='r-in'>                           l<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>npiece_</span><span class='op'>)</span>,<span class='fl'>1</span>,<span class='va'>npiece_</span><span class='op'>)</span>,<span class='fl'>2</span>,<span class='va'>lambda_prior</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>                           C_par<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in FUN(newX[, i], ...):</span> trying to get slot "Tmax" from an object of a basic class ("function") with no slots</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
 <span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
@@ -221,12 +214,14 @@ on the cohort size</p></li>
 <span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'model' in selecting a method for function 'mcmc': object 'model' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span></span>
 <span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
 <span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
 <span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in (function (classes, fdef, mtable) {    methods &lt;- .findInheritedMethods(classes, fdef, mtable)    if (length(methods) == 1L)         return(methods[[1L]])    else if (length(methods) == 0L) {        cnames &lt;- paste0("\"", vapply(classes, as.character,             ""), "\"", collapse = ", ")        stop(gettextf("unable to find an inherited method for function %s for signature %s",             sQuote(fdef@generic), sQuote(cnames)), domain = NA)    }    else stop("Internal error in finding inherited methods; didn't return a unique method",         domain = NA)})(list(structure("IncrementsRelative", package = "crmPack"),     "function"), new("nonstandardGenericFunction", .Data = function (increments,     data, ...) {    ans &lt;- {        standardGeneric("maxDose")    }    .valueClassTest(ans, "numeric", "maxDose")}, generic = structure("maxDose", package = "crmPack"), package = "crmPack",     group = list(), valueClass = "numeric", signature = c("increments",     "data"), default = NULL, skeleton = (function (increments,         data, ...)     stop("invalid call in method dispatch to 'maxDose' (no default method)",         domain = NA))(increments, data, ...)), &lt;environment&gt;):</span> unable to find an inherited method for function ‘maxDose’ for signature ‘"IncrementsRelative", "function"’</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Define the rule which will be used to select the next best dose</span></span>
 <span class='r-in'><span class='co'># based on the class 'NextBestNCRM'</span></span>
@@ -238,6 +233,7 @@ on the cohort size</p></li>
 <span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='nextBest.html'>nextBest</a></span><span class='op'>(</span><span class='va'>myNextBest</span>,</span>
 <span class='r-in'>                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,</span>
 <span class='r-in'>                               samples<span class='op'>=</span><span class='va'>samples</span>, model<span class='op'>=</span><span class='va'>model</span>, data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'doselimit' in selecting a method for function 'nextBest': object 'nextMaxDose' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Define the rule which will be used to select the next cohort size</span></span>
 <span class='r-in'><span class='co'># based on the class 'CohortSizeConst'</span></span>
@@ -245,6 +241,7 @@ on the cohort size</p></li>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Determine the cohort size for the next cohort</span></span>
 <span class='r-in'><span class='va'>sizeRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='size.html'>size</a></span><span class='op'>(</span><span class='va'>mySize</span>, dose<span class='op'>=</span><span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>value</span>, data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in size(mySize, dose = doseRecommendation$value, data = data):</span> object 'doseRecommendation' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Rule for the safety window length:</span></span>
 <span class='r-in'><span class='co'>#   -having patientGap as (0,7,3,3,...) for cohort size &lt;4</span></span>
@@ -256,19 +253,11 @@ on the cohort size</p></li>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Determine the safety window parameters for the next cohort</span></span>
 <span class='r-in'><span class='fu'>windowLength</span><span class='op'>(</span><span class='va'>myWindowLength</span>, size<span class='op'>=</span><span class='va'>sizeRecommendation</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $patientGap</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0 7 3</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $patientFollow</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 7</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $patientFollowMin</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in findInterval(x = size, vec = safetyWindow@sizeIntervals):</span> object 'sizeRecommendation' not found</span>
 <span class='r-in'></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Create the data</span></span>
-<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA-class.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
 <span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
 <span class='r-in'>               doseGrid<span class='op'>=</span></span>
 <span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
@@ -278,6 +267,7 @@ on the cohort size</p></li>
 <span class='r-in'>               Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validObject(.Object):</span> invalid class “DataDA” object: t0 must be of type double, nObs length, non-negative</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>npiece_</span> <span class='op'>&lt;-</span> <span class='fl'>10</span></span>
@@ -291,6 +281,7 @@ on the cohort size</p></li>
 <span class='r-in'>                           npiece<span class='op'>=</span><span class='va'>npiece_</span>,</span>
 <span class='r-in'>                           l<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>npiece_</span><span class='op'>)</span>,<span class='fl'>1</span>,<span class='va'>npiece_</span><span class='op'>)</span>,<span class='fl'>2</span>,<span class='va'>lambda_prior</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>                           C_par<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in FUN(newX[, i], ...):</span> trying to get slot "Tmax" from an object of a basic class ("function") with no slots</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Set-up some MCMC parameters and generate samples from the posterior</span></span>
 <span class='r-in'><span class='va'>options</span> <span class='op'>&lt;-</span> <span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,</span>
@@ -298,12 +289,14 @@ on the cohort size</p></li>
 <span class='r-in'>                       samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='va'>model</span>, <span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'model' in selecting a method for function 'mcmc': object 'model' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Define the rule for dose increments and calculate the maximum dose allowed</span></span>
 <span class='r-in'><span class='va'>myIncrements</span> <span class='op'>&lt;-</span> <span class='fu'><a href='IncrementsRelative.html'>IncrementsRelative</a></span><span class='op'>(</span>intervals<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
 <span class='r-in'>                                   increments<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>0.33</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>nextMaxDose</span> <span class='op'>&lt;-</span> <span class='fu'><a href='maxDose.html'>maxDose</a></span><span class='op'>(</span><span class='va'>myIncrements</span>,</span>
 <span class='r-in'>                       data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in (function (classes, fdef, mtable) {    methods &lt;- .findInheritedMethods(classes, fdef, mtable)    if (length(methods) == 1L)         return(methods[[1L]])    else if (length(methods) == 0L) {        cnames &lt;- paste0("\"", vapply(classes, as.character,             ""), "\"", collapse = ", ")        stop(gettextf("unable to find an inherited method for function %s for signature %s",             sQuote(fdef@generic), sQuote(cnames)), domain = NA)    }    else stop("Internal error in finding inherited methods; didn't return a unique method",         domain = NA)})(list(structure("IncrementsRelative", package = "crmPack"),     "function"), new("nonstandardGenericFunction", .Data = function (increments,     data, ...) {    ans &lt;- {        standardGeneric("maxDose")    }    .valueClassTest(ans, "numeric", "maxDose")}, generic = structure("maxDose", package = "crmPack"), package = "crmPack",     group = list(), valueClass = "numeric", signature = c("increments",     "data"), default = NULL, skeleton = (function (increments,         data, ...)     stop("invalid call in method dispatch to 'maxDose' (no default method)",         domain = NA))(increments, data, ...)), &lt;environment&gt;):</span> unable to find an inherited method for function ‘maxDose’ for signature ‘"IncrementsRelative", "function"’</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Define the rule which will be used to select the next best dose</span></span>
 <span class='r-in'><span class='co'># based on the class 'NextBestNCRM'</span></span>
@@ -315,6 +308,7 @@ on the cohort size</p></li>
 <span class='r-in'><span class='va'>doseRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='nextBest.html'>nextBest</a></span><span class='op'>(</span><span class='va'>myNextBest</span>,</span>
 <span class='r-in'>                               doselimit<span class='op'>=</span><span class='va'>nextMaxDose</span>,</span>
 <span class='r-in'>                               samples<span class='op'>=</span><span class='va'>samples</span>, model<span class='op'>=</span><span class='va'>model</span>, data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'doselimit' in selecting a method for function 'nextBest': object 'nextMaxDose' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Define the rule which will be used to select the next cohort size</span></span>
 <span class='r-in'><span class='co'># based on the class 'CohortSizeConst'</span></span>
@@ -322,6 +316,7 @@ on the cohort size</p></li>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Determine the cohort size for the next cohort</span></span>
 <span class='r-in'><span class='va'>sizeRecommendation</span> <span class='op'>&lt;-</span> <span class='fu'><a href='size.html'>size</a></span><span class='op'>(</span><span class='va'>mySize</span>, dose<span class='op'>=</span><span class='va'>doseRecommendation</span><span class='op'>$</span><span class='va'>value</span>, data <span class='op'>=</span> <span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in size(mySize, dose = doseRecommendation$value, data = data):</span> object 'doseRecommendation' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Rule for having safety window length with constant safety window parameters</span></span>
 <span class='r-in'><span class='va'>myWindowLength</span> <span class='op'>&lt;-</span> <span class='fu'><a href='SafetyWindowConst.html'>SafetyWindowConst</a></span><span class='op'>(</span>patientGap <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>7</span>,<span class='fl'>3</span><span class='op'>)</span>,</span>
@@ -330,15 +325,7 @@ on the cohort size</p></li>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Determine the safety window parameters for the next cohort</span></span>
 <span class='r-in'><span class='fu'>windowLength</span><span class='op'>(</span><span class='va'>myWindowLength</span>, size<span class='op'>=</span><span class='va'>sizeRecommendation</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $patientGap</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0 7 3</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $patientFollow</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 7</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $patientFollowMin</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 14</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in checkHT(n, dx &lt;- dim(x)):</span> object 'sizeRecommendation' not found</span>
 <span class='r-in'></span>
 </pre>
   </div>

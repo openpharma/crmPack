@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class for the time-to-DLT augmented data input — DataDA-class • crmPack</title>
+<title>DataDA — DataDA-class • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,12 +39,10 @@
 
 
 
-<meta property="og:title" content="Class for the time-to-DLT augmented data input — DataDA-class" />
-<meta property="og:description" content="This is a subclass of Data, so contains all
-slots from Data, and in addition DLT free survival
-values. (Note that &amp;#8220;survival&amp;#8221; values here refers to the time that
-the subject did not experience any DLT yet, and is not referring to
-deaths.)" />
+<meta property="og:title" content="DataDA — DataDA-class" />
+<meta property="og:description" content="
+DataDA is a class for the time-to-DLT augmented data.
+It inherits from Data and it contains additional DLT free survival times." />
 
 
 <meta name="robots" content="noindex">
@@ -109,15 +107,6 @@ deaths.)" />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -139,50 +128,80 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class for the time-to-DLT augmented data input</h1>
+    <h1><code>DataDA</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Data-class.R'><code>R/Data-class.R</code></a></small>
     <div class="hidden name"><code>DataDA-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is a subclass of <code><a href='Data-class.html'>Data</a></code>, so contains all
-slots from <code><a href='Data-class.html'>Data</a></code>, and in addition DLT free survival
-values. (Note that &#8220;survival&#8221; values here refers to the time that
-the subject did not experience any DLT yet, and is not referring to
-deaths.)</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p><code>DataDA</code> is a class for the time-to-DLT augmented data.
+It inherits from <code><a href='Data-class.html'>Data</a></code> and it contains additional DLT free survival times.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>DataDA</span><span class='op'>(</span>
+  u <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span><span class='op'>(</span><span class='op'>)</span>,
+  t0 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>u</span><span class='op'>)</span><span class='op'>)</span>,
+  Tmax <span class='op'>=</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>.Machine</span><span class='op'>$</span><span class='va'>double.xmin</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>u</th>
+      <td><p>(<code>numeric</code>)<br /> the continuous vector of DLT free survival times.</p></td>
+    </tr>
+    <tr>
+      <th>t0</th>
+      <td><p>(<code>numeric</code>)<br /> time of initial dosing for each patient.
+Default to vector of 0s of length equal to length of <code>u</code>.</p></td>
+    </tr>
+    <tr>
+      <th>Tmax</th>
+      <td><p>(<code>number</code>)<br /> the DLT observation period.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>parameters passed to <code><a href='Data-class.html'>Data()</a></code>.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl>
-<dt><code>u</code></dt><dd><p>the continuous vector of DLT free survival values</p></dd>
+<dt><code>u</code></dt><dd><p>(<code>numeric</code>)<br /> the continuous vector of DLT free survival times.</p></dd>
 
-<dt><code>Tmax</code></dt><dd><p>the DLT observation period</p></dd>
+<dt><code>t0</code></dt><dd><p>(<code>numeric</code>)<br /> time of initial dosing for each patient.</p></dd>
 
-<dt><code>t0</code></dt><dd><p>time of initial dosing for each patient</p></dd>
+<dt><code>Tmax</code></dt><dd><p>(<code>number</code>)<br /> the DLT observation period.</p></dd>
 
 </dl>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p><code>survival time</code> here refers to the time period for which the subject
+did not experience any DLT, and is not referring to deaths.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>              y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
-<span class='r-in'>              doseGrid<span class='op'>=</span></span>
-<span class='r-in'>                <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
-<span class='r-in'>                  <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
-<span class='r-in'>              u<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>,<span class='fl'>30</span>,<span class='fl'>15</span>,<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,<span class='fl'>30</span>,<span class='fl'>60</span><span class='op'>)</span>,</span>
-<span class='r-in'>              t0<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='op'>-</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>30</span>,<span class='op'>-</span><span class='fl'>40</span>,<span class='op'>-</span><span class='fl'>55</span>,<span class='op'>-</span><span class='fl'>70</span>,<span class='op'>-</span><span class='fl'>75</span>,<span class='op'>-</span><span class='fl'>85</span><span class='op'>)</span>,</span>
-<span class='r-in'>              Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='va'>my_data</span> <span class='op'>&lt;-</span> <span class='fu'>DataDA</span><span class='op'>(</span></span>
+<span class='r-in'>  u <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>, <span class='fl'>30</span>, <span class='fl'>15</span>, <span class='fl'>5</span>, <span class='fl'>20</span>, <span class='fl'>25</span>, <span class='fl'>30</span>, <span class='fl'>60</span><span class='op'>)</span>,</span>
+<span class='r-in'>  t0 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>15</span>, <span class='fl'>30</span>, <span class='fl'>40</span>, <span class='fl'>55</span>, <span class='fl'>70</span>, <span class='fl'>75</span>, <span class='fl'>85</span><span class='op'>)</span>,</span>
+<span class='r-in'>  Tmax <span class='op'>=</span> <span class='fl'>60</span>,</span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
 <span class='r-in'></span>
-<span class='r-in'><span class='co'>#set up an empty data set;</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>emptydata</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>,<span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
-<span class='r-in'>                               <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># set up an empty data set</span></span>
+<span class='r-in'><span class='va'>empty_data</span> <span class='op'>&lt;-</span> <span class='fu'>DataDA</span><span class='op'>(</span></span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>  Tmax <span class='op'>=</span> <span class='fl'>60</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -111,15 +111,6 @@ quantiles for the PEM curve. If hazard=TRUE," />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -221,7 +212,7 @@ model class.</p></li>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='co'># Create the data</span></span>
-<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA-class.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
 <span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
 <span class='r-in'>               doseGrid<span class='op'>=</span></span>
 <span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
@@ -231,6 +222,7 @@ model class.</p></li>
 <span class='r-in'>               Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validObject(.Object):</span> invalid class “DataDA” object: t0 must be of type double, nObs length, non-negative</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>npiece_</span> <span class='op'>&lt;-</span> <span class='fl'>10</span></span>
@@ -244,6 +236,7 @@ model class.</p></li>
 <span class='r-in'>                           npiece<span class='op'>=</span><span class='va'>npiece_</span>,</span>
 <span class='r-in'>                           l<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/apply.html'>apply</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>npiece_</span><span class='op'>)</span>,<span class='fl'>1</span>,<span class='va'>npiece_</span><span class='op'>)</span>,<span class='fl'>2</span>,<span class='va'>lambda_prior</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>                           C_par<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in FUN(newX[, i], ...):</span> trying to get slot "Tmax" from an object of a basic class ("function") with no slots</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>#Obtain the posterior</span></span>
 <span class='r-in'></span>
@@ -253,6 +246,7 @@ model class.</p></li>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>94</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>samples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span> <span class='op'>(</span><span class='va'>data</span>,<span class='va'>model</span>,<span class='va'>options</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'model' in selecting a method for function 'mcmc': object 'model' not found</span>
 <span class='r-in'></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Extract the posterior mean hazard (and empirical 2.5 and 97.5 percentile) </span></span>
@@ -264,6 +258,7 @@ model class.</p></li>
 <span class='r-in'>                  quantiles<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.025</span>,<span class='fl'>0.975</span><span class='op'>)</span>,</span>
 <span class='r-in'>                  middle<span class='op'>=</span><span class='va'>mean</span>,</span>
 <span class='r-in'>                  hazard<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'fitPEM': object 'samples' not found</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
