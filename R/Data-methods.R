@@ -9,7 +9,7 @@
 #' @param x (`GeneralData`)\cr the object we want to convert into list.
 #' @param \dots unused.
 #'
-#' @return a list with all slots in object `x`.
+#' @return A list with all slots in object `x`.
 #'
 #' @example examples/Data-method-asList.R
 #' @export
@@ -18,7 +18,10 @@ setMethod(
   f = "as.list",
   signature = signature(x = "GeneralData"),
   definition = function(x, ...) {
-    sapply(X = slotNames(x), FUN = slot, object = x, simplify = FALSE)
+    slot_names <- slotNames(x)
+    x_list <- lapply(X = slot_names, FUN = slot, object = x)
+    names(x_list) <- slot_names
+    x_list
   }
 )
 

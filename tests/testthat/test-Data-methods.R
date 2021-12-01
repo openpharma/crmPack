@@ -1,6 +1,6 @@
 # as.list ----
 
-test_that("Coercion creates the expected `List` object", {
+test_that("Coercion creates the expected list", {
   object <- Data()
   result <- as.list(object)
 
