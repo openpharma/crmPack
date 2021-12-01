@@ -10,6 +10,7 @@
 #' @param \dots unused.
 #'
 #' @return a list with all slots in object `x`.
+#'
 #' @example examples/Data-method-asList.R
 #' @export
 #'
