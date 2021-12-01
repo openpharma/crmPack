@@ -46,6 +46,7 @@ reference:
   - title: Methods
     contents:
       - as.list
+      - plot-Data-method
   - title: Functions
     contents:
   - title: Graphs

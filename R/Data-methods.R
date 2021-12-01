@@ -42,6 +42,7 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
+#' @name plot-Data-method
 #' @example examples/Data-method-plot-Data.R
 #' @export
 #'
@@ -80,15 +81,10 @@ setMethod(
     p <- ggplot(df, aes(x = patient, y = dose)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
       scale_colour_manual(
-        name = "Toxicity",
-        values = c("red", "black"),
-        breaks = c(1, 0),
-        labels = c("Yes", "No")
+        name = "Toxicity", values = c("red", "black"), breaks = c(1, 0), labels = c("Yes", "No")
       ) +
       scale_shape_discrete(
-        name = "Toxicity",
-        breaks = c(1, 0),
-        labels = c("Yes", "No")
+        name = "Toxicity", breaks = c(1, 0), labels = c("Yes", "No")
       ) +
       scale_x_continuous(breaks = df$patient, minor_breaks = numeric()) +
       scale_y_continuous(
