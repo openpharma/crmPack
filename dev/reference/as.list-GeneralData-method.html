@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>as.list method for the "GeneralData" class — as.list,GeneralData-method • crmPack</title>
+<title>Coerce to List Method for GeneralData Objects — as.list,GeneralData-method • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="as.list method for the "GeneralData" class — as.list,GeneralData-method" />
-<meta property="og:description" content="as.list method for the &quot;GeneralData&quot; class" />
+<meta property="og:title" content="Coerce to List Method for GeneralData Objects — as.list,GeneralData-method" />
+<meta property="og:description" content="
+A method that coerces GeneralData object into list." />
 
 
 <meta name="robots" content="noindex">
@@ -105,15 +106,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -135,13 +127,14 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>as.list method for the "GeneralData" class</h1>
+    <h1>Coerce to List Method for <code>GeneralData</code> Objects</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Data-methods.R'><code>R/Data-methods.R</code></a></small>
     <div class="hidden name"><code>as.list-GeneralData-method.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>as.list method for the "GeneralData" class</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p>A method that coerces <code><a href='GeneralData-class.html'>GeneralData</a></code> object into list.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for GeneralData</span>
@@ -152,30 +145,30 @@ Other releases
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>the <code><a href='GeneralData-class.html'>GeneralData</a></code> object we want to convert</p></td>
+      <td><p>(<code>GeneralData</code>)<br /> the object we want to convert into list.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>unused</p></td>
+      <td><p>unused.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of all slots in <code>x</code></p>
+    <p>A list with all slots in object <code>x</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'></span>
-<span class='r-in'><span class='co'># Create some data of class 'Data'</span></span>
-<span class='r-in'><span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
-<span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,</span>
-<span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='co'># Create some data of class 'Data'</span></span>
+<span class='r-in'><span class='va'>my_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span></span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
 <span class='r-in'></span>
-<span class='r-in'><span class='co'># Converting Data object to list</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>myData</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Convert Data object into list</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span><span class='op'>(</span><span class='va'>my_data</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $x</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  0.1  0.5  1.5  3.0  6.0 10.0 10.0 10.0</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
