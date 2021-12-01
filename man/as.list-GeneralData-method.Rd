@@ -2,30 +2,31 @@
 % Please edit documentation in R/Data-methods.R
 \name{as.list,GeneralData-method}
 \alias{as.list,GeneralData-method}
-\title{as.list method for the "GeneralData" class}
+\title{Coerce to List Method for \code{GeneralData} Objects}
 \usage{
 \S4method{as.list}{GeneralData}(x, ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{GeneralData}} object we want to convert}
+\item{x}{(\code{GeneralData})\cr the object we want to convert into list.}
 
-\item{\dots}{unused}
+\item{\dots}{unused.}
 }
 \value{
-a list of all slots in \code{x}
+a list with all slots in object \code{x}.
 }
 \description{
-as.list method for the "GeneralData" class
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that coerces \code{\link{GeneralData}} object into list.
 }
 \examples{
-
 # Create some data of class 'Data'
-myData <- Data(x=c(0.1,0.5,1.5,3,6,10,10,10),
-               y=c(0,0,0,0,0,0,1,0),
-               doseGrid=c(0.1,0.5,1.5,3,6,
-               seq(from=10,to=80,by=2)))
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# Converting Data object to list
-as.list(myData)
+# Convert Data object into list
+as.list(my_data)
 }
-\keyword{methods}

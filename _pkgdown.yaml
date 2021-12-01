@@ -45,6 +45,7 @@ reference:
     contents:
   - title: Methods
     contents:
+      - as.list
   - title: Functions
     contents:
   - title: Graphs
