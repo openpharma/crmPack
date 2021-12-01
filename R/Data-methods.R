@@ -25,91 +25,106 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Plotting the Data objects
-## --------------------------------------------------
+# Data-plot ----
 
+#' Plot method for the [`Data`] class.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that creates a plot for [`Data`] object.
+#'
+#' @param x (`GeneralData`)\cr object we want to plot.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param \dots not used.
+#'
+#' @return The [`ggplot2`] object.
+#'
+#' @example examples/Data-method-plot-Data.R
+#' @export
+#'
+setMethod(
+  f = "plot",
+  signature = signature(x = "Data", y = "missing"),
+  def = function(x, y, blind = FALSE, ...) {
+    if (x@nObs == 0L) {
+      return()
+    }
 
-##' Plot method for the "Data" class
-##'
-##' @param x the \code{\linkS4class{Data}} object we want to plot
-##' @param y missing
-##' @param blind Logical (default FALSE) if to blind the data. If TRUE, then placebo
-##' subjects are reported by the active dose level of the corresponding cohort and
-##' DLEs are always assigned to the firsts subjects.
-##' @param \dots not used
-##' @return the \code{\link[ggplot2]{ggplot}} object
-##'
-##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
-##' scale_y_continuous scale_x_continuous
-##'
-##' @example examples/Data-method-plot-Data.R
-##' @export
-##' @keywords methods
-setMethod("plot",
-          signature=
-          signature(x="Data", y="missing"),
-          def=
-          function(x, y, blind=FALSE, ...){
-              if(x@nObs == 0)
-              {
-                  return()
-              }
+    df <- data.frame(
+      patient = seq_along(x@x),
+      ID = paste(" ", x@ID),
+      dose = x@x,
+      toxicity = as.factor(x@y)
+    )
 
-              df <- data.frame(patient=seq_along(x@x),
-                               dose=x@x,
-                               toxicity=ifelse(x@y==1, "Yes", "No"),
-                               ID=paste(" ", x@ID))
-              cols <- c("No" = "black","Yes" = "red")
+    if (x@placebo) {
+      if (!blind) {
+        # Placebo will be plotted at y = 0 level.
+        df$dose[x@x == x@doseGrid[1]] <- 0
+      } else {
+        # This is to blind the data.
+        # For each cohort, the placebo is set to the active dose level for that cohort.
+        # In addition, all DLTs are assigned to the first subjects in the cohort.
+        for (coh in unique(x@cohort)) {
+          filter.coh <- x@cohort == coh
+          df$dose[filter.coh] <- max(df$dose[filter.coh])
+          df$toxicity[filter.coh] <- sort(df$toxicity[filter.coh], decreasing = TRUE)
+        }
+      }
+    }
 
-              # If there are placebo, consider this a y=0.0 for the plot
-              if(x@placebo & !blind)
-                df$dose[df$dose == x@doseGrid[1]] <- 0.0
+    # Build plot object.
+    p <- ggplot(df, aes(x = patient, y = dose)) +
+      geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
+      scale_colour_manual(
+        name = "Toxicity",
+        values = c("red", "black"),
+        breaks = c(1, 0),
+        labels = c("Yes", "No")
+      ) +
+      scale_shape_discrete(
+        name = "Toxicity",
+        breaks = c(1, 0),
+        labels = c("Yes", "No")
+      ) +
+      scale_x_continuous(breaks = df$patient, minor_breaks = numeric()) +
+      scale_y_continuous(
+        breaks = sort(unique(c(0, df$dose))),
+        minor_breaks = numeric(),
+        limits = c(0, max(df$dose) * 1.1)
+      ) +
+      xlab("Patient") +
+      ylab("Dose Level")
 
-              # This is to blind the data
-              # For each cohort, the placebo is set to the active dose level for that cohort.
-              # In addition, all DLTs are assigned to the first subjects in the cohort
-              if(x@placebo & blind){
-                cohort.id <- unique(x@cohort)
-                for(iCoh in seq(a=cohort.id)){
-                  filter.coh <- which(x@cohort == cohort.id[iCoh])
-                  df[filter.coh,"dose"] <- max(df[filter.coh,"dose"])
-                  df[filter.coh,"toxicity"] <- sort(df[filter.coh,"toxicity"],
-                                                    decreasing=TRUE)
-                }
-              }
+    # If feasible, add a vertical green lines separating sub-sequent cohorts.
+    if (x@placebo & length(unique(x@cohort)) > 1) {
+      p <- p +
+        geom_vline(
+          xintercept = head(cumsum(table(x@cohort)), n = -1) + 0.5,
+          colour = "green",
+          linetype = "longdash"
+        )
+    }
 
-              a <- ggplot(df, aes(x=patient,y=dose)) +
-                  scale_y_continuous(breaks=
-                                     sort(unique(c(0, df$dose))),
-                                     minor_breaks=numeric(),
-                                     limits=c(0, max(df$dose) * 1.1))
+    if (!blind) {
+      p <- p +
+        geom_text(
+          aes(label = ID, size = 2),
+          data = df,
+          hjust = 0,
+          vjust = 0.5,
+          angle = 90,
+          colour = I("black"),
+          show.legend = FALSE
+        )
+    }
 
-              a <- a +
-                  geom_point(aes(shape=toxicity,colour=toxicity),
-                             size=3) +
-                                 scale_colour_manual(values=cols) +
-                                     xlab("Patient") + ylab("Dose Level")
-
-              if(!blind)
-                a <- a + geom_text(aes(label=ID, size=2),
-                                   data=df,
-                                   hjust=0, vjust=0.5,
-                                   angle=90, colour=I("black"),
-                                   show.legend = FALSE)
-
-              a <- a + scale_x_continuous(breaks=df$patient,
-                                          minor_breaks=numeric())
-
-              # add a vertical lines separating sub-sequent cohorts
-              if(x@placebo & length(unique(x@cohort)) > 1)
-                a <- a + geom_vline(xintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5,
-                                    colour="green",
-                                    linetype = "longdash")
-
-              return(a)
-          })
-
+    p
+  }
+)
 
 ## --------------------------------------------------
 ## Subclass with additional biomarker information

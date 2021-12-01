@@ -25,6 +25,8 @@
 #  cpp_glmBayesMfp cpp_bfgs cpp_optimize cpp_sampleGlm cpp_evalZdensity
 #  cpp_coxfit
 #' @import checkmate
+#' @importFrom ggplot2 ggplot aes geom_point xlab ylab
+#' scale_x_continuous scale_y_continuous scale_colour_manual scale_shape_discrete
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom methods setClass setOldClass setGeneric setMethod representation
 #' signature prototype initialize new is .valueClassTest as callNextMethod slot 
