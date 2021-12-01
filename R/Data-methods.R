@@ -1,4 +1,4 @@
-# as.list ----
+# GeneralData-as.list ----
 
 #' Coerce to List Method for `GeneralData` Objects
 #'
