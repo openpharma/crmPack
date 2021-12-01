@@ -1,54 +1,29 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [ w *.*yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Data-methods.R] by DSB Mon 11/05/2015 17:43>
-##
-## Description:
-## Methods for handling the data. Plot ideas taken from bcrm package.
-##
-## History:
-## 30/01/2014   file creation
-## 06/02/2014   add method for conversion to list
-## 17/02/2014   add update methods
-## 21/07/2015   add plots using data and pseudo models
-###################################################################################
+# GeneralData-as.list ----
 
-
-## ============================================================
-
-## --------------------------------------------------
-## Converting Data object to list
-## --------------------------------------------------
-
-
-##' as.list method for the "GeneralData" class
-##'
-##' @param x the \code{\linkS4class{GeneralData}} object we want to convert
-##' @param \dots unused
-##' @return a list of all slots in \code{x}
-##'
-##' @example examples/Data-method-asList.R
-##' @export
-##' @keywords methods
-setMethod("as.list",
-          signature=
-          signature(x="GeneralData"),
-          def=
-          function(x, ...){
-              nams <- slotNames(x)
-              ret <- lapply(nams,
-                            function(n){
-                                slot(x, n)
-                            })
-              names(ret) <- nams
-              return(ret)
-          })
-
-
-
-## ============================================================
+#' Coerce to List Method for `GeneralData` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that coerces [`GeneralData`] object into list.
+#'
+#' @param x (`GeneralData`)\cr the object we want to convert into list.
+#' @param \dots unused.
+#'
+#' @return A list with all slots in object `x`.
+#'
+#' @example examples/Data-method-asList.R
+#' @export
+#'
+setMethod(
+  f = "as.list",
+  signature = signature(x = "GeneralData"),
+  definition = function(x, ...) {
+    slot_names <- slotNames(x)
+    x_list <- lapply(X = slot_names, FUN = slot, object = x)
+    names(x_list) <- slot_names
+    x_list
+  }
+)
 
 ## --------------------------------------------------
 ## Plotting the Data objects
