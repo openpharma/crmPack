@@ -20,12 +20,16 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      install-system-dependencies: true
   coverage:
     if: github.event_name == 'pull_request'
     name: Coverage 📔 
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      install-system-dependencies: true
   linter:
     if: github.event_name == 'pull_request'
     name: SuperLinter 🦸‍♀️
@@ -35,6 +39,8 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      install-system-dependencies: true
   gitleaks:
     name: gitleaks 💧
     uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
