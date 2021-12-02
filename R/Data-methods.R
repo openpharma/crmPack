@@ -54,19 +54,7 @@ setMethod(
       return()
     }
 
-    if (blind) {
-      x <- h_data_blind(x)
-    } else if (x@placebo) {
-      # Placebo will be plotted at y = 0 level.
-      x@x[x@x == x@doseGrid[1]] <- 0
-    }
-
-    df <- data.frame(
-      patient = seq_along(x@x),
-      ID = paste(" ", x@ID),
-      dose = x@x,
-      toxicity = as.factor(x@y),
-    )
+    df <- h_plot_data_df(x, blind)
 
     # Build plot object.
     p <- ggplot(df, aes(x = patient, y = dose)) +
@@ -77,10 +65,10 @@ setMethod(
       scale_shape_discrete(
         name = "Toxicity", breaks = c(1, 0), labels = c("Yes", "No")
       ) +
-      scale_x_continuous(breaks = df$patient, minor_breaks = numeric()) +
+      scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
       scale_y_continuous(
         breaks = sort(unique(c(0, df$dose))),
-        minor_breaks = numeric(),
+        minor_breaks = NULL,
         limits = c(0, max(df$dose) * 1.1)
       ) +
       xlab("Patient") +
@@ -104,7 +92,7 @@ setMethod(
           hjust = 0,
           vjust = 0.5,
           angle = 90,
-          colour = I("black"),
+          colour = "black",
           show.legend = FALSE
         )
     }

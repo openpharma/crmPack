@@ -33,6 +33,7 @@ reference:
     contents:
       - h_doses_unique_per_cohort
       - h_all_equivalent
+      - h_plot_data_df
   - title: Internal Validation Functions
     contents:
       - validate_subjects

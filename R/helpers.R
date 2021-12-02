@@ -513,7 +513,7 @@ myBarplot <- function(x, description, xaxisround=0)
 #' Comparison with Numerical Tolerance and Without Name Comparison
 #'
 #' @description `r lifecycle::badge("experimental")`
-#' 
+#'
 #' This helper function ensures a default tolerance level equal to `1e-10`,
 #' and ignores names and other attributes.
 #' In contrast to [base::all.equal()], it always returns a logical type object.
@@ -525,13 +525,13 @@ myBarplot <- function(x, description, xaxisround=0)
 #'   up to desired tolerance and without looking at names or other attributes,
 #'   `FALSE` otherwise.
 #'
-h_all_equivalent <- function(target, 
-                             current, 
+h_all_equivalent <- function(target,
+                             current,
                              tolerance = 1e-10) {
   assert_numeric(target)
   assert_numeric(current)
   assert_number(tolerance)
-  
+
   tmp <- all.equal(
     target = target,
     current = current,
@@ -540,4 +540,45 @@ h_all_equivalent <- function(target,
     check.attributes = FALSE
   )
   isTRUE(tmp)
+}
+
+#' Prepare Data for Plotting
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function prepares a data.frame object based on `Data` class object.
+#' The resulting data frame is used by the plot function for `Data` class objects.
+#'
+#' @param data (`Data`)\cr object from which data is extracted and converted
+#'   into a data frame.
+#' @param blind (`flag`)\cr should data be blinded?
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first subjects
+#'   in the cohort. In addition, the placebo (if any) is set to the active dose
+#'   level for that cohort.
+#' @return A `data frame` object with values to plot.
+#'
+h_plot_data_df <- function(data, blind = FALSE) {
+  df <- data.frame(
+    patient = seq_along(data@x),
+    ID = paste(" ", data@ID),
+    cohort = data@cohort,
+    dose = data@x,
+    toxicity = as.factor(data@y)
+  )
+
+  if (blind) {
+    #' This is to blind the data.
+    #' For each cohort, all DLTs are assigned to the first subjects in the cohort.
+    #' In addition, the placebo (if any) is set to the active dose level for that cohort.
+    df <- dapply(df, f = ~cohort, FUN = function(coh) {
+      coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
+      coh$dose <- max(coh$dose)
+      coh
+    })
+  } else if (data@placebo) {
+    # Placebo will be plotted at y = 0 level.
+    df$dose[df$dose == data@doseGrid[1]] <- 0
+  }
+
+  df
 }
