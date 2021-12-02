@@ -53,6 +53,7 @@ setMethod(
     if (x@nObs == 0L) {
       return()
     }
+
     if (blind) {
       x <- h_data_blind(x)
     } else if (x@placebo) {
