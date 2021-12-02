@@ -53,29 +53,20 @@ setMethod(
     if (x@nObs == 0L) {
       return()
     }
+    if (blind) {
+      x <- h_data_blind(x)
+    } else if (x@placebo) {
+      # Placebo will be plotted at y = 0 level.
+      x@x[x@x == x@doseGrid[1]] <- 0
+    }
 
     df <- data.frame(
       patient = seq_along(x@x),
       ID = paste(" ", x@ID),
       dose = x@x,
-      toxicity = as.factor(x@y)
+      toxicity = as.factor(x@y),
+      cohort = x@cohort
     )
-
-    if (x@placebo) {
-      if (!blind) {
-        # Placebo will be plotted at y = 0 level.
-        df$dose[x@x == x@doseGrid[1]] <- 0
-      } else {
-        # This is to blind the data.
-        # For each cohort, the placebo is set to the active dose level for that cohort.
-        # In addition, all DLTs are assigned to the first subjects in the cohort.
-        for (coh in unique(x@cohort)) {
-          filter.coh <- x@cohort == coh
-          df$dose[filter.coh] <- max(df$dose[filter.coh])
-          df$toxicity[filter.coh] <- sort(df$toxicity[filter.coh], decreasing = TRUE)
-        }
-      }
-    }
 
     # Build plot object.
     p <- ggplot(df, aes(x = patient, y = dose)) +
