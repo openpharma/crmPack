@@ -65,7 +65,6 @@ setMethod(
       ID = paste(" ", x@ID),
       dose = x@x,
       toxicity = as.factor(x@y),
-      cohort = x@cohort
     )
 
     # Build plot object.
