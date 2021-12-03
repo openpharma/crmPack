@@ -2,37 +2,41 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,Data,missing-method}
 \alias{plot,Data,missing-method}
-\title{Plot method for the "Data" class}
+\alias{plot-Data-method}
+\title{Plot method for the \code{\link{Data}} class.}
 \usage{
 \S4method{plot}{Data,missing}(x, y, blind = FALSE, ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{Data}} object we want to plot}
+\item{x}{(\code{GeneralData})\cr object we want to plot.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
 
-\item{blind}{Logical (default FALSE) if to blind the data. If TRUE, then placebo
-subjects are reported by the active dose level of the corresponding cohort and
-DLEs are always assigned to the firsts subjects.}
+\item{blind}{(\code{flag})\cr indicates whether to blind the data.
+If \code{TRUE}, then placebo subjects are reported at the same level
+as the active dose level in the corresponding cohort,
+and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{\dots}{not used}
+\item{\dots}{not used.}
 }
 \value{
-the \code{\link[ggplot2]{ggplot}} object
+The \code{\link{ggplot2}} object.
 }
 \description{
-Plot method for the "Data" class
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that creates a plot for \code{\link{Data}} object.
 }
 \examples{
+# Create some data of class 'Data'.
+my_data <- Data(
+  x = c(0.001, 0.1, 0.1, 0.5, 0.001, 3, 3, 0.001, 10, 10, 10),
+  y = c(0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0),
+  cohort = c(1, 1, 1, 2, 3, 3, 3, 4, 4, 4, 4),
+  doseGrid = c(0.001, 0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  placeb = TRUE
+)
 
-# Create some data of class 'Data'
-myData <- Data(x=c(0.1,0.5,1.5,3,6,10,10,10),
-               y=c(0,0,0,0,0,0,1,0),
-               doseGrid=c(0.1,0.5,1.5,3,6,
-                          seq(from=10,to=80,by=2)))
-
-# Plot the data
-plot(myData)
-
+# Plot the data.
+plot(my_data)
 }
-\keyword{methods}
