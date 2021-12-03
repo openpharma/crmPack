@@ -7,3 +7,19 @@ test_that("Coercion creates the expected list", {
   expect_class(result, "list")
   expect_identical(slotNames(object), names(result))
 })
+
+# plot-Data ----
+
+test_that("Plot works as expected for Data object with placebo and no blinding", {
+  data <- h_get_data()
+  result <- plot(data)
+
+  vdiffr::expect_doppelganger("Plot of Data with placebo and no blinding", result)
+})
+
+test_that("Plot works as expected for Data object with placebo and with blinding", {
+  data <- h_get_data()
+  result <- plot(data, blind = TRUE)
+
+  vdiffr::expect_doppelganger("Plot of Data with placebo and with blinding", result)
+})
