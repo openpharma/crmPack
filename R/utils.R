@@ -16,7 +16,7 @@
 #' @param ... parameters passed to [lapply()], which is used when applying a function `FUN`
 #'   over groups defined by `f`.
 #'
-#' @return The [`data frame`] object with results from `FUN`.
+#' @return The `data.frame` object with results from `FUN`.
 #'
 #' @export
 #' @example examples/utils-dapply.R
