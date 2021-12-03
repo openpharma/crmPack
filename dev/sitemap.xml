@@ -538,6 +538,9 @@
     <loc>https://github.com/roche/crmPack/reference/crmPackHelp.html</loc>
   </url>
   <url>
+    <loc>https://github.com/roche/crmPack/reference/dapply.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/roche/crmPack/reference/dinvGamma.html</loc>
   </url>
   <url>
@@ -572,6 +575,9 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/h_all_equivalent.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/h_plot_data_df.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/initialize-DualEndpointOld-method.html</loc>
