@@ -43,7 +43,7 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @name plot-Data-method
+#' @aliases plot-Data-method
 #' @example examples/Data-method-plot-Data.R
 #' @export
 #'

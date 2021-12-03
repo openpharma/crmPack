@@ -21,7 +21,7 @@ This parameter is passed directly into \code{\link[base:split]{base::split()}} f
 over groups defined by \code{f}.}
 }
 \value{
-The \code{\link{data frame}} object with results from \code{FUN}.
+The \code{data.frame} object with results from \code{FUN}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
