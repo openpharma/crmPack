@@ -52,6 +52,9 @@ setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
   def = function(x, y, blind = FALSE, no_legend = FALSE, ...) {
+    assert_flag(blind)
+    assert_flag(no_legend)
+
     if (x@nObs == 0L) {
       return()
     }
@@ -133,6 +136,7 @@ setMethod(
   f = "plot",
   signature = signature(x = "DataDual", y = "missing"),
   def = function(x, y, blind = FALSE, ...) {
+    assert_flag(blind)
 
     # Call the superclass method, to get the first plot.
     plot1 <- callNextMethod(x, blind = blind, no_legend = TRUE, ...)
