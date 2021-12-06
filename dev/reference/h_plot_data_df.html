@@ -107,15 +107,6 @@ The resulting data frame is used by the plot function for Data class objects." /
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -148,7 +139,7 @@ Other releases
 The resulting data frame is used by the plot function for <code>Data</code> class objects.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>h_plot_data_df</span><span class='op'>(</span><span class='va'>data</span>, blind <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>h_plot_data_df</span><span class='op'>(</span><span class='va'>data</span>, blind <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -165,14 +156,18 @@ If <code>TRUE</code>, then for each cohort, all DLTs are assigned to the first s
 in the cohort. In addition, the placebo (if any) is set to the active dose
 level for that cohort.</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>further arguments passed to <code>data.frame</code> constructor.
+It can be e.g. an extra <code>column_name = value</code> pair based on a slot
+from <code>x</code> (which in this case might be a subclass of <code>Data</code>)
+which does not appear in <code>Data</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>data frame</code> object with values to plot.</p>
-<p>This is to blind the data.
-For each cohort, all DLTs are assigned to the first subjects in the cohort.
-In addition, the placebo (if any) is set to the active dose level for that cohort.</p>
+    <p>A <code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code> object with values to plot.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

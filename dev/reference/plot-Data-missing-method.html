@@ -106,15 +106,6 @@ A method that creates a plot for Data object." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -147,14 +138,14 @@ Other releases
     </div>
 
     <pre class="usage"><span class='co'># S4 method for Data,missing</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, blind <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, blind <span class='op'>=</span> <span class='cn'>FALSE</span>, legend <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>(<code>GeneralData</code>)<br /> object we want to plot.</p></td>
+      <td><p>(<code>Data</code>)<br /> object we want to plot.</p></td>
     </tr>
     <tr>
       <th>y</th>
@@ -166,6 +157,10 @@ Other releases
 If <code>TRUE</code>, then placebo subjects are reported at the same level
 as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.</p></td>
+    </tr>
+    <tr>
+      <th>legend</th>
+      <td><p>(<code>flag</code>)<br /> whether the legend should be added.</p></td>
     </tr>
     <tr>
       <th>...</th>
