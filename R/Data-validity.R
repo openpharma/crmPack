@@ -7,7 +7,7 @@
 #'
 #' @name validate_data_objects
 #' @param object (`GeneralData`)\cr object to validate.
-#' @return A character vector with the validation failure messages,
+#' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 

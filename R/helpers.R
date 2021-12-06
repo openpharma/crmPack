@@ -28,21 +28,22 @@
 ##' @export
 ##' @keywords programming
 ##' @example examples/matching-tolerance.R
-matchTolerance <- function(x, table)
-{
+matchTolerance <- function(x, table) {
   as.integer(sapply(x, function(.x) {
-    which(sapply(table, function(.table) isTRUE(all.equal(.x, .table,
-                                                          tolerance=1e-10,
-                                                          check.names=FALSE,
-                                                          check.attributes=FALSE))))[1]
+    which(sapply(table, function(.table) {
+      isTRUE(all.equal(.x, .table,
+        tolerance = 1e-10,
+        check.names = FALSE,
+        check.attributes = FALSE
+      ))
+    }))[1]
   }))
 }
 
 ##' @describeIn matchTolerance Helper function for checking inclusion in a table with tolerance
 ##' @export
-`%~%` <- function(x, table)
-{
-  ! is.na(matchTolerance(x=x, table=table))
+`%~%` <- function(x, table) {
+  !is.na(matchTolerance(x = x, table = table))
 }
 
 
@@ -54,15 +55,14 @@ matchTolerance <- function(x, table)
 ##' @return joined body
 ##'
 ##' @keywords internal programming
-joinBodies <- function(body1, body2)
-{
-    lenBody1 <- length(body1)
-    lenBody2 <- length(body2)
-    for(i in seq_len(lenBody2 - 1L))
-    {
-        body1[[lenBody1 + i]] <- body2[[1L + i]]
-    }
-    return(body1)
+joinBodies <- function(body1, body2) {
+  lenBody1 <- length(body1)
+  lenBody2 <- length(body2)
+  for (i in seq_len(lenBody2 - 1L))
+  {
+    body1[[lenBody1 + i]] <- body2[[1L + i]]
+  }
+  return(body1)
 }
 
 ##' Helper function to join two BUGS models
@@ -72,12 +72,11 @@ joinBodies <- function(body1, body2)
 ##' @return joined model
 ##'
 ##' @keywords internal programming
-joinModels <- function(model1, model2)
-{
-    body1 <- body(model1)
-    body2 <- body(model2)
-    body(model1) <- joinBodies(body1, body2)
-    return(model1)
+joinModels <- function(model1, model2) {
+  body1 <- body(model1)
+  body2 <- body(model2)
+  body(model1) <- joinBodies(body1, body2)
+  return(model1)
 }
 
 ##' Check overlap of two character vectors
@@ -88,10 +87,11 @@ joinModels <- function(model1, model2)
 ##' vectors, otherwise FALSE
 ##'
 ##' @keywords internal
-noOverlap <- function(a, b)
-{
-    identical(intersect(a, b),
-              character(0))
+noOverlap <- function(a, b) {
+  identical(
+    intersect(a, b),
+    character(0)
+  )
 }
 
 ##' Checking for scalar
@@ -101,9 +101,8 @@ noOverlap <- function(a, b)
 ##' (i.e., a scalar)
 ##'
 ##' @keywords internal
-is.scalar <- function(x)
-{
-    return(identical(length(x), 1L))
+is.scalar <- function(x) {
+  return(identical(length(x), 1L))
 }
 
 ##' Predicate checking for a boolean option
@@ -113,10 +112,9 @@ is.scalar <- function(x)
 ##' scalar)
 ##'
 ##' @keywords internal
-is.bool <- function(x)
-{
-    return(is.scalar(x) &&
-           is.logical(x))
+is.bool <- function(x) {
+  return(is.scalar(x) &&
+    is.logical(x))
 }
 
 
@@ -127,9 +125,8 @@ is.bool <- function(x)
 ##' @return TRUE or FALSE for each element of x
 ##'
 ##' @keywords internal
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)
-{
-    abs(x - round(x)) < tol
+is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
+  abs(x - round(x)) < tol
 }
 
 
@@ -139,17 +136,17 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)
 ##' @return the integer vector
 ##'
 ##' @keywords internal
-safeInteger <- function(x)
-{
-    testres <- is.wholenumber(x)
-    if(! all(testres))
-    {
-        notInt <- which(! testres)
-        stop(paste("elements",
-                   paste(notInt, sep=", "),
-                   "of vector are not integers!"))
-    }
-    as.integer(x)
+safeInteger <- function(x) {
+  testres <- is.wholenumber(x)
+  if (!all(testres)) {
+    notInt <- which(!testres)
+    stop(paste(
+      "elements",
+      paste(notInt, sep = ", "),
+      "of vector are not integers!"
+    ))
+  }
+  as.integer(x)
 }
 
 ##' Predicate checking for a probability
@@ -160,14 +157,13 @@ safeInteger <- function(x)
 ##'
 ##' @keywords internal
 is.probability <- function(x,
-                           bounds=TRUE)
-{
-    return(is.scalar(x) &&
-           if(bounds){
-               0 <= x && 1 >= x
-           } else {
-               0 < x && 1 > x
-           })
+                           bounds = TRUE) {
+  return(is.scalar(x) &&
+    if (bounds) {
+      0 <= x && 1 >= x
+    } else {
+      0 < x && 1 > x
+    })
 }
 
 ##' Predicate checking for a numeric range
@@ -176,10 +172,9 @@ is.probability <- function(x,
 ##' @return Returns \code{TRUE} if \code{x} is a numeric range
 ##'
 ##' @keywords internal
-is.range <- function(x)
-{
+is.range <- function(x) {
   return(identical(length(x), 2L) &&
-           x[1] < x[2])
+    x[1] < x[2])
 }
 
 ##' Predicate checking for a probability range
@@ -190,10 +185,9 @@ is.range <- function(x)
 ##'
 ##' @keywords internal
 is.probRange <- function(x,
-                         bounds=TRUE)
-{
-    return(is.range(x) &&
-             all(sapply(x, is.probability, bounds=bounds)))
+                         bounds = TRUE) {
+  return(is.range(x) &&
+    all(sapply(x, is.probability, bounds = bounds)))
 }
 
 
@@ -204,9 +198,8 @@ is.probRange <- function(x,
 ##'
 ##' @export
 ##' @keywords programming
-logit <- function(x)
-{
-    qlogis(x)
+logit <- function(x) {
+  qlogis(x)
 }
 
 ##' Shorthand for probit function
@@ -216,8 +209,7 @@ logit <- function(x)
 ##'
 ##' @export
 ##' @keywords programming
-probit <- function(x)
-{
+probit <- function(x) {
   qnorm(x)
 }
 
@@ -230,11 +222,10 @@ probit <- function(x)
 ##' @export
 ##' @keywords documentation
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-crmPackExample <- function()
-{
-    crmPath <- system.file(package="crmPack")
-    printVignette(list(PDF="example.pdf", Dir=crmPath))
-    ## instead of utils:::print.vignette
+crmPackExample <- function() {
+  crmPath <- system.file(package = "crmPack")
+  printVignette(list(PDF = "example.pdf", Dir = crmPath))
+  ## instead of utils:::print.vignette
 }
 
 ##' Open the browser with help pages for crmPack
@@ -247,9 +238,8 @@ crmPackExample <- function()
 ##' @importFrom utils help
 ##' @keywords documentation
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-crmPackHelp <- function()
-{
-    utils::help(package="crmPack", help_type="html")
+crmPackHelp <- function() {
+  utils::help(package = "crmPack", help_type = "html")
 }
 
 
@@ -262,14 +252,12 @@ crmPackHelp <- function()
 ##'
 ##' @importFrom grid grid.draw
 ##' @export
-plot.gtable <- function(x, ...)
-{
+plot.gtable <- function(x, ...) {
   grid::grid.draw(x, ...)
 }
 
 ##' @export
-print.gtable <- function(x, ...)
-{
+print.gtable <- function(x, ...) {
   plot.gtable(x, ...)
 }
 
@@ -290,8 +278,7 @@ print.gtable <- function(x, ...)
 #' @return Used for the side effect of plotting
 #' @importFrom grid grid.newpage pushViewport viewport
 #' @export
-multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
-{
+multiplot <- function(..., plotlist = NULL, rows = 1, layout = NULL) {
   # Make a list from the ... arguments and plotlist
   plots <- c(list(...), plotlist)
 
@@ -302,19 +289,21 @@ multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
     # Make the panel
     # ncol: Number of columns of plots
     # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, rows * ceiling(numPlots/rows)),
-                     nrow = rows, ncol = ceiling(numPlots/rows),
-                     byrow=TRUE)
+    layout <- matrix(seq(1, rows * ceiling(numPlots / rows)),
+      nrow = rows, ncol = ceiling(numPlots / rows),
+      byrow = TRUE
+    )
   }
 
-  if (numPlots==1) {
+  if (numPlots == 1) {
     print(plots[[1]])
-
   } else {
     # Set up the page
     grid::grid.newpage()
-    grid::pushViewport(grid::viewport(layout = grid::grid.layout(nrow(layout),
-                                                                 ncol(layout))))
+    grid::pushViewport(grid::viewport(layout = grid::grid.layout(
+      nrow(layout),
+      ncol(layout)
+    )))
 
     # Make each plot, in the correct location
     for (i in seq_len(numPlots))
@@ -322,8 +311,10 @@ multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
       # Get the i,j matrix positions of the regions that contain this subplot
       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
 
-      print(plots[[i]], vp = grid::viewport(layout.pos.row = matchidx$row,
-                                            layout.pos.col = matchidx$col))
+      print(plots[[i]], vp = grid::viewport(
+        layout.pos.row = matchidx$row,
+        layout.pos.col = matchidx$col
+      ))
     }
   }
 }
@@ -333,27 +324,30 @@ multiplot <- function(..., plotlist=NULL, rows=1, layout=NULL)
 ##' @importFrom tools file_ext
 ##' @importFrom utils browseURL
 ##' @keywords internal
-printVignette <- function (x, ...)
-{
-    if (nzchar(out <- x$PDF)) {
-        ext <- tools::file_ext(out)
-        out <- file.path(x$Dir, "doc", out)
-        if (tolower(ext) == "pdf") {
-            pdfviewer <- getOption("pdfviewer")
-            if (identical(pdfviewer, "false")) {
-            }
-            else if (.Platform$OS.type == "windows" && identical(pdfviewer,
-                file.path(R.home("bin"), "open.exe")))
-                shell.exec(out)
-            else system2(pdfviewer, shQuote(out), wait = FALSE)
-        }
-        else browseURL(out)
+printVignette <- function(x, ...) {
+  if (nzchar(out <- x$PDF)) {
+    ext <- tools::file_ext(out)
+    out <- file.path(x$Dir, "doc", out)
+    if (tolower(ext) == "pdf") {
+      pdfviewer <- getOption("pdfviewer")
+      if (identical(pdfviewer, "false")) {
+      } else if (.Platform$OS.type == "windows" && identical(
+        pdfviewer,
+        file.path(R.home("bin"), "open.exe")
+      )) {
+        shell.exec(out)
+      } else {
+        system2(pdfviewer, shQuote(out), wait = FALSE)
+      }
+    } else {
+      browseURL(out)
     }
-    else {
-        warning(gettextf("vignette %s has no PDF/HTML", sQuote(x$Topic)),
-            call. = FALSE, domain = NA)
-    }
-    invisible(x)
+  } else {
+    warning(gettextf("vignette %s has no PDF/HTML", sQuote(x$Topic)),
+      call. = FALSE, domain = NA
+    )
+  }
+  invisible(x)
 }
 
 # Validate-class ----
@@ -376,7 +370,7 @@ Validate <- setRefClass(
   fields = list(msg = "character"),
   methods = list(
     check = function(test, string = "") {
-      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}. 
+      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}.
       Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
       assert_flag(test)
       assert_string(string)
@@ -407,18 +401,20 @@ Validate <- setRefClass(
 ##' @param normalize logical; if TRUE, the output will be normalized
 ##'
 ##' @keywords internal
-dinvGamma <- function (x,
-                       a,
-                       b,
-                       log=FALSE,
-                       normalize=TRUE)
-{ ret<- -(a+1)*log(x)-b /x
-if (normalize)
-  ret <- ret +a*log(b)-lgamma(a)
-if (log)
-  return (ret)
-else
-  return (exp(ret))
+dinvGamma <- function(x,
+                      a,
+                      b,
+                      log = FALSE,
+                      normalize = TRUE) {
+  ret <- -(a + 1) * log(x) - b / x
+  if (normalize) {
+    ret <- ret + a * log(b) - lgamma(a)
+  }
+  if (log) {
+    return(ret)
+  } else {
+    return(exp(ret))
+  }
 }
 
 ##' Compute the distribution function of Inverse gamma distribution
@@ -435,14 +431,15 @@ else
 pinvGamma <- function(q,
                       a,
                       b,
-                      lower.tail =TRUE,
-                      log.p = FALSE)
-{
-  pgamma(q=1/q,
-         shape=a,
-         rate=b,
-         lower.tail= !lower.tail,
-         log.p =log.p)
+                      lower.tail = TRUE,
+                      log.p = FALSE) {
+  pgamma(
+    q = 1 / q,
+    shape = a,
+    rate = b,
+    lower.tail = !lower.tail,
+    log.p = log.p
+  )
 }
 
 ##' Compute the quantile function of Inverse gamma distribution
@@ -458,14 +455,15 @@ pinvGamma <- function(q,
 qinvGamma <- function(p,
                       a,
                       b,
-                      lower.tail =TRUE,
-                      log.p = FALSE)
-{
-  1/qgamma(p = p,
-           shape=a,
-           rate=b,
-           lower.tail= !lower.tail,
-           log.p =log.p)
+                      lower.tail = TRUE,
+                      log.p = FALSE) {
+  1 / qgamma(
+    p = p,
+    shape = a,
+    rate = b,
+    lower.tail = !lower.tail,
+    log.p = log.p
+  )
 }
 ##' The random generation of the Inverse gamma distribution
 ##' @param n the number of observations
@@ -475,10 +473,11 @@ qinvGamma <- function(p,
 ##' @keywords internal
 rinvGamma <- function(n,
                       a,
-                      b)
-{1/rgamma(n,
-          shape=a,
-          rate=b)
+                      b) {
+  1 / rgamma(n,
+    shape = a,
+    rate = b
+  )
 }
 
 
@@ -494,20 +493,22 @@ rinvGamma <- function(n,
 #' @keywords internal
 #' @importFrom ggplot2 ggplot geom_histogram aes xlab ylab xlim
 #' @example examples/myBarplot.R
-myBarplot <- function(x, description, xaxisround=0)
-{
+myBarplot <- function(x, description, xaxisround = 0) {
   tabx <- table(x) / length(x)
-  dat <- data.frame(x=as.numeric(names(tabx)), perc=as.numeric(tabx) * 100)
+  dat <- data.frame(x = as.numeric(names(tabx)), perc = as.numeric(tabx) * 100)
   ggplot() +
-    geom_bar(aes(x=x, y=perc),
-             data=dat,
-             stat="identity",
-             position="identity",
-             width=ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)) +
+    geom_bar(aes(x = x, y = perc),
+      data = dat,
+      stat = "identity",
+      position = "identity",
+      width = ifelse(nrow(dat) > 1, min(diff(dat$x)) / 2, 1)
+    ) +
     xlab(description) +
     ylab("Percent") +
-    scale_x_continuous(breaks=
-                         round(dat$x, xaxisround))
+    scale_x_continuous(
+      breaks =
+        round(dat$x, xaxisround)
+    )
 }
 
 #' Comparison with Numerical Tolerance and Without Name Comparison
@@ -516,7 +517,7 @@ myBarplot <- function(x, description, xaxisround=0)
 #'
 #' This helper function ensures a default tolerance level equal to `1e-10`,
 #' and ignores names and other attributes.
-#' In contrast to [base::all.equal()], it always returns a logical type object.
+#' In contrast to [all.equal()], it always returns a logical type object.
 #'
 #' @param target (`numeric`)\cr target values.
 #' @param current (`numeric`)\cr current values.
@@ -555,21 +556,27 @@ h_all_equivalent <- function(target,
 #'   If `TRUE`, then for each cohort, all DLTs are assigned to the first subjects
 #'   in the cohort. In addition, the placebo (if any) is set to the active dose
 #'   level for that cohort.
-#' @return A `data frame` object with values to plot.
+#' @param \dots further arguments passed to `data.frame` constructor.
+#'   It can be e.g. an extra `column_name = value` pair based on a slot
+#'   from `x` (which in this case might be a subclass of `Data`)
+#'   which does not appear in `Data`.
+#' @return A [`data frame`] object with values to plot.
 #'
-h_plot_data_df <- function(data, blind = FALSE) {
+h_plot_data_df <- function(data, blind = FALSE, ...) {
   df <- data.frame(
     patient = seq_along(data@x),
     ID = paste(" ", data@ID),
     cohort = data@cohort,
     dose = data@x,
-    toxicity = as.factor(data@y)
+    toxicity = as.factor(data@y),
+    ...
   )
 
   if (blind) {
-    #' This is to blind the data.
-    #' For each cohort, all DLTs are assigned to the first subjects in the cohort.
-    #' In addition, the placebo (if any) is set to the active dose level for that cohort.
+    # This is to blind the data.
+    # For each cohort, all DLTs are assigned to the first subjects in the cohort.
+    # In addition, the placebo (if any) is set to the active dose level for that cohort.
+    # Notice: dapply reorders records of df according to the lexicographic order of cohort.
     df <- dapply(df, f = ~cohort, FUN = function(coh) {
       coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
       coh$dose <- max(coh$dose)

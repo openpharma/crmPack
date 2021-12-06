@@ -33,7 +33,7 @@ validate_data_DA(object)
 \item{cohort}{(\code{integer})\cr cohort indices parallel to \code{doses}.}
 }
 \value{
-A character vector with the validation failure messages,
+A \code{character} vector with the validation failure messages,
 or \code{TRUE} in case validation passes.
 
 \code{TRUE} if \code{dose} is unique per \code{cohort}, otherwise \code{FALSE}.

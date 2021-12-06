@@ -2,37 +2,40 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,DataDual,missing-method}
 \alias{plot,DataDual,missing-method}
-\title{Plot method for the "DataDual" class}
+\alias{plot-DataDual-method}
+\title{Plot method for the \code{\link{DataDual}} class.}
 \usage{
 \S4method{plot}{DataDual,missing}(x, y, blind = FALSE, ...)
 }
 \arguments{
-\item{x}{the \code{\linkS4class{DataDual}} object we want to plot}
+\item{x}{(\code{DataDual})\cr object we want to plot.}
 
-\item{y}{missing}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
 
-\item{blind}{Logical (default FALSE) if to blind the data}
+\item{blind}{(\code{flag})\cr indicates whether to blind the data.
+If \code{TRUE}, then placebo subjects are reported at the same level
+as the active dose level in the corresponding cohort,
+and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{\dots}{not used}
+\item{\dots}{passed to the first inherited method \code{plot} after this current method.}
 }
 \value{
-the \code{\link[ggplot2]{ggplot}} object
+The \code{\link{ggplot2}} object.
 }
 \description{
-Plot method for the "DataDual" class
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that creates a plot for \code{\link{DataDual}} object.
 }
 \examples{
+# Create some data of class 'DataDual'.
+my_data <- DataDual(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  w = rnorm(8),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# Create some data of class 'DataDual'
-myData <- DataDual(x=c(0.1,0.5,1.5,3,6,10,10,10),
-                   y=c(0,0,0,0,0,0,1,0),
-                   w=rnorm(8),
-                   doseGrid=c(0.1,0.5,1.5,3,6,
-                              seq(from=10,to=80,by=2)))
-
-# Plot the data
-#grid.arrange(plot(myData))
-
-plot(myData)
+# Plot the data.
+plot(my_data)
 }
-\keyword{methods}

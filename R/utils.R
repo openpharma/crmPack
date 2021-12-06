@@ -11,12 +11,12 @@
 #'   `as.factor(f)` defines the grouping, or a `list` of such factors in which case
 #'   their interaction is used for the grouping. `f` can also be a formula of the form
 #'   `~ g1 + ... + gk` to split by the interaction of the variables `g1, ..., gk`.
-#'   This parameter is passed directly into [base::split()] function.
+#'   This parameter is passed directly into [split()] function.
 #' @param FUN (`function`)\cr the function to be applied to each subset of `df` defined by `f`.
 #' @param ... parameters passed to [lapply()], which is used when applying a function `FUN`
 #'   over groups defined by `f`.
 #'
-#' @return The `data.frame` object with results from `FUN`.
+#' @return The [`data.frame`] object with results from `FUN`.
 #'
 #' @export
 #' @example examples/utils-dapply.R

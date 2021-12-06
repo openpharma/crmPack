@@ -9,7 +9,7 @@
 #' @param x (`GeneralData`)\cr the object we want to convert into list.
 #' @param \dots unused.
 #'
-#' @return A list with all slots in object `x`.
+#' @return A `list` with all slots in object `x`.
 #'
 #' @example examples/Data-method-asList.R
 #' @export
@@ -33,12 +33,13 @@ setMethod(
 #'
 #' A method that creates a plot for [`Data`] object.
 #'
-#' @param x (`GeneralData`)\cr object we want to plot.
+#' @param x (`Data`)\cr object we want to plot.
 #' @param y (`missing`)\cr missing object, for compatibility with the generic function.
 #' @param blind (`flag`)\cr indicates whether to blind the data.
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param no_legend (`flag`)\cr should not the legend be added?
 #' @param \dots not used.
 #'
 #' @return The [`ggplot2`] object.
@@ -50,7 +51,7 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
-  def = function(x, y, blind = FALSE, ...) {
+  def = function(x, y, blind = FALSE, no_legend = FALSE, ...) {
     if (x@nObs == 0L) {
       return()
     }
@@ -98,78 +99,75 @@ setMethod(
         )
     }
 
+    if (no_legend) {
+      p <- p + theme(legend.position = "none")
+    }
+
     p
   }
 )
 
-## --------------------------------------------------
-## Subclass with additional biomarker information
-## --------------------------------------------------
+# DataDual-plot ----
 
-##' Plot method for the "DataDual" class
-##'
-##' @param x the \code{\linkS4class{DataDual}} object we want to plot
-##' @param y missing
-##' @param blind Logical (default FALSE) if to blind the data
-##' @param \dots not used
-##' @return the \code{\link[ggplot2]{ggplot}} object
-##'
-##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @example examples/Data-method-plot-DataDual.R
-##' @export
-##' @keywords methods
-setMethod("plot",
-          signature=
-          signature(x="DataDual", y="missing"),
-          def=
-          function(x, y, blind=FALSE, ...){
-              ## call the superclass method, to get the first plot
-              plot1 <- callNextMethod(x, blind=blind, ...)
+#' Plot method for the [`DataDual`] class.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that creates a plot for [`DataDual`] object.
+#'
+#' @param x (`DataDual`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic function.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param \dots passed to the first inherited method `plot` after this current method.
+#'
+#' @return The [`ggplot2`] object.
+#'
+#' @aliases plot-DataDual-method
+#' @example examples/Data-method-plot-DataDual.R
+#' @export
+#'
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataDual", y = "missing"),
+  def = function(x, y, blind = FALSE, ...) {
 
-              ## now to get the second plot
-              df <- data.frame(patient=seq_along(x@x),
-                               dose=x@x,
-                               biomarker=x@w,
-                               toxicity=ifelse(x@y==1, "Yes", "No"))
-              cols <- c("No" = "black","Yes" = "red")
+    # Call the superclass method, to get the first plot.
+    plot1 <- callNextMethod(x, blind = blind, no_legend = TRUE, ...)
 
-              # If there are placebo, consider this a y=0.0 for the plot
-              if(x@placebo & !blind)
-                df$dose[df$dose == x@doseGrid[1]] <- 0.0
-              if(x@placebo & blind){
-                  cohort.id <- unique(x@cohort)
-                  for(iCoh in seq(a=cohort.id)){
-                      filter.coh <- which(x@cohort == cohort.id[iCoh])
-                      df[filter.coh,"dose"] <- max(df[filter.coh,"dose"])
-                  }
-              }
+    # Now, create the second, biomarker plot.
+    df <- h_plot_data_df(x, blind, biomarker = x@w)
 
-              # This is to blind the data
-              # For each cohort, the placebo is set to the active dose level for that cohort.
+    plot2 <- ggplot(df, aes(x = dose, y = biomarker)) +
+      geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
+      scale_colour_manual(
+        name = "Toxicity", values = c("red", "black"), breaks = c(1, 0), labels = c("Yes", "No")
+      ) +
+      scale_shape_discrete(
+        name = "Toxicity", breaks = c(1, 0), labels = c("Yes", "No")
+      ) +
+      xlab("Dose Level") +
+      ylab("Biomarker")
 
-              plot2 <- ggplot(df, aes(x=dose, y=biomarker))
+    if (!blind) {
+      plot2 <- plot2 +
+        geom_text(
+          aes(y = biomarker + 0.02 * diff(range(biomarker)), label = patient, size = 2),
+          data = df,
+          hjust = 0,
+          vjust = 0.5,
+          angle = 90,
+          colour = "black",
+          show.legend = FALSE
+        )
+    }
 
-              plot2 <- plot2 +
-                  geom_point(aes(shape=toxicity, colour=toxicity),
-                             size=3) +
-                      scale_colour_manual(values=cols) +
-                          xlab("Dose Level") + ylab("Biomarker")
-
-              if(!blind)
-                plot2 <- plot2 +
-                  geom_text(data=df,
-                            aes(label=patient, y=biomarker+0.02 * diff(range(biomarker)), size=2), hjust=0,
-                            vjust=0.5, angle=90, colour=I("black"),
-                            show.legend=FALSE)
-
-              ## arrange both plots side by side
-              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
-              return(ret)
-          })
-
-
+    # Arrange both plots side by side.
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+  }
+)
 
 ## ============================================================
 

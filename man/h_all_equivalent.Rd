@@ -23,5 +23,5 @@ up to desired tolerance and without looking at names or other attributes,
 
 This helper function ensures a default tolerance level equal to \code{1e-10},
 and ignores names and other attributes.
-In contrast to \code{\link[base:all.equal]{base::all.equal()}}, it always returns a logical type object.
+In contrast to \code{\link[=all.equal]{all.equal()}}, it always returns a logical type object.
 }

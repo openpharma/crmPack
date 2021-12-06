@@ -13,7 +13,7 @@ dapply(df, f, FUN, ...)
 \code{as.factor(f)} defines the grouping, or a \code{list} of such factors in which case
 their interaction is used for the grouping. \code{f} can also be a formula of the form
 \code{~ g1 + ... + gk} to split by the interaction of the variables \verb{g1, ..., gk}.
-This parameter is passed directly into \code{\link[base:split]{base::split()}} function.}
+This parameter is passed directly into \code{\link[=split]{split()}} function.}
 
 \item{FUN}{(\code{function})\cr the function to be applied to each subset of \code{df} defined by \code{f}.}
 
@@ -21,7 +21,7 @@ This parameter is passed directly into \code{\link[base:split]{base::split()}} f
 over groups defined by \code{f}.}
 }
 \value{
-The \code{data.frame} object with results from \code{FUN}.
+The \code{\link{data.frame}} object with results from \code{FUN}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
