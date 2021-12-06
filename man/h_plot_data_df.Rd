@@ -21,7 +21,7 @@ from \code{x} (which in this case might be a subclass of \code{Data})
 which does not appear in \code{Data}.}
 }
 \value{
-A \code{\link{data frame}} object with values to plot.
+A \code{\link{data.frame}} object with values to plot.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

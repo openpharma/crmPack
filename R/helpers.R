@@ -560,7 +560,7 @@ h_all_equivalent <- function(target,
 #'   It can be e.g. an extra `column_name = value` pair based on a slot
 #'   from `x` (which in this case might be a subclass of `Data`)
 #'   which does not appear in `Data`.
-#' @return A [`data frame`] object with values to plot.
+#' @return A [`data.frame`] object with values to plot.
 #'
 h_plot_data_df <- function(data, blind = FALSE, ...) {
   df <- data.frame(
