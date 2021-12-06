@@ -28,7 +28,7 @@ test_that("h_all_equivalent returns FALSE for non-equivalent objects", {
 
 # h_plot_data_df ----
 
-test_that("h_plot_data_df valid object for sample Data object with placebo and no blinding", {
+test_that("h_plot_data_df valid object for sample Data object with placebo", {
   data <- h_get_data()
   result <- h_plot_data_df(data)
   expected <- data.frame(
@@ -36,7 +36,7 @@ test_that("h_plot_data_df valid object for sample Data object with placebo and n
     ID = paste(" ", 1:12),
     cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
     dose = c(0, 25, 25, 25, 0, 50, 50, 50, 0, 100, 100, 100),
-    toxicity = factor(c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L))
+    toxicity = c(rep("No", 10), "Yes", "No")
   )
 
   expect_identical(result, expected)
@@ -50,7 +50,7 @@ test_that("h_plot_data_df returns valid object for sample Data object with place
     ID = paste(" ", 1:12),
     cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
     dose = rep(c(25, 50, 100), each = 4),
-    toxicity = factor(c(rep(0, 8), 1, rep(0, 3)))
+    toxicity = c(rep("No", 8), "Yes", rep("No", 3))
   )
 
   expect_identical(result, expected)

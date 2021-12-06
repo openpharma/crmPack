@@ -51,7 +51,7 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
-  def = function(x, y, blind = FALSE, legend = TRUE, ...) {
+  definition = function(x, y, blind = FALSE, legend = TRUE, ...) {
     assert_flag(blind)
     assert_flag(legend)
 
@@ -64,12 +64,8 @@ setMethod(
     # Build plot object.
     p <- ggplot(df, aes(x = patient, y = dose)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(
-        name = "Toxicity", values = c("red", "black"), breaks = c(1, 0), labels = c("Yes", "No")
-      ) +
-      scale_shape_discrete(
-        name = "Toxicity", breaks = c(1, 0), labels = c("Yes", "No")
-      ) +
+      scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
+      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
       scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
       scale_y_continuous(
         breaks = sort(unique(c(0, df$dose))),
@@ -79,11 +75,11 @@ setMethod(
       xlab("Patient") +
       ylab("Dose Level")
 
-    # If feasible, add a vertical green lines separating sub-sequent cohorts.
+    # If feasible, add vertical green lines separating sub-sequent cohorts.
     if (x@placebo & length(unique(x@cohort)) > 1) {
       p <- p +
         geom_vline(
-          xintercept = head(cumsum(table(x@cohort)), n = -1) + 0.5,
+          xintercept = head(cumsum(table(df$cohort)), n = -1) + 0.5,
           colour = "green",
           linetype = "longdash"
         )
@@ -135,23 +131,19 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "DataDual", y = "missing"),
-  def = function(x, y, blind = FALSE, ...) {
+  definition = function(x, y, blind = FALSE, ...) {
     assert_flag(blind)
 
     # Call the superclass method, to get the first plot.
     plot1 <- callNextMethod(x, blind = blind, legend = FALSE, ...)
 
-    # Now, create the second, biomarker plot.
+    # Create the second, biomarker plot.
     df <- h_plot_data_df(x, blind, biomarker = x@w)
 
     plot2 <- ggplot(df, aes(x = dose, y = biomarker)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(
-        name = "Toxicity", values = c("red", "black"), breaks = c(1, 0), labels = c("Yes", "No")
-      ) +
-      scale_shape_discrete(
-        name = "Toxicity", breaks = c(1, 0), labels = c("Yes", "No")
-      ) +
+      scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
+      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
       xlab("Dose Level") +
       ylab("Biomarker")
 
@@ -173,7 +165,88 @@ setMethod(
   }
 )
 
-## ============================================================
+# DataDA-plot ----
+
+#' Plot method for the [`DataDA`] class.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that creates a plot for [`DataDA`] object.
+#'
+#' @param x (`DataDA`)\cr object we want to plot.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic function.
+#' @param blind (`flag`)\cr indicates whether to blind the data.
+#'   If `TRUE`, then placebo subjects are reported at the same level
+#'   as the active dose level in the corresponding cohort,
+#'   and DLTs are always assigned to the first subjects in a cohort.
+#' @param \dots passed to the first inherited method `plot` after this current method.
+#'
+#' @return The [`ggplot2`] object.
+#'
+#' @aliases plot-DataDA-method
+#' @example examples/Data-method-plot-DataDA.R
+#' @export
+#'
+setMethod(
+  f = "plot",
+  signature = signature(x = "DataDA", y = "missing"),
+  def = function(x, y, blind = FALSE, ...) {
+    assert_flag(blind)
+
+    # Call the superclass method, to get the first plot.
+    plot1 <- callNextMethod(x, blind = blind, legend = FALSE, ...)
+
+    # Create the second, time plot.
+    df <- h_plot_data_df(x, blind, u = x@u, t0 = x@t0)
+    df$censored <- ifelse(df$u < x@Tmax & df$toxicity == 0, 1, 0)
+    df$tend <- df$t0 + df$u # tend stands for time end
+    df$t0_case <- "Start"
+    df$tend_case <- ifelse(
+      df$toxicity == "Yes",
+      "Yes",
+      ifelse(df$censored, "Censored", "No")
+    )
+
+    # Build plot object.
+    plot2 <- ggplot(df, aes(x = t0, y = patient)) +
+      geom_segment(aes(xend = tend, yend = patient)) +
+      geom_point(aes(shape = t0_case, colour = t0_case), size = 3) +
+      geom_point(aes(x = tend, shape = tend_case, colour = tend_case), size = 3) +
+      scale_colour_manual(
+        name = "Toxicity", values = c(Yes = "red", No = "black", Start = "black", Censored = "black")
+      ) +
+      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16, Start = 1, Censored = 4)) +
+      scale_y_continuous(breaks = df$patient, minor_breaks = NULL) +
+      xlab("Time") +
+      ylab("Patient")
+
+    # If feasible, add horizontal green lines separating sub-sequent cohorts.
+    if (x@placebo & length(unique(df$cohort)) > 1) {
+      plot2 <- plot2 +
+        geom_hline(
+          yintercept = head(cumsum(table(df$cohort)), n = -1) + 0.5,
+          colour = "green",
+          linetype = "longdash"
+        )
+    }
+
+    if (!blind) {
+      plot2 <- plot2 +
+        geom_text(
+          aes(label = ID, size = 2),
+          size = 3,
+          hjust = 1.5,
+          vjust = 0,
+          angle = 0,
+          colour = "black",
+          show.legend = FALSE
+        )
+    }
+
+    # Arrange both plots side by side.
+    gridExtra::arrangeGrob(plot1, plot2, ncol = 1)
+  }
+)
 
 ## --------------------------------------------------
 ## Update a Data object
@@ -513,125 +586,3 @@ setMethod("update",
               ## return the object
               return(object)
             })
-
-
-## --------------------------------------------------
-## Plot a DataDA object
-## --------------------------------------------------
-
-##' Plot method for the `DataDA` class
-##'
-##' @param x the \code{\linkS4class{DataDA}} object we want to plot
-##' @param y missing
-##' @param blind Logical (default FALSE) if to blind the data
-##' @param \dots not used
-##' @return the \code{\link[ggplot2]{ggplot}} object
-##'
-##' @importFrom ggplot2 ggplot geom_point scale_colour_manual xlab ylab aes
-##' @importFrom gridExtra arrangeGrob
-##'
-##' @export
-##' @keywords methods
-setMethod("plot",
-          signature=
-            signature(x="DataDA", y="missing"),
-          def=
-            function(x, y, blind=FALSE,
-                     ...){
-              ## call the superclass method, to get the first plot
-              plot1 <- callNextMethod(x, blind=blind, ...)
-
-              ## now to get the second plot
-              df <- data.frame(patient=seq_along(x@x),
-                               u=x@u,
-                               toxicity=ifelse(x@y==1, 1, 0),
-                               t0=x@t0,
-                               ID=paste(" ", x@ID)
-              )
-
-              cols <- c("No" = "black",
-                        "Yes" = "red")
-
-              cols2 <- c("Yes" = "red",
-                         "No" = "black",
-                         "Start" = "black",
-                         "Censored" = "black")
-
-              shape2 <- c("Yes" = 17,
-                         "No" = 16,
-                         "Start" = 1,
-                         "Censored" = 4)
-
-              df$censored <- ifelse(df$u < x@Tmax & df$toxicity==0,
-                                  1,
-                                  0)
-
-              df$tend <- df$t0 + df$u
-
-              df<-df[ , !(names(df) %in% "u")]
-
-              ## restructure data for plot:
-              mdata <- reshape(df,
-                               direction = "long",
-                               idvar="patient",
-                               varying =c("t0","tend"),
-                               v.names="value",
-                               timevar = "variable",
-                               times=c("t0","tend"))
-
-
-              mdata$mark<-ifelse(mdata$variable=="t0",
-                                 3,
-                                 ifelse(mdata$toxicity,
-                                        1,
-                                        ifelse(mdata$censored,
-                                               4,
-                                               2)))
-
-              mdata$timepoint<-ifelse(mdata$variable=="t0",
-                                      "Start",
-                                      ifelse(mdata$toxicity,
-                                             "Yes",
-                                             ifelse(mdata$censored,
-                                                    "Censored",
-                                                    "No")))
-
-              plot2 <- ggplot(mdata, aes(x=value, y=patient))
-
-              plot2 <- plot2 +
-                geom_line(aes(group = patient)) +
-                geom_point(aes(shape=timepoint, colour=timepoint),
-                           size=3) +
-                scale_colour_manual(values=cols2) +
-                scale_shape_manual(values=shape2)+
-                xlab("Time") + ylab("Patient")
-
-              if(! blind)
-              {
-                plot2 <- plot2 + geom_text(aes(label=ID, size=2),size=3,
-                                           data=mdata[mdata$timepoint=="Start",],
-                                           hjust=1.5, vjust=0,
-                                           angle=0, colour=I("black"),
-                                           show.legend = FALSE)
-              }
-
-              plot2 <- plot2 + scale_y_continuous(breaks=mdata$patient,
-                                                  minor_breaks=numeric())
-
-              # add vertical lines separating sub-sequent cohorts
-              if(x@placebo & length(unique(x@cohort)) > 1)
-              {
-                plot2 <- plot2 +
-                  geom_hline(yintercept=head(cumsum(table(x@cohort)),n=-1) + 0.5,
-                             colour="green",
-                             linetype = "longdash")
-              }
-
-              ## arrange both plots side by side
-              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=1)
-              return(ret)
-            })
-
-
-## ============================================================
-

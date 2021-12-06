@@ -46,3 +46,19 @@ test_that("Plot works as expected for DataDual object with placebo and blinding"
 
   vdiffr::expect_doppelganger("Plot of DataDual with placebo and blinding", result)
 })
+
+# plot-DataDA ----
+
+test_that("Plot works as expected for DataDA object with placebo", {
+  data <- h_get_data_augmented()
+  result <- plot(data)
+  
+  vdiffr::expect_doppelganger("Plot of DataDA with placebo", result)
+})
+
+test_that("Plot works as expected for DataDA object with placebo and blinding", {
+  data <- h_get_data_augmented()
+  result <- plot(data, blind = TRUE)
+  
+  vdiffr::expect_doppelganger("Plot of DataDA with placebo and blinding", result)
+})
