@@ -39,7 +39,7 @@ setMethod(
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param no_legend (`flag`)\cr should not the legend be added?
+#' @param legend (`flag`)\cr whether the legend should be added.
 #' @param \dots not used.
 #'
 #' @return The [`ggplot2`] object.
@@ -51,9 +51,9 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "Data", y = "missing"),
-  def = function(x, y, blind = FALSE, no_legend = FALSE, ...) {
+  def = function(x, y, blind = FALSE, legend = TRUE, ...) {
     assert_flag(blind)
-    assert_flag(no_legend)
+    assert_flag(legend)
 
     if (x@nObs == 0L) {
       return()
@@ -102,7 +102,7 @@ setMethod(
         )
     }
 
-    if (no_legend) {
+    if (!legend) {
       p <- p + theme(legend.position = "none")
     }
 
@@ -139,7 +139,7 @@ setMethod(
     assert_flag(blind)
 
     # Call the superclass method, to get the first plot.
-    plot1 <- callNextMethod(x, blind = blind, no_legend = TRUE, ...)
+    plot1 <- callNextMethod(x, blind = blind, legend = FALSE, ...)
 
     # Now, create the second, biomarker plot.
     df <- h_plot_data_df(x, blind, biomarker = x@w)

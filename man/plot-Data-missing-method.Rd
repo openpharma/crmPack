@@ -5,7 +5,7 @@
 \alias{plot-Data-method}
 \title{Plot method for the \code{\link{Data}} class.}
 \usage{
-\S4method{plot}{Data,missing}(x, y, blind = FALSE, no_legend = FALSE, ...)
+\S4method{plot}{Data,missing}(x, y, blind = FALSE, legend = TRUE, ...)
 }
 \arguments{
 \item{x}{(\code{Data})\cr object we want to plot.}
@@ -17,7 +17,7 @@ If \code{TRUE}, then placebo subjects are reported at the same level
 as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{no_legend}{(\code{flag})\cr should not the legend be added?}
+\item{legend}{(\code{flag})\cr whether the legend should be added.}
 
 \item{\dots}{not used.}
 }
