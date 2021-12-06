@@ -24,7 +24,7 @@ explaining the failure of the validation.
 \section{Methods}{
 
 \describe{
-\item{\code{check(test, string = "")}}{Check whether the \code{test} is \code{TRUE}; if so, return \code{NULL}. 
+\item{\code{check(test, string = "")}}{Check whether the \code{test} is \code{TRUE}; if so, return \code{NULL}.
 Otherwise, add the \code{string} message into the cumulative messages vector \code{msg}.}
 
 \item{\code{result()}}{Return either cumulative messages vector \code{msg}

@@ -27,20 +27,32 @@
 </defs>
 <g clip-path='url(#cpMzcuNjl8NjY1LjYzfDIyLjc4fDU0NS4xMQ==)'>
 <rect x='37.69' y='22.78' width='627.94' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<circle cx='66.23' cy='413.45' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<circle cx='66.23' cy='521.37' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='118.13' cy='413.45' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='170.02' cy='413.45' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='221.92' cy='413.45' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<circle cx='273.82' cy='305.53' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<circle cx='273.82' cy='521.37' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='325.71' cy='305.53' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='377.61' cy='305.53' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='429.50' cy='305.53' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<polygon points='481.40,84.16 486.19,92.46 476.61,92.46 ' style='stroke-width: 0.71; stroke: none; fill: #FF0000;' />
+<circle cx='481.40' cy='521.37' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <circle cx='533.30' cy='89.69' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<circle cx='585.19' cy='89.69' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<polygon points='585.19,84.16 589.98,92.46 580.41,92.46 ' style='stroke-width: 0.71; stroke: none; fill: #FF0000;' />
 <circle cx='637.09' cy='89.69' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <line x1='247.87' y1='545.11' x2='247.87' y2='22.78' style='stroke-width: 1.07; stroke: #00FF00; stroke-dasharray: 9.96,4.27; stroke-linecap: butt;' />
 <line x1='455.45' y1='545.11' x2='455.45' y2='22.78' style='stroke-width: 1.07; stroke: #00FF00; stroke-dasharray: 9.96,4.27; stroke-linecap: butt;' />
+<text transform='translate(70.67,521.37) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  1</text>
+<text transform='translate(122.57,413.45) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  2</text>
+<text transform='translate(174.46,413.45) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  3</text>
+<text transform='translate(226.36,413.45) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  4</text>
+<text transform='translate(278.26,521.37) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  5</text>
+<text transform='translate(330.15,305.53) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  6</text>
+<text transform='translate(382.05,305.53) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  7</text>
+<text transform='translate(433.95,305.53) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  8</text>
+<text transform='translate(485.84,521.37) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='14.35px' lengthAdjust='spacingAndGlyphs'>  9</text>
+<text transform='translate(537.74,89.69) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>  10</text>
+<text transform='translate(589.63,89.69) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>  11</text>
+<text transform='translate(641.53,89.69) rotate(-90)' style='font-size: 12.90px; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>  12</text>
 <rect x='37.69' y='22.78' width='627.94' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -86,6 +98,6 @@
 <circle cx='685.23' cy='300.25' r='3.56' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
 <text x='699.35' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='15.17px' lengthAdjust='spacingAndGlyphs'>Yes</text>
 <text x='699.35' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='11.25px' lengthAdjust='spacingAndGlyphs'>No</text>
-<text x='37.69' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='248.03px' lengthAdjust='spacingAndGlyphs'>Plot of Data with placebo and with blinding</text>
+<text x='37.69' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='146.03px' lengthAdjust='spacingAndGlyphs'>Plot of Data with placebo</text>
 </g>
 </svg>

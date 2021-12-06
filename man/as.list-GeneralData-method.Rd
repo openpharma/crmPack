@@ -12,7 +12,7 @@
 \item{\dots}{unused.}
 }
 \value{
-A list with all slots in object \code{x}.
+A \code{list} with all slots in object \code{x}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

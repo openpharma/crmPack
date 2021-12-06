@@ -4,7 +4,7 @@
 \alias{h_plot_data_df}
 \title{Prepare Data for Plotting}
 \usage{
-h_plot_data_df(data, blind = FALSE)
+h_plot_data_df(data, blind = FALSE, ...)
 }
 \arguments{
 \item{data}{(\code{Data})\cr object from which data is extracted and converted
@@ -14,13 +14,14 @@ into a data frame.}
 If \code{TRUE}, then for each cohort, all DLTs are assigned to the first subjects
 in the cohort. In addition, the placebo (if any) is set to the active dose
 level for that cohort.}
+
+\item{\dots}{further arguments passed to \code{data.frame} constructor.
+It can be e.g. an extra \code{column_name = value} pair based on a slot
+from \code{x} (which in this case might be a subclass of \code{Data})
+which does not appear in \code{Data}.}
 }
 \value{
-A \verb{data frame} object with values to plot.
-
-This is to blind the data.
-For each cohort, all DLTs are assigned to the first subjects in the cohort.
-In addition, the placebo (if any) is set to the active dose level for that cohort.
+A \code{\link{data.frame}} object with values to plot.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
