@@ -603,17 +603,17 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
 #'   returns `NULL` object.
 #'
 #' @param cohort (`integer`)\cr the cohort indices.
-#' @param vertical (`flag`)\cr should the line be vertical? Otherwise it is horizontal.
 #' @param placebo (`flag`)\cr is placebo included in the doses?
 #'   If it so, this function returns `NULL` object as in this case all doses
 #'   in a given cohort are equal and there is no need to separate them.
+#' @param vertical (`flag`)\cr should the line be vertical? Otherwise it is horizontal.
 #'
 h_plot_data_cohort_lines <- function(cohort,
-                                     vertical = TRUE,
-                                     placebo) {
+                                     placebo,
+                                     vertical = TRUE) {
   assert_integer(cohort)
-  assert_flag(vertical)
   assert_flag(placebo)
+  assert_flag(vertical)
 
   # If feasible, add vertical or horizontal green lines separating sub-sequent cohorts.
   if (placebo & length(unique(cohort)) > 1) {

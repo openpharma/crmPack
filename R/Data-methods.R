@@ -211,7 +211,7 @@ setMethod(
       xlab("Time") +
       ylab("Patient")
 
-    plot2 <- plot2 + h_plot_data_cohort_lines(df$cohort, vertical = FALSE, placebo = x@placebo)
+    plot2 <- plot2 + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo, vertical = FALSE)
 
     if (!blind) {
       plot2 <- plot2 +
