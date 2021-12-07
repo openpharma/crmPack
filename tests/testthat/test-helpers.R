@@ -55,3 +55,42 @@ test_that("h_plot_data_df returns valid object for sample Data object with place
 
   expect_identical(result, expected)
 })
+
+# h_plot_data_cohort_lines ----
+
+test_that("h_plot_data_cohort_lines works as expected", {
+  data <- h_get_data()
+  data@placebo <- TRUE
+  df <- h_plot_data_df(data)
+
+  result <- ggplot(df, aes(x = patient, y = dose)) +
+    geom_point() +
+    h_plot_data_cohort_lines(df$cohort, placebo = data@placebo)
+
+  vdiffr::expect_doppelganger("h_plot_data_cohort_lines with placego", result)
+})
+
+test_that("h_plot_data_cohort_lines works as expected when no placebo", {
+  data <- h_get_data()
+  data@placebo <- FALSE
+  df <- h_plot_data_df(data)
+
+  result <- ggplot(df, aes(x = patient, y = dose)) +
+    geom_point() +
+    h_plot_data_cohort_lines(df$cohort, placebo = data@placebo)
+
+  vdiffr::expect_doppelganger("h_plot_data_cohort_lines without placebo", result)
+})
+
+test_that("h_plot_data_cohort_lines works as expected for single cohort", {
+  data <- h_get_data()
+  data@placebo <- TRUE
+  data@cohort <- rep(1L, data@nObs)
+  df <- h_plot_data_df(data)
+
+  result <- ggplot(df, aes(x = patient, y = dose)) +
+    geom_point() +
+    h_plot_data_cohort_lines(df$cohort, placebo = data@placebo)
+
+  vdiffr::expect_doppelganger("h_plot_data_cohort_lines for single cohort", result)
+})
