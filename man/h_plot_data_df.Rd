@@ -26,6 +26,6 @@ A \code{\link{data.frame}} object with values to plot.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This helper function prepares a data.frame object based on \code{Data} class object.
+This helper function prepares a \code{data.frame} object based on \code{Data} class object.
 The resulting data frame is used by the plot function for \code{Data} class objects.
 }

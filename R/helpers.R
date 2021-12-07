@@ -547,7 +547,7 @@ h_all_equivalent <- function(target,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function prepares a data.frame object based on `Data` class object.
+#' This helper function prepares a `data.frame` object based on `Data` class object.
 #' The resulting data frame is used by the plot function for `Data` class objects.
 #'
 #' @param data (`Data`)\cr object from which data is extracted and converted
@@ -588,4 +588,42 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
   }
 
   df
+}
+
+#' Prepare Cohort Lines for Data Plot
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function prepares a `ggplot` geom with reference lines
+#' separating different cohorts on the plot of `Data` class object.
+#' Lines are either vertical or horizontal of green color and longdash type.
+#'
+#' @details The geom object is returned if and only if `placebo` is equal to `TRUE`
+#'   and there are more than one unique values in `cohort`. Otherwise, this function
+#'   returns `NULL` object.
+#'
+#' @param cohort (`integer`)\cr the cohort indices.
+#' @param placebo (`flag`)\cr is placebo included in the doses?
+#'   If it so, this function returns `NULL` object as in this case all doses
+#'   in a given cohort are equal and there is no need to separate them.
+#' @param vertical (`flag`)\cr should the line be vertical? Otherwise it is horizontal.
+#'
+h_plot_data_cohort_lines <- function(cohort,
+                                     placebo,
+                                     vertical = TRUE) {
+  assert_integer(cohort)
+  assert_flag(placebo)
+  assert_flag(vertical)
+
+  # If feasible, add vertical or horizontal green lines separating sub-sequent cohorts.
+  if (placebo & length(unique(cohort)) > 1) {
+    intercept <- head(cumsum(table(cohort)), n = -1) + 0.5
+    if (vertical) {
+      geom_vline(xintercept = intercept, colour = "green", linetype = "longdash")
+    } else {
+      geom_hline(yintercept = intercept, colour = "green", linetype = "longdash")
+    }
+  } else {
+    NULL
+  }
 }

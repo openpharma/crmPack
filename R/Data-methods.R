@@ -61,7 +61,6 @@ setMethod(
 
     df <- h_plot_data_df(x, blind)
 
-    # Build plot object.
     p <- ggplot(df, aes(x = patient, y = dose)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
       scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
@@ -75,15 +74,7 @@ setMethod(
       xlab("Patient") +
       ylab("Dose Level")
 
-    # If feasible, add vertical green lines separating sub-sequent cohorts.
-    if (x@placebo & length(unique(x@cohort)) > 1) {
-      p <- p +
-        geom_vline(
-          xintercept = head(cumsum(table(df$cohort)), n = -1) + 0.5,
-          colour = "green",
-          linetype = "longdash"
-        )
-    }
+    p <- p + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo)
 
     if (!blind) {
       p <- p +
@@ -220,15 +211,7 @@ setMethod(
       xlab("Time") +
       ylab("Patient")
 
-    # If feasible, add horizontal green lines separating sub-sequent cohorts.
-    if (x@placebo & length(unique(df$cohort)) > 1) {
-      plot2 <- plot2 +
-        geom_hline(
-          yintercept = head(cumsum(table(df$cohort)), n = -1) + 0.5,
-          colour = "green",
-          linetype = "longdash"
-        )
-    }
+    plot2 <- plot2 + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo, vertical = FALSE)
 
     if (!blind) {
       plot2 <- plot2 +
