@@ -61,30 +61,13 @@ setMethod(
 
     df <- h_plot_data_df(x, blind)
 
-    # Build plot object.
-    p <- ggplot(df, aes(x = patient, y = dose)) +
-      geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
-      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
+    p <- h_plot_data(df, placebo = x@placebo, legend = legend) +
       scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
       scale_y_continuous(
         breaks = sort(unique(c(0, df$dose))),
         minor_breaks = NULL,
         limits = c(0, max(df$dose) * 1.1)
-      ) +
-      xlab("Patient") +
-      ylab("Dose Level")
-
-    # If feasible, add vertical green lines separating sub-sequent cohorts.
-    if (x@placebo & length(unique(x@cohort)) > 1) {
-      p <- p +
-        geom_vline(
-          xintercept = head(cumsum(table(df$cohort)), n = -1) + 0.5,
-          colour = "green",
-          linetype = "longdash"
-        )
-    }
-
+      )
     if (!blind) {
       p <- p +
         geom_text(
@@ -97,11 +80,6 @@ setMethod(
           show.legend = FALSE
         )
     }
-
-    if (!legend) {
-      p <- p + theme(legend.position = "none")
-    }
-
     p
   }
 )
@@ -140,13 +118,15 @@ setMethod(
     # Create the second, biomarker plot.
     df <- h_plot_data_df(x, blind, biomarker = x@w)
 
-    plot2 <- ggplot(df, aes(x = dose, y = biomarker)) +
-      geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
-      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
-      xlab("Dose Level") +
-      ylab("Biomarker")
-
+    plot2 <- h_plot_data(
+      df = df,
+      placebo = x@placebo,
+      x = "dose",
+      y = "biomarker",
+      xlab = "Dose Level",
+      ylab = "Biomarker",
+      cohort_line = 0
+    )
     if (!blind) {
       plot2 <- plot2 +
         geom_text(
@@ -208,27 +188,22 @@ setMethod(
     )
 
     # Build plot object.
-    plot2 <- ggplot(df, aes(x = t0, y = patient)) +
+    plot2 <- h_plot_data(
+      df = df,
+      placebo = x@placebo,
+      x = "t0",
+      y = "patient",
+      colour_shape = "t0_case",
+      colour_values = c(Yes = "red", No = "black", Start = "black", Censored = "black"),
+      shape_values = c(Yes = 17, No = 16, Start = 1, Censored = 4),
+      xlab = "Time",
+      ylab = "Patient",
+      cohort_line = 2,
+    )
+    plot2 <- plot2 +
       geom_segment(aes(xend = tend, yend = patient)) +
-      geom_point(aes(shape = t0_case, colour = t0_case), size = 3) +
       geom_point(aes(x = tend, shape = tend_case, colour = tend_case), size = 3) +
-      scale_colour_manual(
-        name = "Toxicity", values = c(Yes = "red", No = "black", Start = "black", Censored = "black")
-      ) +
-      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16, Start = 1, Censored = 4)) +
-      scale_y_continuous(breaks = df$patient, minor_breaks = NULL) +
-      xlab("Time") +
-      ylab("Patient")
-
-    # If feasible, add horizontal green lines separating sub-sequent cohorts.
-    if (x@placebo & length(unique(df$cohort)) > 1) {
-      plot2 <- plot2 +
-        geom_hline(
-          yintercept = head(cumsum(table(df$cohort)), n = -1) + 0.5,
-          colour = "green",
-          linetype = "longdash"
-        )
-    }
+      scale_y_continuous(breaks = df$patient, minor_breaks = NULL)
 
     if (!blind) {
       plot2 <- plot2 +

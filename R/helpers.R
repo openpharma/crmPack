@@ -589,3 +589,59 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
 
   df
 }
+
+h_plot_data <- function(df,
+                        placebo = FALSE,
+                        x = "patient",
+                        y = "dose",
+                        colour_shape = "toxicity",
+                        colour_shape_name = "Toxicity",
+                        colour_values = c(Yes = "red", No = "black"),
+                        shape_values = c(Yes = 17, No = 16),
+                        cohort = "cohort",
+                        cohort_lines = 1,
+                        xlab = "Patient",
+                        ylab = "Dose Level",
+                        legend = TRUE) {
+  assert_data_frame(df)
+  assert_flag(placebo)
+  assert_string(x)
+  assert_string(y)
+  assert_string(colour_shape)
+  assert_string(colour_shape_name)
+  assert_string(cohort)
+  assert_int(cohort_lines, lower = 0, upper = 2)
+  assert_string(xlab)
+  assert_string(ylab)
+  assert_flag(legend)
+  vars <- colnames(df)
+  assert_subset(x, vars)
+  assert_subset(y, vars)
+  assert_subset(colour_shape, vars)
+  assert_subset(cohort, vars)
+  assert_subset(df[[colour_shape]], names(colour_values))
+  assert_subset(df[[colour_shape]], names(colour_values))
+
+  p <- ggplot(df, aes_string(x = x, y = y)) +
+    geom_point(aes_string(colour = colour_shape, shape = colour_shape), size = 3) +
+    scale_colour_manual(name = colour_shape_name, values = colour_values) +
+    scale_shape_manual(name = colour_shape_name, values = shape_values) +
+    xlab(xlab) +
+    ylab(ylab)
+
+  # If feasible, add vertical or horizontal green lines separating sub-sequent cohorts.
+  if ((cohort_lines %in% 1:2) & placebo & length(unique(df[[cohort]])) > 1) {
+    intercept <- head(cumsum(table(df[[cohort]])), n = -1) + 0.5
+    if (cohort_lines == 1) {
+      p <- p + geom_vline(xintercept = intercept, colour = "green", linetype = "longdash")
+    } else {
+      p <- p + geom_hline(yintercept = intercept, colour = "green", linetype = "longdash")
+    }
+  }
+
+  if (!legend) {
+    p <- p + theme(legend.position = "none")
+  }
+
+  p
+}
