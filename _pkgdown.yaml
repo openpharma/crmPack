@@ -49,6 +49,7 @@ reference:
       - as.list
       - plot-Data-method
       - plot-DataDual-method
+      - plot-DataDA-method
   - title: Functions
     contents:
       - dapply

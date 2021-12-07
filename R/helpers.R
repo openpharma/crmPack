@@ -568,7 +568,7 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
     ID = paste(" ", data@ID),
     cohort = data@cohort,
     dose = data@x,
-    toxicity = as.factor(data@y),
+    toxicity = ifelse(data@y == 1, "Yes", "No"),
     ...
   )
 

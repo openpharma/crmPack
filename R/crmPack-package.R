@@ -26,6 +26,7 @@
 #  cpp_coxfit
 #' @import checkmate
 #' @import ggplot2
+#' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom methods setClass setOldClass setGeneric setMethod representation
 #' signature prototype initialize new is .valueClassTest as callNextMethod slot 
