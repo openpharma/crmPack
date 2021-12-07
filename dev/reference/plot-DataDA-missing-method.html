@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot method for the DataDA class — plot,DataDA,missing-method • crmPack</title>
+<title>Plot method for the DataDA class. — plot,DataDA,missing-method • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Plot method for the DataDA class — plot,DataDA,missing-method" />
-<meta property="og:description" content="Plot method for the DataDA class" />
+<meta property="og:title" content="Plot method for the DataDA class. — plot,DataDA,missing-method" />
+<meta property="og:description" content="
+A method that creates a plot for DataDA object." />
 
 
 <meta name="robots" content="noindex">
@@ -105,15 +106,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -135,13 +127,14 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot method for the <code>DataDA</code> class</h1>
+    <h1>Plot method for the <code><a href='DataDA-class.html'>DataDA</a></code> class.</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Data-methods.R'><code>R/Data-methods.R</code></a></small>
     <div class="hidden name"><code>plot-DataDA-missing-method.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot method for the <code>DataDA</code> class</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p>A method that creates a plot for <code><a href='DataDA-class.html'>DataDA</a></code> object.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for DataDA,missing</span>
@@ -152,26 +145,46 @@ Other releases
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>the <code><a href='DataDA-class.html'>DataDA</a></code> object we want to plot</p></td>
+      <td><p>(<code>DataDA</code>)<br /> object we want to plot.</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>missing</p></td>
+      <td><p>(<code>missing</code>)<br /> missing object, for compatibility with the generic function.</p></td>
     </tr>
     <tr>
       <th>blind</th>
-      <td><p>Logical (default FALSE) if to blind the data</p></td>
+      <td><p>(<code>flag</code>)<br /> indicates whether to blind the data.
+If <code>TRUE</code>, then placebo subjects are reported at the same level
+as the active dose level in the corresponding cohort,
+and DLTs are always assigned to the first subjects in a cohort.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>not used</p></td>
+      <td><p>passed to the first inherited method <code>plot</code> after this current method.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the <code><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></code> object</p>
+    <p>The <code><a href='https://ggplot2.tidyverse.org/reference/ggplot2-package.html'>ggplot2</a></code> object.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='co'># Create some data of class 'DataDA'.</span></span>
+<span class='r-in'><span class='va'>my_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA-class.html'>DataDA</a></span><span class='op'>(</span></span>
+<span class='r-in'>  u <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>, <span class='fl'>30</span>, <span class='fl'>15</span>, <span class='fl'>5</span>, <span class='fl'>20</span>, <span class='fl'>25</span>, <span class='fl'>30</span>, <span class='fl'>60</span><span class='op'>)</span>,</span>
+<span class='r-in'>  t0 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>15</span>, <span class='fl'>30</span>, <span class='fl'>40</span>, <span class='fl'>55</span>, <span class='fl'>70</span>, <span class='fl'>75</span>, <span class='fl'>85</span><span class='op'>)</span>,</span>
+<span class='r-in'>  Tmax <span class='op'>=</span> <span class='fl'>60</span>,</span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Plot the data.</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>my_data</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot-DataDA-missing-method-1.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
