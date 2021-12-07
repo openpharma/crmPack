@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • crmPack</title>
+<title>Prepare Cohort Lines for Data Plot — h_plot_data_cohort_lines • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,11 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Prepare Cohort Lines for Data Plot — h_plot_data_cohort_lines" />
+<meta property="og:description" content="
+This helper function prepares a ggplot geom with reference lines
+separating different cohorts on the plot of Data class object.
+Lines are either vertical or horizontal of green color and longdash type." />
 
 
 <meta name="robots" content="noindex">
@@ -58,7 +62,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -125,20 +129,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Prepare Cohort Lines for Data Plot</h1>
+    <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/helpers.R'><code>R/helpers.R</code></a></small>
+    <div class="hidden name"><code>h_plot_data_cohort_lines.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="rolling-crm.html">Rolling CRM Example</a></dt>
-        <dd></dt>
-        <dt><a href="simulations.html">Simulation study example</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
+<p>This helper function prepares a <code>ggplot</code> geom with reference lines
+separating different cohorts on the plot of <code>Data</code> class object.
+Lines are either vertical or horizontal of green color and longdash type.</p>
     </div>
+
+    <pre class="usage"><span class='fu'>h_plot_data_cohort_lines</span><span class='op'>(</span><span class='va'>cohort</span>, <span class='va'>placebo</span>, vertical <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>cohort</th>
+      <td><p>(<code>integer</code>)<br /> the cohort indices.</p></td>
+    </tr>
+    <tr>
+      <th>placebo</th>
+      <td><p>(<code>flag</code>)<br /> is placebo included in the doses?
+If it so, this function returns <code>NULL</code> object as in this case all doses
+in a given cohort are equal and there is no need to separate them.</p></td>
+    </tr>
+    <tr>
+      <th>vertical</th>
+      <td><p>(<code>flag</code>)<br /> should the line be vertical? Otherwise it is horizontal.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The geom object is returned if and only if <code>placebo</code> is equal to <code>TRUE</code>
+and there are more than one unique values in <code>cohort</code>. Otherwise, this function
+returns <code>NULL</code> object.</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
