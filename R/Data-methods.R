@@ -196,10 +196,10 @@ setMethod(
     # Call the superclass method, to get the first plot.
     plot1 <- callNextMethod(x, blind = blind, legend = FALSE, ...)
 
-    # Create the second, time plot.
+    # Prepare data set for the second, time plot.
     df <- h_plot_data_df(x, blind, u = x@u, t0 = x@t0)
     df$censored <- ifelse(df$u < x@Tmax & df$toxicity == 0, 1, 0)
-    df$tend <- df$t0 + df$u # tend stands for time end
+    df$tend <- df$t0 + df$u # `tend` stands for `time end`
     df$t0_case <- "Start"
     df$tend_case <- ifelse(
       df$toxicity == "Yes",
