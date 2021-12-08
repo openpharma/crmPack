@@ -264,7 +264,7 @@ setMethod(
     y_len <- length(y)
 
     assert_number(x)
-    assert_integer(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
     assert_numeric(ID, len = y_len)
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
@@ -277,13 +277,13 @@ setMethod(
     object@nObs <- object@nObs + y_len
 
     # Add dose.
-    object@x <- c(object@x, rep(x, y_len))
+    object@x <- c(object@x, rep(as.numeric(x), y_len))
 
     # Add DLT data.
-    object@y <- c(object@y, as.integer(y))
+    object@y <- c(object@y, safeInteger(y))
 
     # Add ID.
-    object@ID <- c(object@ID, ID)
+    object@ID <- c(object@ID, safeInteger(ID))
 
     # Add cohort number.
     last_cohort <- max(tail(object@cohort, 1L), 0L)
