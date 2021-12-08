@@ -181,7 +181,7 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "DataDA", y = "missing"),
-  def = function(x, y, blind = FALSE, ...) {
+  definition = function(x, y, blind = FALSE, ...) {
     assert_flag(blind)
 
     # Call the superclass method, to get the first plot.
@@ -231,84 +231,71 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Update a Data object
-## --------------------------------------------------
+# Data-update ----
 
+#' Update method for the [`Data`] class.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`Data`] object with new data.
+#'
+#' @param object (`Data`)\cr object we want to update.
+#' @param x (`numeric`)\cr the dose level (one level only!).
+#' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this cohort.
+#' @param ID the patient IDs.
+#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned to a new cohort.
+#' @param \dots not used.
+#'
+#' @return The new, updated [`Date`] object.
+#'
+#' @aliases update-Data-method
+#' @example examples/Data-method-update-Data.R
+#' @export
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "Data"),
+  definition = function(object,
+                        x,
+                        y,
+                        ID = length(object@ID) + seq_along(y),
+                        new_cohort = TRUE,
+                        ...) {
+    y_len <- length(y)
 
-##' Update method for the "Data" class
-##'
-##' Add new data to the \code{\linkS4class{Data}} object
-##'
-##' @param object the old \code{\linkS4class{Data}} object
-##' @param x the dose level (one level only!)
-##' @param y the DLT vector (0/1 vector), for all patients in this cohort
-##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned
-##' to a new cohort
-##' @param \dots not used
-##' @return the new \code{\linkS4class{Data}} object
-##'
-##' @example examples/Data-method-update-Data.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-          signature(object="Data"),
-          def=
-          function(object,
-                   x,
-                   y,
-                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
-                   newCohort=TRUE,
-                   ...){
+    assert_number(x)
+    assert_integer(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(ID, len = y_len)
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
 
-              ## some checks
-              stopifnot(is.scalar(x),
-                        all(y %in% c(0, 1)))
+    # Which grid level is the dose?
+    gridLevel <- matchTolerance(x, object@doseGrid)
+    object@xLevel <- c(object@xLevel, rep(gridLevel, y_len))
 
-              ## which grid level is the dose?
-              gridLevel <- matchTolerance(x, object@doseGrid)
+    # Increment sample size.
+    object@nObs <- object@nObs + y_len
 
-              ## add it to the data
-              if(is.na(gridLevel))
-              {
-                  stop("dose is not on grid")
-              } else {
-                  object@xLevel <- c(object@xLevel,
-                                     rep(gridLevel,
-                                         length(y)))
-              }
+    # Add dose.
+    object@x <- c(object@x, rep(x, y_len))
 
-              ## increment sample size
-              object@nObs <- object@nObs + length(y)
+    # Add DLT data.
+    object@y <- c(object@y, as.integer(y))
 
-              ## add dose
-              object@x <- c(object@x,
-                            rep(x,
-                                length(y)))
+    # Add ID.
+    object@ID <- c(object@ID, ID)
 
-              ## add DLT data
-              object@y <- c(object@y, as.integer(y))
+    # Add cohort number.
+    last_cohort <- max(tail(object@cohort, 1L), 0L)
+    object@cohort <- c(
+      object@cohort,
+      rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
+    )
 
-              ## add ID
-              object@ID <- c(object@ID, ID)
-
-              ## add cohort number
-              if(newCohort){
-                  object@cohort <- c(object@cohort,
-                                     rep(max(tail(object@cohort, 1L), 0L) + 1L,
-                                         length(y)))
-              }else{
-                  object@cohort <- c(object@cohort,
-                                     rep(max(tail(object@cohort, 1L), 0L),
-                                         length(y)))
-              }
-
-              ## return the object
-              return(object)
-          })
-
+    validObject(object)
+    object
+  }
+)
 
 ## --------------------------------------------------
 ## Update a DataParts object
