@@ -15,13 +15,17 @@
 )
 }
 \arguments{
-\item{object}{(\code{Data})\cr object we want to update.}
+\item{object}{(\code{Data})\cr object you want to update.}
 
 \item{x}{(\code{numeric})\cr the dose level (one level only!).}
 
-\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.}
+\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
-\item{ID}{the patient IDs.}
+\item{ID}{(\code{integer})\cr the patient IDs.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
 \item{new_cohort}{(\code{flag})\cr if \code{TRUE} (default) the new data are assigned to a new cohort.}
 

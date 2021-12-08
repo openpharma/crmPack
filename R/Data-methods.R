@@ -239,10 +239,14 @@ setMethod(
 #'
 #' A method that updates existing [`Data`] object with new data.
 #'
-#' @param object (`Data`)\cr object we want to update.
+#' @param object (`Data`)\cr object you want to update.
 #' @param x (`numeric`)\cr the dose level (one level only!).
 #' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this cohort.
-#' @param ID the patient IDs.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param ID (`integer`)\cr the patient IDs.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
 #' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned to a new cohort.
 #' @param \dots not used.
 #'

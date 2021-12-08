@@ -13,7 +13,8 @@ DataMixture(xshare = numeric(), yshare = integer(), ...)
 \item{xshare}{(\code{numeric})\cr the doses for the share patients.}
 
 \item{yshare}{(\code{integer})\cr the vector of toxicity events (0 or 1)
-for the share patients.}
+for the share patients. You can also supply \code{numeric} vectors,
+but these will then be converted to \code{integer} internally.}
 
 \item{...}{parameters passed to \code{\link[=Data]{Data()}}.}
 }
