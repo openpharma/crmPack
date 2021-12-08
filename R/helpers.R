@@ -556,7 +556,7 @@ h_all_equivalent <- function(target,
 #'   If `TRUE`, then for each cohort, all DLTs are assigned to the first subjects
 #'   in the cohort. In addition, the placebo (if any) is set to the active dose
 #'   level for that cohort.
-#' @param \dots further arguments passed to `data.frame` constructor.
+#' @param ... further arguments passed to `data.frame` constructor.
 #'   It can be e.g. an extra `column_name = value` pair based on a slot
 #'   from `x` (which in this case might be a subclass of `Data`)
 #'   which does not appear in `Data`.

@@ -15,7 +15,7 @@ If \code{TRUE}, then for each cohort, all DLTs are assigned to the first subject
 in the cohort. In addition, the placebo (if any) is set to the active dose
 level for that cohort.}
 
-\item{\dots}{further arguments passed to \code{data.frame} constructor.
+\item{...}{further arguments passed to \code{data.frame} constructor.
 It can be e.g. an extra \code{column_name = value} pair based on a slot
 from \code{x} (which in this case might be a subclass of \code{Data})
 which does not appear in \code{Data}.}

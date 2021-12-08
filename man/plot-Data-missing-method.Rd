@@ -19,7 +19,7 @@ and DLTs are always assigned to the first subjects in a cohort.}
 
 \item{legend}{(\code{flag})\cr whether the legend should be added.}
 
-\item{\dots}{not used.}
+\item{...}{not used.}
 }
 \value{
 The \code{\link{ggplot2}} object.

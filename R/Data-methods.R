@@ -40,7 +40,7 @@ setMethod(
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
 #' @param legend (`flag`)\cr whether the legend should be added.
-#' @param \dots not used.
+#' @param ... not used.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -111,7 +111,7 @@ setMethod(
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param \dots passed to the first inherited method `plot` after this current method.
+#' @param ... passed to the first inherited method `plot` after this current method.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -170,7 +170,7 @@ setMethod(
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param \dots passed to the first inherited method `plot` after this current method.
+#' @param ... passed to the first inherited method `plot` after this current method.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -233,7 +233,7 @@ setMethod(
 
 # Data-update ----
 
-#' Update method for the [`Data`] class.
+#' Updating `Data` Objects
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -248,9 +248,9 @@ setMethod(
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
 #' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned to a new cohort.
-#' @param \dots not used.
+#' @param ... not used.
 #'
-#' @return The new, updated [`Date`] object.
+#' @return The new, updated [`Data`] object.
 #'
 #' @aliases update-Data-method
 #' @example examples/Data-method-update-Data.R
@@ -265,13 +265,13 @@ setMethod(
                         ID = length(object@ID) + seq_along(y),
                         new_cohort = TRUE,
                         ...) {
-    y_len <- length(y)
-
     assert_number(x)
     assert_numeric(y, lower = 0, upper = 1, min.len = 1)
-    assert_numeric(ID, len = y_len)
+    assert_numeric(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
+
+    y_len <- length(y)
 
     # Which grid level is the dose?
     gridLevel <- matchTolerance(x, object@doseGrid)
@@ -296,7 +296,7 @@ setMethod(
       rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
     )
 
-    stopifnot(test_class(object, "Data"), validObject(object))
+    validObject(object)
     object
   }
 )

@@ -3,7 +3,7 @@
 \name{update,Data-method}
 \alias{update,Data-method}
 \alias{update-Data-method}
-\title{Update method for the \code{\link{Data}} class.}
+\title{Updating \code{Data} Objects}
 \usage{
 \S4method{update}{Data}(
   object,
@@ -29,10 +29,10 @@ You can also supply \code{numeric} vectors, but these will then be converted to
 
 \item{new_cohort}{(\code{flag})\cr if \code{TRUE} (default) the new data are assigned to a new cohort.}
 
-\item{\dots}{not used.}
+\item{...}{not used.}
 }
 \value{
-The new, updated \code{\link{Date}} object.
+The new, updated \code{\link{Data}} object.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
