@@ -296,7 +296,7 @@ setMethod(
       rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
     )
 
-    validObject(object)
+    stopifnot(test_class(object, "Data"), validObject(object))
     object
   }
 )
