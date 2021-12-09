@@ -103,7 +103,7 @@ test_that("Update of Data throws the error for a dose x out of the grid", {
   )
 })
 
-test_that("Update of Data does not throw the error for non-valid update and validation off", {
+test_that("Update of Data, no error for non-valid update when validation is off", {
   object <- h_get_data()
   expect_silent(
     update(object, x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE, check = FALSE)
@@ -113,7 +113,7 @@ test_that("Update of Data does not throw the error for non-valid update and vali
 # update-DataParts ----
 
 test_that("Update of DataParts works as expected", {
-  object <- h_get_data_parts() # nextPart equals 1L here
+  object <- h_get_data_parts() # nextPart equals 1L here.
   result <- update(object, x = 200, y = c(0L, 1L))
 
   object@x <- c(object@x, 200, 200)
@@ -147,7 +147,7 @@ test_that("Update of DataParts works as expected", {
   expect_equal(result, object)
 })
 
-test_that("Update of DataParts works as expected when no DLT and x eq to max of part1Ladder", {
+test_that("Update of DataParts works as expected, no DLT and x eq max of part1Ladder", {
   object <- h_get_data_parts()
   object@nextPart <- 1L
   object@y <- rep(0L, 12)
