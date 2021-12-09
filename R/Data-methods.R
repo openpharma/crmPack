@@ -45,7 +45,7 @@ setMethod(
 #' @return The [`ggplot2`] object.
 #'
 #' @aliases plot-Data-method
-#' @example examples/Data-method-plot-Data.R
+#' @example examples/Data-method-plot.R
 #' @export
 #'
 setMethod(
@@ -263,7 +263,7 @@ setMethod(
 #' @return The new, updated [`Data`] object.
 #'
 #' @aliases update-Data-method
-#' @example examples/Data-method-update-Data.R
+#' @example examples/Data-method-update.R
 #' @export
 #'
 setMethod(
@@ -316,60 +316,63 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Update a DataParts object
-## --------------------------------------------------
+# DataParts-update ----
 
-##' Update method for the "DataParts" class
-##'
-##' Add new data to the \code{\linkS4class{DataParts}} object
-##'
-##' @param object the old \code{\linkS4class{DataParts}} object
-##' @param x the dose level (one level only!)
-##' @param y the DLT vector (0/1 vector), for all patients in this cohort
-##' @param ID the patient IDs
-##' @param \dots not used
-##' @return the new \code{\linkS4class{DataParts}} object
-##'
-##' @example examples/Data-method-update-DataParts.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-          signature(object="DataParts"),
-          def=
-          function(object,
-                   x,
-                   y,
-                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
-                   ...){
+#' Updating `DataParts` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`DataParts`] object with new data.
+#'
+#' @param object (`DataParts`)\cr object you want to update.
+#' @param check (`flag`)\cr whether the validation of the updated object should be conducted.
+#'   See help for [`update-Data-method`] for more details on the use case of this parameter.
+#' @param ... passed to the first inherited method `update` after this current method,
+#'   i.e. [`update-Data-method`].
+#'
+#' @return The new, updated [`DataParts`] object.
+#'
+#' @aliases update-DataParts-method
+#' @example examples/Data-method-update-DataParts.R
+#' @export
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataParts"),
+  definition = function(object, check = TRUE, ...) {
+    x <- list(...)$x
+    y <- list(...)$y
 
-              ## first do the usual things as for Data objects
-              object <- callNextMethod(object=object, x=x, y=y, ID=ID, check = FALSE,...)
+    assert_number(x)
+    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
+    assert_flag(check)
 
-              ## update the part information
-              object@part <- c(object@part,
-                               rep(object@nextPart,
-                                   length(y)))
+    # Update slots corresponding to `Data` class.
+    object <- callNextMethod(object = object, check = FALSE, ...)
 
-              ## now decide which part the next cohort will belong to:
-              ## only if the nextPart was 1, it can potentially be required to
-              ## change it to 2 (once it is 2, it stays)
-              if(object@nextPart == 1L)
-              {
-                  ## if there was a DLT in one of the cohorts,
-                  ## or if the current dose was the highest from part 1:
-                  if(any(object@y == 1L) || x == max(object@part1Ladder))
-                  {
-                      ## then this closes part 1 and the next cohort will
-                      ## be from part 2:
-                      object@nextPart <- 2L
-                  }
-              }
+    # Update the part information.
 
-              ## return the object
-              return(object)
-          })
+    object@part <- c(object@part, rep(object@nextPart, length(y)))
+
+    # Decide which part the next cohort will belong to:
+    # only if the `nextPart` was 1, it can potentially be required
+    # to change it to 2 (once it is 2, it stays).
+    if (object@nextPart == 1L) {
+      # If there was a DLT in one of the cohorts,
+      # or if the current dose was the highest from part 1.
+      if (any(object@y == 1L) || x == max(object@part1Ladder)) {
+        # Then this closes part 1 and the next cohort will be from part 2.
+        object@nextPart <- 2L
+      }
+    }
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
 
 ## --------------------------------------------------
 ## Update a DataDual object
