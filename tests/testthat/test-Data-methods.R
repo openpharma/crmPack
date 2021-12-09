@@ -24,11 +24,13 @@ test_that("Plot works as expected for Data object with placebo and blinding", {
   vdiffr::expect_doppelganger("Plot of Data with placebo and blinding", result)
 })
 
-test_that("Plot works as expected for Data object with placebo, blinding and no legend", {
+test_that("Plot works for Data object with placebo, blinding and no legend", {
   data <- h_get_data()
   result <- plot(data, blind = TRUE, legend = FALSE)
 
-  vdiffr::expect_doppelganger("Plot of Data with placebo, blinding and no legend", result)
+  vdiffr::expect_doppelganger(
+    "Plot of Data with placebo, blinding and no legend", result
+  )
 })
 
 # plot-DataDual ----
@@ -40,11 +42,13 @@ test_that("Plot works as expected for DataDual object with placebo", {
   vdiffr::expect_doppelganger("Plot of DataDual with placebo", result)
 })
 
-test_that("Plot works as expected for DataDual object with placebo and blinding", {
+test_that("Plot works for DataDual object with placebo and blinding", {
   data <- h_get_data_dual()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger("Plot of DataDual with placebo and blinding", result)
+  vdiffr::expect_doppelganger(
+    "Plot of DataDual with placebo and blinding", result
+  )
 })
 
 # plot-DataDA ----
@@ -56,11 +60,13 @@ test_that("Plot works as expected for DataDA object with placebo", {
   vdiffr::expect_doppelganger("Plot of DataDA with placebo", result)
 })
 
-test_that("Plot works as expected for DataDA object with placebo and blinding", {
+test_that("Plot works for DataDA object with placebo and blinding", {
   data <- h_get_data_augmented()
   result <- plot(data, blind = TRUE)
 
-  vdiffr::expect_doppelganger("Plot of DataDA with placebo and blinding", result)
+  vdiffr::expect_doppelganger(
+    "Plot of DataDA with placebo and blinding", result
+  )
 })
 
 # update-Data ----
@@ -80,7 +86,7 @@ test_that("Update of Data works as expected", {
   expect_equal(result, object)
 })
 
-test_that("Update of Data works as expected when doses are added to the old cohort", {
+test_that("Update of Data works when doses are added to the old cohort", {
   object <- h_get_data()
   result <- update(object, x = 100, y = c(0L, 1L, 1L), new_cohort = FALSE)
 
@@ -103,10 +109,13 @@ test_that("Update of Data throws the error for a dose x out of the grid", {
   )
 })
 
-test_that("Update of Data, no error for non-valid update when validation is off", {
+test_that("Update of Data, no error for non-valid update and validation off", {
   object <- h_get_data()
   expect_silent(
-    update(object, x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE, check = FALSE)
+    update(
+      object,
+      x = 12345, y = c(0L, 1L, 1L), new_cohort = FALSE, check = FALSE
+    )
   )
 })
 
@@ -147,12 +156,12 @@ test_that("Update of DataParts works as expected", {
   expect_equal(result, object)
 })
 
-test_that("Update of DataParts works as expected, no DLT and x eq max of part1Ladder", {
+test_that("Update of DataParts works, no DLT and x eq max of part1Ladder", {
   object <- h_get_data_parts()
   object@nextPart <- 1L
   object@y <- rep(0L, 12)
 
-  result <- update(object, x = 250, y = c(0L, 0L)) # 250 is the max of part1Ladder.
+  result <- update(object, x = 250, y = c(0L, 0L)) # max of part1Ladder eq. 250.
 
   object@x <- c(object@x, 250, 250)
   object@y <- c(object@y, 0L, 0L)
