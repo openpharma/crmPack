@@ -2,51 +2,47 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataParts-method}
 \alias{update,DataParts-method}
-\title{Update method for the "DataParts" class}
+\alias{update-DataParts-method}
+\title{Updating \code{DataParts} Objects}
 \usage{
-\S4method{update}{DataParts}(
-  object,
-  x,
-  y,
-  ID = (if (length(object@ID)) max(object@ID) else 0L) + seq_along(y),
-  ...
-)
+\S4method{update}{DataParts}(object, x, y, ..., check = TRUE)
 }
 \arguments{
-\item{object}{the old \code{\linkS4class{DataParts}} object}
+\item{object}{(\code{DataParts})\cr object you want to update.}
 
-\item{x}{the dose level (one level only!)}
+\item{x}{(\code{number})\cr the dose level (one level only!).}
 
-\item{y}{the DLT vector (0/1 vector), for all patients in this cohort}
+\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
-\item{ID}{the patient IDs}
+\item{...}{further arguments passed to the first inherited method \code{update}
+after this current method, i.e. \code{\link{update-Data-method}}.}
 
-\item{\dots}{not used}
+\item{check}{(\code{flag})\cr whether the validation of the updated object should be conducted.
+See help for \code{\link{update-Data-method}} for more details on the use case of this parameter.}
 }
 \value{
-the new \code{\linkS4class{DataParts}} object
+The new, updated \code{\link{DataParts}} object.
 }
 \description{
-Add new data to the \code{\linkS4class{DataParts}} object
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that updates existing \code{\link{DataParts}} object with new data.
 }
 \examples{
+# Create an object of class 'DataParts'.
+my_data <- DataParts(
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  part = c(1L, 1L, 1L),
+  nextPart = 1L,
+  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+)
 
-# create an object of class 'DataParts'
-myData <- DataParts(x=c(0.1,0.5,1.5),
-                    y=c(0,0,0),
-                    doseGrid=c(0.1,0.5,1.5,3,6,
-                               seq(from=10,to=80,by=2)),
-                    part=c(1L,1L,1L),
-                    nextPart=1L,
-                    part1Ladder=c(0.1,0.5,1.5,3,6,10))
-
-# update the data with a new cohort
-# to be noted that since we reached the last level from part1Ladder then
-# nextPart is switched from '1' to '2'
-myData <- update(myData,
-                 x=10,
-                 y=c(0))
-
-
+# Update the data with a new cohort.
+# Note that since we reached the last level from 'part1Ladder'
+# then the 'nextPart' is switched from '1' to '2'.
+my_data1 <- update(my_data, x = 10, y = 0L)
 }
-\keyword{methods}

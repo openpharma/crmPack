@@ -52,6 +52,7 @@ reference:
       - plot-DataDual-method
       - plot-DataDA-method
       - update-Data-method
+      - update-DataParts-method
   - title: Functions
     contents:
       - dapply
