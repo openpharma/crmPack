@@ -24,10 +24,13 @@ Data(
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
 
-\item{ID}{(\code{integer})\cr unique patient IDs.}
+\item{ID}{(\code{integer})\cr unique patient IDs.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
-\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from
-\{0, 1, 2, ...\}).}
+\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
 \item{doseGrid}{(\code{numeric})\cr all possible doses.}
 

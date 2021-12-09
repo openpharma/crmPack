@@ -2,50 +2,63 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,Data-method}
 \alias{update,Data-method}
-\title{Update method for the "Data" class}
+\alias{update-Data-method}
+\title{Updating \code{Data} Objects}
 \usage{
 \S4method{update}{Data}(
   object,
   x,
   y,
-  ID = (if (length(object@ID)) max(object@ID) else 0L) + seq_along(y),
-  newCohort = TRUE,
+  ID = length(object@ID) + seq_along(y),
+  new_cohort = TRUE,
+  check = TRUE,
   ...
 )
 }
 \arguments{
-\item{object}{the old \code{\linkS4class{Data}} object}
+\item{object}{(\code{Data})\cr object you want to update.}
 
-\item{x}{the dose level (one level only!)}
+\item{x}{(\code{number})\cr the dose level (one level only!).}
 
-\item{y}{the DLT vector (0/1 vector), for all patients in this cohort}
+\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
-\item{ID}{the patient IDs}
+\item{ID}{(\code{integer})\cr the patient IDs.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
 
-\item{newCohort}{logical: if TRUE (default) the new data are assigned
-to a new cohort}
+\item{new_cohort}{(\code{flag})\cr if \code{TRUE} (default) the new data are assigned to a new cohort.}
 
-\item{\dots}{not used}
+\item{check}{(\code{flag})\cr whether the validation of the updated object should be conducted.
+Current implementation of this \code{update} method allows for updating the \code{Data} class object
+by adding a single dose level \code{x} only. However, there might be some use cases where
+the new cohort to be added contains a placebo and active dose. Hence, such update
+would need to be performed iteratively by calling the \code{update} method twice.
+For example, in the first call a user can add a placebo, and then in the second call,
+an active dose. Since having a cohort with placebo only is not allowed,
+the \code{update} method would normally throw the error when attempting to add a placebo
+in the first call. To allow for such updates, the \code{check} parameter should be then
+set to \code{FALSE} for that first call.}
+
+\item{...}{not used.}
 }
 \value{
-the new \code{\linkS4class{Data}} object
+The new, updated \code{\link{Data}} object.
 }
 \description{
-Add new data to the \code{\linkS4class{Data}} object
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that updates existing \code{\link{Data}} object with new data.
 }
 \examples{
+# Create some data of class 'Data'.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# Create some data of class 'Data'
-myData <- Data(x=c(0.1,0.5,1.5,3,6,10,10,10),
-               y=c(0,0,0,0,0,0,1,0),
-               doseGrid=c(0.1,0.5,1.5,3,6,
-                          seq(from=10,to=80,by=2)))
-
-## update the data with a new cohort
-myData <- update(myData,
-                 x=20,
-                 y=c(0,1,1))
-
-
+# Update the data with a new cohort.
+my_data1 <- update(my_data, x = 20, y = c(0L, 1L, 1L))
 }
-\keyword{methods}

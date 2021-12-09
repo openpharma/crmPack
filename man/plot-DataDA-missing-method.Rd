@@ -17,7 +17,7 @@ If \code{TRUE}, then placebo subjects are reported at the same level
 as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{\dots}{passed to the first inherited method \code{plot} after this current method.}
+\item{...}{passed to the first inherited method \code{plot} after this current method.}
 }
 \value{
 The \code{\link{ggplot2}} object.

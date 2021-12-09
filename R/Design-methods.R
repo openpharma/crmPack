@@ -313,13 +313,14 @@ setMethod("simulate",
                       if( thisData@placebo && (thisSize.PL > 0L) ){
                           thisData <- update(object=thisData,
                                              x=object@data@doseGrid[1],
-                                             y=thisDLTs.PL)
+                                             y=thisDLTs.PL,
+                                             check = FALSE)
 
                           ## update the data with active dose
                           thisData <- update(object=thisData,
                                              x=thisDose,
                                              y=thisDLTs,
-                                             newCohort=FALSE)
+                                             new_cohort=FALSE)
                       }else{
                           ## update the data with this cohort
                           thisData <- update(object=thisData,
@@ -805,14 +806,15 @@ setMethod("simulate",
                           thisData <- update(object=thisData,
                                              x=object@data@doseGrid[1],
                                              y=thisDLTs.PL,
-                                             w=thisBiomarkers.PL)
+                                             w=thisBiomarkers.PL,
+                                             check = FALSE)
 
                           ### ... and then with active dose
                           thisData <- update(object=thisData,
                                              x=thisDose,
                                              y=thisDLTs,
                                              w=thisBiomarkers,
-                                             newCohort=FALSE)
+                                             new_cohort=FALSE)
                       }else{
                           thisData <- update(object=thisData,
                                              x=thisDose,
@@ -1026,7 +1028,8 @@ setMethod("examine",
                           if(baseData@placebo && (thisSize.PL > 0L) ){
                             thisData <- update(object=baseData,
                                                x=baseData@doseGrid[1],
-                                               y=rep(0,thisSize.PL))
+                                               y=rep(0,thisSize.PL),
+                                               check = FALSE)
 
                             thisData <-
                               update(object=thisData,
@@ -1036,7 +1039,7 @@ setMethod("examine",
                                            times=
                                              c(thisSize - numDLTs,
                                                numDLTs)),
-                                     newCohort=FALSE)
+                                     new_cohort=FALSE)
 
                           }else{
                             thisData <-
@@ -1090,13 +1093,14 @@ setMethod("examine",
                         baseData <-
                           update(object=baseData,
                                  x=baseData@doseGrid[1],
-                                 y=rep(0, thisSize.PL))
+                                 y=rep(0, thisSize.PL),
+                                 check = FALSE)
 
                         baseData <-
                           update(object=baseData,
                                  x=thisDose,
                                  y=rep(0, thisSize),
-                                 newCohort=FALSE)
+                                 new_cohort=FALSE)
 
                       }else{
                         baseData <-
@@ -1791,7 +1795,7 @@ setMethod("simulate",
                     thisData <- update(object=thisData,
                                        x=thisDose,
                                        y=thisDLTs,
-                                       newCohort=FALSE)
+                                       new_cohort=FALSE)
                   } else {
 
                   ## update the data with this cohort
@@ -2114,7 +2118,7 @@ setMethod("simulate",
                     thisData <- update(object=thisData,
                                        x=thisDose,
                                        y=thisDLTs,
-                                       newCohort=FALSE)
+                                       new_cohort=FALSE)
                   } else {
 
                   ## update the data with this cohort
@@ -2490,7 +2494,7 @@ setMethod("simulate",
                                        x=thisDose,
                                        y=thisDLTs,
                                        w=thisEff,
-                                       newCohort=FALSE)
+                                       new_cohort=FALSE)
                   } else {
 
                   ## update the data with this cohort
@@ -2954,7 +2958,7 @@ setMethod("simulate",
                                          x=thisDose,
                                          y=thisDLTs,
                                          w=thisEff,
-                                         newCohort=FALSE)
+                                         new_cohort=FALSE)
                     } else {
 
                       ## update the data with this cohort
@@ -3366,7 +3370,7 @@ setMethod("simulate",
                                        x=thisDose,
                                        y=thisDLTs,
                                        w=thisEff,
-                                       newCohort=FALSE)
+                                       new_cohort=FALSE)
                   } else {
 
                     ## update the data with this cohort
@@ -3957,7 +3961,7 @@ setMethod("simulate",
                     thisData <- update(object=thisData,
                                        x=thisDose,
                                        y=thisDLTs,
-                                       newCohort=FALSE)
+                                       new_cohort=FALSE)
 
                     ##JZ: additional part for DADesign--when to start the next cohort
                     trialtime <- trialtime+nextOpen(window=thisSafetywindow,

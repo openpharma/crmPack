@@ -40,7 +40,7 @@ setMethod(
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
 #' @param legend (`flag`)\cr whether the legend should be added.
-#' @param \dots not used.
+#' @param ... not used.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -111,7 +111,7 @@ setMethod(
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param \dots passed to the first inherited method `plot` after this current method.
+#' @param ... passed to the first inherited method `plot` after this current method.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -170,7 +170,7 @@ setMethod(
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param \dots passed to the first inherited method `plot` after this current method.
+#' @param ... passed to the first inherited method `plot` after this current method.
 #'
 #' @return The [`ggplot2`] object.
 #'
@@ -181,7 +181,7 @@ setMethod(
 setMethod(
   f = "plot",
   signature = signature(x = "DataDA", y = "missing"),
-  def = function(x, y, blind = FALSE, ...) {
+  definition = function(x, y, blind = FALSE, ...) {
     assert_flag(blind)
 
     # Call the superclass method, to get the first plot.
@@ -231,84 +231,90 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Update a Data object
-## --------------------------------------------------
+# Data-update ----
 
+#' Updating `Data` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`Data`] object with new data.
+#'
+#' @param object (`Data`)\cr object you want to update.
+#' @param x (`number`)\cr the dose level (one level only!).
+#' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this cohort.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param ID (`integer`)\cr the patient IDs.
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned to a new cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object should be conducted.
+#'   Current implementation of this `update` method allows for updating the `Data` class object
+#'   by adding a single dose level `x` only. However, there might be some use cases where
+#'   the new cohort to be added contains a placebo and active dose. Hence, such update
+#'   would need to be performed iteratively by calling the `update` method twice.
+#'   For example, in the first call a user can add a placebo, and then in the second call,
+#'   an active dose. Since having a cohort with placebo only is not allowed,
+#'   the `update` method would normally throw the error when attempting to add a placebo
+#'   in the first call. To allow for such updates, the `check` parameter should be then
+#'   set to `FALSE` for that first call.
+#' @param ... not used.
+#'
+#' @return The new, updated [`Data`] object.
+#'
+#' @aliases update-Data-method
+#' @example examples/Data-method-update-Data.R
+#' @export
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "Data"),
+  definition = function(object,
+                        x,
+                        y,
+                        ID = length(object@ID) + seq_along(y),
+                        new_cohort = TRUE,
+                        check = TRUE,
+                        ...) {
+    assert_number(x)
+    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(ID, len = length(y))
+    assert_disjunct(object@ID, ID)
+    assert_flag(new_cohort)
+    assert_flag(check)
 
-##' Update method for the "Data" class
-##'
-##' Add new data to the \code{\linkS4class{Data}} object
-##'
-##' @param object the old \code{\linkS4class{Data}} object
-##' @param x the dose level (one level only!)
-##' @param y the DLT vector (0/1 vector), for all patients in this cohort
-##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned
-##' to a new cohort
-##' @param \dots not used
-##' @return the new \code{\linkS4class{Data}} object
-##'
-##' @example examples/Data-method-update-Data.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-          signature(object="Data"),
-          def=
-          function(object,
-                   x,
-                   y,
-                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
-                   newCohort=TRUE,
-                   ...){
+    y_len <- length(y)
 
-              ## some checks
-              stopifnot(is.scalar(x),
-                        all(y %in% c(0, 1)))
+    # Which grid level is the dose?
+    gridLevel <- matchTolerance(x, object@doseGrid)
+    object@xLevel <- c(object@xLevel, rep(gridLevel, y_len))
 
-              ## which grid level is the dose?
-              gridLevel <- matchTolerance(x, object@doseGrid)
+    # Increment sample size.
+    object@nObs <- object@nObs + y_len
 
-              ## add it to the data
-              if(is.na(gridLevel))
-              {
-                  stop("dose is not on grid")
-              } else {
-                  object@xLevel <- c(object@xLevel,
-                                     rep(gridLevel,
-                                         length(y)))
-              }
+    # Add dose.
+    object@x <- c(object@x, rep(as.numeric(x), y_len))
 
-              ## increment sample size
-              object@nObs <- object@nObs + length(y)
+    # Add DLT data.
+    object@y <- c(object@y, safeInteger(y))
 
-              ## add dose
-              object@x <- c(object@x,
-                            rep(x,
-                                length(y)))
+    # Add ID.
+    object@ID <- c(object@ID, safeInteger(ID))
 
-              ## add DLT data
-              object@y <- c(object@y, as.integer(y))
+    # Add cohort number.
+    last_cohort <- max(tail(object@cohort, 1L), 0L)
+    object@cohort <- c(
+      object@cohort,
+      rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
+    )
 
-              ## add ID
-              object@ID <- c(object@ID, ID)
+    if (check) {
+      validObject(object)
+    }
 
-              ## add cohort number
-              if(newCohort){
-                  object@cohort <- c(object@cohort,
-                                     rep(max(tail(object@cohort, 1L), 0L) + 1L,
-                                         length(y)))
-              }else{
-                  object@cohort <- c(object@cohort,
-                                     rep(max(tail(object@cohort, 1L), 0L),
-                                         length(y)))
-              }
-
-              ## return the object
-              return(object)
-          })
-
+    object
+  }
+)
 
 ## --------------------------------------------------
 ## Update a DataParts object
@@ -339,7 +345,7 @@ setMethod("update",
                    ...){
 
               ## first do the usual things as for Data objects
-              object <- callNextMethod(object=object, x=x, y=y, ID=ID, ...)
+              object <- callNextMethod(object=object, x=x, y=y, ID=ID, check = FALSE,...)
 
               ## update the part information
               object@part <- c(object@part,
@@ -378,7 +384,7 @@ setMethod("update",
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
 ##' @param w the biomarker vector, for all patients in this cohort
 ##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned
+##' @param new_cohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataDual}} object
@@ -394,21 +400,21 @@ setMethod("update",
                    x,
                    y,
                    w,
-                   newCohort=TRUE,
+                   new_cohort=TRUE,
                    ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
                    ...){
-
-              ## first do the usual things as for Data objects
-              object <- callNextMethod(object=object, x=x, y=y, ID=ID,
-                                       newCohort=newCohort, ...)
-
-              ## update the biomarker information
-              object@w <- c(object@w,
-                            w)
-
-              ## return the object
-              return(object)
-          })
+            
+            ## first do the usual things as for Data objects
+            object <- callNextMethod(object=object, x=x, y=y, ID=ID,
+                                     new_cohort=new_cohort, check = FALSE, ...)
+            
+            ## update the biomarker information
+            object@w <- c(object@w, w)
+            
+            ## return the object
+            return(object)
+  }
+)
 
 ## -----------------------------------------------------------------------------------------
 ## Extracting efficacy responses for subjects without DLE observed
@@ -475,7 +481,7 @@ setMethod("getEff",
 ##' @param factT0 the time that patients start DLT observation window
 ##' @param thisDose the current dose of the cohort
 ##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned
+##' @param new_cohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort
 ##' @param trialtime current time in the trial.
 ##' @param \dots not used
@@ -499,7 +505,7 @@ setMethod("update",
                      thisDose,
                      trialtime,
                      ID=NULL,
-                     newCohort=TRUE,
+                     new_cohort=TRUE,
                      ...){
 
               ## some checks
@@ -555,7 +561,7 @@ setMethod("update",
               }
 
               ## add cohort number
-              if(newCohort)
+              if(new_cohort)
               {
                 object@cohort <- c(object@cohort,
                                    rep(max(tail(object@cohort, 1L), 0L) + 1L,

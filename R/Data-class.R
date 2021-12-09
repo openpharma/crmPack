@@ -89,8 +89,11 @@ NULL
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
 #' @param ID (`integer`)\cr unique patient IDs.
-#' @param cohort (`integer`)\cr the cohort indices (sorted values from
-#'   \{0, 1, 2, ...\}).
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
+#' @param cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
+#'   You can also supply `numeric` vectors, but these will then be converted to
+#'   `integer` internally.
 #' @param doseGrid (`numeric`)\cr all possible doses.
 #' @param placebo (`flag`)\cr if `TRUE` the first dose level
 #'   in the `doseGrid` is considered as placebo.
@@ -106,6 +109,7 @@ Data <- function(x = numeric(),
                  placebo = FALSE,
                  ...) {
   assert_numeric(x)
+  assert_numeric(y)
   assert_numeric(ID)
   assert_numeric(cohort)
   assert_numeric(doseGrid, any.missing = FALSE, unique = TRUE)
@@ -273,7 +277,8 @@ DataParts <- function(part = integer(),
 #'
 #' @param xshare (`numeric`)\cr the doses for the share patients.
 #' @param yshare (`integer`)\cr the vector of toxicity events (0 or 1)
-#'   for the share patients.
+#'   for the share patients. You can also supply `numeric` vectors,
+#'   but these will then be converted to `integer` internally.
 #' @param ... parameters passed to [Data()].
 #'
 #' @export
