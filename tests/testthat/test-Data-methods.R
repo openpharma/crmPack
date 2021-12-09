@@ -76,7 +76,7 @@ test_that("Update of Data works as expected", {
   result <- update(object, x = 25, y = c(0L, 1L, 1L))
 
   object@x <- c(object@x, 25, 25, 25)
-  object@y <- c(object@y, c(0L, 1L, 1L))
+  object@y <- c(object@y, 0L, 1L, 1L)
   object@nObs <- object@nObs + 3L
   object@ID <- c(object@ID, 13L, 14L, 15L)
   object@xLevel <- c(object@xLevel, 2L, 2L, 2L)
@@ -173,5 +173,24 @@ test_that("Update of DataParts works, no DLT and x eq max of part1Ladder", {
   object@nextPart <- 2L
 
   expect_valid(result, "DataParts")
+  expect_equal(result, object)
+})
+
+
+# update-DataDual ----
+
+test_that("Update of DataDual works as expected", {
+  object <- h_get_data_dual()
+  result <- update(object, w = c(118, 124), x = 25, y = c(0L, 1L))
+
+  object@w <- c(object@w, 118, 124)
+  object@x <- c(object@x, 25, 25)
+  object@y <- c(object@y, 0L, 1L)
+  object@nObs <- object@nObs + 2L
+  object@ID <- c(object@ID, 13L, 14L)
+  object@xLevel <- c(object@xLevel, 2L, 2L)
+  object@cohort <- c(object@cohort, 4L, 4L)
+
+  expect_valid(result, "DataDual")
   expect_equal(result, object)
 })

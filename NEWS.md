@@ -1,5 +1,6 @@
 # Version 1.0.9000
-* Updated the `update` method for `Data` class: renamed `newCohort` argument to `new_cohort`,
+* Updated the `update` method for Data-like classes: renamed `newCohort`
+  argument to `new_cohort`,
   introduced validation of the updated object,
   added `check` flag to possibly omit the validation of the updated object.
 * Set up the package to use testthat.
