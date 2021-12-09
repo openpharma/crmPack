@@ -9,7 +9,7 @@
   x,
   y,
   w,
-  newCohort = TRUE,
+  new_cohort = TRUE,
   ID = (if (length(object@ID)) max(object@ID) else 0L) + seq_along(y),
   ...
 )
@@ -23,7 +23,7 @@
 
 \item{w}{the biomarker vector, for all patients in this cohort}
 
-\item{newCohort}{logical: if TRUE (default) the new data are assigned
+\item{new_cohort}{logical: if TRUE (default) the new data are assigned
 to a new cohort}
 
 \item{ID}{the patient IDs}

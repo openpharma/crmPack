@@ -12,7 +12,7 @@
   thisDose,
   trialtime,
   ID = NULL,
-  newCohort = TRUE,
+  new_cohort = TRUE,
   ...
 )
 }
@@ -31,7 +31,7 @@
 
 \item{ID}{the patient IDs}
 
-\item{newCohort}{logical: if TRUE (default) the new data are assigned
+\item{new_cohort}{logical: if TRUE (default) the new data are assigned
 to a new cohort}
 
 \item{\dots}{not used}

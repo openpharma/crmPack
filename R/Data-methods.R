@@ -240,7 +240,7 @@ setMethod(
 #' A method that updates existing [`Data`] object with new data.
 #'
 #' @param object (`Data`)\cr object you want to update.
-#' @param x (`numeric`)\cr the dose level (one level only!).
+#' @param x (`number`)\cr the dose level (one level only!).
 #' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this cohort.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
@@ -248,6 +248,16 @@ setMethod(
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
 #' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned to a new cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object should be conducted.
+#'   Current implementation of this `update` method allows for updating the `Data` class object
+#'   by adding a single dose level `x` only. However, there might be some use cases where
+#'   the new cohort to be added contains a placebo and active dose. Hence, such update
+#'   would need to be performed iteratively by calling the `update` method twice.
+#'   For example, in the first call a user can add a placebo, and then in the second call,
+#'   an active dose. Since having a cohort with placebo only is not allowed,
+#'   the `update` method would normally throw the error when attempting to add a placebo
+#'   in the first call. To allow for such updates, the `check` parameter should be then
+#'   set to `FALSE` for that first call.
 #' @param ... not used.
 #'
 #' @return The new, updated [`Data`] object.
@@ -264,12 +274,14 @@ setMethod(
                         y,
                         ID = length(object@ID) + seq_along(y),
                         new_cohort = TRUE,
+                        check = TRUE,
                         ...) {
     assert_number(x)
     assert_numeric(y, lower = 0, upper = 1, min.len = 1)
     assert_numeric(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
+    assert_flag(check)
 
     y_len <- length(y)
 
@@ -296,7 +308,10 @@ setMethod(
       rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
     )
 
-    validObject(object)
+    if (check) {
+      validObject(object)
+    }
+
     object
   }
 )
@@ -330,7 +345,7 @@ setMethod("update",
                    ...){
 
               ## first do the usual things as for Data objects
-              object <- callNextMethod(object=object, x=x, y=y, ID=ID, ...)
+              object <- callNextMethod(object=object, x=x, y=y, ID=ID, check = FALSE,...)
 
               ## update the part information
               object@part <- c(object@part,
@@ -369,7 +384,7 @@ setMethod("update",
 ##' @param y the DLT vector (0/1 vector), for all patients in this cohort
 ##' @param w the biomarker vector, for all patients in this cohort
 ##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned
+##' @param new_cohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort
 ##' @param \dots not used
 ##' @return the new \code{\linkS4class{DataDual}} object
@@ -385,21 +400,21 @@ setMethod("update",
                    x,
                    y,
                    w,
-                   newCohort=TRUE,
+                   new_cohort=TRUE,
                    ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
                    ...){
-
-              ## first do the usual things as for Data objects
-              object <- callNextMethod(object=object, x=x, y=y, ID=ID,
-                                       newCohort=newCohort, ...)
-
-              ## update the biomarker information
-              object@w <- c(object@w,
-                            w)
-
-              ## return the object
-              return(object)
-          })
+            
+            ## first do the usual things as for Data objects
+            object <- callNextMethod(object=object, x=x, y=y, ID=ID,
+                                     new_cohort=new_cohort, check = FALSE, ...)
+            
+            ## update the biomarker information
+            object@w <- c(object@w, w)
+            
+            ## return the object
+            return(object)
+  }
+)
 
 ## -----------------------------------------------------------------------------------------
 ## Extracting efficacy responses for subjects without DLE observed
@@ -466,7 +481,7 @@ setMethod("getEff",
 ##' @param factT0 the time that patients start DLT observation window
 ##' @param thisDose the current dose of the cohort
 ##' @param ID the patient IDs
-##' @param newCohort logical: if TRUE (default) the new data are assigned
+##' @param new_cohort logical: if TRUE (default) the new data are assigned
 ##' to a new cohort
 ##' @param trialtime current time in the trial.
 ##' @param \dots not used
@@ -490,7 +505,7 @@ setMethod("update",
                      thisDose,
                      trialtime,
                      ID=NULL,
-                     newCohort=TRUE,
+                     new_cohort=TRUE,
                      ...){
 
               ## some checks
@@ -546,7 +561,7 @@ setMethod("update",
               }
 
               ## add cohort number
-              if(newCohort)
+              if(new_cohort)
               {
                 object@cohort <- c(object@cohort,
                                    rep(max(tail(object@cohort, 1L), 0L) + 1L,
