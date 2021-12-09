@@ -107,15 +107,6 @@ It inherits from GeneralData." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -173,12 +164,15 @@ You can also supply <code>numeric</code> vectors, but these will then be convert
     </tr>
     <tr>
       <th>ID</th>
-      <td><p>(<code>integer</code>)<br /> unique patient IDs.</p></td>
+      <td><p>(<code>integer</code>)<br /> unique patient IDs.
+You can also supply <code>numeric</code> vectors, but these will then be converted to
+<code>integer</code> internally.</p></td>
     </tr>
     <tr>
       <th>cohort</th>
-      <td><p>(<code>integer</code>)<br /> the cohort indices (sorted values from
-{0, 1, 2, ...}).</p></td>
+      <td><p>(<code>integer</code>)<br /> the cohort indices (sorted values from {0, 1, 2, ...}).
+You can also supply <code>numeric</code> vectors, but these will then be converted to
+<code>integer</code> internally.</p></td>
     </tr>
     <tr>
       <th>doseGrid</th>

@@ -108,15 +108,6 @@ on the mixture sharing." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -162,7 +153,8 @@ on the mixture sharing.</p>
     <tr>
       <th>yshare</th>
       <td><p>(<code>integer</code>)<br /> the vector of toxicity events (0 or 1)
-for the share patients.</p></td>
+for the share patients. You can also supply <code>numeric</code> vectors,
+but these will then be converted to <code>integer</code> internally.</p></td>
     </tr>
     <tr>
       <th>...</th>
