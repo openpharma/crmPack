@@ -325,10 +325,11 @@ setMethod(
 #' A method that updates existing [`DataParts`] object with new data.
 #'
 #' @param object (`DataParts`)\cr object you want to update.
+#' @inheritParams update,Data-method
+#' @param ... further arguments passed to the first inherited method `update`
+#'   after this current method, i.e. [`update-Data-method`].
 #' @param check (`flag`)\cr whether the validation of the updated object should be conducted.
 #'   See help for [`update-Data-method`] for more details on the use case of this parameter.
-#' @param ... passed to the first inherited method `update` after this current method,
-#'   i.e. [`update-Data-method`].
 #'
 #' @return The new, updated [`DataParts`] object.
 #'
@@ -339,16 +340,13 @@ setMethod(
 setMethod(
   f = "update",
   signature = signature(object = "DataParts"),
-  definition = function(object, check = TRUE, ...) {
-    x <- list(...)$x
-    y <- list(...)$y
-
+  definition = function(object, x, y, ..., check = TRUE) {
     assert_number(x)
     assert_numeric(y, lower = 0, upper = 1, min.len = 1)
     assert_flag(check)
 
     # Update slots corresponding to `Data` class.
-    object <- callNextMethod(object = object, check = FALSE, ...)
+    object <- callNextMethod(object = object, x = x, y = y, check = FALSE, ...)
 
     # Update the part information.
 

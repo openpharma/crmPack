@@ -5,16 +5,22 @@
 \alias{update-DataParts-method}
 \title{Updating \code{DataParts} Objects}
 \usage{
-\S4method{update}{DataParts}(object, check = TRUE, ...)
+\S4method{update}{DataParts}(object, x, y, ..., check = TRUE)
 }
 \arguments{
 \item{object}{(\code{DataParts})\cr object you want to update.}
 
+\item{x}{(\code{number})\cr the dose level (one level only!).}
+
+\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.
+You can also supply \code{numeric} vectors, but these will then be converted to
+\code{integer} internally.}
+
+\item{...}{further arguments passed to the first inherited method \code{update}
+after this current method, i.e. \code{\link{update-Data-method}}.}
+
 \item{check}{(\code{flag})\cr whether the validation of the updated object should be conducted.
 See help for \code{\link{update-Data-method}} for more details on the use case of this parameter.}
-
-\item{...}{passed to the first inherited method \code{update} after this current method,
-i.e. \code{\link{update-Data-method}}.}
 }
 \value{
 The new, updated \code{\link{DataParts}} object.
