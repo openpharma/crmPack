@@ -1,3 +1,4 @@
+# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ##         Wai Yin Yeung [w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
@@ -2487,7 +2488,8 @@ setMethod("simulate",
                     thisData <- update(object=thisData,
                                        x=object@data@doseGrid[1],
                                        y=thisDLTs.PL,
-                                       w=thisEff.PL)
+                                       w=thisEff.PL,
+                                       check = FALSE)
 
                     ## update the data with active dose
                     thisData <- update(object=thisData,
@@ -2951,7 +2953,8 @@ setMethod("simulate",
                       thisData <- update(object=thisData,
                                          x=object@data@doseGrid[1],
                                          y=thisDLTs.PL,
-                                         w=thisEff.PL)
+                                         w=thisEff.PL,
+                                         check = FALSE)
 
                       ## update the data with active dose
                       thisData <- update(object=thisData,
@@ -3363,7 +3366,8 @@ setMethod("simulate",
                     thisData <- update(object=thisData,
                                        x=object@data@doseGrid[1],
                                        y=thisDLTs.PL,
-                                       w=thisEff.PL)
+                                       w=thisEff.PL,
+                                       check = FALSE)
 
                     ## update the data with active dose
                     thisData <- update(object=thisData,
@@ -4163,4 +4167,4 @@ setMethod("simulate",
             })
 
 ## --------------------------------------------------------------------------
-
+# nolint end

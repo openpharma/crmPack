@@ -326,10 +326,10 @@ setMethod(
 #'
 #' @param object (`DataParts`)\cr object you want to update.
 #' @inheritParams update,Data-method
-#' @param ... further arguments passed to the first inherited method `update`
-#'   after this current method, i.e. [`update-Data-method`].
-#' @param check (`flag`)\cr whether the validation of the updated object should be conducted.
-#'   See help for [`update-Data-method`] for more details on the use case of this parameter.
+#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param check (`flag`)\cr whether the validation of the updated object
+#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataParts`] object.
 #'
@@ -346,7 +346,7 @@ setMethod(
     assert_flag(check)
 
     # Update slots corresponding to `Data` class.
-    object <- callNextMethod(object = object, x = x, y = y, check = FALSE, ...)
+    object <- callNextMethod(object = object, x = x, y = y, ..., check = FALSE)
 
     # Update the part information.
 
@@ -372,48 +372,46 @@ setMethod(
   }
 )
 
-## --------------------------------------------------
-## Update a DataDual object
-## --------------------------------------------------
+# DataDual-update ----
 
-##' Update method for the "DataDual" class
-##'
-##' Add new data to the \code{\linkS4class{DataDual}} object
-##'
-##' @param object the old \code{\linkS4class{DataDual}} object
-##' @param x the dose level (one level only!)
-##' @param y the DLT vector (0/1 vector), for all patients in this cohort
-##' @param w the biomarker vector, for all patients in this cohort
-##' @param ID the patient IDs
-##' @param new_cohort logical: if TRUE (default) the new data are assigned
-##' to a new cohort
-##' @param \dots not used
-##' @return the new \code{\linkS4class{DataDual}} object
-##'
-##' @example examples/Data-method-update-DataDual.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-          signature(object="DataDual"),
-          def=
-          function(object,
-                   x,
-                   y,
-                   w,
-                   new_cohort=TRUE,
-                   ID=(if(length(object@ID)) max(object@ID) else 0L) + seq_along(y),
-                   ...){
-            
-            ## first do the usual things as for Data objects
-            object <- callNextMethod(object=object, x=x, y=y, ID=ID,
-                                     new_cohort=new_cohort, check = FALSE, ...)
-            
-            ## update the biomarker information
-            object@w <- c(object@w, w)
-            
-            ## return the object
-            return(object)
+#' Updating `DataDual` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`DataDual`] object with new data.
+#'
+#' @param object (`DataDual`)\cr object you want to update.
+#' @param w (`numeric`)\cr the continuous vector of biomarker values
+#'   for all the patients in this update.
+#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param check (`flag`)\cr whether the validation of the updated object
+#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   on the use case of this parameter.
+#'
+#' @return The new, updated [`DataDual`] object.
+#'
+#' @aliases update-DataDual-method
+#' @example examples/Data-method-update-DataDual.R
+#' @export
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataDual"),
+  definition = function(object, w, ..., check = TRUE) {
+    assert_numeric(w)
+    assert_flag(check)
+
+    # Update slots corresponding to `Data` class.
+    object <- callNextMethod(object = object, ..., check = FALSE)
+
+    # Update the biomarker information.
+    object@w <- c(object@w, w)
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
   }
 )
 

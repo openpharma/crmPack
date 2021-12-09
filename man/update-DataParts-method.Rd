@@ -16,11 +16,11 @@
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
 
-\item{...}{further arguments passed to the first inherited method \code{update}
-after this current method, i.e. \code{\link{update-Data-method}}.}
+\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.}
 
-\item{check}{(\code{flag})\cr whether the validation of the updated object should be conducted.
-See help for \code{\link{update-Data-method}} for more details on the use case of this parameter.}
+\item{check}{(\code{flag})\cr whether the validation of the updated object
+should be conducted. See help for \code{\link{update-Data-method}} for more details
+on the use case of this parameter.}
 }
 \value{
 The new, updated \code{\link{DataParts}} object.
