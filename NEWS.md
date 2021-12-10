@@ -1,4 +1,5 @@
 # Version 1.0.9000
+* Renamed arguments in `update-DataDA-method` method.
 * Updated the `update` method for Data-like classes: renamed `newCohort`
   argument to `new_cohort`,
   introduced validation of the updated object,

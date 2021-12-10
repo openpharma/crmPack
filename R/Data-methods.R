@@ -276,8 +276,9 @@ setMethod(
                         new_cohort = TRUE,
                         check = TRUE,
                         ...) {
-    assert_number(x)
-    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(x)
+    assert_true(length(x) == 0 || length(x) == 1)
+    assert_numeric(y, lower = 0, upper = 1)
     assert_numeric(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
@@ -289,9 +290,6 @@ setMethod(
     gridLevel <- matchTolerance(x, object@doseGrid)
     object@xLevel <- c(object@xLevel, rep(gridLevel, y_len))
 
-    # Increment sample size.
-    object@nObs <- object@nObs + y_len
-
     # Add dose.
     object@x <- c(object@x, rep(as.numeric(x), y_len))
 
@@ -302,11 +300,12 @@ setMethod(
     object@ID <- c(object@ID, safeInteger(ID))
 
     # Add cohort number.
-    last_cohort <- max(tail(object@cohort, 1L), 0L)
-    object@cohort <- c(
-      object@cohort,
-      rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
-    )
+    last_cohort <- ifelse(object@nObs > 0, tail(object@cohort, 1L), 0L)
+    cohort <- rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
+    object@cohort <- c(object@cohort, cohort)
+    
+    # Increment sample size.
+    object@nObs <- object@nObs + y_len
 
     if (check) {
       validObject(object)
@@ -341,8 +340,7 @@ setMethod(
   f = "update",
   signature = signature(object = "DataParts"),
   definition = function(object, x, y, ..., check = TRUE) {
-    assert_number(x)
-    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(y)
     assert_flag(check)
 
     # Update slots corresponding to `Data` class.
@@ -415,6 +413,84 @@ setMethod(
   }
 )
 
+# DataDA-update ----
+
+#' Updating `DataDA` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`DataDA`] object with new data.
+#'
+#' @note This function is capable of not only adding new patients but also
+#'   updates existing ones with respect to `y`, `t0`, `u` slots.
+#'
+#' @param object (`DataDA`)\cr object you want to update.
+#' @param u (`numeric`)\cr the new DLT free survival times for all patients,
+#'   i.e. for existing patients in the `object` as well as for new patients.
+#' @param t0 (`numeric`)\cr the time that each patient starts DLT observation window.
+#'   This parameter covers all patients, i.e. existing patients in the `object`
+#'   as well as for new patients.
+#' @param trialtime (`numeric`)\cr current time in the trial, i.e. a followup time.
+#' @param y (`numeric`)\cr the new DLTs for all patients, i.e. for existing
+#'   patients in the `object` as well as for new patients.
+#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#'   These are is used when there are new patients to be added to the cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object
+#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   on the use case of this parameter.
+#'
+#' @return The new, updated [`DataDA`] object.
+#'
+#' @aliases update-DataDA-method
+#' @example examples/Data-method-update-DataDA.R
+#' @export
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataDA"),
+  definition = function(object,
+                        u,
+                        t0,
+                        trialtime,
+                        y,
+                        ...,
+                        check = TRUE) {
+    assert_numeric(y, lower = 0, upper = 1)
+    assert_true(length(y) == 0 || length(y) >= object@nObs)
+    assert_numeric(u, lower = 0, len = length(y))
+    assert_numeric(t0, lower = 0, len = length(y))
+    assert_numeric(trialtime, lower = max(object@t0))
+    assert_true(length(trialtime) == 0L || length(trialtime) == 1L)
+    assert_flag(check)
+
+    # How many additional patients.
+    size <- max(length(y) - object@nObs, 0L)
+
+    # Update slots corresponding to `Data` class.
+    object <- callNextMethod(
+      object = object,
+      y = y[object@nObs + seq_len(size)], # Empty vector when size = 0.
+      ...,
+      check = FALSE
+    )
+
+    # DLT will be observed once the followup time >= the time to DLT.
+    object@y <- safeInteger(y * (trialtime >= t0 + u))
+
+    # Update DLT free survival time.
+    object@u <- apply(rbind(u, trialtime - t0), 2, min)
+
+    # Update t0.
+    object@t0 <- t0
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
 ## -----------------------------------------------------------------------------------------
 ## Extracting efficacy responses for subjects without DLE observed
 ## ---------------------------------------------------------------------------------
@@ -462,115 +538,4 @@ setMethod("getEff",
               }
               ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
               return(ret)
-            })
-
-
-
-## --------------------------------------------------
-## Update a DataDA object
-## --------------------------------------------------
-
-##' Update method for the `DataDA` class
-##'
-##' Update observations in the \code{\linkS4class{DataDA}} object
-##'
-##' @param object the old \code{\linkS4class{DataDA}} object
-##' @param factDLTs the simulated DLT outcome for all patients
-##' @param factSurv the simulated DLT time for all patients
-##' @param factT0 the time that patients start DLT observation window
-##' @param thisDose the current dose of the cohort
-##' @param ID the patient IDs
-##' @param new_cohort logical: if TRUE (default) the new data are assigned
-##' to a new cohort
-##' @param trialtime current time in the trial.
-##' @param \dots not used
-##' @return the new \code{\linkS4class{DataDA}} object
-##'
-##' @example examples/Data-method-update-DAData.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="DataDA"),
-          def=
-            function(object,
-                     # x,
-                     # y,
-                     # u,
-                     # ID,
-                     factDLTs,
-                     factSurv,
-                     factT0,
-                     thisDose,
-                     trialtime,
-                     ID=NULL,
-                     new_cohort=TRUE,
-                     ...){
-
-              ## some checks
-              stopifnot(is.scalar(thisDose),
-                        all(factSurv >= 0),
-                        all(factDLTs %in% c(0, 1)),
-                        length(factDLTs) == length(factSurv),
-                        length(factDLTs) == length(factT0)
-              )
-
-              ## which grid level is the dose?
-              gridLevel <- match(thisDose, object@doseGrid)
-
-              ## add it to the data
-              if(is.na(gridLevel))
-              {
-                stop("dose is not on grid")
-              }
-
-              ## increment sample size
-              object@nObs <- length(factDLTs)
-
-              ##How many additional patients
-              size<-length(factDLTs)-length(object@x)
-
-              ## add dose
-              object@x <- c(object@x,
-                            rep(thisDose,
-                                size))
-
-              #update xLevel
-              object@xLevel <- match(object@x,
-                                     object@doseGrid)
-
-              ##update DLT free survival time
-              object@u<- apply(rbind(factSurv,trialtime-factT0),2,min)
-
-              ## DLT will be observed once the followup time >= the time to DLT
-              object@y <- as.integer(factDLTs*(trialtime>=factT0+factSurv))
-
-              ##t0 will be updated;
-              object@t0 <- factT0
-
-              ## add ID
-              if(size>0)
-              {
-                if(is.null(ID))
-                {
-                  object@ID <-c(object@ID,
-                                (if(length(object@ID)) max(object@ID) else 0L) +
-                                  1:size)
-                }
-              }
-
-              ## add cohort number
-              if(new_cohort)
-              {
-                object@cohort <- c(object@cohort,
-                                   rep(max(tail(object@cohort, 1L), 0L) + 1L,
-                                       size))
-              } else {
-                object@cohort <- c(object@cohort,
-                                   rep(max(tail(object@cohort, 1L), 0L),
-                                       size))
-              }
-
-              ## return the object
-              return(object)
             })
