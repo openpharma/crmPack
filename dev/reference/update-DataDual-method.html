@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Update method for the "DataDual" class — update,DataDual-method • crmPack</title>
+<title>Updating DataDual Objects — update,DataDual-method • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Update method for the "DataDual" class — update,DataDual-method" />
-<meta property="og:description" content="Add new data to the DataDual object" />
+<meta property="og:title" content="Updating DataDual Objects — update,DataDual-method" />
+<meta property="og:description" content="
+A method that updates existing DataDual object with new data." />
 
 
 <meta name="robots" content="noindex">
@@ -105,15 +106,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -135,81 +127,60 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Update method for the "DataDual" class</h1>
+    <h1>Updating <code>DataDual</code> Objects</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Data-methods.R'><code>R/Data-methods.R</code></a></small>
     <div class="hidden name"><code>update-DataDual-method.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Add new data to the <code><a href='DataDual-class.html'>DataDual</a></code> object</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p>A method that updates existing <code><a href='DataDual-class.html'>DataDual</a></code> object with new data.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for DataDual</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>x</span>,
-  <span class='va'>y</span>,
-  <span class='va'>w</span>,
-  new_cohort <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  ID <span class='op'>=</span> <span class='op'>(</span><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>@</span><span class='va'>ID</span><span class='op'>)</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>@</span><span class='va'>ID</span><span class='op'>)</span> <span class='kw'>else</span> <span class='fl'>0L</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_along</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>w</span>, <span class='va'>...</span>, check <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>the old <code><a href='DataDual-class.html'>DataDual</a></code> object</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>the dose level (one level only!)</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>the DLT vector (0/1 vector), for all patients in this cohort</p></td>
+      <td><p>(<code>DataDual</code>)<br /> object you want to update.</p></td>
     </tr>
     <tr>
       <th>w</th>
-      <td><p>the biomarker vector, for all patients in this cohort</p></td>
-    </tr>
-    <tr>
-      <th>new_cohort</th>
-      <td><p>logical: if TRUE (default) the new data are assigned
-to a new cohort</p></td>
-    </tr>
-    <tr>
-      <th>ID</th>
-      <td><p>the patient IDs</p></td>
+      <td><p>(<code>numeric</code>)<br /> the continuous vector of biomarker values
+for all the patients in this update.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>not used</p></td>
+      <td><p>further arguments passed to <code>Data</code> update method <code><a href='update,Data-method.html'>update-Data-method</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>check</th>
+      <td><p>(<code>flag</code>)<br /> whether the validation of the updated object
+should be conducted. See help for <code><a href='update,Data-method.html'>update-Data-method</a></code> for more details
+on the use case of this parameter.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the new <code><a href='DataDual-class.html'>DataDual</a></code> object</p>
+    <p>The new, updated <code><a href='DataDual-class.html'>DataDual</a></code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'></span>
-<span class='r-in'><span class='co'># Create some data of class 'DataDual'</span></span>
-<span class='r-in'><span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual-class.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span>,<span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>8</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,</span>
-<span class='r-in'>                              <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>,to<span class='op'>=</span><span class='fl'>80</span>,by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='co'># Create some data of class 'DataDual'.</span></span>
+<span class='r-in'><span class='va'>my_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual-class.html'>DataDual</a></span><span class='op'>(</span></span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>  w <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>8</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
 <span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
 <span class='r-in'></span>
-<span class='r-in'><span class='co'>## update the data with a new cohort</span></span>
-<span class='r-in'><span class='va'>myData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span><span class='va'>myData</span>,</span>
-<span class='r-in'>                 x<span class='op'>=</span><span class='fl'>20</span>,</span>
-<span class='r-in'>                 y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
-<span class='r-in'>                 w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.4</span>,<span class='fl'>1.2</span>,<span class='fl'>2.2</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'></span>
+<span class='r-in'><span class='co'># Update the data with a new cohort.</span></span>
+<span class='r-in'><span class='va'>my_data1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span><span class='va'>my_data</span>, x <span class='op'>=</span> <span class='fl'>20</span>, y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>, w <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.4</span>, <span class='fl'>1.2</span>, <span class='fl'>2.2</span><span class='op'>)</span><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
