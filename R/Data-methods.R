@@ -303,7 +303,7 @@ setMethod(
     last_cohort <- ifelse(object@nObs > 0, tail(object@cohort, 1L), 0L)
     cohort <- rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
     object@cohort <- c(object@cohort, cohort)
-    
+
     # Increment sample size.
     object@nObs <- object@nObs + y_len
 
