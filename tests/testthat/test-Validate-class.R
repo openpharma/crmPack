@@ -8,7 +8,7 @@ test_that("Validate objects can be created with default constructor Validate", {
 
 # Validate ----
 
-test_that("Validate returns NULL for valid object, or message for an invalid one", {
+test_that("Validate returns NULL for valid object, or message for inv. obj.", {
   erra <- "some_error_A"
   errb <- "some_error_B"
 
@@ -25,7 +25,7 @@ test_that("Validate returns NULL for valid object, or message for an invalid one
   expect_null(o$check(TRUE, errb))
 })
 
-test_that("Having a msg global variable does not confuse the constructor method (1)", {
+test_that("Having a msg global variable does not confuse the constructor (1)", {
   msg <- character(0)
   result <- expect_silent(Validate())
   expect_s4_class(result, "Validate")
@@ -37,7 +37,7 @@ test_that("Having a msg global variable does not confuse the constructor method 
   expect_true(validObject(result))
 })
 
-test_that("Having a msg global variable does not confuse the constructor method (2)", {
+test_that("Having a msg global variable does not confuse the constructor (2)", {
   erra <- "some_error_A"
   errb <- "some_error_B"
 
@@ -55,7 +55,7 @@ test_that("Having a msg global variable does not confuse the constructor method 
   expect_null(o$check(TRUE, errb))
 })
 
-test_that("Having a msg global variable does not confuse the constructor method (3)", {
+test_that("Having a msg global variable does not confuse the constructor (3)", {
   erra <- "some_error_A"
   errb <- "some_error_B"
 
@@ -73,7 +73,7 @@ test_that("Having a msg global variable does not confuse the constructor method 
   expect_null(o$check(TRUE, errb))
 })
 
-test_that("Having a msg global variable does not confuse the constructor method (4)", {
+test_that("Having a msg global variable does not confuse the constructor (4)", {
   erra <- "some_error_A"
   errb <- "some_error_B"
 
