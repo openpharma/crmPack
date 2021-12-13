@@ -284,14 +284,15 @@ setMethod(
     assert_flag(new_cohort)
     assert_flag(check)
 
-    y_len <- length(y)
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
 
     # Which grid level is the dose?
     gridLevel <- matchTolerance(x, object@doseGrid)
-    object@xLevel <- c(object@xLevel, rep(gridLevel, y_len))
+    object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.
-    object@x <- c(object@x, rep(as.numeric(x), y_len))
+    object@x <- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
     object@y <- c(object@y, safeInteger(y))
@@ -300,12 +301,15 @@ setMethod(
     object@ID <- c(object@ID, safeInteger(ID))
 
     # Add cohort number.
-    last_cohort <- ifelse(object@nObs > 0, tail(object@cohort, 1L), 0L)
-    cohort <- rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
-    object@cohort <- c(object@cohort, cohort)
+    if (object@nObs == 0) {
+      new_cohort_ID <- 1L
+    } else {
+      new_cohort_ID <- tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_ID, n))
 
     # Increment sample size.
-    object@nObs <- object@nObs + y_len
+    object@nObs <- object@nObs + n
 
     if (check) {
       validObject(object)
@@ -464,12 +468,12 @@ setMethod(
     assert_flag(check)
 
     # How many additional patients.
-    size <- max(length(y) - object@nObs, 0L)
+    n <- max(length(y) - object@nObs, 0L)
 
     # Update slots corresponding to `Data` class.
     object <- callNextMethod(
       object = object,
-      y = y[object@nObs + seq_len(size)], # Empty vector when size = 0.
+      y = y[object@nObs + seq_len(n)], # Empty vector when n = 0.
       ...,
       check = FALSE
     )
@@ -505,9 +509,11 @@ setMethod(
 ##' @export
 ##' @keywords methods
 setGeneric("getEff",
-           def=function(object,...){
-             standardGeneric("getEff")},
-           valueClass="list")
+  def = function(object, ...) {
+    standardGeneric("getEff")
+  },
+  valueClass = "list"
+)
 
 ##' @rdname getEff
 ##' @param x first
@@ -515,27 +521,28 @@ setGeneric("getEff",
 ##' @param w third
 ##' @example examples/Data-method-getEff.R
 setMethod("getEff",
-          signature=
-            signature(object="DataDual"),
-          def=
-            function(object,
-                     x,
-                     y,
-                     w,...){
-              if (length(which(object@y == 1))==0){
-                wNoDLE<-object@w
-                wDLE<-NULL
-                xNoDLE<- object@x
-                xDLE<-NULL
-              } else {##with observed efficacy response and DLE observed
-                IndexDLE<-which(object@y==1)
-                ##Take efficacy responses with no DLE observed
-                wNoDLE<-object@w[-IndexDLE]
-                wDLE<-object@w[IndexDLE]
-                ##Take the corresponding dose levels
-                xNoDLE<-object@x[-IndexDLE]
-                xDLE<-object@x[IndexDLE]
-              }
-              ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
-              return(ret)
-            })
+  signature =
+    signature(object = "DataDual"),
+  def =
+    function(object,
+             x,
+             y,
+             w, ...) {
+      if (length(which(object@y == 1)) == 0) {
+        wNoDLE <- object@w
+        wDLE <- NULL
+        xNoDLE <- object@x
+        xDLE <- NULL
+      } else { ## with observed efficacy response and DLE observed
+        IndexDLE <- which(object@y == 1)
+        ## Take efficacy responses with no DLE observed
+        wNoDLE <- object@w[-IndexDLE]
+        wDLE <- object@w[IndexDLE]
+        ## Take the corresponding dose levels
+        xNoDLE <- object@x[-IndexDLE]
+        xDLE <- object@x[IndexDLE]
+      }
+      ret <- list(wDLE = wDLE, xDLE = xDLE, wNoDLE = wNoDLE, xNoDLE = xNoDLE)
+      return(ret)
+    }
+)

@@ -249,11 +249,12 @@ test_that("validate_data_DA returns error for vector u of wrong length and value
 test_that("validate_data_DA returns error for vector t0 of wrong length and negative values", {
   object <- h_get_data_augmented()
 
-  # We assign vector t0 of length different than object@nObs and some negative values.
+  # We assign vector t0 of length different than object@nObs
+  # and some negative, non-sorted values.
   object@t0 <- c(1, -2)
 
   expect_equal(
     validate_data_DA(object),
-    "t0 must be of type double, nObs length, non-negative"
+    "t0 must be of type double, nObs length, sorted non-negative"
   )
 })

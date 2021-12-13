@@ -13,7 +13,7 @@ NULL
 
 #' @describeIn validate_data_objects validates that the [`GeneralData`]
 #'   object contains unique `ID`, non-negative `cohort` indices and
-#'   `ID` and `cohort` vectors which are of the same length `nObs`.
+#'   `ID` and `cohort` vectors are of the same length `nObs`.
 validate_subjects <- function(object) {
   o <- Validate()
   # In if clause so that below test_* won't fail.
@@ -175,8 +175,8 @@ validate_data_DA <- function(object) {
     "u must be of type double, nObs length, non-negative and not greater than Tmax"
   )
   o$check(
-    test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE),
-    "t0 must be of type double, nObs length, non-negative"
+    test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE, sorted = TRUE),
+    "t0 must be of type double, nObs length, sorted non-negative"
   )
   o$result()
 }

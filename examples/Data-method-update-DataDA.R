@@ -13,7 +13,7 @@ my_data1 <- update(
   object = my_data,
   y = c(my_data@y, 0), # The y will be updated according to u.
   u = c(my_data@u, 20),
-  t0 = c(my_data@t0, 5),
+  t0 = c(my_data@t0, 95),
   x = 20,
   trialtime = 120 # This is the global timeline for a trial.
 )

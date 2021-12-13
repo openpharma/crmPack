@@ -48,7 +48,7 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{validate_subjects}: validates that the \code{\link{GeneralData}}
 object contains unique \code{ID}, non-negative \code{cohort} indices and
-\code{ID} and \code{cohort} vectors which are of the same length \code{nObs}.
+\code{ID} and \code{cohort} vectors are of the same length \code{nObs}.
 
 \item \code{h_doses_unique_per_cohort}: helper function which verifies whether
 the \code{dose} values are unique in each and every different \code{cohort}.

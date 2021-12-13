@@ -219,9 +219,9 @@ test_that("Update of DataDA works as expected", {
     object = object,
     y = c(object@y, 0),
     u = c(object@u, 20),
-    t0 = c(object@t0, 5),
+    t0 = c(object@t0, 135),
     x = 25,
-    trialtime = 130
+    trialtime = 140
   )
 
   object@x <- c(object@x, 25)
@@ -230,8 +230,8 @@ test_that("Update of DataDA works as expected", {
   object@ID <- c(object@ID, 13L)
   object@xLevel <- c(object@xLevel, 2L)
   object@cohort <- c(object@cohort, 4L)
-  object@t0 <- c(object@t0, 5)
-  object@u <- c(42, 30, 15, 5, 20, 25, 30, 45, 25, 25, 10, 5, 20)
+  object@t0 <- c(object@t0, 135)
+  object@u <- c(42, 30, 15, 5, 20, 25, 30, 55, 25, 30, 20, 15, 5)
 
   expect_valid(result, "DataDA")
   expect_identical(result, object)
