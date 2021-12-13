@@ -237,6 +237,35 @@ test_that("Update of DataDA works as expected", {
   expect_identical(result, object)
 })
 
+test_that("Update of DataDA works for empty update of empty object", {
+  object <- DataDA()
+  result <- update(
+    object = object,
+    y = integer(0),
+    u = numeric(0),
+    t0 = numeric(0),
+    x = numeric(0),
+    trialtime = numeric(0)
+  )
+  expect_valid(result, "DataDA")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataDA works when no update of non-empty object", {
+  object <- h_get_data_augmented()
+  result <- update(
+    object = object,
+    y = object@y,
+    u = object@u,
+    t0 = object@t0,
+    x = numeric(0),
+    trialtime = 500
+  )
+
+  expect_valid(result, "DataDA")
+  expect_identical(result, object)
+})
+
 test_that("Update of DataDA throws the error for empty trialtime", {
   object <- h_get_data_augmented()
   expect_error(
