@@ -236,3 +236,18 @@ test_that("Update of DataDA works as expected", {
   expect_valid(result, "DataDA")
   expect_identical(result, object)
 })
+
+test_that("Update of DataDA throws the error for empty trialtime", {
+  object <- h_get_data_augmented()
+  expect_error(
+    update(
+      object = object,
+      y = c(object@y, 0),
+      u = c(object@u, 20),
+      t0 = c(object@t0, 135),
+      x = 25,
+      trialtime = numeric(0)
+    ),
+    "Assertion on 'trialtime' failed: Must have length 1."
+  )
+})

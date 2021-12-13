@@ -9,20 +9,20 @@ test_that("Validate objects can be created with default constructor Validate", {
 # Validate ----
 
 test_that("Validate returns NULL for valid object, or message for inv. obj.", {
-  erra <- "some_error_A"
-  errb <- "some_error_B"
+  error_a <- "some_error_A"
+  error_b <- "some_error_B"
 
   o <- Validate()
 
   expect_identical(o$msg, character(0))
-  expect_null(o$check(TRUE, erra))
+  expect_null(o$check(TRUE, error_a))
   expect_identical(o$msg, character(0))
 
-  expect_identical(o$check(FALSE, erra), erra)
-  expect_identical(o$msg, erra)
+  expect_identical(o$check(FALSE, error_a), error_a)
+  expect_identical(o$msg, error_a)
 
-  expect_identical(o$check(FALSE, errb), c(erra, errb))
-  expect_null(o$check(TRUE, errb))
+  expect_identical(o$check(FALSE, error_b), c(error_a, error_b))
+  expect_null(o$check(TRUE, error_b))
 })
 
 test_that("Having a msg global variable does not confuse the constructor (1)", {
@@ -38,55 +38,55 @@ test_that("Having a msg global variable does not confuse the constructor (1)", {
 })
 
 test_that("Having a msg global variable does not confuse the constructor (2)", {
-  erra <- "some_error_A"
-  errb <- "some_error_B"
+  error_a <- "some_error_A"
+  error_b <- "some_error_B"
 
   msg <- "some msg"
   o <- Validate()
 
   expect_identical(o$msg, character(0))
-  expect_null(o$check(TRUE, erra))
+  expect_null(o$check(TRUE, error_a))
   expect_identical(o$msg, character(0))
 
-  expect_identical(o$check(FALSE, erra), erra)
-  expect_identical(o$msg, erra)
+  expect_identical(o$check(FALSE, error_a), error_a)
+  expect_identical(o$msg, error_a)
 
-  expect_identical(o$check(FALSE, errb), c(erra, errb))
-  expect_null(o$check(TRUE, errb))
+  expect_identical(o$check(FALSE, error_b), c(error_a, error_b))
+  expect_null(o$check(TRUE, error_b))
 })
 
 test_that("Having a msg global variable does not confuse the constructor (3)", {
-  erra <- "some_error_A"
-  errb <- "some_error_B"
+  error_a <- "some_error_A"
+  error_b <- "some_error_B"
 
   o <- Validate()
   msg <- "some msg"
 
   expect_identical(o$msg, character(0))
-  expect_null(o$check(TRUE, erra))
+  expect_null(o$check(TRUE, error_a))
   expect_identical(o$msg, character(0))
 
-  expect_identical(o$check(FALSE, erra), erra)
-  expect_identical(o$msg, erra)
+  expect_identical(o$check(FALSE, error_a), error_a)
+  expect_identical(o$msg, error_a)
 
-  expect_identical(o$check(FALSE, errb), c(erra, errb))
-  expect_null(o$check(TRUE, errb))
+  expect_identical(o$check(FALSE, error_b), c(error_a, error_b))
+  expect_null(o$check(TRUE, error_b))
 })
 
 test_that("Having a msg global variable does not confuse the constructor (4)", {
-  erra <- "some_error_A"
-  errb <- "some_error_B"
+  error_a <- "some_error_A"
+  error_b <- "some_error_B"
 
   o <- Validate()
 
   expect_identical(o$msg, character(0))
-  expect_null(o$check(TRUE, erra))
+  expect_null(o$check(TRUE, error_a))
   expect_identical(o$msg, character(0))
 
-  expect_identical(o$check(FALSE, erra), erra)
-  expect_identical(o$msg, erra)
+  expect_identical(o$check(FALSE, error_a), error_a)
+  expect_identical(o$msg, error_a)
 
   msg <- "some msg"
-  expect_identical(o$check(FALSE, errb), c(erra, errb))
-  expect_null(o$check(TRUE, errb))
+  expect_identical(o$check(FALSE, error_b), c(error_a, error_b))
+  expect_null(o$check(TRUE, error_b))
 })

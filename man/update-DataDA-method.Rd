@@ -17,13 +17,13 @@ i.e. for existing patients in the \code{object} as well as for new patients.}
 This parameter covers all patients, i.e. existing patients in the \code{object}
 as well as for new patients.}
 
-\item{trialtime}{(\code{numeric})\cr current time in the trial, i.e. a followup time.}
+\item{trialtime}{(\code{number})\cr current time in the trial, i.e. a followup time.}
 
 \item{y}{(\code{numeric})\cr the new DLTs for all patients, i.e. for existing
 patients in the \code{object} as well as for new patients.}
 
 \item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.
-These are is used when there are new patients to be added to the cohort.}
+These are used when there are new patients to be added to the cohort.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object
 should be conducted. See help for \code{\link{update-Data-method}} for more details

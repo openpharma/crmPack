@@ -80,9 +80,9 @@ NULL
 #' @details The `cohort` can be missing if and only if `placebo` is equal to
 #'   `FALSE`.
 #'
-#' @note `ID` and `cohort` can be missing, then a warning
-#'   will be issued and the variables will be filled with default
-#'   IDs and best guesses cohort from `\{1, 2, 3, ...\}`.
+#' @note `ID` and `cohort` can be missing. Then a message will be issued
+#'   and the variables will be filled with default IDs and best guesses cohort,
+#'   i.e. a sorted (in ascending order) sequence of values from `\{1, 2, ...\}`.
 #'
 #' @param x (`numeric`)\cr the doses for the patients.
 #' @param y (`integer`)\cr the vector of toxicity events (0 or 1).

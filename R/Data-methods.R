@@ -276,8 +276,7 @@ setMethod(
                         new_cohort = TRUE,
                         check = TRUE,
                         ...) {
-    assert_numeric(x)
-    assert_true(length(x) == 0 || length(x) == 1)
+    assert_numeric(x, min.len = 0, max.len = 1)
     assert_numeric(y, lower = 0, upper = 1)
     assert_numeric(ID, len = length(y))
     assert_disjunct(object@ID, ID)
@@ -301,12 +300,12 @@ setMethod(
     object@ID <- c(object@ID, safeInteger(ID))
 
     # Add cohort number.
-    if (object@nObs == 0) {
-      new_cohort_ID <- 1L
+    new_cohort_id <- if (object@nObs == 0) {
+      1L
     } else {
-      new_cohort_ID <- tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
     }
-    object@cohort <- c(object@cohort, rep(new_cohort_ID, n))
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
 
     # Increment sample size.
     object@nObs <- object@nObs + n
@@ -434,11 +433,11 @@ setMethod(
 #' @param t0 (`numeric`)\cr the time that each patient starts DLT observation window.
 #'   This parameter covers all patients, i.e. existing patients in the `object`
 #'   as well as for new patients.
-#' @param trialtime (`numeric`)\cr current time in the trial, i.e. a followup time.
+#' @param trialtime (`number`)\cr current time in the trial, i.e. a followup time.
 #' @param y (`numeric`)\cr the new DLTs for all patients, i.e. for existing
 #'   patients in the `object` as well as for new patients.
 #' @param ... further arguments passed to `Data` update method [`update-Data-method`].
-#'   These are is used when there are new patients to be added to the cohort.
+#'   These are used when there are new patients to be added to the cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object
 #'   should be conducted. See help for [`update-Data-method`] for more details
 #'   on the use case of this parameter.
@@ -459,13 +458,14 @@ setMethod(
                         y,
                         ...,
                         check = TRUE) {
+    assert_flag(check)
     assert_numeric(y, lower = 0, upper = 1)
     assert_true(length(y) == 0 || length(y) >= object@nObs)
     assert_numeric(u, lower = 0, len = length(y))
     assert_numeric(t0, lower = 0, len = length(y))
-    assert_numeric(trialtime, lower = max(object@t0))
-    assert_true(length(trialtime) == 0L || length(trialtime) == 1L)
-    assert_flag(check)
+    if (length(y) > 0) {
+      assert_number(trialtime, lower = max(c(object@t0, t0)))
+    }
 
     # How many additional patients.
     n <- max(length(y) - object@nObs, 0L)
@@ -478,7 +478,8 @@ setMethod(
       check = FALSE
     )
 
-    # DLT will be observed once the followup time >= the time to DLT.
+    # DLT will be observed once the followup time >= the time to DLT
+    # and y = 1 at the same time.
     object@y <- safeInteger(y * (trialtime >= t0 + u))
 
     # Update DLT free survival time.

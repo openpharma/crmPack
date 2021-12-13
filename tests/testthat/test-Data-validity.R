@@ -55,7 +55,7 @@ test_that("validate_data returns error when only placebo in cohort", {
   )
 })
 
-test_that("validate_data returns error when multiple different doses", {
+test_that("validate_data: error when multiple different doses in a cohort", {
   object <- h_get_data()
 
   # We assign multiple doses to cohort 1.
@@ -109,7 +109,7 @@ test_that("validate_data_parts passes for valid object", {
   expect_true(validate_data_parts(object))
 })
 
-test_that("validate_data_parts returns error for part of wrong length and values", { # nolintr
+test_that("validate_data_parts: error when part of wrong length and values", {
   object <- h_get_data_parts()
 
   # We assign vector part of length different than object@nObs.
@@ -121,7 +121,7 @@ test_that("validate_data_parts returns error for part of wrong length and values
   )
 })
 
-test_that("validate_data_parts returns error for nextPart of wrong length, values and ordering", { # nolintr
+test_that("validate_data_parts: error when nextPart of wrong len/vals/order", {
   object <- h_get_data_parts()
 
   # We assign vector nextPart of length different than 1,
@@ -134,7 +134,7 @@ test_that("validate_data_parts returns error for nextPart of wrong length, value
   )
 })
 
-test_that("validate_data_parts returns error for part1Ladder with not sorted and non-unique values", { # nolintr
+test_that("validate_data_parts: error when part1Ladder unsorted, non-unique", {
   object <- h_get_data_parts()
 
   # We assign vector part1Ladder with not sorted and non-unique values.
@@ -146,7 +146,7 @@ test_that("validate_data_parts returns error for part1Ladder with not sorted and
   )
 })
 
-test_that("validate_data_parts returns error for part1Ladder with wrong values", { # nolintr
+test_that("validate_data_parts: error when part1Ladder has wrong values", {
   object <- h_get_data_parts()
 
   # We assign vector part1Ladder with values not from object@doseGrid.
@@ -165,7 +165,7 @@ test_that("validate_data_mixture passes for valid object", {
   expect_true(validate_data_mixture(object))
 })
 
-test_that("validate_data_mixture returns error for vector xshare of wrong length", { # nolintr
+test_that("validate_data_mixture: error when xshare is of wrong length", {
   object <- h_get_data_mixture()
 
   # We assign vector xshare of length different than object@nObsshare.
@@ -177,7 +177,7 @@ test_that("validate_data_mixture returns error for vector xshare of wrong length
   )
 })
 
-test_that("validate_data_mixture returns error for vector xshare with wrong values", { # nolintr
+test_that("validate_data_mixture: error when xshare has wrong values", {
   object <- h_get_data_mixture()
 
   # We assign vector xshare with values not from object@doseGrid.
@@ -189,7 +189,7 @@ test_that("validate_data_mixture returns error for vector xshare with wrong valu
   )
 })
 
-test_that("validate_data_mixture returns error for vector yshare of wrong length and values", { # nolintr
+test_that("validate_data_mixture: error for yshare of wrong length and vals.", {
   object <- h_get_data_mixture()
 
   # We assign vector yshare of length different than object@nObsshare
@@ -202,7 +202,7 @@ test_that("validate_data_mixture returns error for vector yshare of wrong length
   )
 })
 
-test_that("validate_data_mixture returns error for nObsshare of wrong length", {
+test_that("validate_data_mixture: error for nObsshare of wrong length", {
   object <- h_get_data_mixture()
 
   # We assign nObsshare of length different than 1.
@@ -221,7 +221,7 @@ test_that("validate_data_DA passes for valid object", {
   expect_true(validate_data_DA(object))
 })
 
-test_that("validate_data_DA returns error for Tmax of wrong length and negative values", { # nolintr
+test_that("validate_data_DA: error for Tmax of wrong length, negative values", {
   object <- h_get_data_augmented()
 
   # We assign Tmax of wrong length and negative values.
@@ -233,7 +233,7 @@ test_that("validate_data_DA returns error for Tmax of wrong length and negative 
   )
 })
 
-test_that("validate_data_DA returns error for vector u of wrong length and values", { # nolintr
+test_that("validate_data_DA: error for u of wrong length and values", {
   object <- h_get_data_augmented()
 
   # We assign vector u of length different than object@nObs
@@ -246,7 +246,7 @@ test_that("validate_data_DA returns error for vector u of wrong length and value
   )
 })
 
-test_that("validate_data_DA returns error for vector t0 of wrong length and negative values", { # nolintr
+test_that("validate_data_DA: error for t0 of wrong length, negative values", {
   object <- h_get_data_augmented()
 
   # We assign vector t0 of length different than object@nObs
