@@ -1,3 +1,4 @@
+# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com ],
 ##         Wai Yin Yeung [,w *.* yeung *a*t* lancaster *.* ac *.* uk]
@@ -707,3 +708,4 @@ setMethod("mcmc",
                              options=options)
               return(ret)
             })
+# nolint end
