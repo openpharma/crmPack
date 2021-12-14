@@ -111,15 +111,6 @@ or new observations of responses are available and added in." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -189,8 +180,8 @@ or new observations of responses are available and added in.</p>
 <span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>100</span>,<span class='fl'>100</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
 <span class='r-in'>           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
 <span class='r-in'>           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'><span class='co'>##update the model to get new estimates</span></span>
 <span class='r-in'><span class='va'>newModel</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>model</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
 </pre>

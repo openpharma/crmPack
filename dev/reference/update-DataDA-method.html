@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Update method for the DataDA class — update,DataDA-method • crmPack</title>
+<title>Updating DataDA Objects — update,DataDA-method • crmPack</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Update method for the DataDA class — update,DataDA-method" />
-<meta property="og:description" content="Update observations in the DataDA object" />
+<meta property="og:title" content="Updating DataDA Objects — update,DataDA-method" />
+<meta property="og:description" content="
+A method that updates existing DataDA object with new data." />
 
 
 <meta name="robots" content="noindex">
@@ -105,15 +106,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -135,107 +127,89 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Update method for the <code>DataDA</code> class</h1>
+    <h1>Updating <code>DataDA</code> Objects</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Data-methods.R'><code>R/Data-methods.R</code></a></small>
     <div class="hidden name"><code>update-DataDA-method.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Update observations in the <code><a href='DataDA-class.html'>DataDA</a></code> object</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p>A method that updates existing <code><a href='DataDA-class.html'>DataDA</a></code> object with new data.</p>
     </div>
 
     <pre class="usage"><span class='co'># S4 method for DataDA</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  <span class='va'>factDLTs</span>,
-  <span class='va'>factSurv</span>,
-  <span class='va'>factT0</span>,
-  <span class='va'>thisDose</span>,
-  <span class='va'>trialtime</span>,
-  ID <span class='op'>=</span> <span class='cn'>NULL</span>,
-  new_cohort <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>u</span>, <span class='va'>t0</span>, <span class='va'>trialtime</span>, <span class='va'>y</span>, <span class='va'>...</span>, check <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>the old <code><a href='DataDA-class.html'>DataDA</a></code> object</p></td>
+      <td><p>(<code>DataDA</code>)<br /> object you want to update.</p></td>
     </tr>
     <tr>
-      <th>factDLTs</th>
-      <td><p>the simulated DLT outcome for all patients</p></td>
+      <th>u</th>
+      <td><p>(<code>numeric</code>)<br /> the new DLT free survival times for all patients,
+i.e. for existing patients in the <code>object</code> as well as for new patients.</p></td>
     </tr>
     <tr>
-      <th>factSurv</th>
-      <td><p>the simulated DLT time for all patients</p></td>
-    </tr>
-    <tr>
-      <th>factT0</th>
-      <td><p>the time that patients start DLT observation window</p></td>
-    </tr>
-    <tr>
-      <th>thisDose</th>
-      <td><p>the current dose of the cohort</p></td>
+      <th>t0</th>
+      <td><p>(<code>numeric</code>)<br /> the time that each patient starts DLT observation window.
+This parameter covers all patients, i.e. existing patients in the <code>object</code>
+as well as for new patients.</p></td>
     </tr>
     <tr>
       <th>trialtime</th>
-      <td><p>current time in the trial.</p></td>
+      <td><p>(<code>number</code>)<br /> current time in the trial, i.e. a followup time.</p></td>
     </tr>
     <tr>
-      <th>ID</th>
-      <td><p>the patient IDs</p></td>
-    </tr>
-    <tr>
-      <th>new_cohort</th>
-      <td><p>logical: if TRUE (default) the new data are assigned
-to a new cohort</p></td>
+      <th>y</th>
+      <td><p>(<code>numeric</code>)<br /> the new DLTs for all patients, i.e. for existing
+patients in the <code>object</code> as well as for new patients.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>not used</p></td>
+      <td><p>further arguments passed to <code>Data</code> update method <code><a href='update,Data-method.html'>update-Data-method</a></code>.
+These are used when there are new patients to be added to the cohort.</p></td>
+    </tr>
+    <tr>
+      <th>check</th>
+      <td><p>(<code>flag</code>)<br /> whether the validation of the updated object
+should be conducted. See help for <code><a href='update,Data-method.html'>update-Data-method</a></code> for more details
+on the use case of this parameter.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the new <code><a href='DataDA-class.html'>DataDA</a></code> object</p>
+    <p>The new, updated <code><a href='DataDA-class.html'>DataDA</a></code> object.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>This function is capable of not only adding new patients but also
+updates existing ones with respect to <code>y</code>, <code>t0</code>, <code>u</code> slots.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>thisData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA-class.html'>DataDA</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   doseGrid<span class='op'>=</span></span>
-<span class='r-in'>                     <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
-<span class='r-in'>                       <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   u<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>,<span class='fl'>30</span>,<span class='fl'>15</span>,<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,<span class='fl'>30</span>,<span class='fl'>60</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   t0<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='op'>-</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>30</span>,<span class='op'>-</span><span class='fl'>40</span>,<span class='op'>-</span><span class='fl'>55</span>,<span class='op'>-</span><span class='fl'>70</span>,<span class='op'>-</span><span class='fl'>75</span>,<span class='op'>-</span><span class='fl'>85</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validObject(.Object):</span> invalid class “DataDA” object: t0 must be of type double, nObs length, non-negative</span>
+    <pre class="examples"><span class='r-in'><span class='co'># Create an object of class 'DataDA'.</span></span>
+<span class='r-in'><span class='va'>my_data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDA-class.html'>DataDA</a></span><span class='op'>(</span></span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from <span class='op'>=</span> <span class='fl'>10</span>, to <span class='op'>=</span> <span class='fl'>80</span>, by <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>  u <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>, <span class='fl'>30</span>, <span class='fl'>15</span>, <span class='fl'>5</span>, <span class='fl'>20</span>, <span class='fl'>25</span>, <span class='fl'>30</span>, <span class='fl'>60</span><span class='op'>)</span>,</span>
+<span class='r-in'>  t0 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>15</span>, <span class='fl'>30</span>, <span class='fl'>40</span>, <span class='fl'>55</span>, <span class='fl'>70</span>, <span class='fl'>75</span>, <span class='fl'>85</span><span class='op'>)</span>,</span>
+<span class='r-in'>  Tmax <span class='op'>=</span> <span class='fl'>60</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'>## later update this example with new function call structure</span></span>
-<span class='r-in'><span class='va'>factDLTs</span> <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>y</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos):</span> object 'thisData' not found</span>
-<span class='r-in'><span class='va'>factSurv</span> <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>u</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos):</span> object 'thisData' not found</span>
-<span class='r-in'><span class='va'>factT0</span>   <span class='op'>&lt;-</span> <span class='va'>thisData</span><span class='op'>@</span><span class='va'>t0</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos):</span> object 'thisData' not found</span>
-<span class='r-in'><span class='va'>thisT0</span>   <span class='op'>&lt;-</span> <span class='fl'>5</span></span>
-<span class='r-in'><span class='va'>thisDose</span> <span class='op'>&lt;-</span> <span class='fl'>20</span></span>
-<span class='r-in'><span class='va'>thisDLTs</span> <span class='op'>&lt;-</span> <span class='fl'>0</span></span>
-<span class='r-in'><span class='va'>thisSurv</span> <span class='op'>&lt;-</span> <span class='fl'>20</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>tempData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>object<span class='op'>=</span><span class='va'>thisData</span>,</span>
-<span class='r-in'>                   factDLTs<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factDLTs</span>,<span class='va'>thisDLTs</span><span class='op'>)</span>,  <span class='co'>####the y will be updated according to u</span></span>
-<span class='r-in'>                   factSurv<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factSurv</span>,<span class='va'>thisSurv</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   factT0<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>factT0</span>,<span class='va'>thisT0</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   thisDose<span class='op'>=</span> <span class='va'>thisDose</span>,</span>
-<span class='r-in'>                   trialtime<span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>  <span class='co'>####this is the globle timeline for a trial</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'update': object 'thisData' not found</span>
+<span class='r-in'><span class='co'># Update the data.</span></span>
+<span class='r-in'><span class='va'>my_data1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span></span>
+<span class='r-in'>  object <span class='op'>=</span> <span class='va'>my_data</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>my_data</span><span class='op'>@</span><span class='va'>y</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='co'># The y will be updated according to u.</span></span>
+<span class='r-in'>  u <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>my_data</span><span class='op'>@</span><span class='va'>u</span>, <span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'>  t0 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>my_data</span><span class='op'>@</span><span class='va'>t0</span>, <span class='fl'>95</span><span class='op'>)</span>,</span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fl'>20</span>,</span>
+<span class='r-in'>  trialtime <span class='op'>=</span> <span class='fl'>120</span> <span class='co'># This is the global timeline for a trial.</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

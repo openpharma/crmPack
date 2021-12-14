@@ -114,15 +114,6 @@ of the gain value samples" />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -236,8 +227,8 @@ the gain values obtained given the DLE and the efficacy samples</p></li>
 <span class='r-in'>               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
 <span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,</span>
 <span class='r-in'>               placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'><span class='co'>## DLE model must be from 'ModelTox' class e.g using 'LogisticIndepBeta' model</span></span>
 <span class='r-in'><span class='va'>DLEmodel</span><span class='op'>&lt;-</span><span class='fu'><a href='LogisticIndepBeta.html'>LogisticIndepBeta</a></span><span class='op'>(</span>binDLE<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.05</span>,<span class='fl'>1.8</span><span class='op'>)</span>,DLEweights<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span>,DLEdose<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span><span class='op'>)</span>,data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
 <span class='r-in'></span>
@@ -247,8 +238,8 @@ the gain values obtained given the DLE and the efficacy samples</p></li>
 <span class='r-in'><span class='va'>options</span><span class='op'>&lt;-</span><span class='fu'><a href='McmcOptions.html'>McmcOptions</a></span><span class='op'>(</span>burnin<span class='op'>=</span><span class='fl'>100</span>,step<span class='op'>=</span><span class='fl'>2</span>,samples<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span></span>
 <span class='r-in'><span class='co'>##set up the same data set in class 'Data' for MCMC sampling for DLE</span></span>
 <span class='r-in'><span class='va'>data1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='va'>data</span><span class='op'>@</span><span class='va'>x</span>,y<span class='op'>=</span><span class='va'>data</span><span class='op'>@</span><span class='va'>y</span>,doseGrid<span class='op'>=</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>DLEsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>data1</span>,model<span class='op'>=</span><span class='va'>DLEmodel</span>,options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>Effsamples</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mcmc.html'>mcmc</a></span><span class='op'>(</span>data<span class='op'>=</span><span class='va'>data</span>,model<span class='op'>=</span><span class='va'>Effmodel</span>,options<span class='op'>=</span><span class='va'>options</span><span class='op'>)</span></span>

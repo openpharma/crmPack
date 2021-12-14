@@ -111,15 +111,6 @@ quantiles for the PEM curve. If hazard=TRUE," />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -229,9 +220,9 @@ model class.</p></li>
 <span class='r-in'>               u<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>42</span>,<span class='fl'>30</span>,<span class='fl'>15</span>,<span class='fl'>5</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,<span class='fl'>30</span>,<span class='fl'>60</span><span class='op'>)</span>,</span>
 <span class='r-in'>               t0<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='op'>-</span><span class='fl'>15</span>,<span class='op'>-</span><span class='fl'>30</span>,<span class='op'>-</span><span class='fl'>40</span>,<span class='op'>-</span><span class='fl'>55</span>,<span class='op'>-</span><span class='fl'>70</span>,<span class='op'>-</span><span class='fl'>75</span>,<span class='op'>-</span><span class='fl'>85</span><span class='op'>)</span>,</span>
 <span class='r-in'>               Tmax<span class='op'>=</span><span class='fl'>60</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validObject(.Object):</span> invalid class “DataDA” object: t0 must be of type double, nObs length, non-negative</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in validObject(.Object):</span> invalid class “DataDA” object: t0 must be of type double, nObs length, sorted non-negative</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>npiece_</span> <span class='op'>&lt;-</span> <span class='fl'>10</span></span>

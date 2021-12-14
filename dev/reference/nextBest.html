@@ -105,15 +105,6 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -287,7 +278,7 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>             doseGrid<span class='op'>=</span></span>
 <span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
 <span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
@@ -329,7 +320,7 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>             doseGrid<span class='op'>=</span></span>
 <span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
 <span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
@@ -417,8 +408,8 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>                    part<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1L</span>,<span class='fl'>1L</span><span class='op'>)</span>,</span>
 <span class='r-in'>                    nextPart<span class='op'>=</span><span class='fl'>1L</span>,</span>
 <span class='r-in'>                    part1Ladder<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>,<span class='fl'>0.5</span>,<span class='fl'>1.5</span>,<span class='fl'>3</span>,<span class='fl'>6</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the CRM model used to model the data</span></span>
 <span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
@@ -460,7 +451,7 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>             doseGrid<span class='op'>=</span></span>
 <span class='r-in'>               <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>5</span>,</span>
 <span class='r-in'>                 <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
 <span class='r-in'></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># The rule to select the next best dose will be based on the 3+3 method</span></span>
@@ -481,8 +472,8 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>      <span class='fl'>0.52</span>, <span class='fl'>0.54</span>, <span class='fl'>0.56</span>, <span class='fl'>0.43</span>, <span class='fl'>0.41</span>, <span class='fl'>0.39</span>, <span class='fl'>0.34</span>, <span class='fl'>0.38</span>, <span class='fl'>0.21</span><span class='op'>)</span>,</span>
 <span class='r-in'>  doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>1.5</span>, <span class='fl'>3</span>, <span class='fl'>6</span>,</span>
 <span class='r-in'>             <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>10</span>, to<span class='op'>=</span><span class='fl'>80</span>, by<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Initialize the Dual-Endpoint model (in this case RW1)</span></span>
 <span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DualEndpointRW.html'>DualEndpointRW</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
@@ -534,8 +525,8 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>150</span>,<span class='fl'>200</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
 <span class='r-in'>           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
 <span class='r-in'>           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'><span class='co'>##The 'nextBest' method using NextBestTDsamples' rules class object</span></span>
 <span class='r-in'><span class='co'>## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples</span></span>
 <span class='r-in'><span class='co'>## model must be of 'LogisticIndepBeta' class</span></span>
@@ -560,8 +551,8 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>150</span>,<span class='fl'>200</span>,<span class='fl'>225</span>,<span class='fl'>300</span><span class='op'>)</span>,</span>
 <span class='r-in'>           y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span>,</span>
 <span class='r-in'>           doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span>from<span class='op'>=</span><span class='fl'>25</span>,to<span class='op'>=</span><span class='fl'>300</span>,by<span class='op'>=</span><span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'><span class='co'>##The 'nextBest' method using NextBestTD' rules class object</span></span>
 <span class='r-in'><span class='co'>## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples</span></span>
 <span class='r-in'><span class='co'>## model must be of 'LogisticIndepBeta' class</span></span>
@@ -580,8 +571,8 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
 <span class='r-in'>               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
 <span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>##The 'nextBest' method using NextBestMaxGain' rules class object</span></span>
 <span class='r-in'><span class='co'>## using the 'ModelTox' class DLE model </span></span>
@@ -603,8 +594,8 @@ efficacy samples. Effmodel must be of class <code><a href='Effloglog-class.html'
 <span class='r-in'>                y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
 <span class='r-in'>                w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
 <span class='r-in'>                doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span>,placebo<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used default patient IDs!</span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Used best guess cohort indices!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
 <span class='r-in'><span class='co'>##The 'nextBest' method using NextBestMaxGainSamples' rules class object</span></span>
 <span class='r-in'><span class='co'>## using the 'ModelTox' class DLE model </span></span>
 <span class='r-in'><span class='co'>## DLEmodel e.g 'LogisticIndepBeta' class</span></span>
