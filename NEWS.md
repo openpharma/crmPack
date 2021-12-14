@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Renamed elements in the list object returned by `get_efficacy` function.
+* Renamed `getEff` function to `get_efficacy`.
 * A vector under `t0` slot in `DataDA` class must be sorted in ascending order.
 * Replaced warning with message when no `cohort` or `ID` is provided to the user
   constructor `Data`.

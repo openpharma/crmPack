@@ -603,9 +603,9 @@ setMethod("mcmc",
               if (length(data@w)==0){
                 w1<-thismodel@Eff
                 x1<-thismodel@Effdose} else {
-                  ## Combine pseudo data with observed efficacy responses and no DLE observed
-                  w1<-c(thismodel@Eff,getEff(data)$wNoDLE)
-                  x1<-c(thismodel@Effdose,getEff(data)$xNoDLE)
+                  ## Combine pseudo data with observed efficacy responses and no DLT observed
+                  w1<-c(thismodel@Eff, get_efficacy(data)$w_no_DLT)
+                  x1<-c(thismodel@Effdose, get_efficacy(data)$x_no_DLT)
                 }
               x1Level <- matchTolerance(x1,data@doseGrid)
               ##betaW is constant, the average of the efficacy values

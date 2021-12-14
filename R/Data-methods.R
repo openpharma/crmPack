@@ -496,54 +496,55 @@ setMethod(
   }
 )
 
-## -----------------------------------------------------------------------------------------
-## Extracting efficacy responses for subjects without DLE observed
-## ---------------------------------------------------------------------------------
+# get_efficacy ----
 
-##' Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-##' efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
-##' dose levels treated at in two categories (with or without DLE)
-##'
-##' @param object for data input from \code{\linkS4class{DataDual}} object
-##' @param \dots unused
-##'
-##' @export
-##' @keywords methods
-setGeneric("getEff",
+#' Extracting efficacy responses for subjects categorized by the DLT
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that extracts efficacy responses for subjects and categorizes it
+#' with respect to DLT, i.e. DLT or no DLT. The efficacy responses
+#' are reported together with their corresponding dose levels.
+#'
+#' @param object (`DataDual`)\cr object from which the responses and dose levels
+#'   are extracted.
+#' @param ... not used.
+#' @return `list` with efficacy responses categorized by the DLT value.
+#' @export
+#'
+setGeneric(
+  name = "get_efficacy",
   def = function(object, ...) {
-    standardGeneric("getEff")
+    standardGeneric("get_efficacy")
   },
   valueClass = "list"
 )
 
-##' @rdname getEff
-##' @param x first
-##' @param y second
-##' @param w third
-##' @example examples/Data-method-getEff.R
-setMethod("getEff",
-  signature =
-    signature(object = "DataDual"),
-  def =
-    function(object,
-             x,
-             y,
-             w, ...) {
-      if (length(which(object@y == 1)) == 0) {
-        wNoDLE <- object@w
-        wDLE <- NULL
-        xNoDLE <- object@x
-        xDLE <- NULL
-      } else { ## with observed efficacy response and DLE observed
-        IndexDLE <- which(object@y == 1)
-        ## Take efficacy responses with no DLE observed
-        wNoDLE <- object@w[-IndexDLE]
-        wDLE <- object@w[IndexDLE]
-        ## Take the corresponding dose levels
-        xNoDLE <- object@x[-IndexDLE]
-        xDLE <- object@x[IndexDLE]
-      }
-      ret <- list(wDLE = wDLE, xDLE = xDLE, wNoDLE = wNoDLE, xNoDLE = xNoDLE)
-      return(ret)
+# DataDual-get_efficacy ----
+
+#' @rdname get_efficacy
+#' @aliases get_efficacy-DataDual-method
+#' @example examples/Data-method-get_efficacy.R
+#'
+setMethod(
+  f = "get_efficacy",
+  signature = signature(object = "DataDual"),
+  definition = function(object, ...) {
+    x_DLT <- NULL
+    w_DLT <- NULL
+    x_no_DLT <- NULL
+    w_no_DLT <- NULL
+
+    is_DLT <- object@y == 1
+    if (any(is_DLT)) {
+      x_DLT <- object@x[is_DLT]
+      w_DLT <- object@w[is_DLT]
     }
+    if (any(!is_DLT)) {
+      x_no_DLT <- object@x[!is_DLT]
+      w_no_DLT <- object@w[!is_DLT]
+    }
+
+    list(x_DLT = x_DLT, w_DLT = w_DLT, x_no_DLT = x_no_DLT, w_no_DLT = w_no_DLT)
+  }
 )
