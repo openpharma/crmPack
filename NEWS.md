@@ -1,4 +1,8 @@
 # Version 1.0.9000
+* A vector under `t0` slot in `DataDA` class must be sorted in ascending order.
+* Replaced warning with message when no `cohort` or `ID` is provided to the user
+  constructor `Data`.
+* Renamed arguments in `update-DataDA-method` method.
 * Updated the `update` method for Data-like classes: renamed `newCohort`
   argument to `new_cohort`,
   introduced validation of the updated object,

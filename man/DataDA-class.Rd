@@ -18,6 +18,7 @@ DataDA(
 \item{u}{(\code{numeric})\cr the continuous vector of DLT free survival times.}
 
 \item{t0}{(\code{numeric})\cr time of initial dosing for each patient.
+Non-negative values sorted in ascending order.
 Default to vector of 0s of length equal to length of \code{u}.}
 
 \item{Tmax}{(\code{number})\cr the DLT observation period.}
@@ -35,7 +36,8 @@ It inherits from \code{\link{Data}} and it contains additional DLT free survival
 \describe{
 \item{\code{u}}{(\code{numeric})\cr the continuous vector of DLT free survival times.}
 
-\item{\code{t0}}{(\code{numeric})\cr time of initial dosing for each patient.}
+\item{\code{t0}}{(\code{numeric})\cr time of initial dosing for each patient.
+Non-negative values sorted in ascending order.}
 
 \item{\code{Tmax}}{(\code{number})\cr the DLT observation period.}
 }}

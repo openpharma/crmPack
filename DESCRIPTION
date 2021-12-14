@@ -46,6 +46,7 @@ Suggests:
     RcppArmadillo
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Encoding: UTF-8
 VignetteBuilder: 
     knitr
 Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 

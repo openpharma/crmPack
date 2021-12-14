@@ -23,12 +23,17 @@
 ##'
 ##' @param x the values to be matched
 ##' @param table the values to be matched against
-##' @return A vector of the same length as \code{x}
+##' @return A vector of the same length as \code{x} or
+##'  empty vector if \code{table} is empty.
 ##'
 ##' @export
 ##' @keywords programming
 ##' @example examples/matching-tolerance.R
 matchTolerance <- function(x, table) {
+  if(length(table) == 0) {
+    return(integer())
+  }
+
   as.integer(sapply(x, function(.x) {
     which(sapply(table, function(.table) {
       isTRUE(all.equal(.x, .table,

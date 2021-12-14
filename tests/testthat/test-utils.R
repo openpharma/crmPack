@@ -5,7 +5,7 @@ df <- data.frame(
   cohort = c("B", "B", "B", "A", "A", "A", "B", "B")
 )
 
-test_that("dapply returns valid object for sample data for max dose function", {
+test_that("dapply returns valid object for sample data for max dose fun", {
   result <- dapply(
     df,
     f = ~cohort,
@@ -18,7 +18,7 @@ test_that("dapply returns valid object for sample data for max dose function", {
   expect_identical(result, expected)
 })
 
-test_that("dapply returns valid objects for sample data for sort dose function", {
+test_that("dapply returns valid objects for sample data for sort dose fun", {
   result <- dapply(
     df,
     f = ~cohort,

@@ -1424,10 +1424,10 @@ setMethod("examine",
 
 
                     baseData <- update(object=baseData,
-                                       factDLTs= factDLTs,  ####the x will be constantly updated according to u
-                                       factSurv=factSurv,
-                                       factT0=factT0,
-                                       thisDose=thisDose,
+                                       y= factDLTs,  ####the x will be constantly updated according to u
+                                       u=factSurv,
+                                       t0=factT0,
+                                       x=thisDose,
                                        trialtime=trialtime)  ####the u will be constantly updated
 
 
@@ -1492,10 +1492,10 @@ setMethod("examine",
 
 
                         thisData <- update(object=baseData,
-                                           factDLTs= thisDLTs,  ####the y will be updated according to u
-                                           factSurv=thisSurv,
-                                           factT0=factT0,
-                                           thisDose=thisDose,
+                                           y= thisDLTs,  ####the y will be updated according to u
+                                           u=thisSurv,
+                                           t0=factT0,
+                                           x=thisDose,
                                            trialtime=trialtime)  ####the u will be updated
 
                       }else {
@@ -1512,10 +1512,10 @@ setMethod("examine",
                         }
 
                         thisData <- update(object=baseData,
-                                           factDLTs= thisDLTs,  ####the y will be updated according to u
-                                           factSurv=thisSurv,
-                                           factT0=factT0,
-                                           thisDose=thisDose,
+                                           y= thisDLTs,  ####the y will be updated according to u
+                                           u=thisSurv,
+                                           t0=factT0,
+                                           x=thisDose,
                                            trialtime=thistime)  ####the u will be updated
 
                       }
@@ -3882,10 +3882,10 @@ setMethod("simulate",
 
                     #need to update the DataDA object
                     tempData <- update(object=thisData,
-                                       factDLTs= c(factDLTs,thisDLTs),  ####the y will be updated according to u
-                                       factSurv= c(factSurv,thisSurv),
-                                       factT0= c(factT0,thisT0),
-                                       thisDose= thisDose,
+                                       y= c(factDLTs,thisDLTs),  ####the y will be updated according to u
+                                       u= c(factSurv,thisSurv),
+                                       t0= c(factT0,thisT0),
+                                       x= thisDose,
                                        trialtime= trialtime+thisSafetywindow$patientGap[2])  ####the u will be updated over time
 
                     temptime<-(tempData@u+tempData@t0)[tempData@y==1 & tempData@x<=thisDose]
@@ -4046,10 +4046,10 @@ setMethod("simulate",
 
 
                     thisData <- update(object=thisData,
-                                       factDLTs= factDLTs,  ####the y will be updated according to u
-                                       factSurv=factSurv,
-                                       factT0=factT0,
-                                       thisDose=thisDose,
+                                       y= factDLTs,  ####the y will be updated according to u
+                                       u=factSurv,
+                                       t0=factT0,
+                                       x=thisDose,
                                        trialtime=trialtime)  ####the u will be updated over time
 
                     try(if(length(thisData@x)!=length(thisData@u) || length(thisData@u)!=length(thisData@y))

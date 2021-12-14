@@ -16,7 +16,7 @@
 \describe{
 \item{\code{ID}}{(\code{integer})\cr unique patient IDs.}
 
-\item{\code{cohort}}{(\code{integer})\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).}
+\item{\code{cohort}}{(\code{integer})\cr the cohort (non-negative sorted) indices.}
 
 \item{\code{nObs}}{(\code{integer})\cr number of observations, a single value.}
 }}

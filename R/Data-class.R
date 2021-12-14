@@ -10,7 +10,7 @@ NULL
 #' [`GeneralData`] is a class for general data input.
 #'
 #' @slot ID (`integer`)\cr unique patient IDs.
-#' @slot cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
+#' @slot cohort (`integer`)\cr the cohort (non-negative sorted) indices.
 #' @slot nObs (`integer`)\cr number of observations, a single value.
 #'
 #' @aliases GeneralData
@@ -80,9 +80,9 @@ NULL
 #' @details The `cohort` can be missing if and only if `placebo` is equal to
 #'   `FALSE`.
 #'
-#' @note `ID` and `cohort` can be missing, then a warning
-#'   will be issued and the variables will be filled with default
-#'   IDs and best guesses, respectively.
+#' @note `ID` and `cohort` can be missing. Then a message will be issued
+#'   and the variables will be filled with default IDs and best guesses cohort,
+#'   i.e. a sorted (in ascending order) sequence of values from `\{1, 2, ...\}`.
 #'
 #' @param x (`numeric`)\cr the doses for the patients.
 #' @param y (`integer`)\cr the vector of toxicity events (0 or 1).
@@ -91,7 +91,7 @@ NULL
 #' @param ID (`integer`)\cr unique patient IDs.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
-#' @param cohort (`integer`)\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
+#' @param cohort (`integer`)\cr the cohort (non-negative sorted) indices.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
 #' @param doseGrid (`numeric`)\cr all possible doses.
@@ -118,12 +118,12 @@ Data <- function(x = numeric(),
   doseGrid <- as.numeric(sort(doseGrid))
 
   if (length(ID) == 0 && length(x) > 0) {
-    warning("Used default patient IDs!")
+    message("Used default patient IDs!")
     ID <- seq_along(x)
   }
 
   if (!placebo && length(cohort) == 0 && length(x) > 0) {
-    warning("Used best guess cohort indices!")
+    message("Used best guess cohort indices!")
     # This is just assuming that consecutive patients
     # in the data set are in the same cohort if they
     # have the same dose. Note that this could be wrong,
@@ -305,10 +305,11 @@ DataMixture <- function(xshare = numeric(),
 #' It inherits from [`Data`] and it contains additional DLT free survival times.
 #'
 #' @note `survival time` here refers to the time period for which the subject
-#' did not experience any DLT, and is not referring to deaths.
+#'   did not experience any DLT, and is not referring to deaths.
 #'
 #' @slot u (`numeric`)\cr the continuous vector of DLT free survival times.
 #' @slot t0 (`numeric`)\cr time of initial dosing for each patient.
+#'   Non-negative values sorted in ascending order.
 #' @slot Tmax (`number`)\cr the DLT observation period.
 #'
 #' @aliases DataDA
@@ -335,6 +336,7 @@ DataMixture <- function(xshare = numeric(),
 #'
 #' @param u (`numeric`)\cr the continuous vector of DLT free survival times.
 #' @param t0 (`numeric`)\cr time of initial dosing for each patient.
+#'   Non-negative values sorted in ascending order.
 #'   Default to vector of 0s of length equal to length of `u`.
 #' @param Tmax (`number`)\cr the DLT observation period.
 #' @param ... parameters passed to [Data()].

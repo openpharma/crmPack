@@ -19,7 +19,7 @@ test_that("Data object can be created with user constructor Data", {
   expect_valid(result, "Data")
 })
 
-test_that("Data object can be created with custom values with Data constructor", {
+test_that("Data object can be created with custom values", {
   plcb <- 0.01
   result <- expect_silent(Data(
     x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
@@ -34,7 +34,7 @@ test_that("Data object can be created with custom values with Data constructor",
 
 test_that("Data constructor handles default IDs as expected", {
   plcb <- 0.05
-  expect_warning(
+  expect_message(
     result <-
       Data(
         x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
@@ -50,7 +50,7 @@ test_that("Data constructor handles default IDs as expected", {
 
 test_that("Data constructor works as expected without cohort and no placebo", {
   plcb <- 0.001
-  expect_warning(
+  expect_message(
     result <-
       Data(
         x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
@@ -78,7 +78,7 @@ test_that("DataDual object can be created with user constructor DataDual", {
   expect_valid(result, "DataDual")
 })
 
-test_that("DataDual object can be created with custom values with DataDual constructor", {
+test_that("DataDual object can be created with custom values", {
   plcb <- 0.01
   result <- expect_silent(
     DataDual(
@@ -108,7 +108,7 @@ test_that("DataParts object can be created with user constructor DataParts", {
   expect_valid(result, "DataParts")
 })
 
-test_that("DataParts object can be created with custom values with DataParts constructor", {
+test_that("DataParts object can be created with custom values", {
   result <- expect_silent(
     DataParts(
       part = c(1L, 1L, 1L),
@@ -133,12 +133,12 @@ test_that(".DataMixture works as expected", {
 
 # DataMixture-constructor ----
 
-test_that("DataMixture object can be created with user constructor DataMixture", {
+test_that("DataMixture object can be created with user constructor", {
   result <- expect_silent(DataMixture())
   expect_valid(result, "DataMixture")
 })
 
-test_that("DataMixture object can be created with custom values with DataMixture constructor", {
+test_that("DataMixture object can be created with custom values", {
   result <- expect_silent(
     DataMixture(
       xshare = c(12, 14, 16, 18.0),
@@ -168,7 +168,7 @@ test_that("DataDA object can be created with user constructor DataDA", {
   expect_valid(result, "DataDA")
 })
 
-test_that("DataDA object can be created with custom values with DataDA constructor", {
+test_that("DataDA object can be created with custom values", {
   result <- expect_silent(
     DataDA(
       u = c(42, 30, 15),

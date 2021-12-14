@@ -15,7 +15,8 @@ x \%~\% table
 \item{table}{the values to be matched against}
 }
 \value{
-A vector of the same length as \code{x}
+A vector of the same length as \code{x} or
+empty vector if \code{table} is empty.
 }
 \description{
 This is a modified version of \code{match} that supports tolerance.

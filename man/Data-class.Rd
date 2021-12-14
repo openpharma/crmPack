@@ -28,7 +28,7 @@ You can also supply \code{numeric} vectors, but these will then be converted to
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
 
-\item{cohort}{(\code{integer})\cr the cohort indices (sorted values from \{0, 1, 2, ...\}).
+\item{cohort}{(\code{integer})\cr the cohort (non-negative sorted) indices.
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
 
@@ -69,9 +69,9 @@ in the \code{doseGrid}is considered as PLACEBO.}
 }}
 
 \note{
-\code{ID} and \code{cohort} can be missing, then a warning
-will be issued and the variables will be filled with default
-IDs and best guesses, respectively.
+\code{ID} and \code{cohort} can be missing. Then a message will be issued
+and the variables will be filled with default IDs and best guesses cohort,
+i.e. a sorted (in ascending order) sequence of values from \verb{\\\{1, 2, ...\\\}}.
 }
 \examples{
 my_data <- Data(

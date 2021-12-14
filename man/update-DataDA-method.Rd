@@ -2,71 +2,63 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataDA-method}
 \alias{update,DataDA-method}
-\title{Update method for the \code{DataDA} class}
+\alias{update-DataDA-method}
+\title{Updating \code{DataDA} Objects}
 \usage{
-\S4method{update}{DataDA}(
-  object,
-  factDLTs,
-  factSurv,
-  factT0,
-  thisDose,
-  trialtime,
-  ID = NULL,
-  new_cohort = TRUE,
-  ...
-)
+\S4method{update}{DataDA}(object, u, t0, trialtime, y, ..., check = TRUE)
 }
 \arguments{
-\item{object}{the old \code{\linkS4class{DataDA}} object}
+\item{object}{(\code{DataDA})\cr object you want to update.}
 
-\item{factDLTs}{the simulated DLT outcome for all patients}
+\item{u}{(\code{numeric})\cr the new DLT free survival times for all patients,
+i.e. for existing patients in the \code{object} as well as for new patients.}
 
-\item{factSurv}{the simulated DLT time for all patients}
+\item{t0}{(\code{numeric})\cr the time that each patient starts DLT observation window.
+This parameter covers all patients, i.e. existing patients in the \code{object}
+as well as for new patients.}
 
-\item{factT0}{the time that patients start DLT observation window}
+\item{trialtime}{(\code{number})\cr current time in the trial, i.e. a followup time.}
 
-\item{thisDose}{the current dose of the cohort}
+\item{y}{(\code{numeric})\cr the new DLTs for all patients, i.e. for existing
+patients in the \code{object} as well as for new patients.}
 
-\item{trialtime}{current time in the trial.}
+\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.
+These are used when there are new patients to be added to the cohort.}
 
-\item{ID}{the patient IDs}
-
-\item{new_cohort}{logical: if TRUE (default) the new data are assigned
-to a new cohort}
-
-\item{\dots}{not used}
+\item{check}{(\code{flag})\cr whether the validation of the updated object
+should be conducted. See help for \code{\link{update-Data-method}} for more details
+on the use case of this parameter.}
 }
 \value{
-the new \code{\linkS4class{DataDA}} object
+The new, updated \code{\link{DataDA}} object.
 }
 \description{
-Update observations in the \code{\linkS4class{DataDA}} object
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that updates existing \code{\link{DataDA}} object with new data.
+}
+\note{
+This function is capable of not only adding new patients but also
+updates existing ones with respect to \code{y}, \code{t0}, \code{u} slots.
 }
 \examples{
-thisData <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-                   y=c(0, 0, 1, 1, 0, 0, 1, 0),
-                   doseGrid=
-                     c(0.1, 0.5, 1.5, 3, 6,
-                       seq(from=10, to=80, by=2)),
-                   u=c(42,30,15,5,20,25,30,60),
-                   t0=c(0,-15,-30,-40,-55,-70,-75,-85),
-                   Tmax=60)
+# Create an object of class 'DataDA'.
+my_data <- DataDA(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 1, 1, 0, 0, 1, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  u = c(42, 30, 15, 5, 20, 25, 30, 60),
+  t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+  Tmax = 60
+)
 
-
-## later update this example with new function call structure
-factDLTs <- thisData@y
-factSurv <- thisData@u
-factT0   <- thisData@t0
-thisT0   <- 5
-thisDose <- 20
-thisDLTs <- 0
-thisSurv <- 20
-
-tempData <- update(object=thisData,
-                   factDLTs= c(factDLTs,thisDLTs),  ####the y will be updated according to u
-                   factSurv= c(factSurv,thisSurv),
-                   factT0= c(factT0,thisT0),
-                   thisDose= thisDose,
-                   trialtime= 8)  ####this is the globle timeline for a trial
+# Update the data.
+my_data1 <- update(
+  object = my_data,
+  y = c(my_data@y, 0), # The y will be updated according to u.
+  u = c(my_data@u, 20),
+  t0 = c(my_data@t0, 95),
+  x = 20,
+  trialtime = 120 # This is the global timeline for a trial.
+)
 }
-\keyword{methods}

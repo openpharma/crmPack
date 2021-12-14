@@ -83,7 +83,23 @@ test_that("Update of Data works as expected", {
   object@cohort <- c(object@cohort, 4L, 4L, 4L)
 
   expect_valid(result, "Data")
-  expect_equal(result, object)
+  expect_identical(result, object)
+})
+
+test_that("Update of empty Data works as expected", {
+  object <- Data(
+    x = c(25, 25), y = c(0L, 1L), doseGrid = 25, ID = 1:2, cohort = c(1L, 1L)
+  )
+  result <- update(Data(doseGrid = 25), x = 25, y = c(0L, 1L))
+
+  expect_valid(result, "Data")
+  expect_identical(result, object)
+})
+
+test_that("Update of Data works for 'empty' update", {
+  object <- h_get_data()
+  result <- update(object, x = numeric(0), y = integer(0))
+  expect_identical(result, object)
 })
 
 test_that("Update of Data works when doses are added to the old cohort", {
@@ -98,7 +114,7 @@ test_that("Update of Data works when doses are added to the old cohort", {
   object@cohort <- c(object@cohort, 3L, 3L, 3L)
 
   expect_valid(result, "Data")
-  expect_equal(result, object)
+  expect_identical(result, object)
 })
 
 test_that("Update of Data throws the error for a dose x out of the grid", {
@@ -135,7 +151,7 @@ test_that("Update of DataParts works as expected", {
   object@nextPart <- 2L
 
   expect_valid(result, "DataParts")
-  expect_equal(result, object)
+  expect_identical(result, object)
 })
 
 test_that("Update of DataParts works as expected", {
@@ -153,7 +169,7 @@ test_that("Update of DataParts works as expected", {
   object@nextPart <- 2L
 
   expect_valid(result, "DataParts")
-  expect_equal(result, object)
+  expect_identical(result, object)
 })
 
 test_that("Update of DataParts works, no DLT and x eq max of part1Ladder", {
@@ -173,7 +189,7 @@ test_that("Update of DataParts works, no DLT and x eq max of part1Ladder", {
   object@nextPart <- 2L
 
   expect_valid(result, "DataParts")
-  expect_equal(result, object)
+  expect_identical(result, object)
 })
 
 
@@ -192,5 +208,75 @@ test_that("Update of DataDual works as expected", {
   object@cohort <- c(object@cohort, 4L, 4L)
 
   expect_valid(result, "DataDual")
-  expect_equal(result, object)
+  expect_identical(result, object)
+})
+
+# update-DataDA ----
+
+test_that("Update of DataDA works as expected", {
+  object <- h_get_data_augmented()
+  result <- update(
+    object = object,
+    y = c(object@y, 0),
+    u = c(object@u, 20),
+    t0 = c(object@t0, 135),
+    x = 25,
+    trialtime = 140
+  )
+
+  object@x <- c(object@x, 25)
+  object@y <- rep(0L, 13)
+  object@nObs <- object@nObs + 1L
+  object@ID <- c(object@ID, 13L)
+  object@xLevel <- c(object@xLevel, 2L)
+  object@cohort <- c(object@cohort, 4L)
+  object@t0 <- c(object@t0, 135)
+  object@u <- c(42, 30, 15, 5, 20, 25, 30, 55, 25, 30, 20, 15, 5)
+
+  expect_valid(result, "DataDA")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataDA works for empty update of empty object", {
+  object <- DataDA()
+  result <- update(
+    object = object,
+    y = integer(0),
+    u = numeric(0),
+    t0 = numeric(0),
+    x = numeric(0),
+    trialtime = numeric(0)
+  )
+  expect_valid(result, "DataDA")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataDA works when no update of non-empty object", {
+  object <- h_get_data_augmented()
+  result <- update(
+    object = object,
+    y = object@y,
+    u = object@u,
+    t0 = object@t0,
+    x = numeric(0),
+    trialtime = 500
+  )
+
+  expect_valid(result, "DataDA")
+  expect_identical(result, object)
+})
+
+test_that("Update of DataDA throws the error for empty trialtime", {
+  object <- h_get_data_augmented()
+  expect_error(
+    update(
+      object = object,
+      y = c(object@y, 0),
+      u = c(object@u, 20),
+      t0 = c(object@t0, 135),
+      x = 25,
+      trialtime = numeric(0)
+    ),
+    "Assertion on 'trialtime' failed: Must have length 1."
+  )
 })

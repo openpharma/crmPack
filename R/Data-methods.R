@@ -276,24 +276,22 @@ setMethod(
                         new_cohort = TRUE,
                         check = TRUE,
                         ...) {
-    assert_number(x)
-    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(x, min.len = 0, max.len = 1)
+    assert_numeric(y, lower = 0, upper = 1)
     assert_numeric(ID, len = length(y))
     assert_disjunct(object@ID, ID)
     assert_flag(new_cohort)
     assert_flag(check)
 
-    y_len <- length(y)
+    # How many additional patients, ie. the length of the update.
+    n <- length(y)
 
     # Which grid level is the dose?
     gridLevel <- matchTolerance(x, object@doseGrid)
-    object@xLevel <- c(object@xLevel, rep(gridLevel, y_len))
-
-    # Increment sample size.
-    object@nObs <- object@nObs + y_len
+    object@xLevel <- c(object@xLevel, rep(gridLevel, n))
 
     # Add dose.
-    object@x <- c(object@x, rep(as.numeric(x), y_len))
+    object@x <- c(object@x, rep(as.numeric(x), n))
 
     # Add DLT data.
     object@y <- c(object@y, safeInteger(y))
@@ -302,11 +300,15 @@ setMethod(
     object@ID <- c(object@ID, safeInteger(ID))
 
     # Add cohort number.
-    last_cohort <- max(tail(object@cohort, 1L), 0L)
-    object@cohort <- c(
-      object@cohort,
-      rep(last_cohort, y_len) + ifelse(new_cohort, 1L, 0L)
-    )
+    new_cohort_id <- if (object@nObs == 0) {
+      1L
+    } else {
+      tail(object@cohort, 1L) + ifelse(new_cohort, 1L, 0L)
+    }
+    object@cohort <- c(object@cohort, rep(new_cohort_id, n))
+
+    # Increment sample size.
+    object@nObs <- object@nObs + n
 
     if (check) {
       validObject(object)
@@ -341,8 +343,7 @@ setMethod(
   f = "update",
   signature = signature(object = "DataParts"),
   definition = function(object, x, y, ..., check = TRUE) {
-    assert_number(x)
-    assert_numeric(y, lower = 0, upper = 1, min.len = 1)
+    assert_numeric(y)
     assert_flag(check)
 
     # Update slots corresponding to `Data` class.
@@ -415,6 +416,86 @@ setMethod(
   }
 )
 
+# DataDA-update ----
+
+#' Updating `DataDA` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`DataDA`] object with new data.
+#'
+#' @note This function is capable of not only adding new patients but also
+#'   updates existing ones with respect to `y`, `t0`, `u` slots.
+#'
+#' @param object (`DataDA`)\cr object you want to update.
+#' @param u (`numeric`)\cr the new DLT free survival times for all patients,
+#'   i.e. for existing patients in the `object` as well as for new patients.
+#' @param t0 (`numeric`)\cr the time that each patient starts DLT observation window.
+#'   This parameter covers all patients, i.e. existing patients in the `object`
+#'   as well as for new patients.
+#' @param trialtime (`number`)\cr current time in the trial, i.e. a followup time.
+#' @param y (`numeric`)\cr the new DLTs for all patients, i.e. for existing
+#'   patients in the `object` as well as for new patients.
+#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#'   These are used when there are new patients to be added to the cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object
+#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   on the use case of this parameter.
+#'
+#' @return The new, updated [`DataDA`] object.
+#'
+#' @aliases update-DataDA-method
+#' @example examples/Data-method-update-DataDA.R
+#' @export
+#'
+setMethod(
+  f = "update",
+  signature = signature(object = "DataDA"),
+  definition = function(object,
+                        u,
+                        t0,
+                        trialtime,
+                        y,
+                        ...,
+                        check = TRUE) {
+    assert_flag(check)
+    assert_numeric(y, lower = 0, upper = 1)
+    assert_true(length(y) == 0 || length(y) >= object@nObs)
+    assert_numeric(u, lower = 0, len = length(y))
+    assert_numeric(t0, lower = 0, len = length(y))
+    if (length(y) > 0) {
+      assert_number(trialtime, lower = max(c(object@t0, t0)))
+    }
+
+    # How many additional patients.
+    n <- max(length(y) - object@nObs, 0L)
+
+    # Update slots corresponding to `Data` class.
+    object <- callNextMethod(
+      object = object,
+      y = y[object@nObs + seq_len(n)], # Empty vector when n = 0.
+      ...,
+      check = FALSE
+    )
+
+    # DLT will be observed once the followup time >= the time to DLT
+    # and y = 1 at the same time.
+    object@y <- safeInteger(y * (trialtime >= t0 + u))
+
+    # Update DLT free survival time.
+    object@u <- apply(rbind(u, trialtime - t0), 2, min)
+
+    # Update t0.
+    object@t0 <- t0
+
+    if (check) {
+      validObject(object)
+    }
+
+    object
+  }
+)
+
 ## -----------------------------------------------------------------------------------------
 ## Extracting efficacy responses for subjects without DLE observed
 ## ---------------------------------------------------------------------------------
@@ -429,9 +510,11 @@ setMethod(
 ##' @export
 ##' @keywords methods
 setGeneric("getEff",
-           def=function(object,...){
-             standardGeneric("getEff")},
-           valueClass="list")
+  def = function(object, ...) {
+    standardGeneric("getEff")
+  },
+  valueClass = "list"
+)
 
 ##' @rdname getEff
 ##' @param x first
@@ -439,138 +522,28 @@ setGeneric("getEff",
 ##' @param w third
 ##' @example examples/Data-method-getEff.R
 setMethod("getEff",
-          signature=
-            signature(object="DataDual"),
-          def=
-            function(object,
-                     x,
-                     y,
-                     w,...){
-              if (length(which(object@y == 1))==0){
-                wNoDLE<-object@w
-                wDLE<-NULL
-                xNoDLE<- object@x
-                xDLE<-NULL
-              } else {##with observed efficacy response and DLE observed
-                IndexDLE<-which(object@y==1)
-                ##Take efficacy responses with no DLE observed
-                wNoDLE<-object@w[-IndexDLE]
-                wDLE<-object@w[IndexDLE]
-                ##Take the corresponding dose levels
-                xNoDLE<-object@x[-IndexDLE]
-                xDLE<-object@x[IndexDLE]
-              }
-              ret<-list(wDLE=wDLE,xDLE=xDLE,wNoDLE=wNoDLE,xNoDLE=xNoDLE)
-              return(ret)
-            })
-
-
-
-## --------------------------------------------------
-## Update a DataDA object
-## --------------------------------------------------
-
-##' Update method for the `DataDA` class
-##'
-##' Update observations in the \code{\linkS4class{DataDA}} object
-##'
-##' @param object the old \code{\linkS4class{DataDA}} object
-##' @param factDLTs the simulated DLT outcome for all patients
-##' @param factSurv the simulated DLT time for all patients
-##' @param factT0 the time that patients start DLT observation window
-##' @param thisDose the current dose of the cohort
-##' @param ID the patient IDs
-##' @param new_cohort logical: if TRUE (default) the new data are assigned
-##' to a new cohort
-##' @param trialtime current time in the trial.
-##' @param \dots not used
-##' @return the new \code{\linkS4class{DataDA}} object
-##'
-##' @example examples/Data-method-update-DAData.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="DataDA"),
-          def=
-            function(object,
-                     # x,
-                     # y,
-                     # u,
-                     # ID,
-                     factDLTs,
-                     factSurv,
-                     factT0,
-                     thisDose,
-                     trialtime,
-                     ID=NULL,
-                     new_cohort=TRUE,
-                     ...){
-
-              ## some checks
-              stopifnot(is.scalar(thisDose),
-                        all(factSurv >= 0),
-                        all(factDLTs %in% c(0, 1)),
-                        length(factDLTs) == length(factSurv),
-                        length(factDLTs) == length(factT0)
-              )
-
-              ## which grid level is the dose?
-              gridLevel <- match(thisDose, object@doseGrid)
-
-              ## add it to the data
-              if(is.na(gridLevel))
-              {
-                stop("dose is not on grid")
-              }
-
-              ## increment sample size
-              object@nObs <- length(factDLTs)
-
-              ##How many additional patients
-              size<-length(factDLTs)-length(object@x)
-
-              ## add dose
-              object@x <- c(object@x,
-                            rep(thisDose,
-                                size))
-
-              #update xLevel
-              object@xLevel <- match(object@x,
-                                     object@doseGrid)
-
-              ##update DLT free survival time
-              object@u<- apply(rbind(factSurv,trialtime-factT0),2,min)
-
-              ## DLT will be observed once the followup time >= the time to DLT
-              object@y <- as.integer(factDLTs*(trialtime>=factT0+factSurv))
-
-              ##t0 will be updated;
-              object@t0 <- factT0
-
-              ## add ID
-              if(size>0)
-              {
-                if(is.null(ID))
-                {
-                  object@ID <-c(object@ID,
-                                (if(length(object@ID)) max(object@ID) else 0L) +
-                                  1:size)
-                }
-              }
-
-              ## add cohort number
-              if(new_cohort)
-              {
-                object@cohort <- c(object@cohort,
-                                   rep(max(tail(object@cohort, 1L), 0L) + 1L,
-                                       size))
-              } else {
-                object@cohort <- c(object@cohort,
-                                   rep(max(tail(object@cohort, 1L), 0L),
-                                       size))
-              }
-
-              ## return the object
-              return(object)
-            })
+  signature =
+    signature(object = "DataDual"),
+  def =
+    function(object,
+             x,
+             y,
+             w, ...) {
+      if (length(which(object@y == 1)) == 0) {
+        wNoDLE <- object@w
+        wDLE <- NULL
+        xNoDLE <- object@x
+        xDLE <- NULL
+      } else { ## with observed efficacy response and DLE observed
+        IndexDLE <- which(object@y == 1)
+        ## Take efficacy responses with no DLE observed
+        wNoDLE <- object@w[-IndexDLE]
+        wDLE <- object@w[IndexDLE]
+        ## Take the corresponding dose levels
+        xNoDLE <- object@x[-IndexDLE]
+        xDLE <- object@x[IndexDLE]
+      }
+      ret <- list(wDLE = wDLE, xDLE = xDLE, wNoDLE = wNoDLE, xNoDLE = xNoDLE)
+      return(ret)
+    }
+)
