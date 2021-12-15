@@ -2,7 +2,10 @@
 output: github_document
 ---
 
+<!-- markdownlint-disable-file -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# crmPack <p align="center"> <img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/> </p>
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
@@ -12,9 +15,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-# crmPack
-
-[![Build Status](https://travis-ci.org/Roche/crmPack.svg?branch=master)](https://travis-ci.org/Roche/crmPack/)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+\
 
 The goal of crmPack is to implement a wide range of model-based dose
 escalation designs, ranging from classical and modern continual
@@ -112,8 +114,3 @@ time <- system.time(mySims <- simulate(design,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
 ```
-
-## Presentations
-
-* [BBS Seminar 26 June 2017](http://bbs.ceb-institute.org/wp-content/uploads/2017/07/BBS-dose-escalation-Sabanes-26-June-2017-v2.pdf)
-* [BaselR 6 December 2016](https://drive.google.com/open?id=148Ww7LVLBEKEHnWrISWzEchIkWahSjLE)

@@ -1,14 +1,27 @@
 
+<!-- markdownlint-disable-file -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-crmPack
-=======
+# crmPack
+<p align="center">
+<img src='man/figures/logo.png' align="right" height="131.5" alt="crmPack-logo"/>
+</p>
 
-[![Build Status](https://travis-ci.org/Roche/crmPack.svg?branch=master)](https://travis-ci.org/Roche/crmPack/)
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)  
 
-The goal of crmPack is to implement a wide range of model-based dose escalation designs, ranging from classical and modern continual reassessment methods (CRMs) based on dose-limiting toxicity endpoints to dual-endpoint designs taking into account a biomarker/efficacy outcome. The focus is on Bayesian inference, making it very easy to setup a new design with your own JAGS code. However, it is also possible to implement 3+3 designs for comparison or models with non-Bayesian estimation. The whole package is written in a modular form in the S4 class system, making it very flexible for adaptation to new models, escalation or stopping rules.
+The goal of crmPack is to implement a wide range of model-based dose
+escalation designs, ranging from classical and modern continual
+reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
+dual-endpoint designs taking into account a biomarker/efficacy outcome.
+The focus is on Bayesian inference, making it very easy to setup a new
+design with your own JAGS code. However, it is also possible to
+implement 3+3 designs for comparison or models with non-Bayesian
+estimation. The whole package is written in a modular form in the S4
+class system, making it very flexible for adaptation to new models,
+escalation or stopping rules.
 
-Installation
-------------
+## Installation
 
 You can install the development version of crmPack from github with:
 
@@ -23,16 +36,19 @@ You can install the stable release version of crmPack from CRAN with:
 install.packages("crmPack")
 ```
 
-Example
--------
+## Example
 
-This is a basic example which shows how to run simulations from a CRM with a 2-parameter logistic regression model, using a log normal prior distribution, and custom cohort size, stopping and maximum increments rules:
+This is a basic example which shows how to run simulations from a CRM
+with a 2-parameter logistic regression model, using a log normal prior
+distribution, and custom cohort size, stopping and maximum increments
+rules:
 
 ``` r
 library(crmPack)
-#> Warning: package 'crmPack' was built under R version 3.4.4
-#> Loading required package: ggplot2
-#> Warning: package 'ggplot2' was built under R version 3.4.4
+#> Lade nötiges Paket: ggplot2
+#> Registered S3 method overwritten by 'crmPack':
+#>   method       from  
+#>   print.gtable gtable
 #> Type crmPackHelp() to open help browser
 #> Type crmPackExample() to open example
 
@@ -98,9 +114,3 @@ time <- system.time(mySims <- simulate(design,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
 ```
-
-Presentations
--------------
-
--   [BBS Seminar 26 June 2017](http://bbs.ceb-institute.org/wp-content/uploads/2017/07/BBS-dose-escalation-Sabanes-26-June-2017-v2.pdf)
--   [BaselR 6 December 2016](https://drive.google.com/open?id=148Ww7LVLBEKEHnWrISWzEchIkWahSjLE)
