@@ -44,12 +44,6 @@ rules:
 
 ``` r
 library(crmPack)
-#> Lade nötiges Paket: ggplot2
-#> Registered S3 method overwritten by 'crmPack':
-#>   method       from  
-#>   print.gtable gtable
-#> Type crmPackHelp() to open help browser
-#> Type crmPackExample() to open example
 
 # Define the dose grid.
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
@@ -57,10 +51,7 @@ empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 # Initialize the CRM model.
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
-  cov =
-    matrix(c(1, -0.5, -0.5, 1),
-      nrow = 2
-    ),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
   refDose = 56
 )
 
