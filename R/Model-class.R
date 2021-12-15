@@ -3355,11 +3355,11 @@ Effloglog<-function(Eff,
     ## always add the constant value c (default is 0)
     x1 <- Effdose + c
   } else {##Combine pseudo data and Observed Efficacy without DLT
-    w1<-c(Eff, get_efficacy(data)$w_no_DLT)
-    x1<-c(Effdose, get_efficacy(data)$x_no_DLT + c)
+    w1<-c(Eff, getEff(data)$w_no_dlt)
+    x1<-c(Effdose, getEff(data)$x_no_dlt + c)
 
-    w2 <- get_efficacy(data)$w_no_DLT
-    x2 <- get_efficacy(data)$x_no_DLT + c
+    w2 <- getEff(data)$w_no_dlt
+    x2 <- getEff(data)$x_no_dlt + c
   }
 
   ##Check if sigma2/nu is a fixed contant
@@ -3559,8 +3559,8 @@ EffFlexi <- function(Eff,
     w1<-Eff
     x1<-Effdose} else {
       ## with observed efficacy responses and no DLT observed
-      w1<-c(Eff, get_efficacy(data)$w_no_DLT)
-      x1<-c(Effdose, get_efficacy(data)$x_no_DLT)
+      w1<-c(Eff, getEff(data)$w_no_dlt)
+      x1<-c(Effdose, getEff(data)$x_no_dlt)
     }
   ## Match dose levels in x1 with the all dose levels for evaluations
   x1Level <- matchTolerance(x1,data@doseGrid)

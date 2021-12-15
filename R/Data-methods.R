@@ -496,7 +496,7 @@ setMethod(
   }
 )
 
-# get_efficacy ----
+# getEff ----
 
 #' Extracting efficacy responses for subjects categorized by the DLT
 #'
@@ -513,38 +513,43 @@ setMethod(
 #' @export
 #'
 setGeneric(
-  name = "get_efficacy",
+  name = "getEff",
   def = function(object, ...) {
-    standardGeneric("get_efficacy")
+    standardGeneric("getEff")
   },
   valueClass = "list"
 )
 
-# DataDual-get_efficacy ----
+# DataDual-getEff ----
 
-#' @rdname get_efficacy
-#' @aliases get_efficacy-DataDual-method
-#' @example examples/Data-method-get_efficacy.R
+#' @rdname getEff
+#' @aliases getEff-DataDual-method
+#' @example examples/Data-method-getEff.R
 #'
 setMethod(
-  f = "get_efficacy",
+  f = "getEff",
   signature = signature(object = "DataDual"),
   definition = function(object, ...) {
-    x_DLT <- NULL
-    w_DLT <- NULL
-    x_no_DLT <- NULL
-    w_no_DLT <- NULL
+    x_dlt <- NULL
+    w_dlt <- NULL
+    x_no_dlt <- NULL
+    w_no_dlt <- NULL
 
-    is_DLT <- object@y == 1
-    if (any(is_DLT)) {
-      x_DLT <- object@x[is_DLT]
-      w_DLT <- object@w[is_DLT]
+    is_dlt <- object@y == 1
+    if (any(is_dlt)) {
+      x_dlt <- object@x[is_dlt]
+      w_dlt <- object@w[is_dlt]
     }
-    if (any(!is_DLT)) {
-      x_no_DLT <- object@x[!is_DLT]
-      w_no_DLT <- object@w[!is_DLT]
+    if (any(!is_dlt)) {
+      x_no_dlt <- object@x[!is_dlt]
+      w_no_dlt <- object@w[!is_dlt]
     }
 
-    list(x_DLT = x_DLT, w_DLT = w_DLT, x_no_DLT = x_no_DLT, w_no_DLT = w_no_DLT)
+    list(
+      x_dlt = x_dlt,
+      w_dlt = w_dlt,
+      x_no_dlt = x_no_dlt,
+      w_no_dlt = w_no_dlt
+    )
   }
 )
