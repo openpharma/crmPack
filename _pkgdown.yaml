@@ -55,6 +55,8 @@ reference:
       - update-DataParts-method
       - update-DataDual-method
       - update-DataDA-method
+      - get_efficacy
+      - get_efficacy-DataDual-method
   - title: Functions
     contents:
       - dapply

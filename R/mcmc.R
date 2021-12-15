@@ -1,3 +1,4 @@
+# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com ],
 ##         Wai Yin Yeung [,w *.* yeung *a*t* lancaster *.* ac *.* uk]
@@ -603,9 +604,9 @@ setMethod("mcmc",
               if (length(data@w)==0){
                 w1<-thismodel@Eff
                 x1<-thismodel@Effdose} else {
-                  ## Combine pseudo data with observed efficacy responses and no DLE observed
-                  w1<-c(thismodel@Eff,getEff(data)$wNoDLE)
-                  x1<-c(thismodel@Effdose,getEff(data)$xNoDLE)
+                  ## Combine pseudo data with observed efficacy responses and no DLT observed
+                  w1<-c(thismodel@Eff, getEff(data)$w_no_dlt)
+                  x1<-c(thismodel@Effdose, getEff(data)$x_no_dlt)
                 }
               x1Level <- matchTolerance(x1,data@doseGrid)
               ##betaW is constant, the average of the efficacy values
@@ -707,3 +708,4 @@ setMethod("mcmc",
                              options=options)
               return(ret)
             })
+# nolint end

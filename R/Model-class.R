@@ -1,3 +1,4 @@
+# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove[sabanesd *a*t* roche *.* com],
 ##         Wai Yin Yeung [ w *.* yeung *a*t* lancaster *.* ac *.* uk]
@@ -3353,12 +3354,12 @@ Effloglog<-function(Eff,
     w1 <- Eff
     ## always add the constant value c (default is 0)
     x1 <- Effdose + c
-  } else {##Combine pseudo data and Observed Efficacy without DLE
-    w1<-c(Eff,getEff(data)$wNoDLE)
-    x1<-c(Effdose,getEff(data)$xNoDLE + c)
+  } else {##Combine pseudo data and Observed Efficacy without DLT
+    w1<-c(Eff, getEff(data)$w_no_dlt)
+    x1<-c(Effdose, getEff(data)$x_no_dlt + c)
 
-    w2<-getEff(data)$wNoDLE
-    x2<-getEff(data)$xNoDLE + c
+    w2 <- getEff(data)$w_no_dlt
+    x2 <- getEff(data)$x_no_dlt + c
   }
 
   ##Check if sigma2/nu is a fixed contant
@@ -3557,9 +3558,9 @@ EffFlexi <- function(Eff,
   if (length(data@w)==0){
     w1<-Eff
     x1<-Effdose} else {
-      ## with observed efficacy responses and no DLE observed
-      w1<-c(Eff,getEff(data)$wNoDLE)
-      x1<-c(Effdose,getEff(data)$xNoDLE)
+      ## with observed efficacy responses and no DLT observed
+      w1<-c(Eff, getEff(data)$w_no_dlt)
+      x1<-c(Effdose, getEff(data)$x_no_dlt)
     }
   ## Match dose levels in x1 with the all dose levels for evaluations
   x1Level <- matchTolerance(x1,data@doseGrid)
@@ -4157,4 +4158,4 @@ validObject(FractionalCRM(
 
 
 ## ============================================================
-
+# nolint end

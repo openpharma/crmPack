@@ -280,3 +280,54 @@ test_that("Update of DataDA throws the error for empty trialtime", {
     "Assertion on 'trialtime' failed: Must have length 1."
   )
 })
+
+# getEff-DataDual ----
+
+test_that("DataDual-getEff works as expected", {
+  data <- h_get_data_dual()
+  result <- getEff(data)
+  expected <- list(
+    x_dlt = 100,
+    w_dlt = 87,
+    x_no_dlt = c(0.001, 25, 25, 25, 0.001, 50, 50, 50, 0.001, 100, 100),
+    w_no_dlt = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 48)
+  )
+
+  expect_identical(result, expected)
+})
+
+test_that("DataDual-getEff works as expected (no DLT)", {
+  data <- DataDual(
+    x = c(25, 50),
+    y = c(0, 0),
+    w = c(0.31, 0.42),
+    doseGrid = c(25, 50)
+  )
+  result <- getEff(data)
+  expected <- list(
+    x_dlt = NULL,
+    w_dlt = NULL,
+    x_no_dlt = c(25, 50),
+    w_no_dlt = c(0.31, 0.42)
+  )
+
+  expect_identical(result, expected)
+})
+
+test_that("DataDual-getEff works as expected (DLT only)", {
+  data <- DataDual(
+    x = c(25, 50),
+    y = c(1, 1),
+    w = c(0.31, 0.42),
+    doseGrid = c(25, 50)
+  )
+  result <- getEff(data)
+  expected <- list(
+    x_dlt = c(25, 50),
+    w_dlt = c(0.31, 0.42),
+    x_no_dlt = NULL,
+    w_no_dlt = NULL
+  )
+
+  expect_identical(result, expected)
+})
