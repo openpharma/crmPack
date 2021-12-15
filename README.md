@@ -110,7 +110,11 @@ design <- Design(
 
 # Define the true function.
 my_truth <- function(dose) {
-  model@prob(dose, alpha0 = 7, alpha1 = 8)
+  alpha0 <- 7
+  alpha1 <- 8
+  ref_dose <- 56
+  stand_log_dose <- log(dose / ref_dose)
+  plogis(alpha0 + alpha1 * stand_log_dose)
 }
 
 # Run the simulation on the desired design.
