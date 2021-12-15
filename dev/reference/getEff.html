@@ -6,9 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
-dose levels treated at in two categories (with or without DLE) — getEff • crmPack</title>
+<title>Extracting efficacy responses for subjects categorized by the DLT — getEff • crmPack</title>
 
 
 <!-- jquery -->
@@ -41,12 +39,11 @@ dose levels treated at in two categories (with or without DLE) — getEff • cr
 
 
 
-<meta property="og:title" content="Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
-dose levels treated at in two categories (with or without DLE) — getEff" />
-<meta property="og:description" content="Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
-dose levels treated at in two categories (with or without DLE)" />
+<meta property="og:title" content="Extracting efficacy responses for subjects categorized by the DLT — getEff" />
+<meta property="og:description" content="
+A method that extracts efficacy responses for subjects and categorizes it
+with respect to DLT, i.e. DLT or no DLT. The efficacy responses
+are reported together with their corresponding dose levels." />
 
 
 <meta name="robots" content="noindex">
@@ -111,15 +108,6 @@ dose levels treated at in two categories (with or without DLE)" />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -141,74 +129,56 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
-dose levels treated at in two categories (with or without DLE)</h1>
+    <h1>Extracting efficacy responses for subjects categorized by the DLT</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Data-methods.R'><code>R/Data-methods.R</code></a></small>
     <div class="hidden name"><code>getEff.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extracting efficacy responses for subjects without or with a DLE. This is a class where we separate
-efficacy responses with or without a DLE. It outputs the efficacy responses and their corresponding
-dose levels treated at in two categories (with or without DLE)</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p>A method that extracts efficacy responses for subjects and categorizes it
+with respect to DLT, i.e. DLT or no DLT. The efficacy responses
+are reported together with their corresponding dose levels.</p>
     </div>
 
     <pre class="usage"><span class='fu'>getEff</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S4 method for DataDual</span>
-<span class='fu'>getEff</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>w</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>getEff</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>for data input from <code><a href='DataDual-class.html'>DataDual</a></code> object</p></td>
+      <td><p>(<code>DataDual</code>)<br /> object from which the responses and dose levels
+are extracted.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>unused</p></td>
-    </tr>
-    <tr>
-      <th>x</th>
-      <td><p>first</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>second</p></td>
-    </tr>
-    <tr>
-      <th>w</th>
-      <td><p>third</p></td>
+      <td><p>not used.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>list</code> with efficacy responses categorized by the DLT value.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'>## Separate the efficacy responses of subjects with or without DLE</span></span>
-<span class='r-in'><span class='co'>## data must be specified for in 'DataDual' class</span></span>
-<span class='r-in'><span class='va'>data</span><span class='op'>&lt;-</span><span class='fu'><a href='DataDual-class.html'>DataDual</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>25</span>,<span class='fl'>50</span>,<span class='fl'>75</span>,<span class='fl'>300</span>,<span class='fl'>250</span>,<span class='fl'>150</span><span class='op'>)</span>,</span>
-<span class='r-in'>               y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
-<span class='r-in'>               w<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>,<span class='fl'>0.42</span>,<span class='fl'>0.59</span>,<span class='fl'>0.45</span>,<span class='fl'>0.6</span>,<span class='fl'>0.7</span>,<span class='fl'>0.6</span>,<span class='fl'>0.52</span><span class='op'>)</span>,</span>
-<span class='r-in'>               doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='co'># Example data.</span></span>
+<span class='r-in'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='DataDual-class.html'>DataDual</a></span><span class='op'>(</span></span>
+<span class='r-in'>  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>25</span>, <span class='fl'>50</span>, <span class='fl'>25</span>, <span class='fl'>50</span>, <span class='fl'>75</span>, <span class='fl'>300</span>, <span class='fl'>250</span>, <span class='fl'>150</span><span class='op'>)</span>,</span>
+<span class='r-in'>  y <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span>,</span>
+<span class='r-in'>  w <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.31</span>, <span class='fl'>0.42</span>, <span class='fl'>0.59</span>, <span class='fl'>0.45</span>, <span class='fl'>0.6</span>, <span class='fl'>0.7</span>, <span class='fl'>0.6</span>, <span class='fl'>0.52</span><span class='op'>)</span>,</span>
+<span class='r-in'>  doseGrid <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>, <span class='fl'>300</span>, <span class='fl'>25</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Used default patient IDs!</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> Used best guess cohort indices!</span>
-<span class='r-in'><span class='co'>##Display the efficacy response and their corresponding dose levels </span></span>
-<span class='r-in'><span class='co'>## treated at when no or a DLE is observed</span></span>
-<span class='r-in'><span class='fu'>getEff</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $wDLE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.7 0.6</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $xDLE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 300 250</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $wNoDLE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 0.31 0.42 0.59 0.45 0.60 0.52</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> $xNoDLE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  25  50  25  50  75 150</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Get the efficacy response and their corresponding dose levels</span></span>
+<span class='r-in'><span class='co'># categorized by the DLT.</span></span>
+<span class='r-in'><span class='fu'>get_efficacy</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in get_efficacy(data):</span> could not find function "get_efficacy"</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
