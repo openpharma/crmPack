@@ -6,9 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>No Intitialization function for this
-General class for model input — GeneralModel-class • crmPack</title>
+<title>GeneralModel — GeneralModel-class • crmPack</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -40,11 +46,12 @@ General class for model input — GeneralModel-class • crmPack</title>
 
 
 
-<meta property="og:title" content="No Intitialization function for this
-General class for model input — GeneralModel-class" />
-<meta property="og:description" content="This is the general model class, from which all other specific models for
-involving BUGS (the software) for computing result.
-It inherits all slots from AllModels" />
+<meta property="og:title" content="GeneralModel — GeneralModel-class" />
+<meta property="og:description" content="
+GeneralModel is a general model class, from which all other specific
+model-like classes inherit. The GeneralModel class inherits from
+AllModels." />
+<meta property="og:image" content="https://github.com/roche/crmPack/logo.png" />
 
 
 <meta name="robots" content="noindex">
@@ -109,15 +116,6 @@ It inherits all slots from AllModels" />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -139,57 +137,51 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>No Intitialization function for this
-General class for model input</h1>
+    <h1><code>GeneralModel</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Model-class.R'><code>R/Model-class.R</code></a></small>
     <div class="hidden name"><code>GeneralModel-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is the general model class, from which all other specific models for
-involving BUGS (the software) for computing result.
-It inherits all slots from <code><a href='AllModels-class.html'>AllModels</a></code></p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p><code>GeneralModel</code> is a general model class, from which all other specific
+model-like classes inherit. The <code>GeneralModel</code> class inherits from
+<code><a href='AllModels-class.html'>AllModels</a></code>.</p>
     </div>
 
 
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The <code>datamodel</code> must obey the convention that the data input is
-called exactly as in the corresponding data class.
-All prior distributions for parameters should be contained in the
-model function <code>priormodel</code>. The background is that this can
-be used to simulate from the prior distribution, before obtaining any
-data.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl>
-<dt><code>datamodel</code></dt><dd><p>a function representing the BUGS data model specification
-(see the details above)</p></dd>
+<dt><code>datamodel</code></dt><dd><p>(<code>function</code>)<br /> a function representing the <code>JAGS</code> data model
+specification.</p></dd>
 
-<dt><code>priormodel</code></dt><dd><p>a function representing the BUGS prior specification
-(see the details above)</p></dd>
+<dt><code>priormodel</code></dt><dd><p>(<code>function</code>)<br /> a function representing the <code>JAGS</code> prior
+specification.</p></dd>
 
-<dt><code>modelspecs</code></dt><dd><p>a function computing the list of the data model and prior
-model specifications that are required for fully specifying them (e.g. prior
-parameters, reference dose, etc.), based on the data
-slots that are then required as arguments of this function. This will then
-be passed to BUGS for the computations.</p></dd>
+<dt><code>modelspecs</code></dt><dd><p>(<code>function</code>)<br /> a function computing the list of the data
+model and prior model specifications that are required to be specified
+completely (e.g. prior parameters, reference dose, etc.), based on the data
+slots that are required as arguments of this function.</p></dd>
 
-<dt><code>init</code></dt><dd><p>a function computing the list of starting values for parameters
-required to be initialized in the MCMC sampler, based on the
-data slots that are then required as arguments of this
-function</p></dd>
+<dt><code>init</code></dt><dd><p>(<code>function</code>)<br /> a function computing the list of starting values
+for parameters required to be initialized in the MCMC sampler, based on the
+data slots that are required as arguments of this function.</p></dd>
 
-<dt><code>sample</code></dt><dd><p>names of all parameters from which you would like to save the
-MCMC samples.</p></dd>
+<dt><code>sample</code></dt><dd><p>(<code>character</code>)<br /> names of all parameters from which you would
+like to save the MCMC samples.</p></dd>
 
 </dl>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <div class='dont-index'><p><code><a href='Model-class.html'>Model</a></code></p></div>
+    <p>The <code>datamodel</code> must obey the convention that the data input is
+called exactly in the same way as in the corresponding data class.
+All prior distributions for parameters should be contained in the
+model function <code>priormodel</code>. The background is that this can
+be used to simulate from the prior distribution, before obtaining any data.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

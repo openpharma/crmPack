@@ -10,6 +10,13 @@
 This is a method based on the TDDesign where model used are of
 ModelTox class object and no samples are involved. — simulate,TDDesign-method • crmPack</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -47,6 +54,7 @@ ModelTox class object and no samples are involved. — simulate,TDDesign-method"
 <meta property="og:description" content="This is a methods to simulate dose escalation procedure only using the DLE responses.
 This is a method based on the TDDesign where model used are of
 ModelTox class object and no samples are involved." />
+<meta property="og:image" content="https://github.com/roche/crmPack/logo.png" />
 
 
 <meta name="robots" content="noindex">
@@ -111,15 +119,6 @@ ModelTox class object and no samples are involved." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -244,7 +243,7 @@ Defaults to the number of cores on the machine, maximum 5.</p></td>
 <span class='r-in'>                             doselimit<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>@</span><span class='va'>doseGrid</span><span class='op'>)</span>,</span>
 <span class='r-in'>                             model<span class='op'>=</span><span class='va'>model</span>,</span>
 <span class='r-in'>                             data<span class='op'>=</span><span class='va'>data</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "TD 30 = 14.3714101936777  not within dose Grid"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "TD 30 = 14.3714101936776  not within dose Grid"</span>
 <span class='r-in'><span class='co'>##Then the starting data, an empty data set</span></span>
 <span class='r-in'><span class='va'>emptydata</span><span class='op'>&lt;-</span><span class='fu'><a href='Data-class.html'>Data</a></span><span class='op'>(</span>doseGrid<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>25</span>,<span class='fl'>300</span>,<span class='fl'>25</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='co'>## The cohort size, size of 3 subjects</span></span>
