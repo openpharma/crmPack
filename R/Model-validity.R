@@ -13,7 +13,7 @@ NULL
 
 #' @describeIn validate_model_objects validates that the names of the
 #'   arguments in `init` function are included in `datanames` slot.
-validate_model_general <- function(object) {
+validate_general_model <- function(object) {
   o <- Validate()
   o$check(
     all(names(formals(object@init)) %in% object@datanames),

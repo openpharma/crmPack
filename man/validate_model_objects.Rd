@@ -2,10 +2,10 @@
 % Please edit documentation in R/Model-validity.R
 \name{validate_model_objects}
 \alias{validate_model_objects}
-\alias{validate_model_general}
+\alias{validate_general_model}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
-validate_model_general(object)
+validate_general_model(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -22,7 +22,7 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
-\item \code{validate_model_general}: validates that the names of the
+\item \code{validate_general_model}: validates that the names of the
 arguments in \code{init} function are included in \code{datanames} slot.
 }}
 

@@ -64,7 +64,7 @@ NULL
     sample = "character"
   ),
   contains = "AllModels",
-  validity = validate_model_general
+  validity = validate_general_model
 )
 
 # nolint start
