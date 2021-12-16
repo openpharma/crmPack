@@ -1,99 +1,73 @@
+#' @include helpers.R Model-validity.R
+NULL
+
+# AllModels-class ----
+
+#' `AllModels`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`AllModels`] is a class from which all the models inherit.
+#'
+#' @slot datanames (`character`)\cr the names of all data slots that are used
+#'   in all the models. In particular, those are also used in the `datamodel` or
+#'   `priormodel` definition for [`GeneralModel`].
+#'
+#' @aliases AllModels
+#' @export
+#'
+.AllModels <- setClass(
+  Class = "AllModels",
+  slots = c(datanames = "character")
+)
+
+# GeneralModel-class ----
+
+#' `GeneralModel`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`GeneralModel`] is a general model class, from which all other specific
+#' model-like classes inherit. The [`GeneralModel`] class inherits from
+#' [`AllModels`].
+#'
+#' @note The `datamodel` must obey the convention that the data input is
+#'   called exactly in the same way as in the corresponding data class.
+#'   All prior distributions for parameters should be contained in the
+#'   model function `priormodel`. The background is that this can
+#'   be used to simulate from the prior distribution, before obtaining any data.
+#'
+#' @slot datamodel (`function`)\cr a function representing the `JAGS` data model
+#'   specification.
+#' @slot priormodel (`function`)\cr a function representing the `JAGS` prior
+#'   specification.
+#' @slot modelspecs (`function`)\cr a function computing the list of the data
+#'   model and prior model specifications that are required to be specified
+#'   completely (e.g. prior parameters, reference dose, etc.), based on the data
+#'   slots that are required as arguments of this function.
+#' @slot init (`function`)\cr a function computing the list of starting values
+#'   for parameters required to be initialized in the MCMC sampler, based on the
+#'   data slots that are required as arguments of this function.
+#' @slot sample (`character`)\cr names of all parameters from which you would
+#'  like to save the MCMC samples.
+#'
+#' @aliases GeneralModel
+#' @export
+#'
+.GeneralModel <- setClass(
+  Class = "GeneralModel",
+  slots = c(
+    datamodel = "function",
+    priormodel = "function",
+    modelspecs = "function",
+    init = "function",
+    sample = "character"
+  ),
+  contains = "AllModels",
+  validity = validate_general_model
+)
+
 # nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove[sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [ w *.* yeung *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Model-class.R] by DSB Mon 11/05/2015 17:44>
-##
-## Description:
-## Encapsulate the model input in a formal class.
-##
-## History:
-## 31/01/2014   file creation
-## 08/07/2015   Adding Pseudo model classes
-###################################################################################
-
-##' @include helpers.R
-{}
-
-
-##' Class for All models
-##' This is a class where all models inherit.
-##'
-##' @slot datanames The names of all data slots that are used in all models.
-##' In particularly, those are also used in the \code{datamodel} and/or
-##' \code{priormodel} definition for \code{\linkS4class{GeneralModel}}.
-##'
-##' @seealso \code{\linkS4class{GeneralModel}}, \code{\linkS4class{ModelPseudo}}
-##'
-##' @export
-##' @keywords classes
-
-.AllModels<-setClass(Class="AllModels",
-                     representation(datanames="character"))
-validObject(.AllModels())
-
-##' No Intitialization function for this
-
-## ============================================================
-
-##' General class for model input
-##'
-##' This is the general model class, from which all other specific models for
-##' involving BUGS (the software) for computing result.
-##' It inherits all slots from \code{\linkS4class{AllModels}}
-##'
-##' The \code{datamodel} must obey the convention that the data input is
-##' called exactly as in the corresponding data class.
-##' All prior distributions for parameters should be contained in the
-##' model function \code{priormodel}. The background is that this can
-##' be used to simulate from the prior distribution, before obtaining any
-##' data.
-##'
-##' @slot datamodel a function representing the BUGS data model specification
-##' (see the details above)
-##' @slot priormodel a function representing the BUGS prior specification
-##' (see the details above)
-##' @slot modelspecs a function computing the list of the data model and prior
-##' model specifications that are required for fully specifying them (e.g. prior
-##' parameters, reference dose, etc.), based on the data
-##' slots that are then required as arguments of this function. This will then
-##' be passed to BUGS for the computations.
-##' @slot init a function computing the list of starting values for parameters
-##' required to be initialized in the MCMC sampler, based on the
-##' data slots that are then required as arguments of this
-##' function
-##' @slot sample names of all parameters from which you would like to save the
-##' MCMC samples.
-##'
-##' @seealso \code{\linkS4class{Model}}
-##'
-##' @export
-##' @keywords classes
-.GeneralModel <-
-    setClass(Class="GeneralModel",
-             representation(datamodel="function",
-                            priormodel="function",
-                            modelspecs="function",
-                            init="function",
-                            sample="character"),
-             contains="AllModels",
-             validity=
-               function(object){
-                 o <- Validate()
-
-                 o$check(all(names(formals(object@init)) %in%
-                               object@datanames),
-                         "arguments of the init function must be data names")
-
-                 o$result()
-               })
-validObject(.GeneralModel())
-
-## no init function for this one
-
-
 
 ## ============================================================
 

@@ -51,6 +51,7 @@ NULL
 #'
 #' @aliases Data
 #' @export
+#'
 .Data <- setClass(
   Class = "Data",
   contains = "GeneralData",
@@ -101,6 +102,7 @@ NULL
 #'
 #' @export
 #' @example examples/Data-class.R
+#'
 Data <- function(x = numeric(),
                  y = integer(),
                  ID = integer(),
@@ -157,6 +159,7 @@ Data <- function(x = numeric(),
 #'
 #' @aliases DataDual
 #' @export
+#'
 .DataDual <- setClass(
   Class = "DataDual",
   slots = c(w = "numeric"),
@@ -174,6 +177,7 @@ Data <- function(x = numeric(),
 #'
 #' @export
 #' @example examples/Data-class-DataDual.R
+#'
 DataDual <- function(w = numeric(),
                      ...) {
   d <- Data(...)
@@ -197,6 +201,7 @@ DataDual <- function(w = numeric(),
 #'
 #' @aliases DataParts
 #' @export
+#'
 .DataParts <- setClass(
   Class = "DataParts",
   slots = c(
@@ -225,6 +230,7 @@ DataDual <- function(w = numeric(),
 #'
 #' @export
 #' @example examples/Data-class-DataParts.R
+#'
 DataParts <- function(part = integer(),
                       nextPart = 1L,
                       part1Ladder = numeric(),
@@ -255,6 +261,7 @@ DataParts <- function(part = integer(),
 #'
 #' @aliases DataMixture
 #' @export
+#'
 .DataMixture <- setClass(
   Class = "DataMixture",
   slots = c(
@@ -283,6 +290,7 @@ DataParts <- function(part = integer(),
 #'
 #' @export
 #' @example examples/Data-class-DataMixture.R
+#'
 DataMixture <- function(xshare = numeric(),
                         yshare = integer(),
                         ...) {
@@ -314,6 +322,7 @@ DataMixture <- function(xshare = numeric(),
 #'
 #' @aliases DataDA
 #' @export
+#'
 .DataDA <- setClass(
   Class = "DataDA",
   slots = c(
@@ -343,6 +352,7 @@ DataMixture <- function(xshare = numeric(),
 #'
 #' @export
 #' @example examples/Data-class-DataDA.R
+#'
 DataDA <- function(u = numeric(),
                    t0 = numeric(length(u)),
                    Tmax = 0 + .Machine$double.xmin,

@@ -59,6 +59,7 @@ Collate:
     'Data-class.R'
     'Data-methods.R'
     'Rules-class.R'
+    'Model-validity.R'
     'Model-class.R'
     'Design-class.R'
     'writeModel.R'
