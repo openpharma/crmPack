@@ -29,6 +29,8 @@ reference:
       - DataParts
       - DataMixture
       - DataDA
+      - AllModels
+      - GeneralModel
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort

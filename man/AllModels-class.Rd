@@ -4,21 +4,18 @@
 \name{AllModels-class}
 \alias{AllModels-class}
 \alias{.AllModels}
-\title{Class for All models
-This is a class where all models inherit.}
+\alias{AllModels}
+\title{\code{AllModels}}
 \description{
-Class for All models
-This is a class where all models inherit.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{AllModels}} is a class from which all the models inherit.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{datanames}}{The names of all data slots that are used in all models.
-In particularly, those are also used in the \code{datamodel} and/or
-\code{priormodel} definition for \code{\linkS4class{GeneralModel}}.}
+\item{\code{datanames}}{(\code{character})\cr the names of all data slots that are used
+in all the models. In particular, those are also used in the \code{datamodel} or
+\code{priormodel} definition for \code{\link{GeneralModel}}.}
 }}
 
-\seealso{
-\code{\linkS4class{GeneralModel}}, \code{\linkS4class{ModelPseudo}}
-}
-\keyword{classes}
