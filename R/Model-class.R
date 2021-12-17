@@ -49,7 +49,7 @@ NULL
 #'   for parameters required to be initialized in the MCMC sampler, based on the
 #'   data slots that are required as arguments of this function.
 #' @slot sample (`character`)\cr names of all parameters from which you would
-#'  like to save the MCMC samples.
+#'   like to save the MCMC samples.
 #'
 #' @aliases GeneralModel
 #' @export
@@ -67,85 +67,67 @@ NULL
   validity = validate_general_model
 )
 
+# Model-class ----
+
+#' `Model`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Model`] is the class for single agent dose escalation, from which all other
+#' specific models inherit. The [`Model`] class inherits from
+#' [`GeneralModel`].
+#'
+#' @note The `datamodel` must obey the convention that the data input is called
+#'   exactly as in the [`Data`] class. All prior distributions for parameters
+#'   should be contained in the model function `priormodel`. The background is
+#'   that this can be used to simulate from the prior distribution, before
+#'   obtaining any data.
+#'
+#' @details The first argument of `dose` function must be the `prob`, which is a
+#'   scalar toxicity probability which is targeted. Further arguments are the
+#'   model parameters. The `dose` function computes, using model parameter(s)
+#'   (samples), the resulting dose. The model parameters are called exactly as
+#'   in the `model` and must be included in the `sample` vector. The vectors
+#'   of all samples for these parameters will then be supplied to the function.
+#'   Hence, a user function must be able to handle vectorized model parameters.
+#'
+#'   The first argument of `prob` function must be the `dose`, which is a scalar
+#'   dose. Further arguments are the model parameters. The `prob` function
+#'   computes, using model parameter(s) (samples), the resulting probability of
+#'   toxicity at that dose. Again here, the function should support vectorized
+#'   model parameters.
+#'
+#'   Note that `dose` and `prob` are the inverse functions of each other.
+#'
+#'   If you work with multivariate parameters, then assume that your functions
+#'   receive either one parameter value as a row vector, or a samples matrix
+#'   where the rows correspond to the sampling index, i.e. the layout is then
+#'   `nSamples x dimParameter`.
+#'
+#' @slot dose (`function`)\cr a function computing the dose reaching a specific
+#'   target probability, based on the model parameters and additional prior
+#'   settings (see the details above).
+#' @slot prob (`function`)\cr a function computing the probability of toxicity
+#'   for a specific dose, based on the model parameters and additional prior
+#'   settings (see the details above).
+#'
+#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
+#'   [`LogisticKadane`], [`DualEndpoint`].
+#'
+#' @aliases Model
+#' @export
+#'
+.Model <- setClass(
+  Class = "Model",
+  slots = c(
+    dose = "function",
+    prob = "function"
+  ),
+  contains = "GeneralModel",
+  validity = validate_model
+)
+
 # nolint start
-
-## ============================================================
-
-##' Class for the model input
-##'
-##' This is the model class for single agent dose escalation,
-##' from which all other specific models inherit. It inherits all slots
-##' from \code{\linkS4class{GeneralModel}}.
-##'
-##' The \code{datamodel} must obey the convention that the data input is
-##' called exactly as in the \code{\linkS4class{Data}} class.
-##' All prior distributions for parameters should be contained in the
-##' model function \code{priormodel}. The background is that this can
-##' be used to simulate from the prior distribution, before obtaining any
-##' data.
-##'
-##' The \code{dose} function has as first argument \code{prob}, a scalar
-##' toxicity probability which is targeted. Additional arguments are model
-##' parameters. Then it computes, using model parameter(s) (samples), the
-##' resulting dose. Note that the model parameters are called exactly as in the
-##' \code{model} and must be included in the \code{sample} vector. The vectors
-##' of all samples for these parameters will then be supplied to the function.
-##' So your function must be able to process vectors of the model parameters,
-##' i.e. it must vectorize over them.
-##'
-##' The \code{prob} function has as first argument \code{dose}, which is a
-##' scalar dose. Additional arguments are model parameters. Then it computes,
-##' using model parameter(s) (samples), the resulting probability of toxicity at
-##' that dose. Again here, the function must vectorize over the model
-##' parameters.
-##'
-##' If you work with multivariate parameters, then please assume that your
-##' the two functions receive either one parameter value as a row vector,
-##' or a samples matrix where the rows correspond to the sampling index, i.e.
-##' the layout is then nSamples x dimParameter.
-##'
-##' Note that \code{dose} and \code{prob} are the inverse functions of each
-##' other.
-##'
-##' @slot dose a function computing the dose reaching a specific target
-##' probability, based on the model parameters and additional prior settings
-##' (see the details above)
-##' @slot prob a function computing the probability of toxicity for a specific
-##' dose, based on the model parameters and additional prior settings (see the
-##' details above)
-##'
-##' @seealso \code{\linkS4class{LogisticNormal}},
-##' \code{\linkS4class{LogisticLogNormal}},
-##' \code{\linkS4class{LogisticLogNormalSub}},
-##' \code{\linkS4class{LogisticKadane}},
-##' \code{\linkS4class{DualEndpoint}}
-##'
-##' @export
-##' @keywords classes
-.Model <-
-    setClass(Class="Model",
-             representation(dose="function",
-                            prob="function"),
-             contains="GeneralModel",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(all(names(formals(object@dose)) %in%
-                                 c("prob", object@sample)),
-                             "objects of dose function incorrect")
-                     o$check(all(names(formals(object@prob)) %in%
-                                 c("dose", object@sample)),
-                             "objects of prob function incorrect")
-
-                     o$result()
-         })
-validObject(.Model())
-
-## no init function for this one
-
-## ============================================================
-
 
 ##' Standard logistic model with bivariate (log) normal prior
 ##'
@@ -210,7 +192,6 @@ validObject(.Model())
 
                      o$result()
                  })
-validObject(.LogisticLogNormal())
 
 
 ##' Initialization function for the "LogisticLogNormal" class
@@ -350,7 +331,6 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 
                o$result()
              })
-validObject(.ProbitLogNormal())
 
 
 ##' Initialization function for the "ProbitLogNormal" class
@@ -491,7 +471,6 @@ validObject(ProbitLogNormal(mu=c(0, 1),
 
                      o$result()
                  })
-validObject(.LogisticLogNormalSub())
 
 
 ##' Initialization function for the "LogisticLogNormalSub" class
@@ -752,7 +731,6 @@ validObject(LogisticNormal(mean=c(0, 1),
 
                      o$result()
                  })
-validObject(.LogisticKadane())
 
 ##' Initialization function for the "LogisticKadane" class
 ##'
@@ -1341,7 +1319,6 @@ setMethod("initialize",
 
                      o$result()
                  })
-validObject(.DualEndpoint())
 
 ##' Initialization function for the "DualEndpoint" class
 ##'
@@ -1618,7 +1595,6 @@ validObject(DualEndpoint(mu=c(0, 1),
 
                      o$result()
                  })
-validObject(.DualEndpointRW())
 
 
 ##' Initialization function for the "DualEndpointRW" class
@@ -1876,7 +1852,6 @@ validObject(DualEndpointRW(sigma2betaW=1,
 
                      o$result()
                  })
-validObject(.DualEndpointBeta())
 
 ##' Initialization function for the "DualEndpointBeta" class
 ##'
@@ -2125,7 +2100,6 @@ validObject(DualEndpointBeta(E0=10,
 
                      o$result()
                  })
-validObject(.DualEndpointEmax())
 
 ##' Initialization function for the "DualEndpointEmax" class
 ##'
@@ -2364,7 +2338,6 @@ validObject(DualEndpointEmax(E0=10,
                      o$check(is.scalar(object@refDose) && (object@refDose > 0),
                              "refDose must be scalar and positive")
                  })
-validObject(.LogisticNormalMixture())
 
 
 ##' Initialization function for the "LogisticNormalMixture" class
@@ -2513,7 +2486,6 @@ validObject(LogisticNormalMixture(comp1=
                        "shareWeight does not specify a probability")
 
              })
-validObject(.LogisticLogNormalMixture())
 
 
 ##' Initialization function for the "LogisticLogNormalMixture" class
@@ -2728,7 +2700,6 @@ validObject(LogisticLogNormalMixture(mean=c(0, 1),
                      o$check(is.bool(object@logNormal),
                              "logNormal must be TRUE or FALSE")
                  })
-validObject(.LogisticNormalFixedMixture())
 
 ##' Initialization function for the "LogisticNormalFixedMixture" class
 ##'
@@ -2879,7 +2850,6 @@ validObject(LogisticNormalFixedMixture(components=
 .ModelPseudo<-setClass(Class="ModelPseudo",
                        contains="AllModels"
 )
-validObject(.ModelPseudo)
 ##' No intialization function
 
 ## ===========================================================================
@@ -2944,7 +2914,6 @@ validObject(.ModelPseudo)
                                    data="Data"),
                     contains="ModelPseudo"
 )
-validObject(.ModelTox)
 ##' No Initialization function
 
 ## ==========================================================================================
@@ -3647,7 +3616,6 @@ EffFlexi <- function(Eff,
 
                o$result()
              })
-validObject(.DALogisticLogNormal())
 
 
 ##' Initialization function for the `DALogisticLogNormal` class
@@ -3844,7 +3812,6 @@ validObject(DALogisticLogNormal(mean=c(0, 1),
                o$check(identical(length(object@weightMethod), 1L),
                        "weightMethod must have length 1")
              })
-validObject(.TITELogisticLogNormal())
 
 
 ##' Initialization function for the `TITELogisticLogNormal` class
@@ -3996,7 +3963,6 @@ validObject(TITELogisticLogNormal(mean=c(0, 1),
                o$check(all(object@skeletonProbs >= 0 & object@skeletonProbs <= 1),
                        "skeletonProbs must be probabilities between 0 and 1")
              })
-validObject(.OneParExpNormalPrior())
 
 ##' @describeIn OneParExpNormalPrior-class Initialization function for the
 ##'   `OneParExpNormalPrior` class.
@@ -4055,7 +4021,6 @@ validObject(OneParExpNormalPrior(
 .FractionalCRM <-
   setClass(Class = "FractionalCRM",
            contains="OneParExpNormalPrior")
-validObject(.FractionalCRM())
 
 ##' @describeIn FractionalCRM-class Initialization function for the fractional CRM.
 ##'   Takes the same arguments as [OneParExpNormalPrior()].

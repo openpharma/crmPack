@@ -3,9 +3,12 @@
 \name{validate_model_objects}
 \alias{validate_model_objects}
 \alias{validate_general_model}
+\alias{validate_model}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 validate_general_model(object)
+
+validate_model(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -24,5 +27,9 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{validate_general_model}: validates that the names of the
 arguments in \code{init} function are included in \code{datanames} slot.
+
+\item \code{validate_model}: validates that the names of the
+arguments in \code{dose} and \code{prob} functions contains \code{prob} and \code{dose}
+respectively, as well as they match \code{sample} slot of the \code{object}.
 }}
 

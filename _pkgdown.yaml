@@ -31,12 +31,14 @@ reference:
       - DataDA
       - AllModels
       - GeneralModel
+      - Model
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
       - h_plot_data_cohort_lines
+      - h_check_fun_formals
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -45,6 +47,8 @@ reference:
       - validate_data_parts
       - validate_data_mixture
       - validate_data_DA
+      - validate_general_model
+      - validate_model
   - title: Example Data
     contents:
   - title: Methods
