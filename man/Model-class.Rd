@@ -4,60 +4,56 @@
 \name{Model-class}
 \alias{Model-class}
 \alias{.Model}
-\title{Class for the model input}
+\title{\code{Model}}
 \description{
-This is the model class for single agent dose escalation,
-from which all other specific models inherit. It inherits all slots
-from \code{\linkS4class{GeneralModel}}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{Model}} is the class for single agent dose escalation, from which all other
+specific models inherit. The \code{\link{Model}} class inherits from
+\code{\link{GeneralModel}}.
 }
 \details{
-The \code{datamodel} must obey the convention that the data input is
-called exactly as in the \code{\linkS4class{Data}} class.
-All prior distributions for parameters should be contained in the
-model function \code{priormodel}. The background is that this can
-be used to simulate from the prior distribution, before obtaining any
-data.
-
-The \code{dose} function has as first argument \code{prob}, a scalar
-toxicity probability which is targeted. Additional arguments are model
-parameters. Then it computes, using model parameter(s) (samples), the
-resulting dose. Note that the model parameters are called exactly as in the
-\code{model} and must be included in the \code{sample} vector. The vectors
+The first argument of \code{dose} function must be the \code{prob}, which is a
+scalar toxicity probability which is targeted. Further arguments are the
+model parameters. The \code{dose} function computes, using model parameter(s)
+(samples), the resulting dose. The model parameters are called exactly as
+in the \code{model} and must be included in the \code{sample} vector. The vectors
 of all samples for these parameters will then be supplied to the function.
-So your function must be able to process vectors of the model parameters,
-i.e. it must vectorize over them.
+Hence, a user function must be able to handle vectorized model parameters.
 
-The \code{prob} function has as first argument \code{dose}, which is a
-scalar dose. Additional arguments are model parameters. Then it computes,
-using model parameter(s) (samples), the resulting probability of toxicity at
-that dose. Again here, the function must vectorize over the model
+The first argument of \code{prob} function must be the \code{dose}, which is a scalar
+dose. Further arguments are the model parameters. The \code{probe} function
+computes, using model parameter(s) (samples), the resulting probability of
+toxicity at that dose. Again here, the function support vectorized model
 parameters.
 
-If you work with multivariate parameters, then please assume that your
-the two functions receive either one parameter value as a row vector,
-or a samples matrix where the rows correspond to the sampling index, i.e.
-the layout is then nSamples x dimParameter.
+Note that \code{dose} and \code{prob} are the inverse functions of each other.
 
-Note that \code{dose} and \code{prob} are the inverse functions of each
-other.
+If you work with multivariate parameters, then assume that your functions
+receive either one parameter value as a row vector, or a samples matrix
+where the rows correspond to the sampling index, i.e. the layout is then
+nSamples x dimParameter.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dose}}{a function computing the dose reaching a specific target
-probability, based on the model parameters and additional prior settings
-(see the details above)}
+\item{\code{dose}}{(\code{function})\cr a function computing the dose reaching a specific
+target probability, based on the model parameters and additional prior
+settings (see the details above).}
 
-\item{\code{prob}}{a function computing the probability of toxicity for a specific
-dose, based on the model parameters and additional prior settings (see the
-details above)}
+\item{\code{prob}}{(\code{function})\cr a function computing the probability of toxicity
+for a specific dose, based on the model parameters and additional prior
+settings (see the details above).}
 }}
 
-\seealso{
-\code{\linkS4class{LogisticNormal}},
-\code{\linkS4class{LogisticLogNormal}},
-\code{\linkS4class{LogisticLogNormalSub}},
-\code{\linkS4class{LogisticKadane}},
-\code{\linkS4class{DualEndpoint}}
+\note{
+The \code{datamodel} must obey the convention that the data input is called
+exactly as in the \code{\link{Data}} class. All prior distributions for parameters
+should be contained in the model function \code{priormodel}. The background is
+that this can be used to simulate from the prior distribution, before
+obtaining any data.
 }
-\keyword{classes}
+\seealso{
+\code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
+\code{\link{LogisticKadane}}, \code{\link{DualEndpoint}}.
+}

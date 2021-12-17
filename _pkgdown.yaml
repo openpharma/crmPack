@@ -31,6 +31,7 @@ reference:
       - DataDA
       - AllModels
       - GeneralModel
+      - Model
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -45,6 +46,8 @@ reference:
       - validate_data_parts
       - validate_data_mixture
       - validate_data_DA
+      - validate_general_model
+      - validate_model
   - title: Example Data
     contents:
   - title: Methods

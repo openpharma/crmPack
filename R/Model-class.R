@@ -67,85 +67,66 @@ NULL
   validity = validate_general_model
 )
 
+# Model-class ----
+
+#' `Model`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Model`] is the class for single agent dose escalation, from which all other
+#' specific models inherit. The [`Model`] class inherits from
+#' [`GeneralModel`].
+#'
+#' @note The `datamodel` must obey the convention that the data input is called
+#'   exactly as in the [`Data`] class. All prior distributions for parameters
+#'   should be contained in the model function `priormodel`. The background is
+#'   that this can be used to simulate from the prior distribution, before
+#'   obtaining any data.
+#'
+#' @details The first argument of `dose` function must be the `prob`, which is a
+#'   scalar toxicity probability which is targeted. Further arguments are the
+#'   model parameters. The `dose` function computes, using model parameter(s)
+#'   (samples), the resulting dose. The model parameters are called exactly as
+#'   in the `model` and must be included in the `sample` vector. The vectors
+#'   of all samples for these parameters will then be supplied to the function.
+#'   Hence, a user function must be able to handle vectorized model parameters.
+#'
+#'   The first argument of `prob` function must be the `dose`, which is a scalar
+#'   dose. Further arguments are the model parameters. The `probe` function
+#'   computes, using model parameter(s) (samples), the resulting probability of
+#'   toxicity at that dose. Again here, the function support vectorized model
+#'   parameters.
+#'
+#'   Note that `dose` and `prob` are the inverse functions of each other.
+#'
+#'   If you work with multivariate parameters, then assume that your functions
+#'   receive either one parameter value as a row vector, or a samples matrix
+#'   where the rows correspond to the sampling index, i.e. the layout is then
+#'   nSamples x dimParameter.
+#'
+#' @slot dose (`function`)\cr a function computing the dose reaching a specific
+#'   target probability, based on the model parameters and additional prior
+#'   settings (see the details above).
+#' @slot prob (`function`)\cr a function computing the probability of toxicity
+#'   for a specific dose, based on the model parameters and additional prior
+#'   settings (see the details above).
+#'
+#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
+#'   [`LogisticKadane`], [`DualEndpoint`].
+#'
+#' @export
+#'
+.Model <- setClass(
+  Class = "Model",
+  slots = c(
+    dose = "function",
+    prob = "function"
+  ),
+  contains = "GeneralModel",
+  validity = validate_model
+)
+
 # nolint start
-
-## ============================================================
-
-##' Class for the model input
-##'
-##' This is the model class for single agent dose escalation,
-##' from which all other specific models inherit. It inherits all slots
-##' from \code{\linkS4class{GeneralModel}}.
-##'
-##' The \code{datamodel} must obey the convention that the data input is
-##' called exactly as in the \code{\linkS4class{Data}} class.
-##' All prior distributions for parameters should be contained in the
-##' model function \code{priormodel}. The background is that this can
-##' be used to simulate from the prior distribution, before obtaining any
-##' data.
-##'
-##' The \code{dose} function has as first argument \code{prob}, a scalar
-##' toxicity probability which is targeted. Additional arguments are model
-##' parameters. Then it computes, using model parameter(s) (samples), the
-##' resulting dose. Note that the model parameters are called exactly as in the
-##' \code{model} and must be included in the \code{sample} vector. The vectors
-##' of all samples for these parameters will then be supplied to the function.
-##' So your function must be able to process vectors of the model parameters,
-##' i.e. it must vectorize over them.
-##'
-##' The \code{prob} function has as first argument \code{dose}, which is a
-##' scalar dose. Additional arguments are model parameters. Then it computes,
-##' using model parameter(s) (samples), the resulting probability of toxicity at
-##' that dose. Again here, the function must vectorize over the model
-##' parameters.
-##'
-##' If you work with multivariate parameters, then please assume that your
-##' the two functions receive either one parameter value as a row vector,
-##' or a samples matrix where the rows correspond to the sampling index, i.e.
-##' the layout is then nSamples x dimParameter.
-##'
-##' Note that \code{dose} and \code{prob} are the inverse functions of each
-##' other.
-##'
-##' @slot dose a function computing the dose reaching a specific target
-##' probability, based on the model parameters and additional prior settings
-##' (see the details above)
-##' @slot prob a function computing the probability of toxicity for a specific
-##' dose, based on the model parameters and additional prior settings (see the
-##' details above)
-##'
-##' @seealso \code{\linkS4class{LogisticNormal}},
-##' \code{\linkS4class{LogisticLogNormal}},
-##' \code{\linkS4class{LogisticLogNormalSub}},
-##' \code{\linkS4class{LogisticKadane}},
-##' \code{\linkS4class{DualEndpoint}}
-##'
-##' @export
-##' @keywords classes
-.Model <-
-    setClass(Class="Model",
-             representation(dose="function",
-                            prob="function"),
-             contains="GeneralModel",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(all(names(formals(object@dose)) %in%
-                                 c("prob", object@sample)),
-                             "objects of dose function incorrect")
-                     o$check(all(names(formals(object@prob)) %in%
-                                 c("dose", object@sample)),
-                             "objects of prob function incorrect")
-
-                     o$result()
-         })
-validObject(.Model())
-
-## no init function for this one
-
-## ============================================================
-
 
 ##' Standard logistic model with bivariate (log) normal prior
 ##'

@@ -9,7 +9,6 @@ test_that(".AllModels works as expected", {
 
 test_that(".GeneralModel works as expected", {
   result <- expect_silent(.GeneralModel(
-    datanames = "x",
     datamodel = function(x) {
       x
     },
@@ -22,7 +21,36 @@ test_that(".GeneralModel works as expected", {
     init = function(x) {
       x
     },
-    sample = "param1"
+    sample = "param1",
+    datanames = "x"
   ))
   expect_valid(result, "GeneralModel")
+})
+
+# Model-class ----
+
+test_that(".Model works as expected", {
+  result <- expect_silent(.Model(
+    dose = function(prob, param1) {
+      prob
+    },
+    prob = function(dose, param1) {
+      dose
+    },
+    datamodel = function(x) {
+      x
+    },
+    priormodel = function(x) {
+      x
+    },
+    modelspecs = function(x) {
+      x
+    },
+    init = function(x) {
+      x
+    },
+    sample = "param1",
+    datanames = "x"
+  ))
+  expect_valid(result, "Model")
 })
