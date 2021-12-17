@@ -38,6 +38,7 @@ reference:
       - h_all_equivalent
       - h_plot_data_df
       - h_plot_data_cohort_lines
+      - h_check_fun_formals
   - title: Internal Validation Functions
     contents:
       - validate_subjects
