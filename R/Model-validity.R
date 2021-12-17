@@ -27,13 +27,20 @@ validate_general_model <- function(object) {
 #'   respectively, as well as they match `sample` slot of the `object`.
 validate_model <- function(object) {
   o <- Validate()
-
   o$check(
-    h_check_fun_formals(object@dose, mandatory = "prob", allowed = object@sample),
+    h_check_fun_formals(
+      object@dose,
+      mandatory = "prob",
+      allowed = object@sample
+    ),
     "Arguments of dose function are incorrect"
   )
   o$check(
-    h_check_fun_formals(object@prob, mandatory = "dose", allowed = object@sample),
+    h_check_fun_formals(
+      object@prob,
+      mandatory = "dose",
+      allowed = object@sample
+    ),
     "Arguments of prob function are incorrect"
   )
   o$result()
