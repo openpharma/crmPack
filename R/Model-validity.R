@@ -16,7 +16,7 @@ NULL
 validate_general_model <- function(object) {
   o <- Validate()
   o$check(
-    all(names(formals(object@init)) %in% object@datanames),
+    h_check_fun_formals(object@init, allowed = object@datanames),
     "Arguments of the init function must be data names"
   )
   o$result()
@@ -29,11 +29,11 @@ validate_model <- function(object) {
   o <- Validate()
 
   o$check(
-    all(names(formals(object@dose)) %in% c("prob", object@sample)),
+    h_check_fun_formals(object@dose, mandatory = "prob", allowed = object@sample),
     "Arguments of dose function are incorrect"
   )
   o$check(
-    all(names(formals(object@prob)) %in% c("dose", object@sample)),
+    h_check_fun_formals(object@prob, mandatory = "dose", allowed = object@sample),
     "Arguments of prob function are incorrect"
   )
   o$result()

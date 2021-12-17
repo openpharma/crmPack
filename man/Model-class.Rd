@@ -4,6 +4,7 @@
 \name{Model-class}
 \alias{Model-class}
 \alias{.Model}
+\alias{Model}
 \title{\code{Model}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -22,17 +23,17 @@ of all samples for these parameters will then be supplied to the function.
 Hence, a user function must be able to handle vectorized model parameters.
 
 The first argument of \code{prob} function must be the \code{dose}, which is a scalar
-dose. Further arguments are the model parameters. The \code{probe} function
+dose. Further arguments are the model parameters. The \code{prob} function
 computes, using model parameter(s) (samples), the resulting probability of
-toxicity at that dose. Again here, the function support vectorized model
-parameters.
+toxicity at that dose. Again here, the function should support vectorized
+model parameters.
 
 Note that \code{dose} and \code{prob} are the inverse functions of each other.
 
 If you work with multivariate parameters, then assume that your functions
 receive either one parameter value as a row vector, or a samples matrix
 where the rows correspond to the sampling index, i.e. the layout is then
-nSamples x dimParameter.
+\verb{nSamples x dimParameter}.
 }
 \section{Slots}{
 

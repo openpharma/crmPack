@@ -49,7 +49,7 @@ NULL
 #'   for parameters required to be initialized in the MCMC sampler, based on the
 #'   data slots that are required as arguments of this function.
 #' @slot sample (`character`)\cr names of all parameters from which you would
-#'  like to save the MCMC samples.
+#'   like to save the MCMC samples.
 #'
 #' @aliases GeneralModel
 #' @export
@@ -92,17 +92,17 @@ NULL
 #'   Hence, a user function must be able to handle vectorized model parameters.
 #'
 #'   The first argument of `prob` function must be the `dose`, which is a scalar
-#'   dose. Further arguments are the model parameters. The `probe` function
+#'   dose. Further arguments are the model parameters. The `prob` function
 #'   computes, using model parameter(s) (samples), the resulting probability of
-#'   toxicity at that dose. Again here, the function support vectorized model
-#'   parameters.
+#'   toxicity at that dose. Again here, the function should support vectorized
+#'   model parameters.
 #'
 #'   Note that `dose` and `prob` are the inverse functions of each other.
 #'
 #'   If you work with multivariate parameters, then assume that your functions
 #'   receive either one parameter value as a row vector, or a samples matrix
 #'   where the rows correspond to the sampling index, i.e. the layout is then
-#'   nSamples x dimParameter.
+#'   `nSamples x dimParameter`.
 #'
 #' @slot dose (`function`)\cr a function computing the dose reaching a specific
 #'   target probability, based on the model parameters and additional prior
@@ -114,6 +114,7 @@ NULL
 #' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
 #'   [`LogisticKadane`], [`DualEndpoint`].
 #'
+#' @aliases Model
 #' @export
 #'
 .Model <- setClass(
@@ -191,7 +192,6 @@ NULL
 
                      o$result()
                  })
-validObject(.LogisticLogNormal())
 
 
 ##' Initialization function for the "LogisticLogNormal" class
@@ -331,7 +331,6 @@ validObject(LogisticLogNormal(mean=c(0, 1),
 
                o$result()
              })
-validObject(.ProbitLogNormal())
 
 
 ##' Initialization function for the "ProbitLogNormal" class
@@ -472,7 +471,6 @@ validObject(ProbitLogNormal(mu=c(0, 1),
 
                      o$result()
                  })
-validObject(.LogisticLogNormalSub())
 
 
 ##' Initialization function for the "LogisticLogNormalSub" class
@@ -733,7 +731,6 @@ validObject(LogisticNormal(mean=c(0, 1),
 
                      o$result()
                  })
-validObject(.LogisticKadane())
 
 ##' Initialization function for the "LogisticKadane" class
 ##'
@@ -1322,7 +1319,6 @@ setMethod("initialize",
 
                      o$result()
                  })
-validObject(.DualEndpoint())
 
 ##' Initialization function for the "DualEndpoint" class
 ##'
@@ -1599,7 +1595,6 @@ validObject(DualEndpoint(mu=c(0, 1),
 
                      o$result()
                  })
-validObject(.DualEndpointRW())
 
 
 ##' Initialization function for the "DualEndpointRW" class
@@ -1857,7 +1852,6 @@ validObject(DualEndpointRW(sigma2betaW=1,
 
                      o$result()
                  })
-validObject(.DualEndpointBeta())
 
 ##' Initialization function for the "DualEndpointBeta" class
 ##'
@@ -2106,7 +2100,6 @@ validObject(DualEndpointBeta(E0=10,
 
                      o$result()
                  })
-validObject(.DualEndpointEmax())
 
 ##' Initialization function for the "DualEndpointEmax" class
 ##'
@@ -2345,7 +2338,6 @@ validObject(DualEndpointEmax(E0=10,
                      o$check(is.scalar(object@refDose) && (object@refDose > 0),
                              "refDose must be scalar and positive")
                  })
-validObject(.LogisticNormalMixture())
 
 
 ##' Initialization function for the "LogisticNormalMixture" class
@@ -2494,7 +2486,6 @@ validObject(LogisticNormalMixture(comp1=
                        "shareWeight does not specify a probability")
 
              })
-validObject(.LogisticLogNormalMixture())
 
 
 ##' Initialization function for the "LogisticLogNormalMixture" class
@@ -2709,7 +2700,6 @@ validObject(LogisticLogNormalMixture(mean=c(0, 1),
                      o$check(is.bool(object@logNormal),
                              "logNormal must be TRUE or FALSE")
                  })
-validObject(.LogisticNormalFixedMixture())
 
 ##' Initialization function for the "LogisticNormalFixedMixture" class
 ##'
@@ -2860,7 +2850,6 @@ validObject(LogisticNormalFixedMixture(components=
 .ModelPseudo<-setClass(Class="ModelPseudo",
                        contains="AllModels"
 )
-validObject(.ModelPseudo)
 ##' No intialization function
 
 ## ===========================================================================
@@ -2925,7 +2914,6 @@ validObject(.ModelPseudo)
                                    data="Data"),
                     contains="ModelPseudo"
 )
-validObject(.ModelTox)
 ##' No Initialization function
 
 ## ==========================================================================================
@@ -3628,7 +3616,6 @@ EffFlexi <- function(Eff,
 
                o$result()
              })
-validObject(.DALogisticLogNormal())
 
 
 ##' Initialization function for the `DALogisticLogNormal` class
@@ -3825,7 +3812,6 @@ validObject(DALogisticLogNormal(mean=c(0, 1),
                o$check(identical(length(object@weightMethod), 1L),
                        "weightMethod must have length 1")
              })
-validObject(.TITELogisticLogNormal())
 
 
 ##' Initialization function for the `TITELogisticLogNormal` class
@@ -3977,7 +3963,6 @@ validObject(TITELogisticLogNormal(mean=c(0, 1),
                o$check(all(object@skeletonProbs >= 0 & object@skeletonProbs <= 1),
                        "skeletonProbs must be probabilities between 0 and 1")
              })
-validObject(.OneParExpNormalPrior())
 
 ##' @describeIn OneParExpNormalPrior-class Initialization function for the
 ##'   `OneParExpNormalPrior` class.
@@ -4036,7 +4021,6 @@ validObject(OneParExpNormalPrior(
 .FractionalCRM <-
   setClass(Class = "FractionalCRM",
            contains="OneParExpNormalPrior")
-validObject(.FractionalCRM())
 
 ##' @describeIn FractionalCRM-class Initialization function for the fractional CRM.
 ##'   Takes the same arguments as [OneParExpNormalPrior()].
