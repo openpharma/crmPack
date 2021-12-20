@@ -32,6 +32,7 @@ reference:
       - AllModels
       - GeneralModel
       - Model
+      - LogisticLogNormal
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -39,6 +40,7 @@ reference:
       - h_plot_data_df
       - h_plot_data_cohort_lines
       - h_check_fun_formals
+      - h_is_positive_definite
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -49,6 +51,7 @@ reference:
       - validate_data_DA
       - validate_general_model
       - validate_model
+      - validate_logistic_log_normal
   - title: Example Data
     contents:
   - title: Methods

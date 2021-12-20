@@ -30,7 +30,7 @@
 ##' @keywords programming
 ##' @example examples/matching-tolerance.R
 matchTolerance <- function(x, table) {
-  if(length(table) == 0) {
+  if (length(table) == 0) {
     return(integer())
   }
 
@@ -652,7 +652,7 @@ h_plot_data_cohort_lines <- function(cohort,
 #'   sense that if `mandatory` is specified as a `character` vector, it does not
 #'   have to be repeated in `allowed`. If `allowed` is specified as `NULL`
 #'   (default), then it means that there must be no any arguments in `fun`
-#'   (other than `mandatory` arguments).
+#'   (except these ones which are specified in `mandatory`).
 #'
 h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
   assert_function(fun)
@@ -664,4 +664,37 @@ h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
   allowed_check <- all(arg_names %in% c(mandatory, allowed))
 
   mandatory_check && allowed_check
+}
+
+#' Test matrix for positive definiteness
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function checks whether a given numeric matrix `x`
+#' is positive-define.
+#'
+#' @details The positive definiteness test implemented in this function
+#'   is based on the following characterization valid for real matrices:
+#'   `A symmetric matrix is positive-definite if and only if all of its
+#'   eigenvalues are positive.` In this function an eigenvalue is considered
+#'   as positive if and only if it is greater than the `tolerance`.
+#'
+#' @param x (`matrix`)\cr a matrix to be checked.
+#' @param tolerance (`number`)\cr a given tolerance number used to check whether
+#'   an eigenvalue is positive or not. An eigenvalue is considered
+#'   as positive if and only if it is greater than the `tolerance`.
+#'
+#' @return `TRUE` if a given matrix is a positive-definite, `FALSE` otherwise.
+#'
+h_is_positive_definite <- function(x, tolerance = 1e-08) {
+  assert_matrix(x, any.missing = FALSE)
+  assert_numeric(x)
+  assert_number(tolerance)
+
+  # If x is not a square matrix or it is not a symmetric matrix.
+  if ((nrow(x) != ncol(x)) || (sum(x == t(x)) != (nrow(x)^2))) {
+    return(FALSE)
+  }
+  eigenvalues <- eigen(x, only.values = TRUE)$values
+  all(eigenvalues > tolerance)
 }

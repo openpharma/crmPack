@@ -148,3 +148,21 @@ test_that("h_check_fun_formals returns FALSE for non-valid arguments", {
   result <- any(result)
   expect_false(result)
 })
+
+# h_is_positive_definite ----
+
+test_that("h_is_positive_definite returns TRUE for positive-definite matrix", {
+  matrix <- matrix(c(5, 2, 2, 5), ncol = 2)
+  expect_true(h_is_positive_definite(matrix))
+})
+
+test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
+  m1 <- matrix(c(-5, 2, 2, 85), ncol = 2)
+  m2 <- matrix(c(5, 2, 1, 5), ncol = 2)
+  m3 <- matrix(c(-5, 2, 2, 85, 2, 4), ncol = 2)
+
+  is_pf_m1 <- h_is_positive_definite(m1)
+  is_pf_m2 <- h_is_positive_definite(m2)
+  is_pf_m3 <- h_is_positive_definite(m3)
+  expect_false(any(is_pf_m1, is_pf_m2, is_pf_m3))
+})

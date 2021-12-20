@@ -45,3 +45,30 @@ validate_model <- function(object) {
   )
   o$result()
 }
+
+#' @describeIn validate_model_objects validates that the model parameters
+#'  are valid as well as `refDose` is a positive scalar.
+validate_logistic_log_normal <- function(object) {
+  o <- Validate()
+  o$check(
+    test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
+    "mean must have length 2 and no missing values are allowed"
+  )
+  is_cov_2x2 <- test_matrix(
+    object@cov,
+    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+  )
+  if (is_cov_2x2) {
+    o$check(
+      h_is_positive_definite(object@cov),
+      "cov must be positive-definite matrix"
+    )
+  } else {
+    o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
+  }
+  o$check(
+    test_number(object@refDose, lower = 0 + .Machine$double.xmin),
+    "refDose must be positive scalar"
+  )
+  o$result()
+}
