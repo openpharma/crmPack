@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_is_positive_definite}
 \alias{h_is_positive_definite}
-\title{Test matrix for positive definiteness}
+\title{Testing Matrix for Positive Definiteness}
 \usage{
 h_is_positive_definite(x, tolerance = 1e-08)
 }
@@ -20,7 +20,7 @@ as positive if and only if it is greater than the \code{tolerance}.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This helper function checks whether a given numeric matrix \code{x}
-is positive-define.
+is positive-definite.
 }
 \details{
 The positive definiteness test implemented in this function

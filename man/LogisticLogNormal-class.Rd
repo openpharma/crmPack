@@ -43,10 +43,10 @@ of the bivariate normal distribution, as well as the reference dose.
 }}
 
 \note{
-Te parametrization inside the class uses \code{alpha0} and \code{alpha1}.
+The parametrization inside the class uses \code{alpha0} and \code{alpha1}.
 \code{alpha0} is identical to the intercept \eqn{\alpha} above and is the
-log-odds for a DLT at the reference dose \code{x}\emph{. Therefore, the prior mean
-for \code{alpha0} is the expected log-odds at the reference dose \code{x}} before
+log-odds for a DLT at the reference dose \verb{x*}. Therefore, the prior mean
+for \code{alpha0} is the expected log-odds at the reference dose \verb{x*} before
 observing any data. Note that the expected odds is not just the exp of the
 prior mean of \code{alpha0}, because the non-linearity of the exp
 transformation. The log-normal distribution on Wikipedia gives the formula
@@ -54,7 +54,7 @@ for computing the prior mean of \code{exp(alpha0)}, where \code{alpha0} is the
 \code{log(alpha)} in the Neuenschwander et al. (2008) paper. The \code{alpha1} is
 identical to \eqn{\beta} above and equals to \code{beta} in the Neuenschwander
 et al paper. The \code{exp(alpha1)} gives the odds-ratio for DLT between two
-doses that differ by the factor \code{exp(1)} ~ 2.7. Paramter \code{alpha1} has a
+doses that differ by the factor \code{exp(1)} ~ 2.7. Parameter \code{alpha1} has a
 log-normal distribution in the \code{LogisticLogNormal} model in order to ensure
 positivity of \code{alpha1} and thus \code{exp(alpha1) > 1}.
 }

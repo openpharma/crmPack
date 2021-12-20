@@ -666,12 +666,12 @@ h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
   mandatory_check && allowed_check
 }
 
-#' Test matrix for positive definiteness
+#' Testing Matrix for Positive Definiteness
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' This helper function checks whether a given numeric matrix `x`
-#' is positive-define.
+#' is positive-definite.
 #'
 #' @details The positive definiteness test implemented in this function
 #'   is based on the following characterization valid for real matrices:

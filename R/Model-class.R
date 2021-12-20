@@ -145,10 +145,10 @@ NULL
 #'   The slots of this class contain the mean vector and the covariance matrix
 #'   of the bivariate normal distribution, as well as the reference dose.
 #'
-#' @note Te parametrization inside the class uses `alpha0` and `alpha1`.
+#' @note The parametrization inside the class uses `alpha0` and `alpha1`.
 #'   `alpha0` is identical to the intercept \eqn{\alpha} above and is the
-#'   log-odds for a DLT at the reference dose `x`*. Therefore, the prior mean
-#'   for `alpha0` is the expected log-odds at the reference dose `x`* before
+#'   log-odds for a DLT at the reference dose `x*`. Therefore, the prior mean
+#'   for `alpha0` is the expected log-odds at the reference dose `x*` before
 #'   observing any data. Note that the expected odds is not just the exp of the
 #'   prior mean of `alpha0`, because the non-linearity of the exp
 #'   transformation. The log-normal distribution on Wikipedia gives the formula
@@ -156,7 +156,7 @@ NULL
 #'   `log(alpha)` in the Neuenschwander et al. (2008) paper. The `alpha1` is
 #'   identical to \eqn{\beta} above and equals to `beta` in the Neuenschwander
 #'   et al paper. The `exp(alpha1)` gives the odds-ratio for DLT between two
-#'   doses that differ by the factor `exp(1)` ~ 2.7. Paramter `alpha1` has a
+#'   doses that differ by the factor `exp(1)` ~ 2.7. Parameter `alpha1` has a
 #'   log-normal distribution in the `LogisticLogNormal` model in order to ensure
 #'   positivity of `alpha1` and thus `exp(alpha1) > 1`.
 #'
