@@ -20,7 +20,7 @@ allowed. The \code{allowed} parameter is independent from the \code{mandatory}, 
 sense that if \code{mandatory} is specified as a \code{character} vector, it does not
 have to be repeated in \code{allowed}. If \code{allowed} is specified as \code{NULL}
 (default), then it means that there must be no any arguments in \code{fun}
-(other than \code{mandatory} arguments).}
+(except these ones which are specified in \code{mandatory}).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -41,3 +41,31 @@ h_get_model <- function() {
     datanames = "x"
   )
 }
+
+h_get_logistic_log_normal <- function() {
+  .LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    refDose = 50,
+    dose = function(prob, param1) {
+      prob
+    },
+    prob = function(dose, param1) {
+      dose
+    },
+    datamodel = function(x) {
+      x
+    },
+    priormodel = function(x) {
+      x
+    },
+    modelspecs = function(x) {
+      x
+    },
+    init = function(x) {
+      x
+    },
+    sample = "param1",
+    datanames = "x"
+  )
+}

@@ -4,11 +4,14 @@
 \alias{validate_model_objects}
 \alias{validate_general_model}
 \alias{validate_model}
+\alias{validate_logistic_log_normal}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 validate_general_model(object)
 
 validate_model(object)
+
+validate_logistic_log_normal(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -31,5 +34,8 @@ arguments in \code{init} function are included in \code{datanames} slot.
 \item \code{validate_model}: validates that the names of the
 arguments in \code{dose} and \code{prob} functions contains \code{prob} and \code{dose}
 respectively, as well as they match \code{sample} slot of the \code{object}.
+
+\item \code{validate_logistic_log_normal}: validates that the model parameters
+are valid as well as \code{refDose} is a positive scalar.
 }}
 

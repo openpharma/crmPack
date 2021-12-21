@@ -127,144 +127,130 @@ NULL
   validity = validate_model
 )
 
-# nolint start
+# LogisticLogNormal-class ----
 
-##' Standard logistic model with bivariate (log) normal prior
-##'
-##' This is the usual logistic regression model with a bivariate normal prior on
-##' the intercept and log slope.
-##'
-##' The covariate is the natural logarithm of the dose \eqn{x} divided by
-##' the reference dose \eqn{x^{*}}:
-##'
-##' \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
-##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
-##' \eqn{x}.
-##'
-##' The prior is
-##' \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}
-##'
-##' The slots of this class contain the mean vector and the covariance matrix of
-##' the bivariate normal distribution, as well as the reference dose.
-##'
-##' Note that the parametrization inside the class uses alpha0 and alpha1.
-##' alpha0 is identical to the intercept \eqn{\alpha} above and is the log-odds
-##' for a DLT at the reference dose x*. Therefore, the prior mean for alpha0
-##' is the expected log-odds at the reference dose x* before observing any data.
-##' Note that the expected odds is not just the exp of the prior mean of alpha0,
-##' because the non-linearity of the exp transformation. The log-normal
-##' distribution on Wikipedia gives the formula for computing the prior mean of
-##' exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
-##' paper. alpha1 is identical to \eqn{\beta} above and equals the beta
-##' in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
-##' between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
-##' log-normal distribution in the LogisticLogNormal model in order to ensure
-##' positivity of alpha1 and thus exp(alpha1) > 1.
-##'
-##' @slot mean the prior mean vector \eqn{\mu}
-##' @slot cov the prior covariance matrix \eqn{\Sigma}
-##' @slot refDose the reference dose \eqn{x^{*}}
-##'
-##' @example examples/Model-class-LogisticLogNormal.R
-##' @export
-##' @keywords classes
-.LogisticLogNormal <-
-    setClass(Class="LogisticLogNormal",
-             representation(mean="numeric",
-                            cov="matrix",
-                            refDose="numeric"),
-             prototype(mean=c(0, 1),
-                       cov=diag(2),
-                       refDose=1),
-             contains="Model",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `LogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticLogNormal`] is the class for a usual logistic regression model with
+#' a bivariate normal prior on the intercept and log slope.
+#'
+#' @details The covariate is the natural logarithm of the dose \eqn{x} divided
+#'   by the reference dose \eqn{x^{*}}:
+#'   \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})},
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose
+#'   \eqn{x}.
+#'   The prior is: \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}.
+#'   The slots of this class contain the mean vector and the covariance matrix
+#'   of the bivariate normal distribution, as well as the reference dose.
+#'
+#' @note The parametrization inside the class uses `alpha0` and `alpha1`.
+#'   `alpha0` is identical to the intercept \eqn{\alpha} above and is the
+#'   log-odds for a DLT at the reference dose `x*`. Therefore, the prior mean
+#'   for `alpha0` is the expected log-odds at the reference dose `x*` before
+#'   observing any data. Note that the expected odds is not just the exp of the
+#'   prior mean of `alpha0`, because the non-linearity of the exp
+#'   transformation. The log-normal distribution on Wikipedia gives the formula
+#'   for computing the prior mean of `exp(alpha0)`, where `alpha0` is the
+#'   `log(alpha)` in the Neuenschwander et al. (2008) paper. The `alpha1` is
+#'   identical to \eqn{\beta} above and equals to `beta` in the Neuenschwander
+#'   et al paper. The `exp(alpha1)` gives the odds-ratio for DLT between two
+#'   doses that differ by the factor `exp(1)` ~ 2.7. Parameter `alpha1` has a
+#'   log-normal distribution in the `LogisticLogNormal` model in order to ensure
+#'   positivity of `alpha1` and thus `exp(alpha1) > 1`.
+#'
+#' @slot mean (`numeric`)\cr the prior mean vector.
+#' @slot cov (`matrix`)\cr the prior covariance matrix.
+#' @slot refDose (`number`)\cr the reference dose.
+#'
+#' @aliases LogisticLogNormal
+#' @export
+#'
+.LogisticLogNormal <- setClass(
+  Class = "LogisticLogNormal",
+  slots = c(
+    mean = "numeric",
+    cov = "matrix",
+    refDose = "numeric"
+  ),
+  prototype = prototype(
+    mean = c(0, 2),
+    cov = diag(2),
+    refDose = 1
+  ),
+  contains = "Model",
+  validity = validate_logistic_log_normal
+)
 
-                     o$check(length(object@mean) == 2,
-                             "mean must have length 2")
-                     o$check(identical(dim(object@cov), c(2L, 2L)) &&
-                                 ! is.null(chol(object@cov)),
-                             "cov must be positive-definite 2x2 covariance matrix")
-                     o$check(is.scalar(object@refDose) &&
-                                 (object@refDose > 0),
-                             "refDose must be positive scalar")
+# LogisticLogNormal-constructor ----
 
-                     o$result()
-                 })
-
-
-##' Initialization function for the "LogisticLogNormal" class
-##'
-##' @param mean the prior mean vector
-##' @param cov the prior covariance matrix
-##' @param refDose the reference dose
-##' @return the \code{\linkS4class{LogisticLogNormal}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname LogisticLogNormal-class
+#'
+#' @param mean (`numeric`)\cr the prior mean vector.
+#' @param cov (`matrix`)\cr the prior covariance matrix.
+#' @param refDose (`number`)\cr the reference dose.
+#'
+#' @export
+#' @example examples/Model-class-LogisticLogNormal.R
+#'
 LogisticLogNormal <- function(mean,
                               cov,
-                              refDose)
-{
-    .LogisticLogNormal(mean=mean,
-                       cov=cov,
-                       refDose=refDose,
-                       datamodel=
-                       function(){
-                           ## the logistic likelihood
-                           for (i in 1:nObs)
-                           {
-                               y[i] ~ dbern(p[i])
-                               logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                               StandLogDose[i] <- log(x[i] / refDose)
-                           }
-                       },
-                       priormodel=
-                       function(){
-                           ## the multivariate normal prior on the (transformed)
-                           ## coefficients
-                           priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                           theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                           ## extract actual coefficients
-                           alpha0 <- theta[1]
-                           alpha1 <- exp(theta[2])
+                              refDose) {
+  assert_number(refDose, lower = 0 + .Machine$double.xmin)
 
-                           ## dummy to use refDose here.
-                           ## It is contained in the modelspecs list below,
-                           ## so it must occur here
-                           bla <- refDose + 1
-                       },
-                       datanames=c("nObs", "y", "x"),
-                       modelspecs=
-                       function(){
-                           list(refDose=refDose,
-                                priorCov=cov,
-                                priorMean=mean)
-                       },
-                       dose=
-                       function(prob, alpha0, alpha1){
-                           StandLogDose <- (logit(prob) - alpha0) / alpha1
-                           return(exp(StandLogDose) * refDose)
-                       },
-                       prob=
-                       function(dose, alpha0, alpha1){
-                           StandLogDose <- log(dose / refDose)
-                           return(plogis(alpha0 + alpha1 * StandLogDose))
-                       },
-                       init=
-                       function(){
-                           list(theta=c(0, 1))
-                       },
-                       sample=
-                       c("alpha0", "alpha1"))
+  # The logistic likelihood.
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      y[i] ~ dbern(p[i])
+      logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
+      StandLogDose[i] <- log(x[i] / refDose)
+    }
+  }
+
+  priormodel <- function() {
+    # The multivariate normal prior on the (transformed) coefficients.
+    priorPrec[1:2, 1:2] <- inverse(priorCov[, ])
+    theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2, 1:2])
+    # Extract actual coefficients.
+    alpha0 <- theta[1]
+    alpha1 <- exp(theta[2])
+
+    # Dummy to use `refDose` here. It is contained in the `modelspecs` list
+    # so it must occur also here.
+    bla <- refDose + 1
+  }
+
+  dose <- function(prob, alpha0, alpha1) {
+    StandLogDose <- (logit(prob) - alpha0) / alpha1
+    exp(StandLogDose) * refDose
+  }
+
+  prob <- function(dose, alpha0, alpha1) {
+    StandLogDose <- log(dose / refDose)
+    plogis(alpha0 + alpha1 * StandLogDose)
+  }
+
+  .LogisticLogNormal(
+    datanames = c("nObs", "y", "x"),
+    datamodel = datamodel,
+    priormodel = priormodel,
+    modelspecs = function() {
+      list(refDose = refDose, priorCov = cov, priorMean = mean)
+    },
+    init = function() {
+      list(theta = c(0, 1))
+    },
+    sample = c("alpha0", "alpha1"),
+    dose = dose,
+    prob = prob,
+    mean = mean,
+    cov = cov,
+    refDose = refDose
+  )
 }
-validObject(LogisticLogNormal(mean=c(0, 1),
-                              cov=diag(2),
-                              refDose=1))
 
-
-## ============================================================
+# nolint start
 
 ##' Probit model with bivariate log normal prior
 ##'

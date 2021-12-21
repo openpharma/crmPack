@@ -4,56 +4,64 @@
 \name{LogisticLogNormal-class}
 \alias{LogisticLogNormal-class}
 \alias{.LogisticLogNormal}
-\title{Standard logistic model with bivariate (log) normal prior}
+\alias{LogisticLogNormal}
+\title{\code{LogisticLogNormal}}
+\usage{
+LogisticLogNormal(mean, cov, refDose)
+}
+\arguments{
+\item{mean}{(\code{numeric})\cr the prior mean vector.}
+
+\item{cov}{(\code{matrix})\cr the prior covariance matrix.}
+
+\item{refDose}{(\code{number})\cr the reference dose.}
+}
 \description{
-This is the usual logistic regression model with a bivariate normal prior on
-the intercept and log slope.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{LogisticLogNormal}} is the class for a usual logistic regression model with
+a bivariate normal prior on the intercept and log slope.
 }
 \details{
-The covariate is the natural logarithm of the dose \eqn{x} divided by
-the reference dose \eqn{x^{*}}:
-
-\deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
+The covariate is the natural logarithm of the dose \eqn{x} divided
+by the reference dose \eqn{x^{*}}:
+\deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})},
 where \eqn{p(x)} is the probability of observing a DLT for a given dose
 \eqn{x}.
-
-The prior is
-\deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}
-
-The slots of this class contain the mean vector and the covariance matrix of
-the bivariate normal distribution, as well as the reference dose.
-
-Note that the parametrization inside the class uses alpha0 and alpha1.
-alpha0 is identical to the intercept \eqn{\alpha} above and is the log-odds
-for a DLT at the reference dose x*. Therefore, the prior mean for alpha0
-is the expected log-odds at the reference dose x* before observing any data.
-Note that the expected odds is not just the exp of the prior mean of alpha0,
-because the non-linearity of the exp transformation. The log-normal
-distribution on Wikipedia gives the formula for computing the prior mean of
-exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
-paper. alpha1 is identical to \eqn{\beta} above and equals the beta
-in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
-between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
-log-normal distribution in the LogisticLogNormal model in order to ensure
-positivity of alpha1 and thus exp(alpha1) > 1.
+The prior is: \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}.
+The slots of this class contain the mean vector and the covariance matrix
+of the bivariate normal distribution, as well as the reference dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{mean}}{the prior mean vector \eqn{\mu}}
+\item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
 
-\item{\code{cov}}{the prior covariance matrix \eqn{\Sigma}}
+\item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix.}
 
-\item{\code{refDose}}{the reference dose \eqn{x^{*}}}
+\item{\code{refDose}}{(\code{number})\cr the reference dose.}
 }}
 
-\examples{
-
-
-model <- LogisticLogNormal(mean = c(-0.85, 1),
-                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           refDose = 50)
-
-
+\note{
+The parametrization inside the class uses \code{alpha0} and \code{alpha1}.
+\code{alpha0} is identical to the intercept \eqn{\alpha} above and is the
+log-odds for a DLT at the reference dose \verb{x*}. Therefore, the prior mean
+for \code{alpha0} is the expected log-odds at the reference dose \verb{x*} before
+observing any data. Note that the expected odds is not just the exp of the
+prior mean of \code{alpha0}, because the non-linearity of the exp
+transformation. The log-normal distribution on Wikipedia gives the formula
+for computing the prior mean of \code{exp(alpha0)}, where \code{alpha0} is the
+\code{log(alpha)} in the Neuenschwander et al. (2008) paper. The \code{alpha1} is
+identical to \eqn{\beta} above and equals to \code{beta} in the Neuenschwander
+et al paper. The \code{exp(alpha1)} gives the odds-ratio for DLT between two
+doses that differ by the factor \code{exp(1)} ~ 2.7. Parameter \code{alpha1} has a
+log-normal distribution in the \code{LogisticLogNormal} model in order to ensure
+positivity of \code{alpha1} and thus \code{exp(alpha1) > 1}.
 }
-\keyword{classes}
+\examples{
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  refDose = 50
+)
+}
