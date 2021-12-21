@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Standard logistic model with bivariate (log) normal prior — LogisticLogNormal-class • crmPack</title>
+<title>LogisticLogNormal — LogisticLogNormal-class • crmPack</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,10 @@
 
 
 
-<meta property="og:title" content="Standard logistic model with bivariate (log) normal prior — LogisticLogNormal-class" />
-<meta property="og:description" content="This is the usual logistic regression model with a bivariate normal prior on
-the intercept and log slope." />
+<meta property="og:title" content="LogisticLogNormal — LogisticLogNormal-class" />
+<meta property="og:description" content="
+LogisticLogNormal is the class for a usual logistic regression model with
+a bivariate normal prior on the intercept and log slope." />
 <meta property="og:image" content="https://github.com/roche/crmPack/logo.png" />
 
 
@@ -114,15 +115,6 @@ the intercept and log slope." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -144,63 +136,81 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Standard logistic model with bivariate (log) normal prior</h1>
+    <h1><code>LogisticLogNormal</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Model-class.R'><code>R/Model-class.R</code></a></small>
     <div class="hidden name"><code>LogisticLogNormal-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is the usual logistic regression model with a bivariate normal prior on
-the intercept and log slope.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p><code>LogisticLogNormal</code> is the class for a usual logistic regression model with
+a bivariate normal prior on the intercept and log slope.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>LogisticLogNormal</span><span class='op'>(</span><span class='va'>mean</span>, <span class='va'>cov</span>, <span class='va'>refDose</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>mean</th>
+      <td><p>(<code>numeric</code>)<br /> the prior mean vector.</p></td>
+    </tr>
+    <tr>
+      <th>cov</th>
+      <td><p>(<code>matrix</code>)<br /> the prior covariance matrix.</p></td>
+    </tr>
+    <tr>
+      <th>refDose</th>
+      <td><p>(<code>number</code>)<br /> the reference dose.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The covariate is the natural logarithm of the dose \(x\) divided by
-the reference dose \(x^{*}\):</p>
-<p>$$logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})$$
+    <p>The covariate is the natural logarithm of the dose \(x\) divided
+by the reference dose \(x^{*}\):
+$$logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})$$,
 where \(p(x)\) is the probability of observing a DLT for a given dose
-\(x\).</p>
-<p>The prior is
-$$(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)$$</p>
-<p>The slots of this class contain the mean vector and the covariance matrix of
-the bivariate normal distribution, as well as the reference dose.</p>
-<p>Note that the parametrization inside the class uses alpha0 and alpha1.
-alpha0 is identical to the intercept \(\alpha\) above and is the log-odds
-for a DLT at the reference dose x*. Therefore, the prior mean for alpha0
-is the expected log-odds at the reference dose x* before observing any data.
-Note that the expected odds is not just the exp of the prior mean of alpha0,
-because the non-linearity of the exp transformation. The log-normal
-distribution on Wikipedia gives the formula for computing the prior mean of
-exp(alpha0). alpha0 is the log(alpha) in the Neuenschwander et al. (2008)
-paper. alpha1 is identical to \(\beta\) above and equals the beta
-in the Neuenschwander et al paper. exp(alpha1) gives the odds-ratio for DLT
-between two doses that differ by the factor exp(1) ~ 2.7. alpha1 has a
-log-normal distribution in the LogisticLogNormal model in order to ensure
-positivity of alpha1 and thus exp(alpha1) &gt; 1.</p>
+\(x\).
+The prior is: $$(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)$$.
+The slots of this class contain the mean vector and the covariance matrix
+of the bivariate normal distribution, as well as the reference dose.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl>
-<dt><code>mean</code></dt><dd><p>the prior mean vector \(\mu\)</p></dd>
+<dt><code>mean</code></dt><dd><p>(<code>numeric</code>)<br /> the prior mean vector.</p></dd>
 
-<dt><code>cov</code></dt><dd><p>the prior covariance matrix \(\Sigma\)</p></dd>
+<dt><code>cov</code></dt><dd><p>(<code>matrix</code>)<br /> the prior covariance matrix.</p></dd>
 
-<dt><code>refDose</code></dt><dd><p>the reference dose \(x^{*}\)</p></dd>
+<dt><code>refDose</code></dt><dd><p>(<code>number</code>)<br /> the reference dose.</p></dd>
 
 </dl>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>The parametrization inside the class uses <code>alpha0</code> and <code>alpha1</code>.
+<code>alpha0</code> is identical to the intercept \(\alpha\) above and is the
+log-odds for a DLT at the reference dose <code>x*</code>. Therefore, the prior mean
+for <code>alpha0</code> is the expected log-odds at the reference dose <code>x*</code> before
+observing any data. Note that the expected odds is not just the exp of the
+prior mean of <code>alpha0</code>, because the non-linearity of the exp
+transformation. The log-normal distribution on Wikipedia gives the formula
+for computing the prior mean of <code>exp(alpha0)</code>, where <code>alpha0</code> is the
+<code>log(alpha)</code> in the Neuenschwander et al. (2008) paper. The <code>alpha1</code> is
+identical to \(\beta\) above and equals to <code>beta</code> in the Neuenschwander
+et al paper. The <code>exp(alpha1)</code> gives the odds-ratio for DLT between two
+doses that differ by the factor <code>exp(1)</code> ~ 2.7. Parameter <code>alpha1</code> has a
+log-normal distribution in the <code>LogisticLogNormal</code> model in order to ensure
+positivity of <code>alpha1</code> and thus <code>exp(alpha1) &gt; 1</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='LogisticLogNormal.html'>LogisticLogNormal</a></span><span class='op'>(</span>mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
-<span class='r-in'>                           cov <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,</span>
-<span class='r-in'>                           refDose <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'></span>
+    <pre class="examples"><span class='r-in'><span class='va'>my_model</span> <span class='op'>&lt;-</span> <span class='fu'>LogisticLogNormal</span><span class='op'>(</span></span>
+<span class='r-in'>  mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>0.85</span>, <span class='fl'>1</span><span class='op'>)</span>,</span>
+<span class='r-in'>  cov <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='op'>-</span><span class='fl'>0.5</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>,</span>
+<span class='r-in'>  refDose <span class='op'>=</span> <span class='fl'>50</span></span>
+<span class='r-in'><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

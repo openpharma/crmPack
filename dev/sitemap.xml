@@ -223,9 +223,6 @@
     <loc>https://github.com/roche/crmPack/reference/LogisticLogNormal-class.html</loc>
   </url>
   <url>
-    <loc>https://github.com/roche/crmPack/reference/LogisticLogNormal.html</loc>
-  </url>
-  <url>
     <loc>https://github.com/roche/crmPack/reference/LogisticLogNormalMixture-class.html</loc>
   </url>
   <url>
@@ -575,6 +572,12 @@
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/h_all_equivalent.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/h_check_fun_formals.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/roche/crmPack/reference/h_is_positive_definite.html</loc>
   </url>
   <url>
     <loc>https://github.com/roche/crmPack/reference/h_plot_data_cohort_lines.html</loc>

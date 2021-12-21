@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Open the browser with help pages for crmPack — crmPackHelp • crmPack</title>
+<title>Testing Matrix for Positive Definiteness — h_is_positive_definite • crmPack</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,10 @@
 
 
 
-<meta property="og:title" content="Open the browser with help pages for crmPack — crmPackHelp" />
-<meta property="og:description" content="This convenience function opens your browser with the help pages for
-crmPack." />
+<meta property="og:title" content="Testing Matrix for Positive Definiteness — h_is_positive_definite" />
+<meta property="og:description" content="
+This helper function checks whether a given numeric matrix x
+is positive-definite." />
 <meta property="og:image" content="https://github.com/roche/crmPack/logo.png" />
 
 
@@ -135,25 +136,43 @@ crmPack." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Open the browser with help pages for crmPack</h1>
+    <h1>Testing Matrix for Positive Definiteness</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/helpers.R'><code>R/helpers.R</code></a></small>
-    <div class="hidden name"><code>crmPackHelp.Rd</code></div>
+    <div class="hidden name"><code>h_is_positive_definite.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This convenience function opens your browser with the help pages for
-crmPack.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
+<p>This helper function checks whether a given numeric matrix <code>x</code>
+is positive-definite.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>crmPackHelp</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>h_is_positive_definite</span><span class='op'>(</span><span class='va'>x</span>, tolerance <span class='op'>=</span> <span class='fl'>1e-08</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>(<code>matrix</code>)<br /> a matrix to be checked.</p></td>
+    </tr>
+    <tr>
+      <th>tolerance</th>
+      <td><p>(<code>number</code>)<br /> a given tolerance number used to check whether
+an eigenvalue is positive or not. An eigenvalue is considered
+as positive if and only if it is greater than the <code>tolerance</code>.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>nothing</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+    <p><code>TRUE</code> if a given matrix is a positive-definite, <code>FALSE</code> otherwise.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Daniel Sabanes Bove <a href='mailto:sabanesd@roche.com'>sabanesd@roche.com</a></p>
+    <p>The positive definiteness test implemented in this function
+is based on the following characterization valid for real matrices:
+<code>A symmetric matrix is positive-definite if and only if all of its eigenvalues are positive.</code> In this function an eigenvalue is considered
+as positive if and only if it is greater than the <code>tolerance</code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

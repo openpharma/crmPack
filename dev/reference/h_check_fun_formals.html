@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Open the browser with help pages for crmPack — crmPackHelp • crmPack</title>
+<title>Check Formals of a Function — h_check_fun_formals • crmPack</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,11 @@
 
 
 
-<meta property="og:title" content="Open the browser with help pages for crmPack — crmPackHelp" />
-<meta property="og:description" content="This convenience function opens your browser with the help pages for
-crmPack." />
+<meta property="og:title" content="Check Formals of a Function — h_check_fun_formals" />
+<meta property="og:description" content="
+This helper function checks whether a given function fun has required or
+allowed arguments. The argument check is based only on the names of the
+arguments. No any further logic is verified here." />
 <meta property="og:image" content="https://github.com/roche/crmPack/logo.png" />
 
 
@@ -135,25 +137,46 @@ crmPack." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Open the browser with help pages for crmPack</h1>
+    <h1>Check Formals of a Function</h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/helpers.R'><code>R/helpers.R</code></a></small>
-    <div class="hidden name"><code>crmPackHelp.Rd</code></div>
+    <div class="hidden name"><code>h_check_fun_formals.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This convenience function opens your browser with the help pages for
-crmPack.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='figures/lifecycle-experimental.svg' alt='[Experimental]' /></a></p>
+<p>This helper function checks whether a given function <code>fun</code> has required or
+allowed arguments. The argument check is based only on the names of the
+arguments. No any further logic is verified here.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>crmPackHelp</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>h_check_fun_formals</span><span class='op'>(</span><span class='va'>fun</span>, mandatory <span class='op'>=</span> <span class='cn'>NULL</span>, allowed <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>fun</th>
+      <td><p>(<code>function</code>)<br /> a function name whose argument names will be
+checked.</p></td>
+    </tr>
+    <tr>
+      <th>mandatory</th>
+      <td><p>(<code>character</code> or <code>NULL</code>)<br /> the names of the arguments which
+must be present in <code>fun</code>. If <code>mandatory</code> is specified as <code>NULL</code> (default)
+this requirement is ignored.</p></td>
+    </tr>
+    <tr>
+      <th>allowed</th>
+      <td><p>(<code>character</code> or <code>NULL</code>)<br /> the names of the arguments which
+are allowed in <code>fun</code>. Names that do not belong to <code>allowed</code> are simply not
+allowed. The <code>allowed</code> parameter is independent from the <code>mandatory</code>, in a
+sense that if <code>mandatory</code> is specified as a <code>character</code> vector, it does not
+have to be repeated in <code>allowed</code>. If <code>allowed</code> is specified as <code>NULL</code>
+(default), then it means that there must be no any arguments in <code>fun</code>
+(except these ones which are specified in <code>mandatory</code>).</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>nothing</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Daniel Sabanes Bove <a href='mailto:sabanesd@roche.com'>sabanesd@roche.com</a></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

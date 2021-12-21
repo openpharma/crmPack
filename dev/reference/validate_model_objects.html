@@ -115,15 +115,6 @@ AllModels or inherited classes and therefore not exported." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -156,7 +147,11 @@ Other releases
 <code><a href='AllModels-class.html'>AllModels</a></code> or inherited classes and therefore not exported.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>validate_general_model</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>validate_general_model</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='fu'>validate_model</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+
+<span class='fu'>validate_logistic_log_normal</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -177,6 +172,11 @@ or <code>TRUE</code> in case validation passes.</p>
 <ul>
 <li><p><code>validate_general_model</code>: validates that the names of the
 arguments in <code>init</code> function are included in <code>datanames</code> slot.</p></li>
+<li><p><code>validate_model</code>: validates that the names of the
+arguments in <code>dose</code> and <code>prob</code> functions contains <code>prob</code> and <code>dose</code>
+respectively, as well as they match <code>sample</code> slot of the <code>object</code>.</p></li>
+<li><p><code>validate_logistic_log_normal</code>: validates that the model parameters
+are valid as well as <code>refDose</code> is a positive scalar.</p></li>
 </ul>
 
   </div>

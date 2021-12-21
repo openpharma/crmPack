@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class for the model input — Model-class • crmPack</title>
+<title>Model — Model-class • crmPack</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,10 +46,11 @@
 
 
 
-<meta property="og:title" content="Class for the model input — Model-class" />
-<meta property="og:description" content="This is the model class for single agent dose escalation,
-from which all other specific models inherit. It inherits all slots
-from GeneralModel." />
+<meta property="og:title" content="Model — Model-class" />
+<meta property="og:description" content="
+Model is the class for single agent dose escalation, from which all other
+specific models inherit. The Model class inherits from
+GeneralModel." />
 <meta property="og:image" content="https://github.com/roche/crmPack/logo.png" />
 
 
@@ -115,15 +116,6 @@ from GeneralModel." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-<!-- start_releases -->
-<li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-Other releases
-<span class="caret"></span></a><ul class="dropdown-menu" role="menu">
-   <li><a href="../../index.html">latest</a></li>
-   <li><a href="../..//index.html"></a></li>
-</ul></li>
-<!-- end_releases -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -145,67 +137,64 @@ Other releases
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class for the model input</h1>
+    <h1><code>Model</code></h1>
     <small class="dont-index">Source: <a href='https://github.com/roche/crmPack/blob/master/R/Model-class.R'><code>R/Model-class.R</code></a></small>
     <div class="hidden name"><code>Model-class.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This is the model class for single agent dose escalation,
-from which all other specific models inherit. It inherits all slots
-from <code><a href='GeneralModel-class.html'>GeneralModel</a></code>.</p>
+    <p><a href='https://lifecycle.r-lib.org/articles/stages.html#stable'><img src='figures/lifecycle-stable.svg' alt='[Stable]' /></a></p>
+<p><code>Model</code> is the class for single agent dose escalation, from which all other
+specific models inherit. The <code>Model</code> class inherits from
+<code><a href='GeneralModel-class.html'>GeneralModel</a></code>.</p>
     </div>
 
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>datamodel</code> must obey the convention that the data input is
-called exactly as in the <code><a href='Data-class.html'>Data</a></code> class.
-All prior distributions for parameters should be contained in the
-model function <code>priormodel</code>. The background is that this can
-be used to simulate from the prior distribution, before obtaining any
-data.</p>
-<p>The <code>dose</code> function has as first argument <code>prob</code>, a scalar
-toxicity probability which is targeted. Additional arguments are model
-parameters. Then it computes, using model parameter(s) (samples), the
-resulting dose. Note that the model parameters are called exactly as in the
-<code>model</code> and must be included in the <code>sample</code> vector. The vectors
+    <p>The first argument of <code>dose</code> function must be the <code>prob</code>, which is a
+scalar toxicity probability which is targeted. Further arguments are the
+model parameters. The <code>dose</code> function computes, using model parameter(s)
+(samples), the resulting dose. The model parameters are called exactly as
+in the <code>model</code> and must be included in the <code>sample</code> vector. The vectors
 of all samples for these parameters will then be supplied to the function.
-So your function must be able to process vectors of the model parameters,
-i.e. it must vectorize over them.</p>
-<p>The <code>prob</code> function has as first argument <code>dose</code>, which is a
-scalar dose. Additional arguments are model parameters. Then it computes,
-using model parameter(s) (samples), the resulting probability of toxicity at
-that dose. Again here, the function must vectorize over the model
-parameters.</p>
-<p>If you work with multivariate parameters, then please assume that your
-the two functions receive either one parameter value as a row vector,
-or a samples matrix where the rows correspond to the sampling index, i.e.
-the layout is then nSamples x dimParameter.</p>
-<p>Note that <code>dose</code> and <code>prob</code> are the inverse functions of each
-other.</p>
+Hence, a user function must be able to handle vectorized model parameters.</p>
+<p>The first argument of <code>prob</code> function must be the <code>dose</code>, which is a scalar
+dose. Further arguments are the model parameters. The <code>prob</code> function
+computes, using model parameter(s) (samples), the resulting probability of
+toxicity at that dose. Again here, the function should support vectorized
+model parameters.</p>
+<p>Note that <code>dose</code> and <code>prob</code> are the inverse functions of each other.</p>
+<p>If you work with multivariate parameters, then assume that your functions
+receive either one parameter value as a row vector, or a samples matrix
+where the rows correspond to the sampling index, i.e. the layout is then
+<code>nSamples x dimParameter</code>.</p>
     <h2 class="hasAnchor" id="slots"><a class="anchor" href="#slots"></a>Slots</h2>
 
     
 
 <dl>
-<dt><code>dose</code></dt><dd><p>a function computing the dose reaching a specific target
-probability, based on the model parameters and additional prior settings
-(see the details above)</p></dd>
+<dt><code>dose</code></dt><dd><p>(<code>function</code>)<br /> a function computing the dose reaching a specific
+target probability, based on the model parameters and additional prior
+settings (see the details above).</p></dd>
 
-<dt><code>prob</code></dt><dd><p>a function computing the probability of toxicity for a specific
-dose, based on the model parameters and additional prior settings (see the
-details above)</p></dd>
+<dt><code>prob</code></dt><dd><p>(<code>function</code>)<br /> a function computing the probability of toxicity
+for a specific dose, based on the model parameters and additional prior
+settings (see the details above).</p></dd>
 
 </dl>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>The <code>datamodel</code> must obey the convention that the data input is called
+exactly as in the <code><a href='Data-class.html'>Data</a></code> class. All prior distributions for parameters
+should be contained in the model function <code>priormodel</code>. The background is
+that this can be used to simulate from the prior distribution, before
+obtaining any data.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='LogisticNormal-class.html'>LogisticNormal</a></code>,
-<code><a href='LogisticLogNormal-class.html'>LogisticLogNormal</a></code>,
-<code><a href='LogisticLogNormalSub-class.html'>LogisticLogNormalSub</a></code>,
-<code><a href='LogisticKadane-class.html'>LogisticKadane</a></code>,
-<code><a href='DualEndpoint-class.html'>DualEndpoint</a></code></p></div>
+    <div class='dont-index'><p><code><a href='LogisticNormal.html'>LogisticNormal</a></code>, <code><a href='LogisticLogNormal-class.html'>LogisticLogNormal</a></code>, <code><a href='LogisticLogNormalSub.html'>LogisticLogNormalSub</a></code>,
+<code><a href='LogisticKadane.html'>LogisticKadane</a></code>, <code><a href='DualEndpoint.html'>DualEndpoint</a></code>.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
