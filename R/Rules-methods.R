@@ -1,17 +1,4 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Rules-methods.R] by DSB Die 09/06/2015 21:29>
-##
-## Description:
-## Encapsulate the rule functions in formal methods.
-##
-## History:
-## 07/02/2014   file creation
-## 10/07/2015   Adding more classes
-###################################################################################
+#nolint start
 
 ##' @include Model-methods.R
 ##' @include Samples-class.R
@@ -3340,4 +3327,39 @@ setMethod("windowLength",
 
 ## ============================================================
 
+#nolint end
+
+##' --------------------------------------------------
+##' The maximum allowable relative increments in terms of DLTs
+##' --------------------------------------------------
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' relative increments determined by DLTs so far (modify increment rule in
+##' Rules-methods.R)
+setMethod("maxDose",
+  signature =
+    signature(
+      increments = "IncrementsRelativeDLTCumulative",
+      data = "Data"
+    ),
+  def =
+    function(increments, data, ...) {
+
+      # Determine what was the last dose.
+      lastDose <- tail(data@x, 1)
+
+      # Determine how many DLTs have occurred in last cohort.
+      lastCohort <- tail(data@cohort, 1)
+      index <- which(data@cohort == lastCohort)
+      dltHappened <- sum(data@y[index])
+
+      # Determine in which interval this is.
+      interval <-
+        findInterval(
+          x = dltHappened,
+          vec = increments@DLTintervals
+        )
+
+      (1 + increments@increments[interval]) * lastDose
+    }
+)
 

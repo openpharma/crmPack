@@ -1,20 +1,7 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
-##
-## Description:
-## Encapsulate the rules in formal classes.
-##
-## History:
-## 07/02/2014   file creation
-## 10/07/2014   Added further rule classs
-###################################################################################
-
 ##' @include helpers.R
 {}
+
+#nolint start
 
 ## ============================================================
 
@@ -2061,4 +2048,56 @@ SafetyWindowConst <- function(patientGap,
 
 ## ============================================================
 
+#nolint end
+
+#' Increment Control based on Relative Differences and Cumulative DLTs
+#'
+#' @description `r lifecycle::badge("experimental")`
+#' 
+#' The `DLTintervals` is to be read as follows. If for example,
+#' we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and
+#' third at least 3 DLTs, then we specify `DLTintervals` to be `c(0, 1, 3)`. 
+#' That means, the right bound of the intervals are exclusive to the interval 
+#' -- the vector only gives the left bounds of the intervals. 
+#' The last interval goes from 3 to infinity.
+#'
+#' @slot DLTintervals (`integer`)\cr left bounds of the relevant
+#'   DLT intervals.
+#' @slot increments (`numeric`)\cr corresponding maximum allowable
+#' relative increments in the `DLTintervals`.
+#'
+#' @seealso [IncrementsRelativeDLT()].
+#' @export
+.IncrementsRelativeDLTCumulative <-
+  setClass(
+    Class = "IncrementsRelativeDLTCumulative",
+    representation(
+      DLTintervals = "integer",
+      increments = "numeric"
+    ),
+    prototype(
+      DLTintervals = as.integer(c(0, 1)),
+      increments = c(2, 1)
+    ),
+    contains = "Increments",
+    validity =
+      function(object) {
+        if (length(object@increments) != length(as.numeric(object@DLTintervals))) {
+          warning("increments must have same length as intervals")
+        }
+        if (is.unsorted(as.numeric(object@DLTintervals))) {
+          warning("intervals has to be sorted and have unique values")
+        }
+      }
+  )
+
+#' @rdname IncrementsRelativeDLTCumulative-class
+#'
+#' @export
+IncrementsRelativeDLTCumulative <- function(DLTintervals = c(0, 1),
+                                            increments = c(2, 1))
+{
+  .IncrementsRelativeDLTCumulative(DLTintervals=safeInteger(DLTintervals),
+                                   increments=increments)
+}
 
