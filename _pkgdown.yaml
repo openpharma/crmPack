@@ -33,6 +33,7 @@ reference:
       - GeneralModel
       - Model
       - LogisticLogNormal
+      - McmcOptions
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -52,6 +53,7 @@ reference:
       - validate_general_model
       - validate_model
       - validate_logistic_log_normal
+      - validate_mcmc_options
   - title: Example Data
     contents:
   - title: Methods

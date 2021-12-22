@@ -4,27 +4,37 @@
 \name{McmcOptions-class}
 \alias{McmcOptions-class}
 \alias{.McmcOptions}
-\title{Class for the three canonical MCMC options}
+\alias{McmcOptions}
+\title{\code{McmcOptions}}
+\usage{
+McmcOptions(burnin = 10000L, step = 2L, samples = 10000L)
+}
+\arguments{
+\item{burnin}{(\code{count})\cr number of burn-in iterations which are not saved.}
+
+\item{step}{(\code{count})\cr only every step-th iteration is saved after
+the burn-in.}
+
+\item{samples}{(\code{count})\cr number of resulting samples.}
+}
 \description{
-Class for the three canonical MCMC options
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{McmcOptions}} is a class for the three canonical MCMC options.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{iterations}}{number of MCMC iterations}
+\item{\code{iterations}}{(\code{count})\cr number of MCMC iterations.}
 
-\item{\code{burnin}}{number of burn-in iterations which are not saved}
+\item{\code{burnin}}{(\code{count})\cr number of burn-in iterations which are not saved.}
 
-\item{\code{step}}{only every step-th iteration is saved after the burn-in}
+\item{\code{step}}{(\code{count})\cr only every step-th iteration is saved after
+the burn-in.}
 }}
 
 \examples{
-
 # Set up MCMC option in order to have a burn-in of 10000 iterations and
-# then take every other iteration up to a collection of 10000 samples
-options <- McmcOptions(burnin=10000,
-                       step=2,
-                       samples=10000)
-
+# then take every other iteration up to a collection of 10000 samples.
+my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 }
-\keyword{classes}

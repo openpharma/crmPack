@@ -21,14 +21,16 @@ test_that("Data object can be created with user constructor Data", {
 
 test_that("Data object can be created with custom values", {
   plcb <- 0.01
-  result <- expect_silent(Data(
-    x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
-    y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
-    ID = 1:12,
-    cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
-    doseGrid = c(plcb, seq(25, 300, 25)),
-    placebo = TRUE,
-  ))
+  result <- expect_silent(
+    Data(
+      x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+      y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L),
+      doseGrid = c(plcb, seq(25, 300, 25)),
+      placebo = TRUE,
+    )
+  )
   expect_valid(result, "Data")
 })
 
