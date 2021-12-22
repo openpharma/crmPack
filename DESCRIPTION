@@ -64,6 +64,7 @@ Collate:
     'Design-class.R'
     'writeModel.R'
     'McmcOptions-methods.R'
+    'McmcOptions-validity.R'
     'McmcOptions-class.R'
     'Samples-class.R'
     'mcmc.R'
