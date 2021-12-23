@@ -70,7 +70,7 @@ setGeneric(
 #' @example examples/McmcOptions-methods-save_sample.R
 setMethod(
   f = "save_sample",
-  signature = signature(object = "McmcOptions"),
+  signature = signature(object = "McmcOptions", iteration = "integer"),
   definition = function(object, iteration, ...) {
     iteration_relative <- iteration - object@burnin # Relative to object@burnin.
     iteration_relative > 0 && ((iteration_relative %% object@step) == 0)
