@@ -25,8 +25,8 @@ determined.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 A method that determines if a sample from a given \code{iteration} should be
-saved. The sample should be save if and only if:
-(1) it is not in burn-in period and (2) it matches eriod and
+saved. The sample should be saved if and only if:
+it is not in burn-in period and it matches the \code{step}.
 }
 \examples{
 # Set up the MCMC option in order to have a burn-in of 10000 iterations and

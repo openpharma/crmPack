@@ -42,8 +42,8 @@ setMethod(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that determines if a sample from a given `iteration` should be
-#'   saved. The sample should be save if and only if:
-#'   (1) it is not in burn-in period and (2) it matches eriod and
+#'   saved. The sample should be saved if and only if:
+#'   it is not in burn-in period and it matches the `step`.
 #'
 #' @param object (`McmcOptions`)\cr object based on which the answer is
 #'   determined.
