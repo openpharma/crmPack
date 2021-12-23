@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_plot_data_df}
 \alias{h_plot_data_df}
-\title{Prepare Data for Plotting}
+\title{Preparing Data for Plotting}
 \usage{
 h_plot_data_df(data, blind = FALSE, ...)
 }

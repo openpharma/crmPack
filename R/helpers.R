@@ -548,7 +548,7 @@ h_all_equivalent <- function(target,
   isTRUE(tmp)
 }
 
-#' Prepare Data for Plotting
+#' Preparing Data for Plotting
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -595,7 +595,7 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
   df
 }
 
-#' Prepare Cohort Lines for Data Plot
+#' Preparing Cohort Lines for Data Plot
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -633,7 +633,7 @@ h_plot_data_cohort_lines <- function(cohort,
   }
 }
 
-#' Check Formals of a Function
+#' Checking Formals of a Function
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'

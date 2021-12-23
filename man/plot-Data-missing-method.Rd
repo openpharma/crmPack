@@ -3,7 +3,7 @@
 \name{plot,Data,missing-method}
 \alias{plot,Data,missing-method}
 \alias{plot-Data-method}
-\title{Plot method for the \code{\link{Data}} class.}
+\title{Plot Method for the \code{\link{Data}} Class}
 \usage{
 \S4method{plot}{Data,missing}(x, y, blind = FALSE, legend = TRUE, ...)
 }

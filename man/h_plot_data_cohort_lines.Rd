@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_plot_data_cohort_lines}
 \alias{h_plot_data_cohort_lines}
-\title{Prepare Cohort Lines for Data Plot}
+\title{Preparing Cohort Lines for Data Plot}
 \usage{
 h_plot_data_cohort_lines(cohort, placebo, vertical = TRUE)
 }

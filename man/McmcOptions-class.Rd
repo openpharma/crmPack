@@ -29,8 +29,12 @@ the burn-in.}
 
 \item{\code{burnin}}{(\code{count})\cr number of burn-in iterations which are not saved.}
 
-\item{\code{step}}{(\code{count})\cr only every step-th iteration is saved after
-the burn-in.}
+\item{\code{step}}{(\code{count})\cr only every \code{step}-th iteration is saved after
+the \code{burnin}. In other words, a sample from iteration
+\verb{i = 1,...,iterations}, is saved if and only if
+\verb{(i - burnin) mod step = 0}. For example, for \code{iterations = 6},
+\code{burnin = 0} and \code{step = 2}, only samples from iterations \verb{2,4,6}
+will be saved.}
 }}
 
 \examples{

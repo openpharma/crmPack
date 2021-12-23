@@ -3,7 +3,7 @@
 \name{plot,DataDual,missing-method}
 \alias{plot,DataDual,missing-method}
 \alias{plot-DataDual-method}
-\title{Plot method for the \code{\link{DataDual}} class.}
+\title{Plot Method for the \code{\link{DataDual}} Class}
 \usage{
 \S4method{plot}{DataDual,missing}(x, y, blind = FALSE, ...)
 }

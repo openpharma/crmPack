@@ -11,8 +11,12 @@ NULL
 #'
 #' @slot iterations (`count`)\cr number of MCMC iterations.
 #' @slot burnin (`count`)\cr number of burn-in iterations which are not saved.
-#' @slot step (`count`)\cr only every step-th iteration is saved after
-#'   the burn-in.
+#' @slot step (`count`)\cr only every `step`-th iteration is saved after
+#'   the `burnin`. In other words, a sample from iteration
+#'   `i = 1,...,iterations`, is saved if and only if
+#'   `(i - burnin) mod step = 0`. For example, for `iterations = 6`, 
+#'   `burnin = 0` and `step = 2`, only samples from iterations `2,4,6`
+#'   will be saved.
 #'
 #' @aliases McmcOptions
 #' @export

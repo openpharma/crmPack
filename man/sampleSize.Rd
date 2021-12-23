@@ -2,28 +2,32 @@
 % Please edit documentation in R/McmcOptions-methods.R
 \name{sampleSize}
 \alias{sampleSize}
-\title{Compute the number of samples for a given MCMC options triple}
+\alias{sampleSize,McmcOptions-method}
+\alias{sampleSize-McmcOptions-method}
+\title{Computing the Number of Samples}
 \usage{
-sampleSize(mcmcOptions)
+sampleSize(object, ...)
+
+\S4method{sampleSize}{McmcOptions}(object, ...)
 }
 \arguments{
-\item{mcmcOptions}{the \code{\linkS4class{McmcOptions}} object}
+\item{object}{(\code{McmcOptions})\cr object based on which the number of samples
+is computed.}
+
+\item{...}{not used.}
 }
 \value{
-the resulting sample size
+A number of samples for a given MCMC options.
 }
 \description{
-Compute the number of samples for a given MCMC options triple
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that computes the number of samples for a given MCMC options triple.
 }
 \examples{
+# Set up the MCMC option in order to have a burn-in of 10000 iterations and
+# then take every other iteration up to a collection of 10000 samples.
+my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 
-# Set up MCMC option in order to have a burn-in of 10000 iterations and
-# then take every other iteration up to a collection of 10000 samples
-options <- McmcOptions(burnin=10000,
-                       step=2,
-                       samples=10000)
-
-sampleSize(options)
-
+sampleSize(my_options)
 }
-\keyword{programming}

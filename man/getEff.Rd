@@ -4,7 +4,7 @@
 \alias{getEff}
 \alias{getEff,DataDual-method}
 \alias{getEff-DataDual-method}
-\title{Extracting efficacy responses for subjects categorized by the DLT}
+\title{Extracting Efficacy Responses for Subjects Categorized by the DLT}
 \usage{
 getEff(object, ...)
 

@@ -1,3 +1,4 @@
+# nolint start
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
 ##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
@@ -3340,4 +3341,4 @@ setMethod("windowLength",
 
 ## ============================================================
 
-
+# nolint end

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_check_fun_formals}
 \alias{h_check_fun_formals}
-\title{Check Formals of a Function}
+\title{Checking Formals of a Function}
 \usage{
 h_check_fun_formals(fun, mandatory = NULL, allowed = NULL)
 }
