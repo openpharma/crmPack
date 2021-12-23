@@ -1,51 +1,75 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[McmcOptions-methods.R] by DSB Fre 16/01/2015 11:58>
-##
-## Description:
-## Functions/methods for the MCMC formal class.
-##
-## History:
-## 12/12/2013   file creation (copy from glmBfp package)
-#####################################################################################
+# sample_size ----
 
-##' Compute the number of samples for a given MCMC options triple
-##'
-##' @param mcmcOptions the \code{\linkS4class{McmcOptions}} object
-##' @return the resulting sample size
-##'
-##' @example examples/McmcOptions-methods-sampleSize.R
-##' @export
-##' @keywords programming
-sampleSize <-
-    function(mcmcOptions)
-{
-    stopifnot(is(mcmcOptions, "McmcOptions"))
+#' Computing the Number of Samples
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that computes the number of samples for a given MCMC options triple.
+#'
+#' @param object (`McmcOptions`)\cr object based on which the number of samples
+#'   is computed.
+#' @param ... not used.
+#' @return A number of samples for a given MCMC options.
+#' @export
+#'
+setGeneric(
+  name = "sample_size",
+  def = function(object, ...) {
+    standardGeneric("sample_size")
+  },
+  valueClass = "integer"
+)
 
-    return(as.integer(ceiling((mcmcOptions@iterations - mcmcOptions@burnin) /
-                                  mcmcOptions@step)))
-}
+# McmcOptions-sample_size ----
 
-##' Determine if we should save this sample
-##'
-##' @param iteration the current iteration index
-##' @param mcmcOptions  the \code{\linkS4class{McmcOptions}} object
-##' @return Logical value, if we should save this sample
-##'
-##' @example examples/McmcOptions-methods-saveSample.R
-##' @export
-##' @keywords programming internal
-saveSample <-
-    function(iteration,
-             mcmcOptions)
-{
-    stopifnot(is(mcmcOptions, "McmcOptions"))
+#' @rdname sample_size
+#' @aliases sample_size-McmcOptions-method
+#' @example examples/McmcOptions-methods-sample_size.R
+setMethod(
+  f = "sample_size",
+  signature = signature(object = "McmcOptions"),
+  definition = function(object, ...) {
+    # Iteration numbers relative to object@burnin.
+    iterations_relative <- object@iterations - object@burnin
+    safeInteger(ceiling(iterations_relative / object@step))
+  }
+)
 
-    return((iteration > mcmcOptions@burnin) &&
-           (((iteration - mcmcOptions@burnin) %% mcmcOptions@step) == 0))
-}
+# save_sample ----
 
+#' Determining if this Sample Should be Saved
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that determines if a sample from a given `iteration` should be
+#'   saved. The sample should be save if and only if:
+#'   (1) it is not in burn-in period and (2) it matches eriod and
+#'
+#' @param object (`McmcOptions`)\cr object based on which the answer is
+#'   determined.
+#' @param iteration (`count`)\cr the current iteration index.
+#' @param ... not used.
+#' @return `TRUE` if this sample should be saved.
+#' @export
+#'
+setGeneric(
+  name = "save_sample",
+  def = function(object, iteration, ...) {
+    standardGeneric("save_sample")
+  },
+  valueClass = "logical"
+)
 
+# McmcOptions-save_sample ----
 
+#' @rdname save_sample
+#' @aliases save_sample-McmcOptions-method
+#' @example examples/McmcOptions-methods-save_sample.R
+setMethod(
+  f = "save_sample",
+  signature = signature(object = "McmcOptions"),
+  definition = function(object, iteration, ...) {
+    iteration_relative <- iteration - object@burnin # Relative to object@burnin.
+    iteration_relative > 0 && ((iteration_relative %% object@step) == 0)
+  }
+)

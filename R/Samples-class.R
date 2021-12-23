@@ -46,7 +46,7 @@
                      o <- Validate()
 
                      o$check(all(sapply(object@data,
-                                        NROW) == sampleSize(object@options)),
+                                        NROW) == sample_size(object@options)),
                              "all data elements must have as many rows as the sample size was")
 
                      o$result()

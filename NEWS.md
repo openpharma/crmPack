@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Renamed two functions in `McmcOptions` class. `sampleSize` to `sample_size`
+  and `saveSample` to `save_sample`.
 * Renamed elements in the list object returned by `getEff` function.
 * A vector under `t0` slot in `DataDA` class must be sorted in ascending order.
 * Replaced warning with message when no `cohort` or `ID` is provided to the user

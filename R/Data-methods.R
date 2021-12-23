@@ -24,10 +24,10 @@ setMethod(
     x_list
   }
 )
-
+  
 # Data-plot ----
 
-#' Plot method for the [`Data`] class.
+#' Plot Method for the [`Data`] Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -99,7 +99,7 @@ setMethod(
 
 # DataDual-plot ----
 
-#' Plot method for the [`DataDual`] class.
+#' Plot Method for the [`DataDual`] Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -158,7 +158,7 @@ setMethod(
 
 # DataDA-plot ----
 
-#' Plot method for the [`DataDA`] class.
+#' Plot Method for the [`DataDA`] Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -498,7 +498,7 @@ setMethod(
 
 # getEff ----
 
-#' Extracting efficacy responses for subjects categorized by the DLT
+#' Extracting Efficacy Responses for Subjects Categorized by the DLT
 #'
 #' @description `r lifecycle::badge("stable")`
 #'

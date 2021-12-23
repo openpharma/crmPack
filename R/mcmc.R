@@ -451,7 +451,7 @@ setMethod("mcmc",
               if(fromPrior){
                 ## sample from the (asymptotic) bivariate normal prior for theta
 
-                tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
+                tmp <- mvtnorm::rmvnorm(n=sample_size(options),
                                         mean=c(slot(thismodel,"phi1"),slot(thismodel,"phi2")),
                                         sigma=solve(precision))
 
@@ -531,16 +531,16 @@ setMethod("mcmc",
 
 
               if (length(thismodel@nu)==2) {
-                nusamples <- rgamma(sampleSize(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
+                nusamples <- rgamma(sample_size(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
                 priornu <- mean(nusamples)} else {
                   priornu <- thismodel@nu
-                  nusamples <- rep(nu,sampleSize(options))}
+                  nusamples <- rep(nu,sample_size(options))}
 
 
 
               ## sample from the (asymptotic) bivariate normal prior for theta1 and theta2
 
-              tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
+              tmp <- mvtnorm::rmvnorm(n=sample_size(options),
                                       mean=c(thismodel@theta1,thismodel@theta2),
                                       sigma=solve(priornu*(thismodel@matQ)))
 
@@ -582,7 +582,7 @@ setMethod("mcmc",
              ##update the model
               thismodel <- update(object=model,data=data)
 
-              nSamples <- sampleSize(options)
+              nSamples <- sample_size(options)
 
               ##Prepare samples container
               ###List parameter samples to save
@@ -695,7 +695,7 @@ setMethod("mcmc",
 
                 ##4)Save Samples
 
-                if (saveSample(iterMcmc,options)){
+                if (save_sample(iterMcmc,options)){
                   samples$ExpEff[iterSave,]<-betaW
                   samples$sigma2[iterSave,1]<-sigma2
                   samples$sigma2betaW[iterSave,1] <-sigma2betaW
