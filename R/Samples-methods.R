@@ -185,7 +185,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sample_size(object@options),
+              probSamples <- matrix(nrow=sampleSize(object@options),
                                     ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -253,7 +253,7 @@ setMethod("fit",
 
               ## get the biomarker level samples
               ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sample_size(object@options),
+              biomLevelSamples <- matrix(nrow=sampleSize(object@options),
                                          ncol=data@nGrid)
 
               ## evaluate the biomLevels, for all samples.
@@ -527,7 +527,7 @@ setMethod("plot",
                       1:max(data@xLevel)
 
               ## get the plot data for the biomarker plot
-              functionSamples <- matrix(nrow=sample_size(x@options),
+              functionSamples <- matrix(nrow=sampleSize(x@options),
                                         ncol=length(xLevels))
 
               ## evaluate the biomLevels, for all samples.
@@ -622,7 +622,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sample_size(object@options),
+              probSamples <- matrix(nrow=sampleSize(object@options),
                                     ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -678,7 +678,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sample_size(object@options),
+              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
                                       ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -734,7 +734,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sample_size(object@options),
+              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
                                       ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -826,7 +826,7 @@ setMethod("fitGain",
 
               ## first we have to get samples from the gain
               ## at the dose grid points.
-              GainSamples <- matrix(nrow=sample_size(DLEsamples@options),
+              GainSamples <- matrix(nrow=sampleSize(DLEsamples@options),
                                     ncol=length(points))
 
               ## evaluate the probs, for all gain samples.
@@ -1403,7 +1403,7 @@ setMethod("plotDualResponses",
                 seq_along(data@doseGrid)} else {1:max(data@xLevel)}
 
               ##get the plot data for the efficacy
-              functionSamples <- matrix(nrow=sample_size(Effsamples@options),
+              functionSamples <- matrix(nrow=sampleSize(Effsamples@options),
                                         ncol=length(xLevels))
               ##evaluate the efficacy for all samples
               for (i in seq_along(xLevels))
@@ -1688,7 +1688,7 @@ setMethod("fitPEM",
               ## first we have to get samples from the PEM
               ## at intercept points and 2 middel points between
               ## intercepts.
-              PEMSamples <- matrix(nrow=sample_size(object@options),
+              PEMSamples <- matrix(nrow=sampleSize(object@options),
                                    ncol=length(points))
 
               i_max<-max(seq_along(points))

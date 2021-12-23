@@ -1,7 +1,7 @@
 #' @include McmcOptions-class.R
 NULL
 
-# sample_size ----
+# sampleSize ----
 
 #' Computing the Number of Samples
 #'
@@ -16,29 +16,31 @@ NULL
 #' @export
 #'
 setGeneric(
-  name = "sample_size",
+  name = "sampleSize",
   def = function(object, ...) {
-    standardGeneric("sample_size")
+    standardGeneric("sampleSize")
   },
   valueClass = "integer"
 )
 
-# McmcOptions-sample_size ----
+# McmcOptions-sampleSize ----
 
-#' @rdname sample_size
-#' @aliases sample_size-McmcOptions-method
-#' @example examples/McmcOptions-methods-sample_size.R
+#' @rdname sampleSize
+#' @aliases sampleSize-McmcOptions-method
+#' @example examples/McmcOptions-methods-sampleSize.R
 setMethod(
-  f = "sample_size",
+  f = "sampleSize",
   signature = signature(object = "McmcOptions"),
   definition = function(object, ...) {
-    # Iteration numbers relative to object@burnin.
     iterations_relative <- object@iterations - object@burnin
-    safeInteger(ceiling(iterations_relative / object@step))
+    if (iterations_relative <= 0) {
+      return(0L)
+    }
+    safeInteger(floor(iterations_relative / object@step))
   }
 )
 
-# save_sample ----
+# saveSample ----
 
 #' Determining if this Sample Should be Saved
 #'
@@ -56,23 +58,23 @@ setMethod(
 #' @export
 #'
 setGeneric(
-  name = "save_sample",
+  name = "saveSample",
   def = function(object, iteration, ...) {
-    standardGeneric("save_sample")
+    standardGeneric("saveSample")
   },
   valueClass = "logical"
 )
 
-# McmcOptions-save_sample ----
+# McmcOptions-saveSample ----
 
-#' @rdname save_sample
-#' @aliases save_sample-McmcOptions-method
-#' @example examples/McmcOptions-methods-save_sample.R
+#' @rdname saveSample
+#' @aliases saveSample-McmcOptions-method
+#' @example examples/McmcOptions-methods-saveSample.R
 setMethod(
-  f = "save_sample",
+  f = "saveSample",
   signature = signature(object = "McmcOptions"),
   definition = function(object, iteration, ...) {
-    iteration_relative <- iteration - object@burnin # Relative to object@burnin.
+    iteration_relative <- iteration - object@burnin
     iteration_relative > 0 && ((iteration_relative %% object@step) == 0)
   }
 )

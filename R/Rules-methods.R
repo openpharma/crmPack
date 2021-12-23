@@ -176,7 +176,7 @@ setMethod("nextBest",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sample_size(samples@options),
+              probSamples <- matrix(nrow=sampleSize(samples@options),
                                     ncol=data@nGrid)
 
               ## evaluate the probs, for all samples.
@@ -450,7 +450,7 @@ setMethod("nextBest",
 
               ## get the biomarker level samples
               ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sample_size(samples@options),
+              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
                                          ncol=data@nGrid)
 
               ## evaluate the biomLevels, for all samples.
@@ -468,7 +468,7 @@ setMethod("nextBest",
 
               ## now get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sample_size(samples@options),
+              probSamples <- matrix(nrow=sampleSize(samples@options),
                                     ncol=data@nGrid)
 
               ## evaluate the probs, for all samples.
@@ -1501,7 +1501,7 @@ setMethod("stopTrial",
 
               ## get the biomarker level samples
               ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sample_size(samples@options),
+              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
                                          ncol=data@nGrid)
 
               ## evaluate the biomLevels, for all samples.
@@ -2412,7 +2412,7 @@ setMethod("nextBest",
 
               ##first get the probDLE samples
               points <- data@doseGrid
-              probDLESamples <- matrix(nrow=sample_size(samples@options),
+              probDLESamples <- matrix(nrow=sampleSize(samples@options),
                                        ncol=length(points))
 
               ## evaluate the probs, for all gain samples.
@@ -2459,7 +2459,7 @@ setMethod("nextBest",
 
               ##we have to get samples from the gain values at all dose levels
 
-              ExpEffSamples  <- matrix(nrow=sample_size(Effsamples@options),
+              ExpEffSamples  <- matrix(nrow=sampleSize(Effsamples@options),
                                        ncol=length(points))
 
               ## evaluate the probs, for all gain samples.
@@ -2476,7 +2476,7 @@ setMethod("nextBest",
               ExpEff <- apply(ExpEffSamples,2,FUN=nextBest@Gstarderive)
 
 
-              GainSamples <- matrix(nrow=sample_size(samples@options),
+              GainSamples <- matrix(nrow=sampleSize(samples@options),
                                     ncol=length(points))
 
               ## evaluate the probs, for all gain samples.
@@ -2659,7 +2659,7 @@ setMethod("nextBest",
 
                 ##first get the probDLE samples
                 points <- data@doseGrid
-                probDLESamples <- matrix(nrow=sample_size(samples@options),
+                probDLESamples <- matrix(nrow=sampleSize(samples@options),
                                          ncol=length(points))
 
                 ## evaluate the probs, for all gain samples.
@@ -2711,7 +2711,7 @@ setMethod("nextBest",
                 ExpEff <- apply(ExpEffsamples,2,FUN=nextBest@Gstarderive)
 
 
-                GainSamples <- matrix(nrow=sample_size(samples@options),
+                GainSamples <- matrix(nrow=sampleSize(samples@options),
                                       ncol=length(points))
 
                 ## evaluate the probs, for all gain samples.
@@ -3041,7 +3041,7 @@ setMethod("stopTrial",
               ##Find the gain value samples then the GstarSamples
               points <- data@doseGrid
 
-              GainSamples <- matrix(nrow=sample_size(samples@options),
+              GainSamples <- matrix(nrow=sampleSize(samples@options),
                                     ncol=length(points))
 
               ## evaluate the probs, for all gain samples.

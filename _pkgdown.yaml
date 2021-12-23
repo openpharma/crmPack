@@ -68,10 +68,10 @@ reference:
       - update-DataDA-method
       - get_efficacy
       - get_efficacy-DataDual-method
-      - sample_size
-      - sample_size-McmcOptions-method
-      - save_sample
-      - save_sample-McmcOptions-method
+      - sampleSize
+      - sampleSize-McmcOptions-method
+      - saveSample
+      - saveSample-McmcOptions-method
   - title: Functions
     contents:
       - dapply

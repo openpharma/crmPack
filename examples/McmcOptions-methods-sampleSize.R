@@ -2,4 +2,4 @@
 # then take every other iteration up to a collection of 10000 samples.
 my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 
-sample_size(my_options)
+sampleSize(my_options)
