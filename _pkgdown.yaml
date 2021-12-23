@@ -54,8 +54,6 @@ reference:
       - validate_model
       - validate_logistic_log_normal
       - validate_mcmc_options
-  - title: Example Data
-    contents:
   - title: Methods
     contents:
       - as.list
@@ -75,9 +73,3 @@ reference:
   - title: Functions
     contents:
       - dapply
-  - title: Graphs
-    contents:
-  - title: Control Functions
-    contents:
-  - title: Assertions
-    contents:
