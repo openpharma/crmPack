@@ -15,3 +15,5 @@ vignettes/*.R
 vignettes/*.pdf
 vignettes/figure/*.pdf
 *.synctex.gz
+docs/
+pkgdown/
