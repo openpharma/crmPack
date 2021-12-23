@@ -1,3 +1,4 @@
+# nolint start
 ## Title: Try to reproduce outcome from BayesLogit  with MCMCpack functions
 ## Purpose: Replace BayesLogit
 ## Author: Daniel Sabanes Bove (sabanesd@roche.com)
@@ -163,7 +164,7 @@ initRes <- BayesLogit::logit(y=data@y,
                              X=X,
                              m0=c(priorphi1,priorphi2),
                              P0=precision,
-                             samp=sampleSize(options),
+                             samp=sample_size(options),
                              burn=options@burnin)
 samples <- initRes$beta
 head(samples)
@@ -201,3 +202,4 @@ initRes2 <- MCMCpack::MCMClogit(formula = y ~ logx,
                                beta.start=c(0, 0))
 head(initRes2)
 hist(initRes2[, 1])
+# nolint end

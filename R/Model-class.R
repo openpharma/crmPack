@@ -3525,7 +3525,7 @@ EffFlexi <- function(Eff,
             dose=function(ExpEff){
               ##Find dose level given a particular Expected Efficacy level with linear Interpolation
               dosevec<-c()
-              for (k in 1:sampleSize(options)){
+              for (k in 1:sample_size(options)){
                 IxEff0<- max(which((ExpEff-Effsamples@data$ExpEff[k,]) >= 0))
                 IxEff1<- min(which((ExpEff-Effsamples@data$ExpEff[k,]) < 0))
                 Interpoldose<-data@doseGrid[IxEff0]+(data@doseGrid[IxEff1]-data@doseGrid[IxEff0])*((ExpEff-Effsamples@data$ExpEff[k,IxEff0])/(Effsamples@data$ExpEff[k,IxEff1]-Effsamples@data$ExpEff[k,IxEff0]))
