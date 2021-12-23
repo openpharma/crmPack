@@ -1,3 +1,6 @@
+#' @include McmcOptions-class.R
+NULL
+
 # sample_size ----
 
 #' Computing the Number of Samples
