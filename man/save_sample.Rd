@@ -2,13 +2,13 @@
 % Please edit documentation in R/McmcOptions-methods.R
 \name{save_sample}
 \alias{save_sample}
-\alias{save_sample,McmcOptions,integer-method}
+\alias{save_sample,McmcOptions-method}
 \alias{save_sample-McmcOptions-method}
 \title{Determining if this Sample Should be Saved}
 \usage{
 save_sample(object, iteration, ...)
 
-\S4method{save_sample}{McmcOptions,integer}(object, iteration, ...)
+\S4method{save_sample}{McmcOptions}(object, iteration, ...)
 }
 \arguments{
 \item{object}{(\code{McmcOptions})\cr object based on which the answer is
@@ -34,5 +34,5 @@ it is not in burn-in period and it matches the \code{step}.
 my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 
 sample_size(my_options)
-save_sample(iteration = 5, mcmcOptions = my_options)
+save_sample(my_options, iteration = 5)
 }

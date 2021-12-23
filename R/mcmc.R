@@ -695,7 +695,7 @@ setMethod("mcmc",
 
                 ##4)Save Samples
 
-                if (save_sample(iterMcmc,options)){
+                if (save_sample(options, iterMcmc)){
                   samples$ExpEff[iterSave,]<-betaW
                   samples$sigma2[iterSave,1]<-sigma2
                   samples$sigma2betaW[iterSave,1] <-sigma2betaW

@@ -3,4 +3,4 @@
 my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 
 sample_size(my_options)
-save_sample(iteration = 5, mcmcOptions = my_options)
+save_sample(my_options, iteration = 5)
