@@ -43,7 +43,7 @@ test_that("ModelTox-dose works as expected", {
 
 # ModelTox_noSamples-dose ----
 
-test_that("ModelTox_noSamples-dose works as expected", {
+test_that("ModelTox-dose works as expected when no samples", {
   dlt_model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEweights = c(3, 3),

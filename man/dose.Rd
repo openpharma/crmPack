@@ -30,7 +30,9 @@ resulting dose by \code{model@dose} function.}
 \item{...}{not used.}
 }
 \value{
-A \code{numeric} output from the \code{model@dose} function.
+A \code{numeric} vector from the \code{model@dose} function. Every element in
+the output vector corresponds to one element of a sample. Hence, the output
+vector is of the same length as the sample vector.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

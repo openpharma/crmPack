@@ -13,7 +13,9 @@ NULL
 #' @param samples (`Samples`)\cr the samples that will be used to compute the
 #'   resulting dose by `model@dose` function.
 #' @param ... not used.
-#' @return A `numeric` output from the `model@dose` function.
+#' @return A `numeric` vector from the `model@dose` function. Every element in
+#'   the output vector corresponds to one element of a sample. Hence, the output
+#'   vector is of the same length as the sample vector.
 #' @export
 #'
 setGeneric(
@@ -45,11 +47,9 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples, ...) {
-    # Extract the `dose` function from the model.
     dose_fun <- model@dose
     # Which arguments, besides the `prob`, does `dose_fun` need?
     dose_args <- setdiff(formalArgs(dose_fun), "prob")
-    # Call `dose_fun` with `prob` and with the arguments taken from the samples.
     do.call(dose_fun, c(list(prob = prob), samples@data[dose_args]))
   }
 )
@@ -73,11 +73,9 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples, ...) {
-    # Extract the `dose` function from the model.
     dose_fun <- model@dose
     # Which arguments, besides the `prob`, does `dose_fun` need?
     dose_args <- setdiff(formalArgs(dose_fun), "prob")
-    # Call `dose_fun` with `prob` and with the arguments taken from the samples.
     do.call(dose_fun, c(list(prob = prob), samples@data[dose_args]))
   }
 )
@@ -103,15 +101,12 @@ setMethod(
     samples = "missing"
   ),
   definition = function(prob, model, ...) {
-    # Extract the `dose` function from the model.
     dose_fun <- model@dose
     # Which arguments, besides the `prob`, does `dose_fun` need?
     dose_args <- setdiff(formalArgs(dose_fun), "prob")
     if (!all(dose_args %in% slotNames(model))) {
       stop("Arguments to `model@dose` (except `probe`) must be in the `model`")
     }
-    # Call `dose_fun` with `prob` and with the arguments taken from the
-    # `model`.
     dose_args_values <- sapply(
       dose_args,
       function(a) slot(model, a),
