@@ -28,7 +28,6 @@ setGeneric(
 
 # Model-dose ----
 
-#' 
 #' @rdname dose
 #'
 #' @description Compute the doses for a given toxicity probability,
