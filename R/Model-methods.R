@@ -35,6 +35,7 @@ setGeneric(
 #'
 #' @aliases dose-Model-method
 #' @example examples/Model-method-dose.R
+#' @export
 #'
 setMethod(
   f = "dose",
@@ -62,6 +63,7 @@ setMethod(
 #'
 #' @aliases dose-ModelTox-method
 #' @example examples/Model-method-dose-ModelTox.R
+#' @export
 #'
 setMethod(
   f = "dose",
@@ -91,6 +93,7 @@ setMethod(
 #'
 #' @aliases dose-ModelTox_noSamples-method
 #' @example examples/Model-method-dose-ModelTox_noSamples.R
+#' @export
 #'
 setMethod(
   f = "dose",
