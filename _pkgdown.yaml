@@ -70,6 +70,10 @@ reference:
       - sampleSize-McmcOptions-method
       - saveSample
       - saveSample-McmcOptions-method
+      - dose
+      - dose-Model-method
+      - dose-ModelTox-method
+      - dose-ModelTox_noSamples-method
   - title: Functions
     contents:
       - dapply

@@ -3,9 +3,12 @@
 \name{dose}
 \alias{dose}
 \alias{dose,numeric,Model,Samples-method}
+\alias{dose-Model-method}
 \alias{dose,numeric,ModelTox,Samples-method}
+\alias{dose-ModelTox-method}
 \alias{dose,numeric,ModelTox,missing-method}
-\title{Compute the doses for a given probability, given model and samples}
+\alias{dose-ModelTox_noSamples-method}
+\title{Computing the Doses for a Given Probability, Model and the Samples}
 \usage{
 dose(prob, model, samples, ...)
 
@@ -16,81 +19,96 @@ dose(prob, model, samples, ...)
 \S4method{dose}{numeric,ModelTox,missing}(prob, model, samples, ...)
 }
 \arguments{
-\item{prob}{the probability}
+\item{prob}{(\code{number})\cr the toxicity probability which is targeted.}
 
-\item{model}{the \code{\linkS4class{Model}}}
+\item{model}{(\code{Model} or \code{ModelTox})\cr the model for single agent dose
+escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 
-\item{samples}{the \code{\linkS4class{Samples}}}
+\item{samples}{(\code{Samples})\cr the samples that will be used to compute the
+resulting dose by \code{model@dose} function.}
 
-\item{\dots}{unused}
+\item{...}{not used.}
+}
+\value{
+A \code{numeric} vector from the \code{model@dose} function. Every element in
+the output vector corresponds to one element of a sample. Hence, the output
+vector is of the same length as the sample vector.
 }
 \description{
-Compute the doses for a given probability, given model and samples
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Compute the doses for a given toxicity probability,
+a given single agent dose escalation model, and the samples.
+
+Compute the doses for a given toxicity probability,
+a given Pseudo DLE (dose-limiting events)/toxicity model, and the samples.
+
+Compute the dose for a given toxicity probability and a given
+Pseudo DLE (dose-limiting events)/toxicity model without samples.
+All the arguments to \code{model@dose} function (except \code{prob}) should be
+present in the \code{model} object.
 }
-\section{Functions}{
-\itemize{
-\item \code{dose,numeric,ModelTox,Samples-method}: Compute the doses for a given probability, given
-Pseudo DLE model with samples
-
-\item \code{dose,numeric,ModelTox,missing-method}: Compute the dose for a given probability and a given
-Pseudo DLE model without samples
-}}
-
 \examples{
+# Create some data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# create some data
-data <- Data(x =c (0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y = c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid = c(0.1, 0.5, 1.5, 3, 6,
-                          seq(from=10, to=80, by=2)))
+# Initialize a model, e.g. `LogisticLogNormal`.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  refDose = 56
+)
 
-# Initialize a  model
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=matrix(c(1, -0.5, -0.5, 1),
-                                      nrow=2),
-                           refDose=56)
-
-# Get samples from posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
+# Get samples from posterior.
 set.seed(94)
-samples <- mcmc(data, model, options)
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
-# Posterior for the dose achieving Prob(DLE) = 0.45
-TD45 <- dose(prob=0.45,model=model,samples=samples)
+# Posterior for the dose achieving Prob(DLT) = 0.45.
+td_45 <- dose(prob = 0.45, model = my_model, samples = my_samples)
 
+# Create data from the `Data` (or `DataDual`) class.
+my_data <- Data(
+  x = c(25, 50, 25, 50, 75, 300, 250, 150),
+  y = c(0, 0, 0, 0, 0, 1, 1, 0),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
 
-# create data from the 'Data" (or DataDual') class
-data <- Data(x = c(25,50,25,50,75,300,250,150),
-             y = c(0,0,0,0,0,1,1,0),
-             doseGrid = seq(25,300,25))
+# Initialize a model from `ModelTox` class e.g using `LogisticIndepBeta` model.
+dlt_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = my_data
+)
 
-## Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model
-DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
-                              DLEweights=c(3,3),
-                              DLEdose=c(25,300),
-                              data=data)
+# Get samples from posterior.
+set.seed(94)
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 200)
+dlt_sample <- mcmc(data = my_data, model = dlt_model, options = my_options)
 
-options <- McmcOptions(burnin=100, step=2, samples=200)
-DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
+# Posterior for the dose achieving Prob(DLT) = 0.45.
+td_45 <- dose(prob = 0.45, model = dlt_model, samples = dlt_sample)
 
-TD45 <- dose(prob=0.45, model = DLEmodel,samples = DLEsamples)
+# Create some data from the `Data` (or `DataDual`) class.
+my_data <- Data(
+  x = c(25, 50, 25, 50, 75, 300, 250, 150),
+  y = c(0, 0, 0, 0, 0, 1, 1, 0),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
 
+# Initialize a model from `ModelTox` class e.g using `LogisticIndepBeta` model.
+dlt_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = my_data
+)
 
-# create data from the 'Data' (or 'DataDual') class
-data <- Data(x = c(25,50,25,50,75,300,250,150),
-                 y = c(0,0,0,0,0,1,1,0),
-                 doseGrid = seq(25,300,25))
-
-## Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model
-DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
-                              DLEweights=c(3,3),
-                              DLEdose=c(25,300),
-                              data=data)
-
-TD45 <- dose(prob=0.45, model = DLEmodel)
-
+td_45 <- dose(prob = 0.45, model = dlt_model)
 }
-\keyword{methods}
