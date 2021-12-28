@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataParts-method}
 \alias{update,DataParts-method}
-\alias{update-DataParts-method}
+\alias{update-DataParts}
 \title{Updating \code{DataParts} Objects}
 \usage{
 \S4method{update}{DataParts}(object, x, y, ..., check = TRUE)
@@ -16,10 +16,10 @@
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
 
-\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.}
+\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data}}.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object
-should be conducted. See help for \code{\link{update-Data-method}} for more details
+should be conducted. See help for \code{\link{update-Data}} for more details
 on the use case of this parameter.}
 }
 \value{

@@ -1,4 +1,4 @@
-# GeneralData-as.list ----
+# as.list-GeneralData ----
 
 #' Coerce to List Method for `GeneralData` Objects
 #'
@@ -25,7 +25,7 @@ setMethod(
   }
 )
   
-# Data-plot ----
+# plot-Data ----
 
 #' Plot Method for the [`Data`] Class
 #'
@@ -44,7 +44,7 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-Data-method
+#' @aliases plot-Data
 #' @example examples/Data-method-plot.R
 #' @export
 #'
@@ -97,7 +97,7 @@ setMethod(
   }
 )
 
-# DataDual-plot ----
+# plot-DataDual ----
 
 #' Plot Method for the [`DataDual`] Class
 #'
@@ -115,7 +115,7 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-DataDual-method
+#' @aliases plot-DataDual
 #' @example examples/Data-method-plot-DataDual.R
 #' @export
 #'
@@ -156,7 +156,7 @@ setMethod(
   }
 )
 
-# DataDA-plot ----
+# plot-DataDA ----
 
 #' Plot Method for the [`DataDA`] Class
 #'
@@ -174,7 +174,7 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-DataDA-method
+#' @aliases plot-DataDA
 #' @example examples/Data-method-plot-DataDA.R
 #' @export
 #'
@@ -231,7 +231,7 @@ setMethod(
   }
 )
 
-# Data-update ----
+# update-Data ----
 
 #' Updating `Data` Objects
 #'
@@ -262,7 +262,7 @@ setMethod(
 #'
 #' @return The new, updated [`Data`] object.
 #'
-#' @aliases update-Data-method
+#' @aliases update-Data
 #' @example examples/Data-method-update.R
 #' @export
 #'
@@ -318,7 +318,7 @@ setMethod(
   }
 )
 
-# DataParts-update ----
+# update-DataParts ----
 
 #' Updating `DataParts` Objects
 #'
@@ -328,14 +328,14 @@ setMethod(
 #'
 #' @param object (`DataParts`)\cr object you want to update.
 #' @inheritParams update,Data-method
-#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param ... further arguments passed to `Data` update method [`update-Data`].
 #' @param check (`flag`)\cr whether the validation of the updated object
-#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   should be conducted. See help for [`update-Data`] for more details
 #'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataParts`] object.
 #'
-#' @aliases update-DataParts-method
+#' @aliases update-DataParts
 #' @example examples/Data-method-update-DataParts.R
 #' @export
 #'
@@ -373,7 +373,7 @@ setMethod(
   }
 )
 
-# DataDual-update ----
+# update-DataDual ----
 
 #' Updating `DataDual` Objects
 #'
@@ -384,14 +384,14 @@ setMethod(
 #' @param object (`DataDual`)\cr object you want to update.
 #' @param w (`numeric`)\cr the continuous vector of biomarker values
 #'   for all the patients in this update.
-#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param ... further arguments passed to `Data` update method [`update-Data`].
 #' @param check (`flag`)\cr whether the validation of the updated object
-#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   should be conducted. See help for [`update-Data`] for more details
 #'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataDual`] object.
 #'
-#' @aliases update-DataDual-method
+#' @aliases update-DataDual
 #' @example examples/Data-method-update-DataDual.R
 #' @export
 #'
@@ -416,7 +416,7 @@ setMethod(
   }
 )
 
-# DataDA-update ----
+# update-DataDA ----
 
 #' Updating `DataDA` Objects
 #'
@@ -436,15 +436,15 @@ setMethod(
 #' @param trialtime (`number`)\cr current time in the trial, i.e. a followup time.
 #' @param y (`numeric`)\cr the new DLTs for all patients, i.e. for existing
 #'   patients in the `object` as well as for new patients.
-#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param ... further arguments passed to `Data` update method [`update-Data`].
 #'   These are used when there are new patients to be added to the cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object
-#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   should be conducted. See help for [`update-Data`] for more details
 #'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataDA`] object.
 #'
-#' @aliases update-DataDA-method
+#' @aliases update-DataDA
 #' @example examples/Data-method-update-DataDA.R
 #' @export
 #'
@@ -520,10 +520,10 @@ setGeneric(
   valueClass = "list"
 )
 
-# DataDual-getEff ----
+# getEff-DataDual ----
 
 #' @rdname getEff
-#' @aliases getEff-DataDual-method
+#' @aliases getEff-DataDual
 #' @example examples/Data-method-getEff.R
 #'
 setMethod(

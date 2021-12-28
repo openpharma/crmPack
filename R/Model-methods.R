@@ -28,14 +28,14 @@ setGeneric(
   valueClass = "numeric"
 )
 
-# Model-dose ----
+# dose-Model ----
 
 #' @rdname dose
 #'
 #' @description Compute the doses for a given toxicity probability,
 #'   a given single agent dose escalation model, and the samples.
 #'
-#' @aliases dose-Model-method
+#' @aliases dose-Model
 #' @example examples/Model-method-dose.R
 #' @export
 #'
@@ -54,14 +54,14 @@ setMethod(
   }
 )
 
-# ModelTox-dose ----
+# dose-ModelTox ----
 
 #' @rdname dose
 #'
 #' @description Compute the doses for a given toxicity probability,
 #'   a given Pseudo DLE (dose-limiting events)/toxicity model, and the samples.
 #'
-#' @aliases dose-ModelTox-method
+#' @aliases dose-ModelTox
 #' @example examples/Model-method-dose-ModelTox.R
 #' @export
 #'
@@ -80,7 +80,7 @@ setMethod(
   }
 )
 
-# ModelTox_noSamples-dose ----
+# dose-ModelTox_noSamples ----
 
 #' @rdname dose
 #'
@@ -89,7 +89,7 @@ setMethod(
 #'   All the arguments to `model@dose` function (except `prob`) should be
 #'   present in the `model` object.
 #'
-#' @aliases dose-ModelTox_noSamples-method
+#' @aliases dose-ModelTox_noSamples
 #' @example examples/Model-method-dose-ModelTox_noSamples.R
 #' @export
 #'

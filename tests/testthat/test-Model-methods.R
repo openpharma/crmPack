@@ -1,6 +1,6 @@
-# Model-dose ----
+# dose-Model ----
 
-test_that("Model-dose works as expected", {
+test_that("dose-Model works as expected", {
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
@@ -19,9 +19,9 @@ test_that("Model-dose works as expected", {
   expect_equal(result, expected, tolerance = 0.001)
 })
 
-# ModelTox-dose ----
+# dose-ModelTox ----
 
-test_that("ModelTox-dose works as expected", {
+test_that("dose-ModelTox works as expected", {
   dlt_model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEweights = c(3, 3),
@@ -41,9 +41,9 @@ test_that("ModelTox-dose works as expected", {
   expect_equal(result, expected, tolerance = 0.0001)
 })
 
-# ModelTox_noSamples-dose ----
+# dose-ModelTox_noSamples ----
 
-test_that("ModelTox-dose works as expected when no samples", {
+test_that("dose-ModelTox works as expected when no samples", {
   dlt_model <- LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEweights = c(3, 3),

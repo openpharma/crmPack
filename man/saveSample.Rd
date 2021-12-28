@@ -3,7 +3,7 @@
 \name{saveSample}
 \alias{saveSample}
 \alias{saveSample,McmcOptions-method}
-\alias{saveSample-McmcOptions-method}
+\alias{saveSample-McmcOptions}
 \title{Determining if this Sample Should be Saved}
 \usage{
 saveSample(object, iteration, ...)

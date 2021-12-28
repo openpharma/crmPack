@@ -1,3 +1,5 @@
+# validate_mcmc_options ----
+
 #' Internal Helper Functions for Validation of [`McmcOptions`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`

@@ -3,7 +3,7 @@
 \name{getEff}
 \alias{getEff}
 \alias{getEff,DataDual-method}
-\alias{getEff-DataDual-method}
+\alias{getEff-DataDual}
 \title{Extracting Efficacy Responses for Subjects Categorized by the DLT}
 \usage{
 getEff(object, ...)

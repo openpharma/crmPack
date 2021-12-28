@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataDA-method}
 \alias{update,DataDA-method}
-\alias{update-DataDA-method}
+\alias{update-DataDA}
 \title{Updating \code{DataDA} Objects}
 \usage{
 \S4method{update}{DataDA}(object, u, t0, trialtime, y, ..., check = TRUE)
@@ -22,11 +22,11 @@ as well as for new patients.}
 \item{y}{(\code{numeric})\cr the new DLTs for all patients, i.e. for existing
 patients in the \code{object} as well as for new patients.}
 
-\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.
+\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data}}.
 These are used when there are new patients to be added to the cohort.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object
-should be conducted. See help for \code{\link{update-Data-method}} for more details
+should be conducted. See help for \code{\link{update-Data}} for more details
 on the use case of this parameter.}
 }
 \value{

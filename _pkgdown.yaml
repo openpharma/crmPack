@@ -57,23 +57,23 @@ reference:
   - title: Methods
     contents:
       - as.list
-      - plot-Data-method
-      - plot-DataDual-method
-      - plot-DataDA-method
-      - update-Data-method
-      - update-DataParts-method
-      - update-DataDual-method
-      - update-DataDA-method
+      - plot-Data
+      - plot-DataDual
+      - plot-DataDA
+      - update-Data
+      - update-DataParts
+      - update-DataDual
+      - update-DataDA
       - get_efficacy
-      - get_efficacy-DataDual-method
+      - get_efficacy-DataDual
       - sampleSize
-      - sampleSize-McmcOptions-method
+      - sampleSize-McmcOptions
       - saveSample
-      - saveSample-McmcOptions-method
+      - saveSample-McmcOptions
       - dose
-      - dose-Model-method
-      - dose-ModelTox-method
-      - dose-ModelTox_noSamples-method
+      - dose-Model
+      - dose-ModelTox
+      - dose-ModelTox_noSamples
   - title: Functions
     contents:
       - dapply

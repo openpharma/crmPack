@@ -3,11 +3,11 @@
 \name{dose}
 \alias{dose}
 \alias{dose,numeric,Model,Samples-method}
-\alias{dose-Model-method}
+\alias{dose-Model}
 \alias{dose,numeric,ModelTox,Samples-method}
-\alias{dose-ModelTox-method}
+\alias{dose-ModelTox}
 \alias{dose,numeric,ModelTox,missing-method}
-\alias{dose-ModelTox_noSamples-method}
+\alias{dose-ModelTox_noSamples}
 \title{Computing the Doses for a Given Probability, Model and the Samples}
 \usage{
 dose(prob, model, samples, ...)
