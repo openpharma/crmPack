@@ -3,7 +3,7 @@
 \name{sampleSize}
 \alias{sampleSize}
 \alias{sampleSize,McmcOptions-method}
-\alias{sampleSize-McmcOptions-method}
+\alias{sampleSize-McmcOptions}
 \title{Computing the Number of Samples}
 \usage{
 sampleSize(object, ...)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,Data,missing-method}
 \alias{plot,Data,missing-method}
-\alias{plot-Data-method}
+\alias{plot-Data}
 \title{Plot Method for the \code{\link{Data}} Class}
 \usage{
 \S4method{plot}{Data,missing}(x, y, blind = FALSE, legend = TRUE, ...)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,DataDual,missing-method}
 \alias{plot,DataDual,missing-method}
-\alias{plot-DataDual-method}
+\alias{plot-DataDual}
 \title{Plot Method for the \code{\link{DataDual}} Class}
 \usage{
 \S4method{plot}{DataDual,missing}(x, y, blind = FALSE, ...)

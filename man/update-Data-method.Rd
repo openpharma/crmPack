@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,Data-method}
 \alias{update,Data-method}
-\alias{update-Data-method}
+\alias{update-Data}
 \title{Updating \code{Data} Objects}
 \usage{
 \S4method{update}{Data}(

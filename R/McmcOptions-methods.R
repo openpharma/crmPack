@@ -23,10 +23,10 @@ setGeneric(
   valueClass = "integer"
 )
 
-# McmcOptions-sampleSize ----
+# sampleSize-McmcOptions ----
 
 #' @rdname sampleSize
-#' @aliases sampleSize-McmcOptions-method
+#' @aliases sampleSize-McmcOptions
 #' @example examples/McmcOptions-methods-sampleSize.R
 setMethod(
   f = "sampleSize",
@@ -65,10 +65,10 @@ setGeneric(
   valueClass = "logical"
 )
 
-# McmcOptions-saveSample ----
+# saveSample-McmcOptions ----
 
 #' @rdname saveSample
-#' @aliases saveSample-McmcOptions-method
+#' @aliases saveSample-McmcOptions
 #' @example examples/McmcOptions-methods-saveSample.R
 setMethod(
   f = "saveSample",
