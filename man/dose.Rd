@@ -8,7 +8,7 @@
 \alias{dose-ModelTox}
 \alias{dose,numeric,ModelTox,missing-method}
 \alias{dose-ModelTox_noSamples}
-\title{Computing the Doses for a Given Probability, Model and the Samples}
+\title{Computing the Doses for a Given Probability, Model and Samples}
 \usage{
 dose(prob, model, samples, ...)
 
@@ -25,7 +25,7 @@ dose(prob, model, samples, ...)
 escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
-used to compute the resulting dose by \code{model@dose} function.}
+used to compute the resulting doses by \code{model@dose} function.}
 
 \item{...}{not used.}
 }
@@ -38,10 +38,10 @@ vector is of the same length as the sample vector.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 Compute doses for a given toxicity probability,
-a given single agent dose escalation model, and the samples.
+a given single agent dose escalation model, and samples.
 
 Compute doses for a given toxicity probability,
-a given Pseudo DLE (dose-limiting events)/toxicity model, and the samples.
+a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
 
 Compute the dose for a given toxicity probability and a given
 Pseudo DLE (dose-limiting events)/toxicity model without samples.
