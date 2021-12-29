@@ -8,11 +8,12 @@
 #' to help programming validation for new S4 classes.
 #'
 #' @details Starting from an empty \code{msg} vector, with each check
-#' that is returning `FALSE` the vector gets a new element - the string
-#' explaining the failure of the validation.
+#'   that is returning `FALSE` the vector gets a new element - the string
+#'   explaining the failure of the validation.
 #'
 #' @name Validate
 #' @field msg (`character`)\cr the cumulative messages.
+#'
 Validate <- setRefClass(
   Class = "Validate",
   fields = list(msg = "character"),
@@ -40,6 +41,35 @@ Validate <- setRefClass(
     }
   )
 )
+
+#' Joining JAGS Models
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This helper function joins two JAGS models in the way that the body of the
+#'   first model is joined with the body of the second model (in this order).
+#'
+#' @note The functions behind `model1` and `model2` must have a multi-expression
+#'   body, i.e. braced expression(s). Environments or any attributes of the
+#'   function bodies are not preserved in any way after joining.
+#'
+#' @param model1 (`function`)\cr the first model to join.
+#' @param model2 (`function`)\cr the second model to join.
+#'
+#' @return joined models.
+#'
+h_join_models <- function(model1, model2) {
+  assert_function(model1)
+  assert_function(model2)
+  assert_class(body(model1), "{")
+  assert_class(body(model2), "{")
+  assert_true(length(body(model2)) >= 2)
+
+  body1 <- as.list(body(model1))
+  body2 <- as.list(body(model2))[-1]
+  body(model1) <- as.call(c(body1, body2))
+  model1
+}
 
 # nolint start
 
@@ -75,39 +105,6 @@ matchTolerance <- function(x, table) {
 ##' @export
 `%~%` <- function(x, table) {
   !is.na(matchTolerance(x = x, table = table))
-}
-
-
-
-##' Helper function to join two function bodies
-##'
-##' @param body1 first body
-##' @param body2 second body
-##' @return joined body
-##'
-##' @keywords internal programming
-joinBodies <- function(body1, body2) {
-  lenBody1 <- length(body1)
-  lenBody2 <- length(body2)
-  for (i in seq_len(lenBody2 - 1L))
-  {
-    body1[[lenBody1 + i]] <- body2[[1L + i]]
-  }
-  return(body1)
-}
-
-##' Helper function to join two BUGS models
-##'
-##' @param model1 first model
-##' @param model2 second model
-##' @return joined model
-##'
-##' @keywords internal programming
-joinModels <- function(model1, model2) {
-  body1 <- body(model1)
-  body2 <- body(model2)
-  body(model1) <- joinBodies(body1, body2)
-  return(model1)
 }
 
 ##' Check overlap of two character vectors

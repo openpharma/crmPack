@@ -42,6 +42,7 @@ reference:
       - h_plot_data_cohort_lines
       - h_check_fun_formals
       - h_is_positive_definite
+      - h_join_models
   - title: Internal Validation Functions
     contents:
       - validate_subjects

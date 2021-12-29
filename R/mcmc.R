@@ -111,7 +111,7 @@ setMethod("mcmc",
                       model@priormodel
                   } else {
                       ## here the data model + the prior
-                      joinModels(model@datamodel,
+                      h_join_models(model@datamodel,
                                  model@priormodel)
                   }
 
