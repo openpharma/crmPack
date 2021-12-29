@@ -18,7 +18,8 @@ joined models.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 This helper function joins two JAGS models in the way that the body of the
-first model is joined with the body of the second model (in this order).
+second model is appended into the body of the first model (in this order).
+After that, the first, body-extended model is returned.
 }
 \note{
 The functions behind \code{model1} and \code{model2} must have a multi-expression
