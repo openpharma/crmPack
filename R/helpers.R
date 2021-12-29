@@ -47,10 +47,10 @@ Validate <- setRefClass(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' This helper function joins two JAGS models in the way that the body of the
-#'   second model is appended into the body of the first model (in this order).
+#'   second model is appended to the body of the first model (in this order).
 #'   After that, the first, body-extended model is returned.
 #'
-#' @note The functions behind `model1` and `model2` must have a multi-expression
+#' @note `model1` and `model2` functions must have a multi-expression
 #'   body, i.e. braced expression(s). Environments or any attributes of the
 #'   function bodies are not preserved in any way after joining.
 #'
@@ -64,11 +64,12 @@ h_join_models <- function(model1, model2) {
   assert_function(model2)
   assert_class(body(model1), "{")
   assert_class(body(model2), "{")
-  assert_true(length(body(model2)) >= 2)
 
-  body1 <- as.list(body(model1))
-  body2 <- as.list(body(model2))[-1]
-  body(model1) <- as.call(c(body1, body2))
+  body2 <- as.list(body(model2))
+  if (length(body2) >= 2) {
+    body1 <- as.list(body(model1))
+    body(model1) <- as.call(c(body1, body2[-1]))
+  }
   model1
 }
 
