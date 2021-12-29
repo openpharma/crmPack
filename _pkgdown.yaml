@@ -74,10 +74,6 @@ reference:
       - dose-Model
       - dose-ModelTox
       - dose-ModelTox_noSamples
-      - prob
-      - prob-Model
-      - prob-ModelTox
-      - prob-ModelTox_noSamples
   - title: Functions
     contents:
       - dapply

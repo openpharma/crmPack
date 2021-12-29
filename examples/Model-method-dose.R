@@ -6,7 +6,7 @@ my_data <- Data(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
-# Initialize a model, e.g. 'LogisticLogNormal'.
+# Initialize a model, e.g. `LogisticLogNormal`.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),

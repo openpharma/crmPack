@@ -11,9 +11,5 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               DLEdose=c(25,300),
                               data=data)
 
-options <- McmcOptions(burnin=100, step=2, samples=200)
-DLEsamples <- mcmc(data=data,model=DLEmodel,options=options)
-
-tox.prob <- prob(dose=100, model = DLEmodel, samples = DLEsamples)
-
+tox.prob <- prob(dose=100, model = DLEmodel)
 

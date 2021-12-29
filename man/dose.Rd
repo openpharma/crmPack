@@ -24,8 +24,8 @@ dose(prob, model, samples, ...)
 \item{model}{(\code{Model} or \code{ModelTox})\cr the model for single agent dose
 escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 
-\item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
-used to compute the resulting dose by \code{model@dose} function.}
+\item{samples}{(\code{Samples})\cr the samples that will be used to compute the
+resulting dose by \code{model@dose} function.}
 
 \item{...}{not used.}
 }
@@ -37,10 +37,10 @@ vector is of the same length as the sample vector.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Compute doses for a given toxicity probability,
+Compute the doses for a given toxicity probability,
 a given single agent dose escalation model, and the samples.
 
-Compute doses for a given toxicity probability,
+Compute the doses for a given toxicity probability,
 a given Pseudo DLE (dose-limiting events)/toxicity model, and the samples.
 
 Compute the dose for a given toxicity probability and a given
@@ -57,7 +57,7 @@ my_data <- Data(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
-# Initialize a model, e.g. 'LogisticLogNormal'.
+# Initialize a model, e.g. `LogisticLogNormal`.
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
@@ -72,14 +72,14 @@ my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 # Posterior for the dose achieving Prob(DLT) = 0.45.
 td_45 <- dose(prob = 0.45, model = my_model, samples = my_samples)
 
-# Create data from the 'Data' (or 'DataDual') class.
+# Create data from the `Data` (or `DataDual`) class.
 my_data <- Data(
   x = c(25, 50, 25, 50, 75, 300, 250, 150),
   y = c(0, 0, 0, 0, 0, 1, 1, 0),
   doseGrid = seq(from = 25, to = 300, by = 25)
 )
 
-# Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model.
+# Initialize a model from `ModelTox` class e.g using `LogisticIndepBeta` model.
 dlt_model <- LogisticIndepBeta(
   binDLE = c(1.05, 1.8),
   DLEweights = c(3, 3),
@@ -95,14 +95,14 @@ dlt_sample <- mcmc(data = my_data, model = dlt_model, options = my_options)
 # Posterior for the dose achieving Prob(DLT) = 0.45.
 td_45 <- dose(prob = 0.45, model = dlt_model, samples = dlt_sample)
 
-# Create some data from the 'Data' (or 'DataDual') class.
+# Create some data from the `Data` (or `DataDual`) class.
 my_data <- Data(
   x = c(25, 50, 25, 50, 75, 300, 250, 150),
   y = c(0, 0, 0, 0, 0, 1, 1, 0),
   doseGrid = seq(from = 25, to = 300, by = 25)
 )
 
-# Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model.
+# Initialize a model from `ModelTox` class e.g using `LogisticIndepBeta` model.
 dlt_model <- LogisticIndepBeta(
   binDLE = c(1.05, 1.8),
   DLEweights = c(3, 3),
