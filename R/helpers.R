@@ -1,21 +1,47 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[helpers.R] by DSB Fre 27/03/2015 14:15>
-##
-## Description:
-## Some helper functions
-##
-## History:
-## 18/12/2013   file creation
-## 19/12/2013   add is.bool from glmBfp
-## 31/01/2014   copied from adaptive package
-## 11/02/2014   add logit function
-## 16/12/2014   add plot method for arrange objects, that we generate by calling
-##              gridExtra::arrangeGrob for combining ggplot2 objects
-#####################################################################################
+# Validate-class ----
 
+#' `Validate`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The [`Validate`] class is a Reference Class
+#' to help programming validation for new S4 classes.
+#'
+#' @details Starting from an empty \code{msg} vector, with each check
+#' that is returning `FALSE` the vector gets a new element - the string
+#' explaining the failure of the validation.
+#'
+#' @name Validate
+#' @field msg (`character`)\cr the cumulative messages.
+Validate <- setRefClass(
+  Class = "Validate",
+  fields = list(msg = "character"),
+  methods = list(
+    check = function(test, string = "") {
+      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}.
+      Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
+      assert_flag(test)
+      assert_string(string)
+      if (test) {
+        NULL
+      } else {
+        msg <<- c(msg, string)
+      }
+    },
+    result = function() {
+      "Return either cumulative messages vector \\code{msg}
+      (which contains the error messages from all the checks),
+      or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were successful)."
+      if (length(msg) > 0) {
+        msg
+      } else {
+        TRUE
+      }
+    }
+  )
+)
+
+# nolint start
 
 ##' Helper function for value matching with tolerance
 ##'
@@ -355,49 +381,6 @@ printVignette <- function(x, ...) {
   invisible(x)
 }
 
-# Validate-class ----
-
-#' `Validate`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' The [`Validate`] class is a Reference Class
-#' to help programming validation for new S4 classes.
-#'
-#' @details Starting from an empty \code{msg} vector, with each check
-#' that is returning `FALSE` the vector gets a new element - the string
-#' explaining the failure of the validation.
-#'
-#' @name Validate
-#' @field msg (`character`)\cr the cumulative messages.
-Validate <- setRefClass(
-  Class = "Validate",
-  fields = list(msg = "character"),
-  methods = list(
-    check = function(test, string = "") {
-      "Check whether the \\code{test} is \\code{TRUE}; if so, return \\code{NULL}.
-      Otherwise, add the \\code{string} message into the cumulative messages vector \\code{msg}."
-      assert_flag(test)
-      assert_string(string)
-      if (test) {
-        NULL
-      } else {
-        msg <<- c(msg, string)
-      }
-    },
-    result = function() {
-      "Return either cumulative messages vector \\code{msg}
-      (which contains the error messages from all the checks),
-      or \\code{NULL}, if \\code{msg} is empty (i.e. all the checks were successful)."
-      if (length(msg) > 0) {
-        msg
-      } else {
-        TRUE
-      }
-    }
-  )
-)
-
 ##' Compute the density of Inverse gamma distribution
 ##' @param x vector of quantiles
 ##' @param a the shape parameter of the inverse gamma distribution
@@ -515,6 +498,8 @@ myBarplot <- function(x, description, xaxisround = 0) {
         round(dat$x, xaxisround)
     )
 }
+
+# nolint end
 
 #' Comparison with Numerical Tolerance and Without Name Comparison
 #'
@@ -697,4 +682,27 @@ h_is_positive_definite <- function(x, tolerance = 1e-08) {
   }
   eigenvalues <- eigen(x, only.values = TRUE)$values
   all(eigenvalues > tolerance)
+}
+
+#' Getting the Slots from a S4 Object
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function extracts requested slots from the S4 class object.
+#' It is a simple wrapper of [`methods::slot`] function.
+#'
+#' @param object (`S4`)\cr an object from a formally defined S4 class.
+#' @param names (`character`)\cr a vector with names of slots to be fetched.
+#'   This function assumes that for every element in `names`, there exists a
+#'   slot of the same name in the `object`.
+#'
+#' @return `list` with the slots extracted from `object` according to
+#'   `names`.
+#'
+h_get_slots <- function(object, names) {
+  assert_true(isS4(object))
+  assert_character(names, min.len = 1, any.missing = FALSE)
+  assert_true(all(names %in% slotNames(object)))
+
+  sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
 }

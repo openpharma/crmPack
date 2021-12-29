@@ -166,3 +166,21 @@ test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
   is_pf_m3 <- h_is_positive_definite(m3)
   expect_false(any(is_pf_m1, is_pf_m2, is_pf_m3))
 })
+
+# h_get_slots ----
+
+test_that("h_get_slots returns slots as expected", {
+  object <- h_get_logistic_log_normal()
+  result <- h_get_slots(object, c("sample", "datanames"))
+  expected <- list(sample = "param1", datanames = "x")
+
+  expect_identical(result, expected)
+})
+
+test_that("h_get_slots throws the error for non-existing slots", {
+  object <- h_get_logistic_log_normal()
+  expect_error(
+    h_get_slots(object, c("sample", "not_existing_slot_name")),
+    "Assertion on 'all\\(names %in% slotNames\\(object\\)\\)' failed: Must be TRUE." # nolintr
+  )
+})

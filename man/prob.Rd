@@ -8,7 +8,7 @@
 \alias{prob-ModelTox}
 \alias{prob,numeric,ModelTox,missing-method}
 \alias{prob-ModelTox_noSamples}
-\title{Computing Toxicity Probabilities for a Given Dose, Model and the Samples}
+\title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
 
@@ -38,10 +38,10 @@ vector is of the same length as the sample vector.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 Compute toxicity probabilities for a given dose, a given single
-agent dose escalation model, and the samples.
+agent dose escalation model, and samples.
 
 Compute toxicity probabilities for a given dose, a given Pseudo
-DLE (dose-limiting events)/toxicity model, and the samples.
+DLE (dose-limiting events)/toxicity model, and samples.
 
 Compute the toxicity probability for a given dose and a given
 Pseudo DLE (dose-limiting events)/toxicity model without samples.

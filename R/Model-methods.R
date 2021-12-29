@@ -3,7 +3,7 @@ NULL
 
 # dose ----
 
-#' Computing the Doses for a Given Probability, Model and the Samples
+#' Computing the Doses for a Given Probability, Model and Samples
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -11,7 +11,7 @@ NULL
 #' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
 #'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute the resulting dose by `model@dose` function.
+#'   used to compute the resulting doses by `model@dose` function.
 #' @param ... not used.
 #' @return A `numeric` vector from the `model@dose` function. Every element in
 #'   the output vector corresponds to one element of a sample. Hence, the output
@@ -33,7 +33,7 @@ setGeneric(
 #' @rdname dose
 #'
 #' @description Compute doses for a given toxicity probability,
-#'   a given single agent dose escalation model, and the samples.
+#'   a given single agent dose escalation model, and samples.
 #'
 #' @aliases dose-Model
 #' @example examples/Model-method-dose.R
@@ -48,9 +48,9 @@ setMethod(
   ),
   definition = function(prob, model, samples, ...) {
     dose_fun <- model@dose
-    # Which arguments, besides the `prob`, does `dose_fun` need?
-    dose_args <- setdiff(formalArgs(dose_fun), "prob")
-    do.call(dose_fun, c(list(prob = prob), samples@data[dose_args]))
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    do.call(dose_fun, dose_args)
   }
 )
 
@@ -59,7 +59,7 @@ setMethod(
 #' @rdname dose
 #'
 #' @description Compute doses for a given toxicity probability,
-#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and the samples.
+#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
 #'
 #' @aliases dose-ModelTox
 #' @example examples/Model-method-dose-ModelTox.R
@@ -74,9 +74,9 @@ setMethod(
   ),
   definition = function(prob, model, samples, ...) {
     dose_fun <- model@dose
-    # Which arguments, besides the `prob`, does `dose_fun` need?
-    dose_args <- setdiff(formalArgs(dose_fun), "prob")
-    do.call(dose_fun, c(list(prob = prob), samples@data[dose_args]))
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    do.call(dose_fun, dose_args)
   }
 )
 
@@ -102,23 +102,15 @@ setMethod(
   ),
   definition = function(prob, model, ...) {
     dose_fun <- model@dose
-    # Which arguments, besides the `prob`, does `dose_fun` need?
-    dose_args <- setdiff(formalArgs(dose_fun), "prob")
-    if (!all(dose_args %in% slotNames(model))) {
-      stop("Arguments to `model@dose` (except `prob`) must be in the `model`")
-    }
-    dose_args_values <- sapply(
-      dose_args,
-      function(a) slot(model, a),
-      simplify = FALSE
-    )
-    do.call(dose_fun, c(list(prob = prob), dose_args_values))
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(h_get_slots(model, dose_args_names), prob = prob)
+    do.call(dose_fun, dose_args)
   }
 )
 
 # prob ----
 
-#' Computing Toxicity Probabilities for a Given Dose, Model and the Samples
+#' Computing Toxicity Probabilities for a Given Dose, Model and Samples
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -148,7 +140,7 @@ setGeneric(
 #' @rdname prob
 #'
 #' @description Compute toxicity probabilities for a given dose, a given single
-#'   agent dose escalation model, and the samples.
+#'   agent dose escalation model, and samples.
 #'
 #' @aliases prob-Model
 #' @example examples/Model-method-prob.R
@@ -163,9 +155,9 @@ setMethod(
   ),
   definition = function(dose, model, samples, ...) {
     prob_fun <- model@prob
-    # Which arguments, besides the `dose`, does `prob_fun` need?
-    prob_args <- setdiff(formalArgs(prob_fun), "dose")
-    do.call(prob_fun, c(list(dose = dose), samples@data[prob_args]))
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(samples@data[prob_args_names], dose = dose)
+    do.call(prob_fun, prob_args)
   }
 )
 
@@ -174,7 +166,7 @@ setMethod(
 #' @rdname prob
 #'
 #' @description Compute toxicity probabilities for a given dose, a given Pseudo
-#'   DLE (dose-limiting events)/toxicity model, and the samples.
+#'   DLE (dose-limiting events)/toxicity model, and samples.
 #'
 #' @aliases prob-ModelTox
 #' @example examples/Model-method-prob-ModelTox.R
@@ -189,9 +181,9 @@ setMethod(
   ),
   definition = function(dose, model, samples, ...) {
     prob_fun <- model@prob
-    # Which arguments, besides the `dose`, does `prob_fun` need?
-    prob_args <- setdiff(formalArgs(prob_fun), "dose")
-    do.call(prob_fun, c(list(dose = dose), samples@data[prob_args]))
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(samples@data[prob_args_names], dose = dose)
+    do.call(prob_fun, prob_args)
   }
 )
 
@@ -217,17 +209,9 @@ setMethod(
   ),
   definition = function(dose, model, ...) {
     prob_fun <- model@prob
-    # Which arguments, besides the `dose`, does `prob_fun` need?
-    prob_args <- setdiff(formalArgs(prob_fun), "dose")
-    if (!all(prob_args %in% slotNames(model))) {
-      stop("Arguments to `model@prob` (except `dose`) must be in the `model`")
-    }
-    prob_args_values <- sapply(
-      prob_args,
-      function(a) slot(model, a),
-      simplify = FALSE
-    )
-    do.call(prob_fun, c(list(dose = dose), prob_args_values))
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(h_get_slots(model, prob_args_names), dose = dose)
+    do.call(prob_fun, prob_args)
   }
 )
 
