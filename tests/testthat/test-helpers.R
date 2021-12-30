@@ -184,3 +184,33 @@ test_that("h_get_slots throws the error for non-existing slots", {
     "Assertion on 'all\\(names %in% slotNames\\(object\\)\\)' failed: Must be TRUE." # nolintr
   )
 })
+
+# h_join_models ----
+
+test_that("h_join_models works as expected", {
+  model1 <- function(x) { x <- x - 2; x <- x^2 } # nolintr
+  model2 <- function(x) { x^3 } # nolintr
+  result <- h_join_models(model1, model2)
+  expected <- function(x) { x <- x - 2; x <- x^2; x^3 } # nolintr
+
+  expect_identical(result, expected)
+})
+
+test_that("h_join_models works as expected for empty model2", {
+  model1 <- function(x) { x <- x - 2 } # nolintr
+  model2 <- function(x) { } # nolintr
+  result <- h_join_models(model1, model2)
+  expected <- model1
+
+  expect_identical(result, expected)
+})
+
+test_that("h_join_models throws the error for non-braced expression", {
+  model1 <- function(x) x^2
+  model2 <- function(x) x^3
+
+  expect_error(
+    h_join_models(model1, model2),
+    "Assertion on 'body\\(model1\\)' failed: Must inherit from class '\\{', but has class 'call'." # nolintr
+  )
+})
