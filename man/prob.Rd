@@ -19,7 +19,10 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,ModelTox,missing}(dose, model, samples, ...)
 }
 \arguments{
-\item{dose}{(\code{number})\cr the dose targeted.}
+\item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted. This must
+be a scalar if \code{samples} are used (for dose escalation \code{model}). It can be
+a vector of any finite length, if \code{samples} are not used with pseudo DLE
+(dose-limiting events)/toxicity \code{model}.}
 
 \item{model}{(\code{Model} or \code{ModelTox})\cr the model for single agent dose
 escalation or pseudo DLE (dose-limiting events)/toxicity model.}
@@ -30,9 +33,12 @@ used to compute toxicity probabilities by \code{model@prob} function.}
 \item{...}{not used.}
 }
 \value{
-A \code{numeric} vector from the \code{model@prob} function. Every element in
-the output vector corresponds to one element of a sample. Hence, the output
-vector is of the same length as the sample vector.
+A \code{number} or \code{numeric} vector from the \code{model@prob} function.
+If \code{samples} were used, then every element in the returned vector
+corresponds to one element of a sample. Hence, in this case, the output
+vector is of the same length as the sample vector. If \code{samples} were not
+used for pseudo DLE/toxicity \code{model}, then the output is of the same length
+as \code{dose}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

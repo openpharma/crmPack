@@ -19,6 +19,25 @@ test_that("dose-Model works as expected", {
   expect_equal(result, expected, tolerance = 0.001)
 })
 
+test_that("dose-Model throws the error when prob is not a scalar", {
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    refDose = 56
+  )
+  samples <- Samples(
+    data = list(
+      alpha0 = seq(from = -1.96, to = 1.96, length = 5),
+      alpha1 = seq(from = -1.96, to = 1.96, length = 5)
+    ),
+    options = McmcOptions(burnin = 2L, step = 1L, samples = 5L)
+  )
+  expect_error(
+    dose(prob = c(0.45, 55), model = model, samples = samples),
+    "Assertion on 'prob' failed: Must have length 1."
+  )
+})
+
 # dose-ModelTox ----
 
 test_that("dose-ModelTox works as expected", {
@@ -50,9 +69,9 @@ test_that("dose-ModelTox works as expected when no samples", {
     DLEdose = c(25, 300),
     data = h_get_data()
   )
-  result <- dose(prob = 0.45, model = dlt_model)
+  result <- dose(prob = c(0.45, 0.55), model = dlt_model)
 
-  expect_equal(result, expected = 188.1673, tolerance = 0.0001)
+  expect_equal(result, expected = c(188.1673, 289.2156), tolerance = 0.0001)
 })
 
 # prob-Model ----
@@ -74,6 +93,25 @@ test_that("prob-Model works as expected", {
   expected <- c(0.1496, 0.2955, 0.5, 0.7045, 0.8504)
 
   expect_equal(result, expected, tolerance = 0.0001)
+})
+
+test_that("prob-Model throws the error when dose is not a scalar", {
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    refDose = 56
+  )
+  samples <- Samples(
+    data = list(
+      alpha0 = seq(from = -1.96, to = 1.96, length = 5),
+      alpha1 = seq(from = -1.96, to = 1.96, length = 5)
+    ),
+    options = McmcOptions(burnin = 2L, step = 1L, samples = 5L)
+  )
+  expect_error(
+    prob(dose = c(40, 50), model = model, samples = samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
 })
 
 # prob-ModelTox ----
@@ -107,7 +145,7 @@ test_that("prob-ModelTox works as expected when no samples", {
     DLEdose = c(25, 300),
     data = h_get_data_dual()
   )
-  result <- prob(dose = 1000, model = dlt_model)
+  result <- prob(dose = c(500, 1000), model = dlt_model)
 
-  expect_equal(result, expected = 0.795597, tolerance = 0.000001)
+  expect_equal(result, expected = c(0.6708009, 0.7955970), tolerance = 0.000001)
 })

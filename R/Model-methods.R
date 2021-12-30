@@ -7,21 +7,27 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' @param prob (`number`)\cr the toxicity probability which is targeted.
+#' @param prob (`number` or `numeric`)\cr the toxicity probability which is
+#'   targeted. This must be a scalar if `samples` are used (for dose escalation
+#'   `model`). It can be a vector of any finite length, if `samples` are not
+#'   used with pseudo DLE (dose-limiting events)/toxicity `model`.
 #' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
-#'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
+#'   escalation or pseudo DLE/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute the resulting doses by `model@dose` function.
 #' @param ... not used.
-#' @return A `numeric` vector from the `model@dose` function. Every element in
-#'   the output vector corresponds to one element of a sample. Hence, the output
-#'   vector is of the same length as the sample vector.
+#' @return A `number` or `numeric` vector from the `model@dose` function.
+#'   If `samples` were used, then every element in the returned vector
+#'   corresponds to one element of a sample. Hence, in this case, the output
+#'   vector is of the same length as the sample vector. If `samples` were not
+#'   used for pseudo DLE/toxicity `model`, then the output is of the same length
+#'   as `prob`.
+#'
 #' @export
 #'
 setGeneric(
   name = "dose",
   def = function(prob, model, samples, ...) {
-    assert_number(prob, lower = 0, upper = 1)
     # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("dose")
   },
@@ -47,6 +53,8 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples, ...) {
+    assert_number(prob, lower = 0L, upper = 1L)
+
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
     dose_args <- c(samples@data[dose_args_names], prob = prob)
@@ -73,6 +81,8 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples, ...) {
+    assert_number(prob, lower = 0L, upper = 1L)
+
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
     dose_args <- c(samples@data[dose_args_names], prob = prob)
@@ -101,9 +111,14 @@ setMethod(
     samples = "missing"
   ),
   definition = function(prob, model, ...) {
+    assert_numeric(
+      prob,
+      lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE
+    )
+
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(h_get_slots(model, dose_args_names), prob = prob)
+    dose_args <- c(h_get_slots(model, dose_args_names), list(prob = prob))
     do.call(dose_fun, dose_args)
   }
 )
@@ -114,21 +129,27 @@ setMethod(
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' @param dose (`number`)\cr the dose targeted.
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted. This must
+#'   be a scalar if `samples` are used (for dose escalation `model`). It can be
+#'   a vector of any finite length, if `samples` are not used with pseudo DLE
+#'   (dose-limiting events)/toxicity `model`.
 #' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
 #'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute toxicity probabilities by `model@prob` function.
 #' @param ... not used.
-#' @return A `numeric` vector from the `model@prob` function. Every element in
-#'   the output vector corresponds to one element of a sample. Hence, the output
-#'   vector is of the same length as the sample vector.
+#' @return A `number` or `numeric` vector from the `model@prob` function.
+#'   If `samples` were used, then every element in the returned vector
+#'   corresponds to one element of a sample. Hence, in this case, the output
+#'   vector is of the same length as the sample vector. If `samples` were not
+#'   used for pseudo DLE/toxicity `model`, then the output is of the same length
+#'   as `dose`.
+#'
 #' @export
 #'
 setGeneric(
   name = "prob",
   def = function(dose, model, samples, ...) {
-    assert_number(dose, lower = 0)
     # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("prob")
   },
@@ -154,6 +175,8 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples, ...) {
+    assert_number(dose, lower = 0L)
+
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
     prob_args <- c(samples@data[prob_args_names], dose = dose)
@@ -180,6 +203,8 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples, ...) {
+    assert_number(dose, lower = 0L)
+
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
     prob_args <- c(samples@data[prob_args_names], dose = dose)
@@ -208,9 +233,11 @@ setMethod(
     samples = "missing"
   ),
   definition = function(dose, model, ...) {
+    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
+
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(h_get_slots(model, prob_args_names), dose = dose)
+    prob_args <- c(h_get_slots(model, prob_args_names), list(dose = dose))
     do.call(prob_fun, prob_args)
   }
 )
