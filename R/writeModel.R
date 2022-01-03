@@ -1,4 +1,3 @@
-#####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: crmPack
 ##
@@ -11,7 +10,6 @@
 ##
 ## History:
 ## 08/12/2014   file creation
-#####################################################################################
 
 ##' Creating a WinBUGS model file
 ##'
@@ -25,8 +23,8 @@
 ##' removed before the BUGS code is saved.
 ##' In S-PLUS, a warning is generated when the model function is defined if the
 ##' last statement in the model is an assignment. To avoid this warning, add the
-##' line \code{invisible()} to the end of the model definition. This line will be
-##' removed before the BUGS code is saved.
+##' line \code{invisible()} to the end of the model definition. This line will
+##' be removed before the BUGS code is saved.
 ##'
 
 #' @param model R function containing the JAGS model
@@ -43,6 +41,8 @@ writeModel <- function(model, con = "model.bug", digits = 5) { # nolintr
   if (is.R()) {
     model_text <- c("model", h_replace_scientific(model, digits = digits))
   } else {
+    # In S-PLUS the body of a function can be obtained with
+    # as.character(function_name).
     model_text <- paste("model", as.character(model))
   }
   model_text <- gsub("%_%", "", model_text)
