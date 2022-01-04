@@ -59,7 +59,7 @@ options <- McmcOptions(burnin=100000,
 
 
 source("../R/mcmc.R")
-source("../R/writeModel.R")
+source("../R/helpers.R")
 library(rjags)
 
 ## obtain the samples

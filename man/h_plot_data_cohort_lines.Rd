@@ -13,7 +13,8 @@ h_plot_data_cohort_lines(cohort, placebo, vertical = TRUE)
 If it so, this function returns \code{NULL} object as in this case all doses
 in a given cohort are equal and there is no need to separate them.}
 
-\item{vertical}{(\code{flag})\cr should the line be vertical? Otherwise it is horizontal.}
+\item{vertical}{(\code{flag})\cr should the line be vertical? Otherwise it is
+horizontal.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -23,7 +24,7 @@ separating different cohorts on the plot of \code{Data} class object.
 Lines are either vertical or horizontal of green color and longdash type.
 }
 \details{
-The geom object is returned if and only if \code{placebo} is equal to \code{TRUE}
-and there are more than one unique values in \code{cohort}. Otherwise, this function
-returns \code{NULL} object.
+The geom object is returned if and only if \code{placebo} is equal to
+\code{TRUE} and there are more than one unique values in \code{cohort}. Otherwise,
+this function returns \code{NULL} object.
 }

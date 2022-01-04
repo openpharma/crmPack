@@ -43,6 +43,9 @@ reference:
       - h_check_fun_formals
       - h_is_positive_definite
       - h_join_models
+      - h_write_model
+      - h_rapply
+      - h_format_number
   - title: Internal Validation Functions
     contents:
       - validate_subjects

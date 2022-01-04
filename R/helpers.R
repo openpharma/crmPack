@@ -42,37 +42,6 @@ Validate <- setRefClass(
   )
 )
 
-#' Joining JAGS Models
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' This helper function joins two JAGS models in the way that the body of the
-#'   second model is appended to the body of the first model (in this order).
-#'   After that, the first, body-extended model is returned.
-#'
-#' @note `model1` and `model2` functions must have a multi-expression
-#'   body, i.e. braced expression(s). Environments or any attributes of the
-#'   function bodies are not preserved in any way after joining.
-#'
-#' @param model1 (`function`)\cr the first model to join.
-#' @param model2 (`function`)\cr the second model to join.
-#'
-#' @return joined models.
-#'
-h_join_models <- function(model1, model2) {
-  assert_function(model1)
-  assert_function(model2)
-  assert_class(body(model1), "{")
-  assert_class(body(model2), "{")
-
-  body2 <- as.list(body(model2))
-  if (length(body2) >= 2) {
-    body1 <- as.list(body(model1))
-    body(model1) <- as.call(c(body1, body2[-1]))
-  }
-  model1
-}
-
 # nolint start
 
 ##' Helper function for value matching with tolerance
@@ -467,7 +436,6 @@ rinvGamma <- function(n,
   )
 }
 
-
 #' Convenience function to make barplots of percentages
 #'
 #' @param x vector of samples
@@ -510,10 +478,13 @@ myBarplot <- function(x, description, xaxisround = 0) {
 #'
 #' @param target (`numeric`)\cr target values.
 #' @param current (`numeric`)\cr current values.
-#' @param tolerance (`number`) relative differences smaller than this are not reported.
+#' @param tolerance (`number`) relative differences smaller than this are not
+#'   reported.
 #' @return `TRUE` when `target` and `current` do not differ
 #'   up to desired tolerance and without looking at names or other attributes,
 #'   `FALSE` otherwise.
+#'
+#' @export
 #'
 h_all_equivalent <- function(target,
                              current,
@@ -536,15 +507,16 @@ h_all_equivalent <- function(target,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function prepares a `data.frame` object based on `Data` class object.
-#' The resulting data frame is used by the plot function for `Data` class objects.
+#' This helper function prepares a `data.frame` object based on `Data` class
+#' object. The resulting data frame is used by the plot function for `Data`
+#' class objects.
 #'
 #' @param data (`Data`)\cr object from which data is extracted and converted
 #'   into a data frame.
 #' @param blind (`flag`)\cr should data be blinded?
-#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first subjects
-#'   in the cohort. In addition, the placebo (if any) is set to the active dose
-#'   level for that cohort.
+#'   If `TRUE`, then for each cohort, all DLTs are assigned to the first
+#'   subjects in the cohort. In addition, the placebo (if any) is set to the
+#'   active dose level for that cohort.
 #' @param ... further arguments passed to `data.frame` constructor.
 #'   It can be e.g. an extra `column_name = value` pair based on a slot
 #'   from `x` (which in this case might be a subclass of `Data`)
@@ -564,8 +536,10 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
   if (blind) {
     # This is to blind the data.
     # For each cohort, all DLTs are assigned to the first subjects in the cohort.
-    # In addition, the placebo (if any) is set to the active dose level for that cohort.
-    # Notice: dapply reorders records of df according to the lexicographic order of cohort.
+    # In addition, the placebo (if any) is set to the active dose level for that
+    # cohort.
+    # Notice: dapply reorders records of df according to the lexicographic order
+    # of cohort.
     df <- dapply(df, f = ~cohort, FUN = function(coh) {
       coh$toxicity <- sort(coh$toxicity, decreasing = TRUE)
       coh$dose <- max(coh$dose)
@@ -587,15 +561,16 @@ h_plot_data_df <- function(data, blind = FALSE, ...) {
 #' separating different cohorts on the plot of `Data` class object.
 #' Lines are either vertical or horizontal of green color and longdash type.
 #'
-#' @details The geom object is returned if and only if `placebo` is equal to `TRUE`
-#'   and there are more than one unique values in `cohort`. Otherwise, this function
-#'   returns `NULL` object.
+#' @details The geom object is returned if and only if `placebo` is equal to
+#'   `TRUE` and there are more than one unique values in `cohort`. Otherwise,
+#'   this function returns `NULL` object.
 #'
 #' @param cohort (`integer`)\cr the cohort indices.
 #' @param placebo (`flag`)\cr is placebo included in the doses?
 #'   If it so, this function returns `NULL` object as in this case all doses
 #'   in a given cohort are equal and there is no need to separate them.
-#' @param vertical (`flag`)\cr should the line be vertical? Otherwise it is horizontal.
+#' @param vertical (`flag`)\cr should the line be vertical? Otherwise it is
+#'   horizontal.
 #'
 h_plot_data_cohort_lines <- function(cohort,
                                      placebo,
@@ -604,13 +579,14 @@ h_plot_data_cohort_lines <- function(cohort,
   assert_flag(placebo)
   assert_flag(vertical)
 
-  # If feasible, add vertical or horizontal green lines separating sub-sequent cohorts.
+  # If feasible, add vertical or horizontal green lines separating sub-sequent
+  # cohorts.
   if (placebo & length(unique(cohort)) > 1) {
     intercept <- head(cumsum(table(cohort)), n = -1) + 0.5
     if (vertical) {
-      geom_vline(xintercept = intercept, colour = "green", linetype = "longdash")
+      geom_vline(xintercept = intercept, colour = "green", linetype = "longdash") # nolintr
     } else {
-      geom_hline(yintercept = intercept, colour = "green", linetype = "longdash")
+      geom_hline(yintercept = intercept, colour = "green", linetype = "longdash") # nolintr
     }
   } else {
     NULL
@@ -637,6 +613,8 @@ h_plot_data_cohort_lines <- function(cohort,
 #'   have to be repeated in `allowed`. If `allowed` is specified as `NULL`
 #'   (default), then it means that there must be no any arguments in `fun`
 #'   (except these ones which are specified in `mandatory`).
+#'
+#' @export
 #'
 h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
   assert_function(fun)
@@ -670,6 +648,8 @@ h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
 #'
 #' @return `TRUE` if a given matrix is a positive-definite, `FALSE` otherwise.
 #'
+#' @export
+#'
 h_is_positive_definite <- function(x, tolerance = 1e-08) {
   assert_matrix(x, any.missing = FALSE)
   assert_numeric(x)
@@ -698,10 +678,191 @@ h_is_positive_definite <- function(x, tolerance = 1e-08) {
 #' @return `list` with the slots extracted from `object` according to
 #'   `names`.
 #'
+#' @export
+#'
 h_get_slots <- function(object, names) {
   assert_true(isS4(object))
   assert_character(names, min.len = 1, any.missing = FALSE)
   assert_true(all(names %in% slotNames(object)))
 
   sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
+}
+
+#' Joining JAGS Models
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This helper function joins two JAGS models in the way that the body of the
+#' second model is appended to the body of the first model (in this order).
+#' After that, the first, body-extended model is returned.
+#'
+#' @note `model1` and `model2` functions must have a multi-expression
+#'   body, i.e. braced expression(s). Environments or any attributes of the
+#'   function bodies are not preserved in any way after joining.
+#'
+#' @param model1 (`function`)\cr the first model to join.
+#' @param model2 (`function`)\cr the second model to join.
+#'
+#' @return joined models.
+#'
+#' @export
+#'
+h_join_models <- function(model1, model2) {
+  assert_function(model1)
+  assert_function(model2)
+  assert_class(body(model1), "{")
+  assert_class(body(model2), "{")
+
+  body2 <- as.list(body(model2))
+  if (length(body2) >= 2) {
+    body1 <- as.list(body(model1))
+    body(model1) <- as.call(c(body1, body2[-1]))
+  }
+  model1
+}
+
+#' Writing JAGS Model to a File
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function converts a R function with JAGS model into a text and then
+#' writes it into a given file. During the "model into text" conversion, the
+#' format of numbers of which absolute value is less than `0.001` or greater
+#' than `10000` is changed. These numbers will be converted into scientific
+#' format with specified number of significant digits using [`formatC`]
+#' function.
+#'
+#' @note JAGS syntax allows truncation specification like `dnorm(...) I(...)`,
+#'   which is illegal in R. To overcome this incompatibility, use dummy operator
+#'   `\%_\%` before `I(...)`, i.e. `dnorm(...) \%_\% I(...)` in the model's
+#'   code. This dummy operator `%_\%` will be removed just before saving the
+#'   JAGS code into a file.
+#'   Due to technical issues related to conversion of numbers to scientific
+#'   format, it is required that the body of a model function does not contain
+#'   `TEMP_NUM_PREF_` or `_TEMP_NUM_SUF` character constants in its body.
+#'
+#' @param model (`function`)\cr function containing the JAGS model.
+#' @param file (`string`)\cr the name of the file where the model will be saved.
+#' @param digits (`count`)\cr a desired number of significant digits for
+#'   for numbers used in JAGS input, see [`formatC`].
+#' @return Nothing, but as a side effect, the model file is written.
+#'
+#' @example examples/helpers-write_model.R
+#' @export
+#'
+h_write_model <- function(model, file = "model.jags", digits = 5) {
+  assert_function(model)
+  assert_string(file)
+  assert_count(digits)
+
+  # Replace scientific notation.
+  model_sci_replaced <- h_rapply(
+    x = body(model),
+    fun = h_format_number,
+    classes = c("integer", "numeric"),
+    digits = digits,
+    prefix = "TEMP_NUM_PREF_",
+    suffix = "_TEMP_NUM_SUF"
+  )
+  # Transform `model` body into character vector.
+  model_text <- deparse(model_sci_replaced, control = NULL)
+  model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
+  model_text <- gsub("%_%", "", model_text)
+  model_text <- c("model", model_text)
+
+  writeLines(model_text, con = file)
+}
+
+#' Recursively Apply a Function to a List
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function is conceptually quite similar to [`base::rapply`]
+#' function with two major differences (see the note for more details).
+#' It recursively iterates through a "list-like" object and it checks whether
+#' an element is of a given class. If it so, then it replaces that element by
+#' the result of an execution of a given function. Otherwise, and if the element
+#' is of length greater than 1 (i.e. not a scalar), it replaces that element by
+#' the result of `h_rapply`, recursively called for that element. In the
+#' remaining case, that is, the element is not of a given class and is a scalar,
+#' then that element remains unchanged.
+#'
+#' @note This helper function is conceptually similar the same as `rapply`
+#'   function. However, it differs from `rapply` in two major ways. First, the
+#'   `h_rapply` is not limited to objects of type `list` or `expression` only.
+#'   It can be any "list-like" object of any type for which `[[` operator is
+#'   defined. This can be, for example, an object of type `language`, often
+#'   obtained from the `body` function. The second difference is that the
+#'   flexibility of `rapply` on `how` the result is structured is not available
+#'   with `h_rapply` for the user. That is, with `h_rapply` each element of `x`,
+#'   which has a class included in `classes`, is replaced by the result of
+#'   applying `fun` to the element.
+#'
+#' @param x \cr any "list-like" object for which `[[` operator is defined.
+#' @param fun (`function`)\cr a function of one "principal" argument, passing
+#'   further arguments via `...`.
+#' @param classes (`character`)\cr class names.
+#' @param ... further arguments passed to function `fun`.
+#'
+#' @return "list-like" object of similar structure as `x`.
+#'
+#' @example examples/helpers-rapply.R
+#' @export
+#'
+h_rapply <- function(x, fun, classes, ...) {
+  assert_function(fun)
+  assert_character(classes, min.len = 1L)
+
+  for (i in seq_along(x)) {
+    if (class(x[[i]]) %in% classes) {
+      x[[i]] <- do.call(fun, c(list(x[[i]]), ...))
+    } else if (length(x[[i]]) > 1L) {
+      x[[i]] <- h_rapply(x[[i]], fun, classes, ...)
+    }
+  }
+  x
+}
+
+#' Conditional Formatting Using C-style Formats
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function conditionally formats a number with [`base::formatC`]
+#' function using `"E"` format and specific number of digits as given by the
+#' user. A number is formatted if and only if its absolute value is less than
+#' `0.001` or greater than `10000`. Otherwise, the number is not formatted.
+#' Additionally, custom prefix or suffix can be appended to character string
+#' with formatted number, so that the changes are marked.
+#' This function is was primarily designed as a helper for [`h_write_model`]
+#' function.
+#'
+#' @param x (`number`)\cr a number to be formatted.
+#' @param digits (`function`)\cr the desired number of significant digits.
+#' @param prefix (`string`)\cr a prefix to be added in front of the formatted
+#'   number.
+#' @param suffix (`string`)\cr a suffix to be appended after the formatted
+#'   number.
+#'
+#' @return (`string` or `number`)\cr a formatted `x` or unchaged `x` if the
+#'   formatting condition is not met.
+#'
+#' @examples
+#' h_format_number(50000)
+#' h_format_number(50000, prefix = "P", suffix = "S")
+#' @export
+#'
+h_format_number <- function(x,
+                            digits = 5,
+                            prefix = "",
+                            suffix = "") {
+  assert_number(x)
+  assert_int(digits)
+  assert_string(prefix)
+  assert_string(suffix)
+
+  if ((abs(x) < 1e-3) || (abs(x) > 1e+4)) {
+    paste0(prefix, formatC(x, digits = digits, format = "E"), suffix)
+  } else {
+    x
+  }
 }

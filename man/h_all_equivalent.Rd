@@ -11,7 +11,8 @@ h_all_equivalent(target, current, tolerance = 1e-10)
 
 \item{current}{(\code{numeric})\cr current values.}
 
-\item{tolerance}{(\code{number}) relative differences smaller than this are not reported.}
+\item{tolerance}{(\code{number}) relative differences smaller than this are not
+reported.}
 }
 \value{
 \code{TRUE} when \code{target} and \code{current} do not differ

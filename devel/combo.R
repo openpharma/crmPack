@@ -71,7 +71,7 @@ options <- McmcOptions(burnin=10000,
 
 
 source("../R/mcmc.R")
-source("../R/writeModel.R")
+source("../R/helpers.R")
 source("../R/Samples-class.R")
 
 ## obtain the samples

@@ -17,7 +17,6 @@
 
 ##' @include helpers.R
 ##' @include Samples-class.R
-##' @include writeModel.R
 {}
 
 
@@ -117,7 +116,7 @@ setMethod("mcmc",
 
               ## write the model file into it
               modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-              writeModel(bugsModel, modelFileName)
+              h_write_model(bugsModel, modelFileName)
 
               ## get the initial values for the parameters,
               ## by evaluating the init function from the model object.
@@ -363,7 +362,7 @@ myBayesLogit <- function(y,
 
   ## write the model file into it
   modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-  writeModel(bugsModel, modelFileName)
+  h_write_model(bugsModel, modelFileName)
 
   jagsModel <- rjags::jags.model(modelFileName,
                                  data = list('X' = X,
