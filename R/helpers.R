@@ -843,7 +843,7 @@ h_rapply <- function(x, fun, classes, ...) {
 #' @param suffix (`string`)\cr a suffix to be appended after the formatted
 #'   number.
 #'
-#' @return (`string` or `number`)\cr a formatted `x` or unchaged `x` if the
+#' @return (`string` or `number`)\cr a formatted `x` or unchanged `x` if the
 #'   formatting condition is not met.
 #'
 #' @examples

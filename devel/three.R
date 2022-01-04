@@ -158,4 +158,3 @@ plot(mySims)
 ## nice!
 
 # nolint end
-

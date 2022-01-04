@@ -18,7 +18,7 @@ number.}
 number.}
 }
 \value{
-(\code{string} or \code{number})\cr a formatted \code{x} or unchaged \code{x} if the
+(\code{string} or \code{number})\cr a formatted \code{x} or unchanged \code{x} if the
 formatting condition is not met.
 }
 \description{
