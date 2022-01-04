@@ -767,7 +767,7 @@ h_write_model <- function(model, file = "model.jags", digits = 5) {
   # Transform `model` body into character vector.
   model_text <- deparse(model_sci_replaced, control = NULL)
   model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
-  model_text <- gsub("%_%", "", model_text)
+  model_text <- gsub("%_% ", "", model_text)
   model_text <- c("model", model_text)
 
   writeLines(model_text, con = file)
