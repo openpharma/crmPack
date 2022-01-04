@@ -446,3 +446,5 @@ type=
 
 ## todo: plot function for model alone, to just plot the prior
 ## without having any data
+
+# nolint end
