@@ -308,4 +308,3 @@ str(mySims@data)
 plot(mySims)
 
 # nolint end
-
