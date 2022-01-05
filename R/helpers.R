@@ -816,7 +816,7 @@ h_rapply <- function(x, fun, classes, ...) {
   assert_character(classes, min.len = 1L)
   # To assert that `x` is subsettable.
   # If it works, fine, we don't see the result, otherwise it gives the error.
-  invisible(x[[1]])
+  force(x[[1]])
 
   for (i in seq_along(x)) {
     if (class(x[[i]]) %in% classes) {
