@@ -19,4 +19,4 @@ my_options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
 # Posterior for Prob(DLT | dose = 50).
-tox_prob <- prob(dose = 50, model = my_model, samples = my_samples)
+prob(dose = 50, model = my_model, samples = my_samples)

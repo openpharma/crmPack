@@ -1,3 +1,5 @@
+# nolint start
+
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
@@ -59,7 +61,7 @@ options <- McmcOptions(burnin=100000,
 
 
 source("../R/mcmc.R")
-source("../R/writeModel.R")
+source("../R/helpers.R")
 library(rjags)
 
 ## obtain the samples
@@ -444,3 +446,5 @@ type=
 
 ## todo: plot function for model alone, to just plot the prior
 ## without having any data
+
+# nolint end

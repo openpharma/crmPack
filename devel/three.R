@@ -1,3 +1,5 @@
+# nolint start
+
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
@@ -47,7 +49,7 @@ source("../R/Model-class.R")
 source("../R/McmcOptions-class.R")
 source("../R/McmcOptions-methods.R")
 source("../R/mcmc.R")
-source("../R/writeModel.R")
+source("../R/helpers.R")
 source("../R/Samples-class.R")
 source("../R/Rules-class.R")
 source("../R/Rules-methods.R")
@@ -154,3 +156,5 @@ str(mySims@data)
 plot(mySims)
 
 ## nice!
+
+# nolint end

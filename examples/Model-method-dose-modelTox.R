@@ -20,4 +20,4 @@ my_options <- McmcOptions(burnin = 100, step = 2, samples = 200)
 dlt_sample <- mcmc(data = my_data, model = dlt_model, options = my_options)
 
 # Posterior for the dose achieving Prob(DLT) = 0.45.
-td_45 <- dose(prob = 0.45, model = dlt_model, samples = dlt_sample)
+dose(prob = 0.45, model = dlt_model, samples = dlt_sample)

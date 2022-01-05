@@ -21,5 +21,5 @@ slot of the same name in the \code{object}.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 This helper function extracts requested slots from the S4 class object.
-It is a simple wrapper of \code{\link[methods:slot]{methods::slot}} function.
+It is a simple wrapper of \code{\link[methods:slot]{methods::slot()}} function.
 }

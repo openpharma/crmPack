@@ -188,16 +188,25 @@ test_that("h_get_slots throws the error for non-existing slots", {
 # h_join_models ----
 
 test_that("h_join_models works as expected", {
-  model1 <- function(x) { x <- x - 2; x <- x^2 } # nolintr
-  model2 <- function(x) { x^3 } # nolintr
+  model1 <- function(x) {
+    x <- x - 2
+    x <- x^2
+  }
+  model2 <- function(x) {
+    x^3
+  }
   result <- h_join_models(model1, model2)
-  expected <- function(x) { x <- x - 2; x <- x^2; x^3 } # nolintr
+  expected <- function(x) {
+    x <- x - 2
+    x <- x^2
+    x^3
+  }
 
   expect_identical(result, expected)
 })
 
 test_that("h_join_models works as expected for empty model2", {
-  model1 <- function(x) { x <- x - 2 } # nolintr
+  model1 <- function(x) { x - 2 } # nolintr
   model2 <- function(x) { } # nolintr
   result <- h_join_models(model1, model2)
   expected <- model1
@@ -213,4 +222,78 @@ test_that("h_join_models throws the error for non-braced expression", {
     h_join_models(model1, model2),
     "Assertion on 'body\\(model1\\)' failed: Must inherit from class '\\{', but has class 'call'." # nolintr
   )
+})
+
+# h_format_number ----
+
+test_that("h_format_number works as expected", {
+  result <- c(
+    h_format_number(0.0001),
+    h_format_number(20000, digits = 3),
+    h_format_number(20000, prefix = "P", suffix = "S")
+  )
+  expected <- c("1.00000E-04", "2.000E+04", "P2.00000E+04S")
+
+  expect_identical(result, expected)
+})
+
+test_that("h_format_number works as expected when no change", {
+  result <- c(
+    h_format_number(1),
+    h_format_number(1, digits = 3),
+    h_format_number(1, prefix = "P", suffix = "S")
+  )
+  expected <- c(1, 1, 1)
+
+  expect_identical(result, expected)
+})
+
+# h_rapply ----
+
+test_that("h_rapply works as expected", {
+  my_model <- function() {
+    alpha0 <- mean(1:10)
+    alpha1 <- 600000
+  }
+  # Replace format of numbers using `formatC` function.
+  result <- h_rapply(
+    x = body(my_model),
+    fun = formatC,
+    classes = c("integer", "numeric"),
+    digits = 3,
+    format = "E"
+  )
+  expected_fun <- function() {
+    alpha0 <- mean("1.000E+00":"1.000E+01")
+    alpha1 <- "6.000E+05"
+  }
+  expected <- body(expected_fun)
+
+  expect_identical(result, expected)
+})
+
+# h_write_model ----
+
+test_that("h_write_model works as expected", {
+  my_model <- function() {
+    alpha0 <- mean(1:10)
+    alpha1 <- 600000
+  }
+
+  temp_file <- tempfile("crmPack-testthat-h_write_model.jags")
+  h_write_model(my_model, temp_file, 5)
+  expect_snapshot(readLines(temp_file))
+  unlink(temp_file)
+})
+
+test_that("h_write_model works as expected for truncation", {
+  my_model <- function() {
+    alpha0 <- dnorm(4) %_% I(4)
+    alpha1 <- 600000
+  }
+
+  temp_file <- tempfile("crmPack-testthat-h_write_model-trunc.jags")
+  h_write_model(my_model, temp_file, 5)
+  expect_snapshot(readLines(temp_file))
+  unlink(temp_file)
 })

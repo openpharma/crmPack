@@ -45,4 +45,5 @@ my_data <- DataParts(
 # Note that since we reached the last level from 'part1Ladder'
 # then the 'nextPart' is switched from '1' to '2'.
 my_data1 <- update(my_data, x = 10, y = 0L)
+my_data1
 }

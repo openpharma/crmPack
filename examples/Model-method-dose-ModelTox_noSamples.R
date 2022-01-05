@@ -14,4 +14,4 @@ dlt_model <- LogisticIndepBeta(
   data = my_data
 )
 
-td_45 <- dose(prob = 0.45, model = dlt_model)
+dose(prob = 0.45, model = dlt_model)
