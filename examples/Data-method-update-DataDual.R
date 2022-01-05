@@ -8,3 +8,4 @@ my_data <- DataDual(
 
 # Update the data with a new cohort.
 my_data1 <- update(my_data, x = 20, y = c(0, 1, 1), w = c(0.4, 1.2, 2.2))
+my_data1

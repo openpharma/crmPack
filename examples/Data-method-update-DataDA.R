@@ -17,3 +17,4 @@ my_data1 <- update(
   x = 20,
   trialtime = 120 # This is the global timeline for a trial.
 )
+my_data1

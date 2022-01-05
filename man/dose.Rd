@@ -76,7 +76,7 @@ my_options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
 my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
 # Posterior for the dose achieving Prob(DLT) = 0.45.
-td_45 <- dose(prob = 0.45, model = my_model, samples = my_samples)
+dose(prob = 0.45, model = my_model, samples = my_samples)
 
 # Create data from the 'Data' (or 'DataDual') class.
 my_data <- Data(
@@ -99,7 +99,7 @@ my_options <- McmcOptions(burnin = 100, step = 2, samples = 200)
 dlt_sample <- mcmc(data = my_data, model = dlt_model, options = my_options)
 
 # Posterior for the dose achieving Prob(DLT) = 0.45.
-td_45 <- dose(prob = 0.45, model = dlt_model, samples = dlt_sample)
+dose(prob = 0.45, model = dlt_model, samples = dlt_sample)
 
 # Create some data from the 'Data' (or 'DataDual') class.
 my_data <- Data(
@@ -116,5 +116,5 @@ dlt_model <- LogisticIndepBeta(
   data = my_data
 )
 
-td_45 <- dose(prob = 0.45, model = dlt_model)
+dose(prob = 0.45, model = dlt_model)
 }

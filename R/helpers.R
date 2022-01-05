@@ -789,18 +789,18 @@ h_write_model <- function(model, file = "model.jags", digits = 5) {
 #'   function. However, it differs from [rapply()] in two major ways. First, the
 #'   `h_rapply()` is not limited to objects of type `list` or `expression` only.
 #'   It can be any "list-like" object of any type for which subsetting operator
-#'   `[[` is defined. This can be, for example, an object of type `language`,
-#'   often obtained from the [body()] function. The second difference is that
-#'   the flexibility of [rapply()] on how the result is structured is not
-#'   available with `h_rapply()` for the user. That is, with `h_rapply()` each
-#'   element of `x`, which has a class included in `classes`, is replaced by the
-#'   result of applying `fun` to the element. This behavior corresponds to
-#'   [rapply()] when invoked with fixed `how = replace`.
+#'   [`[[`][Extract] is defined. This can be, for example, an object of type
+#'   `language`, often obtained from the [body()] function. The second
+#'   difference is that the flexibility of [rapply()] on how the result is
+#'   structured is not available with `h_rapply()` for the user. That is, with
+#'   `h_rapply()` each element of `x`, which has a class included in `classes`,
+#'   is replaced by the result of applying `fun` to the element. This behavior
+#'   corresponds to [rapply()] when invoked with fixed `how = replace`.
 #'   This function was primarily designed as a helper for [h_write_model()]
 #'   function.
 #'
-#' @param x any "list-like" object for which subsetting operator `[[` is
-#'   defined.
+#' @param x any "list-like" object for which subsetting operator [`[[`][Extract]
+#'   is defined.
 #' @param fun (`function`)\cr a function of one "principal" argument, passing
 #'   further arguments via `...`.
 #' @param classes (`character`)\cr class names.

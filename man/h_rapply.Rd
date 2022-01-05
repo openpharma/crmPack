@@ -7,8 +7,8 @@
 h_rapply(x, fun, classes, ...)
 }
 \arguments{
-\item{x}{any "list-like" object for which subsetting operator \code{[[} is
-defined.}
+\item{x}{any "list-like" object for which subsetting operator \code{\link[=Extract]{[[}}
+is defined.}
 
 \item{fun}{(\code{function})\cr a function of one "principal" argument, passing
 further arguments via \code{...}.}
@@ -36,13 +36,13 @@ This helper function is conceptually similar the same as \code{\link[=rapply]{ra
 function. However, it differs from \code{\link[=rapply]{rapply()}} in two major ways. First, the
 \code{h_rapply()} is not limited to objects of type \code{list} or \code{expression} only.
 It can be any "list-like" object of any type for which subsetting operator
-\code{[[} is defined. This can be, for example, an object of type \code{language},
-often obtained from the \code{\link[=body]{body()}} function. The second difference is that
-the flexibility of \code{\link[=rapply]{rapply()}} on how the result is structured is not
-available with \code{h_rapply()} for the user. That is, with \code{h_rapply()} each
-element of \code{x}, which has a class included in \code{classes}, is replaced by the
-result of applying \code{fun} to the element. This behavior corresponds to
-\code{\link[=rapply]{rapply()}} when invoked with fixed \code{how = replace}.
+\code{\link[=Extract]{[[}} is defined. This can be, for example, an object of type
+\code{language}, often obtained from the \code{\link[=body]{body()}} function. The second
+difference is that the flexibility of \code{\link[=rapply]{rapply()}} on how the result is
+structured is not available with \code{h_rapply()} for the user. That is, with
+\code{h_rapply()} each element of \code{x}, which has a class included in \code{classes},
+is replaced by the result of applying \code{fun} to the element. This behavior
+corresponds to \code{\link[=rapply]{rapply()}} when invoked with fixed \code{how = replace}.
 This function was primarily designed as a helper for \code{\link[=h_write_model]{h_write_model()}}
 function.
 }
@@ -53,10 +53,12 @@ my_model <- function() {
   alpha1 <- 600000
 }
 
-# Replace format of numbers using `h_format_number` function.
-my_model_sci_replaced <- h_rapply(
+# Replace format of numbers using `formatC` function.
+h_rapply(
   x = body(my_model),
-  fun = h_format_number,
-  classes = c("integer", "numeric")
+  fun = formatC,
+  classes = c("integer", "numeric"),
+  digits = 3,
+  format = "E"
 )
 }

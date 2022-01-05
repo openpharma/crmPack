@@ -61,4 +61,5 @@ my_data <- Data(
 
 # Update the data with a new cohort.
 my_data1 <- update(my_data, x = 20, y = c(0L, 1L, 1L))
+my_data1
 }

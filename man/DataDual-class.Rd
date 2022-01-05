@@ -36,4 +36,5 @@ my_data <- DataDual(
     seq(from = 10, to = 80, by = 2)
   )
 )
+my_data
 }

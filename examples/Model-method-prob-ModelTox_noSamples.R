@@ -15,4 +15,4 @@ dlt_model <- LogisticIndepBeta(
   data = my_data
 )
 
-tox_prob <- prob(dose = 100, model = dlt_model)
+prob(dose = 100, model = dlt_model)

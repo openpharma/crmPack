@@ -6,3 +6,4 @@ my_data <- Data(
     seq(from = 10, to = 80, by = 2)
   )
 )
+my_data

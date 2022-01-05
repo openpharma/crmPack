@@ -8,3 +8,4 @@ my_data <- DataParts(
   nextPart = 1L,
   part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
 )
+my_data
