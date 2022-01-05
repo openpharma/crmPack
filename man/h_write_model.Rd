@@ -12,7 +12,7 @@ h_write_model(model, file = "model.jags", digits = 5)
 \item{file}{(\code{string})\cr the name of the file where the model will be saved.}
 
 \item{digits}{(\code{count})\cr a desired number of significant digits for
-for numbers used in JAGS input, see \code{\link{formatC}}.}
+for numbers used in JAGS input, see \code{\link[=formatC]{formatC()}}.}
 }
 \value{
 Nothing, but as a side effect, the model file is written.
@@ -24,14 +24,14 @@ This function converts a R function with JAGS model into a text and then
 writes it into a given file. During the "model into text" conversion, the
 format of numbers of which absolute value is less than \code{0.001} or greater
 than \code{10000} is changed. These numbers will be converted into scientific
-format with specified number of significant digits using \code{\link{formatC}}
+format with specified number of significant digits using \code{\link[=formatC]{formatC()}}
 function.
 }
 \note{
 JAGS syntax allows truncation specification like \verb{dnorm(...) I(...)},
 which is illegal in R. To overcome this incompatibility, use dummy operator
 \verb{\\\%_\\\%} before \code{I(...)}, i.e. \verb{dnorm(...) \\\%_\\\% I(...)} in the model's
-code. This dummy operator \verb{\%_\\\%} will be removed just before saving the
+code. This dummy operator \verb{\\\%_\\\%} will be removed just before saving the
 JAGS code into a file.
 Due to technical issues related to conversion of numbers to scientific
 format, it is required that the body of a model function does not contain

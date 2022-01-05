@@ -7,7 +7,7 @@
 #' The [`Validate`] class is a Reference Class
 #' to help programming validation for new S4 classes.
 #'
-#' @details Starting from an empty \code{msg} vector, with each check
+#' @details Starting from an empty `msg` vector, with each check
 #'   that is returning `FALSE` the vector gets a new element - the string
 #'   explaining the failure of the validation.
 #'
@@ -668,7 +668,7 @@ h_is_positive_definite <- function(x, tolerance = 1e-08) {
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' This helper function extracts requested slots from the S4 class object.
-#' It is a simple wrapper of [`methods::slot`] function.
+#' It is a simple wrapper of [methods::slot()] function.
 #'
 #' @param object (`S4`)\cr an object from a formally defined S4 class.
 #' @param names (`character`)\cr a vector with names of slots to be fetched.
@@ -729,13 +729,13 @@ h_join_models <- function(model1, model2) {
 #' writes it into a given file. During the "model into text" conversion, the
 #' format of numbers of which absolute value is less than `0.001` or greater
 #' than `10000` is changed. These numbers will be converted into scientific
-#' format with specified number of significant digits using [`formatC`]
+#' format with specified number of significant digits using [formatC()]
 #' function.
 #'
 #' @note JAGS syntax allows truncation specification like `dnorm(...) I(...)`,
 #'   which is illegal in R. To overcome this incompatibility, use dummy operator
 #'   `\%_\%` before `I(...)`, i.e. `dnorm(...) \%_\% I(...)` in the model's
-#'   code. This dummy operator `%_\%` will be removed just before saving the
+#'   code. This dummy operator `\%_\%` will be removed just before saving the
 #'   JAGS code into a file.
 #'   Due to technical issues related to conversion of numbers to scientific
 #'   format, it is required that the body of a model function does not contain
@@ -744,11 +744,11 @@ h_join_models <- function(model1, model2) {
 #' @param model (`function`)\cr function containing the JAGS model.
 #' @param file (`string`)\cr the name of the file where the model will be saved.
 #' @param digits (`count`)\cr a desired number of significant digits for
-#'   for numbers used in JAGS input, see [`formatC`].
+#'   for numbers used in JAGS input, see [formatC()].
 #' @return Nothing, but as a side effect, the model file is written.
 #'
-#' @example examples/helpers-write_model.R
 #' @export
+#' @example examples/helpers-write_model.R
 #'
 h_write_model <- function(model, file = "model.jags", digits = 5) {
   assert_function(model)
@@ -777,28 +777,30 @@ h_write_model <- function(model, file = "model.jags", digits = 5) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function is conceptually quite similar to [`base::rapply`]
-#' function with two major differences (see the note for more details).
-#' It recursively iterates through a "list-like" object and it checks whether
-#' an element is of a given class. If it so, then it replaces that element by
-#' the result of an execution of a given function. Otherwise, and if the element
-#' is of length greater than 1 (i.e. not a scalar), it replaces that element by
-#' the result of `h_rapply`, recursively called for that element. In the
-#' remaining case, that is, the element is not of a given class and is a scalar,
-#' then that element remains unchanged.
+#' This helper function recursively iterates through a "list-like" object and it
+#' checks whether an element is of a given class. If it so, then it replaces
+#' that element by the result of an execution of a given function. Otherwise,
+#' and if the element is of length greater than 1 (i.e. not a scalar), it
+#' replaces that element by the result of `h_rapply()`, recursively called for
+#' that element. In the remaining case, that is, the element is not of a given
+#' class and is a scalar, then that element remains unchanged.
 #'
-#' @note This helper function is conceptually similar the same as `rapply`
-#'   function. However, it differs from `rapply` in two major ways. First, the
-#'   `h_rapply` is not limited to objects of type `list` or `expression` only.
-#'   It can be any "list-like" object of any type for which `[[` operator is
-#'   defined. This can be, for example, an object of type `language`, often
-#'   obtained from the `body` function. The second difference is that the
-#'   flexibility of `rapply` on `how` the result is structured is not available
-#'   with `h_rapply` for the user. That is, with `h_rapply` each element of `x`,
-#'   which has a class included in `classes`, is replaced by the result of
-#'   applying `fun` to the element.
+#' @note This helper function is conceptually similar the same as [rapply()]
+#'   function. However, it differs from [rapply()] in two major ways. First, the
+#'   `h_rapply()` is not limited to objects of type `list` or `expression` only.
+#'   It can be any "list-like" object of any type for which subsetting operator
+#'   `[[` is defined. This can be, for example, an object of type `language`,
+#'   often obtained from the [body()] function. The second difference is that
+#'   the flexibility of [rapply()] on how the result is structured is not
+#'   available with `h_rapply()` for the user. That is, with `h_rapply()` each
+#'   element of `x`, which has a class included in `classes`, is replaced by the
+#'   result of applying `fun` to the element. This behavior corresponds to
+#'   [rapply()] when invoked with fixed `how = replace`.
+#'   This function was primarily designed as a helper for [h_write_model()]
+#'   function.
 #'
-#' @param x \cr any "list-like" object for which `[[` operator is defined.
+#' @param x any "list-like" object for which subsetting operator `[[` is
+#'   defined.
 #' @param fun (`function`)\cr a function of one "principal" argument, passing
 #'   further arguments via `...`.
 #' @param classes (`character`)\cr class names.
@@ -806,8 +808,8 @@ h_write_model <- function(model, file = "model.jags", digits = 5) {
 #'
 #' @return "list-like" object of similar structure as `x`.
 #'
-#' @example examples/helpers-rapply.R
 #' @export
+#' @example examples/helpers-rapply.R
 #'
 h_rapply <- function(x, fun, classes, ...) {
   assert_function(fun)
@@ -827,14 +829,15 @@ h_rapply <- function(x, fun, classes, ...) {
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function conditionally formats a number with [`base::formatC`]
+#' This helper function conditionally formats a number with [formatC()]
 #' function using `"E"` format and specific number of digits as given by the
 #' user. A number is formatted if and only if its absolute value is less than
 #' `0.001` or greater than `10000`. Otherwise, the number is not formatted.
 #' Additionally, custom prefix or suffix can be appended to character string
 #' with formatted number, so that the changes are marked.
-#' This function is was primarily designed as a helper for [`h_write_model`]
-#' function.
+#'
+#' @note This function was primarily designed as a helper for [h_write_model()]
+#'   function.
 #'
 #' @param x (`number`)\cr a number to be formatted.
 #' @param digits (`function`)\cr the desired number of significant digits.
@@ -843,14 +846,13 @@ h_rapply <- function(x, fun, classes, ...) {
 #' @param suffix (`string`)\cr a suffix to be appended after the formatted
 #'   number.
 #'
-#' @return (`string` or `number`)\cr a formatted `x` or unchanged `x` if the
+#' @return Either formatted `x` as `string` or unchanged `x` if the
 #'   formatting condition is not met.
 #'
+#' @export
 #' @examples
 #' h_format_number(50000)
 #' h_format_number(50000, prefix = "P", suffix = "S")
-#' @export
-#'
 h_format_number <- function(x,
                             digits = 5,
                             prefix = "",

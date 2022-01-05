@@ -15,6 +15,7 @@ NULL
 #'
 #' @aliases GeneralData
 #' @export
+#' 
 .GeneralData <- setClass(
   Class = "GeneralData",
   slots = c(

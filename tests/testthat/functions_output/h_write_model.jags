@@ -1,5 +1,0 @@
-model
-{
-    alpha0 <- mean(1:10)
-    alpha1 <- 6.00000E+05
-}

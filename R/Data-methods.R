@@ -11,8 +11,8 @@
 #'
 #' @return A `list` with all slots in object `x`.
 #'
-#' @example examples/Data-method-asList.R
 #' @export
+#' @example examples/Data-method-asList.R
 #'
 setMethod(
   f = "as.list",
@@ -45,8 +45,8 @@ setMethod(
 #' @return The [`ggplot2`] object.
 #'
 #' @aliases plot-Data
-#' @example examples/Data-method-plot.R
 #' @export
+#' @example examples/Data-method-plot.R
 #'
 setMethod(
   f = "plot",
@@ -116,8 +116,8 @@ setMethod(
 #' @return The [`ggplot2`] object.
 #'
 #' @aliases plot-DataDual
+#' @export 
 #' @example examples/Data-method-plot-DataDual.R
-#' @export
 #'
 setMethod(
   f = "plot",
@@ -175,8 +175,8 @@ setMethod(
 #' @return The [`ggplot2`] object.
 #'
 #' @aliases plot-DataDA
-#' @example examples/Data-method-plot-DataDA.R
 #' @export
+#' @example examples/Data-method-plot-DataDA.R
 #'
 setMethod(
   f = "plot",
@@ -263,8 +263,8 @@ setMethod(
 #' @return The new, updated [`Data`] object.
 #'
 #' @aliases update-Data
+#' @export 
 #' @example examples/Data-method-update.R
-#' @export
 #'
 setMethod(
   f = "update",
@@ -336,8 +336,8 @@ setMethod(
 #' @return The new, updated [`DataParts`] object.
 #'
 #' @aliases update-DataParts
-#' @example examples/Data-method-update-DataParts.R
 #' @export
+#' @example examples/Data-method-update-DataParts.R
 #'
 setMethod(
   f = "update",
@@ -392,8 +392,8 @@ setMethod(
 #' @return The new, updated [`DataDual`] object.
 #'
 #' @aliases update-DataDual
-#' @example examples/Data-method-update-DataDual.R
 #' @export
+#' @example examples/Data-method-update-DataDual.R
 #'
 setMethod(
   f = "update",
@@ -445,8 +445,8 @@ setMethod(
 #' @return The new, updated [`DataDA`] object.
 #'
 #' @aliases update-DataDA
+#' @export 
 #' @example examples/Data-method-update-DataDA.R
-#' @export
 #'
 setMethod(
   f = "update",

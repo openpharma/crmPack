@@ -18,19 +18,21 @@ number.}
 number.}
 }
 \value{
-(\code{string} or \code{number})\cr a formatted \code{x} or unchanged \code{x} if the
+Either formatted \code{x} as \code{string} or unchanged \code{x} if the
 formatting condition is not met.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This helper function conditionally formats a number with \code{\link[base:formatc]{base::formatC}}
+This helper function conditionally formats a number with \code{\link[=formatC]{formatC()}}
 function using \code{"E"} format and specific number of digits as given by the
 user. A number is formatted if and only if its absolute value is less than
 \code{0.001} or greater than \code{10000}. Otherwise, the number is not formatted.
 Additionally, custom prefix or suffix can be appended to character string
 with formatted number, so that the changes are marked.
-This function is was primarily designed as a helper for \code{\link{h_write_model}}
+}
+\note{
+This function was primarily designed as a helper for \code{\link[=h_write_model]{h_write_model()}}
 function.
 }
 \examples{

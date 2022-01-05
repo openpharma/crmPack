@@ -191,24 +191,22 @@ test_that("h_join_models works as expected", {
   model1 <- function(x) {
     x <- x - 2
     x <- x^2
-  } # nolintr
+  }
   model2 <- function(x) {
     x^3
-  } # nolintr
+  }
   result <- h_join_models(model1, model2)
   expected <- function(x) {
     x <- x - 2
     x <- x^2
     x^3
-  } # nolintr
+  }
 
   expect_identical(result, expected)
 })
 
 test_that("h_join_models works as expected for empty model2", {
-  model1 <- function(x) {
-    x <- x - 2
-  } # nolintr
+  model1 <- function(x) { x - 2 } # nolintr
   model2 <- function(x) { } # nolintr
   result <- h_join_models(model1, model2)
   expected <- model1
@@ -282,8 +280,10 @@ test_that("h_write_model works as expected", {
     alpha1 <- 600000
   }
 
-  h_write_model(my_model, "./functions_output/h_write_model.jags", 5)
-  expect_snapshot(readLines("./functions_output/h_write_model.jags"))
+  temp_file <- tempfile("crmPack-testthat-h_write_model.jags")
+  h_write_model(my_model, temp_file, 5)
+  expect_snapshot(readLines(temp_file))
+  unlink(temp_file)
 })
 
 test_that("h_write_model works as expected for truncation", {
@@ -292,10 +292,8 @@ test_that("h_write_model works as expected for truncation", {
     alpha1 <- 600000
   }
 
-  h_write_model(
-    model = my_model,
-    file = "./functions_output/h_write_model-trunc.jags",
-    digits = 5
-  )
-  expect_snapshot(readLines("./functions_output/h_write_model-trunc.jags"))
+  temp_file <- tempfile("crmPack-testthat-h_write_model-trunc.jags")
+  h_write_model(my_model, temp_file, 5)
+  expect_snapshot(readLines(temp_file))
+  unlink(temp_file)
 })

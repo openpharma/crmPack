@@ -1,5 +1,0 @@
-model
-{
-    alpha0 <- dnorm(4) I(4)
-    alpha1 <- 6.00000E+05
-}

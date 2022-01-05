@@ -7,7 +7,8 @@
 h_rapply(x, fun, classes, ...)
 }
 \arguments{
-\item{x}{\cr any "list-like" object for which \code{[[} operator is defined.}
+\item{x}{any "list-like" object for which subsetting operator \code{[[} is
+defined.}
 
 \item{fun}{(\code{function})\cr a function of one "principal" argument, passing
 further arguments via \code{...}.}
@@ -22,27 +23,28 @@ further arguments via \code{...}.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-This helper function is conceptually quite similar to \code{\link[base:rapply]{base::rapply}}
-function with two major differences (see the note for more details).
-It recursively iterates through a "list-like" object and it checks whether
-an element is of a given class. If it so, then it replaces that element by
-the result of an execution of a given function. Otherwise, and if the element
-is of length greater than 1 (i.e. not a scalar), it replaces that element by
-the result of \code{h_rapply}, recursively called for that element. In the
-remaining case, that is, the element is not of a given class and is a scalar,
-then that element remains unchanged.
+This helper function recursively iterates through a "list-like" object and it
+checks whether an element is of a given class. If it so, then it replaces
+that element by the result of an execution of a given function. Otherwise,
+and if the element is of length greater than 1 (i.e. not a scalar), it
+replaces that element by the result of \code{h_rapply()}, recursively called for
+that element. In the remaining case, that is, the element is not of a given
+class and is a scalar, then that element remains unchanged.
 }
 \note{
-This helper function is conceptually similar the same as \code{rapply}
-function. However, it differs from \code{rapply} in two major ways. First, the
-\code{h_rapply} is not limited to objects of type \code{list} or \code{expression} only.
-It can be any "list-like" object of any type for which \code{[[} operator is
-defined. This can be, for example, an object of type \code{language}, often
-obtained from the \code{body} function. The second difference is that the
-flexibility of \code{rapply} on \code{how} the result is structured is not available
-with \code{h_rapply} for the user. That is, with \code{h_rapply} each element of \code{x},
-which has a class included in \code{classes}, is replaced by the result of
-applying \code{fun} to the element.
+This helper function is conceptually similar the same as \code{\link[=rapply]{rapply()}}
+function. However, it differs from \code{\link[=rapply]{rapply()}} in two major ways. First, the
+\code{h_rapply()} is not limited to objects of type \code{list} or \code{expression} only.
+It can be any "list-like" object of any type for which subsetting operator
+\code{[[} is defined. This can be, for example, an object of type \code{language},
+often obtained from the \code{\link[=body]{body()}} function. The second difference is that
+the flexibility of \code{\link[=rapply]{rapply()}} on how the result is structured is not
+available with \code{h_rapply()} for the user. That is, with \code{h_rapply()} each
+element of \code{x}, which has a class included in \code{classes}, is replaced by the
+result of applying \code{fun} to the element. This behavior corresponds to
+\code{\link[=rapply]{rapply()}} when invoked with fixed \code{how = replace}.
+This function was primarily designed as a helper for \code{\link[=h_write_model]{h_write_model()}}
+function.
 }
 \examples{
 # Some model function.
