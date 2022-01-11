@@ -43,7 +43,8 @@ Suggests:
     ggmcmc,
     knitr,
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    vdiffr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Encoding: UTF-8

@@ -14,9 +14,20 @@ NULL
 #' @slot step (`count`)\cr only every `step`-th iteration is saved after
 #'   the `burnin`. In other words, a sample from iteration
 #'   `i = 1,...,iterations`, is saved if and only if
-#'   `(i - burnin) mod step = 0`. For example, for `iterations = 6`, 
-#'   `burnin = 0` and `step = 2`, only samples from iterations `2,4,6`
-#'   will be saved.
+#'   `(i - burnin) mod step = 0`.\cr
+#'   For example, for `iterations = 6`, `burnin = 0` and `step = 2`, only
+#'   samples from iterations `2,4,6` will be saved.
+#' @slot RNG (`list`)\cr a Random Number Generator (RNG) type and seed used
+#'   by `rJAGS`. It must be a list with two elements named `.RNG.name` and
+#'   `.RNG.seed`.\cr
+#'   The `.RNG.name` is the the name of the RNG type and it is one out of the
+#'   following four values: `base::Wichmann-Hill`, `base::Marsaglia-Multicarry`,
+#'   `base::Super-Duper`, `base::Mersenne-Twister`.\cr
+#'   The `.RNG.seed` is an integer scalar seed corresponding to chosen
+#'   `.RNG.name`.\cr
+#'   The `.RNG.name` and `.RNG.seed` correspond to the options available for
+#'   `inits` parameter in [rjags::jags.model()] function.\cr
+#'   Default to `list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 1L)`.
 #'
 #' @aliases McmcOptions
 #' @export
@@ -26,12 +37,14 @@ NULL
   slots = c(
     iterations = "integer",
     burnin = "integer",
-    step = "integer"
+    step = "integer",
+    RNG = "list"
   ),
   prototype = prototype(
     iterations = 1000L,
     burnin = 100L,
-    step = 2L
+    step = 2L,
+    RNG = list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 1L)
   ),
   validity = validate_mcmc_options
 )
@@ -44,20 +57,28 @@ NULL
 #' @param step (`count`)\cr only every step-th iteration is saved after
 #'   the burn-in.
 #' @param samples (`count`)\cr number of resulting samples.
+#' @param RNG_kind (`string`)\cr the name of the RNG type. Possible types are:
+#'   `base::Wichmann-Hill`, `base::Marsaglia-Multicarry`, `base::Super-Duper`,
+#'   `base::Mersenne-Twister`.
+#' @param RNG_seed (`number`)\cr RNG seed as integer value.
 #'
 #' @export
 #' @example examples/McmcOptions-class-McmcOptions.R
 #'
 McmcOptions <- function(burnin = 1e4L,
                         step = 2L,
-                        samples = 1e4L) {
+                        samples = 1e4L,
+                        RNG_kind = "base::Mersenne-Twister",
+                        RNG_seed = 1L) {
   assert_number(burnin)
   assert_number(step)
   assert_number(samples)
+  assert_number(RNG_seed)
 
   .McmcOptions(
     iterations = safeInteger(burnin + (step * samples)),
     burnin = safeInteger(burnin),
-    step = safeInteger(step)
+    step = safeInteger(step),
+    RNG = list(.RNG.name = RNG_kind, .RNG.seed = safeInteger(RNG_seed))
   )
 }

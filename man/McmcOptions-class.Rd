@@ -7,7 +7,13 @@
 \alias{McmcOptions}
 \title{\code{McmcOptions}}
 \usage{
-McmcOptions(burnin = 10000L, step = 2L, samples = 10000L)
+McmcOptions(
+  burnin = 10000L,
+  step = 2L,
+  samples = 10000L,
+  RNG_kind = "base::Mersenne-Twister",
+  RNG_seed = 1L
+)
 }
 \arguments{
 \item{burnin}{(\code{count})\cr number of burn-in iterations which are not saved.}
@@ -16,6 +22,12 @@ McmcOptions(burnin = 10000L, step = 2L, samples = 10000L)
 the burn-in.}
 
 \item{samples}{(\code{count})\cr number of resulting samples.}
+
+\item{RNG_kind}{(\code{string})\cr the name of the RNG type. Possible types are:
+\code{base::Wichmann-Hill}, \code{base::Marsaglia-Multicarry}, \code{base::Super-Duper},
+\code{base::Mersenne-Twister}.}
+
+\item{RNG_seed}{(\code{number})\cr RNG seed as integer value.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -32,9 +44,21 @@ the burn-in.}
 \item{\code{step}}{(\code{count})\cr only every \code{step}-th iteration is saved after
 the \code{burnin}. In other words, a sample from iteration
 \verb{i = 1,...,iterations}, is saved if and only if
-\verb{(i - burnin) mod step = 0}. For example, for \code{iterations = 6},
-\code{burnin = 0} and \code{step = 2}, only samples from iterations \verb{2,4,6}
-will be saved.}
+\verb{(i - burnin) mod step = 0}.\cr
+For example, for \code{iterations = 6}, \code{burnin = 0} and \code{step = 2}, only
+samples from iterations \verb{2,4,6} will be saved.}
+
+\item{\code{RNG}}{(\code{list})\cr a Random Number Generator (RNG) type and seed used
+by \code{rJAGS}. It must be a list with two elements named \code{.RNG.name} and
+\code{.RNG.seed}.\cr
+The \code{.RNG.name} is the the name of the RNG type and it is one out of the
+following four values: \code{base::Wichmann-Hill}, \code{base::Marsaglia-Multicarry},
+\code{base::Super-Duper}, \code{base::Mersenne-Twister}.\cr
+The \code{.RNG.seed} is an integer scalar seed corresponding to chosen
+\code{.RNG.name}.\cr
+The \code{.RNG.name} and \code{.RNG.seed} correspond to the options available for
+\code{inits} parameter in \code{\link[rjags:jags.model]{rjags::jags.model()}} function.\cr
+Default to \code{list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 1L)}.}
 }}
 
 \examples{
