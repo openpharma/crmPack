@@ -32,7 +32,7 @@ test_that("validate_mcmc_options returns error message for wrong step", {
 })
 
 test_that("validate_mcmc_options returns error message for wrong RNG name", {
-  allowed_RNGs <- c(
+  allowed_rng <- c(
     "base::Wichmann-Hill",
     "base::Marsaglia-Multicarry",
     "base::Super-Duper",

@@ -19,7 +19,7 @@ NULL
 #'   i.e. `.RNG.name` and `.RNG.seed`.
 validate_mcmc_options <- function(object) {
   o <- Validate()
-  allowed_RNGs <- c(
+  allowed_rng <- c(
     "base::Wichmann-Hill",
     "base::Marsaglia-Multicarry",
     "base::Super-Duper",
@@ -54,10 +54,10 @@ validate_mcmc_options <- function(object) {
     "RNG's elements must be named: .RNG.name, .RNG.seed"
   )
   o$check(
-    test_subset(object@RNG$.RNG.name, allowed_RNGs),
+    test_subset(object@RNG$.RNG.name, allowed_rng),
     paste(
       ".RNG.name in RNG list must one of the following:",
-      paste(allowed_RNGs, collapse = ", ")
+      paste(allowed_rng, collapse = ", ")
     )
   )
   o$check(
