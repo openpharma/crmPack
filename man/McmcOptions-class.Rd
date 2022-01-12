@@ -11,8 +11,8 @@ McmcOptions(
   burnin = 10000L,
   step = 2L,
   samples = 10000L,
-  RNG_kind = "base::Mersenne-Twister",
-  RNG_seed = 1L
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 1L
 )
 }
 \arguments{
@@ -23,11 +23,10 @@ the burn-in.}
 
 \item{samples}{(\code{count})\cr number of resulting samples.}
 
-\item{RNG_kind}{(\code{string})\cr the name of the RNG type. Possible types are:
-\code{base::Wichmann-Hill}, \code{base::Marsaglia-Multicarry}, \code{base::Super-Duper},
-\code{base::Mersenne-Twister}.}
+\item{rng_kind}{(\code{string})\cr the name of the RNG type. Possible types are:
+\code{Wichmann-Hill}, \code{Marsaglia-Multicarry}, \code{Super-Duper}, \code{Mersenne-Twister}.}
 
-\item{RNG_seed}{(\code{number})\cr RNG seed as integer value.}
+\item{rng_seed}{(\code{number})\cr RNG seed as integer value.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -48,17 +47,13 @@ the \code{burnin}. In other words, a sample from iteration
 For example, for \code{iterations = 6}, \code{burnin = 0} and \code{step = 2}, only
 samples from iterations \verb{2,4,6} will be saved.}
 
-\item{\code{RNG}}{(\code{list})\cr a Random Number Generator (RNG) type and seed used
-by \code{rJAGS}. It must be a list with two elements named \code{.RNG.name} and
-\code{.RNG.seed}.\cr
-The \code{.RNG.name} is the the name of the RNG type and it is one out of the
-following four values: \code{base::Wichmann-Hill}, \code{base::Marsaglia-Multicarry},
-\code{base::Super-Duper}, \code{base::Mersenne-Twister}.\cr
-The \code{.RNG.seed} is an integer scalar seed corresponding to chosen
-\code{.RNG.name}.\cr
-The \code{.RNG.name} and \code{.RNG.seed} correspond to the options available for
-\code{inits} parameter in \code{\link[rjags:jags.model]{rjags::jags.model()}} function.\cr
-Default to \code{list(.RNG.name = "base::Mersenne-Twister", .RNG.seed = 1L)}.}
+\item{\code{rng_kind}}{(\code{string})\cr a Random Number Generator (RNG) type used
+by \code{rJAGS}. It must be one out of the following four values:
+\code{base::Wichmann-Hill}, \code{base::Marsaglia-Multicarry},
+\code{base::Super-Duper}, \code{base::Mersenne-Twister}.}
+
+\item{\code{rng_seed}}{(\code{number})\cr a Random Number Generator (RNG) seed used
+by \code{rJAGS} for a chosen \code{rng_kind}. It must be an integer scalar.}
 }}
 
 \examples{

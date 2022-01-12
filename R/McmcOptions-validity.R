@@ -15,11 +15,10 @@ NULL
 
 #' @describeIn validate_mcmcoptions_objects validates that the [`McmcOptions`]
 #'   object contains valid integer scalars `iterations`, `burnin` and `step`
-#'   as well as proper parameters for Random Number Generator used in `rJAGS`,
-#'   i.e. `.RNG.name` and `.RNG.seed`.
+#'   as well as proper parameters for Random Number Generator.
 validate_mcmc_options <- function(object) {
   o <- Validate()
-  allowed_rng <- c(
+  allowed_rng_kinds <- c(
     "base::Wichmann-Hill",
     "base::Marsaglia-Multicarry",
     "base::Super-Duper",
@@ -46,23 +45,13 @@ validate_mcmc_options <- function(object) {
     "step must be integer scalar greater than or equal to 1"
   )
   o$check(
-    test_list(object@RNG, len = 2L, names = "named", any.missing = FALSE),
-    "RNG must be a named list with two elements"
-  )
-  o$check(
-    test_set_equal(names(object@RNG), c(".RNG.name", ".RNG.seed")),
-    "RNG's elements must be named: .RNG.name, .RNG.seed"
-  )
-  o$check(
-    test_subset(object@RNG$.RNG.name, allowed_rng),
+    test_subset(object@rng_kind, allowed_rng_kinds),
     paste(
-      ".RNG.name in RNG list must one of the following:",
-      paste(allowed_rng, collapse = ", ")
+      "rng_kind must one of the following:",
+      paste(allowed_rng_kinds, collapse = ", "),
+      "User specifies the rng_kind without `base::` prefix"
     )
   )
-  o$check(
-    test_int(object@RNG$.RNG.seed),
-    ".RNG.seed in RNG list must be integer scalar"
-  )
+  o$check(test_int(object@rng_seed), "rng_seed must be an integer scalar")
   o$result()
 }

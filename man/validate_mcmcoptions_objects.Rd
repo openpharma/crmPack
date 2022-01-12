@@ -24,7 +24,6 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{validate_mcmc_options}: validates that the \code{\link{McmcOptions}}
 object contains valid integer scalars \code{iterations}, \code{burnin} and \code{step}
-as well as proper parameters for Random Number Generator used in \code{rJAGS},
-i.e. \code{.RNG.name} and \code{.RNG.seed}.
+as well as proper parameters for Random Number Generator.
 }}
 
