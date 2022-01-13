@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Added new slot `RNG` to `McmcOptions` class which will be used by Random
+  Number Generator in `rJAGS`.
 * Re-factored `sampleSize` function so that it returns `0` if
   `burnin > iterations`.
 * Renamed elements in the list object returned by `getEff` function.

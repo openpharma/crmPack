@@ -14,9 +14,17 @@
 NULL
 
 #' @describeIn validate_mcmcoptions_objects validates that the [`McmcOptions`]
-#'   object contains valid integer scalars `iterations`, `burnin` and `step`.
+#'   object contains valid integer scalars `iterations`, `burnin` and `step`
+#'   as well as proper parameters for Random Number Generator.
 validate_mcmc_options <- function(object) {
   o <- Validate()
+  allowed_rng_kinds <- c(
+    "base::Wichmann-Hill",
+    "base::Marsaglia-Multicarry",
+    "base::Super-Duper",
+    "base::Mersenne-Twister",
+    NA_character_
+  )
 
   o$check(
     test_int(object@iterations, lower = 1L),
@@ -36,6 +44,23 @@ validate_mcmc_options <- function(object) {
   o$check(
     test_int(object@step, lower = 1L),
     "step must be integer scalar greater than or equal to 1"
+  )
+  o$check(
+    # Always `TRUE` when `object@rng_kind` is `NULL`.
+    test_subset(object@rng_kind, allowed_rng_kinds),
+    paste0(
+      "rng_kind must one of the following: ",
+      paste(allowed_rng_kinds, collapse = ", "),
+      ". User specifies the rng_kind without `base::` prefix"
+    )
+  )
+  o$check(
+    test_int(object@rng_seed, na.ok = TRUE),
+    "rng_seed must be an integer scalar"
+  )
+  o$check(
+    !is.na(object@rng_kind) || is.na(object@rng_seed),
+    "rng_seed supplied but rng_kind not set"
   )
   o$result()
 }

@@ -14,9 +14,18 @@ NULL
 #' @slot step (`count`)\cr only every `step`-th iteration is saved after
 #'   the `burnin`. In other words, a sample from iteration
 #'   `i = 1,...,iterations`, is saved if and only if
-#'   `(i - burnin) mod step = 0`. For example, for `iterations = 6`, 
-#'   `burnin = 0` and `step = 2`, only samples from iterations `2,4,6`
-#'   will be saved.
+#'   `(i - burnin) mod step = 0`.\cr
+#'   For example, for `iterations = 6`, `burnin = 0` and `step = 2`, only
+#'   samples from iterations `2,4,6` will be saved.
+#' @slot rng_kind (`string`)\cr a Random Number Generator (RNG) type used by
+#'   [`rjags`]. It must be one out of the following four values:
+#'   `base::Wichmann-Hill`, `base::Marsaglia-Multicarry`,
+#'   `base::Super-Duper`, `base::Mersenne-Twister`, or `NA_character_`.
+#'   If it is `NA_character_` (default), then the RNG kind will be chosen by
+#'   [`rjags`].
+#' @slot rng_seed (`number`)\cr a Random Number Generator (RNG) seed
+#'   used by [`rjags`] for a chosen `rng_kind`. It must be an integer scalar or
+#'   `NA_integer_`, which means that the seed will be chosen by [`rjags`].
 #'
 #' @aliases McmcOptions
 #' @export
@@ -26,12 +35,16 @@ NULL
   slots = c(
     iterations = "integer",
     burnin = "integer",
-    step = "integer"
+    step = "integer",
+    rng_kind = "character",
+    rng_seed = "integer"
   ),
   prototype = prototype(
     iterations = 1000L,
     burnin = 100L,
-    step = 2L
+    step = 2L,
+    rng_kind = NA_character_,
+    rng_seed = NA_integer_
   ),
   validity = validate_mcmc_options
 )
@@ -44,20 +57,43 @@ NULL
 #' @param step (`count`)\cr only every step-th iteration is saved after
 #'   the burn-in.
 #' @param samples (`count`)\cr number of resulting samples.
+#' @param rng_kind (`string`)\cr the name of the RNG type. Possible types are:
+#'   `Wichmann-Hill`, `Marsaglia-Multicarry`, `Super-Duper`, `Mersenne-Twister`.
+#'   If it is `NA` (default), then the RNG kind will be chosen by `[rjags`].
+#' @param rng_seed (`number`)\cr RNG seed corresponding to chosen `rng_kind`.
+#'   It must be an integer value or `NA` (default), which means that the seed
+#'   will be chosen by `[rjags`].
 #'
 #' @export
 #' @example examples/McmcOptions-class-McmcOptions.R
 #'
 McmcOptions <- function(burnin = 1e4L,
                         step = 2L,
-                        samples = 1e4L) {
+                        samples = 1e4L,
+                        rng_kind = NA_character_,
+                        rng_seed = NA_integer_) {
   assert_number(burnin)
   assert_number(step)
   assert_number(samples)
+  assert_string(rng_kind, na.ok = TRUE)
+  assert_number(rng_seed, na.ok = TRUE)
+
+  if (!is.na(rng_kind)) {
+    rng_kind <- paste0("base::", rng_kind)
+  } else {
+    rng_kind <- NA_character_
+  }
+  if (!is.na(rng_seed)) {
+    rng_seed <- safeInteger(rng_seed)
+  } else {
+    rng_seed <- NA_integer_
+  }
 
   .McmcOptions(
     iterations = safeInteger(burnin + (step * samples)),
     burnin = safeInteger(burnin),
-    step = safeInteger(step)
+    step = safeInteger(step),
+    rng_kind = rng_kind,
+    rng_seed = rng_seed
   )
 }
