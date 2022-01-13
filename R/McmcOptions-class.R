@@ -18,14 +18,14 @@ NULL
 #'   For example, for `iterations = 6`, `burnin = 0` and `step = 2`, only
 #'   samples from iterations `2,4,6` will be saved.
 #' @slot rng_kind (`string`)\cr a Random Number Generator (RNG) type used by
-#'   [`rJAGS`]. It must be one out of the following four values:
+#'   [`rjags`]. It must be one out of the following four values:
 #'   `base::Wichmann-Hill`, `base::Marsaglia-Multicarry`,
 #'   `base::Super-Duper`, `base::Mersenne-Twister`, or `NA_character_`.
 #'   If it is `NA_character_` (default), then the RNG kind will be chosen by
-#'   [`rJAGS`].
+#'   [`rjags`].
 #' @slot rng_seed (`number`)\cr a Random Number Generator (RNG) seed
-#'   used by [`rJAGS`] for a chosen `rng_kind`. It must be an integer scalar or
-#'   `NA_integer_`, which means that the seed will be chosen by [`rJAGS`].
+#'   used by [`rjags`] for a chosen `rng_kind`. It must be an integer scalar or
+#'   `NA_integer_`, which means that the seed will be chosen by [`rjags`].
 #'
 #' @aliases McmcOptions
 #' @export
@@ -59,10 +59,10 @@ NULL
 #' @param samples (`count`)\cr number of resulting samples.
 #' @param rng_kind (`string`)\cr the name of the RNG type. Possible types are:
 #'   `Wichmann-Hill`, `Marsaglia-Multicarry`, `Super-Duper`, `Mersenne-Twister`.
-#'   If it is `NA` (default), then the RNG kind will be chosen by `[rJAGS`].
+#'   If it is `NA` (default), then the RNG kind will be chosen by `[rjags`].
 #' @param rng_seed (`number`)\cr RNG seed corresponding to chosen `rng_kind`.
 #'   It must be an integer value or `NA` (default), which means that the seed
-#'   will be chosen by `[rJAGS`].
+#'   will be chosen by `[rjags`].
 #'
 #' @export
 #' @example examples/McmcOptions-class-McmcOptions.R
