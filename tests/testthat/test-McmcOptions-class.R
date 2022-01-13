@@ -36,3 +36,13 @@ test_that("McmcOptions object can be created with custom values", {
   )
   expect_valid(result, "McmcOptions")
 })
+
+test_that("McmcOptions object can be created with custom RNG and NA values", {
+  result <- expect_silent(
+    McmcOptions(
+      rng_kind = "Wichmann-Hill",
+      rng_seed = NA
+    )
+  )
+  expect_valid(result, "McmcOptions")
+})

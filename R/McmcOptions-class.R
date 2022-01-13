@@ -17,12 +17,15 @@ NULL
 #'   `(i - burnin) mod step = 0`.\cr
 #'   For example, for `iterations = 6`, `burnin = 0` and `step = 2`, only
 #'   samples from iterations `2,4,6` will be saved.
-#' @slot rng_kind (`string`)\cr a Random Number Generator (RNG) type used
-#'   by [`rJAGS`]. It must be one out of the following four values:
+#' @slot rng_kind (`string`)\cr a Random Number Generator (RNG) type used by
+#'   [`rJAGS`]. It must be one out of the following four values:
 #'   `base::Wichmann-Hill`, `base::Marsaglia-Multicarry`,
-#'   `base::Super-Duper`, `base::Mersenne-Twister`.
-#' @slot rng_seed (`number`)\cr a Random Number Generator (RNG) seed used
-#'   by [`rJAGS`] for a chosen `rng_kind`. It must be an integer scalar.
+#'   `base::Super-Duper`, `base::Mersenne-Twister`, or `NA_character_`.
+#'   If it is `NA_character_` (default), then the RNG kind will be chosen by
+#'   [`rJAGS`].
+#' @slot rng_seed (`number`)\cr a Random Number Generator (RNG) seed
+#'   used by [`rJAGS`] for a chosen `rng_kind`. It must be an integer scalar or
+#'   `NA_integer_`, which means that the seed will be chosen by [`rJAGS`].
 #'
 #' @aliases McmcOptions
 #' @export
@@ -40,8 +43,8 @@ NULL
     iterations = 1000L,
     burnin = 100L,
     step = 2L,
-    rng_kind = "base::Mersenne-Twister",
-    rng_seed = 1L
+    rng_kind = NA_character_,
+    rng_seed = NA_integer_
   ),
   validity = validate_mcmc_options
 )
@@ -56,8 +59,10 @@ NULL
 #' @param samples (`count`)\cr number of resulting samples.
 #' @param rng_kind (`string`)\cr the name of the RNG type. Possible types are:
 #'   `Wichmann-Hill`, `Marsaglia-Multicarry`, `Super-Duper`, `Mersenne-Twister`.
+#'   If it is `NA` (default), then the RNG kind will be chosen by `[rJAGS`].
 #' @param rng_seed (`number`)\cr RNG seed corresponding to chosen `rng_kind`.
-#'   It must be an integer value.
+#'   It must be an integer value or `NA` (default), which means that the seed
+#'   will be chosen by `[rJAGS`].
 #'
 #' @export
 #' @example examples/McmcOptions-class-McmcOptions.R
@@ -65,19 +70,30 @@ NULL
 McmcOptions <- function(burnin = 1e4L,
                         step = 2L,
                         samples = 1e4L,
-                        rng_kind = "Mersenne-Twister",
-                        rng_seed = 1L) {
+                        rng_kind = NA_character_,
+                        rng_seed = NA_integer_) {
   assert_number(burnin)
   assert_number(step)
   assert_number(samples)
-  assert_string(rng_kind)
-  assert_number(rng_seed)
+  assert_string(rng_kind, na.ok = TRUE)
+  assert_number(rng_seed, na.ok = TRUE)
+
+  if (!is.na(rng_kind)) {
+    rng_kind <- paste0("base::", rng_kind)
+  } else {
+    rng_kind <- NA_character_
+  }
+  if (!is.na(rng_seed)) {
+    rng_seed <- safeInteger(rng_seed)
+  } else {
+    rng_seed <- NA_integer_
+  }
 
   .McmcOptions(
     iterations = safeInteger(burnin + (step * samples)),
     burnin = safeInteger(burnin),
     step = safeInteger(step),
-    rng_kind = paste0("base::", rng_kind),
-    rng_seed = safeInteger(rng_seed)
+    rng_kind = rng_kind,
+    rng_seed = rng_seed
   )
 }

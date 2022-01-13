@@ -22,7 +22,8 @@ validate_mcmc_options <- function(object) {
     "base::Wichmann-Hill",
     "base::Marsaglia-Multicarry",
     "base::Super-Duper",
-    "base::Mersenne-Twister"
+    "base::Mersenne-Twister",
+    NA_character_
   )
 
   o$check(
@@ -45,13 +46,21 @@ validate_mcmc_options <- function(object) {
     "step must be integer scalar greater than or equal to 1"
   )
   o$check(
+    # Always `TRUE` when `object@rng_kind` is `NULL`.
     test_subset(object@rng_kind, allowed_rng_kinds),
-    paste(
-      "rng_kind must one of the following:",
+    paste0(
+      "rng_kind must one of the following: ",
       paste(allowed_rng_kinds, collapse = ", "),
-      "User specifies the rng_kind without `base::` prefix"
+      ". User specifies the rng_kind without `base::` prefix"
     )
   )
-  o$check(test_int(object@rng_seed), "rng_seed must be an integer scalar")
+  o$check(
+    test_int(object@rng_seed, na.ok = TRUE),
+    "rng_seed must be an integer scalar"
+  )
+  o$check(
+    !is.na(object@rng_kind) || is.na(object@rng_seed),
+    "rng_seed supplied but rng_kind not set"
+  )
   o$result()
 }
