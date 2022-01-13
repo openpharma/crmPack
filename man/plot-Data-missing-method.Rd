@@ -10,7 +10,8 @@
 \arguments{
 \item{x}{(\code{Data})\cr object we want to plot.}
 
-\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic
+function.}
 
 \item{blind}{(\code{flag})\cr indicates whether to blind the data.
 If \code{TRUE}, then placebo subjects are reported at the same level

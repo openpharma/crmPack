@@ -1,4 +1,8 @@
 # Version 1.0.9000
+* Added `add_dummy` method for `Data` class.
+* Removed `as.list` method of `GeneralData` class. 
+* Changed helper function name from `h_get_slots` to `h_slots`.
+* Remove `program` parameter from `mcmc` method.
 * Added new slot `RNG` to `McmcOptions` class which will be used by Random
   Number Generator in `rJAGS`.
 * Re-factored `sampleSize` function so that it returns `0` if

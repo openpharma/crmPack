@@ -13,11 +13,12 @@
 \item{u}{(\code{numeric})\cr the new DLT free survival times for all patients,
 i.e. for existing patients in the \code{object} as well as for new patients.}
 
-\item{t0}{(\code{numeric})\cr the time that each patient starts DLT observation window.
-This parameter covers all patients, i.e. existing patients in the \code{object}
-as well as for new patients.}
+\item{t0}{(\code{numeric})\cr the time that each patient starts DLT observation
+window. This parameter covers all patients, i.e. existing patients in the
+\code{object} as well as for new patients.}
 
-\item{trialtime}{(\code{number})\cr current time in the trial, i.e. a followup time.}
+\item{trialtime}{(\code{number})\cr current time in the trial, i.e. a followup
+time.}
 
 \item{y}{(\code{numeric})\cr the new DLTs for all patients, i.e. for existing
 patients in the \code{object} as well as for new patients.}

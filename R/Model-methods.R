@@ -118,7 +118,7 @@ setMethod(
 
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(h_get_slots(model, dose_args_names), list(prob = prob))
+    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
     do.call(dose_fun, dose_args)
   }
 )
@@ -237,7 +237,7 @@ setMethod(
 
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(h_get_slots(model, prob_args_names), list(dose = dose))
+    prob_args <- c(h_slots(model, prob_args_names), list(dose = dose))
     do.call(prob_fun, prob_args)
   }
 )

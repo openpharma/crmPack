@@ -7,19 +7,11 @@
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
 \alias{mcmc,DataDual,EffFlexi,McmcOptions-method}
-\title{Obtain posterior samples for all model parameters}
+\title{Obtaining Posterior Samples for all Model Parameters}
 \usage{
 mcmc(data, model, options, ...)
 
-\S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(
-  data,
-  model,
-  options,
-  program = c("JAGS"),
-  verbose = FALSE,
-  fromPrior = data@nObs == 0L,
-  ...
-)
+\S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, verbose = FALSE, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{DataMixture,GeneralModel,McmcOptions}(
   data,
@@ -36,39 +28,30 @@ mcmc(data, model, options, ...)
 \S4method{mcmc}{DataDual,EffFlexi,McmcOptions}(data, model, options, ...)
 }
 \arguments{
-\item{data}{The data input, an object of class \code{\linkS4class{GeneralData}}}
+\item{data}{(\code{GeneralData})\cr an input data.}
 
-\item{model}{The model input, an object of class \code{\linkS4class{GeneralModel}}}
+\item{model}{(\code{GeneralModel})\cr an input model.}
 
-\item{options}{MCMC options, an object of class
-\code{\linkS4class{McmcOptions}}}
+\item{options}{(\code{McmcOptions})\cr MCMC options.}
 
-\item{\dots}{unused}
-
-\item{program}{the program which shall be used: currently only \dQuote{JAGS}
-is supported}
+\item{...}{not used.}
 
 \item{verbose}{shall progress bar and messages be printed? (not default)}
 
-\item{fromPrior}{sample from the prior only? Defaults to checking if nObs is
+\item{from_prior}{sample from the prior only? Defaults to checking if nObs is
 0. For some models it might be necessary to specify it manually here though.}
 }
 \value{
-The posterior samples, an object of class
-\code{\linkS4class{Samples}}.
+The posterior samples, an object of class \code{\link{Samples}}.
 }
 \description{
-This is the function to actually run the MCMC machinery to produce posterior
-samples from all model parameters and required derived values. It is a
-generic function, so that customized versions may be conveniently defined
-for specific subclasses of GeneralData, GeneralModel, and McmcOptions input.
-}
-\details{
-Reproducible samples can be obtained by setting the seed via
-\code{\link{set.seed}} before in the user code as usual. However, note that
-because the RNG sampler used is external to R, running this MCMC function
-will not change the seed position -- that is, the repeated call to this
-function will then result in exactly the same output.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This is the function that actually runs the MCMC machinery to produce
+posterior samples from all model parameters and required derived values.
+It is a generic function, so that customized versions may be conveniently
+defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{GeneralModel}}, and
+\code{\link{McmcOptions}} input.
 }
 \section{Functions}{
 \itemize{
@@ -106,30 +89,32 @@ Therefore, if the inverse gamma distribution(s) are used, the parameters in the 
 first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
 }}
 
+\note{
+Reproducible samples can be obtained by setting the seed using
+\code{\link[=set.seed]{set.seed()}} in the user code as usual. However, note that because the RNG
+sampler used is external to R, running this MCMC function will not change
+the seed position, that is, the repeated call to this function will then
+result in exactly the same output.
+}
 \examples{
+# Create some data from the class `Data`.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# create some data from the class 'Data'
-myData <- Data(x=c(0.1,0.5,1.5,3,6,10,10,10),
-               y=c(0,0,0,0,0,0,1,0),
-               doseGrid=c(0.1,0.5,1.5,3,6,
-                          seq(from=10,to=80,by=2)))
+# Initialize the CRM model.
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  refDose = 56
+)
 
-# Initialize the CRM model 
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           refDose=56)
-
-
-# Sample from the posterior distribution
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=1000)
-
-samples <- mcmc(data = myData, model = model, options=options)
-
-
+# Sample from the posterior distribution.
+options <- McmcOptions(burnin = 100, step = 2, samples = 1000)
+samples <- mcmc(data = my_data, model = model, options = options)
+samples
 ##obtain mcmc DLE samples given the data, LogisticIndepBeta (DLE model) and mcmc simulations options
 ## data must be of 'Data' class
 data<-Data(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
@@ -170,5 +155,3 @@ options<-McmcOptions(burnin=100,step=2,samples=200)
 set.seed(94)
 samples<-mcmc(data=data,model=Effmodel,options=options)
 }
-\keyword{methods}
-\keyword{regression}

@@ -680,9 +680,9 @@ h_is_positive_definite <- function(x, tolerance = 1e-08) {
 #'
 #' @export
 #'
-h_get_slots <- function(object, names) {
+h_slots <- function(object, names) {
   assert_true(isS4(object))
-  assert_character(names, min.len = 1, any.missing = FALSE)
+  assert_character(names, min.len = 1, any.missing = FALSE, null.ok = TRUE)
   assert_true(all(names %in% slotNames(object)))
 
   sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
@@ -867,6 +867,23 @@ h_format_number <- function(x,
 
   if ((abs(x) < 1e-3) || (abs(x) > 1e+4)) {
     paste0(prefix, formatC(x, digits = digits, format = "E"), suffix)
+  } else {
+    x
+  }
+}
+
+h_extract_jags_samples <- function(x) {
+  x <- x[, , 1L]
+  # In case that there are multiple parameters in a node.
+  if (is.matrix(x)) {
+    x <- t(x)
+  }
+  x
+}
+
+h_null_if_na <- function(x) {
+  if (is.na(x)) {
+    NULL
   } else {
     x
   }

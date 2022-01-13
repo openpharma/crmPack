@@ -36,6 +36,8 @@
 #' rnorm runif uniroot var vcov
 #' @importFrom utils data head tail
 #' @importFrom lifecycle badge
+#' @importFrom rjags jags.model jags.samples
+#' @importFrom futile.logger flog.threshold INFO flog.info
 #' @keywords package
 #' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
 #' "Model-Based Dose Escalation Designs in R with crmPack."

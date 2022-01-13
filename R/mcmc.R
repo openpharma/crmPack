@@ -1,63 +1,40 @@
-# nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com ],
-##         Wai Yin Yeung [,w *.* yeung *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[mcmc.R] by DSB Mit 13/05/2015 23:10>
-##
-## Description:
-## Methods for producing the MCMC samples from Data and Model input.
-##
-## History:
-## 31/01/2014   file creation
-## 08/12/2014   no longer rely on R2WinBUGS for write.model but get it internal
-## 10/07/2015   added mcmc methods for pseudo model class
-###################################################################################
+#' @include helpers.R Samples-class.R
+NULL
 
-##' @include helpers.R
-##' @include Samples-class.R
-{}
+# mcmc ----
 
-
-## --------------------------------------------------
-## The generic function
-## --------------------------------------------------
-
-
-##' Obtain posterior samples for all model parameters
-##'
-##' This is the function to actually run the MCMC machinery to produce posterior
-##' samples from all model parameters and required derived values. It is a
-##' generic function, so that customized versions may be conveniently defined
-##' for specific subclasses of GeneralData, GeneralModel, and McmcOptions input.
-##'
-##' Reproducible samples can be obtained by setting the seed via
-##' \code{\link{set.seed}} before in the user code as usual. However, note that
-##' because the RNG sampler used is external to R, running this MCMC function
-##' will not change the seed position -- that is, the repeated call to this
-##' function will then result in exactly the same output.
-##'
-##' @param data The data input, an object of class \code{\linkS4class{GeneralData}}
-##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
-##' @param options MCMC options, an object of class
-##' \code{\linkS4class{McmcOptions}}
-##' @param \dots unused
-##'
-##' @return The posterior samples, an object of class
-##' \code{\linkS4class{Samples}}.
-##'
-##' @export
-##' @keywords methods regression
-setGeneric("mcmc",
-           def=
-           function(data, model, options, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("mcmc")
-           },
-           valueClass="Samples")
-
+#' Obtaining Posterior Samples for all Model Parameters
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This is the function that actually runs the MCMC machinery to produce
+#' posterior samples from all model parameters and required derived values.
+#' It is a generic function, so that customized versions may be conveniently
+#' defined for specific subclasses of [`GeneralData`], [`GeneralModel`], and
+#' [`McmcOptions`] input.
+#'
+#' @note Reproducible samples can be obtained by setting the seed using
+#'   [set.seed()] in the user code as usual. However, note that because the RNG
+#'   sampler used is external to R, running this MCMC function will not change
+#'   the seed position, that is, the repeated call to this function will then
+#'   result in exactly the same output.
+#'
+#' @param data (`GeneralData`)\cr an input data.
+#' @param model (`GeneralModel`)\cr an input model.
+#' @param options (`McmcOptions`)\cr MCMC options.
+#' @param ... not used.
+#'
+#' @return The posterior samples, an object of class [`Samples`].
+#' @export
+#'
+setGeneric(
+  name = "mcmc",
+  def = function(data, model, options, ...) {
+    # There should be no default, just dispatch it to the class-specific method!
+    standardGeneric("mcmc")
+  },
+  valueClass = "Samples"
+)
 
 ## --------------------------------------------------
 ## The standard method
@@ -65,216 +42,110 @@ setGeneric("mcmc",
 
 ##' @describeIn mcmc Standard method which uses JAGS
 ##'
-##' @param program the program which shall be used: currently only \dQuote{JAGS}
-##' is supported
 ##' @param verbose shall progress bar and messages be printed? (not default)
-##' @param fromPrior sample from the prior only? Defaults to checking if nObs is
+##' @param from_prior sample from the prior only? Defaults to checking if nObs is
 ##' 0. For some models it might be necessary to specify it manually here though.
 ##'
 ##' @importFrom rjags jags.model jags.samples
 ##' @importFrom utils capture.output
 ##'
 ##' @example examples/mcmc.R
-setMethod("mcmc",
-          signature=
-          signature(data="GeneralData",
-                    model="GeneralModel",
-                    options="McmcOptions"),
-          def=
-          function(data, model, options,
-                   program=c("JAGS"),
-                   verbose=FALSE,
-                   fromPrior=data@nObs == 0L,
-                   ...){
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "GeneralModel",
+    options = "McmcOptions"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 verbose = FALSE,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    assert_flag(verbose)
+    assert_flag(from_prior)
 
-              ## select program
-              program <- match.arg(program)
+    if (verbose) {
+      futile.logger::flog.threshold(futile.logger::INFO, name = "mcmc")
+    } else {
+      futile.logger::flog.threshold(futile.logger::FATAL, name = "mcmc")
+    }
 
-              ## get a temp directory
-              bugsTempDir <- file.path(tempdir(), "bugs")
-              ## don't warn, because the temp dir often exists (which is OK)
-              dir.create(bugsTempDir, showWarnings=FALSE)
+    jags_model_fun <- if (from_prior) {
+      model@priormodel
+    } else {
+      h_join_models(model@datamodel, model@priormodel)
+    }
 
-              options(BRugsVerbose=verbose)
-              if(verbose)
-              {
-                  cat("Using temporary directory", bugsTempDir, "\n")
-              }
+    # Write the model into the file.
+    jags_dir <- file.path(tempdir(), "R_crmPack")
+    jags_file <- tempfile("jags_model_fun", jags_dir, ".txt")
+    # Don't warn, as the temp dir often exists (which is OK).
+    dir.create(jags_dir, showWarnings = FALSE)
+    futile.logger::flog.info("Temporary directory: %s", jags_dir, name = "mcmc")
+    h_write_model(jags_model_fun, jags_file)
 
-              ## build the model according to whether we sample from prior
-              ## or not:
-              bugsModel <-
-                  if(fromPrior)
-                  {
-                      ## here only the prior
-                      model@priormodel
-                  } else {
-                      ## here the data model + the prior
-                      h_join_models(model@datamodel,
-                                 model@priormodel)
-                  }
+    # Get the initial values for the parameters.
+    inits <- do.call(model@init, h_slots(data, formalArgs(model@init)))
+    assert_list(inits)
+    inits <- inits[sapply(inits, length) > 0L]
 
-              ## write the model file into it
-              modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-              h_write_model(bugsModel, modelFileName)
+    # Get the model specs.
+    modelspecs <- do.call(
+      model@modelspecs, h_slots(data, formalArgs(model@modelspecs))
+    )
+    assert_list(modelspecs)
 
-              ## get the initial values for the parameters,
-              ## by evaluating the init function from the model object.
-              ## This gives us a list
-              inits <-
-                  do.call(model@init,
-                          as.list(data)[names(formals(model@init))])
-              stopifnot(is.list(inits))
+    if (from_prior) {
+      # Remove elements named "zeros" to avoid JAGS error of unused variables.
+      modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
+      data_model <- NULL
+    } else {
+      # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
+      # scalars by `openBUGS` if `data@nObs == 0`, which leads to failures.
+      add_where <- setdiff(
+        model@datanames,
+        c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax")
+      )
+      data_model <- h_slots(add_dummy(data, where = add_where), model@datanames)
+    }
 
-              ## need to select only initial values with positive length
-              inits <- inits[sapply(inits, length) > 0]
+    # Specify the JAGS model and generate samples.
+    # The `inits` in `c()` below, must be a `list`!
+    jags_model <- rjags::jags.model(
+      file = jags_file,
+      data = c(data_model, modelspecs),
+      inits = c(
+        inits,
+        .RNG.name = h_null_if_na(options@rng_kind),
+        .RNG.seed = h_null_if_na(options@rng_seed)
+      ),
+      quiet = !verbose,
+      n.adapt = 0 # Important for reproducibility.
+    )
+    update(jags_model, n.iter = options@burnin, progress.bar = "none")
 
-              ## get the model specs
-              ## by evaluating the modelspecs function from the model object.
-              ## This gives us a list
-              modelspecs <-
-                  do.call(model@modelspecs,
-                          as.list(data)[names(formals(model@modelspecs))])
-              stopifnot(is.list(modelspecs))
+    jags_samples <- invisible(
+      rjags::jags.samples(
+        model = jags_model,
+        variable.names = model@sample,
+        n.iter = (options@iterations - options@burnin),
+        thin = options@step,
+        progress.bar = ifelse(verbose, "text", "none")
+      )
+    )
+    futile.logger::flog.info(
+      "rjags samples: ", jags_samples, name = "mcmc", capture = TRUE
+    )
+    samples <- lapply(jags_samples, h_extract_jags_samples)
 
-              if(fromPrior)
-              {
-                # remove some list elements to avoid Jags error of unused variables
-                modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
-              }
+    futile.logger::flog.remove("mcmc")
+    Samples(data = samples, options = options)
+  }
+)
 
-              ## prepare the required data.
-              ## This is necessary, because if there is only one observation,
-              ## the data is not passed correctly to openBUGS: Then x and y
-              ## are treated like scalars in the data file. Therefore we add
-              ## dummy values to the vectors in this case.
-              requiredData <-
-                  if(fromPrior)
-                  {
-                      ## in this case requiredData will not be used
-                      NULL
-
-                  } else if(data@nObs == 1L) {
-                      ## here we need to modify!!
-                      tmp <- as.list(data)[model@datanames]
-
-                      ## get the names where to add dummy entries:
-                      addWhere <- which(! (names(tmp) %in% c("nObs",
-                                                             "nGrid",
-                                                             "nObsshare",
-                                                             "yshare",
-                                                             "xshare",
-                                                             "Tmax")))
-                      ## all names that are not referring to the scalars
-                      ## nObs and nGrid
-
-                      for(i in addWhere)
-                      {
-                          tmp[[i]] <- as(c(tmp[[i]],
-                                           0), ## additional zero here!
-                                         class(tmp[[i]])) ## preserve class
-                      }
-                      ## because we don't change the number of observations
-                      ## (nObs), this addition of zeros doesn't affect the
-                      ## results.
-
-                      ## return:
-                      tmp
-
-                  } else {
-                      ## we can take the usual one
-                      as.list(data)[model@datanames]
-                  }
-
-              ## now decide whether JAGS or something else is used
-              if(program=="JAGS")
-              {
-                  ## get or set the seed
-                  rSeed <- try(get(".Random.seed", envir = .GlobalEnv),
-                               silent=TRUE)
-                  if(is(rSeed, "try-error"))
-                  {
-                      set.seed(floor(runif(n=1, min=0, max=1e4)))
-                      rSeed <- get(".Random.seed", envir = .GlobalEnv)
-                  }
-                  ## .Random.seed contains two leading integers where the second
-                  ## gives the position in the following 624 long vector (see
-                  ## ?set.seed). Take the current position and ensure positivity
-                  rSeed <- abs(rSeed[-c(1:2)][rSeed[2]])
-
-                  ## specify the JAGS model
-                  jagsModel <-
-                      rjags::jags.model(file=modelFileName,
-                                        data=c(requiredData,
-                                               modelspecs),
-                                        inits=
-                                        ## add the RNG seed to the inits list:
-                                        ## (use Mersenne Twister as per R
-                                        ## default)
-                                        c(inits,
-                                          list(.RNG.name="base::Mersenne-Twister",
-                                               .RNG.seed=rSeed)),
-                                        quiet=!verbose,
-                                        ## important for
-                                        ## reproducibility:
-                                        n.adapt=0)
-
-                  ## run for the burnin time -> but don't show progress bar for
-                  ## this one in order not to confuse the user
-                  update(jagsModel,
-                         n.iter=options@burnin,
-                         progress.bar="none")
-
-                  ## afterwards generate more samples and save every step one
-                  ## code is:
-                  samplesCode <- "samples <-
-                      rjags::jags.samples(model=jagsModel,
-                                          variable.names=model@sample,
-                                          n.iter=
-                                              (options@iterations - options@burnin),
-                                          thin=options@step,
-                                          progress.bar=
-                                              ifelse(verbose,
-                                                     'text',
-                                                     'none'))"
-
-                  ## evaluate with or without outstream capturing
-                  if(verbose)
-                  {
-                      eval(parse(text=samplesCode))
-                  } else {
-
-                      ## this is necessary because some outputs
-                      ## are written directly from the JAGS compiled
-                      ## code to the outstream
-                      capture.output(eval(parse(text=samplesCode)))
-                  }
-
-                  ## reformat slightly for Samples object
-                  ret <- lapply(samples,
-                                function(x) {
-                                    ## take the first chain (because we use only
-                                    ## one anyway), and take all samples (burnin
-                                    ## was already not saved!)
-                                    x <- x[, , 1L]
-                                    ## transpose if it is a matrix
-                                    ## (in case that there are multiple parameters
-                                    ## in a node)
-                                    if(is.matrix(x))
-                                    {
-                                        x <- t(x)
-                                    }
-                                    x
-                                })
-
-              }
-
-              ## form a Samples object for return
-              ret <- Samples(data=ret,
-                             options=options)
-              return(ret)
-          })
-
+# nolint start
 
 ## --------------------------------------------------
 ## The method for DataMixture usage
