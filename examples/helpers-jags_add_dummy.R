@@ -12,7 +12,7 @@ my_data_2 <- Data(
 )
 
 # Append dummy to `x` and `y`.
-add_dummy(my_data, where = c("x", "y"))
+h_jags_add_dummy(my_data, where = c("x", "y"))
 
 # Append dummy to `x` and `y`. No effect as `my_data_2@nObs != 1`.
-add_dummy(my_data_2, where = c("x", "y"))
+h_jags_add_dummy(my_data_2, where = c("x", "y"))

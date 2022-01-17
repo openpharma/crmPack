@@ -1,4 +1,4 @@
-#' @include helpers.R Samples-class.R logger.R
+#' @include logger.R helpers.R helpers_jags.R Samples-class.R 
 NULL
 
 # mcmc ----
@@ -7,7 +7,7 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' This is the function that actually runs the `MCMC JAGS` machinery to produce
+#' This is the function that actually runs the `JAGS` MCMC machinery to produce
 #' posterior samples from all model parameters and required derived values.
 #' It is a generic function, so that customized versions may be conveniently
 #' defined for specific subclasses of [`GeneralData`], [`GeneralModel`], and
@@ -59,24 +59,20 @@ setMethod(
                  ...) {
     assert_flag(from_prior)
 
-    jags_model_fun <- if (from_prior) {
+    model_fun <- if (from_prior) {
       model@priormodel
     } else {
-      h_join_models(model@datamodel, model@priormodel)
+      h_jags_join_models(model@datamodel, model@priormodel)
     }
-    jags_file <- h_write_model(jags_model_fun)
-
-    inits <- do.call(model@init, h_slots(data, formalArgs(model@init)))
-    assert_list(inits)
-    inits <- inits[sapply(inits, length) > 0L]
-
-    jags_data <- h_get_jags_data(model, data, from_prior)
+    model_file <- h_jags_write_model(model_fun)
+    model_inits <- h_jags_get_model_inits(model, data)
+    model_data <- h_jags_get_data(model, data, from_prior)
 
     jags_model <- rjags::jags.model(
-      file = jags_file,
-      data = jags_data,
+      file = model_file,
+      data = model_data,
       inits = c(
-        inits,
+        model_inits,
         .RNG.name = h_null_if_na(options@rng_kind),
         .RNG.seed = h_null_if_na(options@rng_seed)
       ),
@@ -109,7 +105,7 @@ setMethod(
       )
     }
     log_trace("JAGS samples: ", jags_samples, capture = TRUE)
-    samples <- lapply(jags_samples, h_extract_jags_samples)
+    samples <- lapply(jags_samples, h_jags_extract_samples)
 
     Samples(data = samples, options = options)
   }
@@ -180,11 +176,6 @@ myBayesLogit <- function(y,
   ## ?set.seed). Take the current position and ensure positivity
   rSeed <- abs(rSeed[-c(1:2)][rSeed[2]])
 
-  ## get a temp directory
-  bugsTempDir <- file.path(tempdir(), "bugs")
-  ## don't warn, because the temp dir often exists (which is OK)
-  dir.create(bugsTempDir, showWarnings=FALSE)
-
   ## build the model according to whether we sample from prior
   ## or not:
   bugsModel <- function()
@@ -202,8 +193,7 @@ myBayesLogit <- function(y,
   }
 
   ## write the model file into it
-  modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-  h_write_model(bugsModel, modelFileName)
+  modelFileName <- h_jags_write_model(bugsModel)
 
   jagsModel <- rjags::jags.model(modelFileName,
                                  data = list('X' = X,

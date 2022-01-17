@@ -1,6 +1,6 @@
 # Version 1.0.9000
-* Renamed `fromPrior` to `from_prior` argument of `mcmc` method.
-* Removed `program` and `verbose` arguments from `mcmc` method.
+* Modified `mcmc` method arguments: renamed `fromPrior` to `from_prior`, removed
+  `program` and `verbose`.
 * Added new slot `RNG` to `McmcOptions` class which will be used by Random
   Number Generator in `rJAGS`.
 * Re-factored `sampleSize` function so that it returns `0` if

@@ -9,7 +9,7 @@
 #' enabling verbose logging means that the logging threshold will be set to
 #' [`futile.logger::TRACE`] for the `crmPack` logger, and disabling verbose
 #' logging means that it will be set to [`futile.logger::FATAL`].
-#' 
+#'
 #' @describeIn verbose_logging A simple wrapper of
 #'   [futile.logger::flog.threshold()] that enables `crmPack` verbose logging by
 #'   setting logging threshold to [`futile.logger::TRACE`] for `crmPack` logger.
@@ -57,5 +57,8 @@ is_logging_verbose <- function() {
 #' @export
 #'
 log_trace <- function(msg, ..., capture = FALSE) {
+  assert_string(msg)
+  assert_flag(capture)
+
   futile.logger::flog.trace(msg = msg, ..., name = "crmPack", capture = capture)
 }

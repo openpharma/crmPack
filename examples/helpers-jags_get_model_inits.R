@@ -12,5 +12,4 @@ my_model <- LogisticLogNormal(
   refDose = 56
 )
 
-# Sample from the posterior distribution.
-h_get_model_inits(my_model, my_data)
+h_jags_get_model_inits(model = my_model, data = my_data)

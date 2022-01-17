@@ -7,7 +7,8 @@
 h_null_if_na(x)
 }
 \arguments{
-\item{x}{any object.}
+\item{x}{any atomic object of length \code{1}. For the definition of "atomic",
+see \code{\link[=is.atomic]{is.atomic()}}.}
 }
 \value{
 \code{NULL} if \code{x} is \code{NA}, otherwise, \code{x}.
@@ -15,7 +16,7 @@ h_null_if_na(x)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A simpler helper function that replaces \code{NA} with \code{NULL}.
+A simpler helper function that replaces \code{NA} object by \code{NULL} object.
 }
 \examples{
 h_null_if_na(NA)

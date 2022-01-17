@@ -1,4 +1,4 @@
-# h_write_model works as expected
+# h_jags_write_model works as expected
 
     Code
       readLines(model_file)
@@ -7,7 +7,7 @@
       [3] "    alpha0 <- mean(1:10)"  "    alpha1 <- 6.00000E+05"
       [5] "}"                        
 
-# h_write_model works as expected for truncation
+# h_jags_write_model works as expected for truncation
 
     Code
       readLines(model_file)

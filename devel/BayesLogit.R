@@ -62,7 +62,7 @@ myBayesLogit <- function(y, ## 0/1 vector of responses
   
   ## write the model file into it
   modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-  h_write_model(bugsModel, modelFileName)
+  h_jags_write_model(bugsModel, modelFileName)
   
   jagsModel <- rjags::jags.model(modelFileName,
                                  data = list('X' = X,

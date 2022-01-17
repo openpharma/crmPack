@@ -32,10 +32,10 @@ Additionally, custom prefix or suffix can be appended to character string
 with formatted number, so that the changes are marked.
 }
 \note{
-This function was primarily designed as a helper for \code{\link[=h_write_model]{h_write_model()}}
-function.
+This function was primarily designed as a helper for
+\code{\link[=h_jags_write_model]{h_jags_write_model()}} function.
 }
 \examples{
-  h_format_number(50000)
-  h_format_number(50000, prefix = "P", suffix = "S")
+h_format_number(50000)
+h_format_number(50000, prefix = "P", suffix = "S")
 }
