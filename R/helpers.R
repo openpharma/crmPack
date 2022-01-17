@@ -963,7 +963,7 @@ h_write_model <- function(model, file = NULL, digits = 5) {
   file
 }
 
-#' Extracing Samples from `JAGS` Model
+#' Extracting Samples from `JAGS` Model
 #'
 #' @description `r lifecycle::badge("stable")`
 #'

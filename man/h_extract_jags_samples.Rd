@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_extract_jags_samples}
 \alias{h_extract_jags_samples}
-\title{Extracing Samples from \code{JAGS} Model}
+\title{Extracting Samples from \code{JAGS} Model}
 \usage{
 h_extract_jags_samples(x)
 }
