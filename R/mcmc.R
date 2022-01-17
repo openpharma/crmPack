@@ -117,7 +117,7 @@ setMethod(
 ## The method for DataMixture usage
 ## --------------------------------------------------
 
-##' @describeIn mcmc Method for DataMixture with different fromPrior default
+##' @describeIn mcmc Method for DataMixture with different from_prior default
 setMethod("mcmc",
           signature=
             signature(data="DataMixture",
@@ -125,9 +125,9 @@ setMethod("mcmc",
                       options="McmcOptions"),
           def=
             function(data, model, options,
-                     fromPrior=data@nObs == 0L & data@nObsshare == 0L,
+                     from_prior=data@nObs == 0L & data@nObsshare == 0L,
                      ...){
-              callNextMethod(data, model, options, fromPrior=fromPrior, ...)
+              callNextMethod(data, model, options, from_prior=from_prior, ...)
             })
 
 
@@ -262,7 +262,7 @@ setMethod("mcmc",
               thismodel <- update(object=model,data=data)
 
               ## decide whether we sample from the prior or not
-              fromPrior <- data@nObs == 0L
+              from_prior <- data@nObs == 0L
 
 
               ##probabilities of risk of DLE at all dose levels
@@ -278,7 +278,7 @@ setMethod("mcmc",
                 precision<-precision+precisionmat
               }
 
-              if(fromPrior){
+              if(from_prior){
                 ## sample from the (asymptotic) bivariate normal prior for theta
 
                 tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
@@ -355,7 +355,7 @@ setMethod("mcmc",
                      ...){
 
               ## decide whether we sample from the prior or not
-              fromPrior <- data@nObs == 0L
+              from_prior <- data@nObs == 0L
 
               thismodel <- update(object=model,data=data)
 

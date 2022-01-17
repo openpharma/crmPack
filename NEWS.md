@@ -176,7 +176,7 @@
   outcome for the next best dose among admissible doses, thus avoiding early stopping
   at the placebo dose level.
   
-* If DataMixture objects are used, mcmc now correctly sets fromPrior to FALSE if
+* If DataMixture objects are used, mcmc now correctly sets from_prior to FALSE if
   the shared data object contains any data.
   
 

@@ -18,7 +18,7 @@ mcmc(data, model, options, ...)
   data,
   model,
   options,
-  fromPrior = data@nObs == 0L & data@nObsshare == 0L,
+  from_prior = data@nObs == 0L & data@nObsshare == 0L,
   ...
 )
 
@@ -57,7 +57,7 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 \itemize{
 \item \code{mcmc,GeneralData,GeneralModel,McmcOptions-method}: Standard method which uses JAGS.
 
-\item \code{mcmc,DataMixture,GeneralModel,McmcOptions-method}: Method for DataMixture with different fromPrior default
+\item \code{mcmc,DataMixture,GeneralModel,McmcOptions-method}: Method for DataMixture with different from_prior default
 
 \item \code{mcmc,Data,LogisticIndepBeta,McmcOptions-method}: Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
 DLE model. The joint prior and posterior probability density function of
