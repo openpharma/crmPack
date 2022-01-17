@@ -3,6 +3,7 @@
 \name{mcmc}
 \alias{mcmc}
 \alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
+\alias{mcmc-GeneralData}
 \alias{mcmc,DataMixture,GeneralModel,McmcOptions-method}
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
@@ -11,7 +12,7 @@
 \usage{
 mcmc(data, model, options, ...)
 
-\S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, verbose = FALSE, from_prior = data@nObs == 0L, ...)
+\S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{DataMixture,GeneralModel,McmcOptions}(
   data,
@@ -36,10 +37,9 @@ mcmc(data, model, options, ...)
 
 \item{...}{not used.}
 
-\item{verbose}{shall progress bar and messages be printed? (not default)}
-
-\item{from_prior}{sample from the prior only? Defaults to checking if nObs is
-0. For some models it might be necessary to specify it manually here though.}
+\item{from_prior}{(\code{flag})\cr sample from the prior only? Default to \code{TRUE}
+when number of observations in \code{data} is \code{0}. For some models it might be
+necessary to specify it manually here though.}
 }
 \value{
 The posterior samples, an object of class \code{\link{Samples}}.
@@ -47,7 +47,7 @@ The posterior samples, an object of class \code{\link{Samples}}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-This is the function that actually runs the MCMC machinery to produce
+This is the function that actually runs the \verb{MCMC JAGS} machinery to produce
 posterior samples from all model parameters and required derived values.
 It is a generic function, so that customized versions may be conveniently
 defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{GeneralModel}}, and
@@ -55,7 +55,7 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 }
 \section{Functions}{
 \itemize{
-\item \code{mcmc,GeneralData,GeneralModel,McmcOptions-method}: Standard method which uses JAGS
+\item \code{mcmc,GeneralData,GeneralModel,McmcOptions-method}: Standard method which uses JAGS.
 
 \item \code{mcmc,DataMixture,GeneralModel,McmcOptions-method}: Method for DataMixture with different fromPrior default
 
@@ -90,11 +90,10 @@ first updated and then samples of sigma2 and sigma2betaW will be generated using
 }}
 
 \note{
-Reproducible samples can be obtained by setting the seed using
-\code{\link[=set.seed]{set.seed()}} in the user code as usual. However, note that because the RNG
-sampler used is external to R, running this MCMC function will not change
-the seed position, that is, the repeated call to this function will then
-result in exactly the same output.
+The type of Random Number Generator (RNG) and its initial seed used by
+\code{JAGS} are taken from the \code{options} argument. If no initial values are
+supplied (i.e RNG kind or seed slot in \code{options} has \code{NA}), then they will
+be generated automatically by \code{JAGS}.
 }
 \examples{
 # Create some data from the class `Data`.

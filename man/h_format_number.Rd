@@ -36,6 +36,6 @@ This function was primarily designed as a helper for \code{\link[=h_write_model]
 function.
 }
 \examples{
-h_format_number(50000)
-h_format_number(50000, prefix = "P", suffix = "S")
+  h_format_number(50000)
+  h_format_number(50000, prefix = "P", suffix = "S")
 }

@@ -185,45 +185,6 @@ test_that("h_slots throws the error for non-existing slots", {
   )
 })
 
-# h_join_models ----
-
-test_that("h_join_models works as expected", {
-  model1 <- function(x) {
-    x <- x - 2
-    x <- x^2
-  }
-  model2 <- function(x) {
-    x^3
-  }
-  result <- h_join_models(model1, model2)
-  expected <- function(x) {
-    x <- x - 2
-    x <- x^2
-    x^3
-  }
-
-  expect_identical(result, expected)
-})
-
-test_that("h_join_models works as expected for empty model2", {
-  model1 <- function(x) { x - 2 } # nolintr
-  model2 <- function(x) { } # nolintr
-  result <- h_join_models(model1, model2)
-  expected <- model1
-
-  expect_identical(result, expected)
-})
-
-test_that("h_join_models throws the error for non-braced expression", {
-  model1 <- function(x) x^2
-  model2 <- function(x) x^3
-
-  expect_error(
-    h_join_models(model1, model2),
-    "Assertion on 'body\\(model1\\)' failed: Must inherit from class '\\{', but has class 'call'." # nolintr
-  )
-})
-
 # h_format_number ----
 
 test_that("h_format_number works as expected", {
@@ -272,6 +233,47 @@ test_that("h_rapply works as expected", {
   expect_identical(result, expected)
 })
 
+# h_join_models ----
+
+test_that("h_join_models works as expected", {
+  model1 <- function(x) {
+    x <- x - 2
+    x <- x^2
+  }
+  model2 <- function(x) {
+    x^3
+  }
+  result <- h_join_models(model1, model2)
+  expected <- function(x) {
+    x <- x - 2
+    x <- x^2
+    x^3
+  }
+
+  expect_identical(result, expected)
+})
+
+test_that("h_join_models works as expected for empty model2", {
+  model1 <- function(x) {
+    x - 2
+  } # nolintr
+  model2 <- function(x) { } # nolintr
+  result <- h_join_models(model1, model2)
+  expected <- model1
+
+  expect_identical(result, expected)
+})
+
+test_that("h_join_models throws the error for non-braced expression", {
+  model1 <- function(x) x^2
+  model2 <- function(x) x^3
+
+  expect_error(
+    h_join_models(model1, model2),
+    "Assertion on 'body\\(model1\\)' failed: Must inherit from class '\\{', but has class 'call'." # nolintr
+  )
+})
+
 # h_write_model ----
 
 test_that("h_write_model works as expected", {
@@ -280,10 +282,9 @@ test_that("h_write_model works as expected", {
     alpha1 <- 600000
   }
 
-  temp_file <- tempfile("crmPack-testthat-h_write_model.jags")
-  h_write_model(my_model, temp_file, 5)
-  expect_snapshot(readLines(temp_file))
-  unlink(temp_file)
+  model_file <- h_write_model(my_model, digits = 5)
+  expect_snapshot(readLines(model_file))
+  unlink(model_file)
 })
 
 test_that("h_write_model works as expected for truncation", {
@@ -292,8 +293,8 @@ test_that("h_write_model works as expected for truncation", {
     alpha1 <- 600000
   }
 
-  temp_file <- tempfile("crmPack-testthat-h_write_model-trunc.jags")
-  h_write_model(my_model, temp_file, 5)
-  expect_snapshot(readLines(temp_file))
-  unlink(temp_file)
+  model_file <- tempfile("crmPack-testthat-h_write_model-trunc.jags")
+  h_write_model(my_model, model_file, 5)
+  expect_snapshot(readLines(model_file))
+  unlink(model_file)
 })

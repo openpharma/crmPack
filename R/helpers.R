@@ -688,89 +688,48 @@ h_slots <- function(object, names) {
   sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
 }
 
-#' Joining JAGS Models
+#' Conditional Formatting Using C-style Formats
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function joins two JAGS models in the way that the body of the
-#' second model is appended to the body of the first model (in this order).
-#' After that, the first, body-extended model is returned.
+#' This helper function conditionally formats a number with [formatC()]
+#' function using `"E"` format and specific number of digits as given by the
+#' user. A number is formatted if and only if its absolute value is less than
+#' `0.001` or greater than `10000`. Otherwise, the number is not formatted.
+#' Additionally, custom prefix or suffix can be appended to character string
+#' with formatted number, so that the changes are marked.
 #'
-#' @note `model1` and `model2` functions must have a multi-expression
-#'   body, i.e. braced expression(s). Environments or any attributes of the
-#'   function bodies are not preserved in any way after joining.
+#' @note This function was primarily designed as a helper for [h_write_model()]
+#'   function.
 #'
-#' @param model1 (`function`)\cr the first model to join.
-#' @param model2 (`function`)\cr the second model to join.
+#' @param x (`number`)\cr a number to be formatted.
+#' @param digits (`function`)\cr the desired number of significant digits.
+#' @param prefix (`string`)\cr a prefix to be added in front of the formatted
+#'   number.
+#' @param suffix (`string`)\cr a suffix to be appended after the formatted
+#'   number.
 #'
-#' @return joined models.
+#' @return Either formatted `x` as `string` or unchanged `x` if the
+#'   formatting condition is not met.
 #'
 #' @export
-#'
-h_join_models <- function(model1, model2) {
-  assert_function(model1)
-  assert_function(model2)
-  assert_class(body(model1), "{")
-  assert_class(body(model2), "{")
+#' @examples
+#'   h_format_number(50000)
+#'   h_format_number(50000, prefix = "P", suffix = "S")
+h_format_number <- function(x,
+                            digits = 5,
+                            prefix = "",
+                            suffix = "") {
+  assert_number(x)
+  assert_int(digits)
+  assert_string(prefix)
+  assert_string(suffix)
 
-  body2 <- as.list(body(model2))
-  if (length(body2) >= 2) {
-    body1 <- as.list(body(model1))
-    body(model1) <- as.call(c(body1, body2[-1]))
+  if ((abs(x) < 1e-3) || (abs(x) > 1e+4)) {
+    paste0(prefix, formatC(x, digits = digits, format = "E"), suffix)
+  } else {
+    x
   }
-  model1
-}
-
-#' Writing JAGS Model to a File
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' This function converts a R function with JAGS model into a text and then
-#' writes it into a given file. During the "model into text" conversion, the
-#' format of numbers of which absolute value is less than `0.001` or greater
-#' than `10000` is changed. These numbers will be converted into scientific
-#' format with specified number of significant digits using [formatC()]
-#' function.
-#'
-#' @note JAGS syntax allows truncation specification like `dnorm(...) I(...)`,
-#'   which is illegal in R. To overcome this incompatibility, use dummy operator
-#'   `\%_\%` before `I(...)`, i.e. `dnorm(...) \%_\% I(...)` in the model's
-#'   code. This dummy operator `\%_\%` will be removed just before saving the
-#'   JAGS code into a file.
-#'   Due to technical issues related to conversion of numbers to scientific
-#'   format, it is required that the body of a model function does not contain
-#'   `TEMP_NUM_PREF_` or `_TEMP_NUM_SUF` character constants in its body.
-#'
-#' @param model (`function`)\cr function containing the JAGS model.
-#' @param file (`string`)\cr the name of the file where the model will be saved.
-#' @param digits (`count`)\cr a desired number of significant digits for
-#'   for numbers used in JAGS input, see [formatC()].
-#' @return Nothing, but as a side effect, the model file is written.
-#'
-#' @export
-#' @example examples/helpers-write_model.R
-#'
-h_write_model <- function(model, file = "model.jags", digits = 5) {
-  assert_function(model)
-  assert_string(file)
-  assert_count(digits)
-
-  # Replace scientific notation.
-  model_sci_replaced <- h_rapply(
-    x = body(model),
-    fun = h_format_number,
-    classes = c("integer", "numeric"),
-    digits = digits,
-    prefix = "TEMP_NUM_PREF_",
-    suffix = "_TEMP_NUM_SUF"
-  )
-  # Transform `model` body into character vector.
-  model_text <- deparse(model_sci_replaced, control = NULL)
-  model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
-  model_text <- gsub("%_% ", "", model_text)
-  model_text <- c("model", model_text)
-
-  writeLines(model_text, con = file)
 }
 
 #' Recursively Apply a Function to a List
@@ -828,50 +787,194 @@ h_rapply <- function(x, fun, classes, ...) {
   x
 }
 
-#' Conditional Formatting Using C-style Formats
+#' Appending a Dummy Number for Selected Slots in Data
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' This helper function conditionally formats a number with [formatC()]
-#' function using `"E"` format and specific number of digits as given by the
-#' user. A number is formatted if and only if its absolute value is less than
-#' `0.001` or greater than `10000`. Otherwise, the number is not formatted.
-#' Additionally, custom prefix or suffix can be appended to character string
-#' with formatted number, so that the changes are marked.
+#' A method that append a dummy value to a given slots in [`Data`] class object,
+#' if and only if the total number of observations (as indicated by
+#' `object@nObs`) equals to `1`. Otherwise, the `object` is not changed.
 #'
-#' @note This function was primarily designed as a helper for [h_write_model()]
-#'   function.
+#' @note The main motivation behind this function is related to the `JAGS`.
+#'   If there is only one observation, the data is not passed correctly to
+#'   `JAGS`, i.e. e.g. `x` and `y` are treated like scalars in the data file.
+#'   Therefore it is necessary to add dummy values to the vectors in this case
+#'   As we don't change the number of observations (`nObs`), this addition of
+#'   zeros doesn't affect the results of `JAGS` computations.
 #'
-#' @param x (`number`)\cr a number to be formatted.
-#' @param digits (`function`)\cr the desired number of significant digits.
-#' @param prefix (`string`)\cr a prefix to be added in front of the formatted
-#'   number.
-#' @param suffix (`string`)\cr a suffix to be appended after the formatted
-#'   number.
+#' @param object (`Data`)\cr object into which dummy values will be added.
+#' @param where (`character`)\cr names of slots in `object` to which a `dummy`
+#'   number will be appended.
+#' @param dummy (`number`)\cr a dummy number that will be appended to selected
+#'   slots in `object`. Default to `0`.
 #'
-#' @return Either formatted `x` as `string` or unchanged `x` if the
-#'   formatting condition is not met.
+#' @return A [`Data`] object with slots updated with dummy number.
 #'
 #' @export
-#' @examples
-#' h_format_number(50000)
-#' h_format_number(50000, prefix = "P", suffix = "S")
-h_format_number <- function(x,
-                            digits = 5,
-                            prefix = "",
-                            suffix = "") {
-  assert_number(x)
-  assert_int(digits)
-  assert_string(prefix)
-  assert_string(suffix)
+#' @example examples/helpers-add_dummy.R
+#'
+h_add_dummy <- function(object, where, dummy = 0) {
+  assert_class(object, "Data")
+  assert_character(where)
+  assert_subset(where, slotNames(object))
+  assert_number(dummy)
 
-  if ((abs(x) < 1e-3) || (abs(x) > 1e+4)) {
-    paste0(prefix, formatC(x, digits = digits, format = "E"), suffix)
-  } else {
-    x
+  if (object@nObs == 1L) {
+    for (i in where) {
+      # Add dummy value and preserve the class.
+      slot(object, i) <- as(c(slot(object, i), dummy), class(slot(object, i)))
+    }
   }
+  object
 }
 
+#' Joining `JAGS` Models
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This helper function joins two JAGS models in the way that the body of the
+#' second model is appended to the body of the first model (in this order).
+#' After that, the first, body-extended model is returned.
+#'
+#' @note `model1` and `model2` functions must have a multi-expression
+#'   body, i.e. braced expression(s). Environments or any attributes of the
+#'   function bodies are not preserved in any way after joining.
+#'
+#' @param model1 (`function`)\cr the first model to join.
+#' @param model2 (`function`)\cr the second model to join.
+#'
+#' @return joined models.
+#'
+#' @export
+#'
+h_join_models <- function(model1, model2) {
+  assert_function(model1)
+  assert_function(model2)
+  assert_class(body(model1), "{")
+  assert_class(body(model2), "{")
+
+  body2 <- as.list(body(model2))
+  if (length(body2) >= 2) {
+    body1 <- as.list(body(model1))
+    body(model1) <- as.call(c(body1, body2[-1]))
+  }
+  model1
+}
+
+#' Getting Data for `JAGS`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simple helper function that prepares an object for `data` argument of
+#'   [rjags::jags.model()], which is invoked by [mcmc()] method.
+#'
+#' @param model (`GeneralModel`)\cr an input model.
+#' @param data (`GeneralData`)\cr an input data.
+#' @param from_prior (`flag`)\cr sample from the prior only? In this case
+#'   data will not be appended to the output.
+#'
+#' @export
+#'
+h_get_jags_data <- function(model, data, from_prior) {
+  # Get the model specs.
+  modelspecs <- do.call(
+    model@modelspecs, h_slots(data, formalArgs(model@modelspecs))
+  )
+  assert_list(modelspecs)
+
+  if (from_prior) {
+    # Remove elements named "zeros" to avoid JAGS error of unused variables.
+    modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
+    data_model <- NULL
+  } else {
+    # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
+    # scalars by `JAGS` if `data@nObs == 0`, which leads to failures.
+    add_where <- setdiff(
+      model@datanames,
+      c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax")
+    )
+    data_model <- h_slots(h_add_dummy(data, where = add_where), model@datanames)
+  }
+  c(data_model, modelspecs)
+}
+
+#' Writing JAGS Model to a File
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function converts a R function with JAGS model into a text and then
+#' writes it into a given file. During the "model into text" conversion, the
+#' format of numbers of which absolute value is less than `0.001` or greater
+#' than `10000` is changed. These numbers will be converted into scientific
+#' format with specified number of significant digits using [formatC()]
+#' function.
+#'
+#' @note JAGS syntax allows truncation specification like `dnorm(...) I(...)`,
+#'   which is illegal in R. To overcome this incompatibility, use dummy operator
+#'   `\%_\%` before `I(...)`, i.e. `dnorm(...) \%_\% I(...)` in the model's
+#'   code. This dummy operator `\%_\%` will be removed just before saving the
+#'   JAGS code into a file.
+#'   Due to technical issues related to conversion of numbers to scientific
+#'   format, it is required that the body of a model function does not contain
+#'   `TEMP_NUM_PREF_` or `_TEMP_NUM_SUF` character constants in its body.
+#'
+#' @param model (`function`)\cr function containing the JAGS model.
+#' @param file (`string` or `NULL`)\cr the name of the file (including the
+#'   optional path) where the model will be saved. If `NULL`, the file will be
+#'   created in a `R_crmPack` folder placed under temporary directory indicated
+#'   by [tempdir()] function.
+#' @param digits (`count`)\cr a desired number of significant digits for
+#'   for numbers used in JAGS input, see [formatC()].
+#' @return The name of the file where the model was saved.
+#'
+#' @export
+#' @example examples/helpers-write_model.R
+#'
+h_write_model <- function(model, file = NULL, digits = 5) {
+  assert_function(model)
+  assert_count(digits)
+
+  if (!is.null(file)) {
+    assert_path_for_output(file)
+  } else {
+    dir <- file.path(tempdir(), "R_crmPack")
+    file <- tempfile("jags_model_fun", dir, ".txt")
+    # Don't warn, as the temp dir often exists (which is OK).
+    dir.create(dir, showWarnings = FALSE)
+  }
+
+  # Replace scientific notation.
+  model_sci_replaced <- h_rapply(
+    x = body(model),
+    fun = h_format_number,
+    classes = c("integer", "numeric"),
+    digits = digits,
+    prefix = "TEMP_NUM_PREF_",
+    suffix = "_TEMP_NUM_SUF"
+  )
+  # Transform `model` body into character vector.
+  model_text <- deparse(model_sci_replaced, control = NULL)
+  model_text <- gsub("\"TEMP_NUM_PREF_|_TEMP_NUM_SUF\"", "", model_text)
+  model_text <- gsub("%_% ", "", model_text)
+  model_text <- c("model", model_text)
+
+  log_trace("Writting JAGS model function into: %s", file)
+  writeLines(model_text, con = file)
+  file
+}
+
+#' Extracing Samples from `JAGS` Model
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that extracts parameters samples from the output of
+#'   [`rjags::jags.samples()`] function.
+#'
+#' @param x an object returned from [`rjags::jags.samples()`], i.e. a list of
+#'   `mcarray` objects.
+#'
+#' @export
+#'
 h_extract_jags_samples <- function(x) {
   x <- x[, , 1L]
   # In case that there are multiple parameters in a node.
@@ -881,6 +984,19 @@ h_extract_jags_samples <- function(x) {
   x
 }
 
+#' Getting `NULL` for `NA`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simpler helper function that replaces `NA` with `NULL`.
+#'
+#' @param x any object.
+#'
+#' @return `NULL` if `x` is `NA`, otherwise, `x`.
+#'
+#' @export
+#' @examples
+#' h_null_if_na(NA)
 h_null_if_na <- function(x) {
   if (is.na(x)) {
     NULL

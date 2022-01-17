@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{h_join_models}
 \alias{h_join_models}
-\title{Joining JAGS Models}
+\title{Joining \code{JAGS} Models}
 \usage{
 h_join_models(model1, model2)
 }

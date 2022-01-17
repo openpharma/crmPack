@@ -34,10 +34,10 @@
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
 #' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
 #' rnorm runif uniroot var vcov
-#' @importFrom utils data head tail
+#' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
-#' @importFrom futile.logger flog.threshold INFO flog.info
+#' @importFrom futile.logger flog.threshold flog.logger flog.trace TRACE FATAL
 #' @keywords package
 #' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
 #' "Model-Based Dose Escalation Designs in R with crmPack."

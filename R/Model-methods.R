@@ -28,7 +28,6 @@ NULL
 setGeneric(
   name = "dose",
   def = function(prob, model, samples, ...) {
-    # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("dose")
   },
   valueClass = "numeric"
@@ -150,7 +149,6 @@ setMethod(
 setGeneric(
   name = "prob",
   def = function(dose, model, samples, ...) {
-    # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("prob")
   },
   valueClass = "numeric"

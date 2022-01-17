@@ -1,4 +1,4 @@
-#' @include helpers.R Samples-class.R
+#' @include helpers.R Samples-class.R logger.R
 NULL
 
 # mcmc ----
@@ -7,17 +7,16 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' This is the function that actually runs the MCMC machinery to produce
+#' This is the function that actually runs the `MCMC JAGS` machinery to produce
 #' posterior samples from all model parameters and required derived values.
 #' It is a generic function, so that customized versions may be conveniently
 #' defined for specific subclasses of [`GeneralData`], [`GeneralModel`], and
 #' [`McmcOptions`] input.
 #'
-#' @note Reproducible samples can be obtained by setting the seed using
-#'   [set.seed()] in the user code as usual. However, note that because the RNG
-#'   sampler used is external to R, running this MCMC function will not change
-#'   the seed position, that is, the repeated call to this function will then
-#'   result in exactly the same output.
+#' @note The type of Random Number Generator (RNG) and its initial seed used by
+#'   `JAGS` are taken from the `options` argument. If no initial values are
+#'   supplied (i.e RNG kind or seed slot in `options` has `NA`), then they will
+#'   be generated automatically by `JAGS`.
 #'
 #' @param data (`GeneralData`)\cr an input data.
 #' @param model (`GeneralModel`)\cr an input model.
@@ -30,26 +29,22 @@ NULL
 setGeneric(
   name = "mcmc",
   def = function(data, model, options, ...) {
-    # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("mcmc")
   },
   valueClass = "Samples"
 )
 
-## --------------------------------------------------
-## The standard method
-## --------------------------------------------------
+# mcmc-GeneralData ----
 
-##' @describeIn mcmc Standard method which uses JAGS
-##'
-##' @param verbose shall progress bar and messages be printed? (not default)
-##' @param from_prior sample from the prior only? Defaults to checking if nObs is
-##' 0. For some models it might be necessary to specify it manually here though.
-##'
-##' @importFrom rjags jags.model jags.samples
-##' @importFrom utils capture.output
-##'
-##' @example examples/mcmc.R
+#' @describeIn mcmc Standard method which uses JAGS.
+#'
+#' @param from_prior (`flag`)\cr sample from the prior only? Default to `TRUE`
+#'   when number of observations in `data` is `0`. For some models it might be
+#'   necessary to specify it manually here though.
+#'
+#' @aliases mcmc-GeneralData
+#' @example examples/mcmc.R
+#'
 setMethod(
   f = "mcmc",
   signature = signature(
@@ -60,87 +55,62 @@ setMethod(
   def = function(data,
                  model,
                  options,
-                 verbose = FALSE,
                  from_prior = data@nObs == 0L,
                  ...) {
-    assert_flag(verbose)
     assert_flag(from_prior)
-
-    if (verbose) {
-      futile.logger::flog.threshold(futile.logger::INFO, name = "mcmc")
-    } else {
-      futile.logger::flog.threshold(futile.logger::FATAL, name = "mcmc")
-    }
 
     jags_model_fun <- if (from_prior) {
       model@priormodel
     } else {
       h_join_models(model@datamodel, model@priormodel)
     }
+    jags_file <- h_write_model(jags_model_fun)
 
-    # Write the model into the file.
-    jags_dir <- file.path(tempdir(), "R_crmPack")
-    jags_file <- tempfile("jags_model_fun", jags_dir, ".txt")
-    # Don't warn, as the temp dir often exists (which is OK).
-    dir.create(jags_dir, showWarnings = FALSE)
-    futile.logger::flog.info("Temporary directory: %s", jags_dir, name = "mcmc")
-    h_write_model(jags_model_fun, jags_file)
-
-    # Get the initial values for the parameters.
     inits <- do.call(model@init, h_slots(data, formalArgs(model@init)))
     assert_list(inits)
     inits <- inits[sapply(inits, length) > 0L]
 
-    # Get the model specs.
-    modelspecs <- do.call(
-      model@modelspecs, h_slots(data, formalArgs(model@modelspecs))
-    )
-    assert_list(modelspecs)
+    jags_data <- h_get_jags_data(model, data, from_prior)
 
-    if (from_prior) {
-      # Remove elements named "zeros" to avoid JAGS error of unused variables.
-      modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
-      data_model <- NULL
-    } else {
-      # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
-      # scalars by `openBUGS` if `data@nObs == 0`, which leads to failures.
-      add_where <- setdiff(
-        model@datanames,
-        c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax")
-      )
-      data_model <- h_slots(add_dummy(data, where = add_where), model@datanames)
-    }
-
-    # Specify the JAGS model and generate samples.
-    # The `inits` in `c()` below, must be a `list`!
     jags_model <- rjags::jags.model(
       file = jags_file,
-      data = c(data_model, modelspecs),
+      data = jags_data,
       inits = c(
         inits,
         .RNG.name = h_null_if_na(options@rng_kind),
         .RNG.seed = h_null_if_na(options@rng_seed)
       ),
-      quiet = !verbose,
-      n.adapt = 0 # Important for reproducibility.
+      quiet = !is_logging_verbose(),
+      n.adapt = 0 # No adaptation. Important for reproducibility.
     )
     update(jags_model, n.iter = options@burnin, progress.bar = "none")
 
-    jags_samples <- invisible(
-      rjags::jags.samples(
+    # This is necessary as some outputs are written directly from the JAGS
+    # compiled code to the outstream.
+    log_trace("Running rjags::jags.samples")
+    if (is_logging_verbose()) {
+      jags_samples <- rjags::jags.samples(
         model = jags_model,
         variable.names = model@sample,
         n.iter = (options@iterations - options@burnin),
-        thin = options@step,
-        progress.bar = ifelse(verbose, "text", "none")
+        thin = options@step
       )
-    )
-    futile.logger::flog.info(
-      "rjags samples: ", jags_samples, name = "mcmc", capture = TRUE
-    )
+    } else {
+      invisible(
+        capture.output(
+          jags_samples <- rjags::jags.samples(
+            model = jags_model,
+            variable.names = model@sample,
+            n.iter = (options@iterations - options@burnin),
+            thin = options@step,
+            progress.bar = "none"
+          )
+        )
+      )
+    }
+    log_trace("JAGS samples: ", jags_samples, capture = TRUE)
     samples <- lapply(jags_samples, h_extract_jags_samples)
 
-    futile.logger::flog.remove("mcmc")
     Samples(data = samples, options = options)
   }
 )

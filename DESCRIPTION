@@ -63,6 +63,7 @@ Collate:
     'Model-validity.R'
     'Model-class.R'
     'Design-class.R'
+    'logger.R'
     'McmcOptions-validity.R'
     'McmcOptions-class.R'
     'McmcOptions-methods.R'
