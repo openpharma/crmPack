@@ -12,12 +12,5 @@ my_model <- LogisticLogNormal(
   refDose = 56
 )
 
-# Sample from the posterior distribution.
-my_options <- McmcOptions(
-  burnin = 100,
-  step = 2,
-  samples = 1000
-)
-
-samples <- mcmc(data = my_data, model = my_model, options = my_options)
-samples
+jags_data <- h_jags_get_data(my_model, my_data, from_prior = FALSE)
+jags_data

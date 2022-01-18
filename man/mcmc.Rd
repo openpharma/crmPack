@@ -111,7 +111,14 @@ my_model <- LogisticLogNormal(
 )
 
 # Sample from the posterior distribution.
-h_get_model_inits(my_model, my_data)
+my_options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 1000
+)
+
+samples <- mcmc(data = my_data, model = my_model, options = my_options)
+samples
 ##obtain mcmc DLE samples given the data, LogisticIndepBeta (DLE model) and mcmc simulations options
 ## data must be of 'Data' class
 data<-Data(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),

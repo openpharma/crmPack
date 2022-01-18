@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Added logger feature. It consists of four user-end functions:
+  `verbose_logging`, `disable_logging`, `is_logging_verbose`, `log_trace`.
 * Modified `mcmc` method arguments: renamed `fromPrior` to `from_prior`, removed
   `program` and `verbose`.
 * Added new slot `RNG` to `McmcOptions` class which will be used by Random

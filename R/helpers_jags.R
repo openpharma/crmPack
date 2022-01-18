@@ -114,6 +114,7 @@ h_jags_get_model_inits <- function(model, data) {
 #'   data will not be appended to the output.
 #'
 #' @export
+#' @example examples/helpers-jags_get_data.R
 #'
 h_jags_get_data <- function(model, data, from_prior) {
   assert_class(model, "GeneralModel")

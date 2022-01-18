@@ -170,17 +170,17 @@ test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
 # h_slots ----
 
 test_that("h_slots returns slots as expected", {
-  object <- h_get_logistic_log_normal()
-  result <- h_slots(object, c("sample", "datanames"))
-  expected <- list(sample = "param1", datanames = "x")
+  object <- h_get_data()
+  result <- h_slots(object, c("placebo", "nGrid"))
+  expected <- list(placebo = TRUE, nGrid = 13L)
 
   expect_identical(result, expected)
 })
 
 test_that("h_slots throws the error for non-existing slots", {
-  object <- h_get_logistic_log_normal()
+  object <- h_get_data()
   expect_error(
-    h_slots(object, c("sample", "not_existing_slot_name")),
+    h_slots(object, c("placebo", "not_existing_slot_name")),
     "Assertion on 'all\\(names %in% slotNames\\(object\\)\\)' failed: Must be TRUE." # nolintr
   )
 })
@@ -231,4 +231,31 @@ test_that("h_rapply works as expected", {
   expected <- body(expected_fun)
 
   expect_identical(result, expected)
+})
+
+# h_null_if_na ----
+
+test_that("h_null_if_na works as expected", {
+  expect_null(h_null_if_na(NA))
+  expect_null(h_null_if_na(NA_integer_))
+  expect_null(h_null_if_na(NA_real_))
+  expect_null(h_null_if_na(NA_character_))
+})
+
+test_that("h_null_if_na throws an error for non-atomic argument", {
+  expect_error(
+    h_null_if_na(mean),
+    "Assertion on 'x' failed: Must be of type 'atomic', not 'closure'."
+  )
+})
+
+test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
+  expect_error(
+    h_null_if_na(c(5, NA)),
+    "Assertion on 'x' failed: Must have length 1, but has length 2."
+  )
+  expect_error(
+    h_null_if_na(c(NA, NA)),
+    "Assertion on 'x' failed: Must have length 1, but has length 2."
+  )
 })
