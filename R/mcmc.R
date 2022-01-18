@@ -1,4 +1,4 @@
-#' @include logger.R helpers.R helpers_jags.R Samples-class.R
+#' @include helpers.R Samples-class.R
 NULL
 
 # mcmc ----
