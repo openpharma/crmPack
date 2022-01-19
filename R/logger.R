@@ -43,7 +43,7 @@ disable_logging <- function() {
 #'
 #' @export
 #'
-is_logging_verbose <- function() {
+is_logging_enabled <- function() {
   logger <- futile.logger::flog.logger(name = "crmPack")
   unname(logger$threshold == futile.logger::TRACE)
 }

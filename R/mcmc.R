@@ -77,7 +77,7 @@ setMethod(
         .RNG.name = h_null_if_na(options@rng_kind),
         .RNG.seed = h_null_if_na(options@rng_seed)
       ),
-      quiet = !is_logging_verbose(),
+      quiet = !is_logging_enabled(),
       n.adapt = 0 # No adaptation. Important for reproducibility.
     )
     update(jags_model, n.iter = options@burnin, progress.bar = "none")
@@ -85,7 +85,7 @@ setMethod(
     # This is necessary as some outputs are written directly from the JAGS
     # compiled code to the outstream.
     log_trace("Running rjags::jags.samples")
-    if (is_logging_verbose()) {
+    if (is_logging_enabled()) {
       jags_samples <- rjags::jags.samples(
         model = jags_model,
         variable.names = model@sample,

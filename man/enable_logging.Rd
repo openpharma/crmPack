@@ -3,7 +3,7 @@
 \name{enable_logging}
 \alias{enable_logging}
 \alias{disable_logging}
-\alias{is_logging_verbose}
+\alias{is_logging_enabled}
 \alias{log_trace}
 \title{Verbose Logging}
 \usage{
@@ -11,7 +11,7 @@ enable_logging()
 
 disable_logging()
 
-is_logging_verbose()
+is_logging_enabled()
 
 log_trace(msg, ..., capture = FALSE)
 }
@@ -44,7 +44,7 @@ setting logging threshold to \code{\link[futile.logger:logger.options]{futile.lo
 by setting logging threshold to \code{\link[futile.logger:logger.options]{futile.logger::FATAL}} for \code{crmPack}
 logger.
 
-\item \code{is_logging_verbose}: A simple wrapper of
+\item \code{is_logging_enabled}: A simple wrapper of
 \code{\link[futile.logger:flog.logger]{futile.logger::flog.logger()}} that checks whether current threshold level
 for \code{crmPack} logger is verbose, which is \code{\link[futile.logger:logger.options]{futile.logger::TRACE}}.
 It returns \code{TRUE} if the current logging level is verbose, \code{FALSE}

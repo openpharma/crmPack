@@ -91,6 +91,6 @@ reference:
     contents:
       - enable_logging
       - disable_logging
-      - is_logging_verbose
+      - is_logging_enabled
       - log_trace
       - dapply
