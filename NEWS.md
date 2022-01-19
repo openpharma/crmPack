@@ -1,6 +1,6 @@
 # Version 1.0.9000
-* Added logger feature. It consists of four user-end functions:
-  `verbose_logging`, `disable_logging`, `is_logging_verbose`, `log_trace`.
+* Added logger feature. Its user interface consists of four functions:
+  `enable_logging`, `disable_logging`, `is_logging_verbose`, `log_trace`.
 * Modified `mcmc` method arguments: renamed `fromPrior` to `from_prior`, removed
   `program` and `verbose`.
 * Added new slot `RNG` to `McmcOptions` class which will be used by Random
@@ -178,7 +178,7 @@
   outcome for the next best dose among admissible doses, thus avoiding early stopping
   at the placebo dose level.
   
-* If DataMixture objects are used, mcmc now correctly sets from_prior to FALSE if
+* If DataMixture objects are used, mcmc now correctly sets fromPrior to FALSE if
   the shared data object contains any data.
   
 

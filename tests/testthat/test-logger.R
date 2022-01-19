@@ -1,11 +1,11 @@
-# verbose_logging ----
+# enable_logging ----
 
-test_that("verbose_logging works as expected", {
+test_that("enable_logging works as expected", {
   is_current_verbose <- is_logging_verbose()
 
   disable_logging()
-  verbose_logging()
-  expect_true(h_test_verbose())
+  enable_logging()
+  expect_true(h_test_logging_enabled())
 
   # Restore settings.
   if (!is_current_verbose) {
@@ -19,11 +19,11 @@ test_that("disable_logging works as expected", {
   is_current_verbose <- is_logging_verbose()
 
   disable_logging()
-  expect_true(h_test_no_verbose())
+  expect_true(h_test_logging_disabled())
 
   # Restore settings.
   if (is_current_verbose) {
-    verbose_logging()
+    enable_logging()
   }
 })
 
@@ -33,9 +33,9 @@ test_that("is_logging_verbose works as expected", {
   is_current_verbose <- is_logging_verbose()
 
   disable_logging()
-  expect_true(h_test_no_verbose())
-  verbose_logging()
-  expect_true(h_test_verbose())
+  expect_true(h_test_logging_disabled())
+  enable_logging()
+  expect_true(h_test_logging_enabled())
 
   # Restore settings.
   if (!is_current_verbose) {
@@ -48,8 +48,8 @@ test_that("is_logging_verbose works as expected", {
 test_that("log_trace works as expected", {
   is_current_verbose <- is_logging_verbose()
 
-  verbose_logging()
-  expect_true(h_test_verbose())
+  enable_logging()
+  expect_true(h_test_logging_enabled())
 
   # Restore settings.
   if (!is_current_verbose) {

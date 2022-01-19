@@ -1,4 +1,4 @@
-h_test_verbose <- function() {
+h_test_logging_enabled <- function() {
   log_msg <- capture.output(log_trace("test_that message"))
   verb <- is_logging_verbose()
   log1 <- grepl("TRACE", log_msg)
@@ -7,7 +7,7 @@ h_test_verbose <- function() {
   verb && log1 && log2
 }
 
-h_test_no_verbose <- function() {
+h_test_logging_disabled <- function() {
   log_msg <- capture.output(log_trace("test_that message"))
   verb <- is_logging_verbose()
   log1 <- length(log_msg) == 0L

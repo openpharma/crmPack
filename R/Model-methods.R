@@ -1,4 +1,5 @@
-#' @include Model-class.R Samples-class.R
+#' @include Model-class.R
+#' @include Samples-class.R
 NULL
 
 # dose ----

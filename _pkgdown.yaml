@@ -89,7 +89,7 @@ reference:
       - prob-ModelTox_noSamples
   - title: Functions
     contents:
-      - verbose_logging
+      - enable_logging
       - disable_logging
       - is_logging_verbose
       - log_trace

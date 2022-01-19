@@ -1,4 +1,5 @@
-#' @include helpers.R McmcOptions-validity.R
+#' @include helpers.R
+#' @include McmcOptions-validity.R
 NULL
 
 # McmcOptions-class ----

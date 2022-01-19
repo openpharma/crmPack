@@ -1,4 +1,5 @@
-#' @include helpers.R Samples-class.R
+#' @include helpers.R
+#' @include Samples-class.R
 NULL
 
 # mcmc ----

@@ -63,7 +63,6 @@ Collate:
     'Rules-class.R'
     'Model-validity.R'
     'helpers_jags.R'
-    'logger.R'
     'Model-class.R'
     'Design-class.R'
     'McmcOptions-validity.R'
@@ -79,5 +78,6 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+    'logger.R'
     'utils.R'
 Config/testthat/edition: 3

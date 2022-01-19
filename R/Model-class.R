@@ -1,4 +1,6 @@
-#' @include logger.R helpers.R helpers_jags.R Model-validity.R
+#' @include helpers.R
+#' @include helpers_jags.R
+#' @include Model-validity.R
 NULL
 
 # AllModels-class ----

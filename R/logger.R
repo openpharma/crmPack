@@ -10,19 +10,19 @@
 #' [`futile.logger::TRACE`] for the `crmPack` logger, and disabling verbose
 #' logging means that it will be set to [`futile.logger::FATAL`].
 #'
-#' @describeIn verbose_logging A simple wrapper of
+#' @describeIn enable_logging A simple wrapper of
 #'   [futile.logger::flog.threshold()] that enables `crmPack` verbose logging by
 #'   setting logging threshold to [`futile.logger::TRACE`] for `crmPack` logger.
 #'
 #' @export
 #'
-verbose_logging <- function() {
+enable_logging <- function() {
   invisible(
     futile.logger::flog.threshold(futile.logger::TRACE, name = "crmPack")
   )
 }
 
-#' @describeIn verbose_logging A simple wrapper of
+#' @describeIn enable_logging A simple wrapper of
 #'   [futile.logger::flog.threshold()] that disables `crmPack` verbose logging
 #'   by setting logging threshold to [`futile.logger::FATAL`] for `crmPack`
 #'   logger.
@@ -35,7 +35,7 @@ disable_logging <- function() {
   )
 }
 
-#' @describeIn verbose_logging A simple wrapper of
+#' @describeIn enable_logging A simple wrapper of
 #'   [futile.logger::flog.logger()] that checks whether current threshold level
 #'   for `crmPack` logger is verbose, which is [`futile.logger::TRACE`].
 #'   It returns `TRUE` if the current logging level is verbose, `FALSE`
@@ -48,7 +48,7 @@ is_logging_verbose <- function() {
   unname(logger$threshold == futile.logger::TRACE)
 }
 
-#' @describeIn verbose_logging A simple wrapper of
+#' @describeIn enable_logging A simple wrapper of
 #'   [futile.logger::flog.trace()] that prints a log message in the `crmPack`
 #'   logger.
 #'
