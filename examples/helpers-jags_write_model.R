@@ -4,4 +4,4 @@ my_model <- function() {
   alpha1 <- 600000
 }
 
-write_model(my_model, file = "my_model.jags", digits = 5)
+h_jags_write_model(my_model, digits = 5)

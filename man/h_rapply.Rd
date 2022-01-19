@@ -43,7 +43,7 @@ structured is not available with \code{h_rapply()} for the user. That is, with
 \code{h_rapply()} each element of \code{x}, which has a class included in \code{classes},
 is replaced by the result of applying \code{fun} to the element. This behavior
 corresponds to \code{\link[=rapply]{rapply()}} when invoked with fixed \code{how = replace}.
-This function was primarily designed as a helper for \code{\link[=h_write_model]{h_write_model()}}
+This function was primarily designed as a helper for \code{\link[=h_jags_write_model]{h_jags_write_model()}}
 function.
 }
 \examples{

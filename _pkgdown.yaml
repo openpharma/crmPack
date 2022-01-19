@@ -42,10 +42,16 @@ reference:
       - h_plot_data_cohort_lines
       - h_check_fun_formals
       - h_is_positive_definite
-      - h_join_models
-      - h_write_model
-      - h_rapply
+      - h_slots
       - h_format_number
+      - h_rapply
+      - h_jags_add_dummy
+      - h_jags_join_models
+      - h_jags_get_model_inits
+      - h_jags_get_data
+      - h_jags_write_model
+      - h_jags_extract_samples
+      - h_null_if_na
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -60,7 +66,6 @@ reference:
       - validate_mcmc_options
   - title: Methods
     contents:
-      - as.list
       - plot-Data
       - plot-DataDual
       - plot-DataDA
@@ -84,4 +89,8 @@ reference:
       - prob-ModelTox_noSamples
   - title: Functions
     contents:
+      - enable_logging
+      - disable_logging
+      - is_logging_enabled
+      - log_trace
       - dapply

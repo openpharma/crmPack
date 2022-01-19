@@ -1,4 +1,5 @@
-#' @include Model-class.R Samples-class.R
+#' @include Model-class.R
+#' @include Samples-class.R
 NULL
 
 # dose ----
@@ -28,7 +29,6 @@ NULL
 setGeneric(
   name = "dose",
   def = function(prob, model, samples, ...) {
-    # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("dose")
   },
   valueClass = "numeric"
@@ -118,7 +118,7 @@ setMethod(
 
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(h_get_slots(model, dose_args_names), list(prob = prob))
+    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
     do.call(dose_fun, dose_args)
   }
 )
@@ -150,7 +150,6 @@ setMethod(
 setGeneric(
   name = "prob",
   def = function(dose, model, samples, ...) {
-    # There should be no default, just dispatch it to the class-specific method!
     standardGeneric("prob")
   },
   valueClass = "numeric"
@@ -237,7 +236,7 @@ setMethod(
 
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(h_get_slots(model, prob_args_names), list(dose = dose))
+    prob_args <- c(h_slots(model, prob_args_names), list(dose = dose))
     do.call(prob_fun, prob_args)
   }
 )

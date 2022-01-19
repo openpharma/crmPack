@@ -18,3 +18,4 @@ vignettes/figure/*.pdf
 docs/
 pkgdown/
 *.log
+.DS_Store

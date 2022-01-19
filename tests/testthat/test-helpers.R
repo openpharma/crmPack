@@ -167,60 +167,21 @@ test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
   expect_false(any(is_pf_m1, is_pf_m2, is_pf_m3))
 })
 
-# h_get_slots ----
+# h_slots ----
 
-test_that("h_get_slots returns slots as expected", {
-  object <- h_get_logistic_log_normal()
-  result <- h_get_slots(object, c("sample", "datanames"))
-  expected <- list(sample = "param1", datanames = "x")
+test_that("h_slots returns slots as expected", {
+  object <- h_get_data()
+  result <- h_slots(object, c("placebo", "nGrid"))
+  expected <- list(placebo = TRUE, nGrid = 13L)
 
   expect_identical(result, expected)
 })
 
-test_that("h_get_slots throws the error for non-existing slots", {
-  object <- h_get_logistic_log_normal()
+test_that("h_slots throws the error for non-existing slots", {
+  object <- h_get_data()
   expect_error(
-    h_get_slots(object, c("sample", "not_existing_slot_name")),
+    h_slots(object, c("placebo", "not_existing_slot_name")),
     "Assertion on 'all\\(names %in% slotNames\\(object\\)\\)' failed: Must be TRUE." # nolintr
-  )
-})
-
-# h_join_models ----
-
-test_that("h_join_models works as expected", {
-  model1 <- function(x) {
-    x <- x - 2
-    x <- x^2
-  }
-  model2 <- function(x) {
-    x^3
-  }
-  result <- h_join_models(model1, model2)
-  expected <- function(x) {
-    x <- x - 2
-    x <- x^2
-    x^3
-  }
-
-  expect_identical(result, expected)
-})
-
-test_that("h_join_models works as expected for empty model2", {
-  model1 <- function(x) { x - 2 } # nolintr
-  model2 <- function(x) { } # nolintr
-  result <- h_join_models(model1, model2)
-  expected <- model1
-
-  expect_identical(result, expected)
-})
-
-test_that("h_join_models throws the error for non-braced expression", {
-  model1 <- function(x) x^2
-  model2 <- function(x) x^3
-
-  expect_error(
-    h_join_models(model1, model2),
-    "Assertion on 'body\\(model1\\)' failed: Must inherit from class '\\{', but has class 'call'." # nolintr
   )
 })
 
@@ -272,28 +233,29 @@ test_that("h_rapply works as expected", {
   expect_identical(result, expected)
 })
 
-# h_write_model ----
+# h_null_if_na ----
 
-test_that("h_write_model works as expected", {
-  my_model <- function() {
-    alpha0 <- mean(1:10)
-    alpha1 <- 600000
-  }
-
-  temp_file <- tempfile("crmPack-testthat-h_write_model.jags")
-  h_write_model(my_model, temp_file, 5)
-  expect_snapshot(readLines(temp_file))
-  unlink(temp_file)
+test_that("h_null_if_na works as expected", {
+  expect_null(h_null_if_na(NA))
+  expect_null(h_null_if_na(NA_integer_))
+  expect_null(h_null_if_na(NA_real_))
+  expect_null(h_null_if_na(NA_character_))
 })
 
-test_that("h_write_model works as expected for truncation", {
-  my_model <- function() {
-    alpha0 <- dnorm(4) %_% I(4)
-    alpha1 <- 600000
-  }
+test_that("h_null_if_na throws an error for non-atomic argument", {
+  expect_error(
+    h_null_if_na(mean),
+    "Assertion on 'x' failed: Must be of type 'atomic', not 'closure'."
+  )
+})
 
-  temp_file <- tempfile("crmPack-testthat-h_write_model-trunc.jags")
-  h_write_model(my_model, temp_file, 5)
-  expect_snapshot(readLines(temp_file))
-  unlink(temp_file)
+test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
+  expect_error(
+    h_null_if_na(c(5, NA)),
+    "Assertion on 'x' failed: Must have length 1, but has length 2."
+  )
+  expect_error(
+    h_null_if_na(c(NA, NA)),
+    "Assertion on 'x' failed: Must have length 1, but has length 2."
+  )
 })

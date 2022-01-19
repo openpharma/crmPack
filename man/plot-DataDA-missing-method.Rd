@@ -10,14 +10,16 @@
 \arguments{
 \item{x}{(\code{DataDA})\cr object we want to plot.}
 
-\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic
+function.}
 
 \item{blind}{(\code{flag})\cr indicates whether to blind the data.
 If \code{TRUE}, then placebo subjects are reported at the same level
 as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{...}{passed to the first inherited method \code{plot} after this current method.}
+\item{...}{passed to the first inherited method \code{plot} after this current
+method.}
 }
 \value{
 The \code{\link{ggplot2}} object.

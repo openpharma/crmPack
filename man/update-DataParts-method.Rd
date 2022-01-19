@@ -12,9 +12,9 @@
 
 \item{x}{(\code{number})\cr the dose level (one level only!).}
 
-\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.
-You can also supply \code{numeric} vectors, but these will then be converted to
-\code{integer} internally.}
+\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this
+cohort. You can also supply \code{numeric} vectors, but these will then be
+converted to \code{integer} internally.}
 
 \item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data}}.}
 

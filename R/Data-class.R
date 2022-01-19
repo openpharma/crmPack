@@ -1,4 +1,5 @@
-#' @include helpers.R Data-validity.R
+#' @include helpers.R
+#' @include Data-validity.R
 NULL
 
 # GeneralData-class ----

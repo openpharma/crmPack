@@ -1,4 +1,6 @@
-#' @include helpers.R Model-validity.R
+#' @include helpers.R
+#' @include helpers_jags.R
+#' @include Model-validity.R
 NULL
 
 # AllModels-class ----
@@ -928,7 +930,7 @@ setMethod("initialize",
               if(! useFixed[["sigma2W"]])
               {
                   priormodel <-
-                      h_join_models(priormodel,
+                      h_jags_join_models(priormodel,
                                  function(){
                                      ## gamma prior for biomarker precision
                                      precW ~ dgamma(precWa, precWb)
@@ -952,7 +954,7 @@ setMethod("initialize",
               if(! useFixed[["sigma2betaW"]])
               {
                   priormodel <-
-                      h_join_models(priormodel,
+                      h_jags_join_models(priormodel,
                                  function(){
                                      ## gamma prior for RW precision
                                      precBetaW ~ dgamma(precBetaWa, precBetaWb)
@@ -975,7 +977,7 @@ setMethod("initialize",
               if(! useFixed[["rho"]])
               {
                   priormodel <-
-                      h_join_models(priormodel,
+                      h_jags_join_models(priormodel,
                                  function(){
                                      ## transformed Beta prior for rho
                                      kappa ~ dbeta(rhoa, rhob)
@@ -1372,7 +1374,7 @@ DualEndpoint <- function(mu,
     if(! useFixed[["sigma2W"]])
     {
         priormodel <-
-            h_join_models(priormodel,
+            h_jags_join_models(priormodel,
                        function(){
                            ## gamma prior for biomarker precision
                            precW ~ dgamma(precWa, precWb)
@@ -1396,7 +1398,7 @@ DualEndpoint <- function(mu,
     if(! useFixed[["rho"]])
     {
         priormodel <-
-            h_join_models(priormodel,
+            h_jags_join_models(priormodel,
                        function(){
                            ## transformed Beta prior for rho
                            kappa ~ dbeta(rhoa, rhob)
@@ -1622,7 +1624,7 @@ DualEndpointRW <- function(sigma2betaW,
     ## ----------
 
     start@priormodel <-
-        h_join_models(start@priormodel,
+        h_jags_join_models(start@priormodel,
                    function(){
 
                        betaW[1] <- betaWintercept
@@ -1644,7 +1646,7 @@ DualEndpointRW <- function(sigma2betaW,
     {
         ## add RW1 part
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## the iid first oder differences:
                            for (j in 2:nGrid) {
@@ -1654,7 +1656,7 @@ DualEndpointRW <- function(sigma2betaW,
     } else {
         ## add RW2 part
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## the first order differences:
                            delta[1] <- deltaStart
@@ -1686,7 +1688,7 @@ DualEndpointRW <- function(sigma2betaW,
     if(! start@useFixed[["sigma2betaW"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## gamma prior for RW precision
                            precBetaW ~ dgamma(precBetaWa, precBetaWb)
@@ -1879,7 +1881,7 @@ DualEndpointBeta <- function(E0,
     ## ----------
 
     start@priormodel <-
-        h_join_models(start@priormodel,
+        h_jags_join_models(start@priormodel,
                    function(){
                        ## delta2 <- delta1 * (1 - (mode/refDoseBeta)) / (mode/refDoseBeta)
                        delta2 <- delta1 * (refDoseBeta/mode - 1)
@@ -1907,7 +1909,7 @@ DualEndpointBeta <- function(E0,
     if(! start@useFixed[["E0"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for E0
                            E0 ~ dunif(E0low, E0high)
@@ -1927,7 +1929,7 @@ DualEndpointBeta <- function(E0,
     if(! start@useFixed[["Emax"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for Emax
                            Emax ~ dunif(EmaxLow, EmaxHigh)
@@ -1947,7 +1949,7 @@ DualEndpointBeta <- function(E0,
     if(! start@useFixed[["delta1"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for E0
                            delta1 ~ dunif(delta1Low, delta1High)
@@ -1966,7 +1968,7 @@ DualEndpointBeta <- function(E0,
     if(! start@useFixed[["mode"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for E0
                            mode ~ dunif(modeLow, modeHigh)
@@ -2125,7 +2127,7 @@ DualEndpointEmax <- function(E0,
     ## ----------
 
     start@priormodel <-
-        h_join_models(start@priormodel,
+        h_jags_join_models(start@priormodel,
                    function(){
 
                        for (j in 1:nGrid)
@@ -2147,7 +2149,7 @@ DualEndpointEmax <- function(E0,
     if(! start@useFixed[["E0"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for E0
                            E0 ~ dunif(E0low, E0high)
@@ -2167,7 +2169,7 @@ DualEndpointEmax <- function(E0,
     if(! start@useFixed[["Emax"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for Emax
                            Emax ~ dunif(EmaxLow, EmaxHigh)
@@ -2187,7 +2189,7 @@ DualEndpointEmax <- function(E0,
     if(! start@useFixed[["ED50"]])
     {
         start@priormodel <-
-            h_join_models(start@priormodel,
+            h_jags_join_models(start@priormodel,
                        function(){
                            ## uniform for ED50
                            ED50 ~ dunif(ED50Low, ED50High)
@@ -3692,7 +3694,7 @@ DALogisticLogNormal <- function(npiece=3,
                          },
 
                        priormodel=
-                         h_join_models(start@priormodel,
+                         h_jags_join_models(start@priormodel,
                                     function(){
                                       # ## the multivariate normal prior on the (transformed)
                                       # ## coefficients
