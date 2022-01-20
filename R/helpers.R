@@ -810,3 +810,25 @@ h_null_if_na <- function(x) {
     x
   }
 }
+
+#' Setting Environment for a Function or Formula
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simpler helper function that sets an enclosing environment for a given
+#' function or formula.
+#'
+#' @param fun (`function` or `formula`)\cr an object for which an environment is set.
+#' @param env (`environment`)\cr an environment to be set for `fun`.
+#'
+#' @return `fun` with environment `env` set.
+#'
+#' @export
+#'
+h_set_env <- function(fun, env) {
+  assert_true(test_function(fun) || test_formula(fun))
+  assert_environment(env)
+
+  environment(fun) <- env
+  fun
+}

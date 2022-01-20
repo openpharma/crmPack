@@ -62,6 +62,8 @@ Collate:
     'Data-methods.R'
     'Rules-class.R'
     'Model-validity.R'
+    'dose_prob.R'
+    'jags_model.R'
     'helpers_jags.R'
     'Model-class.R'
     'Design-class.R'

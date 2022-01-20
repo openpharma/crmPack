@@ -72,3 +72,16 @@ validate_logistic_log_normal <- function(object) {
   )
   o$result()
 }
+
+#' @describeIn validate_model_objects validates that the model parameters
+#'  are valid as well as `refDose` is a positive scalar.
+validate_logistic_normal <- function(object) {
+  result_lln <- result_validate_logistic_log_normal(object)
+
+  o <- Validate()
+  o$check(
+    all.equal(object@cov %*% object@prec, diag(1), check.attributes = FALSE),
+    "prec must be inverse of cov"
+  )
+  c(result_lln, o$result())
+}
