@@ -1,6 +1,5 @@
 #' @include helpers.R
 #' @include helpers_jags.R
-#' @include dose_prob.R
 #' @include Model-validity.R
 NULL
 
@@ -173,7 +172,7 @@ NULL
     prec = diag(2),
     refDose = 1
   )
-#  validity = validate_logistic_normal
+  #  validity = validate_logistic_normal
 )
 
 # LogisticNormal-constructor ----
@@ -220,8 +219,14 @@ LogisticNormal <- function(mean,
       list(theta = c(0, 1))
     },
     sample = c("alpha0", "alpha1"),
-    dose = d_logistic(refDose),
-    prob = p_logistic(refDose),
+    dose = function(prob, alpha0, alpha1) {
+      stand_log_dose <- (logit(prob) - alpha0) / alpha1
+      exp(stand_log_dose) * refDose
+    },
+    prob = function(dose, alpha0, alpha1) {
+      stand_log_dose <- log(dose / refDose)
+      plogis(alpha0 + alpha1 * stand_log_dose)
+    },
     mean = mean,
     cov = cov,
     prec = prec,
@@ -329,8 +334,14 @@ LogisticLogNormal <- function(mean,
       list(theta = c(0, 1))
     },
     sample = c("alpha0", "alpha1"),
-    dose = d_logistic(refDose),
-    prob = p_logistic(refDose),
+    dose = function(prob, alpha0, alpha1) {
+      stand_log_dose <- (logit(prob) - alpha0) / alpha1
+      exp(stand_log_dose) * refDose
+    },
+    prob = function(dose, alpha0, alpha1) {
+      stand_log_dose <- log(dose / refDose)
+      plogis(alpha0 + alpha1 * stand_log_dose)
+    },
     mean = mean,
     cov = cov,
     refDose = refDose
@@ -3699,8 +3710,8 @@ DALogisticLogNormal <- function(npiece=3,
                        modelspecs=
                          function(nObs, Tmax){
                            list(refDose=start@refDose,
-                                priorCov=start@cov,
-                                priorMean=start@mean,
+                                cov=start@cov,
+                                mean=start@mean,
                                 npiece=npiece,
                                 l=l,
                                 C_par=C_par,
@@ -3861,8 +3872,8 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
 
 
                              list(refDose=start@refDose,
-                                  priorCov=start@cov,
-                                  priorMean=start@mean,
+                                  cov=start@cov,
+                                  mean=start@mean,
                                   zeros=rep(0, nObs),
                                   cadj=1e10,
                                   w=w)

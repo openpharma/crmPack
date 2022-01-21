@@ -43,27 +43,34 @@ test_that(".Model works as expected", {
   expect_valid(result, "Model")
 })
 
-# LogisticLogNormal-class ----
+# LogisticNormal ----
 
-test_that(".LogisticLogNormal works as expected", {
-  # nolint start
-  result <- expect_silent(
-    .LogisticLogNormal(
-      dose = function(prob, param1) {},
-      prob = function(dose, param1) {},
-      datamodel = function(x) {},
-      priormodel = function(x) {},
-      modelspecs = function(x) {},
-      init = function(x) {},
-      sample = "param1",
-      datanames = "x"
-    )
+## constructor ----
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticNormal model", {
+  data <- h_get_data()
+  model <- h_get_logistic_normal()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(-1.955379, -1.955379, -1.955379, -2.325551),
+      alpha1 = c(1.450219, 1.450219, 1.450219, 1.059415)
+    ),
+    tolerance = 1e-06
   )
-  # nolint end
-  expect_valid(result, "LogisticLogNormal")
 })
 
-# LogisticLogNormal-constructor ----
+## dose ----
+
+# LogisticLogNormal ----
+
+## constructor ----
 
 test_that("LogisticLogNormal object can be created with user constructor", {
   result <- expect_silent(
@@ -75,3 +82,24 @@ test_that("LogisticLogNormal object can be created with user constructor", {
   )
   expect_valid(result, "LogisticLogNormal")
 })
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(-1.296799, -1.296799, -1.296799, -1.680008),
+      alpha1 = c(0.975694, 0.975694, 0.975694, 0.651047)
+    ),
+    tolerance = 1e-06
+  )
+})
+
+## dose ----
