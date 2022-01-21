@@ -57,6 +57,8 @@ model class.
 }}
 
 \examples{
+# nolint start
+
 # Create the data
 data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                y=c(0, 0, 1, 1, 0, 0, 1, 0),
@@ -99,5 +101,7 @@ fitted  <- fitPEM(object = samples,
                   quantiles=c(0.025,0.975),
                   middle=mean,
                   hazard=TRUE)
+
+# nolint end
 }
 \keyword{methods}

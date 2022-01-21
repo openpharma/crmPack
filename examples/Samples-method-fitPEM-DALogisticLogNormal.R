@@ -1,4 +1,4 @@
-# nolintr start
+# nolint start
 
 # Create the data
 data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -43,4 +43,4 @@ fitted  <- fitPEM(object = samples,
                   middle=mean,
                   hazard=TRUE)
 
-# nolintr end
+# nolint end
