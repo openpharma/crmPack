@@ -288,18 +288,18 @@ LogisticLogNormal <- function(mean,
                               cov,
                               refDose) {
   assert_number(refDose, lower = 0 + .Machine$double.xmin)
-  
+
   datamodel <- function() {
     for (i in 1:nObs) {
+      stand_log_dose[i] <- log(x[i] / refDose)
+      logit(p[i]) <- alpha0 + alpha1 * stand_log_dose[i]
       y[i] ~ dbern(p[i])
-      logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-      StandLogDose[i] <- log(x[i] / refDose)
     }
   }
   priormodel <- function() {
     # The multivariate normal prior on the (transformed) coefficients.
-    priorPrec[1:2, 1:2] <- inverse(priorCov[, ])
-    theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2, 1:2])
+    prec <- inverse(cov)
+    theta ~ dmnorm(mean[1:2], prec[1:2, 1:2])
     alpha0 <- theta[1]
     alpha1 <- exp(theta[2])
   }
@@ -309,7 +309,7 @@ LogisticLogNormal <- function(mean,
     datamodel = datamodel,
     priormodel = priormodel,
     modelspecs = function() {
-      list(refDose = refDose, priorCov = cov, priorMean = mean)
+      list(refDose = refDose, cov = cov, mean = mean)
     },
     init = function() {
       list(theta = c(0, 1))
