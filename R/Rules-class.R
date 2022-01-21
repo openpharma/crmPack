@@ -496,10 +496,15 @@ IncrementsRelativeParts <- function(dltStart,
 ##' gives the left bounds of the intervals. The last interval goes from 3 to
 ##' infinity.
 ##'
+##' @note This considers all DLTs across all cohorts observed so far.
+##'
 ##' @slot DLTintervals an integer vector with the left bounds of the relevant
 ##' DLT intervals
 ##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{DLTintervals}
+##'
+##' @seealso [IncrementsRelativeDLTCurrent()] which only considers the DLTs
+##' in the current cohort.
 ##'
 ##' @example examples/Rules-class-IncrementsRelativeDLT.R
 ##' @export
@@ -543,7 +548,37 @@ IncrementsRelativeDLT <- function(DLTintervals,
                            increments=increments)
 }
 
+#' Increment Control based on Relative Differences and Current DLTs
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' The class is based on the number of DLTs observed in the current cohort,
+#' but not cumulatively over all cohorts so far.
+#'
+#' @slot DLTintervals (`integer`)\cr left bounds of the relevant
+#'   DLT intervals.
+#' @slot increments (`numeric`)\cr corresponding maximum allowable
+#' relative increments in the `DLTintervals`.
+#'
+#' @seealso [IncrementsRelativeDLT()] which considers all DLTs cumulatively
+#' across cohorts and doses.
+#' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
+#' @export
+.IncrementsRelativeDLTCurrent <-
+  setClass(
+    Class = "IncrementsRelativeDLTCurrent",
+    contains = "IncrementsRelativeDLT"
+  )
 
+#' @rdname IncrementsRelativeDLTCurrent-class
+#'
+#' @export
+IncrementsRelativeDLTCurrent <- function(DLTintervals = c(0, 1),
+                                         increments = c(2, 1))
+{
+  .IncrementsRelativeDLTCurrent(DLTintervals=safeInteger(DLTintervals),
+                                increments=increments)
+}
 
 ## -----------------------------------------------------------
 ## Max increment based on minimum of multiple increment rules
@@ -2049,57 +2084,3 @@ SafetyWindowConst <- function(patientGap,
 ## ============================================================
 
 #nolint end
-
-#' Increment Control based on Relative Differences and Current DLTs
-#'
-#' @description `r lifecycle::badge("experimental")`
-#' 
-#' The class is based on the number of DLTs observed in the current cohort 
-#' , but not cumulatively over all cohorts so far.
-#' The `DLTintervals` is to be read as follows. If for example,
-#' we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and
-#' third at least 3 DLTs, then we specify `DLTintervals` to be `c(0, 1, 3)`. 
-#' That means, the right bound of the intervals are exclusive to the interval 
-#' -- the vector only gives the left bounds of the intervals. 
-#' The last interval goes from 3 to infinity.
-#'
-#' @slot DLTintervals (`integer`)\cr left bounds of the relevant
-#'   DLT intervals.
-#' @slot increments (`numeric`)\cr corresponding maximum allowable
-#' relative increments in the `DLTintervals`.
-#'
-#' @seealso [IncrementsRelativeDLT()].
-#' @export
-.IncrementsRelativeDLTCurrent <-
-  setClass(
-    Class = "IncrementsRelativeDLTCurrent",
-    representation(
-      DLTintervals = "integer",
-      increments = "numeric"
-    ),
-    prototype(
-      DLTintervals = as.integer(c(0, 1)),
-      increments = c(2, 1)
-    ),
-    contains = "Increments",
-    validity =
-      function(object) {
-        if (length(object@increments) != length(as.numeric(object@DLTintervals))) {
-          warning("increments must have same length as intervals")
-        }
-        if (is.unsorted(as.numeric(object@DLTintervals))) {
-          warning("intervals has to be sorted and have unique values")
-        }
-      }
-  )
-
-#' @rdname IncrementsRelativeDLTCurrent-class
-#'
-#' @export
-IncrementsRelativeDLTCurrent <- function(DLTintervals = c(0, 1),
-                                            increments = c(2, 1))
-{
-  .IncrementsRelativeDLTCurrent(DLTintervals=safeInteger(DLTintervals),
-                                   increments=increments)
-}
-
