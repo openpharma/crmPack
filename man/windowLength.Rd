@@ -172,6 +172,5 @@ myWindowLength <- SafetyWindowConst(patientGap = c(7,3),
 windowLength(myWindowLength, size=sizeRecommendation)
 
 # nolint end
-
 }
 \keyword{methods}
