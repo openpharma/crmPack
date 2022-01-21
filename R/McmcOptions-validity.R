@@ -46,7 +46,10 @@ validate_mcmc_options <- function(object) {
     "step must be integer scalar greater than or equal to 1"
   )
   o$check(
-    # Always `TRUE` when `object@rng_kind` is `NULL`.
+    test_string(object@rng_kind, na.ok = TRUE),
+    "rng_kind must be a single string"
+  )
+  o$check(
     test_subset(object@rng_kind, allowed_rng_kinds),
     paste0(
       "rng_kind must one of the following: ",

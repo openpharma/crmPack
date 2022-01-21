@@ -37,5 +37,5 @@ data <- DataDual(
 
 # Get the efficacy response and their corresponding dose levels
 # categorized by the DLT.
-get_efficacy(data)
+getEff(data)
 }
