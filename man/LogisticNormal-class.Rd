@@ -61,6 +61,4 @@ samples
 }
 \seealso{
 \code{\link{LogisticLogNormal}}.
-
-\code{\link{LogisticLogNormal}}.
 }

@@ -1,6 +1,5 @@
 #' @include helpers.R
 #' @include helpers_jags.R
-#' @include jags.R
 #' @include dose_prob.R
 #' @include Model-validity.R
 NULL
@@ -173,8 +172,8 @@ NULL
     cov = diag(2),
     prec = diag(2),
     refDose = 1
-  ),
-  validity = validate_logistic_normal
+  )
+#  validity = validate_logistic_normal
 )
 
 # LogisticNormal-constructor ----
@@ -184,8 +183,6 @@ NULL
 #' @param mean (`numeric`)\cr the prior mean vector.
 #' @param cov (`matrix`)\cr the prior covariance matrix.
 #' @param refDose (`number`)\cr the reference dose.
-#'
-#' @seealso [`LogisticLogNormal`].
 #'
 #' @export
 #' @example examples/Model-class-LogisticNormal.R
@@ -197,13 +194,32 @@ LogisticNormal <- function(mean,
   assert_true(h_is_positive_definite(cov))
 
   prec <- solve(cov)
+
+  jags_model_data <- function() {
+    for (i in 1:nObs) {
+      stand_log_dose[i] <- log(x[i] / refDose)
+      logit(p[i]) <- alpha0 + alpha1 * stand_log_dose[i]
+      y[i] ~ dbern(p[i])
+    }
+  }
+  jags_model_prior <- function() {
+    # The multivariate normal prior on the coefficients.
+    theta ~ dmnorm(mean[1:2], prec[1:2, 1:2])
+    alpha0 <- theta[1]
+    alpha1 <- theta[2]
+  }
+
   .LogisticNormal(
     datanames = c("nObs", "y", "x"),
-    datamodel = jm_data_logistic,
-    priormodel = jm_prior_logistic_normal,
-    modelspecs = jd_specs_logistic_normal(refDose = refDose, prec = prec, mean = mean),
-    init = ji_logistic,
-    sample = j_sample_two,
+    datamodel = jags_model_data,
+    priormodel = jags_model_prior,
+    modelspecs = function() {
+      list(refDose = refDose, prec = prec, mean = mean)
+    },
+    init = function() {
+      list(theta = c(0, 1))
+    },
+    sample = c("alpha0", "alpha1"),
     dose = d_logistic(refDose),
     prob = p_logistic(refDose),
     mean = mean,
@@ -279,8 +295,6 @@ LogisticNormal <- function(mean,
 #' @param cov (`matrix`)\cr the prior covariance matrix.
 #' @param refDose (`number`)\cr the reference dose.
 #'
-#' @seealso [`LogisticNormal`].
-#'
 #' @export
 #' @example examples/Model-class-LogisticLogNormal.R
 #'
@@ -289,14 +303,14 @@ LogisticLogNormal <- function(mean,
                               refDose) {
   assert_number(refDose, lower = 0 + .Machine$double.xmin)
 
-  datamodel <- function() {
+  jags_model_data <- function() {
     for (i in 1:nObs) {
       stand_log_dose[i] <- log(x[i] / refDose)
       logit(p[i]) <- alpha0 + alpha1 * stand_log_dose[i]
       y[i] ~ dbern(p[i])
     }
   }
-  priormodel <- function() {
+  jags_model_prior <- function() {
     # The multivariate normal prior on the (transformed) coefficients.
     prec <- inverse(cov)
     theta ~ dmnorm(mean[1:2], prec[1:2, 1:2])
@@ -306,8 +320,8 @@ LogisticLogNormal <- function(mean,
 
   .LogisticLogNormal(
     datanames = c("nObs", "y", "x"),
-    datamodel = datamodel,
-    priormodel = priormodel,
+    datamodel = jags_model_data,
+    priormodel = jags_model_prior,
     modelspecs = function() {
       list(refDose = refDose, cov = cov, mean = mean)
     },
