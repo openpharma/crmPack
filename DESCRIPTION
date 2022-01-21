@@ -4,7 +4,7 @@ Authors@R: c(
   person("Daniel", "Sabanes Bove", email = "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
   person("Wai", "Yin Yeung", email = "winnie.yeung@roche.com", role = "aut"),
   person("Marianna", "Grinberg", email = "", role = "aut"),
-  person("Burak Kuersad", "Guenhan", email = "", role = "aut"),
+  person("Burak Kuersad", "Guenhan", email = "burakgunhan@gmail.com", role = "aut"),
   person("Giuseppe", "Palermo", email = "giuseppe.palermo@roche.com", role = "aut"),
   person("Thomas", "Jaki", email = "jaki.thomas@gmail.com", role = "aut"),
   person("Jiawen", "Zhu", email = "zhu.jiawen@gene.com", role = "aut"),
@@ -77,5 +77,6 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+    'test-Rules-methods.R'
     'utils.R'
 Config/testthat/edition: 3
