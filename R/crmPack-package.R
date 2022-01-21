@@ -32,9 +32,9 @@
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom methods setClass setOldClass setGeneric setMethod representation
 #' signature prototype initialize new is .valueClassTest as callNextMethod slot 
-#' slotNames show
+#' slotNames `slot<-` show formalArgs validObject
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
-#' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
+#' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma approxfun
 #' rnorm runif uniroot var vcov
 #' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
@@ -79,7 +79,7 @@ globalVariables(c("log.betaZ",
                   "alpha0",
                   "alpha1",
                   "inverse",
-                  "priorCov",
+                  #"priorCov",
                   "theta",
                   "comp0",
                   "w",

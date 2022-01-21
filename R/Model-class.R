@@ -203,7 +203,7 @@ LogisticNormal <- function(mean,
   }
   jags_model_prior <- function() {
     # The multivariate normal prior on the coefficients.
-    theta ~ dmnorm(mean[1:2], prec[1:2, 1:2])
+    theta ~ dmnorm(mean, prec)
     alpha0 <- theta[1]
     alpha1 <- theta[2]
   }
@@ -318,7 +318,7 @@ LogisticLogNormal <- function(mean,
   jags_model_prior <- function() {
     # The multivariate normal prior on the (transformed) coefficients.
     prec <- inverse(cov)
-    theta ~ dmnorm(mean[1:2], prec[1:2, 1:2])
+    theta ~ dmnorm(mean, prec)
     alpha0 <- theta[1]
     alpha1 <- exp(theta[2])
   }
