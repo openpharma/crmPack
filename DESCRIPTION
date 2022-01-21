@@ -27,6 +27,7 @@ Depends:
     graphics,
     R (>= 3.0.0)
 Imports:
+    futile.logger,
     checkmate,
     lifecycle,
     GenSA,
@@ -45,7 +46,8 @@ Suggests:
     ggmcmc,
     knitr,
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    vdiffr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Encoding: UTF-8
@@ -62,11 +64,12 @@ Collate:
     'Data-methods.R'
     'Rules-class.R'
     'Model-validity.R'
+    'helpers_jags.R'
     'Model-class.R'
     'Design-class.R'
-    'writeModel.R'
-    'McmcOptions-methods.R'
+    'McmcOptions-validity.R'
     'McmcOptions-class.R'
+    'McmcOptions-methods.R'
     'Samples-class.R'
     'mcmc.R'
     'Simulations-class.R'
@@ -77,6 +80,7 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+    'logger.R'
     'test-Rules-methods.R'
     'utils.R'
 Config/testthat/edition: 3

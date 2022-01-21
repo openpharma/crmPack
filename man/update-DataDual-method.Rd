@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataDual-method}
 \alias{update,DataDual-method}
-\alias{update-DataDual-method}
+\alias{update-DataDual}
 \title{Updating \code{DataDual} Objects}
 \usage{
 \S4method{update}{DataDual}(object, w, ..., check = TRUE)
@@ -13,10 +13,10 @@
 \item{w}{(\code{numeric})\cr the continuous vector of biomarker values
 for all the patients in this update.}
 
-\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.}
+\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data}}.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object
-should be conducted. See help for \code{\link{update-Data-method}} for more details
+should be conducted. See help for \code{\link{update-Data}} for more details
 on the use case of this parameter.}
 }
 \value{
@@ -38,4 +38,5 @@ my_data <- DataDual(
 
 # Update the data with a new cohort.
 my_data1 <- update(my_data, x = 20, y = c(0, 1, 1), w = c(0.4, 1.2, 2.2))
+my_data1
 }

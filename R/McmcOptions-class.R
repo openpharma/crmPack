@@ -1,75 +1,100 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[McmcOptions-class.R] by DSB Fre 16/01/2015 12:02>
-##
-## Description:
-## Encapsulate the three canonical MCMC options in a formal class.
-##
-## History:
-## 12/12/2013   file creation (copy from glmBfp package)
-## 19/12/2013   simplify doc (roxygen2 3.0)
-## 29/01/2014   use initialize method rather than constructor function
-##              to be better extensible
-###################################################################################
+#' @include helpers.R
+#' @include McmcOptions-validity.R
+NULL
 
-##' @include helpers.R
-{}
+# McmcOptions-class ----
 
+#' `McmcOptions`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`McmcOptions`] is a class for the three canonical MCMC options.
+#'
+#' @slot iterations (`count`)\cr number of MCMC iterations.
+#' @slot burnin (`count`)\cr number of burn-in iterations which are not saved.
+#' @slot step (`count`)\cr only every `step`-th iteration is saved after
+#'   the `burnin`. In other words, a sample from iteration
+#'   `i = 1,...,iterations`, is saved if and only if
+#'   `(i - burnin) mod step = 0`.\cr
+#'   For example, for `iterations = 6`, `burnin = 0` and `step = 2`, only
+#'   samples from iterations `2,4,6` will be saved.
+#' @slot rng_kind (`string`)\cr a Random Number Generator (RNG) type used by
+#'   [`rjags`]. It must be one out of the following four values:
+#'   `base::Wichmann-Hill`, `base::Marsaglia-Multicarry`,
+#'   `base::Super-Duper`, `base::Mersenne-Twister`, or `NA_character_`.
+#'   If it is `NA_character_` (default), then the RNG kind will be chosen by
+#'   [`rjags`].
+#' @slot rng_seed (`number`)\cr a Random Number Generator (RNG) seed
+#'   used by [`rjags`] for a chosen `rng_kind`. It must be an integer scalar or
+#'   `NA_integer_`, which means that the seed will be chosen by [`rjags`].
+#'
+#' @aliases McmcOptions
+#' @export
+#'
+.McmcOptions <- setClass(
+  Class = "McmcOptions",
+  slots = c(
+    iterations = "integer",
+    burnin = "integer",
+    step = "integer",
+    rng_kind = "character",
+    rng_seed = "integer"
+  ),
+  prototype = prototype(
+    iterations = 1000L,
+    burnin = 100L,
+    step = 2L,
+    rng_kind = NA_character_,
+    rng_seed = NA_integer_
+  ),
+  validity = validate_mcmc_options
+)
 
-##' Class for the three canonical MCMC options
-##'
-##' @slot iterations number of MCMC iterations
-##' @slot burnin number of burn-in iterations which are not saved
-##' @slot step only every step-th iteration is saved after the burn-in
-##'
-##' @example examples/McmcOptions-class-McmcOptions.R
-##' @export
-##' @keywords classes
-.McmcOptions <-
-    setClass(Class="McmcOptions",
-             representation(iterations="integer",
-                            burnin="integer",
-                            step="integer"),
-             prototype(iterations=1000L,
-                       burnin=100L,
-                       step=2L),
-             validity=function(object){
-                 o <- Validate()
+# McmcOptions-constructor ----
 
-                 o$check(is.scalar(object@burnin) && (object@burnin >= 0L),
-                         "burn-in must be non-negative scalar")
-                 o$check(is.scalar(object@iterations),
-                         "iterations must be integer scalar")
-                 o$check(object@burnin < object@iterations,
-                         "burn-in must be smaller than iterations")
-                 o$check(is.scalar(object@step) && (object@step >= 1),
-                         "step size must be scalar of at least 1")
+#' @rdname McmcOptions-class
+#'
+#' @param burnin (`count`)\cr number of burn-in iterations which are not saved.
+#' @param step (`count`)\cr only every step-th iteration is saved after
+#'   the burn-in.
+#' @param samples (`count`)\cr number of resulting samples.
+#' @param rng_kind (`string`)\cr the name of the RNG type. Possible types are:
+#'   `Wichmann-Hill`, `Marsaglia-Multicarry`, `Super-Duper`, `Mersenne-Twister`.
+#'   If it is `NA` (default), then the RNG kind will be chosen by `[rjags`].
+#' @param rng_seed (`number`)\cr RNG seed corresponding to chosen `rng_kind`.
+#'   It must be an integer value or `NA` (default), which means that the seed
+#'   will be chosen by `[rjags`].
+#'
+#' @export
+#' @example examples/McmcOptions-class-McmcOptions.R
+#'
+McmcOptions <- function(burnin = 1e4L,
+                        step = 2L,
+                        samples = 1e4L,
+                        rng_kind = NA_character_,
+                        rng_seed = NA_integer_) {
+  assert_number(burnin)
+  assert_number(step)
+  assert_number(samples)
+  assert_string(rng_kind, na.ok = TRUE)
+  assert_number(rng_seed, na.ok = TRUE)
 
-                 o$result()
-             })
-validObject(.McmcOptions())
+  if (!is.na(rng_kind)) {
+    rng_kind <- paste0("base::", rng_kind)
+  } else {
+    rng_kind <- NA_character_
+  }
+  if (!is.na(rng_seed)) {
+    rng_seed <- safeInteger(rng_seed)
+  } else {
+    rng_seed <- NA_integer_
+  }
 
-
-##' Initialization function for the "McmcOptions" class
-##'
-##' @param burnin number of burn-in iterations which are not saved (default:
-##' \code{10,000})
-##' @param step only every step-th iteration is saved after the burn-in
-##' (default: \code{2})
-##' @param samples number of resulting samples (by default \code{10,000} will
-##' result)
-##' @return the \code{\linkS4class{McmcOptions}} object
-##'
-##' @export
-##' @keywords methods
-McmcOptions <- function(burnin=1e4L,
-                        step=2L,
-                        samples=1e4L)
-{
-    .McmcOptions(iterations=safeInteger(burnin + (step * samples)),
-                 burnin=safeInteger(burnin),
-                 step=safeInteger(step))
+  .McmcOptions(
+    iterations = safeInteger(burnin + (step * samples)),
+    burnin = safeInteger(burnin),
+    step = safeInteger(step),
+    rng_kind = rng_kind,
+    rng_seed = rng_seed
+  )
 }
-validObject(McmcOptions())

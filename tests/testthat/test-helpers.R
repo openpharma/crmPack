@@ -166,3 +166,96 @@ test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
   is_pf_m3 <- h_is_positive_definite(m3)
   expect_false(any(is_pf_m1, is_pf_m2, is_pf_m3))
 })
+
+# h_slots ----
+
+test_that("h_slots returns slots as expected", {
+  object <- h_get_data()
+  result <- h_slots(object, c("placebo", "nGrid"))
+  expected <- list(placebo = TRUE, nGrid = 13L)
+
+  expect_identical(result, expected)
+})
+
+test_that("h_slots throws the error for non-existing slots", {
+  object <- h_get_data()
+  expect_error(
+    h_slots(object, c("placebo", "not_existing_slot_name")),
+    "Assertion on 'all\\(names %in% slotNames\\(object\\)\\)' failed: Must be TRUE." # nolintr
+  )
+})
+
+# h_format_number ----
+
+test_that("h_format_number works as expected", {
+  result <- c(
+    h_format_number(0.0001),
+    h_format_number(20000, digits = 3),
+    h_format_number(20000, prefix = "P", suffix = "S")
+  )
+  expected <- c("1.00000E-04", "2.000E+04", "P2.00000E+04S")
+
+  expect_identical(result, expected)
+})
+
+test_that("h_format_number works as expected when no change", {
+  result <- c(
+    h_format_number(1),
+    h_format_number(1, digits = 3),
+    h_format_number(1, prefix = "P", suffix = "S")
+  )
+  expected <- c(1, 1, 1)
+
+  expect_identical(result, expected)
+})
+
+# h_rapply ----
+
+test_that("h_rapply works as expected", {
+  my_model <- function() {
+    alpha0 <- mean(1:10)
+    alpha1 <- 600000
+  }
+  # Replace format of numbers using `formatC` function.
+  result <- h_rapply(
+    x = body(my_model),
+    fun = formatC,
+    classes = c("integer", "numeric"),
+    digits = 3,
+    format = "E"
+  )
+  expected_fun <- function() {
+    alpha0 <- mean("1.000E+00":"1.000E+01")
+    alpha1 <- "6.000E+05"
+  }
+  expected <- body(expected_fun)
+
+  expect_identical(result, expected)
+})
+
+# h_null_if_na ----
+
+test_that("h_null_if_na works as expected", {
+  expect_null(h_null_if_na(NA))
+  expect_null(h_null_if_na(NA_integer_))
+  expect_null(h_null_if_na(NA_real_))
+  expect_null(h_null_if_na(NA_character_))
+})
+
+test_that("h_null_if_na throws an error for non-atomic argument", {
+  expect_error(
+    h_null_if_na(mean),
+    "Assertion on 'x' failed: Must be of type 'atomic', not 'closure'."
+  )
+})
+
+test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
+  expect_error(
+    h_null_if_na(c(5, NA)),
+    "Assertion on 'x' failed: Must have length 1, but has length 2."
+  )
+  expect_error(
+    h_null_if_na(c(NA, NA)),
+    "Assertion on 'x' failed: Must have length 1, but has length 2."
+  )
+})

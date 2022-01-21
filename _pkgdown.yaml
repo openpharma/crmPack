@@ -33,6 +33,7 @@ reference:
       - GeneralModel
       - Model
       - LogisticLogNormal
+      - McmcOptions
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -41,6 +42,16 @@ reference:
       - h_plot_data_cohort_lines
       - h_check_fun_formals
       - h_is_positive_definite
+      - h_slots
+      - h_format_number
+      - h_rapply
+      - h_jags_add_dummy
+      - h_jags_join_models
+      - h_jags_get_model_inits
+      - h_jags_get_data
+      - h_jags_write_model
+      - h_jags_extract_samples
+      - h_null_if_na
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -52,26 +63,34 @@ reference:
       - validate_general_model
       - validate_model
       - validate_logistic_log_normal
-  - title: Example Data
-    contents:
+      - validate_mcmc_options
   - title: Methods
     contents:
-      - as.list
-      - plot-Data-method
-      - plot-DataDual-method
-      - plot-DataDA-method
-      - update-Data-method
-      - update-DataParts-method
-      - update-DataDual-method
-      - update-DataDA-method
+      - plot-Data
+      - plot-DataDual
+      - plot-DataDA
+      - update-Data
+      - update-DataParts
+      - update-DataDual
+      - update-DataDA
       - get_efficacy
-      - get_efficacy-DataDual-method
+      - get_efficacy-DataDual
+      - sampleSize
+      - sampleSize-McmcOptions
+      - saveSample
+      - saveSample-McmcOptions
+      - dose
+      - dose-Model
+      - dose-ModelTox
+      - dose-ModelTox_noSamples
+      - prob
+      - prob-Model
+      - prob-ModelTox
+      - prob-ModelTox_noSamples
   - title: Functions
     contents:
+      - enable_logging
+      - disable_logging
+      - is_logging_enabled
+      - log_trace
       - dapply
-  - title: Graphs
-    contents:
-  - title: Control Functions
-    contents:
-  - title: Assertions
-    contents:

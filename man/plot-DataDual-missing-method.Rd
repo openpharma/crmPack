@@ -2,22 +2,24 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,DataDual,missing-method}
 \alias{plot,DataDual,missing-method}
-\alias{plot-DataDual-method}
-\title{Plot method for the \code{\link{DataDual}} class.}
+\alias{plot-DataDual}
+\title{Plot Method for the \code{\link{DataDual}} Class}
 \usage{
 \S4method{plot}{DataDual,missing}(x, y, blind = FALSE, ...)
 }
 \arguments{
 \item{x}{(\code{DataDual})\cr object we want to plot.}
 
-\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic
+function.}
 
 \item{blind}{(\code{flag})\cr indicates whether to blind the data.
 If \code{TRUE}, then placebo subjects are reported at the same level
 as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{...}{passed to the first inherited method \code{plot} after this current method.}
+\item{...}{passed to the first inherited method \code{plot} after this current
+method.}
 }
 \value{
 The \code{\link{ggplot2}} object.

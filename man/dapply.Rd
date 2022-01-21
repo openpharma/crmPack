@@ -10,15 +10,16 @@ dapply(df, f, FUN, ...)
 \item{df}{(\verb{data frame})\cr data set to be divided into groups.}
 
 \item{f}{(\code{factor} or \code{formula} or \code{list})\cr a factor in the sense that
-\code{as.factor(f)} defines the grouping, or a \code{list} of such factors in which case
-their interaction is used for the grouping. \code{f} can also be a formula of the form
-\code{~ g1 + ... + gk} to split by the interaction of the variables \verb{g1, ..., gk}.
-This parameter is passed directly into \code{\link[=split]{split()}} function.}
+\code{as.factor(f)} defines the grouping, or a \code{list} of such factors in which
+case their interaction is used for the grouping. \code{f} can also be a formula
+of the form \code{~ g1 + ... + gk} to split by the interaction of the variables
+\verb{g1, ..., gk}. This parameter is passed directly into \code{\link[=split]{split()}} function.}
 
-\item{FUN}{(\code{function})\cr the function to be applied to each subset of \code{df} defined by \code{f}.}
+\item{FUN}{(\code{function})\cr the function to be applied to each subset of \code{df}
+defined by \code{f}.}
 
-\item{...}{parameters passed to \code{\link[=lapply]{lapply()}}, which is used when applying a function \code{FUN}
-over groups defined by \code{f}.}
+\item{...}{parameters passed to \code{\link[=lapply]{lapply()}}, which is used when applying a
+function \code{FUN} over groups defined by \code{f}.}
 }
 \value{
 The \code{\link{data.frame}} object with results from \code{FUN}.

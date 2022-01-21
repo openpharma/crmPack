@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,Data-method}
 \alias{update,Data-method}
-\alias{update-Data-method}
+\alias{update-Data}
 \title{Updating \code{Data} Objects}
 \usage{
 \S4method{update}{Data}(
@@ -20,26 +20,28 @@
 
 \item{x}{(\code{number})\cr the dose level (one level only!).}
 
-\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this cohort.
-You can also supply \code{numeric} vectors, but these will then be converted to
-\code{integer} internally.}
+\item{y}{(\code{integer})\cr the DLT vector (0/1 vector) for all patients in this
+cohort. You can also supply \code{numeric} vectors, but these will then be
+converted to \code{integer} internally.}
 
 \item{ID}{(\code{integer})\cr the patient IDs.
 You can also supply \code{numeric} vectors, but these will then be converted to
 \code{integer} internally.}
 
-\item{new_cohort}{(\code{flag})\cr if \code{TRUE} (default) the new data are assigned to a new cohort.}
+\item{new_cohort}{(\code{flag})\cr if \code{TRUE} (default) the new data are assigned
+to a new cohort.}
 
-\item{check}{(\code{flag})\cr whether the validation of the updated object should be conducted.
-Current implementation of this \code{update} method allows for updating the \code{Data} class object
-by adding a single dose level \code{x} only. However, there might be some use cases where
-the new cohort to be added contains a placebo and active dose. Hence, such update
-would need to be performed iteratively by calling the \code{update} method twice.
-For example, in the first call a user can add a placebo, and then in the second call,
+\item{check}{(\code{flag})\cr whether the validation of the updated object should
+be conducted. Current implementation of this \code{update} method allows for
+updating the \code{Data} class object by adding a single dose level \code{x} only.
+However, there might be some use cases where the new cohort to be added
+contains a placebo and active dose. Hence, such update would need to be
+performed iteratively by calling the \code{update} method twice. For example,
+in the first call a user can add a placebo, and then in the second call,
 an active dose. Since having a cohort with placebo only is not allowed,
-the \code{update} method would normally throw the error when attempting to add a placebo
-in the first call. To allow for such updates, the \code{check} parameter should be then
-set to \code{FALSE} for that first call.}
+the \code{update} method would normally throw the error when attempting to add
+a placebo in the first call. To allow for such updates, the \code{check}
+parameter should be then set to \code{FALSE} for that first call.}
 
 \item{...}{not used.}
 }
@@ -61,4 +63,5 @@ my_data <- Data(
 
 # Update the data with a new cohort.
 my_data1 <- update(my_data, x = 20, y = c(0L, 1L, 1L))
+my_data1
 }

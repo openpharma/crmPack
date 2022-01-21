@@ -1,4 +1,12 @@
 # Version 1.0.9000
+* Added logger feature. Its user interface consists of four functions:
+  `enable_logging`, `disable_logging`, `is_logging_enabled`, `log_trace`.
+* Modified `mcmc` method arguments: renamed `fromPrior` to `from_prior`, removed
+  `program` and `verbose`.
+* Added new slot `RNG` to `McmcOptions` class which will be used by Random
+  Number Generator in `rJAGS`.
+* Re-factored `sampleSize` function so that it returns `0` if
+  `burnin > iterations`.
 * Renamed elements in the list object returned by `getEff` function.
 * A vector under `t0` slot in `DataDA` class must be sorted in ascending order.
 * Replaced warning with message when no `cohort` or `ID` is provided to the user

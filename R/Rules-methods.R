@@ -1,4 +1,18 @@
-#nolint start
+# nolint start
+#####################################################################################
+## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
+##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
+## Project: Object-oriented implementation of CRM designs
+##
+## Time-stamp: <[Rules-methods.R] by DSB Die 09/06/2015 21:29>
+##
+## Description:
+## Encapsulate the rule functions in formal methods.
+##
+## History:
+## 07/02/2014   file creation
+## 10/07/2015   Adding more classes
+###################################################################################
 
 ##' @include Model-methods.R
 ##' @include Samples-class.R
@@ -3327,8 +3341,6 @@ setMethod("windowLength",
 
 ## ============================================================
 
-#nolint end
-
 ##' --------------------------------------------------
 ##' The maximum allowable relative increments in terms of DLTs
 ##' --------------------------------------------------
@@ -3361,5 +3373,6 @@ setMethod("maxDose",
 
       (1 + increments@increments[interval]) * lastDose
     }
-)
-
+)                     
+                     
+# nolint end

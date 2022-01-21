@@ -7,8 +7,9 @@ my_data <- DataDA(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
 )
 
-# set up an empty data set
+# Set up an empty data set.
 empty_data <- DataDA(
   doseGrid = c(0.1, 0.5, 1, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
   Tmax = 60
 )
+empty_data

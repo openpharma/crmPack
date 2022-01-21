@@ -1,13 +1,3 @@
-# as.list ----
-
-test_that("Coercion creates the expected list", {
-  object <- Data()
-  result <- as.list(object)
-
-  expect_class(result, "list")
-  expect_identical(slotNames(object), names(result))
-})
-
 # plot-Data ----
 
 test_that("Plot works as expected for Data object with placebo", {
@@ -283,7 +273,7 @@ test_that("Update of DataDA throws the error for empty trialtime", {
 
 # getEff-DataDual ----
 
-test_that("DataDual-getEff works as expected", {
+test_that("getEff-DataDual works as expected", {
   data <- h_get_data_dual()
   result <- getEff(data)
   expected <- list(
@@ -296,7 +286,7 @@ test_that("DataDual-getEff works as expected", {
   expect_identical(result, expected)
 })
 
-test_that("DataDual-getEff works as expected (no DLT)", {
+test_that("getEff-DataDual works as expected (no DLT)", {
   data <- DataDual(
     x = c(25, 50),
     y = c(0, 0),
@@ -314,7 +304,7 @@ test_that("DataDual-getEff works as expected (no DLT)", {
   expect_identical(result, expected)
 })
 
-test_that("DataDual-getEff works as expected (DLT only)", {
+test_that("getEff-DataDual works as expected (DLT only)", {
   data <- DataDual(
     x = c(25, 50),
     y = c(1, 1),

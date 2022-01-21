@@ -2,22 +2,24 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,DataDA,missing-method}
 \alias{plot,DataDA,missing-method}
-\alias{plot-DataDA-method}
-\title{Plot method for the \code{\link{DataDA}} class.}
+\alias{plot-DataDA}
+\title{Plot Method for the \code{\link{DataDA}} Class}
 \usage{
 \S4method{plot}{DataDA,missing}(x, y, blind = FALSE, ...)
 }
 \arguments{
 \item{x}{(\code{DataDA})\cr object we want to plot.}
 
-\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic
+function.}
 
 \item{blind}{(\code{flag})\cr indicates whether to blind the data.
 If \code{TRUE}, then placebo subjects are reported at the same level
 as the active dose level in the corresponding cohort,
 and DLTs are always assigned to the first subjects in a cohort.}
 
-\item{...}{passed to the first inherited method \code{plot} after this current method.}
+\item{...}{passed to the first inherited method \code{plot} after this current
+method.}
 }
 \value{
 The \code{\link{ggplot2}} object.

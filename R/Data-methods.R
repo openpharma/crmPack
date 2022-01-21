@@ -1,40 +1,14 @@
-# GeneralData-as.list ----
+# plot-Data ----
 
-#' Coerce to List Method for `GeneralData` Objects
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' A method that coerces [`GeneralData`] object into list.
-#'
-#' @param x (`GeneralData`)\cr the object we want to convert into list.
-#' @param \dots unused.
-#'
-#' @return A `list` with all slots in object `x`.
-#'
-#' @example examples/Data-method-asList.R
-#' @export
-#'
-setMethod(
-  f = "as.list",
-  signature = signature(x = "GeneralData"),
-  definition = function(x, ...) {
-    slot_names <- slotNames(x)
-    x_list <- lapply(X = slot_names, FUN = slot, object = x)
-    names(x_list) <- slot_names
-    x_list
-  }
-)
-
-# Data-plot ----
-
-#' Plot method for the [`Data`] class.
+#' Plot Method for the [`Data`] Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that creates a plot for [`Data`] object.
 #'
 #' @param x (`Data`)\cr object we want to plot.
-#' @param y (`missing`)\cr missing object, for compatibility with the generic function.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
 #' @param blind (`flag`)\cr indicates whether to blind the data.
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
@@ -44,9 +18,9 @@ setMethod(
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-Data-method
-#' @example examples/Data-method-plot.R
+#' @aliases plot-Data
 #' @export
+#' @example examples/Data-method-plot.R
 #'
 setMethod(
   f = "plot",
@@ -63,7 +37,9 @@ setMethod(
 
     p <- ggplot(df, aes(x = patient, y = dose)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
+      scale_colour_manual(
+        name = "Toxicity", values = c(Yes = "red", No = "black")
+      ) +
       scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
       scale_x_continuous(breaks = df$patient, minor_breaks = NULL) +
       scale_y_continuous(
@@ -97,27 +73,29 @@ setMethod(
   }
 )
 
-# DataDual-plot ----
+# plot-DataDual ----
 
-#' Plot method for the [`DataDual`] class.
+#' Plot Method for the [`DataDual`] Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that creates a plot for [`DataDual`] object.
 #'
 #' @param x (`DataDual`)\cr object we want to plot.
-#' @param y (`missing`)\cr missing object, for compatibility with the generic function.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
 #' @param blind (`flag`)\cr indicates whether to blind the data.
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param ... passed to the first inherited method `plot` after this current method.
+#' @param ... passed to the first inherited method `plot` after this current
+#'   method.
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-DataDual-method
-#' @example examples/Data-method-plot-DataDual.R
+#' @aliases plot-DataDual
 #' @export
+#' @example examples/Data-method-plot-DataDual.R
 #'
 setMethod(
   f = "plot",
@@ -133,7 +111,9 @@ setMethod(
 
     plot2 <- ggplot(df, aes(x = dose, y = biomarker)) +
       geom_point(aes(shape = toxicity, colour = toxicity), size = 3) +
-      scale_colour_manual(name = "Toxicity", values = c(Yes = "red", No = "black")) +
+      scale_colour_manual(
+        name = "Toxicity", values = c(Yes = "red", No = "black")
+      ) +
       scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16)) +
       xlab("Dose Level") +
       ylab("Biomarker")
@@ -141,7 +121,10 @@ setMethod(
     if (!blind) {
       plot2 <- plot2 +
         geom_text(
-          aes(y = biomarker + 0.02 * diff(range(biomarker)), label = patient, size = 2),
+          aes(
+            y = biomarker + 0.02 * diff(range(biomarker)),
+            label = patient, size = 2
+          ),
           data = df,
           hjust = 0,
           vjust = 0.5,
@@ -156,27 +139,29 @@ setMethod(
   }
 )
 
-# DataDA-plot ----
+# plot-DataDA ----
 
-#' Plot method for the [`DataDA`] class.
+#' Plot Method for the [`DataDA`] Class
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that creates a plot for [`DataDA`] object.
 #'
 #' @param x (`DataDA`)\cr object we want to plot.
-#' @param y (`missing`)\cr missing object, for compatibility with the generic function.
+#' @param y (`missing`)\cr missing object, for compatibility with the generic
+#'   function.
 #' @param blind (`flag`)\cr indicates whether to blind the data.
 #'   If `TRUE`, then placebo subjects are reported at the same level
 #'   as the active dose level in the corresponding cohort,
 #'   and DLTs are always assigned to the first subjects in a cohort.
-#' @param ... passed to the first inherited method `plot` after this current method.
+#' @param ... passed to the first inherited method `plot` after this current
+#'   method.
 #'
 #' @return The [`ggplot2`] object.
 #'
-#' @aliases plot-DataDA-method
-#' @example examples/Data-method-plot-DataDA.R
+#' @aliases plot-DataDA
 #' @export
+#' @example examples/Data-method-plot-DataDA.R
 #'
 setMethod(
   f = "plot",
@@ -202,16 +187,26 @@ setMethod(
     plot2 <- ggplot(df, aes(x = t0, y = patient)) +
       geom_segment(aes(xend = tend, yend = patient)) +
       geom_point(aes(shape = t0_case, colour = t0_case), size = 3) +
-      geom_point(aes(x = tend, shape = tend_case, colour = tend_case), size = 3) +
-      scale_colour_manual(
-        name = "Toxicity", values = c(Yes = "red", No = "black", Start = "black", Censored = "black")
+      geom_point(
+        aes(x = tend, shape = tend_case, colour = tend_case),
+        size = 3
       ) +
-      scale_shape_manual(name = "Toxicity", values = c(Yes = 17, No = 16, Start = 1, Censored = 4)) +
+      scale_colour_manual(
+        name = "Toxicity",
+        values = c(
+          Yes = "red", No = "black", Start = "black", Censored = "black"
+        )
+      ) +
+      scale_shape_manual(
+        name = "Toxicity",
+        values = c(Yes = 17, No = 16, Start = 1, Censored = 4)
+      ) +
       scale_y_continuous(breaks = df$patient, minor_breaks = NULL) +
       xlab("Time") +
       ylab("Patient")
 
-    plot2 <- plot2 + h_plot_data_cohort_lines(df$cohort, placebo = x@placebo, vertical = FALSE)
+    plot2 <- plot2 +
+      h_plot_data_cohort_lines(df$cohort, placebo = x@placebo, vertical = FALSE)
 
     if (!blind) {
       plot2 <- plot2 +
@@ -231,7 +226,7 @@ setMethod(
   }
 )
 
-# Data-update ----
+# update-Data ----
 
 #' Updating `Data` Objects
 #'
@@ -241,30 +236,32 @@ setMethod(
 #'
 #' @param object (`Data`)\cr object you want to update.
 #' @param x (`number`)\cr the dose level (one level only!).
-#' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this cohort.
-#'   You can also supply `numeric` vectors, but these will then be converted to
-#'   `integer` internally.
+#' @param y (`integer`)\cr the DLT vector (0/1 vector) for all patients in this
+#'   cohort. You can also supply `numeric` vectors, but these will then be
+#'   converted to `integer` internally.
 #' @param ID (`integer`)\cr the patient IDs.
 #'   You can also supply `numeric` vectors, but these will then be converted to
 #'   `integer` internally.
-#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned to a new cohort.
-#' @param check (`flag`)\cr whether the validation of the updated object should be conducted.
-#'   Current implementation of this `update` method allows for updating the `Data` class object
-#'   by adding a single dose level `x` only. However, there might be some use cases where
-#'   the new cohort to be added contains a placebo and active dose. Hence, such update
-#'   would need to be performed iteratively by calling the `update` method twice.
-#'   For example, in the first call a user can add a placebo, and then in the second call,
+#' @param new_cohort (`flag`)\cr if `TRUE` (default) the new data are assigned
+#'   to a new cohort.
+#' @param check (`flag`)\cr whether the validation of the updated object should
+#'   be conducted. Current implementation of this `update` method allows for
+#'   updating the `Data` class object by adding a single dose level `x` only.
+#'   However, there might be some use cases where the new cohort to be added
+#'   contains a placebo and active dose. Hence, such update would need to be
+#'   performed iteratively by calling the `update` method twice. For example,
+#'   in the first call a user can add a placebo, and then in the second call,
 #'   an active dose. Since having a cohort with placebo only is not allowed,
-#'   the `update` method would normally throw the error when attempting to add a placebo
-#'   in the first call. To allow for such updates, the `check` parameter should be then
-#'   set to `FALSE` for that first call.
+#'   the `update` method would normally throw the error when attempting to add
+#'   a placebo in the first call. To allow for such updates, the `check`
+#'   parameter should be then set to `FALSE` for that first call.
 #' @param ... not used.
 #'
 #' @return The new, updated [`Data`] object.
 #'
-#' @aliases update-Data-method
-#' @example examples/Data-method-update.R
+#' @aliases update-Data
 #' @export
+#' @example examples/Data-method-update.R
 #'
 setMethod(
   f = "update",
@@ -318,7 +315,7 @@ setMethod(
   }
 )
 
-# DataParts-update ----
+# update-DataParts ----
 
 #' Updating `DataParts` Objects
 #'
@@ -328,16 +325,16 @@ setMethod(
 #'
 #' @param object (`DataParts`)\cr object you want to update.
 #' @inheritParams update,Data-method
-#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param ... further arguments passed to `Data` update method [`update-Data`].
 #' @param check (`flag`)\cr whether the validation of the updated object
-#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   should be conducted. See help for [`update-Data`] for more details
 #'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataParts`] object.
 #'
-#' @aliases update-DataParts-method
-#' @example examples/Data-method-update-DataParts.R
+#' @aliases update-DataParts
 #' @export
+#' @example examples/Data-method-update-DataParts.R
 #'
 setMethod(
   f = "update",
@@ -373,7 +370,7 @@ setMethod(
   }
 )
 
-# DataDual-update ----
+# update-DataDual ----
 
 #' Updating `DataDual` Objects
 #'
@@ -384,16 +381,16 @@ setMethod(
 #' @param object (`DataDual`)\cr object you want to update.
 #' @param w (`numeric`)\cr the continuous vector of biomarker values
 #'   for all the patients in this update.
-#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param ... further arguments passed to `Data` update method [`update-Data`].
 #' @param check (`flag`)\cr whether the validation of the updated object
-#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   should be conducted. See help for [`update-Data`] for more details
 #'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataDual`] object.
 #'
-#' @aliases update-DataDual-method
-#' @example examples/Data-method-update-DataDual.R
+#' @aliases update-DataDual
 #' @export
+#' @example examples/Data-method-update-DataDual.R
 #'
 setMethod(
   f = "update",
@@ -416,7 +413,7 @@ setMethod(
   }
 )
 
-# DataDA-update ----
+# update-DataDA ----
 
 #' Updating `DataDA` Objects
 #'
@@ -430,23 +427,24 @@ setMethod(
 #' @param object (`DataDA`)\cr object you want to update.
 #' @param u (`numeric`)\cr the new DLT free survival times for all patients,
 #'   i.e. for existing patients in the `object` as well as for new patients.
-#' @param t0 (`numeric`)\cr the time that each patient starts DLT observation window.
-#'   This parameter covers all patients, i.e. existing patients in the `object`
-#'   as well as for new patients.
-#' @param trialtime (`number`)\cr current time in the trial, i.e. a followup time.
+#' @param t0 (`numeric`)\cr the time that each patient starts DLT observation
+#'   window. This parameter covers all patients, i.e. existing patients in the
+#'   `object` as well as for new patients.
+#' @param trialtime (`number`)\cr current time in the trial, i.e. a followup
+#'   time.
 #' @param y (`numeric`)\cr the new DLTs for all patients, i.e. for existing
 #'   patients in the `object` as well as for new patients.
-#' @param ... further arguments passed to `Data` update method [`update-Data-method`].
+#' @param ... further arguments passed to `Data` update method [`update-Data`].
 #'   These are used when there are new patients to be added to the cohort.
 #' @param check (`flag`)\cr whether the validation of the updated object
-#'   should be conducted. See help for [`update-Data-method`] for more details
+#'   should be conducted. See help for [`update-Data`] for more details
 #'   on the use case of this parameter.
 #'
 #' @return The new, updated [`DataDA`] object.
 #'
-#' @aliases update-DataDA-method
-#' @example examples/Data-method-update-DataDA.R
+#' @aliases update-DataDA
 #' @export
+#' @example examples/Data-method-update-DataDA.R
 #'
 setMethod(
   f = "update",
@@ -498,7 +496,7 @@ setMethod(
 
 # getEff ----
 
-#' Extracting efficacy responses for subjects categorized by the DLT
+#' Extracting Efficacy Responses for Subjects Categorized by the DLT
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -520,10 +518,10 @@ setGeneric(
   valueClass = "list"
 )
 
-# DataDual-getEff ----
+# getEff-DataDual ----
 
 #' @rdname getEff
-#' @aliases getEff-DataDual-method
+#' @aliases getEff-DataDual
 #' @example examples/Data-method-getEff.R
 #'
 setMethod(

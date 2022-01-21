@@ -1,231 +1,247 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove[sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [w *.* yeung *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Model-methods.R] by DSB Mon 11/05/2015 17:45>
-##
-## Description:
-## Encapsulate the model input in a formal class.
-##
-## History:
-## 31/03/2014   file creation
-## 09/07/2015   Adding more methods for Pseudo Models
-######################################################################################
+#' @include Model-class.R
+#' @include Samples-class.R
+NULL
 
-##' @include Model-class.R
-##' @include Samples-class.R
-{}
+# dose ----
 
-## --------------------------------------------------
-## Compute the doses for a given probability, given model and samples
-## --------------------------------------------------
+#' Computing the Doses for a Given Probability, Model and Samples
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param prob (`number` or `numeric`)\cr the toxicity probability which is
+#'   targeted. This must be a scalar if `samples` are used (for dose escalation
+#'   `model`). It can be a vector of any finite length, if `samples` are not
+#'   used with pseudo DLE (dose-limiting events)/toxicity `model`.
+#' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
+#'   escalation or pseudo DLE/toxicity model.
+#' @param samples (`Samples`)\cr the samples of model's parameters that will be
+#'   used to compute the resulting doses by `model@dose` function.
+#' @param ... not used.
+#' @return A `number` or `numeric` vector from the `model@dose` function.
+#'   If `samples` were used, then every element in the returned vector
+#'   corresponds to one element of a sample. Hence, in this case, the output
+#'   vector is of the same length as the sample vector. If `samples` were not
+#'   used for pseudo DLE/toxicity `model`, then the output is of the same length
+#'   as `prob`.
+#'
+#' @export
+#'
+setGeneric(
+  name = "dose",
+  def = function(prob, model, samples, ...) {
+    standardGeneric("dose")
+  },
+  valueClass = "numeric"
+)
 
-##' Compute the doses for a given probability, given model and samples
-##'
-##' @param prob the probability
-##' @param model the \code{\linkS4class{Model}}
-##' @param samples the \code{\linkS4class{Samples}}
-##' @param \dots unused
-##'
-##' @export
-##' @keywords methods
-setGeneric("dose",
-           def=
-           function(prob, model, samples, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("dose")
-           },
-           valueClass="numeric")
+# dose-Model ----
 
-##' @rdname dose
-##' @example examples/Model-method-dose.R
-setMethod("dose",
-          signature=
-          signature(prob="numeric",
-                    model="Model",
-                    samples="Samples"),
-          def=
-          function(prob, model, samples, ...){
-              ## extract the dose function from the model
-              doseFun <- slot(model, "dose")
-              ## which arguments, besides the prob, does it need?
-              argNames <- setdiff(names(formals(doseFun)),
-                                  "prob")
-              ## now call the function with prob and with
-              ## the arguments taken from the samples
-              ret <- do.call(doseFun,
-                             c(list(prob=prob),
-                               samples@data[argNames]))
-              ## return the resulting vector
-              return(ret)
-          })
+#' @rdname dose
+#'
+#' @description Compute doses for a given toxicity probability,
+#'   a given single agent dose escalation model, and samples.
+#'
+#' @aliases dose-Model
+#' @example examples/Model-method-dose.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "Model",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples, ...) {
+    assert_number(prob, lower = 0L, upper = 1L)
 
-## =====================================================================================
-## -------------------------------------------------------------------------------------
-## Compute the doses for a given probability, given Pseudo DLE model and given samples
-## -----------------------------------------------------------------------------------
-##' @describeIn dose Compute the doses for a given probability, given
-##' Pseudo DLE model with samples
-##' @example examples/Model-method-dose-modelTox.R
-setMethod("dose",
-          signature=
-            signature(prob="numeric",
-                      model="ModelTox",
-                      samples="Samples"),
-          def=
-            function(prob, model, samples, ...){
-              ## extract the dose function from the model
-              doseFun <- slot(model, "dose")
-              ## which arguments, besides the prob, does it need?
-              argNames <- setdiff(names(formals(doseFun)),
-                                  "prob")
-              ## now call the function with prob and with
-              ## the arguments taken from the samples
-              ret <- do.call(doseFun,
-                             c(list(prob=prob),
-                               samples@data[argNames]))
-              ## return the resulting vector
-              return(ret)
-            })
+    dose_fun <- model@dose
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    do.call(dose_fun, dose_args)
+  }
+)
 
-## =========================================================================
-## ----------------------------------------------------------------------------
-## Compute the dose for a given Pseudo DLE model and a given probability
-## -----------------------------------------------------------------------
-##' @describeIn dose Compute the dose for a given probability and a given
-##' Pseudo DLE model without samples
-##' @example examples/Model-method-doseNoSamples.R
-setMethod("dose",
-          signature=
-            signature(prob="numeric",
-                      model="ModelTox",
-                      samples="missing"),
-          def=
-            function(prob, model, ...){
-              ## extract the dose function from the model
-              doseFun <- slot(model, "dose")
-              ## which arguments, besides the prob, does it need?
-              argNames <- setdiff(names(formals(doseFun)),
-                                  "prob")
-              values<-c()
-              for (parName in argNames){
-                values<-c(values, slot(model,parName))}
-              ## now call the function with prob
-              ret <- do.call(doseFun,
-                             c(list(prob=prob), values))
-              ## return the resulting vector
-              return(ret)
-            })
+# dose-ModelTox ----
 
+#' @rdname dose
+#'
+#' @description Compute doses for a given toxicity probability,
+#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
+#'
+#' @aliases dose-ModelTox
+#' @example examples/Model-method-dose-ModelTox.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "ModelTox",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples, ...) {
+    assert_number(prob, lower = 0L, upper = 1L)
 
-## =======================================================================================
+    dose_fun <- model@dose
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    do.call(dose_fun, dose_args)
+  }
+)
 
-## --------------------------------------------------
-## Compute the probability for a given dose, given model and samples
-## --------------------------------------------------
+# dose-ModelTox_noSamples ----
 
-##' Compute the probability for a given dose, given model and samples
-##'
-##' @param dose the dose
-##' @param model the \code{\linkS4class{Model}} object
-##' @param samples the \code{\linkS4class{Samples}}
-##' @param \dots unused
-##' @return the vector (for \code{\linkS4class{Model}} objects) of probability
-##' samples.
-##'
-##' @export
-##' @keywords methods
-setGeneric("prob",
-           def=
-           function(dose, model, samples, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("prob")
-           })
+#' @rdname dose
+#'
+#' @description Compute the dose for a given toxicity probability and a given
+#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
+#'   All the arguments to `model@dose` function (except `prob`) should be
+#'   present in the `model` object.
+#'
+#' @aliases dose-ModelTox_noSamples
+#' @example examples/Model-method-dose-ModelTox_noSamples.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "ModelTox",
+    samples = "missing"
+  ),
+  definition = function(prob, model, ...) {
+    assert_numeric(
+      prob,
+      lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE
+    )
 
-##' @rdname prob
-##' @example examples/Model-method-prob.R
-setMethod("prob",
-          signature=
-          signature(dose="numeric",
-                    model="Model",
-                    samples="Samples"),
-          def=
-          function(dose, model, samples, ...){
-              ## extract the prob function from the model
-              probFun <- slot(model, "prob")
-              ## which arguments, besides the dose, does it need?
-              argNames <- setdiff(names(formals(probFun)),
-                                  "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              ret <- do.call(probFun,
-                             c(list(dose=dose),
-                               samples@data[argNames]))
-              ## return the resulting vector
-              return(ret)
-          })
+    dose_fun <- model@dose
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
+    do.call(dose_fun, dose_args)
+  }
+)
 
-## =============================================================================================
-## Compute the probability for a given dose, given Pseudo DLE model and samples
-## --------------------------------------------------
+# prob ----
 
-##' @describeIn prob Compute the probability for a given dose,
-##' given Pseudo DLE model and samples
-##' @example examples/Model-method-prob-modelTox.R
-setMethod("prob",
-          signature=
-            signature(dose="numeric",
-                      model="ModelTox",
-                      samples="Samples"),
-          def=
-            function(dose, model, samples, ...){
-              ## extract the prob function from the model
-              probFun <- slot(model, "prob")
-              ## which arguments, besides the dose, does it need?
-              argNames <- setdiff(names(formals(probFun)),
-                                  "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              ret <- do.call(probFun,
-                             c(list(dose=dose),
-                               samples@data[argNames]))
-              ## return the resulting vector
-              return(ret)
-            })
+#' Computing Toxicity Probabilities for a Given Dose, Model and Samples
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted. This must
+#'   be a scalar if `samples` are used (for dose escalation `model`). It can be
+#'   a vector of any finite length, if `samples` are not used with pseudo DLE
+#'   (dose-limiting events)/toxicity `model`.
+#' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
+#'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
+#' @param samples (`Samples`)\cr the samples of model's parameters that will be
+#'   used to compute toxicity probabilities by `model@prob` function.
+#' @param ... not used.
+#' @return A `number` or `numeric` vector from the `model@prob` function.
+#'   If `samples` were used, then every element in the returned vector
+#'   corresponds to one element of a sample. Hence, in this case, the output
+#'   vector is of the same length as the sample vector. If `samples` were not
+#'   used for pseudo DLE/toxicity `model`, then the output is of the same length
+#'   as `dose`.
+#'
+#' @export
+#'
+setGeneric(
+  name = "prob",
+  def = function(dose, model, samples, ...) {
+    standardGeneric("prob")
+  },
+  valueClass = "numeric"
+)
 
+# prob-Model ----
 
+#' @rdname prob
+#'
+#' @description Compute toxicity probabilities for a given dose, a given single
+#'   agent dose escalation model, and samples.
+#'
+#' @aliases prob-Model
+#' @example examples/Model-method-prob.R
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "Model",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    assert_number(dose, lower = 0L)
 
+    prob_fun <- model@prob
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(samples@data[prob_args_names], dose = dose)
+    do.call(prob_fun, prob_args)
+  }
+)
 
-## ==============================================================================
-## ## Compute the probability for a given dose, given Pseudo DLE model
-## --------------------------------------------------
+# prob-ModelTox ----
 
-##' @describeIn prob Compute the probability for a given dose, given Pseudo DLE model without samples
-##' @example examples/Model-method-probNoSamples.R
-setMethod("prob",
-          signature=
-            signature(dose="numeric",
-                      model="ModelTox",
-                      samples="missing"),
-          def=
-            function(dose,model,...){
-              ## extract the prob function from the model
-              probFun <- slot(model, "prob")
-              ## which arguments, besides the dose, does it need?
-              argNames <- setdiff(names(formals(probFun)),
-                                  "dose")
-              ## now call the function with dose
-              values<-c()
-              for (parName in argNames){
-                values<-c(values, slot(model,parName))}
-              ret <- do.call(probFun,
-                             c(list(dose=dose), values))
-              ## return the resulting vector
-              return(ret)
-            })
+#' @rdname prob
+#'
+#' @description Compute toxicity probabilities for a given dose, a given Pseudo
+#'   DLE (dose-limiting events)/toxicity model, and samples.
+#'
+#' @aliases prob-ModelTox
+#' @example examples/Model-method-prob-ModelTox.R
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "ModelTox",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    assert_number(dose, lower = 0L)
+
+    prob_fun <- model@prob
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(samples@data[prob_args_names], dose = dose)
+    do.call(prob_fun, prob_args)
+  }
+)
+
+# prob-ModelTox_noSamples ----
+
+#' @rdname prob
+#'
+#' @description Compute the toxicity probability for a given dose and a given
+#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
+#'   All the arguments to `model@prob` function (except `dose`) should be
+#'   present in the `model` object.
+#'
+#' @aliases prob-ModelTox_noSamples
+#' @example examples/Model-method-prob-ModelTox_noSamples.R
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "ModelTox",
+    samples = "missing"
+  ),
+  definition = function(dose, model, ...) {
+    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
+
+    prob_fun <- model@prob
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(h_slots(model, prob_args_names), list(dose = dose))
+    do.call(prob_fun, prob_args)
+  }
+)
+
+# nolint start
 
 ## =============================================================================
 
@@ -629,3 +645,5 @@ setMethod("update",
               ##return the updated model
               return(model)
             })
+
+# nolint end

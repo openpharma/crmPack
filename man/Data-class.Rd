@@ -71,7 +71,7 @@ in the \code{doseGrid}is considered as PLACEBO.}
 \note{
 \code{ID} and \code{cohort} can be missing. Then a message will be issued
 and the variables will be filled with default IDs and best guesses cohort,
-i.e. a sorted (in ascending order) sequence of values from \verb{\\\{1, 2, ...\\\}}.
+i.e. a sorted (in ascending order) sequence of values from \verb{\{1, 2, ...\}}.
 }
 \examples{
 my_data <- Data(
@@ -82,4 +82,5 @@ my_data <- Data(
     seq(from = 10, to = 80, by = 2)
   )
 )
+my_data
 }

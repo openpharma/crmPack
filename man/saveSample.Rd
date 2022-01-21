@@ -2,33 +2,37 @@
 % Please edit documentation in R/McmcOptions-methods.R
 \name{saveSample}
 \alias{saveSample}
-\title{Determine if we should save this sample}
+\alias{saveSample,McmcOptions-method}
+\alias{saveSample-McmcOptions}
+\title{Determining if this Sample Should be Saved}
 \usage{
-saveSample(iteration, mcmcOptions)
+saveSample(object, iteration, ...)
+
+\S4method{saveSample}{McmcOptions}(object, iteration, ...)
 }
 \arguments{
-\item{iteration}{the current iteration index}
+\item{object}{(\code{McmcOptions})\cr object based on which the answer is
+determined.}
 
-\item{mcmcOptions}{the \code{\linkS4class{McmcOptions}} object}
+\item{iteration}{(\code{count})\cr the current iteration index.}
+
+\item{...}{not used.}
 }
 \value{
-Logical value, if we should save this sample
+\code{TRUE} if this sample should be saved.
 }
 \description{
-Determine if we should save this sample
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that determines if a sample from a given \code{iteration} should be
+saved. The sample should be saved if and only if:
+it is not in burn-in period and it matches the \code{step}.
 }
 \examples{
+# Set up the MCMC option in order to have a burn-in of 10000 iterations and
+# then take every other iteration up to a collection of 10000 samples.
+my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 
-# Set up MCMC option in order to have a burn-in of 10000 iterations and
-# then take every other iteration up to a collection of 10000 samples
-options <- McmcOptions(burnin=10000,
-                       step=2,
-                       samples=10000)
-
-sampleSize(options)
-
-saveSample(iteration=5,
-           mcmcOptions=options)
+sampleSize(my_options)
+saveSample(my_options, iteration = 5)
 }
-\keyword{internal}
-\keyword{programming}

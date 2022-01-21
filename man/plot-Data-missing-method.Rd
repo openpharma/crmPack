@@ -2,15 +2,16 @@
 % Please edit documentation in R/Data-methods.R
 \name{plot,Data,missing-method}
 \alias{plot,Data,missing-method}
-\alias{plot-Data-method}
-\title{Plot method for the \code{\link{Data}} class.}
+\alias{plot-Data}
+\title{Plot Method for the \code{\link{Data}} Class}
 \usage{
 \S4method{plot}{Data,missing}(x, y, blind = FALSE, legend = TRUE, ...)
 }
 \arguments{
 \item{x}{(\code{Data})\cr object we want to plot.}
 
-\item{y}{(\code{missing})\cr missing object, for compatibility with the generic function.}
+\item{y}{(\code{missing})\cr missing object, for compatibility with the generic
+function.}
 
 \item{blind}{(\code{flag})\cr indicates whether to blind the data.
 If \code{TRUE}, then placebo subjects are reported at the same level

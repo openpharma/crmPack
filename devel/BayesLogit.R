@@ -1,3 +1,4 @@
+# nolint start
 ## Title: Try to reproduce outcome from BayesLogit  with MCMCpack functions
 ## Purpose: Replace BayesLogit
 ## Author: Daniel Sabanes Bove (sabanesd@roche.com)
@@ -61,7 +62,7 @@ myBayesLogit <- function(y, ## 0/1 vector of responses
   
   ## write the model file into it
   modelFileName <- file.path(bugsTempDir, "bugsModel.txt")
-  writeModel(bugsModel, modelFileName)
+  h_jags_write_model(bugsModel, modelFileName)
   
   jagsModel <- rjags::jags.model(modelFileName,
                                  data = list('X' = X,
@@ -201,3 +202,4 @@ initRes2 <- MCMCpack::MCMClogit(formula = y ~ logx,
                                beta.start=c(0, 0))
 head(initRes2)
 hist(initRes2[, 1])
+# nolint end

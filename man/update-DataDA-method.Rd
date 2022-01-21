@@ -2,7 +2,7 @@
 % Please edit documentation in R/Data-methods.R
 \name{update,DataDA-method}
 \alias{update,DataDA-method}
-\alias{update-DataDA-method}
+\alias{update-DataDA}
 \title{Updating \code{DataDA} Objects}
 \usage{
 \S4method{update}{DataDA}(object, u, t0, trialtime, y, ..., check = TRUE)
@@ -13,20 +13,21 @@
 \item{u}{(\code{numeric})\cr the new DLT free survival times for all patients,
 i.e. for existing patients in the \code{object} as well as for new patients.}
 
-\item{t0}{(\code{numeric})\cr the time that each patient starts DLT observation window.
-This parameter covers all patients, i.e. existing patients in the \code{object}
-as well as for new patients.}
+\item{t0}{(\code{numeric})\cr the time that each patient starts DLT observation
+window. This parameter covers all patients, i.e. existing patients in the
+\code{object} as well as for new patients.}
 
-\item{trialtime}{(\code{number})\cr current time in the trial, i.e. a followup time.}
+\item{trialtime}{(\code{number})\cr current time in the trial, i.e. a followup
+time.}
 
 \item{y}{(\code{numeric})\cr the new DLTs for all patients, i.e. for existing
 patients in the \code{object} as well as for new patients.}
 
-\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data-method}}.
+\item{...}{further arguments passed to \code{Data} update method \code{\link{update-Data}}.
 These are used when there are new patients to be added to the cohort.}
 
 \item{check}{(\code{flag})\cr whether the validation of the updated object
-should be conducted. See help for \code{\link{update-Data-method}} for more details
+should be conducted. See help for \code{\link{update-Data}} for more details
 on the use case of this parameter.}
 }
 \value{
@@ -55,10 +56,11 @@ my_data <- DataDA(
 # Update the data.
 my_data1 <- update(
   object = my_data,
-  y = c(my_data@y, 0), # The y will be updated according to u.
+  y = c(my_data@y, 0), # The 'y' will be updated according to 'u'.
   u = c(my_data@u, 20),
   t0 = c(my_data@t0, 95),
   x = 20,
   trialtime = 120 # This is the global timeline for a trial.
 )
+my_data1
 }

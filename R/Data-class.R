@@ -1,4 +1,5 @@
-#' @include helpers.R Data-validity.R
+#' @include helpers.R
+#' @include Data-validity.R
 NULL
 
 # GeneralData-class ----
@@ -15,6 +16,7 @@ NULL
 #'
 #' @aliases GeneralData
 #' @export
+#' 
 .GeneralData <- setClass(
   Class = "GeneralData",
   slots = c(
@@ -83,7 +85,7 @@ NULL
 #'
 #' @note `ID` and `cohort` can be missing. Then a message will be issued
 #'   and the variables will be filled with default IDs and best guesses cohort,
-#'   i.e. a sorted (in ascending order) sequence of values from `\{1, 2, ...\}`.
+#'   i.e. a sorted (in ascending order) sequence of values from `{1, 2, ...}`.
 #'
 #' @param x (`numeric`)\cr the doses for the patients.
 #' @param y (`integer`)\cr the vector of toxicity events (0 or 1).
