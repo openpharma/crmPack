@@ -2050,10 +2050,12 @@ SafetyWindowConst <- function(patientGap,
 
 #nolint end
 
-#' Increment Control based on Relative Differences and Cumulative DLTs
+#' Increment Control based on Relative Differences and Current DLTs
 #'
 #' @description `r lifecycle::badge("experimental")`
 #' 
+#' The class is based on the number of DLTs observed in the current cohort 
+#' , but not cumulatively over all cohorts so far.
 #' The `DLTintervals` is to be read as follows. If for example,
 #' we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and
 #' third at least 3 DLTs, then we specify `DLTintervals` to be `c(0, 1, 3)`. 
@@ -2068,9 +2070,9 @@ SafetyWindowConst <- function(patientGap,
 #'
 #' @seealso [IncrementsRelativeDLT()].
 #' @export
-.IncrementsRelativeDLTCumulative <-
+.IncrementsRelativeDLTCurrent <-
   setClass(
-    Class = "IncrementsRelativeDLTCumulative",
+    Class = "IncrementsRelativeDLTCurrent",
     representation(
       DLTintervals = "integer",
       increments = "numeric"
@@ -2091,13 +2093,13 @@ SafetyWindowConst <- function(patientGap,
       }
   )
 
-#' @rdname IncrementsRelativeDLTCumulative-class
+#' @rdname IncrementsRelativeDLTCurrent-class
 #'
 #' @export
-IncrementsRelativeDLTCumulative <- function(DLTintervals = c(0, 1),
+IncrementsRelativeDLTCurrent <- function(DLTintervals = c(0, 1),
                                             increments = c(2, 1))
 {
-  .IncrementsRelativeDLTCumulative(DLTintervals=safeInteger(DLTintervals),
+  .IncrementsRelativeDLTCurrent(DLTintervals=safeInteger(DLTintervals),
                                    increments=increments)
 }
 

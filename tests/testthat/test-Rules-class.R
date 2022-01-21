@@ -1,13 +1,13 @@
-# IncrementsRelativeDLTCumulative-class ----
+# IncrementsRelativeDLTCurrent-class ----
 
-test_that(".IncrementsRelativeDLTCumulative works as expected", {
-  result <- expect_silent(.IncrementsRelativeDLTCumulative())
-  expect_valid(result, "IncrementsRelativeDLTCumulative")
+test_that(".IncrementsRelativeDLTCurrent works as expected", {
+  result <- expect_silent(.IncrementsRelativeDLTCurrent())
+  expect_valid(result, "IncrementsRelativeDLTCurrent")
 })
 
-# IncrementsRelativeDLTCumulative-constructor ----
+# IncrementsRelativeDLTCurrent-constructor ----
 
-test_that("IncrementsRelativeDLTCumulative object can be created with user constructor", {
-  result <- expect_silent(IncrementsRelativeDLTCumulative())
-  expect_valid(result, "IncrementsRelativeDLTCumulative")
+test_that("IncrementsRelativeDLTCurrent object can be created with user constructor", {
+  result <- expect_silent(IncrementsRelativeDLTCurrent())
+  expect_valid(result, "IncrementsRelativeDLTCurrent")
 })

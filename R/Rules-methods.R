@@ -3338,7 +3338,7 @@ setMethod("windowLength",
 setMethod("maxDose",
   signature =
     signature(
-      increments = "IncrementsRelativeDLTCumulative",
+      increments = "IncrementsRelativeDLTCurrent",
       data = "Data"
     ),
   def =
