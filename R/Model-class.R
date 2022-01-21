@@ -171,8 +171,8 @@ NULL
     cov = diag(2),
     prec = diag(2),
     refDose = 1
-  )
-  #  validity = validate_logistic_normal
+  ),
+  validity = validate_logistic_normal
 )
 
 # LogisticNormal-constructor ----
