@@ -1,15 +1,15 @@
-# nolint start
-
 # Logistic ----
 
-dose_logistic <- function(prob, alpha0, alpha1) {
-  StandLogDose <- (logit(prob) - alpha0) / alpha1
-  exp(StandLogDose) * refDose
+d_logistic <- function(refDose) { # nolintr
+  function(prob, alpha0, alpha1) {
+    stand_log_dose <- (logit(prob) - alpha0) / alpha1
+    exp(stand_log_dose) * refDose
+  }
 }
 
-prob_logistic <- function(dose, alpha0, alpha1) {
-  StandLogDose <- log(dose / refDose)
-  plogis(alpha0 + alpha1 * StandLogDose)
+p_logistic <- function(refDose) { # nolintr
+  function(dose, alpha0, alpha1) {
+    stand_log_dose <- log(dose / refDose)
+    plogis(alpha0 + alpha1 * stand_log_dose)
+  }
 }
-
-# nolint end

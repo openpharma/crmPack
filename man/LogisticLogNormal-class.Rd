@@ -66,3 +66,8 @@ my_model <- LogisticLogNormal(
 )
 my_model
 }
+\seealso{
+\code{\link{LogisticNormal}}.
+
+\code{\link{LogisticNormal}}.
+}

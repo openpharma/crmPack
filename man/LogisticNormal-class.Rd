@@ -59,3 +59,8 @@ my_options <- McmcOptions(burnin = 100, step = 2, samples = 1000)
 samples <- mcmc(empty_data, my_model, my_options)
 samples
 }
+\seealso{
+\code{\link{LogisticLogNormal}}.
+
+\code{\link{LogisticLogNormal}}.
+}

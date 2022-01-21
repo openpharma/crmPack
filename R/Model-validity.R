@@ -76,7 +76,7 @@ validate_logistic_log_normal <- function(object) {
 #' @describeIn validate_model_objects validates that the model parameters
 #'  are valid as well as `refDose` is a positive scalar.
 validate_logistic_normal <- function(object) {
-  result_lln <- result_validate_logistic_log_normal(object)
+  result_lln <- validate_logistic_log_normal(object)
 
   o <- Validate()
   o$check(
