@@ -83,5 +83,6 @@ validate_logistic_normal <- function(object) {
     all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
     "prec must be inverse of cov"
   )
-  c(result_lln && o$result())
+
+  h_validate_combine_results(result_lln, o$result())
 }

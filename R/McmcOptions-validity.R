@@ -60,9 +60,9 @@ validate_mcmc_options <- function(object) {
   is_rng_seed_scalar <- test_int(object@rng_seed, na.ok = TRUE)
   o$check(is_rng_seed_scalar, "rng_seed must be an integer scalar")
 
-  # Below `if` condition is not only reasonable but needed as R CMD check is activating
-  # some stricter checks and it fails when arguments to `||` are not scalars,
-  # even if `||` works well with vectors of length > 1.
+  # Below `if` condition is not only reasonable but also needed as R CMD check
+  # is activating some stricter checks and it fails when arguments to `||` are
+  # not scalars, even if `||` works well with vectors of length > 1.
   if (is_rng_kind_scalar && is_rng_seed_scalar) {
     o$check(
       !is.na(object@rng_kind) || is.na(object@rng_seed),
