@@ -29,11 +29,13 @@ reference:
       - DataParts
       - DataMixture
       - DataDA
+      - McmcOptions
       - AllModels
       - GeneralModel
       - Model
+      - LogisticNormal
       - LogisticLogNormal
-      - McmcOptions
+      - LogisticLogNormalSub
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort

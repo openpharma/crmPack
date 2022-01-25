@@ -192,3 +192,78 @@ test_that("prob computes correct values for LogisticLogNormal model", {
     tolerance = 1e-06
   )
 })
+
+# LogisticLogNormalSub ----
+
+## constructor ----
+
+test_that("LogisticLogNormalSub object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticLogNormalSub(
+      mean = c(1, 5),
+      cov = diag(4, ncol = 2, nrow = 2),
+      refDose = 2
+    )
+  )
+  expect_valid(result, "LogisticLogNormalSub")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticLogNormalSub model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal_sub()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(-2.965073, -2.965073, -2.965073, -2.965073),
+      alpha1 = c(0.00974706, 0.00974706, 0.00974706, 0.00974706)
+    ),
+    tolerance = 1e-06
+  )
+})
+
+## dose ----
+
+test_that("dose computes correct values for LogisticLogNormalSub model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal_sub()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- dose(0.4, model, samples)
+  expect_equal(
+    result,
+    c(-Inf, 2.2972674, 0.5945349, 4.4054651),
+    tolerance = 1e-05
+  )
+})
+
+## prob ----
+
+test_that("prob computes correct values for LogisticLogNormalSub model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal_sub()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- prob(4, model, samples)
+  expect_equal(
+    result,
+    c(0.5, 0.9525741, 0.9525741, 0.5),
+    tolerance = 1e-06
+  )
+})
