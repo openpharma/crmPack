@@ -81,14 +81,19 @@ test_that("MCMC computes correct values for LogisticNormal model", {
 test_that("dose computes correct values for LogisticNormal model", {
   data <- h_get_data()
   model <- h_get_logistic_normal()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
 
-  samples <- mcmc(data = data, model = model, options = options)
   result <- dose(0.4, model, samples)
   expect_equal(
     result,
-    c(145.5861, 145.5861, 145.5861, 306.2573),
-    tolerance = 1e-04
+    c(0.00000, 67.30876, 12.26265, 554.17921),
+    tolerance = 1e-05
   )
 })
 
@@ -97,13 +102,18 @@ test_that("dose computes correct values for LogisticNormal model", {
 test_that("prob computes correct values for LogisticNormal model", {
   data <- h_get_data()
   model <- h_get_logistic_normal()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
 
-  samples <- mcmc(data = data, model = model, options = options)
-  result <- prob(145, model, samples)
+  result <- prob(60, model, samples)
   expect_equal(
     result,
-    c(0.3985968, 0.3985968, 0.3985968, 0.2319058),
+    c(0.5, 0.346297, 0.765365, 0.860287),
     tolerance = 1e-06
   )
 })
@@ -146,14 +156,19 @@ test_that("MCMC computes correct values for LogisticLogNormal model", {
 test_that("dose computes correct values for LogisticLogNormal model", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
 
-  samples <- mcmc(data = data, model = model, options = options)
   result <- dose(0.4, model, samples)
   expect_equal(
     result,
-    c(124.6565, 124.6565, 124.6565, 354.1443),
-    tolerance = 1e-04
+    c(0.00000, 67.30876, 12.26265, 554.17921),
+    tolerance = 1e-05
   )
 })
 
@@ -162,13 +177,18 @@ test_that("dose computes correct values for LogisticLogNormal model", {
 test_that("prob computes correct values for LogisticLogNormal model", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
 
-  samples <- mcmc(data = data, model = model, options = options)
-  result <- prob(0.4, model, samples)
+  result <- prob(60, model, samples)
   expect_equal(
     result,
-    c(0.002453566, 0.002453566, 0.002453566, 0.007974759),
+    c(0.5000000, 0.3462969, 0.7653650, 0.8602873),
     tolerance = 1e-06
   )
 })
