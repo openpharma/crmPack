@@ -925,6 +925,65 @@ StoppingMTDdistribution <- function(target,
                              prob=prob)
 }
 
+#' Stop based on precision of MTD calculated as CV(MTD)
+#' 
+#' @description `r lifecycle::badge("experimental")`
+#' 
+#'
+#' @slot target (`numeric`)\cr toxicity target of MTD
+#' @slot threshCV (`numeric`)\cr threshold for CV to be considered accurate enough
+#'  to stop the trial
+#' 
+#' @example examples/Rules-class-StoppingMTDCV.R
+#' @export
+.StoppingMTDCV <-
+  setClass(
+    Class = "StoppingMTDCV",
+    representation(
+      target = "numeric",
+      threshCV = "numeric"
+    ),
+    prototype(
+      target = 0.33,
+      threshCV = 40
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
+        o$check(
+          is.probability(object@target,
+            bounds = FALSE
+          ),
+          "target must be probability > 0 and < 1"
+        )
+        o$check(
+          is.probability(object@threshCV/100,
+                         bounds = FALSE
+          ),
+          "threshCV must be percentage > 0"
+        )
+        o$result()
+      }
+  )
+validObject(.StoppingMTDCV())
+
+# Initialization function for "StoppingMTDCV"
+#
+# @param target see \code{\linkS4class{StoppingMTDCV}}
+# @param threshCV see \code{\linkS4class{StoppingMTDCV}}
+# @return the \code{\linkS4class{StoppingMTDCV}} object
+#
+
+#' @rdname StoppingMTDCV-class
+#' @export
+StoppingMTDCV <- function(target,
+                          threshCV) {
+  .StoppingMTDCV(
+    target = target,
+    threshCV = threshCV
+  )
+}
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker

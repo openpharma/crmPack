@@ -1482,6 +1482,61 @@ setMethod("stopTrial",
 
 
 ## --------------------------------------------------
+## Stopping based on precision of MTD calculated as CV(MTD)
+## --------------------------------------------------
+
+##' @describeIn stopTrial Stopping rule based precision of the MTD estimation
+##' The trial is stopped, when the MTD can be estimated with sufficient precision.
+##' The criteria is based on the robust CV calculated from the posterior distribution.
+##' The robust coefficient of variation is defined as MAD(MTD)/median(MTD)
+
+setMethod("stopTrial",
+  signature =
+    signature(
+      stopping = "StoppingMTDCV",
+      dose = "numeric",
+      samples = "Samples",
+      model = "Model",
+      data = "ANY"
+    ),
+  def =
+    function(stopping, dose, samples, model, data, ...) {
+      # First, generate the MTD samples.
+
+      # add prior data and samples to the
+      # function environment so that they
+      # can be used.
+      MTDSamples <- dose(
+        prob = stopping@target,
+        model,
+        samples
+      )
+
+      # CV of MTD expressed as percentage, derived based on MTD posterior samples
+      MTDCV <- (mad(MTDSamples) / median(MTDSamples)) * 100
+
+      # so can we stop?
+      doStop <- ((MTDCV <= stopping@threshCV) & (MTDCV >= 0))
+
+      # generate message
+      text <-
+        paste(
+          "CV of MTD is",
+          round(MTDCV), "% and thus",
+          ifelse(doStop, "below", "above"),
+          "the required precision threshold of",
+          round(stopping@threshCV),
+          "%"
+        )
+
+      # return both
+      return(structure(doStop,
+        message = text
+      ))
+    }
+)
+
+## --------------------------------------------------
 ## Stopping based on probability of targeting biomarker
 ## --------------------------------------------------
 
