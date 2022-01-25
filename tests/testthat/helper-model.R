@@ -49,3 +49,11 @@ h_get_logistic_log_normal <- function() {
     refDose = 50
   )
 }
+
+h_get_logistic_normal <- function() {
+  LogisticNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+    refDose = 50
+  )
+}

@@ -73,8 +73,8 @@ reference:
       - update-DataParts
       - update-DataDual
       - update-DataDA
-      - get_efficacy
-      - get_efficacy-DataDual
+      - getEff
+      - getEff-DataDual
       - sampleSize
       - sampleSize-McmcOptions
       - saveSample

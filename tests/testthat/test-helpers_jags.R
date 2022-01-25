@@ -105,7 +105,7 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
   model <- h_get_logistic_log_normal()
   e <- environment(model@modelspecs)
   model@modelspecs <- function(x, y) {
-    list(refDose = refDose / sum(y), priorCov = cov, priorMean = mean)
+    list(refDose = refDose / sum(y), cov = cov, mean = mean)
   }
   environment(model@modelspecs) <- e
 
@@ -114,8 +114,8 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
     h_slots(data, c("nObs", "y", "x")),
     list(
       refDose = model@refDose / 5,
-      priorCov = model@cov,
-      priorMean = model@mean
+      cov = model@cov,
+      mean = model@mean
     )
   )
   expect_identical(result, expected)
