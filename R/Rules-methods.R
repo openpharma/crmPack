@@ -759,9 +759,12 @@ setMethod("maxDose",
                       data="Data"),
           def=
             function(increments, data, ...){
-              ## determine what was the level of the last dose
-              lastDoseLevel <- tail(data@xLevel, 1)
-
+              ## determine what was the basis level for increment,
+              ## i.e. the last dose or the max dose applied
+              basisDoseLevel <- ifelse(increments@basisLevel=='lastGiven',
+                                       tail(data@xLevel, 1),
+                                       max(data@xLevel))
+              
               ## determine the maximum next dose level
               maxNextDoseLevel <- min(length(data@doseGrid),
                                       lastDoseLevel + increments@maxLevels)
