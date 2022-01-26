@@ -25,9 +25,9 @@ a bivariate normal prior on the intercept and slope.
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
 the reference dose \eqn{x^{*}}:
-\deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})},
+\deqn{logit[p(x)] = \alpha_0 + \alpha_1 \cdot \log(x/x^{*})}{probit[p(x)] = alpha0 + alpha1 * log(x/x*)},
 where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
-The prior is: \deqn{(\alpha, \beta) \sim Normal(\mu, \Sigma)}.
+The prior is: \deqn{(\alpha_0, \alpha_1) \sim Normal(\mu, \Sigma)}{(alpha0, alpha1) ~ Normal(mean, cov)}.
 The slots of this class contain the mean vector, the covariance and
 precision matrices of the bivariate normal distribution, as well as the
 reference dose.

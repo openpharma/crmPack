@@ -36,6 +36,8 @@ reference:
       - LogisticNormal
       - LogisticLogNormal
       - LogisticLogNormalSub
+      - ProbitLogNormal
+      - ProbitLogNormalLogDose
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -62,10 +64,11 @@ reference:
       - validate_data_parts
       - validate_data_mixture
       - validate_data_DA
+      - validate_mcmc_options
       - validate_general_model
       - validate_model
       - validate_logistic_log_normal
-      - validate_mcmc_options
+      - validate_logistic_normal
   - title: Methods
     contents:
       - plot-Data
