@@ -267,3 +267,229 @@ test_that("prob computes correct values for LogisticLogNormalSub model", {
     tolerance = 1e-06
   )
 })
+
+
+# LogisticLogNormal ----
+
+## constructor ----
+
+test_that("LogisticLogNormal object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticLogNormal(
+      mean = c(1, 5),
+      cov = diag(4, ncol = 2, nrow = 2),
+      refDose = 2
+    )
+  )
+  expect_valid(result, "LogisticLogNormal")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(-1.296799, -1.296799, -1.296799, -1.680008),
+      alpha1 = c(0.975694, 0.975694, 0.975694, 0.651047)
+    ),
+    tolerance = 1e-06
+  )
+})
+
+## dose ----
+
+test_that("dose computes correct values for LogisticLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- dose(0.4, model, samples)
+  expect_equal(
+    result,
+    c(0.00000, 67.30876, 12.26265, 554.17921),
+    tolerance = 1e-05
+  )
+})
+
+## prob ----
+
+test_that("prob computes correct values for LogisticLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- prob(60, model, samples)
+  expect_equal(
+    result,
+    c(0.5000000, 0.3462969, 0.7653650, 0.8602873),
+    tolerance = 1e-06
+  )
+})
+
+# ProbitLogNormal ----
+
+## constructor ----
+
+test_that("ProbitLogNormal object can be created with user constructor", {
+  result <- expect_silent(
+    ProbitLogNormal(
+      mean = c(1, 5),
+      cov = diag(4, ncol = 2, nrow = 2),
+      refDose = 2
+    )
+  )
+  expect_valid(result, "ProbitLogNormal")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for ProbitLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_probit_log_normal()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(-0.8353588, -0.8353588, -0.8353588, -0.8353588),
+      alpha1 = c(0.02201234, 0.02201234, 0.02201234, 0.02201234)
+    ),
+    tolerance = 1e-06
+  )
+})
+
+## dose ----
+
+test_that("dose computes correct values for ProbitLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_probit_log_normal()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- dose(0.4, model, samples)
+  expect_equal(
+    result,
+    c(-Inf, 0.7466529, -2.5066942, 4.5066942),
+    tolerance = 1e-05
+  )
+})
+
+## prob ----
+
+test_that("prob computes correct values for ProbitLogNormal model", {
+  data <- h_get_data()
+  model <- h_get_probit_log_normal()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- prob(4, model, samples)
+  expect_equal(
+    result,
+    c(0.5, 0.9986501, 0.9986501, 0.5),
+    tolerance = 1e-06
+  )
+})
+
+# ProbitLogNormalLogDose ----
+
+## constructor ----
+
+test_that("ProbitLogNormalLogDose object can be created with user constructor", {
+  result <- expect_silent(
+    ProbitLogNormalLogDose(
+      mean = c(1, 5),
+      cov = diag(4, ncol = 2, nrow = 2),
+      refDose = 2
+    )
+  )
+  expect_valid(result, "ProbitLogNormalLogDose")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for ProbitLogNormalLogDose model", {
+  data <- h_get_data()
+  model <- h_get_probit_log_normal_ldose()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = c(-1.709947, -1.709947, -1.709947, -1.988543),
+      alpha1 = c(0.4101207, 0.4101207, 0.4101207, 0.3056156)
+    ),
+    tolerance = 1e-06
+  )
+})
+
+## dose ----
+
+test_that("dose computes correct values for ProbitLogNormalLogDose model", {
+  data <- h_get_data()
+  model <- h_get_probit_log_normal_ldose()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- dose(0.4, model, samples)
+  expect_equal(
+    result,
+    c(0, 10.458421, 2.055942, 68.540727),
+    tolerance = 1e-05
+  )
+})
+
+## prob ----
+
+test_that("prob computes correct values for ProbitLogNormalLogDose model", {
+  data <- h_get_data()
+  model <- h_get_probit_log_normal_ldose()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- prob(4, model, samples)
+  expect_equal(
+    result,
+    c(0.5, 0.01479359, 0.65990847, 0.99517026),
+    tolerance = 1e-06
+  )
+})
