@@ -180,7 +180,7 @@ NULL
     mean = c(0, 2),
     cov = diag(2),
     prec = diag(2),
-    ref_dose = 1
+    ref_dose = NA_real_
   ),
   validity = validate_model_normal
 )
@@ -195,7 +195,7 @@ NULL
 #'
 #' @export
 #'
-ModelNormal <- function(mean, cov, ref_dose) {
+ModelNormal <- function(mean, cov, ref_dose = NA_real_) {
   assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
   assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
 
@@ -241,7 +241,7 @@ ModelNormal <- function(mean, cov, ref_dose) {
 #' @export
 #' @example examples/Model-class-LogisticNormal.R
 #'
-LogisticNormal <- function(mean, cov, ref_dose) {
+LogisticNormal <- function(mean, cov, ref_dose = NA_real_) {
   jags_model_data <- function() {
     for (i in 1:nObs) {
       stand_log_dose[i] <- log(x[i] / ref_dose)

@@ -7,7 +7,7 @@
 \alias{ModelNormal}
 \title{\code{ModelNormal}}
 \usage{
-ModelNormal(mean, cov, ref_dose)
+ModelNormal(mean, cov, ref_dose = NA_real_)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
