@@ -389,14 +389,21 @@ IncrementsRelative <- function(intervals,
 ##' dose levels to increment for the next dose. It defaults to 1,
 ##' which means that no dose skipping is allowed - the next dose
 ##' can be maximum one level higher than the current dose.
+##' @slot basisLevel character scalar with possible values 'lastGiven' or
+##' 'maxGiven' for the basis dose level used to increment from. If lastGiven (default)
+##' is specified the increments is applied to the last given dose and if
+##' maxGiven is specified the increment is applied from the max given dose
+##' level.
 ##'
 ##' @example examples/Rules-class-IncrementsNumDoseLevels.R
 ##' @export
 ##' @keywords classes
 .IncrementsNumDoseLevels <-
   setClass(Class="IncrementsNumDoseLevels",
-           representation(maxLevels="integer"),
-           prototype(maxLevels=1L),
+           representation(maxLevels="integer",
+                          basisLevel="character"),
+           prototype(maxLevels=1L,
+                     basisLevel="lastGiven"),
            contains="Increments",
            validity=
              function(object){
@@ -406,6 +413,8 @@ IncrementsRelative <- function(intervals,
                          is.integer(object@maxLevels) &&
                          object@maxLevels > 0,
                        "maxLevels must be scalar positive integer")
+               o$check(is.scalar(object@basisLevel) && object@basisLevel %in% c("lastGiven", "maxGiven"),
+                       "basisLevel must be either 'lastGiven' or 'maxGiven'")
 
                o$result()
              })
@@ -414,13 +423,16 @@ validObject(.IncrementsNumDoseLevels())
 ##' Initialization function for "IncrementsNumDoseLevels"
 ##'
 ##' @param maxLevels see \code{\linkS4class{IncrementsNumDoseLevels}}
+##' @param basisLevel see \code{\linkS4class{IncrementsNumDoseLevels}}
 ##' @return the \code{\linkS4class{IncrementsNumDoseLevels}} object
 ##'
 ##' @export
 ##' @keywords methods
-IncrementsNumDoseLevels <- function(maxLevels=1)
+IncrementsNumDoseLevels <- function(maxLevels=1,
+                                    basisLevel="lastGiven")
 {
-  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels))
+  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels),
+                           basisLevel=basisLevel)
 }
 
 
