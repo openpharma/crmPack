@@ -100,6 +100,6 @@ test_that("validate_model_normal returns error for wrong ref_dose", {
 
   expect_equal(
     validate_model_normal(object),
-    "ref_dose must be positive scalar"
+    "ref_dose must be positive scalar or NA_real_"
   )
 })

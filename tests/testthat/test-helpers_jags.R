@@ -133,11 +133,11 @@ test_that("h_jags_get_data throws the error when `modelspecs` does not return li
   )
 })
 
-test_that("h_jags_get_data removes zeros from modelspecs when sample from from_prior only", {
+test_that("h_jags_get_data removes ref_dose from modelspecs when sample from from_prior only", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
   model@modelspecs <- function(x, y) {
-    list(refDose = 50, zeros = 1)
+    list(refDose = 50, ref_dose = 1)
   }
 
   result <- h_jags_get_data(model, data, TRUE)
