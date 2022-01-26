@@ -46,8 +46,45 @@ validate_model <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_model_objects validates that the model parameters
-#'  are valid as well as `refDose` is a positive scalar.
+#' @describeIn validate_model_objects validates that the normal model parameters
+#'   are valid as well as `ref_dose` is a positive scalar.
+validate_model_normal <- function(object) {
+  o <- Validate()
+  o$check(
+    test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
+    "mean must have length 2 and no missing values are allowed"
+  )
+  is_cov_2x2 <- test_matrix(
+    object@cov,
+    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+  )
+  is_prec_2x2 <- test_matrix(
+    object@prec,
+    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+  )
+  o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
+  o$check(is_prec_2x2, "prec must be 2x2 matrix without any missing values")
+  if (is_cov_2x2) {
+    o$check(
+      h_is_positive_definite(object@cov),
+      "cov must be positive-definite matrix"
+    )
+    if (is_prec_2x2) {
+      o$check(
+        all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
+        "prec must be inverse of cov"
+      )
+    }
+  }
+  o$check(
+    test_number(object@ref_dose, lower = 0 + .Machine$double.xmin),
+    "ref_dose must be positive scalar"
+  )
+  o$result()
+}
+
+### TEMP
+
 validate_logistic_log_normal <- function(object) {
   o <- Validate()
   o$check(
@@ -58,31 +95,16 @@ validate_logistic_log_normal <- function(object) {
     object@cov,
     mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
   )
+  o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
   if (is_cov_2x2) {
     o$check(
       h_is_positive_definite(object@cov),
       "cov must be positive-definite matrix"
     )
-  } else {
-    o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
   }
   o$check(
     test_number(object@refDose, lower = 0 + .Machine$double.xmin),
     "refDose must be positive scalar"
   )
   o$result()
-}
-
-#' @describeIn validate_model_objects validates that the model parameters
-#'  are valid as well as `refDose` is a positive scalar.
-validate_logistic_normal <- function(object) {
-  result_lln <- validate_logistic_log_normal(object)
-
-  o <- Validate()
-  o$check(
-    all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
-    "prec must be inverse of cov"
-  )
-
-  h_validate_combine_results(result_lln, o$result())
 }

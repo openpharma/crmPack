@@ -52,7 +52,7 @@ test_that("LogisticNormal object can be created with user constructor", {
     LogisticNormal(
       mean = c(1, 5),
       cov = diag(4, ncol = 2, nrow = 2),
-      refDose = 2
+      ref_dose = 2
     )
   )
   expect_valid(result, "LogisticNormal")

@@ -1,3 +1,5 @@
+# nolint start
+
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
@@ -186,7 +188,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
         else
             LogisticNormal(mean=attr(targetRes, "mean"),
                            cov=attr(targetRes, "cov"),
-                           refDose=refDose)
+                           ref_dose=refDose)
 
     ## return it together with the resulting distance and the quantiles
     return(list(model=ret,
@@ -332,3 +334,5 @@ MinimalInformative <- function(dosegrid,
                              level=0.95,
                              ...)
 }
+
+# nolint end

@@ -33,6 +33,7 @@ reference:
       - AllModels
       - GeneralModel
       - Model
+      - ModelNormal
       - LogisticNormal
       - LogisticLogNormal
       - LogisticLogNormalSub
@@ -67,6 +68,7 @@ reference:
       - validate_mcmc_options
       - validate_general_model
       - validate_model
+      - validate_model_normal
       - validate_logistic_log_normal
       - validate_logistic_normal
   - title: Methods

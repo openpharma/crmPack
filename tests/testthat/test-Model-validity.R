@@ -50,45 +50,42 @@ test_that("validate_model returns error message for wrong prob function", {
   )
 })
 
-# validate_logistic_normal ----
+# validate_model_normal ----
 
-test_that("validate_logistic_normal passes for valid object", {
-  object <- h_get_logistic_normal()
-  expect_true(validate_logistic_normal(object))
+test_that("validate_model_normal passes for valid object", {
+  object <- h_get_model_normal()
+  expect_true(validate_model_normal(object))
 })
 
-test_that("validate_logistic_normal returns error for wrong mean and NA", {
-  object <- h_get_logistic_normal()
+test_that("validate_model_normal returns error for wrong mean and NA", {
+  object <- h_get_model_normal()
   # Assigning mean vector of wrong length = 4 != 2, and with NA.
   object@mean <- c(1:3, NA)
 
   expect_equal(
-    validate_logistic_normal(object),
+    validate_model_normal(object),
     "mean must have length 2 and no missing values are allowed"
   )
 })
 
-test_that("validate_logistic_normal returns error for cov with NA", {
-  object <- h_get_logistic_normal()
+test_that("validate_model_normal returns error for cov with NA", {
+  object <- h_get_model_normal()
   # We assign a covariance matrix of wrong dimension and including NA.
   object@cov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
 
   expect_equal(
-    validate_logistic_normal(object),
-    c(
-      "cov must be 2x2 matrix without any missing values",
-      "prec must be inverse of cov"
-    )
+    validate_model_normal(object),
+    "cov must be 2x2 matrix without any missing values"
   )
 })
 
-test_that("validate_logistic_normal returns error for wrong cov and prec", {
-  object <- h_get_logistic_normal()
+test_that("validate_model_normal returns error for wrong cov", {
+  object <- h_get_model_normal()
   # We assign a matrix which is not a covariance matrix.
   object@cov <- matrix(c(5, 2, 1, 5), ncol = 2)
 
   expect_equal(
-    validate_logistic_normal(object),
+    validate_model_normal(object),
     c(
       "cov must be positive-definite matrix",
       "prec must be inverse of cov"
@@ -96,64 +93,13 @@ test_that("validate_logistic_normal returns error for wrong cov and prec", {
   )
 })
 
-test_that("validate_logistic_normal returns error for wrong refDose", {
-  object <- h_get_logistic_normal()
-  # We assign a refDose which is not a positive scalar.
-  object@refDose <- c(-3, -5, 4)
+test_that("validate_model_normal returns error for wrong ref_dose", {
+  object <- h_get_model_normal()
+  # We assign a ref_dose which is not a positive scalar.
+  object@ref_dose <- c(-3, -5, 4)
 
   expect_equal(
-    validate_logistic_normal(object),
-    "refDose must be positive scalar"
-  )
-})
-
-# validate_logistic_log_normal ----
-
-test_that("validate_logistic_log_normal passes for valid object", {
-  object <- h_get_logistic_log_normal()
-  expect_true(validate_logistic_log_normal(object))
-})
-
-test_that("validate_logistic_log_normal returns error for wrong mean and NA", {
-  object <- h_get_logistic_log_normal()
-  # Assigning mean vector of wrong length = 4 != 2, and with NA.
-  object@mean <- c(1:3, NA)
-
-  expect_equal(
-    validate_logistic_log_normal(object),
-    "mean must have length 2 and no missing values are allowed"
-  )
-})
-
-test_that("validate_logistic_log_normal returns error for cov with NA", {
-  object <- h_get_logistic_log_normal()
-  # We assign a covariance matrix of wrong dimension and including NA.
-  object@cov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
-
-  expect_equal(
-    validate_logistic_log_normal(object),
-    "cov must be 2x2 matrix without any missing values"
-  )
-})
-
-test_that("validate_logistic_log_normal returns error for wrong cov", {
-  object <- h_get_logistic_log_normal()
-  # We assign a matrix which is not a covariance matrix.
-  object@cov <- matrix(c(5, 2, 1, 5), ncol = 2)
-
-  expect_equal(
-    validate_logistic_log_normal(object),
-    "cov must be positive-definite matrix"
-  )
-})
-
-test_that("validate_logistic_log_normal returns error for wrong refDose", {
-  object <- h_get_logistic_log_normal()
-  # We assign a refDose which is not a positive scalar.
-  object@refDose <- c(-3, -5, 4)
-
-  expect_equal(
-    validate_logistic_log_normal(object),
-    "refDose must be positive scalar"
+    validate_model_normal(object),
+    "ref_dose must be positive scalar"
   )
 })
