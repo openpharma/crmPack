@@ -4,17 +4,27 @@
 \name{IncrementsNumDoseLevels-class}
 \alias{IncrementsNumDoseLevels-class}
 \alias{.IncrementsNumDoseLevels}
-\title{Increments control based on number of dose levels}
+\alias{IncrementsNumDoseLevels}
+\title{Increments Control Based on Number of Dose Levels}
+\usage{
+IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "lastGiven")
+}
 \description{
-Increments control based on number of dose levels
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \section{Slots}{
 
 \describe{
-\item{\code{maxLevels}}{scalar positive integer for the number of maximum
+\item{\code{maxLevels}}{(\verb{scalar positive integer})\cr corresponding to the number of maximum
 dose levels to increment for the next dose. It defaults to 1,
 which means that no dose skipping is allowed - the next dose
 can be maximum one level higher than the current dose.}
+
+\item{\code{basisLevel}}{(\verb{character scalar})\cr corresponding to the dose level used to increment from.
+It can take tow possible values 'lastGiven' or 'maxGiven'. If lastGiven (default)
+is specified the increments is applied to the last given dose and if
+maxGiven is specified the increment is applied from the max given dose
+level.}
 }}
 
 \examples{
@@ -25,4 +35,4 @@ can be maximum one level higher than the current dose.}
 myIncrements <- IncrementsNumDoseLevels(maxLevels=2)
 
 }
-\keyword{classes}
+\keyword{methods}
