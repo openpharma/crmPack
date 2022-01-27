@@ -77,8 +77,8 @@ validate_model_normal <- function(object) {
     }
   }
   o$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0 + .Machine$double.xmin),
-    "ref_dose must be positive scalar or NA_real_"
+    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
+    "ref_dose must be a non-negative scalar"
   )
   o$result()
 }

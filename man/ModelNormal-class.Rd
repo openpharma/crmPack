@@ -7,7 +7,7 @@
 \alias{ModelNormal}
 \title{\code{ModelNormal}}
 \usage{
-ModelNormal(mean, cov, ref_dose = NA_real_)
+ModelNormal(mean, cov, ref_dose = 0)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -19,9 +19,9 @@ ModelNormal(mean, cov, ref_dose = NA_real_)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{ModelNormal}} is the class for a model with a bivariate normal prior on the
-model parameters \code{alpha0} and \code{alpha1}, i.e.:
-\deqn{(alpha0, alpha1) ~ Normal(mean, cov)} All other specific models
+\code{\link{ModelNormal}} is the class for a model with a reference dose and bivariate
+normal prior on the model parameters \code{alpha0} and \code{alpha1}, i.e.:
+\deqn{(alpha0, alpha1) ~ Normal(mean, cov)} All other model specific classes
 inherit from this class.
 The slots of this class contain the mean vector, the covariance and
 precision matrices of the bivariate normal distribution, as well as the

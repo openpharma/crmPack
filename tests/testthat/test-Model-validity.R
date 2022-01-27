@@ -95,11 +95,18 @@ test_that("validate_model_normal returns error for wrong cov", {
 
 test_that("validate_model_normal returns error for wrong ref_dose", {
   object <- h_get_model_normal()
-  # We assign a ref_dose which is not a positive scalar.
+  # We assign a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
 
   expect_equal(
     validate_model_normal(object),
-    "ref_dose must be positive scalar or NA_real_"
+    "ref_dose must be a non-negative scalar"
   )
+})
+
+test_that("validate_model_normal passes for valid object with ref_dose 0", {
+  object <- h_get_model_normal()
+  object@ref_dose <- 0
+
+  expect_true(validate_model_normal(object))
 })

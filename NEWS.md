@@ -1,7 +1,7 @@
 # Version 1.0.9000
 * Renamed `refDose` slot to `ref_dose` in `ModelNormal` class.
 * Created new `ModelNormal` class as a parent class for all the models with
-  bivariate normal prior on the model parameters.
+  reference dose and bivariate normal prior on the model parameters.
 * Created new `ProbitLogNormalLogDose` model class to support the log of (standardized) dose.
 * `ProbitLogNormal` does not support the log of (standardized) dose anymore.
 * Added logger feature. Its user interface consists of four functions:

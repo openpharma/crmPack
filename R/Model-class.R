@@ -148,9 +148,9 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`ModelNormal`] is the class for a model with a bivariate normal prior on the
-#' model parameters `alpha0` and `alpha1`, i.e.:
-#' \deqn{(alpha0, alpha1) ~ Normal(mean, cov)} All other specific models
+#' [`ModelNormal`] is the class for a model with a reference dose and bivariate
+#' normal prior on the model parameters `alpha0` and `alpha1`, i.e.:
+#' \deqn{(alpha0, alpha1) ~ Normal(mean, cov)} All other model specific classes
 #' inherit from this class.
 #' The slots of this class contain the mean vector, the covariance and
 #' precision matrices of the bivariate normal distribution, as well as the
@@ -180,7 +180,7 @@ NULL
     mean = c(0, 2),
     cov = diag(2),
     prec = diag(2),
-    ref_dose = NA_real_
+    ref_dose = 0
   ),
   validity = validate_model_normal
 )
@@ -195,7 +195,7 @@ NULL
 #'
 #' @export
 #'
-ModelNormal <- function(mean, cov, ref_dose = NA_real_) {
+ModelNormal <- function(mean, cov, ref_dose = 0) {
   assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
   assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
 
@@ -229,7 +229,7 @@ ModelNormal <- function(mean, cov, ref_dose = NA_real_) {
 #'
 .LogisticNormal <- setClass(
   Class = "LogisticNormal",
-  contains = "ModelNormal",
+  contains = "ModelNormal"
 )
 
 # LogisticNormal-constructor ----
@@ -257,7 +257,15 @@ LogisticNormal <- function(mean, cov, ref_dose = NA_real_) {
 
   params <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
   .LogisticNormal(
-    datanames = c("nObs", "y", "x"),
+    params,
+    dose = function(prob, alpha0, alpha1) {
+      stand_log_dose <- (logit(prob) - alpha0) / alpha1
+      exp(stand_log_dose) * ref_dose
+    },
+    prob = function(dose, alpha0, alpha1) {
+      stand_log_dose <- log(dose / ref_dose)
+      plogis(alpha0 + alpha1 * stand_log_dose)
+    },
     datamodel = jags_model_data,
     priormodel = jags_model_prior,
     modelspecs = function() {
@@ -267,15 +275,7 @@ LogisticNormal <- function(mean, cov, ref_dose = NA_real_) {
       list(theta = c(0, 1))
     },
     sample = c("alpha0", "alpha1"),
-    dose = function(prob, alpha0, alpha1) {
-      stand_log_dose <- (logit(prob) - alpha0) / alpha1
-      exp(stand_log_dose) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      stand_log_dose <- log(dose / ref_dose)
-      plogis(alpha0 + alpha1 * stand_log_dose)
-    },
-    params
+    datanames = c("nObs", "y", "x")
   )
 }
 
