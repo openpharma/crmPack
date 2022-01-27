@@ -928,7 +928,6 @@ StoppingMTDdistribution <- function(target,
 #' Stop based on precision of MTD calculated as CV(MTD)
 #' 
 #' @description `r lifecycle::badge("experimental")`
-#' 
 #'
 #' @slot target (`numeric`)\cr toxicity target of MTD
 #' @slot threshCV (`numeric`)\cr threshold for CV to be considered accurate enough
@@ -952,15 +951,11 @@ StoppingMTDdistribution <- function(target,
       function(object) {
         o <- Validate()
         o$check(
-          is.probability(object@target,
-            bounds = FALSE
-          ),
+          is.probability(object@target, bounds = FALSE),
           "target must be probability > 0 and < 1"
         )
         o$check(
-          is.probability(object@threshCV/100,
-                         bounds = FALSE
-          ),
+          is.probability(object@threshCV/100, bounds = FALSE),
           "threshCV must be percentage > 0"
         )
         o$result()
@@ -968,13 +963,12 @@ StoppingMTDdistribution <- function(target,
   )
 validObject(.StoppingMTDCV())
 
-# Initialization function for "StoppingMTDCV"
-#
-# @param target see \code{\linkS4class{StoppingMTDCV}}
-# @param threshCV see \code{\linkS4class{StoppingMTDCV}}
-# @return the \code{\linkS4class{StoppingMTDCV}} object
-#
-
+#' Initialization function for `StoppingMTDCV`
+#'
+#' @param target see above.
+#' @param threshCV see above.
+#' @return the `StoppingMTDCV` object.
+#'
 #' @rdname StoppingMTDCV-class
 #' @export
 StoppingMTDCV <- function(target,

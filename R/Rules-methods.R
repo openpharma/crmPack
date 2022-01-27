@@ -1513,26 +1513,23 @@ setMethod("stopTrial",
       )
 
       # CV of MTD expressed as percentage, derived based on MTD posterior samples
-      MTDCV <- (mad(MTDSamples) / median(MTDSamples)) * 100
+      mtd_cv <- (mad(MTDSamples) / median(MTDSamples)) * 100
 
       # so can we stop?
-      doStop <- ((MTDCV <= stopping@threshCV) & (MTDCV >= 0))
+      do_stop <- ((mtd_cv <= stopping@threshCV) & (mtd_cv >= 0))
 
       # generate message
-      text <-
-        paste(
+      msg <- paste(
           "CV of MTD is",
-          round(MTDCV), "% and thus",
-          ifelse(doStop, "below", "above"),
+          round(mtd_cv), "% and thus",
+          ifelse(do_stop, "below", "above"),
           "the required precision threshold of",
           round(stopping@threshCV),
           "%"
         )
 
       # return both
-      return(structure(doStop,
-        message = text
-      ))
+      structure(do_stop, message = msg)
     }
 )
 
