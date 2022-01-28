@@ -736,7 +736,7 @@ setMethod("maxDose",
 ## --------------------------------------------------
 
 #' @describeIn maxDose Determine the maximum possible next dose based on
-#' maximum dose levels to increment for the next dose
+#' maximum dose levels to increment for the next dose.
 #'
 #' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
 setMethod("maxDose",

@@ -387,13 +387,13 @@ IncrementsRelative <- function(intervals,
 
 #' Increments Control Based on Number of Dose Levels
 #'
-#' @description `r lifecycle::badge("superseded")`
+#' @description `r lifecycle::badge("stable")`
 #'
-#' @slot maxLevels (`scalar positive integer`)\cr corresponding to the number of maximum
+#' @slot maxLevels (`count`)\cr corresponding to the number of maximum
 #' dose levels to increment for the next dose. It defaults to 1,
 #' which means that no dose skipping is allowed - the next dose
 #' can be maximum one level higher than the current dose.
-#' @slot basisLevel (`character scalar`)\cr corresponding to the dose level used to increment from.
+#' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
 #' It can take two possible values 'lastGiven' or 'maxGiven'. If lastGiven (default)
 #' is specified the increments is applied to the last given dose and if
 #' maxGiven is specified the increment is applied from the max given dose
@@ -435,7 +435,6 @@ IncrementsRelative <- function(intervals,
 #' @rdname IncrementsNumDoseLevels-class
 #'
 #' @export
-#' @keywords methods
 IncrementsNumDoseLevels <- function(maxLevels=1,
                                     basisLevel="lastGiven")
 {
