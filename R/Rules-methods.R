@@ -757,7 +757,7 @@ setMethod("maxDose",
       # determine the maximum next dose level.
       maxNextDoseLevel <- min(
         length(data@doseGrid),
-        lastDoseLevel + increments@maxLevels
+        basisDoseLevel + increments@maxLevels
       )
 
       # so the maximum next dose is:
