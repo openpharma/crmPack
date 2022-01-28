@@ -251,12 +251,6 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
 
   .LogisticNormal(
     model_normal,
-    dose = function(prob, alpha0, alpha1) {
-      exp((logit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      plogis(alpha0 + alpha1 * log(dose / ref_dose))
-    },
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
@@ -267,6 +261,12 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
       alpha1 <- theta[2]
+    },
+    dose = function(prob, alpha0, alpha1) {
+      exp((logit(prob) - alpha0) / alpha1) * ref_dose
+    },
+    prob = function(dose, alpha0, alpha1) {
+      plogis(alpha0 + alpha1 * log(dose / ref_dose))
     }
   )
 }
@@ -324,12 +324,6 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
 
   .LogisticLogNormal(
     model_normal,
-    dose = function(prob, alpha0, alpha1) {
-      exp((logit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      plogis(alpha0 + alpha1 * log(dose / ref_dose))
-    },
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
@@ -340,6 +334,12 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
       alpha1 <- exp(theta[2])
+    },
+    dose = function(prob, alpha0, alpha1) {
+      exp((logit(prob) - alpha0) / alpha1) * ref_dose
+    },
+    prob = function(dose, alpha0, alpha1) {
+      plogis(alpha0 + alpha1 * log(dose / ref_dose))
     }
   )
 }
