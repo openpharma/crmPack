@@ -7,7 +7,7 @@
 \alias{LogisticNormal}
 \title{\code{LogisticNormal}}
 \usage{
-LogisticNormal(mean, cov, ref_dose = NA_real_)
+LogisticNormal(mean, cov, ref_dose = 0)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}

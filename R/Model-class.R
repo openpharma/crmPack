@@ -20,8 +20,7 @@ NULL
 #'
 .AllModels <- setClass(
   Class = "AllModels",
-  slots = c(datanames = "character"),
-  prototype = prototype(datanames = NA_character_)
+  slots = c(datanames = "character")
 )
 
 # GeneralModel-class ----
@@ -69,10 +68,7 @@ NULL
   ),
   prototype = prototype(
     datamodel = I,
-    priormodel = I,
-    modelspecs = I,
-    init = function() {},
-    sample = NA_character_
+    priormodel = I
   ),
   validity = validate_general_model
 )
@@ -199,11 +195,20 @@ ModelNormal <- function(mean, cov, ref_dose = 0) {
   assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
   assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
 
+  prec <- solve(cov)
   .ModelNormal(
     mean = mean,
     cov = cov,
-    prec = solve(cov),
-    ref_dose = ref_dose
+    prec = prec,
+    ref_dose = ref_dose,
+    modelspecs = function() {
+      list(ref_dose = ref_dose, mean = mean, prec = prec)
+    },
+    init = function() {
+      list(theta = c(0, 1))
+    },
+    sample = c("alpha0", "alpha1"),
+    datanames = c("nObs", "y", "x")
   )
 }
 
@@ -241,41 +246,28 @@ ModelNormal <- function(mean, cov, ref_dose = 0) {
 #' @export
 #' @example examples/Model-class-LogisticNormal.R
 #'
-LogisticNormal <- function(mean, cov, ref_dose = NA_real_) {
-  jags_model_data <- function() {
-    for (i in 1:nObs) {
-      stand_log_dose[i] <- log(x[i] / ref_dose)
-      logit(p[i]) <- alpha0 + alpha1 * stand_log_dose[i]
-      y[i] ~ dbern(p[i])
-    }
-  }
-  jags_model_prior <- function() {
-    theta ~ dmnorm(mean, prec)
-    alpha0 <- theta[1]
-    alpha1 <- theta[2]
-  }
+LogisticNormal <- function(mean, cov, ref_dose = 0) {
+  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
-  params <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
   .LogisticNormal(
-    params,
+    model_normal,
     dose = function(prob, alpha0, alpha1) {
-      stand_log_dose <- (logit(prob) - alpha0) / alpha1
-      exp(stand_log_dose) * ref_dose
+      exp((logit(prob) - alpha0) / alpha1) * ref_dose
     },
     prob = function(dose, alpha0, alpha1) {
-      stand_log_dose <- log(dose / ref_dose)
-      plogis(alpha0 + alpha1 * stand_log_dose)
+      plogis(alpha0 + alpha1 * log(dose / ref_dose))
     },
-    datamodel = jags_model_data,
-    priormodel = jags_model_prior,
-    modelspecs = function() {
-      list(ref_dose = params@ref_dose, mean = params@mean, prec = params@prec)
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
     },
-    init = function() {
-      list(theta = c(0, 1))
-    },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- theta[2]
+    }
   )
 }
 
@@ -285,108 +277,70 @@ LogisticNormal <- function(mean, cov, ref_dose = NA_real_) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`LogisticLogNormal`] is the class for a usual logistic regression model with
-#' a bivariate normal prior on the intercept and log slope.
+#' [`LogisticLogNormal`] is the class for the usual logistic regression model with
+#'   a bivariate normal prior on the intercept and slope.
 #'
-#' @details The covariate is the natural logarithm of the dose \eqn{x} divided
-#'   by the reference dose \eqn{x^{*}}:
-#'   \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})},
-#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose
-#'   \eqn{x}.
-#'   The prior is: \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}.
-#'   The slots of this class contain the mean vector and the covariance matrix
-#'   of the bivariate normal distribution, as well as the reference dose.
+#' @details The covariate is the natural logarithm of the dose \eqn{x} divided by
+#'   the reference dose \eqn{x*}:
+#'   \deqn{probit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}
+#'   and the prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
 #'
 #' @note The parametrization inside the class uses `alpha0` and `alpha1`.
-#'   `alpha0` is identical to the intercept \eqn{\alpha} above and is the
-#'   log-odds for a DLT at the reference dose `x*`. Therefore, the prior mean
-#'   for `alpha0` is the expected log-odds at the reference dose `x*` before
-#'   observing any data. Note that the expected odds is not just the exp of the
-#'   prior mean of `alpha0`, because the non-linearity of the exp
-#'   transformation. The log-normal distribution on Wikipedia gives the formula
-#'   for computing the prior mean of `exp(alpha0)`, where `alpha0` is the
-#'   `log(alpha)` in the Neuenschwander et al. (2008) paper. The `alpha1` is
-#'   identical to \eqn{\beta} above and equals to `beta` in the Neuenschwander
+#'   `alpha0` is the log-odds for a DLT at the reference dose `x*`.
+#'   Therefore, the prior mean for `alpha0` is the expected log-odds at the
+#'   reference dose `x*` before observing any data. Note that the expected odds
+#'   is not just the exp of the prior mean of `alpha0`, because the non-linearity
+#'   of the `exp` transformation. The log-normal distribution on Wikipedia gives
+#'   the formula for computing the prior mean of `exp(alpha0)`, where `alpha0`
+#'   is the `log(alpha)` in the Neuenschwander et al. (2008) paper. The `alpha1`
+#'   is identical to \eqn{\beta} above and equals to `beta` in the Neuenschwander
 #'   et al paper. The `exp(alpha1)` gives the odds-ratio for DLT between two
 #'   doses that differ by the factor `exp(1)` ~ 2.7. Parameter `alpha1` has a
 #'   log-normal distribution in the `LogisticLogNormal` model in order to ensure
 #'   positivity of `alpha1` and thus `exp(alpha1) > 1`.
 #'
-#' @slot mean (`numeric`)\cr the prior mean vector.
-#' @slot cov (`matrix`)\cr the prior covariance matrix.
-#' @slot refDose (`number`)\cr the reference dose.
-#'
-#' @seealso [`LogisticNormal`].
+#' @seealso [`ModelNormal`] [`LogisticNormal`].
 #'
 #' @aliases LogisticLogNormal
 #' @export
 #'
 .LogisticLogNormal <- setClass(
   Class = "LogisticLogNormal",
-  slots = c(
-    mean = "numeric",
-    cov = "matrix",
-    refDose = "numeric"
-  ),
-  prototype = prototype(
-    mean = c(0, 2),
-    cov = diag(2),
-    refDose = 1
-  ),
-  contains = "Model",
-  validity = validate_logistic_log_normal
+  contains = "ModelNormal"
 )
 
 # LogisticLogNormal-constructor ----
 
 #' @rdname LogisticLogNormal-class
 #'
-#' @param mean (`numeric`)\cr the prior mean vector.
-#' @param cov (`matrix`)\cr the prior covariance matrix.
-#' @param refDose (`number`)\cr the reference dose.
+#' @inheritParams ModelNormal
 #'
 #' @export
 #' @example examples/Model-class-LogisticLogNormal.R
 #'
-LogisticLogNormal <- function(mean,
-                              cov,
-                              refDose) {
-  jags_model_data <- function() {
-    for (i in 1:nObs) {
-      stand_log_dose[i] <- log(x[i] / refDose)
-      logit(p[i]) <- alpha0 + alpha1 * stand_log_dose[i]
-      y[i] ~ dbern(p[i])
-    }
-  }
-  jags_model_prior <- function() {
-    prec <- inverse(cov)
-    theta ~ dmnorm(mean, prec)
-    alpha0 <- theta[1]
-    alpha1 <- exp(theta[2])
-  }
+LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
+  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticLogNormal(
-    datanames = c("nObs", "y", "x"),
-    datamodel = jags_model_data,
-    priormodel = jags_model_prior,
-    modelspecs = function() {
-      list(refDose = refDose, mean = mean, cov = cov)
-    },
-    init = function() {
-      list(theta = c(0, 1))
-    },
-    sample = c("alpha0", "alpha1"),
+    model_normal,
     dose = function(prob, alpha0, alpha1) {
-      stand_log_dose <- (logit(prob) - alpha0) / alpha1
-      exp(stand_log_dose) * refDose
+      exp((logit(prob) - alpha0) / alpha1) * ref_dose
     },
     prob = function(dose, alpha0, alpha1) {
-      stand_log_dose <- log(dose / refDose)
-      plogis(alpha0 + alpha1 * stand_log_dose)
+      plogis(alpha0 + alpha1 * log(dose / ref_dose))
     },
-    mean = mean,
-    cov = cov,
-    refDose = refDose
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- exp(theta[2])
+    }
   )
 }
 
@@ -447,8 +401,7 @@ LogisticLogNormalSub <- function(mean,
                                  refDose) {
   jags_model_data <- function() {
     for (i in 1:nObs) {
-      stand_log_dose[i] <- x[i] - refDose
-      logit(p[i]) <- alpha0 + alpha1 * stand_log_dose[i]
+      logit(p[i]) <- alpha0 + alpha1 * (x[i] - refDose)
       y[i] ~ dbern(p[i])
     }
   }
@@ -471,12 +424,10 @@ LogisticLogNormalSub <- function(mean,
     },
     sample = c("alpha0", "alpha1"),
     dose = function(prob, alpha0, alpha1) {
-      stand_log_dose <- (logit(prob) - alpha0) / alpha1
-      stand_log_dose + refDose
+      ((logit(prob) - alpha0) / alpha1) + refDose
     },
     prob = function(dose, alpha0, alpha1) {
-      stand_log_dose <- dose - refDose
-      plogis(alpha0 + alpha1 * stand_log_dose)
+      plogis(alpha0 + alpha1 * (dose - refDose))
     },
     mean = mean,
     cov = cov,
@@ -2503,7 +2454,7 @@ LogisticLogNormalMixture <- function(mean,
 {
   .LogisticLogNormalMixture(mean=mean,
                             cov=cov,
-                            refDose=refDose,
+                            ref_dose=refDose,
                             shareWeight=shareWeight,
                             datamodel=
                               function(){
@@ -3652,7 +3603,7 @@ DALogisticLogNormal <- function(npiece=3,
 
                              #Part I: describe the logistic model of DLTs vs dose;
                              logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                             StandLogDose[i] <- log(x[i] / refDose)
+                             StandLogDose[i] <- log(x[i] / ref_dose)
 
                              #Part II: describe the piecewise exponential;
                              #please notice:
@@ -3752,8 +3703,8 @@ DALogisticLogNormal <- function(npiece=3,
                        datanames=c("nObs", "y", "x", "u", "Tmax"),
                        modelspecs=
                          function(nObs, Tmax){
-                           list(refDose=start@refDose,
-                                cov=start@cov,
+                           list(ref_dose=start@ref_dose,
+                                prec=start@prec,
                                 mean=start@mean,
                                 npiece=npiece,
                                 l=l,
@@ -3772,7 +3723,7 @@ DALogisticLogNormal <- function(npiece=3,
 }
 validObject(DALogisticLogNormal(mean=c(0, 1),
                                 cov=diag(2),
-                                refDose=1,
+                                ref_dose=1,
                                 npiece=3,
                                 l=0.5,
                                 C_par=2))
@@ -3847,7 +3798,7 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                                #Part I: describe the logistic model of DLTs vs dose;
 
                                logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                               StandLogDose[i] <- log(x[i] / refDose)
+                               StandLogDose[i] <- log(x[i] / ref_dose)
 
                                #Part II: describe the piecewise exponential;
                                #please notice:
@@ -3914,8 +3865,8 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                              w[u==Tmax] <- 1
 
 
-                             list(refDose=start@refDose,
-                                  cov=start@cov,
+                             list(ref_dose=start@ref_dose,
+                                  prec=start@prec,
                                   mean=start@mean,
                                   zeros=rep(0, nObs),
                                   cadj=1e10,
@@ -3925,7 +3876,7 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
 }
 validObject(TITELogisticLogNormal(mean=c(0, 1),
                                   cov=diag(2),
-                                  refDose=1,
+                                  ref_dose=1,
                                   weightMethod="linear"))
 
 ## ============================================================

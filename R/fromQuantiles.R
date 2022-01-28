@@ -184,7 +184,7 @@ Quantiles2LogisticNormal <- function(dosegrid,
         if(logNormal)
             LogisticLogNormal(mean=attr(targetRes, "mean"),
                               cov=attr(targetRes, "cov"),
-                              refDose=refDose)
+                              ref_dose=refDose)
         else
             LogisticNormal(mean=attr(targetRes, "mean"),
                            cov=attr(targetRes, "cov"),

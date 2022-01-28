@@ -127,7 +127,7 @@ test_that("LogisticLogNormal object can be created with user constructor", {
     LogisticLogNormal(
       mean = c(1, 5),
       cov = diag(4, ncol = 2, nrow = 2),
-      refDose = 2
+      ref_dose = 2
     )
   )
   expect_valid(result, "LogisticLogNormal")
@@ -278,7 +278,7 @@ test_that("LogisticLogNormal object can be created with user constructor", {
     LogisticLogNormal(
       mean = c(1, 5),
       cov = diag(4, ncol = 2, nrow = 2),
-      refDose = 2
+      ref_dose = 2
     )
   )
   expect_valid(result, "LogisticLogNormal")
