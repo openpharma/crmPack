@@ -71,8 +71,6 @@ reference:
       - validate_general_model
       - validate_model
       - validate_model_normal
-      - validate_logistic_log_normal
-      - validate_logistic_normal
   - title: Methods
     contents:
       - plot-Data

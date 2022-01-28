@@ -7,14 +7,14 @@
 \alias{LogisticLogNormalSub}
 \title{\code{LogisticLogNormalSub}}
 \usage{
-LogisticLogNormalSub(mean, cov, refDose)
+LogisticLogNormalSub(mean, cov, ref_dose = 0)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
 
 \item{cov}{(\code{matrix})\cr the prior covariance matrix.}
 
-\item{refDose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -23,23 +23,12 @@ LogisticLogNormalSub(mean, cov, refDose)
 bivariate (log) normal prior with subtractive dose standardization.
 }
 \details{
-This is the usual logistic regression model with a bivariate normal
-prior on the intercept and log slope. The covariate is the dose \eqn{x}
-minus the reference dose \eqn{x^{*}}:
-\deqn{logit[p(x)] = \alpha + \beta \cdot (x - x^{*})}, where \eqn{p(x)}
-is the probability of observing a DLT for a given dose \eqn{x}.
-The prior is \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}.
+The covariate is the dose \eqn{x} minus the reference dose \eqn{x*},
+i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * (x - x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
-\section{Slots}{
-
-\describe{
-\item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
-
-\item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix.}
-
-\item{\code{refDose}}{(\code{number})\cr the reference dose.}
-}}
-
 \examples{
 my_model <- LogisticLogNormalSub(
   mean = c(-0.85, 1),
@@ -48,5 +37,6 @@ my_model <- LogisticLogNormalSub(
 )
 }
 \seealso{
-\code{\link{LogisticLogNormal}}.
+\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
 }

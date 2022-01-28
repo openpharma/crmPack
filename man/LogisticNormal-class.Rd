@@ -24,10 +24,10 @@ a bivariate normal prior on the intercept and slope.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
-the reference dose \eqn{x*}:
-\deqn{probit[p(x)] = alpha0 + alpha1 * log(x/x*),}
-where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}
-and the prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
+the reference dose \eqn{x*}, i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
 }
 \examples{
 # Define the dose-grid.
@@ -44,5 +44,6 @@ samples <- mcmc(empty_data, my_model, my_options)
 samples
 }
 \seealso{
-\code{\link{ModelNormal}} \code{\link{LogisticLogNormal}}.
+\code{\link{ModelNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
 }

@@ -7,14 +7,14 @@
 \alias{ProbitLogNormal}
 \title{\code{ProbitLogNormal}}
 \usage{
-ProbitLogNormal(mean, cov, refDose = 1)
+ProbitLogNormal(mean, cov, ref_dose = 0)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
 
 \item{cov}{(\code{matrix})\cr the prior covariance matrix.}
 
-\item{refDose}{(\code{number})\cr the reference dose, default to 1 (no standardization).}
+\item{ref_dose}{(\code{number})\cr the reference dose.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -23,21 +23,12 @@ ProbitLogNormal(mean, cov, refDose = 1)
 normal prior on the intercept and log slope.
 }
 \details{
-The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*}:
-\deqn{probit[p(x)] = alpha0 + alpha1 * x/x*}, where \eqn{p(x)} is the
-probability of observing a DLT for a given dose \eqn{x}.
-The prior is \deqn{(alpha0, alpha1) ~ Normal(mean, cov)}.
+The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*},
+i.e.:
+\deqn{probit[p(x)] = alpha0 + alpha1 * x/x*,}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
-\section{Slots}{
-
-\describe{
-\item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
-
-\item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix.}
-
-\item{\code{refDose}}{(\code{number})\cr the reference dose.}
-}}
-
 \note{
 This model is also used in the \code{\link{DualEndpoint}} classes, so this class
 can be used to check the prior assumptions on the dose-toxicity model, even
@@ -51,5 +42,6 @@ my_model <- ProbitLogNormal(
 )
 }
 \seealso{
-\code{\link{ProbitLogNormalLogDose}}.
+\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormalLogDose}}.
 }

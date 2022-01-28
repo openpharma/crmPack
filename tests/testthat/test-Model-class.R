@@ -43,6 +43,43 @@ test_that(".Model works as expected", {
   expect_valid(result, "Model")
 })
 
+# ModelNormal-class ----
+
+test_that(".ModelNormal works as expected", {
+  # nolint start
+  result <- expect_silent(
+    .ModelNormal(
+      mean = c(0, 2),
+      cov = diag(2),
+      prec = diag(2),
+      ref_dose = 1,
+      dose = function(prob, param1) {},
+      prob = function(dose, param1) {},
+      datamodel = function(x) {},
+      priormodel = function(x) {},
+      modelspecs = function(x) {},
+      init = function(x) {},
+      sample = "param1",
+      datanames = "x"
+    )
+  )
+  # nolint end
+  expect_valid(result, "ModelNormal")
+})
+
+# ModelNormal-constructor ----
+
+test_that("ModelNormal object can be created with user constructor", {
+  result <- expect_silent(
+    ModelNormal(
+      mean = c(1, 5),
+      cov = diag(4, ncol = 2, nrow = 2),
+      ref_dose = 2
+    )
+  )
+  expect_valid(result, "ModelNormal")
+})
+
 # LogisticNormal ----
 
 ## constructor ----
@@ -202,7 +239,7 @@ test_that("LogisticLogNormalSub object can be created with user constructor", {
     LogisticLogNormalSub(
       mean = c(1, 5),
       cov = diag(4, ncol = 2, nrow = 2),
-      refDose = 2
+      ref_dose = 2
     )
   )
   expect_valid(result, "LogisticLogNormalSub")
@@ -353,7 +390,7 @@ test_that("ProbitLogNormal object can be created with user constructor", {
     ProbitLogNormal(
       mean = c(1, 5),
       cov = diag(4, ncol = 2, nrow = 2),
-      refDose = 2
+      ref_dose = 2
     )
   )
   expect_valid(result, "ProbitLogNormal")
@@ -428,7 +465,7 @@ test_that("ProbitLogNormalLogDose object can be created with user constructor", 
     ProbitLogNormalLogDose(
       mean = c(1, 5),
       cov = diag(4, ncol = 2, nrow = 2),
-      refDose = 2
+      ref_dose = 2
     )
   )
   expect_valid(result, "ProbitLogNormalLogDose")

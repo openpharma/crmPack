@@ -20,12 +20,18 @@ ModelNormal(mean, cov, ref_dose = 0)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{ModelNormal}} is the class for a model with a reference dose and bivariate
-normal prior on the model parameters \code{alpha0} and \code{alpha1}, i.e.:
-\deqn{(alpha0, alpha1) ~ Normal(mean, cov)} All other model specific classes
-inherit from this class.
+normal prior on the model parameters \code{alpha0} and \code{alpha1} (or its functions),
+i.e.: \deqn{(f1(alpha0, f2(alpha1)) ~ Normal(mean, cov),} where \code{f1}, \code{f2}
+are some functions as specified in \code{priormodel} slot. By default, \code{f1} is
+just identity and \code{f2} is natural logarithm, which means that \code{alpha1} has
+log-normal distribution in such case. The parameter \code{alpha1} has a log-normal
+distribution by default to ensure positivity of \code{alpha1} which ensures
+\code{exp(alpha1) > 1}.
 The slots of this class contain the mean vector, the covariance and
 precision matrices of the bivariate normal distribution, as well as the
-reference dose.
+reference dose. Note that the precision matrix is an inverse of the
+covariance matrix in the \code{JAGS}.
+All ("normal") model specific classes inherit from this class.
 }
 \section{Slots}{
 
@@ -40,6 +46,6 @@ reference dose.
 }}
 
 \seealso{
-\code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}},
+\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
 }

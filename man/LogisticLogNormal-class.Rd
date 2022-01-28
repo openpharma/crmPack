@@ -19,30 +19,15 @@ LogisticLogNormal(mean, cov, ref_dose = 0)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{LogisticLogNormal}} is the class for the usual logistic regression model with
-a bivariate normal prior on the intercept and slope.
+\code{\link{LogisticLogNormal}} is the class for the usual logistic regression model
+with a bivariate normal prior on the intercept and log slope.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
-the reference dose \eqn{x*}:
-\deqn{probit[p(x)] = alpha0 + alpha1 * log(x/x*),}
-where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}
-and the prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
-}
-\note{
-The parametrization inside the class uses \code{alpha0} and \code{alpha1}.
-\code{alpha0} is the log-odds for a DLT at the reference dose \verb{x*}.
-Therefore, the prior mean for \code{alpha0} is the expected log-odds at the
-reference dose \verb{x*} before observing any data. Note that the expected odds
-is not just the exp of the prior mean of \code{alpha0}, because the non-linearity
-of the \code{exp} transformation. The log-normal distribution on Wikipedia gives
-the formula for computing the prior mean of \code{exp(alpha0)}, where \code{alpha0}
-is the \code{log(alpha)} in the Neuenschwander et al. (2008) paper. The \code{alpha1}
-is identical to \eqn{\beta} above and equals to \code{beta} in the Neuenschwander
-et al paper. The \code{exp(alpha1)} gives the odds-ratio for DLT between two
-doses that differ by the factor \code{exp(1)} ~ 2.7. Parameter \code{alpha1} has a
-log-normal distribution in the \code{LogisticLogNormal} model in order to ensure
-positivity of \code{alpha1} and thus \code{exp(alpha1) > 1}.
+the reference dose \eqn{x*}, i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
 \examples{
 my_model <- LogisticLogNormal(
@@ -53,5 +38,6 @@ my_model <- LogisticLogNormal(
 my_model
 }
 \seealso{
-\code{\link{ModelNormal}} \code{\link{LogisticNormal}}.
+\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormalSub}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
 }
