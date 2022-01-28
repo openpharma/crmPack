@@ -387,7 +387,7 @@ IncrementsRelative <- function(intervals,
 
 #' Increments Control Based on Number of Dose Levels
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description `r lifecycle::badge("superseded")`
 #'
 #' @slot maxLevels (`scalar positive integer`)\cr corresponding to the number of maximum
 #' dose levels to increment for the next dose. It defaults to 1,
