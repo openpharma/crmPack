@@ -44,6 +44,6 @@ samples <- mcmc(empty_data, my_model, my_options)
 samples
 }
 \seealso{
-\code{\link{ModelNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
+\code{\link{ModelLogNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
 }

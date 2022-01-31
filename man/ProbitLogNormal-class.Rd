@@ -4,6 +4,7 @@
 \name{ProbitLogNormal-class}
 \alias{ProbitLogNormal-class}
 \alias{.ProbitLogNormal}
+\alias{ProbitLogNormalLogDose}
 \alias{ProbitLogNormal}
 \title{\code{ProbitLogNormal}}
 \usage{
@@ -19,13 +20,13 @@ ProbitLogNormal(mean, cov, ref_dose = 0)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{ProbitLogNormal}} is the class for probit regression model with a bivariate
-normal prior on the intercept and log slope.
+\code{\link{ProbitLogNormal}} is the class for probit regression model with a
+bivariate normal prior on the intercept and log slope.
 }
 \details{
-The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*},
-i.e.:
-\deqn{probit[p(x)] = alpha0 + alpha1 * x/x*,}
+The covariate is the natural logarithm of dose \eqn{x} divided by a
+reference dose \eqn{x*}, i.e.:
+\deqn{probit[p(x)] = alpha0 + alpha1 * log(x/x*),}
 where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
@@ -38,10 +39,11 @@ possible.
 \examples{
 my_model <- ProbitLogNormal(
   mean = c(-0.85, 1),
-  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 7.2
 )
 }
 \seealso{
-\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
-\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormalLogDose}}.
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormalRel}}.
 }

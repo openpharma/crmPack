@@ -33,10 +33,10 @@ The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 my_model <- LogisticLogNormalSub(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 50
+  ref_dose = 50
 )
 }
 \seealso{
-\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
 }

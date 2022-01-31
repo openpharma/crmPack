@@ -35,12 +35,12 @@ reference:
       - AllModels
       - GeneralModel
       - Model
-      - ModelNormal
+      - ModelLogNormal
       - LogisticNormal
       - LogisticLogNormal
       - LogisticLogNormalSub
       - ProbitLogNormal
-      - ProbitLogNormalLogDose
+      - ProbitLogNormalRel
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -70,7 +70,7 @@ reference:
       - validate_mcmc_options
       - validate_general_model
       - validate_model
-      - validate_model_normal
+      - validate_model_log_normal
   - title: Methods
     contents:
       - plot-Data

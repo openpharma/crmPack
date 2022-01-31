@@ -55,7 +55,7 @@ that this can be used to simulate from the prior distribution, before
 obtaining any data.
 }
 \seealso{
-\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
 \code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}},
 \code{\link{LogisticKadane}}, \code{\link{DualEndpoint}}.
 }

@@ -38,6 +38,6 @@ my_model <- LogisticLogNormal(
 my_model
 }
 \seealso{
-\code{\link{ModelNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalLogDose}}.
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormalSub}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
 }

@@ -117,7 +117,7 @@ NULL
 #'   for a specific dose, based on the model parameters and additional prior
 #'   settings (see the details above).
 #'
-#' @seealso [`ModelNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
 #'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalLogDose`],
 #'   [`LogisticKadane`], [`DualEndpoint`].
 #'
@@ -138,20 +138,18 @@ NULL
   validity = validate_model
 )
 
-# ModelNormal-class ----
+# ModelLogNormal-class ----
 
-#' `ModelNormal`
+#' `ModelLogNormal`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`ModelNormal`] is the class for a model with a reference dose and bivariate
-#' normal prior on the model parameters `alpha0` and `alpha1` (or its functions),
-#' i.e.: \deqn{(f1(alpha0, f2(alpha1)) ~ Normal(mean, cov),} where `f1`, `f2`
-#' are some functions as specified in `priormodel` slot. By default, `f1` is
-#' just identity and `f2` is natural logarithm, which means that `alpha1` has
-#' log-normal distribution in such case. The parameter `alpha1` has a log-normal
-#' distribution by default to ensure positivity of `alpha1` which ensures
-#' `exp(alpha1) > 1`.
+#' [`ModelLogNormal`] is the class for a model with a reference dose and bivariate
+#' normal prior on the model parameters `alpha0` and natural logarithm of `alpha1`,
+#' i.e.: \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov),}. Transformations other
+#' than `log`, e.g. identity, can be specified too in `priormodel` slot.
+#' The parameter `alpha1` has a log-normal distribution by default to ensure
+#' positivity of `alpha1` which further guarantees `exp(alpha1) > 1`.
 #' The slots of this class contain the mean vector, the covariance and
 #' precision matrices of the bivariate normal distribution, as well as the
 #' reference dose. Note that the precision matrix is an inverse of the
@@ -163,14 +161,14 @@ NULL
 #' @slot prec the prior precision matrix, which is an inverse matrix of the `cov`.
 #' @slot ref_dose (`number`)\cr the reference dose.
 #'
-#' @seealso [`ModelNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalLogDose`].
+#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
 #'
-#' @aliases ModelNormal
+#' @aliases ModelLogNormal
 #' @export
 #'
-.ModelNormal <- setClass(
-  Class = "ModelNormal",
+.ModelLogNormal <- setClass(
+  Class = "ModelLogNormal",
   contains = "Model",
   slots = c(
     mean = "numeric",
@@ -178,12 +176,12 @@ NULL
     prec = "matrix",
     ref_dose = "numeric"
   ),
-  validity = validate_model_normal
+  validity = validate_model_log_normal
 )
 
-# ModelNormal-constructor ----
+# ModelLogNormal-constructor ----
 
-#' @rdname ModelNormal-class
+#' @rdname ModelLogNormal-class
 #'
 #' @param mean (`numeric`)\cr the prior mean vector.
 #' @param cov (`matrix`)\cr the prior covariance matrix.
@@ -191,12 +189,12 @@ NULL
 #'
 #' @export
 #'
-ModelNormal <- function(mean, cov, ref_dose = 0) {
+ModelLogNormal <- function(mean, cov, ref_dose = 0) {
   assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
   assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
 
   prec <- solve(cov)
-  .ModelNormal(
+  .ModelLogNormal(
     mean = mean,
     cov = cov,
     prec = prec,
@@ -232,31 +230,31 @@ ModelNormal <- function(mean, cov, ref_dose = 0) {
 #'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 #'   The prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
 #'
-#' @seealso [`ModelNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalLogDose`].
+#' @seealso [`ModelLogNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
 #'
 #' @aliases LogisticNormal
 #' @export
 #'
 .LogisticNormal <- setClass(
   Class = "LogisticNormal",
-  contains = "ModelNormal"
+  contains = "ModelLogNormal"
 )
 
 # LogisticNormal-constructor ----
 
 #' @rdname LogisticNormal-class
 #'
-#' @inheritParams ModelNormal
+#' @inheritParams ModelLogNormal
 #'
 #' @export
 #' @example examples/Model-class-LogisticNormal.R
 #'
 LogisticNormal <- function(mean, cov, ref_dose = 0) {
-  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticNormal(
-    model_normal,
+    model_ln,
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
@@ -292,31 +290,31 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
 #'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
-#' @seealso [`ModelNormal`], [`LogisticNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalLogDose`].
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormalSub`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
 #'
 #' @aliases LogisticLogNormal
 #' @export
 #'
 .LogisticLogNormal <- setClass(
   Class = "LogisticLogNormal",
-  contains = "ModelNormal"
+  contains = "ModelLogNormal"
 )
 
 # LogisticLogNormal-constructor ----
 
 #' @rdname LogisticLogNormal-class
 #'
-#' @inheritParams ModelNormal
+#' @inheritParams ModelLogNormal
 #'
 #' @export
 #' @example examples/Model-class-LogisticLogNormal.R
 #'
 LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
-  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticLogNormal(
-    model_normal,
+    model_ln,
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
@@ -347,31 +345,31 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
 #'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
-#' @seealso [`ModelNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalLogDose`].
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
 #'
 #' @aliases LogisticLogNormalSub
 #' @export
 #'
 .LogisticLogNormalSub <- setClass(
   Class = "LogisticLogNormalSub",
-  contains = "ModelNormal"
+  contains = "ModelLogNormal"
 )
 
 # LogisticLogNormalSub-constructor ----
 
 #' @rdname LogisticLogNormalSub-class
 #'
-#' @inheritParams ModelNormal
+#' @inheritParams ModelLogNormal
 #'
 #' @export
 #' @example examples/Model-class-LogisticLogNormalSub.R
 #'
 LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
-  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticLogNormalSub(
-    model_normal,
+    model_ln,
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- alpha0 + alpha1 * (x[i] - ref_dose)
@@ -396,67 +394,7 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`ProbitLogNormal`] is the class for probit regression model with a bivariate
-#' normal prior on the intercept and log slope.
-#'
-#' @details The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*},
-#'   i.e.:
-#'   \deqn{probit[p(x)] = alpha0 + alpha1 * x/x*,}
-#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
-#'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
-#'
-#' @note This model is also used in the [`DualEndpoint`] classes, so this class
-#'   can be used to check the prior assumptions on the dose-toxicity model, even
-#'   when sampling from the prior distribution of the dual endpoint model is not
-#'   possible.
-#'
-#' @seealso [`ModelNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`LogisticLogNormalSub`], [`ProbitLogNormalLogDose`].
-#'
-#' @aliases ProbitLogNormal
-#' @export
-#'
-.ProbitLogNormal <- setClass(
-  Class = "ProbitLogNormal",
-  contains = "ModelNormal"
-)
-
-# ProbitLogNormal-constructor ----
-
-#' @rdname ProbitLogNormal-class
-#'
-#' @inheritParams ModelNormal
-#'
-#' @export
-#' @example examples/Model-class-ProbitLogNormal.R
-#'
-ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
-  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
-
-  .ProbitLogNormal(
-    model_normal,
-    datamodel = function() {
-      for (i in 1:nObs) {
-        probit(p[i]) <- alpha0 + alpha1 * (x[i] / ref_dose)
-        y[i] ~ dbern(p[i])
-      }
-    },
-    dose = function(prob, alpha0, alpha1) {
-      ((probit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      pnorm(alpha0 + alpha1 * (dose / ref_dose))
-    }
-  )
-}
-
-# ProbitLogNormalLogDose-class ----
-
-#' `ProbitLogNormalLogDose`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`ProbitLogNormalLogDose`] is the class for probit regression model with a
+#' [`ProbitLogNormal`] is the class for probit regression model with a
 #' bivariate normal prior on the intercept and log slope.
 #'
 #' @details The covariate is the natural logarithm of dose \eqn{x} divided by a
@@ -470,31 +408,31 @@ ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
 #'   when sampling from the prior distribution of the dual endpoint model is not
 #'   possible.
 #'
-#' @seealso [`ModelNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`].
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalSub`], [`ProbitLogNormalRel`].
 #'
 #' @aliases ProbitLogNormalLogDose
 #' @export
 #'
-.ProbitLogNormalLogDose <- setClass(
-  Class = "ProbitLogNormalLogDose",
-  contains = "ModelNormal"
+.ProbitLogNormal <- setClass(
+  Class = "ProbitLogNormal",
+  contains = "ModelLogNormal"
 )
 
-# ProbitLogNormalLogDose-constructor ----
+# ProbitLogNormal-constructor ----
 
-#' @rdname ProbitLogNormalLogDose-class
+#' @rdname ProbitLogNormal-class
 #'
-#' @inheritParams ModelNormal
+#' @inheritParams ModelLogNormal
 #'
 #' @export
-#' @example examples/Model-class-ProbitLogNormalLogDose.R
+#' @example examples/Model-class-ProbitLogNormal.R
 #'
-ProbitLogNormalLogDose <- function(mean, cov, ref_dose = 0) {
-  model_normal <- ModelNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
-  .ProbitLogNormalLogDose(
-    model_normal,
+  .ProbitLogNormal(
+    model_ln,
     datamodel = function() {
       for (i in 1:nObs) {
         probit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
@@ -506,6 +444,66 @@ ProbitLogNormalLogDose <- function(mean, cov, ref_dose = 0) {
     },
     prob = function(dose, alpha0, alpha1) {
       pnorm(alpha0 + alpha1 * log(dose / ref_dose))
+    }
+  )
+}
+
+# ProbitLogNormalRel-class ----
+
+#' `ProbitLogNormalRel`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`ProbitLogNormalRel`] is the class for probit regression model with a bivariate
+#' normal prior on the intercept and log slope.
+#'
+#' @details The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*},
+#'   i.e.:
+#'   \deqn{probit[p(x)] = alpha0 + alpha1 * x/x*,}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
+#'
+#' @note This model is also used in the [`DualEndpoint`] classes, so this class
+#'   can be used to check the prior assumptions on the dose-toxicity model, even
+#'   when sampling from the prior distribution of the dual endpoint model is not
+#'   possible.
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`].
+#'
+#' @aliases ProbitLogNormalRel
+#' @export
+#'
+.ProbitLogNormalRel <- setClass(
+  Class = "ProbitLogNormalRel",
+  contains = "ModelLogNormal"
+)
+
+# ProbitLogNormalRel-constructor ----
+
+#' @rdname ProbitLogNormalRel-class
+#'
+#' @inheritParams ModelLogNormal
+#'
+#' @export
+#' @example examples/Model-class-ProbitLogNormalRel.R
+#'
+ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+
+  .ProbitLogNormalRel(
+    model_ln,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        probit(p[i]) <- alpha0 + alpha1 * (x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    },
+    dose = function(prob, alpha0, alpha1) {
+      ((probit(prob) - alpha0) / alpha1) * ref_dose
+    },
+    prob = function(dose, alpha0, alpha1) {
+      pnorm(alpha0 + alpha1 * (dose / ref_dose))
     }
   )
 }
