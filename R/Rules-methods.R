@@ -1489,7 +1489,7 @@ setMethod("stopTrial",
 #' The trial is stopped, when the MTD can be estimated with sufficient precision.
 #' The criteria is based on the robust CV calculated from the posterior distribution.
 #' The robust coefficient of variation is defined as MAD(MTD)/median(MTD).
-
+#' @example examples/Rules-method-stopTrial-StoppingMTDCV.R
 setMethod("stopTrial", 
   signature = signature(
       stopping = "StoppingMTDCV",
