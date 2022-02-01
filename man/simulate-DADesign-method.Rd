@@ -75,6 +75,8 @@ an object of class \code{\linkS4class{Simulations}}
 Simulate outcomes from a time-to-DLT augmented CRM design (\code{DADesign})
 }
 \examples{
+# nolint start
+
 # Define the dose-grid and PEM parameters
 emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
                                seq(from=10, to=80, by=2)),Tmax=60)
@@ -167,5 +169,7 @@ mySims <- simulate(design,
                    deescalate=FALSE,
                    parallel=TRUE,
                    nCores=2)
+
+# nolint end
 }
 \keyword{methods}
