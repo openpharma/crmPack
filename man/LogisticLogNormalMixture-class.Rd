@@ -32,6 +32,8 @@ class.
 }}
 
 \examples{
+# nolint start
+
 ## decide on the dose grid:
 doseGrid <- 1:80
 
@@ -67,6 +69,8 @@ nodataShare <- DataMixture(doseGrid=doseGrid,
 ## now compare with the resulting prior model:
 priorSamplesShare <- mcmc(nodataShare, modelShare, options)
 plot(priorSamplesShare, modelShare, nodataShare)
+
+# nolint end
 }
 \seealso{
 the \code{\linkS4class{DataMixture}} class for use with this model

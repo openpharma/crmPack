@@ -1,3 +1,4 @@
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -41,4 +42,4 @@ doseRecommendation <- nextBest(myNextBest,
 # Look at the probabilities
 doseRecommendation$probs
 
-
+# nolint end

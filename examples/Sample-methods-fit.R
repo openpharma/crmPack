@@ -1,3 +1,4 @@
+# nolint start
 
 # Create some data
 data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -47,4 +48,4 @@ samples <- mcmc(data,model,options)
 
 fitted <- fit(object=samples, model=model, data=data)
 
-
+# nolint end

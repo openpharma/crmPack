@@ -1,3 +1,4 @@
+# nolint start
 
 # Create some data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -52,5 +53,4 @@ myStopping <- (myStopping1 | myStopping2) | myStopping3
 stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
 
-
-
+# nolint end

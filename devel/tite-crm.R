@@ -1,3 +1,5 @@
+# nolint start
+
 ###two examples of using crmPack to run a TITE-CRM design with overdose control
 
 library("crmPack")
@@ -180,3 +182,6 @@ savePlot <- function(myPlot,name) {
   png(filename = paste(Sys.Date(),"C:/Users/liaoz4/Documents/R/simulation_result/",name,".png",sep=""), width = 480, height = 480)
   print(myPlot)
   dev.off()}
+
+# nolint end
+

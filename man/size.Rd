@@ -58,6 +58,7 @@ far
 }}
 
 \examples{
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -107,6 +108,8 @@ mySize <- CohortSizeRange(intervals=c(0, 10),
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -156,6 +159,8 @@ mySize <- CohortSizeDLT(DLTintervals = c(0, 1),
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -213,8 +218,8 @@ mySize <- maxSize(mySize1, mySize2)
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
-
-
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -272,8 +277,8 @@ mySize <- minSize(mySize1, mySize2)
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
-
-
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -320,8 +325,8 @@ mySize <- CohortSizeConst(size=3)
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
-
-
+# nolint end
+# nolint start
 
 # create an object of class 'DataParts'
 data <- DataParts(x=c(0.1,0.5,1.5),
@@ -370,5 +375,6 @@ mySize <- CohortSizeParts(sizes=c(1,3))
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
+# nolint end
 }
 \keyword{methods}

@@ -1,3 +1,4 @@
+# nolint start
 
 # create an object of class 'DataParts'
 data <- DataParts(x=c(0.1,0.5,1.5),
@@ -39,4 +40,6 @@ doseRecommendation <- nextBest(myNextBest,
                                samples=samples, 
                                model=model, 
                                data=data)
+
+# nolint end
 

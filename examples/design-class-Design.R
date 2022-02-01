@@ -1,3 +1,4 @@
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
@@ -40,5 +41,6 @@ design <- Design(model=model,
                  cohortSize=mySize,
                  data=emptydata,
                  startingDose=3)
-  
+# nolint end
+
   

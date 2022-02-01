@@ -1,3 +1,4 @@
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
@@ -26,3 +27,5 @@ threeSims <- simulate(myDesign,
                       seed=35,
                       truth=myTruth,
                       parallel=FALSE)
+
+# nolint end

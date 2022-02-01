@@ -127,6 +127,7 @@ efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or
 }}
 
 \examples{
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -168,6 +169,10 @@ mtdNextBest <- NextBestMTD(target=0.33,
 doseRecommendation <- nextBest(mtdNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
+
+# nolint end
+
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -211,7 +216,8 @@ doseRecommendation <- nextBest(myNextBest,
 # Look at the probabilities
 doseRecommendation$probs
 
-
+# nolint end
+# nolint start
 
 # create an object of class 'DataParts'
 data <- DataParts(x=c(0.1,0.5,1.5),
@@ -253,6 +259,8 @@ doseRecommendation <- nextBest(myNextBest,
                                samples=samples, 
                                model=model, 
                                data=data)
+
+# nolint end
 
 
 # Create the data

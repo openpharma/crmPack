@@ -1,3 +1,4 @@
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
@@ -61,4 +62,4 @@ time <- system.time(mySims <- simulate(design,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
   
-  
+# nolint end

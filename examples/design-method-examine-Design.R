@@ -1,3 +1,4 @@
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
@@ -74,3 +75,5 @@ design <- Design(model=model,
                  data=emptydata,
                  startingDose=3)
 examine(design, mcmcOptions=options, maxNoIncrement = 2)
+
+# nolint end

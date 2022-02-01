@@ -1,3 +1,4 @@
+# nolint start
 
 # Create some data
 data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -30,5 +31,4 @@ posterior <- approximate(object = samples,
                                         max.time = 1,
                                         maxit = 1))
 
-
-
+# nolint end

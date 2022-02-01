@@ -1,3 +1,4 @@
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -47,3 +48,4 @@ stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
+# nolint end

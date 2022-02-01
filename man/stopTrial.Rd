@@ -157,6 +157,7 @@ myStopping <- (myStopping1 & myStopping2) | myStopping3
 
 
 
+# nolint start
 
 # Create some data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -213,8 +214,8 @@ mystopping <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
 stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
 
-
-
+# nolint end
+# nolint start
 
 # Create some data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -269,8 +270,8 @@ myStopping <- (myStopping1 | myStopping2) & myStopping3
 stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
 
-
-
+# nolint end
+# nolint start
 
 # Create some data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -325,8 +326,8 @@ myStopping <- (myStopping1 | myStopping2) | myStopping3
 stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
 
-
-
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -377,6 +378,8 @@ stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -427,6 +430,8 @@ stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -476,6 +481,8 @@ stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -525,6 +532,8 @@ stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -577,6 +586,8 @@ stopTrial(stopping=myStopping,
           model=model,
           data=data)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -631,6 +642,7 @@ stopTrial(stopping=myStopping,
           model=model,
           data=data)
 
+# nolint end
 
 # Create the data
 data <- DataDual(
@@ -690,6 +702,8 @@ stopTrial(stopping=myStopping,
           samples=samples,
           model=model,
           data=data)
+
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40,
@@ -753,8 +767,7 @@ stopTrial(stopping=myStopping,
           model=model,
           data=data)
 
-
-
+# nolint end
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
 ##Using only DLE responses with samples
 ## we need a data object with doses >= 1:

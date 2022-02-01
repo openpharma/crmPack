@@ -37,6 +37,7 @@ object for the dose-toxicity model fit
 Plotting dose-toxicity model fits
 }
 \examples{
+# nolint start
 
 # Create some data
 data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -61,7 +62,5 @@ samples <- mcmc(data, model, options)
 # for the prob(DLT) by doses
 plot(x = samples, y = model, data = data)
               
-
-
-
+# nolint end
 }

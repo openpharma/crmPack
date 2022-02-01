@@ -1,3 +1,4 @@
+# nolint start
 
 # create an object of class 'DataParts'
 data <- DataParts(x=c(0.1,0.5,1.5),
@@ -46,3 +47,4 @@ mySize <- CohortSizeParts(sizes=c(1,3))
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
+# nolint end
