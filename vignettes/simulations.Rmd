@@ -12,6 +12,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+# nolint start
 ```
 
 ## Simulation setting
@@ -105,4 +106,5 @@ mySims <- simulate(design,
                    mcmcOptions=options,
                    parallel=FALSE)
 
+# nolint end
 ```

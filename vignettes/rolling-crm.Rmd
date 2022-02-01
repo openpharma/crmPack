@@ -12,6 +12,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+# nolint start
 ```
 
 ## Example 1: Recommend a dose for the next cohort
@@ -209,9 +210,6 @@ plot(mySims)
 plot(b)
 
 mySims@stopReasons[[2]]
+
+# nolint end
 ```
-
-
-
-
-
