@@ -86,6 +86,5 @@ time <- system.time(mySims <- simulate(design,
 show(summary(mySims,truth=myTruth))
 
 # nolint end
-
 }
 \keyword{methods}

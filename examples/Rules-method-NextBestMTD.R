@@ -42,4 +42,3 @@ doseRecommendation <- nextBest(mtdNextBest,
                                samples=samples, model=model, data=data)
 
 # nolint end
-

@@ -42,4 +42,3 @@ doseRecommendation <- nextBest(myNextBest,
                                data=data)
 
 # nolint end
-

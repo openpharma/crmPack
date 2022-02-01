@@ -184,4 +184,3 @@ savePlot <- function(myPlot,name) {
   dev.off()}
 
 # nolint end
-

@@ -71,7 +71,5 @@ design <- Design(model=model,
                  data=emptydata,
                  startingDose=3)
 # nolint end
-
-  
 }
 \keyword{classes}

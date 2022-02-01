@@ -171,7 +171,6 @@ doseRecommendation <- nextBest(mtdNextBest,
                                samples=samples, model=model, data=data)
 
 # nolint end
-
 # nolint start
 
 # Create the data
@@ -261,7 +260,6 @@ doseRecommendation <- nextBest(myNextBest,
                                data=data)
 
 # nolint end
-
 
 # Create the data
 data <- Data(x=c(5, 5, 5, 10, 10, 10),
