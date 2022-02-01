@@ -27,6 +27,7 @@ an object of class \code{\linkS4class{CohortSize}} (defaults to constant
 }}
 
 \examples{
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
@@ -36,7 +37,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Choose the rule for selecting the next dose 
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
@@ -69,7 +70,6 @@ design <- Design(model=model,
                  cohortSize=mySize,
                  data=emptydata,
                  startingDose=3)
-  
-  
+# nolint end
 }
 \keyword{classes}

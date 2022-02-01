@@ -105,7 +105,7 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
   model <- h_get_logistic_log_normal()
   e <- environment(model@modelspecs)
   model@modelspecs <- function(x, y) {
-    list(refDose = refDose / sum(y), cov = cov, mean = mean)
+    list(ref_dose = ref_dose / sum(y), cov = cov, mean = mean)
   }
   environment(model@modelspecs) <- e
 
@@ -113,7 +113,7 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
   expected <- c(
     h_slots(data, c("nObs", "y", "x")),
     list(
-      refDose = model@refDose / 5,
+      ref_dose = model@ref_dose / 5,
       cov = model@cov,
       mean = model@mean
     )
@@ -133,15 +133,12 @@ test_that("h_jags_get_data throws the error when `modelspecs` does not return li
   )
 })
 
-test_that("h_jags_get_data removes zeros from modelspecs when sample from from_prior only", {
+test_that("h_jags_get_data removes ref_dose from modelspecs when sample from from_prior only", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  model@modelspecs <- function(x, y) {
-    list(refDose = 50, zeros = 1)
-  }
 
-  result <- h_jags_get_data(model, data, TRUE)
-  expect_identical(result, list(refDose = 50))
+  result <- h_jags_get_data(model, data, from_prior = TRUE)
+  expect_identical(result, h_slots(model, c("mean", "prec")))
 })
 
 # h_jags_join_models ----
