@@ -74,6 +74,7 @@ Collate:
     'Model-methods.R'
     'Rules-methods.R'
     'Design-methods.R'
+    'Rules-validity.R'
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
