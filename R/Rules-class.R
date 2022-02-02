@@ -1,22 +1,8 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
-##
-## Description:
-## Encapsulate the rules in formal classes.
-##
-## History:
-## 07/02/2014   file creation
-## 10/07/2014   Added further rule classs
-###################################################################################
+# nolint start
 
 ##' @include helpers.R
+##' @include Rules-validity.R
 {}
-
-#nolint start
 
 ## ============================================================
 
@@ -381,16 +367,16 @@ IncrementsRelative <- function(intervals,
                         increments=increments)
 }
 
-## --------------------------------------------------
-## Increments control based on number of dose levels
-## --------------------------------------------------
+# nolint end
 
-#' Increments Control Based on Number of Dose Levels
+# IncrementsNumDoseLevels-class ----
+
+#' `IncrementsNumDoseLevels`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' @slot maxLevels (`count`)\cr corresponding to the number of maximum
-#' dose levels to increment for the next dose. It defaults to 1,
+#'   dose levels to increment for the next dose. It defaults to 1,
 #' which means that no dose skipping is allowed - the next dose
 #' can be maximum one level higher than the current dose.
 #' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
@@ -401,47 +387,32 @@ IncrementsRelative <- function(intervals,
 #'
 #' @example examples/Rules-class-IncrementsNumDoseLevels.R
 #' @export
-.IncrementsNumDoseLevels <-
-  setClass(
-    Class = "IncrementsNumDoseLevels",
-    representation(
-      maxLevels = "integer",
-      basisLevel = "character"
-    ),
-    prototype(
-      maxLevels = 1L,
-      basisLevel = "lastGiven"
-    ),
-    contains = "Increments",
-    validity =
-      function(object) {
-        o <- Validate()
-
-        o$check(
-          is.scalar(object@maxLevels) &&
-            is.integer(object@maxLevels) &&
-            object@maxLevels > 0,
-          "maxLevels must be scalar positive integer"
-        )
-        o$check(
-          is.scalar(object@basisLevel) && object@basisLevel %in% c("lastGiven", "maxGiven"),
-          "basisLevel must be either 'lastGiven' or 'maxGiven'"
-        )
-
-        o$result()
-      }
-  )
+.IncrementsNumDoseLevels <- setClass(
+  Class = "IncrementsNumDoseLevels",
+  contains = "Increments",
+  representation = representation(
+    maxLevels="integer", 
+    basisLevel="character"
+  ),
+  prototype(
+    maxLevels = 1L,
+    basisLevel = "lastGiven"
+  ),
+  validity = validate_Increments_NumDoseLevels
+)
 
 #' @rdname IncrementsNumDoseLevels-class
 #'
 #' @export
 IncrementsNumDoseLevels <- function(maxLevels=1,
-                                    basisLevel="lastGiven")
-{
-  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels),
-                           basisLevel=basisLevel)
+                                    basisLevel="lastGiven"){
+  .IncrementsNumDoseLevels(
+    maxLevels=safeInteger(maxLevels),
+    basisLevel=basisLevel
+    )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Increments control based on relative differences in intervals,
@@ -2080,4 +2051,4 @@ SafetyWindowConst <- function(patientGap,
 
 ## ============================================================
 
-#nolint end
+# nolint end

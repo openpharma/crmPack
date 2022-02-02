@@ -730,44 +730,50 @@ setMethod("maxDose",
               return(ret)
           })
 
+# nolint end
 
-## --------------------------------------------------
-## The maximum allowable number of dose levels method
-## --------------------------------------------------
+# maxDose-IncrementsNumDoseLevels ----
 
-#' @describeIn maxDose Determine the maximum possible next dose based on
-#' maximum dose levels to increment for the next dose.
+#' @rdname maxDose
+#' 
+#' @description Increments control based on number of dose levels
+#'   Increment rule to determine the maximum possible next dose based on
+#'   maximum dose levels to increment for the next dose. 
+#'   Increment rule can be applied to last dose or maximum dose given so far.
 #'
+#' @aliases maxDose-IncrementsNumDoseLevels
 #' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsNumDoseLevels",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      # Determine what is the basis level for increment,
-      # i.e. the last dose or the max dose applied.
-      basisDoseLevel <- ifelse(increments@basisLevel == "lastGiven",
-        tail(data@xLevel, 1),
-        max(data@xLevel)
-      )
+#' @export
+#' 
+setMethod(
+  "maxDose",
+  signature = signature(
+    increments = "IncrementsNumDoseLevels",
+    data = "Data"
+  ),
+  definition  = function(increments, data, ...) {
+    # Determine what is the basis level for increment,
+    # i.e. the last dose or the max dose applied.
+    basisDoseLevel <- ifelse(
+                        increments@basisLevel == "lastGiven",
+                        tail(
+                          data@xLevel, 
+                          1
+                        ),
+                         max(data@xLevel)
+                      )
 
-      # determine the maximum next dose level.
-      maxNextDoseLevel <- min(
-        length(data@doseGrid),
-        basisDoseLevel + increments@maxLevels
-      )
+    maxNextDoseLevel <- min(
+                          length(data@doseGrid),
+                          basisDoseLevel + increments@maxLevels
+                        )
 
-      # so the maximum next dose is:
-      ret <- data@doseGrid[maxNextDoseLevel]
+    data@doseGrid[maxNextDoseLevel]
 
-      return(ret)
     }
 )
 
-
+# nolint start
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments, with special rules for
