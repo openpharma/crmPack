@@ -127,6 +127,7 @@ efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or
 }}
 
 \examples{
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -141,7 +142,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -169,6 +170,9 @@ doseRecommendation <- nextBest(mtdNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
+# nolint end
+# nolint start
+
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
              y=c(0, 0, 0, 0, 0, 0, 1, 0),
@@ -182,7 +186,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -211,7 +215,8 @@ doseRecommendation <- nextBest(myNextBest,
 # Look at the probabilities
 doseRecommendation$probs
 
-
+# nolint end
+# nolint start
 
 # create an object of class 'DataParts'
 data <- DataParts(x=c(0.1,0.5,1.5),
@@ -227,7 +232,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -254,6 +259,7 @@ doseRecommendation <- nextBest(myNextBest,
                                model=model, 
                                data=data)
 
+# nolint end
 
 # Create the data
 data <- Data(x=c(5, 5, 5, 10, 10, 10),

@@ -60,6 +60,7 @@ listed.
 }}
 
 \examples{
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
@@ -69,7 +70,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Choose the rule for selecting the next dose 
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
@@ -137,6 +138,8 @@ design <- Design(model=model,
                  startingDose=3)
 examine(design, mcmcOptions=options, maxNoIncrement = 2)
 
+# nolint end
+
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
 
@@ -150,6 +153,8 @@ myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
 # Examine the design
 set.seed(4235)
 examine(myDesign)
+# nolint start
+
 # Define the dose-grid and PEM parameters
 emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
                                seq(from=10, to=80, by=2)),Tmax=60)
@@ -163,7 +168,7 @@ lambda_prior<-function(k){
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                           refDose=56,
+                           ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
@@ -210,6 +215,8 @@ set.seed(4235)
 # This procedure will take a while.
 options <- McmcOptions(burnin=10,step=1,samples=100)
 # examine(design, mcmcOptions=options)
+
+# nolint end
 }
 \keyword{methods}
 \keyword{regression}

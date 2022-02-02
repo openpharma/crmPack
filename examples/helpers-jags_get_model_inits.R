@@ -9,7 +9,7 @@ my_data <- Data(
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 56
+  ref_dose = 56
 )
 
 h_jags_get_model_inits(model = my_model, data = my_data)

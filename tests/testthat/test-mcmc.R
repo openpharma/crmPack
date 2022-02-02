@@ -3,7 +3,7 @@
 test_that("mcmc-GeneralData works as expected", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  options <- McmcOptions(burnin = 100, step = 2, samples = 1000)
+  options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
 
@@ -17,7 +17,7 @@ test_that("mcmc-GeneralData works as expected", {
 test_that("mcmc-GeneralData gets random results", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  options <- McmcOptions(burnin = 100, step = 2, samples = 1000)
+  options <- h_get_mcmc_options()
 
   result_1 <- mcmc(data = data, model = model, options = options)
   result_2 <- mcmc(data = data, model = model, options = options)
@@ -30,13 +30,7 @@ test_that("mcmc-GeneralData gets random results", {
 test_that("mcmc-GeneralData respects fixed RNG settings", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
-  options <- McmcOptions(
-    burnin = 100,
-    step = 2,
-    samples = 1000,
-    rng_kind = "Mersenne-Twister",
-    rng_seed = 1
-  )
+  options <- h_get_mcmc_options(fixed = TRUE)
 
   result_1 <- mcmc(data = data, model = model, options = options)
   result_2 <- mcmc(data = data, model = model, options = options)

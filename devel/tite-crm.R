@@ -1,3 +1,5 @@
+# nolint start
+
 ###two examples of using crmPack to run a TITE-CRM design with overdose control
 
 library("crmPack")
@@ -31,7 +33,7 @@ Tmax_=42
 
 model<-TITELogisticLogNormal(mean=c(-0.85,1),
                              cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                             refDose=56)
+                             ref_dose=56)
 
 #3) Obtain the posterior
 
@@ -180,3 +182,5 @@ savePlot <- function(myPlot,name) {
   png(filename = paste(Sys.Date(),"C:/Users/liaoz4/Documents/R/simulation_result/",name,".png",sep=""), width = 480, height = 480)
   print(myPlot)
   dev.off()}
+
+# nolint end

@@ -4,42 +4,39 @@
 \name{LogisticLogNormalSub-class}
 \alias{LogisticLogNormalSub-class}
 \alias{.LogisticLogNormalSub}
-\title{Standard logistic model with bivariate (log) normal prior with subtractive
-dose standardization}
+\alias{LogisticLogNormalSub}
+\title{\code{LogisticLogNormalSub}}
+\usage{
+LogisticLogNormalSub(mean, cov, ref_dose = 0)
+}
+\arguments{
+\item{mean}{(\code{numeric})\cr the prior mean vector.}
+
+\item{cov}{(\code{matrix})\cr the prior covariance matrix.}
+
+\item{ref_dose}{(\code{number})\cr the reference dose.}
+}
 \description{
-This is the usual logistic regression model with a bivariate normal prior on
-the intercept and log slope.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{LogisticLogNormalSub}} is the class for a standard logistic model with
+bivariate (log) normal prior with subtractive dose standardization.
 }
 \details{
-The covariate is the dose \eqn{x} minus the reference dose \eqn{x^{*}}:
-
-\deqn{logit[p(x)] = \alpha + \beta \cdot (x - x^{*})}
-where \eqn{p(x)} is the probability of observing a DLT for a given dose
-\eqn{x}.
-
-The prior is
-\deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}
-
-The slots of this class contain the mean vector and the covariance matrix of
-the bivariate normal distribution, as well as the reference dose.
+The covariate is the dose \eqn{x} minus the reference dose \eqn{x*},
+i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * (x - x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
-\section{Slots}{
-
-\describe{
-\item{\code{mean}}{the prior mean vector \eqn{\mu}}
-
-\item{\code{cov}}{the prior covariance matrix \eqn{\Sigma}}
-
-\item{\code{refDose}}{the reference dose \eqn{x^{*}}}
-}}
-
 \examples{
-
-
-model <- LogisticLogNormalSub(mean = c(-0.85, 1),
-                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           refDose = 50)
-
-
+my_model <- LogisticLogNormalSub(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+)
 }
-\keyword{classes}
+\seealso{
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
+}

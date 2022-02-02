@@ -25,6 +25,7 @@ test_that("validate_mcmc_options returns error messages for non-valid object", {
     c(
       "iterations must be integer scalar greater than or equal to 1",
       "burn-in must be lower than iterations",
+      "rng_kind must be a single string",
       paste0(
         "rng_kind must one of the following: ",
         paste(allowed_rng_kinds, collapse = ", "),

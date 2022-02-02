@@ -1,3 +1,5 @@
+---
+
 url: https://github.com/roche/crmPack
 
 template:
@@ -10,8 +12,8 @@ home:
 navbar:
   type: default
   right:
-  - icon: fa-github fa-lg
-    href: https://github.com/roche/crmPack
+    - icon: fa-github fa-lg
+      href: https://github.com/roche/crmPack
 
 development:
   mode: devel
@@ -29,11 +31,16 @@ reference:
       - DataParts
       - DataMixture
       - DataDA
+      - McmcOptions
       - AllModels
       - GeneralModel
       - Model
+      - ModelLogNormal
+      - LogisticNormal
       - LogisticLogNormal
-      - McmcOptions
+      - LogisticLogNormalSub
+      - ProbitLogNormal
+      - ProbitLogNormalRel
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -60,10 +67,10 @@ reference:
       - validate_data_parts
       - validate_data_mixture
       - validate_data_DA
+      - validate_mcmc_options
       - validate_general_model
       - validate_model
-      - validate_logistic_log_normal
-      - validate_mcmc_options
+      - validate_model_log_normal
   - title: Methods
     contents:
       - plot-Data
@@ -73,8 +80,8 @@ reference:
       - update-DataParts
       - update-DataDual
       - update-DataDA
-      - get_efficacy
-      - get_efficacy-DataDual
+      - getEff
+      - getEff-DataDual
       - sampleSize
       - sampleSize-McmcOptions
       - saveSample

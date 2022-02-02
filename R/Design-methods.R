@@ -4075,7 +4075,7 @@ setMethod("simulate",
 
                     temp_model<-LogisticLogNormal(mean=object@model@mean,
                                                   cov=object@model@cov,
-                                                  refDose=object@model@refDose)
+                                                  ref_dose=object@model@refDose)
 
                     trunk_Data<-Data(x = thisData@x,y =thisData@y,
                                      doseGrid= thisData@doseGrid,

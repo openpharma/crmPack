@@ -4,7 +4,7 @@ test_that("dose-Model works as expected", {
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    refDose = 56
+    ref_dose = 56
   )
   samples <- Samples(
     data = list(
@@ -23,7 +23,7 @@ test_that("dose-Model throws the error when prob is not a scalar", {
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    refDose = 56
+    ref_dose = 56
   )
   samples <- Samples(
     data = list(
@@ -80,7 +80,7 @@ test_that("prob-Model works as expected", {
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    refDose = 56
+    ref_dose = 56
   )
   samples <- Samples(
     data = list(
@@ -99,7 +99,7 @@ test_that("prob-Model throws the error when dose is not a scalar", {
   model <- LogisticLogNormal(
     mean = c(-0.85, 1),
     cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-    refDose = 56
+    ref_dose = 56
   )
   samples <- Samples(
     data = list(

@@ -1,3 +1,4 @@
+# nolint start
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -12,7 +13,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -44,5 +45,4 @@ mySize <- CohortSizeConst(size=3)
 # Determine the cohort size for the next cohort
 size(mySize, dose=doseRecommendation$value, data = data)
 
-
-
+# nolint end

@@ -47,6 +47,7 @@ an object of class \code{\linkS4class{GeneralSimulations}}
 Simulate outcomes from a rule-based design
 }
 \examples{
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(5, 10, 15, 25, 35, 50, 80))
@@ -60,7 +61,7 @@ myDesign <- RuleDesign(nextBest = NextBestThreePlusThree(),
 
 model <- LogisticLogNormal(mean = c(-0.85, 1),
                            cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           refDose = 50)
+                           ref_dose = 50)
   
 ## define the true function
 myTruth <- function(dose)
@@ -75,5 +76,7 @@ threeSims <- simulate(myDesign,
                       seed=35,
                       truth=myTruth,
                       parallel=FALSE)
+
+# nolint end
 }
 \keyword{methods}
