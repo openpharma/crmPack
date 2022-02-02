@@ -1,20 +1,8 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
-##
-## Description:
-## Encapsulate the rules in formal classes.
-##
-## History:
-## 07/02/2014   file creation
-## 10/07/2014   Added further rule classs
-###################################################################################
+# nolint start
 
-##' @include helpers.R
-{}
+#' @include helpers.R
+#' @include Rules-validity.R
+NULL
 
 ## ============================================================
 
@@ -925,50 +913,54 @@ StoppingMTDdistribution <- function(target,
                              prob=prob)
 }
 
+# nolint end
+
 # StoppingMTDCV-class ----
 
-#' Stop based on precision of MTD calculated as CV(MTD)
-#' 
+#' `StoppingMTDCV`
+#'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' @slot target (`numeric`)\cr toxicity target of MTD.
-#' @slot threshCV (`numeric`)\cr threshold for CV to be considered accurate enough
-#'  to stop the trial.
-#' 
+#' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
+#' which is calculated as the coefficient of variation (CV) of the MTD.
+#'
+#' @slot target (`number`)\cr TODO.
+#' @slot thresh_cv (`number`)\cr TODO.
+#'
 #' @example examples/Rules-class-StoppingMTDCV.R
 #' @export
-.StoppingMTDCV <-
-  setClass(
-    Class = "StoppingMTDCV",
-    contains = "Stopping",
-    representation(
-      target = "numeric",
-      threshCV = "numeric"
-    ),
-    prototype(
-      target = 0.33,
-      threshCV = 40
-    ),
-    validity = validate_stopping_mtd_cv
+.StoppingMTDCV <- setClass(
+  Class = "StoppingMTDCV",
+  contains = "Stopping",
+  representation = representation(
+    target = "numeric",
+    thresh_cv = "numeric"
+  ),
+  prototype(
+    target = 0.33,
+    thresh_cv = 40
+  ),
+  validity = validate_stopping_mtd_cv
 )
 
-# StoppingMTDCV-constructor ----
-
-#' Initialization function for `StoppingMTDCV`
 #' @rdname StoppingMTDCV-class
 #'
-#' @param target see above.
-#' @param threshCV see above.
-#' @return the `StoppingMTDCV` object.
+#' @param target (`number`)\cr the target toxicity probability (e.g. 0.33)
+#'   defining the MTD.
+#' @param thresh_cv (`number`)\cr the threshold relative to the MTD (e.g. 0.5).
 #'
 #' @export
-StoppingMTDCV <- function(target=0.3,
-                          threshCV=40) {
+#' @example examples/Rules-class-StoppingMTDCV.R
+#'
+StoppingMTDCV <- function(target = 0.33,
+                          thresh_cv = 40) {
   .StoppingMTDCV(
     target = target,
-    threshCV = threshCV
+    thresh_cv = thresh_cv
   )
 }
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker
@@ -2105,4 +2097,4 @@ SafetyWindowConst <- function(patientGap,
 
 ## ============================================================
 
-
+# nolint end

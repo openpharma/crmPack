@@ -5,28 +5,35 @@
 \alias{StoppingMTDCV-class}
 \alias{.StoppingMTDCV}
 \alias{StoppingMTDCV}
-\title{Stop based on precision of MTD calculated as CV(MTD)}
+\title{\code{StoppingMTDCV}}
 \usage{
-StoppingMTDCV(target, threshCV)
+StoppingMTDCV(target = 0.33, thresh_cv = 40)
+}
+\arguments{
+\item{target}{(\code{number})\cr the target toxicity probability (e.g. 0.33)
+defining the MTD.}
+
+\item{thresh_cv}{(\code{number})\cr the threshold relative to the MTD (e.g. 0.5).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\code{\link{StoppingMTDCV}} is a class for stopping rule based on precision of MTD
+which is calculated as the coefficient of variation (CV) of the MTD.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{numeric})\cr toxicity target of MTD}
+\item{\code{target}}{(\code{number})\cr TODO.}
 
-\item{\code{threshCV}}{(\code{numeric})\cr threshold for CV to be considered accurate enough
-to stop the trial}
+\item{\code{thresh_cv}}{(\code{number})\cr TODO.}
 }}
 
 \examples{
-
-# As example, here is the rule for: 
-#   stopping the study if the MTD estimation is precise enough, i.e. if robust
-#   coefficient of variation of the MTD is below 40\%
-
-myStopping <- StoppingMTDCV(target = 0.3,
-                            threshCV = 40)
+# Stopping the study if the MTD estimation is precise enough, i.e. if robust
+# coefficient of variation of the MTD is below 40\%.
+my_stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 40)
+# Stopping the study if the MTD estimation is precise enough, i.e. if robust
+# coefficient of variation of the MTD is below 40\%.
+my_stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 40)
 }
