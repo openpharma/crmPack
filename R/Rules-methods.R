@@ -1487,11 +1487,11 @@ setMethod("stopTrial",
 #' @rdname stopTrial
 #'
 #' @description Stopping rule based precision of the MTD estimation.
-#'   trial is stopped, when the MTD can be estimated with sufficient precision.
+#'   The trial is stopped, when the MTD can be estimated with sufficient precision.
 #'   The criteria is based on the robust coefficient of variation (CV) calculated
 #'   from the posterior distribution.
-#'   The robust CV is defined `mad(MTD) / median(MTD)`, where `mad` is Median
-#'   Absolute Deviation.
+#'   The robust CV is defined `mad(MTD) / median(MTD)`, where `mad` is the median
+#'   absolute deviation.
 #'
 #' @aliases stopTrial-StoppingMTDCV
 #' @example examples/Rules-method-stopTrial-StoppingMTDCV.R

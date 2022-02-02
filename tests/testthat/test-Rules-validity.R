@@ -7,9 +7,23 @@ test_that("validate_stopping_mtd_cv passes for valid object", {
 
 test_that("validate_stopping_mtd_cv returns expected messages for non-valid object", {
   object <- StoppingMTDCV()
-  object@target <- c(1.3, -5)
-  object@thresh_cv <- c(2.3, -7)
+  object@target <- c(-0.3)
+  object@thresh_cv <- c(-40)
 
+  expect_equal(
+    validate_stopping_mtd_cv(object),
+    c(
+      "target must be probability > 0 and < 1",
+      "thresh_cv must be percentage > 0"
+    )
+  )
+})
+
+test_that("validate_stopping_mtd_cv returns expected messages for non-valid object", {
+  object <- StoppingMTDCV()
+  object@target <- c(3)
+  object@thresh_cv <- c(0)
+  
   expect_equal(
     validate_stopping_mtd_cv(object),
     c(
