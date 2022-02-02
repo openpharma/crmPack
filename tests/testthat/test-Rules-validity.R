@@ -23,7 +23,7 @@ test_that("validate_stopping_mtd_cv returns expected messages for non-valid obje
   object <- StoppingMTDCV()
   object@target <- c(3)
   object@thresh_cv <- c(0)
-  
+
   expect_equal(
     validate_stopping_mtd_cv(object),
     c(

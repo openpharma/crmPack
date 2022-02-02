@@ -598,31 +598,26 @@ IncrementMin <- function(IncrementsList)
   .IncrementMin(IncrementsList=IncrementsList)
 }
 
+# Stopping-class ----
 
-
-
-## ============================================================
-
-## --------------------------------------------------
-## Virtual class for stopping rules
-## --------------------------------------------------
-
-##' The virtual class for stopping rules
-##'
-##' @seealso \code{\linkS4class{StoppingList}},
-##' \code{\linkS4class{StoppingCohortsNearDose}},
-##' \code{\linkS4class{StoppingPatientsNearDose}},
-##' \code{\linkS4class{StoppingMinCohorts}},
-##' \code{\linkS4class{StoppingMinPatients}},
-##' \code{\linkS4class{StoppingTargetProb}}
-##' \code{\linkS4class{StoppingMTDdistribution}},
-##' \code{\linkS4class{StoppingTargetBiomarker}},
-##' \code{\linkS4class{StoppingHighestDose}}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="Stopping",
-         contains=list("VIRTUAL"))
+#' `Stopping`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Stopping`] is a class for for stopping rules.
+#'
+#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
+#'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
+#'   [`StoppingMTDCV`].
+#'
+#' @aliases Stopping
+#' @export
+#'
+setClass(
+  Class = "Stopping",
+  contains = list("VIRTUAL")
+)
 
 
 ## --------------------------------------------------
@@ -926,10 +921,11 @@ StoppingMTDdistribution <- function(target,
 #'
 #' @slot target (`number`)\cr toxicity target of MTD.
 #' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
-#'  to stop the trial.
+#'   to stop the trial.
 #'
-#' @example examples/Rules-class-StoppingMTDCV.R
+#' @aliases StoppingMTDCV
 #' @export
+#' 
 .StoppingMTDCV <- setClass(
   Class = "StoppingMTDCV",
   contains = "Stopping",

@@ -103,11 +103,11 @@ for the decision.
 This function returns whether to stop the trial.
 
 Stopping rule based precision of the MTD estimation.
-trial is stopped, when the MTD can be estimated with sufficient precision.
+The trial is stopped, when the MTD can be estimated with sufficient precision.
 The criteria is based on the robust coefficient of variation (CV) calculated
 from the posterior distribution.
-The robust CV is defined \code{mad(MTD) / median(MTD)}, where \code{mad} is Median
-Absolute Deviation.
+The robust CV is defined \code{mad(MTD) / median(MTD)}, where \code{mad} is the median
+absolute deviation.
 }
 \section{Functions}{
 \itemize{
@@ -666,7 +666,7 @@ my_data <- Data(
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 56
+  ref_dose = 56
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
