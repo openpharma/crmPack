@@ -1131,9 +1131,15 @@ specific case of the function contained in the model space:
 
 <<true-def, fig=TRUE>>=
 ## define the true function
-myTruth <- function(dose)
-{
-    model@prob(dose, alpha0=7, alpha1=8)
+myTruth <- function(dose) {
+  samples <- Samples(
+    data = list(
+      alpha0 = 7,
+      alpha1 = 8
+    ),
+    options = McmcOptions(samples = 1)
+  )
+  prob(dose, model, samples)
 }
 
 ## plot it in the range of the dose grid
