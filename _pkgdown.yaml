@@ -67,6 +67,7 @@ reference:
       - validate_model
       - validate_logistic_log_normal
       - validate_mcmc_options
+      - validate_increments_numdoselevels
   - title: Methods
     contents:
       - plot-Data
