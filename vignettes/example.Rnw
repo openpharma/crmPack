@@ -1381,13 +1381,7 @@ can predict the future course of the trial, given the current data. In our
 illustrating example, this would work as follows.
 
 The rationale of the \texttt{simulate} call is now that we specify as the
-\texttt{truth} argument the \texttt{prob} function from our assumed model, which
-has additional arguments (in our case \texttt{alpha0} and \texttt{alpha1}) on
-top of the first argument \texttt{dose}:
-
-<<explain-fut>>=
-model@prob
-@
+\texttt{truth} argument the \texttt{prob} function from our assumed model.
 
 For the simulations, these arguments are internally given by the values
 contained in the data frame given to \texttt{simulate} as the \texttt{args}
@@ -1425,7 +1419,13 @@ time <- system.time(futureSims <- simulate(
     ## supply the new design here
     nowDesign,
     ## the truth is the assumed prob function
-    truth=model@prob,
+    truth=function(dose, alpha0, alpha1) {
+      samples <- Samples(
+        data = list(alpha0 = alpha0, alpha1 = alpha1),
+        options = McmcOptions(samples = 1)
+      )
+      prob(dose, model, samples)
+    },
     ## further arguments are the
     ## posterior samples
     args=postSamples,

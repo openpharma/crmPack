@@ -9,7 +9,7 @@ h_assert_prob(prob, is_sample_scalar)
 \arguments{
 \item{prob}{(\code{number} or \code{numeric})\cr the prob to be validated.}
 
-\item{is_sample_scalar}{(\code{flag})\cr is model parametr sample scalar?}
+\item{is_sample_scalar}{(\code{flag})\cr is model parameter sample scalar?}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

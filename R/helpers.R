@@ -855,7 +855,7 @@ h_validate_combine_results <- function(v1, v2) {
 #' then the `prob` must be a scalar value.
 #'
 #' @param prob (`number` or `numeric`)\cr the prob to be validated.
-#' @param is_sample_scalar (`flag`)\cr is model parametr sample scalar?
+#' @param is_sample_scalar (`flag`)\cr is model parameter sample scalar?
 #'
 #' @export
 #' @examples
@@ -881,7 +881,7 @@ h_assert_prob <- function(prob, is_sample_scalar) {
 #' then the `dose` must be a scalar value.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose to be validated.
-#' @param is_sample_scalar (`flag`)\cr is model parametr sample scalar?
+#' @param is_sample_scalar (`flag`)\cr is model parameter sample scalar?
 #'
 #' @export
 #' @examples
