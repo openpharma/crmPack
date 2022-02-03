@@ -391,19 +391,23 @@ IncrementsRelative <- function(intervals,
   Class = "IncrementsNumDoseLevels",
   contains = "Increments",
   representation = representation(
-    maxLevels="integer", 
-    basisLevel="character"
+    maxLevels = "integer", 
+    basisLevel = "character"
   ),
   prototype(
     maxLevels = 1L,
     basisLevel = "lastGiven"
   ),
-  validity = validate_Increments_NumDoseLevels
+  validity = validate_increments_numdoselevels
 )
+
+# IncrementsNumDoseLevels-constructor ----
 
 #' @rdname IncrementsNumDoseLevels-class
 #'
 #' @export
+#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#' 
 IncrementsNumDoseLevels <- function(maxLevels=1,
                                     basisLevel="lastGiven"){
   .IncrementsNumDoseLevels(
