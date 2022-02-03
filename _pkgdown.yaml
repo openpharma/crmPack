@@ -59,6 +59,8 @@ reference:
       - h_jags_write_model
       - h_jags_extract_samples
       - h_null_if_na
+      - h_assert_prob
+      - h_assert_dose
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -88,10 +90,22 @@ reference:
       - saveSample-McmcOptions
       - dose
       - dose-Model
+      - dose-LogisticNormal
+      - dose-LogisticLogNormal
+      - dose-LogisticLogNormalSub
+      - dose-ProbitLogNormal
+      - dose-ProbitLogNormalRel
+      - dose-LogisticLogNormalMixture
       - dose-ModelTox
       - dose-ModelTox_noSamples
       - prob
       - prob-Model
+      - prob-LogisticNormal
+      - prob-LogisticLogNormal
+      - prob-LogisticLogNormalSub
+      - prob-ProbitLogNormal
+      - prob-ProbitLogNormalRel
+      - prob-LogisticLogNormalMixture
       - prob-ModelTox
       - prob-ModelTox_noSamples
   - title: Functions

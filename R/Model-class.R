@@ -73,15 +73,16 @@ NULL
   validity = validate_general_model
 )
 
-# Model-class ----
+# Model-class (TO REMOVE) ----
 
 #' `Model`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("superseded")`
 #'
-#' [`Model`] is the class for single agent dose escalation, from which all other
-#' specific models inherit. The [`Model`] class inherits from
-#' [`GeneralModel`].
+#' [`Model`] is the old class for single agent dose escalation, from which all
+#' other specific models inherit. The [`Model`] class inherits from
+#' [`GeneralModel`]. It will be soon removed as the `dose` and `prob` are
+#' moved to a separate S4 class-specific methods.
 #'
 #' @note The `datamodel` must obey the convention that the data input is called
 #'   exactly as in the [`Data`] class. All prior distributions for parameters
@@ -117,9 +118,6 @@ NULL
 #'   for a specific dose, based on the model parameters and additional prior
 #'   settings (see the details above).
 #'
-#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalLogDose`],
-#'   [`LogisticKadane`], [`DualEndpoint`].
 #'
 #' @aliases Model
 #' @export
@@ -138,7 +136,9 @@ NULL
   validity = validate_model
 )
 
-# ModelLogNormal-class ----
+# ModelLogNormal ----
+
+## class ----
 
 #' `ModelLogNormal`
 #'
@@ -179,7 +179,7 @@ NULL
   validity = validate_model_log_normal
 )
 
-# ModelLogNormal-constructor ----
+## constructor ----
 
 #' @rdname ModelLogNormal-class
 #'
@@ -215,7 +215,9 @@ ModelLogNormal <- function(mean, cov, ref_dose = 0) {
   )
 }
 
-# LogisticNormal-class ----
+# LogisticNormal ----
+
+## class ----
 
 #' `LogisticNormal`
 #'
@@ -241,7 +243,7 @@ ModelLogNormal <- function(mean, cov, ref_dose = 0) {
   contains = "ModelLogNormal"
 )
 
-# LogisticNormal-constructor ----
+## constructor ----
 
 #' @rdname LogisticNormal-class
 #'
@@ -265,17 +267,13 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
       alpha1 <- theta[2]
-    },
-    dose = function(prob, alpha0, alpha1) {
-      exp((logit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      plogis(alpha0 + alpha1 * log(dose / ref_dose))
     }
   )
 }
 
-# LogisticLogNormal-class ----
+# LogisticLogNormal ----
+
+## class ----
 
 #' `LogisticLogNormal`
 #'
@@ -301,7 +299,7 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
   contains = "ModelLogNormal"
 )
 
-# LogisticLogNormal-constructor ----
+## constructor ----
 
 #' @rdname LogisticLogNormal-class
 #'
@@ -320,17 +318,13 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
         logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
-    },
-    dose = function(prob, alpha0, alpha1) {
-      exp((logit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      plogis(alpha0 + alpha1 * log(dose / ref_dose))
     }
   )
 }
 
-# LogisticLogNormalSub-class ----
+# LogisticLogNormalSub ----
+
+## class ----
 
 #' `LogisticLogNormalSub`
 #'
@@ -356,7 +350,7 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
   contains = "ModelLogNormal"
 )
 
-# LogisticLogNormalSub-constructor ----
+## constructor ----
 
 #' @rdname LogisticLogNormalSub-class
 #'
@@ -378,17 +372,13 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
     },
     init = function() {
       list(theta = c(0, -20))
-    },
-    dose = function(prob, alpha0, alpha1) {
-      ((logit(prob) - alpha0) / alpha1) + ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      plogis(alpha0 + alpha1 * (dose - ref_dose))
     }
   )
 }
 
-# ProbitLogNormal-class ----
+# ProbitLogNormal ----
+
+## class ----
 
 #' `ProbitLogNormal`
 #'
@@ -419,7 +409,7 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
   contains = "ModelLogNormal"
 )
 
-# ProbitLogNormal-constructor ----
+## constructor ----
 
 #' @rdname ProbitLogNormal-class
 #'
@@ -438,17 +428,13 @@ ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
         probit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
-    },
-    dose = function(prob, alpha0, alpha1) {
-      exp((probit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      pnorm(alpha0 + alpha1 * log(dose / ref_dose))
     }
   )
 }
 
-# ProbitLogNormalRel-class ----
+# ProbitLogNormalRel ----
+
+## class ----
 
 #' `ProbitLogNormalRel`
 #'
@@ -479,7 +465,7 @@ ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
   contains = "ModelLogNormal"
 )
 
-# ProbitLogNormalRel-constructor ----
+## constructor ----
 
 #' @rdname ProbitLogNormalRel-class
 #'
@@ -498,12 +484,6 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
         probit(p[i]) <- alpha0 + alpha1 * (x[i] / ref_dose)
         y[i] ~ dbern(p[i])
       }
-    },
-    dose = function(prob, alpha0, alpha1) {
-      ((probit(prob) - alpha0) / alpha1) * ref_dose
-    },
-    prob = function(dose, alpha0, alpha1) {
-      pnorm(alpha0 + alpha1 * (dose / ref_dose))
     }
   )
 }
@@ -2413,17 +2393,6 @@ LogisticLogNormalMixture <- function(mean,
                                      refDose=refDose,
                                      catProbs=c(1 - shareWeight, shareWeight))
                               },
-                            dose=
-                              function(prob, alpha0, alpha1, comp){
-                                stop("not implemented")
-                              },
-                            prob=
-                              function(dose, alpha0, alpha1, comp){
-                                StandLogDose <- log(dose / refDose)
-                                selectMat <- cbind(seq_len(nrow(alpha0)), comp)
-                                return(plogis(alpha0[selectMat] +
-                                                alpha1[selectMat] * StandLogDose))
-                              },
                             init=
                               function(){
                                 list(theta=matrix(c(0, 0, 1, 1), nrow=2))
@@ -3927,7 +3896,6 @@ validObject(FractionalCRM(
   doseGrid = c(10, 30, 50, 100),
   sigma2 = 2
 ))
-
 
 ## ============================================================
 # nolint end

@@ -845,3 +845,54 @@ h_validate_combine_results <- function(v1, v2) {
     }
   }
 }
+
+#' Assert that the value of `prob` argument of [`dose`] method is valid
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simple helper function that asserts that `prob` argument of [`dose`]
+#' methods is valid. In particular, if the model parameter sample is a vector,
+#' then the `prob` must be a scalar value.
+#'
+#' @param prob (`number` or `numeric`)\cr the prob to be validated.
+#' @param is_sample_scalar (`flag`)\cr is model parametr sample scalar?
+#'
+#' @export
+#' @examples
+#' h_assert_prob(c(0.5, 0.9), TRUE)
+#' \dontrun{
+#' h_assert_prob(c(0.5, 0.9), FALSE) # Error.
+#' }
+#'
+h_assert_prob <- function(prob, is_sample_scalar) {
+  if (is_sample_scalar) {
+    assert_numeric(prob, lower = 0L, upper = 1L, any.missing = FALSE)
+  } else {
+    assert_number(prob, lower = 0L, upper = 1L)
+  }
+}
+
+#' Assert that the value of `dose` argument of [`prob`] method is valid
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simple helper function that asserts that `dose` argument of [`prob`]
+#' methods is valid. In particular, if the model parameter sample is a vector,
+#' then the `dose` must be a scalar value.
+#'
+#' @param dose (`number` or `numeric`)\cr the dose to be validated.
+#' @param is_sample_scalar (`flag`)\cr is model parametr sample scalar?
+#'
+#' @export
+#' @examples
+#' h_assert_dose(c(34, 12), TRUE)
+#' \dontrun{
+#' h_assert_dose(c(34, 12), FALSE) # Error.
+#' }
+h_assert_dose <- function(dose, is_sample_scalar) {
+  if (is_sample_scalar) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE)
+  } else {
+    assert_number(dose, lower = 0L)
+  }
+}

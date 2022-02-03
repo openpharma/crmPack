@@ -64,9 +64,15 @@ model <- LogisticLogNormal(mean = c(-0.85, 1),
                            ref_dose = 50)
   
 ## define the true function
-myTruth <- function(dose)
-{
-  model@prob(dose, alpha0=7, alpha1=8)
+myTruth <- function(dose) {
+  samples <- Samples(
+    data = list(
+      alpha0 = 7,
+      alpha1 = 8
+    ),
+    options = McmcOptions(samples = 1)
+  )
+  prob(dose, model, samples)
 }
 
 # Perform the simulation

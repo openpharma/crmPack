@@ -87,9 +87,15 @@ design <- Design(model=model,
                  startingDose=3)
 
 ## define the true function
-myTruth <- function(dose)
-{
-  model@prob(dose, alpha0=7, alpha1=8)
+myTruth <- function(dose) {
+  samples <- Samples(
+    data = list(
+      alpha0 = 7,
+      alpha1 = 8
+    ),
+    options = McmcOptions(samples = 1)
+  )
+  prob(dose, model, samples)
 }
 
 # Run the simulation on the desired design

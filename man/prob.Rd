@@ -4,6 +4,18 @@
 \alias{prob}
 \alias{prob,numeric,Model,Samples-method}
 \alias{prob-Model}
+\alias{prob,numeric,LogisticNormal,Samples-method}
+\alias{prob-LogisticNormal}
+\alias{prob,numeric,LogisticLogNormal,Samples-method}
+\alias{prob-LogisticLogNormal}
+\alias{prob,numeric,LogisticLogNormalSub,Samples-method}
+\alias{prob-LogisticLogNormalSub}
+\alias{prob,numeric,ProbitLogNormal,Samples-method}
+\alias{prob-ProbitLogNormal}
+\alias{prob,numeric,ProbitLogNormalRel,Samples-method}
+\alias{prob-ProbitLogNormalRel}
+\alias{prob,numeric,LogisticLogNormalMixture,Samples-method}
+\alias{prob-LogisticLogNormalMixture}
 \alias{prob,numeric,ModelTox,Samples-method}
 \alias{prob-ModelTox}
 \alias{prob,numeric,ModelTox,missing-method}
@@ -13,6 +25,18 @@
 prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,Model,Samples}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,LogisticNormal,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormal,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalSub,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,ProbitLogNormal,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,ModelTox,Samples}(dose, model, samples, ...)
 
@@ -43,8 +67,8 @@ as \code{dose}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Compute toxicity probabilities for a given dose, a given single
-agent dose escalation model, and samples.
+A function that computes toxicity probabilities for a given dose, a given
+single agent dose escalation model, and samples.
 
 Compute toxicity probabilities for a given dose, a given Pseudo
 DLE (dose-limiting events)/toxicity model, and samples.
@@ -53,6 +77,18 @@ Compute the toxicity probability for a given dose and a given
 Pseudo DLE (dose-limiting events)/toxicity model without samples.
 All the arguments to \code{model@prob} function (except \code{dose}) should be
 present in the \code{model} object.
+}
+\details{
+The \code{prob} function computes the probability of toxicity for at
+a given \code{dose}, using samples of the model parameter(s). Hence, the vectors
+of these samples must be included in the \code{samples} object.
+If you work with multivariate model parameters, then assume that your model
+specific \code{dose} function receives either one parameter value as a row vector,
+or a samples matrix where the rows correspond to the sampling index, i.e.
+the layout is then \verb{nSamples x dimParameter}.
+}
+\note{
+The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of each other.
 }
 \examples{
 # Create some data.

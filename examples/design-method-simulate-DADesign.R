@@ -56,10 +56,15 @@ design <- DADesign(model=model,
 
 ## set up truth curves
 
-myTruth<-function(dose){
-  
-  model@prob(dose,alpha0=2,alpha1=3)
-  
+myTruth <- function(dose) {
+  samples <- Samples(
+    data = list(
+      alpha0 = 2,
+      alpha1 = 3
+    ),
+    options = McmcOptions(samples = 1)
+  )
+  prob(dose, model, samples)
 }
 
 curve(myTruth(x), from=0, to=100, ylim=c(0, 1))

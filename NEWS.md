@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Moved `dose` and `prob` functions from model class slots to model class methods
+  for several models.
 * Renamed `refDose` slot to `ref_dose` in `ModelLogNormal` class.
 * Created new `ModelLogNormal` class as a parent class for all the models with
   reference dose and bivariate (log) normal prior on the model parameters.
