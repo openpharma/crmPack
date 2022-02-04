@@ -24,7 +24,7 @@ test_that("validate_increments_numdoselevels returns expected messages for non-v
     validate_increments_numdoselevels(object),
     c(
       "maxLevels must be scalar positive integer",
-      "basisLevel must be either 'lastGiven' or 'maxGiven'"
+      "basisLevel must be either lastGiven or maxGiven"
     )
   )
 })
