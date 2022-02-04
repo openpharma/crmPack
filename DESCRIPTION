@@ -61,6 +61,7 @@ Collate:
     'helpers.R'
     'Data-class.R'
     'Data-methods.R'
+    'Rules-validity.R'
     'Rules-class.R'
     'Model-validity.R'
     'helpers_jags.R'
@@ -80,5 +81,6 @@ Collate:
     'Simulations-methods.R'
     'crmPack-package.R'
     'logger.R'
+    'test-Rules-validity.R'
     'utils.R'
 Config/testthat/edition: 3
