@@ -1,4 +1,9 @@
 # Version 1.0.9000
+* Renamed `refDose` slot to `ref_dose` in `ModelLogNormal` class.
+* Created new `ModelLogNormal` class as a parent class for all the models with
+  reference dose and bivariate (log) normal prior on the model parameters.
+* Created new `ProbitLogNormalRel` model class to support the (standardized) dose.
+* Changed `ProbitLogNormal` so that it supports the log of (standardized) dose only.
 * Added logger feature. Its user interface consists of four functions:
   `enable_logging`, `disable_logging`, `is_logging_enabled`, `log_trace`.
 * Modified `mcmc` method arguments: renamed `fromPrior` to `from_prior`, removed

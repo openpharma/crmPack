@@ -128,8 +128,8 @@ h_jags_get_data <- function(model, data, from_prior) {
   assert_list(modelspecs)
 
   data_model <- if (from_prior) {
-    # Remove elements named "zeros" to avoid JAGS error of unused variables.
-    modelspecs <- modelspecs[setdiff(names(modelspecs), "zeros")]
+    # Remove elements named "ref_dose" to avoid JAGS error of unused variables.
+    modelspecs <- modelspecs[setdiff(names(modelspecs), "ref_dose")]
     NULL
   } else {
     # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as

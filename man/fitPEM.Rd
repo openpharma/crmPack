@@ -77,7 +77,7 @@ lambda_prior<-function(k){
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                           refDose=56,
+                           ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)

@@ -25,6 +25,8 @@ in an object of class \code{\linkS4class{DataDA}}}
 }}
 
 \examples{
+# nolint start
+
 # Define the dose-grid and PEM parameters
 emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
                                seq(from=10, to=80, by=2)),Tmax=60)
@@ -38,7 +40,7 @@ lambda_prior<-function(k){
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                           refDose=56,
+                           ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
@@ -78,5 +80,6 @@ design <- DADesign(model=model,
                    data=emptydata,
                    safetyWindow=mysafetywindow,
                    startingDose=3)
+# nolint end
 }
 \keyword{classes}

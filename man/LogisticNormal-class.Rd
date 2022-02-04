@@ -7,14 +7,14 @@
 \alias{LogisticNormal}
 \title{\code{LogisticNormal}}
 \usage{
-LogisticNormal(mean, cov, refDose)
+LogisticNormal(mean, cov, ref_dose = 0)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
 
 \item{cov}{(\code{matrix})\cr the prior covariance matrix.}
 
-\item{refDose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -24,41 +24,26 @@ a bivariate normal prior on the intercept and slope.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
-the reference dose \eqn{x^{*}}:
-\deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})},
+the reference dose \eqn{x*}, i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
 where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
-The prior is: \deqn{(\alpha, \beta) \sim Normal(\mu, \Sigma)}.
-The slots of this class contain the mean vector, the covariance and
-precision matrices of the bivariate normal distribution, as well as the
-reference dose.
+The prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
 }
-\section{Slots}{
-
-\describe{
-\item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
-
-\item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix.}
-
-\item{\code{prec}}{the prior precision matrix, which is an inverse matrix of the \code{cov}.}
-
-\item{\code{refDose}}{(\code{number})\cr the reference dose.}
-}}
-
 \examples{
 # Define the dose-grid.
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
 my_model <- LogisticNormal(
   mean = c(-0.85, 1),
-  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 50
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
 )
 
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 1000)
+my_options <- McmcOptions(burnin = 10, step = 2, samples = 100)
 
 samples <- mcmc(empty_data, my_model, my_options)
 samples
 }
 \seealso{
-\code{\link{LogisticLogNormal}}.
+\code{\link{ModelLogNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
 }
