@@ -4,6 +4,7 @@
 \alias{maxDose}
 \alias{maxDose,IncrementsRelative,Data-method}
 \alias{maxDose,IncrementsNumDoseLevels,Data-method}
+\alias{maxDose-IncrementsNumDoseLevels}
 \alias{maxDose,IncrementsRelativeParts,DataParts-method}
 \alias{maxDose,IncrementsRelativeDLT,Data-method}
 \alias{maxDose,IncrementMin,Data-method}
@@ -34,6 +35,11 @@ the maximum possible next dose
 }
 \description{
 Determine the upper limit of the next dose based on the increments rule.
+
+Increments control based on number of dose levels
+Increment rule to determine the maximum possible next dose based on
+maximum dose levels to increment for the next dose.
+Increment rule can be applied to last dose or maximum dose given so far.
 }
 \details{
 This function outputs the maximum possible next dose, based on the
@@ -43,9 +49,6 @@ corresponding rule \code{increments} and the \code{data}.
 \itemize{
 \item \code{maxDose,IncrementsRelative,Data-method}: Determine the maximum possible next dose based on
 relative increments
-
-\item \code{maxDose,IncrementsNumDoseLevels,Data-method}: Determine the maximum possible next dose based on
-maximum dose levels to increment for the next dose.
 
 \item \code{maxDose,IncrementsRelativeParts,DataParts-method}: Determine the maximum possible next dose based on
 relative increments and part 1 and 2

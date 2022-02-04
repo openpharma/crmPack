@@ -6,8 +6,9 @@ Authors@R: c(
   person("Giuseppe", "Palermo", email = "giuseppe.palermo@roche.com", role = "aut"),
   person("Thomas", "Jaki", email = "jaki.thomas@gmail.com", role = "aut"),
   person("Jiawen", "Zhu", email = "zhu.jiawen@gene.com", role = "aut"),
-  person("Ziwei", "Liao", email = "ziwei.liao.fdu@gmail.com", role = "aut"))
-  person("Dimitris", "Kontos", email = "dimitris.kontos@clinbay.com", role = "aut"))
+  person("Ziwei", "Liao", email = "ziwei.liao.fdu@gmail.com", role = "aut"),
+  person("Dimitris", "Kontos", email = "dimitris.kontos@clinbay.com", role = "aut")
+  )
 Description: Implements a wide range of model-based dose
     escalation designs, ranging from classical and modern continual
     reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
@@ -81,6 +82,5 @@ Collate:
     'Simulations-methods.R'
     'crmPack-package.R'
     'logger.R'
-    'test-Rules-validity.R'
     'utils.R'
 Config/testthat/edition: 3
