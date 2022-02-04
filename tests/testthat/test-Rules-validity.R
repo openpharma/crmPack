@@ -17,14 +17,14 @@ test_that("validate_increments_numdoselevels passes for valid object", {
 
 test_that("validate_increments_numdoselevels returns expected messages for non-valid object", {
   object <- IncrementsNumDoseLevels()
-  object@maxLevels <- c(-1)
-  object@basisLevel <- c(2)
+  object@maxLevels <- c(-1L)
+  object@basisLevel <- c("minGiven")
   
   expect_equal(
     validate_increments_numdoselevels(object),
     c(
       "maxLevels must be scalar positive integer",
-      "basisLevel must be either lastGiven or maxGiven"
+      "basisLevel must be either 'lastGiven' or 'maxGiven'"
     )
   )
 })
