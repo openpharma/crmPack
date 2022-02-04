@@ -60,6 +60,7 @@ Collate:
     'helpers.R'
     'Data-class.R'
     'Data-methods.R'
+    'Rules-validity.R'
     'Rules-class.R'
     'Model-validity.R'
     'helpers_jags.R'
