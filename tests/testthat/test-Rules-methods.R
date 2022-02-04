@@ -1,74 +1,43 @@
 # maxDose-IncrementsNumDoseLevels ----
 
-increments <- IncrementsRelativePerCohortDLT(
-  DLTintervals = c(0, 1, 2),
-  increments = c(2.00, 0.50, 0.30)
-)
+# Sample data to test maxDose of IncrementsNumDoseLevels method.
+my_data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10 ),
+                y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+                cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+                doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from=10, to=80, by=2))
+                )
 
-# Starting point for data below (no DLTs). Last dose is 50.
-data_template <- Data(
-  x = c(10, 10, 16, 20, 30, 40, 50, 50, 50),
-  y = c(0, 0, 0, 0, 0, 0, 0, 0, 0),
-  cohort = c(0, 0, 1, 2, 3, 4, 5, 5, 5),
-  doseGrid = seq(from = 10, to = 200, by = 1)
-)
-
-test_that("IncrementsRelativePerCohortDLT works correctly without DLTs", {
-  data <- data_template
+test_that("IncrementsNumDoseLevels works correctly if basislevel 'lastGiven' is defined", {
+  Increments <- IncrementsNumDoseLevels(
+    maxLevels = 2, 
+    basisLevel = "lastGiven"
+    )
   result <- maxDose(
-    increments,
-    data = data
+    Increments,
+    data=my_data
   )
-  expect_equal(result, 150)  # 50 * (1 + 2) = 150.
+  expect_equal(result, 14) # maxDose is 14 if basislevel='lastGiven'.
 })
 
-test_that("IncrementsRelativePerCohortDLT works correctly without DLTs in the last cohort", {
-  data <- data_template
-  data@y <- as.integer(c(1, 0, 0, 0, 0, 0, 0, 0, 0))  # Some DLTs, but not in the last cohort.
-  result <- maxDose(
-    increments,
-    data = data
+test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined and default is used", {
+  Increments <- IncrementsNumDoseLevels(
+    maxLevels = 2
   )
-  expect_equal(result, 75)  # 50 * (1 + 0.5) = 75.
+  result <- maxDose(
+    Increments,
+    data=my_data
+  )
+  expect_equal(result, 14) # maxDose is 14 if basislevel not defined, then reference value is used.
 })
 
-
-test_that("IncrementsRelativePerCohortDLT works correctly when 2 DLTs not the last cohort", {
-  data <- data_template
-  data@y <- as.integer(c(1, 1, 0, 0, 0, 0, 0, 0, 0))  # Some DLTs, but not in the last cohort.
-  result <- maxDose(
-    increments,
-    data = data
+test_that("IncrementsNumDoseLevels works correctly if basislevel 'maxGiven' is defined", {
+  Increments <- IncrementsNumDoseLevels(
+    maxLevels = 2, 
+    basisLevel = "maxGiven"
   )
-  expect_equal(result, 65)  # 50 * (1 + 0.3) = 65.
-})
-
-test_that("IncrementsRelativePerCohortDLT works correctly when 1 DLT in last cohort", {
-  data <- data_template
-  data@y <- as.integer(c(1, 0, 0, 0, 1, 0, 1, 0, 0))  # Overall more than 1 DLT, but only 1 in last cohort.
   result <- maxDose(
-    increments,
-    data = data
+    Increments,
+    data=my_data
   )
-  expect_equal(result, 75)  # 50 * (1 + 0.5) = 75.
-})
-
-test_that("IncrementsRelativePerCohortDLT works correctly when 2 DLTs in last cohort", {
-  data <- data_template
-  data@y <- as.integer(c(1, 0, 0, 0, 1, 0, 1, 0, 1))
-  result <- maxDose(
-    increments,
-    data = data
-  )
-  expect_equal(result, 65)  # 50 * (1 + 0.3) = 65.
-})
-
-test_that("IncrementsRelativePerCohortDLT works correctly when 3 DLTs in last cohort", {
-  data <- data_template
-  data@y <- as.integer(c(1, 0, 0, 0, 1, 0, 1, 1, 1))
-  result <- maxDose(
-    increments,
-    data = data
-  )
-  expect_equal(result, 65)  # 50 * (1 + 0.3) = 65.
+  expect_equal(result, 20) # maxDose is 20 if basislevel='maxGiven'.
 })
