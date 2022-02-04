@@ -28,17 +28,3 @@ test_that("validate_increments_numdoselevels returns expected messages for non-v
     )
   )
 })
-
-test_that("validate_increments_numdoselevels returns expected messages for non-valid object", {
-  object <- StoppingMTDCV()
-  object@target <- c(3)
-  object@thresh_cv <- c("minGiven")
-  
-  expect_equal(
-    validate_stopping_mtd_cv(object),
-    c(
-      "maxLevels must be scalar positive integer",
-      "basisLevel must be either 'lastGiven' or 'maxGiven'"
-    )
-  )
-})
