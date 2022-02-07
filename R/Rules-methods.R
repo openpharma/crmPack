@@ -735,7 +735,7 @@ setMethod("maxDose",
 # maxDose-IncrementsNumDoseLevels ----
 
 #' @rdname maxDose
-#' 
+#'
 #' @description Increments control based on number of dose levels
 #'   Increment rule to determine the maximum possible next dose based on
 #'   maximum dose levels to increment for the next dose. 
