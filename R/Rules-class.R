@@ -413,7 +413,7 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
   .IncrementsNumDoseLevels(
     maxLevels=safeInteger(maxLevels),
     basisLevel=basisLevel
-    )
+  )
 }
 
 # nolint start
