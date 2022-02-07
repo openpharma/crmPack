@@ -2,9 +2,9 @@
 #' @include Samples-class.R
 NULL
 
-# dose ----
+# generic ----
 
-## generic ----
+## dose ----
 
 #' Computing the Doses for a Given Probability, Model and Samples
 #'
@@ -50,228 +50,33 @@ setGeneric(
   valueClass = "numeric"
 )
 
-## Model ----
+## doseFunction ----
 
-#' @rdname dose
+#' Getting the Dose Function for a Given Model Type
 #'
-#' @aliases dose-Model
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A function that returns a function that computes the dose reaching a
+#' specific target probability, based on the model specific parameters.
+#'
+#' @param model (`GeneralModel`)\cr the model for single agent dose escalation.
+#' @param ... model specific parameters.
+#'
+#' @return A `function` that computes doses for a given toxicity probability
+#'   and the model.
+#'
+#' @example examples/Model-method-doseFunction.R
 #' @export
 #'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "Model",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples, ...) {
-    assert_number(prob, lower = 0L, upper = 1L)
-
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(samples@data[dose_args_names], prob = prob)
-    do.call(dose_fun, dose_args)
-  }
+setGeneric(
+  name = "doseFunction",
+  def = function(model, ...) {
+    standardGeneric("doseFunction")
+  },
+  valueClass = "function"
 )
 
-## LogisticNormal ----
-
-#' @rdname dose
-#'
-#' @aliases dose-LogisticNormal
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "LogisticNormal",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    h_assert_prob(prob, length(alpha0) == 1L)
-
-    exp((logit(prob) - alpha0) / alpha1) * model@ref_dose
-  }
-)
-
-## LogisticLogNormal ----
-
-#' @rdname dose
-#'
-#' @aliases dose-LogisticLogNormal
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "LogisticLogNormal",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    h_assert_prob(prob, length(alpha0) == 1L)
-
-    exp((logit(prob) - alpha0) / alpha1) * model@ref_dose
-  }
-)
-
-## LogisticLogNormalSub ----
-
-#' @rdname dose
-#'
-#' @aliases dose-LogisticLogNormalSub
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "LogisticLogNormalSub",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    h_assert_prob(prob, length(alpha0) == 1L)
-
-    ((logit(prob) - alpha0) / alpha1) + model@ref_dose
-  }
-)
-
-## ProbitLogNormal ----
-
-#' @rdname dose
-#'
-#' @aliases dose-ProbitLogNormal
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "ProbitLogNormal",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    h_assert_prob(prob, length(alpha0) == 1L)
-
-    exp((probit(prob) - alpha0) / alpha1) * model@ref_dose
-  }
-)
-
-## ProbitLogNormalRel ----
-
-#' @rdname dose
-#'
-#' @aliases dose-ProbitLogNormalRel
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "ProbitLogNormalRel",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    h_assert_prob(prob, length(alpha0) == 1L)
-
-    ((probit(prob) - alpha0) / alpha1) * model@ref_dose
-  }
-)
-
-## LogisticLogNormalMixture ----
-
-#' @rdname dose
-#'
-#' @aliases dose-LogisticLogNormalMixture
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "LogisticLogNormalMixture",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    stop("not implemented")
-  }
-)
-
-## ModelTox ----
-
-#' @rdname dose
-#'
-#' @description Compute doses for a given toxicity probability,
-#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
-#'
-#' @aliases dose-ModelTox
-#' @example examples/Model-method-dose-ModelTox.R
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "ModelTox",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples, ...) {
-    assert_number(prob, lower = 0L, upper = 1L)
-
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(samples@data[dose_args_names], prob = prob)
-    do.call(dose_fun, dose_args)
-  }
-)
-
-## ModelTox_noSamples ----
-
-#' @rdname dose
-#'
-#' @description Compute the dose for a given toxicity probability and a given
-#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
-#'   All the arguments to `model@dose` function (except `prob`) should be
-#'   present in the `model` object.
-#'
-#' @aliases dose-ModelTox_noSamples
-#' @example examples/Model-method-dose-ModelTox_noSamples.R
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "ModelTox",
-    samples = "missing"
-  ),
-  definition = function(prob, model, ...) {
-    assert_numeric(
-      prob,
-      lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE
-    )
-
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
-    do.call(dose_fun, dose_args)
-  }
-)
-
-# prob ----
-
-## generic ----
+## prob ----
 
 #' Computing Toxicity Probabilities for a Given Dose, Model and Samples
 #'
@@ -317,7 +122,109 @@ setGeneric(
   valueClass = "numeric"
 )
 
-## Model ----
+## probFunction ----
+
+#' Getting the Prob Function for a Given Model Type
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A function that returns a function that computes the toxicity probabilities
+#' for a given dose and single agent dose escalation model parameters.
+#'
+#' @param model (`GeneralModel`)\cr the model for single agent dose escalation.
+#' @param ... model specific parameters.
+#'
+#' @return A `function` that computes toxicity probabilities for a given dose
+#'   and the model.
+#'
+#' @example examples/Model-method-probFunction.R
+#' @export
+#'
+setGeneric(
+  name = "probFunction",
+  def = function(model, ...) {
+    standardGeneric("probFunction")
+  },
+  valueClass = "function"
+)
+
+# GeneralModel ----
+
+## doseFunction ----
+
+#' @rdname doseFunction
+#'
+#' @aliases doseFunction-GeneralModel
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "GeneralModel",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_set_equal(names(model_params), model@sample)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(prob) {
+      dose(prob, model, samples)
+    }
+  }
+)
+
+## probFunction ----
+
+#' @rdname probFunction
+#'
+#' @aliases probFunction-GeneralModel
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "GeneralModel",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_set_equal(names(model_params), model@sample)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose, model, samples)
+    }
+  }
+)
+
+# Model ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-Model
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "Model",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples, ...) {
+    assert_number(prob, lower = 0L, upper = 1L)
+
+    dose_fun <- model@dose
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    do.call(dose_fun, dose_args)
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -333,7 +240,6 @@ setMethod(
   ),
   definition = function(dose, model, samples, ...) {
     assert_number(dose, lower = 0L)
-
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
     prob_args <- c(samples@data[prob_args_names], dose = dose)
@@ -341,7 +247,32 @@ setMethod(
   }
 )
 
-## LogisticNormal ----
+# LogisticNormal ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticNormal
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticNormal",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    exp((logit(prob) - alpha0) / alpha1) * model@ref_dose
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -359,13 +290,38 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    h_assert_dose(dose, length(alpha0) == 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
 
-## LogisticLogNormal ----
+# LogisticLogNormal ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticLogNormal
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticLogNormal",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    exp((logit(prob) - alpha0) / alpha1) * model@ref_dose
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -383,13 +339,38 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    h_assert_dose(dose, length(alpha0) == 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
 
-## LogisticLogNormalSub ----
+# LogisticLogNormalSub ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticLogNormalSub
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticLogNormalSub",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    ((logit(prob) - alpha0) / alpha1) + model@ref_dose
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -407,13 +388,38 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    h_assert_dose(dose, length(alpha0) == 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * (dose - ref_dose))
   }
 )
 
-## ProbitLogNormal ----
+# ProbitLogNormal ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-ProbitLogNormal
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "ProbitLogNormal",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    exp((probit(prob) - alpha0) / alpha1) * model@ref_dose
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -431,13 +437,38 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    h_assert_dose(dose, length(alpha0) == 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     pnorm(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
 
-## ProbitLogNormalRel ----
+# ProbitLogNormalRel ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-ProbitLogNormalRel
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "ProbitLogNormalRel",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    ((probit(prob) - alpha0) / alpha1) * model@ref_dose
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -455,13 +486,34 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    h_assert_dose(dose, length(alpha0) == 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     pnorm(alpha0 + alpha1 * (dose / ref_dose))
   }
 )
 
-## LogisticLogNormalMixture ----
+# LogisticLogNormalMixture ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticLogNormalMixture
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticLogNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    stop("not implemented")
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -480,14 +532,44 @@ setMethod(
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
     comp <- samples@data$comp
-    h_assert_dose(dose, length(alpha0) == 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     sel <- cbind(seq_len(nrow(alpha0)), comp)
     plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
   }
 )
 
-## ModelTox ----
+# ModelTox ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @description Compute doses for a given toxicity probability,
+#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
+#'
+#' @aliases dose-ModelTox
+#' @example examples/Model-method-dose-ModelTox.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "ModelTox",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples, ...) {
+    assert_number(prob, lower = 0L, upper = 1L)
+
+    dose_fun <- model@dose
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    do.call(dose_fun, dose_args)
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'
@@ -515,7 +597,39 @@ setMethod(
   }
 )
 
-## ModelTox_noSamples ----
+# ModelTox_noSamples ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @description Compute the dose for a given toxicity probability and a given
+#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
+#'   All the arguments to `model@dose` function (except `prob`) should be
+#'   present in the `model` object.
+#'
+#' @aliases dose-ModelTox_noSamples
+#' @example examples/Model-method-dose-ModelTox_noSamples.R
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "ModelTox",
+    samples = "missing"
+  ),
+  definition = function(prob, model, ...) {
+    assert_numeric(prob, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
+
+    dose_fun <- model@dose
+    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
+    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
+    do.call(dose_fun, dose_args)
+  }
+)
+
+## prob ----
 
 #' @rdname prob
 #'

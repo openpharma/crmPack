@@ -63,16 +63,7 @@ design <- Design(model=model,
                  startingDose=3)
 
 ## define the true function
-myTruth <- function(dose) {
-  samples <- Samples(
-    data = list(
-      alpha0 = 7,
-      alpha1 = 8
-    ),
-    options = McmcOptions(samples = 1)
-  )
-  prob(dose, model, samples)
-}
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Run the simulation on the desired design
 # We only generate 1 trial outcome here for illustration, for the actual study 

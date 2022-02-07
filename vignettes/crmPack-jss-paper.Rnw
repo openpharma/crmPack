@@ -518,16 +518,7 @@ examine(design, mcmcOptions=options)
 \paragraph{Simulating operating characteristics} For the many trials operating characteristics, we first have to define true scenarios, from which the data should arise. In this case, this only requires a function that computes the probability of DLT given a dose. As an example we use here the function contained in the slot \code{prob} of the object \code{model}:
 %, for which the dose-toxicity curve is shown below.
 <<true-def>>=
-myTruth <- function(dose) {
-  samples <- Samples(
-    data = list(
-      alpha0 = 4.5,
-      alpha1 = 8
-    ),
-    options = McmcOptions(samples = 1)
-  )
-  prob(dose, model, samples)
-}
+myTruth <- probFunction(model, alpha0 = 4.5, alpha1 = 8)
 @
 Note that any possible R-function returning a vector of probabilities upon input of the dose vector can be used. In particular, it is trivially possible to directly specify the probability of DLT for each dose in order to examine operating characteristics not based on any statistical model. For example, assume 5 doses 1--5 with probabilities of DLT of 0.01, 0.02, 0.04, 0.06, 0.09, then the following code could be used:
 <<true-def-alternative>>=

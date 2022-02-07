@@ -1131,16 +1131,7 @@ specific case of the function contained in the model space:
 
 <<true-def, fig=TRUE>>=
 ## define the true function
-myTruth <- function(dose) {
-  samples <- Samples(
-    data = list(
-      alpha0 = 7,
-      alpha1 = 8
-    ),
-    options = McmcOptions(samples = 1)
-  )
-  prob(dose, model, samples)
-}
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 ## plot it in the range of the dose grid
 curve(myTruth(x), from=0, to=80, ylim=c(0, 1))
@@ -1419,13 +1410,7 @@ time <- system.time(futureSims <- simulate(
     ## supply the new design here
     nowDesign,
     ## the truth is the assumed prob function
-    truth=function(dose, alpha0, alpha1) {
-      samples <- Samples(
-        data = list(alpha0 = alpha0, alpha1 = alpha1),
-        options = McmcOptions(samples = 1)
-      )
-      prob(dose, model, samples)
-    },
+    truth=probFunction(model, alpha0 = alpha0, alpha1 = alpha1),
     ## further arguments are the
     ## posterior samples
     args=postSamples,

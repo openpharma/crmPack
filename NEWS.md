@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Added new `doseFunction` and `probFunction` functions which return dose
+  (or probability) computing functions using model specific parameters.
 * Moved `dose` and `prob` functions from model class slots to model class methods
   for several models.
 * Renamed `refDose` slot to `ref_dose` in `ModelLogNormal` class.

@@ -44,6 +44,7 @@ reference:
       - StoppingMTDCV
   - title: Internal Helper Functions
     contents:
+      - h_validate_combine_results
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
@@ -60,8 +61,7 @@ reference:
       - h_jags_write_model
       - h_jags_extract_samples
       - h_null_if_na
-      - h_assert_prob
-      - h_assert_dose
+      - h_null_if_scalar
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -90,6 +90,8 @@ reference:
       - sampleSize-McmcOptions
       - saveSample
       - saveSample-McmcOptions
+      - doseFunction
+      - doseFunction-GeneralModel
       - dose
       - dose-Model
       - dose-LogisticNormal
@@ -100,6 +102,8 @@ reference:
       - dose-LogisticLogNormalMixture
       - dose-ModelTox
       - dose-ModelTox_noSamples
+      - probFunction
+      - probFunction-GeneralModel
       - prob
       - prob-Model
       - prob-LogisticNormal
