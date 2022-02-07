@@ -754,7 +754,7 @@ setMethod(
   definition  = function(increments, data, ...) {
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
-    basisDoseLevel <- ifelse(
+    basis_dose_level <- ifelse(
                         increments@basisLevel == "lastGiven",
                         tail(
                           data@xLevel, 
