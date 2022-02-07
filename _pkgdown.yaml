@@ -41,6 +41,7 @@ reference:
       - LogisticLogNormalSub
       - ProbitLogNormal
       - ProbitLogNormalRel
+      - StoppingMTDCV
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -73,6 +74,7 @@ reference:
       - validate_general_model
       - validate_model
       - validate_model_log_normal
+      - validate_stopping_mtd_cv
   - title: Methods
     contents:
       - plot-Data
@@ -108,6 +110,7 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-ModelTox
       - prob-ModelTox_noSamples
+      - stopTrial-StoppingMTDCV
   - title: Functions
     contents:
       - enable_logging

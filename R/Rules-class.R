@@ -1,20 +1,8 @@
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
-##         Wai Yin Yeung [ w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Rules-class.R] by DSB Die 09/06/2015 21:28>
-##
-## Description:
-## Encapsulate the rules in formal classes.
-##
-## History:
-## 07/02/2014   file creation
-## 10/07/2014   Added further rule classs
-###################################################################################
+# nolint start
 
-##' @include helpers.R
-{}
+#' @include helpers.R
+#' @include Rules-validity.R
+NULL
 
 ## ============================================================
 
@@ -610,31 +598,26 @@ IncrementMin <- function(IncrementsList)
   .IncrementMin(IncrementsList=IncrementsList)
 }
 
+# Stopping-class ----
 
-
-
-## ============================================================
-
-## --------------------------------------------------
-## Virtual class for stopping rules
-## --------------------------------------------------
-
-##' The virtual class for stopping rules
-##'
-##' @seealso \code{\linkS4class{StoppingList}},
-##' \code{\linkS4class{StoppingCohortsNearDose}},
-##' \code{\linkS4class{StoppingPatientsNearDose}},
-##' \code{\linkS4class{StoppingMinCohorts}},
-##' \code{\linkS4class{StoppingMinPatients}},
-##' \code{\linkS4class{StoppingTargetProb}}
-##' \code{\linkS4class{StoppingMTDdistribution}},
-##' \code{\linkS4class{StoppingTargetBiomarker}},
-##' \code{\linkS4class{StoppingHighestDose}}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="Stopping",
-         contains=list("VIRTUAL"))
+#' `Stopping`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Stopping`] is a class for for stopping rules.
+#'
+#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
+#'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
+#'   [`StoppingMTDCV`].
+#'
+#' @aliases Stopping
+#' @export
+#'
+setClass(
+  Class = "Stopping",
+  contains = list("VIRTUAL")
+)
 
 
 ## --------------------------------------------------
@@ -925,6 +908,59 @@ StoppingMTDdistribution <- function(target,
                              prob=prob)
 }
 
+# nolint end
+
+# StoppingMTDCV-class ----
+
+#' `StoppingMTDCV`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
+#' which is calculated as the coefficient of variation (CV) of the MTD.
+#'
+#' @slot target (`number`)\cr toxicity target of MTD.
+#' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
+#'   to stop the trial.
+#'
+#' @aliases StoppingMTDCV
+#' @export
+#' 
+.StoppingMTDCV <- setClass(
+  Class = "StoppingMTDCV",
+  contains = "Stopping",
+  representation = representation(
+    target = "numeric",
+    thresh_cv = "numeric"
+  ),
+  prototype(
+    target = 0.3,
+    thresh_cv = 40
+  ),
+  validity = validate_stopping_mtd_cv
+)
+
+# StoppingMTDCV-constructor ----
+
+#' @rdname StoppingMTDCV-class
+#'
+#' @param target (`number`)\cr the target toxicity probability (e.g. 0.3)
+#'   defining the MTD.
+#' @param thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
+#'  to stop the trial (e.g. 40 percent).
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMTDCV.R
+#'
+StoppingMTDCV <- function(target = 0.3,
+                          thresh_cv = 40) {
+  .StoppingMTDCV(
+    target = target,
+    thresh_cv = thresh_cv
+  )
+}
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker
@@ -2061,4 +2097,4 @@ SafetyWindowConst <- function(patientGap,
 
 ## ============================================================
 
-
+# nolint end
