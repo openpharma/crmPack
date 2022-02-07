@@ -35,3 +35,6 @@ my_model <- LogisticLogNormal(
 dose_fun <- doseFunction(my_model, alpha0 = 2, alpha1 = 3)
 dose_fun(0.6)
 }
+\seealso{
+\code{\link{dose}}, \code{\link{probFunction}}.
+}

@@ -154,3 +154,6 @@ dlt_model <- LogisticIndepBeta(
 
 dose(prob = 0.45, model = dlt_model)
 }
+\seealso{
+\code{\link{doseFunction}}, \code{\link{prob}}.
+}

@@ -1410,7 +1410,13 @@ time <- system.time(futureSims <- simulate(
     ## supply the new design here
     nowDesign,
     ## the truth is the assumed prob function
-    truth=probFunction(model, alpha0 = alpha0, alpha1 = alpha1),
+    truth=function(dose, alpha0, alpha1) {
+      samples <- Samples(
+        data = list(alpha0 = alpha0, alpha1 = alpha1),
+        options = McmcOptions(samples = 1)
+      )
+      prob(dose, model, samples)
+    },
     ## further arguments are the
     ## posterior samples
     args=postSamples,

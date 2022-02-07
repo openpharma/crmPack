@@ -32,12 +32,15 @@ NULL
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute the resulting doses by `model@dose` function.
 #' @param ... not used.
+#'
 #' @return A `number` or `numeric` vector from the `model@dose` function.
 #'   If `samples` were used, then every element in the returned vector
 #'   corresponds to one element of a sample. Hence, in this case, the output
 #'   vector is of the same length as the sample vector. If `samples` were not
 #'   used for pseudo DLE/toxicity `model`, then the output is of the same length
 #'   as `prob`.
+#'
+#' @seealso [`doseFunction`], [`prob`].
 #'
 #' @example examples/Model-method-dose.R
 #' @export
@@ -64,6 +67,8 @@ setGeneric(
 #'
 #' @return A `function` that computes doses for a given toxicity probability
 #'   and the model.
+#'
+#' @seealso [`dose`], [`probFunction`].
 #'
 #' @example examples/Model-method-doseFunction.R
 #' @export
@@ -104,12 +109,15 @@ setGeneric(
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute toxicity probabilities by `model@prob` function.
 #' @param ... not used.
+#'
 #' @return A `number` or `numeric` vector from the `model@prob` function.
 #'   If `samples` were used, then every element in the returned vector
 #'   corresponds to one element of a sample. Hence, in this case, the output
 #'   vector is of the same length as the sample vector. If `samples` were not
 #'   used for pseudo DLE/toxicity `model`, then the output is of the same length
 #'   as `dose`.
+#'
+#' @seealso [`probFunction`], [`dose`].
 #'
 #' @example examples/Model-method-prob.R
 #' @export
@@ -137,6 +145,8 @@ setGeneric(
 #' @return A `function` that computes toxicity probabilities for a given dose
 #'   and the model.
 #'
+#' @seealso [`prob`], [`doseFunction`].
+#'
 #' @example examples/Model-method-probFunction.R
 #' @export
 #'
@@ -162,7 +172,7 @@ setMethod(
   signature = "GeneralModel",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_set_equal(names(model_params), model@sample)
+    assert_subset(names(model_params), model@sample)
 
     samples <- Samples(
       data = model_params,
@@ -186,7 +196,7 @@ setMethod(
   signature = "GeneralModel",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_set_equal(names(model_params), model@sample)
+    assert_subset(names(model_params), model@sample)
 
     samples <- Samples(
       data = model_params,
