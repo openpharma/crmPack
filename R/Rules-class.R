@@ -380,9 +380,9 @@ IncrementsRelative <- function(intervals,
 #' which means that no dose skipping is allowed - the next dose
 #' can be maximum one level higher than the current dose.
 #' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
-#' It can take two possible values `lastGiven` or `maxGiven`. If `lastGiven` (default)
+#' It can take two possible values `last` or `max`. If `last` (default)
 #' is specified the increments is applied to the last given dose and if
-#' maxGiven is specified the increment is applied from the max given dose
+#' `max` is specified the increment is applied from the max given dose
 #' level.
 #'
 #' @example examples/Rules-class-IncrementsNumDoseLevels.R
@@ -396,7 +396,7 @@ IncrementsRelative <- function(intervals,
   ),
   prototype(
     maxLevels = 1L,
-    basisLevel = "lastGiven"
+    basisLevel = "last"
   ),
   validity = validate_increments_numdoselevels
 )
@@ -409,7 +409,7 @@ IncrementsRelative <- function(intervals,
 #' @example examples/Rules-class-IncrementsNumDoseLevels.R
 #' 
 IncrementsNumDoseLevels <- function(maxLevels=1,
-                                    basisLevel="lastGiven"){
+                                    basisLevel="last"){
   .IncrementsNumDoseLevels(
     maxLevels=safeInteger(maxLevels),
     basisLevel=basisLevel

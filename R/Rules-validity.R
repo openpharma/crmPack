@@ -23,8 +23,8 @@ validate_increments_numdoselevels <- function(object) {
   )
   o$check(
     is.scalar(object@basisLevel) && 
-    object@basisLevel %in% c("lastGiven", "maxGiven"),
-    "basisLevel must be either 'lastGiven' or 'maxGiven'"
+    object@basisLevel %in% c("last", "max"),
+    "basisLevel must be either 'last' or 'max'"
   )
   o$result()
 }

@@ -10,7 +10,7 @@ test_that(".IncrementsNumDoseLevels works as expected", {
 test_that("IncrementsNumDoseLevels object can be created with user constructor", {
   result <- expect_silent(IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
-
+})
   
 # StoppingMTDCV-class ----
 

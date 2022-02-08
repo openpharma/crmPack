@@ -7,16 +7,16 @@ my_data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 
                 doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from=10, to=80, by=2))
                 )
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel 'lastGiven' is defined", {
+test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
   Increments <- IncrementsNumDoseLevels(
     maxLevels = 2, 
-    basisLevel = "lastGiven"
+    basisLevel = "last"
     )
   result <- maxDose(
     Increments,
     data=my_data
   )
-  expect_equal(result, 14) # maxDose is 14 if basislevel='lastGiven'.
+  expect_equal(result, 14) # maxDose is 14 if basislevel='last'.
 })
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined and default is used", {
@@ -30,16 +30,16 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined 
   expect_equal(result, 14) # maxDose is 14 if basislevel not defined, then reference value is used.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel 'maxGiven' is defined", {
+test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is defined", {
   Increments <- IncrementsNumDoseLevels(
     maxLevels = 2, 
-    basisLevel = "maxGiven"
+    basisLevel = "max"
   )
   result <- maxDose(
     Increments,
     data=my_data
   )
-  expect_equal(result, 20) # maxDose is 20 if basislevel='maxGiven'.
+  expect_equal(result, 20) # maxDose is 20 if basislevel='max'.
 })
 
 
