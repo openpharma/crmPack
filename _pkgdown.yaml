@@ -39,6 +39,7 @@ reference:
       - LogisticNormal
       - LogisticLogNormal
       - LogisticLogNormalSub
+      - IncrementsNumDoseLevels
       - ProbitLogNormal
       - ProbitLogNormalRel
       - StoppingMTDCV
@@ -73,6 +74,9 @@ reference:
       - validate_mcmc_options
       - validate_general_model
       - validate_model
+      - validate_logistic_log_normal
+      - validate_mcmc_options
+      - validate_increments_numdoselevels
       - validate_model_log_normal
       - validate_stopping_mtd_cv
   - title: Methods

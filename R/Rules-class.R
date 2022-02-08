@@ -303,8 +303,10 @@ validObject(NextBestMinDist(0.1))
 ##'
 ##' @seealso \code{\linkS4class{IncrementsRelative}},
 ##' \code{\linkS4class{IncrementsRelativeDLT}},
-##' \code{\linkS4class{IncrementsRelativeParts}}
+##' \code{\linkS4class{IncrementsRelativeParts}},
+##' [`IncrementsNumDoseLevels`]
 ##'
+##' @aliases Increments
 ##' @export
 ##' @keywords classes
 setClass(Class="Increments",
@@ -367,50 +369,55 @@ IncrementsRelative <- function(intervals,
                         increments=increments)
 }
 
-## --------------------------------------------------
-## Increments control based on number of dose levels
-## --------------------------------------------------
+# nolint end
 
-##' Increments control based on number of dose levels
-##'
-##' @slot maxLevels scalar positive integer for the number of maximum
-##' dose levels to increment for the next dose. It defaults to 1,
-##' which means that no dose skipping is allowed - the next dose
-##' can be maximum one level higher than the current dose.
-##'
-##' @example examples/Rules-class-IncrementsNumDoseLevels.R
-##' @export
-##' @keywords classes
-.IncrementsNumDoseLevels <-
-  setClass(Class="IncrementsNumDoseLevels",
-           representation(maxLevels="integer"),
-           prototype(maxLevels=1L),
-           contains="Increments",
-           validity=
-             function(object){
-               o <- Validate()
+# IncrementsNumDoseLevels-class ----
 
-               o$check(is.scalar(object@maxLevels) &&
-                         is.integer(object@maxLevels) &&
-                         object@maxLevels > 0,
-                       "maxLevels must be scalar positive integer")
+#' `IncrementsNumDoseLevels`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @slot maxLevels (`count`)\cr corresponding to the number of maximum
+#'   dose levels to increment for the next dose. It defaults to 1,
+#' which means that no dose skipping is allowed - the next dose
+#' can be maximum one level higher than the current dose.
+#' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
+#' It can take two possible values `last` or `max`. If `last` (default)
+#' is specified the increments is applied to the last given dose and if
+#' `max` is specified the increment is applied from the max given dose
+#' level.
+#'
+#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#' @export
+.IncrementsNumDoseLevels <- setClass(
+  Class = "IncrementsNumDoseLevels",
+  contains = "Increments",
+  representation = representation(
+    maxLevels = "integer",
+    basisLevel = "character"
+  ),
+  prototype(
+    maxLevels = 1L,
+    basisLevel = "last"
+  ),
+  validity = validate_increments_numdoselevels
+)
 
-               o$result()
-             })
-validObject(.IncrementsNumDoseLevels())
+# IncrementsNumDoseLevels-constructor ----
 
-##' Initialization function for "IncrementsNumDoseLevels"
-##'
-##' @param maxLevels see \code{\linkS4class{IncrementsNumDoseLevels}}
-##' @return the \code{\linkS4class{IncrementsNumDoseLevels}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsNumDoseLevels <- function(maxLevels=1)
-{
-  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels))
+#' @rdname IncrementsNumDoseLevels-class
+#' @param maxLevels see below.
+#' @param basisLevel see below.
+#' @export
+IncrementsNumDoseLevels <- function(maxLevels=1,
+                                    basisLevel="last"){
+  .IncrementsNumDoseLevels(
+    maxLevels=safeInteger(maxLevels),
+    basisLevel=basisLevel
+  )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Increments control based on relative differences in intervals,
@@ -925,7 +932,7 @@ StoppingMTDdistribution <- function(target,
 #'
 #' @aliases StoppingMTDCV
 #' @export
-#' 
+#'
 .StoppingMTDCV <- setClass(
   Class = "StoppingMTDCV",
   contains = "Stopping",
