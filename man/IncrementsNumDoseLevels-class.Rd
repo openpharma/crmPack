@@ -4,25 +4,42 @@
 \name{IncrementsNumDoseLevels-class}
 \alias{IncrementsNumDoseLevels-class}
 \alias{.IncrementsNumDoseLevels}
-\title{Increments control based on number of dose levels}
+\alias{IncrementsNumDoseLevels}
+\title{\code{IncrementsNumDoseLevels}}
+\usage{
+IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
+}
+\arguments{
+\item{maxLevels}{see below.}
+
+\item{basisLevel}{see below.}
+}
 \description{
-Increments control based on number of dose levels
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \section{Slots}{
 
 \describe{
-\item{\code{maxLevels}}{scalar positive integer for the number of maximum
+\item{\code{maxLevels}}{(\code{count})\cr corresponding to the number of maximum
 dose levels to increment for the next dose. It defaults to 1,
 which means that no dose skipping is allowed - the next dose
 can be maximum one level higher than the current dose.}
+
+\item{\code{basisLevel}}{(\code{string})\cr corresponding to the dose level used to increment from.
+It can take two possible values \code{last} or \code{max}. If \code{last} (default)
+is specified the increments is applied to the last given dose and if
+\code{max} is specified the increment is applied from the max given dose
+level.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-# maximum skip one dose level, that is 2 dose levels higher is maximum
-# increment
-myIncrements <- IncrementsNumDoseLevels(maxLevels=2)
-
+# In this example we define a rule for dose increments which would allow:
+# Maximum skip one dose level, that is 2 dose levels higher than the last dose
+# given.
+# Maximum increment is explicitly defined as:
+increments <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "last")
+# Since the default method is based on the last dose given,
+# maximum increment can also be defined as:
+increments <- IncrementsNumDoseLevels(maxLevels = 2)
 }
-\keyword{classes}
