@@ -9,12 +9,12 @@ my_data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
   Increments <- IncrementsNumDoseLevels(
-    maxLevels = 2, 
+    maxLevels = 2,
     basisLevel = "last"
     )
   result <- maxDose(
     Increments,
-    data=my_data
+    data = my_data
   )
   expect_equal(result, 14) # maxDose is 14 if basislevel='last'.
 })
@@ -25,7 +25,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined 
   )
   result <- maxDose(
     Increments,
-    data=my_data
+    data = my_data
   )
   expect_equal(result, 14) # maxDose is 14 if basislevel not defined, then reference value is used.
 })
@@ -37,7 +37,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is define
   )
   result <- maxDose(
     Increments,
-    data=my_data
+    data = my_data
   )
   expect_equal(result, 20) # maxDose is 20 if basislevel='max'.
 })
