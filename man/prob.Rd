@@ -43,10 +43,12 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,ModelTox,missing}(dose, model, samples, ...)
 }
 \arguments{
-\item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted. This must
-be a scalar if \code{samples} are used (for dose escalation \code{model}). It can be
-a vector of any finite length, if \code{samples} are not used with pseudo DLE
-(dose-limiting events)/toxicity \code{model}.}
+\item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
+This must be a scalar if non-scalar \code{samples} are used
+(e.g. in case of dose escalation \code{model}).
+It can be a vector of any finite length, if \code{samples} are scalars or
+\code{samples} are not used (as e.g. in case of pseudo DLE
+(dose-limiting events)/toxicity \code{model}).}
 
 \item{model}{(\code{Model} or \code{ModelTox})\cr the model for single agent dose
 escalation or pseudo DLE (dose-limiting events)/toxicity model.}
@@ -57,12 +59,12 @@ used to compute toxicity probabilities by \code{model@prob} function.}
 \item{...}{not used.}
 }
 \value{
-A \code{number} or \code{numeric} vector from the \code{model@prob} function.
-If \code{samples} were used, then every element in the returned vector
+A \code{number} or \code{numeric} vector with the toxicity probabilities.
+If non-scalar \code{samples} were used, then every element in the returned vector
 corresponds to one element of a sample. Hence, in this case, the output
-vector is of the same length as the sample vector. If \code{samples} were not
-used for pseudo DLE/toxicity \code{model}, then the output is of the same length
-as \code{dose}.
+vector is of the same length as the sample vector. If scalar \code{samples} were
+used or no \code{samples} were used, e.g. for pseudo DLE/toxicity \code{model},
+then the output is of the same length as the length of the \code{dose}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -79,8 +81,8 @@ All the arguments to \code{model@prob} function (except \code{dose}) should be
 present in the \code{model} object.
 }
 \details{
-The \code{prob} function computes the probability of toxicity for at
-a given \code{dose}, using samples of the model parameter(s). Hence, the vectors
+The \code{prob} function computes the probability of toxicity for a given
+\code{dose}, using samples of the model parameter(s). Hence, the vectors
 of these samples must be included in the \code{samples} object.
 If you work with multivariate model parameters, then assume that your model
 specific \code{dose} function receives either one parameter value as a row vector,

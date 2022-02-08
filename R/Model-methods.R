@@ -13,9 +13,9 @@ NULL
 #' A function that computes the dose reaching a specific target probability,
 #' based on the model specific parameters.
 #'
-#' @details The `dose` function computes the doses, using samples of the model
-#'   parameter(s) and hence the vectors of these samples must be included in the
-#'   `samples` object.
+#' @details The `dose` function computes the doses for a given toxicity probabilities,
+#'   using samples of the model parameter(s). Hence, the vectors of these samples
+#'   must be included in the `samples` object.
 #'   If you work with multivariate model parameters, then assume that your model
 #'   specific `dose` function receives either one parameter value as a row vector,
 #'   or a samples matrix where the rows correspond to the sampling index, i.e.
@@ -24,21 +24,23 @@ NULL
 #' @note The [`dose`] and [`prob`] functions are the inverse of each other.
 #'
 #' @param prob (`number` or `numeric`)\cr the toxicity probability which is
-#'   targeted. This must be a scalar if `samples` are used (for dose escalation
-#'   `model`). It can be a vector of any finite length, if `samples` are not
-#'   used with pseudo DLE (dose-limiting events)/toxicity `model`.
+#'   targeted. This must be a scalar if non-scalar `samples` are used
+#'   (e.g. in case of dose escalation `model`).
+#'   It can be a vector of any finite length, if `samples` are scalars or
+#'   `samples` are not used (as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity `model`).
 #' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
 #'   escalation or pseudo DLE/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute the resulting doses by `model@dose` function.
+#'   used to compute the resulting doses by the [`dose`] function.
 #' @param ... not used.
 #'
-#' @return A `number` or `numeric` vector from the `model@dose` function.
-#'   If `samples` were used, then every element in the returned vector
+#' @return A `number` or `numeric` vector with the doses.
+#'   If non-scalar `samples` were used, then every element in the returned vector
 #'   corresponds to one element of a sample. Hence, in this case, the output
-#'   vector is of the same length as the sample vector. If `samples` were not
-#'   used for pseudo DLE/toxicity `model`, then the output is of the same length
-#'   as `prob`.
+#'   vector is of the same length as the sample vector. If scalar `samples` were
+#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
+#'   then the output is of the same length as the length of the `prob`.
 #'
 #' @seealso [`doseFunction`], [`prob`].
 #'
@@ -90,8 +92,8 @@ setGeneric(
 #' A function that computes toxicity probabilities for a given dose, a given
 #' single agent dose escalation model, and samples.
 #'
-#' @details The `prob` function computes the probability of toxicity for at
-#'   a given `dose`, using samples of the model parameter(s). Hence, the vectors
+#' @details The `prob` function computes the probability of toxicity for a given
+#'   `dose`, using samples of the model parameter(s). Hence, the vectors
 #'   of these samples must be included in the `samples` object.
 #'   If you work with multivariate model parameters, then assume that your model
 #'   specific `dose` function receives either one parameter value as a row vector,
@@ -100,22 +102,24 @@ setGeneric(
 #'
 #' @note The [`prob`] and [`dose`] functions are the inverse of each other.
 #'
-#' @param dose (`number` or `numeric`)\cr the dose which is targeted. This must
-#'   be a scalar if `samples` are used (for dose escalation `model`). It can be
-#'   a vector of any finite length, if `samples` are not used with pseudo DLE
-#'   (dose-limiting events)/toxicity `model`.
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
+#'   This must be a scalar if non-scalar `samples` are used
+#'   (e.g. in case of dose escalation `model`).
+#'   It can be a vector of any finite length, if `samples` are scalars or
+#'   `samples` are not used (as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity `model`).
 #' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
 #'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute toxicity probabilities by `model@prob` function.
 #' @param ... not used.
 #'
-#' @return A `number` or `numeric` vector from the `model@prob` function.
-#'   If `samples` were used, then every element in the returned vector
+#' @return A `number` or `numeric` vector with the toxicity probabilities.
+#'   If non-scalar `samples` were used, then every element in the returned vector
 #'   corresponds to one element of a sample. Hence, in this case, the output
-#'   vector is of the same length as the sample vector. If `samples` were not
-#'   used for pseudo DLE/toxicity `model`, then the output is of the same length
-#'   as `dose`.
+#'   vector is of the same length as the sample vector. If scalar `samples` were
+#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
+#'   then the output is of the same length as the length of the `dose`.
 #'
 #' @seealso [`probFunction`], [`dose`].
 #'
@@ -570,11 +574,11 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples, ...) {
-    assert_number(prob, lower = 0L, upper = 1L)
-
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    dose_args <- c(samples@data[dose_args_names], list(prob = prob))
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(dose_args[[1]]))
+
     do.call(dose_fun, dose_args)
   }
 )
@@ -598,11 +602,11 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples, ...) {
-    assert_number(dose, lower = 0L)
-
     prob_fun <- model@prob
     prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(samples@data[prob_args_names], dose = dose)
+    prob_args <- c(samples@data[prob_args_names], list(dose = dose))
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(prob_args[[1]]))
+
     do.call(prob_fun, prob_args)
   }
 )
