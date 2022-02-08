@@ -738,13 +738,13 @@ setMethod("maxDose",
 #'
 #' @description Increments control based on number of dose levels
 #'   Increment rule to determine the maximum possible next dose based on
-#'   maximum dose levels to increment for the next dose. 
+#'   maximum dose levels to increment for the next dose.
 #'   Increment rule can be applied to last dose or maximum dose given so far.
 #'
 #' @aliases maxDose-IncrementsNumDoseLevels
 #' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
 #' @export
-#' 
+#'
 setMethod(
   "maxDose",
   signature = signature(
@@ -757,15 +757,15 @@ setMethod(
     basis_dose_level <- ifelse(
                         increments@basisLevel == "lastGiven",
                         tail(
-                          data@xLevel, 
+                          data@xLevel,
                           1
                         ),
                          max(data@xLevel)
                       )
 
-    maxNextDoseLevel <- min(
+    max_next_dose_level <- min(
                           length(data@doseGrid),
-                          basisDoseLevel + increments@maxLevels
+                          basis_dose_level + increments@maxLevels
                         )
 
     data@doseGrid[maxNextDoseLevel]
