@@ -768,7 +768,7 @@ setMethod(
                           basis_dose_level + increments@maxLevels
                         )
 
-    data@doseGrid[maxNextDoseLevel]
+    data@doseGrid[max_next_dose_level]
 
     }
 )
