@@ -17,7 +17,7 @@ navbar:
 
 development:
   mode: devel
-  
+
 reference:
   - title: Package
     contents:
@@ -104,8 +104,8 @@ reference:
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
       - dose-LogisticLogNormalMixture
-      - dose-ModelTox
-      - dose-ModelTox_noSamples
+      - dose-LogisticIndepBeta
+      - dose-LogisticIndepBeta-noSamples
       - probFunction
       - probFunction-GeneralModel
       - prob
@@ -116,8 +116,8 @@ reference:
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
       - prob-LogisticLogNormalMixture
-      - prob-ModelTox
-      - prob-ModelTox_noSamples
+      - prob-LogisticIndepBeta
+      - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingMTDCV
   - title: Functions
     contents:

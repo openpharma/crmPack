@@ -28,12 +28,12 @@ NULL
 #'   (e.g. in case of dose escalation `model`).
 #'   It can be a vector of any finite length, if `samples` are scalars or
 #'   `samples` are not used (as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity `model`).
-#' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
-#'   escalation or pseudo DLE/toxicity model.
+#'   (dose-limiting events)/toxicity model).
+#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model for single agent
+#'   dose escalation or pseudo DLE/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute the resulting doses by the [`dose`] function.
-#' @param ... not used.
+#'   used to compute the resulting doses.
+#' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `number` or `numeric` vector with the doses.
 #'   If non-scalar `samples` were used, then every element in the returned vector
@@ -107,12 +107,12 @@ setGeneric(
 #'   (e.g. in case of dose escalation `model`).
 #'   It can be a vector of any finite length, if `samples` are scalars or
 #'   `samples` are not used (as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity `model`).
-#' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
-#'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
+#'   (dose-limiting events)/toxicity model).
+#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model for single agent
+#'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute toxicity probabilities by `model@prob` function.
-#' @param ... not used.
+#'   used to compute toxicity probabilities.
+#' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `number` or `numeric` vector with the toxicity probabilities.
 #'   If non-scalar `samples` were used, then every element in the returned vector
@@ -553,33 +553,34 @@ setMethod(
   }
 )
 
-# ModelTox ----
+# LogisticIndepBeta ----
 
 ## dose ----
 
 #' @rdname dose
 #'
-#' @description Compute doses for a given toxicity probability,
-#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
+#' @description Compute the dose level reaching a specific target probability of
+#' the occurrence of a DLE, based on the samples of [`LogisticIndepBeta`] model
+#' parameters.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
 #'
-#' @aliases dose-ModelTox
-#' @example examples/Model-method-dose-ModelTox.R
+#' @aliases dose-LogisticIndepBeta
 #' @export
 #'
 setMethod(
   f = "dose",
   signature = signature(
     prob = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples, ...) {
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(samples@data[dose_args_names], list(prob = prob))
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(dose_args[[1]]))
+  definition = function(prob, model, samples) {
+    phi1 <- samples@data$phi1
+    phi2 <- samples@data$phi2
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
 
-    do.call(dose_fun, dose_args)
+    log_dose <- (log(prob / (1 - prob)) - phi1) / phi2
+    exp(log_dose)
   }
 )
 
@@ -587,59 +588,61 @@ setMethod(
 
 #' @rdname prob
 #'
-#' @description Compute toxicity probabilities for a given dose, a given Pseudo
-#'   DLE (dose-limiting events)/toxicity model, and samples.
+#' @description Compute toxicity probabilities of the occurrence of a DLE at a
+#' specified dose level, based on the samples of [`LogisticIndepBeta`] model
+#' parameters.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
 #'
-#' @aliases prob-ModelTox
-#' @example examples/Model-method-prob-ModelTox.R
+#' @aliases prob-LogisticIndepBeta
 #' @export
 #'
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples, ...) {
-    prob_fun <- model@prob
-    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(samples@data[prob_args_names], list(dose = dose))
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(prob_args[[1]]))
+  definition = function(dose, model, samples) {
+    phi1 <- samples@data$phi1
+    phi2 <- samples@data$phi2
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
 
-    do.call(prob_fun, prob_args)
+    log_dose <- log(dose)
+    exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
   }
 )
 
-# ModelTox_noSamples ----
+# LogisticIndepBeta-noSamples ----
 
 ## dose ----
 
 #' @rdname dose
 #'
-#' @description Compute the dose for a given toxicity probability and a given
-#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
-#'   All the arguments to `model@dose` function (except `prob`) should be
-#'   present in the `model` object.
+#' @description Compute the dose level reaching a specific target probability of
+#' the occurrence of a DLE, based on the [`LogisticIndepBeta`] model
+#' parameters. All model parameters (except `prob`) should be present in the `model` object.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
 #'
-#' @aliases dose-ModelTox_noSamples
-#' @example examples/Model-method-dose-ModelTox_noSamples.R
+#' @aliases dose-LogisticIndepBeta-noSamples
 #' @export
 #'
 setMethod(
   f = "dose",
   signature = signature(
     prob = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "missing"
   ),
-  definition = function(prob, model, ...) {
+  definition = function(prob, model) {
     assert_numeric(prob, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
 
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
-    do.call(dose_fun, dose_args)
+    args <- h_slots(model, c("phi1", "phi2"))
+    phi1 <- args$phi1
+    phi2 <- args$phi2
+
+    log_dose <- (log(prob / (1 - prob)) - phi1) / phi2
+    exp(log_dose)
   }
 )
 
@@ -647,29 +650,30 @@ setMethod(
 
 #' @rdname prob
 #'
-#' @description Compute the toxicity probability for a given dose and a given
-#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
-#'   All the arguments to `model@prob` function (except `dose`) should be
-#'   present in the `model` object.
+#' @description Compute toxicity probabilities of the occurrence of a DLE at a
+#' specified dose level, based on the [`LogisticIndepBeta`] model parameters.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
+#' All model parameters (except `dose`) should be present in the `model` object.
 #'
-#' @aliases prob-ModelTox_noSamples
-#' @example examples/Model-method-prob-ModelTox_noSamples.R
+#' @aliases prob-LogisticIndepBeta-noSamples
 #' @export
 #'
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "missing"
   ),
   definition = function(dose, model, ...) {
     assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
 
-    prob_fun <- model@prob
-    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(h_slots(model, prob_args_names), list(dose = dose))
-    do.call(prob_fun, prob_args)
+    args <- h_slots(model, c("phi1", "phi2"))
+    phi1 <- args$phi1
+    phi2 <- args$phi2
+
+    log_dose <- log(dose)
+    exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
   }
 )
 

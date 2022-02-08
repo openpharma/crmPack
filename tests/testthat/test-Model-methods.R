@@ -214,9 +214,9 @@ test_that("dose-ProbitLogNormalRel throws the error when prob is not a valid sca
   )
 })
 
-## ModelTox ----
+## LogisticIndepBeta ----
 
-test_that("dose-ModelTox works as expected", {
+test_that("dose-LogisticIndepBeta works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
@@ -230,7 +230,7 @@ test_that("dose-ModelTox works as expected", {
   expect_equal(result, expected, tolerance = 0.0001)
 })
 
-test_that("dose-ModelTox works as expected for scalar samples", {
+test_that("dose-LogisticIndepBeta works as expected for scalar samples", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = -1, phi2 = 1))
 
@@ -238,7 +238,7 @@ test_that("dose-ModelTox works as expected for scalar samples", {
   expect_equal(result, c(2.224049, 6.342658), tolerance = 1e-05)
 })
 
-test_that("dose-ModelTox throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticIndepBeta throws the error when prob is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = c(-1, 0.5), phi2 = c(1, 0.6)))
 
@@ -256,16 +256,16 @@ test_that("dose-ModelTox throws the error when prob is not a valid scalar", {
   )
 })
 
-## ModelTox_noSamples ----
+## LogisticIndepBeta-noSamples ----
 
-test_that("dose-ModelTox_noSamples works as expected", {
+test_that("dose-LogisticIndepBeta-noSamples works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
 
   result <- dose(prob = c(0.45, 0.55), model = dlt_model)
   expect_equal(result, expected = c(188.1673, 289.2156), tolerance = 0.0001)
 })
 
-test_that("dose-ModelTox_noSamples throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticIndepBeta-noSamples throws the error when prob is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
 
   expect_error(
@@ -502,9 +502,9 @@ test_that("prob-ProbitLogNormalRel throws the error when dose is not a valid sca
   )
 })
 
-## ModelTox ----
+## LogisticIndepBeta ----
 
-test_that("prob-ModelTox works as expected", {
+test_that("prob-LogisticIndepBeta works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
@@ -518,7 +518,7 @@ test_that("prob-ModelTox works as expected", {
   expect_equal(result, expected, tolerance = 0.000001)
 })
 
-test_that("prob-ModelTox works as expected for scalar samples", {
+test_that("prob-LogisticIndepBeta works as expected for scalar samples", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = -1, phi2 = 1))
 
@@ -526,7 +526,7 @@ test_that("prob-ModelTox works as expected for scalar samples", {
   expect_equal(result, c(0.6882090, 0.8465832), tolerance = 1e-05)
 })
 
-test_that("prob-ModelTox throws the error when dose is not a valid scalar", {
+test_that("prob-LogisticIndepBeta throws the error when dose is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = c(-1, 0.5), phi2 = c(1, 0.6)))
 
@@ -540,16 +540,16 @@ test_that("prob-ModelTox throws the error when dose is not a valid scalar", {
   )
 })
 
-## ModelTox_noSamples ----
+## LogisticIndepBeta-noSamples ----
 
-test_that("prob-ModelTox_noSamples works as expected", {
+test_that("prob-LogisticIndepBeta-noSamples works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
 
   result <- prob(dose = c(500, 1000), model = dlt_model)
   expect_equal(result, expected = c(0.6708009, 0.7955970), tolerance = 0.000001)
 })
 
-test_that("prob-ModelTox throws the error when dose is not a valid scalar", {
+test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
 
   expect_error(

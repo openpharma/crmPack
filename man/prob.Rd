@@ -16,10 +16,10 @@
 \alias{prob-ProbitLogNormalRel}
 \alias{prob,numeric,LogisticLogNormalMixture,Samples-method}
 \alias{prob-LogisticLogNormalMixture}
-\alias{prob,numeric,ModelTox,Samples-method}
-\alias{prob-ModelTox}
-\alias{prob,numeric,ModelTox,missing-method}
-\alias{prob-ModelTox_noSamples}
+\alias{prob,numeric,LogisticIndepBeta,Samples-method}
+\alias{prob-LogisticIndepBeta}
+\alias{prob,numeric,LogisticIndepBeta,missing-method}
+\alias{prob-LogisticIndepBeta-noSamples}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -38,9 +38,9 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples)
 
-\S4method{prob}{numeric,ModelTox,Samples}(dose, model, samples, ...)
+\S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples)
 
-\S4method{prob}{numeric,ModelTox,missing}(dose, model, samples, ...)
+\S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model, samples, ...)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
@@ -48,15 +48,15 @@ This must be a scalar if non-scalar \code{samples} are used
 (e.g. in case of dose escalation \code{model}).
 It can be a vector of any finite length, if \code{samples} are scalars or
 \code{samples} are not used (as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity \code{model}).}
+(dose-limiting events)/toxicity model).}
 
-\item{model}{(\code{Model} or \code{ModelTox})\cr the model for single agent dose
-escalation or pseudo DLE (dose-limiting events)/toxicity model.}
+\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model for single agent
+dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
-used to compute toxicity probabilities by \code{model@prob} function.}
+used to compute toxicity probabilities.}
 
-\item{...}{not used.}
+\item{...}{model specific parameters when \code{samples} are not used.}
 }
 \value{
 A \code{number} or \code{numeric} vector with the toxicity probabilities.
@@ -72,13 +72,15 @@ then the output is of the same length as the length of the \code{dose}.
 A function that computes toxicity probabilities for a given dose, a given
 single agent dose escalation model, and samples.
 
-Compute toxicity probabilities for a given dose, a given Pseudo
-DLE (dose-limiting events)/toxicity model, and samples.
+Compute toxicity probabilities of the occurrence of a DLE at a
+specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
+parameters.
+The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
 
-Compute the toxicity probability for a given dose and a given
-Pseudo DLE (dose-limiting events)/toxicity model without samples.
-All the arguments to \code{model@prob} function (except \code{dose}) should be
-present in the \code{model} object.
+Compute toxicity probabilities of the occurrence of a DLE at a
+specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
+The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
+All model parameters (except \code{dose}) should be present in the \code{model} object.
 }
 \details{
 The \code{prob} function computes the probability of toxicity for a given
@@ -109,30 +111,34 @@ my_model <- LogisticLogNormal(
 )
 
 # Get samples from posterior.
-set.seed(94)
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 20)
 my_samples <- mcmc(data = my_data, model = my_model, options = my_options)
 
 # Posterior for Prob(DLT | dose = 50).
 prob(dose = 50, model = my_model, samples = my_samples)
 
 # Create data from the 'DataDual' class.
-my_data <- DataDual(
+data_dual <- DataDual(
   x = c(25, 50, 25, 50, 75, 300, 250, 150),
   y = c(0, 0, 0, 0, 0, 1, 1, 0),
   w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
   doseGrid = seq(from = 25, to = 300, by = 25)
 )
 
-# Initialize a model from 'ModelTox' class e.g using 'LogisticIndepBeta' model.
+# Initialize a toxicity model using 'LogisticIndepBeta' model.
 dlt_model <- LogisticIndepBeta(
   binDLE = c(1.05, 1.8),
   DLEweights = c(3, 3),
   DLEdose = c(25, 300),
-  data = my_data
+  data = data_dual
 )
 
-prob(dose = 100, model = dlt_model)
+# Get samples from posterior.
+dlt_sample <- mcmc(data = data_dual, model = dlt_model, options = my_options)
+
+# Posterior for Prob(DLT | dose = 100).
+prob(dose = 100, model = dlt_model, samples = dlt_sample)
+prob(dose = c(50, 150), model = dlt_model)
 }
 \seealso{
 \code{\link{probFunction}}, \code{\link{dose}}.
