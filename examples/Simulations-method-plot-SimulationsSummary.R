@@ -43,10 +43,7 @@ design <- Design(model=model,
                  startingDose=3)
 
 ## define the true function
-myTruth <- function(dose)
-{
-  model@prob(dose, alpha0=7, alpha1=8)
-}
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Run the simulation on the desired design
 # We only generate 1 trial outcomes here for illustration, for the actual study 

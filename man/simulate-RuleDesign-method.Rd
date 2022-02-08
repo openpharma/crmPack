@@ -64,10 +64,7 @@ model <- LogisticLogNormal(mean = c(-0.85, 1),
                            ref_dose = 50)
   
 ## define the true function
-myTruth <- function(dose)
-{
-  model@prob(dose, alpha0=7, alpha1=8)
-}
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Perform the simulation
 ##For illustration purpose only 10 simulation is produced (nsim=10). 

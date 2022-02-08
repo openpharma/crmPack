@@ -89,3 +89,12 @@ h_get_probit_log_normal <- function() {
     ref_dose = 7.2
   )
 }
+
+h_get_logistic_indep_beta <- function() {
+  dlt_model <- LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEweights = c(3, 3),
+    DLEdose = c(25, 300),
+    data = h_get_data_dual()
+  )
+}

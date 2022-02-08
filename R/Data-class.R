@@ -16,7 +16,7 @@ NULL
 #'
 #' @aliases GeneralData
 #' @export
-#' 
+#'
 .GeneralData <- setClass(
   Class = "GeneralData",
   slots = c(
@@ -32,7 +32,9 @@ NULL
   validity = validate_subjects
 )
 
-# Data-class ----
+# Data ----
+
+## class ----
 
 #' `Data`
 #'
@@ -76,7 +78,7 @@ NULL
   validity = validate_data
 )
 
-# Data-constructor ----
+## constructor ----
 
 #' @rdname Data-class
 #'
@@ -148,7 +150,9 @@ Data <- function(x = numeric(),
   )
 }
 
-# DataDual-class ----
+# DataDual ----
+
+## class ----
 
 #' `DataDual`
 #'
@@ -170,7 +174,7 @@ Data <- function(x = numeric(),
   validity = validate_data_dual
 )
 
-# DataDual-constructor ----
+## constructor ----
 
 #' @rdname DataDual-class
 #'
@@ -186,7 +190,9 @@ DataDual <- function(w = numeric(),
   .DataDual(d, w = w)
 }
 
-# DataParts-class ----
+# DataParts ----
+
+## class ----
 
 #' `DataParts`
 #'
@@ -220,7 +226,7 @@ DataDual <- function(w = numeric(),
   validity = validate_data_parts
 )
 
-# DataParts-constructor ----
+## constructor ----
 
 #' @rdname DataParts-class
 #'
@@ -246,7 +252,9 @@ DataParts <- function(part = integer(),
   )
 }
 
-# DataMixture-class ----
+# DataMixture ----
+
+## class ----
 
 #' `DataMixture`
 #'
@@ -280,7 +288,7 @@ DataParts <- function(part = integer(),
   validity = validate_data_mixture
 )
 
-# DataMixture-constructor ----
+## constructor ----
 
 #' @rdname DataMixture-class
 #'
@@ -305,7 +313,9 @@ DataMixture <- function(xshare = numeric(),
   )
 }
 
-# DataDA-class ----
+# DataDA ----
+
+## class ----
 
 #' `DataDA`
 #'
@@ -341,7 +351,7 @@ DataMixture <- function(xshare = numeric(),
   validity = validate_data_DA
 )
 
-# DataDA-constructor ----
+## constructor ----
 
 #' @rdname DataDA-class
 #'

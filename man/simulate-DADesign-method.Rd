@@ -132,25 +132,13 @@ design <- DADesign(model=model,
                    startingDose=3)
 
 ## set up truth curves
-
-myTruth<-function(dose){
-  
-  model@prob(dose,alpha0=2,alpha1=3)
-  
-}
-
+myTruth <- probFunction(model, alpha0 = 2, alpha1 = 3)
 curve(myTruth(x), from=0, to=100, ylim=c(0, 1))
 
-
-
-onset=15
-
+onset <- 15
 exp_cond.cdf<-function(x){
-  
   1-(pexp(x,1/onset,lower.tail=FALSE)-pexp(28,1/onset,lower.tail=FALSE))/pexp(28,1/onset)
-  
 }
-
 
 #set up simulation settings
 options <- McmcOptions(burnin=100,
