@@ -404,10 +404,7 @@ IncrementsRelative <- function(intervals,
 # IncrementsNumDoseLevels-constructor ----
 
 #' @rdname IncrementsNumDoseLevels-class
-#'
 #' @export
-#' @example examples/Rules-class-IncrementsNumDoseLevels.R
-#' 
 IncrementsNumDoseLevels <- function(maxLevels=1,
                                     basisLevel="last"){
   .IncrementsNumDoseLevels(

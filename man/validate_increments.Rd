@@ -23,6 +23,6 @@ These functions are only used internally to validate the format of an input
 \section{Functions}{
 \itemize{
 \item \code{validate_increments_numdoselevels}: validates that the \code{\link{IncrementsNumDoseLevels}} object
-contains valid maxLevels and basisLevel option.
+contains valid \code{maxLevels} and \code{basisLevel} option.
 }}
 

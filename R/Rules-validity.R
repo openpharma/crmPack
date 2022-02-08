@@ -12,7 +12,7 @@
 NULL
 
 #' @describeIn validate_increments validates that the [`IncrementsNumDoseLevels`] object
-#'   contains valid maxLevels and basisLevel option.
+#'   contains valid `maxLevels` and `basisLevel` option.
 validate_increments_numdoselevels <- function(object) {
   o <- Validate()
   o$check(
