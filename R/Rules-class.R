@@ -303,8 +303,10 @@ validObject(NextBestMinDist(0.1))
 ##'
 ##' @seealso \code{\linkS4class{IncrementsRelative}},
 ##' \code{\linkS4class{IncrementsRelativeDLT}},
-##' \code{\linkS4class{IncrementsRelativeParts}}
+##' \code{\linkS4class{IncrementsRelativeParts}},
+##' [`IncrementsNumDoseLevels`]
 ##'
+##' @aliases Increments
 ##' @export
 ##' @keywords classes
 setClass(Class="Increments",
@@ -391,7 +393,7 @@ IncrementsRelative <- function(intervals,
   Class = "IncrementsNumDoseLevels",
   contains = "Increments",
   representation = representation(
-    maxLevels = "integer", 
+    maxLevels = "integer",
     basisLevel = "character"
   ),
   prototype(
@@ -404,6 +406,8 @@ IncrementsRelative <- function(intervals,
 # IncrementsNumDoseLevels-constructor ----
 
 #' @rdname IncrementsNumDoseLevels-class
+#' @param maxLevels see below.
+#' @param basisLevel see below.
 #' @export
 IncrementsNumDoseLevels <- function(maxLevels=1,
                                     basisLevel="last"){
@@ -928,7 +932,7 @@ StoppingMTDdistribution <- function(target,
 #'
 #' @aliases StoppingMTDCV
 #' @export
-#' 
+#'
 .StoppingMTDCV <- setClass(
   Class = "StoppingMTDCV",
   contains = "Stopping",

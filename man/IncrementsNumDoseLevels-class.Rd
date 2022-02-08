@@ -9,6 +9,11 @@
 \usage{
 IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
 }
+\arguments{
+\item{maxLevels}{see below.}
+
+\item{basisLevel}{see below.}
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
@@ -33,8 +38,8 @@ level.}
 # Maximum skip one dose level, that is 2 dose levels higher than the last dose
 # given.
 # Maximum increment is explicitly defined as:
-myIncrements <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "last")
+increments <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "last")
 # Since the default method is based on the last dose given,
 # maximum increment can also be defined as:
-myIncrements <- IncrementsNumDoseLevels(maxLevels = 2)
+increments <- IncrementsNumDoseLevels(maxLevels = 2)
 }
