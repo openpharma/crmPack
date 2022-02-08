@@ -19,7 +19,7 @@ test_that("validate_increments_numdoselevels returns expected messages for non-v
   object <- IncrementsNumDoseLevels()
   object@maxLevels <- c(-1L)
   object@basisLevel <- c("minGiven")
-  
+
   expect_equal(
     validate_increments_numdoselevels(object),
     c(
