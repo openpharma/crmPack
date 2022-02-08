@@ -7,7 +7,7 @@
 \alias{IncrementsNumDoseLevels}
 \title{\code{IncrementsNumDoseLevels}}
 \usage{
-IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "lastGiven")
+IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -21,31 +21,29 @@ which means that no dose skipping is allowed - the next dose
 can be maximum one level higher than the current dose.}
 
 \item{\code{basisLevel}}{(\code{string})\cr corresponding to the dose level used to increment from.
-It can take two possible values 'lastGiven' or 'maxGiven'. If lastGiven (default)
+It can take two possible values \code{last} or \code{max}. If \code{last} (default)
 is specified the increments is applied to the last given dose and if
-maxGiven is specified the increment is applied from the max given dose
+\code{max} is specified the increment is applied from the max given dose
 level.}
 }}
 
 \examples{
 
 # In this example we define a rule for dose increments which would allow:
-# Maximum skip one dose level, that is 2 dose levels higher than the last dose 
+# Maximum skip one dose level, that is 2 dose levels higher than the last dose
 # given.
 # Maximum increment is explicitly defined as:
-myIncrements <- IncrementsNumDoseLevels(maxLevels=2,basisLevel = "lastGiven")
+myIncrements <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "last")
 # Since the default method is based on the last dose given,
-# maximum increment can also be defined as: 
-myIncrements <- IncrementsNumDoseLevels(maxLevels=2)
-
+# maximum increment can also be defined as:
+myIncrements <- IncrementsNumDoseLevels(maxLevels = 2)
 
 # In this example we define a rule for dose increments which would allow:
-# Maximum skip one dose level, that is 2 dose levels higher than the last dose 
+# Maximum skip one dose level, that is 2 dose levels higher than the last dose
 # given.
 # Maximum increment is explicitly defined as:
-myIncrements <- IncrementsNumDoseLevels(maxLevels=2,basisLevel = "lastGiven")
+myIncrements <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "last")
 # Since the default method is based on the last dose given,
-# maximum increment can also be defined as: 
-myIncrements <- IncrementsNumDoseLevels(maxLevels=2)
-
+# maximum increment can also be defined as:
+myIncrements <- IncrementsNumDoseLevels(maxLevels = 2)
 }
