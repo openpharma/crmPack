@@ -20,7 +20,6 @@
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
 \alias{prob-LogisticIndepBeta-noSamples}
-
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -92,18 +91,6 @@ to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
 \note{
 The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of each other.
 }
-\details{
-The \code{prob} function computes the probability of toxicity for a given
-\code{dose}, using samples of the model parameter(s). Hence, the vectors
-of these samples must be included in the \code{samples} object.
-If you work with multivariate model parameters, then assume that your model
-specific \code{dose} function receives either one parameter value as a row vector,
-or a samples matrix where the rows correspond to the sampling index, i.e.
-the layout is then \verb{nSamples x dimParameter}.
-}
-\note{
-The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of each other.
-}
 \examples{
 # Create some data.
 my_data <- Data(
@@ -149,9 +136,6 @@ dlt_sample <- mcmc(data = data_dual, model = dlt_model, options = my_options)
 # Posterior for Prob(DLT | dose = 100).
 prob(dose = 100, model = dlt_model, samples = dlt_sample)
 prob(dose = c(50, 150), model = dlt_model)
-}
-\seealso{
-\code{\link{probFunction}}, \code{\link{dose}}.
 }
 \seealso{
 \code{\link{probFunction}}, \code{\link{dose}}.
