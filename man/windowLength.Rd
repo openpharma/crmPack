@@ -39,6 +39,8 @@ on the cohort size
 }}
 
 \examples{
+# nolint start
+
 # Create the data
 data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                y=c(0, 0, 1, 1, 0, 0, 1, 0),
@@ -46,7 +48,7 @@ data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                  c(0.1, 0.5, 1.5, 3, 6,
                    seq(from=10, to=80, by=2)),
                u=c(42,30,15,5,20,25,30,60),
-               t0=c(0,-15,-30,-40,-55,-70,-75,-85),
+               t0=c(0,15,30,40,55,70,75,85),
                Tmax=60)
 
 # Initialize the CRM model used to model the data
@@ -57,7 +59,7 @@ lambda_prior<-function(k){
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                           refDose=56,
+                           ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
@@ -104,6 +106,8 @@ myWindowLength <- SafetyWindowSize(patientGap = list(c(7,3),c(9,5)),
 # Determine the safety window parameters for the next cohort
 windowLength(myWindowLength, size=sizeRecommendation)
 
+# nolint end
+# nolint start
 
 # Create the data
 data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -112,7 +116,7 @@ data <- DataDA(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
                  c(0.1, 0.5, 1.5, 3, 6,
                    seq(from=10, to=80, by=2)),
                u=c(42,30,15,5,20,25,30,60),
-               t0=c(0,-15,-30,-40,-55,-70,-75,-85),
+               t0=c(0,15,30,40,55,70,75,85),
                Tmax=60)
 
 # Initialize the CRM model used to model the data
@@ -123,7 +127,7 @@ lambda_prior<-function(k){
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                           refDose=56,
+                           ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
@@ -167,5 +171,6 @@ myWindowLength <- SafetyWindowConst(patientGap = c(7,3),
 # Determine the safety window parameters for the next cohort
 windowLength(myWindowLength, size=sizeRecommendation)
 
+# nolint end
 }
 \keyword{methods}

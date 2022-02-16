@@ -4,59 +4,46 @@
 \name{ProbitLogNormal-class}
 \alias{ProbitLogNormal-class}
 \alias{.ProbitLogNormal}
-\title{Probit model with bivariate log normal prior}
+\alias{ProbitLogNormalLogDose}
+\alias{ProbitLogNormal}
+\title{\code{ProbitLogNormal}}
+\usage{
+ProbitLogNormal(mean, cov, ref_dose = 0)
+}
+\arguments{
+\item{mean}{(\code{numeric})\cr the prior mean vector.}
+
+\item{cov}{(\code{matrix})\cr the prior covariance matrix.}
+
+\item{ref_dose}{(\code{number})\cr the reference dose.}
+}
 \description{
-This is probit regression model with a bivariate normal prior on
-the intercept and log slope.
-The covariate is the dose \eqn{x} itself, potentially divided
-by a reference dose \eqn{x^{*}}, or the logarithm of it:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{ProbitLogNormal}} is the class for probit regression model with a
+bivariate normal prior on the intercept and log slope.
 }
 \details{
-\deqn{probit[p(x)] = \alpha + \beta
-\cdot x/x^{*}}{probit[p(x)] = alpha + beta * x/x*}
-or
-\deqn{probit[p(x)] = \alpha + \beta
-\cdot \log(x/x^{*})}{probit[p(x)] = alpha + beta * log(x/x*)}
-in case that the option \code{useLogDose} is \code{TRUE}.
-Here \eqn{p(x)} is the probability of observing a DLT for a given dose
-\eqn{x}.
-
-The prior is
-\deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}{
-(alpha, beta) ~ Normal(mu, Sigma)}
-
-The slots of this class contain the mean vector and the covariance matrix of
-the bivariate normal distribution, as well as the reference dose.
-Note that the parametrization inside the class uses alpha0 and alpha1.
-
-This model is also used in the \code{\linkS4class{DualEndpoint}} classes,
-so this class can be used to check the prior assumptions on the dose-toxicity
-model - even when sampling from the prior distribution of the dual endpoint model
-is not possible.
+The covariate is the natural logarithm of dose \eqn{x} divided by a
+reference dose \eqn{x*}, i.e.:
+\deqn{probit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
-\section{Slots}{
-
-\describe{
-\item{\code{mu}}{the prior mean vector \eqn{\mu}}
-
-\item{\code{Sigma}}{the prior covariance matrix \eqn{\Sigma}}
-
-\item{\code{refDose}}{the reference dose \eqn{x^{*}}}
-
-\item{\code{useLogDose}}{should the log of (standardized) dose be used?}
-}}
-
+\note{
+This model is also used in the \code{\link{DualEndpoint}} classes, so this class
+can be used to check the prior assumptions on the dose-toxicity model, even
+when sampling from the prior distribution of the dual endpoint model is not
+possible.
+}
 \examples{
-model <- ProbitLogNormal(mu = c(-0.85, 1),
-                           Sigma = matrix(c(1, -0.5, -0.5, 1), nrow = 2))
-
-## we can also specify a reference dose, and use a log transformation of
-## standardized dose in the model:
-model <- ProbitLogNormal(mu = c(-0.85, 1),
-                         Sigma = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                         refDose = 7.2,
-                         useLogDose=TRUE)
-
-
+my_model <- ProbitLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 7.2
+)
 }
-\keyword{classes}
+\seealso{
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormalRel}}.
+}

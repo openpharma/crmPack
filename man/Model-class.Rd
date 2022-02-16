@@ -7,11 +7,12 @@
 \alias{Model}
 \title{\code{Model}}
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
 
-\code{\link{Model}} is the class for single agent dose escalation, from which all other
-specific models inherit. The \code{\link{Model}} class inherits from
-\code{\link{GeneralModel}}.
+\code{\link{Model}} is the old class for single agent dose escalation, from which all
+other specific models inherit. The \code{\link{Model}} class inherits from
+\code{\link{GeneralModel}}. It will be soon removed as the \code{dose} and \code{prob} are
+moved to a separate S4 class-specific methods.
 }
 \details{
 The first argument of \code{dose} function must be the \code{prob}, which is a
@@ -53,8 +54,4 @@ exactly as in the \code{\link{Data}} class. All prior distributions for paramete
 should be contained in the model function \code{priormodel}. The background is
 that this can be used to simulate from the prior distribution, before
 obtaining any data.
-}
-\seealso{
-\code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{LogisticKadane}}, \code{\link{DualEndpoint}}.
 }

@@ -468,6 +468,41 @@ myBarplot <- function(x, description, xaxisround = 0) {
 
 # nolint end
 
+#' Combining S4 Class Validation Results
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A simple helper function that combines two outputs from calls to `result()`
+#'   function which is placed in a slot of [Validate()] reference class.
+#'
+#' @param v1 (`logical` or `character`)\cr an output from `result()` function from
+#'   [Validate()] reference class, to be combined with `v2`.
+#' @param v2 (`logical` or `character`)\cr an output from `result()` function from
+#'   [Validate()] reference class, to be combined with `v1`.
+#'
+#' @export
+#' @examples
+#' h_validate_combine_results(TRUE, "some_message")
+h_validate_combine_results <- function(v1, v2) {
+  assert_true(test_true(v1) || test_character(v1, any.missing = FALSE, min.len = 1L))
+  assert_true(test_true(v2) || test_character(v2, any.missing = FALSE, min.len = 1L))
+
+  isTRUE_v2 <- isTRUE(v2)
+  if (isTRUE(v1)) {
+    if (isTRUE_v2) {
+      TRUE
+    } else {
+      v2
+    }
+  } else {
+    if (isTRUE_v2) {
+      v1
+    } else {
+      c(v1, v2)
+    }
+  }
+}
+
 #' Comparison with Numerical Tolerance and Without Name Comparison
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -791,7 +826,7 @@ h_rapply <- function(x, fun, classes, ...) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A simpler helper function that replaces `NA` object by `NULL` object.
+#' A simple helper function that replaces `NA` object by `NULL` object.
 #'
 #' @param x any atomic object of length `1`. For the definition of "atomic",
 #'   see [is.atomic()].
@@ -808,5 +843,28 @@ h_null_if_na <- function(x) {
     NULL
   } else {
     x
+  }
+}
+
+#' Getting `NULL` for scalar object
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that returns `NULL` if `x` is a scalar object, i.e.
+#' an object of length equals 1. Otherwise it returns 1L.
+#'
+#' @param x any object for which length function is defined.
+#'
+#' @return `NULL` if `x` is of length 1, otherwise, 1L.
+#'
+#' @export
+#' @examples
+#' h_null_if_scalar(c(1, 3))
+#' h_null_if_scalar(2)
+h_null_if_scalar <- function(x) {
+  if (length(x) == 1L) {
+    NULL
+  } else {
+    1L
   }
 }

@@ -1,5 +1,8 @@
-##' @include helpers.R
-{}
+# nolint start
+
+#' @include helpers.R
+#' @include Rules-validity.R
+NULL
 
 #nolint start
 
@@ -302,8 +305,10 @@ validObject(NextBestMinDist(0.1))
 ##'
 ##' @seealso \code{\linkS4class{IncrementsRelative}},
 ##' \code{\linkS4class{IncrementsRelativeDLT}},
-##' \code{\linkS4class{IncrementsRelativeParts}}
+##' \code{\linkS4class{IncrementsRelativeParts}},
+##' [`IncrementsNumDoseLevels`]
 ##'
+##' @aliases Increments
 ##' @export
 ##' @keywords classes
 setClass(Class="Increments",
@@ -366,50 +371,55 @@ IncrementsRelative <- function(intervals,
                         increments=increments)
 }
 
-## --------------------------------------------------
-## Increments control based on number of dose levels
-## --------------------------------------------------
+# nolint end
 
-##' Increments control based on number of dose levels
-##'
-##' @slot maxLevels scalar positive integer for the number of maximum
-##' dose levels to increment for the next dose. It defaults to 1,
-##' which means that no dose skipping is allowed - the next dose
-##' can be maximum one level higher than the current dose.
-##'
-##' @example examples/Rules-class-IncrementsNumDoseLevels.R
-##' @export
-##' @keywords classes
-.IncrementsNumDoseLevels <-
-  setClass(Class="IncrementsNumDoseLevels",
-           representation(maxLevels="integer"),
-           prototype(maxLevels=1L),
-           contains="Increments",
-           validity=
-             function(object){
-               o <- Validate()
+# IncrementsNumDoseLevels-class ----
 
-               o$check(is.scalar(object@maxLevels) &&
-                         is.integer(object@maxLevels) &&
-                         object@maxLevels > 0,
-                       "maxLevels must be scalar positive integer")
+#' `IncrementsNumDoseLevels`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @slot maxLevels (`count`)\cr corresponding to the number of maximum
+#'   dose levels to increment for the next dose. It defaults to 1,
+#' which means that no dose skipping is allowed - the next dose
+#' can be maximum one level higher than the current dose.
+#' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
+#' It can take two possible values `last` or `max`. If `last` (default)
+#' is specified the increments is applied to the last given dose and if
+#' `max` is specified the increment is applied from the max given dose
+#' level.
+#'
+#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#' @export
+.IncrementsNumDoseLevels <- setClass(
+  Class = "IncrementsNumDoseLevels",
+  contains = "Increments",
+  representation = representation(
+    maxLevels = "integer",
+    basisLevel = "character"
+  ),
+  prototype(
+    maxLevels = 1L,
+    basisLevel = "last"
+  ),
+  validity = validate_increments_numdoselevels
+)
 
-               o$result()
-             })
-validObject(.IncrementsNumDoseLevels())
+# IncrementsNumDoseLevels-constructor ----
 
-##' Initialization function for "IncrementsNumDoseLevels"
-##'
-##' @param maxLevels see \code{\linkS4class{IncrementsNumDoseLevels}}
-##' @return the \code{\linkS4class{IncrementsNumDoseLevels}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsNumDoseLevels <- function(maxLevels=1)
-{
-  .IncrementsNumDoseLevels(maxLevels=safeInteger(maxLevels))
+#' @rdname IncrementsNumDoseLevels-class
+#' @param maxLevels see below.
+#' @param basisLevel see below.
+#' @export
+IncrementsNumDoseLevels <- function(maxLevels=1,
+                                    basisLevel="last"){
+  .IncrementsNumDoseLevels(
+    maxLevels=safeInteger(maxLevels),
+    basisLevel=basisLevel
+  )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Increments control based on relative differences in intervals,
@@ -632,31 +642,26 @@ IncrementMin <- function(IncrementsList)
   .IncrementMin(IncrementsList=IncrementsList)
 }
 
+# Stopping-class ----
 
-
-
-## ============================================================
-
-## --------------------------------------------------
-## Virtual class for stopping rules
-## --------------------------------------------------
-
-##' The virtual class for stopping rules
-##'
-##' @seealso \code{\linkS4class{StoppingList}},
-##' \code{\linkS4class{StoppingCohortsNearDose}},
-##' \code{\linkS4class{StoppingPatientsNearDose}},
-##' \code{\linkS4class{StoppingMinCohorts}},
-##' \code{\linkS4class{StoppingMinPatients}},
-##' \code{\linkS4class{StoppingTargetProb}}
-##' \code{\linkS4class{StoppingMTDdistribution}},
-##' \code{\linkS4class{StoppingTargetBiomarker}},
-##' \code{\linkS4class{StoppingHighestDose}}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="Stopping",
-         contains=list("VIRTUAL"))
+#' `Stopping`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Stopping`] is a class for for stopping rules.
+#'
+#' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
+#'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
+#'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
+#'   [`StoppingMTDCV`].
+#'
+#' @aliases Stopping
+#' @export
+#'
+setClass(
+  Class = "Stopping",
+  contains = list("VIRTUAL")
+)
 
 
 ## --------------------------------------------------
@@ -947,6 +952,59 @@ StoppingMTDdistribution <- function(target,
                              prob=prob)
 }
 
+# nolint end
+
+# StoppingMTDCV-class ----
+
+#' `StoppingMTDCV`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
+#' which is calculated as the coefficient of variation (CV) of the MTD.
+#'
+#' @slot target (`number`)\cr toxicity target of MTD.
+#' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
+#'   to stop the trial.
+#'
+#' @aliases StoppingMTDCV
+#' @export
+#'
+.StoppingMTDCV <- setClass(
+  Class = "StoppingMTDCV",
+  contains = "Stopping",
+  representation = representation(
+    target = "numeric",
+    thresh_cv = "numeric"
+  ),
+  prototype(
+    target = 0.3,
+    thresh_cv = 40
+  ),
+  validity = validate_stopping_mtd_cv
+)
+
+# StoppingMTDCV-constructor ----
+
+#' @rdname StoppingMTDCV-class
+#'
+#' @param target (`number`)\cr the target toxicity probability (e.g. 0.3)
+#'   defining the MTD.
+#' @param thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
+#'  to stop the trial (e.g. 40 percent).
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMTDCV.R
+#'
+StoppingMTDCV <- function(target = 0.3,
+                          thresh_cv = 40) {
+  .StoppingMTDCV(
+    target = target,
+    thresh_cv = thresh_cv
+  )
+}
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker
@@ -2083,4 +2141,4 @@ SafetyWindowConst <- function(patientGap,
 
 ## ============================================================
 
-#nolint end
+# nolint end

@@ -2,7 +2,9 @@
 #' @include McmcOptions-validity.R
 NULL
 
-# McmcOptions-class ----
+# McmcOptions ----
+
+## class ----
 
 #' `McmcOptions`
 #'
@@ -50,7 +52,7 @@ NULL
   validity = validate_mcmc_options
 )
 
-# McmcOptions-constructor ----
+## constructor ----
 
 #' @rdname McmcOptions-class
 #'

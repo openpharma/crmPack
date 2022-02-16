@@ -28,14 +28,12 @@
 #  cpp_coxfit
 #' @import checkmate
 #' @import ggplot2
+#' @import methods 
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
-#' @importFrom methods setClass setOldClass setGeneric setMethod representation
-#' signature prototype initialize new is .valueClassTest as callNextMethod slot 
-#' slotNames show
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
-#' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma
-#' rnorm runif uniroot var vcov
+#' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma approxfun
+#' rnorm runif uniroot var vcov step mad
 #' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
@@ -112,6 +110,22 @@ globalVariables(c("log.betaZ",
                   "thisProb.PL",
                   "thisMeanEff.PL",
                   "thisSize.PL",
-                  "probit<-"))
+                  "probit<-",
+                  "refDose",
+                  "Tmax",
+                  "u",
+                  "eps",
+                  "h",
+                  "lambda",
+                  "cadj",
+                  "A",
+                  "lambda_p",
+                  "cond",
+                  "t0",
+                  "tend",
+                  "t0_case",
+                  "tend_case",
+                  "yhat",
+                  "ref_dose"))
 
 # nolint end

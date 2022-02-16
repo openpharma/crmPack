@@ -4,6 +4,7 @@
 \alias{maxDose}
 \alias{maxDose,IncrementsRelative,Data-method}
 \alias{maxDose,IncrementsNumDoseLevels,Data-method}
+\alias{maxDose-IncrementsNumDoseLevels}
 \alias{maxDose,IncrementsRelativeParts,DataParts-method}
 \alias{maxDose,IncrementsRelativeDLT,Data-method}
 \alias{maxDose,IncrementsRelativeDLTCurrent,Data-method}
@@ -37,6 +38,11 @@ the maximum possible next dose
 }
 \description{
 Determine the upper limit of the next dose based on the increments rule.
+
+Increments control based on number of dose levels
+Increment rule to determine the maximum possible next dose based on
+maximum dose levels to increment for the next dose.
+Increment rule can be applied to last dose or maximum dose given so far.
 }
 \details{
 This function outputs the maximum possible next dose, based on the
@@ -46,9 +52,6 @@ corresponding rule \code{increments} and the \code{data}.
 \itemize{
 \item \code{maxDose,IncrementsRelative,Data-method}: Determine the maximum possible next dose based on
 relative increments
-
-\item \code{maxDose,IncrementsNumDoseLevels,Data-method}: Determine the maximum possible next dose based on
-maximum dose levels to increment for the next dose
 
 \item \code{maxDose,IncrementsRelativeParts,DataParts-method}: Determine the maximum possible next dose based on
 relative increments and part 1 and 2
@@ -85,25 +88,35 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 nextMaxDose <- maxDose(myIncrements,
                        data=data)
 
-
 # Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
+data <- Data(x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
+             y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+             cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+             doseGrid =
                c(0.1, 0.5, 1.5, 3, 6, 8,
-                 seq(from=10, to=80, by=2)))
+               seq(from = 10, to = 80, by = 2)
+                )
+            )
 
 
-# In this example we define a rule for dose increments which would allow:
-# maximum skip one dose level, that is 2 dose levels higher is maximum
-# increment
-myIncrements <- IncrementsNumDoseLevels(maxLevels=2)
+# In this first example we define a rule for dose increments which would allow:
+# Maximum skip one dose level, that is 2 dose levels higher than the last dose
+# given. Maximum increment is explicitly defined as:
+increments <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "last")
+# Since the default method is based on the last dose given, maximum increment
+# can also be defined as:
+increments <- IncrementsNumDoseLevels(maxLevels = 2)
 
 # Based on the rule above, we then calculate the maximum dose allowed
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+max_dose <- maxDose(increments, data = data)
 
+# In this second example we define a rule for dose increments which would allow:
+# Maximum skip one dose level, that is 2 dose levels higher than the max dose
+# given. Maximum increment is explicitly defined as:
+increments <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "max")
+
+# Based on the rule above, we then calculate the maximum dose allowed
+max_dose <- maxDose(increments, data = data)
 
 # create an object of class 'DataParts'
 myData <- DataParts(x=c(0.1,0.5,1.5),

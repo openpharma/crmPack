@@ -1,3 +1,5 @@
+---
+
 url: https://github.com/roche/crmPack
 
 template:
@@ -10,8 +12,8 @@ home:
 navbar:
   type: default
   right:
-  - icon: fa-github fa-lg
-    href: https://github.com/roche/crmPack
+    - icon: fa-github fa-lg
+      href: https://github.com/roche/crmPack
 
 development:
   mode: devel
@@ -29,13 +31,21 @@ reference:
       - DataParts
       - DataMixture
       - DataDA
+      - McmcOptions
       - AllModels
       - GeneralModel
       - Model
+      - ModelLogNormal
+      - LogisticNormal
       - LogisticLogNormal
-      - McmcOptions
+      - LogisticLogNormalSub
+      - IncrementsNumDoseLevels
+      - ProbitLogNormal
+      - ProbitLogNormalRel
+      - StoppingMTDCV
   - title: Internal Helper Functions
     contents:
+      - h_validate_combine_results
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
@@ -52,6 +62,7 @@ reference:
       - h_jags_write_model
       - h_jags_extract_samples
       - h_null_if_na
+      - h_null_if_scalar
   - title: Internal Validation Functions
     contents:
       - validate_subjects
@@ -60,10 +71,14 @@ reference:
       - validate_data_parts
       - validate_data_mixture
       - validate_data_DA
+      - validate_mcmc_options
       - validate_general_model
       - validate_model
       - validate_logistic_log_normal
       - validate_mcmc_options
+      - validate_increments_numdoselevels
+      - validate_model_log_normal
+      - validate_stopping_mtd_cv
   - title: Methods
     contents:
       - plot-Data
@@ -73,20 +88,37 @@ reference:
       - update-DataParts
       - update-DataDual
       - update-DataDA
-      - get_efficacy
-      - get_efficacy-DataDual
+      - getEff
+      - getEff-DataDual
       - sampleSize
       - sampleSize-McmcOptions
       - saveSample
       - saveSample-McmcOptions
+      - doseFunction
+      - doseFunction-GeneralModel
       - dose
       - dose-Model
+      - dose-LogisticNormal
+      - dose-LogisticLogNormal
+      - dose-LogisticLogNormalSub
+      - dose-ProbitLogNormal
+      - dose-ProbitLogNormalRel
+      - dose-LogisticLogNormalMixture
       - dose-ModelTox
       - dose-ModelTox_noSamples
+      - probFunction
+      - probFunction-GeneralModel
       - prob
       - prob-Model
+      - prob-LogisticNormal
+      - prob-LogisticLogNormal
+      - prob-LogisticLogNormalSub
+      - prob-ProbitLogNormal
+      - prob-ProbitLogNormalRel
+      - prob-LogisticLogNormalMixture
       - prob-ModelTox
       - prob-ModelTox_noSamples
+      - stopTrial-StoppingMTDCV
   - title: Functions
     contents:
       - enable_logging

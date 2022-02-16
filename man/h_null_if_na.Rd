@@ -16,7 +16,7 @@ see \code{\link[=is.atomic]{is.atomic()}}.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A simpler helper function that replaces \code{NA} object by \code{NULL} object.
+A simple helper function that replaces \code{NA} object by \code{NULL} object.
 }
 \examples{
 h_null_if_na(NA)

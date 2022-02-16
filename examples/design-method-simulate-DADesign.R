@@ -1,3 +1,5 @@
+# nolint start
+
 # Define the dose-grid and PEM parameters
 emptydata <- DataDA(doseGrid=c(0.1, 0.5,1, 1.5, 3, 6,
                                seq(from=10, to=80, by=2)),Tmax=60)
@@ -11,7 +13,7 @@ lambda_prior<-function(k){
 
 model<-DALogisticLogNormal(mean=c(-0.85,1),
                            cov=matrix(c(1,-0.5,-0.5,1),nrow=2),
-                           refDose=56,
+                           ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
                            C_par=2)
@@ -53,25 +55,13 @@ design <- DADesign(model=model,
                    startingDose=3)
 
 ## set up truth curves
-
-myTruth<-function(dose){
-  
-  model@prob(dose,alpha0=2,alpha1=3)
-  
-}
-
+myTruth <- probFunction(model, alpha0 = 2, alpha1 = 3)
 curve(myTruth(x), from=0, to=100, ylim=c(0, 1))
 
-
-
-onset=15
-
+onset <- 15
 exp_cond.cdf<-function(x){
-  
   1-(pexp(x,1/onset,lower.tail=FALSE)-pexp(28,1/onset,lower.tail=FALSE))/pexp(28,1/onset)
-  
 }
-
 
 #set up simulation settings
 options <- McmcOptions(burnin=100,
@@ -90,3 +80,5 @@ mySims <- simulate(design,
                    deescalate=FALSE,
                    parallel=TRUE,
                    nCores=2)
+
+# nolint end

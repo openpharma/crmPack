@@ -58,6 +58,7 @@ NULL
 #'
 .GeneralModel <- setClass(
   Class = "GeneralModel",
+  contains = "AllModels",
   slots = c(
     datamodel = "function",
     priormodel = "function",
@@ -65,19 +66,23 @@ NULL
     init = "function",
     sample = "character"
   ),
-  contains = "AllModels",
+  prototype = prototype(
+    datamodel = I,
+    priormodel = I
+  ),
   validity = validate_general_model
 )
 
-# Model-class ----
+# Model-class (TO REMOVE) ----
 
 #' `Model`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("superseded")`
 #'
-#' [`Model`] is the class for single agent dose escalation, from which all other
-#' specific models inherit. The [`Model`] class inherits from
-#' [`GeneralModel`].
+#' [`Model`] is the old class for single agent dose escalation, from which all
+#' other specific models inherit. The [`Model`] class inherits from
+#' [`GeneralModel`]. It will be soon removed as the `dose` and `prob` are
+#' moved to a separate S4 class-specific methods.
 #'
 #' @note The `datamodel` must obey the convention that the data input is called
 #'   exactly as in the [`Data`] class. All prior distributions for parameters
@@ -113,555 +118,377 @@ NULL
 #'   for a specific dose, based on the model parameters and additional prior
 #'   settings (see the details above).
 #'
-#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
-#'   [`LogisticKadane`], [`DualEndpoint`].
 #'
 #' @aliases Model
 #' @export
 #'
 .Model <- setClass(
   Class = "Model",
+  contains = "GeneralModel",
   slots = c(
     dose = "function",
     prob = "function"
   ),
-  contains = "GeneralModel",
+  prototype = prototype(
+    dose = function(prob) {},
+    prob = function(dose) {}
+  ),
   validity = validate_model
 )
 
-# LogisticLogNormal-class ----
+# ModelLogNormal ----
+
+## class ----
+
+#' `ModelLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`ModelLogNormal`] is the class for a model with a reference dose and bivariate
+#' normal prior on the model parameters `alpha0` and natural logarithm of `alpha1`,
+#' i.e.: \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov),}. Transformations other
+#' than `log`, e.g. identity, can be specified too in `priormodel` slot.
+#' The parameter `alpha1` has a log-normal distribution by default to ensure
+#' positivity of `alpha1` which further guarantees `exp(alpha1) > 1`.
+#' The slots of this class contain the mean vector, the covariance and
+#' precision matrices of the bivariate normal distribution, as well as the
+#' reference dose. Note that the precision matrix is an inverse of the
+#' covariance matrix in the `JAGS`.
+#' All ("normal") model specific classes inherit from this class.
+#'
+#' @slot mean (`numeric`)\cr the prior mean vector.
+#' @slot cov (`matrix`)\cr the prior covariance matrix.
+#' @slot prec the prior precision matrix, which is an inverse matrix of the `cov`.
+#' @slot ref_dose (`number`)\cr the reference dose.
+#'
+#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#'
+#' @aliases ModelLogNormal
+#' @export
+#'
+.ModelLogNormal <- setClass(
+  Class = "ModelLogNormal",
+  contains = "Model",
+  slots = c(
+    mean = "numeric",
+    cov = "matrix",
+    prec = "matrix",
+    ref_dose = "numeric"
+  ),
+  validity = validate_model_log_normal
+)
+
+## constructor ----
+
+#' @rdname ModelLogNormal-class
+#'
+#' @param mean (`numeric`)\cr the prior mean vector.
+#' @param cov (`matrix`)\cr the prior covariance matrix.
+#' @param ref_dose (`number`)\cr the reference dose.
+#'
+#' @export
+#'
+ModelLogNormal <- function(mean, cov, ref_dose = 0) {
+  assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
+  assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
+
+  prec <- solve(cov)
+  .ModelLogNormal(
+    mean = mean,
+    cov = cov,
+    prec = prec,
+    ref_dose = ref_dose,
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- exp(theta[2])
+    },
+    modelspecs = function() {
+      list(ref_dose = ref_dose, mean = mean, prec = prec)
+    },
+    init = function() {
+      list(theta = c(0, 1))
+    },
+    sample = c("alpha0", "alpha1"),
+    datanames = c("nObs", "y", "x")
+  )
+}
+
+# LogisticNormal ----
+
+## class ----
+
+#' `LogisticNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticNormal`] is the class for the usual logistic regression model with
+#' a bivariate normal prior on the intercept and slope.
+#'
+#' @details The covariate is the natural logarithm of the dose \eqn{x} divided by
+#'   the reference dose \eqn{x*}, i.e.:
+#'   \deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#'
+#' @aliases LogisticNormal
+#' @export
+#'
+.LogisticNormal <- setClass(
+  Class = "LogisticNormal",
+  contains = "ModelLogNormal"
+)
+
+## constructor ----
+
+#' @rdname LogisticNormal-class
+#'
+#' @inheritParams ModelLogNormal
+#'
+#' @export
+#' @example examples/Model-class-LogisticNormal.R
+#'
+LogisticNormal <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+
+  .LogisticNormal(
+    model_ln,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- theta[2]
+    }
+  )
+}
+
+# LogisticLogNormal ----
+
+## class ----
 
 #' `LogisticLogNormal`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`LogisticLogNormal`] is the class for a usual logistic regression model with
-#' a bivariate normal prior on the intercept and log slope.
+#' [`LogisticLogNormal`] is the class for the usual logistic regression model
+#' with a bivariate normal prior on the intercept and log slope.
 #'
-#' @details The covariate is the natural logarithm of the dose \eqn{x} divided
-#'   by the reference dose \eqn{x^{*}}:
-#'   \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})},
-#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose
-#'   \eqn{x}.
-#'   The prior is: \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}.
-#'   The slots of this class contain the mean vector and the covariance matrix
-#'   of the bivariate normal distribution, as well as the reference dose.
+#' @details The covariate is the natural logarithm of the dose \eqn{x} divided by
+#'   the reference dose \eqn{x*}, i.e.:
+#'   \deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
-#' @note The parametrization inside the class uses `alpha0` and `alpha1`.
-#'   `alpha0` is identical to the intercept \eqn{\alpha} above and is the
-#'   log-odds for a DLT at the reference dose `x*`. Therefore, the prior mean
-#'   for `alpha0` is the expected log-odds at the reference dose `x*` before
-#'   observing any data. Note that the expected odds is not just the exp of the
-#'   prior mean of `alpha0`, because the non-linearity of the exp
-#'   transformation. The log-normal distribution on Wikipedia gives the formula
-#'   for computing the prior mean of `exp(alpha0)`, where `alpha0` is the
-#'   `log(alpha)` in the Neuenschwander et al. (2008) paper. The `alpha1` is
-#'   identical to \eqn{\beta} above and equals to `beta` in the Neuenschwander
-#'   et al paper. The `exp(alpha1)` gives the odds-ratio for DLT between two
-#'   doses that differ by the factor `exp(1)` ~ 2.7. Parameter `alpha1` has a
-#'   log-normal distribution in the `LogisticLogNormal` model in order to ensure
-#'   positivity of `alpha1` and thus `exp(alpha1) > 1`.
-#'
-#' @slot mean (`numeric`)\cr the prior mean vector.
-#' @slot cov (`matrix`)\cr the prior covariance matrix.
-#' @slot refDose (`number`)\cr the reference dose.
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormalSub`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
 #'
 #' @aliases LogisticLogNormal
 #' @export
 #'
 .LogisticLogNormal <- setClass(
   Class = "LogisticLogNormal",
-  slots = c(
-    mean = "numeric",
-    cov = "matrix",
-    refDose = "numeric"
-  ),
-  prototype = prototype(
-    mean = c(0, 2),
-    cov = diag(2),
-    refDose = 1
-  ),
-  contains = "Model",
-  validity = validate_logistic_log_normal
+  contains = "ModelLogNormal"
 )
 
-# LogisticLogNormal-constructor ----
+## constructor ----
 
 #' @rdname LogisticLogNormal-class
 #'
-#' @param mean (`numeric`)\cr the prior mean vector.
-#' @param cov (`matrix`)\cr the prior covariance matrix.
-#' @param refDose (`number`)\cr the reference dose.
+#' @inheritParams ModelLogNormal
 #'
 #' @export
 #' @example examples/Model-class-LogisticLogNormal.R
 #'
-LogisticLogNormal <- function(mean,
-                              cov,
-                              refDose) {
-  assert_number(refDose, lower = 0 + .Machine$double.xmin)
-
-  # The logistic likelihood.
-  datamodel <- function() {
-    for (i in 1:nObs) {
-      y[i] ~ dbern(p[i])
-      logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-      StandLogDose[i] <- log(x[i] / refDose)
-    }
-  }
-
-  priormodel <- function() {
-    # The multivariate normal prior on the (transformed) coefficients.
-    priorPrec[1:2, 1:2] <- inverse(priorCov[, ])
-    theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2, 1:2])
-    # Extract actual coefficients.
-    alpha0 <- theta[1]
-    alpha1 <- exp(theta[2])
-
-    # Dummy to use `refDose` here. It is contained in the `modelspecs` list
-    # so it must occur also here.
-    bla <- refDose + 1
-  }
-
-  dose <- function(prob, alpha0, alpha1) {
-    StandLogDose <- (logit(prob) - alpha0) / alpha1
-    exp(StandLogDose) * refDose
-  }
-
-  prob <- function(dose, alpha0, alpha1) {
-    StandLogDose <- log(dose / refDose)
-    plogis(alpha0 + alpha1 * StandLogDose)
-  }
+LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticLogNormal(
-    datanames = c("nObs", "y", "x"),
-    datamodel = datamodel,
-    priormodel = priormodel,
-    modelspecs = function() {
-      list(refDose = refDose, priorCov = cov, priorMean = mean)
+    model_ln,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    }
+  )
+}
+
+# LogisticLogNormalSub ----
+
+## class ----
+
+#' `LogisticLogNormalSub`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticLogNormalSub`] is the class for a standard logistic model with
+#' bivariate (log) normal prior with subtractive dose standardization.
+#'
+#' @details The covariate is the dose \eqn{x} minus the reference dose \eqn{x*},
+#'   i.e.:
+#'   \deqn{logit[p(x)] = alpha0 + alpha1 * (x - x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#'
+#' @aliases LogisticLogNormalSub
+#' @export
+#'
+.LogisticLogNormalSub <- setClass(
+  Class = "LogisticLogNormalSub",
+  contains = "ModelLogNormal"
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalSub-class
+#'
+#' @inheritParams ModelLogNormal
+#'
+#' @export
+#' @example examples/Model-class-LogisticLogNormalSub.R
+#'
+LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+
+  .LogisticLogNormalSub(
+    model_ln,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * (x[i] - ref_dose)
+        y[i] ~ dbern(p[i])
+      }
     },
     init = function() {
-      list(theta = c(0, 1))
-    },
-    sample = c("alpha0", "alpha1"),
-    dose = dose,
-    prob = prob,
-    mean = mean,
-    cov = cov,
-    refDose = refDose
+      list(theta = c(0, -20))
+    }
+  )
+}
+
+# ProbitLogNormal ----
+
+## class ----
+
+#' `ProbitLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`ProbitLogNormal`] is the class for probit regression model with a
+#' bivariate normal prior on the intercept and log slope.
+#'
+#' @details The covariate is the natural logarithm of dose \eqn{x} divided by a
+#'   reference dose \eqn{x*}, i.e.:
+#'   \deqn{probit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
+#'
+#' @note This model is also used in the [`DualEndpoint`] classes, so this class
+#'   can be used to check the prior assumptions on the dose-toxicity model, even
+#'   when sampling from the prior distribution of the dual endpoint model is not
+#'   possible.
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalSub`], [`ProbitLogNormalRel`].
+#'
+#' @aliases ProbitLogNormalLogDose
+#' @export
+#'
+.ProbitLogNormal <- setClass(
+  Class = "ProbitLogNormal",
+  contains = "ModelLogNormal"
+)
+
+## constructor ----
+
+#' @rdname ProbitLogNormal-class
+#'
+#' @inheritParams ModelLogNormal
+#'
+#' @export
+#' @example examples/Model-class-ProbitLogNormal.R
+#'
+ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+
+  .ProbitLogNormal(
+    model_ln,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        probit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    }
+  )
+}
+
+# ProbitLogNormalRel ----
+
+## class ----
+
+#' `ProbitLogNormalRel`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`ProbitLogNormalRel`] is the class for probit regression model with a bivariate
+#' normal prior on the intercept and log slope.
+#'
+#' @details The covariate is the dose \eqn{x} divided by a reference dose \eqn{x*},
+#'   i.e.:
+#'   \deqn{probit[p(x)] = alpha0 + alpha1 * x/x*,}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
+#'
+#' @note This model is also used in the [`DualEndpoint`] classes, so this class
+#'   can be used to check the prior assumptions on the dose-toxicity model, even
+#'   when sampling from the prior distribution of the dual endpoint model is not
+#'   possible.
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`].
+#'
+#' @aliases ProbitLogNormalRel
+#' @export
+#'
+.ProbitLogNormalRel <- setClass(
+  Class = "ProbitLogNormalRel",
+  contains = "ModelLogNormal"
+)
+
+## constructor ----
+
+#' @rdname ProbitLogNormalRel-class
+#'
+#' @inheritParams ModelLogNormal
+#'
+#' @export
+#' @example examples/Model-class-ProbitLogNormalRel.R
+#'
+ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
+  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
+
+  .ProbitLogNormalRel(
+    model_ln,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        probit(p[i]) <- alpha0 + alpha1 * (x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    }
   )
 }
 
 # nolint start
-
-##' Probit model with bivariate log normal prior
-##'
-##' This is probit regression model with a bivariate normal prior on
-##' the intercept and log slope.
-##' The covariate is the dose \eqn{x} itself, potentially divided
-##' by a reference dose \eqn{x^{*}}, or the logarithm of it:
-##'
-##' \deqn{probit[p(x)] = \alpha + \beta
-##' \cdot x/x^{*}}{probit[p(x)] = alpha + beta * x/x*}
-##' or
-##' \deqn{probit[p(x)] = \alpha + \beta
-##' \cdot \log(x/x^{*})}{probit[p(x)] = alpha + beta * log(x/x*)}
-##' in case that the option \code{useLogDose} is \code{TRUE}.
-##' Here \eqn{p(x)} is the probability of observing a DLT for a given dose
-##' \eqn{x}.
-##'
-##' The prior is
-##' \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}{
-##' (alpha, beta) ~ Normal(mu, Sigma)}
-##'
-##' The slots of this class contain the mean vector and the covariance matrix of
-##' the bivariate normal distribution, as well as the reference dose.
-##' Note that the parametrization inside the class uses alpha0 and alpha1.
-##'
-##' This model is also used in the \code{\linkS4class{DualEndpoint}} classes,
-##' so this class can be used to check the prior assumptions on the dose-toxicity
-##' model - even when sampling from the prior distribution of the dual endpoint model
-##' is not possible.
-##'
-##' @slot mu the prior mean vector \eqn{\mu}
-##' @slot Sigma the prior covariance matrix \eqn{\Sigma}
-##' @slot refDose the reference dose \eqn{x^{*}}
-##' @slot useLogDose should the log of (standardized) dose be used?
-##'
-##' @example examples/Model-class-ProbitLogNormal.R
-##' @export
-##' @keywords classes
-.ProbitLogNormal <-
-  setClass(Class="ProbitLogNormal",
-           representation(mu="numeric",
-                          Sigma="matrix",
-                          refDose="numeric",
-                          useLogDose="logical"),
-           prototype(mu=c(0, 1),
-                     Sigma=diag(2),
-                     refDose=1,
-                     useLogDose=TRUE),
-           contains="Model",
-           validity=
-             function(object){
-               o <- Validate()
-
-               o$check(length(object@mu) == 2,
-                       "mu must have length 2")
-               o$check(identical(dim(object@Sigma), c(2L, 2L)) &&
-                         ! is.null(chol(object@Sigma)),
-                       "Sigma must be positive-definite 2x2 covariance matrix")
-               o$check(is.scalar(object@refDose) &&
-                         (object@refDose > 0),
-                       "refDose must be positive scalar")
-               o$check(is.bool(object@useLogDose),
-                       "useLogDose must be TRUE or FALSE")
-
-               o$result()
-             })
-
-
-##' Initialization function for the "ProbitLogNormal" class
-##'
-##' @param mu the prior mean vector
-##' @param Sigma the prior covariance matrix
-##' @param refDose the reference dose \eqn{x^{*}}, default 1 (no standardization)
-##' @param useLogDose should the log of (standardized) dose be used? (not default)
-##' @return the \code{\linkS4class{ProbitLogNormal}} object
-##'
-##' @export
-##' @keywords methods
-ProbitLogNormal <- function(mu,
-                            Sigma,
-                            refDose=1,
-                            useLogDose=FALSE)
-{
-  .ProbitLogNormal(mu=mu,
-                   Sigma=Sigma,
-                   refDose=refDose,
-                   useLogDose=useLogDose,
-                     datamodel=
-                     if(useLogDose){
-                       function(){
-                         ## the Probit likelihood with log dose
-                         for (i in 1:nObs)
-                         {
-                           y[i] ~ dbern(p[i])
-                           probit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                           StandLogDose[i] <- log(x[i] / refDose)
-                         }
-                       }} else {
-                       function(){
-                         ## the Probit likelihood
-                         for (i in 1:nObs)
-                         {
-                           y[i] ~ dbern(p[i])
-                           probit(p[i]) <- alpha0 + alpha1 * x[i] / refDose
-                         }
-                       }},
-                     priormodel=
-                       function(){
-                         ## the multivariate normal prior on the (transformed)
-                         ## coefficients
-                         priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                         theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                         ## extract actual coefficients
-                         alpha0 <- theta[1]
-                         alpha1 <- exp(theta[2])
-                       },
-                     datanames=c("nObs", "y", "x"),
-                     modelspecs=
-                       function(){
-                         list(priorCov=Sigma,
-                              priorMean=mu,
-                              refDose=refDose)
-                       },
-                     dose=
-                     if(useLogDose){
-                       function(prob, alpha0, alpha1){
-                         dose <- (probit(prob) - alpha0) / alpha1
-                         return(exp(dose) * refDose)
-                       }} else {
-                         function(prob, alpha0, alpha1){
-                           dose <- (probit(prob) - alpha0) / alpha1
-                           return(dose * refDose)
-                         }},
-                     prob=
-                     if(useLogDose){
-                       function(dose, alpha0, alpha1){
-                         return(pnorm(alpha0 + alpha1 * log(dose / refDose)))
-                       }} else {
-                         function(dose, alpha0, alpha1){
-                           return(pnorm(alpha0 + alpha1 * dose / refDose))
-                         }},
-                     init=
-                       function(){
-                         list(theta=c(0, 1))
-                       },
-                     sample=
-                       c("alpha0", "alpha1"))
-}
-validObject(ProbitLogNormal(mu=c(0, 1),
-                            Sigma=diag(2),
-                            refDose=1,
-                            useLogDose=TRUE))
-
-
-## ============================================================
-
-
-##' Standard logistic model with bivariate (log) normal prior with subtractive
-##' dose standardization
-##'
-##' This is the usual logistic regression model with a bivariate normal prior on
-##' the intercept and log slope.
-##'
-##' The covariate is the dose \eqn{x} minus the reference dose \eqn{x^{*}}:
-##'
-##' \deqn{logit[p(x)] = \alpha + \beta \cdot (x - x^{*})}
-##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
-##' \eqn{x}.
-##'
-##' The prior is
-##' \deqn{(\alpha, \log(\beta)) \sim Normal(\mu, \Sigma)}
-##'
-##' The slots of this class contain the mean vector and the covariance matrix of
-##' the bivariate normal distribution, as well as the reference dose.
-##'
-##' @slot mean the prior mean vector \eqn{\mu}
-##' @slot cov the prior covariance matrix \eqn{\Sigma}
-##' @slot refDose the reference dose \eqn{x^{*}}
-##'
-##' @example examples/Model-class-LogisticLogNormalSub.R
-##' @export
-##' @keywords classes
-.LogisticLogNormalSub <-
-    setClass(Class="LogisticLogNormalSub",
-             contains="Model",
-             representation(mean="numeric",
-                            cov="matrix",
-                            refDose="numeric"),
-             prototype(mean=c(0, 1),
-                       cov=diag(2),
-                       refDose=1),
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(length(object@mean) == 2,
-                             "mean must have length 2")
-                     o$check(identical(dim(object@cov), c(2L, 2L)) &&
-                                 ! is.null(chol(object@cov)),
-                             "cov must be positive-definite 2x2 covariance matrix")
-                     o$check(is.scalar(object@refDose) &&
-                                 (object@refDose > 0),
-                             "refDose must be positive scalar")
-
-                     o$result()
-                 })
-
-
-##' Initialization function for the "LogisticLogNormalSub" class
-##'
-##' @param mean the prior mean vector
-##' @param cov the prior covariance matrix
-##' @param refDose the reference dose
-##' @return the \code{\linkS4class{LogisticLogNormalSub}} object
-##'
-##' @export
-##' @keywords methods
-LogisticLogNormalSub <- function (mean,
-                                  cov,
-                                  refDose){
-
-    .LogisticLogNormalSub(mean=mean,
-                          cov=cov,
-                          refDose=refDose,
-                          datamodel=
-                              function(){
-                                  ## the logistic likelihood
-                                  for (i in 1:nObs)
-                                  {
-                                      y[i] ~ dbern(p[i])
-                                      logit(p[i]) <- alpha0 + alpha1 * StandDose[i]
-                                      StandDose[i] <- x[i] - refDose
-                                  }
-                              },
-                          priormodel=
-                              function(){
-                                  ## the multivariate normal prior on the (transformed)
-                                  ## coefficients
-                                  priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                                  theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                  ## extract actual coefficients
-                                  alpha0 <- theta[1]
-                                  alpha1 <- exp(theta[2])
-
-                                  ## dummy to use refDose here.
-                                  ## It is contained in the modelspecs list below,
-                                  ## so it must occur here
-                                  bla <- refDose + 1
-                              },
-                          datanames=c("nObs", "y", "x"),
-                          modelspecs=
-                              function(){
-                                  list(refDose=refDose,
-                                       priorCov=cov,
-                                       priorMean=mean)
-                              },
-                          dose=
-                              function(prob, alpha0, alpha1){
-                                  StandDose <- (logit(prob) - alpha0) / alpha1
-                                  return(StandDose + refDose)
-                              },
-                          prob=
-                              function(dose, alpha0, alpha1){
-                                  StandDose <- dose - refDose
-                                  return(plogis(alpha0 + alpha1 * StandDose))
-                              },
-                          init=
-                              function(){
-                                  list(theta=c(0, -20))
-                              },
-                          sample=
-                              c("alpha0", "alpha1"))
-}
-validObject(LogisticLogNormalSub(mean=c(0, 1),
-                                 cov=diag(2),
-                                 refDose=1))
-
-## ============================================================
-
-
-##' Standard logistic model with bivariate normal prior
-##'
-##' This is the usual logistic regression model with a bivariate normal prior on
-##' the intercept and slope.
-##'
-##' The covariate is the natural logarithm of the dose \eqn{x} divided by
-##' the reference dose \eqn{x^{*}}:
-##'
-##' \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
-##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
-##' \eqn{x}.
-##'
-##' The prior is
-##' \deqn{(\alpha, \beta) \sim Normal(\mu, \Sigma)}
-##'
-##' The slots of this class contain the mean vector, the covariance and
-##' precision matrices of the bivariate normal distribution, as well as the
-##' reference dose.
-##'
-##' @slot mean the prior mean vector \eqn{\mu}
-##' @slot cov the prior covariance matrix \eqn{\Sigma}
-##' @slot prec the prior precision matrix \eqn{\Sigma^{-1}}
-##' @slot refDose the reference dose \eqn{x^{*}}
-##'
-##' @example examples/Model-class-LogisticNormal.R
-##' @export
-##' @keywords classes
-.LogisticNormal <-
-    setClass(Class="LogisticNormal",
-             contains="Model",
-             representation(mean="numeric",
-                            cov="matrix",
-                            prec="matrix",
-                            refDose="numeric"),
-             prototype(mean=c(0, 1),
-                       cov=diag(2),
-                       prec=diag(2),
-                       refDose=1),
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(length(object@mean) == 2,
-                             "mean must have length 2")
-                     o$check(identical(dim(object@cov), c(2L, 2L)) &&
-                                 ! is.null(chol(object@cov)),
-                             "cov must be positive-definite 2x2 covariance matrix")
-                     o$check(all.equal(solve(object@cov), object@prec,
-                                       check.attributes=FALSE),
-                             "prec must be inverse of cov")
-                     o$check(is.scalar(object@refDose) &&
-                                 (object@refDose > 0),
-                             "refDose must be positive scalar")
-
-                     o$result()
-                 })
-
-
-##' Initialization function for the "LogisticNormal" class
-##'
-##' @param mean the prior mean vector
-##' @param cov the prior covariance matrix
-##' @param refDose the reference dose
-##' @return the \code{\linkS4class{LogisticNormal}} object
-##'
-##' @export
-##' @keywords methods
-LogisticNormal <- function (mean,
-                            cov,
-                            refDose)
-{
-  prec <- solve(cov)
-    .LogisticNormal(mean=mean,
-                    cov=cov,
-                    prec=prec,
-                    refDose=refDose,
-                    datamodel=
-                        function(){
-                            ## the logistic likelihood
-                            for (i in 1:nObs)
-                            {
-                                y[i] ~ dbern(p[i])
-                                logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                                StandLogDose[i] <- log(x[i] / refDose)
-                            }
-                        },
-                    priormodel=
-                        function(){
-                            ## the multivariate normal prior on the coefficients
-                            theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                            ## extract actual coefficients
-                            alpha0 <- theta[1]
-                            alpha1 <- theta[2]
-
-                            ## dummy to use refDose here.
-                            ## It is contained in the modelspecs list below,
-                            ## so it must occur here
-                            bla <- refDose + 1
-                        },
-                    datanames=c("nObs", "y", "x"),
-                    modelspecs=
-                        function(){
-                            list(refDose=refDose,
-                                 priorPrec=prec,
-                                 priorMean=mean)
-                        },
-                    dose=
-                        function(prob, alpha0, alpha1){
-                            StandLogDose <- (logit(prob) - alpha0) / alpha1
-                            return(exp(StandLogDose) * refDose)
-                        },
-                    prob=
-                        function(dose, alpha0, alpha1){
-                            StandLogDose <- log(dose / refDose)
-                                 return(plogis(alpha0 + alpha1 * StandLogDose))
-                        },
-                    init=
-                        function(){
-                            list(theta=c(0, 1))
-                        },
-                    sample=
-                        c("alpha0", "alpha1"))
-}
-validObject(LogisticNormal(mean=c(0, 1),
-                           cov=diag(2),
-                           refDose=1))
-
-
-## ============================================================
 
 ##' Reparametrized logistic model
 ##'
@@ -2367,7 +2194,6 @@ LogisticNormalMixture <- function(comp1,
                                },
                            priormodel=
                                function(){
-                                   ## the multivariate normal prior on the coefficients
                                    theta[1:2] ~ dmnorm(priorMean[1:2, comp],
                                                        priorPrec[1:2, 1:2, comp])
                                    ## this is conditional on the component index
@@ -2493,7 +2319,8 @@ LogisticLogNormalMixture <- function(mean,
 {
   .LogisticLogNormalMixture(mean=mean,
                             cov=cov,
-                            refDose=refDose,
+                            prec = solve(cov),
+                            ref_dose=refDose,
                             shareWeight=shareWeight,
                             datamodel=
                               function(){
@@ -2565,17 +2392,6 @@ LogisticLogNormalMixture <- function(mean,
                                      cov=cov,
                                      refDose=refDose,
                                      catProbs=c(1 - shareWeight, shareWeight))
-                              },
-                            dose=
-                              function(prob, alpha0, alpha1, comp){
-                                stop("not implemented")
-                              },
-                            prob=
-                              function(dose, alpha0, alpha1, comp){
-                                StandLogDose <- log(dose / refDose)
-                                selectMat <- cbind(seq_len(nrow(alpha0)), comp)
-                                return(plogis(alpha0[selectMat] +
-                                                alpha1[selectMat] * StandLogDose))
                               },
                             init=
                               function(){
@@ -2737,7 +2553,6 @@ LogisticNormalFixedMixture <- function(components,
                                     if(logNormal){
                                         function()
                                         {
-                                            ## the multivariate normal prior on the coefficients
                                             theta[1:2] ~ dmnorm(priorMean[1:2, comp],
                                                                 priorPrec[1:2, 1:2, comp])
                                             ## this is conditional on the component index
@@ -2759,7 +2574,6 @@ LogisticNormalFixedMixture <- function(components,
                                     } else {
                                         function()
                                         {
-                                            ## the multivariate normal prior on the coefficients
                                             theta[1:2] ~ dmnorm(priorMean[1:2, comp],
                                                                 priorPrec[1:2, 1:2, comp])
                                             ## this is conditional on the component index
@@ -3644,7 +3458,7 @@ DALogisticLogNormal <- function(npiece=3,
 
                              #Part I: describe the logistic model of DLTs vs dose;
                              logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                             StandLogDose[i] <- log(x[i] / refDose)
+                             StandLogDose[i] <- log(x[i] / ref_dose)
 
                              #Part II: describe the piecewise exponential;
                              #please notice:
@@ -3744,9 +3558,9 @@ DALogisticLogNormal <- function(npiece=3,
                        datanames=c("nObs", "y", "x", "u", "Tmax"),
                        modelspecs=
                          function(nObs, Tmax){
-                           list(refDose=start@refDose,
-                                priorCov=start@cov,
-                                priorMean=start@mean,
+                           list(ref_dose=start@ref_dose,
+                                prec=start@prec,
+                                mean=start@mean,
                                 npiece=npiece,
                                 l=l,
                                 C_par=C_par,
@@ -3764,7 +3578,7 @@ DALogisticLogNormal <- function(npiece=3,
 }
 validObject(DALogisticLogNormal(mean=c(0, 1),
                                 cov=diag(2),
-                                refDose=1,
+                                ref_dose=1,
                                 npiece=3,
                                 l=0.5,
                                 C_par=2))
@@ -3839,7 +3653,7 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                                #Part I: describe the logistic model of DLTs vs dose;
 
                                logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                               StandLogDose[i] <- log(x[i] / refDose)
+                               StandLogDose[i] <- log(x[i] / ref_dose)
 
                                #Part II: describe the piecewise exponential;
                                #please notice:
@@ -3906,9 +3720,9 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
                              w[u==Tmax] <- 1
 
 
-                             list(refDose=start@refDose,
-                                  priorCov=start@cov,
-                                  priorMean=start@mean,
+                             list(ref_dose=start@ref_dose,
+                                  prec=start@prec,
+                                  mean=start@mean,
                                   zeros=rep(0, nObs),
                                   cadj=1e10,
                                   w=w)
@@ -3917,7 +3731,7 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
 }
 validObject(TITELogisticLogNormal(mean=c(0, 1),
                                   cov=diag(2),
-                                  refDose=1,
+                                  ref_dose=1,
                                   weightMethod="linear"))
 
 ## ============================================================
@@ -4082,7 +3896,6 @@ validObject(FractionalCRM(
   doseGrid = c(10, 30, 50, 100),
   sigma2 = 2
 ))
-
 
 ## ============================================================
 # nolint end

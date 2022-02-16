@@ -236,7 +236,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                                matrix(c(1, -0.5, -0.5, 1),
                                       nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 @
 
 We can query the class that an object belongs to with the
@@ -1131,10 +1131,7 @@ specific case of the function contained in the model space:
 
 <<true-def, fig=TRUE>>=
 ## define the true function
-myTruth <- function(dose)
-{
-    model@prob(dose, alpha0=7, alpha1=8)
-}
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 ## plot it in the range of the dose grid
 curve(myTruth(x), from=0, to=80, ylim=c(0, 1))
@@ -1375,13 +1372,7 @@ can predict the future course of the trial, given the current data. In our
 illustrating example, this would work as follows.
 
 The rationale of the \texttt{simulate} call is now that we specify as the
-\texttt{truth} argument the \texttt{prob} function from our assumed model, which
-has additional arguments (in our case \texttt{alpha0} and \texttt{alpha1}) on
-top of the first argument \texttt{dose}:
-
-<<explain-fut>>=
-model@prob
-@
+\texttt{truth} argument the \texttt{prob} function from our assumed model.
 
 For the simulations, these arguments are internally given by the values
 contained in the data frame given to \texttt{simulate} as the \texttt{args}
@@ -1419,7 +1410,13 @@ time <- system.time(futureSims <- simulate(
     ## supply the new design here
     nowDesign,
     ## the truth is the assumed prob function
-    truth=model@prob,
+    truth=function(dose, alpha0, alpha1) {
+      samples <- Samples(
+        data = list(alpha0 = alpha0, alpha1 = alpha1),
+        options = McmcOptions(samples = 1)
+      )
+      prob(dose, model, samples)
+    },
     ## further arguments are the
     ## posterior samples
     args=postSamples,

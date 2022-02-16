@@ -42,6 +42,7 @@ assumed truth (as specified by the \code{truth} argument to
 You can specify any subset of these in the \code{type} argument.
 }
 \examples{
+# nolint start
 
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
@@ -51,7 +52,7 @@ model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
-                           refDose=56)
+                           ref_dose=56)
 
 # Choose the rule for selecting the next dose 
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
@@ -86,10 +87,7 @@ design <- Design(model=model,
                  startingDose=3)
 
 ## define the true function
-myTruth <- function(dose)
-{
-  model@prob(dose, alpha0=7, alpha1=8)
-}
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Run the simulation on the desired design
 # We only generate 1 trial outcomes here for illustration, for the actual study 
@@ -108,6 +106,6 @@ time <- system.time(mySims <- simulate(design,
 # Plot the Summary of the Simulations
 plot(summary(mySims,truth=myTruth))
 
-
+# nolint end
 }
 \keyword{methods}

@@ -4,6 +4,18 @@
 \alias{dose}
 \alias{dose,numeric,Model,Samples-method}
 \alias{dose-Model}
+\alias{dose,numeric,LogisticNormal,Samples-method}
+\alias{dose-LogisticNormal}
+\alias{dose,numeric,LogisticLogNormal,Samples-method}
+\alias{dose-LogisticLogNormal}
+\alias{dose,numeric,LogisticLogNormalSub,Samples-method}
+\alias{dose-LogisticLogNormalSub}
+\alias{dose,numeric,ProbitLogNormal,Samples-method}
+\alias{dose-ProbitLogNormal}
+\alias{dose,numeric,ProbitLogNormalRel,Samples-method}
+\alias{dose-ProbitLogNormalRel}
+\alias{dose,numeric,LogisticLogNormalMixture,Samples-method}
+\alias{dose-LogisticLogNormalMixture}
 \alias{dose,numeric,ModelTox,Samples-method}
 \alias{dose-ModelTox}
 \alias{dose,numeric,ModelTox,missing-method}
@@ -14,37 +26,51 @@ dose(prob, model, samples, ...)
 
 \S4method{dose}{numeric,Model,Samples}(prob, model, samples, ...)
 
+\S4method{dose}{numeric,LogisticNormal,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormal,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormalSub,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,ProbitLogNormal,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,ProbitLogNormalRel,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,LogisticLogNormalMixture,Samples}(prob, model, samples)
+
 \S4method{dose}{numeric,ModelTox,Samples}(prob, model, samples, ...)
 
 \S4method{dose}{numeric,ModelTox,missing}(prob, model, samples, ...)
 }
 \arguments{
 \item{prob}{(\code{number} or \code{numeric})\cr the toxicity probability which is
-targeted. This must be a scalar if \code{samples} are used (for dose escalation
-\code{model}). It can be a vector of any finite length, if \code{samples} are not
-used with pseudo DLE (dose-limiting events)/toxicity \code{model}.}
+targeted. This must be a scalar if non-scalar \code{samples} are used
+(e.g. in case of dose escalation \code{model}).
+It can be a vector of any finite length, if \code{samples} are scalars or
+\code{samples} are not used (as e.g. in case of pseudo DLE
+(dose-limiting events)/toxicity \code{model}).}
 
 \item{model}{(\code{Model} or \code{ModelTox})\cr the model for single agent dose
 escalation or pseudo DLE/toxicity model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
-used to compute the resulting doses by \code{model@dose} function.}
+used to compute the resulting doses by the \code{\link{dose}} function.}
 
 \item{...}{not used.}
 }
 \value{
-A \code{number} or \code{numeric} vector from the \code{model@dose} function.
-If \code{samples} were used, then every element in the returned vector
+A \code{number} or \code{numeric} vector with the doses.
+If non-scalar \code{samples} were used, then every element in the returned vector
 corresponds to one element of a sample. Hence, in this case, the output
-vector is of the same length as the sample vector. If \code{samples} were not
-used for pseudo DLE/toxicity \code{model}, then the output is of the same length
-as \code{prob}.
+vector is of the same length as the sample vector. If scalar \code{samples} were
+used or no \code{samples} were used, e.g. for pseudo DLE/toxicity \code{model},
+then the output is of the same length as the length of the \code{prob}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Compute doses for a given toxicity probability,
-a given single agent dose escalation model, and samples.
+A function that computes the dose reaching a specific target probability,
+based on the model specific parameters.
 
 Compute doses for a given toxicity probability,
 a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
@@ -53,6 +79,18 @@ Compute the dose for a given toxicity probability and a given
 Pseudo DLE (dose-limiting events)/toxicity model without samples.
 All the arguments to \code{model@dose} function (except \code{prob}) should be
 present in the \code{model} object.
+}
+\details{
+The \code{dose} function computes the doses for a given toxicity probabilities,
+using samples of the model parameter(s). Hence, the vectors of these samples
+must be included in the \code{samples} object.
+If you work with multivariate model parameters, then assume that your model
+specific \code{dose} function receives either one parameter value as a row vector,
+or a samples matrix where the rows correspond to the sampling index, i.e.
+the layout is then \verb{nSamples x dimParameter}.
+}
+\note{
+The \code{\link{dose}} and \code{\link{prob}} functions are the inverse of each other.
 }
 \examples{
 # Create some data.
@@ -67,7 +105,7 @@ my_data <- Data(
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 56
+  ref_dose = 56
 )
 
 # Get samples from posterior.
@@ -94,4 +132,7 @@ dlt_model <- LogisticIndepBeta(
 )
 
 dose(prob = 0.45, model = dlt_model)
+}
+\seealso{
+\code{\link{doseFunction}}, \code{\link{prob}}.
 }
