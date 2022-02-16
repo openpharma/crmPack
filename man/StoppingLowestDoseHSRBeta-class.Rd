@@ -33,7 +33,7 @@ The rule is triggered when the first dose is considered to be toxic
 lowest dose level and a Beta(a,b) prior distribution.
 The default prior is Beta(1,1).
 In case that placebo is used, the rule is evaluated at the second dose of the
-dosegrid, i.e. at the lowest non-placebo dose.
+dose grid, i.e. at the lowest non-placebo dose.
 }
 \section{Slots}{
 

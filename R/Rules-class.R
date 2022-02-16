@@ -982,7 +982,7 @@ StoppingMTDCV <- function(target = 0.3,
 #' lowest dose level and a Beta(a,b) prior distribution.
 #' The default prior is Beta(1,1).
 #' In case that placebo is used, the rule is evaluated at the second dose of the
-#' dosegrid, i.e. at the lowest non-placebo dose.
+#' dose grid, i.e. at the lowest non-placebo dose.
 #'
 #' @slot target (`number`)\cr the target toxicity
 #' @slot prob (`number`)\cr the threshold probability for the lowest
