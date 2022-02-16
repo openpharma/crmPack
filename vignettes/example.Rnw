@@ -254,7 +254,7 @@ str(model)
 
 We see that the object has \Sexpr{length(slotNames(model))} slots, and their
 names. These can be accessed with the \verb|@| operator (similarly as for lists
-the \verb|$| operator), for example we can extract the \texttt{ref_dose} slot:
+the \verb|$| operator), for example we can extract the \texttt{ref\_dose} slot:
 
 <<dose>>=
 model@ref_dose
