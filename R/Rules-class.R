@@ -466,12 +466,10 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
 
 #' @rdname IncrementsHSRBeta-class
 #'
-#' @param target (`number`)\cr the target toxicity
-#' @param prob (`number`)\cr the threshold probability for a dose being toxic
-#' @param a (`number`)\cr shape parameter a>0 of probability
-#'  distribution Beta (a,b)
-#' @param b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b)
+#' @param target (`number`)\cr see slot definition.
+#' @param prob (`number`)\cr see slot definition.
+#' @param a (`number`)\cr see slot definition.
+#' @param b (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-IncrementsHSRBeta.R
 #' @export
