@@ -879,8 +879,7 @@ setMethod("maxDose",
 ##' The maximum allowable relative increments in terms of DLTs
 ##' --------------------------------------------------
 ##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs so far (modify increment rule in
-##' Rules-methods.R)
+##' relative increments determined by DLTs in the current cohort.
 ##'
 ##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
 setMethod("maxDose",
