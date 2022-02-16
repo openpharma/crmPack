@@ -16,16 +16,40 @@ NULL
 validate_increments_numdoselevels <- function(object) {
   o <- Validate()
   o$check(
-    is.scalar(object@maxLevels) && 
-    is.integer(object@maxLevels) && 
+    is.scalar(object@maxLevels) &&
+    is.integer(object@maxLevels) &&
     object@maxLevels > 0,
     "maxLevels must be scalar positive integer"
   )
   o$check(
-    is.scalar(object@basisLevel) && 
+    is.scalar(object@basisLevel) &&
     object@basisLevel %in% c("last", "max"),
     "basisLevel must be either 'last' or 'max'"
   )
+  o$result()
+}
+
+#' @describeIn validate_stopping validates that the [`IncrementsHSRBeta`]
+#'  object contains valid probability target, threshold and shape parameters.
+validate_increments_hrs_beta <- function(object) {
+  o <- Validate()
+  o$check(
+    is.probability(object@target, bounds = FALSE),
+    "target must be probability > 0 and < 1"
+  )
+  o$check(
+    is.probability(object@prob, bounds = FALSE),
+    "prob must be probability > 0 and < 1"
+  )
+  o$check(
+    is.numeric(object@a) & object@a > 0,
+    "Beta distribution shape parameter a must me a real number > 0"
+  )
+  o$check(
+    is.numeric(object@b) & object@b > 0,
+    "Beta distribution shape parameter b must me a real number > 0"
+  )
+
   o$result()
 }
 
