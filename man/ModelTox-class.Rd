@@ -10,24 +10,6 @@ This is a class of DLE (dose-limiting events) models/ toxicity model which conta
 for which their prior are specified in form of pseudo data (as if there is some data before
 the trial starts). It inherits all slots from \code{\linkS4class{ModelPseudo}}}
 \description{
-The \code{dose} function has a first argument \code{prob}, a scalar a probability of
-the occurrence of a DLE which is targeted. Additional arguments are models parameters.
-It computes, using the model parameter(s)/ model parameter(s) samples, the resulting dose.
-Note that the model parameters are called exactly as in the \code{model}. The model estimates
-generated can be single values of the maximum likelihodd estimates (prior or posterior modal
-estimates) or samples of the model estimates generated. If samples of the model estimates are
-generated, the model parameters (samples) must be included in the \code{samples} vector.
-The vectors of all samples for these model parameters will be supplied to the function such
-that the function will be able to process vectors of model parameters.
-}
-\details{
-The \code{prob} function has a first argument \code{dose}, a scalar dose level which is targeted.
-Additional arguments are model parameters. It computes using model parameter(s) (samples), the
-resulting probabilities of a DLE occurring at the target dose level. If samples of model parameters
-are generated, the function must vectorize over the model parameters.
-
-Note that \code{dose} and \code{prob} are the inverse functions of each other.
-
 The \code{data} must obey the convention that the data input is called exactly in the
 \code{\linkS4class{Data}} class. This refers to any observed DLE responses (\code{y} in
 \code{\linkS4class{Data}} class), the dose (levels) (\code{x} in \code{\linkS4class{Data}} class)
@@ -42,16 +24,6 @@ data.
 \section{Slots}{
 
 \describe{
-\item{\code{dose}}{a function computing the dose level reaching a specific target probability of the occurrence
-of a DLE, based on the model parameters. The model parameters (samples)are obtained based on the prior
-specified in form of pseudo data and together with (if any) the observed
-DLE responses and their corresponding dose levels (see details above)}
-
-\item{\code{prob}}{a function computing the probability of the occurrence of a DLE at a specified dose level,
-based on the model parameters. The model parameters (samples) are obtained the prior specified in form
-of pseudo data and together with (if any) the observed DLE responses and their
-corresponding dose levels (see details above)}
-
 \item{\code{data}}{refers to the data input specification in \code{\linkS4class{Data}} class which are used to
 obtain model parameters estimates or samples (see details above)}
 }}

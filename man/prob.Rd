@@ -44,13 +44,12 @@ prob(dose, model, samples, ...)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
-This must be a scalar if non-scalar \code{samples} are used
-(e.g. in case of dose escalation \code{model}).
+This must be a scalar if non-scalar \code{samples} are used.
 It can be a vector of any finite length, if \code{samples} are scalars or
-\code{samples} are not used (as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model).}
+\code{samples} are not used, as e.g. in case of pseudo DLE
+(dose-limiting events)/toxicity model.}
 
-\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model for single agent
+\item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model for single agent
 dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
@@ -69,8 +68,8 @@ then the output is of the same length as the length of the \code{dose}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A function that computes toxicity probabilities for a given dose, a given
-single agent dose escalation model, and samples.
+A function that computes the probability of the occurrence of a DLE at a
+specified dose level, based on the model parameters.
 
 Compute toxicity probabilities of the occurrence of a DLE at a
 specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
@@ -84,12 +83,10 @@ All model parameters (except \code{dose}) should be present in the \code{model} 
 }
 \details{
 The \code{prob} function computes the probability of toxicity for a given
-\code{dose}, using samples of the model parameter(s). Hence, the vectors
-of these samples must be included in the \code{samples} object.
+\code{dose}, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
-specific \code{dose} function receives either one parameter value as a row vector,
-or a samples matrix where the rows correspond to the sampling index, i.e.
-the layout is then \verb{nSamples x dimParameter}.
+specific \code{prob} method receives a samples matrix where the rows correspond
+to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
 }
 \note{
 The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of each other.

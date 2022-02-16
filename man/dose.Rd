@@ -44,13 +44,12 @@ dose(prob, model, samples, ...)
 }
 \arguments{
 \item{prob}{(\code{number} or \code{numeric})\cr the toxicity probability which is
-targeted. This must be a scalar if non-scalar \code{samples} are used
-(e.g. in case of dose escalation \code{model}).
+targeted. This must be a scalar if non-scalar \code{samples} are used.
 It can be a vector of any finite length, if \code{samples} are scalars or
-\code{samples} are not used (as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model).}
+\code{samples} are not used, as e.g. in case of pseudo DLE
+(dose-limiting events)/toxicity model.}
 
-\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model for single agent
+\item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model for single agent
 dose escalation or pseudo DLE/toxicity model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
@@ -69,8 +68,9 @@ then the output is of the same length as the length of the \code{prob}.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-A function that computes the dose reaching a specific target probability,
-based on the model specific parameters.
+A function that computes the dose reaching a specific target probability of
+the occurrence of a DLE. The doses are computed based on the samples
+of the model parameters.
 
 Compute the dose level reaching a specific target probability of
 the occurrence of a DLE, based on the samples of \code{\link{LogisticIndepBeta}} model
@@ -83,13 +83,11 @@ parameters. All model parameters (except \code{prob}) should be present in the \
 The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
 }
 \details{
-The \code{dose} function computes the doses for a given toxicity probabilities,
-using samples of the model parameter(s). Hence, the vectors of these samples
-must be included in the \code{samples} object.
+The \code{dose} function computes the doses for a given toxicity
+probabilities, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
-specific \code{dose} function receives either one parameter value as a row vector,
-or a samples matrix where the rows correspond to the sampling index, i.e.
-the layout is then \verb{nSamples x dimParameter}.
+specific \code{dose} method receives a samples matrix where the rows correspond
+to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
 }
 \note{
 The \code{\link{dose}} and \code{\link{prob}} functions are the inverse of each other.

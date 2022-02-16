@@ -10,26 +10,24 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A function that computes the dose reaching a specific target probability,
-#' based on the model specific parameters.
+#' A function that computes the dose reaching a specific target probability of
+#' the occurrence of a DLE. The doses are computed based on the samples
+#' of the model parameters.
 #'
-#' @details The `dose` function computes the doses for a given toxicity probabilities,
-#'   using samples of the model parameter(s). Hence, the vectors of these samples
-#'   must be included in the `samples` object.
+#' @details The `dose` function computes the doses for a given toxicity
+#'   probabilities, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `dose` function receives either one parameter value as a row vector,
-#'   or a samples matrix where the rows correspond to the sampling index, i.e.
-#'   the layout is then `nSamples x dimParameter`.
+#'   specific `dose` method receives a samples matrix where the rows correspond
+#'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 #'
 #' @note The [`dose`] and [`prob`] functions are the inverse of each other.
 #'
 #' @param prob (`number` or `numeric`)\cr the toxicity probability which is
-#'   targeted. This must be a scalar if non-scalar `samples` are used
-#'   (e.g. in case of dose escalation `model`).
+#'   targeted. This must be a scalar if non-scalar `samples` are used.
 #'   It can be a vector of any finite length, if `samples` are scalars or
-#'   `samples` are not used (as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model).
-#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model for single agent
+#'   `samples` are not used, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
 #'   dose escalation or pseudo DLE/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute the resulting doses.
@@ -89,26 +87,23 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A function that computes toxicity probabilities for a given dose, a given
-#' single agent dose escalation model, and samples.
+#' A function that computes the probability of the occurrence of a DLE at a
+#' specified dose level, based on the model parameters.
 #'
 #' @details The `prob` function computes the probability of toxicity for a given
-#'   `dose`, using samples of the model parameter(s). Hence, the vectors
-#'   of these samples must be included in the `samples` object.
+#'   `dose`, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `dose` function receives either one parameter value as a row vector,
-#'   or a samples matrix where the rows correspond to the sampling index, i.e.
-#'   the layout is then `nSamples x dimParameter`.
+#'   specific `prob` method receives a samples matrix where the rows correspond
+#'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 #'
 #' @note The [`prob`] and [`dose`] functions are the inverse of each other.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if non-scalar `samples` are used
-#'   (e.g. in case of dose escalation `model`).
+#'   This must be a scalar if non-scalar `samples` are used.
 #'   It can be a vector of any finite length, if `samples` are scalars or
-#'   `samples` are not used (as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model).
-#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model for single agent
+#'   `samples` are not used, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
 #'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute toxicity probabilities.
@@ -637,12 +632,12 @@ setMethod(
   definition = function(prob, model) {
     assert_numeric(prob, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
 
-    args <- h_slots(model, c("phi1", "phi2"))
-    phi1 <- args$phi1
-    phi2 <- args$phi2
-
-    log_dose <- (log(prob / (1 - prob)) - phi1) / phi2
-    exp(log_dose)
+    model_params <- h_slots(model, c("phi1", "phi2"))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    dose(prob, model, samples)
   }
 )
 
@@ -668,12 +663,12 @@ setMethod(
   definition = function(dose, model, ...) {
     assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
 
-    args <- h_slots(model, c("phi1", "phi2"))
-    phi1 <- args$phi1
-    phi2 <- args$phi2
-
-    log_dose <- log(dose)
-    exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
+    model_params <- h_slots(model, c("phi1", "phi2"))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    prob(dose, model, samples)
   }
 )
 
