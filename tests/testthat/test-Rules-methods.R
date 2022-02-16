@@ -109,7 +109,11 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expected <- structure(
     FALSE,
-    message = "Probability that the lowest active dose of 25 being toxic based on posterior Beta distribution using a Beta(1,1) prior is 24% and thus below the required 90% threshold."
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus below the required 90% threshold."
+    )
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -125,7 +129,11 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expected <- structure(
     TRUE,
-    message = "Probability that the lowest active dose of 25 being toxic based on posterior Beta distribution using a Beta(1,1) prior is 24% and thus above the required 10% threshold."
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus above the required 10% threshold."
+    )
   )
   expect_identical(result, expected) # Prob being toxic is 24% > 10%.
 })
@@ -148,7 +156,11 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expected <- structure(
     FALSE,
-    message = "Probability that the lowest active dose of 25 being toxic based on posterior Beta distribution using a Beta(1,1) prior is 24% and thus below the required 90% threshold."
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 24% and thus",
+      "below the required 90% threshold."
+    )
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -164,13 +176,17 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expected <- structure(
     TRUE,
-    message = "Probability that the lowest active dose of 25 being toxic based on posterior Beta distribution using a Beta(1,1) prior is 24% and thus above the required 10% threshold."
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 24% and thus",
+      "above the required 10% threshold."
+    )
   )
   expect_identical(result, expected) # Prob being toxic is 24% > 10%.
 })
 
 my_data <- h_get_data()
-my_data@x[my_data@cohort==1] <- c(0.001,75,75,75)
+my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
 
 my_model <- LogisticKadane(0.3, xmin = 0.001, xmax = 100)
 my_options <- McmcOptions(
@@ -195,7 +211,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 })
 
 my_data <- h_get_data_no_plcb()
-my_data@x[my_data@cohort==1] <- c(75,75,75)
+my_data@x[my_data@cohort == 1] <- c(75, 75, 75)
 
 my_model <- LogisticKadane(0.3, xmin = 0.001, xmax = 100)
 my_options <- McmcOptions(

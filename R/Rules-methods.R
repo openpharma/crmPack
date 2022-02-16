@@ -1552,11 +1552,11 @@ setMethod(
   definition = function(stopping, dose, samples, model, data, ...) {
     # determine if the first doses is toxic
     # First active dose Tested?
-    if (sum(data@x == data@doseGrid[data@placebo+1]) > 0) {
+    if (sum(data@x == data@doseGrid[data@placebo + 1]) > 0) {
       lowest_dose_tested <- TRUE
       # summary data at first dose
       y <- factor(data@y, levels = c("0", "1"))
-      dlt_tab <- table(y, data@x)[, data@placebo+1]
+      dlt_tab <- table(y, data@x)[, data@placebo + 1]
       tox_prob_first_dose <-
         1 - pbeta(
           stopping@target, dlt_tab[2] + stopping@a,
@@ -1576,7 +1576,7 @@ setMethod(
     } else {
       paste(
         "Probability that the lowest active dose of ",
-        data@doseGrid[data@placebo+1],
+        data@doseGrid[data@placebo + 1],
         " being toxic based on posterior Beta distribution using a Beta(",
         stopping@a, ",", stopping@b, ") prior is ",
         round(tox_prob_first_dose * 100),
