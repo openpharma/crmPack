@@ -96,6 +96,7 @@ reference:
       - saveSample-McmcOptions
       - doseFunction
       - doseFunction-GeneralModel
+      - doseFunction-ModelTox
       - dose
       - dose-Model
       - dose-LogisticNormal
@@ -108,6 +109,7 @@ reference:
       - dose-LogisticIndepBeta-noSamples
       - probFunction
       - probFunction-GeneralModel
+      - probFunction-ModelTox
       - prob
       - prob-Model
       - prob-LogisticNormal

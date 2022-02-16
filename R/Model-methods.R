@@ -62,7 +62,7 @@ setGeneric(
 #' A function that returns a function that computes the dose reaching a
 #' specific target probability, based on the model specific parameters.
 #'
-#' @param model (`GeneralModel`)\cr the model for single agent dose escalation.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
 #' @return A `function` that computes doses for a given toxicity probability
@@ -136,9 +136,9 @@ setGeneric(
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' A function that returns a function that computes the toxicity probabilities
-#' for a given dose and single agent dose escalation model parameters.
+#' for a given dose, model and the model parameters.
 #'
-#' @param model (`GeneralModel`)\cr the model for single agent dose escalation.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
 #' @return A `function` that computes toxicity probabilities for a given dose
@@ -171,7 +171,7 @@ setMethod(
   signature = "GeneralModel",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_subset(names(model_params), model@sample)
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
 
     samples <- Samples(
       data = model_params,
@@ -195,7 +195,7 @@ setMethod(
   signature = "GeneralModel",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_subset(names(model_params), model@sample)
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
 
     samples <- Samples(
       data = model_params,
@@ -207,7 +207,57 @@ setMethod(
   }
 )
 
-# Model ----
+# ModelTox ----
+
+## doseFunction ----
+
+#' @rdname doseFunction
+#'
+#' @aliases doseFunction-ModelTox
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "ModelTox",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(prob) {
+      dose(prob, model, samples)
+    }
+  }
+)
+
+## probFunction ----
+
+#' @rdname probFunction
+#'
+#' @aliases probFunction-ModelTox
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "ModelTox",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose, model, samples)
+    }
+  }
+)
+
+# Model (TO REMOVE SOON) ----
 
 ## dose ----
 
@@ -273,6 +323,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -296,6 +347,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -322,6 +374,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -345,6 +398,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -371,6 +425,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -394,6 +449,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -420,6 +476,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -443,6 +500,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -469,6 +527,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -492,6 +551,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -537,6 +597,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -570,6 +631,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_set_equal(names(samples@data), c("phi1", "phi2"))
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
@@ -599,6 +661,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_set_equal(names(samples@data), c("phi1", "phi2"))
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
@@ -840,17 +903,7 @@ setMethod("gain",
           def=
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
 
-
-              ## extract the prob function from the model
-              probFun <- slot(DLEmodel, "prob")
-              ## which arguments, besides the dose, does it need?
-              DLEargNames <- setdiff(names(formals(probFun)),
-                                     "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              DLEret <- do.call(probFun,
-                                c(list(dose=dose),
-                                  DLEsamples@data[DLEargNames]))
+              DLEret <- prob(dose, DLEmodel, DLEsamples)
 
               ## extract the ExpEff function from the model
               EffFun <- slot(Effmodel, "ExpEff")
@@ -884,18 +937,7 @@ setMethod("gain",
           def=
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
 
-
-
-              ## extract the prob function from the model
-              probFun <- slot(DLEmodel, "prob")
-              ## which arguments, besides the dose, does it need?
-              DLEargNames <- setdiff(names(formals(probFun)),
-                                     "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              DLEret <- do.call(probFun,
-                                c(list(dose=dose),
-                                  DLEsamples@data[DLEargNames]))
+              DLEret <- prob(dose, DLEmodel, DLEsamples)
 
               ## extract the ExpEff function from the model
               EffFun <- slot(Effmodel, "ExpEff")
@@ -922,16 +964,8 @@ setMethod("gain",
                       Effsamples="missing"),
           def=
             function(dose,DLEmodel,Effmodel,...){
-              ##extract the prob function from the DLE model
-              probFun <- slot(DLEmodel,"prob")
-              ##which arguments besides the dose dose it need?
-              DLEargNames <- setdiff(names(formals(probFun)),"dose")
-              ##now call the function with dose
-              DLEvalues<-c()
-              for (DLEparName in DLEargNames){
-                DLEvalues<-c(DLEvalues, slot(DLEmodel,DLEparName))}
-              DLEret <- do.call(probFun,
-                                c(list(dose=dose), DLEvalues))
+
+              DLEret <- prob(dose, DLEmodel)
 
               ##extract the ExpEff function from the Eff model
               EffFun <- slot(Effmodel,"ExpEff")

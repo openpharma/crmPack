@@ -1,10 +1,10 @@
+# nolint start
+
 ##obtain the plot for the simulation results
 ##If DLE and efficacy responses are considered in the simulations
-
-
 data <- DataDual(doseGrid=seq(25,300,25))
-##First for the DLE model 
-##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class 
+##First for the DLE model
+##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class
 DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               DLEweights=c(3,3),
                               DLEdose=c(25,300),
@@ -29,13 +29,13 @@ mySize <-CohortSizeConst(size=3)
 ##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid
 ##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid
 ##This is to specified a maximum of 3-fold restriction in dose-esclation
-myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
+myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)),
                                  increments=c(2,2))
 ##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
 myStopping <- StoppingMinPatients(nPatients=36)
 
 
-##Specified the design 
+##Specified the design
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      cohortSize=mySize,
                                      startingDose=25,
@@ -45,12 +45,10 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      stopping=myStopping,
                                      increments=myIncrements)
 ##specified the true DLE curve and the true expected efficacy values at all dose levels
-myTruthDLE<- function(dose)
-{ DLEmodel@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
+myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
 
-myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,  
-               0.9333009  ,1.0687031,  1.1793942 , 1.2726408 , 
+myTruthEff<- c(-0.5478867, 0.1645417,  0.5248031,  0.7604467,
+               0.9333009  ,1.0687031,  1.1793942 , 1.2726408 ,
                1.3529598 , 1.4233411 , 1.4858613 , 1.5420182)
 ##The true gain curve can also be seen
 myTruthGain <- function(dose)
@@ -60,7 +58,7 @@ myTruthGain <- function(dose)
 ##options for MCMC
 options<-McmcOptions(burnin=10,step=1,samples=20)
 ##The simulations
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulation is produced (nsim=1).
 mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,
@@ -73,3 +71,5 @@ mySim<-simulate(object=design,
                 parallel=FALSE)
 ##plot this simulated results
 print(plot(mySim))
+
+# nolint end

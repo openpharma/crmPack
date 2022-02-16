@@ -4,14 +4,18 @@
 \alias{probFunction}
 \alias{probFunction,GeneralModel-method}
 \alias{probFunction-GeneralModel}
+\alias{probFunction,ModelTox-method}
+\alias{probFunction-ModelTox}
 \title{Getting the Prob Function for a Given Model Type}
 \usage{
 probFunction(model, ...)
 
 \S4method{probFunction}{GeneralModel}(model, ...)
+
+\S4method{probFunction}{ModelTox}(model, ...)
 }
 \arguments{
-\item{model}{(\code{GeneralModel})\cr the model for single agent dose escalation.}
+\item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model.}
 
 \item{...}{model specific parameters.}
 }
@@ -23,7 +27,7 @@ and the model.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A function that returns a function that computes the toxicity probabilities
-for a given dose and single agent dose escalation model parameters.
+for a given dose, model and the model parameters.
 }
 \examples{
 my_model <- LogisticLogNormal(

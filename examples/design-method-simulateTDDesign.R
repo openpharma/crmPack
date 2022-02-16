@@ -1,8 +1,10 @@
+# nolint start
+
 ##Simulate dose-escalation procedure based only on DLE responses and no DLE samples are used
 
-##The design comprises a model, the escalation rule, starting data, 
+##The design comprises a model, the escalation rule, starting data,
 ##a cohort size and a starting dose
-##Define your data set first using an empty data set 
+##Define your data set first using an empty data set
 ## with dose levels from 25 to 300 with increments 25
 data <- Data(doseGrid=seq(25,300,25))
 
@@ -24,7 +26,7 @@ mySize <-CohortSizeConst(size=3)
 ##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid
 ##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid
 ##This is to specified a maximum of 3-fold restriction in dose-esclation
-myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
+myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)),
                                  increments=c(2,2))
 ##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
 myStopping <- StoppingMinPatients(nPatients=36)
@@ -39,17 +41,18 @@ design <- TDDesign(model=model,
                    data=data,startingDose=25)
 
 ##Specify the truth of the DLE responses
-myTruth <- function(dose)
-{ model@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
+myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
+
 ##then plot the truth to see how the truth dose-DLE curve look like
 curve(myTruth(x), from=0, to=300,ylim=c(0,1))
 
 
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulation is produced (nsim=1).
 mySim <- simulate(object=design,
                   args=NULL,
                   truth=myTruth,
                   nsim=1,
                   seed=819,
                   parallel=FALSE)
+
+# nolint end
