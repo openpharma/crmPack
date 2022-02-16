@@ -6,6 +6,7 @@
 \alias{doseFunction-GeneralModel}
 \alias{doseFunction,ModelTox-method}
 \alias{doseFunction-ModelTox}
+
 \title{Getting the Dose Function for a Given Model Type}
 \usage{
 doseFunction(model, ...)

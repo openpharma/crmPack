@@ -6,6 +6,7 @@
 \alias{probFunction-GeneralModel}
 \alias{probFunction,ModelTox-method}
 \alias{probFunction-ModelTox}
+
 \title{Getting the Prob Function for a Given Model Type}
 \usage{
 probFunction(model, ...)
