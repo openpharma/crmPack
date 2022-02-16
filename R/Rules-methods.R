@@ -810,11 +810,11 @@ setMethod(
 
     # return the min toxic dose level or maximum dose level if no dose is toxic
     # while ignoring placebo
-    if (sum(tox_prob > increments@prob) > 0) {
-      dose_tox <- min(doses[which(tox_prob > increments@prob)])
+    dose_tox <- if (sum(tox_prob > increments@prob) > 0) {
+      min(doses[which(tox_prob > increments@prob)])
     } else {
       # add small value to max dose, so that the max dose is always smaller
-      dose_tox <- max(data@doseGrid) + 0.01
+      max(data@doseGrid) + 0.01
     }
 
     # Determine the next maximum possible dose.
