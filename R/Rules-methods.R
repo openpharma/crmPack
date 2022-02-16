@@ -800,18 +800,21 @@ setMethod(
     }
 
     # extract dose names as these get lost if only one dose available
-    doses <- as.numeric(colnames(dlt_tab))
+    non_plcb_doses <- unique(sort(as.numeric(colnames(dlt_tab))))
 
     # toxicity probability per dose level
+    x <- dlt_tab[2, ]
+    n <- apply(dlt_tab, 2, sum)
     tox_prob <- 1 - pbeta(
-      increments@target, dlt_tab[2, ] + increments@a,
-      apply(dlt_tab, 2, sum) - dlt_tab[2, ] + increments@b
+      increments@target,
+      x + increments@a,
+      n - x + increments@b
     )
 
     # return the min toxic dose level or maximum dose level if no dose is toxic
     # while ignoring placebo
     dose_tox <- if (sum(tox_prob > increments@prob) > 0) {
-      min(doses[which(tox_prob > increments@prob)])
+      min(non_plcb_doses[which(tox_prob > increments@prob)])
     } else {
       # add small value to max dose, so that the max dose is always smaller
       max(data@doseGrid) + 0.01
