@@ -616,7 +616,7 @@ IncrementMin <- function(IncrementsList)
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`].
+#'   [`StoppingMTDCV`] [`StoppingLowestDoseHSRBeta`].
 #'
 #' @aliases Stopping
 #' @export
