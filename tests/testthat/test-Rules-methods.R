@@ -90,6 +90,20 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo
   expect_equal(result, 300) # maxDose is 300 as placebo is ignored.
 })
 
+test_that(paste(
+  "IncrementsHSRBeta works correctly if toxcicity probability of first",
+  "active dose is above threshold probability and placebo == T, but not appplied"
+), {
+  my_data@x <- c(rep(25, 4), rep(50, 4), rep(100, 4))
+  my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L, 1L)
+  increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
+  result <- maxDose(
+    increments,
+    data = my_data
+  )
+  expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
+})
+
 my_data <- h_get_data_no_plcb()
 
 test_that(paste(
