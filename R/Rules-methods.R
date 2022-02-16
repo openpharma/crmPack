@@ -795,8 +795,8 @@ setMethod(
     dlt_tab <- table(y, data@x)
 
     # ignore placebo if applied
-    if (data@placebo==TRUE & min(data@x) == data@doseGrid[1]){
-      dlt_tab <- dlt_tab[,-1]
+    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
+      dlt_tab <- dlt_tab[, -1]
     }
 
     # extract dose names as these get lost if only one dose available
@@ -822,7 +822,7 @@ setMethod(
     # the first active dose is reported as maximum. I.e. in case that placebo is used,
     # the second dose is reported. Please note that this rule should be used together
     # with the hard safety stopping rule to avoid inconsistent results.
-    max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo+1])
+    max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
   }
 )
 

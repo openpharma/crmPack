@@ -46,7 +46,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is define
 # maxDose-IncrementsHSRBeta ----
 
 my_data <- h_get_data()
-my_data@y[my_data@cohort==3] <- c(0L,0L,1L,1L)
+my_data@y[my_data@cohort == 3] <- c(0L, 0L, 1L, 1L)
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is below threshold probability", {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
@@ -67,9 +67,12 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 })
 
 
-my_data@y[my_data@cohort==1] <- c(0L,1L,1L,1L)
+my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L, 1L)
 
-test_that("IncrementsHSRBeta works correctly if toxcicity probability of first active dose is above threshold probability", {
+test_that(paste(
+  "IncrementsHSRBeta works correctly if toxcicity probability of first",
+  "active dose is above threshold probability"
+), {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
   result <- maxDose(
     increments,
@@ -80,7 +83,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability of first a
 
 
 my_data <- h_get_data()
-my_data@y[my_data@x==0.001] <- c(1L,1L,1L)
+my_data@y[my_data@x == 0.001] <- c(1L, 1L, 1L)
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo is above threshold probability", {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
@@ -92,9 +95,12 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo
 })
 
 my_data <- h_get_data_no_plcb()
-my_data@y[my_data@cohort==1] <- c(0L,1L,1L)
+my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L)
 
-test_that("IncrementsHSRBeta works correctly if toxcicity probability of first active dose is above threshold probability (no placebo)", {
+test_that(paste(
+  "IncrementsHSRBeta works correctly if toxcicity probability of first",
+  "active dose is above threshold probability (no placebo)"
+), {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
   result <- maxDose(
     increments,
@@ -104,7 +110,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability of first a
 })
 
 my_data <- h_get_data_no_plcb()
-my_data@y[my_data@cohort==3] <- c(0L,1L,1L)
+my_data@y[my_data@cohort == 3] <- c(0L, 1L, 1L)
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is above threshold probability (no placebo)", {
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
