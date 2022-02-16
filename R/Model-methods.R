@@ -323,7 +323,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -347,7 +347,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -374,7 +374,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -398,7 +398,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -425,7 +425,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -449,7 +449,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -476,7 +476,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -500,7 +500,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -527,7 +527,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -551,7 +551,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -597,7 +597,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("alpha0", "alpha1"))
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -631,7 +631,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
-    assert_set_equal(names(samples@data), c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(samples@data))
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
@@ -661,7 +661,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_set_equal(names(samples@data), c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(samples@data))
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
@@ -696,6 +696,7 @@ setMethod(
     assert_numeric(prob, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
 
     model_params <- h_slots(model, c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(model_params))
     samples <- Samples(
       data = model_params,
       options = McmcOptions(samples = length(model_params[[1]]))
@@ -727,6 +728,7 @@ setMethod(
     assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
 
     model_params <- h_slots(model, c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(model_params))
     samples <- Samples(
       data = model_params,
       options = McmcOptions(samples = length(model_params[[1]]))
