@@ -305,6 +305,7 @@ validObject(NextBestMinDist(0.1))
 ##' \code{\linkS4class{IncrementsRelativeDLT}},
 ##' \code{\linkS4class{IncrementsRelativeParts}},
 ##' [`IncrementsNumDoseLevels`]
+##' [`IncrementsHSRBeta`]
 ##'
 ##' @aliases Increments
 ##' @export
