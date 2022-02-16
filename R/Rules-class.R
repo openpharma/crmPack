@@ -434,12 +434,12 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
 #' This is a hard safety rule that limits further escalation based on the
 #' observed data per dose level, independent from the underlying model.
 #'
-#' @slot target (`number`)\cr the target toxicity
-#' @slot prob (`number`)\cr the threshold probability for a dose being toxic
+#' @slot target (`number`)\cr the target toxicity.
+#' @slot prob (`number`)\cr the threshold probability for a dose being toxic.
 #' @slot a (`number`)\cr shape parameter a>0 of probability
-#'  distribution Beta (a,b)
+#'  distribution Beta (a,b).
 #' @slot b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b)
+#'  distribution Beta (a,b).
 #'
 #' @aliases IncrementsHSRBeta
 #' @export
