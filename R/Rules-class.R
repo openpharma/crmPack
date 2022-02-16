@@ -425,7 +425,8 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`IncrementsHSRBeta`] is a class for increments based on the Bin-Beta model.
+#' [`IncrementsHSRBeta`] is a class for limiting further increments using
+#' a Hard Safety Rule based on the Bin-Beta model.
 #' Increment control is based on the number of observed DLTs and number of
 #' subjects at each dose level. The probability of toxicity is calculated
 #' using a Bin-Beta model with prior (a,b). If the probability exceeds
@@ -459,7 +460,7 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
     a = 1,
     b = 1
   ),
-  validity = validate_increments_hrs_beta
+  validity = validate_increments_hsr_beta
 )
 
 # IncrementsHSRBeta-constructor ----

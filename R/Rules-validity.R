@@ -31,7 +31,7 @@ validate_increments_numdoselevels <- function(object) {
 
 #' @describeIn validate_stopping validates that the [`IncrementsHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
-validate_increments_hrs_beta <- function(object) {
+validate_increments_hsr_beta <- function(object) {
   o <- Validate()
   o$check(
     is.probability(object@target, bounds = FALSE),

@@ -30,19 +30,19 @@ test_that("validate_increments_numdoselevels returns expected messages for non-v
 })
 
 
-# validate_increments_hrs_beta ----
+# validate_increments_hsr_beta ----
 
-test_that("validate_increments_hrs_beta passes for valid object", {
+test_that("validate_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
-  expect_true(validate_increments_hrs_beta(object))
+  expect_true(validate_increments_hsr_beta(object))
 })
 
-test_that("validate_increments_hrs_beta passes for valid object", {
+test_that("validate_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
-  expect_true(validate_increments_hrs_beta(object))
+  expect_true(validate_increments_hsr_beta(object))
 })
 
-test_that("validate_increments_hrs_beta returns expected messages for non-valid object", {
+test_that("validate_increments_hsr_beta returns expected messages for non-valid object", {
   object <- IncrementsHSRBeta()
   object@target <- -0.3
   object@prob <- 1.1
@@ -50,7 +50,7 @@ test_that("validate_increments_hrs_beta returns expected messages for non-valid 
   object@b <- 0
 
   expect_equal(
-    validate_increments_hrs_beta(object),
+    validate_increments_hsr_beta(object),
     c(
       "target must be probability > 0 and < 1",
       "prob must be probability > 0 and < 1",
