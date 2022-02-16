@@ -1531,6 +1531,68 @@ setMethod(
   }
 )
 
+
+# stopTrial-StoppingLowestDoseHSRBeta ----
+
+#' @rdname stopTrial
+#'
+#' @description Stopping based based on the lowest dose meeting the hard
+#' safety criteria using Bin-Beta model based DLT probability.
+#'
+#' @aliases stopTrial-StoppingLowestDoseHSRBeta
+#' @example examples/Rules-method-stopTrial-StoppingLowestDoseHSRBeta.R
+#' @export
+setMethod(
+  "stopTrial",
+  signature = signature(
+    stopping = "StoppingLowestDoseHSRBeta",
+    dose = "numeric",
+    samples = "Samples"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # determine if the first doses is toxic
+    # First active dose Tested?
+    if (sum(data@x == data@doseGrid[data@placebo+1]) > 0) {
+      lowest_dose_tested <- TRUE
+      # summary data at first dose
+      y <- factor(data@y, levels = c("0", "1"))
+      dlt_tab <- table(y, data@x)[, data@placebo+1]
+      tox_prob_first_dose <-
+        1 - pbeta(
+          stopping@target, dlt_tab[2] + stopping@a,
+          sum(dlt_tab) - dlt_tab[2] + stopping@b
+        )
+    } else {
+      lowest_dose_tested <- FALSE
+      tox_prob_first_dose <- 0
+    }
+
+    # so can we stop?
+    do_stop <- tox_prob_first_dose > stopping@prob
+
+    # generate message
+    msg <- if (lowest_dose_tested == FALSE) {
+      paste("Lowest active dose not tested, stopping rule not applied.")
+    } else {
+      paste(
+        "Probability that the lowest active dose of ",
+        data@doseGrid[data@placebo+1],
+        " being toxic based on posterior Beta distribution using a Beta(",
+        stopping@a, ",", stopping@b, ") prior is ",
+        round(tox_prob_first_dose * 100),
+        "% and thus ",
+        ifelse(do_stop, "above", "below"),
+        " the required ",
+        round(stopping@prob * 100),
+        "% threshold.",
+        sep = ""
+      )
+    }
+
+    # return both
+    structure(do_stop, message = msg)
+  }
+)
 # nolint start
 
 ## --------------------------------------------------

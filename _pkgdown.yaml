@@ -17,7 +17,7 @@ navbar:
 
 development:
   mode: devel
-  
+
 reference:
   - title: Package
     contents:
@@ -43,6 +43,7 @@ reference:
       - ProbitLogNormal
       - ProbitLogNormalRel
       - StoppingMTDCV
+      - StoppingLowestDoseHSRBeta
   - title: Internal Helper Functions
     contents:
       - h_validate_combine_results
@@ -79,6 +80,7 @@ reference:
       - validate_increments_numdoselevels
       - validate_model_log_normal
       - validate_stopping_mtd_cv
+      - validate_stopping_lowest_dose_hsr_beta
   - title: Methods
     contents:
       - plot-Data
