@@ -790,7 +790,7 @@ setMethod(
     data = "Data"
   ),
   definition = function(increments, data, ...) {
-    # summary of observed data per dose level
+    # Summary of observed data per dose level.
     y <- factor(data@y, levels = c("0", "1"))
     dlt_tab <- table(y, data@x)
 
