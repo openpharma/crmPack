@@ -5,5 +5,5 @@
 #      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed
 
 my_Increments <- IncrementsRelativeDLTCurrent(DLTintervals = c(0, 1, 3),
-                                             increments = c(1, 0.33, 0.2))
+                 increments = c(1, 0.33, 0.2))
 
