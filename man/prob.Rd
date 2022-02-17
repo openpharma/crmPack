@@ -82,8 +82,8 @@ The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 }
 \details{
-The \code{prob} function computes the probability of toxicity for a given
-\code{dose}, using samples of the model parameter(s).
+The \code{prob} function computes the probability of toxicity for given
+doses, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
 specific \code{prob} method receives a samples matrix where the rows correspond
 to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.

@@ -83,7 +83,7 @@ parameters. All model parameters (except \code{prob}) should be present in the \
 The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
 }
 \details{
-The \code{dose} function computes the doses for a given toxicity
+The \code{dose} function computes the doses for given toxicity
 probabilities, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
 specific \code{dose} method receives a samples matrix where the rows correspond

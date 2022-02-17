@@ -14,7 +14,7 @@ NULL
 #' the occurrence of a DLE. The doses are computed based on the samples
 #' of the model parameters.
 #'
-#' @details The `dose` function computes the doses for a given toxicity
+#' @details The `dose` function computes the doses for given toxicity
 #'   probabilities, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
 #'   specific `dose` method receives a samples matrix where the rows correspond
@@ -90,8 +90,8 @@ setGeneric(
 #' A function that computes the probability of the occurrence of a DLE at a
 #' specified dose level, based on the model parameters.
 #'
-#' @details The `prob` function computes the probability of toxicity for a given
-#'   `dose`, using samples of the model parameter(s).
+#' @details The `prob` function computes the probability of toxicity for given
+#'   doses, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
 #'   specific `prob` method receives a samples matrix where the rows correspond
 #'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
