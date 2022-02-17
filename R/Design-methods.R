@@ -2164,11 +2164,12 @@ setMethod("simulate",
                                       data=thisData)
                 }
                 ## get the fit
-                thisFit <- list(phi1=thisModel@phi1,
-                                phi2=thisModel@phi2,
-                                probDLE=thisModel@prob(object@data@doseGrid,
-                                                       thisModel@phi1,thisModel@phi2))
-
+                prob_fun <- probFunction(thisModel, phi1 = thisModel@phi1, phi2 = thisModel@phi2)
+                thisFit <- list(
+                    phi1 = thisModel@phi1,
+                    phi2 = thisModel@phi2,
+                    probDLE = prob_fun(object@data@doseGrid)
+                )
 
                 ## return the results
                 thisResult <-
@@ -2579,10 +2580,13 @@ setMethod("simulate",
                 }
 
                 ## get the fits
-                thisDLEFit <- list(phi1=thisDLEModel@phi1,
-                                   phi2=thisDLEModel@phi2,
-                                   probDLE=thisDLEModel@prob(object@data@doseGrid,
-                                                             thisDLEModel@phi1,thisDLEModel@phi2))
+                prob_fun <- probFunction(thisDLEModel, phi1 = thisDLEModel@phi1, phi2 = thisDLEModel@phi2)
+                thisDLEFit <- list(
+                    phi1 = thisDLEModel@phi1,
+                    phi2 = thisDLEModel@phi2,
+                    probDLE = prob_fun(object@data@doseGrid)
+                )
+
                 thisEffFit <- list(theta1=thisEffModel@theta1,
                                    theta2=thisEffModel@theta2,
                                    ExpEff=thisEffModel@ExpEff(object@data@doseGrid,

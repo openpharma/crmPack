@@ -29,36 +29,33 @@ validate_increments_numdoselevels <- function(object) {
   o$result()
 }
 
-
 #' @describeIn validate_stopping validates that the [`IncrementsHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
-validate_increments_hrs_beta <- function(object) {
+validate_increments_hsr_beta <- function(object) {
   o <- Validate()
   o$check(
     is.probability(object@target, bounds = FALSE),
-    "target must be probability > 0 and < 1"
+    "target must be a probability"
   )
   o$check(
     is.probability(object@prob, bounds = FALSE),
-    "prob must be probability > 0 and < 1"
+    "prob must be a probability"
   )
   o$check(
-    is.numeric(object@a) & object@a > 0,
-    "Beta distribution shape parameter a must me a real number > 0"
+    is.scalar(object@a) & is.numeric(object@a) && object@a > 0,
+    "Beta distribution shape parameter a must be a positive scalar"
   )
   o$check(
-    is.numeric(object@b) & object@b > 0,
-    "Beta distribution shape parameter b must me a real number > 0"
+    is.scalar(object@b) & is.numeric(object@b) && object@b > 0,
+    "Beta distribution shape parameter b must be a positive scalar"
   )
 
   o$result()
 }
 
-
 #' @describeIn validate_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
-validate_stopping_lowest_dose_hsr_beta <- validate_increments_hrs_beta
-
+validate_stopping_lowest_dose_hsr_beta <- validate_increments_hsr_beta
 
 #' Internal Helper Functions for Validation of [`Stopping`] Objects
 #'

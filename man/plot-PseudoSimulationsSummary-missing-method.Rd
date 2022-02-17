@@ -34,10 +34,12 @@ objects in order to summarize them graphically. This can be used when only DLE r
 in the simulations. This also applied to results with or without samples generated during the simulations
 }
 \examples{
+# nolint start
+
 ##obtain the plot for the simulation results
 ##If only DLE responses are considered in the simulations
 ##Specified your simulations when no DLE samples are used
-##Define your data set first using an empty data set 
+##Define your data set first using an empty data set
 ## with dose levels from 25 to 300 with increments 25
 data <- Data(doseGrid=seq(25,300,25))
 
@@ -53,7 +55,7 @@ mySize <-CohortSizeConst(size=3)
 ##The maximum increase of 200\% for doses up to the maximum of the dose specified in the doseGrid
 ##The maximum increase of 200\% for dose above the maximum of the dose specified in the doseGrid
 ##This is to specified a maximum of 3-fold restriction in dose-esclation
-myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
+myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)),
                                  increments=c(2,2))
 ##Specified the stopping rule e.g stop when the maximum sample size of 12 patients has been reached
 myStopping <- StoppingMinPatients(nPatients=12)
@@ -66,12 +68,10 @@ design <- TDDesign(model=model,
                   data=data,startingDose=25)
 
 ##Specify the truth of the DLE responses
-myTruth <- function(dose)
-{ model@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
+myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
 
-## Then specified the simulations and generate the trial 
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+## Then specified the simulations and generate the trial
+##For illustration purpose only 1 simulation is produced (nsim=1).
 ##The simulations
 mySim <- simulate(design,
                   args=NULL,
@@ -103,7 +103,7 @@ design <- TDsamplesDesign(model=model,
 ##options for MCMC
 options<-McmcOptions(burnin=100,step=2,samples=200)
 ##The simulations
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulation is produced (nsim=1).
 # mySim <- simulate(design,
 #                   args=NULL,
 #                   truth=myTruth,
@@ -116,5 +116,7 @@ options<-McmcOptions(burnin=100,step=2,samples=200)
 #                  truth=myTruth)
 # ##plot the summary of the simulations
 # print(plot(MYSUM))
+
+# nolint end
 }
 \keyword{methods}

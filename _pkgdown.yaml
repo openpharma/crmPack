@@ -44,6 +44,7 @@ reference:
       - ProbitLogNormalRel
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
+      - IncrementsHSRBeta
   - title: Internal Helper Functions
     contents:
       - h_validate_combine_results
@@ -81,6 +82,7 @@ reference:
       - validate_model_log_normal
       - validate_stopping_mtd_cv
       - validate_stopping_lowest_dose_hsr_beta
+      - validate_increments_hsr_beta
   - title: Methods
     contents:
       - plot-Data
@@ -98,6 +100,7 @@ reference:
       - saveSample-McmcOptions
       - doseFunction
       - doseFunction-GeneralModel
+      - doseFunction-ModelTox
       - dose
       - dose-Model
       - dose-LogisticNormal
@@ -106,10 +109,11 @@ reference:
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
       - dose-LogisticLogNormalMixture
-      - dose-ModelTox
-      - dose-ModelTox_noSamples
+      - dose-LogisticIndepBeta
+      - dose-LogisticIndepBeta-noSamples
       - probFunction
       - probFunction-GeneralModel
+      - probFunction-ModelTox
       - prob
       - prob-Model
       - prob-LogisticNormal
@@ -118,9 +122,11 @@ reference:
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
       - prob-LogisticLogNormalMixture
-      - prob-ModelTox
-      - prob-ModelTox_noSamples
+      - prob-LogisticIndepBeta
+      - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingMTDCV
+      - maxDose-IncrementsNumDoseLevels
+      - maxDose-IncrementsHSRBeta
   - title: Functions
     contents:
       - enable_logging

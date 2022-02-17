@@ -254,15 +254,13 @@ str(model)
 
 We see that the object has \Sexpr{length(slotNames(model))} slots, and their
 names. These can be accessed with the \verb|@| operator (similarly as for lists
-the \verb|$| operator), for example we can extract the \texttt{dose} slot:
+the \verb|$| operator), for example we can extract the \texttt{ref\_dose} slot:
 
 <<dose>>=
-model@dose
+model@ref_dose
 @
 
-This is the function that computes for given parameters \texttt{alpha0} and
-\texttt{alpha1} the dose that gives the probability \texttt{prob} for a
-dose-limiting toxicity (DLT). You can find out yourself about the other slots,
+You can find out yourself about the other slots,
 by looking at the help page for \texttt{Model-class} in the help browser,
 because all univariate models with JAGS specification are just special cases (subclasses) of the \texttt{Model} class.
 In the \texttt{Model-class} help page, you also find out that there are four
@@ -1142,10 +1140,7 @@ In a similar way, we can also simulate trials based on a true DLT scenario using
 First, we will specified the true DLT scenario such that
 <<trueDLT, fig=TRUE>>=
 ## define the true function
-TrueDLT <- function(dose)
-{
-    DLTmodel@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
+TrueDLT <- probFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 ## plot it in the range of the dose grid
 curve(TrueDLT, from=25, to=300, ylim=c(0, 1))
@@ -2080,9 +2075,7 @@ Next, we have to specify the scenarios for simulations. For example, for simulat
 
 
 <<trueDLTtrueEff>>=
-myTruthDLT<- function(dose)
-{ DLTmodel@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
+myTruthDLT <- probFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 myTruthEff<- function(dose)
 {Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
@@ -2094,7 +2087,8 @@ myTruthGain <- function(dose)
 
 The true DLT, efficacy and gain curves can be obtained. We can see the corresponding curves as
 <<Truecurves, fig=TRUE>>=
-TruthTD<-function(prob){DLTmodel@dose(prob, phi1=-53.66584, phi2=10.50499)}
+TruthTD <- doseFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
+
 GAIN<-function(xi){-(-4.8218429+3.653058*log(xi))/(1+exp(-53.66584+10.50499*xi))}
 Txi<-(optim(1,GAIN,method="BFGS")$par)
 maxg<-(optim(1,GAIN,method="BFGS")$value)
@@ -2135,8 +2129,7 @@ The corresponding curves can also be plotted as:
 maxg1<-max(myTruthGain1)
 gstar1 <- data2@doseGrid[which.max(myTruthGain1)]
 DoseLevels1<-seq(1,300,1)
-TruthTD<-function(prob)
-  {DLTmodel@dose(prob, phi1=-53.66584, phi2=10.50499)}
+TruthTD <- doseFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
 td30<-TruthTD(0.3)
 td35<-TruthTD(0.35)
 plot(DoseLevels1,myTruthDLT(DoseLevels1), col='red',type='l',

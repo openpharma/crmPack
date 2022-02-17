@@ -10,30 +10,28 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A function that computes the dose reaching a specific target probability,
-#' based on the model specific parameters.
+#' A function that computes the dose reaching a specific target probability of
+#' the occurrence of a DLE. The doses are computed based on the samples
+#' of the model parameters.
 #'
-#' @details The `dose` function computes the doses for a given toxicity probabilities,
-#'   using samples of the model parameter(s). Hence, the vectors of these samples
-#'   must be included in the `samples` object.
+#' @details The `dose` function computes the doses for given toxicity
+#'   probabilities, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `dose` function receives either one parameter value as a row vector,
-#'   or a samples matrix where the rows correspond to the sampling index, i.e.
-#'   the layout is then `nSamples x dimParameter`.
+#'   specific `dose` method receives a samples matrix where the rows correspond
+#'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 #'
 #' @note The [`dose`] and [`prob`] functions are the inverse of each other.
 #'
 #' @param prob (`number` or `numeric`)\cr the toxicity probability which is
-#'   targeted. This must be a scalar if non-scalar `samples` are used
-#'   (e.g. in case of dose escalation `model`).
+#'   targeted. This must be a scalar if non-scalar `samples` are used.
 #'   It can be a vector of any finite length, if `samples` are scalars or
-#'   `samples` are not used (as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity `model`).
-#' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
-#'   escalation or pseudo DLE/toxicity model.
+#'   `samples` are not used, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
+#'   dose escalation or pseudo DLE/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute the resulting doses by the [`dose`] function.
-#' @param ... not used.
+#'   used to compute the resulting doses.
+#' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `number` or `numeric` vector with the doses.
 #'   If non-scalar `samples` were used, then every element in the returned vector
@@ -64,7 +62,7 @@ setGeneric(
 #' A function that returns a function that computes the dose reaching a
 #' specific target probability, based on the model specific parameters.
 #'
-#' @param model (`GeneralModel`)\cr the model for single agent dose escalation.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
 #' @return A `function` that computes doses for a given toxicity probability
@@ -89,30 +87,27 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A function that computes toxicity probabilities for a given dose, a given
-#' single agent dose escalation model, and samples.
+#' A function that computes the probability of the occurrence of a DLE at a
+#' specified dose level, based on the model parameters.
 #'
-#' @details The `prob` function computes the probability of toxicity for a given
-#'   `dose`, using samples of the model parameter(s). Hence, the vectors
-#'   of these samples must be included in the `samples` object.
+#' @details The `prob` function computes the probability of toxicity for given
+#'   doses, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `dose` function receives either one parameter value as a row vector,
-#'   or a samples matrix where the rows correspond to the sampling index, i.e.
-#'   the layout is then `nSamples x dimParameter`.
+#'   specific `prob` method receives a samples matrix where the rows correspond
+#'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 #'
 #' @note The [`prob`] and [`dose`] functions are the inverse of each other.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if non-scalar `samples` are used
-#'   (e.g. in case of dose escalation `model`).
+#'   This must be a scalar if non-scalar `samples` are used.
 #'   It can be a vector of any finite length, if `samples` are scalars or
-#'   `samples` are not used (as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity `model`).
-#' @param model (`Model` or `ModelTox`)\cr the model for single agent dose
-#'   escalation or pseudo DLE (dose-limiting events)/toxicity model.
+#'   `samples` are not used, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
+#'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute toxicity probabilities by `model@prob` function.
-#' @param ... not used.
+#'   used to compute toxicity probabilities.
+#' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `number` or `numeric` vector with the toxicity probabilities.
 #'   If non-scalar `samples` were used, then every element in the returned vector
@@ -141,9 +136,9 @@ setGeneric(
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' A function that returns a function that computes the toxicity probabilities
-#' for a given dose and single agent dose escalation model parameters.
+#' for a given dose, model and the model parameters.
 #'
-#' @param model (`GeneralModel`)\cr the model for single agent dose escalation.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
 #' @return A `function` that computes toxicity probabilities for a given dose
@@ -176,7 +171,7 @@ setMethod(
   signature = "GeneralModel",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_subset(names(model_params), model@sample)
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
 
     samples <- Samples(
       data = model_params,
@@ -200,7 +195,7 @@ setMethod(
   signature = "GeneralModel",
   definition = function(model, ...) {
     model_params <- list(...)
-    assert_subset(names(model_params), model@sample)
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
 
     samples <- Samples(
       data = model_params,
@@ -212,7 +207,57 @@ setMethod(
   }
 )
 
-# Model ----
+# ModelTox ----
+
+## doseFunction ----
+
+#' @rdname doseFunction
+#'
+#' @aliases doseFunction-ModelTox
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "ModelTox",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(prob) {
+      dose(prob, model, samples)
+    }
+  }
+)
+
+## probFunction ----
+
+#' @rdname probFunction
+#'
+#' @aliases probFunction-ModelTox
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "ModelTox",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose, model, samples)
+    }
+  }
+)
+
+# Model (TO REMOVE SOON) ----
 
 ## dose ----
 
@@ -278,6 +323,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -301,6 +347,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -327,6 +374,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -350,6 +398,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -376,6 +425,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -399,6 +449,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -425,6 +476,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -448,6 +500,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -474,6 +527,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
@@ -497,6 +551,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -542,6 +597,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
@@ -553,33 +609,35 @@ setMethod(
   }
 )
 
-# ModelTox ----
+# LogisticIndepBeta ----
 
 ## dose ----
 
 #' @rdname dose
 #'
-#' @description Compute doses for a given toxicity probability,
-#'   a given Pseudo DLE (dose-limiting events)/toxicity model, and samples.
+#' @description Compute the dose level reaching a specific target probability of
+#' the occurrence of a DLE, based on the samples of [`LogisticIndepBeta`] model
+#' parameters.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
 #'
-#' @aliases dose-ModelTox
-#' @example examples/Model-method-dose-ModelTox.R
+#' @aliases dose-LogisticIndepBeta
 #' @export
 #'
 setMethod(
   f = "dose",
   signature = signature(
     prob = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples, ...) {
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(samples@data[dose_args_names], list(prob = prob))
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(dose_args[[1]]))
+  definition = function(prob, model, samples) {
+    assert_subset(c("phi1", "phi2"), names(samples@data))
+    phi1 <- samples@data$phi1
+    phi2 <- samples@data$phi2
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
 
-    do.call(dose_fun, dose_args)
+    log_dose <- (log(prob / (1 - prob)) - phi1) / phi2
+    exp(log_dose)
   }
 )
 
@@ -587,59 +645,63 @@ setMethod(
 
 #' @rdname prob
 #'
-#' @description Compute toxicity probabilities for a given dose, a given Pseudo
-#'   DLE (dose-limiting events)/toxicity model, and samples.
+#' @description Compute toxicity probabilities of the occurrence of a DLE at a
+#' specified dose level, based on the samples of [`LogisticIndepBeta`] model
+#' parameters.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
 #'
-#' @aliases prob-ModelTox
-#' @example examples/Model-method-prob-ModelTox.R
+#' @aliases prob-LogisticIndepBeta
 #' @export
 #'
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(dose, model, samples, ...) {
-    prob_fun <- model@prob
-    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(samples@data[prob_args_names], list(dose = dose))
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(prob_args[[1]]))
+  definition = function(dose, model, samples) {
+    assert_subset(c("phi1", "phi2"), names(samples@data))
+    phi1 <- samples@data$phi1
+    phi2 <- samples@data$phi2
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
 
-    do.call(prob_fun, prob_args)
+    log_dose <- log(dose)
+    exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
   }
 )
 
-# ModelTox_noSamples ----
+# LogisticIndepBeta-noSamples ----
 
 ## dose ----
 
 #' @rdname dose
 #'
-#' @description Compute the dose for a given toxicity probability and a given
-#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
-#'   All the arguments to `model@dose` function (except `prob`) should be
-#'   present in the `model` object.
+#' @description Compute the dose level reaching a specific target probability of
+#' the occurrence of a DLE, based on the [`LogisticIndepBeta`] model
+#' parameters. All model parameters (except `prob`) should be present in the `model` object.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
 #'
-#' @aliases dose-ModelTox_noSamples
-#' @example examples/Model-method-dose-ModelTox_noSamples.R
+#' @aliases dose-LogisticIndepBeta-noSamples
 #' @export
 #'
 setMethod(
   f = "dose",
   signature = signature(
     prob = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "missing"
   ),
-  definition = function(prob, model, ...) {
+  definition = function(prob, model) {
     assert_numeric(prob, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
 
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(h_slots(model, dose_args_names), list(prob = prob))
-    do.call(dose_fun, dose_args)
+    model_params <- h_slots(model, c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(model_params))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    dose(prob, model, samples)
   }
 )
 
@@ -647,29 +709,31 @@ setMethod(
 
 #' @rdname prob
 #'
-#' @description Compute the toxicity probability for a given dose and a given
-#'   Pseudo DLE (dose-limiting events)/toxicity model without samples.
-#'   All the arguments to `model@prob` function (except `dose`) should be
-#'   present in the `model` object.
+#' @description Compute toxicity probabilities of the occurrence of a DLE at a
+#' specified dose level, based on the [`LogisticIndepBeta`] model parameters.
+#' The [`LogisticIndepBeta`] model is a Pseudo DLE (dose-limiting events)/toxicity.
+#' All model parameters (except `dose`) should be present in the `model` object.
 #'
-#' @aliases prob-ModelTox_noSamples
-#' @example examples/Model-method-prob-ModelTox_noSamples.R
+#' @aliases prob-LogisticIndepBeta-noSamples
 #' @export
 #'
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "ModelTox",
+    model = "LogisticIndepBeta",
     samples = "missing"
   ),
   definition = function(dose, model, ...) {
     assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
 
-    prob_fun <- model@prob
-    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(h_slots(model, prob_args_names), list(dose = dose))
-    do.call(prob_fun, prob_args)
+    model_params <- h_slots(model, c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(model_params))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    prob(dose, model, samples)
   }
 )
 
@@ -841,17 +905,7 @@ setMethod("gain",
           def=
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
 
-
-              ## extract the prob function from the model
-              probFun <- slot(DLEmodel, "prob")
-              ## which arguments, besides the dose, does it need?
-              DLEargNames <- setdiff(names(formals(probFun)),
-                                     "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              DLEret <- do.call(probFun,
-                                c(list(dose=dose),
-                                  DLEsamples@data[DLEargNames]))
+              DLEret <- prob(dose, DLEmodel, DLEsamples)
 
               ## extract the ExpEff function from the model
               EffFun <- slot(Effmodel, "ExpEff")
@@ -885,18 +939,7 @@ setMethod("gain",
           def=
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
 
-
-
-              ## extract the prob function from the model
-              probFun <- slot(DLEmodel, "prob")
-              ## which arguments, besides the dose, does it need?
-              DLEargNames <- setdiff(names(formals(probFun)),
-                                     "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              DLEret <- do.call(probFun,
-                                c(list(dose=dose),
-                                  DLEsamples@data[DLEargNames]))
+              DLEret <- prob(dose, DLEmodel, DLEsamples)
 
               ## extract the ExpEff function from the model
               EffFun <- slot(Effmodel, "ExpEff")
@@ -923,16 +966,8 @@ setMethod("gain",
                       Effsamples="missing"),
           def=
             function(dose,DLEmodel,Effmodel,...){
-              ##extract the prob function from the DLE model
-              probFun <- slot(DLEmodel,"prob")
-              ##which arguments besides the dose dose it need?
-              DLEargNames <- setdiff(names(formals(probFun)),"dose")
-              ##now call the function with dose
-              DLEvalues<-c()
-              for (DLEparName in DLEargNames){
-                DLEvalues<-c(DLEvalues, slot(DLEmodel,DLEparName))}
-              DLEret <- do.call(probFun,
-                                c(list(dose=dose), DLEvalues))
+
+              DLEret <- prob(dose, DLEmodel)
 
               ##extract the ExpEff function from the Eff model
               EffFun <- slot(Effmodel,"ExpEff")

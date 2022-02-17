@@ -305,6 +305,7 @@ validObject(NextBestMinDist(0.1))
 ##' \code{\linkS4class{IncrementsRelativeDLT}},
 ##' \code{\linkS4class{IncrementsRelativeParts}},
 ##' [`IncrementsNumDoseLevels`]
+##' [`IncrementsHSRBeta`]
 ##'
 ##' @aliases Increments
 ##' @export
@@ -414,6 +415,75 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
   .IncrementsNumDoseLevels(
     maxLevels=safeInteger(maxLevels),
     basisLevel=basisLevel
+  )
+}
+
+
+# IncrementsHSRBeta-class ----
+
+#' `IncrementsHSRBeta`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsHSRBeta`] is a class for limiting further increments using
+#' a Hard Safety Rule based on the Bin-Beta model.
+#' Increment control is based on the number of observed DLTs and number of
+#' subjects at each dose level. The probability of toxicity is calculated
+#' using a Bin-Beta model with prior (a,b). If the probability exceeds
+#' the threshold for a given dose, that dose and all doses above are excluded
+#' from further escalation.
+#' This is a hard safety rule that limits further escalation based on the
+#' observed data per dose level, independent from the underlying model.
+#'
+#' @slot target (`number`)\cr the target toxicity.
+#' @slot prob (`number`)\cr the threshold probability for a dose being toxic.
+#' @slot a (`number`)\cr shape parameter a>0 of probability
+#'  distribution Beta (a,b).
+#' @slot b (`number`)\cr shape parameter b>0 of probability
+#'  distribution Beta (a,b).
+#'
+#' @aliases IncrementsHSRBeta
+#' @export
+#'
+.IncrementsHSRBeta <- setClass(
+  Class = "IncrementsHSRBeta",
+  contains = "Increments",
+  representation(
+    target = "numeric",
+    prob = "numeric",
+    a = "numeric",
+    b = "numeric"
+  ),
+  prototype(
+    target = 0.3,
+    prob = 0.95,
+    a = 1,
+    b = 1
+  ),
+  validity = validate_increments_hsr_beta
+)
+
+# IncrementsHSRBeta-constructor ----
+
+#' @rdname IncrementsHSRBeta-class
+#'
+#' @param target (`number`)\cr see slot definition.
+#' @param prob (`number`)\cr see slot definition.
+#' @param a (`number`)\cr see slot definition.
+#' @param b (`number`)\cr see slot definition.
+#'
+#' @example examples/Rules-class-IncrementsHSRBeta.R
+#' @export
+#'
+IncrementsHSRBeta <- function(target = 0.3,
+                              prob = 0.95,
+                              a = 1,
+                              b = 1) {
+  .IncrementsHSRBeta(
+    target = target,
+    prob = prob,
+    a = a,
+    b = b
   )
 }
 

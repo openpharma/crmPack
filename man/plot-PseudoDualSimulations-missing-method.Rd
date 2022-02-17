@@ -33,19 +33,21 @@ You can specify one or both of these in the
 \code{type} argument.
 }
 \examples{
+# nolint start
+
 ##obtain the plot for the simulation results
 ##If DLE and efficacy responses are considered in the simulations
 ##Specified your simulations when no samples are used
 ## we need a data object with doses >= 1:
 data <- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
-##First for the DLE model 
-##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class 
+##First for the DLE model
+##The DLE model must be of 'ModelTox' (e.g 'LogisticIndepBeta') class
 DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               DLEweights=c(3,3),
                               DLEdose=c(25,300),
                               data=data)
 
-##The efficacy model of 'ModelEff' (e.g 'Effloglog') class 
+##The efficacy model of 'ModelEff' (e.g 'Effloglog') class
 Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
                     nu=c(a=1,b=0.025),data=data,c=0)
 
@@ -54,7 +56,7 @@ mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
                             DLEEndOfTrialtarget=0.3)
 
 
-##The increments (see Increments class examples) 
+##The increments (see Increments class examples)
 ## 200\% allowable increase for dose below 300 and 200\% increase for dose above 300
 myIncrements<-IncrementsRelative(intervals=c(25,300),
                                  increments=c(2,2))
@@ -73,16 +75,14 @@ design <- DualResponsesDesign(nextBest=mynextbest,
                               cohortSize=mySize,
                               data=data,startingDose=25)
 ##Specify the true DLE and efficacy curves
-myTruthDLE<- function(dose)
-{ DLEmodel@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
+myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
 
 myTruthEff<- function(dose)
 {Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
 }
 
 ## Then specified the simulations and generate the trial
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulation is produced (nsim=1).
 mySim <-simulate(object=design,
                  args=NULL,
                  trueDLE=myTruthDLE,
@@ -115,7 +115,7 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
 ##options for MCMC
 options<-McmcOptions(burnin=10,step=1,samples=20)
 ##The simulations
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulation is produced (nsim=1).
 mySim<-simulate(design,
                 args=NULL,
                 trueDLE=myTruthDLE,
@@ -127,5 +127,7 @@ mySim<-simulate(design,
                 parallel=FALSE)
 ##plot the simulation results
 print(plot(mySim))
+
+# nolint end
 }
 \keyword{methods}
