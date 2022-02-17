@@ -1,5 +1,5 @@
 
-# Create the data
+# Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 6, 6, 6),
   y = c(0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1),
@@ -10,8 +10,9 @@ my_data <- Data(
 )
 
 # In this example we define a rule for dose increments that limits the further
-# dose escalation to doses below 6
+# dose escalation to doses below 6, because dose 6 is above the probability
+# toxicity threshold.
 my_increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
 
-# Based on the rule above, we then calculate the maximum dose allowed
+# Based on the rule above, we then calculate the maximum dose allowed.
 my_next_max_dose <- maxDose(my_increments, data = my_data)
