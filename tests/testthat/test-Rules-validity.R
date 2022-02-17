@@ -30,6 +30,54 @@ test_that("validate_increments_numdoselevels returns expected messages for non-v
 })
 
 
+# validate_increments_hsr_beta ----
+
+test_that("validate_increments_hsr_beta passes for valid object", {
+  object <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
+  expect_true(validate_increments_hsr_beta(object))
+})
+
+test_that("validate_increments_hsr_beta passes for valid object", {
+  object <- IncrementsHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
+  expect_true(validate_increments_hsr_beta(object))
+})
+
+test_that("validate_increments_hsr_beta returns expected messages for non-valid object", {
+  object <- IncrementsHSRBeta()
+  object@target <- -0.3
+  object@prob <- 1.1
+  object@a <- -2
+  object@b <- 0
+
+  expect_equal(
+    validate_increments_hsr_beta(object),
+    c(
+      "target must be a probability",
+      "prob must be a probability",
+      "Beta distribution shape parameter a must be a positive scalar",
+      "Beta distribution shape parameter b must be a positive scalar"
+    )
+  )
+})
+
+test_that("validate_increments_hsr_beta returns expected messages for non-valid object", {
+  object <- IncrementsHSRBeta()
+  object@target <- c(0.3, 0.4)
+  object@prob <- c(0.9, 0.95)
+  object@a <- c(1, 2)
+  object@b <- c(1, 2)
+
+  expect_equal(
+    validate_increments_hsr_beta(object),
+    c(
+      "target must be a probability",
+      "prob must be a probability",
+      "Beta distribution shape parameter a must be a positive scalar",
+      "Beta distribution shape parameter b must be a positive scalar"
+    )
+  )
+})
+
 # validate_stopping_mtd_cv ----
 
 test_that("validate_stopping_mtd_cv passes for valid object", {

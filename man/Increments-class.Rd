@@ -13,5 +13,6 @@ The virtual class for controlling increments
 \code{\linkS4class{IncrementsRelativeDLT}},
 \code{\linkS4class{IncrementsRelativeParts}},
 \code{\link{IncrementsNumDoseLevels}}
+\code{\link{IncrementsHSRBeta}}
 }
 \keyword{classes}
