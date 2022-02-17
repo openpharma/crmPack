@@ -34,20 +34,20 @@ validate_increments_numdoselevels <- function(object) {
 validate_increments_hsr_beta <- function(object) {
   o <- Validate()
   o$check(
-    is.probability(object@target, bounds = FALSE),
-    "target must be probability > 0 and < 1"
+    is.scalar(object@target) & is.probability(object@target, bounds = FALSE),
+    "target must be a probability skalar"
   )
   o$check(
-    is.probability(object@prob, bounds = FALSE),
-    "prob must be probability > 0 and < 1"
+    is.scalar(object@prob) & is.probability(object@prob, bounds = FALSE),
+    "prob must be a probability skalar"
   )
   o$check(
-    is.numeric(object@a) & object@a > 0,
-    "Beta distribution shape parameter a must me a real number > 0"
+    is.scalar(object@a) & is.numeric(object@a) && object@a > 0,
+    "Beta distribution shape parameter a must be a positive skalar"
   )
   o$check(
-    is.numeric(object@b) & object@b > 0,
-    "Beta distribution shape parameter b must me a real number > 0"
+    is.scalar(object@b) & is.numeric(object@b) && object@b > 0,
+    "Beta distribution shape parameter b must be a positive skalar"
   )
 
   o$result()

@@ -52,14 +52,31 @@ test_that("validate_increments_hsr_beta returns expected messages for non-valid 
   expect_equal(
     validate_increments_hsr_beta(object),
     c(
-      "target must be probability > 0 and < 1",
-      "prob must be probability > 0 and < 1",
-      "Beta distribution shape parameter a must me a real number > 0",
-      "Beta distribution shape parameter b must me a real number > 0"
+      "target must be a probability skalar",
+      "prob must be a probability skalar",
+      "Beta distribution shape parameter a must be a positive skalar",
+      "Beta distribution shape parameter b must be a positive skalar"
     )
   )
 })
 
+test_that("validate_increments_hsr_beta returns expected messages for non-valid object", {
+  object <- IncrementsHSRBeta()
+  object@target <- c(0.3, 0.4)
+  object@prob <- c(0.9, 0.95)
+  object@a <- c(1, 2)
+  object@b <- c(1, 2)
+
+  expect_equal(
+    validate_increments_hsr_beta(object),
+    c(
+      "target must be a probability skalar",
+      "prob must be a probability skalar",
+      "Beta distribution shape parameter a must be a positive skalar",
+      "Beta distribution shape parameter b must be a positive skalar"
+    )
+  )
+})
 
 # validate_stopping_mtd_cv ----
 
