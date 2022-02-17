@@ -302,4 +302,3 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expect_identical(result, expected) # First active dose not applied.
 })
-
