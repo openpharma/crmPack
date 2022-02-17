@@ -124,6 +124,7 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-LogisticIndepBeta
       - prob-LogisticIndepBeta-noSamples
+      - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
       - maxDose-IncrementsHSRBeta
