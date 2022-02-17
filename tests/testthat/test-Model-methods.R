@@ -1,3 +1,135 @@
+# doseFunction ----
+
+## GeneralModel ----
+
+test_that("doseFunction-GeneralModel returns correct dose function", {
+  model <- h_get_logistic_log_normal()
+  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  dose_args <- c("prob", "model", "samples")
+
+  dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
+  dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
+  dose_fun_env <- environment(dose_fun)
+
+  expect_function(dose_fun, args = "prob", nargs = 1, null.ok = FALSE)
+  expect_equal(dose_fun_dose_args, dose_args)
+  expect_subset(
+    setdiff(dose_fun_dose_args, "prob"),
+    ls(envir = dose_fun_env)
+  )
+  expect_identical(dose_fun_env[["model"]], model)
+  expect_identical(dose_fun_env[["samples"]], samples)
+})
+
+test_that("doseFunction-GeneralModel throws the error when valid params are not provided", {
+  model <- h_get_logistic_log_normal()
+
+  expect_error(
+    doseFunction(model),
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, not empty.$"
+  )
+  expect_error(
+    doseFunction(model, wrong = 1, alpha1 = 2),
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but is \\{'wrong','alpha1'\\}.$"
+  )
+})
+
+## ModelTox ----
+
+test_that("doseFunction-ModelTox returns correct dose function", {
+  model <- h_get_logistic_indep_beta()
+  samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
+  dose_args <- c("prob", "model", "samples")
+
+  dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
+  dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
+  dose_fun_env <- environment(dose_fun)
+
+  expect_function(dose_fun, args = "prob", nargs = 1, null.ok = FALSE)
+  expect_equal(dose_fun_dose_args, dose_args)
+  expect_subset(
+    setdiff(dose_fun_dose_args, "prob"),
+    ls(envir = dose_fun_env)
+  )
+  expect_identical(dose_fun_env[["model"]], model)
+  expect_identical(dose_fun_env[["samples"]], samples)
+})
+
+test_that("doseFunction-ModelTox throws the error when no params are provided", {
+  model <- h_get_logistic_indep_beta()
+
+  expect_error(
+    doseFunction(model),
+    "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
+  )
+})
+
+# probFunction ----
+
+## GeneralModel ----
+
+test_that("probFunction-GeneralModel returns correct prob function", {
+  model <- h_get_logistic_log_normal()
+  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  prob_args <- c("dose", "model", "samples")
+
+  prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
+  prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
+  prob_fun_env <- environment(prob_fun)
+
+  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_equal(prob_fun_prob_args, prob_args)
+  expect_subset(
+    setdiff(prob_fun_prob_args, "dose"),
+    ls(envir = prob_fun_env)
+  )
+  expect_identical(prob_fun_env[["model"]], model)
+  expect_identical(prob_fun_env[["samples"]], samples)
+})
+
+test_that("probFunction-GeneralModel throws the error when valid params are not provided", {
+  model <- h_get_logistic_log_normal()
+
+  expect_error(
+    probFunction(model),
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, not empty.$"
+  )
+  expect_error(
+    probFunction(model, wrong = 1, alpha1 = 2),
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but is \\{'wrong','alpha1'\\}.$"
+  )
+})
+
+## ModelTox ----
+
+test_that("probFunction-ModelTox returns correct prob function", {
+  model <- h_get_logistic_indep_beta()
+  samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
+  prob_args <- c("dose", "model", "samples")
+
+  prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
+  prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
+  prob_fun_env <- environment(prob_fun)
+
+  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_equal(prob_fun_prob_args, prob_args)
+  expect_subset(
+    setdiff(prob_fun_prob_args, "dose"),
+    ls(envir = prob_fun_env)
+  )
+  expect_identical(prob_fun_env[["model"]], model)
+  expect_identical(prob_fun_env[["samples"]], samples)
+})
+
+test_that("probFunction-ModelTox throws the error when no params are provided", {
+  model <- h_get_logistic_indep_beta()
+
+  expect_error(
+    probFunction(model),
+    "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
+  )
+})
+
 # dose ----
 
 ## LogisticNormal ----
@@ -214,9 +346,9 @@ test_that("dose-ProbitLogNormalRel throws the error when prob is not a valid sca
   )
 })
 
-## ModelTox ----
+## LogisticIndepBeta ----
 
-test_that("dose-ModelTox works as expected", {
+test_that("dose-LogisticIndepBeta works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
@@ -230,7 +362,7 @@ test_that("dose-ModelTox works as expected", {
   expect_equal(result, expected, tolerance = 0.0001)
 })
 
-test_that("dose-ModelTox works as expected for scalar samples", {
+test_that("dose-LogisticIndepBeta works as expected for scalar samples", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = -1, phi2 = 1))
 
@@ -238,7 +370,7 @@ test_that("dose-ModelTox works as expected for scalar samples", {
   expect_equal(result, c(2.224049, 6.342658), tolerance = 1e-05)
 })
 
-test_that("dose-ModelTox throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticIndepBeta throws the error when prob is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = c(-1, 0.5), phi2 = c(1, 0.6)))
 
@@ -256,16 +388,16 @@ test_that("dose-ModelTox throws the error when prob is not a valid scalar", {
   )
 })
 
-## ModelTox_noSamples ----
+## LogisticIndepBeta-noSamples ----
 
-test_that("dose-ModelTox_noSamples works as expected", {
+test_that("dose-LogisticIndepBeta-noSamples works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
 
   result <- dose(prob = c(0.45, 0.55), model = dlt_model)
   expect_equal(result, expected = c(188.1673, 289.2156), tolerance = 0.0001)
 })
 
-test_that("dose-ModelTox_noSamples throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticIndepBeta-noSamples throws the error when prob is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
 
   expect_error(
@@ -276,27 +408,6 @@ test_that("dose-ModelTox_noSamples throws the error when prob is not a valid sca
     dose(prob = -2, model = dlt_model),
     "Assertion on 'prob' failed: Element 1 is not >= 0."
   )
-})
-
-# doseFunction ----
-
-test_that("doseFunction returns correct dose function", {
-  model <- h_get_logistic_log_normal()
-  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
-  dose_args <- c("prob", "model", "samples")
-
-  dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
-  dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
-  dose_fun_env <- environment(dose_fun)
-
-  expect_function(dose_fun, args = "prob", nargs = 1, null.ok = FALSE)
-  expect_equal(dose_fun_dose_args, dose_args)
-  expect_subset(
-    setdiff(dose_fun_dose_args, "prob"),
-    ls(envir = dose_fun_env)
-  )
-  expect_identical(dose_fun_env[["model"]], model)
-  expect_identical(dose_fun_env[["samples"]], samples)
 })
 
 # prob ----
@@ -502,9 +613,9 @@ test_that("prob-ProbitLogNormalRel throws the error when dose is not a valid sca
   )
 })
 
-## ModelTox ----
+## LogisticIndepBeta ----
 
-test_that("prob-ModelTox works as expected", {
+test_that("prob-LogisticIndepBeta works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(
     list(
@@ -518,7 +629,7 @@ test_that("prob-ModelTox works as expected", {
   expect_equal(result, expected, tolerance = 0.000001)
 })
 
-test_that("prob-ModelTox works as expected for scalar samples", {
+test_that("prob-LogisticIndepBeta works as expected for scalar samples", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = -1, phi2 = 1))
 
@@ -526,7 +637,7 @@ test_that("prob-ModelTox works as expected for scalar samples", {
   expect_equal(result, c(0.6882090, 0.8465832), tolerance = 1e-05)
 })
 
-test_that("prob-ModelTox throws the error when dose is not a valid scalar", {
+test_that("prob-LogisticIndepBeta throws the error when dose is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = c(-1, 0.5), phi2 = c(1, 0.6)))
 
@@ -540,41 +651,20 @@ test_that("prob-ModelTox throws the error when dose is not a valid scalar", {
   )
 })
 
-## ModelTox_noSamples ----
+## LogisticIndepBeta-noSamples ----
 
-test_that("prob-ModelTox_noSamples works as expected", {
+test_that("prob-LogisticIndepBeta-noSamples works as expected", {
   dlt_model <- h_get_logistic_indep_beta()
 
   result <- prob(dose = c(500, 1000), model = dlt_model)
   expect_equal(result, expected = c(0.6708009, 0.7955970), tolerance = 0.000001)
 })
 
-test_that("prob-ModelTox throws the error when dose is not a valid scalar", {
+test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
 
   expect_error(
     prob(dose = -3, model = dlt_model),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
-})
-
-# probFunction ----
-
-test_that("probFunction returns correct prob function", {
-  model <- h_get_logistic_log_normal()
-  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
-  prob_args <- c("dose", "model", "samples")
-
-  prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
-  prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
-  prob_fun_env <- environment(prob_fun)
-
-  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
-  expect_equal(prob_fun_prob_args, prob_args)
-  expect_subset(
-    setdiff(prob_fun_prob_args, "dose"),
-    ls(envir = prob_fun_env)
-  )
-  expect_identical(prob_fun_env[["model"]], model)
-  expect_identical(prob_fun_env[["samples"]], samples)
 })

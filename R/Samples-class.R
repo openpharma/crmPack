@@ -49,7 +49,8 @@
                      o$check(all(sapply(object@data,
                                         NROW) == sampleSize(object@options)),
                              "all data elements must have as many rows as the sample size was")
-
+                     o$check(all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
+                             "all data elements must be finite numeric values")
                      o$result()
                  })
 validObject(.Samples())

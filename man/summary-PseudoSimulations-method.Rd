@@ -26,6 +26,7 @@ an object of class \code{\linkS4class{PseudoSimulationsSummary}}
 Summarize the simulations, relative to a given truth
 }
 \examples{
+# nolint start
 
 ##If only DLE responses are considered in the simulations
 ##Specified your simulations when no DLE samples are used
@@ -47,7 +48,7 @@ mySize <-CohortSizeConst(size=3)
 ##The maximum increase of 200\% for doses up to the maximum of the dose specified in the doseGrid
 ##The maximum increase of 200\% for dose above the maximum of the dose specified in the doseGrid
 ##This is to specified a maximum of 3-fold restriction in dose-esclation
-myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
+myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)),
                                  increments=c(2,2))
 ##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
 myStopping <- StoppingMinPatients(nPatients=36)
@@ -62,14 +63,10 @@ design <- TDDesign(model=model,
                    data=data,startingDose=25)
 
 ##Specify the truth of the DLE responses
-myTruth <- function(dose)
-{ model@prob(dose, phi1=-53.66584, phi2=10.50499)
-}
-
-
+myTruth <- probFunction(model, phi1 = -53.66584, phi2 = 10.50499)
 
 ##(Please refer to desgin-method 'simulate TDDesign' examples for details)
-##For illustration purpose only 1 simulation is produced (nsim=1). 
+##For illustration purpose only 1 simulation is produced (nsim=1).
 mySim <- simulate(design,
                   args=NULL,
                   truth=myTruth,
@@ -111,5 +108,7 @@ mySim <- simulate(design,
 ##Then produce a summary of your simulations
 summary(mySim,
         truth=myTruth)
+
+# nolint end
 }
 \keyword{methods}

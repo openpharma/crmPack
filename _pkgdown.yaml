@@ -17,7 +17,7 @@ navbar:
 
 development:
   mode: devel
-  
+
 reference:
   - title: Package
     contents:
@@ -96,6 +96,7 @@ reference:
       - saveSample-McmcOptions
       - doseFunction
       - doseFunction-GeneralModel
+      - doseFunction-ModelTox
       - dose
       - dose-Model
       - dose-LogisticNormal
@@ -104,10 +105,11 @@ reference:
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
       - dose-LogisticLogNormalMixture
-      - dose-ModelTox
-      - dose-ModelTox_noSamples
+      - dose-LogisticIndepBeta
+      - dose-LogisticIndepBeta-noSamples
       - probFunction
       - probFunction-GeneralModel
+      - probFunction-ModelTox
       - prob
       - prob-Model
       - prob-LogisticNormal
@@ -116,8 +118,8 @@ reference:
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
       - prob-LogisticLogNormalMixture
-      - prob-ModelTox
-      - prob-ModelTox_noSamples
+      - prob-LogisticIndepBeta
+      - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingMTDCV
   - title: Functions
     contents:
