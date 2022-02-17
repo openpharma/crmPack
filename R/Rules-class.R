@@ -974,8 +974,8 @@ StoppingMTDCV <- function(target = 0.3,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`StoppingLowestDoseHSRBeta`] is a class for stopping based on a hard safety
-#' rule using the Beta posterior distribution with Beta(a,b) prior and a
+#' [`StoppingLowestDoseHSRBeta`] is a class for stopping based on a Hard Safety
+#' Rule using the Beta posterior distribution with Beta(a,b) prior and a
 #' Bin-Beta model based on the observed data at the lowest dose level.
 #' The rule is triggered when the first dose is considered to be toxic
 #' (i.e. above threshold probability) based on the observed data at the
@@ -983,14 +983,15 @@ StoppingMTDCV <- function(target = 0.3,
 #' The default prior is Beta(1,1).
 #' In case that placebo is used, the rule is evaluated at the second dose of the
 #' dose grid, i.e. at the lowest non-placebo dose.
+#' Note: this stopping rule is independent from the underlying model.
 #'
-#' @slot target (`number`)\cr the target toxicity
+#' @slot target (`number`)\cr the target toxicity.
 #' @slot prob (`number`)\cr the threshold probability for the lowest
-#'  dose being toxic
+#'  dose being toxic.
 #' @slot a (`number`)\cr shape parameter a>0 of probability
-#'  distribution Beta (a,b)
+#'  distribution Beta (a,b).
 #' @slot b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b)
+#'  distribution Beta (a,b).
 #'
 #' @aliases StoppingLowestDoseHSRBeta
 #' @export
@@ -1018,14 +1019,10 @@ StoppingMTDCV <- function(target = 0.3,
 
 #' @rdname StoppingLowestDoseHSRBeta-class
 #'
-#' @param target (`number`)\cr the target toxicity probability (e.g. `0.3`)
-#'   defining the MTD.
-#' @param prob (`number`)\cr the threshold probability for the lowest
-#'  dose being toxic (e.g. `0.95`).
-#' @param a (`number`)\cr shape parameter a>0 of probability
-#'  distribution Beta (a,b), default is Beta(1,1)
-#' @param b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b), default is Beta(1,1)
+#' @param target (`number`)\cr see slot definition.
+#' @param prob (`number`)\cr see slot definition.
+#' @param a (`number`)\cr see slot definition.
+#' @param b (`number`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R

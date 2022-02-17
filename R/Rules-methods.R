@@ -1536,8 +1536,11 @@ setMethod(
 
 #' @rdname stopTrial
 #'
-#' @description Stopping based based on the lowest dose meeting the hard
-#' safety criteria using Bin-Beta model based DLT probability.
+#' @description Stopping based based on the lowest non placebo dose. The trial is
+#'  stopped when the lowest non placebo dose meets the Hard
+#'  Safety Rule, i.e. it is deemed to be overly toxic. Stopping is based on the
+#'  observed data at the lowest dose level using a Bin-Beta model
+#'  based on DLT probability.
 #'
 #' @aliases stopTrial-StoppingLowestDoseHSRBeta
 #' @example examples/Rules-method-stopTrial-StoppingLowestDoseHSRBeta.R
@@ -1550,28 +1553,22 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
-    # determine if the first doses is toxic
-    # First active dose Tested?
-    if (sum(data@x == data@doseGrid[data@placebo + 1]) > 0) {
-      lowest_dose_tested <- TRUE
-      # summary data at first dose
-      y <- factor(data@y, levels = c("0", "1"))
-      dlt_tab <- table(y, data@x)[, data@placebo + 1]
-      tox_prob_first_dose <-
-        1 - pbeta(
-          stopping@target, dlt_tab[2] + stopping@a,
-          sum(dlt_tab) - dlt_tab[2] + stopping@b
-        )
-    } else {
-      lowest_dose_tested <- FALSE
-      tox_prob_first_dose <- 0
-    }
+    # Actual number of patients at first active dose.
+    n <- sum(data@x == data@doseGrid[data@placebo + 1])
 
-    # so can we stop?
+    # Determine toxicity probability of the first active dose.
+    tox_prob_first_dose <-
+      if (n > 0) {
+        x <- sum(data@y[which(data@x == data@doseGrid[data@placebo + 1])])
+        1 - pbeta(stopping@target, x + stopping@a, n - x + stopping@b)
+      } else {
+        0
+      }
+
     do_stop <- tox_prob_first_dose > stopping@prob
 
     # generate message
-    msg <- if (lowest_dose_tested == FALSE) {
+    msg <- if (n == 0) {
       paste("Lowest active dose not tested, stopping rule not applied.")
     } else {
       paste(
@@ -1589,10 +1586,10 @@ setMethod(
       )
     }
 
-    # return both
     structure(do_stop, message = msg)
   }
 )
+
 # nolint start
 
 ## --------------------------------------------------

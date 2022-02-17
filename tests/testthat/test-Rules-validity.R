@@ -88,10 +88,28 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   expect_equal(
     validate_stopping_lowest_dose_hsr_beta(object),
     c(
-      "target must be probability > 0 and < 1",
-      "prob must be probability > 0 and < 1",
-      "Beta distribution shape parameter a must me a real number > 0",
-      "Beta distribution shape parameter b must me a real number > 0"
+      "target must be a probability",
+      "prob must be a probability",
+      "Beta distribution shape parameter a must be a positive scalar",
+      "Beta distribution shape parameter b must be a positive scalar"
+    )
+  )
+})
+
+test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid object", {
+  object <- StoppingLowestDoseHSRBeta()
+  object@target <- c(0.3, 0.4)
+  object@prob <- c(0.9, 0.95)
+  object@a <- c(1, 2)
+  object@b <- c(1, 2)
+
+  expect_equal(
+    validate_stopping_lowest_dose_hsr_beta(object),
+    c(
+      "target must be a probability",
+      "prob must be a probability",
+      "Beta distribution shape parameter a must be a positive scalar",
+      "Beta distribution shape parameter b must be a positive scalar"
     )
   )
 })
