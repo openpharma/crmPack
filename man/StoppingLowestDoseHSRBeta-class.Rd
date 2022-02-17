@@ -10,23 +10,19 @@
 StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 \arguments{
-\item{target}{(\code{number})\cr the target toxicity probability (e.g. \code{0.3})
-defining the MTD.}
+\item{target}{(\code{number})\cr see slot definition.}
 
-\item{prob}{(\code{number})\cr the threshold probability for the lowest
-dose being toxic (e.g. \code{0.95}).}
+\item{prob}{(\code{number})\cr see slot definition.}
 
-\item{a}{(\code{number})\cr shape parameter a>0 of probability
-distribution Beta (a,b), default is Beta(1,1)}
+\item{a}{(\code{number})\cr see slot definition.}
 
-\item{b}{(\code{number})\cr shape parameter b>0 of probability
-distribution Beta (a,b), default is Beta(1,1)}
+\item{b}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{\link{StoppingLowestDoseHSRBeta}} is a class for stopping based on a hard safety
-rule using the Beta posterior distribution with Beta(a,b) prior and a
+\code{\link{StoppingLowestDoseHSRBeta}} is a class for stopping based on a Hard Safety
+Rule using the Beta posterior distribution with Beta(a,b) prior and a
 Bin-Beta model based on the observed data at the lowest dose level.
 The rule is triggered when the first dose is considered to be toxic
 (i.e. above threshold probability) based on the observed data at the
@@ -34,20 +30,21 @@ lowest dose level and a Beta(a,b) prior distribution.
 The default prior is Beta(1,1).
 In case that placebo is used, the rule is evaluated at the second dose of the
 dose grid, i.e. at the lowest non-placebo dose.
+Note: this stopping rule is independent from the underlying model.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{number})\cr the target toxicity}
+\item{\code{target}}{(\code{number})\cr the target toxicity.}
 
 \item{\code{prob}}{(\code{number})\cr the threshold probability for the lowest
-dose being toxic}
+dose being toxic.}
 
 \item{\code{a}}{(\code{number})\cr shape parameter a>0 of probability
-distribution Beta (a,b)}
+distribution Beta (a,b).}
 
 \item{\code{b}}{(\code{number})\cr shape parameter b>0 of probability
-distribution Beta (a,b)}
+distribution Beta (a,b).}
 }}
 
 \examples{
@@ -55,15 +52,19 @@ distribution Beta (a,b)}
 #   Stopping the study if the first dose is toxic with more than 90\%
 #   probability based on a Beta posterior distribution with Beta(1,1) prior.
 
-my_stopping <- StoppingLowestDoseHSRBeta(target = 0.3,
-                                         prob = 0.9)
+my_stopping <- StoppingLowestDoseHSRBeta(
+  target = 0.3,
+  prob = 0.9
+)
 
 
 #   Stopping the study if the first dose is toxic with more than 90\%
 #   probability based on a Beta posterior distribution with Beta(0.5,0.5) prior.
 
-my_stopping <- StoppingLowestDoseHSRBeta(target = 0.3,
-                                         prob = 0.9,
-                                         a = 0.5,
-                                         b = 0.5)
+my_stopping <- StoppingLowestDoseHSRBeta(
+  target = 0.3,
+  prob = 0.9,
+  a = 0.5,
+  b = 0.5
+)
 }

@@ -10,15 +10,13 @@
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 \arguments{
-\item{target}{(\code{number})\cr the target toxicity}
+\item{target}{(\code{number})\cr see slot definition.}
 
-\item{prob}{(\code{number})\cr the threshold probability for a dose being toxic}
+\item{prob}{(\code{number})\cr see slot definition.}
 
-\item{a}{(\code{number})\cr shape parameter a>0 of probability
-distribution Beta (a,b)}
+\item{a}{(\code{number})\cr see slot definition.}
 
-\item{b}{(\code{number})\cr shape parameter b>0 of probability
-distribution Beta (a,b)}
+\item{b}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -50,6 +48,6 @@ distribution Beta (a,b).}
 \examples{
 
 # Limit the escalation with a hard safety criteria to the doses that are below
-# the first dose that is toxic with a probability of 0.95
+# the first dose that is toxic with a probability of 0.95.
 my_increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
 }
