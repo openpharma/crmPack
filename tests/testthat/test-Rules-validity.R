@@ -52,10 +52,10 @@ test_that("validate_increments_hsr_beta returns expected messages for non-valid 
   expect_equal(
     validate_increments_hsr_beta(object),
     c(
-      "target must be a probability skalar",
-      "prob must be a probability skalar",
-      "Beta distribution shape parameter a must be a positive skalar",
-      "Beta distribution shape parameter b must be a positive skalar"
+      "target must be a probability",
+      "prob must be a probability",
+      "Beta distribution shape parameter a must be a positive scalar",
+      "Beta distribution shape parameter b must be a positive scalar"
     )
   )
 })
@@ -70,10 +70,10 @@ test_that("validate_increments_hsr_beta returns expected messages for non-valid 
   expect_equal(
     validate_increments_hsr_beta(object),
     c(
-      "target must be a probability skalar",
-      "prob must be a probability skalar",
-      "Beta distribution shape parameter a must be a positive skalar",
-      "Beta distribution shape parameter b must be a positive skalar"
+      "target must be a probability",
+      "prob must be a probability",
+      "Beta distribution shape parameter a must be a positive scalar",
+      "Beta distribution shape parameter b must be a positive scalar"
     )
   )
 })
