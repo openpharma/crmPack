@@ -773,6 +773,62 @@ setMethod(
     }
 )
 
+
+# maxDose-IncrementsHSRBeta ----
+
+#' @rdname maxDose
+#'
+#' @description Determine the maximum possible dose for escalation.
+#'
+#' @aliases maxDose-IncrementsHSRBeta
+#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#' @export
+setMethod(
+  "maxDose",
+  signature = signature(
+    increments = "IncrementsHSRBeta",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    # Summary of observed data per dose level.
+    y <- factor(data@y, levels = c("0", "1"))
+    dlt_tab <- table(y, data@x)
+
+    # Ignore placebo if applied.
+    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
+      dlt_tab <- dlt_tab[, -1]
+    }
+
+    # Extract dose names as these get lost if only one dose available.
+    non_plcb_doses <- unique(sort(as.numeric(colnames(dlt_tab))))
+
+    # Toxicity probability per dose level.
+    x <- dlt_tab[2, ]
+    n <- apply(dlt_tab, 2, sum)
+    tox_prob <- 1 - pbeta(
+      increments@target,
+      x + increments@a,
+      n - x + increments@b
+    )
+
+    # Return the min toxic dose level or maximum dose level if no dose is toxic,
+    # while ignoring placebo.
+    dose_tox <- if (sum(tox_prob > increments@prob) > 0) {
+      min(non_plcb_doses[which(tox_prob > increments@prob)])
+    } else {
+      # Add small value to max dose, so that the max dose is always smaller.
+      max(data@doseGrid) + 0.01
+    }
+
+    # Determine the next maximum possible dose.
+    # In case that the first active dose is above probability threshold,
+    # the first active dose is reported as maximum. I.e. in case that placebo is used,
+    # the second dose is reported. Please note that this rule should be used together
+    # with the hard safety stopping rule to avoid inconsistent results.
+    max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
+  }
+)
+
 # nolint start
 
 ## --------------------------------------------------

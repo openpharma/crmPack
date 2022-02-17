@@ -12,7 +12,7 @@
 \presetkeys%
     {todonotes}%
     {inline,backgroundcolor=yellow}{}
-    
+
 \makeatletter
 \if@todonotes@disabled
 \newcommand{\hlfix}[2]{#1}
@@ -44,9 +44,9 @@ knitr::knit_hooks$set(output = function(x, options) {
   {
     ret <- strsplit(x, "\n")[[1]]
     ret <- if (length(ret) > options$abbreviate * 2)
-      paste(paste(head(ret, options$abbreviate), 
+      paste(paste(head(ret, options$abbreviate),
                   collapse="\n"),
-            "\n...\n", 
+            "\n...\n",
             paste(tail(ret, options$abbreviate),
                   collapse="\n"),
             "\n",
@@ -57,7 +57,7 @@ knitr::knit_hooks$set(output = function(x, options) {
   } else if(options$wrap) {
     ## do we need to wrap the output?
     oh(paste(paste(strwrap(strsplit(x, "\n")[[1]]), collapse="\n"),
-             "\n"), 
+             "\n"),
        options)
   } else {
     ## original output hook
@@ -88,19 +88,19 @@ knitr::knit_hooks$set(output = function(x, options) {
   need for more efficient and informative Phase I trials. The wide-spread
   implementation of such designs has been hindered by the need for either
   licensing specialized commercial software or programming the design and
-  simulations from scratch for each project. The \proglang{R}-package \pkg{crmPack} 
+  simulations from scratch for each project. The \proglang{R}-package \pkg{crmPack}
   provides a simple and unified object-oriented framework for model-based dose escalation
-  designs. This enables the standard use of such designs, while being able to 
-  flexibly adapt and extend them. The framework comprises classes and methods 
-  for the data structure including the dose grid, statistical models including  
+  designs. This enables the standard use of such designs, while being able to
+  flexibly adapt and extend them. The framework comprises classes and methods
+  for the data structure including the dose grid, statistical models including
   prior specification, rules for maximum increments, next best dose, and adaptive
   stopping and cohort sizes. In addition to multiple modified classic
   continual reassessment method and escalation with overdose control
-  designs with possibly advanced prior specifications 
-  (e.g., minimal informative and mixture priors), \pkg{crmPack} currently features dual-endpoint 
-  (safety and biomarker) designs and two-part designs. 
-  Optional assignment of a small number of patients in each cohort to 
-  placebo instead of treatment enables the use in trials outside Oncology. 
+  designs with possibly advanced prior specifications
+  (e.g., minimal informative and mixture priors), \pkg{crmPack} currently features dual-endpoint
+  (safety and biomarker) designs and two-part designs.
+  Optional assignment of a small number of patients in each cohort to
+  placebo instead of treatment enables the use in trials outside Oncology.
 %   We introduce \pkg{crmPack} by outlining the design framework and show how easy it is
 % to specify a design, run simulations, and report dose recommendations during the
 % trial.
@@ -146,10 +146,10 @@ knitr::knit_hooks$set(output = function(x, options) {
 \section{Introduction}
 \label{sec:introduction}
 
-Phase I trials that are testing new investigational agents in humans 
-for the first time escalate from low to high doses in a sequential fashion. 
+Phase I trials that are testing new investigational agents in humans
+for the first time escalate from low to high doses in a sequential fashion.
 This dose escalation design is necessary
-in order to reduce the risk of too high and therefore too toxic doses for the probands. 
+in order to reduce the risk of too high and therefore too toxic doses for the probands.
 These can either be healthy volunteers (e.g., in neurology) or patients
 (e.g., in oncology), and we will henceforth use only the latter for ease of
 presentation. While higher doses of agents are usually expected to deliver
@@ -183,7 +183,7 @@ flexibility) or programming the design and simulations from scratch for each
 project (thus losing efficiency). While the models underlying most model-based
 dose escalation procedures can easily be fit in standard software with the
 capability to fit generalized linear models, e.g., \pkg{PROC MIXED} in
-\proglang{SAS} \citep{SAS2003}, \pkg{glm} in \proglang{Stata} \citep{Stata2015} or \proglang{R} \citep{R2016}, 
+\proglang{SAS} \citep{SAS2003}, \pkg{glm} in \proglang{Stata} \citep{Stata2015} or \proglang{R} \citep{R2016},
 there are still only few software solutions available dedicated to dose escalation studies.
 
 The commercial packages \proglang{East} \citep{East2016} and
@@ -197,15 +197,15 @@ can be tailored towards the individual needs of the study. Similarly static
 implementations of methods for dose escalation are available in the
 \proglang{Stata} module \pkg{crm} \citep{StataCRM} which implements the CRM and
 the  \pkg{dfcrm} package \citep{dfcrm2013} in \proglang{R} which additionally implements the
-time-to-event CRM (TITE-CRM) \citep{cheung2000}. Several \proglang{R}-packages 
+time-to-event CRM (TITE-CRM) \citep{cheung2000}. Several \proglang{R}-packages
 with extensions are available. The \pkg{bcrm} package \citep{sweeting2013} implements a variety of one and two parameter models, and facilitates different
 ways to specify prior distributions, escalation and stopping rules. The \pkg{ordcrm} package
-\citep{ordcrm} implements ordinal proportional odds and continuation ratio models for CRMs. 
+\citep{ordcrm} implements ordinal proportional odds and continuation ratio models for CRMs.
 The \pkg{dfpk} package \citep{dfpk} uses pharmacokinetic data in the dose escalation.
 
 In this paper we introduce the \proglang{R}-package \pkg{crmPack} \citep{crmPack} for
 dose escalation studies, which is publicly available on CRAN. While the package's name
-pays tribute to the original CRM as the first model-based dose escalation design, the 
+pays tribute to the original CRM as the first model-based dose escalation design, the
 package's functionality differs from the above existing implementations in
 three fundamental ways. Firstly, it is written using \proglang{S4} classes and methods
 \citep{Chambers2008}, which allows customized methodology to be added to the
@@ -213,7 +213,7 @@ package while still being able to use the existing backbone functionalities.
 Secondly, methods for studies with a placebo group (e.g., for healthy volunteer
 studies) are readily implemented. Thirdly, dual endpoint dose escalation methods
 that incorporate both safety and efficacy and allow determination of an optimal
-biological dose are already available. 
+biological dose are already available.
 
 \section{Framework}\label{sec:framework}
 
@@ -222,11 +222,11 @@ for early phase trials from \cite{Thall2010}. Figure~\ref{fig:schematic} summari
 the framework in a schematic.
 
 \begin{figure}
-\centering 
-\includegraphics[width=.8\linewidth]{schematic.pdf} 
+\centering
+\includegraphics[width=.8\linewidth]{schematic.pdf}
 \caption{Schematic of the framework. Separate design features are implemented as classes
-(shown as gray boxes) and bundled together in the overarching \code{Design} object. 
-They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the \code{Data} and \code{Model} objects can be processed by the \code{mcmc} method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated \code{Data} closes the dose escalation loop. On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling \code{crmPackHelp()}.} 
+(shown as gray boxes) and bundled together in the overarching \code{Design} object.
+They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the \code{Data} and \code{Model} objects can be processed by the \code{mcmc} method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated \code{Data} closes the dose escalation loop. On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling \code{crmPackHelp()}.}
 \label{fig:schematic}
 \end{figure}
 
@@ -294,7 +294,7 @@ $0$, meaning to stop the trial because all doses are too toxic):
 This mapping is commonly specified via the combination of two elements:
 The first element is a function $\tau$ for the maximum increments between dose
 levels, which can calculate from the current data $\mathcal{D}_{N}$ (including the
-current dose $x_{N}$) the maximum possible next dose $t_{N+1}=\tau(\mathcal{D}_{N})$ 
+current dose $x_{N}$) the maximum possible next dose $t_{N+1}=\tau(\mathcal{D}_{N})$
 for the next cohort. The second element is a rule $\nu$ indirectly
 acting on the current data through the posterior distribution $p(\theta \given
 \mathcal{D}_{N})$ and the maximum possible dose $t_{N+1}$ to finally give the
@@ -320,8 +320,8 @@ using the \code{simulate} methods for the design classes, and is recommended to
 be performed for a multitude of different scenarios in order to stress-test the
 design and to convince oneself of its properties.
 %
-In particular, the operating characteristics reveal whether the MTD can be 
-estimated well by the designs. 
+In particular, the operating characteristics reveal whether the MTD can be
+estimated well by the designs.
 %
 In addition, the \code{examine} method evaluates hypothetical trial outcomes and lists the
 resulting trial decisions (dose for the next cohort and trial end).
@@ -352,30 +352,30 @@ library("crmPack")
 \label{subsec:crmtrial}
 
 Suppose that 12 dose levels ranging from 25 to 300 mg in 25 mg increments of a
-novel agent are available in addition to placebo, defining our dose grid 
-$\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}$, with $x_{1} = 0.001$ mg representing 
-placebo and  $x_{2} = 25$ being our starting dose. Note that here we used a very small dose instead of zero 
+novel agent are available in addition to placebo, defining our dose grid
+$\mathcal{X} = \{0.001,25, 50,\dotsc, 300\}$, with $x_{1} = 0.001$ mg representing
+placebo and  $x_{2} = 25$ being our starting dose. Note that here we used a very small dose instead of zero
 for $x_{1}$, since we consider here the regression model~\eqref{eq:LogisticLogNormal}
-with a log transformation of the dose $x$ (with $x^{*} = 100$ chosen as reference dose). 
+with a log transformation of the dose $x$ (with $x^{*} = 100$ chosen as reference dose).
 
 \paragraph{Minimally informative prior}
-Here we assume that limited prior information is available on the dose-toxicity 
+Here we assume that limited prior information is available on the dose-toxicity
 relationship, and hence would like to use a minimally informative prior
 \citep{Neuenschwander2008} which can be easily obtained with the function
 \code{MinimalInformative}. Since stochastic optimization is used
-internally, setting of a seed is required for reproducibility. 
+internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
 
 <<min-inf, warning=FALSE, message=FALSE, results="hide">>=
 coarseGrid <- c(25, 50, 100, 200, 300)
-model <- MinimalInformative(dosegrid = coarseGrid, refDose = 100, 
-                            logNormal = TRUE, threshmin = 0.1, 
-                            threshmax = 0.2, seed = 432, 
+model <- MinimalInformative(dosegrid = coarseGrid, refDose = 100,
+                            logNormal = TRUE, threshmin = 0.1,
+                            threshmax = 0.2, seed = 432,
                             control = list(max.time = 30))$model
 @
 
-The resulting \code{model} (which is an object of class \code{LogisticLogNormal}) 
-has prior parameters 
+The resulting \code{model} (which is an object of class \code{LogisticLogNormal})
+has prior parameters
 $\mu = (\Sexpr{round(model@mean[1], 2)}, \Sexpr{round(model@mean[2], 2)})$ and
 $\Sigma=
 \left(\begin{smallmatrix}
@@ -385,7 +385,7 @@ $\Sigma=
 $
 and will approximately have 5\% probability each for the DLT
 rate to exceed 10\% (\code{threshmin} argument) at the 25~mg dose and to be below 20\%
-(\code{threshmax}) at the 300~mg dose. 
+(\code{threshmax}) at the 300~mg dose.
 
 \paragraph{Data object definition and visualization}
 In this simple case of a univariate dose $x$ resulting in binary DLT
@@ -408,9 +408,9 @@ the repetition to match the outcome variables $y_{j,k}$) where \code{doseGrid}
 captures the set ${\cal X}$ of all possible doses, \code{y} takes the binary
 DLTs (here $y_{3, 3} = 1$ denotes the only DLT having been observed in the 3rd
 patient in the 3rd cohort), while \code{cohort} groups the patients together in
-cohorts (here $N=3$). The option \code{placebo} is used to specify that this is a 
-placebo controlled study, with placebo patients included in each cohort. The lowest dose $x_{1}$ is then interpreted internally as the placebo dose. Patient IDs can be given 
-optionally in the \code{ID} argument. The data can then be visualized by simply applying 
+cohorts (here $N=3$). The option \code{placebo} is used to specify that this is a
+placebo controlled study, with placebo patients included in each cohort. The lowest dose $x_{1}$ is then interpreted internally as the placebo dose. Patient IDs can be given
+optionally in the \code{ID} argument. The data can then be visualized by simply applying
 the \code{plot} function to the object, which also allows to produce a blinded plot (hiding patient
 IDs and placebo/treatment assignment) with the option \code{blind}, see Figure~\ref{fig:plot-data}:
 
@@ -433,9 +433,9 @@ set.seed(94)
 samples <- mcmc(data, model, options)
 @
 
-The posterior mean curve and 95\% equi-tailed credible interval curves for the 
+The posterior mean curve and 95\% equi-tailed credible interval curves for the
 DLT rates can be obtained by supplying
-the samples, model and data to the generic \code{plot} function. Similarly we can 
+the samples, model and data to the generic \code{plot} function. Similarly we can
 also produce a similar plot without any data, which is then giving the prior, see Figure~\ref{fig:plot-model-fit}:
 
 <<plot-model-fit,fig.show='hold',fig.width=5,fig.height=5,out.width='.35\\linewidth',fig.align='center', fig.env='figure', fig.cap='Posterior and prior regression model fits'>>=
@@ -448,24 +448,24 @@ plot(priorsamples, model, emptydata) + ggtitle("Prior")
 As illustrated here, the plots can be customized by using the \pkg{ggplot2} \citep{ggplot2}
 functionality. We can see that while the posterior mean estimate (left panel, continuous line)
 is only slightly steeper than the prior mean estimate curve (right panel, continuous line),
-the posterior uncertainty is reduced due to the data (smaller credible intervals, dashed lines). 
+the posterior uncertainty is reduced due to the data (smaller credible intervals, dashed lines).
 
 \paragraph{Decision making for the next dose}
-To determine which dose to administer to the next (cohort of) patients we begin by 
+To determine which dose to administer to the next (cohort of) patients we begin by
 specifying the maximum increments function $\tau$. In the example below a maximum increase of 100\%
-for doses below 100 mg, 50\% for doses in the range from 100 mg to 200 mg, and 33\% 
+for doses below 100 mg, 50\% for doses in the range from 100 mg to 200 mg, and 33\%
 for doses equal or above 200 mg is specified using the class \code{IncrementsRelative}:
 <<rel-incrs>>=
-myIncrements <- IncrementsRelative(intervals = c(0, 100, 200), 
+myIncrements <- IncrementsRelative(intervals = c(0, 100, 200),
                                    increments = c(1, 0.5, 0.33))
 @
-This specific rule $\tau$ can then be evaluated on the current dataset ${\cal D}_{N}$ by 
+This specific rule $\tau$ can then be evaluated on the current dataset ${\cal D}_{N}$ by
 the \code{maxDose} function to obtain the maximum next dose $t_{N+1} = \tau({\cal D}_{N})$:
 <<rel-incrs-eval>>=
 (nextMaxDose <- maxDose(myIncrements, data))
 @
 
-We then define the function $\nu$ for selecting a dose for the next cohort. In this case we would like to select the dose which maximizes the probability of the DLT rate being in the target toxicity range from 20\% to 35\%, but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}, using the \code{NextBestNCRM} class: 
+We then define the function $\nu$ for selecting a dose for the next cohort. In this case we would like to select the dose which maximizes the probability of the DLT rate being in the target toxicity range from 20\% to 35\%, but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}, using the \code{NextBestNCRM} class:
 <<nextBest-ncrm-def>>=
 myNextBest <- NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1),
                            maxOverdoseProb = 0.25)
@@ -503,13 +503,13 @@ In this case we will use a fixed cohort size of 3 patients on active and 1 patie
 mySize <- CohortSizeConst(3)
 mySizePL <- CohortSizeConst(1)
 
-design <- Design(model = model, nextBest = myNextBest, 
-                 stopping = myStopping, increments = myIncrements, 
-                 cohortSize = mySize, PLcohortSize = mySizePL, 
+design <- Design(model = model, nextBest = myNextBest,
+                 stopping = myStopping, increments = myIncrements,
+                 cohortSize = mySize, PLcohortSize = mySizePL,
                  data = emptydata, startingDose = 25)
 @
 We can then start by looking at the single trial operating characteristics of the dose escalation design with the function \code{examine}, which generates a data frame showing the beginning of several hypothetical trial courses under the design. Assuming no DLTs have been seen until a certain dose, then the consequences of different number of DLTs being observed at this dose are shown. For example, if we observe 3 DLTs at the starting dose of 25~mg, we would
-need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250~mg cohort, the maximum considered dose of 300~mg dose can be reached in the next cohort if also no DLTs are observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150~mg, respectively.  
+need to stop the trial, while we would enroll another cohort at the same dose level in case of 2 DLTs. In the last rows of the output we see that if no DLTs were observed before the 250~mg cohort, the maximum considered dose of 300~mg dose can be reached in the next cohort if also no DLTs are observed at 250~mg. If 1, 2 or 3 DLTs are observed, the next dose is recommended as 225, 175 and 150~mg, respectively.
 <<design-examine, abbreviate=5>>=
 set.seed(23)
 examine(design, mcmcOptions=options)
@@ -523,32 +523,32 @@ myTruth <- probFunction(model, alpha0 = 4.5, alpha1 = 8)
 Note that any possible R-function returning a vector of probabilities upon input of the dose vector can be used. In particular, it is trivially possible to directly specify the probability of DLT for each dose in order to examine operating characteristics not based on any statistical model. For example, assume 5 doses 1--5 with probabilities of DLT of 0.01, 0.02, 0.04, 0.06, 0.09, then the following code could be used:
 <<true-def-alternative>>=
 doseProbMatrix <- cbind(c(1, 2, 3, 4, 5), c(0.01, 0.02, 0.04, 0.06, 0.09))
-myTruthMatrix <- 
+myTruthMatrix <-
   function(dose){doseProbMatrix[match(dose, doseProbMatrix[, 1]), 2]}
-@  
+@
 Now we can proceed to the simulations using the function \code{simulate}:
 <<run-sims>>=
-mySimsTime <- 
-  system.time(mySims <- simulate(design, truth = myTruth, nsim = 100, 
-                                 seed = 819, mcmcOptions = options, 
+mySimsTime <-
+  system.time(mySims <- simulate(design, truth = myTruth, nsim = 100,
+                                 seed = 819, mcmcOptions = options,
                                  parallel = FALSE))[3]
-@ 
-The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we 
+@
+The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we
 needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials
 on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class \code{Simulations} containing multiple slots, with e.g., the \code{data} slot containing the list of simulated trials. The slots \code{doses} and \code{stopReasons} contain information about the final MTD and the stopping reason for each trial. We can  e.g., investigate the number of patients and the MTD at the end of the third simulated trial:
 <<third-trial, fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
 mySims@data[[3]]@nObs
-mySims@doses[3]      
+mySims@doses[3]
 @
 Furthermore, we can plot the \code{Simulations} object by calling the \code{plot} method on it, see Figure~\ref{fig:sim-plot}. You can select the plots by changing the \code{type} argument of \code{plot}, which by default is \code{type = c("trajectory", "dosesTried")}.
 <<sim-plot, echo=FALSE, fig.width=4,fig.height=4,out.width='.5\\linewidth',fig.align='center',fig.env='figure', fig.cap='Simulation plot. On the top panel a summary of the trial trajectories, and on the bottom, the proportions of doses tried, averaged over the simulated trials, are shown.'>>=
 plot(mySims)
 @
 
-Second, we can summarize the simulation results, and obtain a textual description of the 
-results: 
+Second, we can summarize the simulation results, and obtain a textual description of the
+results:
 <<sim-summary, abbreviate=3>>=
 simSum <- summary(mySims, truth = myTruth)
 simSum
@@ -565,17 +565,17 @@ In this section, dose escalation designs incorporating both safety (as binary DL
 the addition of the efficacy data \code{w} to the previous dataset:
 <<data-dual, warning=FALSE>>=
 data2 <- DataDual(x = data@x, y = data@y, placebo = TRUE,
-                  w = c(0.02, 0.42, 0.59, 0.45, 0.03, 0.7, 0.6, 0.52, 
-                        0.01, 0.71, 0.54, 0.45), cohort = data@cohort, 
+                  w = c(0.02, 0.42, 0.59, 0.45, 0.03, 0.7, 0.6, 0.52,
+                        0.01, 0.71, 0.54, 0.45), cohort = data@cohort,
                   doseGrid = data@doseGrid, ID = data@ID)
 @
-The endpoints can be modelled jointly or separately. For joint modelling derived from \cite{bekele2005}, please see the package vignette and the \code{DualEndpoint} class. In the following section we will describe separate modelling, as proposed in \cite{yeung2015}. We will show how the dual endpoint design can help to estimate an optimal dose level which represents the best trade-off between safety and efficacy. 
+The endpoints can be modelled jointly or separately. For joint modelling derived from \cite{bekele2005}, please see the package vignette and the \code{DualEndpoint} class. In the following section we will describe separate modelling, as proposed in \cite{yeung2015}. We will show how the dual endpoint design can help to estimate an optimal dose level which represents the best trade-off between safety and efficacy.
 
 \paragraph{Methodology} Briefly introducing the methodology in current notation, assume that the dose grid $\cal{X}$ contains $k$ dose levels, and the logistic regression model~\eqref{eq:LogisticLogNormal} with $x^{*}=1$ is used for the safety endpoint $y$. For the continuous efficacy endpoint $w$, a linear log-log model can be used, conditional on $y=0$ (no DLT):
 \begin{equation}\label{eq:loglog}
-\E(w(x)) = \gamma + \delta \log\{\log(x + c)\} 
+\E(w(x)) = \gamma + \delta \log\{\log(x + c)\}
 \end{equation}
-such that $w(x) \sim N(\E(w(x)), \sigma^2)$ with $c \geq 0$ as a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow for the placebo dose $x=\Sexpr{PL}$ which is close to 0. 
+such that $w(x) \sim N(\E(w(x)), \sigma^2)$ with $c \geq 0$ as a constant. Usually the default value $c=0$ can be used, but in our case we choose $c=2$ to allow for the placebo dose $x=\Sexpr{PL}$ which is close to 0.
 
 For both the safety and efficacy models, the prior will be expressed in form of imaginary pseudo data \citep[see][for details]{yeung2015}. Prior and posterior modal estimates of the model parameters can then be obtained as the maximum likelihood estimates from the data set combining pseudo data with observed data \citep{w06}. The variance $\sigma^{2}$ can be fixed or assigned an inverse gamma prior distribution.
 
@@ -583,8 +583,8 @@ For both the safety and efficacy models, the prior will be expressed in form of 
 The \code{ModelPseudo} class contains all model classes where the priors are specified in terms of pseudo data, with subclasses for safety (\code{ModelTox}) and efficacy (\code{ModelEff}).
 
 Coming back to our example study, the pseudo data for the safety prior assumes that 3 subjects each are treated at the lowest (25~mg) and the highest (300~mg) dose level, with 1.05 and 1.8
-DLTs being observed at these two dose levels, respectively. This corresponds to prior 
-means of 0.35 and 0.6 for the DLT probabilities. We implement 
+DLTs being observed at these two dose levels, respectively. This corresponds to prior
+means of 0.35 and 0.6 for the DLT probabilities. We implement
 model~\eqref{eq:LogisticLogNormal} with this pseudo data prior as follows:
 <<DLTmodel>>=
 DLTmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
@@ -594,7 +594,7 @@ DLTmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
 The efficacy model can similarly be specified as
 <<Effmodel>>=
 emptydata2 <- DataDual(doseGrid = emptydata@doseGrid, placebo = TRUE)
-Effmodel <- Effloglog(Eff = c(1.223, 2.513), Effdose = c(25, 300), 
+Effmodel <- Effloglog(Eff = c(1.223, 2.513), Effdose = c(25, 300),
                       nu = c(a = 1, b = 0.025), data = emptydata2, c = 2)
 @
 Here the argument \code{Eff} takes the vector of pseudo efficacy responses at the two fixed dose levels, assuming one subject is treated at each of these dose levels. The argument \code{nu} specifies a Gamma prior distribution with shape 1 and rate 0.025 for the precision parameter of the pseudo efficacy responses.
@@ -604,29 +604,29 @@ Here the argument \code{Eff} takes the vector of pseudo efficacy responses at th
 \label{eq:gainfunction}
 G(x)=\Prob(Y=0 \given x, \theta)\E(w(x))
 \end{equation}
-Note that the gain function depends on the safety parameter vector $\theta$ and 
-the efficacy parameters $\gamma$ and $\delta$, which will be estimated by their 
+Note that the gain function depends on the safety parameter vector $\theta$ and
+the efficacy parameters $\gamma$ and $\delta$, which will be estimated by their
 posterior modal estimates using the \code{update} method:
 <<update>>=
 newDLTmodel <- update(object = DLTmodel, data = data2)
 newEffmodel <- update(object = Effmodel, data = data2)
 @
-With \pkg{crmPack} we can implement the next best dose recommendation 
+With \pkg{crmPack} we can implement the next best dose recommendation
 based on maximizing the gain function as follows:
 <<NextBestGain>>=
-GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, 
+GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget = 0.35,
                                 DLEEndOfTrialtarget = 0.3)
 @
-where \code{DLEDuringTrialtarget} specifies the maximum estimated DLT rate tolerated 
-during the study and \code{DLEEndOfTrialtarget} the maximum estimated DLT rate tolerated 
-at the end of the study. 
-As in Section~\ref{subsec:crmtrial} this rule $\nu$ can be evaluated using 
-\code{nextBest} to obtain $x_{N+1}$, after evaluating the maximum increments rule 
+where \code{DLEDuringTrialtarget} specifies the maximum estimated DLT rate tolerated
+during the study and \code{DLEEndOfTrialtarget} the maximum estimated DLT rate tolerated
+at the end of the study.
+As in Section~\ref{subsec:crmtrial} this rule $\nu$ can be evaluated using
+\code{nextBest} to obtain $x_{N+1}$, after evaluating the maximum increments rule
 $\tau$ using \code{maxDose} to obtain $t_{N+1}$:
 <<nextBest>>=
 (nextMaxDose <- maxDose(myIncrements, data2))
-doseRecGain <- nextBest(GainNextBest, doselimit = nextMaxDose, 
-                        model = newDLTmodel, Effmodel = newEffmodel, 
+doseRecGain <- nextBest(GainNextBest, doselimit = nextMaxDose,
+                        model = newDLTmodel, Effmodel = newEffmodel,
                         data = data2)
 (nextDoseVal <- doseRecGain$nextdose)
 @
@@ -642,34 +642,34 @@ print(doseRecGain$plot)
 \paragraph{Stopping rules} In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum gain:
 <<newdualstopping-rule>>=
 myStopping4 <- StoppingGstarCIRatio(targetRatio = 5,
-                                    targetEndOfTrial = 
+                                    targetEndOfTrial =
                                       GainNextBest@DLEEndOfTrialtarget)
 myStoppingDual <- myStopping1 | myStopping4
 @
-This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less 
+This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
 than~\Sexpr{myStopping4@targetRatio}.
 
-\paragraph{Simulations} To simulate the operating characteristics, first a design has to be built: 
+\paragraph{Simulations} To simulate the operating characteristics, first a design has to be built:
 <<design>>=
 design2 <- DualResponsesDesign(nextBest = GainNextBest, model = DLTmodel,
                                Effmodel = Effmodel, data = emptydata2,
-                               stopping = myStoppingDual, 
-                               increments = myIncrements, 
+                               stopping = myStoppingDual,
+                               increments = myIncrements,
                                cohortSize = mySize, startingDose = 25)
 @
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:
 <<scenario>>=
-myTruthDLT<- function(dose){DLTmodel@prob(dose, phi1 = -53, phi2 = 10)}
-myTruthEff<- function(dose){Effmodel@ExpEff(dose, theta1 = -4.8, 
+myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
+myTruthEff<- function(dose){Effmodel@ExpEff(dose, theta1 = -4.8,
                                             theta2 = 3.7)}
 myTruthGain <- function(dose){myTruthEff(dose) * (1 - myTruthDLT(dose))}
 @
-Please note that the parameter names \code{phi1}, \code{phi2}, \code{theta1} and 
+Please note that the parameter names \code{phi1}, \code{phi2}, \code{theta1} and
 \code{theta2} correspond to $\alpha_0, \alpha_1, \gamma$ and $\delta$, respectively.
 Simulations are again produced by the \code{simulate} function:
 <<simulate>>=
 Sim1 <- simulate(object = design2, args = NULL, trueDLE = myTruthDLT,
-                 trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20, 
+                 trueEff = myTruthEff, trueNu = 1 / 0.025, nsim = 20,
                  seed = 819, parallel = FALSE)
 @
 Note that the fixed precision \code{nu} $1/\sigma^{2}$ is specified instead of the
@@ -682,11 +682,11 @@ The results of the simulation can then be plotted and summarized as shown before
 
 One of the big advantages of \pkg{crmPack} over existing \proglang{R} implementations is its flexible
 framework based on the \proglang{S4} classes and methods system \citep{Chambers2008} and \proglang{JAGS} \citep{JAGS}
-for Bayesian computations. Here we will therefore illustrate how users can extend 
+for Bayesian computations. Here we will therefore illustrate how users can extend
 the existing functionality easily to the specific needs of the study.
 
-\paragraph{Objective} 
-The example will implement a version of the one-parameter CRM 
+\paragraph{Objective}
+The example will implement a version of the one-parameter CRM
 \citep{oquigley1990}, which is currently not (yet) included in the package.
 It is based on a one-parameter power model to describe the relationship between the binary DLT responses $Y$ and their corresponding dose levels $x$:
 \begin{equation}
@@ -695,36 +695,36 @@ It is based on a one-parameter power model to describe the relationship between 
 \end{equation}
 Here $0 < f(x) < 1$ is monotonically increasing in $x$ and is specified by the
 investigator upfront. The sequence $f(x_{1}), \dotsc, f(x_{k})$ along the
-dose grid is often called ``skeleton'' of the CRM. An exponential distribution with parameter $\lambda$ is imposed as the prior distribution for the unknown parameter $\theta$. 
-The next dose should then be chosen such that the distance of the posterior mean estimated DLT probability to a predefined target toxicity level is minimized.  
+dose grid is often called ``skeleton'' of the CRM. An exponential distribution with parameter $\lambda$ is imposed as the prior distribution for the unknown parameter $\theta$.
+The next dose should then be chosen such that the distance of the posterior mean estimated DLT probability to a predefined target toxicity level is minimized.
 
-\paragraph{Creating a new model} 
+\paragraph{Creating a new model}
 To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack} we first need to define an appropriate \proglang{S4} class inheriting from the general model class \code{Model}:
 <<classOnePara>>=
 .OneParExp <-
     setClass(Class = "OneParExp", contains = "Model",
-             representation(skeletonFun = "function", 
-                            skeletonProbs = "numeric", 
+             representation(skeletonFun = "function",
+                            skeletonProbs = "numeric",
                             lambda = "numeric"))
 @
 Here we specify that the new class is called \code{OneParExp} and contains
 two additional slots containing the function $f(x)$, the resulting skeleton
-prior probabilities and the prior parameter $\lambda$. 
+prior probabilities and the prior parameter $\lambda$.
 
 Second we have to create a convenient initialization function, which specifies
 the likelihood and prior distributions in the underlying \code{Model} in \proglang{JAGS}.
 We choose to let the user supply just the skeleton probabilities along with the
-intended dose grid to use. Then internally we will create a function $f(x)$ 
+intended dose grid to use. Then internally we will create a function $f(x)$
 interpolating between the grid points (\code{skeletonFun} with inverse \code{invSkeletonFun}), in order to obtain a general \proglang{R} function
-in slot \code{prob} for the DLT probability $\pi(x, \theta)$ which is later needed by other methods. Also the inverse function 
+in slot \code{prob} for the DLT probability $\pi(x, \theta)$ which is later needed by other methods. Also the inverse function
 \begin{equation}
 \label{eq:oneparameterInverse}
 \pi^{-1}(p, \theta) = f^{-1}(p^{1/\theta})
 \end{equation}
-mapping a probability $p$ to a dose $x$ is required by some methods and 
-should be defined (slot \code{dose}). The likelihood with the power model 
+mapping a probability $p$ to a dose $x$ is required by some methods and
+should be defined (slot \code{dose}). The likelihood with the power model
 is specified in \code{datamodel}
-and uses the \code{Data} slots which are specified in \code{datanames}. The prior is 
+and uses the \code{Data} slots which are specified in \code{datanames}. The prior is
 defined in \code{priormodel}. Model parameters are passed to \proglang{JAGS} via \code{modelspecs}. The \code{init} slot contains a function giving the starting values for the MCMC sampler,
 and \code{sample} defines which parameter samples will be returned:
 <<classOnePara-init>>=
@@ -732,9 +732,9 @@ OneParExp <- function(skeletonProbs, doseGrid, lambda)
 {
   skeletonFun <- approxfun(x = doseGrid, y = skeletonProbs, rule = 2)
   invSkeletonFun <- approxfun(x = skeletonProbs, y = doseGrid, rule = 1)
-  
+
   .OneParExp(
-    skeletonFun = skeletonFun, skeletonProbs = skeletonProbs, 
+    skeletonFun = skeletonFun, skeletonProbs = skeletonProbs,
     lambda = lambda,
     datamodel = function(){
       for (i in 1:nObs)
@@ -755,29 +755,29 @@ Now we can already use the model, for example in the following we specify the sk
 posterior fit can be plotted as usual, see Figure~\ref{fig:oneParaExp-model-example}.
 <<oneParaExp-model-example, fig.width=5,fig.height=4,out.width='.5\\linewidth',fig.align='center', fig.env='figure', fig.cap='Model fit of the one parameter power model'>>=
 (skeletonProbs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
-newModel <- OneParExp(skeletonProbs = skeletonProbs, 
+newModel <- OneParExp(skeletonProbs = skeletonProbs,
                       doseGrid = data@doseGrid, lambda = 1)
 newSamples <- mcmc(data, newModel, options)
 plot(newSamples, newModel, data)
 @
 
-\paragraph{Creating a new dose recommendation rule} 
+\paragraph{Creating a new dose recommendation rule}
 In a second step we would like to create a new dose recommendation rule, which
 proposes the dose with estimated DLT probability closest to the target. Again
 we start with the class, now inheriting from \code{NextBest}:
 <<newNextBest-def>>=
-.NextBestMinDist <- setClass(Class = "NextBestMinDist", 
+.NextBestMinDist <- setClass(Class = "NextBestMinDist",
                              contains = "NextBest",
                              representation(target = "numeric"))
 NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
 @
-Note that here we keep to the convention of separate class definition and 
-initialization function, although there is no technical need in this case. 
+Note that here we keep to the convention of separate class definition and
+initialization function, although there is no technical need in this case.
 In order to make it useable we need to define the \code{nextBest} method for this
-new rule. Note that we do only specialize the method for the first argument, 
+new rule. Note that we do only specialize the method for the first argument,
 such that this rule could also be used with other models.
 <<newNextBest-method, results='hide'>>=
-setMethod("nextBest", 
+setMethod("nextBest",
           signature = signature(nextBest = "NextBestMinDist",
                                 doselimit = "numeric", samples = "Samples",
                                 model = "Model", data = "Data"),
@@ -796,23 +796,23 @@ setMethod("nextBest",
             })
 @
 In the method definition, we can use the \code{fit} function in order to obtain
-the estimated DLT rates. We need to return a \code{list} from this method, 
-since this is required by the generic function definition. The advantage is 
-that we could also include a plot or other supporting information in the return 
-value. Immediately we can now use this rule in order to obtain the next dose 
+the estimated DLT rates. We need to return a \code{list} from this method,
+since this is required by the generic function definition. The advantage is
+that we could also include a plot or other supporting information in the return
+value. Immediately we can now use this rule in order to obtain the next dose
 recommendation, e.g., after specifying a target dose of 30\%:
 <<newNextBest-try>>=
 newMyNextBest <- NextBestMinDist(target = 0.3)
-(newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose, 
+(newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose,
                             newSamples, newModel, data)$value)
 @
-So using this CRM, we could escalate to \Sexpr{newNextDoseVal}~mg, instead 
+So using this CRM, we could escalate to \Sexpr{newNextDoseVal}~mg, instead
 of just 100~mg above.
 
 \paragraph{Using the new functionality} These were the only necessary additions
-of code that we needed to implement the one-parameter CRM with a greedy next 
+of code that we needed to implement the one-parameter CRM with a greedy next
 best dose rule - from now on we can use the new classes in the same way as
-classes already contained in \pkg{crmPack}! For example, we can create a 
+classes already contained in \pkg{crmPack}! For example, we can create a
 corresponding new \code{Design} object, examine its hypothetical trial course
 and run simulations. In particular, the placebo convention automatically carries over.
 
@@ -831,7 +831,7 @@ need to be considered.
 \item Templates for new designs can be found by looking at the existing
 code in the package - only minimal \proglang{S4} and \proglang{JAGS} knowledge is required.
 \end{enumerate}
-Therefore, \pkg{crmPack} allows the user to easily extend the package by keeping modifications local and limited to what needs to be changed, which in our experience has been a key success factor for the wider use of model-based dose escalation designs. 
+Therefore, \pkg{crmPack} allows the user to easily extend the package by keeping modifications local and limited to what needs to be changed, which in our experience has been a key success factor for the wider use of model-based dose escalation designs.
 The package does, however, already include a wide range of model-based and algorithmic dose escalation procedures, which are described in the package's documentation available through
 \code{crmPackHelp()} and provide end-users easy access to these approaches without the need for further coding.
 Another unique feature of the package is the inclusion of approaches that allow
@@ -843,14 +843,14 @@ graphical displays are also available.
 
 The package is actively developed further and new methods will be added.
 Future extensions of \pkg{crmPack} will include model-based combination dose
-escalation designs, see for example \cite{Sweeting2012} and \cite{Riviere2014} 
-for recent reviews. Furthermore, data-augmentation CRM designs \citep[see][]{Liu2013} 
+escalation designs, see for example \cite{Sweeting2012} and \cite{Riviere2014}
+for recent reviews. Furthermore, data-augmentation CRM designs \citep[see][]{Liu2013}
 that allow for a decoupling of inter-cohort waiting times and DLT time windows, hence
 speeding up dose escalation trials, will be included.
 
 \section*{Acknowledgments}
 
-We would like to thank Francesca Michielin and Peter Dutton for their valuable comments 
+We would like to thank Francesca Michielin and Peter Dutton for their valuable comments
 on an earlier draft of the manuscript. This report is funded by the Roche Postdoctoral Fellowship programme (RPF-234) and research arising from Prof Jaki's Senior Research Fellowship (NIHR-SRF-2015-08-001) supported by the National Institute for Health Research. The views expressed in this publication are those of the authors and not necessarily those of the NHS, the National Institute for Health Research or the Department of Health. This manuscript was prepared using \pkg{knitr} \citep{knitr2018}.
 
 \bibstyle{jss}

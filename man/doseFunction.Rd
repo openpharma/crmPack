@@ -4,14 +4,18 @@
 \alias{doseFunction}
 \alias{doseFunction,GeneralModel-method}
 \alias{doseFunction-GeneralModel}
+\alias{doseFunction,ModelTox-method}
+\alias{doseFunction-ModelTox}
 \title{Getting the Dose Function for a Given Model Type}
 \usage{
 doseFunction(model, ...)
 
 \S4method{doseFunction}{GeneralModel}(model, ...)
+
+\S4method{doseFunction}{ModelTox}(model, ...)
 }
 \arguments{
-\item{model}{(\code{GeneralModel})\cr the model for single agent dose escalation.}
+\item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model.}
 
 \item{...}{model specific parameters.}
 }
