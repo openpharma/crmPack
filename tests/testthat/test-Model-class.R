@@ -244,3 +244,36 @@ test_that("MCMC computes correct values for ProbitLogNormalRel model", {
     tolerance = 1e-06
   )
 })
+
+# LogisticKadane ----
+
+## constructor ----
+
+test_that("LogisticKadane object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticKadane(
+      theta = 0.33,
+      xmin = 1,
+      xmax = 200
+    )
+  )
+  expect_valid(result, "LogisticKadane")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticKadane model", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      gamma = c(86.15670, 87.65260, 87.16488, 77.19426),
+      rho0 = c(0.15583729, 0.04234820, 0.01397354, 0.05035614)
+    ),
+    tolerance = 1e-06
+  )
+})

@@ -91,10 +91,18 @@ h_get_probit_log_normal <- function() {
 }
 
 h_get_logistic_indep_beta <- function() {
-  dlt_model <- LogisticIndepBeta(
+  LogisticIndepBeta(
     binDLE = c(1.05, 1.8),
     DLEweights = c(3, 3),
     DLEdose = c(25, 300),
     data = h_get_data_dual()
+  )
+}
+
+h_get_logistic_kadane <- function() {
+  LogisticKadane(
+    theta = 0.33,
+    xmin = 1,
+    xmax = 200
   )
 }

@@ -658,7 +658,6 @@ setMethod(
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    ref_dose <- model@ref_dose
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
 
     num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose

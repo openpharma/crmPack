@@ -346,6 +346,49 @@ test_that("dose-ProbitLogNormalRel throws the error when prob is not a valid sca
   )
 })
 
+## LogisticKadane ----
+
+test_that("dose-LogisticKadane works as expected", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  samples <- h_as_samples(list(rho0 = c(0.1, 0.2, 0.3), gamma = c(10, 40, 80)))
+
+  result <- dose(0.2, model, samples)
+  expect_equal(
+    result,
+    c(5.901396, 1, -305.087742),
+    tolerance = 1e-05
+  )
+})
+
+test_that("dose-LogisticKadane works as expected for scalar samples", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_equal(result, c(43.3589, 124.2571), tolerance = 1e-05)
+})
+
+test_that("dose-LogisticKadane throws the error when prob is not a valid scalar", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
+
+  expect_error(
+    dose(prob = c(40, 50), model = model, samples = samples),
+    "Assertion on 'prob' failed: Must have length 1."
+  )
+  expect_error(
+    dose(prob = 2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(prob = -2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not >= 0."
+  )
+})
+
 ## LogisticIndepBeta ----
 
 test_that("dose-LogisticIndepBeta works as expected", {
@@ -602,6 +645,45 @@ test_that("prob-ProbitLogNormalRel throws the error when dose is not a valid sca
   data <- h_get_data()
   model <- h_get_probit_log_normal_rel()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
+
+  expect_error(
+    prob(dose = c(40, 50), model = model, samples = samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(dose = -3, model = model, samples = samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## LogisticKadane ----
+
+test_that("prob-LogisticKadane works as expected", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  samples <- h_as_samples(list(rho0 = c(0.1, 0.2, 0.3), gamma = c(10, 40, 80)))
+
+  result <- prob(4, model, samples)
+  expect_equal(
+    result,
+    c(0.1543506, 0.2084767, 0.3011106),
+    tolerance = 1e-06
+  )
+})
+
+test_that("prob-LogisticKadane works as expected for scalar samples", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
+
+  result <- prob(c(2, 2.5), model, samples)
+  expect_equal(result, c(0.1526904, 0.1540504), tolerance = 1e-05)
+})
+
+test_that("prob-LogisticKadane throws the error when dose is not a valid scalar", {
+  data <- h_get_data()
+  model <- h_get_logistic_kadane()
+  samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
 
   expect_error(
     prob(dose = c(40, 50), model = model, samples = samples),

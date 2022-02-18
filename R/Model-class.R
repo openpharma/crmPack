@@ -564,8 +564,8 @@ LogisticKadane <- function(theta, xmin, xmax) {
       }
     },
     priormodel = function() {
-      gamma ~ dunif(xmin, xmax)
       rho0 ~ dunif(0, theta)
+      gamma ~ dunif(xmin, xmax)
     },
     modelspecs = function() {
       list(theta = theta, xmin = xmin, xmax = xmax)

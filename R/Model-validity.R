@@ -89,19 +89,16 @@ validate_model_logistic_kadane <- function(object) {
   o <- Validate()
   o$check(
     is.probability(object@theta, bounds = FALSE),
-    "theta must be a probability > 0 and < 1"
+    "theta must be a probability scalar > 0 and < 1"
   )
-  o$check(
-    test_number(object@xmin),
-    "xmin must be scalar"
-  )
-  o$check(
-    test_number(object@xmax),
-    "xmax must be scalar"
-  )
-  o$check(
-    object@xmin < object@xmax,
-    "xmin must be smaller than xmax"
-  )
+  is_xmin_number <- test_number(object@xmin)
+  o$check(is_xmin_number, "xmin must be scalar")
+
+  is_xmax_number <- test_number(object@xmax)
+  o$check(is_xmax_number, "xmax must be scalar")
+
+  if (is_xmin_number && is_xmax_number) {
+    o$check(object@xmin < object@xmax, "xmin must be strictly smaller than xmax")
+  }
   o$result()
 }
