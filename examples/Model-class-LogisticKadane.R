@@ -1,7 +1,1 @@
-
-
-model <- LogisticKadane(theta = 0.33,
-                        xmin = 1,
-                        xmax = 200)
-
-
+my_model <- LogisticKadane(theta = 0.33, xmin = 1, xmax = 200)

@@ -22,7 +22,7 @@ NULL
 #'
 #' @note The [`dose`] and [`prob`] functions are the inverse of each other.
 #'
-#' @param prob (`number` or `numeric`)\cr the toxicity probability which is
+#' @param prob (`proportion` or `numeric`)\cr the toxicity probability which is
 #'   targeted. This must be a scalar if non-scalar `samples` are used.
 #'   It can be a vector of any finite length, if `samples` are scalars or
 #'   `samples` are not used, as e.g. in case of pseudo DLE
@@ -109,7 +109,7 @@ setGeneric(
 #'   used to compute toxicity probabilities.
 #' @param ... model specific parameters when `samples` are not used.
 #'
-#' @return A `number` or `numeric` vector with the toxicity probabilities.
+#' @return A `proportion` or `numeric` vector with the toxicity probabilities.
 #'   If non-scalar `samples` were used, then every element in the returned vector
 #'   corresponds to one element of a sample. Hence, in this case, the output
 #'   vector is of the same length as the sample vector. If scalar `samples` were
@@ -606,6 +606,62 @@ setMethod(
 
     sel <- cbind(seq_len(nrow(alpha0)), comp)
     plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
+  }
+)
+
+# LogisticKadane ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticKadane
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticKadane",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    assert_subset(c("rho0", "gamma"), names(samples@data))
+    rho0 <- samples@data$rho0
+    gamma <- samples@data$gamma
+    theta <- model@theta
+    xmin <- model@xmin
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
+
+    num <- gamma * (logit(prob) - logit(rho0)) + xmin * (logit(theta) - logit(prob))
+    num / (logit(theta) - logit(rho0))
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @aliases prob-LogisticKadane
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticKadane",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("rho0", "gamma"), names(samples@data))
+    rho0 <- samples@data$rho0
+    gamma <- samples@data$gamma
+    theta <- model@theta
+    xmin <- model@xmin
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
+
+    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
+    plogis(num / (gamma - xmin))
   }
 )
 

@@ -7,12 +7,19 @@ my_data <- Data(
 )
 
 # maxDose-IncrementsNumDoseLevels ----
+# Sample data to test maxDose of IncrementsNumDoseLevels method.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+)
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
   increments <- IncrementsNumDoseLevels(
     maxLevels = 2,
     basisLevel = "last"
-    )
+  )
   result <- maxDose(
     increments,
     data = my_data
@@ -151,9 +158,9 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
-  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
+  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
   result <- stopTrial(
     stopping = stopping,
     dose = 7,
@@ -163,14 +170,14 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
   )
   expected <- structure(
     TRUE,
-    message = "CV of MTD is 23 % and thus below the required precision threshold of 30 %"
+    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %"
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
 
 test_that("StoppingMTDCV works correctly if CV is above threshold", {
   my_data <- h_get_data()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
   result <- stopTrial(
@@ -182,7 +189,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
   )
   expected <- structure(
     FALSE,
-    message = "CV of MTD is 23 % and thus above the required precision threshold of 20 %"
+    message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %"
   )
   expect_identical(result, expected) # CV is 23% > 20%.
 })
@@ -192,7 +199,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
   result <- stopTrial(
@@ -215,7 +222,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
   my_data <- h_get_data()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
@@ -239,7 +246,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is tox
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
   my_data <- h_get_data()
   my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
@@ -259,7 +266,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data_no_plcb()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
   result <- stopTrial(
@@ -282,7 +289,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
   my_data <- h_get_data_no_plcb()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
@@ -306,7 +313,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is tox
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
   my_data <- h_get_data_no_plcb()
   my_data@x[my_data@cohort == 1] <- c(75, 75, 75)
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(

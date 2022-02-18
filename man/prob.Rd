@@ -16,6 +16,8 @@
 \alias{prob-ProbitLogNormalRel}
 \alias{prob,numeric,LogisticLogNormalMixture,Samples-method}
 \alias{prob-LogisticLogNormalMixture}
+\alias{prob,numeric,LogisticKadane,Samples-method}
+\alias{prob-LogisticKadane}
 \alias{prob,numeric,LogisticIndepBeta,Samples-method}
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
@@ -38,6 +40,8 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples)
 
+\S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples)
+
 \S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model, samples, ...)
@@ -58,7 +62,7 @@ used to compute toxicity probabilities.}
 \item{...}{model specific parameters when \code{samples} are not used.}
 }
 \value{
-A \code{number} or \code{numeric} vector with the toxicity probabilities.
+A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
 If non-scalar \code{samples} were used, then every element in the returned vector
 corresponds to one element of a sample. Hence, in this case, the output
 vector is of the same length as the sample vector. If scalar \code{samples} were

@@ -488,130 +488,97 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
   )
 }
 
-# nolint start
+# LogisticKadane ----
 
-##' Reparametrized logistic model
-##'
-##' This is the logistic model in the parametrization of Kadane et al. (1980).
-##'
-##' Let \eqn{\rho_{0} = p(x_{min})} be the probability of a DLT and the minimum
-##' dose \eqn{x_{min}}, and let \eqn{\gamma} be the dose with target toxicity
-##' probability \eqn{\theta}, i.e. \eqn{p(\gamma) = \theta}. Then it can easily
-##' be shown that the logistic regression model has intercept
-##' \deqn{\frac{\gamma logit(\rho_{0}) - x_{min} logit(\theta)}{\gamma -
-##' x_{min}}}{(\gamma logit(\rho_{0}) - x_{min} logit(\theta)) / (\gamma -
-##' x_{min})}
-##' and slope
-##' \deqn{\frac{logit(theta) - logit(\rho_{0})}{\gamma - x_{min}}}{(logit(theta)
-##' - logit(\rho_{0})) / (\gamma - x_{min})}
-##'
-##' The prior is a uniform distribution for \eqn{\gamma} between \eqn{x_{min}}
-##' and \eqn{x_{max}}, and for \eqn{\rho_{0}} as well a uniform distribution
-##' between \eqn{0} and \eqn{\theta}.
-##'
-##' The slots of this class, required for creating the model, are the target
-##' toxicity, as well as the minimum and maximum of the dose range. Note that
-##' these can be different from the minimum and maximum of the dose grid in the
-##' data later on.
-##'
-##' @slot theta the target toxicity probability \eqn{\theta}
-##' @slot xmin the minimum of the dose range \eqn{x_{min}}
-##' @slot xmax the maximum of the dose range \eqn{x_{max}}
-##'
-##' @example examples/Model-class-LogisticKadane.R
-##' @export
-##' @keywords classes
-.LogisticKadane <-
-    setClass(Class="LogisticKadane",
-             contains="Model",
-             representation(theta="numeric",
-                            xmin="numeric",
-                            xmax="numeric"),
-             prototype(theta=0.3,
-                       xmin=0.1,
-                       xmax=1),
-             validity=
-                 function(object){
-                     o <- Validate()
+## class ----
 
-                     o$check(is.probability(object@theta,
-                                            bounds=FALSE),
-                             "theta must be a probability > 0 and < 1")
-                     o$check(object@xmin < object@xmax,
-                             "xmin must be smaller than xmax")
-                     o$check(is.scalar(object@xmin),
-                             "xmin must be scalar")
-                     o$check(is.scalar(object@xmax),
-                             "xmax must be scalar")
+#' `LogisticKadane`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticKadane`] is the class for the logistic model in the parametrization
+#' of Kadane et al. (1980).
+#'
+#' @details Let `rho0 = p(xmin)` be the probability of a DLT at the minimum dose
+#'   `xmin`, and let `gamma` be the dose with target toxicity probability `theta`,
+#'   i.e. \eqn{p(gamma) = theta}. Then it can easily be shown that the logistic
+#'   regression model has intercept
+#'   \deqn{[gamma * logit(rho0) - xmin * logit(theta)] / [gamma - xmin]}
+#'   and slope
+#'   \deqn{[logit(theta) - logit(rho0)] / [gamma - xmin].}
+#'
+#'   The priors are \deqn{gamma ~ Unif(xmin, xmax).} and
+#'   \deqn{rho0 ~ Unif(0, theta).}
+#'
+#' @note The slots of this class, required for creating the model, are the target
+#'   toxicity, as well as the minimum and maximum of the dose range. Note that
+#'   these can be different from the minimum and maximum of the dose grid in the
+#'   data later on.
+#'
+#' @slot theta (`proportion`)\cr the target toxicity probability.
+#' @slot xmin (`number`)\cr the minimum of the dose range.
+#' @slot xmax (`number`)\cr the maximum of the dose range.
+#'
+#' @seealso [`ModelLogNormal`]
+#'
+#' @aliases LogisticKadane
+#' @export
+#'
+.LogisticKadane <- setClass(
+  Class = "LogisticKadane",
+  contains = "GeneralModel",
+  slots = c(
+    theta = "numeric",
+    xmin = "numeric",
+    xmax = "numeric"
+  ),
+  prototype = prototype(
+    theta = 0.3,
+    xmin = 0.1,
+    xmax = 1
+  ),
+  validity = validate_model_logistic_kadane
+)
 
-                     o$result()
-                 })
+## constructor ----
 
-##' Initialization function for the "LogisticKadane" class
-##'
-##' @param theta the target toxicity probability
-##' @param xmin the minimum of the dose range
-##' @param xmax the maximum of the dose range
-##' @return the \code{\linkS4class{LogisticKadane}}
-##'
-##' @export
-##' @keywords methods
-LogisticKadane <- function(theta,
-                           xmin,
-                           xmax)
-{
-    .LogisticKadane(theta=theta,
-                    xmin=xmin,
-                    xmax=xmax,
-                    datamodel=
-                        function(){
-                            ## the logistic likelihood
-                            for (i in 1:nObs)
-                            {
-                                y[i] ~ dbern(p[i])
-                                logit(p[i]) <- (1/(gamma - xmin)) *
-                                    (gamma*logit(rho0) - xmin*logit(theta)
-                                     + (logit(theta) - logit(rho0)) * x[i])
-                            }
-                        },
-                    priormodel=
-                        function(){
-                            ## priors
-                            gamma ~ dunif(xmin, xmax)
-                            rho0 ~ dunif(0, theta)
-                        },
-                    datanames=c("nObs", "y", "x"),
-                    modelspecs=
-                        function(){
-                            list(theta=theta,
-                                 xmin=xmin,
-                                 xmax=xmax)
-                        },
-                    dose=
-                        function(prob, rho0, gamma){
-                            ret <- gamma * (logit(prob) - logit(rho0)) +
-                                xmin * (logit(theta) - logit(prob))
-                            ret <- ret / (logit(theta) - logit(rho0))
-                            return(ret)
-                        },
-                    prob=
-                        function(dose, rho0, gamma){
-                            ret <- (gamma*logit(rho0) - xmin*logit(theta)
-                                    + (logit(theta) - logit(rho0)) * dose)
-                            ret <- plogis(ret / (gamma - xmin))
-                            return(ret)
-                        },
-                    init=
-                        function(){
-                            list(rho0 = theta / 10,
-                                 gamma = (xmax - xmin) / 2)},
-                    sample=
-                        c("rho0", "gamma"))
+#' @rdname LogisticKadane-class
+#'
+#' @param theta (`proportion`)\cr the target toxicity probability.
+#' @param xmin (`number`)\cr the minimum of the dose range.
+#' @param xmax (`number`)\cr the maximum of the dose range.
+#'
+#' @export
+#' @example examples/Model-class-LogisticKadane.R
+#'
+LogisticKadane <- function(theta, xmin, xmax) {
+  .LogisticKadane(
+    theta = theta,
+    xmin = xmin,
+    xmax = xmax,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- (1 / (gamma - xmin)) *
+          (gamma * logit(rho0) - xmin * logit(theta) + x[i] * (logit(theta) - logit(rho0)))
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = function() {
+      rho0 ~ dunif(0, theta)
+      gamma ~ dunif(xmin, xmax)
+    },
+    modelspecs = function() {
+      list(theta = theta, xmin = xmin, xmax = xmax)
+    },
+    init = function() {
+      list(rho0 = theta / 10, gamma = (xmax - xmin) / 2)
+    },
+    sample = c("rho0", "gamma"),
+    datanames = c("nObs", "y", "x")
+  )
 }
 
-
-## ============================================================
-
+# nolint start
 
 ##' Dual endpoint model
 ##'
