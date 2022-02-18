@@ -13,6 +13,8 @@
 \alias{stopTrial,StoppingMTDdistribution,numeric,Samples,Model,ANY-method}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
+\alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
+\alias{stopTrial-StoppingLowestDoseHSRBeta}
 \alias{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}
 \alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}
@@ -42,6 +44,8 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMTDCV,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -108,6 +112,12 @@ The criteria is based on the robust coefficient of variation (CV) calculated
 from the posterior distribution.
 The robust CV is defined \code{mad(MTD) / median(MTD)}, where \code{mad} is the median
 absolute deviation.
+
+Stopping based based on the lowest non placebo dose. The trial is
+stopped when the lowest non placebo dose meets the Hard
+Safety Rule, i.e. it is deemed to be overly toxic. Stopping is based on the
+observed data at the lowest dose level using a Bin-Beta model
+based on DLT probability.
 }
 \section{Functions}{
 \itemize{
@@ -708,6 +718,72 @@ stopTrial(
   samples = my_samples,
   model = my_model,
   data = my_data
+)
+
+# Create the data.
+data <- Data(
+  x = c(0.1, 0.1, 0.1),
+  y = c(0, 0, 1),
+  cohort = c(1, 1, 1),
+  doseGrid = c(
+    0.1, 0.5, 1.5, 3, 6,
+    seq(from = 10, to = 80, by = 2)
+  ),
+  ID = 1:3
+)
+
+# Initialize the CRM model used to model the data.
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
+
+# Set-up some MCMC parameters and generate samples from the posterior.
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
+set.seed(94)
+samples <- mcmc(data, model, options)
+
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+
+next_max_dose <- maxDose(my_increments, data = data)
+
+# Define the rule which will be used to select the next best dose
+# based on the class 'NextBestNCRM'.
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  maxOverdoseProb = 0.25
+)
+
+# Calculate the next best dose.
+dose_recommendation <- nextBest(my_next_best,
+  doselimit = next_max_dose,
+  samples = samples, model = model, data = data
+)
+
+# Define the stopping rule such that the study would be stopped if first dose
+# is toxic based on a Beta posterior distribution with Beta(1,1) prior.
+my_stopping <- StoppingLowestDoseHSRBeta(
+  target = 0.3,
+  prob = 0.9
+)
+
+# Evaluate if the trial will be stopped.
+stopTrial(
+  stopping = my_stopping,
+  dose = dose_recommendation$value,
+  samples = samples,
+  model = model,
+  data = data
 )
 
 # Create the data

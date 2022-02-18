@@ -44,6 +44,7 @@ reference:
       - LogisticKadane
       - IncrementsNumDoseLevels
       - StoppingMTDCV
+      - StoppingLowestDoseHSRBeta
       - IncrementsHSRBeta
   - title: Internal Helper Functions
     contents:
@@ -124,6 +125,7 @@ reference:
       - prob-LogisticKadane
       - prob-LogisticIndepBeta
       - prob-LogisticIndepBeta-noSamples
+      - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
       - maxDose-IncrementsHSRBeta
