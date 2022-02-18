@@ -1055,8 +1055,8 @@ StoppingMTDCV <- function(target = 0.3,
 #' dose grid, i.e. at the lowest non-placebo dose.
 #' Note: this stopping rule is independent from the underlying model.
 #'
-#' @slot target (`number`)\cr the target toxicity.
-#' @slot prob (`number`)\cr the threshold probability for the lowest
+#' @slot target (`proportion`)\cr the target toxicity.
+#' @slot prob (`proportion`)\cr the threshold probability for the lowest
 #'  dose being toxic.
 #' @slot a (`number`)\cr shape parameter a>0 of probability
 #'  distribution Beta (a,b).
