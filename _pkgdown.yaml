@@ -43,6 +43,7 @@ reference:
       - ProbitLogNormal
       - ProbitLogNormalRel
       - StoppingMTDCV
+      - StoppingLowestDoseHSRBeta
       - IncrementsHSRBeta
   - title: Internal Helper Functions
     contents:
@@ -80,6 +81,7 @@ reference:
       - validate_increments_numdoselevels
       - validate_model_log_normal
       - validate_stopping_mtd_cv
+      - validate_stopping_lowest_dose_hsr_beta
       - validate_increments_hsr_beta
   - title: Methods
     contents:
@@ -122,6 +124,7 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-LogisticIndepBeta
       - prob-LogisticIndepBeta-noSamples
+      - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
       - maxDose-IncrementsHSRBeta
