@@ -10,11 +10,9 @@
 StoppingMTDCV(target = 0.3, thresh_cv = 40)
 }
 \arguments{
-\item{target}{(\code{number})\cr the target toxicity probability (e.g. 0.3)
-defining the MTD.}
+\item{target}{(\code{proportion})\cr see slot definition.}
 
-\item{thresh_cv}{(\code{number})\cr threshold for CV to be considered accurate enough
-to stop the trial (e.g. 40 percent).}
+\item{thresh_cv}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -25,7 +23,7 @@ which is calculated as the coefficient of variation (CV) of the MTD.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{number})\cr toxicity target of MTD.}
+\item{\code{target}}{(\code{proportion})\cr toxicity target of MTD.}
 
 \item{\code{thresh_cv}}{(\code{number})\cr threshold for CV to be considered accurate enough
 to stop the trial.}

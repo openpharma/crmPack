@@ -53,6 +53,10 @@ validate_increments_hsr_beta <- function(object) {
   o$result()
 }
 
+#' @describeIn validate_stopping validates that the [`StoppingLowestDoseHSRBeta`]
+#'  object contains valid probability target, threshold and shape parameters.
+validate_stopping_lowest_dose_hsr_beta <- validate_increments_hsr_beta
+
 #' Internal Helper Functions for Validation of [`Stopping`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`

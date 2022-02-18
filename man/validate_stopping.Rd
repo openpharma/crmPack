@@ -2,11 +2,14 @@
 % Please edit documentation in R/Rules-validity.R
 \name{validate_increments_hsr_beta}
 \alias{validate_increments_hsr_beta}
+\alias{validate_stopping_lowest_dose_hsr_beta}
 \alias{validate_stopping}
 \alias{validate_stopping_mtd_cv}
 \title{Internal Helper Functions for Validation of \code{\link{Stopping}} Objects}
 \usage{
 validate_increments_hsr_beta(object)
+
+validate_stopping_lowest_dose_hsr_beta(object)
 
 validate_stopping_mtd_cv(object)
 }
@@ -26,6 +29,9 @@ These functions are only used internally to validate the format of an input
 \section{Functions}{
 \itemize{
 \item \code{validate_increments_hsr_beta}: validates that the \code{\link{IncrementsHSRBeta}}
+object contains valid probability target, threshold and shape parameters.
+
+\item \code{validate_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
 
 \item \code{validate_stopping_mtd_cv}: validates that the \code{\link{StoppingMTDCV}} object

@@ -59,9 +59,8 @@ test_that("IncrementsRelativeDLTCurrent works correctly", {
 
 # maxDose-IncrementsHSRBeta ----
 
-my_data <- h_get_data()
-
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is below threshold probability", {
+  my_data <- h_get_data()
   my_data@y[my_data@cohort == 3] <- c(0L, 0L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
   result <- maxDose(
@@ -72,6 +71,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is below t
 })
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is above threshold probability", {
+  my_data <- h_get_data()
   my_data@y[my_data@cohort == 3] <- c(0L, 0L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.9)
   result <- maxDose(
@@ -85,6 +85,7 @@ test_that(paste(
   "IncrementsHSRBeta works correctly if toxcicity probability of first",
   "active dose is above threshold probability"
 ), {
+  my_data <- h_get_data()
   my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
   result <- maxDose(
@@ -95,6 +96,7 @@ test_that(paste(
 })
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability of placebo is above threshold probability", {
+  my_data <- h_get_data()
   my_data@y[my_data@x == 0.001] <- c(1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
   result <- maxDose(
@@ -108,6 +110,7 @@ test_that(paste(
   "IncrementsHSRBeta works correctly if toxcicity probability of first",
   "active dose is above threshold probability and placebo == T, but not appplied"
 ), {
+  my_data <- h_get_data()
   my_data@x <- c(rep(25, 4), rep(50, 4), rep(100, 4))
   my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
@@ -118,12 +121,11 @@ test_that(paste(
   expect_equal(result, 25) # maxDose is 25 as toxicity probability of dose 25 is above 0.95 and placebo used.
 })
 
-my_data <- h_get_data_no_plcb()
-
 test_that(paste(
   "IncrementsHSRBeta works correctly if toxcicity probability of first",
   "active dose is above threshold probability (no placebo)"
 ), {
+  my_data <- h_get_data_no_plcb()
   my_data@y[my_data@cohort == 1] <- c(0L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
   result <- maxDose(
@@ -134,6 +136,7 @@ test_that(paste(
 })
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is above threshold probability (no placebo)", {
+  my_data <- h_get_data_no_plcb()
   my_data@y[my_data@cohort == 3] <- c(0L, 1L, 1L)
   increments <- IncrementsHSRBeta(target = 0.3, prob = 0.90)
   result <- maxDose(
@@ -146,17 +149,10 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 
 # stopTrial-StoppingMTDCV ----
 
-# Sample data to test Stopping Rule MTD precisely estimated: CV(MTD) <= 30%.
-my_data <- h_get_data()
-# Model that leads to a CV of 25% given the data and the options.
-my_model <- LogisticKadane(0.3, xmin = 0.001, xmax = 100)
-my_options <- McmcOptions(
-  burnin = 10^3, step = 1, samples = 10^4, rng_kind = "Mersenne-Twister", rng_seed = 94
-)
-
-my_samples <- mcmc(my_data, my_model, my_options)
-
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
   result <- stopTrial(
     stopping = stopping,
@@ -173,6 +169,9 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
 })
 
 test_that("StoppingMTDCV works correctly if CV is above threshold", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
   result <- stopTrial(
     stopping = stopping,
@@ -186,4 +185,140 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
     message = "CV of MTD is 23 % and thus above the required precision threshold of 20 %"
   )
   expect_identical(result, expected) # CV is 23% > 20%.
+})
+
+
+# stopTrial-StoppingLowestDoseHSRBeta ----
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus below the required 90% threshold."
+    )
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic",
+      "based on posterior Beta distribution using a Beta(1,1) prior",
+      "is 24% and thus above the required 10% threshold."
+    )
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% > 10%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
+  my_data <- h_get_data()
+  my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Lowest active dose not tested, stopping rule not applied."
+  )
+  expect_identical(result, expected) # First active dose not applied.
+})
+
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
+  my_data <- h_get_data_no_plcb()
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 24% and thus",
+      "below the required 90% threshold."
+    )
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% < 90%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
+  my_data <- h_get_data_no_plcb()
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = paste(
+      "Probability that the lowest active dose of 25 being toxic based on",
+      "posterior Beta distribution using a Beta(1,1) prior is 24% and thus",
+      "above the required 10% threshold."
+    )
+  )
+  expect_identical(result, expected) # Prob being toxic is 24% > 10%.
+})
+
+test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not applied", {
+  my_data <- h_get_data_no_plcb()
+  my_data@x[my_data@cohort == 1] <- c(75, 75, 75)
+  my_model <- h_get_logistic_kedane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 300,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Lowest active dose not tested, stopping rule not applied."
+  )
+  expect_identical(result, expected) # First active dose not applied.
 })
