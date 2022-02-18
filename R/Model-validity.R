@@ -83,7 +83,7 @@ validate_model_log_normal <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_model_objects validates that the logistic kadane model
+#' @describeIn validate_model_objects validates that the logistic Kadane model
 #'   parameters are valid.
 validate_model_logistic_kadane <- function(object) {
   o <- Validate()

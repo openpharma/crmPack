@@ -41,7 +41,7 @@ respectively, as well as they match \code{sample} slot of the \code{object}.
 \item \code{validate_model_log_normal}: validates that the normal model parameters
 are valid as well as \code{ref_dose} is a positive scalar.
 
-\item \code{validate_model_logistic_kadane}: validates that the logistic kadane model
+\item \code{validate_model_logistic_kadane}: validates that the logistic Kadane model
 parameters are valid.
 }}
 
