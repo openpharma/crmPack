@@ -1616,7 +1616,7 @@ setMethod(
     tox_prob_first_dose <-
       if (n > 0) {
         x <- sum(data@y[which(data@x == data@doseGrid[data@placebo + 1])])
-        1 - pbeta(stopping@target, x + stopping@a, n - x + stopping@b)
+        pbeta(stopping@target, x + stopping@a, n - x + stopping@b, lower.tail = FALSE)
       } else {
         0
       }
@@ -1625,7 +1625,7 @@ setMethod(
 
     # generate message
     msg <- if (n == 0) {
-      paste("Lowest active dose not tested, stopping rule not applied.")
+      "Lowest active dose not tested, stopping rule not applied."
     } else {
       paste(
         "Probability that the lowest active dose of ",
