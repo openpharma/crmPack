@@ -1089,8 +1089,8 @@ StoppingMTDCV <- function(target = 0.3,
 
 #' @rdname StoppingLowestDoseHSRBeta-class
 #'
-#' @param target (`number`)\cr see slot definition.
-#' @param prob (`number`)\cr see slot definition.
+#' @param target (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
 #' @param a (`number`)\cr see slot definition.
 #' @param b (`number`)\cr see slot definition.
 #'
