@@ -29,7 +29,6 @@ test_that("validate_increments_numdoselevels returns expected messages for non-v
   )
 })
 
-
 # validate_increments_hsr_beta ----
 
 test_that("validate_increments_hsr_beta passes for valid object", {

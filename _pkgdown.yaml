@@ -79,6 +79,7 @@ reference:
       - validate_model_log_normal
       - validate_model_logistic_kadane
       - validate_stopping_mtd_cv
+      - validate_increments_numdoselevels
       - validate_increments_hsr_beta
   - title: Methods
     contents:
