@@ -1625,7 +1625,7 @@ setMethod(
 
     # generate message
     msg <- if (n == 0) {
-      paste("Lowest active dose not tested, stopping rule not applied.")
+      "Lowest active dose not tested, stopping rule not applied."
     } else {
       paste(
         "Probability that the lowest active dose of ",
