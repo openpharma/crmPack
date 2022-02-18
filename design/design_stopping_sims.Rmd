@@ -1,0 +1,42 @@
+---
+title: "Design how to save atomic stopping rule results in simulations and report them"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objective 
+
+What we want to do...
+
+## current prototype
+
+Situation was ....
+
+Our current prototype was this:
+
+```{r}
+
+```
+
+
+## unpack combined stopping rules
+
+In order to be general enough for all stopping rules, we also need to be able
+to process combined stopping rules (and / or combinations).
+
+Some ideas:
+...
+
+Try out some code:
+
+```{r}
+
+```
+
+
+
+
+
