@@ -80,6 +80,7 @@ reference:
       - validate_model_log_normal
       - validate_model_logistic_kadane
       - validate_stopping_mtd_cv
+      - validate_stopping_lowest_dose_hsr_beta
       - validate_increments_numdoselevels
       - validate_increments_hsr_beta
   - title: Methods
