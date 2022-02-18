@@ -31,7 +31,7 @@ my_next_best <- NextBestNCRM(
   maxOverdoseProb = 0.25
 )
 
-# Calculate the next best dose
+# Calculate the next best dose.
 dose_recommendation <- nextBest(
   my_next_best,
   doselimit = next_max_dose,

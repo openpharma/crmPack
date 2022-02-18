@@ -435,8 +435,8 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
 #' This is a hard safety rule that limits further escalation based on the
 #' observed data per dose level, independent from the underlying model.
 #'
-#' @slot target (`number`)\cr the target toxicity.
-#' @slot prob (`number`)\cr the threshold probability for a dose being toxic.
+#' @slot target (`proportion`)\cr the target toxicity.
+#' @slot prob (`proportion`)\cr the threshold probability for a dose being toxic.
 #' @slot a (`number`)\cr shape parameter a>0 of probability
 #'  distribution Beta (a,b).
 #' @slot b (`number`)\cr shape parameter b>0 of probability
@@ -467,8 +467,8 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
 
 #' @rdname IncrementsHSRBeta-class
 #'
-#' @param target (`number`)\cr see slot definition.
-#' @param prob (`number`)\cr see slot definition.
+#' @param target (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
 #' @param a (`number`)\cr see slot definition.
 #' @param b (`number`)\cr see slot definition.
 #'
@@ -996,7 +996,7 @@ StoppingMTDdistribution <- function(target,
 #' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
 #' which is calculated as the coefficient of variation (CV) of the MTD.
 #'
-#' @slot target (`number`)\cr toxicity target of MTD.
+#' @slot target (`proportion`)\cr toxicity target of MTD.
 #' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
 #'   to stop the trial.
 #'
@@ -1021,10 +1021,8 @@ StoppingMTDdistribution <- function(target,
 
 #' @rdname StoppingMTDCV-class
 #'
-#' @param target (`number`)\cr the target toxicity probability (e.g. 0.3)
-#'   defining the MTD.
-#' @param thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
-#'  to stop the trial (e.g. 40 percent).
+#' @param target (`proportion`)\cr see slot definition.
+#' @param thresh_cv (`number`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
