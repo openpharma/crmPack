@@ -805,10 +805,11 @@ setMethod(
     # Toxicity probability per dose level.
     x <- dlt_tab[2, ]
     n <- apply(dlt_tab, 2, sum)
-    tox_prob <- 1 - pbeta(
+    tox_prob <- pbeta(
       increments@target,
       x + increments@a,
-      n - x + increments@b
+      n - x + increments@b,
+      lower.tail = FALSE
     )
 
     # Return the min toxic dose level or maximum dose level if no dose is toxic,
