@@ -113,6 +113,20 @@ test_that("validate_stopping_mtd_cv returns expected messages for non-valid obje
   )
 })
 
+test_that("validate_stopping_mtd_cv returns expected messages for non-valid object", {
+  object <- StoppingMTDCV()
+  object@target <- c(0.3, 0.35)
+  object@thresh_cv <- c(30, 40)
+
+  expect_equal(
+    validate_stopping_mtd_cv(object),
+    c(
+      "target must be probability > 0 and < 1",
+      "thresh_cv must be percentage > 0"
+    )
+  )
+})
+
 
 # validate_stopping_lowest_dose_hsr_beta ----
 
