@@ -629,6 +629,8 @@ setMethod(
     assert_subset(c("rho0", "gamma"), names(samples@data))
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
+    theta <- model@theta
+    xmin <- model@xmin
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
 
     num <- gamma * (logit(prob) - logit(rho0)) + xmin * (logit(theta) - logit(prob))
@@ -654,6 +656,8 @@ setMethod(
     assert_subset(c("rho0", "gamma"), names(samples@data))
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
+    theta <- model@theta
+    xmin <- model@xmin
     ref_dose <- model@ref_dose
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
 
