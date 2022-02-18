@@ -10,9 +10,9 @@
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 \arguments{
-\item{target}{(\code{number})\cr see slot definition.}
+\item{target}{(\code{proportion})\cr see slot definition.}
 
-\item{prob}{(\code{number})\cr see slot definition.}
+\item{prob}{(\code{proportion})\cr see slot definition.}
 
 \item{a}{(\code{number})\cr see slot definition.}
 
@@ -34,9 +34,9 @@ observed data per dose level, independent from the underlying model.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{number})\cr the target toxicity.}
+\item{\code{target}}{(\code{proportion})\cr the target toxicity.}
 
-\item{\code{prob}}{(\code{number})\cr the threshold probability for a dose being toxic.}
+\item{\code{prob}}{(\code{proportion})\cr the threshold probability for a dose being toxic.}
 
 \item{\code{a}}{(\code{number})\cr shape parameter a>0 of probability
 distribution Beta (a,b).}
