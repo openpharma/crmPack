@@ -515,7 +515,7 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
 #'   these can be different from the minimum and maximum of the dose grid in the
 #'   data later on.
 #'
-#' @slot theta (`number`)\cr the target toxicity probability.
+#' @slot theta (`proportion`)\cr the target toxicity probability.
 #' @slot xmin (`number`)\cr the minimum of the dose range.
 #' @slot xmax (`number`)\cr the maximum of the dose range.
 #'
@@ -544,7 +544,7 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
 
 #' @rdname LogisticKadane-class
 #'
-#' @param theta (`number`)\cr the target toxicity probability.
+#' @param theta (`proportion`)\cr the target toxicity probability.
 #' @param xmin (`number`)\cr the minimum of the dose range.
 #' @param xmax (`number`)\cr the maximum of the dose range.
 #'

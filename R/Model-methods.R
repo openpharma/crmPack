@@ -22,7 +22,7 @@ NULL
 #'
 #' @note The [`dose`] and [`prob`] functions are the inverse of each other.
 #'
-#' @param prob (`number` or `numeric`)\cr the toxicity probability which is
+#' @param prob (`proportion` or `numeric`)\cr the toxicity probability which is
 #'   targeted. This must be a scalar if non-scalar `samples` are used.
 #'   It can be a vector of any finite length, if `samples` are scalars or
 #'   `samples` are not used, as e.g. in case of pseudo DLE
@@ -109,7 +109,7 @@ setGeneric(
 #'   used to compute toxicity probabilities.
 #' @param ... model specific parameters when `samples` are not used.
 #'
-#' @return A `number` or `numeric` vector with the toxicity probabilities.
+#' @return A `proportion` or `numeric` vector with the toxicity probabilities.
 #'   If non-scalar `samples` were used, then every element in the returned vector
 #'   corresponds to one element of a sample. Hence, in this case, the output
 #'   vector is of the same length as the sample vector. If scalar `samples` were

@@ -62,7 +62,7 @@ used to compute toxicity probabilities.}
 \item{...}{model specific parameters when \code{samples} are not used.}
 }
 \value{
-A \code{number} or \code{numeric} vector with the toxicity probabilities.
+A \code{proportion} or \code{numeric} vector with the toxicity probabilities.
 If non-scalar \code{samples} were used, then every element in the returned vector
 corresponds to one element of a sample. Hence, in this case, the output
 vector is of the same length as the sample vector. If scalar \code{samples} were

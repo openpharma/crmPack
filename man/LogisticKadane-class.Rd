@@ -10,7 +10,7 @@
 LogisticKadane(theta, xmin, xmax)
 }
 \arguments{
-\item{theta}{(\code{number})\cr the target toxicity probability.}
+\item{theta}{(\code{proportion})\cr the target toxicity probability.}
 
 \item{xmin}{(\code{number})\cr the minimum of the dose range.}
 
@@ -37,7 +37,7 @@ The priors are \deqn{gamma ~ Unif(xmin, xmax).} and
 \section{Slots}{
 
 \describe{
-\item{\code{theta}}{(\code{number})\cr the target toxicity probability.}
+\item{\code{theta}}{(\code{proportion})\cr the target toxicity probability.}
 
 \item{\code{xmin}}{(\code{number})\cr the minimum of the dose range.}
 

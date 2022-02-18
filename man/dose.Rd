@@ -47,7 +47,7 @@ dose(prob, model, samples, ...)
 \S4method{dose}{numeric,LogisticIndepBeta,missing}(prob, model)
 }
 \arguments{
-\item{prob}{(\code{number} or \code{numeric})\cr the toxicity probability which is
+\item{prob}{(\code{proportion} or \code{numeric})\cr the toxicity probability which is
 targeted. This must be a scalar if non-scalar \code{samples} are used.
 It can be a vector of any finite length, if \code{samples} are scalars or
 \code{samples} are not used, as e.g. in case of pseudo DLE
