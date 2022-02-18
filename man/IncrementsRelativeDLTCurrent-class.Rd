@@ -10,12 +10,9 @@
 IncrementsRelativeDLTCurrent(DLTintervals = c(0, 1), increments = c(2, 1))
 }
 \arguments{
-\item{DLTintervals}{see \code{\linkS4class{IncrementsRelativeDLTCurrent}}}
+\item{DLTintervals}{see slot description.}
 
-\item{increments}{see \code{\linkS4class{IncrementsRelativeDLTCurrent}}}
-}
-\value{
-the \code{\linkS4class{IncrementsRelativeDLTCurrent}} object
+\item{increments}{see slot description.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

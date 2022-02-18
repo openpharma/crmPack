@@ -649,12 +649,11 @@ IncrementsRelativeDLT <- function(DLTintervals,
     Class = "IncrementsRelativeDLTCurrent",
     contains = "IncrementsRelativeDLT"
   )
-##' Initialization function for "IncrementsRelativeDLTCurrent"
-##'
-##' @param DLTintervals see \code{\linkS4class{IncrementsRelativeDLTCurrent}}
-##' @param increments see \code{\linkS4class{IncrementsRelativeDLTCurrent}}
-##' @return the \code{\linkS4class{IncrementsRelativeDLTCurrent}} object
+
 #' @rdname IncrementsRelativeDLTCurrent-class
+#'
+#' @param DLTintervals see slot description.
+#' @param increments see slot description.
 #'
 #' @export
 IncrementsRelativeDLTCurrent <- function(DLTintervals = c(0, 1),

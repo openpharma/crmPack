@@ -10,11 +10,9 @@
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 \arguments{
-
 \item{target}{(\code{proportion})\cr see slot definition.}
 
 \item{prob}{(\code{proportion})\cr see slot definition.}
-
 
 \item{a}{(\code{number})\cr see slot definition.}
 
