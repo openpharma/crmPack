@@ -39,9 +39,10 @@ reference:
       - LogisticNormal
       - LogisticLogNormal
       - LogisticLogNormalSub
-      - IncrementsNumDoseLevels
       - ProbitLogNormal
       - ProbitLogNormalRel
+      - LogisticKadane
+      - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
       - IncrementsHSRBeta
@@ -76,12 +77,11 @@ reference:
       - validate_mcmc_options
       - validate_general_model
       - validate_model
-      - validate_logistic_log_normal
-      - validate_mcmc_options
-      - validate_increments_numdoselevels
       - validate_model_log_normal
+      - validate_model_logistic_kadane
       - validate_stopping_mtd_cv
       - validate_stopping_lowest_dose_hsr_beta
+      - validate_increments_numdoselevels
       - validate_increments_hsr_beta
   - title: Methods
     contents:
@@ -109,6 +109,7 @@ reference:
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
       - dose-LogisticLogNormalMixture
+      - dose-LogisticKadane
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
       - probFunction
@@ -122,6 +123,7 @@ reference:
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
       - prob-LogisticLogNormalMixture
+      - prob-LogisticKadane
       - prob-LogisticIndepBeta
       - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingLowestDoseHSRBeta

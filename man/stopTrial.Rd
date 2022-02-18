@@ -11,7 +11,7 @@
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingTargetProb,numeric,Samples,Model,ANY-method}
 \alias{stopTrial,StoppingMTDdistribution,numeric,Samples,Model,ANY-method}
-\alias{stopTrial,StoppingMTDCV,numeric,Samples,Model,ANY-method}
+\alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
 \alias{stopTrial-StoppingLowestDoseHSRBeta}
@@ -43,7 +43,7 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMTDCV,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMTDCV,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY}(stopping, dose, samples, model, data, ...)
 

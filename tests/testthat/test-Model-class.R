@@ -244,3 +244,18 @@ test_that("MCMC computes correct values for ProbitLogNormalRel model", {
     tolerance = 1e-06
   )
 })
+
+# LogisticKadane ----
+
+## constructor ----
+
+test_that("LogisticKadane object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticKadane(
+      theta = 0.33,
+      xmin = 1,
+      xmax = 200
+    )
+  )
+  expect_valid(result, "LogisticKadane")
+})

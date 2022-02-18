@@ -1561,7 +1561,7 @@ setMethod(
     stopping = "StoppingMTDCV",
     dose = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "ANY"
   ),
   definition = function(stopping, dose, samples, model, data, ...) {

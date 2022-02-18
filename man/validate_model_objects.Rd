@@ -5,6 +5,7 @@
 \alias{validate_general_model}
 \alias{validate_model}
 \alias{validate_model_log_normal}
+\alias{validate_model_logistic_kadane}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 validate_general_model(object)
@@ -12,6 +13,8 @@ validate_general_model(object)
 validate_model(object)
 
 validate_model_log_normal(object)
+
+validate_model_logistic_kadane(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -37,5 +40,8 @@ respectively, as well as they match \code{sample} slot of the \code{object}.
 
 \item \code{validate_model_log_normal}: validates that the normal model parameters
 are valid as well as \code{ref_dose} is a positive scalar.
+
+\item \code{validate_model_logistic_kadane}: validates that the logistic Kadane model
+parameters are valid.
 }}
 
