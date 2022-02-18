@@ -1616,7 +1616,7 @@ setMethod(
     tox_prob_first_dose <-
       if (n > 0) {
         x <- sum(data@y[which(data@x == data@doseGrid[data@placebo + 1])])
-        1 - pbeta(stopping@target, x + stopping@a, n - x + stopping@b)
+        pbeta(stopping@target, x + stopping@a, n - x + stopping@b, lower.tail = FALSE)
       } else {
         0
       }
