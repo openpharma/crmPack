@@ -138,9 +138,9 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
-  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
+  stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
   result <- stopTrial(
     stopping = stopping,
     dose = 7,
@@ -150,14 +150,14 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
   )
   expected <- structure(
     TRUE,
-    message = "CV of MTD is 23 % and thus below the required precision threshold of 30 %"
+    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %"
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
 
 test_that("StoppingMTDCV works correctly if CV is above threshold", {
   my_data <- h_get_data()
-  my_model <- h_get_logistic_kedane()
+  my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
   result <- stopTrial(
@@ -169,7 +169,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
   )
   expected <- structure(
     FALSE,
-    message = "CV of MTD is 23 % and thus above the required precision threshold of 20 %"
+    message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %"
   )
   expect_identical(result, expected) # CV is 23% > 20%.
 })
