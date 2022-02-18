@@ -82,3 +82,26 @@ validate_model_log_normal <- function(object) {
   )
   o$result()
 }
+
+#' @describeIn validate_model_objects validates that the logistic kadane model
+#'   parameters are valid.
+validate_model_logistic_kadane <- function(object) {
+  o <- Validate()
+  o$check(
+    is.probability(object@theta, bounds = FALSE),
+    "theta must be a probability > 0 and < 1"
+  )
+  o$check(
+    test_number(object@xmin),
+    "xmin must be scalar"
+  )
+  o$check(
+    test_number(object@xmax),
+    "xmax must be scalar"
+  )
+  o$check(
+    object@xmin < object@xmax,
+    "xmin must be smaller than xmax"
+  )
+  o$result()
+}

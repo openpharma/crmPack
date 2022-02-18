@@ -609,6 +609,59 @@ setMethod(
   }
 )
 
+# LogisticKadane ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticKadane
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticKadane",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    assert_subset(c("rho0", "gamma"), names(samples@data))
+    rho0 <- samples@data$rho0
+    gamma <- samples@data$gamma
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
+
+    num <- gamma * (logit(prob) - logit(rho0)) + xmin * (logit(theta) - logit(prob))
+    num / (logit(theta) - logit(rho0))
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @aliases prob-LogisticKadane
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticKadane",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("rho0", "gamma"), names(samples@data))
+    rho0 <- samples@data$rho0
+    gamma <- samples@data$gamma
+    ref_dose <- model@ref_dose
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
+
+    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
+    plogis(num / (gamma - xmin))
+  }
+)
+
 # LogisticIndepBeta ----
 
 ## dose ----
