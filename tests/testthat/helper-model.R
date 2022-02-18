@@ -98,3 +98,11 @@ h_get_logistic_indep_beta <- function() {
     data = h_get_data_dual()
   )
 }
+
+h_get_logistic_kedane <- function() {
+  LogisticKadane(
+    theta = 0.3,
+    xmin = 0.001,
+    xmax = 100
+  )
+}
