@@ -10,7 +10,7 @@
 StoppingMTDCV(target = 0.3, thresh_cv = 40)
 }
 \arguments{
-\item{target}{(\code{number})\cr the target toxicity probability (e.g. 0.3)
+\item{target}{(\code{proportion})\cr the target toxicity probability (e.g. 0.3)
 defining the MTD.}
 
 \item{thresh_cv}{(\code{number})\cr threshold for CV to be considered accurate enough
@@ -25,7 +25,7 @@ which is calculated as the coefficient of variation (CV) of the MTD.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{number})\cr toxicity target of MTD.}
+\item{\code{target}}{(\code{proportion})\cr toxicity target of MTD.}
 
 \item{\code{thresh_cv}}{(\code{number})\cr threshold for CV to be considered accurate enough
 to stop the trial.}

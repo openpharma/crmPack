@@ -996,7 +996,7 @@ StoppingMTDdistribution <- function(target,
 #' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
 #' which is calculated as the coefficient of variation (CV) of the MTD.
 #'
-#' @slot target (`number`)\cr toxicity target of MTD.
+#' @slot target (`proportion`)\cr toxicity target of MTD.
 #' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
 #'   to stop the trial.
 #'
@@ -1021,7 +1021,7 @@ StoppingMTDdistribution <- function(target,
 
 #' @rdname StoppingMTDCV-class
 #'
-#' @param target (`number`)\cr the target toxicity probability (e.g. 0.3)
+#' @param target (`proportion`)\cr the target toxicity probability (e.g. 0.3)
 #'   defining the MTD.
 #' @param thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
 #'  to stop the trial (e.g. 40 percent).
