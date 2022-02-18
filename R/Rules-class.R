@@ -1021,10 +1021,8 @@ StoppingMTDdistribution <- function(target,
 
 #' @rdname StoppingMTDCV-class
 #'
-#' @param target (`proportion`)\cr the target toxicity probability (e.g. 0.3)
-#'   defining the MTD.
-#' @param thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
-#'  to stop the trial (e.g. 40 percent).
+#' @param target (`proportion`)\cr see slot definition.
+#' @param thresh_cv (`number`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
