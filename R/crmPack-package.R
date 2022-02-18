@@ -28,20 +28,20 @@
 #  cpp_coxfit
 #' @import checkmate
 #' @import ggplot2
-#' @import methods 
+#' @import methods
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
 #' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma approxfun
-#' rnorm runif uniroot var vcov step mad
+#' rnorm runif uniroot var vcov step mad pbeta
 #' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
 #' @importFrom futile.logger flog.threshold flog.logger flog.trace TRACE FATAL
 #' @keywords package
-#' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019). 
+#' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019).
 #' "Model-Based Dose Escalation Designs in R with crmPack."
-#' Journal of Statistical Software, 89(10), 1-22. 
+#' Journal of Statistical Software, 89(10), 1-22.
 #' doi:10.18637/jss.v089.i10 (URL: http://doi.org/10.18637/jss.v089.i10).
 {}
 
@@ -106,7 +106,7 @@ globalVariables(c("log.betaZ",
                   "upperBiomarker",
                   "nObsshare",
                   "xshare",
-                  "yshare", 
+                  "yshare",
                   "thisProb.PL",
                   "thisMeanEff.PL",
                   "thisSize.PL",

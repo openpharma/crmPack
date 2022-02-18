@@ -5,6 +5,8 @@
 \alias{maxDose,IncrementsRelative,Data-method}
 \alias{maxDose,IncrementsNumDoseLevels,Data-method}
 \alias{maxDose-IncrementsNumDoseLevels}
+\alias{maxDose,IncrementsHSRBeta,Data-method}
+\alias{maxDose-IncrementsHSRBeta}
 \alias{maxDose,IncrementsRelativeParts,DataParts-method}
 \alias{maxDose,IncrementsRelativeDLT,Data-method}
 \alias{maxDose,IncrementMin,Data-method}
@@ -15,6 +17,8 @@ maxDose(increments, data, ...)
 \S4method{maxDose}{IncrementsRelative,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsNumDoseLevels,Data}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsHSRBeta,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsRelativeParts,DataParts}(increments, data, ...)
 
@@ -40,6 +44,8 @@ Increments control based on number of dose levels
 Increment rule to determine the maximum possible next dose based on
 maximum dose levels to increment for the next dose.
 Increment rule can be applied to last dose or maximum dose given so far.
+
+Determine the maximum possible dose for escalation.
 }
 \details{
 This function outputs the maximum possible next dose, based on the
@@ -110,6 +116,23 @@ increments <- IncrementsNumDoseLevels(maxLevels = 2, basisLevel = "max")
 
 # Based on the rule above, we then calculate the maximum dose allowed
 max_dose <- maxDose(increments, data = data)
+
+# Create the data
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 6, 6, 6),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
+
+# In this example we define a rule for dose increments that limits the further
+# dose escalation to doses below 6
+my_increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
+
+# Based on the rule above, we then calculate the maximum dose allowed
+my_next_max_dose <- maxDose(my_increments, data = my_data)
 
 # create an object of class 'DataParts'
 myData <- DataParts(x=c(0.1,0.5,1.5),
