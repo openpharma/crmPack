@@ -9,6 +9,14 @@
 \usage{
 IncrementsRelativeDLTCurrent(DLTintervals = c(0, 1), increments = c(2, 1))
 }
+\arguments{
+\item{DLTintervals}{see \code{\linkS4class{IncrementsRelativeDLTCurrent}}}
+
+\item{increments}{see \code{\linkS4class{IncrementsRelativeDLTCurrent}}}
+}
+\value{
+the \code{\linkS4class{IncrementsRelativeDLTCurrent}} object
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
@@ -32,9 +40,10 @@ relative increments in the \code{DLTintervals}.}
 #      or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose
 #      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed
 
-myIncrements <- IncrementsRelativeDLTCurrent(DLTintervals = c(0, 1, 3),
-                                             increments = c(1, 0.33, 0.2))
-
+my_increments <- IncrementsRelativeDLTCurrent(
+  DLTintervals = c(0, 1, 3),
+  increments = c(1, 0.33, 0.2)
+)
 }
 \seealso{
 \code{\link[=IncrementsRelativeDLT]{IncrementsRelativeDLT()}} which considers all DLTs cumulatively

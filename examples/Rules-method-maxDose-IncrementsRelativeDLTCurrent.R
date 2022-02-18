@@ -22,6 +22,6 @@ my_increments <- IncrementsRelativeDLTCurrent(
 )
 
 # Based on the rule above, we then calculate the maximum dose allowed
-nextMaxDose <- maxDose(my_increments,
+next_max_dose <- maxDose(my_increments,
   data = data
 )

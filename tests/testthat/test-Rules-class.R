@@ -23,25 +23,22 @@ test_that("IncrementsRelativeDLTCurrent fails if DLTintervals is not integer", {
 })
 
 test_that("IncrementsRelativeDLTCurrent fails if DLTintervals is not sorted and unique", {
-  expect_warning(
-    expect_error(
-      IncrementsRelativeDLTCurrent(
-        DLTintervals = c(1, 0),
-        increments = c(1, 3)
-      ),
-      "intervals has to be sorted and have unique values"
+  expect_error(
+    IncrementsRelativeDLTCurrent(
+      DLTintervals = c(1, 0),
+      increments = c(1, 3)
     ),
-    "intervals has to be sorted and have unique values"
+    "DLTintervals has to be sorted and have unique values"
   )
 })
 
 test_that("IncrementsRelativeDLTCurrent warns if increments does not have same length as intervals", {
-  expect_warning(
+  expect_error(
     IncrementsRelativeDLTCurrent(
       DLTintervals = c(0, 1),
       increments = c(1, 3, 100)
     ),
-    "increments must have same length as intervals"
+    "increments must have same length as DLTintervals"
   )
 })
 
