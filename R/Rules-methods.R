@@ -930,6 +930,44 @@ setMethod("maxDose",
           })
 
 
+## ============================================================
+
+##' --------------------------------------------------
+##' The maximum allowable relative increments in terms of DLTs
+##' --------------------------------------------------
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' relative increments determined by DLTs in the current cohort.
+##'
+##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+setMethod("maxDose",
+          signature =
+            signature(
+              increments = "IncrementsRelativeDLTCurrent",
+              data = "Data"
+            ),
+          def =
+            function(increments, data, ...) {
+
+              # Determine what was the last dose.
+              lastDose <- tail(data@x, 1)
+
+              # Determine how many DLTs have occurred in last cohort.
+              lastCohort <- tail(data@cohort, 1)
+              index <- which(data@cohort == lastCohort)
+              dltHappened <- sum(data@y[index])
+
+              # Determine in which interval this is.
+              interval <-
+                findInterval(
+                  x = dltHappened,
+                  vec = increments@DLTintervals
+                )
+
+              (1 + increments@increments[interval]) * lastDose
+            }
+)
+
+
 ## --------------------------------------------------
 ## The maximum allowable relative increments in terms of DLTs
 ## --------------------------------------------------
@@ -3505,8 +3543,5 @@ setMethod("windowLength",
 
               return(ret)
             })
-
-
-## ============================================================
 
 # nolint end

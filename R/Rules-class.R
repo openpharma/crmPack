@@ -4,6 +4,8 @@
 #' @include Rules-validity.R
 NULL
 
+#nolint start
+
 ## ============================================================
 
 ## --------------------------------------------------
@@ -574,10 +576,15 @@ IncrementsRelativeParts <- function(dltStart,
 ##' gives the left bounds of the intervals. The last interval goes from 3 to
 ##' infinity.
 ##'
+##' @note This considers all DLTs across all cohorts observed so far.
+##'
 ##' @slot DLTintervals an integer vector with the left bounds of the relevant
 ##' DLT intervals
 ##' @slot increments a vector of the same length with the maximum allowable
 ##' relative increments in the \code{DLTintervals}
+##'
+##' @seealso [IncrementsRelativeDLTCurrent()] which only considers the DLTs
+##' in the current cohort.
 ##'
 ##' @example examples/Rules-class-IncrementsRelativeDLT.R
 ##' @export
@@ -621,7 +628,40 @@ IncrementsRelativeDLT <- function(DLTintervals,
                            increments=increments)
 }
 
+#' Increment Control based on Relative Differences and Current DLTs
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' The class is based on the number of DLTs observed in the current cohort,
+#' but not cumulatively over all cohorts so far.
+#'
+#' @slot DLTintervals (`integer`)\cr left bounds of the relevant
+#'   DLT intervals.
+#' @slot increments (`numeric`)\cr corresponding maximum allowable
+#' relative increments in the `DLTintervals`.
+#'
+#' @seealso [IncrementsRelativeDLT()] which considers all DLTs cumulatively
+#' across cohorts and doses.
+#' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
+#' @export
+.IncrementsRelativeDLTCurrent <-
+  setClass(
+    Class = "IncrementsRelativeDLTCurrent",
+    contains = "IncrementsRelativeDLT"
+  )
 
+#' @rdname IncrementsRelativeDLTCurrent-class
+#'
+#' @param DLTintervals see slot description.
+#' @param increments see slot description.
+#'
+#' @export
+IncrementsRelativeDLTCurrent <- function(DLTintervals = c(0, 1),
+                                         increments = c(2, 1))
+{
+  .IncrementsRelativeDLTCurrent(DLTintervals=safeInteger(DLTintervals),
+                                increments=increments)
+}
 
 ## -----------------------------------------------------------
 ## Max increment based on minimum of multiple increment rules

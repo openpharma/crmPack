@@ -1,5 +1,12 @@
-# maxDose-IncrementsNumDoseLevels ----
+# Sample data to test maxDose.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+)
 
+# maxDose-IncrementsNumDoseLevels ----
 # Sample data to test maxDose of IncrementsNumDoseLevels method.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
@@ -43,6 +50,19 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is define
   expect_equal(result, 20) # maxDose is 20 if basislevel='max'.
 })
 
+# maxDose-IncrementsRelativeDLTCurrent ----
+
+test_that("IncrementsRelativeDLTCurrent works correctly", {
+  increments <- IncrementsRelativeDLTCurrent(
+    DLTintervals = c(0, 1, 3),
+    increments = c(1, 0.33, 0.2)
+  )
+  result <- maxDose(
+    increments,
+    data = my_data
+  )
+  expect_equal(result, 13.3) # maxDose is 13.3 because last dose was 10 with 1 DLT.
+})
 
 # maxDose-IncrementsHSRBeta ----
 

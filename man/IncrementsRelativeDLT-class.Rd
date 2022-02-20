@@ -24,15 +24,23 @@ DLT intervals}
 relative increments in the \code{DLTintervals}}
 }}
 
+\note{
+This considers all DLTs across all cohorts observed so far.
+}
 \examples{
 
-# As example, here is the rule for: 
-#      maximum doubling the dose if no DLTs were observed at the current dose
-#      or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose
-#      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed
+# As example, here is the rule for:
+#      maximum doubling the dose if no DLTs were observed in the whole study so far
+#      or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed so far
+#      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed so far
 
-myIncrements <- IncrementsRelativeDLT(DLTintervals = c(0, 1, 3),
-                                      increments = c(1, 0.33, 0.2))
-
+my_increments <- IncrementsRelativeDLT(
+  DLTintervals = c(0, 1, 3),
+  increments = c(1, 0.33, 0.2)
+)
+}
+\seealso{
+\code{\link[=IncrementsRelativeDLTCurrent]{IncrementsRelativeDLTCurrent()}} which only considers the DLTs
+in the current cohort.
 }
 \keyword{classes}
