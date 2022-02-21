@@ -1,16 +1,9 @@
+#' @include Model-methods.R
+#' @include Samples-class.R
+#' @include Rules-class.R
+NULL
+
 # nolint start
-
-##' @include Model-methods.R
-##' @include Samples-class.R
-##' @include Rules-class.R
-{}
-
-## ============================================================
-
-## --------------------------------------------------
-## Find out what is the next best dose
-## --------------------------------------------------
-
 
 ##' Find the next best dose
 ##'
@@ -929,12 +922,10 @@ setMethod("maxDose",
               return(ret)
           })
 
+## --------------------------------------------------
+## The maximum allowable relative increments in terms of DLTs
+## --------------------------------------------------
 
-## ============================================================
-
-##' --------------------------------------------------
-##' The maximum allowable relative increments in terms of DLTs
-##' --------------------------------------------------
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' relative increments determined by DLTs in the current cohort.
 ##'
