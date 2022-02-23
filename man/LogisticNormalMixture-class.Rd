@@ -11,7 +11,8 @@ LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
 }
 \arguments{
 \item{comp1}{(\code{list})\cr specifications of the first component, i.e. a named list
-with \code{mean} and \code{cov} for the first bivariate normal prior mean vector.}
+with \code{mean} and \code{cov} for the first bivariate normal prior mean vector.
+The precision matrix \code{prec} is internally calculated as an inverse of \code{cov}.}
 
 \item{comp2}{(\code{list})\cr specifications of the second component.}
 

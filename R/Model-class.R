@@ -184,7 +184,8 @@ NULL
 #' @rdname ModelLogNormal-class
 #'
 #' @param mean (`numeric`)\cr the prior mean vector.
-#' @param cov (`matrix`)\cr the prior covariance matrix.
+#' @param cov (`matrix`)\cr the prior covariance matrix. The precision matrix
+#'   `prec` is internally calculated as an inverse of `cov`.
 #' @param ref_dose (`number`)\cr the reference dose.
 #'
 #' @export
@@ -640,6 +641,7 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #'
 #' @param comp1 (`list`)\cr specifications of the first component, i.e. a named list
 #'   with `mean` and `cov` for the first bivariate normal prior mean vector.
+#'   The precision matrix `prec` is internally calculated as an inverse of `cov`.
 #' @param comp2 (`list`)\cr specifications of the second component.
 #' @param weightpar (`numeric`)\cr the beta parameters for the weight of the
 #'   first component. It must a be a named vector of length 2 with names `a` and
