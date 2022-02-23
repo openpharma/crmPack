@@ -259,3 +259,19 @@ test_that("LogisticKadane object can be created with user constructor", {
   )
   expect_valid(result, "LogisticKadane")
 })
+
+# LogisticNormalMixture ----
+
+## constructor ----
+
+test_that("LogisticNormalMixture object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticNormalMixture(
+      comp1 = list(mean = c(0, 3), cov = diag(2)),
+      comp2 = list(mean = c(-1, 6), cov = c(2, 4) * diag(2)),
+      weightpar = c(a = 1, b = 5),
+      ref_dose = 2
+    )
+  )
+  expect_valid(result, "LogisticNormalMixture")
+})

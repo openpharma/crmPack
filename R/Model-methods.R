@@ -377,9 +377,10 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((logit(prob) - alpha0) / alpha1) * model@ref_dose
+    exp((logit(prob) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -428,9 +429,10 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    ((logit(prob) - alpha0) / alpha1) + model@ref_dose
+    ((logit(prob) - alpha0) / alpha1) + ref_dose
   }
 )
 
@@ -479,9 +481,10 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((probit(prob) - alpha0) / alpha1) * model@ref_dose
+    exp((probit(prob) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -530,9 +533,10 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    ((probit(prob) - alpha0) / alpha1) * model@ref_dose
+    ((probit(prob) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -662,6 +666,58 @@ setMethod(
 
     num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
     plogis(num / (gamma - xmin))
+  }
+)
+
+# LogisticNormalMixture ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticNormalMixture
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    exp((logit(prob) - alpha0) / alpha1) * ref_dose
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @aliases prob-LogisticNormalMixture
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
 

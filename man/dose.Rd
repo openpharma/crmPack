@@ -18,6 +18,8 @@
 \alias{dose-LogisticLogNormalMixture}
 \alias{dose,numeric,LogisticKadane,Samples-method}
 \alias{dose-LogisticKadane}
+\alias{dose,numeric,LogisticNormalMixture,Samples-method}
+\alias{dose-LogisticNormalMixture}
 \alias{dose,numeric,LogisticIndepBeta,Samples-method}
 \alias{dose-LogisticIndepBeta}
 \alias{dose,numeric,LogisticIndepBeta,missing-method}
@@ -41,6 +43,8 @@ dose(prob, model, samples, ...)
 \S4method{dose}{numeric,LogisticLogNormalMixture,Samples}(prob, model, samples)
 
 \S4method{dose}{numeric,LogisticKadane,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,LogisticNormalMixture,Samples}(prob, model, samples)
 
 \S4method{dose}{numeric,LogisticIndepBeta,Samples}(prob, model, samples)
 
