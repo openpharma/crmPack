@@ -49,7 +49,7 @@ NULL
     rng_kind = NA_character_,
     rng_seed = NA_integer_
   ),
-  validity = validate_mcmc_options
+  validity = v_mcmc_options
 )
 
 ## constructor ----

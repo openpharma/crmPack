@@ -1,4 +1,4 @@
-# validate_mcmc_options ----
+# v_mcmc_options ----
 
 #' Internal Helper Functions for Validation of [`McmcOptions`] Objects
 #'
@@ -7,16 +7,16 @@
 #' These functions are only used internally to validate the format of an input
 #' [`McmcOptions`] or inherited classes and therefore not exported.
 #'
-#' @name validate_mcmcoptions_objects
+#' @name v_mcmcoptions_objects
 #' @param object (`McmcOptions`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_mcmcoptions_objects validates that the [`McmcOptions`]
+#' @describeIn v_mcmcoptions_objects validates that the [`McmcOptions`]
 #'   object contains valid integer scalars `iterations`, `burnin` and `step`
 #'   as well as proper parameters for Random Number Generator.
-validate_mcmc_options <- function(object) {
+v_mcmc_options <- function(object) {
   o <- Validate()
   allowed_rng_kinds <- c(
     "base::Wichmann-Hill",

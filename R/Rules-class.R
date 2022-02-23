@@ -403,7 +403,7 @@ IncrementsRelative <- function(intervals,
     maxLevels = 1L,
     basisLevel = "last"
   ),
-  validity = validate_increments_numdoselevels
+  validity = v_increments_numdoselevels
 )
 
 # IncrementsNumDoseLevels-constructor ----
@@ -462,7 +462,7 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
     a = 1,
     b = 1
   ),
-  validity = validate_increments_hsr_beta
+  validity = v_increments_hsr_beta
 )
 
 # IncrementsHSRBeta-constructor ----
@@ -1054,7 +1054,7 @@ StoppingMTDdistribution <- function(target,
     target = 0.3,
     thresh_cv = 40
   ),
-  validity = validate_stopping_mtd_cv
+  validity = v_stopping_mtd_cv
 )
 
 # StoppingMTDCV-constructor ----
@@ -1119,7 +1119,7 @@ StoppingMTDCV <- function(target = 0.3,
     a = 1,
     b = 1
   ),
-  validity = validate_stopping_lowest_dose_hsr_beta
+  validity = v_stopping_lowest_dose_hsr_beta
 )
 
 

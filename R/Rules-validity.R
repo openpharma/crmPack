@@ -5,15 +5,15 @@
 #' These functions are only used internally to validate the format of an input
 #' [`Increments`] or inherited classes and therefore not exported.
 #'
-#' @name validate_increments
+#' @name v_increments
 #' @param object (`Increments`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_increments validates that the [`IncrementsNumDoseLevels`] object
+#' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
 #'   contains valid `maxLevels` and `basisLevel` option.
-validate_increments_numdoselevels <- function(object) {
+v_increments_numdoselevels <- function(object) {
   o <- Validate()
   o$check(
     is.scalar(object@maxLevels) &&
@@ -29,9 +29,9 @@ validate_increments_numdoselevels <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_stopping validates that the [`IncrementsHSRBeta`]
+#' @describeIn v_stopping validates that the [`IncrementsHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
-validate_increments_hsr_beta <- function(object) {
+v_increments_hsr_beta <- function(object) {
   o <- Validate()
   o$check(
     is.probability(object@target, bounds = FALSE),
@@ -53,9 +53,9 @@ validate_increments_hsr_beta <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_stopping validates that the [`StoppingLowestDoseHSRBeta`]
+#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
-validate_stopping_lowest_dose_hsr_beta <- validate_increments_hsr_beta
+v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
 
 #' Internal Helper Functions for Validation of [`Stopping`] Objects
 #'
@@ -64,15 +64,15 @@ validate_stopping_lowest_dose_hsr_beta <- validate_increments_hsr_beta
 #' These functions are only used internally to validate the format of an input
 #' [`Stopping`] or inherited classes and therefore not exported.
 #'
-#' @name validate_stopping
+#' @name v_stopping
 #' @param object (`Stopping`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_stopping validates that the [`StoppingMTDCV`] object
+#' @describeIn v_stopping validates that the [`StoppingMTDCV`] object
 #'   contains valid probability target and percentage threshold.
-validate_stopping_mtd_cv <- function(object) {
+v_stopping_mtd_cv <- function(object) {
   o <- Validate()
   o$check(
     is.probability(object@target, bounds = FALSE),

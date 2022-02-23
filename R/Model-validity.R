@@ -5,15 +5,15 @@
 #' These functions are only used internally to validate the format of an input
 #' [`AllModels`] or inherited classes and therefore not exported.
 #'
-#' @name validate_model_objects
+#' @name v_model_objects
 #' @param object (`AllModels`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_model_objects validates that the names of the
+#' @describeIn v_model_objects validates that the names of the
 #'   arguments in `init` function are included in `datanames` slot.
-validate_general_model <- function(object) {
+v_general_model <- function(object) {
   o <- Validate()
   o$check(
     h_check_fun_formals(object@init, allowed = object@datanames),
@@ -22,10 +22,10 @@ validate_general_model <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_model_objects validates that the names of the
+#' @describeIn v_model_objects validates that the names of the
 #'   arguments in `dose` and `prob` functions contains `prob` and `dose`
 #'   respectively, as well as they match `sample` slot of the `object`.
-validate_model <- function(object) {
+v_model <- function(object) {
   o <- Validate()
   o$check(
     h_check_fun_formals(
@@ -46,9 +46,9 @@ validate_model <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_model_objects validates that the normal model parameters
+#' @describeIn v_model_objects validates that the normal model parameters
 #'   are valid as well as `ref_dose` is a positive scalar.
-validate_model_log_normal <- function(object) {
+v_model_log_normal <- function(object) {
   o <- Validate()
   o$check(
     test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
@@ -83,9 +83,9 @@ validate_model_log_normal <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_model_objects validates that the logistic Kadane model
+#' @describeIn v_model_objects validates that the logistic Kadane model
 #'   parameters are valid.
-validate_model_logistic_kadane <- function(object) {
+v_model_logistic_kadane <- function(object) {
   o <- Validate()
   o$check(
     is.probability(object@theta, bounds = FALSE),
@@ -103,7 +103,7 @@ validate_model_logistic_kadane <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_model_objects validates that the logistic normal mixture
+#' @describeIn v_model_objects validates that the logistic normal mixture
 #'   model parameters as well as `ref_dose` are valid.
 v_model_logistic_normal_mixture <- function(object) {
   o <- Validate()

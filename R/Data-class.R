@@ -29,7 +29,7 @@ NULL
     cohort = integer(),
     nObs = 0L
   ),
-  validity = validate_subjects
+  validity = v_general_data
 )
 
 # Data ----
@@ -75,7 +75,7 @@ NULL
     xLevel = integer(),
     placebo = FALSE
   ),
-  validity = validate_data
+  validity = v_data
 )
 
 ## constructor ----
@@ -171,7 +171,7 @@ Data <- function(x = numeric(),
   slots = c(w = "numeric"),
   prototype = prototype(w = numeric()),
   contains = "Data",
-  validity = validate_data_dual
+  validity = v_data_dual
 )
 
 ## constructor ----
@@ -223,7 +223,7 @@ DataDual <- function(w = numeric(),
     part1Ladder = numeric()
   ),
   contains = "Data",
-  validity = validate_data_parts
+  validity = v_data_parts
 )
 
 ## constructor ----
@@ -285,7 +285,7 @@ DataParts <- function(part = integer(),
     nObsshare = 0L
   ),
   contains = "Data",
-  validity = validate_data_mixture
+  validity = v_data_mixture
 )
 
 ## constructor ----
@@ -348,7 +348,7 @@ DataMixture <- function(xshare = numeric(),
     Tmax = 0 + .Machine$double.xmin
   ),
   contains = "Data",
-  validity = validate_data_DA
+  validity = v_data_DA
 )
 
 ## constructor ----
