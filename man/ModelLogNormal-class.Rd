@@ -12,7 +12,8 @@ ModelLogNormal(mean, cov, ref_dose = 0)
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
 
-\item{cov}{(\code{matrix})\cr the prior covariance matrix.}
+\item{cov}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
+\code{prec} is internally calculated as an inverse of \code{cov}.}
 
 \item{ref_dose}{(\code{number})\cr the reference dose.}
 }

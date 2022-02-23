@@ -4,58 +4,69 @@
 \name{LogisticNormalMixture-class}
 \alias{LogisticNormalMixture-class}
 \alias{.LogisticNormalMixture}
-\title{Standard logistic model with flexible mixture of two bivariate normal priors}
+\alias{LogisticNormalMixture}
+\title{\code{LogisticNormalMixture}}
+\usage{
+LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
+}
+\arguments{
+\item{comp1}{(\code{list})\cr specifications of the first component, i.e. a named list
+with \code{mean} and \code{cov} for the first bivariate normal prior mean vector.
+The precision matrix \code{prec} is internally calculated as an inverse of \code{cov}.}
+
+\item{comp2}{(\code{list})\cr specifications of the second component.}
+
+\item{weightpar}{(\code{numeric})\cr the beta parameters for the weight of the
+first component. It must a be a named vector of length 2 with names \code{a} and
+\code{b} and with strictly positive values.}
+
+\item{ref_dose}{(\code{number})\cr the reference dose.}
+}
 \description{
-This is standard logistic regression model with a mixture of two bivariate
-normal priors on the intercept and slope parameters. The weight of the two
-normal priors is a model parameter, hence it is a flexible mixture.
-This type of prior is often used with a mixture of a minimal informative
-and an informative component, in order to make the CRM more robust to
-data deviations from the informative component.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{LogisticNormalMixture}} is the class for standard logistic regression model
+with a mixture of two bivariate normal priors on the intercept and slope parameters.
 }
 \details{
 The covariate is the natural logarithm of the dose \eqn{x} divided by
-the reference dose \eqn{x^{*}}:
-
-\deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
-where \eqn{p(x)} is the probability of observing a DLT for a given dose
-\eqn{x}.
-
-The prior is
-\deqn{(\alpha, \beta) \sim
-w * Normal(\mu_{1}, \Sigma_{1}) + (1 - w) * Normal(\mu_{2}, \Sigma_{2})}
-
-The weight w for the first component is assigned a beta prior B(a, b).
-
-The slots of this class comprise two lists, containing the mean vector, the
-covariance and precision matrices of the two bivariate normal distributions
-each, the parameters of the beta prior for the first component weight, as
-well as the reference dose.
+the reference dose \eqn{x*}, i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior
+\deqn{(alpha0, alpha1) ~ w * Normal(mean1, cov1) + (1 - w) * Normal(mean2, cov2).}
+The weight w for the first component is assigned a beta prior \code{B(a, b)}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{comp1}}{the specifications of the first component: a list with
-\code{mean}, \code{cov} and \code{prec} for the first bivariate normal prior}
+\item{\code{comp1}}{(\code{list})\cr specifications of the first component, i.e. a named list
+with \code{mean}, \code{cov} and \code{prec} (which must be an inverse of \code{cov}) for the
+first bivariate normal prior mean vector.}
 
-\item{\code{comp2}}{the specifications of the second component}
+\item{\code{comp2}}{(\code{list})\cr specifications of the second component.}
 
-\item{\code{weightpar}}{the beta parameters for the weight of the first component}
+\item{\code{weightpar}}{(\code{numeric})\cr the beta parameters for the weight of the
+first component. It must a be a named vector of length 2 with names \code{a} and
+\code{b} and with strictly positive values.}
 
-\item{\code{refDose}}{the reference dose \eqn{x^{*}}}
+\item{\code{ref_dose}}{(\code{number})\cr the reference dose.}
 }}
 
-\examples{
-
-model <- LogisticNormalMixture(comp1 = list(mean = c(-0.85, 1),
-                                            cov = matrix(c(1, -0.5, -0.5, 1), 
-                                                         nrow = 2)),
-                               comp2 = list(mean = c(1, 1.5),
-                                            cov = matrix(c(1.2, -0.45, -0.45, 0.6), 
-                                                         nrow = 2)),
-                               weightpar = c(a=1, b=1),
-                               refDose = 50)
-
-
+\note{
+The weight of the two normal priors is a model parameter, hence it is a
+flexible mixture. This type of prior is often used with a mixture of a minimal
+informative and an informative component, in order to make the CRM more robust
+to data deviations from the informative component.
 }
-\keyword{classes}
+\examples{
+my_model <- LogisticNormalMixture(
+  comp1 = list(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)),
+  comp2 = list(mean = c(1, 1.5), cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)),
+  weightpar = c(a = 1, b = 1),
+  ref_dose = 50
+)
+}
+\seealso{
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}.
+}

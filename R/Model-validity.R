@@ -102,3 +102,59 @@ validate_model_logistic_kadane <- function(object) {
   }
   o$result()
 }
+
+#' @describeIn validate_model_objects validates that the logistic normal mixture
+#'   model parameters as well as `ref_dose` are valid.
+v_model_logistic_normal_mixture <- function(object) {
+  o <- Validate()
+
+  for (i in c("comp1", "comp2")) {
+    comp <- slot(object, i)
+    o$check(
+      test_numeric(x = comp$mean, len = 2L, any.missing = FALSE),
+      "mean must have length 2 and no missing values are allowed"
+    )
+    is_cov_2x2 <- test_matrix(
+      comp$cov,
+      mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+    )
+    is_prec_2x2 <- test_matrix(
+      comp$prec,
+      mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+    )
+    o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
+    o$check(is_prec_2x2, "prec must be 2x2 matrix without any missing values")
+    if (is_cov_2x2) {
+      o$check(
+        h_is_positive_definite(comp$cov),
+        "cov must be positive-definite matrix"
+      )
+    }
+    if (is_prec_2x2) {
+      o$check(
+        all.equal(comp$cov %*% comp$prec, diag(1, 2), check.attributes = FALSE) == TRUE,
+        "prec must be inverse of cov"
+      )
+    }
+  }
+  o$check(
+    test_numeric(
+      object@weightpar,
+      lower = 0 + .Machine$double.xmin,
+      finite = TRUE,
+      any.missing = FALSE,
+      len = 2,
+      names = "named"
+    ),
+    "weightpar must be a numerical vector of length two with values greater than 0"
+  )
+  o$check(
+    test_set_equal(names(object@weightpar), c("a", "b")),
+    "weightpar should be a named vector of length two with names 'a' and 'b'"
+  )
+  o$check(
+    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
+    "ref_dose must be a non-negative scalar"
+  )
+  o$result()
+}
