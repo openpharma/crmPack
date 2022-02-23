@@ -69,22 +69,22 @@ reference:
       - h_null_if_scalar
   - title: Internal Validation Functions
     contents:
-      - validate_subjects
-      - validate_data
-      - validate_data_dual
-      - validate_data_parts
-      - validate_data_mixture
-      - validate_data_DA
-      - validate_mcmc_options
-      - validate_general_model
-      - validate_model
-      - validate_model_log_normal
-      - validate_model_logistic_kadane
+      - v_general_data
+      - v_data
+      - v_data_dual
+      - v_data_parts
+      - v_data_mixture
+      - v_data_DA
+      - v_mcmc_options
+      - v_general_model
+      - v_model
+      - v_model_log_normal
+      - v_model_logistic_kadane
       - v_model_logistic_normal_mixture
-      - validate_stopping_mtd_cv
-      - validate_stopping_lowest_dose_hsr_beta
-      - validate_increments_numdoselevels
-      - validate_increments_hsr_beta
+      - v_stopping_mtd_cv
+      - v_stopping_lowest_dose_hsr_beta
+      - v_increments_numdoselevels
+      - v_increments_hsr_beta
   - title: Methods
     contents:
       - plot-Data

@@ -70,7 +70,7 @@ NULL
     datamodel = I,
     priormodel = I
   ),
-  validity = validate_general_model
+  validity = v_general_model
 )
 
 # Model-class (TO REMOVE) ----
@@ -133,7 +133,7 @@ NULL
     dose = function(prob) {},
     prob = function(dose) {}
   ),
-  validity = validate_model
+  validity = v_model
 )
 
 # ModelLogNormal ----
@@ -176,7 +176,7 @@ NULL
     prec = "matrix",
     ref_dose = "numeric"
   ),
-  validity = validate_model_log_normal
+  validity = v_model_log_normal
 )
 
 ## constructor ----
@@ -538,7 +538,7 @@ ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
     xmin = 0.1,
     xmax = 1
   ),
-  validity = validate_model_logistic_kadane
+  validity = v_model_logistic_kadane
 )
 
 ## constructor ----

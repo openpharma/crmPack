@@ -5,16 +5,16 @@
 #' These functions are only used internally to validate the format of an input
 #' [`GeneralData`] or inherited classes and therefore not exported.
 #'
-#' @name validate_data_objects
+#' @name v_data_objects
 #' @param object (`GeneralData`)\cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn validate_data_objects validates that the [`GeneralData`]
+#' @describeIn v_data_objects validates that the [`GeneralData`]
 #'   object contains unique `ID`, non-negative `cohort` indices and
 #'   `ID` and `cohort` vectors are of the same length `nObs`.
-validate_subjects <- function(object) {
+v_general_data <- function(object) {
   o <- Validate()
   # In if clause so that below test_* won't fail.
   if (!test_int(object@nObs)) {
@@ -31,7 +31,7 @@ validate_subjects <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_data_objects helper function which verifies whether
+#' @describeIn v_data_objects helper function which verifies whether
 #'   the `dose` values are unique in each and every different `cohort`.
 #' @param dose (`numeric`)\cr dose values.
 #' @param cohort (`integer`)\cr cohort indices parallel to `doses`.
@@ -48,9 +48,9 @@ h_doses_unique_per_cohort <- function(dose, cohort) {
   all(num_doses_per_cohort == 1L)
 }
 
-#' @describeIn validate_data_objects validates that the [`Data`] object contains
+#' @describeIn v_data_objects validates that the [`Data`] object contains
 #'   valid elements with respect to their types, dependency and length.
-validate_data <- function(object) {
+v_data <- function(object) {
   o <- Validate()
   o$check(
     test_double(object@x, len = object@nObs, any.missing = FALSE),
@@ -103,9 +103,9 @@ validate_data <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_data_objects validates that the [`DataDual`] object
+#' @describeIn v_data_objects validates that the [`DataDual`] object
 #' contains valid biomarker vector with respect to its type and the length.
-validate_data_dual <- function(object) {
+v_data_dual <- function(object) {
   o <- Validate()
   o$check(
     test_double(object@w, len = object@nObs, any.missing = FALSE),
@@ -114,9 +114,9 @@ validate_data_dual <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_data_objects validates that the [`DataParts`] object
+#' @describeIn v_data_objects validates that the [`DataParts`] object
 #' contains valid elements with respect to their types, dependency and length.
-validate_data_parts <- function(object) {
+v_data_parts <- function(object) {
   o <- Validate()
   o$check(
     test_integer(object@part, lower = 1, upper = 2, len = object@nObs, any.missing = FALSE),
@@ -137,9 +137,9 @@ validate_data_parts <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_data_objects validates that the [`DataMixture`] object
+#' @describeIn v_data_objects validates that the [`DataMixture`] object
 #' contains valid elements with respect to their types, dependency and length.
-validate_data_mixture <- function(object) {
+v_data_mixture <- function(object) {
   o <- Validate()
 
   # In if clause so that below test_* won't fail.
@@ -161,9 +161,9 @@ validate_data_mixture <- function(object) {
   o$result()
 }
 
-#' @describeIn validate_data_objects validates that the [`DataDA`] object
+#' @describeIn v_data_objects validates that the [`DataDA`] object
 #' contains valid elements with respect to their types, dependency and length.
-validate_data_DA <- function(object) {
+v_data_DA <- function(object) {
   o <- Validate()
   # In if clause so that below test_* won't fail.
   if (!(test_number(object@Tmax) && object@Tmax > 0)) {
