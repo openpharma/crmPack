@@ -49,7 +49,8 @@ reference:
       - IncrementsHSRBeta
   - title: Internal Helper Functions
     contents:
-      - h_validate_combine_results
+      - h_combine_validation_results
+      - h_validate_normal_params
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df

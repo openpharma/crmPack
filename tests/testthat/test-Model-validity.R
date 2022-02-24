@@ -93,6 +93,17 @@ test_that("v_model_log_normal returns error for wrong cov", {
   )
 })
 
+test_that("v_model_log_normal returns error for wrong prec", {
+  object <- h_get_model_log_normal()
+  # We assign a matrix which is not an inverse of `cov`.
+  object@prec <- matrix(c(5, 4, 1, 5), ncol = 2)
+
+  expect_equal(
+    v_model_log_normal(object),
+    "prec must be inverse of cov"
+  )
+})
+
 test_that("v_model_log_normal returns error for wrong ref_dose", {
   object <- h_get_model_log_normal()
   # We assign a ref_dose which is not a non-negative scalar.
@@ -191,13 +202,7 @@ test_that("v_model_logistic_normal_mixture returns error for cov with NA", {
 
   expect_equal(
     v_model_logistic_normal_mixture(object),
-    rep(
-      c(
-        "cov must be 2x2 matrix without any missing values",
-        "prec must be inverse of cov"
-      ),
-      2
-    )
+    rep("cov must be 2x2 matrix without any missing values", 2)
   )
 })
 
@@ -216,6 +221,18 @@ test_that("v_model_logistic_normal_mixture returns error for wrong cov", {
       ),
       2
     )
+  )
+})
+
+test_that("v_model_logistic_normal_mixture returns error for wrong prec", {
+  object <- h_get_logistic_normal_mixture()
+  # We assign a matrix which is not an inverse of `cov`.
+  object@comp1$prec <- matrix(c(5, 2, 1, 5), ncol = 2)
+  object@comp2$prec <- matrix(c(5, 2, 1, 9), ncol = 2)
+
+  expect_equal(
+    v_model_logistic_normal_mixture(object),
+    rep("prec must be inverse of cov", 2)
   )
 })
 

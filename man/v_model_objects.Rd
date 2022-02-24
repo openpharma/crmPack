@@ -2,6 +2,7 @@
 % Please edit documentation in R/Model-validity.R
 \name{v_model_objects}
 \alias{v_model_objects}
+\alias{h_validate_normal_params}
 \alias{v_general_model}
 \alias{v_model}
 \alias{v_model_log_normal}
@@ -9,6 +10,8 @@
 \alias{v_model_logistic_normal_mixture}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
+h_validate_normal_params(params)
+
 v_general_model(object)
 
 v_model(object)
@@ -20,6 +23,10 @@ v_model_logistic_kadane(object)
 v_model_logistic_normal_mixture(object)
 }
 \arguments{
+\item{params}{(\code{list})\cr bivariate normal parameters. It is expected that
+this would be a named list with \code{mean} 2 elements numerical vector,
+\code{cov} and \code{prec} 2x2 matrices, where \code{prec} must be an inverse of \code{cov}).}
+
 \item{object}{(\code{AllModels})\cr object to validate.}
 }
 \value{
@@ -34,6 +41,9 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
+\item \code{h_validate_normal_params}: a helper function that validates bivariate normal
+parameters.
+
 \item \code{v_general_model}: validates that the names of the
 arguments in \code{init} function are included in \code{datanames} slot.
 
