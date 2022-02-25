@@ -42,32 +42,35 @@ Validate <- setRefClass(
   )
 )
 
-#' Combining validation results
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' A simple helper function that combines outputs from S4 object validation
-#' functions into one consistent object. Namely, it combines the validation
-#' `character` messages supplied to the input of this function into one `character`
-#' vector, or simply returns `TRUE` if there were no such messages.
-#'
-#' @param ... outputs from S4 object validation functions.
-#'
-#' @return `character` vector if there was at least object of type `character`
-#'   in the input. Otherwise, `TRUE`.
-#'
-#' @export
-h_combine_validation_results <- function(...) {
-  x <- list(...)
-  is_msg <- sapply(x, is.character)
-  if (any(is_msg)) {
-    unlist(x[is_msg], use.names = FALSE)
-  } else {
-    TRUE
-  }
-}
-
 # nolint start
+
+# #' Combining validation results
+# #'
+# #' @description `r lifecycle::badge("experimental")`
+# #'
+# #' A simple helper function that combines outputs from S4 object validation
+# #' functions into one consistent object. Namely, it combines the validation
+# #' `character` messages supplied to the input of this function into one `character`
+# #' vector, or simply returns `TRUE` if there were no such messages.
+# #'
+# #' @param ... outputs from S4 object validation functions; a single validation
+# #'   output is a `character` vector or `TRUE`.
+# #'
+# #' @return `character` vector if there was at least object of type `character`
+# #'   in the input. Otherwise, `TRUE`.
+# #'
+# #' @export
+# h_combine_validation_results <- function(...) {
+#   x <- list(...)
+#   assert_true(all(sapply(x, function(i) is.character(i) || isTRUE(i))))
+#
+#   is_msg <- sapply(x, is.character)
+#   if (any(is_msg)) {
+#     unlist(x[is_msg], use.names = FALSE)
+#   } else {
+#     TRUE
+#   }
+# }
 
 ##' Helper function for value matching with tolerance
 ##'

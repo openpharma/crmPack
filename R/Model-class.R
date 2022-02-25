@@ -1,6 +1,7 @@
 #' @include helpers.R
 #' @include helpers_jags.R
 #' @include Model-validity.R
+#' @include ModelParams-class.R
 NULL
 
 # AllModels-class ----
@@ -156,9 +157,7 @@ NULL
 #' covariance matrix in the `JAGS`.
 #' All ("normal") model specific classes inherit from this class.
 #'
-#' @slot mean (`numeric`)\cr the prior mean vector.
-#' @slot cov (`matrix`)\cr the prior covariance matrix.
-#' @slot prec the prior precision matrix, which is an inverse matrix of the `cov`.
+#' @slot params (`ModelParamsNormal`)\cr bivariate normal prior parameters.
 #' @slot ref_dose (`number`)\cr the reference dose.
 #'
 #' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
@@ -171,9 +170,7 @@ NULL
   Class = "ModelLogNormal",
   contains = "Model",
   slots = c(
-    mean = "numeric",
-    cov = "matrix",
-    prec = "matrix",
+    params = "ModelParamsNormal",
     ref_dose = "numeric"
   ),
   validity = v_model_log_normal
@@ -191,14 +188,9 @@ NULL
 #' @export
 #'
 ModelLogNormal <- function(mean, cov, ref_dose = 0) {
-  assert_matrix(cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
-  assert_true(h_is_positive_definite(cov)) # To ensure that `cov` is invertible.
-
-  prec <- solve(cov)
+  params <- ModelParamsNormal(mean, cov)
   .ModelLogNormal(
-    mean = mean,
-    cov = cov,
-    prec = prec,
+    params = params,
     ref_dose = ref_dose,
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
@@ -206,7 +198,7 @@ ModelLogNormal <- function(mean, cov, ref_dose = 0) {
       alpha1 <- exp(theta[2])
     },
     modelspecs = function() {
-      list(ref_dose = ref_dose, mean = mean, prec = prec)
+      list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
     },
     init = function() {
       list(theta = c(0, 1))
@@ -603,16 +595,16 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #'   informative and an informative component, in order to make the CRM more robust
 #'   to data deviations from the informative component.
 #'
-#' @slot comp1 (`list`)\cr specifications of the first component, i.e. a named list
-#'   with `mean`, `cov` and `prec` (which must be an inverse of `cov`) for the
-#'   first bivariate normal prior mean vector.
-#' @slot comp2 (`list`)\cr specifications of the second component.
+#' @slot comp1 (`ModelParamsNormal`)\cr bivariate normal prior specification of
+#'   the first component.
+#' @slot comp2 (`ModelParamsNormal`)\cr bivariate normal prior specification of
+#'   the second component.
 #' @slot weightpar (`numeric`)\cr the beta parameters for the weight of the
 #'   first component. It must a be a named vector of length 2 with names `a` and
 #'   `b` and with strictly positive values.
 #' @slot ref_dose (`number`)\cr the reference dose.
 #'
-#' @seealso [`ModelLogNormal`], [`LogisticNormal`].
+#' @seealso [`ModelParamsNormal`], [`ModelLogNormal`], [`LogisticNormal`].
 #'
 #' @aliases LogisticNormalMixture
 #' @export
@@ -621,14 +613,14 @@ LogisticKadane <- function(theta, xmin, xmax) {
   Class = "LogisticNormalMixture",
   contains = "GeneralModel",
   slots = c(
-    comp1 = "list",
-    comp2 = "list",
+    comp1 = "ModelParamsNormal",
+    comp2 = "ModelParamsNormal",
     weightpar = "numeric",
     ref_dose = "numeric"
   ),
   prototype = prototype(
-    comp1 = list(mean = c(0, 1), cov = diag(2), prec = diag(2)),
-    comp2 = list(mean = c(-1, 1), cov = diag(2), prec = diag(2)),
+    comp1 = ModelParamsNormal(mean = c(0, 1), cov = diag(2)),
+    comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2)),
     weightpar = c(a = 1, b = 1),
     ref_dose = 1
   ),
@@ -639,10 +631,10 @@ LogisticKadane <- function(theta, xmin, xmax) {
 
 #' @rdname LogisticNormalMixture-class
 #'
-#' @param comp1 (`list`)\cr specifications of the first component, i.e. a named list
-#'   with `mean` and `cov` for the first bivariate normal prior mean vector.
-#'   The precision matrix `prec` is internally calculated as an inverse of `cov`.
-#' @param comp2 (`list`)\cr specifications of the second component.
+#' @param comp1 (`ModelParamsNormal`)\cr bivariate normal prior specification of
+#'   the first component. See [`ModelParamsNormal`] for more details.
+#' @param comp2 (`ModelParamsNormal`)\cr bivariate normal prior specification of
+#'   the second component. See [`ModelParamsNormal`] for more details.
 #' @param weightpar (`numeric`)\cr the beta parameters for the weight of the
 #'   first component. It must a be a named vector of length 2 with names `a` and
 #'   `b` and with strictly positive values.
@@ -655,15 +647,6 @@ LogisticNormalMixture <- function(comp1,
                                   comp2,
                                   weightpar,
                                   ref_dose) {
-  # To ensure that `cov` is invertible.
-  assert_matrix(comp1$cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
-  assert_matrix(comp2$cov, mode = "numeric", any.missing = FALSE, nrows = 2, ncols = 2)
-  assert_true(h_is_positive_definite(comp1$cov))
-  assert_true(h_is_positive_definite(comp2$cov))
-
-  comp1 <- c(comp1, list(prec = solve(comp1$cov)))
-  comp2 <- c(comp2, list(prec = solve(comp2$cov)))
-
   .LogisticNormalMixture(
     comp1 = comp1,
     comp2 = comp2,
@@ -690,8 +673,8 @@ LogisticNormalMixture <- function(comp1,
     modelspecs = function() {
       list(
         ref_dose = ref_dose,
-        mean = cbind(comp1$mean, comp2$mean),
-        prec = array(data = c(comp1$prec, comp2$prec), dim = c(2, 2, 2)),
+        mean = cbind(comp1@mean, comp2@mean),
+        prec = array(data = c(comp1@prec, comp2@prec), dim = c(2, 2, 2)),
         weightpar = weightpar
       )
     },
@@ -1820,9 +1803,8 @@ LogisticLogNormalMixture <- function(mean,
                                      refDose,
                                      shareWeight)
 {
-  .LogisticLogNormalMixture(mean=mean,
-                            cov=cov,
-                            prec = solve(cov),
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalMixture(params = params,
                             ref_dose=refDose,
                             shareWeight=shareWeight,
                             datamodel=
@@ -1891,8 +1873,8 @@ LogisticLogNormalMixture <- function(mean,
                             datanames=c("nObs", "y", "x", "nObsshare", "yshare", "xshare"),
                             modelspecs=
                               function(){
-                                list(mean=mean,
-                                     cov=cov,
+                                list(mean=params@mean,
+                                     cov=params@cov,
                                      refDose=refDose,
                                      catProbs=c(1 - shareWeight, shareWeight))
                               },
@@ -3023,8 +3005,8 @@ DALogisticLogNormal <- function(npiece=3,
                        modelspecs=
                          function(nObs, Tmax){
                            list(ref_dose=start@ref_dose,
-                                prec=start@prec,
-                                mean=start@mean,
+                                prec=start@params@prec,
+                                mean=start@params@mean,
                                 npiece=npiece,
                                 l=l,
                                 C_par=C_par,
@@ -3185,8 +3167,8 @@ TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
 
 
                              list(ref_dose=start@ref_dose,
-                                  prec=start@prec,
-                                  mean=start@mean,
+                                  prec=start@params@prec,
+                                  mean=start@params@mean,
                                   zeros=rep(0, nObs),
                                   cadj=1e10,
                                   w=w)

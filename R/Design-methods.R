@@ -4077,8 +4077,8 @@ setMethod("simulate",
                                         options=mcmcOptions)
                   } else if(DA==FALSE) {
 
-                    temp_model<-LogisticLogNormal(mean=object@model@mean,
-                                                  cov=object@model@cov,
+                    temp_model<-LogisticLogNormal(mean=object@model@params@mean,
+                                                  cov=object@model@params@cov,
                                                   ref_dose=object@model@refDose)
 
                     trunk_Data<-Data(x = thisData@x,y =thisData@y,

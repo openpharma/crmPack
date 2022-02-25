@@ -10,11 +10,11 @@
 LogisticNormalMixture(comp1, comp2, weightpar, ref_dose)
 }
 \arguments{
-\item{comp1}{(\code{list})\cr specifications of the first component, i.e. a named list
-with \code{mean} and \code{cov} for the first bivariate normal prior mean vector.
-The precision matrix \code{prec} is internally calculated as an inverse of \code{cov}.}
+\item{comp1}{(\code{ModelParamsNormal})\cr bivariate normal prior specification of
+the first component. See \code{\link{ModelParamsNormal}} for more details.}
 
-\item{comp2}{(\code{list})\cr specifications of the second component.}
+\item{comp2}{(\code{ModelParamsNormal})\cr bivariate normal prior specification of
+the second component. See \code{\link{ModelParamsNormal}} for more details.}
 
 \item{weightpar}{(\code{numeric})\cr the beta parameters for the weight of the
 first component. It must a be a named vector of length 2 with names \code{a} and
@@ -40,11 +40,11 @@ The weight w for the first component is assigned a beta prior \code{B(a, b)}.
 \section{Slots}{
 
 \describe{
-\item{\code{comp1}}{(\code{list})\cr specifications of the first component, i.e. a named list
-with \code{mean}, \code{cov} and \code{prec} (which must be an inverse of \code{cov}) for the
-first bivariate normal prior mean vector.}
+\item{\code{comp1}}{(\code{ModelParamsNormal})\cr bivariate normal prior specification of
+the first component.}
 
-\item{\code{comp2}}{(\code{list})\cr specifications of the second component.}
+\item{\code{comp2}}{(\code{ModelParamsNormal})\cr bivariate normal prior specification of
+the second component.}
 
 \item{\code{weightpar}}{(\code{numeric})\cr the beta parameters for the weight of the
 first component. It must a be a named vector of length 2 with names \code{a} and
@@ -61,12 +61,18 @@ to data deviations from the informative component.
 }
 \examples{
 my_model <- LogisticNormalMixture(
-  comp1 = list(mean = c(-0.85, 1), cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)),
-  comp2 = list(mean = c(1, 1.5), cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)),
+  comp1 = ModelParamsNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  ),
+  comp2 = ModelParamsNormal(
+    mean = c(1, 1.5),
+    cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+  ),
   weightpar = c(a = 1, b = 1),
   ref_dose = 50
 )
 }
 \seealso{
-\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}.
+\code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}.
 }

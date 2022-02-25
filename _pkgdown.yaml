@@ -32,6 +32,7 @@ reference:
       - DataMixture
       - DataDA
       - McmcOptions
+      - ModelParamsNormal
       - AllModels
       - GeneralModel
       - Model
@@ -49,8 +50,6 @@ reference:
       - IncrementsHSRBeta
   - title: Internal Helper Functions
     contents:
-      - h_combine_validation_results
-      - h_validate_normal_params
       - h_doses_unique_per_cohort
       - h_all_equivalent
       - h_plot_data_df
@@ -77,6 +76,7 @@ reference:
       - v_data_mixture
       - v_data_DA
       - v_mcmc_options
+      - v_model_params_normal
       - v_general_model
       - v_model
       - v_model_log_normal

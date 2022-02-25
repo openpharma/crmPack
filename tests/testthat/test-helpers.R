@@ -1,3 +1,44 @@
+# h_combine_validation_results ----
+
+# nolint start
+
+# test_that("h_combine_validation_results returns TRUE for all TRUE objects", {
+#   result <- h_combine_validation_results(TRUE, TRUE, TRUE)
+#   expect_equal(result, TRUE)
+# })
+#
+# test_that("h_combine_validation_results returns combined message", {
+#   out1 <- c("error_msg", "error1_msg")
+#   out2 <- c("error2_msg", "error3_msg")
+#
+#   result <- h_combine_validation_results(out1, out2)
+#   expected <- c(out1, out2)
+#   expect_equal(result, expected)
+# })
+#
+# test_that("h_combine_validation_results returns combined message", {
+#   out1 <- c("error_msg", "error1_msg")
+#   out2 <- TRUE
+#   out3 <- c("error2_msg", "error3_msg")
+#
+#   result <- h_combine_validation_results(out1, out2, out3)
+#   expected <- c(out1, out3)
+#   expect_equal(result, expected)
+# })
+#
+# test_that("h_combine_validation_results throws the error for non-valid input", {
+#   expect_error(
+#     h_combine_validation_results(FALSE, "error_msg"),
+#     "Assertion on .* failed: Must be TRUE."
+#   )
+#   expect_error(
+#     h_combine_validation_results(TRUE, 1),
+#     "Assertion on .* failed: Must be TRUE."
+#   )
+# })
+
+# nolint end
+
 # h_all_equivalent ----
 
 test_that("h_all_equivalent returns TRUE for equivalent objects", {

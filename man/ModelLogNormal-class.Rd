@@ -35,11 +35,7 @@ All ("normal") model specific classes inherit from this class.
 \section{Slots}{
 
 \describe{
-\item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
-
-\item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix.}
-
-\item{\code{prec}}{the prior precision matrix, which is an inverse matrix of the \code{cov}.}
+\item{\code{params}}{(\code{ModelParamsNormal})\cr bivariate normal prior parameters.}
 
 \item{\code{ref_dose}}{(\code{number})\cr the reference dose.}
 }}
