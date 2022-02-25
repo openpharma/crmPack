@@ -15,20 +15,20 @@ NULL
 #'   object contains unique `ID`, non-negative `cohort` indices and
 #'   `ID` and `cohort` vectors are of the same length `nObs`.
 v_general_data <- function(object) {
-  o <- Validate()
+  v <- Validate()
   # In if clause so that below test_* won't fail.
   if (!test_int(object@nObs)) {
     return("nObs must be of type integer of length 1")
   }
-  o$check(
+  v$check(
     test_integer(object@ID, len = object@nObs, any.missing = FALSE, unique = TRUE),
     "ID must be of type integer and length nObs and unique"
   )
-  o$check(
+  v$check(
     test_integer(object@cohort, lower = 0L, len = object@nObs, any.missing = FALSE, sorted = TRUE),
     "cohort must be of type integer and length nObs and contain non-negative, sorted values"
   )
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_data_objects helper function which verifies whether
@@ -51,132 +51,132 @@ h_doses_unique_per_cohort <- function(dose, cohort) {
 #' @describeIn v_data_objects validates that the [`Data`] object contains
 #'   valid elements with respect to their types, dependency and length.
 v_data <- function(object) {
-  o <- Validate()
-  o$check(
+  v <- Validate()
+  v$check(
     test_double(object@x, len = object@nObs, any.missing = FALSE),
     "Doses vector x must be of type double and length nObs"
   )
-  o$check(
+  v$check(
     test_integer(object@y, lower = 0, upper = 1, len = object@nObs, any.missing = FALSE),
     "DLT vector y must be nObs long and contain 0 or 1 integers only"
   )
-  o$check(
+  v$check(
     test_double(object@doseGrid, len = object@nGrid, any.missing = FALSE, unique = TRUE, sorted = TRUE),
     "doseGrid must be of type double and length nGrid and contain unique, sorted values"
   )
-  o$check(
+  v$check(
     test_int(object@nGrid),
     "Number of dose grid values nGrid must be scalar integer"
   )
-  o$check(
+  v$check(
     test_integer(object@xLevel, len = object@nObs, any.missing = FALSE),
     "Levels xLevel for the doses the patients have been given must be of type integer and length nObs"
   )
-  o$check(
+  v$check(
     test_flag(object@placebo),
     "The placebo flag must be scalar logical"
   )
-  o$check(
+  v$check(
     test_subset(object@x, object@doseGrid),
     "Dose values in x must be from doseGrid"
   )
-  o$check(
+  v$check(
     h_all_equivalent(object@x, object@doseGrid[object@xLevel]),
     "x must be equivalent to doseGrid[xLevel] (up to numerical tolerance)"
   )
   if (object@placebo) {
     is_placebo <- object@x == object@doseGrid[1]
-    o$check(
+    v$check(
       test_set_equal(object@cohort, object@cohort[!is_placebo]),
       "A cohort with only placebo is not allowed"
     )
-    o$check(
+    v$check(
       h_doses_unique_per_cohort(dose = object@x[!is_placebo], cohort = object@cohort[!is_placebo]),
       "There must be only one dose level, other than placebo, per cohort"
     )
   } else {
-    o$check(
+    v$check(
       h_doses_unique_per_cohort(dose = object@x, cohort = object@cohort),
       "There must be only one dose level, per cohort"
     )
   }
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_data_objects validates that the [`DataDual`] object
 #' contains valid biomarker vector with respect to its type and the length.
 v_data_dual <- function(object) {
-  o <- Validate()
-  o$check(
+  v <- Validate()
+  v$check(
     test_double(object@w, len = object@nObs, any.missing = FALSE),
     "Biomarker vector w must be of type double and length nObs"
   )
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_data_objects validates that the [`DataParts`] object
 #' contains valid elements with respect to their types, dependency and length.
 v_data_parts <- function(object) {
-  o <- Validate()
-  o$check(
+  v <- Validate()
+  v$check(
     test_integer(object@part, lower = 1, upper = 2, len = object@nObs, any.missing = FALSE),
     "vector part must be nObs long and contain 1 or 2 integers only"
   )
-  o$check(
+  v$check(
     test_int(object@nextPart, lower = 1, upper = 2),
     "nextPart must be integer scalar 1 or 2"
   )
-  o$check(
+  v$check(
     test_numeric(object@part1Ladder, any.missing = FALSE, sorted = TRUE, unique = TRUE),
     "part1Ladder must be of type double and contain unique, sorted values"
   )
-  o$check(
+  v$check(
     test_subset(object@part1Ladder, object@doseGrid),
     "part1Ladder must have all entries from doseGrid"
   )
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_data_objects validates that the [`DataMixture`] object
 #' contains valid elements with respect to their types, dependency and length.
 v_data_mixture <- function(object) {
-  o <- Validate()
+  v <- Validate()
 
   # In if clause so that below test_* won't fail.
   if (!test_int(object@nObsshare)) {
     return("nObsshare must be of type integer of length 1")
   }
-  o$check(
+  v$check(
     test_numeric(object@xshare, len = object@nObsshare, any.missing = FALSE),
     "Dose vector xshare must be of type double and length nObsshare"
   )
-  o$check(
+  v$check(
     test_integer(object@yshare, lower = 0, upper = 1, len = object@nObsshare, any.missing = FALSE),
     "DLT vector yshare must be nObsshare long and contain 0 or 1 integers only"
   )
-  o$check(
+  v$check(
     test_subset(object@xshare, object@doseGrid),
     "Dose values in xshare must be from doseGrid"
   )
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_data_objects validates that the [`DataDA`] object
 #' contains valid elements with respect to their types, dependency and length.
 v_data_DA <- function(object) {
-  o <- Validate()
+  v <- Validate()
   # In if clause so that below test_* won't fail.
   if (!(test_number(object@Tmax) && object@Tmax > 0)) {
     return("DLT window Tmax must be of type double of length 1 and greater than 0")
   }
-  o$check(
+  v$check(
     test_numeric(object@u, upper = object@Tmax, len = object@nObs, any.missing = FALSE) &&
       all(object@u > 0),
     "u must be of type double, nObs length, non-negative and not greater than Tmax"
   )
-  o$check(
+  v$check(
     test_numeric(object@t0, lower = 0, len = object@nObs, any.missing = FALSE, sorted = TRUE),
     "t0 must be of type double, nObs length, sorted non-negative"
   )
-  o$result()
+  v$result()
 }

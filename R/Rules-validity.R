@@ -14,43 +14,43 @@ NULL
 #' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
 #'   contains valid `maxLevels` and `basisLevel` option.
 v_increments_numdoselevels <- function(object) {
-  o <- Validate()
-  o$check(
+  v <- Validate()
+  v$check(
     is.scalar(object@maxLevels) &&
     is.integer(object@maxLevels) &&
     object@maxLevels > 0,
     "maxLevels must be scalar positive integer"
   )
-  o$check(
+  v$check(
     is.scalar(object@basisLevel) &&
     object@basisLevel %in% c("last", "max"),
     "basisLevel must be either 'last' or 'max'"
   )
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_stopping validates that the [`IncrementsHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_increments_hsr_beta <- function(object) {
-  o <- Validate()
-  o$check(
+  v <- Validate()
+  v$check(
     is.probability(object@target, bounds = FALSE),
     "target must be a probability"
   )
-  o$check(
+  v$check(
     is.probability(object@prob, bounds = FALSE),
     "prob must be a probability"
   )
-  o$check(
+  v$check(
     is.scalar(object@a) & is.numeric(object@a) && object@a > 0,
     "Beta distribution shape parameter a must be a positive scalar"
   )
-  o$check(
+  v$check(
     is.scalar(object@b) & is.numeric(object@b) && object@b > 0,
     "Beta distribution shape parameter b must be a positive scalar"
   )
 
-  o$result()
+  v$result()
 }
 
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
@@ -73,14 +73,14 @@ NULL
 #' @describeIn v_stopping validates that the [`StoppingMTDCV`] object
 #'   contains valid probability target and percentage threshold.
 v_stopping_mtd_cv <- function(object) {
-  o <- Validate()
-  o$check(
+  v <- Validate()
+  v$check(
     is.probability(object@target, bounds = FALSE),
     "target must be probability > 0 and < 1"
   )
-  o$check(
+  v$check(
     is.probability(object@thresh_cv / 100, bounds = FALSE),
     "thresh_cv must be percentage > 0"
   )
-  o$result()
+  v$result()
 }
