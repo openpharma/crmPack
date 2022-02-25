@@ -376,11 +376,11 @@ model <- MinimalInformative(dosegrid = coarseGrid, refDose = 100,
 
 The resulting \code{model} (which is an object of class \code{LogisticLogNormal})
 has prior parameters
-$\mu = (\Sexpr{round(model@mean[1], 2)}, \Sexpr{round(model@mean[2], 2)})$ and
+$\mu = (\Sexpr{round(model@params@mean[1], 2)}, \Sexpr{round(model@params@mean[2], 2)})$ and
 $\Sigma=
 \left(\begin{smallmatrix}
-  \Sexpr{round(model@cov[1, 1], 2)} & \Sexpr{round(model@cov[1, 2], 2)} \\
-  \Sexpr{round(model@cov[2, 1], 2)} & \Sexpr{round(model@cov[2, 2], 2)}
+  \Sexpr{round(model@params@cov[1, 1], 2)} & \Sexpr{round(model@params@cov[1, 2], 2)} \\
+  \Sexpr{round(model@params@cov[2, 1], 2)} & \Sexpr{round(model@params@cov[2, 2], 2)}
 \end{smallmatrix}\right)
 $
 and will approximately have 5\% probability each for the DLT

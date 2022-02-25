@@ -51,32 +51,6 @@ v_model <- function(object) {
 v_model_log_normal <- function(object) {
   o <- Validate()
   o$check(
-    test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
-    "mean must have length 2 and no missing values are allowed"
-  )
-  is_cov_2x2 <- test_matrix(
-    object@cov,
-    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
-  )
-  is_prec_2x2 <- test_matrix(
-    object@prec,
-    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
-  )
-  o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
-  o$check(is_prec_2x2, "prec must be 2x2 matrix without any missing values")
-  if (is_cov_2x2) {
-    o$check(
-      h_is_positive_definite(object@cov),
-      "cov must be positive-definite matrix"
-    )
-    if (is_prec_2x2) {
-      o$check(
-        all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
-        "prec must be inverse of cov"
-      )
-    }
-  }
-  o$check(
     test_number(object@ref_dose, na.ok = TRUE, lower = 0),
     "ref_dose must be a non-negative scalar"
   )
@@ -107,36 +81,6 @@ v_model_logistic_kadane <- function(object) {
 #'   model parameters as well as `ref_dose` are valid.
 v_model_logistic_normal_mixture <- function(object) {
   o <- Validate()
-
-  for (i in c("comp1", "comp2")) {
-    comp <- slot(object, i)
-    o$check(
-      test_numeric(x = comp$mean, len = 2L, any.missing = FALSE),
-      "mean must have length 2 and no missing values are allowed"
-    )
-    is_cov_2x2 <- test_matrix(
-      comp$cov,
-      mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
-    )
-    is_prec_2x2 <- test_matrix(
-      comp$prec,
-      mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
-    )
-    o$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
-    o$check(is_prec_2x2, "prec must be 2x2 matrix without any missing values")
-    if (is_cov_2x2) {
-      o$check(
-        h_is_positive_definite(comp$cov),
-        "cov must be positive-definite matrix"
-      )
-    }
-    if (is_prec_2x2) {
-      o$check(
-        all.equal(comp$cov %*% comp$prec, diag(1, 2), check.attributes = FALSE) == TRUE,
-        "prec must be inverse of cov"
-      )
-    }
-  }
   o$check(
     test_numeric(
       object@weightpar,

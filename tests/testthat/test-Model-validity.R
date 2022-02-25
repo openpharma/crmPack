@@ -57,40 +57,11 @@ test_that("v_model_log_normal passes for valid object", {
   expect_true(v_model_log_normal(object))
 })
 
-test_that("v_model_log_normal returns error for wrong mean and NA", {
+test_that("v_model_log_normal passes for valid object with ref_dose 0", {
   object <- h_get_model_log_normal()
-  # Assigning mean vector of wrong length = 4 != 2, and with NA.
-  object@mean <- c(1:3, NA)
+  object@ref_dose <- 0
 
-  expect_equal(
-    v_model_log_normal(object),
-    "mean must have length 2 and no missing values are allowed"
-  )
-})
-
-test_that("v_model_log_normal returns error for cov with NA", {
-  object <- h_get_model_log_normal()
-  # We assign a covariance matrix of wrong dimension and including NA.
-  object@cov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
-
-  expect_equal(
-    v_model_log_normal(object),
-    "cov must be 2x2 matrix without any missing values"
-  )
-})
-
-test_that("v_model_log_normal returns error for wrong cov", {
-  object <- h_get_model_log_normal()
-  # We assign a matrix which is not a covariance matrix.
-  object@cov <- matrix(c(5, 2, 1, 5), ncol = 2)
-
-  expect_equal(
-    v_model_log_normal(object),
-    c(
-      "cov must be positive-definite matrix",
-      "prec must be inverse of cov"
-    )
-  )
+  expect_true(v_model_log_normal(object))
 })
 
 test_that("v_model_log_normal returns error for wrong ref_dose", {
@@ -102,13 +73,6 @@ test_that("v_model_log_normal returns error for wrong ref_dose", {
     v_model_log_normal(object),
     "ref_dose must be a non-negative scalar"
   )
-})
-
-test_that("v_model_log_normal passes for valid object with ref_dose 0", {
-  object <- h_get_model_log_normal()
-  object@ref_dose <- 0
-
-  expect_true(v_model_log_normal(object))
 })
 
 # v_model_logistic_kadane ----
@@ -171,52 +135,11 @@ test_that("v_model_logistic_normal_mixture passes for valid object", {
   expect_true(v_model_logistic_normal_mixture(object))
 })
 
-test_that("v_model_logistic_normal_mixture returns error for wrong mean and NA", {
+test_that("v_model_logistic_normal_mixture passes for valid object with ref_dose 0", {
   object <- h_get_logistic_normal_mixture()
-  # Assigning mean vector of wrong length = 4 != 2, and with NA.
-  object@comp1$mean <- c(1:3, NA)
-  object@comp2$mean <- c(1:4, NA)
+  object@ref_dose <- 0
 
-  expect_equal(
-    v_model_logistic_normal_mixture(object),
-    rep("mean must have length 2 and no missing values are allowed", 2)
-  )
-})
-
-test_that("v_model_logistic_normal_mixture returns error for cov with NA", {
-  object <- h_get_logistic_normal_mixture()
-  # We assign a covariance matrix of wrong dimension and including NA.
-  object@comp1$cov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
-  object@comp2$cov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
-
-  expect_equal(
-    v_model_logistic_normal_mixture(object),
-    rep(
-      c(
-        "cov must be 2x2 matrix without any missing values",
-        "prec must be inverse of cov"
-      ),
-      2
-    )
-  )
-})
-
-test_that("v_model_logistic_normal_mixture returns error for wrong cov", {
-  object <- h_get_logistic_normal_mixture()
-  # We assign a matrix which is not a covariance matrix.
-  object@comp1$cov <- matrix(c(5, 2, 1, 5), ncol = 2)
-  object@comp2$cov <- matrix(c(5, 2, 1, 9), ncol = 2)
-
-  expect_equal(
-    v_model_logistic_normal_mixture(object),
-    rep(
-      c(
-        "cov must be positive-definite matrix",
-        "prec must be inverse of cov"
-      ),
-      2
-    )
-  )
+  expect_true(v_model_logistic_normal_mixture(object))
 })
 
 test_that("v_model_logistic_normal_mixture returns error for wrong ref_dose", {
@@ -228,13 +151,6 @@ test_that("v_model_logistic_normal_mixture returns error for wrong ref_dose", {
     v_model_logistic_normal_mixture(object),
     "ref_dose must be a non-negative scalar"
   )
-})
-
-test_that("v_model_logistic_normal_mixture passes for valid object with ref_dose 0", {
-  object <- h_get_logistic_normal_mixture()
-  object@ref_dose <- 0
-
-  expect_true(v_model_logistic_normal_mixture(object))
 })
 
 test_that("v_model_logistic_normal_mixture returns error for wrong weightpar", {

@@ -65,6 +65,8 @@ Collate:
     'Data-methods.R'
     'Rules-validity.R'
     'Rules-class.R'
+    'ModelParams-validity.R'
+    'ModelParams-class.R'
     'Model-validity.R'
     'helpers_jags.R'
     'Model-class.R'

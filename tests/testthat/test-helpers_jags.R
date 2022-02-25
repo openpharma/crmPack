@@ -114,8 +114,8 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
     h_slots(data, c("nObs", "y", "x")),
     list(
       ref_dose = model@ref_dose / 5,
-      cov = model@cov,
-      mean = model@mean
+      cov = model@params@cov,
+      mean = model@params@mean
     )
   )
   expect_identical(result, expected)
@@ -138,7 +138,7 @@ test_that("h_jags_get_data removes ref_dose from modelspecs when sample from fro
   model <- h_get_logistic_log_normal()
 
   result <- h_jags_get_data(model, data, from_prior = TRUE)
-  expect_identical(result, h_slots(model, c("mean", "prec")))
+  expect_identical(result, h_slots(model@params, c("mean", "prec")))
 })
 
 # h_jags_join_models ----

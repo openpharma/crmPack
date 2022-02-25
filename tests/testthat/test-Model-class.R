@@ -49,9 +49,7 @@ test_that(".ModelLogNormal works as expected", {
   # nolint start
   result <- expect_silent(
     .ModelLogNormal(
-      mean = c(0, 2),
-      cov = diag(2),
-      prec = diag(2),
+      params = ModelParamsNormal(mean = c(0, 2), cov = diag(2)),
       ref_dose = 1,
       dose = function(prob, param1) {},
       prob = function(dose, param1) {},
@@ -267,8 +265,8 @@ test_that("LogisticKadane object can be created with user constructor", {
 test_that("LogisticNormalMixture object can be created with user constructor", {
   result <- expect_silent(
     LogisticNormalMixture(
-      comp1 = list(mean = c(0, 3), cov = diag(2)),
-      comp2 = list(mean = c(-1, 6), cov = c(2, 4) * diag(2)),
+      comp1 = ModelParamsNormal(mean = c(0, 3), cov = diag(2)),
+      comp2 = ModelParamsNormal(mean = c(-1, 6), cov = c(2, 4) * diag(2)),
       weightpar = c(a = 1, b = 5),
       ref_dose = 2
     )

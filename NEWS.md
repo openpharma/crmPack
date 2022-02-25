@@ -1,4 +1,6 @@
 # Version 1.0.9000
+* Added new `ModelParamsNormal` class to represent parameters of bivariate normal
+  distribution.
 * Added new `doseFunction` and `probFunction` functions which return dose
   and probability computing functions using model specific parameters.
 * Moved `dose` and `prob` functions from model class slots to model class methods

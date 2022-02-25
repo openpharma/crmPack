@@ -46,5 +46,5 @@ samples
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}, \code{\link{LogisticNormalMixture}}.
 }
