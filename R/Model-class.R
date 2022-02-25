@@ -160,8 +160,8 @@ NULL
 #' @slot params (`ModelParamsNormal`)\cr bivariate normal prior parameters.
 #' @slot ref_dose (`number`)\cr the reference dose.
 #'
-#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#' @seealso [`ModelParamsNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalRel`].
 #'
 #' @aliases ModelLogNormal
 #' @export
@@ -226,7 +226,7 @@ ModelLogNormal <- function(mean, cov, ref_dose = 0) {
 #'   The prior \deqn{(alpha0, alpha1) ~ Normal(mean, cov).}
 #'
 #' @seealso [`ModelLogNormal`], [`LogisticLogNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`], [`LogisticNormalMixture`].
 #'
 #' @aliases LogisticNormal
 #' @export

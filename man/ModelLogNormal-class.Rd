@@ -41,6 +41,6 @@ All ("normal") model specific classes inherit from this class.
 }}
 
 \seealso{
-\code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
+\code{\link{ModelParamsNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
 }
