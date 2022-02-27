@@ -102,3 +102,42 @@ test_that("StoppingLowestDoseHSRBeta object can be created with user constructor
   result <- expect_silent(StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
 })
+
+
+# NextBestNCRMLoss-class ----
+
+test_that("NextBestNCRMLoss error: overdose has to be a probability range", {
+  expect_error(
+    NextBestNCRMLoss(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 0.6, 2),
+      maxOverdoseProb = 0.25,
+      losses = c(1, 0, 1, 2)
+    ),
+    "overdose has to be a probability range"
+  )
+})
+
+test_that("NextBestNCRMLoss error: maxOverdoseProb has to be a probability", {
+  expect_error(
+    NextBestNCRMLoss(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 0.6, 1),
+      maxOverdoseProb = 1.25,
+      losses = c(1, 0, 1, 2)
+    ),
+    "maxOverdoseProb has to be a probability"
+  )
+})
+
+test_that("NextBestNCRMLoss error: losses has to be a vector of non-negative elements", {
+  expect_error(
+    NextBestNCRMLoss(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 0.6, 1),
+      maxOverdoseProb = 0.25,
+      losses = c(-1, 0, 1, 2)
+    ),
+    "losses has to be a vector of non-negative elements"
+  )
+})
