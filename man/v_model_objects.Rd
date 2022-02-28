@@ -6,7 +6,8 @@
 \alias{v_model}
 \alias{v_model_log_normal}
 \alias{v_model_logistic_kadane}
-\alias{v_model_logistic_normal_mixture}
+\alias{v_model_logistic_normal_mix}
+\alias{v_model_logistic_log_normal_mix}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 v_general_model(object)
@@ -17,7 +18,9 @@ v_model_log_normal(object)
 
 v_model_logistic_kadane(object)
 
-v_model_logistic_normal_mixture(object)
+v_model_logistic_normal_mix(object)
+
+v_model_logistic_log_normal_mix(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -41,13 +44,13 @@ arguments in \code{init} function are included in \code{datanames} slot.
 arguments in \code{dose} and \code{prob} functions contains \code{prob} and \code{dose}
 respectively, as well as they match \code{sample} slot of the \code{object}.
 
-\item \code{v_model_log_normal}: validates that the normal model parameters
-are valid as well as \code{ref_dose} is a positive scalar.
+\item \code{v_model_log_normal}: validates that the \code{ref_dose} is a positive scalar.
 
 \item \code{v_model_logistic_kadane}: validates that the logistic Kadane model
 parameters are valid.
 
-\item \code{v_model_logistic_normal_mixture}: validates that the logistic normal mixture
-model parameters as well as \code{ref_dose} are valid.
+\item \code{v_model_logistic_normal_mix}: validates that \code{weightpar} and \code{ref_dose} are valid.
+
+\item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
 }}
 
