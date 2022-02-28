@@ -128,54 +128,89 @@ test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
   )
 })
 
-# v_model_logistic_normal_mixture ----
+# v_model_logistic_normal_mix ----
 
-test_that("v_model_logistic_normal_mixture passes for valid object", {
-  object <- h_get_logistic_normal_mixture()
-  expect_true(v_model_logistic_normal_mixture(object))
+test_that("v_model_logistic_normal_mix passes for valid object", {
+  object <- h_get_logistic_normal_mix()
+  expect_true(v_model_logistic_normal_mix(object))
 })
 
-test_that("v_model_logistic_normal_mixture passes for valid object with ref_dose 0", {
-  object <- h_get_logistic_normal_mixture()
+test_that("v_model_logistic_normal_mix passes for valid object with ref_dose 0", {
+  object <- h_get_logistic_normal_mix()
   object@ref_dose <- 0
 
-  expect_true(v_model_logistic_normal_mixture(object))
+  expect_true(v_model_logistic_normal_mix(object))
 })
 
-test_that("v_model_logistic_normal_mixture returns error for wrong ref_dose", {
-  object <- h_get_logistic_normal_mixture()
+test_that("v_model_logistic_normal_mix returns error for wrong ref_dose", {
+  object <- h_get_logistic_normal_mix()
   # We assign a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
 
   expect_equal(
-    v_model_logistic_normal_mixture(object),
+    v_model_logistic_normal_mix(object),
     "ref_dose must be a non-negative scalar"
   )
 })
 
-test_that("v_model_logistic_normal_mixture returns error for wrong weightpar", {
-  object <- h_get_logistic_normal_mixture()
+test_that("v_model_logistic_normal_mix returns error for wrong weightpar", {
+  object <- h_get_logistic_normal_mix()
   err_msg <- "weightpar must be a numerical vector of length two with values greater than 0"
   # Assigning wrong values for weightpar.
   object@weightpar <- c(a = -1, b = -2)
-  expect_equal(v_model_logistic_normal_mixture(object), err_msg)
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = -1, b = 2)
-  expect_equal(v_model_logistic_normal_mixture(object), err_msg)
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
 })
 
-test_that("v_model_logistic_normal_mixture returns error for wrong weightpar names", {
-  object <- h_get_logistic_normal_mixture()
+test_that("v_model_logistic_normal_mix returns error for wrong weightpar names", {
+  object <- h_get_logistic_normal_mix()
   err_msg0 <- "weightpar must be a numerical vector of length two with values greater than 0"
   err_msg <- "weightpar should be a named vector of length two with names 'a' and 'b'"
   # Assigning wrong values for weightpar.
   object@weightpar <- c(1, 2)
-  expect_equal(v_model_logistic_normal_mixture(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
   object@weightpar <- c(a = 1, 2)
-  expect_equal(v_model_logistic_normal_mixture(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
   object@weightpar <- c(1, b = 2)
-  expect_equal(v_model_logistic_normal_mixture(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
   object@weightpar <- c(a = 1, g = 2)
-  expect_equal(v_model_logistic_normal_mixture(object), err_msg)
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(h = 1, g = 2)
-  expect_equal(v_model_logistic_normal_mixture(object), err_msg)
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
+})
+
+# v_model_logistic_log_normal_mix ----
+
+test_that("v_model_logistic_log_normal_mix passes for valid object", {
+  object <- h_get_logistic_log_normal_mix()
+  expect_true(v_model_logistic_log_normal_mix(object))
+})
+
+test_that("v_model_logistic_log_normal_mix passes for valid object with ref_dose 0", {
+  object <- h_get_logistic_log_normal_mix()
+  object@ref_dose <- 0
+
+  expect_true(v_model_logistic_log_normal_mix(object))
+})
+
+test_that("v_model_logistic_log_normal_mix returns error for wrong ref_dose", {
+  object <- h_get_logistic_log_normal_mix()
+  # We assign a ref_dose which is not a non-negative scalar.
+  object@ref_dose <- c(-3, -5, 4)
+
+  expect_equal(
+    v_model_logistic_log_normal_mix(object),
+    "ref_dose must be a non-negative scalar"
+  )
+})
+
+test_that("v_model_logistic_log_normal_mix returns error for wrong share_weight", {
+  object <- h_get_logistic_log_normal_mix()
+  err_msg <- "share_weight does not specify a probability"
+  # Assigning wrong values for weightpar.
+  object@share_weight <- -1
+  expect_equal(v_model_logistic_log_normal_mix(object), err_msg)
+  object@share_weight <- c(-1, 0.5)
+  expect_equal(v_model_logistic_log_normal_mix(object), err_msg)
 })

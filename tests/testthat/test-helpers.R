@@ -259,3 +259,15 @@ test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
     "Assertion on 'x' failed: Must have length 1, but has length 2."
   )
 })
+
+# h_null_if_scalar ----
+
+test_that("h_null_if_scalar returns NULL as expected", {
+  expect_null(h_null_if_scalar(2))
+  expect_null(h_null_if_scalar(array(data = 1:12, dim = c(1, 3, 4))))
+})
+
+test_that("h_null_if_scalar returns 1L as expected", {
+  expect_identical(h_null_if_scalar(c(1, 3)), 1L)
+  expect_identical(h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4))), 1L)
+})

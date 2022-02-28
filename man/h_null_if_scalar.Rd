@@ -10,15 +10,19 @@ h_null_if_scalar(x)
 \item{x}{any object for which length function is defined.}
 }
 \value{
-\code{NULL} if \code{x} is of length 1, otherwise, 1L.
+\code{NULL} if \code{x} is of length 1 or the first dimension equals to 1,
+otherwise, 1L.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 A simple helper function that returns \code{NULL} if \code{x} is a scalar object, i.e.
-an object of length equals 1. Otherwise it returns 1L.
+an non-dimensional object of length equals 1, or two or more dimensional object
+with the first dimension equals to 1. Otherwise it returns 1L.
 }
 \examples{
 h_null_if_scalar(c(1, 3))
 h_null_if_scalar(2)
+h_null_if_scalar(array(data = 1:24, dim = c(2,3,4)))
+h_null_if_scalar(array(data = 1:12, dim = c(1,3,4)))
 }

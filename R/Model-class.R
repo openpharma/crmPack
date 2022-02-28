@@ -624,7 +624,7 @@ LogisticKadane <- function(theta, xmin, xmax) {
     weightpar = c(a = 1, b = 1),
     ref_dose = 1
   ),
-  validity = v_model_logistic_normal_mixture
+  validity = v_model_logistic_normal_mix
 )
 
 ## constructor ----
@@ -683,6 +683,108 @@ LogisticNormalMixture <- function(comp1,
     },
     datanames = c("nObs", "y", "x"),
     sample = c("alpha0", "alpha1", "w")
+  )
+}
+
+# LogisticLogNormalMixture ----
+
+## class ----
+
+#' `LogisticLogNormalMixture`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticLogNormalMixture`] is the class for standard logistic model with
+#'  online mixture of two bivariate log normal priors.
+#'
+#' @details This model can be used when data is arising online from the informative
+#'   component of the prior, at the same time with the data of the trial of
+#'   main interest. Formally, this is achieved by assuming that the probability
+#'   of a DLT at dose \eqn{x} is given by
+#'   \deqn{p(x) = \pi * p1(x) + (1 - \pi) * p2(x)}
+#'   where \eqn{\pi} is the probability for the model \eqn{p(x)} being the same
+#'   as the model \eqn{p1(x)}, which is the informative component of the prior.
+#'   From this model data arises in parallel: at doses `xshare`, DLT information
+#'   `yshare` is observed, in total `nObsshare` data points (see [`DataMixture`]).
+#'   On the other hand, \eqn{1 - \pi}, is the probability of a separate model
+#'   \eqn{p2(x)}. Both components have the same log normal prior distribution,
+#'   which can be specified by the user, and which is inherited from the
+#'   [`LogisticLogNormal`] class.
+#'
+#' @slot share_weight (`proportion`)\cr the prior weight for the share component
+#'   \eqn{p_{1}(x)}.
+#'
+#' @seealso [`LogisticLogNormal`].
+#'
+#' @aliases LogisticLogNormalMixture
+#' @export
+#'
+.LogisticLogNormalMixture <- setClass(
+  Class = "LogisticLogNormalMixture",
+  contains = "LogisticLogNormal",
+  slots = c(
+    share_weight = "numeric"
+  ),
+  prototype = prototype(
+    share_weight = 0.1
+  ),
+  validity = v_model_logistic_log_normal_mix
+)
+
+## constructor ----
+
+#' @rdname LogisticLogNormalMixture-class
+#'
+#' @inheritParams ModelLogNormal
+#' @param share_weight (`proportion`)\cr the prior weight for the share component.
+#'
+#' @export
+#' @example examples/Model-class-LogisticLogNormalMixture.R
+#'
+LogisticLogNormalMixture <- function(mean,
+                                     cov,
+                                     ref_dose,
+                                     share_weight) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalMixture(
+    params = params,
+    ref_dose = ref_dose,
+    share_weight = share_weight,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        # comp gives the component: non-informative (1) or share (2) the two components.
+        stand_log_dose[i] <- log(x[i] / ref_dose)
+        logit(p[i]) <- alpha0[comp] + alpha1[comp] * stand_log_dose[i]
+        y[i] ~ dbern(p[i])
+      }
+      for (j in 1:nObsshare) {
+        stand_log_dose_share[j] <- log(xshare[j] / ref_dose)
+        logit(pshare[j]) <- alpha0[2] + alpha1[2] * stand_log_dose_share[j]
+        yshare[j] ~ dbern(pshare[j])
+      }
+    },
+    priormodel = function() {
+      for (k in 1:2) {
+        theta[k, 1:2] ~ dmnorm(mean, prec)
+        alpha0[k] <- theta[k, 1]
+        alpha1[k] <- exp(theta[k, 2])
+      }
+      # The component indicator.
+      comp ~ dcat(cat_probs)
+    },
+    modelspecs = function() {
+      list(
+        ref_dose = ref_dose,
+        cat_probs = c(1 - share_weight, share_weight),
+        mean = params@mean,
+        prec = params@prec
+      )
+    },
+    init = function() {
+      list(theta = matrix(c(0, 0, 1, 1), nrow = 2))
+    },
+    sample = c("alpha0", "alpha1", "comp"),
+    datanames = c("nObs", "y", "x", "nObsshare", "yshare", "xshare")
   )
 }
 
@@ -1744,152 +1846,6 @@ validObject(DualEndpointEmax(E0=10,
                              Sigma=diag(2),
                              sigma2W=1,
                              rho=0))
-
-## ============================================================
-
-##' Standard logistic model with online mixture of two bivariate log normal priors
-##'
-##' This model can be used when data is arising online from the informative
-##' component of the prior, at the same time with the data of the trial of
-##' main interest. Formally, this is achieved by assuming that the probability
-##' of a DLT at dose \eqn{x} is given by
-##'
-##' \deqn{p(x) = \pi p_{1}(x) + (1 - \pi) p_{2}(x)}
-##'
-##' where \eqn{\pi} is the probability for the model \eqn{p(x)} being the same
-##' as the model \eqn{p_{1}(x)} - this is
-##' the informative component of the prior. From this model data arises in
-##' parallel: at doses \code{xshare}, DLT information \code{yshare} is observed,
-##' in total \code{nObsshare} data points, see \code{\linkS4class{DataMixture}}.
-##' On the other hand, \eqn{1 - \pi}
-##' is the probability of a separate model \eqn{p_{2}(x)}. Both components
-##' have the same log normal prior distribution, which can be specified by the
-##' user, and which is inherited from the \code{\linkS4class{LogisticLogNormal}}
-##' class.
-##'
-##' @slot shareWeight the prior weight for sharing the same model \eqn{p_{1}(x)}
-##'
-##' @seealso the \code{\linkS4class{DataMixture}} class for use with this model
-##' @example examples/Model-class-LogisticLogNormalMixture.R
-##' @export
-##' @keywords classes
-.LogisticLogNormalMixture <-
-  setClass(Class="LogisticLogNormalMixture",
-           contains="LogisticLogNormal",
-           representation(shareWeight="numeric"),
-           prototype(shareWeight=0.1),
-           validity=
-             function(object){
-               o <- Validate()
-
-               o$check(is.probability(object@shareWeight),
-                       "shareWeight does not specify a probability")
-
-             })
-
-
-##' Initialization function for the "LogisticLogNormalMixture" class
-##'
-##' @param mean the prior mean vector
-##' @param cov the prior covariance matrix
-##' @param refDose the reference dose
-##' @param shareWeight the prior weight for the share component
-##' @return the \code{\linkS4class{LogisticLogNormalMixture}} object
-##'
-##' @export
-##' @keywords methods
-LogisticLogNormalMixture <- function(mean,
-                                     cov,
-                                     refDose,
-                                     shareWeight)
-{
-  params <- ModelParamsNormal(mean, cov)
-  .LogisticLogNormalMixture(params = params,
-                            ref_dose=refDose,
-                            shareWeight=shareWeight,
-                            datamodel=
-                              function(){
-                                ## the logistic likelihood:
-
-                                ## mixture for the new combo obs
-                                for (i in 1:nObs)
-                                {
-                                  ## the bernoulli distribution:
-                                  y[i] ~ dbern(p[comp, i])
-
-                                  ## comp gives the component -
-                                  ## non-informative (1) or share (2)
-
-                                  ## the two components:
-                                  for (k in 1:2)
-                                  {
-                                    logit(p[k, i]) <- alpha0[k] + alpha1[k] *
-                                      StandLogDose[i]
-                                  }
-
-                                  ## just the standardized log dose:
-                                  StandLogDose[i] <- log(x[i] / refDose)
-                                }
-
-                                ## just from share for the share obs
-                                for (j in 1:nObsshare)
-                                {
-                                  ## the bernoulli distribution:
-                                  yshare[j] ~ dbern(pshare[j])
-
-                                  ## take the correct - second - component
-                                  logit(pshare[j]) <- alpha0[2] + alpha1[2] *
-                                    StandLogDoseshare[j]
-
-                                  ## just the standardized log dose:
-                                  StandLogDoseshare[j] <- log(xshare[j] / refDose)
-                                }
-
-                              },
-                            priormodel=
-                              function(){
-
-                                ## compute precision matrix
-                                priorPrec[1:2,1:2] <- inverse(cov[,])
-
-                                ## the two components: same prior
-                                for (k in 1:2)
-                                {
-                                  theta[k, 1:2] ~ dmnorm(mean[1:2],
-                                                         priorPrec[1:2,1:2])
-
-                                  alpha0[k] <- theta[k, 1]
-                                  alpha1[k] <- exp(theta[k, 2])
-                                }
-
-                                ## the component indicator
-                                comp ~ dcat(catProbs)
-
-                                ## dummy to use refDose here.
-                                ## It is contained in the modelspecs list below,
-                                ## so it must occur here
-                                bla <- refDose + 1
-                              },
-                            datanames=c("nObs", "y", "x", "nObsshare", "yshare", "xshare"),
-                            modelspecs=
-                              function(){
-                                list(mean=params@mean,
-                                     cov=params@cov,
-                                     refDose=refDose,
-                                     catProbs=c(1 - shareWeight, shareWeight))
-                              },
-                            init=
-                              function(){
-                                list(theta=matrix(c(0, 0, 1, 1), nrow=2))
-                              },
-                            sample=
-                              c("alpha0", "alpha1", "comp"))
-}
-validObject(LogisticLogNormalMixture(mean=c(0, 1),
-                                     cov=diag(2),
-                                     shareWeight=0.1,
-                                     refDose=1))
-
 
 ## ============================================================
 

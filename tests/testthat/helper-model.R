@@ -107,11 +107,20 @@ h_get_logistic_kadane <- function() {
   )
 }
 
-h_get_logistic_normal_mixture <- function() {
+h_get_logistic_normal_mix <- function() {
   LogisticNormalMixture(
     comp1 = ModelParamsNormal(mean = c(0, 3), cov = diag(2)),
     comp2 = ModelParamsNormal(mean = c(-1, 6), cov = c(2, 4) * diag(2)),
     weightpar = c(a = 1, b = 5),
     ref_dose = 2
+  )
+}
+
+h_get_logistic_log_normal_mix <- function() {
+  LogisticLogNormalMixture(
+    mean = c(0, 1),
+    cov = diag(2),
+    share_weight = 0.1,
+    ref_dose = 1.5
   )
 }

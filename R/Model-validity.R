@@ -46,8 +46,7 @@ v_model <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that the normal model parameters
-#'   are valid as well as `ref_dose` is a positive scalar.
+#' @describeIn v_model_objects validates that the `ref_dose` is a positive scalar.
 v_model_log_normal <- function(object) {
   v <- Validate()
   v$check(
@@ -77,9 +76,8 @@ v_model_logistic_kadane <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that the logistic normal mixture
-#'   model parameters as well as `ref_dose` are valid.
-v_model_logistic_normal_mixture <- function(object) {
+#' @describeIn v_model_objects validates that `weightpar` and `ref_dose` are valid.
+v_model_logistic_normal_mix <- function(object) {
   v <- Validate()
   v$check(
     test_numeric(
@@ -99,6 +97,20 @@ v_model_logistic_normal_mixture <- function(object) {
   v$check(
     test_number(object@ref_dose, na.ok = TRUE, lower = 0),
     "ref_dose must be a non-negative scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that `share_weight` represents probability.
+v_model_logistic_log_normal_mix <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
+    "ref_dose must be a non-negative scalar"
+  )
+  v$check(
+    is.probability(object@share_weight),
+    "share_weight does not specify a probability"
   )
   v$result()
 }
