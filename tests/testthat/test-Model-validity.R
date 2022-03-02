@@ -180,6 +180,106 @@ test_that("v_model_logistic_normal_mix returns error for wrong weightpar names",
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
 })
 
+# v_model_logistic_normal_fixed_mix ----
+
+test_that("v_model_logistic_normal_fixed_mix passes for valid object", {
+  object <- h_get_logistic_normal_fixed_mix()
+  expect_true(v_model_logistic_normal_fixed_mix(object))
+})
+
+test_that("v_model_logistic_normal_fixed_mix passes for valid object with ref_dose 0", {
+  object <- h_get_logistic_normal_fixed_mix()
+  object@ref_dose <- 0
+
+  expect_true(v_model_logistic_normal_fixed_mix(object))
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for wrong ref_dose", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning ref_dose which is not a non-negative scalar.
+  object@ref_dose <- c(-3, -5, 4)
+
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    "ref_dose must be a non-negative scalar"
+  )
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for wrong components", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning wrong values for components.
+  object@components <- list(mean = c(0, 1), cov = diag(2))
+
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    "components must be a list with ModelParamsNormal S4 class objects"
+  )
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for non-valid ModelParamsNormal comp", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning wrong values for ModelParamsNormal object.
+  object@components[[1]]@mean <- c(0, NA)
+  object@components[[1]]@cov <- matrix(letters[1:4], nrow = 2)
+
+  err_msg <- paste(
+    c(
+      "components must be a list with valid ModelParamsNormal S4 class objects",
+      "mean must have length 2 and no missing values are allowed",
+      "cov must be 2x2 matrix without any missing values"
+    ),
+    collapse = ", "
+  )
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    err_msg
+  )
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for weights and comp of diff len", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning weights of different length than the components.
+  object@weights <- rep(0.1, 10)
+
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    "components must have same length as weights"
+  )
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for weights not sum to 1", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning weights that do not sum to 1.
+  object@weights <- c(2, 4)
+
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    "weights must sum to 1"
+  )
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for negative weights", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning negative weights.
+  object@weights <- c(-0.5, 1.5)
+
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    "weights must be positive"
+  )
+})
+
+test_that("v_model_logistic_normal_fixed_mix returns error for non-scalar log_normal", {
+  object <- h_get_logistic_normal_fixed_mix()
+  # Assigning non-scalar log_normal.
+  object@log_normal <- c(TRUE, FALSE, TRUE)
+
+  expect_equal(
+    v_model_logistic_normal_fixed_mix(object),
+    "log_normal must be TRUE or FALSE"
+  )
+})
+
 # v_model_logistic_log_normal_mix ----
 
 test_that("v_model_logistic_log_normal_mix passes for valid object", {

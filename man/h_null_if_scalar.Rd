@@ -23,6 +23,6 @@ with the first dimension equals to 1. Otherwise it returns 1L.
 \examples{
 h_null_if_scalar(c(1, 3))
 h_null_if_scalar(2)
-h_null_if_scalar(array(data = 1:24, dim = c(2,3,4)))
-h_null_if_scalar(array(data = 1:12, dim = c(1,3,4)))
+h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4)))
+h_null_if_scalar(array(data = 1:12, dim = c(1, 3, 4)))
 }

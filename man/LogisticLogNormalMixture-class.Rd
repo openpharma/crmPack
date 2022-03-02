@@ -82,5 +82,6 @@ prior_samples_share <- mcmc(empty_data_share, model_share, my_options)
 plot(prior_samples_share, model_share, empty_data_share)
 }
 \seealso{
-\code{\link{LogisticLogNormal}}.
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormalMixture}},
+\code{\link{LogisticNormalFixedMixture}}.
 }

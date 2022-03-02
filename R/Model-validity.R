@@ -101,6 +101,49 @@ v_model_logistic_normal_mix <- function(object) {
   v$result()
 }
 
+#' @describeIn v_model_objects validates that `component` is a list with
+#'   valid `ModelParamsNormal` objects as well as `weights` and `ref_dose` are
+#'   correct.
+v_model_logistic_normal_fixed_mix <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@components, test_class, "ModelParamsNormal")),
+    "components must be a list with ModelParamsNormal S4 class objects"
+  )
+  comp_valid_result <- sapply(object@components, validObject, test = TRUE)
+  comp_valid <- sapply(comp_valid_result, isTRUE)
+  v$check(
+    all(comp_valid),
+    paste(
+      "components must be a list with valid ModelParamsNormal S4 class objects",
+      paste(unlist(comp_valid_result[!comp_valid]), collapse = ", "),
+      collapse = ", ",
+      sep = ", "
+    )
+  )
+  v$check(
+    length(object@components) == length(object@weights),
+    "components must have same length as weights"
+  )
+  v$check(
+    test_numeric(object@weights, lower = 0 + .Machine$double.xmin, finite = TRUE, any.missing = FALSE),
+    "weights must be positive"
+  )
+  v$check(
+    sum(object@weights) == 1,
+    "weights must sum to 1"
+  )
+  v$check(
+    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
+    "ref_dose must be a non-negative scalar"
+  )
+  v$check(
+    test_flag(object@log_normal),
+    "log_normal must be TRUE or FALSE"
+  )
+  v$result()
+}
+
 #' @describeIn v_model_objects validates that `share_weight` represents probability.
 v_model_logistic_log_normal_mix <- function(object) {
   v <- Validate()
