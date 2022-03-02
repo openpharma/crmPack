@@ -74,5 +74,6 @@ my_model <- LogisticNormalMixture(
 )
 }
 \seealso{
-\code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}.
+\code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}},
+\code{\link{LogisticNormalFixedMixture}}, \code{\link{LogisticLogNormalMixture}}.
 }

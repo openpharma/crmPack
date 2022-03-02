@@ -709,18 +709,27 @@ h_is_positive_definite <- function(x, tolerance = 1e-08) {
 #' @param names (`character`)\cr a vector with names of slots to be fetched.
 #'   This function assumes that for every element in `names`, there exists a
 #'   slot of the same name in the `object`.
+#' @param simplify (`flag`)\cr should an output be simplified? This has an
+#'   effect if and only if a single slot is about to be extracted, i.e.
+#'   `names` is just a single string.
 #'
-#' @return `list` with the slots extracted from `object` according to
-#'   `names`.
+#' @return `list` with the slots extracted from `object` according to `names`,
+#'   or single slot if simplification is required and possible.
 #'
 #' @export
 #'
-h_slots <- function(object, names) {
+h_slots <- function(object, names, simplify = FALSE) {
   assert_true(isS4(object))
   assert_character(names, min.len = 1, any.missing = FALSE, null.ok = TRUE)
   assert_true(all(names %in% slotNames(object)))
 
-  sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
+  slots_list <- sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
+
+  if (simplify && length(names) == 1) {
+    slots_list[[1]]
+  } else {
+    slots_list
+  }
 }
 
 #' Conditional Formatting Using C-style Formats
@@ -863,8 +872,8 @@ h_null_if_na <- function(x) {
 #' @examples
 #' h_null_if_scalar(c(1, 3))
 #' h_null_if_scalar(2)
-#' h_null_if_scalar(array(data = 1:24, dim = c(2,3,4)))
-#' h_null_if_scalar(array(data = 1:12, dim = c(1,3,4)))
+#' h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4)))
+#' h_null_if_scalar(array(data = 1:12, dim = c(1, 3, 4)))
 h_null_if_scalar <- function(x) {
   dim_x <- dim(x)
   len <- if (is.null(dim_x)) {

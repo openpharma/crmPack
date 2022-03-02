@@ -169,12 +169,35 @@ test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
 
 # h_slots ----
 
-test_that("h_slots returns slots as expected", {
+test_that("h_slots returns two slots as expected", {
   object <- h_get_data()
   result <- h_slots(object, c("placebo", "nGrid"))
   expected <- list(placebo = TRUE, nGrid = 13L)
 
   expect_identical(result, expected)
+})
+
+test_that("h_slots returns two slots as expected (simplification ignored)", {
+  object <- h_get_data()
+  result <- h_slots(object, c("placebo", "nGrid"), simplify = TRUE)
+  expected <- list(placebo = TRUE, nGrid = 13L)
+
+  expect_identical(result, expected)
+})
+
+test_that("h_slots returns one slot as expected", {
+  object <- h_get_data()
+  result <- h_slots(object, "placebo")
+  expected <- list(placebo = TRUE)
+
+  expect_identical(result, expected)
+})
+
+test_that("h_slots returns one slot expected (with simplification)", {
+  object <- h_get_data()
+  result <- h_slots(object, "placebo", simplify = TRUE)
+
+  expect_identical(result, TRUE)
 })
 
 test_that("h_slots throws the error for non-existing slots", {

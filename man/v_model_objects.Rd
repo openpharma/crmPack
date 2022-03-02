@@ -7,6 +7,7 @@
 \alias{v_model_log_normal}
 \alias{v_model_logistic_kadane}
 \alias{v_model_logistic_normal_mix}
+\alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
@@ -19,6 +20,8 @@ v_model_log_normal(object)
 v_model_logistic_kadane(object)
 
 v_model_logistic_normal_mix(object)
+
+v_model_logistic_normal_fixed_mix(object)
 
 v_model_logistic_log_normal_mix(object)
 }
@@ -50,6 +53,10 @@ respectively, as well as they match \code{sample} slot of the \code{object}.
 parameters are valid.
 
 \item \code{v_model_logistic_normal_mix}: validates that \code{weightpar} and \code{ref_dose} are valid.
+
+\item \code{v_model_logistic_normal_fixed_mix}: validates that \code{component} is a list with
+valid \code{ModelParamsNormal} objects as well as \code{weights} and \code{ref_dose} are
+correct.
 
 \item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
 }}

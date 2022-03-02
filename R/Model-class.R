@@ -69,7 +69,10 @@ NULL
   ),
   prototype = prototype(
     datamodel = I,
-    priormodel = I
+    priormodel = I,
+    init = function() {
+      list()
+    }
   ),
   validity = v_general_model
 )
@@ -282,7 +285,7 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
 #' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`], [`LogisticLogNormalMixture`]
 #'
 #' @aliases LogisticLogNormal
 #' @export
@@ -604,7 +607,8 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #'   `b` and with strictly positive values.
 #' @slot ref_dose (`number`)\cr the reference dose.
 #'
-#' @seealso [`ModelParamsNormal`], [`ModelLogNormal`], [`LogisticNormal`].
+#' @seealso [`ModelParamsNormal`], [`ModelLogNormal`],
+#'   [`LogisticNormalFixedMixture`], [`LogisticLogNormalMixture`].
 #'
 #' @aliases LogisticNormalMixture
 #' @export
@@ -681,8 +685,146 @@ LogisticNormalMixture <- function(comp1,
     init = function() {
       list(theta = c(0, 1))
     },
-    datanames = c("nObs", "y", "x"),
-    sample = c("alpha0", "alpha1", "w")
+    sample = c("alpha0", "alpha1", "w"),
+    datanames = c("nObs", "y", "x")
+  )
+}
+
+# LogisticNormalFixedMixture ----
+
+## class ----
+
+#' `LogisticNormalFixedMixture`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticNormalFixedMixture`] is the class for standard logistic regression
+#' model with fixed mixture of multiple bivariate (log) normal priors on the
+#' intercept and slope parameters. The weights of the normal priors are fixed,
+#' hence no additional model parameters are introduced. This type of prior is
+#' often used to better approximate a given posterior distribution, or when the
+#' information is given in terms of a mixture.
+#'
+#' @details The covariate is the natural logarithm of the dose \eqn{x} divided
+#'   by the reference dose \eqn{x*}, i.e.:
+#'   \deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+#'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+#'   The prior
+#'   \deqn{(alpha0, alpha1) ~ w1 * Normal(mean1, cov1) + ... + wK * Normal(meanK, covK),}
+#'   if a normal prior is used and
+#'   \deqn{(alpha0, log(alpha1)) ~ w1 * Normal(mean1, cov1) + ... + wK * Normal(meanK, covK),}
+#'   if a log normal prior is used.
+#'   The weights \eqn{w1, ..., wK} of the components are fixed and sum to 1.
+#'
+#'   The slots of this class comprise a list with components parameters. Every
+#'   single component contains the mean vector and the covariance matrix of
+#'   bivariate normal distributions. Remaining slots are the weights of the
+#'   components as well as the reference dose. Moreover, a special indicator
+#'   slot specifies whether a log normal prior is used.
+#'
+#' @slot components (`list`)\cr the specifications of the mixture components,
+#'   a list with [`ModelParamsNormal`] objects for each bivariate (log) normal
+#'   prior.
+#' @slot weights (`numeric`)\cr the weights of the components; these must be
+#'   positive and must sum to 1.
+#' @slot ref_dose (`number`)\cr the reference dose.
+#' @slot log_normal (`flag`)\cr should a log normal prior be used, such
+#'   that the mean vectors and covariance matrices are valid for the intercept
+#'   and log slope?
+#'
+#' @seealso [`ModelParamsNormal`], [`ModelLogNormal`],
+#'   [`LogisticNormalMixture`], [`LogisticLogNormalMixture`].
+#'
+#' @aliases LogisticNormalFixedMixture
+#' @export
+#'
+.LogisticNormalFixedMixture <- setClass(
+  Class = "LogisticNormalFixedMixture",
+  contains = "GeneralModel",
+  slots = c(
+    components = "list",
+    weights = "numeric",
+    ref_dose = "numeric",
+    log_normal = "logical"
+  ),
+  prototype = prototype(
+    components = list(
+      comp1 = ModelParamsNormal(mean = c(0, 1), cov = diag(2)),
+      comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2))
+    ),
+    weights = c(0.5, 0.5),
+    ref_dose = 1,
+    log_normal = TRUE
+  ),
+  validity = v_model_logistic_normal_fixed_mix
+)
+
+## constructor ----
+
+#' @rdname LogisticNormalFixedMixture-class
+#'
+#' @param components (`list`)\cr the specifications of the mixture components,
+#'   a list with [`ModelParamsNormal`] objects for each bivariate (log) normal
+#'   prior.
+#' @param weights (`numeric`)\cr the weights of the components; these must be
+#'   positive and will be normalized to sum to 1.
+#' @param ref_dose (`number`)\cr the reference dose.
+#' @param log_normal (`flag`)\cr should a log normal prior be specified, such
+#'   that the mean vectors and covariance matrices are valid for the intercept
+#'   and log slope?
+#'
+#' @export
+#' @example examples/Model-class-LogisticNormalFixedMixture.R
+#'
+LogisticNormalFixedMixture <- function(components,
+                                       weights,
+                                       ref_dose,
+                                       log_normal = FALSE) {
+  # Normalize weights to sum to 1.
+  weights <- weights / sum(weights)
+
+  .LogisticNormalFixedMixture(
+    components = components,
+    weights = weights,
+    ref_dose = ref_dose,
+    log_normal = log_normal,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = if (log_normal) {
+      function() {
+        comp ~ dcat(weights)
+        theta ~ dmnorm(mean[1:2, comp], prec[1:2, 1:2, comp])
+        alpha0 <- theta[1]
+        alpha1 <- exp(theta[2])
+      }
+    } else {
+      function() {
+        comp ~ dcat(weights)
+        theta ~ dmnorm(mean[1:2, comp], prec[1:2, 1:2, comp])
+        alpha0 <- theta[1]
+        alpha1 <- theta[2]
+      }
+    },
+    modelspecs = function() {
+      list(
+        ref_dose = ref_dose,
+        weights = weights,
+        mean = do.call(cbind, lapply(components, h_slots, "mean", simplify = TRUE)),
+        prec = array(
+          do.call(c, lapply(components, h_slots, "prec", simplify = TRUE)),
+          dim = c(2, 2, length(components))
+        )
+      )
+    },
+    init = function() {
+      list(theta = c(0, 1))
+    },
+    sample = c("alpha0", "alpha1"),
+    datanames = c("nObs", "y", "x")
   )
 }
 
@@ -695,7 +837,7 @@ LogisticNormalMixture <- function(comp1,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`LogisticLogNormalMixture`] is the class for standard logistic model with
-#'  online mixture of two bivariate log normal priors.
+#' online mixture of two bivariate log normal priors.
 #'
 #' @details This model can be used when data is arising online from the informative
 #'   component of the prior, at the same time with the data of the trial of
@@ -714,7 +856,8 @@ LogisticNormalMixture <- function(comp1,
 #' @slot share_weight (`proportion`)\cr the prior weight for the share component
 #'   \eqn{p_{1}(x)}.
 #'
-#' @seealso [`LogisticLogNormal`].
+#' @seealso [`ModelLogNormal`], [`LogisticNormalMixture`],
+#'   [`LogisticNormalFixedMixture`].
 #'
 #' @aliases LogisticLogNormalMixture
 #' @export
@@ -1846,235 +1989,6 @@ validObject(DualEndpointEmax(E0=10,
                              Sigma=diag(2),
                              sigma2W=1,
                              rho=0))
-
-## ============================================================
-
-##' Standard logistic model with fixed mixture of multiple bivariate (log) normal priors
-##'
-##' This is standard logistic regression model with a mixture of multiple bivariate
-##' (log) normal priors on the intercept and slope parameters. The weights of the
-##' normal priors are fixed, hence no additional model parameters are introduced.
-##' This type of prior is often used to better approximate a given posterior
-##' distribution, or when the information is given in terms of a mixture.
-##'
-##' The covariate is the natural logarithm of the dose \eqn{x} divided by
-##' the reference dose \eqn{x^{*}}:
-##'
-##' \deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
-##' where \eqn{p(x)} is the probability of observing a DLT for a given dose
-##' \eqn{x}.
-##'
-##' The prior is
-##' \deqn{(\alpha, \beta) \sim
-##' \sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
-##' if a normal prior is used and
-##' \deqn{(\alpha, \log(\beta)) \sim
-##' \sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
-##' if a log normal prior is used.
-##'
-##' The weight \eqn{w_{j}} of the components are fixed and sum to 1.
-##'
-##' The (additional) slots of this class comprise two lists, containing the mean
-##' vector, the covariance and precision matrices of the two bivariate normal
-##' distributions each, the parameters of the beta prior for the first component
-##' weight, as well as the reference dose. Moreover, a slot specifies whether a
-##' log normal prior is used.
-##'
-##' @slot components a list with one entry per component of the mixture.
-##' Each entry is a list with \code{mean}, \code{cov} and \code{prec} for the
-##' bivariate normal prior
-##' @slot weights the weights of the components, these must be positive and sum
-##' to 1
-##' @slot refDose the reference dose \eqn{x^{*}}
-##' @slot logNormal is a log normal prior specified for each of the components?
-##'
-##' @example examples/Model-class-LogisticNormalFixedMixture.R
-##' @export
-##' @keywords classes
-.LogisticNormalFixedMixture <-
-    setClass(Class="LogisticNormalFixedMixture",
-             contains="Model",
-             representation(components="list",
-                            weights="numeric",
-                            refDose="numeric",
-                            logNormal="logical"),
-             prototype(components=
-                           list(comp1=
-                                    list(mean=c(0, 1),
-                                         cov=diag(2),
-                                         prec=diag(2)),
-                                comp2=
-                                    list(mean=c(-1, 1),
-                                         cov=diag(2),
-                                         prec=diag(2))),
-                       weights=c(1/2, 1/2),
-                       refDose=1,
-                       logNormal=TRUE),
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     for(thisComp in seq_along(object@components))
-                     {
-                         thisList <- object@components[[thisComp]]
-                         o$check(identical(names(thisList),
-                                           c("mean", "cov", "prec")),
-                                 paste("element", thisComp,
-                                       "must be a list with elements mean, cov, prec"))
-                         o$check(length(thisList$mean) == 2,
-                                 paste("element", thisComp,
-                                       "mean must have length 2"))
-                         o$check(identical(dim(thisList$cov), c(2L, 2L)) &&
-                                     ! is.null(chol(thisList$cov)),
-                                 paste("element", thisComp,
-                                       "cov must be positive-definite 2x2 covariance matrix"))
-                         o$check(all.equal(solve(thisList$cov), thisList$prec,
-                                           check.attributes=FALSE),
-                                 paste("element", thisComp,
-                                       "prec must be inverse of cov"))
-                     }
-
-                     o$check(identical(length(object@components),
-                                       length(object@weights)),
-                             "components must have same length as weights")
-                     o$check(all(object@weights > 0) &&
-                                 (sum(object@weights) == 1),
-                             "weights must be positive and sum to 1")
-                     o$check(is.scalar(object@refDose) && (object@refDose > 0),
-                             "refDose must be scalar and positive")
-                     o$check(is.bool(object@logNormal),
-                             "logNormal must be TRUE or FALSE")
-                 })
-
-##' Initialization function for the "LogisticNormalFixedMixture" class
-##'
-##' @param components the specifications of the mixture components: a list with
-##' one list of \code{mean} and \code{cov} for each bivariate (log) normal prior
-##' @param weights the weights of the components, these must be positive and
-##' will be normalized to sum to 1
-##' @param refDose the reference dose
-##' @param logNormal should a log normal prior be specified, such that the mean
-##' vectors and covariance matrices are valid for the intercept and log slope?
-##' (not default)
-##' @return the \code{\linkS4class{LogisticNormalFixedMixture}} object
-##'
-##' @export
-##' @keywords methods
-LogisticNormalFixedMixture <- function(components,
-                                       weights,
-                                       refDose,
-                                       logNormal=FALSE)
-{
-    ## add precision matrices to component lists
-    components <- lapply(components,
-                         function(x){
-                             c(x,
-                               list(prec=solve(x$cov)))})
-
-    ## normalize the weights to sum to 1
-    weights <- weights / sum(weights)
-
-    ## go to the general initialize method now
-    .LogisticNormalFixedMixture(components=components,
-                                weights=weights,
-                                refDose=refDose,
-                                logNormal=logNormal,
-                                datamodel=
-                                    function(){
-                                        ## the logistic likelihood:
-                                        ## not changed from non-mixture case
-                                        for (i in 1:nObs)
-                                        {
-                                            y[i] ~ dbern(p[i])
-                                            logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                                            StandLogDose[i] <- log(x[i] / refDose)
-                                        }
-                                    },
-                                priormodel=
-                                    if(logNormal){
-                                        function()
-                                        {
-                                            theta[1:2] ~ dmnorm(priorMean[1:2, comp],
-                                                                priorPrec[1:2, 1:2, comp])
-                                            ## this is conditional on the component index
-                                            ## "comp"
-
-                                            ## mixture for component index
-                                            comp ~ dcat(weights)
-
-                                            ## extract actual coefficients
-                                            alpha0 <- theta[1]
-                                            alpha1 <- exp(theta[2])
-                                            ## single difference to !logNormal ...
-
-                                            ## dummy to use refDose here.
-                                            ## It is contained in the modelspecs list below,
-                                            ## so it must occur here
-                                            bla <- refDose + 1
-                                        }
-                                    } else {
-                                        function()
-                                        {
-                                            theta[1:2] ~ dmnorm(priorMean[1:2, comp],
-                                                                priorPrec[1:2, 1:2, comp])
-                                            ## this is conditional on the component index
-                                            ## "comp"
-
-                                            ## mixture for component index
-                                            comp ~ dcat(weights)
-
-                                            ## extract actual coefficients
-                                            alpha0 <- theta[1]
-                                            alpha1 <- theta[2]
-
-                                            ## dummy to use refDose here.
-                                            ## It is contained in the modelspecs list below,
-                                            ## so it must occur here
-                                            bla <- refDose + 1
-                                        }
-                                    },
-                                datanames=c("nObs", "y", "x"),
-                                modelspecs=
-                                    function(){
-                                        list(refDose=refDose,
-                                             priorMean=
-                                                 do.call(cbind,
-                                                         lapply(components, "[[", "mean")),
-                                             priorPrec=
-                                                 array(data=
-                                                           do.call(c,
-                                                                   lapply(components, "[[", "prec")),
-                                                       dim=c(2, 2, length(components))),
-                                             weights=weights)
-                                    },
-                                dose=
-                                    function(prob, alpha0, alpha1){
-                                        StandLogDose <- (logit(prob) - alpha0) / alpha1
-                                        return(exp(StandLogDose) * refDose)
-                                    },
-                                prob=
-                                    function(dose, alpha0, alpha1){
-                                        StandLogDose <- log(dose / refDose)
-                                        return(plogis(alpha0 + alpha1 * StandLogDose))
-                                    },
-                                init=
-                                    function(){
-                                        list(theta=c(0, 1))
-                                    },
-                                sample=
-                                    c("alpha0", "alpha1"))
-}
-validObject(LogisticNormalFixedMixture(components=
-                                           list(comp1=
-                                                    list(mean=c(0, 1),
-                                                         cov=diag(2),
-                                                         prec=diag(2)),
-                                                comp2=
-                                                    list(mean=c(-1, 1),
-                                                         cov=diag(2),
-                                                         prec=diag(2))),
-                                       weights=c(1/2, 1/2),
-                                       refDose=1))
 
 ## =========================================================================
 ##' Class of models using expressing their prior in form of Pseudo data
