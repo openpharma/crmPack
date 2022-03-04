@@ -4,65 +4,87 @@
 \name{LogisticNormalFixedMixture-class}
 \alias{LogisticNormalFixedMixture-class}
 \alias{.LogisticNormalFixedMixture}
-\title{Standard logistic model with fixed mixture of multiple bivariate (log) normal priors}
+\alias{LogisticNormalFixedMixture}
+\title{\code{LogisticNormalFixedMixture}}
+\usage{
+LogisticNormalFixedMixture(components, weights, ref_dose, log_normal = FALSE)
+}
+\arguments{
+\item{components}{(\code{list})\cr the specifications of the mixture components,
+a list with \code{\link{ModelParamsNormal}} objects for each bivariate (log) normal
+prior.}
+
+\item{weights}{(\code{numeric})\cr the weights of the components; these must be
+positive and will be normalized to sum to 1.}
+
+\item{ref_dose}{(\code{number})\cr the reference dose.}
+
+\item{log_normal}{(\code{flag})\cr should a log normal prior be specified, such
+that the mean vectors and covariance matrices are valid for the intercept
+and log slope?}
+}
 \description{
-This is standard logistic regression model with a mixture of multiple bivariate
-(log) normal priors on the intercept and slope parameters. The weights of the
-normal priors are fixed, hence no additional model parameters are introduced.
-This type of prior is often used to better approximate a given posterior
-distribution, or when the information is given in terms of a mixture.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{LogisticNormalFixedMixture}} is the class for standard logistic regression
+model with fixed mixture of multiple bivariate (log) normal priors on the
+intercept and slope parameters. The weights of the normal priors are fixed,
+hence no additional model parameters are introduced. This type of prior is
+often used to better approximate a given posterior distribution, or when the
+information is given in terms of a mixture.
 }
 \details{
-The covariate is the natural logarithm of the dose \eqn{x} divided by
-the reference dose \eqn{x^{*}}:
-
-\deqn{logit[p(x)] = \alpha + \beta \cdot \log(x/x^{*})}
-where \eqn{p(x)} is the probability of observing a DLT for a given dose
-\eqn{x}.
-
-The prior is
-\deqn{(\alpha, \beta) \sim
-\sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
+The covariate is the natural logarithm of the dose \eqn{x} divided
+by the reference dose \eqn{x*}, i.e.:
+\deqn{logit[p(x)] = alpha0 + alpha1 * log(x/x*),}
+where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
+The prior
+\deqn{(alpha0, alpha1) ~ w1 * Normal(mean1, cov1) + ... + wK * Normal(meanK, covK),}
 if a normal prior is used and
-\deqn{(\alpha, \log(\beta)) \sim
-\sum_{j=1}^{K} w_{j} Normal(\mu_{j}, \Sigma_{j})}
+\deqn{(alpha0, log(alpha1)) ~ w1 * Normal(mean1, cov1) + ... + wK * Normal(meanK, covK),}
 if a log normal prior is used.
+The weights \eqn{w1, ..., wK} of the components are fixed and sum to 1.
 
-The weight \eqn{w_{j}} of the components are fixed and sum to 1.
-
-The (additional) slots of this class comprise two lists, containing the mean
-vector, the covariance and precision matrices of the two bivariate normal
-distributions each, the parameters of the beta prior for the first component
-weight, as well as the reference dose. Moreover, a slot specifies whether a
-log normal prior is used.
+The slots of this class comprise a list with components parameters. Every
+single component contains the mean vector and the covariance matrix of
+bivariate normal distributions. Remaining slots are the weights of the
+components as well as the reference dose. Moreover, a special indicator
+slot specifies whether a log normal prior is used.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{components}}{a list with one entry per component of the mixture.
-Each entry is a list with \code{mean}, \code{cov} and \code{prec} for the
-bivariate normal prior}
+\item{\code{components}}{(\code{list})\cr the specifications of the mixture components,
+a list with \code{\link{ModelParamsNormal}} objects for each bivariate (log) normal
+prior.}
 
-\item{\code{weights}}{the weights of the components, these must be positive and sum
-to 1}
+\item{\code{weights}}{(\code{numeric})\cr the weights of the components; these must be
+positive and must sum to 1.}
 
-\item{\code{refDose}}{the reference dose \eqn{x^{*}}}
+\item{\code{ref_dose}}{(\code{number})\cr the reference dose.}
 
-\item{\code{logNormal}}{is a log normal prior specified for each of the components?}
+\item{\code{log_normal}}{(\code{flag})\cr should a log normal prior be used, such
+that the mean vectors and covariance matrices are valid for the intercept
+and log slope?}
 }}
 
 \examples{
-
-model <- LogisticNormalFixedMixture(components = 
-                                      list(comp1 = list(mean = c(-0.85, 1),
-                                                        cov = matrix(c(1, -0.5, -0.5, 1), 
-                                                                     nrow = 2)),
-                                           comp2 = list(mean = c(1, 1.5),
-                                                        cov = matrix(c(1.2, -0.45, -0.45, 0.6), 
-                                                                     nrow = 2))),
-                                    weights = c(0.3,0.7),
-                                    refDose = 50)
-
-
+my_model <- LogisticNormalFixedMixture(
+  components = list(
+    comp1 = ModelParamsNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    ),
+    comp2 = ModelParamsNormal(
+      mean = c(1, 1.5),
+      cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+    )
+  ),
+  weights = c(0.3, 0.7),
+  ref_dose = 50
+)
 }
-\keyword{classes}
+\seealso{
+\code{\link{ModelParamsNormal}}, \code{\link{ModelLogNormal}},
+\code{\link{LogisticNormalMixture}}, \code{\link{LogisticLogNormalMixture}}.
+}

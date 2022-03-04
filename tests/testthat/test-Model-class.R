@@ -273,3 +273,76 @@ test_that("LogisticNormalMixture object can be created with user constructor", {
   )
   expect_valid(result, "LogisticNormalMixture")
 })
+
+# LogisticNormalFixedMixture ----
+
+## constructor ----
+
+test_that("LogisticNormalFixedMixture object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticNormalFixedMixture(
+      components = list(
+        comp1 = ModelParamsNormal(
+          mean = c(-0.85, 1),
+          cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+        ),
+        comp2 = ModelParamsNormal(
+          mean = c(1, 1.5),
+          cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+        )
+      ),
+      weights = c(0.3, 0.7),
+      ref_dose = 50
+    )
+  )
+  expect_valid(result, "LogisticNormalFixedMixture")
+})
+
+# LogisticLogNormalMixture ----
+
+## constructor ----
+
+test_that("LogisticLogNormalMixture object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticLogNormalMixture(
+      mean = c(0, 1),
+      cov = diag(2),
+      share_weight = 0.1,
+      ref_dose = 1
+    )
+  )
+  expect_valid(result, "LogisticLogNormalMixture")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
+  data <- h_get_data_mixture()
+  model <- h_get_logistic_log_normal_mix()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_equal(
+    result@data,
+    list(
+      alpha0 = matrix(
+        c(
+          -0.939651, -0.6725854, -0.939651, -0.6725854,
+          -2.371683, -1.2819273, -2.371683, -1.0844256
+        ),
+        ncol = 2,
+        byrow = TRUE
+      ),
+      alpha1 = matrix(
+        c(
+          0.4468436, 0.7469892, 0.4468436, 0.7469892,
+          0.3986522, 1.1817339, 0.3986522, 0.6291422
+        ),
+        ncol = 2,
+        byrow = TRUE
+      ),
+      comp = c(1, 1, 1, 1)
+    ),
+    tolerance = 1e-06
+  )
+})

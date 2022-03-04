@@ -128,6 +128,7 @@ globalVariables(c("log.betaZ",
                   "yhat",
                   "ref_dose",
                   "y.values",
-                  "y.ind"))
+                  "y.ind",
+                  "comp"))
 
 # nolint end
