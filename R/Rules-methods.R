@@ -663,6 +663,34 @@ setMethod("nextBest",
 
 ## ============================================================
 
+setMethod("nextBest", signature = signature(nextBest = "NextBestInfTh", doselimit = "numeric", samples = "Samples",
+                                            model = "Model", data = "Data"),
+          def = function(nextBest, doselimit, samples, model, data, ...){
+
+            probSamples <- matrix(nrow=sampleSize(samples@options),
+                                  ncol=data@nGrid)
+
+            for(i in seq_len(data@nGrid))
+            {
+              probSamples[, i] <- prob(dose=data@doseGrid[i],
+                                       model,
+                                       samples)
+            }
+
+            dosesOK <-
+              if(length(doselimit))
+                (data@doseGrid <= doselimit)
+            else
+              rep(TRUE, length(data@doseGrid))
+
+           criterion <-colMeans(((probSamples-nextBest@target)^2)/(probSamples^nextBest@asymmetry*(1-probSamples)^(2-nextBest@asymmetry)))
+
+           doseLevel <-which.min(criterion[dosesOK])
+           ret <- data@doseGrid[dosesOK][doseLevel]
+           return(list(value=ret))
+          })
+
+
 
 ## --------------------------------------------------
 ## Determine the maximum possible next dose
