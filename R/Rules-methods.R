@@ -663,6 +663,9 @@ setMethod("nextBest",
 
 ## ============================================================
 
+##' @describeIn nextBest Method for `NextBestInfTh` class, which will give
+##'   the appropriate dose within an information theoretic framework
+##' @export
 setMethod("nextBest", signature = signature(nextBest = "NextBestInfTh", doselimit = "numeric", samples = "Samples",
                                             model = "Model", data = "Data"),
           def = function(nextBest, doselimit, samples, model, data, ...){
@@ -689,8 +692,6 @@ setMethod("nextBest", signature = signature(nextBest = "NextBestInfTh", doselimi
            ret <- data@doseGrid[dosesOK][doseLevel]
            return(list(value=ret))
           })
-
-
 
 ## --------------------------------------------------
 ## Determine the maximum possible next dose
