@@ -297,6 +297,28 @@ validObject(NextBestMinDist(0.1))
 
 ## ============================================================
 
+#' Class for Next Best Dose based on Information Theory.
+#'
+#'
+#' @slot target target DLT probability.
+#' @slot asymmetry value of the asymmetry exponent
+#'
+#' @export
+#' @aliases NextBestInfTh
+.NextBestInfTh <- setClass(Class = "NextBestInfTh",
+                           contains = "NextBest",
+                           representation(target = "numeric", asymmetry="numeric"))
+validObject(.NextBestInfTh())
+
+#' @describeIn NextBestInfTh-class Initialization function for `NextBestInfTh`.
+#' @param target target DLT probability.
+#' @param asymmetry value of the asymmetry exponent
+#' @export
+NextBestInfTh <- function(target,asymmetry){ .NextBestInfTh(target = target, asymmetry = asymmetry) }
+validObject(NextBestInfTh(0.1,1))
+
+## ============================================================
+
 ## --------------------------------------------------
 ## Virtual class for increments control
 ## --------------------------------------------------
