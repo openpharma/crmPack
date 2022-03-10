@@ -1081,7 +1081,6 @@ DualEndpoint <- function(mean,
       }
     }
   }
-
   priormodel <- function() {
     # Priors for betaW defined in subclasses!
     theta ~ dmnorm(betaZ_mean, betaZ_prec)
@@ -1090,18 +1089,17 @@ DualEndpoint <- function(mean,
     # Conditional precision for biomarker.
     condPrecW <- precW / (1 - pow(rho, 2))
   }
-
   modelspecs <- list(
     betaZ_mean = betaZ_params@mean,
     betaZ_prec = betaZ_params@prec,
     ref_dose = ref_dose
   )
+  init <- NULL
+  sample <- "betaZ"
 
   # The biomarker regression variance.
   if (use_fixed["sigma2W"]) {
     modelspecs <- c(modelspecs, list(precW = 1 / sigma2W))
-    init <- list()
-    sample <- "betaZ"
   } else {
     priormodel <- h_jags_join_models(
       priormodel,
@@ -1110,8 +1108,8 @@ DualEndpoint <- function(mean,
       }
     )
     modelspecs <- c(modelspecs, list(precWa = sigma2W["a"], precWb = sigma2W["b"]))
-    sample <- c("betaZ", "precW")
     init <- list(precW = 1)
+    sample <- c(sample, "precW")
   }
 
   # DLT and biomarker correlation.
@@ -1125,8 +1123,8 @@ DualEndpoint <- function(mean,
         rho <- 2 * kappa - 1
       }
     )
-    init$kappa <- 1 / 2
     modelspecs <- c(modelspecs, list(rhoa = rho["a"], rhob = rho["b"]))
+    init$kappa <- 0.5
     sample <- c(sample, "rho")
   }
 
