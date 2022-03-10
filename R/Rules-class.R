@@ -287,7 +287,6 @@ NextBestDualEndpoint <- function(target,
 .NextBestMinDist <- setClass(Class = "NextBestMinDist",
                              contains = "NextBest",
                              representation(target = "numeric"))
-validObject(.NextBestMinDist())
 
 #' @describeIn NextBestMinDist-class Initialization function for `NextBestMinDist`.
 #' @param target target DLT probability.
@@ -308,7 +307,6 @@ validObject(NextBestMinDist(0.1))
 .NextBestInfTh <- setClass(Class = "NextBestInfTh",
                            contains = "NextBest",
                            representation(target = "numeric", asymmetry="numeric"))
-validObject(.NextBestInfTh())
 
 #' @describeIn NextBestInfTh-class Initialization function for `NextBestInfTh`.
 #' @param target target DLT probability.
