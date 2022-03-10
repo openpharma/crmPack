@@ -56,7 +56,7 @@ dose(prob, model, samples, ...)
 
 \S4method{dose}{numeric,LogisticIndepBeta,missing}(prob, model)
 
-\S4method{dose}{numeric,DualEndpoint,Samples}(prob, model, samples, use_log_dose)
+\S4method{dose}{numeric,DualEndpoint,Samples}(prob, model, samples)
 }
 \arguments{
 \item{prob}{(\code{proportion} or \code{numeric})\cr the toxicity probability which is
@@ -72,9 +72,6 @@ dose escalation or pseudo DLE/toxicity model.}
 used to compute the resulting doses.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
-
-\item{use_log_dose}{(\code{flag}) \cr for the probit toxicity model, whether a log
-transformation of the (standardized) dose should be used.}
 }
 \value{
 A \code{number} or \code{numeric} vector with the doses.

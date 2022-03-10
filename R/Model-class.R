@@ -1051,7 +1051,7 @@ DualEndpoint <- function(mean,
                          use_log_dose = FALSE,
                          sigma2W,
                          rho) {
-  use_fixed <- c(sigma2W = length(sigma2W), rho = length(rho)) == 1L
+  use_fixed <- sapply(list(sigma2W = sigma2W, rho = rho), is.scalar)
   betaZ_params <- ModelParamsNormal(mean, cov)
 
   datamodel <- if (use_log_dose) {
@@ -1427,7 +1427,7 @@ DualEndpointRW <- function(sigma2betaW,
                      o <- Validate()
 
                      ## check delta1
-                     if(object@use_fixed[delta1])
+                     if(object@use_fixed["delta1"])
                      {
                        o$check(object@delta1 > 0,
                                "delta1 must be positive")
@@ -1492,25 +1492,16 @@ DualEndpointBeta <- function(E0,
                              delta1,
                              mode,
                              refDoseBeta,
-                             ...)
-{
-    ## call the initialize function from DualEndpoint
-    ## to get started
+                             ...) {
     start <- DualEndpoint(...)
 
-    ## we need the dose grid here in the BUGS model,
-    ## therefore add it to datanames
-    start@datanames <- c(start@datanames,
-                         "doseGrid")
+    ## we need the dose grid here in the BUGS model, therefore add it to datanames
+    start@datanames <- c(start@datanames, "doseGrid")
 
-    ## Find out which of the additional parameters are fixed
-    for(parName in c("E0", "Emax", "delta1", "mode")) {
-        start@use_fixed[parName] <- length(parName) == 1L
-    }
-
-    ## build together the prior model and the parameters
-    ## to be saved during sampling
-    ## ----------
+    start@use_fixed <- c(
+      start@use_fixed,
+      sapply(list(E0 = E0, Emax = Emax, delta1 = delta1, mode = mode), is.scalar)
+    )
 
     start@priormodel <-
         h_jags_join_models(start@priormodel,
@@ -1735,37 +1726,23 @@ DualEndpointEmax <- function(E0,
                              Emax,
                              ED50,
                              refDoseEmax,
-                             ...)
-{
-    ## call the initialize function from DualEndpoint
-    ## to get started
+                             ...) {
     start <- DualEndpoint(...)
 
-    ## we need the dose grid here in the BUGS model,
-    ## therefore add it to datanames
-    start@datanames <- c(start@datanames,
-                         "doseGrid")
-
-    ## Find out which of the additional parameters are fixed
-    for(parName in c("E0", "Emax", "ED50")) {
-        start@use_fixed[parName] <- length(parName) == 1L
-    }
-
-    ## build together the prior model and the parameters
-    ## to be saved during sampling
-    ## ----------
-
-    start@priormodel <-
-        h_jags_join_models(start@priormodel,
-                   function(){
-
-                       for (j in 1:nGrid)
-                       {
-                           StandDoseEmax[j] <- doseGrid[j] / refDoseEmax
-                           betaW[j] <- E0 + (Emax - E0) * StandDoseEmax[j] /
-                                            (ED50 + StandDoseEmax[j])
-                       }
-                   })
+    start@datanames <- c(start@datanames, "doseGrid")
+    start@use_fixed <- c(
+      start@use_fixed,
+      sapply(list(E0 = E0, Emax = Emax, ED50 = ED50), is.scalar)
+    )
+    start@priormodel <- h_jags_join_models(
+      start@priormodel,
+      function() {
+        for (j in 1:nGrid) {
+          StandDoseEmax[j] <- doseGrid[j] / refDoseEmax
+          betaW[j] <- E0 + (Emax - E0) * StandDoseEmax[j] / (ED50 + StandDoseEmax[j])
+        }
+      }
+    )
 
     ## we will fill in more, depending on which parameters
     ## are fixed, in these two variables:
