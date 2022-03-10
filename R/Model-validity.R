@@ -79,20 +79,10 @@ v_model_logistic_kadane <- function(object) {
 #' @describeIn v_model_objects validates that `weightpar` and `ref_dose` are valid.
 v_model_logistic_normal_mix <- function(object) {
   v <- Validate()
+
   v$check(
-    test_numeric(
-      object@weightpar,
-      lower = 0 + .Machine$double.xmin,
-      finite = TRUE,
-      any.missing = FALSE,
-      len = 2,
-      names = "named"
-    ),
-    "weightpar must be a numerical vector of length two with values greater than 0"
-  )
-  v$check(
-    test_set_equal(names(object@weightpar), c("a", "b")),
-    "weightpar should be a named vector of length two with names 'a' and 'b'"
+    h_test_named_numeric(object@weightpar, permutation.of = c("a", "b")),
+    "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
   )
   v$check(
     test_number(object@ref_dose, na.ok = TRUE, lower = 0),
@@ -144,7 +134,8 @@ v_model_logistic_normal_fixed_mix <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that `share_weight` represents probability.
+#' @describeIn v_model_objects validates that `ref_dose` is valid and
+#'   `share_weight` represents probability.
 v_model_logistic_log_normal_mix <- function(object) {
   v <- Validate()
   v$check(
@@ -156,4 +147,62 @@ v_model_logistic_log_normal_mix <- function(object) {
     "share_weight does not specify a probability"
   )
   v$result()
+}
+
+#' @describeIn v_model_objects validates that [`DualEndpoint`] class slots are valid.
+v_model_dual_endpoint <- function(object) {
+  rmin <- .Machine$double.xmin
+  v <- Validate()
+
+  v$check(
+    test_number(object@ref_dose, na.ok = TRUE, lower = 0 + rmin),
+    "ref_dose must be a positive scalar"
+  )
+  v$check(
+    test_flag(object@use_log_dose),
+    "use_log_dose must be TRUE or FALSE"
+  )
+  v$check(
+    h_test_named_logical(
+      object@use_fixed,
+      must.include = c("sigma2W", "rho"),
+      any.missing = FALSE,
+      len = NULL,
+      min.len = 2
+    ),
+    "use_fixed must be a named logical vector of length 2 with names including 'sigma2W' and 'rho'"
+  )
+
+  if (object@use_fixed["sigma2W"]) {
+    v$check(
+      test_number(object@sigma2W, lower = 0 + rmin, finite = TRUE),
+      "sigma2W must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2W is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2W, permutation.of = c("a", "b")),
+      "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+
+  if (object@use_fixed["rho"]) {
+    v$check(
+      test_number(object@rho, lower = -1 + rmin, upper = 1 - rmin),
+      "rho must be a number in (-1, 1)"
+    )
+  } else {
+    # object@rho is a vector with parameters for Beta(a, b).
+    v$check(
+      h_test_named_numeric(object@rho, permutation.of = c("a", "b")),
+      "rho must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`DualEndpointRW`] class slots are valid.
+v_model_dual_endpoint_RW <- function(object) {
+  TRUE
 }

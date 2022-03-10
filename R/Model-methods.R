@@ -901,6 +901,70 @@ setMethod(
   }
 )
 
+# DualEndpoint ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @param use_log_dose (`flag`) \cr for the probit toxicity model, whether a log
+#'   transformation of the (standardized) dose should be used.
+#'
+#' @aliases dose-DualEndpoint
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "DualEndpoint",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples, use_log_dose) {
+    assert_subset("betaZ", names(samples@data))
+    betaZ <- samples@data$betaZ
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+    assert_flag(use_log_dose)
+
+    if (use_log_dose) {
+      exp((qnorm(prob) - betaZ[, 1]) / betaZ[, 2]) * ref_dose
+    } else {
+      ((qnorm(prob) - betaZ[, 1]) / betaZ[, 2]) * ref_dose
+    }
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @param use_log_dose (`flag`) \cr for the probit toxicity model, whether a log
+#'   transformation of the (standardized) dose should be used.
+#'
+#' @aliases prob-DualEndpoint
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "DualEndpoint",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, use_log_dose) {
+    assert_subset("betaZ", names(samples@data))
+    betaZ <- samples@data$betaZ
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+    assert_flag(use_log_dose)
+
+    if (use_log_dose) {
+      pnorm(betaZ[, 1] + betaZ[, 2] * log(dose / ref_dose))
+    } else {
+      pnorm(betaZ[, 1] + betaZ[, 2] * dose / ref_dose)
+    }
+  }
+)
+
 # nolint start
 
 ## =============================================================================

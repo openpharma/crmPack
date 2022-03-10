@@ -9,6 +9,8 @@
 \alias{v_model_logistic_normal_mix}
 \alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
+\alias{v_model_dual_endpoint}
+\alias{v_model_dual_endpoint_RW}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 v_general_model(object)
@@ -24,6 +26,10 @@ v_model_logistic_normal_mix(object)
 v_model_logistic_normal_fixed_mix(object)
 
 v_model_logistic_log_normal_mix(object)
+
+v_model_dual_endpoint(object)
+
+v_model_dual_endpoint_RW(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -58,6 +64,11 @@ parameters are valid.
 valid \code{ModelParamsNormal} objects as well as \code{weights} and \code{ref_dose} are
 correct.
 
-\item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
+\item \code{v_model_logistic_log_normal_mix}: validates that \code{ref_dose} is valid and
+\code{share_weight} represents probability.
+
+\item \code{v_model_dual_endpoint}: validates that \code{\link{DualEndpoint}} class slots are valid.
+
+\item \code{v_model_dual_endpoint_RW}: validates that \code{\link{DualEndpointRW}} class slots are valid.
 }}
 

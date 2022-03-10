@@ -155,25 +155,19 @@ test_that("v_model_logistic_normal_mix returns error for wrong ref_dose", {
 
 test_that("v_model_logistic_normal_mix returns error for wrong weightpar", {
   object <- h_get_logistic_normal_mix()
-  err_msg <- "weightpar must be a numerical vector of length two with values greater than 0"
+  err_msg <- "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
   # Assigning wrong values for weightpar.
   object@weightpar <- c(a = -1, b = -2)
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = -1, b = 2)
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
-})
 
-test_that("v_model_logistic_normal_mix returns error for wrong weightpar names", {
-  object <- h_get_logistic_normal_mix()
-  err_msg0 <- "weightpar must be a numerical vector of length two with values greater than 0"
-  err_msg <- "weightpar should be a named vector of length two with names 'a' and 'b'"
-  # Assigning wrong values for weightpar.
   object@weightpar <- c(1, 2)
-  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = 1, 2)
-  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(1, b = 2)
-  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = 1, g = 2)
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(h = 1, g = 2)

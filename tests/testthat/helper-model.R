@@ -141,3 +141,12 @@ h_get_logistic_log_normal_mix <- function() {
     ref_dose = 1.5
   )
 }
+
+h_get_dual_endpoint <- function() {
+  DualEndpoint(
+    mean = c(0, 1),
+    cov = diag(2),
+    sigma2W = 1,
+    rho = 0
+  )
+}

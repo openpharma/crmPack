@@ -322,3 +322,21 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
   result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
+
+
+
+# DualEndpoint ----
+
+## constructor ----
+
+test_that("DualEndpoint object can be created with user constructor", {
+  result <- expect_silent(
+    DualEndpoint(
+      mean = c(0, 1),
+      cov = diag(2),
+      sigma2W = 1,
+      rho = 0
+    )
+  )
+  expect_valid(result, "DualEndpoint")
+})

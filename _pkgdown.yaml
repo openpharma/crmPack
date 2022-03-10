@@ -69,6 +69,8 @@ reference:
       - h_jags_extract_samples
       - h_null_if_na
       - h_null_if_scalar
+      - h_test_named_numeric
+      - h_test_named_logical
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -119,6 +121,7 @@ reference:
       - dose-LogisticNormalMixture
       - dose-LogisticNormalFixedMixture
       - dose-LogisticLogNormalMixture
+      - dose-DualEndpoint
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
       - probFunction
@@ -136,6 +139,7 @@ reference:
       - prob-LogisticNormalMixture
       - prob-LogisticNormalFixedMixture
       - prob-LogisticLogNormalMixture
+      - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV

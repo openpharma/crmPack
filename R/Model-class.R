@@ -931,338 +931,226 @@ LogisticLogNormalMixture <- function(mean,
   )
 }
 
+# DualEndpoint ----
+
+## class ----
+
+#' `DualEndpoint`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DualEndpoint`] is the general class for the dual endpoint model.
+#'
+#' @details The idea of the dual-endpoint models is to model not only the
+#'   dose-toxicity relationship, but also to model, at the same time, the
+#'   relationship of a PD biomarker with the dose. The sub-classes of this class
+#'   define how the dose-biomarker relationship is parametrized. This class here
+#'   shall contain all the common features to reduce duplicate code.
+#'   (This class however, must not be virtual as we need to create objects
+#'   of it during the construction of subclass objects.)
+#'
+#'   The dose-toxicity relationship is modeled with probit regression model
+#'   \deqn{probit[p(x)] = betaZ1 + betaZ2 * x/x*,}
+#'   or
+#'   \deqn{probit[p(x)] = betaZ1 + betaZ2 * log(x/x*),}
+#'   in case when the option `use_log_dose` is `TRUE`.
+#'   Here, \eqn{p(x)} is the probability of observing a DLT for a given
+#'   dose \eqn{x} and \eqn{x*} is the reference dose.
+#'   The prior \deqn{(betaZ1, log(betaZ2)) ~ Normal(mean, cov).}
+#'
+#'   For the biomarker response \eqn{w} at a dose \eqn{x}, we assume
+#'   \deqn{w(x) ~ Normal(f(x), sigma2W),}
+#'   where \eqn{f(x)} is a function of the dose \eqn{x}, which is further
+#'   specified in sub-classes. The biomarker variance \eqn{sigma2W} can be fixed
+#'   or assigned an Inverse-Gamma prior distribution; see the details below under
+#'   slot `sigma2W`.
+#'
+#'   Finally, the two endpoints \eqn{y} (the binary DLT variable) and \eqn{w}
+#'   (the biomarker) can be correlated, by assuming a correlation of level
+#'   \eqn{rho} between the underlying continuous latent toxicity variable \eqn{z}
+#'   and the biomarker \eqn{w}. Again, this correlation can be fixed or assigned
+#'   a prior distribution from the scaled Beta family; see the details below
+#'   under slot `rho`.
+#'
+#'   Please see the Hive page for more details on the model and the example
+#'   vignette by typing `crmPackExample()` for a full example.
+#'
+#' @slot betaZ_params (`ModelParamsNormal`)\cr for the probit toxicity model, it
+#'   contains the prior mean, covariance matrix and precision matrix which is
+#'   internally calculated as an inverse of the covariance matrix.
+#' @slot ref_dose (`number`)\cr for the probit toxicity model,, the reference dose.
+#' @slot use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
+#'   transformation of the (standardized) dose should be used?
+#' @slot sigma2W (`numeric`)\cr either a fixed value for the biomarker variance,
+#'   or a numeric vector with elements named `a` and `b` for the Inverse-Gamma
+#'   prior parameters.
+#' @slot rho (`numeric`)\cr either a fixed value for the correlation
+#'   (between -1 and 1), or a named vector with elements named `a` and `b` for
+#'   the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is in
+#'   (0, 1). For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
+#' @slot use_fixed rho (`logical`)\cr indicates whether a fixed value for
+#'   `sigma2W` and `rho` (for each parameter separately) is used or not. This
+#'   slot is needed for internal purposes and must not be touched by the user.
+#'
+#' @seealso [`DualEndpointRW`], [`DualEndpointBeta`], [`DualEndpointEmax`].
+#'
+#' @aliases DualEndpoint
+#' @export
+#'
+.DualEndpoint <- setClass(
+  Class = "DualEndpoint",
+  slots = c(
+    betaZ_params = "ModelParamsNormal",
+    ref_dose = "numeric",
+    use_log_dose = "logical",
+    sigma2W = "numeric",
+    rho = "numeric",
+    use_fixed = "logical"
+  ),
+  prototype = prototype(
+    probit_params = ModelParamsNormal(
+      mean = c(0, 1),
+      cov = diag(2)
+    ),
+    ref_dose = 1,
+    use_log_dose = FALSE,
+    sigma2W = 1,
+    rho = 0,
+    use_fixed = c(
+      sigma2W = TRUE,
+      rho = TRUE
+    )
+  ),
+  contains = "Model",
+  validity = v_model_dual_endpoint
+)
+
+## constructor ----
+
+#' @rdname DualEndpoint-class
+#'
+#' @param mean (`numeric`)\cr for the probit toxicity model, the prior mean vector.
+#' @param cov (`matrix`)\cr for the probit toxicity model, the prior covariance
+#'   matrix. The precision matrix is internally calculated as an inverse of `cov`.
+#' @param ref_dose (`number`)\cr for the probit toxicity model, the reference dose.
+#' @param use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
+#'   transformation of the (standardized) dose should be used?
+#' @param sigma2W (`numeric`)\cr either a fixed value for the biomarker variance,
+#'   or a numeric vector with elements named `a` and `b` for the Inverse-Gamma
+#'   prior parameters.
+#' @param rho (`numeric`)\cr either a fixed value for the correlation
+#'   (between -1 and 1), or a named vector with elements named `a` and `b` for
+#'   the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is in
+#'   (0, 1). For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
+#'
+#' @export
+#'
+DualEndpoint <- function(mean,
+                         cov,
+                         ref_dose = 1,
+                         use_log_dose = FALSE,
+                         sigma2W,
+                         rho) {
+  use_fixed <- c(sigma2W = length(sigma2W), rho = length(rho)) == 1L
+  betaZ_params <- ModelParamsNormal(mean, cov)
+
+  datamodel <- if (use_log_dose) {
+    function() {
+      for (i in 1:nObs) {
+        # The toxicity model.
+        meanZ[i] <- betaZ[1] + betaZ[2] * log(x[i] / ref_dose)
+        z[i] ~ dnorm(meanZ[i], 1)
+        y[i] ~ dinterval(z[i], 0)
+
+        # The conditional biomarker model. betaW defined in subclasses!
+        condMeanW[i] <- betaW[xLevel[i]] + rho / sqrt(precW) * (z[i] - meanZ[i])
+        w[i] ~ dnorm(condMeanW[i], condPrecW)
+      }
+    }
+  } else {
+    function() {
+      for (i in 1:nObs) {
+        # The toxicity model.
+        meanZ[i] <- betaZ[1] + betaZ[2] * (x[i] / ref_dose)
+        z[i] ~ dnorm(meanZ[i], 1)
+        y[i] ~ dinterval(z[i], 0)
+
+        # The conditional biomarker model. betaW defined in subclasses!
+        condMeanW[i] <- betaW[xLevel[i]] + rho / sqrt(precW) * (z[i] - meanZ[i])
+        w[i] ~ dnorm(condMeanW[i], condPrecW)
+      }
+    }
+  }
+
+  priormodel <- function() {
+    # Priors for betaW defined in subclasses!
+    theta ~ dmnorm(betaZ_mean, betaZ_prec)
+    betaZ[1] <- theta[1]
+    betaZ[2] <- exp(theta[2])
+    # Conditional precision for biomarker.
+    condPrecW <- precW / (1 - pow(rho, 2))
+  }
+
+  modelspecs <- list(
+    betaZ_mean = betaZ_params@mean,
+    betaZ_prec = betaZ_params@prec,
+    ref_dose = ref_dose
+  )
+
+  # The biomarker regression variance.
+  if (use_fixed["sigma2W"]) {
+    modelspecs <- c(modelspecs, list(precW = 1 / sigma2W))
+    init <- list()
+    sample <- "betaZ"
+  } else {
+    priormodel <- h_jags_join_models(
+      priormodel,
+      function() {
+        precW ~ dgamma(precWa, precWb)
+      }
+    )
+    modelspecs <- c(modelspecs, list(precWa = sigma2W["a"], precWb = sigma2W["b"]))
+    sample <- c("betaZ", "precW")
+    init <- list(precW = 1)
+  }
+
+  # DLT and biomarker correlation.
+  if (use_fixed["rho"]) {
+    modelspecs <- c(modelspecs, list(rho = rho))
+  } else {
+    priormodel <- h_jags_join_models(
+      priormodel,
+      function() {
+        kappa ~ dbeta(rhoa, rhob)
+        rho <- 2 * kappa - 1
+      }
+    )
+    init$kappa <- 1 / 2
+    modelspecs <- c(modelspecs, list(rhoa = rho["a"], rhob = rho["b"]))
+    sample <- c(sample, "rho")
+  }
+
+  .DualEndpoint(
+    betaZ_params = betaZ_params,
+    sigma2W = sigma2W,
+    rho = rho,
+    use_fixed = use_fixed,
+    datamodel = datamodel,
+    priormodel = priormodel,
+    modelspecs = function() {
+      modelspecs
+    },
+    init = function(y, w, nGrid) {
+      c(init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
+    },
+    sample = sample,
+    datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid")
+  )
+}
+
 # nolint start
 
-##' General class for the dual endpoint model
-##'
-##' The idea of the dual-endpoint models is to model not only the dose-toxicity
-##' relationship, but also to model at the same time the relationship of a PD
-##' biomarker with the dose. The subclasses of this class detail how the
-##' dose-biomarker relationship is parametrized and are those to be used. This
-##' class here shall contain all the common features to reduce duplicate code.
-##' (However, this class must not be virtual, because we need to create objects
-##' of it during the construction of subclass objects.)
-##'
-##' Currently a probit regression model
-##' \deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2}
-##' \cdot x/x^{*}}{probit[p(x)] = beta_Z1 + beta_Z2 * x/x*}
-##' or
-##' \deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2}
-##' \cdot \log(x/x^{*})}{probit[p(x)] = beta_Z1 + beta_Z2 * log(x/x*)}
-##' in case that the option \code{useLogDose} is \code{TRUE}.
-##' Here \eqn{p(x)} is the probability of observing a DLT for a given
-##' dose \eqn{x}, \eqn{\Phi} is the standard normal cdf, and \eqn{x^{*}} is
-##' the reference dose.
-##'
-##' The prior is \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right)
-##' \sim Normal(\mu, \Sigma)}{(beta_Z1, log(beta_Z2)) ~ Normal(mu, Sigma)}.
-##'
-##' For the biomarker response w at a dose x, we assume
-##' \deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}{w(x) ~ Normal(f(x), sigma^2_W)}
-##' and \eqn{f(x)} is a function of the dose x, which is further specified in
-##' the subclasses. The biomarker variance \eqn{\sigma^{2}_{W}} can be fixed or
-##' assigned an inverse gamma prior distribution; see the details below under
-##' slot \code{sigma2W}.
-##'
-##' Finally, the two endpoints y (the binary DLT variable) and w (the biomarker)
-##' can be correlated, by assuming a correlation \eqn{\rho} between the
-##' underlying continuous latent toxicity variable z and the biomarker w.
-##' Again, this correlation can be fixed or assigned a prior distribution from
-##' the scaled beta family; see the details below under slot \code{rho}.
-##'
-##' Please see the Hive page for more details on the model and the example
-##' vignette by typing \code{crmPackExample()} for a full example.
-##'
-##' @slot mu For the probit toxicity model, \code{mu} contains the prior mean
-##' vector
-##' @slot Sigma For the probit toxicity model, contains the prior covariance
-##' matrix
-##' @slot refDose For the probit toxicity model, the reference dose
-##' @slot useLogDose For the probit toxicity model, whether a log transformation
-##' of the (standardized) dose should be used?
-##' @slot sigma2W Either a fixed value for the biomarker variance, or a vector
-##' with elements \code{a} and \code{b} for the inverse-gamma prior parameters.
-##' @slot rho Either a fixed value for the correlation (between -1 and 1), or a
-##' vector with elements \code{a} and \code{b} for the Beta prior on the
-##' transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
-##' \code{a=1,b=1} leads to a uniform prior on rho.
-##' @slot useFixed a list with logical value for each of the parameters
-##' indicating whether a fixed value is used or not; this slot is needed for
-##' internal purposes and not to be touched by the user.
-##'
-##' @export
-##' @seealso Current subclasses: \code{\linkS4class{DualEndpointRW}},
-##' \code{\linkS4class{DualEndpointBeta}}
-##' @keywords classes
-.DualEndpoint <-
-    setClass(Class="DualEndpoint",
-             representation(mu="numeric",
-                            Sigma="matrix",
-                            refDose="numeric",
-                            useLogDose="logical",
-                            sigma2W="numeric",
-                            rho="numeric",
-                            useFixed="list"),
-             prototype(mu=c(0, 1),
-                       Sigma=diag(2),
-                       refDose=1,
-                       useLogDose=FALSE,
-                       sigma2W=1,
-                       rho=0,
-                       useFixed=
-                           list(sigma2W=TRUE,
-                                rho=TRUE)),
-             contains="Model",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     ## check the prior parameters with variable content
-                     for(parName in c("sigma2W", "rho"))
-                     {
-                         ## if we use a fixed value for this parameter
-                         if(object@useFixed[[parName]])
-                         {
-                             ## check range of value
-                             if(parName == "rho")
-                             {
-                                 o$check((object@rho > -1) && (object@rho < 1),
-                                         "rho must be in (-1, 1)")
-                             } else {
-                                 o$check(slot(object, parName) > 0,
-                                         paste(parName, "must be positive"))
-                             }
-                         } else {
-                             ## use a IG(a, b) or Beta(a, b)  prior
-                             o$check(identical(names(slot(object, parName)),
-                                               c("a", "b")),
-                                     paste(parName,
-                                           "must have names 'a' and 'b'"))
-                             o$check(all(slot(object, parName) > 0),
-                                     paste(parName,
-                                           "must have positive prior parameters"))
-                         }
-                     }
-
-                     ## check the other prior parameters
-                     o$check(identical(length(object@mu), 2L),
-                             "mu must have length 2")
-                     o$check(identical(dim(object@Sigma), c(2L, 2L)) &&
-                                 ! is.null(chol(object@Sigma)),
-                             "Sigma must be positive-definite 2x2 covariance matrix")
-
-                     ## check reference dose and log parameter
-                     o$check(is.scalar(object@refDose) &&
-                               (object@refDose > 0),
-                             "refDose must be positive scalar")
-                     o$check(is.bool(object@useLogDose),
-                             "useLogDose must be TRUE or FALSE")
-
-                     o$result()
-                 })
-
-##' Initialization function for the "DualEndpoint" class
-##'
-##' @param mu see \code{\linkS4class{DualEndpoint}}
-##' @param Sigma see \code{\linkS4class{DualEndpoint}}
-##' @param refDose see \code{\linkS4class{DualEndpoint}} (default: 1)
-##' @param useLogDose see \code{\linkS4class{DualEndpoint}}
-##' (default: \code{FALSE})
-##' @param sigma2W see \code{\linkS4class{DualEndpoint}}
-##' @param rho see \code{\linkS4class{DualEndpoint}}
-##' @return the \code{\linkS4class{DualEndpoint}} object
-##'
-##' @export
-##' @keywords methods
-DualEndpoint <- function(mu,
-                         Sigma,
-                         refDose=1,
-                         useLogDose=FALSE,
-                         sigma2W,
-                         rho)
-{
-    ## Find out which parameters are fixed
-    useFixed <- list()
-    for(parName in c("sigma2W", "rho"))
-    {
-        useFixed[[parName]] <-
-            identical(length(get(parName)), 1L)
-    }
-
-    ## build together the prior model and the parameters
-    ## to be saved during sampling
-    ## ----------
-
-    ## start with this:
-
-    modelspecs <-
-        list(mu=mu,
-             PrecBetaZ=solve(Sigma),
-             refDose=refDose## ,
-             ## low=c(-10000, 0),
-             ## high=c(0, 10000)
-             )
-
-    priormodel <-
-        function(){
-            ## priors for betaW: defined in subclasses
-
-            ## the bivariate normal prior for the
-            ## probit coefficients
-            log.betaZ[1:2] ~ dmnorm(mu[], PrecBetaZ[,])
-
-            betaZ[1] <- log.betaZ[1]
-            betaZ[2] <- exp(log.betaZ[2])
-
-            ## conditional precision for biomarker
-            condPrecW <- precW / (1 - pow(rho, 2))
-        }
-
-    ## we will fill in more, depending on which parameters
-    ## are fixed, in these two variables:
-    sample <- c("betaZ")
-    initlist <- list()
-
-    ## first the biomarker regression variance
-    if(! useFixed[["sigma2W"]])
-    {
-        priormodel <-
-            h_jags_join_models(priormodel,
-                       function(){
-                           ## gamma prior for biomarker precision
-                           precW ~ dgamma(precWa, precWb)
-                       })
-
-        sample <- c(sample,
-                    "precW")
-
-        modelspecs <- c(modelspecs,
-                        list(precWa=sigma2W["a"],
-                             precWb=sigma2W["b"]))
-
-        initlist$precW <- 1
-
-    } else {
-        modelspecs <- c(modelspecs,
-                        list(precW=1/sigma2W))
-    }
-
-    ## second the correlation
-    if(! useFixed[["rho"]])
-    {
-        priormodel <-
-            h_jags_join_models(priormodel,
-                       function(){
-                           ## transformed Beta prior for rho
-                           kappa ~ dbeta(rhoa, rhob)
-                           rho <- kappa * 2 - 1
-                       })
-
-        sample <- c(sample,
-                    "rho")
-
-        initlist$kappa <- 1/2
-
-        modelspecs <- c(modelspecs,
-                        list(rhoa=rho["a"],
-                             rhob=rho["b"]))
-    } else {
-        modelspecs <- c(modelspecs,
-                        list(rho=rho))
-    }
-
-    ## finally build the object
-    .DualEndpoint(mu=mu,
-                  Sigma=Sigma,
-                  sigma2W=sigma2W,
-                  rho=rho,
-                  useFixed=useFixed,
-                  datamodel=
-                    if(useLogDose){
-                      function(){
-                        ## the Probit likelihood with log dose
-                        for (i in 1:nObs)
-                        {
-                          ## the toxicity model
-                          ## z[i] ~ dnorm(meanZ[i], 1) %_%
-                          ##     I(low[y[i] + 1], high[y[i] + 1])
-                          y[i] ~ dinterval(z[i], 0)
-                          z[i] ~ dnorm(meanZ[i], 1)
-
-                          ## the conditional biomarker model
-                          w[i] ~ dnorm(condMeanW[i], condPrecW)
-
-                          ## the moments - here with log dose
-                          StandLogDose[i] <- log(x[i] / refDose)
-                          meanZ[i] <- betaZ[1] + betaZ[2] * StandLogDose[i]
-                          condMeanW[i] <- betaW[xLevel[i]] +
-                            rho / sqrt(precW) * (z[i] - meanZ[i])
-                          ## betaW needs to be defined in subclasses!
-                        }}} else {
-                          function(){
-                            ## the likelihood
-                            for (i in 1:nObs)
-                            {
-                              ## the toxicity model
-                              ## z[i] ~ dnorm(meanZ[i], 1) %_%
-                              ##     I(low[y[i] + 1], high[y[i] + 1])
-                              y[i] ~ dinterval(z[i], 0)
-                              z[i] ~ dnorm(meanZ[i], 1)
-
-                              ## the conditional biomarker model
-                              w[i] ~ dnorm(condMeanW[i], condPrecW)
-
-                              ## the moments - here just standardized dose
-                              StandDose[i] <- x[i] / refDose
-                              meanZ[i] <- betaZ[1] + betaZ[2] * StandDose[i]
-                              condMeanW[i] <- betaW[xLevel[i]] +
-                                rho / sqrt(precW) * (z[i] - meanZ[i])
-                              ## betaW needs to be defined in subclasses!
-                            }
-                          }},
-                  priormodel=priormodel,
-                  datanames=
-                  c("nObs", "w", "x", "xLevel", "y", "nGrid"),
-                  modelspecs=
-                  function(){
-                      modelspecs
-                  },
-                  dose=
-                    if(useLogDose){
-                      function(prob, betaZ){
-                        ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
-                        return(exp(ret) * refDose)
-                      }} else {
-                        function(prob, betaZ){
-                          ret <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
-                          return(ret * refDose)
-                        }},
-                  prob=
-                    if(useLogDose){
-                      function(dose, betaZ){
-                        ret <- pnorm(betaZ[, 1] + betaZ[, 2] * log(dose / refDose))
-                        return(ret)
-                      }} else {
-                        function(dose, betaZ){
-                          ret <- pnorm(betaZ[, 1] + betaZ[, 2] * dose / refDose)
-                          return(ret)
-                        }},
-                  init=
-                  function(y, w, nGrid){
-                      c(initlist,
-                        list(z=
-                             ifelse(y==0, -1, 1),
-                             log.betaZ=c(0,1)))},
-                  sample=sample)
-}
-validObject(DualEndpoint(mu=c(0, 1),
-                         Sigma=diag(2),
-                         sigma2W=1,
-                         rho=0))
-
-
-## ============================================================
-
+# DualEndpointRW ----
 
 ##' Dual endpoint model with RW prior for biomarker
 ##'
@@ -1306,8 +1194,8 @@ validObject(DualEndpoint(mu=c(0, 1),
                             useRW1="logical"),
              prototype(sigma2betaW=1,
                        useRW1=TRUE,
-                       useFixed=
-                       list(sigma2W=TRUE,
+                       use_fixed=
+                       c(sigma2W=TRUE,
                             rho=TRUE,
                             sigma2betaW=TRUE)),
              contains="DualEndpoint",
@@ -1319,7 +1207,7 @@ validObject(DualEndpoint(mu=c(0, 1),
                      for(parName in c("sigma2betaW"))
                      {
                          ## if we use a fixed value for this parameter
-                         if(object@useFixed[[parName]])
+                         if(object@use_fixed[parName])
                          {
                              o$check(slot(object, parName) > 0,
                                      paste(parName, "must be positive"))
@@ -1336,7 +1224,6 @@ validObject(DualEndpoint(mu=c(0, 1),
 
                      o$result()
                  })
-
 
 ##' Initialization function for the "DualEndpointRW" class
 ##'
@@ -1366,11 +1253,7 @@ DualEndpointRW <- function(sigma2betaW,
     useRW1 <- smooth == "RW1"
 
     ## Find out which of the additional parameters are fixed
-    for(parName in c("sigma2betaW"))
-    {
-        start@useFixed[[parName]] <-
-            identical(length(get(parName)), 1L)
-    }
+    start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
 
     ## build together the prior model and the parameters
     ## to be saved during sampling
@@ -1438,7 +1321,7 @@ DualEndpointRW <- function(sigma2betaW,
     oldInit <- start@init
 
     ## check the variance for the RW prior
-    if(! start@useFixed[["sigma2betaW"]])
+    if(! start@use_fixed["sigma2betaW"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1478,16 +1361,14 @@ DualEndpointRW <- function(sigma2betaW,
                     sigma2betaW=sigma2betaW,
                     useRW1=useRW1)
 }
-validObject(DualEndpointRW(sigma2betaW=1,
-                           smooth="RW1",
-                           mu=c(0, 1),
-                           Sigma=diag(2),
-                           sigma2W=1,
-                           rho=0))
+#validObject(DualEndpointRW(sigma2betaW=1,
+#                           smooth="RW1",
+#                           mean=c(0, 1),
+#                           cov=diag(2),
+#                           sigma2W=1,
+#                           rho=0))
 
-
-## ============================================================
-
+# DualEndpointBeta ----
 
 ##' Dual endpoint model with beta function for dose-biomarker relationship
 ##'
@@ -1533,8 +1414,8 @@ validObject(DualEndpointRW(sigma2betaW=1,
                        delta1=c(0, 5),
                        mode=c(1, 15),
                        refDoseBeta=1000,
-                       useFixed=
-                       list(sigma2W=TRUE,
+                       use_fixed=
+                       c(sigma2W=TRUE,
                             rho=TRUE,
                             E0=FALSE,
                             Emax=FALSE,
@@ -1546,7 +1427,7 @@ validObject(DualEndpointRW(sigma2betaW=1,
                      o <- Validate()
 
                      ## check delta1
-                     if(object@useFixed$delta1)
+                     if(object@use_fixed[delta1])
                      {
                        o$check(object@delta1 > 0,
                                "delta1 must be positive")
@@ -1560,7 +1441,7 @@ validObject(DualEndpointRW(sigma2betaW=1,
                      for(parName in c("delta1", "mode"))
                      {
                        ## if we use a fixed value for this parameter
-                       if(object@useFixed[[parName]])
+                       if(object@use_fixed[parName])
                        {
                          ## check range of value
                          o$check(slot(object, parName) > 0,
@@ -1578,7 +1459,7 @@ validObject(DualEndpointRW(sigma2betaW=1,
                      for(parName in c("E0", "Emax"))
                      {
                          ## if we don't use a fixed value for this parameter
-                         if(! object@useFixed[[parName]])
+                         if(! object@use_fixed[parName])
                          {
                              ## use a Uniform(a, b) prior
                              o$check(diff(slot(object, parName)) > 0,
@@ -1623,10 +1504,8 @@ DualEndpointBeta <- function(E0,
                          "doseGrid")
 
     ## Find out which of the additional parameters are fixed
-    for(parName in c("E0", "Emax", "delta1", "mode"))
-    {
-        start@useFixed[[parName]] <-
-            identical(length(get(parName)), 1L)
+    for(parName in c("E0", "Emax", "delta1", "mode")) {
+        start@use_fixed[parName] <- length(parName) == 1L
     }
 
     ## build together the prior model and the parameters
@@ -1659,7 +1538,7 @@ DualEndpointBeta <- function(E0,
     newModelspecs <- list(refDoseBeta=refDoseBeta)
 
     ## for E0:
-    if(! start@useFixed[["E0"]])
+    if(! start@use_fixed["E0"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1679,7 +1558,7 @@ DualEndpointBeta <- function(E0,
     }
 
     ## for Emax:
-    if(! start@useFixed[["Emax"]])
+    if(! start@use_fixed["Emax"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1699,7 +1578,7 @@ DualEndpointBeta <- function(E0,
     }
 
     ## for delta1 and delta2:
-    if(! start@useFixed[["delta1"]])
+    if(! start@use_fixed["delta1"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1718,7 +1597,7 @@ DualEndpointBeta <- function(E0,
         newModelspecs$delta1 <- delta1
     }
 
-    if(! start@useFixed[["mode"]])
+    if(! start@use_fixed["mode"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1760,19 +1639,18 @@ DualEndpointBeta <- function(E0,
                       mode=mode,
                       refDoseBeta=refDoseBeta)
 }
-validObject(DualEndpointBeta(E0=10,
-                             Emax=50,
-                             delta1=c(1, 5),
-                             mode=c(3, 10),
-                             refDoseBeta=10,
-                             mu=c(0, 1),
-                             Sigma=diag(2),
-                             sigma2W=1,
-                             rho=0))
+#validObject(DualEndpointBeta(E0=10,
+#                             Emax=50,
+#                             delta1=c(1, 5),
+#                             mode=c(3, 10),
+#                             refDoseBeta=10,
+#                             mean=c(0, 1),
+#                             cov=diag(2),
+#                             sigma2W=1,
+#                             rho=0))
 
 
-## ============================================================
-
+# DualEndpointEmax ----
 
 ##' Dual endpoint model with emax function for dose-biomarker relationship
 ##'
@@ -1806,8 +1684,8 @@ validObject(DualEndpointBeta(E0=10,
                        Emax=c(0, 500),
                        ED50=c(0,500),
                        refDoseEmax=1000,
-                       useFixed=
-                           list(sigma2W=TRUE,
+                       use_fixed=
+                           c(sigma2W=TRUE,
                                 rho=TRUE,
                                 E0=FALSE,
                                 Emax=FALSE,
@@ -1821,7 +1699,7 @@ validObject(DualEndpointBeta(E0=10,
                      for(parName in c("E0", "Emax", "ED50"))
                      {
                          ## if we use a fixed value for this parameter
-                         if(object@useFixed[[parName]])
+                         if(object@use_fixed[parName])
                          {
                              ## check range of value
                              o$check(slot(object, parName) > 0,
@@ -1869,10 +1747,8 @@ DualEndpointEmax <- function(E0,
                          "doseGrid")
 
     ## Find out which of the additional parameters are fixed
-    for(parName in c("E0", "Emax", "ED50"))
-    {
-        start@useFixed[[parName]] <-
-            identical(length(get(parName)), 1L)
+    for(parName in c("E0", "Emax", "ED50")) {
+        start@use_fixed[parName] <- length(parName) == 1L
     }
 
     ## build together the prior model and the parameters
@@ -1899,7 +1775,7 @@ DualEndpointEmax <- function(E0,
     newModelspecs <- list(refDoseEmax=refDoseEmax)
 
     ## for E0:
-    if(! start@useFixed[["E0"]])
+    if(! start@use_fixed["E0"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1919,7 +1795,7 @@ DualEndpointEmax <- function(E0,
     }
 
     ## for Emax:
-    if(! start@useFixed[["Emax"]])
+    if(! start@use_fixed["Emax"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1939,7 +1815,7 @@ DualEndpointEmax <- function(E0,
     }
 
     ## for ED50:
-    if(! start@useFixed[["ED50"]])
+    if(! start@use_fixed["ED50"])
     {
         start@priormodel <-
             h_jags_join_models(start@priormodel,
@@ -1981,14 +1857,16 @@ DualEndpointEmax <- function(E0,
                       ED50=ED50,
                       refDoseEmax=refDoseEmax)
 }
-validObject(DualEndpointEmax(E0=10,
-                             Emax=50,
-                             ED50=20,
-                             refDoseEmax=10,
-                             mu=c(0, 1),
-                             Sigma=diag(2),
-                             sigma2W=1,
-                             rho=0))
+#validObject(DualEndpointEmax(E0=10,
+#                             Emax=50,
+#                             ED50=20,
+#                             refDoseEmax=10,
+#                             mean=c(0, 1),
+#                             cov=diag(2),
+#                             sigma2W=1,
+#                             rho=0))
+
+# ModelPseudo ----
 
 ## =========================================================================
 ##' Class of models using expressing their prior in form of Pseudo data
@@ -2008,6 +1886,8 @@ validObject(DualEndpointEmax(E0=10,
                        contains="AllModels"
 )
 ##' No intialization function
+
+# ModelTox ----
 
 ## ===========================================================================
 
@@ -2042,6 +1922,8 @@ validObject(DualEndpointEmax(E0=10,
                     contains="ModelPseudo"
 )
 ##' No Initialization function
+
+# ModelEff ----
 
 ## ==========================================================================================
 
@@ -2098,6 +1980,8 @@ validObject(DualEndpointEmax(E0=10,
 )
 validObject(.ModelEff)
 ##' No initialization function
+
+# LogisticIndepBeta ----
 
 ## ==============================================================================
 ##' Standard logistic model with prior in form of pseudo data
@@ -2242,6 +2126,8 @@ LogisticIndepBeta <- function(binDLE,
                      data=data
   )
 }
+
+# Effloglog ----
 
 ## ======================================================================================================
 ##' Class for the linear log-log efficacy model using pseudo data prior
@@ -2481,6 +2367,8 @@ Effloglog<-function(Eff,
              c=c
   )}
 
+# EffFlexi ----
+
 ## =========================================================================================
 ##' Class for the efficacy model in flexible form for prior expressed in form of pseudo data
 ##'
@@ -2691,6 +2579,7 @@ EffFlexi <- function(Eff,
             RWmatRank=RWmatRank)}
 ## ---------------------------------------------------------------------------------------------------------
 
+# DALogisticLogNormal ----
 
 ##' Logistic model with bivariate (log) normal prior and data augmentation
 ##'
@@ -2899,6 +2788,8 @@ validObject(DALogisticLogNormal(mean=c(0, 1),
                                 l=0.5,
                                 C_par=2))
 
+# TITELogisticLogNormal ----
+
 ## ============================================================
 
 ##' Standard logistic model with bivariate (log) normal prior (for TITE-CRM use)
@@ -3049,6 +2940,8 @@ validObject(TITELogisticLogNormal(mean=c(0, 1),
                                   cov=diag(2),
                                   ref_dose=1,
                                   weightMethod="linear"))
+
+# OneParExpNormalPrior ----
 
 ## ============================================================
 
