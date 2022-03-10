@@ -663,10 +663,10 @@ setMethod("nextBest",
 
 ## ============================================================
 
-##' @describeIn nextBest Method for `NextBestInfTh` class, which will give
+##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
 ##'   the appropriate dose within an information theoretic framework
 ##' @export
-setMethod("nextBest", signature = signature(nextBest = "NextBestInfTh", doselimit = "numeric", samples = "Samples",
+setMethod("nextBest", signature = signature(nextBest = "NextBestInfTheory", doselimit = "numeric", samples = "Samples",
                                             model = "Model", data = "Data"),
           def = function(nextBest, doselimit, samples, model, data, ...){
 

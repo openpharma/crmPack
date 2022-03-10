@@ -303,17 +303,17 @@ validObject(NextBestMinDist(0.1))
 #' @slot asymmetry value of the asymmetry exponent
 #'
 #' @export
-#' @aliases NextBestInfTh
-.NextBestInfTh <- setClass(Class = "NextBestInfTh",
+#' @aliases NextBestInfTheory
+.NextBestInfTheory <- setClass(Class = "NextBestInfTheory",
                            contains = "NextBest",
                            representation(target = "numeric", asymmetry="numeric"))
 
-#' @describeIn NextBestInfTh-class Initialization function for `NextBestInfTh`.
+#' @describeIn NextBestInfTheory-class Initialization function for `NextBestInfTheory`.
 #' @param target target DLT probability.
 #' @param asymmetry value of the asymmetry exponent
 #' @export
-NextBestInfTh <- function(target,asymmetry){ .NextBestInfTh(target = target, asymmetry = asymmetry) }
-validObject(NextBestInfTh(0.1,1))
+NextBestInfTheory <- function(target,asymmetry){ .NextBestInfTheory(target = target, asymmetry = asymmetry) }
+validObject(NextBestInfTheory(0.1,1))
 
 ## ============================================================
 
