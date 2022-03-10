@@ -686,7 +686,12 @@ setMethod("nextBest", signature = signature(nextBest = "NextBestInfTheory", dose
             else
               rep(TRUE, length(data@doseGrid))
 
-           criterion <-colMeans(((probSamples-nextBest@target)^2)/(probSamples^nextBest@asymmetry*(1-probSamples)^(2-nextBest@asymmetry)))
+           h_info_theory_dist <- function(probability,target,asymmetry){
+             delta = ((probability-target)^2)/((probability^asymmetry)*(1-probability)^(2-asymmetry)))
+             return delta
+           }
+
+           criterion <-colMeans(h_info_theory_dist(probSamples,nextBest@target,nextBest@asymmetry))
 
            doseLevel <-which.min(criterion[dosesOK])
            ret <- data@doseGrid[dosesOK][doseLevel]
