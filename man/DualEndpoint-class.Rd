@@ -66,8 +66,7 @@ and the biomarker \eqn{w}. Again, this correlation can be fixed or assigned
 a prior distribution from the scaled Beta family; see the details below
 under slot \code{rho}.
 
-Please see the Hive page for more details on the model and the example
-vignette by typing \code{crmPackExample()} for a full example.
+Please see the example vignette by typing \code{crmPackExample()} for a full example.
 }
 \section{Slots}{
 

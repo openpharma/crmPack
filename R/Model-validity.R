@@ -203,6 +203,6 @@ v_model_dual_endpoint <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that [`DualEndpointRW`] class slots are valid.
-v_model_dual_endpoint_RW <- function(object) {
+v_model_dual_endpoint_rw <- function(object) {
   TRUE
 }

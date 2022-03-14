@@ -972,8 +972,7 @@ LogisticLogNormalMixture <- function(mean,
 #'   a prior distribution from the scaled Beta family; see the details below
 #'   under slot `rho`.
 #'
-#'   Please see the Hive page for more details on the model and the example
-#'   vignette by typing `crmPackExample()` for a full example.
+#'   Please see the example vignette by typing `crmPackExample()` for a full example.
 #'
 #' @slot betaZ_params (`ModelParamsNormal`)\cr for the probit toxicity model, it
 #'   contains the prior mean, covariance matrix and precision matrix which is
@@ -1051,34 +1050,21 @@ DualEndpoint <- function(mean,
                          use_log_dose = FALSE,
                          sigma2W,
                          rho) {
-  use_fixed <- sapply(list(sigma2W = sigma2W, rho = rho), is.scalar)
+  use_fixed <- c(sigma2W = is.scalar(sigma2W), rho = is.scalar(rho))
   betaZ_params <- ModelParamsNormal(mean, cov)
 
-  datamodel <- if (use_log_dose) {
-    function() {
-      for (i in 1:nObs) {
-        # The toxicity model.
-        meanZ[i] <- betaZ[1] + betaZ[2] * log(x[i] / ref_dose)
-        z[i] ~ dnorm(meanZ[i], 1)
-        y[i] ~ dinterval(z[i], 0)
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      # The toxicity model.
+      stand_dose_temp[i] <- x[i] / ref_dose
+      stand_dose[i] <- ifelse(use_log_dose, log(stand_dose_temp[i]), stand_dose_temp[i])
+      meanZ[i] <- betaZ[1] + betaZ[2] * stand_dose[i]
+      z[i] ~ dnorm(meanZ[i], 1)
+      y[i] ~ dinterval(z[i], 0)
 
-        # The conditional biomarker model. betaW defined in subclasses!
-        condMeanW[i] <- betaW[xLevel[i]] + rho / sqrt(precW) * (z[i] - meanZ[i])
-        w[i] ~ dnorm(condMeanW[i], condPrecW)
-      }
-    }
-  } else {
-    function() {
-      for (i in 1:nObs) {
-        # The toxicity model.
-        meanZ[i] <- betaZ[1] + betaZ[2] * (x[i] / ref_dose)
-        z[i] ~ dnorm(meanZ[i], 1)
-        y[i] ~ dinterval(z[i], 0)
-
-        # The conditional biomarker model. betaW defined in subclasses!
-        condMeanW[i] <- betaW[xLevel[i]] + rho / sqrt(precW) * (z[i] - meanZ[i])
-        w[i] ~ dnorm(condMeanW[i], condPrecW)
-      }
+      # The conditional biomarker model. betaW defined in subclasses!
+      condMeanW[i] <- betaW[xLevel[i]] + rho / sqrt(precW) * (z[i] - meanZ[i])
+      w[i] ~ dnorm(condMeanW[i], condPrecW)
     }
   }
   priormodel <- function() {
@@ -1090,43 +1076,23 @@ DualEndpoint <- function(mean,
     condPrecW <- precW / (1 - pow(rho, 2))
   }
   modelspecs <- list(
+    use_log_dose = use_log_dose,
+    ref_dose = ref_dose,
     betaZ_mean = betaZ_params@mean,
-    betaZ_prec = betaZ_params@prec,
-    ref_dose = ref_dose
+    betaZ_prec = betaZ_params@prec
   )
   init <- NULL
   sample <- "betaZ"
 
-  # The biomarker regression variance.
-  if (use_fixed["sigma2W"]) {
-    modelspecs <- c(modelspecs, list(precW = 1 / sigma2W))
-  } else {
-    priormodel <- h_jags_join_models(
-      priormodel,
-      function() {
-        precW ~ dgamma(precWa, precWb)
-      }
-    )
-    modelspecs <- c(modelspecs, list(precWa = sigma2W["a"], precWb = sigma2W["b"]))
-    init <- list(precW = 1)
-    sample <- c(sample, "precW")
-  }
+  # Update model components with regard to biomarker regression variance.
+  comp <- h_model_dual_endpoint_sigma2W(
+    use_fixed["sigma2W"], sigma2W, priormodel, modelspecs, init, sample
+  )
 
-  # DLT and biomarker correlation.
-  if (use_fixed["rho"]) {
-    modelspecs <- c(modelspecs, list(rho = rho))
-  } else {
-    priormodel <- h_jags_join_models(
-      priormodel,
-      function() {
-        kappa ~ dbeta(rhoa, rhob)
-        rho <- 2 * kappa - 1
-      }
-    )
-    modelspecs <- c(modelspecs, list(rhoa = rho["a"], rhob = rho["b"]))
-    init$kappa <- 0.5
-    sample <- c(sample, "rho")
-  }
+  # Update model components with regard to DLT and biomarker correlation.
+  comp <- h_model_dual_endpoint_rho(
+    use_fixed["rho"], rho, comp$priormodel, comp$modelspecs, comp$init, comp$sample
+  )
 
   .DualEndpoint(
     betaZ_params = betaZ_params,
@@ -1134,14 +1100,14 @@ DualEndpoint <- function(mean,
     rho = rho,
     use_fixed = use_fixed,
     datamodel = datamodel,
-    priormodel = priormodel,
+    priormodel = comp$priormodel,
     modelspecs = function() {
-      modelspecs
+      comp$modelspecs
     },
     init = function(y, w, nGrid) {
-      c(init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
+      c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
     },
-    sample = sample,
+    sample = comp$sample,
     datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid")
   )
 }

@@ -84,6 +84,7 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+    'helpers_model.R'
     'logger.R'
     'utils.R'
 Config/testthat/edition: 3

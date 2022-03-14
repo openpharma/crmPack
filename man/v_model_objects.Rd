@@ -10,7 +10,7 @@
 \alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
 \alias{v_model_dual_endpoint}
-\alias{v_model_dual_endpoint_RW}
+\alias{v_model_dual_endpoint_rw}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 v_general_model(object)
@@ -29,7 +29,7 @@ v_model_logistic_log_normal_mix(object)
 
 v_model_dual_endpoint(object)
 
-v_model_dual_endpoint_RW(object)
+v_model_dual_endpoint_rw(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -69,6 +69,6 @@ correct.
 
 \item \code{v_model_dual_endpoint}: validates that \code{\link{DualEndpoint}} class slots are valid.
 
-\item \code{v_model_dual_endpoint_RW}: validates that \code{\link{DualEndpointRW}} class slots are valid.
+\item \code{v_model_dual_endpoint_rw}: validates that \code{\link{DualEndpointRW}} class slots are valid.
 }}
 
