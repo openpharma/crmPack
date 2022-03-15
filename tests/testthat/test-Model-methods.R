@@ -417,7 +417,7 @@ test_that("dose-LogisticKadaneBetaGamma throws the error when prob is not a vali
 ## LogisticNormalMixture ----
 
 test_that("dose-LogisticNormalMixture works as expected", {
-  model <- h_get_logistic_normal_mixture()
+  model <- h_get_logistic_normal_mix()
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.2, model, samples)
@@ -429,7 +429,7 @@ test_that("dose-LogisticNormalMixture works as expected", {
 })
 
 test_that("dose-LogisticNormalMixture works as expected for scalar samples", {
-  model <- h_get_logistic_normal_mixture()
+  model <- h_get_logistic_normal_mix()
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
@@ -437,7 +437,7 @@ test_that("dose-LogisticNormalMixture works as expected for scalar samples", {
 })
 
 test_that("dose-LogisticNormalMixture throws the error when prob is not a valid scalar", {
-  model <- h_get_logistic_normal_mixture()
+  model <- h_get_logistic_normal_mix()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
@@ -451,6 +451,57 @@ test_that("dose-LogisticNormalMixture throws the error when prob is not a valid 
   expect_error(
     dose(prob = -2, model = model, samples = samples),
     "Assertion on 'prob' failed: Element 1 is not >= 0."
+  )
+})
+
+## LogisticNormalFixedMixture ----
+
+test_that("dose-LogisticNormalFixedMixture works as expected", {
+  model <- h_get_logistic_normal_fixed_mix()
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+
+  result <- dose(0.2, model, samples)
+  expect_equal(
+    result,
+    c(0, 41.218032, 4.598493, 1477.811220),
+    tolerance = 1e-05
+  )
+})
+
+test_that("dose-LogisticNormalFixedMixture works as expected for scalar samples", {
+  model <- h_get_logistic_normal_fixed_mix()
+  samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_equal(result, c(27.86282, 33.00809), tolerance = 1e-05)
+})
+
+test_that("dose-LogisticNormalFixedMixture throws the error when prob is not a valid scalar", {
+  model <- h_get_logistic_normal_fixed_mix()
+  samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
+
+  expect_error(
+    dose(prob = c(40, 50), model = model, samples = samples),
+    "Assertion on 'prob' failed: Must have length 1."
+  )
+  expect_error(
+    dose(prob = 2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(prob = -2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not >= 0."
+  )
+})
+
+## LogisticLogNormalMixture ----
+
+test_that("dose-LogisticLogNormalMixture is not implemented", {
+  model <- h_get_logistic_log_normal_mix()
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  expect_error(
+    dose(prob = 2, model = model, samples = samples),
+    "not implemented"
   )
 })
 
@@ -745,7 +796,7 @@ test_that("prob-LogisticKadane throws the error when dose is not a valid scalar"
 ## LogisticNormalMixture ----
 
 test_that("prob-LogisticNormalMixture works as expected", {
-  model <- h_get_logistic_normal_mixture()
+  model <- h_get_logistic_normal_mix()
   samples <- Samples(
     data = list(
       alpha0 = c(0, -1, 1, 2),
@@ -763,7 +814,7 @@ test_that("prob-LogisticNormalMixture works as expected", {
 })
 
 test_that("prob-LogisticNormalMixture works as expected for scalar samples", {
-  model <- h_get_logistic_normal_mixture()
+  model <- h_get_logistic_normal_mix()
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- prob(c(1, 1.5), model, samples)
@@ -771,8 +822,120 @@ test_that("prob-LogisticNormalMixture works as expected for scalar samples", {
 })
 
 test_that("prob-LogisticNormalMixture throws the error when dose is not a valid scalar", {
-  model <- h_get_logistic_normal_mixture()
+  model <- h_get_logistic_normal_mix()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
+
+  expect_error(
+    prob(dose = c(40, 50), model = model, samples = samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(dose = -3, model = model, samples = samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## LogisticNormalFixedMixture ----
+
+test_that("prob-LogisticNormalFixedMixture works as expected", {
+  model <- h_get_logistic_normal_fixed_mix()
+  samples <- Samples(
+    data = list(
+      alpha0 = c(0, -1, 1, 2),
+      alpha1 = c(0, 2, 1, -1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- prob(60, model, samples)
+  expect_equal(
+    result,
+    c(0.5, 0.3462969, 0.7653650, 0.8602873),
+    tolerance = 1e-06
+  )
+})
+
+test_that("prob-LogisticNormalFixedMixture works as expected for scalar samples", {
+  model <- h_get_logistic_normal_fixed_mix()
+  samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
+
+  result <- prob(c(30, 45), model, samples)
+  expect_equal(result, c(0.4729623, 0.9810421), tolerance = 1e-05)
+})
+
+test_that("prob-LogisticNormalFixedMixture throws the error when dose is not a valid scalar", {
+  model <- h_get_logistic_normal_fixed_mix()
+  samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
+
+  expect_error(
+    prob(dose = c(40, 50), model = model, samples = samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(dose = -3, model = model, samples = samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## LogisticLogNormalMixture ----
+
+test_that("prob-LogisticLogNormalMixture works as expected", {
+  model <- h_get_logistic_log_normal_mix()
+  samples <- Samples(
+    data = list(
+      alpha0 = matrix(
+        c(-0.93, -0.67, -0.94, -0.67, -2.37, -1.28, -2.37, -1.08),
+        ncol = 2,
+        byrow = TRUE
+      ),
+      alpha1 = matrix(
+        c(0.45, 0.75, 0.45, 0.75, 0.4, 1.18, 0.4, 0.63),
+        ncol = 2,
+        byrow = TRUE
+      ),
+      comp = c(1, 1, 1, 1)
+    ),
+    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+
+  result <- prob(60, model, samples)
+  expect_equal(
+    result,
+    c(0.6748043, 0.6726061, 0.2901927, 0.2901927),
+    tolerance = 1e-06
+  )
+})
+
+test_that("prob-LogisticLogNormalMixture works as expected for single samples", {
+  model <- h_get_logistic_log_normal_mix()
+  samples <- h_as_samples(
+    list(
+      alpha0 = matrix(c(-0.93, -0.67), ncol = 2),
+      alpha1 = matrix(c(0.45, 0.75), ncol = 2),
+      comp = 1
+    )
+  )
+  result <- prob(c(1, 1.5), model, samples)
+  expect_equal(result, c(0.2474127, 0.2829247), tolerance = 1e-05)
+})
+
+test_that("prob-LogisticLogNormalMixture throws the error when dose is not a valid scalar", {
+  model <- h_get_logistic_log_normal_mix()
+  samples <- h_as_samples(
+    list(
+      alpha0 = matrix(
+        c(-0.93, -0.67, -0.94, -0.67, -2.37, -1.28, -2.37, -1.08),
+        ncol = 2,
+        byrow = TRUE
+      ),
+      alpha1 = matrix(
+        c(0.45, 0.75, 0.45, 0.75, 0.4, 1.18, 0.4, 0.63),
+        ncol = 2,
+        byrow = TRUE
+      ),
+      comp = c(1, 1, 1, 1)
+    )
+  )
 
   expect_error(
     prob(dose = c(40, 50), model = model, samples = samples),

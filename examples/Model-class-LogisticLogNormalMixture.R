@@ -1,39 +1,32 @@
-# nolint start
+# Decide on the dose grid and MCMC options.
+dose_grid <- 1:80
+my_options <- McmcOptions()
 
-## decide on the dose grid:
-doseGrid <- 1:80
+# Classic model.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+)
 
-## and MCMC options:
-options <- McmcOptions()
+empty_data <- Data(doseGrid = dose_grid)
+prior_samples <- mcmc(empty_data, my_model, my_options)
+plot(prior_samples, my_model, empty_data)
 
-## the classic model would be:
-model <- LogisticLogNormal(mean = c(-0.85, 1),
-                           cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                           ref_dose = 50)
+# Set up the mixture model and data share object.
+model_share <- LogisticLogNormalMixture(
+  share_weight = 0.1,
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+)
 
-nodata <- Data(doseGrid=doseGrid)
+empty_data_share <- DataMixture(
+  doseGrid = dose_grid,
+  xshare = rep(c(10, 20, 40), each = 4),
+  yshare = rep(0L, 12),
+)
 
-priorSamples <- mcmc(nodata, model, options)
-plot(priorSamples, model, nodata)
-
-## set up the mixture model and data share object:
-modelShare <- LogisticLogNormalMixture(shareWeight=0.1,
-                                       mean = c(-0.85, 1),
-                                       cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-                                       refDose = 50)
-
-nodataShare <- DataMixture(doseGrid=doseGrid,
-                           xshare=
-                             c(rep(10, 4),
-                               rep(20, 4),
-                               rep(40, 4)),
-                           yshare=
-                             c(rep(0L, 4),
-                               rep(0L, 4),
-                               rep(0L, 4)))
-
-## now compare with the resulting prior model:
-priorSamplesShare <- mcmc(nodataShare, modelShare, options)
-plot(priorSamplesShare, modelShare, nodataShare)
-
-# nolint end
+# Compare with the resulting prior model.
+prior_samples_share <- mcmc(empty_data_share, model_share, my_options)
+plot(prior_samples_share, model_share, empty_data_share)

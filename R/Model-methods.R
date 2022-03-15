@@ -565,54 +565,6 @@ setMethod(
   }
 )
 
-# LogisticLogNormalMixture ----
-
-## dose ----
-
-#' @rdname dose
-#'
-#' @aliases dose-LogisticLogNormalMixture
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    prob = "numeric",
-    model = "LogisticLogNormalMixture",
-    samples = "Samples"
-  ),
-  definition = function(prob, model, samples) {
-    stop("not implemented")
-  }
-)
-
-## prob ----
-
-#' @rdname prob
-#'
-#' @aliases prob-LogisticLogNormalMixture
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticLogNormalMixture",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
-    comp <- samples@data$comp
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    sel <- cbind(seq_len(nrow(alpha0)), comp)
-    plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
-  }
-)
-
 # LogisticKadane ----
 
 ## dose ----
@@ -774,6 +726,106 @@ setMethod(
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+# LogisticNormalFixedMixture ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticNormalFixedMixture
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticNormalFixedMixture",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    exp((logit(prob) - alpha0) / alpha1) * ref_dose
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @aliases prob-LogisticNormalFixedMixture
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticNormalFixedMixture",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+# LogisticLogNormalMixture ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-LogisticLogNormalMixture
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "LogisticLogNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    stop("not implemented")
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @aliases prob-LogisticLogNormalMixture
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
+    comp <- samples@data$comp
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    sel <- cbind(seq_len(nrow(alpha0)), comp)
+    plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
   }
 )
 

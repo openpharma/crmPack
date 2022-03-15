@@ -45,6 +45,8 @@ reference:
       - LogisticKadane
       - LogisticKadaneBetaGamma
       - LogisticNormalMixture
+      - LogisticNormalFixedMixture
+      - LogisticLogNormalMixture
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
@@ -84,6 +86,8 @@ reference:
       - v_model_logistic_kadane
       - v_model_logistic_kadane_beta_gamma
       - v_model_logistic_normal_mixture
+      - v_model_logistic_normal_fixed_mix
+      - v_model_logistic_log_normal_mixture
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
       - v_increments_numdoselevels
@@ -113,10 +117,11 @@ reference:
       - dose-LogisticLogNormalSub
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
-      - dose-LogisticLogNormalMixture
       - dose-LogisticKadane
       - dose-LogisticKadaneBetaGamma
       - dose-LogisticNormalMixture
+      - dose-LogisticNormalFixedMixture
+      - dose-LogisticLogNormalMixture
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
       - probFunction
@@ -129,11 +134,12 @@ reference:
       - prob-LogisticLogNormalSub
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
-      - prob-LogisticLogNormalMixture
       - prob-LogisticKadane
       - prob-LogisticKadaneBetaGamma
       - prob-LogisticIndepBeta
       - prob-LogisticNormalMixture
+      - prob-LogisticNormalFixedMixture
+      - prob-LogisticLogNormalMixture
       - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV

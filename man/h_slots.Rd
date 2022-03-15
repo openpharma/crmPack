@@ -4,7 +4,7 @@
 \alias{h_slots}
 \title{Getting the Slots from a S4 Object}
 \usage{
-h_slots(object, names)
+h_slots(object, names, simplify = FALSE)
 }
 \arguments{
 \item{object}{(\code{S4})\cr an object from a formally defined S4 class.}
@@ -12,10 +12,14 @@ h_slots(object, names)
 \item{names}{(\code{character})\cr a vector with names of slots to be fetched.
 This function assumes that for every element in \code{names}, there exists a
 slot of the same name in the \code{object}.}
+
+\item{simplify}{(\code{flag})\cr should an output be simplified? This has an
+effect if and only if a single slot is about to be extracted, i.e.
+\code{names} is just a single string.}
 }
 \value{
-\code{list} with the slots extracted from \code{object} according to
-\code{names}.
+\code{list} with the slots extracted from \code{object} according to \code{names},
+or single slot if simplification is required and possible.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

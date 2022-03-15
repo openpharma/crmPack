@@ -709,18 +709,27 @@ h_is_positive_definite <- function(x, tolerance = 1e-08) {
 #' @param names (`character`)\cr a vector with names of slots to be fetched.
 #'   This function assumes that for every element in `names`, there exists a
 #'   slot of the same name in the `object`.
+#' @param simplify (`flag`)\cr should an output be simplified? This has an
+#'   effect if and only if a single slot is about to be extracted, i.e.
+#'   `names` is just a single string.
 #'
-#' @return `list` with the slots extracted from `object` according to
-#'   `names`.
+#' @return `list` with the slots extracted from `object` according to `names`,
+#'   or single slot if simplification is required and possible.
 #'
 #' @export
 #'
-h_slots <- function(object, names) {
+h_slots <- function(object, names, simplify = FALSE) {
   assert_true(isS4(object))
   assert_character(names, min.len = 1, any.missing = FALSE, null.ok = TRUE)
   assert_true(all(names %in% slotNames(object)))
 
-  sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
+  slots_list <- sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
+
+  if (simplify && length(names) == 1) {
+    slots_list[[1]]
+  } else {
+    slots_list
+  }
 }
 
 #' Conditional Formatting Using C-style Formats
@@ -851,18 +860,29 @@ h_null_if_na <- function(x) {
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A simple helper function that returns `NULL` if `x` is a scalar object, i.e.
-#' an object of length equals 1. Otherwise it returns 1L.
+#' an non-dimensional object of length equals 1, or two or more dimensional object
+#' with the first dimension equals to 1. Otherwise it returns 1L.
 #'
 #' @param x any object for which length function is defined.
 #'
-#' @return `NULL` if `x` is of length 1, otherwise, 1L.
+#' @return `NULL` if `x` is of length 1 or the first dimension equals to 1,
+#'   otherwise, 1L.
 #'
 #' @export
 #' @examples
 #' h_null_if_scalar(c(1, 3))
 #' h_null_if_scalar(2)
+#' h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4)))
+#' h_null_if_scalar(array(data = 1:12, dim = c(1, 3, 4)))
 h_null_if_scalar <- function(x) {
-  if (length(x) == 1L) {
+  dim_x <- dim(x)
+  len <- if (is.null(dim_x)) {
+    length(x)
+  } else {
+    dim_x[1]
+  }
+
+  if (len == 1L) {
     NULL
   } else {
     1L

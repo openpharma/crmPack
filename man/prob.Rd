@@ -14,14 +14,16 @@
 \alias{prob-ProbitLogNormal}
 \alias{prob,numeric,ProbitLogNormalRel,Samples-method}
 \alias{prob-ProbitLogNormalRel}
-\alias{prob,numeric,LogisticLogNormalMixture,Samples-method}
-\alias{prob-LogisticLogNormalMixture}
 \alias{prob,numeric,LogisticKadane,Samples-method}
 \alias{prob-LogisticKadane}
 \alias{prob,numeric,LogisticKadaneBetaGamma,Samples-method}
 \alias{prob-LogisticKadaneBetaGamma}
 \alias{prob,numeric,LogisticNormalMixture,Samples-method}
 \alias{prob-LogisticNormalMixture}
+\alias{prob,numeric,LogisticNormalFixedMixture,Samples-method}
+\alias{prob-LogisticNormalFixedMixture}
+\alias{prob,numeric,LogisticLogNormalMixture,Samples-method}
+\alias{prob-LogisticLogNormalMixture}
 \alias{prob,numeric,LogisticIndepBeta,Samples-method}
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
@@ -42,13 +44,15 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples)
 
-\S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples)
-
 \S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticKadaneBetaGamma,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticNormalMixture,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticNormalFixedMixture,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticLogNormalMixture,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples)
 

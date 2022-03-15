@@ -169,12 +169,35 @@ test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
 
 # h_slots ----
 
-test_that("h_slots returns slots as expected", {
+test_that("h_slots returns two slots as expected", {
   object <- h_get_data()
   result <- h_slots(object, c("placebo", "nGrid"))
   expected <- list(placebo = TRUE, nGrid = 13L)
 
   expect_identical(result, expected)
+})
+
+test_that("h_slots returns two slots as expected (simplification ignored)", {
+  object <- h_get_data()
+  result <- h_slots(object, c("placebo", "nGrid"), simplify = TRUE)
+  expected <- list(placebo = TRUE, nGrid = 13L)
+
+  expect_identical(result, expected)
+})
+
+test_that("h_slots returns one slot as expected", {
+  object <- h_get_data()
+  result <- h_slots(object, "placebo")
+  expected <- list(placebo = TRUE)
+
+  expect_identical(result, expected)
+})
+
+test_that("h_slots returns one slot expected (with simplification)", {
+  object <- h_get_data()
+  result <- h_slots(object, "placebo", simplify = TRUE)
+
+  expect_identical(result, TRUE)
 })
 
 test_that("h_slots throws the error for non-existing slots", {
@@ -258,4 +281,16 @@ test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
     h_null_if_na(c(NA, NA)),
     "Assertion on 'x' failed: Must have length 1, but has length 2."
   )
+})
+
+# h_null_if_scalar ----
+
+test_that("h_null_if_scalar returns NULL as expected", {
+  expect_null(h_null_if_scalar(2))
+  expect_null(h_null_if_scalar(array(data = 1:12, dim = c(1, 3, 4))))
+})
+
+test_that("h_null_if_scalar returns 1L as expected", {
+  expect_identical(h_null_if_scalar(c(1, 3)), 1L)
+  expect_identical(h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4))), 1L)
 })
