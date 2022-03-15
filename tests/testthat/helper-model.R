@@ -107,7 +107,7 @@ h_get_logistic_kadane <- function() {
   )
 }
 
-h_get_logistic_kadane_beta_gamma <- function() {
+h_get_logistic_kadane_beta_gam <- function() {
   LogisticKadaneBetaGamma(
     theta = 0.3,
     xmin = 0,

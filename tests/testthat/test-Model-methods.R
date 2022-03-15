@@ -375,7 +375,7 @@ test_that("dose-LogisticKadane throws the error when prob is not a valid scalar"
 ## LogisticKadaneBetaGamma ----
 
 test_that("dose-LogisticKadaneBetaGamma works as expected", {
-  model <- h_get_logistic_kadane_beta_gamma()
+  model <- h_get_logistic_kadane_beta_gam()
   samples <- h_as_samples(list(rho0 = c(0.05, 0.1, 0.15),
                                gamma = c(3, 7, 10)
   )
@@ -389,7 +389,7 @@ test_that("dose-LogisticKadaneBetaGamma works as expected", {
 })
 
 test_that("dose-LogisticKadaneBetaGamma works as expected for scalar samples", {
-  model <- h_get_logistic_kadane_beta_gamma()
+  model <- h_get_logistic_kadane_beta_gam()
   samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
 
   result <- dose(c(0.3, 0.7), model, samples)
@@ -397,7 +397,7 @@ test_that("dose-LogisticKadaneBetaGamma works as expected for scalar samples", {
 })
 
 test_that("dose-LogisticKadaneBetaGamma throws the error when prob is not a valid scalar", {
-  model <- h_get_logistic_kadane_beta_gamma()
+  model <- h_get_logistic_kadane_beta_gam()
   samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
 
   expect_error(
