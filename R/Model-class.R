@@ -571,6 +571,125 @@ LogisticKadane <- function(theta, xmin, xmax) {
   )
 }
 
+# LogisticKadaneBetaGamma ----
+
+## class ----
+
+#' `LogisticKadaneBetaGamma`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`LogisticKadaneBetaGamma`] is the class for the logistic model in the parametrization
+#' of Kadane et al. (1980), with a beta prior on the `rho0 = p(xmin)` and a gamma prior on
+#' the `gamma`.
+#'
+#' @details Let `rho0 = p(xmin)` be the probability of a DLT at the minimum dose
+#'   `xmin`, and let `gamma` be the dose with target toxicity probability `theta`,
+#'   i.e. \eqn{p(gamma) = theta}. Then it can easily be shown that the logistic
+#'   regression model has intercept
+#'   \deqn{[gamma * logit(rho0) - xmin * logit(theta)] / [gamma - xmin]}
+#'   and slope
+#'   \deqn{[logit(theta) - logit(rho0)] / [gamma - xmin].}
+#'
+#'   The prior for `gamma`, is \deqn{gamma ~ Gamma(shape, rate).}.
+#'   The prior for `rho0 = p(xmin)`, is \deqn{rho0 ~ Beta(alpha, beta).}
+#'
+#' @note The slots of this class, required for creating the model, are the same
+#'    as in the `LogisticKadane` class. In addition, the shape parameters of the
+#'    Beta prior distribution of `rho0` and the shape and rate parameters of the
+#'    Gamma prior distribution of `gamma`, are required for creating the prior model.
+#'
+#' @slot theta (`proportion`)\cr the target toxicity probability.
+#' @slot xmin (`number`)\cr the minimum of the dose range.
+#' @slot xmax (`number`)\cr the maximum of the dose range.
+#' @slot alpha (`number`)\cr the first shape parameter of the Beta prior distribution
+#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#' @slot beta (`number`)\cr the second shape parameter of the Beta prior distribution
+#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#' @slot shape (`number`)\cr the shape parameter of the Gamma prior distribution
+#' of `gamma` the dose with target toxicity probability `theta`.
+#' @slot rate (`number`)\cr the rate parameter of the Gamma prior distribution
+#' of `gamma` the dose with target toxicity probability `theta`.
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticKadane`].
+#'
+#' @aliases LogisticKadaneBetaGamma
+#' @export
+#'
+.LogisticKadaneBetaGamma <- setClass(
+  Class = "LogisticKadaneBetaGamma",
+  contains = "LogisticKadane",
+  slots = c(
+    theta = "numeric",
+    xmin = "numeric",
+    xmax = "numeric",
+    alpha = "numeric",
+    beta = "numeric",
+    shape = "numeric",
+    rate = "numeric"
+  ),
+  prototype = prototype(
+    theta = 0.3,
+    xmin = 0.1,
+    xmax = 1,
+    alpha = 1,
+    beta = 0.5,
+    shape = 1.2,
+    rate = 2.5
+  ),
+  validity = v_model_logistic_kadane_beta_gamma
+)
+
+## constructor ----
+
+#' @rdname LogisticKadaneBetaGamma-class
+#'
+#' @inheritParams LogisticKadane
+#'
+#' @param alpha (`number`)\cr the first shape parameter of the Beta prior distribution
+#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#' @param beta (`number`)\cr the second shape parameter of the Beta prior distribution
+#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#' @param shape (`number`)\cr the shape parameter of the Gamma prior distribution
+#' of `gamma` the dose with target toxicity probability `theta`.
+#' @param rate (`number`)\cr the rate parameter of the Gamma prior distribution
+#' of `gamma` the dose with target toxicity probability `theta`.
+#'
+#' @export
+#' @example examples/Model-class-LogisticKadaneBetaGamma.R
+#'
+LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate) {
+  model_lk <- LogisticKadane(theta = theta, xmin = xmin, xmax = xmax)
+  .LogisticKadaneBetaGamma(
+    model_lk,
+    alpha = alpha,
+    beta = beta,
+    shape = shape,
+    rate = rate,
+    priormodel = function() {
+      rho0 ~ dbeta(alpha, beta)
+      gamma ~ dgamma(shape, rate)
+
+      ## the dummy assignment below is arbitrary and is just added to eliminate warning messages input variables not being used anywhere in the function
+      #  Warning messages:
+      #   1: In rjags::jags.model(file = modelFileName, data = if (fromPrior) modelspecs else c(requiredData,  :
+      #      Unused variable "xmax" in data
+      #   2: In rjags::jags.model(file = modelFileName, data = if (fromPrior) modelspecs else c(requiredData,  :
+      #      Unused variable "xmin" in data
+      #   3. In rjags::jags.model(file = modelFileName, data = if (fromPrior) modelspecs else c(requiredData,  :
+      #      Unused variable "theta" in data
+      ## need to ask Daniel if there is workaround for this issue.
+
+      #lowestdose <- xmin
+      #highestdose <- xmax
+      #DLTtarget <- theta
+    },
+    modelspecs = function() {
+      list(theta = theta, xmin = xmin, xmax = xmax, alpha = alpha, beta = beta, shape = shape, rate = rate)
+    }
+  )
+}
+
 # LogisticNormalMixture ----
 
 ## class ----

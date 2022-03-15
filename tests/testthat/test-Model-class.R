@@ -258,6 +258,25 @@ test_that("LogisticKadane object can be created with user constructor", {
   expect_valid(result, "LogisticKadane")
 })
 
+# LogisticKadaneBetaGamma ----
+
+## constructor ----
+
+test_that("LogisticKadaneBetaGamma object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticKadaneBetaGamma(
+      theta = 0.3,
+      xmin = 0,
+      xmax = 7,
+      alpha = 1,
+      beta = 19,
+      shape = 0.5625,
+      rate = 0.125
+    )
+  )
+  expect_valid(result, "LogisticKadaneBetaGamma")
+})
+
 # LogisticNormalMixture ----
 
 ## constructor ----

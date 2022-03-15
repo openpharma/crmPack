@@ -6,6 +6,7 @@
 \alias{v_model}
 \alias{v_model_log_normal}
 \alias{v_model_logistic_kadane}
+\alias{v_model_logistic_kadane_beta_gamma}
 \alias{v_model_logistic_normal_mixture}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
@@ -16,6 +17,8 @@ v_model(object)
 v_model_log_normal(object)
 
 v_model_logistic_kadane(object)
+
+v_model_logistic_kadane_beta_gamma(object)
 
 v_model_logistic_normal_mixture(object)
 }
@@ -46,6 +49,9 @@ are valid as well as \code{ref_dose} is a positive scalar.
 
 \item \code{v_model_logistic_kadane}: validates that the logistic Kadane model
 parameters are valid.
+
+\item \code{v_model_logistic_kadane_beta_gamma}: validates that the logistic Kadane model
+parameters with a beta and gamma prior are valid.
 
 \item \code{v_model_logistic_normal_mixture}: validates that the logistic normal mixture
 model parameters as well as \code{ref_dose} are valid.

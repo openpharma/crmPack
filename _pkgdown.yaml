@@ -43,6 +43,7 @@ reference:
       - ProbitLogNormal
       - ProbitLogNormalRel
       - LogisticKadane
+      - LogisticKadaneBetaGamma
       - LogisticNormalMixture
       - IncrementsNumDoseLevels
       - StoppingMTDCV
@@ -81,6 +82,7 @@ reference:
       - v_model
       - v_model_log_normal
       - v_model_logistic_kadane
+      - v_model_logistic_kadane_beta_gamma
       - v_model_logistic_normal_mixture
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
@@ -113,6 +115,7 @@ reference:
       - dose-ProbitLogNormalRel
       - dose-LogisticLogNormalMixture
       - dose-LogisticKadane
+      - dose-LogisticKadaneBetaGamma
       - dose-LogisticNormalMixture
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
@@ -128,6 +131,7 @@ reference:
       - prob-ProbitLogNormalRel
       - prob-LogisticLogNormalMixture
       - prob-LogisticKadane
+      - prob-LogisticKadaneBetaGamma
       - prob-LogisticIndepBeta
       - prob-LogisticNormalMixture
       - prob-LogisticIndepBeta-noSamples
