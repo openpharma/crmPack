@@ -131,12 +131,12 @@ test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
 # v_model_logistic_kadane_beta_gamma ----
 
 test_that("v_model_logistic_kadane_beta_gamma passes for valid object", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   expect_true(v_model_logistic_kadane_beta_gamma(object))
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for wrong theta probability", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "theta must be a probability scalar > 0 and < 1"
   # Assigning wrong values for probability theta.
   object@theta <- -1
@@ -148,7 +148,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong theta prob
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   # Assigning vectors for scalar slots.
   object@theta <- c(0.4, 0.5)
   object@xmin <- 1:4
@@ -173,7 +173,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for xmin greater than xmax", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   # Assigning vectors for scalar slots.
   object@xmin <- 1
   object@xmax <- 1
@@ -190,7 +190,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for xmin greater tha
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distribution shape parameter alpha", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Beta distribution shape parameter alpha must be a positive scalar"
   # Assigning wrong values for Beta distribution shape parameter alpha.
   object@alpha <- -1
@@ -200,7 +200,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distr
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distribution shape parameter beta", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Beta distribution shape parameter beta must be a positive scalar"
   # Assigning wrong values for Beta distribution shape parameter beta.
   object@beta <- -1
@@ -210,7 +210,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distr
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Gamma distribution shape parameter", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Gamma distribution shape parameter must be a positive scalar"
   # Assigning wrong values for Gamma distribution shape parameter.
   object@shape <- -1
@@ -220,7 +220,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Gamma dist
 })
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Gamma distribution rate parameter", {
-  object <- h_get_logistic_kadane_beta_gamma()
+  object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Gamma distribution rate parameter must be a positive scalar"
   # Assigning wrong values for Gamma distribution rate parameter.
   object@rate <- -1
