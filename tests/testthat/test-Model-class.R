@@ -256,7 +256,7 @@ test_that("LogisticKadaneBetaGamma object can be created with user constructor",
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
-  data <- h_get_data_no_plcb()
+  data <- h_get_data_no_plcb_k()
   model <- h_get_logistic_kadane_beta_gam()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
