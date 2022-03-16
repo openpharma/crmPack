@@ -114,8 +114,8 @@ h_get_logistic_kadane_beta_gam <- function() {
     xmax = 7,
     alpha = 1,
     beta = 19,
-    shape = 0.5625,
-    rate = 0.125
+    shape = 5,
+    rate = 1
   )
 }
 
