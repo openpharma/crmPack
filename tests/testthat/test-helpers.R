@@ -294,3 +294,36 @@ test_that("h_null_if_scalar returns 1L as expected", {
   expect_identical(h_null_if_scalar(c(1, 3)), 1L)
   expect_identical(h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4))), 1L)
 })
+
+# h_test_named_numeric ----
+
+test_that("h_test_named_numeric returns TRUE as expected", {
+  x <- c(a = 1, b = 2)
+  expect_true(h_test_named_numeric(x, subset.of = c("a", "b", "c")))
+  expect_true(h_test_named_numeric(x, must.include = "a"))
+  expect_true(h_test_named_numeric(x, must.include = "b"))
+  expect_true(h_test_named_numeric(x, permutation.of = c("a", "b")))
+  expect_true(h_test_named_numeric(x, permutation.of = c("b", "a")))
+  expect_true(h_test_named_numeric(x, identical.to = c("a", "b")))
+  expect_true(h_test_named_numeric(x, disjunct.from = c("c", "d", "e")))
+})
+
+test_that("h_test_named_numeric returns TRUE as expected for duplicated names", {
+  x <- c(a = 1, b = 2, b = 3)
+  expect_true(h_test_named_numeric(x, len = 3, subset.of = c("a", "b", "c")))
+  expect_true(h_test_named_numeric(x, len = 3, identical.to = c("a", "b", "b")))
+  expect_true(h_test_named_numeric(x, len = 3, disjunct.from = c("c", "d", "e")))
+})
+
+test_that("h_test_named_numeric returns FALSE as expected", {
+  x <- c(a = 1, b = 2)
+  expect_false(h_test_named_numeric(x, subset.of = c("a", "c")))
+  expect_false(h_test_named_numeric(x, must.include = "c"))
+  expect_false(h_test_named_numeric(x, permutation.of = c("a", "c")))
+  expect_false(h_test_named_numeric(x, identical.to = c("b", "a")))
+  expect_false(h_test_named_numeric(x, disjunct.from = c("b", "a")))
+  x1 <- c(a = 1, b = 2, b = 3)
+  expect_false(h_test_named_numeric(x1, len = 3, permutation.of = c("a", "b")))
+  expect_false(h_test_named_numeric(c(a = TRUE, b = FALSE)))
+  expect_false(h_test_named_numeric(c(a = "1", b = "2")))
+})

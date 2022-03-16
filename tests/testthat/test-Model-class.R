@@ -323,8 +323,6 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
   expect_snapshot(result@data)
 })
 
-
-
 # DualEndpoint ----
 
 ## constructor ----

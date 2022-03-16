@@ -923,10 +923,11 @@ setMethod(
     ref_dose <- model@ref_dose
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
 
+    dose_temp <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
     if (model@use_log_dose) {
-      exp((qnorm(prob) - betaZ[, 1]) / betaZ[, 2]) * ref_dose
+      exp(dose_temp) * ref_dose
     } else {
-      ((qnorm(prob) - betaZ[, 1]) / betaZ[, 2]) * ref_dose
+      dose_temp * ref_dose
     }
   }
 )
@@ -951,11 +952,12 @@ setMethod(
     ref_dose <- model@ref_dose
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
 
-    if (model@use_log_dose) {
-      pnorm(betaZ[, 1] + betaZ[, 2] * log(dose / ref_dose))
+    stand_dose <- if (model@use_log_dose) {
+      log(dose / ref_dose)
     } else {
-      pnorm(betaZ[, 1] + betaZ[, 2] * dose / ref_dose)
+      dose / ref_dose
     }
+    pnorm(betaZ[, 1] + betaZ[, 2] * stand_dose)
   }
 )
 

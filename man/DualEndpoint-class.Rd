@@ -21,13 +21,13 @@ matrix. The precision matrix is internally calculated as an inverse of \code{cov
 transformation of the (standardized) dose should be used?}
 
 \item{sigma2W}{(\code{numeric})\cr either a fixed value for the biomarker variance,
-or a numeric vector with elements named \code{a} and \code{b} for the Inverse-Gamma
+or a numeric vector with two elements named \code{a} and \code{b} for the Inverse-Gamma
 prior parameters.}
 
 \item{rho}{(\code{numeric})\cr either a fixed value for the correlation
-(between -1 and 1), or a named vector with elements named \code{a} and \code{b} for
-the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is in
-(0, 1). For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
+(between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}
+for the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is
+in \verb{(0, 1)}. For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -81,13 +81,13 @@ internally calculated as an inverse of the covariance matrix.}
 transformation of the (standardized) dose should be used?}
 
 \item{\code{sigma2W}}{(\code{numeric})\cr either a fixed value for the biomarker variance,
-or a numeric vector with elements named \code{a} and \code{b} for the Inverse-Gamma
-prior parameters.}
+or a numeric vector with two elements named \code{a} and \code{b} for the
+Inverse-Gamma prior parameters.}
 
 \item{\code{rho}}{(\code{numeric})\cr either a fixed value for the correlation
-(between -1 and 1), or a named vector with elements named \code{a} and \code{b} for
-the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is in
-(0, 1). For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
+(between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}
+for the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is
+in \verb{(0, 1)}. For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
 
 \item{\code{use_fixed}}{rho (\code{logical})\cr indicates whether a fixed value for
 \code{sigma2W} and \code{rho} (for each parameter separately) is used or not. This

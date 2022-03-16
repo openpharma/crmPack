@@ -2,30 +2,27 @@
 % Please edit documentation in R/helpers_model.R
 \name{h_model_dual_endpoint_sigma2W}
 \alias{h_model_dual_endpoint_sigma2W}
-\title{Prepare \code{DualEndpoint} class model components with regard to biomarker
+\title{Update \code{DualEndpoint} class model components with regard to biomarker
 regression variance.}
 \usage{
-h_model_dual_endpoint_sigma2W(
-  use_fixed,
-  sigma2W,
-  priormodel,
-  modelspecs,
-  init,
-  sample
-)
+h_model_dual_endpoint_sigma2W(use_fixed, sigma2W, comp)
 }
 \arguments{
-\item{use_fixed}{(\code{flag})\cr TODO}
+\item{use_fixed}{(\code{flag})\cr indicates whether a fixed value for the biomarker
+regression variance \code{sigma2W} should be used or not. If \code{sigma2W} is not
+supposed to be a fixed value, a prior distribution from the Inverse-Gamma
+distribution will be used. See the details below, under \code{sigma2W} argument.}
 
-\item{sigma2W}{(\code{numeric})\cr TODO}
+\item{sigma2W}{(\code{numeric})\cr the biomarker regression variance. It must be
+either a fixed value or a numeric vector with two elements named \code{a} and \code{b}
+for the Inverse-Gamma prior parameters.}
 
-\item{priormodel}{(\code{function})\cr TODO}
-
-\item{modelspecs}{(\code{function})\cr TODO}
-
-\item{init}{(\code{function})\cr TODO}
-
-\item{sample}{(\code{character})\cr TODO}
+\item{comp}{(\code{list})\cr a named list with model components that will be updated.
+The names should be: \code{priormodel}, \code{modelspecs}, \code{init}, \code{sample}. For
+definitions of the components, see \code{\link{GeneralModel}} class.
+The \code{modelspecs} and \code{init} components on \code{comp} list are specified up to
+the body of corresponding \code{GeneralModel@modelspecs} and \code{GeneralModel@init}
+functions. These bodies are simply a lists itself.}
 }
 \value{
 \code{list} with updated model components.

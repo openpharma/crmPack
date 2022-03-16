@@ -981,12 +981,12 @@ LogisticLogNormalMixture <- function(mean,
 #' @slot use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
 #' @slot sigma2W (`numeric`)\cr either a fixed value for the biomarker variance,
-#'   or a numeric vector with elements named `a` and `b` for the Inverse-Gamma
-#'   prior parameters.
+#'   or a numeric vector with two elements named `a` and `b` for the
+#'   Inverse-Gamma prior parameters.
 #' @slot rho (`numeric`)\cr either a fixed value for the correlation
-#'   (between -1 and 1), or a named vector with elements named `a` and `b` for
-#'   the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is in
-#'   (0, 1). For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
+#'   (between `-1` and `1`), or a named vector with two elements named `a` and `b`
+#'   for the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is
+#'   in `(0, 1)`. For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
 #' @slot use_fixed rho (`logical`)\cr indicates whether a fixed value for
 #'   `sigma2W` and `rho` (for each parameter separately) is used or not. This
 #'   slot is needed for internal purposes and must not be touched by the user.
@@ -1035,12 +1035,12 @@ LogisticLogNormalMixture <- function(mean,
 #' @param use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
 #' @param sigma2W (`numeric`)\cr either a fixed value for the biomarker variance,
-#'   or a numeric vector with elements named `a` and `b` for the Inverse-Gamma
+#'   or a numeric vector with two elements named `a` and `b` for the Inverse-Gamma
 #'   prior parameters.
 #' @param rho (`numeric`)\cr either a fixed value for the correlation
-#'   (between -1 and 1), or a named vector with elements named `a` and `b` for
-#'   the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is in
-#'   (0, 1). For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
+#'   (between `-1` and `1`), or a named vector with two elements named `a` and `b`
+#'   for the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is
+#'   in `(0, 1)`. For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
 #'
 #' @export
 #'
@@ -1084,18 +1084,23 @@ DualEndpoint <- function(mean,
   init <- NULL
   sample <- "betaZ"
 
+  comp <- list(
+    priormodel = priormodel, modelspecs = modelspecs, init = init, sample = sample
+  )
   # Update model components with regard to biomarker regression variance.
   comp <- h_model_dual_endpoint_sigma2W(
-    use_fixed["sigma2W"], sigma2W, priormodel, modelspecs, init, sample
+    use_fixed["sigma2W"], sigma2W = sigma2W, comp = comp
   )
 
   # Update model components with regard to DLT and biomarker correlation.
   comp <- h_model_dual_endpoint_rho(
-    use_fixed["rho"], rho, comp$priormodel, comp$modelspecs, comp$init, comp$sample
+    use_fixed["rho"], rho = rho, comp = comp
   )
 
   .DualEndpoint(
     betaZ_params = betaZ_params,
+    ref_dose = ref_dose,
+    use_log_dose = use_log_dose,
     sigma2W = sigma2W,
     rho = rho,
     use_fixed = use_fixed,
@@ -1324,6 +1329,8 @@ DualEndpointRW <- function(sigma2betaW,
     .DualEndpointRW(start,
                     sigma2betaW=sigma2betaW,
                     useRW1=useRW1)
+
+
 }
 #validObject(DualEndpointRW(sigma2betaW=1,
 #                           smooth="RW1",

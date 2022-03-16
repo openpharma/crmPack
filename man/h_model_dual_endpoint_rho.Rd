@@ -2,26 +2,32 @@
 % Please edit documentation in R/helpers_model.R
 \name{h_model_dual_endpoint_rho}
 \alias{h_model_dual_endpoint_rho}
-\title{Prepare \code{DualEndpoint} class model components with regard to DLT and biomarker
+\title{Update \code{DualEndpoint} class model components with regard to DLT and biomarker
 correlation.}
 \usage{
-h_model_dual_endpoint_rho(use_fixed, rho, priormodel, modelspecs, init, sample)
+h_model_dual_endpoint_rho(use_fixed, rho, comp)
 }
 \arguments{
-\item{use_fixed}{(\code{flag})\cr TODO}
+\item{use_fixed}{(\code{flag})\cr indicates whether a fixed value for DLT and
+biomarker correlation \code{rho} should be used or not. If \code{rho} is not supposed
+to be a fixed value, a prior distribution from the scaled Beta family will
+be used. See the details below, under \code{rho} argument.}
 
-\item{rho}{(\code{numeric})\cr TODO}
+\item{rho}{(\code{numeric})\cr DLT and biomarker correlation. It must be either a
+fixed value (between \code{-1} and \code{1}), or a named vector with two elements,
+named \code{a} and \code{b} for the Beta prior on the transformation
+\code{kappa = (rho + 1) / 2}, which is in \verb{(0, 1)}. For example, \verb{a = 1, b = 1}
+leads to a uniform prior on \code{rho}.}
 
-\item{priormodel}{(\code{function})\cr TODO}
-
-\item{modelspecs}{(\code{function})\cr TODO}
-
-\item{init}{(\code{function})\cr TODO}
-
-\item{sample}{(\code{character})\cr TODO}
+\item{comp}{(\code{list})\cr a named list with model components that will be updated.
+The names should be: \code{priormodel}, \code{modelspecs}, \code{init}, \code{sample}. For
+definitions of the components, see \code{\link{GeneralModel}} class.
+The \code{modelspecs} and \code{init} components on \code{comp} list are specified up to
+the body of corresponding \code{GeneralModel@modelspecs} and \code{GeneralModel@init}
+functions. These bodies are simply a lists itself.}
 }
 \value{
-\code{list} with updated model components.
+A \code{list} with updated model components.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

@@ -71,7 +71,6 @@ reference:
       - h_null_if_na
       - h_null_if_scalar
       - h_test_named_numeric
-      - h_test_named_logical
       - h_model_dual_endpoint_sigma2W
       - h_model_dual_endpoint_rho
   - title: Internal Validation Functions

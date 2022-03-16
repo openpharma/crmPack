@@ -162,18 +162,18 @@ v_model_dual_endpoint <- function(object) {
     test_flag(object@use_log_dose),
     "use_log_dose must be TRUE or FALSE"
   )
+  uf_sigma2W <- object@use_fixed["sigma2W"]
   v$check(
-    h_test_named_logical(
-      object@use_fixed,
-      must.include = c("sigma2W", "rho"),
-      any.missing = FALSE,
-      len = NULL,
-      min.len = 2
-    ),
-    "use_fixed must be a named logical vector of length 2 with names including 'sigma2W' and 'rho'"
+    test_flag(uf_sigma2W),
+    "use_fixed must be a named logical vector that contains name 'sigma2W'"
+  )
+  uf_rho <- object@use_fixed["rho"]
+  v$check(
+    test_flag(uf_rho),
+    "use_fixed must be a named logical vector that contains name 'rho'"
   )
 
-  if (object@use_fixed["sigma2W"]) {
+  if (isTRUE(uf_sigma2W)) {
     v$check(
       test_number(object@sigma2W, lower = 0 + rmin, finite = TRUE),
       "sigma2W must be a positive and finite numerical scalar"
@@ -186,9 +186,9 @@ v_model_dual_endpoint <- function(object) {
     )
   }
 
-  if (object@use_fixed["rho"]) {
+  if (isTRUE(uf_rho)) {
     v$check(
-      test_number(object@rho, lower = -1 + rmin, upper = 1 - rmin),
+      test_number(object@rho, lower = -1 + rmin, upper = 1 - rmin), # rmin is ignored here!
       "rho must be a number in (-1, 1)"
     )
   } else {
