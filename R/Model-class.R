@@ -583,8 +583,7 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`LogisticKadaneBetaGamma`] is the class for the logistic model in the parametrization
-#' of Kadane et al. (1980), with a beta prior on the `rho0 = p(xmin)` and a gamma prior on
-#' the `gamma`.
+#' of Kadane et al. (1980), using a beta and a gamma distribution as the model priors.
 #'
 #' @details Let `rho0 = p(xmin)` be the probability of a DLT at the minimum dose
 #'   `xmin`, and let `gamma` be the dose with target toxicity probability `theta`,
@@ -623,9 +622,6 @@ LogisticKadane <- function(theta, xmin, xmax) {
   Class = "LogisticKadaneBetaGamma",
   contains = "LogisticKadane",
   slots = c(
-    theta = "numeric",
-    xmin = "numeric",
-    xmax = "numeric",
     alpha = "numeric",
     beta = "numeric",
     shape = "numeric",
@@ -672,23 +668,17 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
     priormodel = function() {
       rho0 ~ dbeta(alpha, beta)
       gamma ~ dgamma(shape, rate)
-
-      ## the dummy assignment below is arbitrary and is just added to eliminate warning messages input variables not being used anywhere in the function
-      #  Warning messages:
-      #   1: In rjags::jags.model(file = modelFileName, data = if (fromPrior) modelspecs else c(requiredData,  :
-      #      Unused variable "xmax" in data
-      #   2: In rjags::jags.model(file = modelFileName, data = if (fromPrior) modelspecs else c(requiredData,  :
-      #      Unused variable "xmin" in data
-      #   3. In rjags::jags.model(file = modelFileName, data = if (fromPrior) modelspecs else c(requiredData,  :
-      #      Unused variable "theta" in data
-      ## need to ask Daniel if there is workaround for this issue.
-
-      #lowestdose <- xmin
-      #highestdose <- xmax
-      #DLTtarget <- theta
     },
     modelspecs = function() {
-      list(theta = theta, xmin = xmin, xmax = xmax, alpha = alpha, beta = beta, shape = shape, rate = rate)
+      list(
+        theta = theta,
+        xmin = xmin,
+        xmax = xmax,
+        alpha = alpha,
+        beta = beta,
+        shape = shape,
+        rate = rate
+        )
     }
   )
 }
