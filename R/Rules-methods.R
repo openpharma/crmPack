@@ -663,6 +663,11 @@ setMethod("nextBest",
 
 ## ============================================================
 
+h_info_theory_dist <- function(probability,target,asymmetry){
+  delta = ((probability-target)^2)/((probability^asymmetry)*(1-probability)^(2-asymmetry)))
+  return delta
+}
+
 ##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
 ##'   the appropriate dose within an information theoretic framework
 ##' @export
@@ -685,11 +690,6 @@ setMethod("nextBest", signature = signature(nextBest = "NextBestInfTheory", dose
                 (data@doseGrid <= doselimit)
             else
               rep(TRUE, length(data@doseGrid))
-
-           h_info_theory_dist <- function(probability,target,asymmetry){
-             delta = ((probability-target)^2)/((probability^asymmetry)*(1-probability)^(2-asymmetry)))
-             return delta
-           }
 
            criterion <-colMeans(h_info_theory_dist(probSamples,nextBest@target,nextBest@asymmetry))
 
