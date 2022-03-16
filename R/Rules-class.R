@@ -292,7 +292,6 @@ NextBestDualEndpoint <- function(target,
 #' @param target target DLT probability.
 #' @export
 NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
-validObject(NextBestMinDist(0.1))
 
 ## ============================================================
 
@@ -313,7 +312,6 @@ validObject(NextBestMinDist(0.1))
 #' @param asymmetry value of the asymmetry exponent
 #' @export
 NextBestInfTheory <- function(target,asymmetry){ .NextBestInfTheory(target = target, asymmetry = asymmetry) }
-validObject(NextBestInfTheory(0.1,1))
 
 ## ============================================================
 
