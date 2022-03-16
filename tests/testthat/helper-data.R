@@ -29,7 +29,7 @@ h_get_data_no_plcb <- function() {
 
 h_get_data_no_plcb_k <- function() {
   x <- c(1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5)
-  dose_grid <- c(1.5, 2.5, 3.5, 4.5, 6, 7 )
+  dose_grid <- c(1.5, 2.5, 3.5, 4.5, 6, 7)
 
   Data(
     x = x,
