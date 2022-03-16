@@ -135,24 +135,10 @@ test_that("v_model_logistic_kadane_beta_gamma passes for valid object", {
   expect_true(v_model_logistic_kadane_beta_gamma(object))
 })
 
-test_that("v_model_logistic_kadane_beta_gamma returns error for wrong theta probability", {
-  object <- h_get_logistic_kadane_beta_gam()
-  err_msg <- "theta must be a probability scalar > 0 and < 1"
-  # Assigning wrong values for probability theta.
-  object@theta <- -1
-  expect_equal(v_model_logistic_kadane_beta_gamma(object), err_msg)
-  object@theta <- 5
-  expect_equal(v_model_logistic_kadane_beta_gamma(object), err_msg)
-  object@theta <- 0
-  expect_equal(v_model_logistic_kadane_beta_gamma(object), err_msg)
-})
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
   object <- h_get_logistic_kadane_beta_gam()
   # Assigning vectors for scalar slots.
-  object@theta <- c(0.4, 0.5)
-  object@xmin <- 1:4
-  object@xmax <- 2:5
   object@alpha <- 3:6
   object@beta <- 3:6
   object@shape <- 4:7
@@ -161,31 +147,11 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
   expect_equal(
     v_model_logistic_kadane_beta_gamma(object),
     c(
-      "theta must be a probability scalar > 0 and < 1",
-      "xmin must be scalar",
-      "xmax must be scalar",
       "Beta distribution shape parameter alpha must be a positive scalar",
       "Beta distribution shape parameter beta must be a positive scalar",
       "Gamma distribution shape parameter must be a positive scalar",
-      "Gamma distribution rate parameter must be a positive scalar",
+      "Gamma distribution rate parameter must be a positive scalar"
     )
-  )
-})
-
-test_that("v_model_logistic_kadane_beta_gamma returns error for xmin greater than xmax", {
-  object <- h_get_logistic_kadane_beta_gam()
-  # Assigning vectors for scalar slots.
-  object@xmin <- 1
-  object@xmax <- 1
-  expect_equal(
-    v_model_logistic_kadane_beta_gamma(object),
-    "xmin must be strictly smaller than xmax"
-  )
-  object@xmin <- 2
-  object@xmax <- 1
-  expect_equal(
-    v_model_logistic_kadane_beta_gamma(object),
-    "xmin must be strictly smaller than xmax"
   )
 })
 
