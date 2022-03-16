@@ -128,13 +128,58 @@ test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
   )
 })
 
+test_that("v_model_logistic_kadane returns error for wrong theta probability", {
+  object <- h_get_logistic_kadane_beta_gam()
+  err_msg <- "theta must be a probability scalar > 0 and < 1"
+  # Assigning wrong values for probability theta.
+  object@theta <- -1
+  expect_equal(v_model_logistic_kadane(object), err_msg)
+  object@theta <- 5
+  expect_equal(v_model_logistic_kadane(object), err_msg)
+  object@theta <- 0
+  expect_equal(v_model_logistic_kadane(object), err_msg)
+})
+
+test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
+  object <- h_get_logistic_kadane_beta_gam()
+  # Assigning vectors for scalar slots.
+  object@xmin <- 1
+  object@xmax <- 1
+  expect_equal(
+    v_model_logistic_kadane(object),
+    "xmin must be strictly smaller than xmax"
+  )
+  object@xmin <- 2
+  object@xmax <- 1
+  expect_equal(
+    v_model_logistic_kadane(object),
+    "xmin must be strictly smaller than xmax"
+  )
+})
+
+test_that("v_model_logistic_kadane returns error for non-scalars", {
+  object <- h_get_logistic_kadane_beta_gam()
+  # Assigning vectors for scalar slots.
+  object@theta <- c(0.4, 0.5)
+  object@xmin <- 1:4
+  object@xmax <- 2:5
+
+  expect_equal(
+    v_model_logistic_kadane(object),
+    c(
+      "theta must be a probability scalar > 0 and < 1",
+      "xmin must be scalar",
+      "xmax must be scalar"
+    )
+  )
+})
+
 # v_model_logistic_kadane_beta_gamma ----
 
 test_that("v_model_logistic_kadane_beta_gamma passes for valid object", {
   object <- h_get_logistic_kadane_beta_gam()
   expect_true(v_model_logistic_kadane_beta_gamma(object))
 })
-
 
 test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
   object <- h_get_logistic_kadane_beta_gam()
