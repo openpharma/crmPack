@@ -802,8 +802,8 @@ h_format_number <- function(x,
 #'   This function was primarily designed as a helper for [h_jags_write_model()]
 #'   function.
 #'
-#' @param x any "list-like" object for which subsetting operator [`[[`][Extract]
-#'   is defined.
+#' @param x (`any`)\cr "list-like" object for which subsetting operator
+#'   [`[[`][Extract] is defined.
 #' @param fun (`function`)\cr a function of one "principal" argument, passing
 #'   further arguments via `...`.
 #' @param classes (`character`)\cr class names.
@@ -837,8 +837,8 @@ h_rapply <- function(x, fun, classes, ...) {
 #'
 #' A simple helper function that replaces `NA` object by `NULL` object.
 #'
-#' @param x any atomic object of length `1`. For the definition of "atomic",
-#'   see [is.atomic()].
+#' @param x (`any`)\cr atomic object of length `1`. For the definition of
+#'   "atomic", see [is.atomic()].
 #'
 #' @return `NULL` if `x` is `NA`, otherwise, `x`.
 #'
@@ -863,7 +863,7 @@ h_null_if_na <- function(x) {
 #' an non-dimensional object of length equals 1, or two or more dimensional object
 #' with the first dimension equals to 1. Otherwise it returns 1L.
 #'
-#' @param x any object for which length function is defined.
+#' @param x (`any`)\cr an object for which length function is defined.
 #'
 #' @return `NULL` if `x` is of length 1 or the first dimension equals to 1,
 #'   otherwise, 1L.
@@ -887,4 +887,57 @@ h_null_if_scalar <- function(x) {
   } else {
     1L
   }
+}
+
+#' Check that an argument is a named vector of type numeric
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that tests whether an object is a named numerical
+#' vector.
+#'
+#' @note This function is based on [`checkmate::test_numeric`] and
+#'   [`checkmate::test_names`] functions.
+#'
+#' @param x (`any`)\cr object to check.
+#' @inheritParams checkmate::test_names
+#' @inheritParams checkmate::test_numeric
+#' @param ... \cr further parameters passed to [`checkmate::test_numeric`].
+#'
+#' @return `TRUE` if `x` is a named vector of type numeric, otherwise `FALSE`.
+#'
+#' @export
+#' @examples
+#' h_test_named_numeric(1:2, permutation.of = c("a", "b"))
+#' h_test_named_numeric(c(a = 1, b = 2), permutation.of = c("a", "b"))
+#' h_test_named_numeric(c(a = 1, b = 2), permutation.of = c("b", "a"))
+h_test_named_numeric <- function(x,
+                                 subset.of = NULL,
+                                 must.include = NULL,
+                                 permutation.of = NULL,
+                                 identical.to = NULL,
+                                 disjunct.from = NULL,
+                                 lower = 0 + .Machine$double.xmin,
+                                 finite = TRUE,
+                                 any.missing = FALSE,
+                                 len = 2,
+                                 ...) {
+  is_valid_num <- test_numeric(
+    x,
+    lower = lower,
+    finite = finite,
+    any.missing = any.missing,
+    len = len,
+    ...,
+    names = "named"
+  )
+  are_names_valid <- test_names(
+    names(x),
+    subset.of = subset.of,
+    must.include = must.include,
+    permutation.of = permutation.of,
+    identical.to = identical.to,
+    disjunct.from = disjunct.from,
+  )
+  is_valid_num && are_names_valid
 }

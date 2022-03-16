@@ -48,7 +48,8 @@ h_jags_add_dummy <- function(object, where, dummy = 0) {
 #'
 #' This helper function joins two JAGS models in the way that the body of the
 #' second model is appended to the body of the first model (in this order).
-#' After that, the first, body-extended model is returned.
+#' After that, the first, body-extended model is returned. The arguments of
+#' `model1`, `model2` model functions (if any) are not combined in any way.
 #'
 #' @note `model1` and `model2` functions must have a multi-expression
 #'   body, i.e. braced expression(s). Environments or any attributes of the

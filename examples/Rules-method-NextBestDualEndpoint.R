@@ -1,3 +1,4 @@
+# nolint start
 
 # Create the data
 data <- DataDual(
@@ -11,8 +12,8 @@ data <- DataDual(
              seq(from=10, to=80, by=2)))
 
 # Initialize the Dual-Endpoint model (in this case RW1)
-model <- DualEndpointRW(mu = c(0, 1),
-                        Sigma = matrix(c(1, 0, 0, 1), nrow=2),
+model <- DualEndpointRW(mean = c(0, 1),
+                        cov = matrix(c(1, 0, 0, 1), nrow=2),
                         sigma2betaW = 0.01,
                         sigma2W = c(a=0.1, b=0.1),
                         rho = c(a=1, b=1),
@@ -52,3 +53,4 @@ print(doseRecommendation$plot)
 variant1 <- doseRecommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
 
+# nolint end
