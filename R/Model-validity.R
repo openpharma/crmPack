@@ -80,19 +80,6 @@ v_model_logistic_kadane <- function(object) {
 #'   parameters with a beta and gamma prior are valid.
 v_model_logistic_kadane_beta_gamma <- function(object) {
   v <- Validate()
-  v$check(
-    is.probability(object@theta, bounds = FALSE),
-    "theta must be a probability scalar > 0 and < 1"
-  )
-  is_xmin_number <- test_number(object@xmin)
-  v$check(is_xmin_number, "xmin must be scalar")
-
-  is_xmax_number <- test_number(object@xmax)
-  v$check(is_xmax_number, "xmax must be scalar")
-
-  if (is_xmin_number && is_xmax_number) {
-    v$check(object@xmin < object@xmax, "xmin must be strictly smaller than xmax")
-  }
 
   v$check(
     is.scalar(object@alpha) & is.numeric(object@alpha) && object@alpha > 0,
