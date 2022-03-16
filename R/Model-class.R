@@ -668,6 +668,10 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
     priormodel = function() {
       rho0 ~ dbeta(alpha, beta)
       gamma ~ dgamma(shape, rate)
+
+      lowestdose <- xmin
+      highestdose <- xmax
+      DLTtarget <- theta
     },
     modelspecs = function() {
       list(

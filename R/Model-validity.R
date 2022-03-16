@@ -80,7 +80,6 @@ v_model_logistic_kadane <- function(object) {
 #'   parameters with a beta and gamma prior are valid.
 v_model_logistic_kadane_beta_gamma <- function(object) {
   v <- Validate()
-
   v$check(
     is.scalar(object@alpha) & is.numeric(object@alpha) && object@alpha > 0,
     "Beta distribution shape parameter alpha must be a positive scalar"
@@ -89,7 +88,6 @@ v_model_logistic_kadane_beta_gamma <- function(object) {
     is.scalar(object@beta) & is.numeric(object@beta) && object@beta > 0,
     "Beta distribution shape parameter beta must be a positive scalar"
   )
-
   v$check(
     is.scalar(object@shape) & is.numeric(object@shape) && object@shape > 0,
     "Gamma distribution shape parameter must be a positive scalar"

@@ -153,10 +153,10 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
   object@theta <- c(0.4, 0.5)
   object@xmin <- 1:4
   object@xmax <- 2:5
-  object@alpha <- 1:4
-  object@beta <- 2:5
-  object@shape <- 1:4
-  object@rate <- 2:5
+  object@alpha <- 3:6
+  object@beta <- 3:6
+  object@shape <- 4:7
+  object@rate <- 4:7
 
   expect_equal(
     v_model_logistic_kadane_beta_gamma(object),

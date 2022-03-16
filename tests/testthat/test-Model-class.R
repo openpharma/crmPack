@@ -225,8 +225,6 @@ test_that("LogisticKadane object can be created with user constructor", {
 
 ## mcmc ----
 
-## mcmc ----
-
 test_that("MCMC computes correct values for LogisticKadane model", {
   data <- h_get_data()
   model <- h_get_logistic_kadane()
@@ -258,7 +256,7 @@ test_that("LogisticKadaneBetaGamma object can be created with user constructor",
 ## mcmc ----
 
 test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
-  data <- h_get_data()
+  data <- h_get_data_no_plcb()
   model <- h_get_logistic_kadane_beta_gam()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
