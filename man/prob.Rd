@@ -28,6 +28,8 @@
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
 \alias{prob-LogisticIndepBeta-noSamples}
+\alias{prob,numeric,DualEndpoint,Samples-method}
+\alias{prob-DualEndpoint}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -57,6 +59,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model, samples, ...)
+
+\S4method{prob}{numeric,DualEndpoint,Samples}(dose, model, samples)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.

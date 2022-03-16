@@ -1,3 +1,14 @@
+h_get_model_4comp <- function() {
+  list(
+    priormodel = function() {
+      y ~ x + 1
+    },
+    modelspecs = list(x = 2),
+    init = list(y = 2),
+    sample = c("a", "b")
+  )
+}
+
 h_get_general_model <- function() {
   .GeneralModel(
     datamodel = function(x) {
@@ -151,5 +162,15 @@ h_get_logistic_log_normal_mix <- function() {
     cov = diag(2),
     share_weight = 0.1,
     ref_dose = 1.5
+  )
+}
+
+h_get_dual_endpoint <- function(use_log_dose = FALSE) {
+  DualEndpoint(
+    mean = c(0, 1),
+    cov = diag(2),
+    use_log_dose = use_log_dose,
+    sigma2W = 1,
+    rho = 0
   )
 }

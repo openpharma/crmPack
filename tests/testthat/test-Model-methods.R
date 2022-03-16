@@ -505,6 +505,51 @@ test_that("dose-LogisticLogNormalMixture is not implemented", {
   )
 })
 
+## DualEndpoint ----
+
+test_that("dose-DualEndpoint works as expected", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  betaZ <- matrix(c(0.4, -0.2, 0.5, 0.9, -1.3, 0.1, 0.24, -1.03), ncol = 2) # nolintr
+  samples <- h_as_samples(list(betaZ = betaZ))
+
+  result <- dose(0.2, model, samples)
+  result_log_dose <- dose(0.2, model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("dose-DualEndpoint works as expected for scalar samples", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2), ncol = 2)))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  result_log_dose <- dose(c(0.3, 0.7), model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("dose-DualEndpoint throws the error when prob is not a valid scalar", {
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+
+  expect_error(
+    dose(prob = c(40, 50), model = model, samples = samples),
+    "Assertion on 'prob' failed: Must have length 1."
+  )
+  expect_error(
+    dose(prob = 2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(prob = -2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not >= 0."
+  )
+})
+
 ## LogisticIndepBeta ----
 
 test_that("dose-LogisticIndepBeta works as expected", {
@@ -797,13 +842,7 @@ test_that("prob-LogisticKadane throws the error when dose is not a valid scalar"
 
 test_that("prob-LogisticNormalMixture works as expected", {
   model <- h_get_logistic_normal_mix()
-  samples <- Samples(
-    data = list(
-      alpha0 = c(0, -1, 1, 2),
-      alpha1 = c(0, 2, 1, -1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
-  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
   expect_equal(
@@ -839,13 +878,7 @@ test_that("prob-LogisticNormalMixture throws the error when dose is not a valid 
 
 test_that("prob-LogisticNormalFixedMixture works as expected", {
   model <- h_get_logistic_normal_fixed_mix()
-  samples <- Samples(
-    data = list(
-      alpha0 = c(0, -1, 1, 2),
-      alpha1 = c(0, 2, 1, -1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
-  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
   expect_equal(
@@ -881,8 +914,8 @@ test_that("prob-LogisticNormalFixedMixture throws the error when dose is not a v
 
 test_that("prob-LogisticLogNormalMixture works as expected", {
   model <- h_get_logistic_log_normal_mix()
-  samples <- Samples(
-    data = list(
+  samples <- h_as_samples(
+    list(
       alpha0 = matrix(
         c(-0.93, -0.67, -0.94, -0.67, -2.37, -1.28, -2.37, -1.08),
         ncol = 2,
@@ -894,8 +927,7 @@ test_that("prob-LogisticLogNormalMixture works as expected", {
         byrow = TRUE
       ),
       comp = c(1, 1, 1, 1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+    )
   )
 
   result <- prob(60, model, samples)
@@ -936,6 +968,47 @@ test_that("prob-LogisticLogNormalMixture throws the error when dose is not a val
       comp = c(1, 1, 1, 1)
     )
   )
+
+  expect_error(
+    prob(dose = c(40, 50), model = model, samples = samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(dose = -3, model = model, samples = samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## DualEndpoint ----
+
+test_that("prob-DualEndpoint works as expected", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  betaZ <- matrix(c(0.4, -0.6, 0.5, 0.09, -0.3, 0.1, 0.24, -1.03), ncol = 2) # nolintr
+  samples <- h_as_samples(list(betaZ = betaZ))
+
+  result <- prob(5, model, samples)
+  result_log_dose <- prob(5, model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("prob-DualEndpoint works as expected for scalar samples", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.6), ncol = 2)))
+
+  result <- prob(c(5, 8), model, samples)
+  result_log_dose <- prob(c(5, 8), model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("prob-DualEndpoint throws the error when dose is not a valid scalar", {
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
 
   expect_error(
     prob(dose = c(40, 50), model = model, samples = samples),

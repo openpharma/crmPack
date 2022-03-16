@@ -47,6 +47,7 @@ reference:
       - LogisticNormalMixture
       - LogisticNormalFixedMixture
       - LogisticLogNormalMixture
+      - DualEndpoint
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
@@ -70,6 +71,9 @@ reference:
       - h_jags_extract_samples
       - h_null_if_na
       - h_null_if_scalar
+      - h_test_named_numeric
+      - h_model_dual_endpoint_sigma2W
+      - h_model_dual_endpoint_rho
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -88,6 +92,7 @@ reference:
       - v_model_logistic_normal_mixture
       - v_model_logistic_normal_fixed_mix
       - v_model_logistic_log_normal_mixture
+      - v_model_dual_endpoint
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
       - v_increments_numdoselevels
@@ -122,6 +127,7 @@ reference:
       - dose-LogisticNormalMixture
       - dose-LogisticNormalFixedMixture
       - dose-LogisticLogNormalMixture
+      - dose-DualEndpoint
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
       - probFunction
@@ -140,6 +146,7 @@ reference:
       - prob-LogisticNormalMixture
       - prob-LogisticNormalFixedMixture
       - prob-LogisticLogNormalMixture
+      - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
