@@ -1109,7 +1109,7 @@ DualEndpoint <- function(mean,
     modelspecs = function() {
       comp$modelspecs
     },
-    init = function(y, w, nGrid) {
+    init = function(y) {
       c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
     },
     sample = comp$sample,
