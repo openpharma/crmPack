@@ -52,7 +52,7 @@ Are vectors with missing values allowed? Default is \code{TRUE}.}
 \item{len}{[\code{integer(1)}]\cr
 Exact expected length of \code{x}.}
 
-\item{...}{\cr further parameters passed to \code{\link[checkmate:checkNumeric]{checkmate::test_numeric}}.}
+\item{...}{further parameters passed to \code{\link[checkmate:checkNumeric]{checkmate::test_numeric}}.}
 }
 \value{
 \code{TRUE} if \code{x} is a named vector of type numeric, otherwise \code{FALSE}.
