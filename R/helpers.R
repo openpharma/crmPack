@@ -902,7 +902,7 @@ h_null_if_scalar <- function(x) {
 #' @param x (`any`)\cr object to check.
 #' @inheritParams checkmate::test_names
 #' @inheritParams checkmate::test_numeric
-#' @param ... \cr further parameters passed to [`checkmate::test_numeric`].
+#' @param ... further parameters passed to [`checkmate::test_numeric`].
 #'
 #' @return `TRUE` if `x` is a named vector of type numeric, otherwise `FALSE`.
 #'
