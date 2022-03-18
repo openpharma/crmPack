@@ -664,7 +664,7 @@ setMethod("nextBest",
 ## ============================================================
 
 h_info_theory_dist <- function(probability,target,asymmetry){
-  return ((probability-target)^2)/(((probability^asymmetry)*(1-probability)^(2-asymmetry)))
+  ((probability-target)^2)/(((probability^asymmetry)*(1-probability)^(2-asymmetry)))
 }
 
 ##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
