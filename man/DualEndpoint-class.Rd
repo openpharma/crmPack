@@ -4,76 +4,96 @@
 \name{DualEndpoint-class}
 \alias{DualEndpoint-class}
 \alias{.DualEndpoint}
-\title{General class for the dual endpoint model}
+\alias{DualEndpoint}
+\title{\code{DualEndpoint}}
+\usage{
+DualEndpoint(mean, cov, ref_dose = 1, use_log_dose = FALSE, sigma2W, rho)
+}
+\arguments{
+\item{mean}{(\code{numeric})\cr for the probit toxicity model, the prior mean vector.}
+
+\item{cov}{(\code{matrix})\cr for the probit toxicity model, the prior covariance
+matrix. The precision matrix is internally calculated as an inverse of \code{cov}.}
+
+\item{ref_dose}{(\code{number})\cr for the probit toxicity model, the reference dose.}
+
+\item{use_log_dose}{(\code{flag})\cr for the probit toxicity model, whether a log
+transformation of the (standardized) dose should be used?}
+
+\item{sigma2W}{(\code{numeric})\cr either a fixed value for the biomarker variance,
+or a numeric vector with two elements named \code{a} and \code{b} for the Inverse-Gamma
+prior parameters.}
+
+\item{rho}{(\code{numeric})\cr either a fixed value for the correlation
+(between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}
+for the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is
+in \verb{(0, 1)}. For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
+}
 \description{
-The idea of the dual-endpoint models is to model not only the dose-toxicity
-relationship, but also to model at the same time the relationship of a PD
-biomarker with the dose. The subclasses of this class detail how the
-dose-biomarker relationship is parametrized and are those to be used. This
-class here shall contain all the common features to reduce duplicate code.
-(However, this class must not be virtual, because we need to create objects
-of it during the construction of subclass objects.)
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DualEndpoint}} is the general class for the dual endpoint model.
 }
 \details{
-Currently a probit regression model
-\deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2}
-\cdot x/x^{*}}{probit[p(x)] = beta_Z1 + beta_Z2 * x/x*}
+The idea of the dual-endpoint models is to model not only the
+dose-toxicity relationship, but also to model, at the same time, the
+relationship of a PD biomarker with the dose. The sub-classes of this class
+define how the dose-biomarker relationship is parametrized. This class here
+shall contain all the common features to reduce duplicate code.
+(This class however, must not be virtual as we need to create objects
+of it during the construction of subclass objects.)
+
+The dose-toxicity relationship is modeled with probit regression model
+\deqn{probit[p(x)] = betaZ1 + betaZ2 * x/x*,}
 or
-\deqn{probit[p(x)] = \beta_{Z1} + \beta_{Z2}
-\cdot \log(x/x^{*})}{probit[p(x)] = beta_Z1 + beta_Z2 * log(x/x*)}
-in case that the option \code{useLogDose} is \code{TRUE}.
-Here \eqn{p(x)} is the probability of observing a DLT for a given
-dose \eqn{x}, \eqn{\Phi} is the standard normal cdf, and \eqn{x^{*}} is
-the reference dose.
+\deqn{probit[p(x)] = betaZ1 + betaZ2 * log(x/x*),}
+in case when the option \code{use_log_dose} is \code{TRUE}.
+Here, \eqn{p(x)} is the probability of observing a DLT for a given
+dose \eqn{x} and \eqn{x*} is the reference dose.
+The prior \deqn{(betaZ1, log(betaZ2)) ~ Normal(mean, cov).}
 
-The prior is \deqn{\left( \beta_{Z1} , log(\beta_{Z2}) \right)
-\sim Normal(\mu, \Sigma)}{(beta_Z1, log(beta_Z2)) ~ Normal(mu, Sigma)}.
-
-For the biomarker response w at a dose x, we assume
-\deqn{w(x) \sim Normal(f(x), \sigma^{2}_{W})}{w(x) ~ Normal(f(x), sigma^2_W)}
-and \eqn{f(x)} is a function of the dose x, which is further specified in
-the subclasses. The biomarker variance \eqn{\sigma^{2}_{W}} can be fixed or
-assigned an inverse gamma prior distribution; see the details below under
+For the biomarker response \eqn{w} at a dose \eqn{x}, we assume
+\deqn{w(x) ~ Normal(f(x), sigma2W),}
+where \eqn{f(x)} is a function of the dose \eqn{x}, which is further
+specified in sub-classes. The biomarker variance \eqn{sigma2W} can be fixed
+or assigned an Inverse-Gamma prior distribution; see the details below under
 slot \code{sigma2W}.
 
-Finally, the two endpoints y (the binary DLT variable) and w (the biomarker)
-can be correlated, by assuming a correlation \eqn{\rho} between the
-underlying continuous latent toxicity variable z and the biomarker w.
-Again, this correlation can be fixed or assigned a prior distribution from
-the scaled beta family; see the details below under slot \code{rho}.
+Finally, the two endpoints \eqn{y} (the binary DLT variable) and \eqn{w}
+(the biomarker) can be correlated, by assuming a correlation of level
+\eqn{rho} between the underlying continuous latent toxicity variable \eqn{z}
+and the biomarker \eqn{w}. Again, this correlation can be fixed or assigned
+a prior distribution from the scaled Beta family; see the details below
+under slot \code{rho}.
 
-Please see the Hive page for more details on the model and the example
-vignette by typing \code{crmPackExample()} for a full example.
+Please see the example vignette by typing \code{crmPackExample()} for a full example.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{mu}}{For the probit toxicity model, \code{mu} contains the prior mean
-vector}
+\item{\code{betaZ_params}}{(\code{ModelParamsNormal})\cr for the probit toxicity model, it
+contains the prior mean, covariance matrix and precision matrix which is
+internally calculated as an inverse of the covariance matrix.}
 
-\item{\code{Sigma}}{For the probit toxicity model, contains the prior covariance
-matrix}
+\item{\code{ref_dose}}{(\code{number})\cr for the probit toxicity model,, the reference dose.}
 
-\item{\code{refDose}}{For the probit toxicity model, the reference dose}
+\item{\code{use_log_dose}}{(\code{flag})\cr for the probit toxicity model, whether a log
+transformation of the (standardized) dose should be used?}
 
-\item{\code{useLogDose}}{For the probit toxicity model, whether a log transformation
-of the (standardized) dose should be used?}
+\item{\code{sigma2W}}{(\code{numeric})\cr either a fixed value for the biomarker variance,
+or a numeric vector with two elements named \code{a} and \code{b} for the
+Inverse-Gamma prior parameters.}
 
-\item{\code{sigma2W}}{Either a fixed value for the biomarker variance, or a vector
-with elements \code{a} and \code{b} for the inverse-gamma prior parameters.}
+\item{\code{rho}}{(\code{numeric})\cr either a fixed value for the correlation
+(between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}
+for the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is
+in \verb{(0, 1)}. For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
 
-\item{\code{rho}}{Either a fixed value for the correlation (between -1 and 1), or a
-vector with elements \code{a} and \code{b} for the Beta prior on the
-transformation kappa = (rho + 1) / 2, which is in (0, 1). For example,
-\code{a=1,b=1} leads to a uniform prior on rho.}
-
-\item{\code{useFixed}}{a list with logical value for each of the parameters
-indicating whether a fixed value is used or not; this slot is needed for
-internal purposes and not to be touched by the user.}
+\item{\code{use_fixed}}{rho (\code{logical})\cr indicates whether a fixed value for
+\code{sigma2W} and \code{rho} (for each parameter separately) is used or not. This
+slot is needed for internal purposes and must not be touched by the user.}
 }}
 
 \seealso{
-Current subclasses: \code{\linkS4class{DualEndpointRW}},
-\code{\linkS4class{DualEndpointBeta}}
+\code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.
 }
-\keyword{classes}

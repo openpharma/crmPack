@@ -901,6 +901,66 @@ setMethod(
   }
 )
 
+# DualEndpoint ----
+
+## dose ----
+
+#' @rdname dose
+#'
+#' @aliases dose-DualEndpoint
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    prob = "numeric",
+    model = "DualEndpoint",
+    samples = "Samples"
+  ),
+  definition = function(prob, model, samples) {
+    assert_subset("betaZ", names(samples@data))
+    betaZ <- samples@data$betaZ
+    ref_dose <- model@ref_dose
+    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+
+    dose_temp <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+    if (model@use_log_dose) {
+      exp(dose_temp) * ref_dose
+    } else {
+      dose_temp * ref_dose
+    }
+  }
+)
+
+## prob ----
+
+#' @rdname prob
+#'
+#' @aliases prob-DualEndpoint
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "DualEndpoint",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("betaZ", names(samples@data))
+    betaZ <- samples@data$betaZ
+    ref_dose <- model@ref_dose
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+
+    stand_dose <- if (model@use_log_dose) {
+      log(dose / ref_dose)
+    } else {
+      dose / ref_dose
+    }
+    pnorm(betaZ[, 1] + betaZ[, 2] * stand_dose)
+  }
+)
+
 # nolint start
 
 ## =============================================================================

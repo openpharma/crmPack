@@ -29,38 +29,58 @@ h_get_data_no_plcb <- function() {
 
 h_get_data_dual <- function() {
   d <- h_get_data()
-  .DataDual(
-    d,
-    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48)
+  DataDual(
+    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
   )
 }
 
 h_get_data_parts <- function() {
   d <- h_get_data()
-  .DataParts(
-    d,
+  DataParts(
     part = c(1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 2L, 2L),
     nextPart = 1L,
-    part1Ladder = seq(25, 250, 25)
+    part1Ladder = seq(25, 250, 25),
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
   )
 }
 
 h_get_data_mixture <- function() {
   d <- h_get_data()
-  .DataMixture(
-    d,
+  DataMixture(
     xshare = seq(25, 100, 25),
     yshare = c(0L, 1L, 1L, 1L),
-    nObsshare = 4L
+    nObsshare = 4L,
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
   )
 }
 
 h_get_data_augmented <- function() { # nolintr
   d <- h_get_data()
-  .DataDA(
-    d,
+  DataDA(
     u = c(42, 30, 15, 5, 20, 25, 30, 60, 25, 30, 35, 40),
     t0 = c(0, 15, 30, 40, 55, 70, 75, 85, 95, 105, 120, 125),
-    Tmax = 60
+    Tmax = 60,
+    x = d@x,
+    y = d@y,
+    doseGrid = d@doseGrid,
+    placebo = d@placebo,
+    ID = d@ID,
+    cohort = d@cohort
   )
 }

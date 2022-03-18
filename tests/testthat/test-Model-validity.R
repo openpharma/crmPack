@@ -155,25 +155,19 @@ test_that("v_model_logistic_normal_mix returns error for wrong ref_dose", {
 
 test_that("v_model_logistic_normal_mix returns error for wrong weightpar", {
   object <- h_get_logistic_normal_mix()
-  err_msg <- "weightpar must be a numerical vector of length two with values greater than 0"
+  err_msg <- "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
   # Assigning wrong values for weightpar.
   object@weightpar <- c(a = -1, b = -2)
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = -1, b = 2)
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
-})
 
-test_that("v_model_logistic_normal_mix returns error for wrong weightpar names", {
-  object <- h_get_logistic_normal_mix()
-  err_msg0 <- "weightpar must be a numerical vector of length two with values greater than 0"
-  err_msg <- "weightpar should be a named vector of length two with names 'a' and 'b'"
-  # Assigning wrong values for weightpar.
   object@weightpar <- c(1, 2)
-  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = 1, 2)
-  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(1, b = 2)
-  expect_equal(v_model_logistic_normal_mix(object), c(err_msg0, err_msg))
+  expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(a = 1, g = 2)
   expect_equal(v_model_logistic_normal_mix(object), err_msg)
   object@weightpar <- c(h = 1, g = 2)
@@ -313,4 +307,95 @@ test_that("v_model_logistic_log_normal_mix returns error for wrong share_weight"
   expect_equal(v_model_logistic_log_normal_mix(object), err_msg)
   object@share_weight <- c(-1, 0.5)
   expect_equal(v_model_logistic_log_normal_mix(object), err_msg)
+})
+
+# v_model_dual_endpoint ----
+
+test_that("v_model_dual_endpoint passes for valid object", {
+  object <- h_get_dual_endpoint()
+  expect_true(v_model_dual_endpoint(object))
+})
+
+test_that("v_model_dual_endpoint returns error for wrong ref_dose", {
+  object <- h_get_dual_endpoint()
+  # We assign a ref_dose which is not a non-negative scalar.
+  object@ref_dose <- c(-3, -5, 4, 0)
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    "ref_dose must be a positive scalar"
+  )
+})
+
+test_that("v_model_dual_endpoint returns error for wrong use_log_dose", {
+  object <- h_get_dual_endpoint()
+  # We assign a use_log_dose which is not a single flag.
+  object@use_log_dose <- c(TRUE, FALSE)
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    "use_log_dose must be TRUE or FALSE"
+  )
+})
+
+test_that("v_model_dual_endpoint returns error for wrong use_fixed", {
+  object <- h_get_dual_endpoint()
+  # We assign a use_log_dose which is not a single flag.
+  object@use_fixed <- TRUE
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    c(
+      "use_fixed must be a named logical vector that contains name 'sigma2W'",
+      "use_fixed must be a named logical vector that contains name 'rho'",
+      "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'",
+      "rho must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  )
+})
+
+test_that("v_model_dual_endpoint returns error for wrong fixed sigma2W", {
+  object <- h_get_dual_endpoint()
+  # Assigning wrong values for sigma2W.
+  object@sigma2W <- c(-5:0, Inf)
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    "sigma2W must be a positive and finite numerical scalar"
+  )
+})
+
+test_that("v_model_dual_endpoint returns error for wrong sigma2W", {
+  object <- h_get_dual_endpoint()
+  # Assigning wrong values for sigma2W.
+  object@sigma2W <- c(4, -5, b = -Inf)
+  object@use_fixed["sigma2W"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
+})
+
+test_that("v_model_dual_endpoint returns error for wrong fixed rho", {
+  object <- h_get_dual_endpoint()
+  # Assigning wrong values for rho.
+  object@rho <- c(-5:0, Inf)
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    "rho must be a number in (-1, 1)"
+  )
+})
+
+test_that("v_model_dual_endpoint returns error for wrong sigma2W", {
+  object <- h_get_dual_endpoint()
+  # Assigning wrong values for rho.
+  object@rho <- c(4, -5, b = -Inf)
+  object@use_fixed["rho"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint(object),
+    "rho must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
 })
