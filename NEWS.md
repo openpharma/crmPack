@@ -1,4 +1,4 @@
-# Version 1.0.9000
+# Version 1.0.9000.9000
 * Added new `ModelParamsNormal` class to represent parameters of bivariate normal
   distribution.
 * Added new `doseFunction` and `probFunction` functions which return dose

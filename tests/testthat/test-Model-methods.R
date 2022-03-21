@@ -371,6 +371,49 @@ test_that("dose-LogisticKadane throws the error when prob is not a valid scalar"
   )
 })
 
+
+## LogisticKadaneBetaGamma ----
+
+test_that("dose-LogisticKadaneBetaGamma works as expected", {
+  model <- h_get_logistic_kadane_beta_gam()
+  samples <- h_as_samples(list(rho0 = c(0.05, 0.1, 0.15),
+                               gamma = c(3, 7, 10)
+  )
+  )
+
+  result <- dose(0.2, model, samples)
+  expect_equal(
+    result,
+    c(2.228955,  4.205052, 3.925453), tolerance = 1e-05
+  )
+})
+
+test_that("dose-LogisticKadaneBetaGamma works as expected for scalar samples", {
+  model <- h_get_logistic_kadane_beta_gam()
+  samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_equal(result, c(50.0000, 145.4914), tolerance = 1e-05)
+})
+
+test_that("dose-LogisticKadaneBetaGamma throws the error when prob is not a valid scalar", {
+  model <- h_get_logistic_kadane_beta_gam()
+  samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
+
+  expect_error(
+    dose(prob = c(40, 50), model = model, samples = samples),
+    "Assertion on 'prob' failed: Must have length 1."
+  )
+  expect_error(
+    dose(prob = 2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(prob = -2, model = model, samples = samples),
+    "Assertion on 'prob' failed: Element 1 is not >= 0."
+  )
+})
+
 ## LogisticNormalMixture ----
 
 test_that("dose-LogisticNormalMixture works as expected", {

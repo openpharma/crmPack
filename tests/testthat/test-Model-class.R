@@ -234,6 +234,36 @@ test_that("MCMC computes correct values for LogisticKadane model", {
   expect_snapshot(result@data)
 })
 
+# LogisticKadaneBetaGamma ----
+
+## constructor ----
+
+test_that("LogisticKadaneBetaGamma object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticKadaneBetaGamma(
+      theta = 0.3,
+      xmin = 0,
+      xmax = 7,
+      alpha = 1,
+      beta = 19,
+      shape = 0.5625,
+      rate = 0.125
+    )
+  )
+  expect_valid(result, "LogisticKadaneBetaGamma")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
+  data <- h_get_data_no_plcb_k()
+  model <- h_get_logistic_kadane_beta_gam()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
 # LogisticNormalMixture ----
 
 ## constructor ----

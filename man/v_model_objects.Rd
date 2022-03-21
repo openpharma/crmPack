@@ -6,6 +6,7 @@
 \alias{v_model}
 \alias{v_model_log_normal}
 \alias{v_model_logistic_kadane}
+\alias{v_model_logistic_kadane_beta_gamma}
 \alias{v_model_logistic_normal_mix}
 \alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
@@ -20,6 +21,8 @@ v_model(object)
 v_model_log_normal(object)
 
 v_model_logistic_kadane(object)
+
+v_model_logistic_kadane_beta_gamma(object)
 
 v_model_logistic_normal_mix(object)
 
@@ -58,12 +61,18 @@ respectively, as well as they match \code{sample} slot of the \code{object}.
 \item \code{v_model_logistic_kadane}: validates that the logistic Kadane model
 parameters are valid.
 
+\item \code{v_model_logistic_kadane_beta_gamma}: validates that the logistic Kadane model
+parameters with a beta and gamma prior are valid.
+
 \item \code{v_model_logistic_normal_mix}: validates that \code{weightpar} and \code{ref_dose} are valid.
 
 \item \code{v_model_logistic_normal_fixed_mix}: validates that \code{component} is a list with
 valid \code{ModelParamsNormal} objects as well as \code{weights} and \code{ref_dose} are
 correct.
 
+\item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
+
+=======
 \item \code{v_model_logistic_log_normal_mix}: validates that \code{ref_dose} is valid and
 \code{share_weight} represents probability.
 

@@ -43,6 +43,7 @@ reference:
       - ProbitLogNormal
       - ProbitLogNormalRel
       - LogisticKadane
+      - LogisticKadaneBetaGamma
       - LogisticNormalMixture
       - LogisticNormalFixedMixture
       - LogisticLogNormalMixture
@@ -87,6 +88,7 @@ reference:
       - v_model
       - v_model_log_normal
       - v_model_logistic_kadane
+      - v_model_logistic_kadane_beta_gamma
       - v_model_logistic_normal_mixture
       - v_model_logistic_normal_fixed_mix
       - v_model_logistic_log_normal_mixture
@@ -121,6 +123,7 @@ reference:
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
       - dose-LogisticKadane
+      - dose-LogisticKadaneBetaGamma
       - dose-LogisticNormalMixture
       - dose-LogisticNormalFixedMixture
       - dose-LogisticLogNormalMixture
@@ -138,6 +141,7 @@ reference:
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
       - prob-LogisticKadane
+      - prob-LogisticKadaneBetaGamma
       - prob-LogisticIndepBeta
       - prob-LogisticNormalMixture
       - prob-LogisticNormalFixedMixture

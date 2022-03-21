@@ -16,6 +16,8 @@
 \alias{prob-ProbitLogNormalRel}
 \alias{prob,numeric,LogisticKadane,Samples-method}
 \alias{prob-LogisticKadane}
+\alias{prob,numeric,LogisticKadaneBetaGamma,Samples-method}
+\alias{prob-LogisticKadaneBetaGamma}
 \alias{prob,numeric,LogisticNormalMixture,Samples-method}
 \alias{prob-LogisticNormalMixture}
 \alias{prob,numeric,LogisticNormalFixedMixture,Samples-method}
@@ -45,6 +47,8 @@ prob(dose, model, samples, ...)
 \S4method{prob}{numeric,ProbitLogNormalRel,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticKadane,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,LogisticKadaneBetaGamma,Samples}(dose, model, samples)
 
 \S4method{prob}{numeric,LogisticNormalMixture,Samples}(dose, model, samples)
 

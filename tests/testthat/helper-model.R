@@ -118,6 +118,18 @@ h_get_logistic_kadane <- function() {
   )
 }
 
+h_get_logistic_kadane_beta_gam <- function() {
+  LogisticKadaneBetaGamma(
+    theta = 0.3,
+    xmin = 0,
+    xmax = 7,
+    alpha = 1,
+    beta = 19,
+    shape = 5,
+    rate = 1
+  )
+}
+
 h_get_logistic_normal_mix <- function() {
   LogisticNormalMixture(
     comp1 = ModelParamsNormal(mean = c(0, 3), cov = diag(2)),

@@ -16,6 +16,8 @@
 \alias{dose-ProbitLogNormalRel}
 \alias{dose,numeric,LogisticKadane,Samples-method}
 \alias{dose-LogisticKadane}
+\alias{dose,numeric,LogisticKadaneBetaGamma,Samples-method}
+\alias{dose-LogisticKadaneBetaGamma}
 \alias{dose,numeric,LogisticNormalMixture,Samples-method}
 \alias{dose-LogisticNormalMixture}
 \alias{dose,numeric,LogisticNormalFixedMixture,Samples-method}
@@ -45,6 +47,8 @@ dose(prob, model, samples, ...)
 \S4method{dose}{numeric,ProbitLogNormalRel,Samples}(prob, model, samples)
 
 \S4method{dose}{numeric,LogisticKadane,Samples}(prob, model, samples)
+
+\S4method{dose}{numeric,LogisticKadaneBetaGamma,Samples}(prob, model, samples)
 
 \S4method{dose}{numeric,LogisticNormalMixture,Samples}(prob, model, samples)
 

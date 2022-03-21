@@ -27,6 +27,20 @@ h_get_data_no_plcb <- function() {
   )
 }
 
+h_get_data_no_plcb_k <- function() {
+  x <- c(1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5)
+  dose_grid <- c(1.5, 2.5, 3.5, 4.5, 6, 7)
+
+  Data(
+    x = x,
+    y = c(0, 0, 0, 0, 0, 0, 0, 1, 0),
+    doseGrid = dose_grid,
+    placebo = FALSE,
+    ID = 1:9,
+    cohort = c(1, 1, 1, 2, 2, 2, 3, 3, 3)
+  )
+}
+
 h_get_data_dual <- function() {
   d <- h_get_data()
   DataDual(
