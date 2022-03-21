@@ -30,12 +30,12 @@ prior for biomarker.
 This class extends the \code{\link{DualEndpoint}} class. Here, the dose-biomarker
 relationship \eqn{f(x)} is modelled by a non-parametric random walk of first
 or second order. That means, for the first order random walk we assume
-\deqn{betaW_i - betaW_i-1 ~ Normal(0, (x_i - x_i-1) ⋅ sigma2betaW),}
-  where \eqn{betaW_i = f(x_i)} is the biomarker mean at the \eqn{i}-th dose
+\deqn{betaW_i - betaW_i-1 ~ Normal(0, (x_i - x_i-1) * sigma2betaW),}
+where \eqn{betaW_i = f(x_i)} is the biomarker mean at the \eqn{i}-th dose
 gridpoint \eqn{x_i}.
 For the second order random walk, the second-order differences instead of
 the first-order differences of the biomarker means follow the normal distribution
-with \eqn{0} mean and \eqn{2 ⋅ (x_i - x_i-2) ⋅ sigma2betaW} variance.
+with \eqn{0} mean and \eqn{2 * (x_i - x_i-2) * sigma2betaW} variance.
 
 The variance parameter \eqn{sigma2betaW} is important because it steers the
 smoothness of the function \eqn{f(x)}, i.e.: if it is large, then \eqn{f(x)}
