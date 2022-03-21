@@ -76,6 +76,29 @@ v_model_logistic_kadane <- function(object) {
   v$result()
 }
 
+#' @describeIn v_model_objects validates that the logistic Kadane model
+#'   parameters with a beta and gamma prior are valid.
+v_model_logistic_kadane_beta_gamma <- function(object) {
+  v <- Validate()
+  v$check(
+    is.scalar(object@alpha) & is.numeric(object@alpha) && object@alpha > 0,
+    "Beta distribution shape parameter alpha must be a positive scalar"
+  )
+  v$check(
+    is.scalar(object@beta) & is.numeric(object@beta) && object@beta > 0,
+    "Beta distribution shape parameter beta must be a positive scalar"
+  )
+  v$check(
+    is.scalar(object@shape) & is.numeric(object@shape) && object@shape > 0,
+    "Gamma distribution shape parameter must be a positive scalar"
+  )
+  v$check(
+    is.scalar(object@rate) & is.numeric(object@rate) && object@rate > 0,
+    "Gamma distribution rate parameter must be a positive scalar"
+  )
+  v$result()
+}
+
 #' @describeIn v_model_objects validates that `weightpar` and `ref_dose` are valid.
 v_model_logistic_normal_mix <- function(object) {
   v <- Validate()
