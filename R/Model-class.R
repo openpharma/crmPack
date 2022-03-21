@@ -1202,13 +1202,15 @@ DualEndpoint <- function(mean,
   # Update model components with regard to biomarker regression variance.
   comp <- h_model_dual_endpoint_sigma2W(
     use_fixed["sigma2W"],
-    sigma2W = sigma2W, comp = comp
+    sigma2W = sigma2W,
+    comp = comp
   )
 
   # Update model components with regard to DLT and biomarker correlation.
   comp <- h_model_dual_endpoint_rho(
     use_fixed["rho"],
-    rho = rho, comp = comp
+    rho = rho,
+    comp = comp
   )
 
   .DualEndpoint(
@@ -1317,36 +1319,31 @@ DualEndpointRW <- function(sigma2betaW,
   start <- DualEndpoint(...)
   start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
 
-  start@priormodel <- if (rw1) {
-    h_jags_join_models(
-      start@priormodel,
-      function() {
-        # The 1st order differences.
-        # Essentially dflat(), which is not available in JAGS.
-        betaW[1] ~ dnorm(0, 0.000001)
-        for (i in 2:nGrid) {
-          delta[i - 1] ~ dnorm(0, precBetaW / (doseGrid[i] - doseGrid[i - 1]))
-          betaW[i] <- betaW[i - 1] + delta[i - 1]
-        }
+  priormodel <- if (rw1) {
+    function() {
+      # The 1st order differences.
+      # Essentially dflat(), which is not available in JAGS.
+      betaW[1] ~ dnorm(0, 0.000001)
+      for (i in 2:nGrid) {
+        delta[i - 1] ~ dnorm(0, precBetaW / (doseGrid[i] - doseGrid[i - 1]))
+        betaW[i] <- betaW[i - 1] + delta[i - 1]
       }
-    )
+    }
   } else {
-    h_jags_join_models(
-      start@priormodel,
-      function() {
-        # The 2nd order differences.
-        delta[1] ~ dnorm(0, 0.000001)
-        betaW[1] ~ dnorm(0, 0.000001)
-        betaW[2] <- betaW[1] + delta[1]
-        for (i in 3:nGrid) {
-          # delta2: differences of the differences of betaW follow normal dist.
-          delta2[i - 2] ~ dnorm(0, 2 * precBetaW / (doseGrid[i] - doseGrid[i - 2]))
-          delta[i - 1] <- delta[i - 2] + delta2[i - 2]
-          betaW[i] <- betaW[i - 1] + delta[i - 1]
-        }
+    function() {
+      # The 2nd order differences.
+      delta[1] ~ dnorm(0, 0.000001)
+      betaW[1] ~ dnorm(0, 0.000001)
+      betaW[2] <- betaW[1] + delta[1]
+      for (i in 3:nGrid) {
+        # delta2: differences of the differences of betaW follow normal dist.
+        delta2[i - 2] ~ dnorm(0, 2 * precBetaW / (doseGrid[i] - doseGrid[i - 2]))
+        delta[i - 1] <- delta[i - 2] + delta2[i - 2]
+        betaW[i] <- betaW[i - 1] + delta[i - 1]
       }
-    )
+    }
   }
+  start@priormodel <- h_jags_join_models(start@priormodel, priormodel)
 
   start@sample <- c(start@sample, "betaW", "delta")
   # We need the doseGrid in the BUGS model.
