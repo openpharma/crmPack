@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_model.R
 \name{h_model_dual_endpoint_rho}
 \alias{h_model_dual_endpoint_rho}
-\title{Update \code{DualEndpoint} class model components with regard to DLT and biomarker
+\title{Update \code{\link{DualEndpoint}} class model components with regard to DLT and biomarker
 correlation.}
 \usage{
 h_model_dual_endpoint_rho(use_fixed, rho, comp)

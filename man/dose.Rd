@@ -24,12 +24,12 @@
 \alias{dose-LogisticNormalFixedMixture}
 \alias{dose,numeric,LogisticLogNormalMixture,Samples-method}
 \alias{dose-LogisticLogNormalMixture}
+\alias{dose,numeric,DualEndpoint,Samples-method}
+\alias{dose-DualEndpoint}
 \alias{dose,numeric,LogisticIndepBeta,Samples-method}
 \alias{dose-LogisticIndepBeta}
 \alias{dose,numeric,LogisticIndepBeta,missing-method}
 \alias{dose-LogisticIndepBeta-noSamples}
-\alias{dose,numeric,DualEndpoint,Samples-method}
-\alias{dose-DualEndpoint}
 \title{Computing the Doses for a Given Probability, Model and Samples}
 \usage{
 dose(prob, model, samples, ...)
@@ -56,11 +56,11 @@ dose(prob, model, samples, ...)
 
 \S4method{dose}{numeric,LogisticLogNormalMixture,Samples}(prob, model, samples)
 
+\S4method{dose}{numeric,DualEndpoint,Samples}(prob, model, samples)
+
 \S4method{dose}{numeric,LogisticIndepBeta,Samples}(prob, model, samples)
 
 \S4method{dose}{numeric,LogisticIndepBeta,missing}(prob, model)
-
-\S4method{dose}{numeric,DualEndpoint,Samples}(prob, model, samples)
 }
 \arguments{
 \item{prob}{(\code{proportion} or \code{numeric})\cr the toxicity probability which is

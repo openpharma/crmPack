@@ -70,9 +70,6 @@ parameters with a beta and gamma prior are valid.
 valid \code{ModelParamsNormal} objects as well as \code{weights} and \code{ref_dose} are
 correct.
 
-\item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
-
-=======
 \item \code{v_model_logistic_log_normal_mix}: validates that \code{ref_dose} is valid and
 \code{share_weight} represents probability.
 

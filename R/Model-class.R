@@ -668,7 +668,6 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
     priormodel = function() {
       rho0 ~ dbeta(alpha, beta)
       gamma ~ dgamma(shape, rate)
-
       lowestdose <- xmin
       highestdose <- xmax
       DLTtarget <- theta
@@ -682,7 +681,7 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
         beta = beta,
         shape = shape,
         rate = rate
-        )
+      )
     }
   )
 }
@@ -1093,9 +1092,9 @@ LogisticLogNormalMixture <- function(mean,
 #' @slot ref_dose (`number`)\cr for the probit toxicity model,, the reference dose.
 #' @slot use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
-#' @slot sigma2W (`numeric`)\cr either a fixed value for the biomarker variance,
-#'   or a numeric vector with two elements named `a` and `b` for the
-#'   Inverse-Gamma prior parameters.
+#' @slot sigma2W (`numeric`)\cr the biomarker variance. Either a fixed value or
+#'   Inverse-Gamma distribution parameters, i.e. vector with two elements named
+#'   `a` and `b`.
 #' @slot rho (`numeric`)\cr either a fixed value for the correlation
 #'   (between `-1` and `1`), or a named vector with two elements named `a` and `b`
 #'   for the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is
@@ -1120,7 +1119,7 @@ LogisticLogNormalMixture <- function(mean,
     use_fixed = "logical"
   ),
   prototype = prototype(
-    probit_params = ModelParamsNormal(
+    betaZ_params = ModelParamsNormal(
       mean = c(0, 1),
       cov = diag(2)
     ),
@@ -1147,9 +1146,9 @@ LogisticLogNormalMixture <- function(mean,
 #' @param ref_dose (`number`)\cr for the probit toxicity model, the reference dose.
 #' @param use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
-#' @param sigma2W (`numeric`)\cr either a fixed value for the biomarker variance,
-#'   or a numeric vector with two elements named `a` and `b` for the Inverse-Gamma
-#'   prior parameters.
+#' @param sigma2W (`numeric`)\cr the biomarker variance. Either a fixed value or
+#'   Inverse-Gamma distribution parameters, i.e. vector with two elements named
+#'   `a` and `b`.
 #' @param rho (`numeric`)\cr either a fixed value for the correlation
 #'   (between `-1` and `1`), or a named vector with two elements named `a` and `b`
 #'   for the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is
@@ -1202,12 +1201,14 @@ DualEndpoint <- function(mean,
   )
   # Update model components with regard to biomarker regression variance.
   comp <- h_model_dual_endpoint_sigma2W(
-    use_fixed["sigma2W"], sigma2W = sigma2W, comp = comp
+    use_fixed["sigma2W"],
+    sigma2W = sigma2W, comp = comp
   )
 
   # Update model components with regard to DLT and biomarker correlation.
   comp <- h_model_dual_endpoint_rho(
-    use_fixed["rho"], rho = rho, comp = comp
+    use_fixed["rho"],
+    rho = rho, comp = comp
   )
 
   .DualEndpoint(
@@ -1230,227 +1231,142 @@ DualEndpoint <- function(mean,
   )
 }
 
-# nolint start
-
 # DualEndpointRW ----
 
-##' Dual endpoint model with RW prior for biomarker
-##'
-##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
-##' dose-biomarker relationship \eqn{f(x)} is modelled by a non-parametric
-##' random-walk of first (RW1) or second order (RW2).
-##'
-##' That means, for the RW1 we assume
-##' \deqn{\beta_{W,i} - \beta_{W,i-1} \sim Normal(0, (x_{i} - x_{i-1}) \sigma^{2}_{\beta_{W}}),}
-##' where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
-##' gridpoint \eqn{x_{i}}.
-##' For the RW2, the second-order differences instead of the first-order
-##' differences of the biomarker means follow the normal distribution.
-##'
-##' The variance parameter \eqn{\sigma^{2}_{\beta_{W}}} is important because it
-##' steers the smoothness of the function f(x): if it is large, then f(x) will
-##' be very wiggly; if it is small, then f(x) will be smooth. This parameter can
-##' either be fixed or assigned an inverse gamma prior distribution.
-##'
-##' Non-equidistant dose grids can be used now, because the difference
-##' \eqn{x_{i} - x_{i-1}} is included in the modelling assumption above.
-##'
-##' Please note that due to impropriety of the RW prior distributions, it is
-##' not possible to produce MCMC samples with empty data objects (i.e., sample
-##' from the prior). This is not a bug, but a theoretical feature of this
-##' model.
-##'
-##' @slot sigma2betaW Contains the prior variance factor of the random walk
-##' prior for the biomarker model. If it is not a single number, it can also
-##' contain a vector with elements \code{a} and {b} for the inverse-gamma prior
-##' on \code{sigma2betaW}.
-##' @slot useRW1 for specifying the random walk prior on the biomarker level: if
-##' \code{TRUE}, RW1 is used, otherwise RW2.
-##'
-##' @example examples/Model-class-DualEndpointRW.R
-##' @export
-##' @keywords classes
-.DualEndpointRW <-
-    setClass(Class="DualEndpointRW",
-             representation(sigma2betaW="numeric",
-                            useRW1="logical"),
-             prototype(sigma2betaW=1,
-                       useRW1=TRUE,
-                       use_fixed=
-                       c(sigma2W=TRUE,
-                            rho=TRUE,
-                            sigma2betaW=TRUE)),
-             contains="DualEndpoint",
-             validity=
-                 function(object){
-                     o <- Validate()
+## class ----
 
-                     ## check the additional prior parameters
-                     for(parName in c("sigma2betaW"))
-                     {
-                         ## if we use a fixed value for this parameter
-                         if(object@use_fixed[parName])
-                         {
-                             o$check(slot(object, parName) > 0,
-                                     paste(parName, "must be positive"))
-                         } else {
-                              o$check(identical(names(slot(object, parName)),
-                                               c("a", "b")),
-                                     paste(parName,
-                                           "must have names 'a' and 'b'"))
-                              o$check(all(slot(object, parName) > 0),
-                                      paste(parName,
-                                            "must have positive prior parameters"))
-                         }
-                     }
+#' `DualEndpointRW`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DualEndpointRW`] is the class for the dual endpoint model with random walk
+#' prior for biomarker.
+#'
+#' @details This class extends the [`DualEndpoint`] class. Here, the dose-biomarker
+#'   relationship \eqn{f(x)} is modelled by a non-parametric random walk of first
+#'   or second order. That means, for the first order random walk we assume
+#'   \deqn{betaW_i - betaW_i-1 ~ Normal(0, (x_i - x_i-1) ⋅ sigma2betaW),}
+#'   where \eqn{betaW_i = f(x_i)} is the biomarker mean at the \eqn{i}-th dose
+#'   gridpoint \eqn{x_i}.
+#'   For the second order random walk, the second-order differences instead of
+#'   the first-order differences of the biomarker means follow the normal distribution
+#'   with \eqn{0} mean and \eqn{2 ⋅ (x_i - x_i-2) ⋅ sigma2betaW} variance.
+#'
+#'   The variance parameter \eqn{sigma2betaW} is important because it steers the
+#'   smoothness of the function \eqn{f(x)}, i.e.: if it is large, then \eqn{f(x)}
+#'   will be very wiggly; if it is small, then \eqn{f(x)} will be smooth.
+#'   This parameter can either be a fixed value or assigned an inverse gamma prior
+#'   distribution.
+#'
+#' @note Non-equidistant dose grids can be used now, because the difference
+#'   \eqn{x_i - x_i-1} is included in the modelling assumption above.
+#'   Please note that due to impropriety of the random walk prior distributions,
+#'   it is not possible to produce MCMC samples with empty data objects (i.e.,
+#'   sample from the prior). This is not a bug, but a theoretical feature of this
+#'   model.
+#'
+#' @slot sigma2betaW (`numeric`)\cr the prior variance factor of the random walk
+#'   prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
+#'   parameters, i.e. vector with two elements named `a` and `b`.
+#' @slot rw1 rho (`flag`)\cr for specifying the random walk prior on the biomarker
+#'   level. When `TRUE`, random walk of first order is used. Otherwise, the
+#'   random walk of second order is used.
+#'
+#' @seealso [`DualEndpoint`], [`DualEndpointBeta`], [`DualEndpointEmax`].
+#'
+#' @aliases DualEndpointRW
+#' @export
+#'
+.DualEndpointRW <- setClass(
+  Class = "DualEndpointRW",
+  slots = c(
+    sigma2betaW = "numeric",
+    rw1 = "logical"
+  ),
+  prototype = prototype(
+    sigma2betaW = 1,
+    rw1 = TRUE,
+    use_fixed = c(
+      sigma2W = TRUE,
+      rho = TRUE,
+      sigma2betaW = TRUE
+    )
+  ),
+  contains = "DualEndpoint",
+  validity = v_model_dual_endpoint_rw
+)
 
-                     o$result()
-                 })
+## constructor ----
 
-##' Initialization function for the "DualEndpointRW" class
-##'
-##' @param sigma2betaW see \code{\linkS4class{DualEndpointRW}}
-##' @param smooth either \dQuote{RW1} (default) or \dQuote{RW2}, for
-##' specifying the random walk prior on the biomarker level.
-##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
-##' @return the \code{\linkS4class{DualEndpointRW}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname DualEndpointRW-class
+#'
+#' @param sigma2betaW (`numeric`)\cr the prior variance factor of the random walk
+#'   prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
+#'   parameters, i.e. vector with two elements named `a` and `b`.
+#' @param rw1 (`flag`)\cr for specifying the random walk prior on the biomarker
+#'   level. When `TRUE`, random walk of first order is used. Otherwise, the
+#'   random walk of second order is used.
+#' @param ... parameters passed to [DualEndpoint()].
+#'
+#' @export
+#' @example examples/Model-class-DualEndpointRW.R
+#'
 DualEndpointRW <- function(sigma2betaW,
-                           smooth=c("RW1", "RW2"),
-                           ...)
-{
-    ## call the initialize function from DualEndpoint
-    ## to get started
-    start <- DualEndpoint(...)
+                           rw1 = TRUE,
+                           ...) {
+  start <- DualEndpoint(...)
+  start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
 
-    ## we need the dose grid here in the BUGS model,
-    ## therefore add it to datanames
-    start@datanames <- c(start@datanames,
-                         "doseGrid")
+  start@priormodel <- if (rw1) {
+    h_jags_join_models(
+      start@priormodel,
+      function() {
+        # The 1st order differences.
+        # Essentially dflat(), which is not available in JAGS.
+        betaW[1] ~ dnorm(0, 0.000001)
+        for (i in 2:nGrid) {
+          delta[i - 1] ~ dnorm(0, precBetaW / (doseGrid[i] - doseGrid[i - 1]))
+          betaW[i] <- betaW[i - 1] + delta[i - 1]
+        }
+      }
+    )
+  } else {
+    h_jags_join_models(
+      start@priormodel,
+      function() {
+        # The 2nd order differences.
+        delta[1] ~ dnorm(0, 0.000001)
+        betaW[1] ~ dnorm(0, 0.000001)
+        betaW[2] <- betaW[1] + delta[1]
+        for (i in 3:nGrid) {
+          # delta2: differences of the differences of betaW follow normal dist.
+          delta2[i - 2] ~ dnorm(0, 2 * precBetaW / (doseGrid[i] - doseGrid[i - 2]))
+          delta[i - 1] <- delta[i - 2] + delta2[i - 2]
+          betaW[i] <- betaW[i - 1] + delta[i - 1]
+        }
+      }
+    )
+  }
 
-    ## Find out RW choice
-    smooth <- match.arg(smooth)
-    useRW1 <- smooth == "RW1"
+  start@sample <- c(start@sample, "betaW", "delta")
+  # We need the doseGrid in the BUGS model.
+  start@datanames <- c(start@datanames, "doseGrid")
 
-    ## Find out which of the additional parameters are fixed
-    start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
+  # Update model components with regard to biomarker regression variance.
+  start <- h_model_dual_endpoint_sigma2betaW(
+    start@use_fixed["sigma2betaW"],
+    sigma2betaW = sigma2betaW,
+    de = start
+  )
 
-    ## build together the prior model and the parameters
-    ## to be saved during sampling
-    ## ----------
-
-    start@priormodel <-
-        h_jags_join_models(start@priormodel,
-                   function(){
-
-                       betaW[1] <- betaWintercept
-                       for (j in 2:nGrid) {
-                           betaW[j] <- betaWintercept +
-                               sum(delta[1:(j-1)])
-                       }
-
-                       ## delta will then be defined below
-                       ## (depending on whether RW1 or RW2 is used)
-
-                       ## the intercept (= first location betaW value)
-                       betaWintercept ~ dnorm(0, 0.000001)
-                       ## ~ essentially dflat(),
-                       ## which is not available in JAGS.
-                   })
-
-    if(useRW1)
-    {
-        ## add RW1 part
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## the iid first oder differences:
-                           for (j in 2:nGrid) {
-                               delta[j-1] ~ dnorm(0, precBetaW / (doseGrid[j] - doseGrid[j-1]))
-                           }
-                       })
-    } else {
-        ## add RW2 part
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## the first order differences:
-                           delta[1] <- deltaStart
-                           for (j in 2:(nGrid-1)) {
-                               delta[j] <- deltaStart +
-                                   sum(delta2[1:(j-1)])
-                           }
-
-                           ## the iid second oder differences:
-                           for (j in 1:(nGrid-2)) {
-                               delta2[j] ~ dnorm(0, 2 * precBetaW / (doseGrid[j+2] - doseGrid[j]))
-                           }
-
-                           ## the first 1st order difference:
-                           deltaStart ~ dnorm(0, 0.000001)
-                       })
-    }
-
-    ## we will fill in more, depending on which parameters
-    ## are fixed, in these two variables:
-    start@sample <- c(start@sample,
-                      "betaWintercept", "betaW", "delta")
-
-    ## copy some things that we need to amend
-    oldModelspecs <- start@modelspecs
-    oldInit <- start@init
-
-    ## check the variance for the RW prior
-    if(! start@use_fixed["sigma2betaW"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## gamma prior for RW precision
-                           precBetaW ~ dgamma(precBetaWa, precBetaWb)
-                       })
-
-        start@sample <- c(start@sample,
-                          "precBetaW")
-
-        start@init <-
-            function(y, w, nGrid){
-                c(oldInit(y, w, nGrid),
-                  list(precBetaW=1))
-            }
-
-        start@modelspecs <-
-            function(){
-                c(oldModelspecs(),
-                  list(precBetaWa=sigma2betaW["a"],
-                       precBetaWb=sigma2betaW["b"]))
-            }
-
-    } else {
-        start@modelspecs <-
-            function(){
-                c(oldModelspecs(),
-                  list(precBetaW=1/sigma2betaW))
-            }
-    }
-
-    ## call the constructor:
-    ## inherit everything from DualEndpoint object "start", and add
-    ## specifics
-    .DualEndpointRW(start,
-                    sigma2betaW=sigma2betaW,
-                    useRW1=useRW1)
-
-
+  .DualEndpointRW(
+    start,
+    sigma2betaW = sigma2betaW,
+    rw1 = rw1
+  )
 }
-#validObject(DualEndpointRW(sigma2betaW=1,
-#                           smooth="RW1",
-#                           mean=c(0, 1),
-#                           cov=diag(2),
-#                           sigma2W=1,
-#                           rho=0))
+
+# nolint start
 
 # DualEndpointBeta ----
 
@@ -2237,7 +2153,7 @@ LogisticIndepBeta <- function(binDLE,
 ##' \eqn{2 \times 1}
 ##' column vector contains the prior modal estimates of the intercept (theta1) and the slope (theta2). Based on
 ##' \eqn{r} for \eqn{r \geq 2} pseudo efficacy responses specified, \eqn{\mathbf{X}_0} will be the
-##'\eqn{r \times 2} design matrix
+##' \eqn{r \times 2} design matrix
 ##' obtained for these pseudo efficacy responses. the matrix \eqn{\mathbf{Q}_0} will be calculated by
 ##' \eqn{\mathbf{Q}_0=\mathbf{X}_0 \mathbf{X}^T_0} where \eqn{\nu} is the precision of the pseudo efficacy responses.
 ##' For the joint posterior bivariate distribution, we have \eqn{\boldsymbol{\mu}} as the mean and
@@ -2288,9 +2204,9 @@ LogisticIndepBeta <- function(binDLE,
 ##' \eqn{y_i=\theta_1 +theta_2 log(log(d_i + c))+\epsilon_i}, such that dose levels
 ##' greater than \eqn{1-c} can be considered as described in Yeung et al. (2015).
 ##'
-##'@example examples/Model-class-Effloglog.R
-##'@export
-##'@keywords methods
+##' @example examples/Model-class-Effloglog.R
+##' @export
+##' @keywords methods
 .Effloglog<-
   setClass(Class="Effloglog",
            representation(Eff="numeric",

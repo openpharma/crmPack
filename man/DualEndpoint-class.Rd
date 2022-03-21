@@ -20,9 +20,9 @@ matrix. The precision matrix is internally calculated as an inverse of \code{cov
 \item{use_log_dose}{(\code{flag})\cr for the probit toxicity model, whether a log
 transformation of the (standardized) dose should be used?}
 
-\item{sigma2W}{(\code{numeric})\cr either a fixed value for the biomarker variance,
-or a numeric vector with two elements named \code{a} and \code{b} for the Inverse-Gamma
-prior parameters.}
+\item{sigma2W}{(\code{numeric})\cr the biomarker variance. Either a fixed value or
+Inverse-Gamma distribution parameters, i.e. vector with two elements named
+\code{a} and \code{b}.}
 
 \item{rho}{(\code{numeric})\cr either a fixed value for the correlation
 (between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}
@@ -80,9 +80,9 @@ internally calculated as an inverse of the covariance matrix.}
 \item{\code{use_log_dose}}{(\code{flag})\cr for the probit toxicity model, whether a log
 transformation of the (standardized) dose should be used?}
 
-\item{\code{sigma2W}}{(\code{numeric})\cr either a fixed value for the biomarker variance,
-or a numeric vector with two elements named \code{a} and \code{b} for the
-Inverse-Gamma prior parameters.}
+\item{\code{sigma2W}}{(\code{numeric})\cr the biomarker variance. Either a fixed value or
+Inverse-Gamma distribution parameters, i.e. vector with two elements named
+\code{a} and \code{b}.}
 
 \item{\code{rho}}{(\code{numeric})\cr either a fixed value for the correlation
 (between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}

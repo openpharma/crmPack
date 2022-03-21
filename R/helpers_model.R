@@ -1,4 +1,4 @@
-#' Update `DualEndpoint` class model components with regard to biomarker
+#' Update [`DualEndpoint`] class model components with regard to biomarker
 #' regression variance.
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -11,9 +11,9 @@
 #'   regression variance `sigma2W` should be used or not. If `sigma2W` is not
 #'   supposed to be a fixed value, a prior distribution from the Inverse-Gamma
 #'   distribution will be used. See the details below, under `sigma2W` argument.
-#' @param sigma2W (`numeric`)\cr the biomarker regression variance. It must be
-#'   either a fixed value or a numeric vector with two elements named `a` and `b`
-#'   for the Inverse-Gamma prior parameters.
+#' @param sigma2W (`numeric`)\cr the biomarker variance. Either a fixed value or
+#'   Inverse-Gamma distribution parameters, i.e. vector with two elements named
+#'   `a` and `b`.
 #' @param comp (`list`)\cr a named list with model components that will be updated.
 #'   The names should be: `priormodel`, `modelspecs`, `init`, `sample`. For
 #'   definitions of the components, see [`GeneralModel`] class.
@@ -48,7 +48,7 @@ h_model_dual_endpoint_sigma2W <- function(use_fixed,
   comp
 }
 
-#' Update `DualEndpoint` class model components with regard to DLT and biomarker
+#' Update [`DualEndpoint`] class model components with regard to DLT and biomarker
 #' correlation.
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -100,4 +100,60 @@ h_model_dual_endpoint_rho <- function(use_fixed,
     comp$sample <- c(comp$sample, "rho")
   }
   comp
+}
+
+#' Update certain components of [`DualEndpoint`] model with regard to prior variance
+#' factor of the random walk.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that takes [`DualEndpoint`] object and updates
+#' `priormodel`, `modelspecs`, `init`, `sample` slots according to the random walk
+#' variance.
+#'
+#' @param use_fixed (`flag`)\cr indicates whether a fixed value for
+#'   `sigma2betaW` should be used or not. If `sigma2betaW` is not supposed
+#'   to be a fixed value, a prior distribution from the Inverse-Gamma distribution
+#'   will be used. See the details below, under `sigma2betaW` argument.
+#' @param sigma2betaW (`numeric`)\cr the prior variance factor of the random walk
+#'   prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
+#'   parameters, i.e. vector with two elements named `a` and `b`.
+#' @param de (`DualEnpoint`)\cr dual endpoint model whose slots will be updated.
+#'
+#' @return A [`DualEndpoint`] model with updated `priormodel`, `modelspecs`,
+#'   `init`, `sample` slots.
+#'
+#' @export
+h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
+                                              sigma2betaW,
+                                              de) {
+  modelspecs <- de@modelspecs
+  init <- de@init
+
+  if (use_fixed) {
+    assert_number(sigma2betaW, lower = 0 + .Machine$double.xmin, finite = TRUE)
+    de@modelspecs <- function() {
+      c(modelspecs(), list(precBetaW = 1 / sigma2betaW))
+    }
+  } else {
+    assert_true(h_test_named_numeric(sigma2betaW, permutation.of = c("a", "b")))
+    # gamma prior for random walk precision.
+    de@priormodel <- h_jags_join_models(
+      de@priormodel,
+      function() {
+        precBetaW ~ dgamma(precBetaWa, precBetaWb)
+      }
+    )
+    de@modelspecs <- function() {
+      c(
+        modelspecs(),
+        list(precBetaWa = sigma2betaW[["a"]], precBetaWb = sigma2betaW[["b"]])
+      )
+    }
+    de@init <- function(y) {
+      c(init(y), list(precBetaW = 1))
+    }
+    de@sample <- c(de@sample, "precBetaW")
+  }
+  de
 }
