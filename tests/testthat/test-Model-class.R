@@ -368,3 +368,40 @@ test_that("DualEndpoint object can be created with user constructor", {
   )
   expect_valid(result, "DualEndpoint")
 })
+
+# DualEndpointRW ----
+
+## constructor ----
+
+test_that("DualEndpointRW object can be created with user constructor", {
+  result <- expect_silent(
+    DualEndpointRW(
+      mean = c(0, 1),
+      cov = matrix(c(1, 0, 0, 1), nrow = 2),
+      sigma2W = c(a = 0.1, b = 0.1),
+      rho = c(a = 1, b = 1),
+      sigma2betaW = 0.01
+    )
+  )
+  expect_valid(result, "DualEndpointRW")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DualEndpointRW model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})

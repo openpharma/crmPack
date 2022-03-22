@@ -66,7 +66,7 @@ test_that("v_model_log_normal passes for valid object with ref_dose 0", {
 
 test_that("v_model_log_normal returns error for wrong ref_dose", {
   object <- h_get_model_log_normal()
-  # We assign a ref_dose which is not a non-negative scalar.
+  # Assigning a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
 
   expect_equal(
@@ -256,7 +256,7 @@ test_that("v_model_logistic_normal_mix passes for valid object with ref_dose 0",
 
 test_that("v_model_logistic_normal_mix returns error for wrong ref_dose", {
   object <- h_get_logistic_normal_mix()
-  # We assign a ref_dose which is not a non-negative scalar.
+  # Assigning a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
 
   expect_equal(
@@ -402,7 +402,7 @@ test_that("v_model_logistic_log_normal_mix passes for valid object with ref_dose
 
 test_that("v_model_logistic_log_normal_mix returns error for wrong ref_dose", {
   object <- h_get_logistic_log_normal_mix()
-  # We assign a ref_dose which is not a non-negative scalar.
+  # Assigning a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
 
   expect_equal(
@@ -452,7 +452,7 @@ test_that("v_model_dual_endpoint returns error for wrong use_log_dose", {
 
 test_that("v_model_dual_endpoint returns error for wrong use_fixed", {
   object <- h_get_dual_endpoint()
-  # We assign a use_log_dose which is not a single flag.
+  # Assigning non-valid use_fixed.
   object@use_fixed <- TRUE
 
   expect_equal(
@@ -500,7 +500,7 @@ test_that("v_model_dual_endpoint returns error for wrong fixed rho", {
   )
 })
 
-test_that("v_model_dual_endpoint returns error for wrong sigma2W", {
+test_that("v_model_dual_endpoint returns error for wrong rho", {
   object <- h_get_dual_endpoint()
   # Assigning wrong values for rho.
   object@rho <- c(4, -5, b = -Inf)
@@ -509,5 +509,49 @@ test_that("v_model_dual_endpoint returns error for wrong sigma2W", {
   expect_equal(
     v_model_dual_endpoint(object),
     "rho must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
+})
+
+# v_model_dual_endpoint_rw ----
+
+test_that("v_model_dual_endpoint_rw passes for valid object", {
+  object <- h_get_dual_endpoint_rw()
+  expect_true(v_model_dual_endpoint_rw(object))
+})
+
+test_that("v_model_dual_endpoint_rw returns error for wrong use_fixed", {
+  object <- h_get_dual_endpoint_rw()
+  # Assigning non-valid use_fixed.
+  object@use_fixed <- TRUE
+
+  expect_equal(
+    v_model_dual_endpoint_rw(object),
+    c(
+      "use_fixed must be a named logical vector that contains name 'sigma2betaW'",
+      "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  )
+})
+
+test_that("v_model_dual_endpoint_rw returns error for wrong fixed sigma2betaW", {
+  object <- h_get_dual_endpoint_rw()
+  # Assigning wrong values for sigma2betaW.
+  object@sigma2betaW <- c(-5:0, Inf)
+
+  expect_equal(
+    v_model_dual_endpoint_rw(object),
+    "sigma2betaW must be a positive and finite numerical scalar"
+  )
+})
+
+test_that("v_model_dual_endpoint_rw returns error for wrong sigma2betaW", {
+  object <- h_get_dual_endpoint_rw()
+  # Assigning wrong values for sigma2betaW.
+  object@sigma2betaW <- c(4, -5, b = -Inf)
+  object@use_fixed["sigma2betaW"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint_rw(object),
+    "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
   )
 })

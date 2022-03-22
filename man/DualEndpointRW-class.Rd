@@ -4,53 +4,75 @@
 \name{DualEndpointRW-class}
 \alias{DualEndpointRW-class}
 \alias{.DualEndpointRW}
-\title{Dual endpoint model with RW prior for biomarker}
+\alias{DualEndpointRW}
+\title{\code{DualEndpointRW}}
+\usage{
+DualEndpointRW(sigma2betaW, rw1 = TRUE, ...)
+}
+\arguments{
+\item{sigma2betaW}{(\code{numeric})\cr the prior variance factor of the random walk
+prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
+parameters, i.e. vector with two elements named \code{a} and \code{b}.}
+
+\item{rw1}{(\code{flag})\cr for specifying the random walk prior on the biomarker
+level. When \code{TRUE}, random walk of first order is used. Otherwise, the
+random walk of second order is used.}
+
+\item{...}{parameters passed to \code{\link[=DualEndpoint]{DualEndpoint()}}.}
+}
 \description{
-This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
-dose-biomarker relationship \eqn{f(x)} is modelled by a non-parametric
-random-walk of first (RW1) or second order (RW2).
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DualEndpointRW}} is the class for the dual endpoint model with random walk
+prior for biomarker.
 }
 \details{
-That means, for the RW1 we assume
-\deqn{\beta_{W,i} - \beta_{W,i-1} \sim Normal(0, (x_{i} - x_{i-1}) \sigma^{2}_{\beta_{W}}),}
-where \eqn{\beta_{W,i} = f(x_{i})} is the biomarker mean at the i-th dose
-gridpoint \eqn{x_{i}}.
-For the RW2, the second-order differences instead of the first-order
-differences of the biomarker means follow the normal distribution.
+This class extends the \code{\link{DualEndpoint}} class. Here, the dose-biomarker
+relationship \eqn{f(x)} is modelled by a non-parametric random walk of first
+or second order. That means, for the first order random walk we assume
+\deqn{betaW_i - betaW_i-1 ~ Normal(0, (x_i - x_i-1) * sigma2betaW),}
+where \eqn{betaW_i = f(x_i)} is the biomarker mean at the \eqn{i}-th dose
+gridpoint \eqn{x_i}.
+For the second order random walk, the second-order differences instead of
+the first-order differences of the biomarker means follow the normal distribution
+with \eqn{0} mean and \eqn{2 * (x_i - x_i-2) * sigma2betaW} variance.
 
-The variance parameter \eqn{\sigma^{2}_{\beta_{W}}} is important because it
-steers the smoothness of the function f(x): if it is large, then f(x) will
-be very wiggly; if it is small, then f(x) will be smooth. This parameter can
-either be fixed or assigned an inverse gamma prior distribution.
-
-Non-equidistant dose grids can be used now, because the difference
-\eqn{x_{i} - x_{i-1}} is included in the modelling assumption above.
-
-Please note that due to impropriety of the RW prior distributions, it is
-not possible to produce MCMC samples with empty data objects (i.e., sample
-from the prior). This is not a bug, but a theoretical feature of this
-model.
+The variance parameter \eqn{sigma2betaW} is important because it steers the
+smoothness of the function \eqn{f(x)}, i.e.: if it is large, then \eqn{f(x)}
+will be very wiggly; if it is small, then \eqn{f(x)} will be smooth.
+This parameter can either be a fixed value or assigned an inverse gamma prior
+distribution.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{sigma2betaW}}{Contains the prior variance factor of the random walk
-prior for the biomarker model. If it is not a single number, it can also
-contain a vector with elements \code{a} and {b} for the inverse-gamma prior
-on \code{sigma2betaW}.}
+\item{\code{sigma2betaW}}{(\code{numeric})\cr the prior variance factor of the random walk
+prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
+parameters, i.e. vector with two elements named \code{a} and \code{b}.}
 
-\item{\code{useRW1}}{for specifying the random walk prior on the biomarker level: if
-\code{TRUE}, RW1 is used, otherwise RW2.}
+\item{\code{rw1}}{rho (\code{flag})\cr for specifying the random walk prior on the biomarker
+level. When \code{TRUE}, random walk of first order is used. Otherwise, the
+random walk of second order is used.}
 }}
 
+\note{
+Non-equidistant dose grids can be used now, because the difference
+\eqn{x_i - x_i-1} is included in the modelling assumption above.
+Please note that due to impropriety of the random walk prior distributions,
+it is not possible to produce MCMC samples with empty data objects (i.e.,
+sample from the prior). This is not a bug, but a theoretical feature of this
+model.
+}
 \examples{
 my_model <- DualEndpointRW(
   mean = c(0, 1),
   cov = matrix(c(1, 0, 0, 1), nrow = 2),
-  sigma2betaW = 0.01,
   sigma2W = c(a = 0.1, b = 0.1),
   rho = c(a = 1, b = 1),
-  smooth = "RW1"
+  sigma2betaW = 0.01,
+  rw1 = TRUE
 )
 }
-\keyword{classes}
+\seealso{
+\code{\link{DualEndpoint}}, \code{\link{DualEndpointBeta}}, \code{\link{DualEndpointEmax}}.
+}

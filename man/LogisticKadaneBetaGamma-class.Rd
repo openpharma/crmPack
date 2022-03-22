@@ -32,8 +32,7 @@ of \code{gamma} the dose with target toxicity probability \code{theta}.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{LogisticKadaneBetaGamma}} is the class for the logistic model in the parametrization
-of Kadane et al. (1980), with a beta prior on the \code{rho0 = p(xmin)} and a gamma prior on
-the \code{gamma}.
+of Kadane et al. (1980), using a beta and a gamma distribution as the model priors.
 }
 \details{
 Let \code{rho0 = p(xmin)} be the probability of a DLT at the minimum dose
@@ -76,7 +75,15 @@ Beta prior distribution of \code{rho0} and the shape and rate parameters of the
 Gamma prior distribution of \code{gamma}, are required for creating the prior model.
 }
 \examples{
-my_model <- LogisticKadaneBetaGamma(theta = 0.3, xmin = 0, xmax = 7, alpha = 1, beta = 19, shape = 0.5625, rate = 0.125)
+my_model <- LogisticKadaneBetaGamma(
+  theta = 0.3,
+  xmin = 0,
+  xmax = 7,
+  alpha = 1,
+  beta = 19,
+  shape = 0.5625,
+  rate = 0.125
+)
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticKadane}}.

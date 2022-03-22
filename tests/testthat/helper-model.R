@@ -174,3 +174,15 @@ h_get_dual_endpoint <- function(use_log_dose = FALSE) {
     rho = 0
   )
 }
+
+h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE) {
+  DualEndpointRW(
+    mean = c(0, 1),
+    cov = matrix(c(1, 0, 0, 1), nrow = 2),
+    use_log_dose = use_log_dose,
+    sigma2W = c(a = 0.1, b = 0.1),
+    rho = c(a = 1, b = 1),
+    sigma2betaW = 0.01,
+    rw1 = rw1
+  )
+}

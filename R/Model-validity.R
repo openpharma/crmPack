@@ -227,5 +227,24 @@ v_model_dual_endpoint <- function(object) {
 
 #' @describeIn v_model_objects validates that [`DualEndpointRW`] class slots are valid.
 v_model_dual_endpoint_rw <- function(object) {
-  TRUE
+  v <- Validate()
+
+  uf_sigma2W <- object@use_fixed["sigma2betaW"]
+  v$check(
+    test_flag(uf_sigma2W),
+    "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
+  )
+  if (isTRUE(uf_sigma2W)) {
+    v$check(
+      test_number(object@sigma2betaW, lower = 0 + .Machine$double.xmin, finite = TRUE),
+      "sigma2betaW must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2betaW is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2betaW, permutation.of = c("a", "b")),
+      "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+  v$result()
 }
