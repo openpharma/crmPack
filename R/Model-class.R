@@ -1089,7 +1089,7 @@ LogisticLogNormalMixture <- function(mean,
 #' @slot betaZ_params (`ModelParamsNormal`)\cr for the probit toxicity model, it
 #'   contains the prior mean, covariance matrix and precision matrix which is
 #'   internally calculated as an inverse of the covariance matrix.
-#' @slot ref_dose (`number`)\cr for the probit toxicity model,, the reference dose.
+#' @slot ref_dose (`number`)\cr for the probit toxicity model, the reference dose.
 #' @slot use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
 #' @slot sigma2W (`numeric`)\cr the biomarker variance. Either a fixed value or
@@ -1244,7 +1244,7 @@ DualEndpoint <- function(mean,
 #' [`DualEndpointRW`] is the class for the dual endpoint model with random walk
 #' prior for biomarker.
 #'
-#' @details This class extends the [`DualEndpoint`] class. Here, the dose-biomarker
+#' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
 #'   relationship \eqn{f(x)} is modelled by a non-parametric random walk of first
 #'   or second order. That means, for the first order random walk we assume
 #'   \deqn{betaW_i - betaW_i-1 ~ Normal(0, (x_i - x_i-1) * sigma2betaW),}
@@ -1363,42 +1363,51 @@ DualEndpointRW <- function(sigma2betaW,
   )
 }
 
-# nolint start
-
 # DualEndpointBeta ----
 
-##' Dual endpoint model with beta function for dose-biomarker relationship
-##'
-##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
-##' dose-biomarker relationship \eqn{f(x)} is modelled by a parametric, rescaled
-##' beta density function:
-##'
-##' \deqn{f(x) = E_{0} + (E_{max} - E_{0}) * Beta(\delta_{1}, \delta_{2}) *
-##'                   (x/x^{*})^{\delta_{1}} * (1 - x/x^{*})^{\delta_{2}}}
-##'
-##' where \eqn{x^{*}} is the maximum dose (end of the dose range to be
-##' considered), \eqn{\delta_{1}} and \eqn{\delta_{2}} are the two beta
-##' parameters, and \eqn{E_{0}} and \eqn{E_{max}} are the minimum and maximum
-##' levels, respectively. For ease of interpretation, we parametrize with
-##' \eqn{\delta_{1}} and the mode of the curve instead, where
-##' \deqn{mode = \delta_{1} / (\delta_{1} + \delta_{2}),}
-##' and multiplying this with \eqn{x^{*}} gives the mode on the dose grid.
-##'
-##' All parameters can currently be assigned uniform distributions or be fixed
-##' in advance. Note that \code{E0} and \code{Emax} can have negative values or uniform
-##' distributions reaching into negative range, while \code{delta1} and \code{mode}
-##' must be positive or have uniform distributions in the positive range.
-##'
-##' @slot E0 either a fixed number or the two uniform distribution parameters
-##' @slot Emax either a fixed number or the two uniform distribution parameters
-##' @slot delta1 either a fixed number or the two uniform distribution parameters
-##' @slot mode either a fixed number or the two uniform distribution parameters
-##' @slot ref_dose_beta the reference dose \eqn{x^{*}} (note that this is different from
-##' the \code{refDose} in the inherited \code{\linkS4class{DualEndpoint}} model)
-##'
-##' @example examples/Model-class-DualEndpointBeta.R
-##' @export
-##' @keywords classes
+## class ----
+
+#' `DualEndpointBeta`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DualEndpointBeta`] is the class for the dual endpoint model with beta
+#' function for dose-biomarker relationship.
+#'
+#' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
+#'   relationship \eqn{f(x)} is modelled by a parametric, rescaled beta density
+#'   function:
+#'   \deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)delta1 * (1 - x/x*)^delta2,}
+#'   where \eqn{x*} is the maximum dose (end of the dose range to be considered),
+#'   \eqn{delta1} and \eqn{delta2} are the two beta function parameters, and
+#'   \eqn{E0}, \eqn{Emax} are the minimum and maximum levels, respectively.
+#'   For ease of interpretation, we use the parametrization based on \eqn{delta1}
+#'   and the mode, where
+#'   \deqn{mode = delta1 / (delta1 + delta2),}
+#'   so that multiplying this by \eqn{x*} gives the mode on the dose grid.
+#'
+#'   All parameters can currently be assigned uniform distributions or be fixed
+#'   in advance. Note that \code{E0} and \code{Emax} can have negative values or
+#'   uniform distributions reaching into negative range, while \code{delta1} and
+#'   \code{mode} must be positive or have uniform distributions in the positive
+#'   range.
+#'
+#' @slot E0 (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @slot Emax (`numeric`)\cr either a fixed number or the two uniform
+#'   distribution parameters.
+#' @slot delta1 (`numeric`)\cr either a fixed positive number or the two
+#'   parameters of the uniform distribution, that can take only positive values.
+#' @slot mode (`numeric`)\cr either a fixed positive number or the two
+#'   parameters of the uniform distribution, that can take only positive values.
+#' @slot ref_dose_beta (`number`)\cr the reference dose \eqn{x*} (note that this
+#'   is different from the `ref_dose` in the inherited [`DualEndpoint`] model).
+#'
+#' @seealso [`DualEndpoint`], [`DualEndpointRW`], [`DualEndpointEmax`].
+#'
+#' @aliases DualEndpointBeta
+#' @export
+#'
 .DualEndpointBeta <- setClass(
   Class = "DualEndpointBeta",
   slots = c(
@@ -1427,19 +1436,26 @@ DualEndpointRW <- function(sigma2betaW,
   validity = v_model_dual_endpoint_beta
 )
 
+## constructor ----
 
-##' Initialization function for the "DualEndpointBeta" class
-##'
-##' @param E0 see \code{\linkS4class{DualEndpointBeta}}
-##' @param Emax see \code{\linkS4class{DualEndpointBeta}}
-##' @param delta1 see \code{\linkS4class{DualEndpointBeta}}
-##' @param mode see \code{\linkS4class{DualEndpointBeta}}
-##' @param ref_dose_beta see \code{\linkS4class{DualEndpointBeta}}
-##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
-##' @return the \code{\linkS4class{DualEndpointBeta}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname DualEndpointBeta-class
+#'
+#' @param E0 (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @param Emax (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @param delta1 (`numeric`)\cr either a fixed positive number or the two parameters
+#'   of the uniform distribution, that can take only positive values.
+#' @param mode (`numeric`)\cr either a fixed positive number or the two parameters
+#'   of the uniform distribution, that can take only positive values.
+#' @param ref_dose_beta (`number`)\cr the reference dose \eqn{x*} (note that
+#'  this is different from the `ref_dose` in the inherited [`DualEndpoint`]
+#'  model).
+#' @param ... parameters passed to [DualEndpoint()].
+#'
+#' @export
+#' @example examples/Model-class-DualEndpointBeta.R
+#'
 DualEndpointBeta <- function(E0,
                              Emax,
                              delta1,
@@ -1448,67 +1464,55 @@ DualEndpointBeta <- function(E0,
                              ...) {
   start <- DualEndpoint(...)
 
-  ## we need the dose grid here in the BUGS model, therefore add it to datanames
+  # We need the doseGrid in the BUGS model.
+  start@sample <- c(start@sample, "betaW")
   start@datanames <- c(start@datanames, "doseGrid")
-
-  use_fixed <- sapply(
-    list(E0 = E0, Emax = Emax, delta1 = delta1, mode = mode),
-    is.scalar
-  )
-
   ms <- start@modelspecs
   start@modelspecs <- function() {
     c(ms(), list(ref_dose_beta = ref_dose_beta))
   }
-  start@sample <- c(start@sample, "betaW")
 
   start <- h_model_dual_endpoint_beta(
-    use_fixed["E0"],
     param = E0,
     param_name = "E0",
-    prior = function() {
+    priormodel = function() {
       E0 ~ dunif(E0_low, E0_high)
     },
     de = start
   )
 
   start <- h_model_dual_endpoint_beta(
-    use_fixed["Emax"],
     param = Emax,
     param_name = "Emax",
-    prior = function() {
+    priormodel = function() {
       Emax ~ dunif(Emax_low, Emax_high)
     },
     de = start
   )
 
   start <- h_model_dual_endpoint_beta(
-    use_fixed["delta1"],
     param = delta1,
     param_name = "delta1",
-    prior = function() {
+    priormodel = function() {
       delta1 ~ dunif(delta1_low, delta1_high)
     },
     de = start
   )
 
   start <- h_model_dual_endpoint_beta(
-    use_fixed["mode"],
     param = mode,
     param_name = "mode",
-    prior = function() {
+    priormodel = function() {
       mode ~ dunif(mode_low, mode_high)
     },
     de = start
   )
 
-  start@use_fixed <- c(start@use_fixed, use_fixed)
-
   start@priormodel <- h_jags_join_models(
     start@priormodel,
     function() {
       # delta2 <- delta1 * (1 - (mode/ref_dose_beta)) / (mode/ref_dose_beta) # nolint
-      delta2 <- delta1 * (ref_dose_beta/mode - 1)
+      delta2 <- delta1 * (ref_dose_beta / mode - 1)
       # betafun <- (delta1 + delta2)^(delta1 + delta2) * delta1^(- delta1) * delta2^(- delta2) # nolint
       betafun <- (1 + delta2 / delta1)^delta1 * (delta1 / delta2 + 1)^delta2
       for (i in 1:nGrid) {
@@ -1527,6 +1531,8 @@ DualEndpointBeta <- function(E0,
     ref_dose_beta = ref_dose_beta
   )
 }
+
+# nolint start
 
 # DualEndpointEmax ----
 

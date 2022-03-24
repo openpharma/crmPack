@@ -4,42 +4,72 @@
 \name{DualEndpointBeta-class}
 \alias{DualEndpointBeta-class}
 \alias{.DualEndpointBeta}
-\title{Dual endpoint model with beta function for dose-biomarker relationship}
+\alias{DualEndpointBeta}
+\title{\code{DualEndpointBeta}}
+\usage{
+DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta, ...)
+}
+\arguments{
+\item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
+
+\item{Emax}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
+
+\item{delta1}{(\code{numeric})\cr either a fixed positive number or the two parameters
+of the uniform distribution, that can take only positive values.}
+
+\item{mode}{(\code{numeric})\cr either a fixed positive number or the two parameters
+of the uniform distribution, that can take only positive values.}
+
+\item{ref_dose_beta}{(\code{number})\cr the reference dose \eqn{x*} (note that
+this is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}}
+model).}
+
+\item{...}{parameters passed to \code{\link[=DualEndpoint]{DualEndpoint()}}.}
+}
 \description{
-This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
-dose-biomarker relationship \eqn{f(x)} is modelled by a parametric, rescaled
-beta density function:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DualEndpointBeta}} is the class for the dual endpoint model with beta
+function for dose-biomarker relationship.
 }
 \details{
-\deqn{f(x) = E_{0} + (E_{max} - E_{0}) * Beta(\delta_{1}, \delta_{2}) *
-                  (x/x^{*})^{\delta_{1}} * (1 - x/x^{*})^{\delta_{2}}}
-
-where \eqn{x^{*}} is the maximum dose (end of the dose range to be
-considered), \eqn{\delta_{1}} and \eqn{\delta_{2}} are the two beta
-parameters, and \eqn{E_{0}} and \eqn{E_{max}} are the minimum and maximum
-levels, respectively. For ease of interpretation, we parametrize with
-\eqn{\delta_{1}} and the mode of the curve instead, where
-\deqn{mode = \delta_{1} / (\delta_{1} + \delta_{2}),}
-and multiplying this with \eqn{x^{*}} gives the mode on the dose grid.
+This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
+relationship \eqn{f(x)} is modelled by a parametric, rescaled beta density
+function:
+\deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)delta1 * (1 - x/x*)^delta2,}
+where \eqn{x*} is the maximum dose (end of the dose range to be considered),
+\eqn{delta1} and \eqn{delta2} are the two beta function parameters, and
+\eqn{E0}, \eqn{Emax} are the minimum and maximum levels, respectively.
+For ease of interpretation, we use the parametrization based on \eqn{delta1}
+and the mode, where
+\deqn{mode = delta1 / (delta1 + delta2),}
+so that multiplying this by \eqn{x*} gives the mode on the dose grid.
 
 All parameters can currently be assigned uniform distributions or be fixed
-in advance. Note that \code{E0} and \code{Emax} can have negative values or uniform
-distributions reaching into negative range, while \code{delta1} and \code{mode}
-must be positive or have uniform distributions in the positive range.
+in advance. Note that \code{E0} and \code{Emax} can have negative values or
+uniform distributions reaching into negative range, while \code{delta1} and
+\code{mode} must be positive or have uniform distributions in the positive
+range.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{E0}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{E0}}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
 
-\item{\code{Emax}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{Emax}}{(\code{numeric})\cr either a fixed number or the two uniform
+distribution parameters.}
 
-\item{\code{delta1}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{delta1}}{(\code{numeric})\cr either a fixed positive number or the two
+parameters of the uniform distribution, that can take only positive values.}
 
-\item{\code{mode}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{mode}}{(\code{numeric})\cr either a fixed positive number or the two
+parameters of the uniform distribution, that can take only positive values.}
 
-\item{\code{ref_dose_beta}}{the reference dose \eqn{x^{*}} (note that this is different from
-the \code{refDose} in the inherited \code{\linkS4class{DualEndpoint}} model)}
+\item{\code{ref_dose_beta}}{(\code{number})\cr the reference dose \eqn{x*} (note that this
+is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}} model).}
 }}
 
 \examples{
@@ -57,4 +87,6 @@ my_model <- DualEndpointBeta(
   ref_dose_beta = 1000
 )
 }
-\keyword{classes}
+\seealso{
+\code{\link{DualEndpoint}}, \code{\link{DualEndpointRW}}, \code{\link{DualEndpointEmax}}.
+}

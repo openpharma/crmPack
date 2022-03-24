@@ -27,7 +27,7 @@ random walk of second order is used.}
 prior for biomarker.
 }
 \details{
-This class extends the \code{\link{DualEndpoint}} class. Here, the dose-biomarker
+This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
 relationship \eqn{f(x)} is modelled by a non-parametric random walk of first
 or second order. That means, for the first order random walk we assume
 \deqn{betaW_i - betaW_i-1 ~ Normal(0, (x_i - x_i-1) * sigma2betaW),}
