@@ -30,7 +30,8 @@ The value of this argument is ignored when \code{param} is a scalar.}
 
 \item{priormodel}{(\code{function} or \code{NULL})\cr a function representing the
 \code{JAGS} prior specification that will be appended to existing
-de@priormodel\verb{specification if}param\verb{is not a scalar. Otherwise,}de@priormodel` remains unchanged.}
+\code{de@priormodel} specification if \code{param} is not a scalar. Otherwise,
+\code{de@priormodel} remains unchanged.}
 
 \item{de}{(\code{DualEnpoint})\cr dual endpoint model whose slots will be updated.}
 }

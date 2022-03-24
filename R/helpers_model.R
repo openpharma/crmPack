@@ -186,7 +186,7 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
 #'   The value of this argument is ignored when `param` is a scalar.
 #' @param priormodel (`function` or `NULL`)\cr a function representing the
 #'   `JAGS` prior specification that will be appended to existing
-#'   de@priormodel` specification if `param` is not a scalar. Otherwise,
+#'   `de@priormodel` specification if `param` is not a scalar. Otherwise,
 #'   `de@priormodel` remains unchanged.
 #' @param de (`DualEnpoint`)\cr dual endpoint model whose slots will be updated.
 #'
