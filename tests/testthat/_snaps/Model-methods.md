@@ -3,54 +3,54 @@
     Code
       result
     Output
-      [1]  0.9550933 -6.4162123 -5.5900885  1.6908944
+      [1]   1.910187 -12.832425 -11.180177   3.381789
 
 ---
 
     Code
       result_log_dose
     Output
-      [1] 2.598912937 0.001634837 0.003734697 5.424330065
+      [1]  5.197825875  0.003269673  0.007469395 10.848660131
 
 # dose-DualEndpoint works as expected for scalar samples
 
     Code
       result
     Output
-      [1]  4.6220026 -0.6220026
+      [1]  9.244005 -1.244005
 
 ---
 
     Code
       result_log_dose
     Output
-      [1] 101.6974840   0.5368682
+      [1] 203.394968   1.073736
 
 # prob-DualEndpoint works as expected
 
     Code
       result
     Output
-      [1] 1.356661e-01 4.601722e-01 9.554345e-01 2.096282e-07
+      [1] 0.363169349 0.363169349 0.864333939 0.006477572
 
 ---
 
     Code
       result_log_dose
     Output
-      [1] 0.46699281 0.33031040 0.81226265 0.05847312
+      [1] 0.5497829 0.3055966 0.7642097 0.1966136
 
 # prob-DualEndpoint works as expected for scalar samples
 
     Code
       result
     Output
-      [1] 4.661188e-03 5.412544e-06
+      [1] 0.13566606 0.02275013
 
 ---
 
     Code
       result_log_dose
     Output
-      [1] 0.2858115 0.1983123
+      [1] 0.4404713 0.3329519
 

@@ -75,7 +75,7 @@ Please see the example vignette by typing \code{crmPackExample()} for a full exa
 contains the prior mean, covariance matrix and precision matrix which is
 internally calculated as an inverse of the covariance matrix.}
 
-\item{\code{ref_dose}}{(\code{number})\cr for the probit toxicity model,, the reference dose.}
+\item{\code{ref_dose}}{(\code{number})\cr for the probit toxicity model, the reference dose.}
 
 \item{\code{use_log_dose}}{(\code{flag})\cr for the probit toxicity model, whether a log
 transformation of the (standardized) dose should be used?}

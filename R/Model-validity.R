@@ -248,3 +248,47 @@ v_model_dual_endpoint_rw <- function(object) {
   }
   v$result()
 }
+
+#' @describeIn v_model_objects validates that [`DualEndpointBeta`] class slots are valid.
+v_model_dual_endpoint_beta <- function(object) {
+  v <- Validate()
+
+  for (s in c("E0", "Emax", "delta1", "mode")) {
+    rmin <- .Machine$double.xmin
+    uf <- object@use_fixed[s]
+
+    v$check(
+      test_flag(uf),
+      paste0("use_fixed must be a named logical vector that contains name '", s, "'")
+    )
+    if (isTRUE(uf)) {
+      if (s %in% c("delta1", "mode")) {
+        v$check(
+          test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+          paste(s, "must be a positive and finite numerical scalar")
+        )
+      }
+    } else {
+      # s is a vector with parameters for Uniform(s[1], s[2]) prior.
+      v$check(
+        test_numeric(
+          slot(object, s),
+          lower = 0,
+          finite = TRUE,
+          any.missing = FALSE,
+          len = 2,
+          unique = TRUE,
+          sorted = TRUE
+        ),
+        paste(s, "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values")
+      )
+    }
+  }
+
+  v$check(
+    test_number(object@ref_dose_beta, na.ok = TRUE, lower = 0 + rmin),
+    "ref_dose_beta must be a positive scalar"
+  )
+
+  v$result()
+}

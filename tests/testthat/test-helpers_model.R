@@ -153,3 +153,105 @@ test_that("h_model_dual_endpoint_sigma2betaW throws error for non-valid sigma2be
     "Assertion on .* failed"
   )
 })
+
+# h_model_dual_endpoint_beta ----
+
+test_that("h_model_dual_endpoint_beta updates model components for scalar param", {
+  de <- h_get_dual_endpoint()
+  result <- h_model_dual_endpoint_beta(
+    param = 5,
+    param_name = "some_name",
+    de = de
+  )
+
+  # Expect that modelspecs is updated correctly.
+  expected_ms <- c(de@modelspecs(), c(list(some_name = 5))) # nolintr
+  expect_identical(result@modelspecs(), expected_ms) # nolintr
+
+  # Expect that use_fixed is updated correctly, and others (except modelspecs) are not changed.
+  de@use_fixed <- c(de@use_fixed, some_name = TRUE)
+  other_slots <- setdiff(slotNames(de), "modelspecs")
+  expect_identical(
+    h_slots(de, other_slots),
+    h_slots(result, other_slots)
+  )
+})
+
+test_that("h_model_dual_endpoint_beta updates model components", {
+  de <- h_get_dual_endpoint()
+
+  priormodel <- function() {
+    E0 ~ dunif(E0_a, E0_b)
+  }
+  result <- h_model_dual_endpoint_beta(
+    param = c(2, 6),
+    param_name = "E0",
+    param_suffix = c("a", "b"),
+    priormodel = priormodel,
+    de = de
+  )
+
+  # Expect that priormodel is updated correctly.
+  expected_prior <- h_jags_join_models(de@priormodel, priormodel)
+  expect_identical(result@priormodel, expected_prior)
+
+  # Expect that modelspecs is updated correctly.
+  expected_ms <- c(de@modelspecs(), c(list(E0a = 2, E0b = 6))) # nolintr
+  expect_identical(result@modelspecs(), expected_ms) # nolintr
+
+  # Expect that init is updated correctly.
+  expected_init <- c(de@init(0), c(list(E0 = 4))) # nolintr
+  expect_identical(result@init(0), expected_init) # nolintr
+
+  # Expect that use_fixed is updated correctly, and others are not changed.
+  de@use_fixed <- c(de@use_fixed, E0 = FALSE)
+  de@sample <- c(de@sample, "E0")
+  other_slots <- setdiff(slotNames(de), c("priormodel", "modelspecs", "init"))
+  expect_identical(
+    h_slots(de, other_slots),
+    h_slots(result, other_slots)
+  )
+})
+
+test_that("h_model_dual_endpoint_beta throws error for non-valid param", {
+  de <- h_get_dual_endpoint()
+  expect_error(
+    h_model_dual_endpoint_beta(param = 1:5, param_name = "some_name", de = de),
+    "Assertion on 'param' failed: Must have length <= 2, but has length 5."
+  )
+})
+
+test_that("h_model_dual_endpoint_beta throws error for non-valid param_name", {
+  de <- h_get_dual_endpoint()
+  expect_error(
+    h_model_dual_endpoint_beta(param = 5, param_name = c("p1", "p2"), de = de),
+    "Assertion on 'param_name' failed: Must have length 1."
+  )
+})
+
+test_that("h_model_dual_endpoint_beta throws error for non-valid param_suffix", {
+  de <- h_get_dual_endpoint()
+  expect_error(
+    h_model_dual_endpoint_beta(
+      param = c(1, 1),
+      param_name = "p1",
+      param_suffix = c("s1", "s2", "s3"),
+      priormodel = function() {}, # nolintr
+      de = de
+    ),
+    "Assertion on 'param_suffix' failed: Must have length 2, but has length 3."
+  )
+})
+
+test_that("h_model_dual_endpoint_beta throws error for non-valid priormodel", {
+  de <- h_get_dual_endpoint()
+  expect_error(
+    h_model_dual_endpoint_beta(
+      param = c(1, 1),
+      param_name = "p1",
+      priormodel = "wrong",
+      de = de
+    ),
+    "Assertion on 'priormodel' failed: Must be a function, not 'character'."
+  )
+})

@@ -157,3 +157,84 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
   }
   de
 }
+
+#' Update certain components of [`DualEndpoint`] model with regard to parameters
+#' of the function that models dose-biomarker relationship defined in the
+#' [`DualEndpointBeta`] class.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that takes [`DualEndpoint`] object and updates
+#' `use_fixed`, `priormodel`, `modelspecs`, `init`, `sample` slots with regard
+#' to a given parameter of the dose-biomarker relationship \eqn{f(x)} defined in
+#' the [`DualEndpointBeta`] class. This update solely depends on whether a given
+#' parameter's value `param` is a fixed-valued scalar or two-elements numeric
+#' vector. In the later case, it is assumed that `param` represents two
+#' parameters of a probability distribution that will be used in `priormodel`
+#' function to generate values for the `param_name` parameter of \eqn{f(x)}.
+#' See the help page for [`DualEndpointBeta`] class for more details.
+#'
+#' @param param (`numeric`)\cr the value of a given `param_name` parameter of
+#'   the dose-biomarker relationship function \eqn{f(x)}. Either a fixed-valued
+#'   scalar or vector with two elements that are the parameters of a probability
+#'   distribution that will be used in `priormodel` function to generate values
+#'   for the `param_name` parameter of \eqn{f(x)}.
+#' @param param_name (`string`)\cr the name of the parameter of \eqn{f(x)},
+#'   whose value depends on `param`.
+#' @param param_suffix (`character`)\cr the two suffixes to be appended to
+#'   the elements of `param_name` and then used when updating `modelspecs`.
+#'   The value of this argument is ignored when `param` is a scalar.
+#' @param priormodel (`function` or `NULL`)\cr a function representing the
+#'   `JAGS` prior specification that will be appended to existing
+#'   `de@priormodel` specification if `param` is not a scalar. Otherwise,
+#'   `de@priormodel` remains unchanged.
+#' @param de (`DualEnpoint`)\cr dual endpoint model whose slots will be updated.
+#'
+#' @return A [`DualEndpoint`] model with updated `use_fixed`, `priormodel`,
+#'   `modelspecs`, `init`, `sample` slots.
+#'
+#' @export
+h_model_dual_endpoint_beta <- function(param,
+                                       param_name,
+                                       param_suffix = c("_low", "_high"),
+                                       priormodel = NULL,
+                                       de) {
+  assert_numeric(param, min.len = 1, max.len = 2, any.missing = FALSE)
+  assert_string(param_name)
+  assert_class(de, "DualEndpoint")
+
+  use_fixed <- setNames(is.scalar(param), param_name)
+  ms <- de@modelspecs
+
+  if (use_fixed) {
+    de@modelspecs <- function() {
+      c(ms(), setNames(list(param), param_name))
+    }
+  } else {
+    assert_character(param_suffix, len = 2, unique = TRUE, any.missing = FALSE)
+    assert_function(priormodel)
+    param_name2 <- paste0(param_name, param_suffix)
+
+    init <- de@init
+    de@priormodel <- h_jags_join_models(
+      de@priormodel,
+      priormodel
+    )
+    de@modelspecs <- function() {
+      c(
+        ms(),
+        setNames(list(param[1], param[2]), param_name2)
+      )
+    }
+    de@init <- function(y) {
+      c(
+        init(y),
+        setNames(list(mean(param)), param_name)
+      )
+    }
+    de@sample <- c(de@sample, param_name)
+  }
+
+  de@use_fixed <- c(de@use_fixed, use_fixed)
+  de
+}
