@@ -165,24 +165,70 @@ h_get_logistic_log_normal_mix <- function() {
   )
 }
 
-h_get_dual_endpoint <- function(use_log_dose = FALSE) {
+h_get_dual_endpoint <- function(use_log_dose = FALSE, fixed = TRUE) {
+  if (fixed) {
+    sigma2W <- 1 # nolint
+    rho <- 0
+  } else {
+    sigma2W <- c(a = 1, b = 2) # nolint
+    rho <- c(a = 1.5, b = 2.5)
+  }
+
   DualEndpoint(
     mean = c(0, 1),
     cov = diag(2),
+    ref_dose = 2,
     use_log_dose = use_log_dose,
-    sigma2W = 1,
-    rho = 0
+    sigma2W = sigma2W,
+    rho = rho
   )
 }
 
-h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE) {
+h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE, fixed = TRUE) {
+  de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
+  sigma2betaW <- if (fixed) { # nolint
+    0.01
+  } else {
+    c(a = 1, b = 2)
+  }
+
   DualEndpointRW(
-    mean = c(0, 1),
-    cov = matrix(c(1, 0, 0, 1), nrow = 2),
-    use_log_dose = use_log_dose,
-    sigma2W = c(a = 0.1, b = 0.1),
-    rho = c(a = 1, b = 1),
-    sigma2betaW = 0.01,
+    mean = de@betaZ_params@mean,
+    cov = de@betaZ_params@cov,
+    ref_dose = de@ref_dose,
+    use_log_dose = de@use_log_dose,
+    sigma2W = de@sigma2W,
+    rho = de@rho,
+    sigma2betaW = sigma2betaW,
     rw1 = rw1
+  )
+}
+
+h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
+  de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
+  if (fixed) {
+    E0 <- 10 # nolint
+    Emax <- 50 # nolint
+    delta1 <- 3
+    mode <- 5
+  } else {
+    E0 <- c(1, 6) # nolint
+    Emax <- c(2, 9) # nolint
+    delta1 <- 3 # c(1, 5), waiting for fixing issue no 162 # nolint
+    mode <- 5 # c(3, 10), waiting for fixing issue no 162 # nolint
+  }
+
+  DualEndpointBeta(
+    mean = de@betaZ_params@mean,
+    cov = de@betaZ_params@cov,
+    ref_dose = de@ref_dose,
+    use_log_dose = de@use_log_dose,
+    sigma2W = de@sigma2W,
+    rho = de@rho,
+    E0 = E0,
+    Emax = Emax,
+    delta1 = delta1,
+    mode = mode,
+    ref_dose_beta = 10
   )
 }

@@ -425,7 +425,10 @@ test_that("v_model_logistic_log_normal_mix returns error for wrong share_weight"
 
 test_that("v_model_dual_endpoint passes for valid object", {
   object <- h_get_dual_endpoint()
+  object_ff <- h_get_dual_endpoint(fixed = FALSE)
+
   expect_true(v_model_dual_endpoint(object))
+  expect_true(v_model_dual_endpoint(object_ff))
 })
 
 test_that("v_model_dual_endpoint returns error for wrong ref_dose", {
@@ -516,7 +519,10 @@ test_that("v_model_dual_endpoint returns error for wrong rho", {
 
 test_that("v_model_dual_endpoint_rw passes for valid object", {
   object <- h_get_dual_endpoint_rw()
+  object_ff <- h_get_dual_endpoint_rw(fixed = FALSE)
+
   expect_true(v_model_dual_endpoint_rw(object))
+  expect_true(v_model_dual_endpoint_rw(object_ff))
 })
 
 test_that("v_model_dual_endpoint_rw returns error for wrong use_fixed", {
@@ -553,5 +559,93 @@ test_that("v_model_dual_endpoint_rw returns error for wrong sigma2betaW", {
   expect_equal(
     v_model_dual_endpoint_rw(object),
     "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
+})
+
+# v_model_dual_endpoint_beta ----
+
+test_that("v_model_dual_endpoint_beta passes for valid object", {
+  object <- h_get_dual_endpoint_beta()
+  object_ff <- h_get_dual_endpoint_beta(fixed = FALSE)
+
+  expect_true(v_model_dual_endpoint_beta(object))
+  expect_true(v_model_dual_endpoint_beta(object_ff))
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong use_fixed", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning non-valid use_fixed.
+  object@use_fixed <- TRUE
+
+  expect_snapshot(v_model_dual_endpoint_beta(object))
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong E0", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning wrong values for E0.
+  object@E0 <- c(4, -5, b = -Inf)
+  object@use_fixed["E0"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint_beta(object),
+    "E0 must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
+  )
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong Emax", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning wrong values for Emax.
+  object@Emax <- c(4, -5, b = -Inf)
+  object@use_fixed["Emax"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint_beta(object),
+    "Emax must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
+  )
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong fixed delta1", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning wrong values for delta1.
+  object@delta1 <- c(-2, 0)
+
+  expect_equal(
+    v_model_dual_endpoint_beta(object),
+    "delta1 must be a positive and finite numerical scalar"
+  )
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong delta1", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning wrong values for delta1.
+  object@delta1 <- c(4, -5, b = Inf)
+  object@use_fixed["delta1"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint_beta(object),
+    "delta1 must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
+  )
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong fixed mode", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning wrong values for mode.
+  object@mode <- c(-2, 0)
+
+  expect_equal(
+    v_model_dual_endpoint_beta(object),
+    "mode must be a positive and finite numerical scalar"
+  )
+})
+
+test_that("v_model_dual_endpoint_beta returns error for wrong mode", {
+  object <- h_get_dual_endpoint_beta()
+  # Assigning wrong values for mode.
+  object@mode <- c(4, -5, b = Inf)
+  object@use_fixed["mode"] <- FALSE
+
+  expect_equal(
+    v_model_dual_endpoint_beta(object),
+    "mode must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
   )
 })

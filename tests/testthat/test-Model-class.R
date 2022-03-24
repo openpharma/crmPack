@@ -357,15 +357,13 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
 
 ## constructor ----
 
+test_that("DualEndpoint object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint())
+  expect_valid(result, "DualEndpoint")
+})
+
 test_that("DualEndpoint object can be created with user constructor", {
-  result <- expect_silent(
-    DualEndpoint(
-      mean = c(0, 1),
-      cov = diag(2),
-      sigma2W = 1,
-      rho = 0
-    )
-  )
+  result <- expect_silent(h_get_dual_endpoint(fixed = FALSE))
   expect_valid(result, "DualEndpoint")
 })
 
@@ -373,24 +371,30 @@ test_that("DualEndpoint object can be created with user constructor", {
 
 ## constructor ----
 
+test_that("DualEndpointRW object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint_rw())
+  expect_valid(result, "DualEndpointRW")
+})
+
 test_that("DualEndpointRW object can be created with user constructor", {
-  result <- expect_silent(
-    DualEndpointRW(
-      mean = c(0, 1),
-      cov = matrix(c(1, 0, 0, 1), nrow = 2),
-      sigma2W = c(a = 0.1, b = 0.1),
-      rho = c(a = 1, b = 1),
-      sigma2betaW = 0.01
-    )
-  )
+  result <- expect_silent(h_get_dual_endpoint_rw(fixed = FALSE))
   expect_valid(result, "DualEndpointRW")
 })
 
 ## mcmc ----
 
-test_that("MCMC computes correct values for DualEndpointRW model", {
+test_that("MCMC computes correct values for DualEndpointRW model (fixed params)", {
   data <- h_get_data_dual()
   model <- h_get_dual_endpoint_rw()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw(fixed = FALSE)
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
   result <- mcmc(data = data, model = model, options = options)
@@ -400,6 +404,49 @@ test_that("MCMC computes correct values for DualEndpointRW model", {
 test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
   data <- h_get_data_dual()
   model <- h_get_dual_endpoint_rw(rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model (fixed params) with RW2", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+# DualEndpointBeta ----
+
+## constructor ----
+
+test_that("DualEndpointBeta object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint_beta())
+  expect_valid(result, "DualEndpointBeta")
+})
+
+test_that("DualEndpointBeta object can be created with user constructor", {
+  result <- expect_silent(h_get_dual_endpoint_beta(fixed = FALSE))
+  expect_valid(result, "DualEndpointBeta")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DualEndpointBeta model with fixed parameters", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_beta()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointBeta model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_beta(fixed = FALSE)
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
   result <- mcmc(data = data, model = model, options = options)

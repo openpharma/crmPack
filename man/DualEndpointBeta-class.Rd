@@ -38,23 +38,23 @@ must be positive or have uniform distributions in the positive range.
 
 \item{\code{mode}}{either a fixed number or the two uniform distribution parameters}
 
-\item{\code{refDoseBeta}}{the reference dose \eqn{x^{*}} (note that this is different from
+\item{\code{ref_dose_beta}}{the reference dose \eqn{x^{*}} (note that this is different from
 the \code{refDose} in the inherited \code{\linkS4class{DualEndpoint}} model)}
 }}
 
 \examples{
 my_model <- DualEndpointBeta(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  ref_dose = 10,
+  use_log_dose = TRUE,
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
   E0 = c(0, 100),
   Emax = c(0, 500),
   delta1 = c(0, 5),
   mode = c(1, 15),
-  refDoseBeta = 1000,
-  ref_dose = 10,
-  use_log_dose = TRUE,
-  mean = c(0, 1),
-  cov = matrix(c(1, 0, 0, 1), nrow = 2),
-  sigma2W = c(a = 0.1, b = 0.1),
-  rho = c(a = 1, b = 1)
+  ref_dose_beta = 1000
 )
 }
 \keyword{classes}

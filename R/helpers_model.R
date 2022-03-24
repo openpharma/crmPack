@@ -157,3 +157,47 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
   }
   de
 }
+
+#' @export
+h_model_dual_endpoint_beta <- function(use_fixed,
+                                       param,
+                                       param_name,
+                                       param_prefix_lh = c("_low", "_high"),
+                                       prior,
+                                       de) {
+  assert_flag(use_fixed)
+  assert_numeric(param, min.len = 1, max.len = 2, any.missing = FALSE)
+  assert_string(param_name)
+  assert_character(param_prefix_lh, len = 2, unique = TRUE, any.missing = FALSE)
+  assert_function(prior)
+  assert_class(de, "DualEndpoint")
+
+  param_name_lh <- paste0(param_name, param_prefix_lh)
+  ms <- de@modelspecs
+
+  if (use_fixed) {
+    de@modelspecs <- function() {
+      c(ms(), setNames(list(param), param_name))
+    }
+  } else {
+    init <- de@init
+    de@priormodel <- h_jags_join_models(
+      de@priormodel,
+      prior
+    )
+    de@modelspecs <- function() {
+      c(
+        ms(),
+        setNames(list(param[1], param[2]), param_name_lh)
+      )
+    }
+    de@init <- function(y) {
+      c(
+        init(y),
+        setNames(list(mean(param)), param_name)
+      )
+    }
+    de@sample <- c(de@sample, param_name)
+  }
+  de
+}

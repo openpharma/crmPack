@@ -1393,84 +1393,40 @@ DualEndpointRW <- function(sigma2betaW,
 ##' @slot Emax either a fixed number or the two uniform distribution parameters
 ##' @slot delta1 either a fixed number or the two uniform distribution parameters
 ##' @slot mode either a fixed number or the two uniform distribution parameters
-##' @slot refDoseBeta the reference dose \eqn{x^{*}} (note that this is different from
+##' @slot ref_dose_beta the reference dose \eqn{x^{*}} (note that this is different from
 ##' the \code{refDose} in the inherited \code{\linkS4class{DualEndpoint}} model)
 ##'
 ##' @example examples/Model-class-DualEndpointBeta.R
 ##' @export
 ##' @keywords classes
-.DualEndpointBeta <-
-    setClass("DualEndpointBeta",
-             representation(E0="numeric",
-                            Emax="numeric",
-                            delta1="numeric",
-                            mode="numeric",
-                            refDoseBeta="numeric"),
-             prototype(E0=c(0, 100),
-                       Emax=c(0, 500),
-                       delta1=c(0, 5),
-                       mode=c(1, 15),
-                       refDoseBeta=1000,
-                       use_fixed=
-                       c(sigma2W=TRUE,
-                            rho=TRUE,
-                            E0=FALSE,
-                            Emax=FALSE,
-                            delta1=FALSE,
-                            mode=FALSE)),
-             contains="DualEndpoint",
-             validity=
-                 function(object){
-                     o <- Validate()
+.DualEndpointBeta <- setClass(
+  Class = "DualEndpointBeta",
+  slots = c(
+    E0 = "numeric",
+    Emax = "numeric",
+    delta1 = "numeric",
+    mode = "numeric",
+    ref_dose_beta = "numeric"
+  ),
+  prototype = prototype(
+    E0 = c(0, 100),
+    Emax = c(0, 500),
+    delta1 = c(0, 5),
+    mode = c(1, 15),
+    ref_dose_beta = 1000,
+    use_fixed = c(
+      sigma2W = TRUE,
+      rho = TRUE,
+      E0 = FALSE,
+      Emax = FALSE,
+      delta1 = FALSE,
+      mode = FALSE
+    )
+  ),
+  contains = "DualEndpoint",
+  validity = v_model_dual_endpoint_beta
+)
 
-                     ## check delta1
-                     if(object@use_fixed["delta1"])
-                     {
-                       o$check(object@delta1 > 0,
-                               "delta1 must be positive")
-                     } else {
-                       o$check(all(object@delta1 >= 0) &&
-                                 (diff(object@delta1) > 0),
-                               "delta1 has not proper prior parameters")
-                     }
-
-                     ## check delta1 and mode
-                     for(parName in c("delta1", "mode"))
-                     {
-                       ## if we use a fixed value for this parameter
-                       if(object@use_fixed[parName])
-                       {
-                         ## check range of value
-                         o$check(slot(object, parName) > 0,
-                                 paste(parName, "must be positive"))
-                       } else {
-                         ## use a Uniform(a, b) prior
-                         o$check(all(slot(object, parName) >= 0) &&
-                                   (diff(slot(object, parName)) > 0),
-                                 paste(parName,
-                                       "has not proper prior parameters"))
-                       }
-                     }
-
-                     ## check E0 and Emax
-                     for(parName in c("E0", "Emax"))
-                     {
-                         ## if we don't use a fixed value for this parameter
-                         if(! object@use_fixed[parName])
-                         {
-                             ## use a Uniform(a, b) prior
-                             o$check(diff(slot(object, parName)) > 0,
-                                     paste(parName,
-                                           "has not proper prior parameters"))
-                         }
-                     }
-
-                     ## check the refDoseBeta
-                     o$check(object@refDoseBeta > 0,
-                             "refDoseBeta must be positive")
-
-                     o$result()
-                 })
 
 ##' Initialization function for the "DualEndpointBeta" class
 ##'
@@ -1478,7 +1434,7 @@ DualEndpointRW <- function(sigma2betaW,
 ##' @param Emax see \code{\linkS4class{DualEndpointBeta}}
 ##' @param delta1 see \code{\linkS4class{DualEndpointBeta}}
 ##' @param mode see \code{\linkS4class{DualEndpointBeta}}
-##' @param refDoseBeta see \code{\linkS4class{DualEndpointBeta}}
+##' @param ref_dose_beta see \code{\linkS4class{DualEndpointBeta}}
 ##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
 ##' @return the \code{\linkS4class{DualEndpointBeta}} object
 ##'
@@ -1488,155 +1444,89 @@ DualEndpointBeta <- function(E0,
                              Emax,
                              delta1,
                              mode,
-                             refDoseBeta,
+                             ref_dose_beta,
                              ...) {
-    start <- DualEndpoint(...)
+  start <- DualEndpoint(...)
 
-    ## we need the dose grid here in the BUGS model, therefore add it to datanames
-    start@datanames <- c(start@datanames, "doseGrid")
+  ## we need the dose grid here in the BUGS model, therefore add it to datanames
+  start@datanames <- c(start@datanames, "doseGrid")
 
-    start@use_fixed <- c(
-      start@use_fixed,
-      sapply(list(E0 = E0, Emax = Emax, delta1 = delta1, mode = mode), is.scalar)
-    )
+  use_fixed <- sapply(
+    list(E0 = E0, Emax = Emax, delta1 = delta1, mode = mode),
+    is.scalar
+  )
 
-    start@priormodel <-
-        h_jags_join_models(start@priormodel,
-                   function(){
-                       ## delta2 <- delta1 * (1 - (mode/refDoseBeta)) / (mode/refDoseBeta)
-                       delta2 <- delta1 * (refDoseBeta/mode - 1)
-                       ## betafun <- (delta1 + delta2)^(delta1 + delta2) *
-                       ##     delta1^(- delta1) * delta2^(- delta2)
-                       betafun <- (1 + delta2 / delta1)^delta1 *
-                           (delta1 / delta2 + 1)^delta2
+  ms <- start@modelspecs
+  start@modelspecs <- function() {
+    c(ms(), list(ref_dose_beta = ref_dose_beta))
+  }
+  start@sample <- c(start@sample, "betaW")
 
-                       for (j in 1:nGrid)
-                       {
-                           StandDoseBeta[j] <- doseGrid[j] / refDoseBeta
-                           betaW[j] <- E0 + (Emax - E0) * betafun *
-                               StandDoseBeta[j]^delta1 * (1 - StandDoseBeta[j])^delta2
-                       }
-                   })
+  start <- h_model_dual_endpoint_beta(
+    use_fixed["E0"],
+    param = E0,
+    param_name = "E0",
+    prior = function() {
+      E0 ~ dunif(E0_low, E0_high)
+    },
+    de = start
+  )
 
-    ## we will fill in more, depending on which parameters
-    ## are fixed, in these two variables:
-    start@sample <- c(start@sample,
-                      "betaW")
-    newInits <- list()
-    newModelspecs <- list(refDoseBeta=refDoseBeta)
+  start <- h_model_dual_endpoint_beta(
+    use_fixed["Emax"],
+    param = Emax,
+    param_name = "Emax",
+    prior = function() {
+      Emax ~ dunif(Emax_low, Emax_high)
+    },
+    de = start
+  )
 
-    ## for E0:
-    if(! start@use_fixed["E0"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for E0
-                           E0 ~ dunif(E0low, E0high)
-                       })
+  start <- h_model_dual_endpoint_beta(
+    use_fixed["delta1"],
+    param = delta1,
+    param_name = "delta1",
+    prior = function() {
+      delta1 ~ dunif(delta1_low, delta1_high)
+    },
+    de = start
+  )
 
-        start@sample <- c(start@sample,
-                          "E0")
+  start <- h_model_dual_endpoint_beta(
+    use_fixed["mode"],
+    param = mode,
+    param_name = "mode",
+    prior = function() {
+      mode ~ dunif(mode_low, mode_high)
+    },
+    de = start
+  )
 
-        newInits$E0 <- mean(E0)
-        newModelspecs$E0low <- E0[1]
-        newModelspecs$E0high <- E0[2]
-    } else {
-        newModelspecs$E0 <- E0
+  start@use_fixed <- c(start@use_fixed, use_fixed)
+
+  start@priormodel <- h_jags_join_models(
+    start@priormodel,
+    function() {
+      # delta2 <- delta1 * (1 - (mode/ref_dose_beta)) / (mode/ref_dose_beta) # nolint
+      delta2 <- delta1 * (ref_dose_beta/mode - 1)
+      # betafun <- (delta1 + delta2)^(delta1 + delta2) * delta1^(- delta1) * delta2^(- delta2) # nolint
+      betafun <- (1 + delta2 / delta1)^delta1 * (delta1 / delta2 + 1)^delta2
+      for (i in 1:nGrid) {
+        stand_dose_beta[i] <- doseGrid[i] / ref_dose_beta
+        betaW[i] <- E0 + (Emax - E0) * betafun * stand_dose_beta[i]^delta1 * (1 - stand_dose_beta[i])^delta2
+      }
     }
+  )
 
-    ## for Emax:
-    if(! start@use_fixed["Emax"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for Emax
-                           Emax ~ dunif(EmaxLow, EmaxHigh)
-                       })
-
-        start@sample <- c(start@sample,
-                          "Emax")
-
-        newInits$Emax <- mean(Emax)
-        newModelspecs$EmaxLow <- Emax[1]
-        newModelspecs$EmaxHigh <- Emax[2]
-    } else {
-        newModelspecs$Emax <- Emax
-    }
-
-    ## for delta1 and delta2:
-    if(! start@use_fixed["delta1"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for E0
-                           delta1 ~ dunif(delta1Low, delta1High)
-                       })
-
-        start@sample <- c(start@sample,
-                          "delta1")
-
-        newInits$delta1 <- mean(delta1)
-        newModelspecs$delta1Low <- delta1[1]
-        newModelspecs$delta1High <- delta1[2]
-    } else {
-        newModelspecs$delta1 <- delta1
-    }
-
-    if(! start@use_fixed["mode"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for E0
-                           mode ~ dunif(modeLow, modeHigh)
-                       })
-
-        start@sample <- c(start@sample,
-                          "mode")
-
-        newInits$mode <- mean(mode)
-        newModelspecs$modeLow <- mode[1]
-        newModelspecs$modeHigh <- mode[2]
-    } else {
-        newModelspecs$mode <- mode
-    }
-
-    ## now define the new modelspecs and init functions:
-    oldModelspecs <- start@modelspecs
-    start@modelspecs <- function()
-    {
-        c(oldModelspecs(),
-          newModelspecs)
-    }
-
-    oldInit <- start@init
-    start@init <- function(y, w, nGrid)
-    {
-        c(oldInit(y, w, nGrid),
-          newInits)
-    }
-
-    ## finally call the constructor
-    .DualEndpointBeta(start,
-                      E0=E0,
-                      Emax=Emax,
-                      delta1=delta1,
-                      mode=mode,
-                      refDoseBeta=refDoseBeta)
+  .DualEndpointBeta(
+    start,
+    E0 = E0,
+    Emax = Emax,
+    delta1 = delta1,
+    mode = mode,
+    ref_dose_beta = ref_dose_beta
+  )
 }
-#validObject(DualEndpointBeta(E0=10,
-#                             Emax=50,
-#                             delta1=c(1, 5),
-#                             mode=c(3, 10),
-#                             refDoseBeta=10,
-#                             mean=c(0, 1),
-#                             cov=diag(2),
-#                             sigma2W=1,
-#                             rho=0))
-
 
 # DualEndpointEmax ----
 

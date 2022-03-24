@@ -4,7 +4,7 @@
 \alias{DualEndpointBeta}
 \title{Initialization function for the "DualEndpointBeta" class}
 \usage{
-DualEndpointBeta(E0, Emax, delta1, mode, refDoseBeta, ...)
+DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta, ...)
 }
 \arguments{
 \item{E0}{see \code{\linkS4class{DualEndpointBeta}}}
@@ -15,7 +15,7 @@ DualEndpointBeta(E0, Emax, delta1, mode, refDoseBeta, ...)
 
 \item{mode}{see \code{\linkS4class{DualEndpointBeta}}}
 
-\item{refDoseBeta}{see \code{\linkS4class{DualEndpointBeta}}}
+\item{ref_dose_beta}{see \code{\linkS4class{DualEndpointBeta}}}
 
 \item{\dots}{additional parameters, see \code{\linkS4class{DualEndpoint}}}
 }
