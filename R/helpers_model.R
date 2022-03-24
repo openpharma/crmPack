@@ -181,9 +181,9 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
 #'   for the `param_name` parameter of \eqn{f(x)}.
 #' @param param_name (`string`)\cr the name of the parameter of \eqn{f(x)},
 #'   whose value depends on `param`.
-#' @param param_suffix_lh (`string`)\cr the suffix to be appended to elements of
-#'   `param_name` and then used when updating `modelspecs`. It is ignored when
-#'   `param` is a scalar.
+#' @param param_suffix (`character`)\cr the two suffixes to be appended to
+#'   the elements of `param_name` and then used when updating `modelspecs`.
+#'   The value of this argument is ignored when `param` is a scalar.
 #' @param priormodel (`function` or `NULL`)\cr a function representing the
 #'   `JAGS` prior specification that will be appended to existing
 #'   de@priormodel` specification if `param` is not a scalar. Otherwise,

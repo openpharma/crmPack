@@ -24,15 +24,15 @@ for the \code{param_name} parameter of \eqn{f(x)}.}
 \item{param_name}{(\code{string})\cr the name of the parameter of \eqn{f(x)},
 whose value depends on \code{param}.}
 
+\item{param_suffix}{(\code{character})\cr the two suffixes to be appended to
+the elements of \code{param_name} and then used when updating \code{modelspecs}.
+The value of this argument is ignored when \code{param} is a scalar.}
+
 \item{priormodel}{(\code{function} or \code{NULL})\cr a function representing the
 \code{JAGS} prior specification that will be appended to existing
 de@priormodel\verb{specification if}param\verb{is not a scalar. Otherwise,}de@priormodel` remains unchanged.}
 
 \item{de}{(\code{DualEnpoint})\cr dual endpoint model whose slots will be updated.}
-
-\item{param_suffix_lh}{(\code{string})\cr the suffix to be appended to elements of
-\code{param_name} and then used when updating \code{modelspecs}. It is ignored when
-\code{param} is a scalar.}
 }
 \value{
 A \code{\link{DualEndpoint}} model with updated \code{use_fixed}, \code{priormodel},
