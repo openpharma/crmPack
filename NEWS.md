@@ -1,4 +1,4 @@
-# Version 1.0.9000.9001
+# Version 1.0.9000.9002
 * Renamed `refDoseBeta` slot to `ref_dose_beta` in `DualEndpointBeta` class.
 * Replaced `smooth` character vector argument of `DualEndpointRW()` to `rw1` flag. 
 * Added new `ModelParamsNormal` class to represent parameters of bivariate normal
