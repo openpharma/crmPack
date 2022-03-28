@@ -1346,7 +1346,6 @@ DualEndpointRW <- function(sigma2betaW,
   start@priormodel <- h_jags_join_models(start@priormodel, priormodel)
 
   start@sample <- c(start@sample, "betaW", "delta")
-  # We need the doseGrid in the BUGS model.
   start@datanames <- c(start@datanames, "doseGrid")
 
   # Update model components with regard to biomarker regression variance.
@@ -1464,9 +1463,8 @@ DualEndpointBeta <- function(E0,
                              ...) {
   start <- DualEndpoint(...)
 
-  # We need the doseGrid in the BUGS model.
-  start@datanames <- c(start@datanames, "doseGrid")
   start@sample <- c(start@sample, "betaW")
+  start@datanames <- c(start@datanames, "doseGrid")
   ms <- start@modelspecs
   start@modelspecs <- function() {
     c(ms(), list(ref_dose_beta = ref_dose_beta))
@@ -1540,11 +1538,11 @@ DualEndpointBeta <- function(E0,
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`DualEndpointEmax`] is the class for the dual endpoint model with beta
+#' [`DualEndpointEmax`] is the class for the dual endpoint model with `Emax`
 #' function for dose-biomarker relationship.
 #'
 #' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
-#'   relationship \eqn{f(x)} is modelled by a parametric EMAX function:
+#'   relationship \eqn{f(x)} is modelled by a parametric `Emax` function:
 #'   \deqn{f(x) = E0 + [(Emax - E0) * (x/x*)]/[ED50 + (x/x*)],}
 #'   where \eqn{x*} is a reference dose, \eqn{E0} and \eqn{Emax} are the minimum
 #'   and maximum levels for the biomarker, and \eqn{ED50} is the dose achieving
@@ -1615,9 +1613,8 @@ DualEndpointEmax <- function(E0,
                              ...) {
   start <- DualEndpoint(...)
 
-  # We need the doseGrid in the BUGS model.
-  start@datanames <- c(start@datanames, "doseGrid")
   start@sample <- c(start@sample, "betaW")
+  start@datanames <- c(start@datanames, "doseGrid")
   ms <- start@modelspecs
   start@modelspecs <- function() {
     c(ms(), list(ref_dose_emax = ref_dose_emax))

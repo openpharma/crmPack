@@ -28,12 +28,12 @@ model).}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{DualEndpointEmax}} is the class for the dual endpoint model with beta
+\code{\link{DualEndpointEmax}} is the class for the dual endpoint model with \code{Emax}
 function for dose-biomarker relationship.
 }
 \details{
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
-relationship \eqn{f(x)} is modelled by a parametric EMAX function:
+relationship \eqn{f(x)} is modelled by a parametric \code{Emax} function:
 \deqn{f(x) = E0 + [(Emax - E0) * (x/x*)]/[ED50 + (x/x*)],}
 where \eqn{x*} is a reference dose, \eqn{E0} and \eqn{Emax} are the minimum
 and maximum levels for the biomarker, and \eqn{ED50} is the dose achieving
