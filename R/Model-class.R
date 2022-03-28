@@ -1465,8 +1465,8 @@ DualEndpointBeta <- function(E0,
   start <- DualEndpoint(...)
 
   # We need the doseGrid in the BUGS model.
-  start@sample <- c(start@sample, "betaW")
   start@datanames <- c(start@datanames, "doseGrid")
+  start@sample <- c(start@sample, "betaW")
   ms <- start@modelspecs
   start@modelspecs <- function() {
     c(ms(), list(ref_dose_beta = ref_dose_beta))
@@ -1532,209 +1532,144 @@ DualEndpointBeta <- function(E0,
   )
 }
 
-# nolint start
-
 # DualEndpointEmax ----
 
-##' Dual endpoint model with emax function for dose-biomarker relationship
-##'
-##' This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
-##' dose-biomarker relationship \eqn{f(x)} is modelled by a parametric EMAX function:
-##'
-##' \deqn{f(x) = E_{0} + \frac{(E_{max} - E_{0}) * (x/x^{*})}{ED_{50} + (x/x^{*})}}
-##'
-##' where \eqn{x^{*}} is a reference dose, \eqn{E_{0}} and \eqn{E_{max}} are the
-##' minimum and maximum levels for the biomarker and \eqn{ED_{50}} is the dose
-##' achieving half of the maximum effect \eqn{0.5 * E_{max}}.
-##'
-##' All parameters can currently be assigned uniform distributions or be fixed
-##' in advance.
-##'
-##' @slot E0 either a fixed number or the two uniform distribution parameters
-##' @slot Emax either a fixed number or the two uniform distribution parameters
-##' @slot ED50 either a fixed number or the two uniform distribution parameters
-##' @slot refDoseEmax the reference dose \eqn{x^{*}}
-##'
-##' @example examples/Model-class-DualEndpointEmax.R
-##' @export
-##' @keywords classes
-.DualEndpointEmax <-
-    setClass("DualEndpointEmax",
-             representation(E0="numeric",
-                            Emax="numeric",
-                            ED50="numeric",
-                            refDoseEmax="numeric"),
-             prototype(E0=c(0, 100),
-                       Emax=c(0, 500),
-                       ED50=c(0,500),
-                       refDoseEmax=1000,
-                       use_fixed=
-                           c(sigma2W=TRUE,
-                                rho=TRUE,
-                                E0=FALSE,
-                                Emax=FALSE,
-                                ED50=FALSE)),
-             contains="DualEndpoint",
-             validity=
-                 function(object){
-                     o <- Validate()
+## class ----
 
-                     ## check the prior parameters with variable content
-                     for(parName in c("E0", "Emax", "ED50"))
-                     {
-                         ## if we use a fixed value for this parameter
-                         if(object@use_fixed[parName])
-                         {
-                             ## check range of value
-                             o$check(slot(object, parName) > 0,
-                                     paste(parName, "must be positive"))
-                         } else {
-                             ## use a Uniform(a, b) prior
-                             o$check(all(slot(object, parName) >= 0) &&
-                                         (diff(slot(object, parName)) > 0),
-                                     paste(parName,
-                                           "has not proper prior parameters"))
-                         }
-                     }
+#' `DualEndpointEmax`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DualEndpointEmax`] is the class for the dual endpoint model with beta
+#' function for dose-biomarker relationship.
+#'
+#' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
+#'   relationship \eqn{f(x)} is modelled by a parametric EMAX function:
+#'   \deqn{f(x) = E0 + [(Emax - E0) * (x/x*)]/[ED50 + (x/x*)],}
+#'   where \eqn{x*} is a reference dose, \eqn{E0} and \eqn{Emax} are the minimum
+#'   and maximum levels for the biomarker, and \eqn{ED50} is the dose achieving
+#'   half of the maximum effect \eqn{0.5 * Emax}.
+#'   All parameters can currently be assigned uniform distributions or be fixed.
+#'
+#' @slot E0 (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @slot Emax (`numeric`)\cr either a fixed number or the two uniform
+#'   distribution parameters.
+#' @slot ED50 (`numeric`)\cr either a fixed number or the two uniform
+#'   distribution parameters.
+#' @slot ref_dose_emax (`number`)\cr the reference dose \eqn{x*} (note that this
+#'   is different from the `ref_dose` in the inherited [`DualEndpoint`] model).
+#'
+#' @seealso [`DualEndpoint`], [`DualEndpointRW`], [`DualEndpointBeta`].
+#'
+#' @aliases DualEndpointEmax
+#' @export
+#'
+.DualEndpointEmax <- setClass(
+  Class = "DualEndpointEmax",
+  slots = c(
+    E0 = "numeric",
+    Emax = "numeric",
+    ED50 = "numeric",
+    ref_dose_emax = "numeric"
+  ),
+  prototype = prototype(
+    E0 = c(0, 100),
+    Emax = c(0, 500),
+    ED50 = c(0, 500),
+    ref_dose_emax = 1000,
+    use_fixed = c(
+      sigma2W = TRUE,
+      rho = TRUE,
+      E0 = FALSE,
+      Emax = FALSE,
+      ED50 = FALSE
+    )
+  ),
+  contains = "DualEndpoint",
+  validity = v_model_dual_endpoint_emax
+)
 
-                     ## check the refDoseEmax
-                     o$check(object@refDoseEmax > 0,
-                             "refDoseEmax must be positive")
+## constructor ----
 
-                     o$result()
-                 })
-
-##' Initialization function for the "DualEndpointEmax" class
-##'
-##' @param E0 see \code{\linkS4class{DualEndpointEmax}}
-##' @param Emax see \code{\linkS4class{DualEndpointEmax}}
-##' @param ED50 see \code{\linkS4class{DualEndpointEmax}}
-##' @param refDoseEmax see \code{\linkS4class{DualEndpointEmax}}
-##' @param \dots additional parameters, see \code{\linkS4class{DualEndpoint}}
-##' @return the \code{\linkS4class{DualEndpointEmax}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname DualEndpointEmax-class
+#'
+#' @param E0 (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @param Emax (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @param ED50 (`numeric`)\cr either a fixed number or the two uniform distribution
+#'   parameters.
+#' @param ref_dose_emax (`number`)\cr the reference dose \eqn{x*} (note that
+#'  this is different from the `ref_dose` in the inherited [`DualEndpoint`]
+#'  model).
+#' @param ... parameters passed to [DualEndpoint()].
+#'
+#' @export
+#' @example examples/Model-class-DualEndpointEmax.R
+#'
 DualEndpointEmax <- function(E0,
                              Emax,
                              ED50,
-                             refDoseEmax,
+                             ref_dose_emax,
                              ...) {
-    start <- DualEndpoint(...)
+  start <- DualEndpoint(...)
 
-    start@datanames <- c(start@datanames, "doseGrid")
-    start@use_fixed <- c(
-      start@use_fixed,
-      sapply(list(E0 = E0, Emax = Emax, ED50 = ED50), is.scalar)
-    )
-    start@priormodel <- h_jags_join_models(
-      start@priormodel,
-      function() {
-        for (j in 1:nGrid) {
-          StandDoseEmax[j] <- doseGrid[j] / refDoseEmax
-          betaW[j] <- E0 + (Emax - E0) * StandDoseEmax[j] / (ED50 + StandDoseEmax[j])
-        }
+  # We need the doseGrid in the BUGS model.
+  start@datanames <- c(start@datanames, "doseGrid")
+  start@sample <- c(start@sample, "betaW")
+  ms <- start@modelspecs
+  start@modelspecs <- function() {
+    c(ms(), list(ref_dose_emax = ref_dose_emax))
+  }
+
+  start <- h_model_dual_endpoint_beta(
+    param = E0,
+    param_name = "E0",
+    priormodel = function() {
+      E0 ~ dunif(E0_low, E0_high)
+    },
+    de = start
+  )
+
+  start <- h_model_dual_endpoint_beta(
+    param = Emax,
+    param_name = "Emax",
+    priormodel = function() {
+      Emax ~ dunif(Emax_low, Emax_high)
+    },
+    de = start
+  )
+
+  start <- h_model_dual_endpoint_beta(
+    param = ED50,
+    param_name = "ED50",
+    priormodel = function() {
+      ED50 ~ dunif(ED50_low, ED50_high)
+    },
+    de = start
+  )
+
+  start@priormodel <- h_jags_join_models(
+    start@priormodel,
+    function() {
+      for (i in 1:nGrid) {
+        stand_dose_emax[i] <- doseGrid[i] / ref_dose_emax
+        betaW[i] <- E0 + (Emax - E0) * stand_dose_emax[i] / (ED50 + stand_dose_emax[i])
       }
-    )
-
-    ## we will fill in more, depending on which parameters
-    ## are fixed, in these two variables:
-    start@sample <- c(start@sample,
-                      "betaW")
-    newInits <- list()
-    newModelspecs <- list(refDoseEmax=refDoseEmax)
-
-    ## for E0:
-    if(! start@use_fixed["E0"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for E0
-                           E0 ~ dunif(E0low, E0high)
-                       })
-
-        start@sample <- c(start@sample,
-                          "E0")
-
-        newInits$E0 <- mean(E0)
-        newModelspecs$E0low <- E0[1]
-        newModelspecs$E0high <- E0[2]
-    } else {
-        newModelspecs$E0 <- E0
     }
+  )
 
-    ## for Emax:
-    if(! start@use_fixed["Emax"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for Emax
-                           Emax ~ dunif(EmaxLow, EmaxHigh)
-                       })
-
-        start@sample <- c(start@sample,
-                          "Emax")
-
-        newInits$Emax <- mean(Emax)
-        newModelspecs$EmaxLow <- Emax[1]
-        newModelspecs$EmaxHigh <- Emax[2]
-    } else {
-        newModelspecs$Emax <- Emax
-    }
-
-    ## for ED50:
-    if(! start@use_fixed["ED50"])
-    {
-        start@priormodel <-
-            h_jags_join_models(start@priormodel,
-                       function(){
-                           ## uniform for ED50
-                           ED50 ~ dunif(ED50Low, ED50High)
-                       })
-
-        start@sample <- c(start@sample,
-                          "ED50")
-
-        newInits$ED50 <- mean(ED50)
-        newModelspecs$ED50Low <- ED50[1]
-        newModelspecs$ED50High <- ED50[2]
-    } else {
-        newModelspecs$ED50 <- ED50
-    }
-
-
-    ## now define the new modelspecs and init functions:
-    oldModelspecs <- start@modelspecs
-    start@modelspecs <- function()
-    {
-        c(oldModelspecs(),
-          newModelspecs)
-    }
-
-    oldInit <- start@init
-    start@init <- function(y, w, nGrid)
-    {
-        c(oldInit(y, w, nGrid),
-          newInits)
-    }
-
-    ## finally call the constructor
-    .DualEndpointEmax(start,
-                      E0=E0,
-                      Emax=Emax,
-                      ED50=ED50,
-                      refDoseEmax=refDoseEmax)
+  .DualEndpointEmax(
+    start,
+    E0 = E0,
+    Emax = Emax,
+    ED50 = ED50,
+    ref_dose_emax = ref_dose_emax
+  )
 }
-#validObject(DualEndpointEmax(E0=10,
-#                             Emax=50,
-#                             ED50=20,
-#                             refDoseEmax=10,
-#                             mean=c(0, 1),
-#                             cov=diag(2),
-#                             sigma2W=1,
-#                             rho=0))
+
+# nolint start
 
 # ModelPseudo ----
 
