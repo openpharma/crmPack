@@ -5,7 +5,7 @@ test_that("v_general_model passes for valid object", {
   expect_true(v_general_model(object))
 })
 
-test_that("v_general_model returns error message for non-valid object", {
+test_that("v_general_model returns message for non-valid object", {
   object <- h_get_general_model()
   # Changing `datanames` so that the arguments of `object@init` are not a subset
   # of the `datanames`.
@@ -24,7 +24,7 @@ test_that("v_model passes for valid object", {
   expect_true(v_model(object))
 })
 
-test_that("v_model returns error message for wrong dose function", {
+test_that("v_model returns message for wrong dose function", {
   object <- h_get_model()
   # Assigning a function with wrong parameter, i.e. not a `prob` and `param1`.
   object@dose <- function(wrong_param) {
@@ -37,7 +37,7 @@ test_that("v_model returns error message for wrong dose function", {
   )
 })
 
-test_that("v_model returns error message for wrong prob function", {
+test_that("v_model returns message for wrong prob function", {
   object <- h_get_model()
   # Assigning a function with wrong parameter, i.e. not a `dose` and `param1`.
   object@prob <- function(wrong_param) {
@@ -64,7 +64,7 @@ test_that("v_model_log_normal passes for valid object with ref_dose 0", {
   expect_true(v_model_log_normal(object))
 })
 
-test_that("v_model_log_normal returns error for wrong ref_dose", {
+test_that("v_model_log_normal returns message for wrong ref_dose", {
   object <- h_get_model_log_normal()
   # Assigning a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
@@ -82,7 +82,7 @@ test_that("v_model_logistic_kadane passes for valid object", {
   expect_true(v_model_logistic_kadane(object))
 })
 
-test_that("v_model_logistic_kadane returns error for wrong theta probability", {
+test_that("v_model_logistic_kadane returns message for wrong theta probability", {
   object <- h_get_logistic_kadane()
   err_msg <- "theta must be a probability scalar > 0 and < 1"
   # Assigning wrong values for probability theta.
@@ -94,7 +94,7 @@ test_that("v_model_logistic_kadane returns error for wrong theta probability", {
   expect_equal(v_model_logistic_kadane(object), err_msg)
 })
 
-test_that("v_model_logistic_kadane returns error for non-scalars", {
+test_that("v_model_logistic_kadane returns message for non-scalars", {
   object <- h_get_logistic_kadane()
   # Assigning vectors for scalar slots.
   object@theta <- c(0.4, 0.5)
@@ -111,7 +111,7 @@ test_that("v_model_logistic_kadane returns error for non-scalars", {
   )
 })
 
-test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
+test_that("v_model_logistic_kadane returns message for xmin greater than xmax", {
   object <- h_get_logistic_kadane()
   # Assigning vectors for scalar slots.
   object@xmin <- 1
@@ -128,7 +128,7 @@ test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
   )
 })
 
-test_that("v_model_logistic_kadane returns error for wrong theta probability", {
+test_that("v_model_logistic_kadane returns message for wrong theta probability", {
   object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "theta must be a probability scalar > 0 and < 1"
   # Assigning wrong values for probability theta.
@@ -140,7 +140,7 @@ test_that("v_model_logistic_kadane returns error for wrong theta probability", {
   expect_equal(v_model_logistic_kadane(object), err_msg)
 })
 
-test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
+test_that("v_model_logistic_kadane returns message for xmin greater than xmax", {
   object <- h_get_logistic_kadane_beta_gam()
   # Assigning vectors for scalar slots.
   object@xmin <- 1
@@ -157,7 +157,7 @@ test_that("v_model_logistic_kadane returns error for xmin greater than xmax", {
   )
 })
 
-test_that("v_model_logistic_kadane returns error for non-scalars", {
+test_that("v_model_logistic_kadane returns message for non-scalars", {
   object <- h_get_logistic_kadane_beta_gam()
   # Assigning vectors for scalar slots.
   object@theta <- c(0.4, 0.5)
@@ -181,7 +181,7 @@ test_that("v_model_logistic_kadane_beta_gamma passes for valid object", {
   expect_true(v_model_logistic_kadane_beta_gamma(object))
 })
 
-test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
+test_that("v_model_logistic_kadane_beta_gamma returns message for non-scalars", {
   object <- h_get_logistic_kadane_beta_gam()
   # Assigning vectors for scalar slots.
   object@alpha <- 3:6
@@ -189,18 +189,10 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for non-scalars", {
   object@shape <- 4:7
   object@rate <- 4:7
 
-  expect_equal(
-    v_model_logistic_kadane_beta_gamma(object),
-    c(
-      "Beta distribution shape parameter alpha must be a positive scalar",
-      "Beta distribution shape parameter beta must be a positive scalar",
-      "Gamma distribution shape parameter must be a positive scalar",
-      "Gamma distribution rate parameter must be a positive scalar"
-    )
-  )
+  expect_snapshot(v_model_logistic_kadane_beta_gamma(object))
 })
 
-test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distribution shape parameter alpha", {
+test_that("v_model_logistic_kadane_beta_gamma returns message for wrong Beta distribution shape parameter alpha", {
   object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Beta distribution shape parameter alpha must be a positive scalar"
   # Assigning wrong values for Beta distribution shape parameter alpha.
@@ -210,7 +202,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distr
   expect_equal(v_model_logistic_kadane_beta_gamma(object), err_msg)
 })
 
-test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distribution shape parameter beta", {
+test_that("v_model_logistic_kadane_beta_gamma returns message for wrong Beta distribution shape parameter beta", {
   object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Beta distribution shape parameter beta must be a positive scalar"
   # Assigning wrong values for Beta distribution shape parameter beta.
@@ -220,7 +212,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Beta distr
   expect_equal(v_model_logistic_kadane_beta_gamma(object), err_msg)
 })
 
-test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Gamma distribution shape parameter", {
+test_that("v_model_logistic_kadane_beta_gamma returns message for wrong Gamma distribution shape parameter", {
   object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Gamma distribution shape parameter must be a positive scalar"
   # Assigning wrong values for Gamma distribution shape parameter.
@@ -230,7 +222,7 @@ test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Gamma dist
   expect_equal(v_model_logistic_kadane_beta_gamma(object), err_msg)
 })
 
-test_that("v_model_logistic_kadane_beta_gamma returns error for wrong Gamma distribution rate parameter", {
+test_that("v_model_logistic_kadane_beta_gamma returns message for wrong Gamma distribution rate parameter", {
   object <- h_get_logistic_kadane_beta_gam()
   err_msg <- "Gamma distribution rate parameter must be a positive scalar"
   # Assigning wrong values for Gamma distribution rate parameter.
@@ -254,7 +246,7 @@ test_that("v_model_logistic_normal_mix passes for valid object with ref_dose 0",
   expect_true(v_model_logistic_normal_mix(object))
 })
 
-test_that("v_model_logistic_normal_mix returns error for wrong ref_dose", {
+test_that("v_model_logistic_normal_mix returns message for wrong ref_dose", {
   object <- h_get_logistic_normal_mix()
   # Assigning a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
@@ -265,7 +257,7 @@ test_that("v_model_logistic_normal_mix returns error for wrong ref_dose", {
   )
 })
 
-test_that("v_model_logistic_normal_mix returns error for wrong weightpar", {
+test_that("v_model_logistic_normal_mix returns message for wrong weightpar", {
   object <- h_get_logistic_normal_mix()
   err_msg <- "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
   # Assigning wrong values for weightpar.
@@ -300,7 +292,7 @@ test_that("v_model_logistic_normal_fixed_mix passes for valid object with ref_do
   expect_true(v_model_logistic_normal_fixed_mix(object))
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for wrong ref_dose", {
+test_that("v_model_logistic_normal_fixed_mix returns message for wrong ref_dose", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
@@ -311,7 +303,7 @@ test_that("v_model_logistic_normal_fixed_mix returns error for wrong ref_dose", 
   )
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for wrong components", {
+test_that("v_model_logistic_normal_fixed_mix returns message for wrong components", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning wrong values for components.
   object@components <- list(mean = c(0, 1), cov = diag(2))
@@ -322,27 +314,16 @@ test_that("v_model_logistic_normal_fixed_mix returns error for wrong components"
   )
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for non-valid ModelParamsNormal comp", {
+test_that("v_model_logistic_normal_fixed_mix returns message for non-valid ModelParamsNormal comp", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning wrong values for ModelParamsNormal object.
   object@components[[1]]@mean <- c(0, NA)
   object@components[[1]]@cov <- matrix(letters[1:4], nrow = 2)
 
-  err_msg <- paste(
-    c(
-      "components must be a list with valid ModelParamsNormal S4 class objects",
-      "mean must have length 2 and no missing values are allowed",
-      "cov must be 2x2 matrix without any missing values"
-    ),
-    collapse = ", "
-  )
-  expect_equal(
-    v_model_logistic_normal_fixed_mix(object),
-    err_msg
-  )
+  expect_snapshot(v_model_logistic_normal_fixed_mix(object))
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for weights and comp of diff len", {
+test_that("v_model_logistic_normal_fixed_mix returns message for weights and comp of diff len", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning weights of different length than the components.
   object@weights <- rep(0.1, 10)
@@ -353,7 +334,7 @@ test_that("v_model_logistic_normal_fixed_mix returns error for weights and comp 
   )
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for weights not sum to 1", {
+test_that("v_model_logistic_normal_fixed_mix returns message for weights not sum to 1", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning weights that do not sum to 1.
   object@weights <- c(2, 4)
@@ -364,7 +345,7 @@ test_that("v_model_logistic_normal_fixed_mix returns error for weights not sum t
   )
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for negative weights", {
+test_that("v_model_logistic_normal_fixed_mix returns message for negative weights", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning negative weights.
   object@weights <- c(-0.5, 1.5)
@@ -375,7 +356,7 @@ test_that("v_model_logistic_normal_fixed_mix returns error for negative weights"
   )
 })
 
-test_that("v_model_logistic_normal_fixed_mix returns error for non-scalar log_normal", {
+test_that("v_model_logistic_normal_fixed_mix returns message for non-scalar log_normal", {
   object <- h_get_logistic_normal_fixed_mix()
   # Assigning non-scalar log_normal.
   object@log_normal <- c(TRUE, FALSE, TRUE)
@@ -400,7 +381,7 @@ test_that("v_model_logistic_log_normal_mix passes for valid object with ref_dose
   expect_true(v_model_logistic_log_normal_mix(object))
 })
 
-test_that("v_model_logistic_log_normal_mix returns error for wrong ref_dose", {
+test_that("v_model_logistic_log_normal_mix returns message for wrong ref_dose", {
   object <- h_get_logistic_log_normal_mix()
   # Assigning a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4)
@@ -411,7 +392,7 @@ test_that("v_model_logistic_log_normal_mix returns error for wrong ref_dose", {
   )
 })
 
-test_that("v_model_logistic_log_normal_mix returns error for wrong share_weight", {
+test_that("v_model_logistic_log_normal_mix returns message for wrong share_weight", {
   object <- h_get_logistic_log_normal_mix()
   err_msg <- "share_weight does not specify a probability"
   # Assigning wrong values for weightpar.
@@ -431,7 +412,7 @@ test_that("v_model_dual_endpoint passes for valid object", {
   expect_true(v_model_dual_endpoint(object_ff))
 })
 
-test_that("v_model_dual_endpoint returns error for wrong ref_dose", {
+test_that("v_model_dual_endpoint returns message for wrong ref_dose", {
   object <- h_get_dual_endpoint()
   # We assign a ref_dose which is not a non-negative scalar.
   object@ref_dose <- c(-3, -5, 4, 0)
@@ -442,7 +423,7 @@ test_that("v_model_dual_endpoint returns error for wrong ref_dose", {
   )
 })
 
-test_that("v_model_dual_endpoint returns error for wrong use_log_dose", {
+test_that("v_model_dual_endpoint returns message for wrong use_log_dose", {
   object <- h_get_dual_endpoint()
   # We assign a use_log_dose which is not a single flag.
   object@use_log_dose <- c(TRUE, FALSE)
@@ -453,23 +434,15 @@ test_that("v_model_dual_endpoint returns error for wrong use_log_dose", {
   )
 })
 
-test_that("v_model_dual_endpoint returns error for wrong use_fixed", {
+test_that("v_model_dual_endpoint returns message for wrong use_fixed", {
   object <- h_get_dual_endpoint()
   # Assigning non-valid use_fixed.
   object@use_fixed <- TRUE
 
-  expect_equal(
-    v_model_dual_endpoint(object),
-    c(
-      "use_fixed must be a named logical vector that contains name 'sigma2W'",
-      "use_fixed must be a named logical vector that contains name 'rho'",
-      "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'",
-      "rho must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
-    )
-  )
+  expect_snapshot(v_model_dual_endpoint(object))
 })
 
-test_that("v_model_dual_endpoint returns error for wrong fixed sigma2W", {
+test_that("v_model_dual_endpoint returns message for wrong fixed sigma2W", {
   object <- h_get_dual_endpoint()
   # Assigning wrong values for sigma2W.
   object@sigma2W <- c(-5:0, Inf)
@@ -480,7 +453,7 @@ test_that("v_model_dual_endpoint returns error for wrong fixed sigma2W", {
   )
 })
 
-test_that("v_model_dual_endpoint returns error for wrong sigma2W", {
+test_that("v_model_dual_endpoint returns message for wrong sigma2W", {
   object <- h_get_dual_endpoint()
   # Assigning wrong values for sigma2W.
   object@sigma2W <- c(4, -5, b = -Inf)
@@ -492,7 +465,7 @@ test_that("v_model_dual_endpoint returns error for wrong sigma2W", {
   )
 })
 
-test_that("v_model_dual_endpoint returns error for wrong fixed rho", {
+test_that("v_model_dual_endpoint returns message for wrong fixed rho", {
   object <- h_get_dual_endpoint()
   # Assigning wrong values for rho.
   object@rho <- c(-5:0, Inf)
@@ -503,7 +476,7 @@ test_that("v_model_dual_endpoint returns error for wrong fixed rho", {
   )
 })
 
-test_that("v_model_dual_endpoint returns error for wrong rho", {
+test_that("v_model_dual_endpoint returns message for wrong rho", {
   object <- h_get_dual_endpoint()
   # Assigning wrong values for rho.
   object@rho <- c(4, -5, b = -Inf)
@@ -525,7 +498,7 @@ test_that("v_model_dual_endpoint_rw passes for valid object", {
   expect_true(v_model_dual_endpoint_rw(object_ff))
 })
 
-test_that("v_model_dual_endpoint_rw returns error for wrong use_fixed", {
+test_that("v_model_dual_endpoint_rw returns message for wrong use_fixed", {
   object <- h_get_dual_endpoint_rw()
   # Assigning non-valid use_fixed.
   object@use_fixed <- TRUE
@@ -539,7 +512,7 @@ test_that("v_model_dual_endpoint_rw returns error for wrong use_fixed", {
   )
 })
 
-test_that("v_model_dual_endpoint_rw returns error for wrong fixed sigma2betaW", {
+test_that("v_model_dual_endpoint_rw returns message for wrong fixed sigma2betaW", {
   object <- h_get_dual_endpoint_rw()
   # Assigning wrong values for sigma2betaW.
   object@sigma2betaW <- c(-5:0, Inf)
@@ -550,7 +523,7 @@ test_that("v_model_dual_endpoint_rw returns error for wrong fixed sigma2betaW", 
   )
 })
 
-test_that("v_model_dual_endpoint_rw returns error for wrong sigma2betaW", {
+test_that("v_model_dual_endpoint_rw returns message for wrong sigma2betaW", {
   object <- h_get_dual_endpoint_rw()
   # Assigning wrong values for sigma2betaW.
   object@sigma2betaW <- c(4, -5, b = -Inf)
@@ -572,7 +545,7 @@ test_that("v_model_dual_endpoint_beta passes for valid object", {
   expect_true(v_model_dual_endpoint_beta(object_ff))
 })
 
-test_that("v_model_dual_endpoint_beta returns error for wrong use_fixed", {
+test_that("v_model_dual_endpoint_beta returns message for wrong use_fixed", {
   object <- h_get_dual_endpoint_beta()
   # Assigning non-valid use_fixed.
   object@use_fixed <- TRUE
@@ -580,72 +553,74 @@ test_that("v_model_dual_endpoint_beta returns error for wrong use_fixed", {
   expect_snapshot(v_model_dual_endpoint_beta(object))
 })
 
-test_that("v_model_dual_endpoint_beta returns error for wrong E0", {
+test_that("v_model_dual_endpoint_beta returns message for wrong fixed parameters", {
   object <- h_get_dual_endpoint_beta()
-  # Assigning wrong values for E0.
-  object@E0 <- c(4, -5, b = -Inf)
-  object@use_fixed["E0"] <- FALSE
-
-  expect_equal(
-    v_model_dual_endpoint_beta(object),
-    "E0 must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
-  )
-})
-
-test_that("v_model_dual_endpoint_beta returns error for wrong Emax", {
-  object <- h_get_dual_endpoint_beta()
-  # Assigning wrong values for Emax.
-  object@Emax <- c(4, -5, b = -Inf)
-  object@use_fixed["Emax"] <- FALSE
-
-  expect_equal(
-    v_model_dual_endpoint_beta(object),
-    "Emax must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
-  )
-})
-
-test_that("v_model_dual_endpoint_beta returns error for wrong fixed delta1", {
-  object <- h_get_dual_endpoint_beta()
-  # Assigning wrong values for delta1.
+  # Assigning wrong values for fixed delta1, mode parameters.
   object@delta1 <- c(-2, 0)
+  object@mode <- c(-2, 2)
+
+  expect_snapshot(v_model_dual_endpoint_beta(object))
+})
+
+test_that("v_model_dual_endpoint_beta returns message for wrong parameters", {
+  object <- h_get_dual_endpoint_beta(fixed = FALSE)
+  # Assigning wrong values for E0, Emax, delta1, mode parameters.
+  object@E0 <- c(4, -5, b = -Inf)
+  object@Emax <- c(4, -5, b = -Inf)
+  object@delta1 <- c(4, -5, b = -Inf)
+  object@mode <- c(4, -5, b = -Inf)
+
+  expect_snapshot(v_model_dual_endpoint_beta(object))
+})
+
+test_that("v_model_dual_endpoint_emax returns message for wrong ref_dose_beta", {
+  object <- h_get_dual_endpoint_beta()
+  # We assign a ref_dose_beta which is not a non-negative scalar.
+  object@ref_dose_beta <- c(-3, -5, 4, 0)
 
   expect_equal(
     v_model_dual_endpoint_beta(object),
-    "delta1 must be a positive and finite numerical scalar"
+    "ref_dose_beta must be a positive scalar"
   )
 })
 
-test_that("v_model_dual_endpoint_beta returns error for wrong delta1", {
-  object <- h_get_dual_endpoint_beta()
-  # Assigning wrong values for delta1.
-  object@delta1 <- c(4, -5, b = Inf)
-  object@use_fixed["delta1"] <- FALSE
+# v_model_dual_endpoint_emax ----
 
-  expect_equal(
-    v_model_dual_endpoint_beta(object),
-    "delta1 must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
-  )
+test_that("v_model_dual_endpoint_emax passes for valid object", {
+  object <- h_get_dual_endpoint_emax()
+  object_ff <- h_get_dual_endpoint_emax(fixed = FALSE)
+
+  expect_true(v_model_dual_endpoint_emax(object))
+  expect_true(v_model_dual_endpoint_emax(object_ff))
 })
 
-test_that("v_model_dual_endpoint_beta returns error for wrong fixed mode", {
-  object <- h_get_dual_endpoint_beta()
-  # Assigning wrong values for mode.
-  object@mode <- c(-2, 0)
+test_that("v_model_dual_endpoint_emax returns message for wrong fixed parameters", {
+  object <- h_get_dual_endpoint_emax()
+  # Assigning wrong values for fixed E0, Emax, ED50 parameters.
+  object@E0 <- c(-2, 0)
+  object@Emax <- c(-2, 2)
+  object@ED50 <- c(-2, 6)
 
-  expect_equal(
-    v_model_dual_endpoint_beta(object),
-    "mode must be a positive and finite numerical scalar"
-  )
+  expect_snapshot(v_model_dual_endpoint_emax(object))
 })
 
-test_that("v_model_dual_endpoint_beta returns error for wrong mode", {
-  object <- h_get_dual_endpoint_beta()
-  # Assigning wrong values for mode.
-  object@mode <- c(4, -5, b = Inf)
-  object@use_fixed["mode"] <- FALSE
+test_that("v_model_dual_endpoint_emax returns message for wrong parameters", {
+  object <- h_get_dual_endpoint_emax(fixed = FALSE)
+  # Assigning wrong values for E0, Emax, ED50 parameters.
+  object@E0 <- c(4, -5, b = -Inf)
+  object@Emax <- c(4, -5, b = -Inf)
+  object@ED50 <- c(4, -5, b = -Inf)
+
+  expect_snapshot(v_model_dual_endpoint_emax(object))
+})
+
+test_that("v_model_dual_endpoint_emax returns message for wrong ref_dose_emax", {
+  object <- h_get_dual_endpoint_emax()
+  # We assign a ref_dose_emax which is not a non-negative scalar.
+  object@ref_dose_emax <- c(-3, -5, 4, 0)
 
   expect_equal(
-    v_model_dual_endpoint_beta(object),
-    "mode must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values"
+    v_model_dual_endpoint_emax(object),
+    "ref_dose_emax must be a positive scalar"
   )
 })

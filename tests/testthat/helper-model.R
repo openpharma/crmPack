@@ -232,3 +232,29 @@ h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
     ref_dose_beta = 10
   )
 }
+
+h_get_dual_endpoint_emax <- function(use_log_dose = FALSE, fixed = TRUE) {
+  de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
+  if (fixed) {
+    E0 <- 10 # nolint
+    Emax <- 50 # nolint
+    ED50 <- 20 # nolint
+  } else {
+    E0 <- c(0, 100) # nolint
+    Emax <- c(0, 500) # nolint
+    ED50 <- c(0, 500) # nolint
+  }
+
+  DualEndpointEmax(
+    mean = de@betaZ_params@mean,
+    cov = de@betaZ_params@cov,
+    ref_dose = de@ref_dose,
+    use_log_dose = de@use_log_dose,
+    sigma2W = de@sigma2W,
+    rho = de@rho,
+    E0 = E0,
+    Emax = Emax,
+    ED50 = ED50,
+    ref_dose_emax = 10
+  )
+}

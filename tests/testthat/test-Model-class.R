@@ -452,3 +452,37 @@ test_that("MCMC computes correct values for DualEndpointBeta model", {
   result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
+
+# DualEndpointEmax ----
+
+## constructor ----
+
+test_that("DualEndpointEmax object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint_emax())
+  expect_valid(result, "DualEndpointEmax")
+})
+
+test_that("DualEndpointEmax object can be created with user constructor", {
+  result <- expect_silent(h_get_dual_endpoint_emax(fixed = FALSE))
+  expect_valid(result, "DualEndpointEmax")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DualEndpointEmax model with fixed parameters", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_emax()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointEmax model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_emax(fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
