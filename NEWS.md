@@ -1,4 +1,4 @@
-# Version 1.0.9000.9003
+# Version 1.0.9000.9004
 * Renamed `refDoseBeta` slot to `ref_dose_beta` in `DualEndpointEmax` class.
 * Renamed `refDoseEmax` slot to `ref_dose_emax` in `DualEndpointBeta` class.
 * Replaced `smooth` character vector argument of `DualEndpointRW()` to `rw1` flag. 
