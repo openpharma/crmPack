@@ -156,6 +156,8 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
+      - mcmc-GeneralData
+      - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
