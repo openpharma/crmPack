@@ -329,3 +329,12 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expect_identical(result, expected) # First active dose not applied.
 })
+
+test_that("NextBestInfoTheory can be initiliazed ",{
+  newMyNextBest <- NextBestInfTheory(target = 0.25, asymmetry=0.1)
+
+  #design <- Design(model=model, stopping=stopRule, increments=increments, nextBest=newMyNextBest, cohortSize=cohort, data=emptyData, startingDose=40)
+  #sims.InfTheory1 <- simulate(design, nsim=10, seed = 456, truth=scenario, args=list(ED50=175, alpha1=5),mcmcOptions = mcmcOptions, parallel = F)
+  #summary(sims.InfTheory1, truth=scenario, target=newMyNextBest@target, ED50=175, alpha1=5)
+
+})
