@@ -453,6 +453,18 @@ test_that("MCMC computes correct values for DualEndpointBeta model", {
   expect_snapshot(result@data)
 })
 
+test_that("MCMC throws the error when ref_dose_beta is not greater than max dose in grid)", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_beta()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  model@ref_dose_beta <- data@doseGrid[data@nGrid] - 1
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'model@ref_dose_beta > data@doseGrid\\[data@nGrid\\]' failed: Must be TRUE."
+  )
+})
+
 # DualEndpointEmax ----
 
 ## constructor ----

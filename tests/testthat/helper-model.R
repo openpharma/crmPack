@@ -214,8 +214,8 @@ h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
   } else {
     E0 <- c(1, 6) # nolint
     Emax <- c(2, 9) # nolint
-    delta1 <- 3 # c(1, 5), waiting for fixing issue no 162 # nolint
-    mode <- 5 # c(3, 10), waiting for fixing issue no 162 # nolint
+    delta1 <- 3
+    mode <- 5
   }
 
   DualEndpointBeta(
@@ -229,7 +229,7 @@ h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
     Emax = Emax,
     delta1 = delta1,
     mode = mode,
-    ref_dose_beta = 10
+    ref_dose_beta = 400 # When used for mcmc, it must be greater than data@doseGrid[nGrid].
   )
 }
 
