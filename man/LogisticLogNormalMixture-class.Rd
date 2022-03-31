@@ -15,7 +15,8 @@ LogisticLogNormalMixture(mean, cov, ref_dose, share_weight)
 \item{cov}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
 \code{prec} is internally calculated as an inverse of \code{cov}.}
 
-\item{ref_dose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose \eqn{x*} (strictly positive
+number).}
 
 \item{share_weight}{(\code{proportion})\cr the prior weight for the share component.}
 }

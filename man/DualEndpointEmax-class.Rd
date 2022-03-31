@@ -7,7 +7,7 @@
 \alias{DualEndpointEmax}
 \title{\code{DualEndpointEmax}}
 \usage{
-DualEndpointEmax(E0, Emax, ED50, ref_dose_emax, ...)
+DualEndpointEmax(E0, Emax, ED50, ref_dose_emax = 1, ...)
 }
 \arguments{
 \item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
@@ -19,9 +19,9 @@ parameters.}
 \item{ED50}{(\code{numeric})\cr either a fixed number or the two uniform distribution
 parameters.}
 
-\item{ref_dose_emax}{(\code{number})\cr the reference dose \eqn{x*} (note that
-this is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}}
-model).}
+\item{ref_dose_emax}{(\code{number})\cr the reference dose \eqn{x*} (strictly
+positive number). Note that this is different from the \code{ref_dose} in the
+inherited \code{\link{DualEndpoint}} model).}
 
 \item{...}{parameters passed to \code{\link[=DualEndpoint]{DualEndpoint()}}.}
 }
@@ -52,8 +52,9 @@ distribution parameters.}
 \item{\code{ED50}}{(\code{numeric})\cr either a fixed number or the two uniform
 distribution parameters.}
 
-\item{\code{ref_dose_emax}}{(\code{number})\cr the reference dose \eqn{x*} (note that this
-is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}} model).}
+\item{\code{ref_dose_emax}}{(\code{positive_number})\cr the reference dose \eqn{x*} (note
+that this is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}}
+model).}
 }}
 
 \examples{

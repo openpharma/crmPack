@@ -7,7 +7,7 @@
 \alias{DualEndpointBeta}
 \title{\code{DualEndpointBeta}}
 \usage{
-DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta, ...)
+DualEndpointBeta(E0, Emax, delta1, mode, ref_dose_beta = 1, ...)
 }
 \arguments{
 \item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
@@ -22,9 +22,9 @@ of the uniform distribution, that can take only positive values.}
 \item{mode}{(\code{numeric})\cr either a fixed positive number or the two parameters
 of the uniform distribution, that can take only positive values.}
 
-\item{ref_dose_beta}{(\code{number})\cr the reference dose \eqn{x*} (note that
-this is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}}
-model).}
+\item{ref_dose_beta}{(\code{number})\cr the reference dose \eqn{x*} (strictly
+positive number). Note that this is different from the \code{ref_dose} in the
+inherited \code{\link{DualEndpoint}} model).}
 
 \item{...}{parameters passed to \code{\link[=DualEndpoint]{DualEndpoint()}}.}
 }
@@ -38,7 +38,7 @@ function for dose-biomarker relationship.
 This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
 relationship \eqn{f(x)} is modelled by a parametric, rescaled beta density
 function:
-\deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)delta1 * (1 - x/x*)^delta2,}
+\deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1 * (1 - x/x*)^delta2,}
 where \eqn{x*} is the maximum dose (end of the dose range to be considered),
 \eqn{delta1} and \eqn{delta2} are the two beta function parameters, and
 \eqn{E0}, \eqn{Emax} are the minimum and maximum levels, respectively.
@@ -68,8 +68,9 @@ parameters of the uniform distribution, that can take only positive values.}
 \item{\code{mode}}{(\code{numeric})\cr either a fixed positive number or the two
 parameters of the uniform distribution, that can take only positive values.}
 
-\item{\code{ref_dose_beta}}{(\code{number})\cr the reference dose \eqn{x*} (note that this
-is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}} model).}
+\item{\code{ref_dose_beta}}{(\code{positive_number})\cr the reference dose \eqn{x*} (note
+that this is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}}
+model).}
 }}
 
 \examples{

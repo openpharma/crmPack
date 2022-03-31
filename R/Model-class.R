@@ -161,7 +161,7 @@ NULL
 #' All ("normal") model specific classes inherit from this class.
 #'
 #' @slot params (`ModelParamsNormal`)\cr bivariate normal prior parameters.
-#' @slot ref_dose (`number`)\cr the reference dose.
+#' @slot ref_dose (`positive_number`)\cr the reference dose.
 #'
 #' @seealso [`ModelParamsNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
 #'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalRel`].
@@ -174,9 +174,8 @@ NULL
   contains = "Model",
   slots = c(
     params = "ModelParamsNormal",
-    ref_dose = "numeric"
-  ),
-  validity = v_model_log_normal
+    ref_dose = "positive_number"
+  )
 )
 
 ## constructor ----
@@ -186,15 +185,16 @@ NULL
 #' @param mean (`numeric`)\cr the prior mean vector.
 #' @param cov (`matrix`)\cr the prior covariance matrix. The precision matrix
 #'   `prec` is internally calculated as an inverse of `cov`.
-#' @param ref_dose (`number`)\cr the reference dose.
+#' @param ref_dose (`number`)\cr the reference dose \eqn{x*} (strictly positive
+#'   number).
 #'
 #' @export
 #'
-ModelLogNormal <- function(mean, cov, ref_dose = 0) {
+ModelLogNormal <- function(mean, cov, ref_dose = 1) {
   params <- ModelParamsNormal(mean, cov)
   .ModelLogNormal(
     params = params,
-    ref_dose = ref_dose,
+    ref_dose = positive_number(ref_dose),
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
       alpha0 <- theta[1]
@@ -248,7 +248,7 @@ ModelLogNormal <- function(mean, cov, ref_dose = 0) {
 #' @export
 #' @example examples/Model-class-LogisticNormal.R
 #'
-LogisticNormal <- function(mean, cov, ref_dose = 0) {
+LogisticNormal <- function(mean, cov, ref_dose = 1) {
   model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticNormal(
@@ -304,7 +304,7 @@ LogisticNormal <- function(mean, cov, ref_dose = 0) {
 #' @export
 #' @example examples/Model-class-LogisticLogNormal.R
 #'
-LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
+LogisticLogNormal <- function(mean, cov, ref_dose = 1) {
   model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .LogisticLogNormal(
@@ -335,40 +335,60 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 0) {
 #'   where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
-#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#' @slot params (`ModelParamsNormal`)\cr bivariate normal prior parameters.
+#' @slot ref_dose (`number`)\cr the reference dose \eqn{x*}.
+#'
+#' @seealso [`LogisticNormal`], [`LogisticLogNormal`], [`ProbitLogNormal`],
+#'   [`ProbitLogNormalRel`].
 #'
 #' @aliases LogisticLogNormalSub
 #' @export
 #'
 .LogisticLogNormalSub <- setClass(
   Class = "LogisticLogNormalSub",
-  contains = "ModelLogNormal"
+  slots = c(
+    params = "ModelParamsNormal",
+    ref_dose = "number"
+  ),
+  contains = "Model"
 )
 
 ## constructor ----
 
 #' @rdname LogisticLogNormalSub-class
 #'
-#' @inheritParams ModelLogNormal
+#' @param mean (`numeric`)\cr the prior mean vector.
+#' @param cov (`matrix`)\cr the prior covariance matrix. The precision matrix
+#'   `prec` is internally calculated as an inverse of `cov`.
+#' @param ref_dose (`number`)\cr the reference dose \eqn{x*}.
 #'
 #' @export
 #' @example examples/Model-class-LogisticLogNormalSub.R
 #'
 LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
-  model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
-
+  params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormalSub(
-    model_ln,
+    params = params,
+    ref_dose = ref_dose,
     datamodel = function() {
       for (i in 1:nObs) {
         logit(p[i]) <- alpha0 + alpha1 * (x[i] - ref_dose)
         y[i] ~ dbern(p[i])
       }
     },
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha0 <- theta[1]
+      alpha1 <- exp(theta[2])
+    },
+    modelspecs = function() {
+      list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+    },
     init = function() {
       list(theta = c(0, -20))
-    }
+    },
+    sample = c("alpha0", "alpha1"),
+    datanames = c("nObs", "y", "x")
   )
 }
 
@@ -414,7 +434,7 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
 #' @export
 #' @example examples/Model-class-ProbitLogNormal.R
 #'
-ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
+ProbitLogNormal <- function(mean, cov, ref_dose = 1) {
   model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .ProbitLogNormal(
@@ -470,7 +490,7 @@ ProbitLogNormal <- function(mean, cov, ref_dose = 0) {
 #' @export
 #' @example examples/Model-class-ProbitLogNormalRel.R
 #'
-ProbitLogNormalRel <- function(mean, cov, ref_dose = 0) {
+ProbitLogNormalRel <- function(mean, cov, ref_dose = 1) {
   model_ln <- ModelLogNormal(mean = mean, cov = cov, ref_dose = ref_dose)
 
   .ProbitLogNormalRel(
@@ -717,7 +737,7 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
 #' @slot weightpar (`numeric`)\cr the beta parameters for the weight of the
 #'   first component. It must a be a named vector of length 2 with names `a` and
 #'   `b` and with strictly positive values.
-#' @slot ref_dose (`number`)\cr the reference dose.
+#' @slot ref_dose (`positive_number`)\cr the reference dose.
 #'
 #' @seealso [`ModelParamsNormal`], [`ModelLogNormal`],
 #'   [`LogisticNormalFixedMixture`], [`LogisticLogNormalMixture`].
@@ -732,13 +752,13 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
     comp1 = "ModelParamsNormal",
     comp2 = "ModelParamsNormal",
     weightpar = "numeric",
-    ref_dose = "numeric"
+    ref_dose = "positive_number"
   ),
   prototype = prototype(
     comp1 = ModelParamsNormal(mean = c(0, 1), cov = diag(2)),
     comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2)),
     weightpar = c(a = 1, b = 1),
-    ref_dose = 1
+    ref_dose = positive_number(1)
   ),
   validity = v_model_logistic_normal_mix
 )
@@ -754,7 +774,8 @@ LogisticKadaneBetaGamma <- function(theta, xmin, xmax, alpha, beta, shape, rate)
 #' @param weightpar (`numeric`)\cr the beta parameters for the weight of the
 #'   first component. It must a be a named vector of length 2 with names `a` and
 #'   `b` and with strictly positive values.
-#' @param ref_dose (`number`)\cr the reference dose.
+#' @param ref_dose (`number`)\cr the reference dose \eqn{x*}
+#'   (strictly positive number).
 #'
 #' @export
 #' @example examples/Model-class-LogisticNormalMixture.R
@@ -767,7 +788,7 @@ LogisticNormalMixture <- function(comp1,
     comp1 = comp1,
     comp2 = comp2,
     weightpar = weightpar,
-    ref_dose = ref_dose,
+    ref_dose = positive_number(ref_dose),
     datamodel = function() {
       # The logistic likelihood - the same as for non-mixture case.
       for (i in 1:nObs) {
@@ -839,7 +860,7 @@ LogisticNormalMixture <- function(comp1,
 #'   prior.
 #' @slot weights (`numeric`)\cr the weights of the components; these must be
 #'   positive and must sum to 1.
-#' @slot ref_dose (`number`)\cr the reference dose.
+#' @slot ref_dose (`positive_number`)\cr the reference dose.
 #' @slot log_normal (`flag`)\cr should a log normal prior be used, such
 #'   that the mean vectors and covariance matrices are valid for the intercept
 #'   and log slope?
@@ -856,7 +877,7 @@ LogisticNormalMixture <- function(comp1,
   slots = c(
     components = "list",
     weights = "numeric",
-    ref_dose = "numeric",
+    ref_dose = "positive_number",
     log_normal = "logical"
   ),
   prototype = prototype(
@@ -865,7 +886,7 @@ LogisticNormalMixture <- function(comp1,
       comp2 = ModelParamsNormal(mean = c(-1, 1), cov = diag(2))
     ),
     weights = c(0.5, 0.5),
-    ref_dose = 1,
+    ref_dose = positive_number(1),
     log_normal = TRUE
   ),
   validity = v_model_logistic_normal_fixed_mix
@@ -880,7 +901,8 @@ LogisticNormalMixture <- function(comp1,
 #'   prior.
 #' @param weights (`numeric`)\cr the weights of the components; these must be
 #'   positive and will be normalized to sum to 1.
-#' @param ref_dose (`number`)\cr the reference dose.
+#' @param ref_dose (`number`)\cr the reference dose \eqn{x*}
+#'   (strictly positive number).
 #' @param log_normal (`flag`)\cr should a log normal prior be specified, such
 #'   that the mean vectors and covariance matrices are valid for the intercept
 #'   and log slope?
@@ -898,7 +920,7 @@ LogisticNormalFixedMixture <- function(components,
   .LogisticNormalFixedMixture(
     components = components,
     weights = weights,
-    ref_dose = ref_dose,
+    ref_dose = positive_number(ref_dose),
     log_normal = log_normal,
     datamodel = function() {
       for (i in 1:nObs) {
@@ -1003,7 +1025,7 @@ LogisticLogNormalMixture <- function(mean,
   params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormalMixture(
     params = params,
-    ref_dose = ref_dose,
+    ref_dose = positive_number(ref_dose),
     share_weight = share_weight,
     datamodel = function() {
       for (i in 1:nObs) {
@@ -1089,7 +1111,8 @@ LogisticLogNormalMixture <- function(mean,
 #' @slot betaZ_params (`ModelParamsNormal`)\cr for the probit toxicity model, it
 #'   contains the prior mean, covariance matrix and precision matrix which is
 #'   internally calculated as an inverse of the covariance matrix.
-#' @slot ref_dose (`number`)\cr for the probit toxicity model, the reference dose.
+#' @slot ref_dose (`positive_number`)\cr for the probit toxicity model, the
+#'   reference dose.
 #' @slot use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
 #' @slot sigma2W (`numeric`)\cr the biomarker variance. Either a fixed value or
@@ -1112,7 +1135,7 @@ LogisticLogNormalMixture <- function(mean,
   Class = "DualEndpoint",
   slots = c(
     betaZ_params = "ModelParamsNormal",
-    ref_dose = "numeric",
+    ref_dose = "positive_number",
     use_log_dose = "logical",
     sigma2W = "numeric",
     rho = "numeric",
@@ -1123,7 +1146,7 @@ LogisticLogNormalMixture <- function(mean,
       mean = c(0, 1),
       cov = diag(2)
     ),
-    ref_dose = 1,
+    ref_dose = positive_number(1),
     use_log_dose = FALSE,
     sigma2W = 1,
     rho = 0,
@@ -1143,7 +1166,8 @@ LogisticLogNormalMixture <- function(mean,
 #' @param mean (`numeric`)\cr for the probit toxicity model, the prior mean vector.
 #' @param cov (`matrix`)\cr for the probit toxicity model, the prior covariance
 #'   matrix. The precision matrix is internally calculated as an inverse of `cov`.
-#' @param ref_dose (`number`)\cr for the probit toxicity model, the reference dose.
+#' @param ref_dose (`number`)\cr for the probit toxicity model, the reference
+#'   dose \eqn{x*} (strictly positive number).
 #' @param use_log_dose (`flag`)\cr for the probit toxicity model, whether a log
 #'   transformation of the (standardized) dose should be used?
 #' @param sigma2W (`numeric`)\cr the biomarker variance. Either a fixed value or
@@ -1215,7 +1239,7 @@ DualEndpoint <- function(mean,
 
   .DualEndpoint(
     betaZ_params = betaZ_params,
-    ref_dose = ref_dose,
+    ref_dose = positive_number(ref_dose),
     use_log_dose = use_log_dose,
     sigma2W = sigma2W,
     rho = rho,
@@ -1376,7 +1400,7 @@ DualEndpointRW <- function(sigma2betaW,
 #' @details This class extends the [`DualEndpoint`] class so that the dose-biomarker
 #'   relationship \eqn{f(x)} is modelled by a parametric, rescaled beta density
 #'   function:
-#'   \deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)delta1 * (1 - x/x*)^delta2,}
+#'   \deqn{f(x) = E0 + (Emax - E0) * Beta(delta1, delta2) * (x/x*)^delta1 * (1 - x/x*)^delta2,}
 #'   where \eqn{x*} is the maximum dose (end of the dose range to be considered),
 #'   \eqn{delta1} and \eqn{delta2} are the two beta function parameters, and
 #'   \eqn{E0}, \eqn{Emax} are the minimum and maximum levels, respectively.
@@ -1399,8 +1423,9 @@ DualEndpointRW <- function(sigma2betaW,
 #'   parameters of the uniform distribution, that can take only positive values.
 #' @slot mode (`numeric`)\cr either a fixed positive number or the two
 #'   parameters of the uniform distribution, that can take only positive values.
-#' @slot ref_dose_beta (`number`)\cr the reference dose \eqn{x*} (note that this
-#'   is different from the `ref_dose` in the inherited [`DualEndpoint`] model).
+#' @slot ref_dose_beta (`positive_number`)\cr the reference dose \eqn{x*} (note
+#'   that this is different from the `ref_dose` in the inherited [`DualEndpoint`]
+#'   model).
 #'
 #' @seealso [`DualEndpoint`], [`DualEndpointRW`], [`DualEndpointEmax`].
 #'
@@ -1414,14 +1439,14 @@ DualEndpointRW <- function(sigma2betaW,
     Emax = "numeric",
     delta1 = "numeric",
     mode = "numeric",
-    ref_dose_beta = "numeric"
+    ref_dose_beta = "positive_number"
   ),
   prototype = prototype(
     E0 = c(0, 100),
     Emax = c(0, 500),
     delta1 = c(0, 5),
     mode = c(1, 15),
-    ref_dose_beta = 1000,
+    ref_dose_beta = positive_number(1),
     use_fixed = c(
       sigma2W = TRUE,
       rho = TRUE,
@@ -1447,9 +1472,9 @@ DualEndpointRW <- function(sigma2betaW,
 #'   of the uniform distribution, that can take only positive values.
 #' @param mode (`numeric`)\cr either a fixed positive number or the two parameters
 #'   of the uniform distribution, that can take only positive values.
-#' @param ref_dose_beta (`number`)\cr the reference dose \eqn{x*} (note that
-#'  this is different from the `ref_dose` in the inherited [`DualEndpoint`]
-#'  model).
+#' @param ref_dose_beta (`number`)\cr the reference dose \eqn{x*} (strictly
+#'   positive number). Note that this is different from the `ref_dose` in the
+#'   inherited [`DualEndpoint`] model).
 #' @param ... parameters passed to [DualEndpoint()].
 #'
 #' @export
@@ -1459,7 +1484,7 @@ DualEndpointBeta <- function(E0,
                              Emax,
                              delta1,
                              mode,
-                             ref_dose_beta,
+                             ref_dose_beta = 1,
                              ...) {
   start <- DualEndpoint(...)
 
@@ -1526,7 +1551,7 @@ DualEndpointBeta <- function(E0,
     Emax = Emax,
     delta1 = delta1,
     mode = mode,
-    ref_dose_beta = ref_dose_beta
+    ref_dose_beta = positive_number(ref_dose_beta)
   )
 }
 
@@ -1555,8 +1580,9 @@ DualEndpointBeta <- function(E0,
 #'   distribution parameters.
 #' @slot ED50 (`numeric`)\cr either a fixed number or the two uniform
 #'   distribution parameters.
-#' @slot ref_dose_emax (`number`)\cr the reference dose \eqn{x*} (note that this
-#'   is different from the `ref_dose` in the inherited [`DualEndpoint`] model).
+#' @slot ref_dose_emax (`positive_number`)\cr the reference dose \eqn{x*} (note
+#'   that this is different from the `ref_dose` in the inherited [`DualEndpoint`]
+#'   model).
 #'
 #' @seealso [`DualEndpoint`], [`DualEndpointRW`], [`DualEndpointBeta`].
 #'
@@ -1575,7 +1601,7 @@ DualEndpointBeta <- function(E0,
     E0 = c(0, 100),
     Emax = c(0, 500),
     ED50 = c(0, 500),
-    ref_dose_emax = 1000,
+    ref_dose_emax = positive_number(1),
     use_fixed = c(
       sigma2W = TRUE,
       rho = TRUE,
@@ -1598,9 +1624,9 @@ DualEndpointBeta <- function(E0,
 #'   parameters.
 #' @param ED50 (`numeric`)\cr either a fixed number or the two uniform distribution
 #'   parameters.
-#' @param ref_dose_emax (`number`)\cr the reference dose \eqn{x*} (note that
-#'  this is different from the `ref_dose` in the inherited [`DualEndpoint`]
-#'  model).
+#' @param ref_dose_emax (`number`)\cr the reference dose \eqn{x*} (strictly
+#'   positive number). Note that this is different from the `ref_dose` in the
+#'   inherited [`DualEndpoint`] model).
 #' @param ... parameters passed to [DualEndpoint()].
 #'
 #' @export
@@ -1609,7 +1635,7 @@ DualEndpointBeta <- function(E0,
 DualEndpointEmax <- function(E0,
                              Emax,
                              ED50,
-                             ref_dose_emax,
+                             ref_dose_emax = 1,
                              ...) {
   start <- DualEndpoint(...)
 
@@ -1662,7 +1688,7 @@ DualEndpointEmax <- function(E0,
     E0 = E0,
     Emax = Emax,
     ED50 = ED50,
-    ref_dose_emax = ref_dose_emax
+    ref_dose_emax = positive_number(ref_dose_emax)
   )
 }
 

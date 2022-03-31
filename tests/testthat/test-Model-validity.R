@@ -50,31 +50,6 @@ test_that("v_model returns message for wrong prob function", {
   )
 })
 
-# v_model_log_normal ----
-
-test_that("v_model_log_normal passes for valid object", {
-  object <- h_get_model_log_normal()
-  expect_true(v_model_log_normal(object))
-})
-
-test_that("v_model_log_normal passes for valid object with ref_dose 0", {
-  object <- h_get_model_log_normal()
-  object@ref_dose <- 0
-
-  expect_true(v_model_log_normal(object))
-})
-
-test_that("v_model_log_normal returns message for wrong ref_dose", {
-  object <- h_get_model_log_normal()
-  # Assigning a ref_dose which is not a non-negative scalar.
-  object@ref_dose <- c(-3, -5, 4)
-
-  expect_equal(
-    v_model_log_normal(object),
-    "ref_dose must be a non-negative scalar"
-  )
-})
-
 # v_model_logistic_kadane ----
 
 test_that("v_model_logistic_kadane passes for valid object", {
@@ -239,24 +214,6 @@ test_that("v_model_logistic_normal_mix passes for valid object", {
   expect_true(v_model_logistic_normal_mix(object))
 })
 
-test_that("v_model_logistic_normal_mix passes for valid object with ref_dose 0", {
-  object <- h_get_logistic_normal_mix()
-  object@ref_dose <- 0
-
-  expect_true(v_model_logistic_normal_mix(object))
-})
-
-test_that("v_model_logistic_normal_mix returns message for wrong ref_dose", {
-  object <- h_get_logistic_normal_mix()
-  # Assigning a ref_dose which is not a non-negative scalar.
-  object@ref_dose <- c(-3, -5, 4)
-
-  expect_equal(
-    v_model_logistic_normal_mix(object),
-    "ref_dose must be a non-negative scalar"
-  )
-})
-
 test_that("v_model_logistic_normal_mix returns message for wrong weightpar", {
   object <- h_get_logistic_normal_mix()
   err_msg <- "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
@@ -283,24 +240,6 @@ test_that("v_model_logistic_normal_mix returns message for wrong weightpar", {
 test_that("v_model_logistic_normal_fixed_mix passes for valid object", {
   object <- h_get_logistic_normal_fixed_mix()
   expect_true(v_model_logistic_normal_fixed_mix(object))
-})
-
-test_that("v_model_logistic_normal_fixed_mix passes for valid object with ref_dose 0", {
-  object <- h_get_logistic_normal_fixed_mix()
-  object@ref_dose <- 0
-
-  expect_true(v_model_logistic_normal_fixed_mix(object))
-})
-
-test_that("v_model_logistic_normal_fixed_mix returns message for wrong ref_dose", {
-  object <- h_get_logistic_normal_fixed_mix()
-  # Assigning ref_dose which is not a non-negative scalar.
-  object@ref_dose <- c(-3, -5, 4)
-
-  expect_equal(
-    v_model_logistic_normal_fixed_mix(object),
-    "ref_dose must be a non-negative scalar"
-  )
 })
 
 test_that("v_model_logistic_normal_fixed_mix returns message for wrong components", {
@@ -374,24 +313,6 @@ test_that("v_model_logistic_log_normal_mix passes for valid object", {
   expect_true(v_model_logistic_log_normal_mix(object))
 })
 
-test_that("v_model_logistic_log_normal_mix passes for valid object with ref_dose 0", {
-  object <- h_get_logistic_log_normal_mix()
-  object@ref_dose <- 0
-
-  expect_true(v_model_logistic_log_normal_mix(object))
-})
-
-test_that("v_model_logistic_log_normal_mix returns message for wrong ref_dose", {
-  object <- h_get_logistic_log_normal_mix()
-  # Assigning a ref_dose which is not a non-negative scalar.
-  object@ref_dose <- c(-3, -5, 4)
-
-  expect_equal(
-    v_model_logistic_log_normal_mix(object),
-    "ref_dose must be a non-negative scalar"
-  )
-})
-
 test_that("v_model_logistic_log_normal_mix returns message for wrong share_weight", {
   object <- h_get_logistic_log_normal_mix()
   err_msg <- "share_weight does not specify a probability"
@@ -410,17 +331,6 @@ test_that("v_model_dual_endpoint passes for valid object", {
 
   expect_true(v_model_dual_endpoint(object))
   expect_true(v_model_dual_endpoint(object_ff))
-})
-
-test_that("v_model_dual_endpoint returns message for wrong ref_dose", {
-  object <- h_get_dual_endpoint()
-  # We assign a ref_dose which is not a non-negative scalar.
-  object@ref_dose <- c(-3, -5, 4, 0)
-
-  expect_equal(
-    v_model_dual_endpoint(object),
-    "ref_dose must be a positive scalar"
-  )
 })
 
 test_that("v_model_dual_endpoint returns message for wrong use_log_dose", {
@@ -573,17 +483,6 @@ test_that("v_model_dual_endpoint_beta returns message for wrong parameters", {
   expect_snapshot(v_model_dual_endpoint_beta(object))
 })
 
-test_that("v_model_dual_endpoint_emax returns message for wrong ref_dose_beta", {
-  object <- h_get_dual_endpoint_beta()
-  # We assign a ref_dose_beta which is not a non-negative scalar.
-  object@ref_dose_beta <- c(-3, -5, 4, 0)
-
-  expect_equal(
-    v_model_dual_endpoint_beta(object),
-    "ref_dose_beta must be a positive scalar"
-  )
-})
-
 # v_model_dual_endpoint_emax ----
 
 test_that("v_model_dual_endpoint_emax passes for valid object", {
@@ -612,15 +511,4 @@ test_that("v_model_dual_endpoint_emax returns message for wrong parameters", {
   object@ED50 <- c(4, -5, b = -Inf)
 
   expect_snapshot(v_model_dual_endpoint_emax(object))
-})
-
-test_that("v_model_dual_endpoint_emax returns message for wrong ref_dose_emax", {
-  object <- h_get_dual_endpoint_emax()
-  # We assign a ref_dose_emax which is not a non-negative scalar.
-  object@ref_dose_emax <- c(-3, -5, 4, 0)
-
-  expect_equal(
-    v_model_dual_endpoint_emax(object),
-    "ref_dose_emax must be a positive scalar"
-  )
 })

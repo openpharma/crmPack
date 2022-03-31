@@ -50,7 +50,7 @@ test_that(".ModelLogNormal works as expected", {
   result <- expect_silent(
     .ModelLogNormal(
       params = ModelParamsNormal(mean = c(0, 2), cov = diag(2)),
-      ref_dose = 1,
+      ref_dose = positive_number(1),
       dose = function(prob, param1) {},
       prob = function(dose, param1) {},
       datamodel = function(x) {},
@@ -458,7 +458,7 @@ test_that("MCMC throws the error when ref_dose_beta is not greater than max dose
   model <- h_get_dual_endpoint_beta()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  model@ref_dose_beta <- data@doseGrid[data@nGrid] - 1
+  model@ref_dose_beta <- positive_number(data@doseGrid[data@nGrid] - 1)
   expect_error(
     mcmc(data = data, model = model, options = options),
     "Assertion on 'model@ref_dose_beta > data@doseGrid\\[data@nGrid\\]' failed: Must be TRUE."

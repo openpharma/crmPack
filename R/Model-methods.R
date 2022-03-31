@@ -326,9 +326,10 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((logit(prob) - alpha0) / alpha1) * model@ref_dose
+    exp((logit(prob) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -350,7 +351,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
@@ -377,7 +378,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     exp((logit(prob) - alpha0) / alpha1) * ref_dose
@@ -402,7 +403,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
@@ -481,7 +482,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     exp((probit(prob) - alpha0) / alpha1) * ref_dose
@@ -506,7 +507,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     pnorm(alpha0 + alpha1 * log(dose / ref_dose))
@@ -533,7 +534,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     ((probit(prob) - alpha0) / alpha1) * ref_dose
@@ -558,7 +559,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     pnorm(alpha0 + alpha1 * (dose / ref_dose))
@@ -697,7 +698,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     exp((logit(prob) - alpha0) / alpha1) * ref_dose
@@ -722,7 +723,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
@@ -749,7 +750,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     exp((logit(prob) - alpha0) / alpha1) * ref_dose
@@ -774,7 +775,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
@@ -820,7 +821,7 @@ setMethod(
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     comp <- samples@data$comp
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
@@ -848,7 +849,7 @@ setMethod(
   definition = function(prob, model, samples) {
     assert_subset("betaZ", names(samples@data))
     betaZ <- samples@data$betaZ
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
 
     dose_temp <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
@@ -877,7 +878,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_subset("betaZ", names(samples@data))
     betaZ <- samples@data$betaZ
-    ref_dose <- model@ref_dose
+    ref_dose <- as.numeric(model@ref_dose)
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
 
     stand_dose <- if (model@use_log_dose) {

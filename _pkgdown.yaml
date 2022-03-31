@@ -25,6 +25,7 @@ reference:
   - title: Classes
     contents:
       - Validate
+      - positive_number
       - GeneralData
       - Data
       - DataDual

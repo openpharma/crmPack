@@ -8,7 +8,7 @@
 \alias{ProbitLogNormal}
 \title{\code{ProbitLogNormal}}
 \usage{
-ProbitLogNormal(mean, cov, ref_dose = 0)
+ProbitLogNormal(mean, cov, ref_dose = 1)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -16,7 +16,8 @@ ProbitLogNormal(mean, cov, ref_dose = 0)
 \item{cov}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
 \code{prec} is internally calculated as an inverse of \code{cov}.}
 
-\item{ref_dose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose \eqn{x*} (strictly positive
+number).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
