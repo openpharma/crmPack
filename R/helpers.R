@@ -60,7 +60,7 @@ positive_number <- setClass(
   validity = function(object) {
     v <- Validate()
     v$check(
-      test_number(object, lower = .Machine$double.xmin, finite = TRUE),
+      test_number(object, finite = TRUE) && object > 0,
       "Object's value must be strictly positive"
     )
     v$result()
