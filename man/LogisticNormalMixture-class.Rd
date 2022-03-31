@@ -20,7 +20,8 @@ the second component. See \code{\link{ModelParamsNormal}} for more details.}
 first component. It must a be a named vector of length 2 with names \code{a} and
 \code{b} and with strictly positive values.}
 
-\item{ref_dose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose \eqn{x*}
+(strictly positive number).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -50,7 +51,7 @@ the second component.}
 first component. It must a be a named vector of length 2 with names \code{a} and
 \code{b} and with strictly positive values.}
 
-\item{\code{ref_dose}}{(\code{number})\cr the reference dose.}
+\item{\code{ref_dose}}{(\code{positive_number})\cr the reference dose.}
 }}
 
 \note{

@@ -1,4 +1,6 @@
 # Version 1.0.9000.9004
+* Added `positive_number` class to handle strictly positive valued slots
+  (e.g. `ref_dose` in many model classes).
 * Renamed `refDoseBeta` slot to `ref_dose_beta` in `DualEndpointEmax` class.
 * Renamed `refDoseEmax` slot to `ref_dose_emax` in `DualEndpointBeta` class.
 * Replaced `smooth` character vector argument of `DualEndpointRW()` to `rw1` flag. 

@@ -46,16 +46,6 @@ v_model <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that the `ref_dose` is a positive scalar.
-v_model_log_normal <- function(object) {
-  v <- Validate()
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
-  )
-  v$result()
-}
-
 #' @describeIn v_model_objects validates that the logistic Kadane model
 #'   parameters are valid.
 v_model_logistic_kadane <- function(object) {
@@ -99,24 +89,18 @@ v_model_logistic_kadane_beta_gamma <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that `weightpar` and `ref_dose` are valid.
+#' @describeIn v_model_objects validates that `weightpar` is valid.
 v_model_logistic_normal_mix <- function(object) {
   v <- Validate()
-
   v$check(
     h_test_named_numeric(object@weightpar, permutation.of = c("a", "b")),
     "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
-  )
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
   )
   v$result()
 }
 
 #' @describeIn v_model_objects validates that `component` is a list with
-#'   valid `ModelParamsNormal` objects as well as `weights` and `ref_dose` are
-#'   correct.
+#'   valid `ModelParamsNormal` objects as well as `weights` are correct.
 v_model_logistic_normal_fixed_mix <- function(object) {
   v <- Validate()
   v$check(
@@ -147,24 +131,15 @@ v_model_logistic_normal_fixed_mix <- function(object) {
     "weights must sum to 1"
   )
   v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
-  )
-  v$check(
     test_flag(object@log_normal),
     "log_normal must be TRUE or FALSE"
   )
   v$result()
 }
 
-#' @describeIn v_model_objects validates that `ref_dose` is valid and
-#'   `share_weight` represents probability.
+#' @describeIn v_model_objects validates that `share_weight` represents probability.
 v_model_logistic_log_normal_mix <- function(object) {
   v <- Validate()
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
-  )
   v$check(
     is.probability(object@share_weight),
     "share_weight does not specify a probability"
@@ -177,10 +152,6 @@ v_model_dual_endpoint <- function(object) {
   rmin <- .Machine$double.xmin
   v <- Validate()
 
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0 + rmin),
-    "ref_dose must be a positive scalar"
-  )
   v$check(
     test_flag(object@use_log_dose),
     "use_log_dose must be TRUE or FALSE"
@@ -228,7 +199,6 @@ v_model_dual_endpoint <- function(object) {
 #' @describeIn v_model_objects validates that [`DualEndpointRW`] class slots are valid.
 v_model_dual_endpoint_rw <- function(object) {
   v <- Validate()
-
   uf_sigma2W <- object@use_fixed["sigma2betaW"]
   v$check(
     test_flag(uf_sigma2W),
@@ -285,11 +255,6 @@ v_model_dual_endpoint_beta <- function(object) {
     }
   }
 
-  v$check(
-    test_number(object@ref_dose_beta, na.ok = TRUE, lower = 0 + rmin),
-    "ref_dose_beta must be a positive scalar"
-  )
-
   v$result()
 }
 
@@ -326,11 +291,6 @@ v_model_dual_endpoint_emax <- function(object) {
       )
     }
   }
-
-  v$check(
-    test_number(object@ref_dose_emax, na.ok = TRUE, lower = 0 + rmin),
-    "ref_dose_emax must be a positive scalar"
-  )
 
   v$result()
 }

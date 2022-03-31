@@ -42,6 +42,31 @@ Validate <- setRefClass(
   )
 )
 
+# positive_number-class ----
+
+#' `positive_number`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' The [`positive_number`] class is a class to store not `NULL`, non `NA`,
+#' finite and strictly positive numerical value. It is mainly used to store
+#' reference dose value in model classes.
+#'
+#' @name positive_number
+#'
+positive_number <- setClass(
+  Class = "positive_number",
+  contains = "numeric",
+  validity = function(object) {
+    v <- Validate()
+    v$check(
+      test_number(object, finite = TRUE) && object > 0,
+      "Object's value must be strictly positive"
+    )
+    v$result()
+  }
+)
+
 # nolint start
 
 ##' Helper function for value matching with tolerance
