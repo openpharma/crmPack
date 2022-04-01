@@ -331,9 +331,32 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 })
 
 test_that("NextBestInfoTheory can be initiliazed ",{
+  # set up
   newMyNextBest <- NextBestInfTheory(target = 0.25, asymmetry=0.1)
 
-  #design <- Design(model=model, stopping=stopRule, increments=increments, nextBest=newMyNextBest, cohortSize=cohort, data=emptyData, startingDose=40)
+  myModel <- h_get_model_log_normal()
+
+  # taken from docstrings to Design
+  emptyData <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+  mySize1 <- CohortSizeRange(intervals=c(0, 30),
+                           cohortSize=c(1, 3))
+  mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
+                         cohortSize=c(1, 3))
+  mySize <- maxSize(mySize1, mySize2)
+
+  # Choose the rule for stopping
+  myStopping1 <- StoppingMinCohorts(nCohorts=3)
+  myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
+                                  prob=0.5)
+  myStopping3 <- StoppingMinPatients(nPatients=20)
+  myStopping <- (myStopping1 & myStopping2) | myStopping3
+
+  # Choose the rule for dose increments
+  myIncrements <- IncrementsRelative(intervals=c(0, 20),
+                                   increments=c(1, 0.33))
+
+  design <- Design(model=myModel, stopping=myStopping, increments=myIncrements, nextBest=newMyNextBest, cohortSize=mySize, data=emptyData, startingDose=40)
   #sims.InfTheory1 <- simulate(design, nsim=10, seed = 456, truth=scenario, args=list(ED50=175, alpha1=5),mcmcOptions = mcmcOptions, parallel = F)
   #summary(sims.InfTheory1, truth=scenario, target=newMyNextBest@target, ED50=175, alpha1=5)
 
