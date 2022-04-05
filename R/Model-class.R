@@ -122,7 +122,6 @@ NULL
 #'   for a specific dose, based on the model parameters and additional prior
 #'   settings (see the details above).
 #'
-#'
 #' @aliases Model
 #' @export
 #'
@@ -617,21 +616,21 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #'   The prior for `rho0 = p(xmin)`, is \deqn{rho0 ~ Beta(alpha, beta).}
 #'
 #' @note The slots of this class, required for creating the model, are the same
-#'    as in the `LogisticKadane` class. In addition, the shape parameters of the
-#'    Beta prior distribution of `rho0` and the shape and rate parameters of the
-#'    Gamma prior distribution of `gamma`, are required for creating the prior model.
+#'   as in the `LogisticKadane` class. In addition, the shape parameters of the
+#'   Beta prior distribution of `rho0` and the shape and rate parameters of the
+#'   Gamma prior distribution of `gamma`, are required for creating the prior model.
 #'
 #' @slot theta (`proportion`)\cr the target toxicity probability.
 #' @slot xmin (`number`)\cr the minimum of the dose range.
 #' @slot xmax (`number`)\cr the maximum of the dose range.
 #' @slot alpha (`number`)\cr the first shape parameter of the Beta prior distribution
-#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#'   of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 #' @slot beta (`number`)\cr the second shape parameter of the Beta prior distribution
-#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#'   of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 #' @slot shape (`number`)\cr the shape parameter of the Gamma prior distribution
-#' of `gamma` the dose with target toxicity probability `theta`.
+#'   of `gamma` the dose with target toxicity probability `theta`.
 #' @slot rate (`number`)\cr the rate parameter of the Gamma prior distribution
-#' of `gamma` the dose with target toxicity probability `theta`.
+#'   of `gamma` the dose with target toxicity probability `theta`.
 #'
 #' @seealso [`ModelLogNormal`], [`LogisticKadane`].
 #'
@@ -666,13 +665,13 @@ LogisticKadane <- function(theta, xmin, xmax) {
 #' @inheritParams LogisticKadane
 #'
 #' @param alpha (`number`)\cr the first shape parameter of the Beta prior distribution
-#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#'   `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 #' @param beta (`number`)\cr the second shape parameter of the Beta prior distribution
-#' of `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
+#'   `rho0 = p(xmin)` the probability of a DLT at the minimum dose `xmin`.
 #' @param shape (`number`)\cr the shape parameter of the Gamma prior distribution
-#' of `gamma` the dose with target toxicity probability `theta`.
+#'   `gamma` the dose with target toxicity probability `theta`.
 #' @param rate (`number`)\cr the rate parameter of the Gamma prior distribution
-#' of `gamma` the dose with target toxicity probability `theta`.
+#'   `gamma` the dose with target toxicity probability `theta`.
 #'
 #' @export
 #' @example examples/Model-class-LogisticKadaneBetaGamma.R
@@ -887,7 +886,7 @@ LogisticNormalMixture <- function(comp1,
     ),
     weights = c(0.5, 0.5),
     ref_dose = positive_number(1),
-    log_normal = TRUE
+    log_normal = FALSE
   ),
   validity = v_model_logistic_normal_fixed_mix
 )

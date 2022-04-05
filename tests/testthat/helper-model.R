@@ -139,7 +139,7 @@ h_get_logistic_normal_mix <- function() {
   )
 }
 
-h_get_logistic_normal_fixed_mix <- function() { # nolint
+h_get_logistic_normal_fixed_mix <- function(log_normal = FALSE) { # nolint
   LogisticNormalFixedMixture(
     components = list(
       comp1 = ModelParamsNormal(
@@ -152,7 +152,8 @@ h_get_logistic_normal_fixed_mix <- function() { # nolint
       )
     ),
     weights = c(0.3, 0.7),
-    ref_dose = 50
+    ref_dose = 50,
+    log_normal = log_normal
   )
 }
 
