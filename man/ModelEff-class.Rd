@@ -5,8 +5,7 @@
 \alias{ModelEff-class}
 \alias{.ModelEff}
 \alias{ModelEff}
-\title{No Initialization function
-class for Efficacy models using pseudo data prior}
+\title{class for Efficacy models using pseudo data prior}
 \description{
 This is a class of which contains all efficacy models for which their prior are specified in
 form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
