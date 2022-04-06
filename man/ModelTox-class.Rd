@@ -4,6 +4,7 @@
 \name{ModelTox-class}
 \alias{ModelTox-class}
 \alias{.ModelTox}
+\alias{ModelTox}
 \title{Class for DLE models using pseudo data prior.
 This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
 for which their prior are specified in form of pseudo data (as if there is some data before

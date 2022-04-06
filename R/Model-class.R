@@ -1743,6 +1743,7 @@ DualEndpointEmax <- function(E0,
 ##' \code{\linkS4class{EffFlexi}}
 ##'
 ##'
+#' @aliases ModelTox
 ##' @export
 ##' @keywords classes
 .ModelTox<-setClass(Class="ModelTox",
@@ -1798,8 +1799,8 @@ DualEndpointEmax <- function(E0,
 ##' @seealso \code{\linkS4class{Effloglog}},
 ##' \code{\linkS4class{EffFlexi}}
 ##'
+#' @aliases ModelEff
 ##' @export
-##' @keywords classes
 .ModelEff<-setClass(Class="ModelEff",
                     representation(dose="function",
                                    ExpEff="function",

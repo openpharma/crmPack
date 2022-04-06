@@ -4,6 +4,7 @@
 \name{ModelEff-class}
 \alias{ModelEff-class}
 \alias{.ModelEff}
+\alias{ModelEff}
 \title{No Initialization function
 class for Efficacy models using pseudo data prior}
 \description{
@@ -54,4 +55,3 @@ obtain model parameters estimates or samples (see details above)}
 \code{\linkS4class{Effloglog}},
 \code{\linkS4class{EffFlexi}}
 }
-\keyword{classes}
