@@ -17,16 +17,16 @@ LogisticKadaneBetaGamma(theta, xmin, xmax, alpha, beta, shape, rate)
 \item{xmax}{(\code{number})\cr the maximum of the dose range.}
 
 \item{alpha}{(\code{number})\cr the first shape parameter of the Beta prior distribution
-of \code{rho0 = p(xmin)} the probability of a DLT at the minimum dose \code{xmin}.}
+\code{rho0 = p(xmin)} the probability of a DLT at the minimum dose \code{xmin}.}
 
 \item{beta}{(\code{number})\cr the second shape parameter of the Beta prior distribution
-of \code{rho0 = p(xmin)} the probability of a DLT at the minimum dose \code{xmin}.}
+\code{rho0 = p(xmin)} the probability of a DLT at the minimum dose \code{xmin}.}
 
 \item{shape}{(\code{number})\cr the shape parameter of the Gamma prior distribution
-of \code{gamma} the dose with target toxicity probability \code{theta}.}
+\code{gamma} the dose with target toxicity probability \code{theta}.}
 
 \item{rate}{(\code{number})\cr the rate parameter of the Gamma prior distribution
-of \code{gamma} the dose with target toxicity probability \code{theta}.}
+\code{gamma} the dose with target toxicity probability \code{theta}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

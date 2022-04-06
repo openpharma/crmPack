@@ -1708,7 +1708,7 @@ DualEndpointEmax <- function(E0,
 #' @aliases ModelPseudo
 #' @export
 #'
-.ModelPseudo < -setClass(
+.ModelPseudo <- setClass(
   Class = "ModelPseudo",
   contains = "AllModels"
 )
