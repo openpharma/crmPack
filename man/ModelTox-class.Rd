@@ -4,8 +4,8 @@
 \name{ModelTox-class}
 \alias{ModelTox-class}
 \alias{.ModelTox}
-\title{No intialization function
-Class for DLE models using pseudo data prior.
+\alias{ModelTox}
+\title{Class for DLE models using pseudo data prior.
 This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
 for which their prior are specified in form of pseudo data (as if there is some data before
 the trial starts). It inherits all slots from \code{\linkS4class{ModelPseudo}}}
