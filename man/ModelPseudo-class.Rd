@@ -10,8 +10,7 @@
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{ModelPseudo}} is the parent class for models that express their prior in
-the form of pseudo data (given that some data is available before the trial
-starts).
+the form of pseudo data (as if there is some data before the trial starts).
 }
 \seealso{
 \code{\link{ModelEff}}, \code{\link{ModelTox}}.

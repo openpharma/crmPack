@@ -53,6 +53,7 @@ reference:
       - DualEndpointBeta
       - DualEndpointEmax
       - ModelPseudo
+      - ModelTox
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta

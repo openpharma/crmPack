@@ -5,32 +5,32 @@
 \alias{ModelTox-class}
 \alias{.ModelTox}
 \alias{ModelTox}
-\title{Class for DLE models using pseudo data prior.
-This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
-for which their prior are specified in form of pseudo data (as if there is some data before
-the trial starts). It inherits all slots from \code{\linkS4class{ModelPseudo}}}
+\title{\code{ModelTox}}
 \description{
-The \code{data} must obey the convention that the data input is called exactly in the
-\code{\linkS4class{Data}} class. This refers to any observed DLE responses (\code{y} in
-\code{\linkS4class{Data}} class), the dose (levels) (\code{x} in \code{\linkS4class{Data}} class)
-at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
-in \code{\linkS4class{Data}}) class and other specifications in \code{\linkS4class{Data}}
-class that can be used to generate prior or
-posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
-at least \code{doseGrid} in \code{\linkS4class{Data}} has to be specified in \code{data} slot for which
-prior modal estimates or samples can be obtained for model parameters based on the specified pseudo
-data.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{ModelTox}} is the parent class for DLE (dose-limiting events) models using
+pseudo data prior. It is dedicated for DLE models or toxicity models that
+have their prior specified in the form of pseudo data (as if there is some
+data before the trial starts).
+
+The \code{data} must obey the convention of the \code{\link{Data}} class. This refers to any
+observed DLE responses (\code{y} in \code{\link{Data}}), the dose levels (\code{x} in \code{\link{Data}})
+at which these responses are observed, all dose levels considered in the
+study (\code{doseGrid} in \code{\link{Data}}) and other specifications in \code{\link{Data}} class
+that can be used to generate prior or posterior modal estimates or samples
+estimates for model parameter(s).
+If no responses are observed, at least \code{doseGrid} has to be specified
+in \code{data} for which prior modal estimates or samples can be obtained for
+model parameters based on the specified pseudo data.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{refers to the data input specification in \code{\linkS4class{Data}} class which are used to
-obtain model parameters estimates or samples (see details above)}
+\item{\code{data}}{(\code{Data})\cr observed data that is used to obtain model parameters
+estimates or samples (see details above).}
 }}
 
 \seealso{
-\code{\linkS4class{LogisticIndepBeta}},
-\code{\linkS4class{Effloglog}},
-\code{\linkS4class{EffFlexi}}
+\code{\link{ModelPseudo}}, \code{\link{ModelEff}}.
 }
-\keyword{classes}

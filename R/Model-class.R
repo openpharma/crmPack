@@ -1700,8 +1700,7 @@ DualEndpointEmax <- function(E0,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`ModelPseudo`] is the parent class for models that express their prior in
-#' the form of pseudo data (given that some data is available before the trial
-#' starts).
+#' the form of pseudo data (as if there is some data before the trial starts).
 #'
 #' @seealso [`ModelEff`], [`ModelTox`].
 #'
@@ -1713,44 +1712,46 @@ DualEndpointEmax <- function(E0,
   contains = "AllModels"
 )
 
-# nolint start
-
 # ModelTox ----
 
-## ===========================================================================
+## class ----
 
-##' Class for DLE models using pseudo data prior.
-##' This is a class of DLE (dose-limiting events) models/ toxicity model which contains all DLE models
-##' for which their prior are specified in form of pseudo data (as if there is some data before
-##' the trial starts). It inherits all slots from \code{\linkS4class{ModelPseudo}}
-##'
-##' The \code{data} must obey the convention that the data input is called exactly in the
-##' \code{\linkS4class{Data}} class. This refers to any observed DLE responses (\code{y} in
-##' \code{\linkS4class{Data}} class), the dose (levels) (\code{x} in \code{\linkS4class{Data}} class)
-##' at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
-##' in \code{\linkS4class{Data}}) class and other specifications in \code{\linkS4class{Data}}
-##' class that can be used to generate prior or
-##' posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
-##' at least \code{doseGrid} in \code{\linkS4class{Data}} has to be specified in \code{data} slot for which
-##' prior modal estimates or samples can be obtained for model parameters based on the specified pseudo
-##' data.
-##' @slot data refers to the data input specification in \code{\linkS4class{Data}} class which are used to
-##' obtain model parameters estimates or samples (see details above)
-##'
-##'
-##' @seealso \code{\linkS4class{LogisticIndepBeta}},
-##' \code{\linkS4class{Effloglog}},
-##' \code{\linkS4class{EffFlexi}}
-##'
-##'
+#' `ModelTox`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`ModelTox`] is the parent class for DLE (dose-limiting events) models using
+#' pseudo data prior. It is dedicated for DLE models or toxicity models that
+#' have their prior specified in the form of pseudo data (as if there is some
+#' data before the trial starts).
+#'
+#' The `data` must obey the convention of the [`Data`] class. This refers to any
+#' observed DLE responses (`y` in [`Data`]), the dose levels (`x` in [`Data`])
+#' at which these responses are observed, all dose levels considered in the
+#' study (`doseGrid` in [`Data`]) and other specifications in [`Data`] class
+#' that can be used to generate prior or posterior modal estimates or samples
+#' estimates for model parameter(s).
+#' If no responses are observed, at least `doseGrid` has to be specified
+#' in `data` for which prior modal estimates or samples can be obtained for
+#' model parameters based on the specified pseudo data.
+#'
+#' @slot data (`Data`)\cr observed data that is used to obtain model parameters
+#'   estimates or samples (see details above).
+#'
+#' @seealso [`ModelPseudo`], [`ModelEff`].
+#'
 #' @aliases ModelTox
-##' @export
-##' @keywords classes
-.ModelTox<-setClass(Class="ModelTox",
-                    representation(data="Data"),
-                    contains="ModelPseudo"
+#' @export
+#'
+.ModelTox <- setClass(
+  Class = "ModelTox",
+  slots = c(
+    data = "Data"
+  ),
+  contains = "ModelPseudo"
 )
-##' No Initialization function
+
+# nolint start
 
 # ModelEff ----
 
