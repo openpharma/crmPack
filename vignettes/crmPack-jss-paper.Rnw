@@ -744,7 +744,7 @@ OneParExp <- function(skeletonProbs, doseGrid, lambda)
       }},
     datanames = c("nObs", "y", "xLevel"),
     prob = function(dose, theta){ skeletonFun(dose)^theta },
-    dose = function(prob, theta){ invSkeletonFun(prob^(1 / theta)) },
+    dose = function(x, theta){ invSkeletonFun(x^(1 / theta)) },
     priormodel = function(){ theta ~ dexp(lambda) },
     modelspecs = function(){ list(skeletonProbs = skeletonProbs,
                                   lambda = lambda) },
