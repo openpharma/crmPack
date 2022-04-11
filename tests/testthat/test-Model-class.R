@@ -29,7 +29,7 @@ test_that(".Model works as expected", {
   # nolint start
   result <- expect_silent(
     .Model(
-      dose = function(prob, param1) {},
+      dose = function(x, param1) {},
       prob = function(dose, param1) {},
       datamodel = function(x) {},
       priormodel = function(x) {},
@@ -51,7 +51,7 @@ test_that(".ModelLogNormal works as expected", {
     .ModelLogNormal(
       params = ModelParamsNormal(mean = c(0, 2), cov = diag(2)),
       ref_dose = positive_number(1),
-      dose = function(prob, param1) {},
+      dose = function(x, param1) {},
       prob = function(dose, param1) {},
       datamodel = function(x) {},
       priormodel = function(x) {},

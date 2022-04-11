@@ -20,14 +20,14 @@ probFunction(model, ...)
 \item{...}{model specific parameters.}
 }
 \value{
-A \code{function} that computes toxicity probabilities for a given dose
-and the model.
+A \code{\link{prob}} function that computes toxicity probabilities for a given
+dose and the model.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A function that returns a function that computes the toxicity probabilities
-for a given dose, model and the model parameters.
+A function that returns a \code{\link{prob}} function that computes the toxicity
+probabilities for a given dose, model and the model parameters.
 }
 \examples{
 my_model <- LogisticLogNormal(

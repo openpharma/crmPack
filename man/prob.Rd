@@ -109,7 +109,10 @@ specific \code{prob} method receives a samples matrix where the rows correspond
 to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
 }
 \note{
-The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of each other.
+The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of
+each other, for all \code{\link{dose}} methods for which its first argument, i.e. a
+given independent variable that dose depends on, represents toxicity
+probability.
 }
 \examples{
 # Create some data.

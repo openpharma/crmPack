@@ -26,7 +26,7 @@ test_that("v_model passes for valid object", {
 
 test_that("v_model returns message for wrong dose function", {
   object <- h_get_model()
-  # Assigning a function with wrong parameter, i.e. not a `prob` and `param1`.
+  # Assigning a function with wrong parameter, i.e. not a `x` and `param1`.
   object@dose <- function(wrong_param) {
     wrong_param
   }

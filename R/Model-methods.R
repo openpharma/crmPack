@@ -6,29 +6,34 @@ NULL
 
 ## dose ----
 
-#' Computing the Doses for a Given Probability, Model and Samples
+#' Computing the Doses for a given independent variable, Model and Samples
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A function that computes the dose reaching a specific target probability of
-#' the occurrence of a DLE. The doses are computed based on the samples
-#' of the model parameters.
+#' A function that computes the dose reaching a specific target value of a
+#' given variable that dose depends on. The meaning of this variable depends
+#' on the type of the model. For instance, for single agent dose escalation
+#' model or pseudo DLE (dose-limiting events)/toxicity model, this variable
+#' represents the a probability of the occurrence of a DLE. For efficacy models,
+#' it represents expected efficacy.
+#' The doses are computed based on the samples of the model parameters.
 #'
-#' @details The `dose` function computes the doses for given toxicity
-#'   probabilities, using samples of the model parameter(s).
+#' @details The `dose` function computes the doses corresponding to a value of
+#'   a given independent variable, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
 #'   specific `dose` method receives a samples matrix where the rows correspond
 #'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 #'
-#' @note The [`dose`] and [`prob`] functions are the inverse of each other.
+#' @note The [`dose`] and [`prob`] methods are the inverse of each other, for
+#'   all [`dose`] methods for which its first argument, i.e. a given independent
+#'   variable that dose depends on, represents toxicity probability.
 #'
-#' @param prob (`proportion` or `numeric`)\cr the toxicity probability which is
-#'   targeted. This must be a scalar if non-scalar `samples` are used.
-#'   It can be a vector of any finite length, if `samples` are scalars or
-#'   `samples` are not used, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
-#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
-#'   dose escalation or pseudo DLE/toxicity model.
+#' @param x (`proportion` or `numeric`)\cr a value of an independent variable
+#'   on which dose depends.
+#'   This must be a scalar if non-scalar `samples` are used. It can be a vector
+#'   of any finite length, if `samples` are scalars or `samples` are not used,
+#'   as e.g. in case of pseudo DLE/toxicity model.
+#' @param model (`GeneralModel` or `ModelTox` or `ModelEff`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute the resulting doses.
 #' @param ... model specific parameters when `samples` are not used.
@@ -47,7 +52,7 @@ NULL
 #'
 setGeneric(
   name = "dose",
-  def = function(prob, model, samples, ...) {
+  def = function(x, model, samples, ...) {
     standardGeneric("dose")
   },
   valueClass = "numeric"
@@ -59,14 +64,15 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A function that returns a function that computes the dose reaching a
-#' specific target probability, based on the model specific parameters.
+#' A function that returns a [`dose`] method that computes the dose reaching a
+#' specific target value of a given independent variable, and based on the model
+#' specific parameters.
 #'
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A `function` that computes doses for a given toxicity probability
-#'   and the model.
+#' @return A [`dose`] method that computes doses for a given value of an
+#'   independent variable and the model.
 #'
 #' @seealso [`dose`], [`probFunction`].
 #'
@@ -96,7 +102,10 @@ setGeneric(
 #'   specific `prob` method receives a samples matrix where the rows correspond
 #'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
 #'
-#' @note The [`prob`] and [`dose`] functions are the inverse of each other.
+#' @note The [`prob`] and [`dose`] functions are the inverse of
+#'   each other, for all [`dose`] methods for which its first argument, i.e. a
+#'   given independent variable that dose depends on, represents toxicity
+#'   probability.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
 #'   This must be a scalar if non-scalar `samples` are used.
@@ -135,14 +144,14 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A function that returns a function that computes the toxicity probabilities
-#' for a given dose, model and the model parameters.
+#' A function that returns a [`prob`] function that computes the toxicity
+#' probabilities for a given dose, model and the model parameters.
 #'
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A `function` that computes toxicity probabilities for a given dose
-#'   and the model.
+#' @return A [`prob`] function that computes toxicity probabilities for a given
+#'   dose and the model.
 #'
 #' @seealso [`prob`], [`doseFunction`].
 #'
@@ -177,8 +186,8 @@ setMethod(
       data = model_params,
       options = McmcOptions(samples = length(model_params[[1]]))
     )
-    function(prob) {
-      dose(prob, model, samples)
+    function(x) {
+      dose(x, model, samples)
     }
   }
 )
@@ -227,8 +236,8 @@ setMethod(
       data = model_params,
       options = McmcOptions(samples = length(model_params[[1]]))
     )
-    function(prob) {
-      dose(prob, model, samples)
+    function(x) {
+      dose(x, model, samples)
     }
   }
 )
@@ -269,16 +278,16 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "Model",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples, ...) {
-    assert_number(prob, lower = 0L, upper = 1L)
+  definition = function(x, model, samples, ...) {
+    assert_number(x, lower = 0L, upper = 1L)
 
     dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "prob")
-    dose_args <- c(samples@data[dose_args_names], prob = prob)
+    dose_args_names <- setdiff(formalArgs(dose_fun), "x")
+    dose_args <- c(samples@data[dose_args_names], x = x)
     do.call(dose_fun, dose_args)
   }
 )
@@ -318,18 +327,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticNormal",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((logit(prob) - alpha0) / alpha1) * ref_dose
+    exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -370,18 +379,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticLogNormal",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((logit(prob) - alpha0) / alpha1) * ref_dose
+    exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -422,18 +431,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticLogNormalSub",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    ((logit(prob) - alpha0) / alpha1) + ref_dose
+    ((logit(x) - alpha0) / alpha1) + ref_dose
   }
 )
 
@@ -474,18 +483,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "ProbitLogNormal",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((probit(prob) - alpha0) / alpha1) * ref_dose
+    exp((probit(x) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -526,18 +535,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "ProbitLogNormalRel",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    ((probit(prob) - alpha0) / alpha1) * ref_dose
+    ((probit(x) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -578,19 +587,19 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticKadane",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("rho0", "gamma"), names(samples@data))
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
 
-    num <- gamma * (logit(prob) - logit(rho0)) + xmin * (logit(theta) - logit(prob))
+    num <- gamma * (logit(x) - logit(rho0)) + xmin * (logit(theta) - logit(x))
     num / (logit(theta) - logit(rho0))
   }
 )
@@ -634,19 +643,19 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticKadaneBetaGamma",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("rho0", "gamma"), names(samples@data))
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
 
-    num <- gamma * (logit(prob) - logit(rho0)) + xmin * (logit(theta) - logit(prob))
+    num <- gamma * (logit(x) - logit(rho0)) + xmin * (logit(theta) - logit(x))
     num / (logit(theta) - logit(rho0))
   }
 )
@@ -690,18 +699,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticNormalMixture",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((logit(prob) - alpha0) / alpha1) * ref_dose
+    exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -742,18 +751,18 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticNormalFixedMixture",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
 
-    exp((logit(prob) - alpha0) / alpha1) * ref_dose
+    exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
 
@@ -794,11 +803,11 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticLogNormalMixture",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     stop("not implemented")
   }
 )
@@ -842,17 +851,17 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "DualEndpoint",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset("betaZ", names(samples@data))
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
 
-    dose_temp <- (qnorm(prob) - betaZ[, 1]) / betaZ[, 2]
+    dose_temp <- (qnorm(x) - betaZ[, 1]) / betaZ[, 2]
     if (model@use_log_dose) {
       exp(dose_temp) * ref_dose
     } else {
@@ -907,17 +916,17 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticIndepBeta",
     samples = "Samples"
   ),
-  definition = function(prob, model, samples) {
+  definition = function(x, model, samples) {
     assert_subset(c("phi1", "phi2"), names(samples@data))
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
-    assert_numeric(prob, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
 
-    log_dose <- (log(prob / (1 - prob)) - phi1) / phi2
+    log_dose <- (log(x / (1 - x)) - phi1) / phi2
     exp(log_dose)
   }
 )
@@ -969,12 +978,12 @@ setMethod(
 setMethod(
   f = "dose",
   signature = signature(
-    prob = "numeric",
+    x = "numeric",
     model = "LogisticIndepBeta",
     samples = "missing"
   ),
-  definition = function(prob, model) {
-    assert_numeric(prob, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
+  definition = function(x, model) {
+    assert_numeric(x, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
 
     model_params <- h_slots(model, c("phi1", "phi2"))
     assert_subset(c("phi1", "phi2"), names(model_params))
@@ -982,7 +991,7 @@ setMethod(
       data = model_params,
       options = McmcOptions(samples = length(model_params[[1]]))
     )
-    dose(prob, model, samples)
+    dose(x, model, samples)
   }
 )
 

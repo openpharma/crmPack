@@ -20,14 +20,15 @@ doseFunction(model, ...)
 \item{...}{model specific parameters.}
 }
 \value{
-A \code{function} that computes doses for a given toxicity probability
-and the model.
+A \code{\link{dose}} method that computes doses for a given value of an
+independent variable and the model.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A function that returns a function that computes the dose reaching a
-specific target probability, based on the model specific parameters.
+A function that returns a \code{\link{dose}} method that computes the dose reaching a
+specific target value of a given independent variable, and based on the model
+specific parameters.
 }
 \examples{
 my_model <- LogisticLogNormal(
