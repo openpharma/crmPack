@@ -1055,9 +1055,9 @@ setMethod("plot",
                                      probDLE=prob(dose=x@doseGrid,
                                                   model=y))
               ##Look for TD30 and TD35
-              TD30 <-dose(prob=0.30,
+              TD30 <-dose(x=0.30,
                           model=y)
-              TD35 <-dose(prob=0.35,
+              TD35 <-dose(x=0.35,
                           model=y)
 
               ##make the plot
@@ -1288,7 +1288,7 @@ setMethod("plotGain",
 
 
 
-              TD30 <- dose(prob=0.3,model=DLEmodel)
+              TD30 <- dose(x=0.3,model=DLEmodel)
 
               Gainfun<-function(DOSE){
                 -gain(DOSE,DLEmodel=DLEmodel,Effmodel=Effmodel)

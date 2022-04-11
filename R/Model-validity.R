@@ -23,14 +23,14 @@ v_general_model <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that the names of the
-#'   arguments in `dose` and `prob` functions contains `prob` and `dose`
-#'   respectively, as well as they match `sample` slot of the `object`.
+#'   arguments in `dose` and `prob` functions contains expected arguments as
+#'   well as they match `sample` slot of the `object`.
 v_model <- function(object) {
   v <- Validate()
   v$check(
     h_check_fun_formals(
       object@dose,
-      mandatory = "prob",
+      mandatory = "x",
       allowed = object@sample
     ),
     "Arguments of dose function are incorrect"

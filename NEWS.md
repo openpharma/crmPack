@@ -1,4 +1,5 @@
 # Version 1.0.9000.9009
+* Renamed `prob` argument to `x` for `dose` methods.
 * Added `positive_number` class to handle strictly positive valued slots
   (e.g. `ref_dose` in many model classes).
 * Renamed `refDoseBeta` slot to `ref_dose_beta` in `DualEndpointEmax` class.

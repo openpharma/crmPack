@@ -94,7 +94,7 @@ NULL
 #'   that this can be used to simulate from the prior distribution, before
 #'   obtaining any data.
 #'
-#' @details The first argument of `dose` function must be the `prob`, which is a
+#' @details The first argument of `dose` function must be the `x`, which is a
 #'   scalar toxicity probability which is targeted. Further arguments are the
 #'   model parameters. The `dose` function computes, using model parameter(s)
 #'   (samples), the resulting dose. The model parameters are called exactly as
@@ -133,7 +133,7 @@ NULL
     prob = "function"
   ),
   prototype = prototype(
-    dose = function(prob) {},
+    dose = function(x) {},
     prob = function(dose) {}
   ),
   validity = v_model
@@ -2179,8 +2179,8 @@ Effloglog<-function(Eff,
              useFixed=useFixed,
              datanames=c("nObs","w","x"),
              data=data,
-             dose=function(ExpEff,theta1,theta2){
-               LogDose<-exp((ExpEff-theta1)/theta2)
+             dose=function(x,theta1,theta2){
+               LogDose<-exp((x-theta1)/theta2)
                return(exp(LogDose) - c)
              },
              ExpEff=function(dose,theta1,theta2){
@@ -2372,13 +2372,13 @@ EffFlexi <- function(Eff,
             sigma2betaW=sigma2betaW,
             datanames=c("nObs","w","x"),
             data=data,
-            dose=function(ExpEff){
+            dose=function(x){
               ##Find dose level given a particular Expected Efficacy level with linear Interpolation
               dosevec<-c()
               for (k in 1:sampleSize(options)){
-                IxEff0<- max(which((ExpEff-Effsamples@data$ExpEff[k,]) >= 0))
-                IxEff1<- min(which((ExpEff-Effsamples@data$ExpEff[k,]) < 0))
-                Interpoldose<-data@doseGrid[IxEff0]+(data@doseGrid[IxEff1]-data@doseGrid[IxEff0])*((ExpEff-Effsamples@data$ExpEff[k,IxEff0])/(Effsamples@data$ExpEff[k,IxEff1]-Effsamples@data$ExpEff[k,IxEff0]))
+                IxEff0<- max(which((x-Effsamples@data$ExpEff[k,]) >= 0))
+                IxEff1<- min(which((x-Effsamples@data$ExpEff[k,]) < 0))
+                Interpoldose<-data@doseGrid[IxEff0]+(data@doseGrid[IxEff1]-data@doseGrid[IxEff0])*((x-Effsamples@data$ExpEff[k,IxEff0])/(Effsamples@data$ExpEff[k,IxEff1]-Effsamples@data$ExpEff[k,IxEff0]))
                 dosevec[k]<-Interpoldose
               }
               ##return coreresponding dose levels
@@ -2832,7 +2832,7 @@ OneParExpNormalPrior <- function(skeletonProbs,
       }},
     datanames = c("nObs", "y", "xLevel"),
     prob = function(dose, alpha){ skeletonFun(dose)^exp(alpha) },
-    dose = function(prob, alpha){ invSkeletonFun(prob^(1 / exp(alpha))) },
+    dose = function(x, alpha){ invSkeletonFun(x^(1 / exp(alpha))) },
     priormodel = function(){ alpha ~ dnorm(0, 1 / sigma2) },
     modelspecs = function(){ list(skeletonProbs = skeletonProbs,
                                   sigma2 = sigma2) },

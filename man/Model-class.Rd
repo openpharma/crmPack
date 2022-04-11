@@ -15,7 +15,7 @@ other specific models inherit. The \code{\link{Model}} class inherits from
 moved to a separate S4 class-specific methods.
 }
 \details{
-The first argument of \code{dose} function must be the \code{prob}, which is a
+The first argument of \code{dose} function must be the \code{x}, which is a
 scalar toxicity probability which is targeted. Further arguments are the
 model parameters. The \code{dose} function computes, using model parameter(s)
 (samples), the resulting dose. The model parameters are called exactly as
