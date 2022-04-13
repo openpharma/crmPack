@@ -126,7 +126,7 @@ reference:
       - saveSample-McmcOptions
       - doseFunction
       - doseFunction-GeneralModel
-      - doseFunction-ModelTox
+      - doseFunction-ModelPseudo
       - dose
       - dose-Model
       - dose-LogisticNormal
@@ -162,6 +162,9 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
+      - efficacyFunction
+      - efficacyFunction-ModelEff
+      - efficacy
       - efficacy-Effloglog
       - efficacy-Effloglog-noSamples
       - efficacy-EffFlexi

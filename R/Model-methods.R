@@ -35,7 +35,7 @@ NULL
 #'   finite length, if there is only one sample in `samples`, or `samples` are
 #'   not used at all, as e.g. in case of pseudo DLE
 #'   (dose-limiting events)/toxicity model.
-#' @param model (`GeneralModel` or `ModelTox` or `ModelEff`)\cr the model.
+#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute the resulting doses.
 #' @param ... model specific parameters when `samples` are not used.
@@ -70,11 +70,10 @@ setGeneric(
 #' specific target value of a given independent variable, based on the model
 #' specific parameters.
 #'
-#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
+#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A [`dose`] method that computes doses for a given value of an
-#'   independent variable and the model.
+#' @return A [`dose`] method that computes doses.
 #'
 #' @seealso [`dose`], [`probFunction`].
 #'
@@ -148,13 +147,12 @@ setGeneric(
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' A function that returns a [`prob`] function that computes the toxicity
-#' probabilities for a given dose, based on the model specific parameters.
+#' probabilities for a given dose level, based on the model specific parameters.
 #'
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A [`prob`] function that computes toxicity probabilities for a given
-#'   dose and the model.
+#' @return A [`prob`] function that computes toxicity probabilities.
 #'
 #' @seealso [`prob`], [`doseFunction`].
 #'
@@ -217,6 +215,33 @@ setGeneric(
   valueClass = "numeric"
 )
 
+## efficacyFunction ----
+
+#' Getting the Efficacy Function for a Given Model Type
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A function that returns an [`efficacy`] function that computes expected
+#' efficacy for a given dose level, based on the model specific parameters.
+#'
+#' @param model (`ModelEff`)\cr the model.
+#' @param ... model specific parameters.
+#'
+#' @return A [`efficacy`] function that computes expected efficacy.
+#'
+#' @seealso [`efficacy`].
+#'
+#' @export
+#' @example examples/Model-method-efficacyFunction.R
+#'
+setGeneric(
+  name = "efficacyFunction",
+  def = function(model, ...) {
+    standardGeneric("efficacyFunction")
+  },
+  valueClass = "function"
+)
+
 # GeneralModel ----
 
 ## doseFunction ----
@@ -267,18 +292,18 @@ setMethod(
   }
 )
 
-# ModelTox ----
+# ModelPseudo ----
 
 ## doseFunction ----
 
 #' @rdname doseFunction
 #'
-#' @aliases doseFunction-ModelTox
+#' @aliases doseFunction-ModelPseudo
 #' @export
 #'
 setMethod(
   f = "doseFunction",
-  signature = "ModelTox",
+  signature = "ModelPseudo",
   definition = function(model, ...) {
     model_params <- list(...)
     assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
@@ -292,6 +317,8 @@ setMethod(
     }
   }
 )
+
+# ModelTox ----
 
 ## probFunction ----
 
@@ -317,11 +344,38 @@ setMethod(
   }
 )
 
+# ModelEff ----
+
+## efficacyFunction ----
+
+#' @rdname efficacyFunction
+#'
+#' @aliases efficacyFunction-ModelEff
+#' @export
+#'
+setMethod(
+  f = "efficacyFunction",
+  signature = "ModelEff",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      efficacy(dose, model, samples)
+    }
+  }
+)
+
 # Model (TO REMOVE SOON) ----
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-Model
 #' @export
@@ -370,7 +424,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticNormal
 #' @export
@@ -422,7 +477,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticLogNormal
 #' @export
@@ -474,7 +530,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticLogNormalSub
 #' @export
@@ -526,7 +583,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-ProbitLogNormal
 #' @export
@@ -578,7 +636,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-ProbitLogNormalRel
 #' @export
@@ -630,7 +689,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticKadane
 #' @export
@@ -686,7 +746,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticKadaneBetaGamma
 #' @export
@@ -742,7 +803,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticNormalMixture
 #' @export
@@ -794,7 +856,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticNormalFixedMixture
 #' @export
@@ -846,7 +909,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticLogNormalMixture
 #' @export
@@ -894,7 +958,8 @@ setMethod(
 
 ## dose ----
 
-#' @rdname dose
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-DualEndpoint
 #' @export
@@ -955,8 +1020,7 @@ setMethod(
 ## dose ----
 
 #' @describeIn dose compute the dose level reaching a specific target
-#' probability of the occurrence of a DLE, based on the samples of
-#' [`LogisticIndepBeta`] model parameters.
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-LogisticIndepBeta
 #' @export
@@ -982,9 +1046,8 @@ setMethod(
 ## dose-noSamples ----
 
 #' @describeIn dose compute the dose level reaching a specific target
-#' probability of the occurrence of a DLE, based on the [`LogisticIndepBeta`]
-#' model parameters. All model parameters (except `x`) should be present in the
-#' `model` object.
+#'   probability of the occurrence of a DLE (`x`).
+#'   All model parameters (except `x`) should be present in the `model` object.
 #'
 #' @aliases dose-LogisticIndepBeta-noSamples
 #' @export
@@ -1069,9 +1132,9 @@ setMethod(
 
 ## dose-noSamples ----
 
-#' @describeIn dose compute the dose level reaching a specific target of
-#' expected efficacy (`x`), based on the [`Effloglog`] model parameters.
-#' All model parameters (except `x`) should be present in the `model` object.
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'   All model parameters (except `x`) should be present in the `model` object.
 #'
 #' @aliases dose-Effloglog-noSamples
 #' @export
@@ -1152,9 +1215,8 @@ setMethod(
 
 ## dose ----
 
-#' @describeIn dose compute the dose level reaching a specific target of
-#' expected efficacy (`x`), based on the samples of [`EffFlexi`] model
-#' parameters and the dose grid.
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
 #'
 #' @aliases dose-EffFlexi
 #' @export

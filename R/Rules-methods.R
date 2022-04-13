@@ -2495,7 +2495,7 @@ setMethod("nextBest",
               plotData<-data.frame(dose=rep(data@doseGrid,3),
                                    values=c(prob(dose=data@doseGrid,
                                                  model=model),
-                                            ExpEff(dose=data@doseGrid,
+                                            efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
                                                  DLEmodel=model,
@@ -2664,9 +2664,9 @@ setMethod("nextBest",
               {
                 ## Now we want to evaluate for the
                 ## following dose:
-                ExpEffSamples[, i] <- ExpEff(dose=points[i],
-                                             model=Effmodel,
-                                             samples=Effsamples)
+                ExpEffSamples[, i] <- efficacy(dose=points[i],
+                                               model=Effmodel,
+                                               samples=Effsamples)
               }
 
 

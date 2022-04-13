@@ -79,7 +79,7 @@ finite length, if there is only one sample in \code{samples}, or \code{samples} 
 not used at all, as e.g. in case of pseudo DLE
 (dose-limiting events)/toxicity model.}
 
-\item{model}{(\code{GeneralModel} or \code{ModelTox} or \code{ModelEff})\cr the model.}
+\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
 used to compute the resulting doses.}
@@ -114,22 +114,55 @@ to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
 }
 \section{Functions}{
 \itemize{
+\item \code{dose,numeric,Model,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticNormal,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticLogNormal,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticLogNormalSub,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,ProbitLogNormal,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,ProbitLogNormalRel,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticKadane,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticKadaneBetaGamma,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticNormalMixture,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticNormalFixedMixture,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticLogNormalMixture,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,DualEndpoint,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
 \item \code{dose,numeric,LogisticIndepBeta,Samples-method}: compute the dose level reaching a specific target
-probability of the occurrence of a DLE, based on the samples of
-\code{\link{LogisticIndepBeta}} model parameters.
+probability of the occurrence of a DLE (\code{x}).
 
 \item \code{dose,numeric,LogisticIndepBeta,missing-method}: compute the dose level reaching a specific target
-probability of the occurrence of a DLE, based on the \code{\link{LogisticIndepBeta}}
-model parameters. All model parameters (except \code{x}) should be present in the
-\code{model} object.
-
-\item \code{dose,numeric,Effloglog,missing-method}: compute the dose level reaching a specific target of
-expected efficacy (\code{x}), based on the \code{\link{Effloglog}} model parameters.
+probability of the occurrence of a DLE (\code{x}).
 All model parameters (except \code{x}) should be present in the \code{model} object.
 
-\item \code{dose,numeric,EffFlexi,Samples-method}: compute the dose level reaching a specific target of
-expected efficacy (\code{x}), based on the samples of \code{\link{EffFlexi}} model
-parameters and the dose grid.
+\item \code{dose,numeric,Effloglog,missing-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+All model parameters (except \code{x}) should be present in the \code{model} object.
+
+\item \code{dose,numeric,EffFlexi,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
 }}
 
 \note{

@@ -4,24 +4,23 @@
 \alias{doseFunction}
 \alias{doseFunction,GeneralModel-method}
 \alias{doseFunction-GeneralModel}
-\alias{doseFunction,ModelTox-method}
-\alias{doseFunction-ModelTox}
+\alias{doseFunction,ModelPseudo-method}
+\alias{doseFunction-ModelPseudo}
 \title{Getting the Dose Function for a Given Model Type}
 \usage{
 doseFunction(model, ...)
 
 \S4method{doseFunction}{GeneralModel}(model, ...)
 
-\S4method{doseFunction}{ModelTox}(model, ...)
+\S4method{doseFunction}{ModelPseudo}(model, ...)
 }
 \arguments{
-\item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model.}
+\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
 \item{...}{model specific parameters.}
 }
 \value{
-A \code{\link{dose}} method that computes doses for a given value of an
-independent variable and the model.
+A \code{\link{dose}} method that computes doses.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

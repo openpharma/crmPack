@@ -259,3 +259,17 @@ h_get_dual_endpoint_emax <- function(use_log_dose = FALSE, fixed = TRUE) {
     ref_dose_emax = 10
   )
 }
+
+h_get_eff_log_log <- function() {
+  dd <- DataDual(
+    doseGrid = c(0.001, seq(25, 300, 25)),
+    placebo = TRUE
+  )
+  Effloglog(
+    Eff = c(1.223, 2.513),
+    Effdose = c(25, 300),
+    nu = c(a = 1, b = 0.025),
+    data = dd,
+    c = 2
+  )
+}
