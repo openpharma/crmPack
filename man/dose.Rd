@@ -106,11 +106,12 @@ it represents expected efficacy.
 The doses are computed based on the samples of the model parameters (samples).
 }
 \details{
-The \code{dose} function computes the doses corresponding to a value of
+The \code{dose()} function computes the doses corresponding to a value of
 a given independent variable, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
-specific \code{dose} method receives a samples matrix where the rows correspond
-to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
+specific \code{dose()} method receives a samples matrix where the rows
+correspond to the sampling index, i.e. the layout is then
+\verb{nSamples x dimParameter}.
 }
 \section{Functions}{
 \itemize{
@@ -166,8 +167,8 @@ probability of the occurrence of a DLE (\code{x}).
 }}
 
 \note{
-The \code{\link{dose}} and \code{\link{prob}} methods are the inverse of each other, for
-all \code{\link{dose}} methods for which its first argument, i.e. a given independent
+The \code{\link[=dose]{dose()}} and \code{\link[=prob]{prob()}} methods are the inverse of each other, for
+all \code{\link[=dose]{dose()}} methods for which its first argument, i.e. a given independent
 variable that dose depends on, represents toxicity probability.
 }
 \examples{
@@ -216,5 +217,5 @@ dose(x = 0.45, model = dlt_model, samples = dlt_sample)
 dose(x = c(0.45, 0.6), model = dlt_model)
 }
 \seealso{
-\code{\link{doseFunction}}, \code{\link{prob}}, \code{\link{efficacy}}.
+\code{\link[=doseFunction]{doseFunction()}}, \code{\link[=prob]{prob()}}, \code{\link[=efficacy]{efficacy()}}.
 }

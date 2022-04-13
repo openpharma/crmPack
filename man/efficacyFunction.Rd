@@ -16,14 +16,19 @@ efficacyFunction(model, ...)
 \item{...}{model specific parameters.}
 }
 \value{
-A \code{\link{efficacy}} function that computes expected efficacy.
+A \code{\link[=efficacy]{efficacy()}} function that computes expected efficacy.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A function that returns an \code{\link{efficacy}} function that computes expected
+A function that returns an \code{\link[=efficacy]{efficacy()}} function that computes expected
 efficacy for a given dose level, based on the model specific parameters.
 }
+\section{Functions}{
+\itemize{
+\item \code{efficacyFunction,ModelEff-method}: 
+}}
+
 \examples{
 my_data <- DataDual(
   doseGrid = c(0.001, seq(25, 300, 25)),
@@ -42,5 +47,5 @@ eff_fun <- efficacyFunction(my_model, theta1 = -4.8, theta2 = 3.7)
 eff_fun(30)
 }
 \seealso{
-\code{\link{efficacy}}.
+\code{\link[=efficacy]{efficacy()}}.
 }

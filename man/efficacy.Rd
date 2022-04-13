@@ -50,10 +50,10 @@ are obtained based on prior specified in form of pseudo data combined with
 observed responses (if any).
 }
 \details{
-The \code{efficacy} function computes the expected efficacy for given
+The \code{efficacy()} function computes the expected efficacy for given
 doses, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
-specific \code{efficacy} method receives a samples matrix where the rows
+specific \code{efficacy()} method receives a samples matrix where the rows
 correspond to the sampling index, i.e. the layout is then
 \verb{nSamples x dimParameter}.
 }
@@ -108,5 +108,5 @@ my_model_ll <- Effloglog(
 efficacy(dose = 75, model = my_model_ll)
 }
 \seealso{
-\code{\link{dose}}, \code{\link{prob}}.
+\code{\link[=dose]{dose()}}, \code{\link[=prob]{prob()}}.
 }

@@ -18,14 +18,15 @@ NULL
 #' it represents expected efficacy.
 #' The doses are computed based on the samples of the model parameters (samples).
 #'
-#' @details The `dose` function computes the doses corresponding to a value of
+#' @details The `dose()` function computes the doses corresponding to a value of
 #'   a given independent variable, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `dose` method receives a samples matrix where the rows correspond
-#'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
+#'   specific `dose()` method receives a samples matrix where the rows
+#'   correspond to the sampling index, i.e. the layout is then
+#'   `nSamples x dimParameter`.
 #'
-#' @note The [`dose`] and [`prob`] methods are the inverse of each other, for
-#'   all [`dose`] methods for which its first argument, i.e. a given independent
+#' @note The [dose()] and [prob()] methods are the inverse of each other, for
+#'   all [dose()] methods for which its first argument, i.e. a given independent
 #'   variable that dose depends on, represents toxicity probability.
 #'
 #' @param x (`proportion` or `numeric`)\cr a value of an independent variable
@@ -47,7 +48,7 @@ NULL
 #'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
 #'   then the output is of the same length as the length of the `prob`.
 #'
-#' @seealso [`doseFunction`], [`prob`], [`efficacy`].
+#' @seealso [doseFunction()], [prob()], [efficacy()].
 #'
 #' @export
 #' @example examples/Model-method-dose.R
@@ -66,16 +67,16 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A function that returns a [`dose`] method that computes the dose reaching a
+#' A function that returns a [dose()] method that computes the dose reaching a
 #' specific target value of a given independent variable, based on the model
 #' specific parameters.
 #'
 #' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A [`dose`] method that computes doses.
+#' @return A [dose()] method that computes doses.
 #'
-#' @seealso [`dose`], [`probFunction`].
+#' @seealso [dose()], [probFunction()].
 #'
 #' @export
 #' @example examples/Model-method-doseFunction.R
@@ -97,14 +98,15 @@ setGeneric(
 #' A function that computes the probability of the occurrence of a DLE at a
 #' specified dose level, based on the model parameters (samples).
 #'
-#' @details The `prob` function computes the probability of toxicity for given
+#' @details The `prob()` function computes the probability of toxicity for given
 #'   doses, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `prob` method receives a samples matrix where the rows correspond
-#'   to the sampling index, i.e. the layout is then `nSamples x dimParameter`.
+#'   specific `prob()` method receives a samples matrix where the rows
+#'   correspond to the sampling index, i.e. the layout is then
+#'   `nSamples x dimParameter`.
 #'
-#' @note The [`prob`] and [`dose`] functions are the inverse of
-#'   each other, for all [`dose`] methods for which its first argument, i.e. a
+#' @note The [prob()] and [dose()] functions are the inverse of
+#'   each other, for all [dose()] methods for which its first argument, i.e. a
 #'   given independent variable that dose depends on, represents toxicity
 #'   probability.
 #'
@@ -127,7 +129,7 @@ setGeneric(
 #'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
 #'   then the output is of the same length as the length of the `dose`.
 #'
-#' @seealso [`probFunction`], [`dose`], [`efficacy`].
+#' @seealso [probFunction()], [dose()], [efficacy()].
 #'
 #' @export
 #' @example examples/Model-method-prob.R
@@ -146,15 +148,15 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A function that returns a [`prob`] function that computes the toxicity
+#' A function that returns a [prob()] function that computes the toxicity
 #' probabilities for a given dose level, based on the model specific parameters.
 #'
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A [`prob`] function that computes toxicity probabilities.
+#' @return A [prob()] function that computes toxicity probabilities.
 #'
-#' @seealso [`prob`], [`doseFunction`].
+#' @seealso [prob()], [doseFunction()].
 #'
 #' @export
 #' @example examples/Model-method-probFunction.R
@@ -178,10 +180,10 @@ setGeneric(
 #' are obtained based on prior specified in form of pseudo data combined with
 #' observed responses (if any).
 #'
-#' @details The `efficacy` function computes the expected efficacy for given
+#' @details The `efficacy()` function computes the expected efficacy for given
 #'   doses, using samples of the model parameter(s).
 #'   If you work with multivariate model parameters, then assume that your model
-#'   specific `efficacy` method receives a samples matrix where the rows
+#'   specific `efficacy()` method receives a samples matrix where the rows
 #'   correspond to the sampling index, i.e. the layout is then
 #'   `nSamples x dimParameter`.
 #'
@@ -203,7 +205,7 @@ setGeneric(
 #'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
 #'   then the output is of the same length as the length of the `dose`.
 #'
-#' @seealso [`dose`], [`prob`].
+#' @seealso [dose()], [prob()].
 #'
 #' @export
 #' @example examples/Model-method-efficacy.R
@@ -221,15 +223,15 @@ setGeneric(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' A function that returns an [`efficacy`] function that computes expected
+#' A function that returns an [efficacy()] function that computes expected
 #' efficacy for a given dose level, based on the model specific parameters.
 #'
 #' @param model (`ModelEff`)\cr the model.
 #' @param ... model specific parameters.
 #'
-#' @return A [`efficacy`] function that computes expected efficacy.
+#' @return A [efficacy()] function that computes expected efficacy.
 #'
-#' @seealso [`efficacy`].
+#' @seealso [efficacy()].
 #'
 #' @export
 #' @example examples/Model-method-efficacyFunction.R
@@ -246,7 +248,7 @@ setGeneric(
 
 ## doseFunction ----
 
-#' @rdname doseFunction
+#' @describeIn doseFunction
 #'
 #' @aliases doseFunction-GeneralModel
 #' @export
@@ -270,7 +272,7 @@ setMethod(
 
 ## probFunction ----
 
-#' @rdname probFunction
+#' @describeIn probFunction
 #'
 #' @aliases probFunction-GeneralModel
 #' @export
@@ -296,7 +298,7 @@ setMethod(
 
 ## doseFunction ----
 
-#' @rdname doseFunction
+#' @describeIn doseFunction
 #'
 #' @aliases doseFunction-ModelPseudo
 #' @export
@@ -322,7 +324,7 @@ setMethod(
 
 ## probFunction ----
 
-#' @rdname probFunction
+#' @describeIn probFunction
 #'
 #' @aliases probFunction-ModelTox
 #' @export
@@ -348,7 +350,7 @@ setMethod(
 
 ## efficacyFunction ----
 
-#' @rdname efficacyFunction
+#' @describeIn efficacyFunction
 #'
 #' @aliases efficacyFunction-ModelEff
 #' @export
@@ -399,7 +401,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-Model
 #' @export
@@ -450,7 +452,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticNormal
 #' @export
@@ -503,7 +505,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticLogNormal
 #' @export
@@ -556,7 +558,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticLogNormalSub
 #' @export
@@ -609,7 +611,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-ProbitLogNormal
 #' @export
@@ -662,7 +664,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-ProbitLogNormalRel
 #' @export
@@ -717,7 +719,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticKadane
 #' @export
@@ -774,7 +776,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticKadaneBetaGamma
 #' @export
@@ -829,7 +831,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticNormalMixture
 #' @export
@@ -882,7 +884,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticNormalFixedMixture
 #' @export
@@ -929,7 +931,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-LogisticLogNormalMixture
 #' @export
@@ -988,7 +990,7 @@ setMethod(
 
 ## prob ----
 
-#' @rdname prob
+#' @describeIn prob
 #'
 #' @aliases prob-DualEndpoint
 #' @export
@@ -1362,17 +1364,8 @@ setMethod("gain",
             function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
 
               DLEret <- prob(dose, DLEmodel, DLEsamples)
+              Effret <- efficacy(dose, Effmodel, Effsamples)
 
-              ## extract the ExpEff function from the model
-              EffFun <- slot(Effmodel, "ExpEff")
-              ## which arguments, besides the dose, does it need?
-              EffargNames <- setdiff(names(formals(EffFun)),
-                                     "dose")
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              Effret <- do.call(EffFun,
-                                c(list(dose=dose),
-                                  Effsamples@data[EffargNames]))
 
               ## return the resulting vector
               Gainret <- Effret/(1+(DLEret/(1-DLEret)))
@@ -1385,61 +1378,48 @@ setMethod("gain",
 ##' @describeIn gain Compute the gain given a dose level, a pseduo DLE model, a DLE sample,
 ##' the pseudo EffFlexi model and an Efficacy sample
 ##' @example examples/Model-method-gainFlexi.R
-setMethod("gain",
-          signature=
-            signature(dose="numeric",
-                      DLEmodel="ModelTox",
-                      DLEsamples="Samples",
-                      Effmodel="EffFlexi",
-                      Effsamples="Samples"),
-          def=
-            function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
-
-              DLEret <- prob(dose, DLEmodel, DLEsamples)
-
-              ## extract the ExpEff function from the model
-              EffFun <- slot(Effmodel, "ExpEff")
-
-              ## now call the function with dose and with
-              ## the arguments taken from the samples
-              Effret <- EffFun(dose,Effmodel@data,Effsamples)
-
-              ## return the resulting vector
-              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
-              return(Gainret)
-            })
-
+setMethod(
+  f = "gain",
+  signature = signature(
+    dose = "numeric",
+    DLEmodel = "ModelTox",
+    DLEsamples = "Samples",
+    Effmodel = "EffFlexi",
+    Effsamples = "Samples"
+  ),
+  definition = function(dose,
+                        DLEmodel,
+                        DLEsamples,
+                        Effmodel,
+                        Effsamples,
+                        ...) {
+    DLEret <- prob(dose, DLEmodel, DLEsamples)
+    Effret <- efficacy(dose, Effmodel, Effsamples)
+    Effret / (1 + (DLEret / (1 - DLEret)))
+  }
+)
 
 ##' @describeIn gain Compute the gain value given a dose level, a pseudo DLE model and a pseudo
 ##' efficacy model of \code{\linkS4class{Effloglog}} class object without DLE and the efficacy sample
 ##' @example examples/Model-method-gainNoSamples.R
-setMethod("gain",
-          signature=
-            signature(dose="numeric",
-                      DLEmodel="ModelTox",
-                      DLEsamples="missing",
-                      Effmodel="Effloglog",
-                      Effsamples="missing"),
-          def=
-            function(dose,DLEmodel,Effmodel,...){
-
-              DLEret <- prob(dose, DLEmodel)
-
-              ##extract the ExpEff function from the Eff model
-              EffFun <- slot(Effmodel,"ExpEff")
-              ##which arguments besides the dose dose it need?
-              EffargNames <- setdiff(names(formals(EffFun)),"dose")
-              ##now call the function with dose
-              Effvalues<-c()
-              for (EffparName in EffargNames){
-                Effvalues <- c(Effvalues, slot(Effmodel,EffparName))}
-
-              Effret <- do.call(EffFun,
-                                c(list(dose=dose),Effvalues))
-              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
-              return(Gainret)
-            })
-
+setMethod(
+  f = "gain",
+  signature = signature(
+    dose = "numeric",
+    DLEmodel = "ModelTox",
+    DLEsamples = "missing",
+    Effmodel = "Effloglog",
+    Effsamples = "missing"
+  ),
+  definition = function(dose,
+                        DLEmodel,
+                        Effmodel,
+                        ...) {
+    DLEret <- prob(dose, DLEmodel)
+    Effret <- efficacy(dose, Effmodel)
+    Effret / (1 + (DLEret / (1 - DLEret)))
+  }
+)
 
 ## ------------------------------------------------------------------------------------
 ## Update Pseduo models object to obtain new modal estimates for pseudo model parameters

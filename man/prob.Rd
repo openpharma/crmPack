@@ -93,14 +93,39 @@ A function that computes the probability of the occurrence of a DLE at a
 specified dose level, based on the model parameters (samples).
 }
 \details{
-The \code{prob} function computes the probability of toxicity for given
+The \code{prob()} function computes the probability of toxicity for given
 doses, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
-specific \code{prob} method receives a samples matrix where the rows correspond
-to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
+specific \code{prob()} method receives a samples matrix where the rows
+correspond to the sampling index, i.e. the layout is then
+\verb{nSamples x dimParameter}.
 }
 \section{Functions}{
 \itemize{
+\item \code{prob,numeric,Model,Samples-method}: 
+
+\item \code{prob,numeric,LogisticNormal,Samples-method}: 
+
+\item \code{prob,numeric,LogisticLogNormal,Samples-method}: 
+
+\item \code{prob,numeric,LogisticLogNormalSub,Samples-method}: 
+
+\item \code{prob,numeric,ProbitLogNormal,Samples-method}: 
+
+\item \code{prob,numeric,ProbitLogNormalRel,Samples-method}: 
+
+\item \code{prob,numeric,LogisticKadane,Samples-method}: 
+
+\item \code{prob,numeric,LogisticKadaneBetaGamma,Samples-method}: 
+
+\item \code{prob,numeric,LogisticNormalMixture,Samples-method}: 
+
+\item \code{prob,numeric,LogisticNormalFixedMixture,Samples-method}: 
+
+\item \code{prob,numeric,LogisticLogNormalMixture,Samples-method}: 
+
+\item \code{prob,numeric,DualEndpoint,Samples-method}: 
+
 \item \code{prob,numeric,LogisticIndepBeta,Samples-method}: compute toxicity probabilities of the occurrence of a DLE at
 a specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
 parameters.
@@ -111,8 +136,8 @@ All model parameters (except \code{dose}) should be present in the \code{model} 
 }}
 
 \note{
-The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of
-each other, for all \code{\link{dose}} methods for which its first argument, i.e. a
+The \code{\link[=prob]{prob()}} and \code{\link[=dose]{dose()}} functions are the inverse of
+each other, for all \code{\link[=dose]{dose()}} methods for which its first argument, i.e. a
 given independent variable that dose depends on, represents toxicity
 probability.
 }
@@ -163,5 +188,5 @@ prob(dose = 100, model = dlt_model, samples = dlt_sample)
 prob(dose = c(50, 150), model = dlt_model)
 }
 \seealso{
-\code{\link{probFunction}}, \code{\link{dose}}, \code{\link{efficacy}}.
+\code{\link[=probFunction]{probFunction()}}, \code{\link[=dose]{dose()}}, \code{\link[=efficacy]{efficacy()}}.
 }
