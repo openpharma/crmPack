@@ -54,6 +54,7 @@ reference:
       - DualEndpointEmax
       - ModelPseudo
       - ModelTox
+      - ModelEff
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
@@ -141,6 +142,8 @@ reference:
       - dose-DualEndpoint
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
+      - dose-Effloglog-noSamples
+      - dose-EffFlexi
       - probFunction
       - probFunction-GeneralModel
       - probFunction-ModelTox
@@ -159,6 +162,9 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
+      - efficacy-Effloglog
+      - efficacy-Effloglog-noSamples
+      - efficacy-EffFlexi
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta

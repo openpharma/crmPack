@@ -60,13 +60,14 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticIndepBeta,Samples}(dose, model, samples)
 
-\S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model, samples, ...)
+\S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
-This must be a scalar if non-scalar \code{samples} are used.
-It can be a vector of any finite length, if \code{samples} are scalars or
-\code{samples} are not used, as e.g. in case of pseudo DLE
+This must be a scalar if number of samples in \code{samples} is greater than
+one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
+finite length, if there is only one sample in \code{samples}, or \code{samples} are
+not used at all, as e.g. in case of pseudo DLE
 (dose-limiting events)/toxicity model.}
 
 \item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model for single agent
@@ -89,17 +90,7 @@ then the output is of the same length as the length of the \code{dose}.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 A function that computes the probability of the occurrence of a DLE at a
-specified dose level, based on the model parameters.
-
-Compute toxicity probabilities of the occurrence of a DLE at a
-specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
-parameters.
-The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
-
-Compute toxicity probabilities of the occurrence of a DLE at a
-specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
-The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
-All model parameters (except \code{dose}) should be present in the \code{model} object.
+specified dose level, based on the model parameters (samples).
 }
 \details{
 The \code{prob} function computes the probability of toxicity for given
@@ -108,6 +99,17 @@ If you work with multivariate model parameters, then assume that your model
 specific \code{prob} method receives a samples matrix where the rows correspond
 to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
 }
+\section{Functions}{
+\itemize{
+\item \code{prob,numeric,LogisticIndepBeta,Samples-method}: compute toxicity probabilities of the occurrence of a DLE at
+a specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
+parameters.
+
+\item \code{prob,numeric,LogisticIndepBeta,missing-method}: compute toxicity probabilities of the occurrence of a DLE at
+a specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
+All model parameters (except \code{dose}) should be present in the \code{model} object.
+}}
+
 \note{
 The \code{\link{prob}} and \code{\link{dose}} functions are the inverse of
 each other, for all \code{\link{dose}} methods for which its first argument, i.e. a
@@ -161,5 +163,5 @@ prob(dose = 100, model = dlt_model, samples = dlt_sample)
 prob(dose = c(50, 150), model = dlt_model)
 }
 \seealso{
-\code{\link{probFunction}}, \code{\link{dose}}.
+\code{\link{probFunction}}, \code{\link{dose}}, \code{\link{efficacy}}.
 }

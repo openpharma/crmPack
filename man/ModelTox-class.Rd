@@ -17,9 +17,9 @@ data before the trial starts).
 The \code{data} must obey the convention of the \code{\link{Data}} class. This refers to any
 observed DLE responses (\code{y} in \code{\link{Data}}), the dose levels (\code{x} in \code{\link{Data}})
 at which these responses are observed, all dose levels considered in the
-study (\code{doseGrid} in \code{\link{Data}}) and other specifications in \code{\link{Data}} class
-that can be used to generate prior or posterior modal estimates or samples
-estimates for model parameter(s).
+study (\code{doseGrid} in \code{\link{Data}}), and finally other specifications in \code{\link{Data}}
+class that can be used to generate prior or posterior modal estimates or
+samples estimates for model parameter(s).
 If no responses are observed, at least \code{doseGrid} has to be specified
 in \code{data} for which prior modal estimates or samples can be obtained for
 model parameters based on the specified pseudo data.

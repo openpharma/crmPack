@@ -27,7 +27,7 @@ independent variable and the model.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 A function that returns a \code{\link{dose}} method that computes the dose reaching a
-specific target value of a given independent variable, and based on the model
+specific target value of a given independent variable, based on the model
 specific parameters.
 }
 \examples{
