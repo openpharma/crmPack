@@ -1728,9 +1728,9 @@ DualEndpointEmax <- function(E0,
 #' The `data` must obey the convention of the [`Data`] class. This refers to any
 #' observed DLE responses (`y` in [`Data`]), the dose levels (`x` in [`Data`])
 #' at which these responses are observed, all dose levels considered in the
-#' study (`doseGrid` in [`Data`]) and other specifications in [`Data`] class
-#' that can be used to generate prior or posterior modal estimates or samples
-#' estimates for model parameter(s).
+#' study (`doseGrid` in [`Data`]), and finally other specifications in [`Data`]
+#' class that can be used to generate prior or posterior modal estimates or
+#' samples estimates for model parameter(s).
 #' If no responses are observed, at least `doseGrid` has to be specified
 #' in `data` for which prior modal estimates or samples can be obtained for
 #' model parameters based on the specified pseudo data.
@@ -1751,65 +1751,45 @@ DualEndpointEmax <- function(E0,
   contains = "ModelPseudo"
 )
 
-# nolint start
-
 # ModelEff ----
 
-## ==========================================================================================
+## class ----
 
-##' class for Efficacy models using pseudo data prior
-##'
-##' This is a class of which contains all efficacy models for which their prior are specified in
-##' form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
-##'
-##' The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value
-##' which is targeted. Additional arguments are model parameters. It computes using modal estimate(s)
-##' or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
-##' of the model parameters are used, the function must vectorize over the model parameters.
-##'
-##' The \code{ExpEff} function has a first argument \code{dose}, a scalar dose level which is targeted.
-##' Additional arguments are model parameters. It computes using modal estimates or samples of the
-##' model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
-##' of the model parameter(s) are used, the function must vectorize over the model parameters.
-##'
-##' The \code{data} must obey the convention that the data input is called exactly in the
-##' \code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses
-##' (\code{w} in
-##' \code{\linkS4class{DataDual}} class), the dose (levels) (\code{x} in \code{\linkS4class{DataDual}} or
-##' \code{Data} class)
-##' at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
-##' in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in
-##' \code{\linkS4class{DataDual}}
-##' class that can be used to generate prior or
-##' posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
-##' at least \code{doseGrid} in \code{\linkS4class{DataDual}} has to be specified in \code{data} slot
-##' for which prior modal estimates or samples can be obtained for model parameters based on
-##' the specified pseudo data.
-##'
-##' @slot dose a function computing the dose reaching a specific target value of expected efficacy, based
-##' on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified
-##' in form of pseudo data and if any together with any observed responses (see details above)
-##'
-##' @slot ExpEff a function computing the expected efficacy (value) for a specific dose, based on model
-##' parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any)
-##' with observed responses (see details above)
-##'
-##' @slot data refers to the data input specification in \code{\linkS4class{DataDual}} class which are used to
-##' obtain model parameters estimates or samples (see details above)
-##'
-##' @seealso \code{\linkS4class{Effloglog}},
-##' \code{\linkS4class{EffFlexi}}
-##'
+#' `ModelEff`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`ModelEff`] is the parent class for efficacy models using pseudo data prior.
+#' It is dedicated all efficacy models that have their prior specified in the
+#' form of pseudo data (as if there is some data before the trial starts).
+#'
+#' The `data` must obey the convention of the [`DataDual`] class. This refers to
+#' any observed efficacy/biomarker responses (`w` in [`DataDual`]), the dose
+#' levels at which these responses are observed (`x` in [`DataDual`]), all dose
+#' levels considered in the study (`doseGrid` in [`DataDual`]), and finally
+#' other specifications in [`DataDual`] class that can be used to generate prior
+#' or posterior modal estimates or samples estimates for model parameter(s).
+#' If no responses are observed, at least `doseGrid` has to be specified
+#' in `data` for which prior modal estimates or samples can be obtained for
+#' model parameters based on the specified pseudo data.
+#'
+#' @slot data (`DataDual`)\cr observed data that is used to obtain model
+#'   parameters estimates or samples (see details above).
+#'
+#' @seealso [`ModelPseudo`], [`ModelTox`].
+#'
 #' @aliases ModelEff
-##' @export
-.ModelEff<-setClass(Class="ModelEff",
-                    representation(dose="function",
-                                   ExpEff="function",
-                                   data="DataDual"),
-                    contains="ModelPseudo"
+#' @export
+#'
+.ModelEff <- setClass(
+  Class = "ModelEff",
+  slots = c(
+    data = "DataDual"
+  ),
+  contains = "ModelPseudo"
 )
-validObject(.ModelEff)
-##' No initialization function
+
+# nolint start
 
 # LogisticIndepBeta ----
 
@@ -2060,48 +2040,48 @@ LogisticIndepBeta <- function(binDLE,
 ##' @example examples/Model-class-Effloglog.R
 ##' @export
 ##' @keywords methods
-.Effloglog<-
-  setClass(Class="Effloglog",
-           representation(Eff="numeric",
-                          Effdose="numeric",
-                          nu="numeric",
-                          useFixed="logical",
-                          theta1="numeric",
-                          theta2="numeric",
-                          Pcov="matrix",
-                          vecmu="matrix",
-                          matX="matrix",
-                          matQ="matrix",
-                          vecY="matrix",
-                          c="numeric"),
-           prototype(Eff=c(0,0),
-                     Effdose=c(1,1),
-                     nu=1/0.025,
-                     useFixed=TRUE,
-                     c=0),
-           contains="ModelEff",
-           validity=
-             function(object){
-               o <- Validate()
+.Effloglog <- setClass(
+  Class = "Effloglog",
+  representation(Eff="numeric",
+                 Effdose="numeric",
+                 nu="numeric",
+                 useFixed="logical",
+                 theta1="numeric",
+                 theta2="numeric",
+                 Pcov="matrix",
+                 vecmu="matrix",
+                 matX="matrix",
+                 matQ="matrix",
+                 vecY="matrix",
+                 c="numeric"),
+  prototype(Eff=c(0,0),
+            Effdose=c(1,1),
+            nu=1/0.025,
+            useFixed=TRUE,
+            c=0),
+  contains="ModelEff",
+  validity=
+    function(object){
+      o <- Validate()
 
-               o$check(length(object@Eff) >= 2,
-                       "length of Eff must be at least 2")
-               o$check(length(object@Effdose) >= 2,
-                       "length of Effdose must be at least 2")
-               o$check(length(object@Eff)==length(object@Effdose),
-                       "length of Eff and Effdose must be equal")
-               if (object@useFixed == "TRUE"){
-                 o$check((length(object@nu)==1)&&(object@nu > 0),
-                         "nu must be a single positive real number")} else {
-                           o$check(identical(names(slot(object,"nu")),c("a","b")),
-                                   "nu must have names 'a' and 'b' ")
-                           o$check(all(slot(object,"nu") > 0),
-                                   "nu must have positive prior paramters")
-                           o$check(identical(length(object@nu),2L),
-                                   "nu must have length at most 2")
-                         }
-               o$result()
-             })
+      o$check(length(object@Eff) >= 2,
+              "length of Eff must be at least 2")
+      o$check(length(object@Effdose) >= 2,
+              "length of Effdose must be at least 2")
+      o$check(length(object@Eff)==length(object@Effdose),
+              "length of Eff and Effdose must be equal")
+      if (object@useFixed == "TRUE"){
+        o$check((length(object@nu)==1)&&(object@nu > 0),
+                "nu must be a single positive real number")} else {
+                  o$check(identical(names(slot(object,"nu")),c("a","b")),
+                          "nu must have names 'a' and 'b' ")
+                  o$check(all(slot(object,"nu") > 0),
+                          "nu must have positive prior paramters")
+                  o$check(identical(length(object@nu),2L),
+                          "nu must have length at most 2")
+                }
+      o$result()
+    })
 validObject(.Effloglog())
 
 ##' Initialization function for the "Effloglog" class
@@ -2179,14 +2159,6 @@ Effloglog<-function(Eff,
              useFixed=useFixed,
              datanames=c("nObs","w","x"),
              data=data,
-             dose=function(x,theta1,theta2){
-               LogDose<-exp((x-theta1)/theta2)
-               return(exp(LogDose) - c)
-             },
-             ExpEff=function(dose,theta1,theta2){
-               dose <- dose + c
-               return(theta1+theta2*log(log(dose)))
-             },
              theta1=theta1,
              theta2=theta2,
              Pcov=Pcov,
@@ -2266,44 +2238,44 @@ Effloglog<-function(Eff,
 ##' @export
 ##' @keywords class
 .EffFlexi<-setClass(Class="EffFlexi",
-representation(Eff="numeric",
-               Effdose="numeric",
-               sigma2="numeric",
-               sigma2betaW="numeric",
-               useFixed="list",
-               useRW1="logical",
-               designW="matrix",
-               RWmat="matrix",
-               RWmatRank="integer"),
-prototype(Eff=c(0,0),
-          Effdose=c(1,1),
-          sigma2=0.025,
-          sigma2betaW=1,
-          useRW1=TRUE,
-          useFixed=list(sigma2=TRUE,sigma2betaW=TRUE)),
-contains="ModelEff",
-validity=
-  function(object){
-    o<- Validate()
-    o$check(length(object@Eff) >= 2,
-            "length of Eff must be at least 2")
-    o$check(length(object@Effdose) >= 2,
-            "length of Effdose must be at least 2")
-    o$check(length(object@Eff)==length(object@Effdose),
-            "length of Eff and Effdose must be equal")
-    for (parName in c("sigma2","sigma2betaW"))
-    {
-      if (object@useFixed[[parName]]){
-        o$check(slot(object,parName) > 0,
-                paste(parName, "must be positive"))} else {
-                  o$check(identical(names(slot(object,parName)),c("a","b")),
-                          paste(parName,"must have names 'a' and 'b'"))
-                  o$check(all(slot(object,parName) > 0),
-                          paste(parName, "must have positive prior parameters"))
-                }
-    }
-    o$result()
-  })
+                    representation(Eff="numeric",
+                                   Effdose="numeric",
+                                   sigma2="numeric",
+                                   sigma2betaW="numeric",
+                                   useFixed="list",
+                                   useRW1="logical",
+                                   designW="matrix",
+                                   RWmat="matrix",
+                                   RWmatRank="integer"),
+                    prototype(Eff=c(0,0),
+                              Effdose=c(1,1),
+                              sigma2=0.025,
+                              sigma2betaW=1,
+                              useRW1=TRUE,
+                              useFixed=list(sigma2=TRUE,sigma2betaW=TRUE)),
+                    contains="ModelEff",
+                    validity=
+                      function(object){
+                        o<- Validate()
+                        o$check(length(object@Eff) >= 2,
+                                "length of Eff must be at least 2")
+                        o$check(length(object@Effdose) >= 2,
+                                "length of Effdose must be at least 2")
+                        o$check(length(object@Eff)==length(object@Effdose),
+                                "length of Eff and Effdose must be equal")
+                        for (parName in c("sigma2","sigma2betaW"))
+                        {
+                          if (object@useFixed[[parName]]){
+                            o$check(slot(object,parName) > 0,
+                                    paste(parName, "must be positive"))} else {
+                                      o$check(identical(names(slot(object,parName)),c("a","b")),
+                                              paste(parName,"must have names 'a' and 'b'"))
+                                      o$check(all(slot(object,parName) > 0),
+                                              paste(parName, "must have positive prior parameters"))
+                                    }
+                        }
+                        o$result()
+                      })
 validObject(.EffFlexi())
 
 ##' Initialization function for the "EffFlexi" class
@@ -2372,36 +2344,6 @@ EffFlexi <- function(Eff,
             sigma2betaW=sigma2betaW,
             datanames=c("nObs","w","x"),
             data=data,
-            dose=function(x){
-              ##Find dose level given a particular Expected Efficacy level with linear Interpolation
-              dosevec<-c()
-              for (k in 1:sampleSize(options)){
-                IxEff0<- max(which((x-Effsamples@data$ExpEff[k,]) >= 0))
-                IxEff1<- min(which((x-Effsamples@data$ExpEff[k,]) < 0))
-                Interpoldose<-data@doseGrid[IxEff0]+(data@doseGrid[IxEff1]-data@doseGrid[IxEff0])*((x-Effsamples@data$ExpEff[k,IxEff0])/(Effsamples@data$ExpEff[k,IxEff1]-Effsamples@data$ExpEff[k,IxEff0]))
-                dosevec[k]<-Interpoldose
-              }
-              ##return coreresponding dose levels
-              return(dosevec)},
-
-            ExpEff=function(dose,data,Effsamples){
-              ##Find the ExpEff with a given dose level
-              ##Check if given dose is in doseGrid
-              DoseInGrid<-!is.na(matchTolerance(dose,data@doseGrid))
-              if (DoseInGrid==TRUE){
-                ##Find which dose is this in the dose Grid
-                EIx<-matchTolerance(dose,data@doseGrid)
-                ##Return corresponding expected efficacy values from mcmc samples
-                return(Effsamples@data$ExpEff[,EIx])} else {##if dose not in doseGrid do linear Interploation
-                  ## check if this dose is within doseGrid
-                  stopifnot(dose <= max(data@doseGrid), dose >= min(data@doseGrid))
-                  Ixd0 <- max(which((dose-data@doseGrid) > 0))
-                  Ixd1<-min(which((dose-data@doseGrid) < 0))
-                  ExpEffd0<-Effsamples@data$ExpEff[,Ixd0]
-                  ExpEffd1<-Effsamples@data$ExpEff[,Ixd1]
-                  InterpolExpEff<- ExpEffd0+(ExpEffd1-ExpEffd0)*((dose-data@doseGrid[Ixd0])/(data@doseGrid[Ixd1]-data@doseGrid[Ixd0]))
-                  return(InterpolExpEff)}
-            },
             useFixed=useFixed,
             useRW1=useRW1,
             designW=designW,
@@ -2544,51 +2486,51 @@ DALogisticLogNormal <- function(npiece=3,
 
                        priormodel=
                          h_jags_join_models(start@priormodel,
-                                    function(){
-                                      # ## the multivariate normal prior on the (transformed)
-                                      # ## coefficients
-                                      # priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                                      # theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                      # ## extract actual coefficients
-                                      # alpha0 <- theta[1]
-                                      # alpha1 <- exp(theta[2])
-                                      #
-                                      # ## dummy to use refDose here.
-                                      # ## It is contained in the modelspecs list below,
-                                      # ## so it must occur here
-                                      # bla <- refDose + 1
+                                            function(){
+                                              # ## the multivariate normal prior on the (transformed)
+                                              # ## coefficients
+                                              # priorPrec[1:2,1:2] <- inverse(priorCov[,])
+                                              # theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
+                                              # ## extract actual coefficients
+                                              # alpha0 <- theta[1]
+                                              # alpha1 <- exp(theta[2])
+                                              #
+                                              # ## dummy to use refDose here.
+                                              # ## It is contained in the modelspecs list below,
+                                              # ## so it must occur here
+                                              # bla <- refDose + 1
 
-                                      # dummies to use eps and cadj. Otherwise
-                                      # empty data sampling fails.
-                                      blu <- eps + cadj
+                                              # dummies to use eps and cadj. Otherwise
+                                              # empty data sampling fails.
+                                              blu <- eps + cadj
 
-                                      ## the piecewise exponential prior;
-                                      g_beta<- 1/C_par
+                                              ## the piecewise exponential prior;
+                                              g_beta<- 1/C_par
 
-                                      for  (j in 1:npiece){
+                                              for  (j in 1:npiece){
 
-                                        muT[j]<- lambda[j]*sT[j]
+                                                muT[j]<- lambda[j]*sT[j]
 
-                                        sT[j]<-h[j+1]-h[j]
+                                                sT[j]<-h[j+1]-h[j]
 
-                                        #prior of lambda ;
+                                                #prior of lambda ;
 
-                                        g_alpha[j]<-l[j]/C_par
+                                                g_alpha[j]<-l[j]/C_par
 
-                                        lambda_p[j]~dgamma(g_alpha[j],g_beta)
+                                                lambda_p[j]~dgamma(g_alpha[j],g_beta)
 
-                                        lambda[j]<-lambda_p[j]
-                                      }
+                                                lambda[j]<-lambda_p[j]
+                                              }
 
-                                      ## for conditional:
-                                      sum_muT <- sum(muT[])
+                                              ## for conditional:
+                                              sum_muT <- sum(muT[])
 
-                                      ## If cond = 1, then conditional PEM is used and this
-                                      ## is defined as the probability to have DLT, i.e. t<T
-                                      ## otherwise cond = 0 and it is just 1 (so no
-                                      ## impact in likelihood)
-                                      A <- cond * (1-exp(-sum_muT)) + (1 - cond)
-                                    }),
+                                              ## If cond = 1, then conditional PEM is used and this
+                                              ## is defined as the probability to have DLT, i.e. t<T
+                                              ## otherwise cond = 0 and it is just 1 (so no
+                                              ## impact in likelihood)
+                                              A <- cond * (1-exp(-sum_muT)) + (1 - cond)
+                                            }),
 
                        datanames=c("nObs", "y", "x", "u", "Tmax"),
                        modelspecs=

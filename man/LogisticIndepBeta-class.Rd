@@ -4,8 +4,7 @@
 \name{LogisticIndepBeta-class}
 \alias{LogisticIndepBeta-class}
 \alias{.LogisticIndepBeta}
-\title{No initialization function
-Standard logistic model with prior in form of pseudo data}
+\title{Standard logistic model with prior in form of pseudo data}
 \description{
 This is a class for the two-parameter logistic regression DLE model with prior expressed
 in form of pseudo data. This model describe the relationship of the binary DLE (dose-limiting

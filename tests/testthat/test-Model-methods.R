@@ -34,9 +34,9 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
   )
 })
 
-## ModelTox ----
+## ModelPseudo ----
 
-test_that("doseFunction-ModelTox returns correct dose function", {
+test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
   samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
   dose_args <- c("x", "model", "samples")
@@ -55,7 +55,7 @@ test_that("doseFunction-ModelTox returns correct dose function", {
   expect_identical(dose_fun_env[["samples"]], samples)
 })
 
-test_that("doseFunction-ModelTox throws the error when no params are provided", {
+test_that("doseFunction-ModelPseudo throws the error when no params are provided", {
   model <- h_get_logistic_indep_beta()
 
   expect_error(
@@ -126,6 +126,38 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
 
   expect_error(
     probFunction(model),
+    "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
+  )
+})
+
+# efficacyFunction ----
+
+## ModelEff ----
+
+test_that("efficacyFunction-ModelEff returns correct efficacy function", {
+  model <- h_get_eff_log_log()
+  samples <- Samples(data = list(theta1 = -4.8, theta2 = 3.7), options = McmcOptions(samples = 1))
+  eff_args <- c("dose", "model", "samples")
+
+  eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
+  eff_fun_eff_args <- as.character(body(eff_fun)[[2]][-1])
+  eff_fun_env <- environment(eff_fun)
+
+  expect_function(eff_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_equal(eff_fun_eff_args, eff_args)
+  expect_subset(
+    setdiff(eff_fun_eff_args, "dose"),
+    ls(envir = eff_fun_env)
+  )
+  expect_identical(eff_fun_env[["model"]], model)
+  expect_identical(eff_fun_env[["samples"]], samples)
+})
+
+test_that("efficacyFunction-ModelEff throws the error when no params are provided", {
+  model <- h_get_eff_log_log()
+
+  expect_error(
+    efficacyFunction(model),
     "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
   )
 })

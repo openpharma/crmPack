@@ -2076,10 +2076,7 @@ Next, we have to specify the scenarios for simulations. For example, for simulat
 
 <<trueDLTtrueEff>>=
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53.66584, phi2 = 10.50499)
-
-myTruthEff<- function(dose)
-{Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
-}
+myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.818429, theta2 = 3.653058)
 
 myTruthGain <- function(dose)
 {return(myTruthEff(dose) * (1-myTruthDLT(dose)))}

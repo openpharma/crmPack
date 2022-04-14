@@ -4,32 +4,38 @@
 \alias{doseFunction}
 \alias{doseFunction,GeneralModel-method}
 \alias{doseFunction-GeneralModel}
-\alias{doseFunction,ModelTox-method}
-\alias{doseFunction-ModelTox}
+\alias{doseFunction,ModelPseudo-method}
+\alias{doseFunction-ModelPseudo}
 \title{Getting the Dose Function for a Given Model Type}
 \usage{
 doseFunction(model, ...)
 
 \S4method{doseFunction}{GeneralModel}(model, ...)
 
-\S4method{doseFunction}{ModelTox}(model, ...)
+\S4method{doseFunction}{ModelPseudo}(model, ...)
 }
 \arguments{
-\item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model.}
+\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
 \item{...}{model specific parameters.}
 }
 \value{
-A \code{\link{dose}} method that computes doses for a given value of an
-independent variable and the model.
+A \code{\link[=dose]{dose()}} method that computes doses.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-A function that returns a \code{\link{dose}} method that computes the dose reaching a
-specific target value of a given independent variable, and based on the model
+A function that returns a \code{\link[=dose]{dose()}} method that computes the dose reaching a
+specific target value of a given independent variable, based on the model
 specific parameters.
 }
+\section{Functions}{
+\itemize{
+\item \code{doseFunction,GeneralModel-method}: 
+
+\item \code{doseFunction,ModelPseudo-method}: 
+}}
+
 \examples{
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),
@@ -41,5 +47,5 @@ dose_fun <- doseFunction(my_model, alpha0 = 2, alpha1 = 3)
 dose_fun(0.6)
 }
 \seealso{
-\code{\link{dose}}, \code{\link{probFunction}}.
+\code{\link[=dose]{dose()}}, \code{\link[=probFunction]{probFunction()}}.
 }

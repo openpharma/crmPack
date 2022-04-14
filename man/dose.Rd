@@ -30,6 +30,10 @@
 \alias{dose-LogisticIndepBeta}
 \alias{dose,numeric,LogisticIndepBeta,missing-method}
 \alias{dose-LogisticIndepBeta-noSamples}
+\alias{dose,numeric,Effloglog,missing-method}
+\alias{dose-Effloglog-noSamples}
+\alias{dose,numeric,EffFlexi,Samples-method}
+\alias{dose-EffFlexi}
 \title{Computing the Doses for a given independent variable, Model and Samples}
 \usage{
 dose(x, model, samples, ...)
@@ -61,15 +65,21 @@ dose(x, model, samples, ...)
 \S4method{dose}{numeric,LogisticIndepBeta,Samples}(x, model, samples)
 
 \S4method{dose}{numeric,LogisticIndepBeta,missing}(x, model)
+
+\S4method{dose}{numeric,Effloglog,missing}(x, model)
+
+\S4method{dose}{numeric,EffFlexi,Samples}(x, model, samples)
 }
 \arguments{
 \item{x}{(\code{proportion} or \code{numeric})\cr a value of an independent variable
 on which dose depends.
-This must be a scalar if non-scalar \code{samples} are used. It can be a vector
-of any finite length, if \code{samples} are scalars or \code{samples} are not used,
-as e.g. in case of pseudo DLE/toxicity model.}
+This must be a scalar if number of samples in \code{samples} is greater than
+one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
+finite length, if there is only one sample in \code{samples}, or \code{samples} are
+not used at all, as e.g. in case of pseudo DLE
+(dose-limiting events)/toxicity model.}
 
-\item{model}{(\code{GeneralModel} or \code{ModelTox} or \code{ModelEff})\cr the model.}
+\item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
 used to compute the resulting doses.}
@@ -93,28 +103,72 @@ on the type of the model. For instance, for single agent dose escalation
 model or pseudo DLE (dose-limiting events)/toxicity model, this variable
 represents the a probability of the occurrence of a DLE. For efficacy models,
 it represents expected efficacy.
-The doses are computed based on the samples of the model parameters.
-
-Compute the dose level reaching a specific target probability of
-the occurrence of a DLE, based on the samples of \code{\link{LogisticIndepBeta}} model
-parameters.
-The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
-
-Compute the dose level reaching a specific target probability of
-the occurrence of a DLE, based on the \code{\link{LogisticIndepBeta}} model
-parameters. All model parameters (except \code{prob}) should be present in the \code{model} object.
-The \code{\link{LogisticIndepBeta}} model is a Pseudo DLE (dose-limiting events)/toxicity.
+The doses are computed based on the samples of the model parameters (samples).
 }
 \details{
-The \code{dose} function computes the doses corresponding to a value of
+The \code{dose()} function computes the doses corresponding to a value of
 a given independent variable, using samples of the model parameter(s).
 If you work with multivariate model parameters, then assume that your model
-specific \code{dose} method receives a samples matrix where the rows correspond
-to the sampling index, i.e. the layout is then \verb{nSamples x dimParameter}.
+specific \code{dose()} method receives a samples matrix where the rows
+correspond to the sampling index, i.e. the layout is then
+\verb{nSamples x dimParameter}.
 }
+\section{Functions}{
+\itemize{
+\item \code{dose,numeric,Model,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticNormal,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticLogNormal,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticLogNormalSub,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,ProbitLogNormal,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,ProbitLogNormalRel,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticKadane,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticKadaneBetaGamma,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticNormalMixture,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticNormalFixedMixture,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticLogNormalMixture,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,DualEndpoint,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticIndepBeta,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,LogisticIndepBeta,missing-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+All model parameters (except \code{x}) should be present in the \code{model} object.
+
+\item \code{dose,numeric,Effloglog,missing-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+All model parameters (except \code{x}) should be present in the \code{model} object.
+
+\item \code{dose,numeric,EffFlexi,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+}}
+
 \note{
-The \code{\link{dose}} and \code{\link{prob}} methods are the inverse of each other, for
-all \code{\link{dose}} methods for which its first argument, i.e. a given independent
+The \code{\link[=dose]{dose()}} and \code{\link[=prob]{prob()}} methods are the inverse of each other, for
+all \code{\link[=dose]{dose()}} methods for which its first argument, i.e. a given independent
 variable that dose depends on, represents toxicity probability.
 }
 \examples{
@@ -163,5 +217,5 @@ dose(x = 0.45, model = dlt_model, samples = dlt_sample)
 dose(x = c(0.45, 0.6), model = dlt_model)
 }
 \seealso{
-\code{\link{doseFunction}}, \code{\link{prob}}.
+\code{\link[=doseFunction]{doseFunction()}}, \code{\link[=prob]{prob()}}, \code{\link[=efficacy]{efficacy()}}.
 }

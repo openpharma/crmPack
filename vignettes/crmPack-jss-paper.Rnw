@@ -660,9 +660,10 @@ design2 <- DualResponsesDesign(nextBest = GainNextBest, model = DLTmodel,
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:
 <<scenario>>=
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
-myTruthEff<- function(dose){Effmodel@ExpEff(dose, theta1 = -4.8,
-                                            theta2 = 3.7)}
-myTruthGain <- function(dose){myTruthEff(dose) * (1 - myTruthDLT(dose))}
+myTruthEff<- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
+myTruthGain <- function(dose) {
+  myTruthEff(dose) * (1 - myTruthDLT(dose))
+}
 @
 Please note that the parameter names \code{phi1}, \code{phi2}, \code{theta1} and
 \code{theta2} correspond to $\alpha_0, \alpha_1, \gamma$ and $\delta$, respectively.
