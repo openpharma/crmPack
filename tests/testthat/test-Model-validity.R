@@ -512,3 +512,76 @@ test_that("v_model_dual_endpoint_emax returns message for wrong parameters", {
 
   expect_snapshot(v_model_dual_endpoint_emax(object))
 })
+
+# v_model_logistic_indep_beta ----
+
+test_that("v_model_logistic_indep_beta passes for valid object", {
+  object_edat <- h_get_logistic_indep_beta(emptydata = TRUE)
+  object <- h_get_logistic_indep_beta(emptydata = FALSE)
+
+  expect_true(v_model_logistic_indep_beta(object_edat))
+  expect_true(v_model_logistic_indep_beta(object))
+})
+
+test_that("v_model_logistic_indep_beta returns message for wrong DLE parameters", {
+  object <- h_get_logistic_indep_beta()
+  # Assigning wrong values for binDLE, DLEdose, DLEweights.
+  object@binDLE <- c(-2, NA)
+  object@DLEdose <- c(3, NA)
+  object@DLEweights <- c(4L, NA)
+  expect_snapshot(v_model_logistic_indep_beta(object))
+
+  object@binDLE <- -2
+  object@DLEdose <- 3
+  object@DLEweights <- 4L
+  expect_snapshot(v_model_logistic_indep_beta(object))
+})
+
+test_that("v_model_logistic_indep_beta returns message for wrong DLE parameters (diff len)", {
+  object <- h_get_logistic_indep_beta()
+  # Assigning wrong-length values for binDLE, DLEdose, DLEweights.
+  object@binDLE <- c(2, 6)
+  object@DLEdose <- c(3, 8, 9)
+  object@DLEweights <- c(4L, 12L)
+  expect_snapshot(v_model_logistic_indep_beta(object))
+
+  object@binDLE <- c(2, 6)
+  object@DLEdose <- c(3, 8)
+  object@DLEweights <- c(4L, 12L, 20L)
+  expect_snapshot(v_model_logistic_indep_beta(object))
+
+  object@binDLE <- c(2, 6)
+  object@DLEdose <- c(3, 8, 11)
+  object@DLEweights <- c(4L, 12L, 20L)
+  expect_snapshot(v_model_logistic_indep_beta(object))
+})
+
+test_that("v_model_logistic_indep_beta returns message for wrong phi parameters", {
+  object <- h_get_logistic_indep_beta()
+  # Assigning non-scalar values for phi1 and phi2.
+  object@phi1 <- c(2, 6)
+  object@phi2 <- c(3, 8, 9)
+
+  expect_equal(
+    v_model_logistic_indep_beta(object),
+    c(
+      "phi1 must be a numerical scalar",
+      "phi2 must be a numerical scalar"
+    )
+  )
+})
+
+test_that("v_model_logistic_indep_beta returns message for wrong Pcov", {
+  err_msg <- "Pcov must be 2x2 positive-definite matrix without any missing values"
+  object <- h_get_logistic_indep_beta()
+
+  # Assigning wrong Pcov matrix.
+  object@Pcov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
+  expect_equal(v_model_logistic_indep_beta(object), err_msg)
+
+  object@Pcov <- matrix(c(5, 2, 1, 5), ncol = 2)
+  expect_equal(v_model_logistic_indep_beta(object), err_msg)
+
+  object@Pcov <- matrix(c(5, 2, 3, 2, 3, 2, 3, 2, 5), ncol = 3)
+  expect_equal(v_model_logistic_indep_beta(object), err_msg)
+})

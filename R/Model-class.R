@@ -1789,153 +1789,156 @@ DualEndpointEmax <- function(E0,
   contains = "ModelPseudo"
 )
 
-# nolint start
-
 # LogisticIndepBeta ----
 
-## ==============================================================================
-##' Standard logistic model with prior in form of pseudo data
-##'
-##' This is a class for the two-parameter logistic regression DLE model with prior expressed
-##' in form of pseudo data. This model describe the relationship of the binary DLE (dose-limiting
-##' events) responses and the dose levels. More specifically, this DLE model represents the relationship
-##' of the probabilities of the occurrence of a DLE with their corresponding dose levels in log scale.
-##' This model is specified as
-##' \deqn{p(d_{(j)})= \frac{exp(\phi_1+\phi_2 log(d_{(j)}))}{1+exp(\phi_1+\phi_2 log(d_{(j)}))}}
-##' for any dose j where \eqn{p(d_{(j)})} is the probability of the occurrence of a DLE at dose j.
-##' The two parameters of this model is the intercept \eqn{\phi_1} and the slope \eqn{\phi_2}
-##' It inherits all slots from \code{\linkS4class{ModelTox}} class.
-##'
-##' The pseudo data can be interpreted as as if we obtain some observations before the trial starts.
-##' These pseudo data can be used to express our prior, the initial beliefs for the model parameter(s).
-##' The pseudo data are expressed in the following way. First, fix at least two dose levels which are
-##' Then ask for experts' opinion how many subjects are to be treated at each of these dose levels and
-##' the number of subjects observed with DLE are observed. At each dose level, the number of subjects
-##' observed with a DLE divided by the total number of subjects treated is the probability of the
-##' occurrence of a DLE at that particular dose level. The probabilities of the occurrence of a DLE
-##' based on these pseudo data are independent Beta distributions. Therefore, the joint prior probability
-##' density function of all these probabilities can be obtained. Hence, by a change of variable, the
-##' joint prior probability density function of the two parameters in this model can also be obtained.
-##' In addition, a conjugate joint prior density function of the two parameters in the model is used.
-##' For details about the form of all these joint prior and posterior probability density function, please
-##' refers to Whitehead and Willamson (1998).
-##'
-##'
-##' When expressing the pseudo data, \code{binDLE},\code{DLEdose} and \code{DLEweights} are used.
-##' The \code{binDLE} represents the number of subjects observed with DLE. Note that, since the imaginary
-##' nature of the pseudo data, the number of subjects observed with DLE is not necessary to be integer(s)
-##' but any scalar value.
-##' The \code{DLEdose} represents the dose levels at which the pseudo DLE responses (\code{binDLE}) are
-##' observed.
-##' The \code{DLEweights} represents the total number of subjects treated.
-##' Since at least two DLE pseudo responses are needed to obtain prior modal estimates (same as the maximum
-##' likelihood estimates) for the model parameters. \code{binDLE}, \code{DLEdose} and \code{DLEweights} must
-##' all be vectors of at least length 2. Since given one pseudo DLE responses, the number of subjects observed
-##' with a DLE relates to at which dose level they are treated and the total number of of subjects treated at
-##' this dose level. Therefore, each of the elements in any of the vectors of \code{binDLE}, \code{DLEdose} and
-##' \code{DLEweights} must have a corresponding elements in the other two vectors. A set of three values with
-##' one of each in the vectors of \code{binDLE}, \code{DLEdose} and \code{DLEweights}. In this model, each of
-##' these three values must be specified in the same position as in each of the vector of \code{binDLE},
-##' \code{DLEdose} and \code{DLEweights}. The order of the values or elements in one of the vector \code{binDLE},
-##' \code{DLEdose} and \code{DLEweights} must corresponds to the values or elements specified in the other two
-##' vectors.
-##'
-##' @slot binDLE represents the vector of pseudo DLE responses. This must be at least f length 2 and the
-##' order of its elements must corresponds to values specified in \code{DLEdose} and \code{DLEweights}.
-##' (see details from above)
-##' @slot DLEdose represents the vector of the corresponding dose levels observed at each of the
-##' pseudo DLE responses (\code{binDLE}). This mus be at least of length 2 and the order of its elements
-##' must corresponds to values specified in \code{binDLE} and \code{DLEweights}.
-##' (see details from above)
-##' @slot DLEweights refers to the total number of subjects treated at each of the pseudo dose level
-##' (\code{DLEdose}). This must be of length of at least 2 and the order of its elements must corresponds
-##' to values specified in \code{binDLE} and \code{DLEdose}. (see details from above)
-##' @slot phi1 refers the intercept of the model. This slot is used in output to display the resulting prior
-##' or posterior modal estimate of the intercept obtained based on the pseudo data and (if any)
-##' observed data/responses.
-##' @slot phi2 refers to slope of the model. This slot is used in output to display the resulting prior or
-##' posterior modal estimate of the slope obtained based on the pseudo data and (if any) the observed data/responses.
-##' @slot Pcov refers to the covariance matrix of the intercept (phi1) and the slope parameters (phi2) of the
-##' model. This is used in output to display the resulting prior and posterior covariance matrix of phi1 and
-##' phi2 obtained, based on the pseudo data and (if any) the observed data and responses. This slot is needed for
-##' internal purposes.
-##'
-##' @example examples/Model-class-LogisticIndepBeta.R
-##' @export
-##' @keywords classes
-.LogisticIndepBeta<-
-  setClass(Class="LogisticIndepBeta",
-           representation(binDLE="numeric",
-                          DLEdose="numeric",
-                          DLEweights="numeric",
+## class ----
 
-                          phi1="numeric",
-                          phi2="numeric",
-                          Pcov="matrix"),
-           prototype(binDLE=c(0,0),
-                     DLEdose=c(1,1),
-                     DLEweights=c(1,1)),
-           contains="ModelTox",
-           validity=
-             function(object){
-               o <- Validate()
-               ##Check if at least two pseudo DLE responses are given
-               o$check(length(object@binDLE) >= 2,
-                       "length of binDLE must be at least 2")
-               ##Check if at least two weights for pseudo DLE are given
-               o$check(length(object@DLEweights) >= 2,
-                       "length of DLEweights must be at least 2")
-               ##Check if at least two corresponding dose levels are given for the pseudo DLE responses
-               o$check(length(object@DLEdose) >= 2,
-                       "length of DLEdose must be at least 2")
-               ##Check if pseudo DLE responses have same length with it corresponding dose levels and weights
-               o$check((length(object@binDLE)==length(object@DLEweights))&(length(object@binDLE)==length(object@DLEdose))&(length(object@DLEweights)==length(object@DLEdose)),
-                       "length of binDLE, DLEweights, DLEDose must be equal")
-               o$result()
-             })
-validObject(.LogisticIndepBeta())
+#' `LogisticIndepBeta`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`LogisticIndepBeta`] is the class for the two-parameters logistic regression
+#' dose-limiting events (DLE) model with prior expressed in form of pseudo data.
+#' This model describes the relationship between the binary DLE responses
+#' and the dose levels. More specifically, it represents the relationship of the
+#' probabilities of the occurrence of a DLE for corresponding dose levels in log
+#' scale. This model is specified as
+#' \deqn{p(x) = exp(phi1 + phi2 * log(x)) / (1 + exp(phi1 + phi2 * log(x)))}
+#' where \eqn{p(x)} is the probability of the occurrence of a DLE at dose \eqn{x}.
+#' The two parameters of this model are the intercept \eqn{phi1} and the slope
+#' \eqn{phi2}. The `LogisticIndepBeta` inherits all slots from [`ModelTox`] class.
+#'
+#' In the context of pseudo data, the following three arguments are used,
+#' `binDLE`, `DLEdose` and `DLEweights`. The `DLEdose` represents fixed dose
+#' levels at which the pseudo DLE responses `binDLE` are observed. `DLEweights`
+#' represents total number of subjects treated per each dose level in `DLEdose`.
+#' The `binDLE` represents the number of subjects observed with DLE per each
+#' dose level in `DLEdose`. Hence, all these three vectors must be of the same
+#' length and the order of the elements in any of the vectors `binDLE`,
+#' `DLEdose` and `DLEweights` must be kept, so that an element of a given vector
+#' corresponds to the elements of the remaining two vectors (see the example for
+#' more insight).
+#' Finally, since at least two DLE pseudo responses are needed to
+#' obtain prior modal estimates (same as the maximum likelihood estimates) for
+#' the model parameters, the `binDLE`, `DLEdose` and `DLEweights` must all be
+#' vectors of at least length 2.
+#'
+#' @details The pseudo data can be interpreted as if we obtain some observations
+#' before the trial starts. It can be used to express our prior, i.e. the
+#' initial beliefs for the model parameters. The pseudo data is expressed in the
+#' following way. First, fix at least two dose levels, then ask for experts'
+#' opinion on how many subjects are to be treated at each of these dose levels
+#' and on the number of subjects observed with a DLE. At each dose level,
+#' the number of subjects observed with a DLE, divided by the total number of
+#' subjects treated, is the probability of the occurrence of a DLE at that
+#' particular dose level. The probabilities of the occurrence of a DLE based on
+#' this pseudo data are independent and they follow Beta distributions.
+#' Therefore, the joint prior probability density function of all these
+#' probabilities can be obtained. Hence, by a change of variable, the joint
+#' prior probability density function of the two parameters in this model can
+#' also be obtained. In addition, a conjugate joint prior density function of
+#' the two parameters in the model is used. For details about the form of all
+#' these joint prior and posterior probability density functions, please refer
+#' to Whitehead and Willamson (1998).
+#'
+#' @slot binDLE (`numeric`)\cr a vector of total numbers of DLE responses.
+#'   It must be at least of length 2 and the order of its elements must
+#'   correspond to values specified in `DLEdose` and `DLEweights`.
+#' @slot DLEdose (`numeric`)\cr a vector of the dose levels corresponding to
+#'   It must be at least of length 2 and the order of its elements must
+#'   correspond to values specified in `binDLE` and `DLEweights`.
+#' @slot DLEweights (`integer`)\cr total number of subjects treated at each of
+#'   the pseudo dose level `DLEdose`.
+#'   It must be at least of length 2 and the order of its elements must
+#'   correspond to values specified in `binDLE` and `DLEdose`.
+#' @slot phi1 (`number`)\cr  the intercept of the model. This slot is used in
+#'   output to display the resulting prior or posterior modal estimate of the
+#'   intercept obtained based on the pseudo data and (if any) observed data/responses.
+#' @slot phi2 (`number`)\cr  the slope of the model. This slot is used in output
+#'   to display the resulting prior or posterior modal estimate of the slope
+#'   obtained based on the pseudo data and (if any) the observed data/responses.
+#' @slot Pcov (`matrix`)\cr refers to the 2x2 covariance matrix of the intercept
+#'   (`phi1`) and the slope parameters (`phi2`) of the model.
+#'   This is used in output to display the resulting prior and posterior
+#'   covariance matrix of `phi1` and `phi2` obtained, based on the pseudo data
+#'   and (if any) the observed data and responses. This slot is needed for
+#'   internal purposes.
+#'
+#' @aliases LogisticIndepBeta
+#' @export
+#'
+.LogisticIndepBeta <- setClass(
+  Class = "LogisticIndepBeta",
+  slots = c(
+    binDLE = "numeric",
+    DLEdose = "numeric",
+    DLEweights = "integer",
+    phi1 = "numeric",
+    phi2 = "numeric",
+    Pcov = "matrix"
+  ),
+  prototype = prototype(
+    binDLE = c(0, 0),
+    DLEdose = c(1, 1),
+    DLEweights = c(1L, 1L)
+  ),
+  contains = "ModelTox",
+  validity = v_model_logistic_indep_beta
+)
 
-##' Intialization function for "LogisticIndepBeta" class
-##' @param binDLE the number of subjects observed with a DLE, the pseudo DLE responses
-##' @param DLEdose the corresponding dose levels for the pseudo DLE responses, pseudo dose levels
-##' @param DLEweights the total number of subjects treated at each of the dose levels, pseudo weights
-##' @param data the input data to update estimates of model parameters and
-##' follow the \code{\linkS4class{Data}} object class specification
-##' @return the \code{\linkS4class{LogisticIndepBeta}}
-##'
-##' @export
-##' @keywords methods
+## constructor ----
+
+#' @rdname LogisticIndepBeta-class
+#'
+#' @param binDLE (`numeric`)\cr the number of subjects observed with a DLE, the
+#'   pseudo DLE responses, depending on dose levels `DLEdose`.
+#'   Elements of `binDLE` must correspond to the elements of `DLEdose` and
+#'   `DLEweights`.
+#' @param DLEdose (`numeric`)\cr dose levels for the pseudo DLE responses.
+#'   Elements of `DLEdose` must correspond to the elements of `binDLE` and
+#'   `DLEweights`.
+#' @param DLEweights (`numeric`)\cr the total number of subjects treated at each
+#'   of the dose levels `DLEdose`, pseudo weights.
+#'   Elements of `DLEweights` must correspond to the elements of `binDLE` and
+#'   `DLEdose`.
+#' @param data (`Data`)\cr the input data to update estimates of the model
+#'   parameters.
+#'
+#' @export
+#' @example examples/Model-class-LogisticIndepBeta.R
+#'
 LogisticIndepBeta <- function(binDLE,
                               DLEdose,
                               DLEweights,
-                              data)
-{##if no observed DLE(data)
-  if (length(data@y)==0){
-    w1<-DLEweights
-    y1<-binDLE
-    x1<-DLEdose} else {w1<-c(DLEweights,rep(1,data@nObs))
-    ##combine pseudo and observed
-    y1<-c(binDLE,data@y)
-    x1<-c(DLEdose,data@x)}
-  ##Fit the pseudo data and DLE responses with their corresponding dose levels
-  FitDLE<-suppressWarnings(glm(y1/w1~log(x1),family=binomial(link="logit"),weights=w1))
-  SFitDLE<-summary(FitDLE)
-  ##Obtain parameter estimates for dose-DLE curve
-  phi1<-coef(SFitDLE)[1,1]
-  phi2<-coef(SFitDLE)[2,1]
-  ## covariance matrix of phi1 and phi2
-  Pcov <- vcov(FitDLE)
+                              data) {
 
-  .LogisticIndepBeta(binDLE=binDLE,
-                     DLEdose=DLEdose,
-                     DLEweights=DLEweights,
-                     phi1=phi1,
-                     phi2=phi2,
-                     Pcov=Pcov,
-                     datanames=c("nObs","y","x"),
-                     data=data
+  # Combine pseudo and observed. It can also happen that data@nObs == 0.
+  y1 <- c(binDLE, data@y)
+  x1 <- c(DLEdose, data@x)
+  w1 <- c(DLEweights, rep(1, data@nObs))
+
+  # Fit the pseudo data and DLE responses with their corresponding dose levels.
+  fit_DLE <- suppressWarnings(
+    glm(y1 / w1 ~ log(x1), family = binomial(link = "logit"), weights = w1)
+  )
+
+  phi1 <- coef(fit_DLE)[["(Intercept)"]]
+  phi2 <- coef(fit_DLE)[["log(x1)"]]
+  Pcov <- vcov(fit_DLE)
+
+  .LogisticIndepBeta(
+    binDLE = binDLE,
+    DLEdose = DLEdose,
+    DLEweights = safeInteger(DLEweights),
+    phi1 = phi1,
+    phi2 = phi2,
+    Pcov = Pcov,
+    data = data,
+    datanames = c("nObs", "y", "x")
   )
 }
+
+# nolint start
 
 # Effloglog ----
 

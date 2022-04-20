@@ -13,6 +13,7 @@
 \alias{v_model_dual_endpoint_rw}
 \alias{v_model_dual_endpoint_beta}
 \alias{v_model_dual_endpoint_emax}
+\alias{v_model_logistic_indep_beta}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 v_general_model(object)
@@ -36,6 +37,8 @@ v_model_dual_endpoint_rw(object)
 v_model_dual_endpoint_beta(object)
 
 v_model_dual_endpoint_emax(object)
+
+v_model_logistic_indep_beta(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -79,5 +82,7 @@ valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 \item \code{v_model_dual_endpoint_beta}: validates that \code{\link{DualEndpointBeta}} class slots are valid.
 
 \item \code{v_model_dual_endpoint_emax}: validates that \code{\link{DualEndpointEmax}} class slots are valid.
+
+\item \code{v_model_logistic_indep_beta}: validates that \code{\link{LogisticIndepBeta}} class slots are valid.
 }}
 

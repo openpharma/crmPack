@@ -155,6 +155,13 @@
 # dose-LogisticIndepBeta works as expected
 
     Code
+      result_emptydat
+    Output
+      [1] 0.4075397 0.4514756 0.0000000 0.2997621 0.3320788
+
+---
+
+    Code
       result
     Output
       [1] 0.4075397 0.4514756 0.0000000 0.2997621 0.3320788
@@ -169,9 +176,16 @@
 # dose-LogisticIndepBeta-noSamples works as expected
 
     Code
+      result_emptydat
+    Output
+      [1]  68.96623 182.55643
+
+---
+
+    Code
       result
     Output
-      [1] 188.1673 289.2156
+      [1]  75.82941 108.33195
 
 # prob-LogisticNormal works as expected
 
@@ -330,6 +344,13 @@
 # prob-LogisticIndepBeta works as expected
 
     Code
+      result_emptydat
+    Output
+      [1] 1.693462e-05 4.098339e-03 5.000000e-01 9.959017e-01 9.999831e-01
+
+---
+
+    Code
       result
     Output
       [1] 1.693462e-05 4.098339e-03 5.000000e-01 9.959017e-01 9.999831e-01
@@ -344,7 +365,14 @@
 # prob-LogisticIndepBeta-noSamples works as expected
 
     Code
+      result_emptydat
+    Output
+      [1] 0.6493251 0.7113300
+
+---
+
+    Code
       result
     Output
-      [1] 0.6708009 0.7955970
+      [1] 0.8722965 0.9371023
 

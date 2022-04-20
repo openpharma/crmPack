@@ -720,3 +720,27 @@
       [1] -0.8478294 -0.9008383 -0.7634940 -0.7231665
       
 
+# MCMC computes correct values for LogisticIndepBeta model (empty data)
+
+    Code
+      result@data
+    Output
+      $phi1
+      [1] -1.775733 -5.848248 -1.266877 -5.483583
+      
+      $phi2
+      [1] 0.3449701 1.0647430 0.3513896 1.0368889
+      
+
+# MCMC computes correct values for LogisticIndepBeta model
+
+    Code
+      result@data
+    Output
+      $phi1
+      [1] -0.2140691 -0.9963186 -0.9963186 -1.7178745
+      
+      $phi2
+      [1] 0.27003542 0.01697991 0.01697991 0.37729886
+      
+

@@ -101,15 +101,6 @@ h_get_probit_log_normal <- function() {
   )
 }
 
-h_get_logistic_indep_beta <- function() {
-  LogisticIndepBeta(
-    binDLE = c(1.05, 1.8),
-    DLEweights = c(3, 3),
-    DLEdose = c(25, 300),
-    data = h_get_data_dual()
-  )
-}
-
 h_get_logistic_kadane <- function() {
   LogisticKadane(
     theta = 0.33,
@@ -257,6 +248,28 @@ h_get_dual_endpoint_emax <- function(use_log_dose = FALSE, fixed = TRUE) {
     Emax = Emax,
     ED50 = ED50,
     ref_dose_emax = 10
+  )
+}
+
+h_get_logistic_indep_beta <- function(emptydata = FALSE) {
+  dose_grid <- seq(25, 300, 25)
+  data <- if (emptydata) {
+    Data(doseGrid = dose_grid)
+  } else {
+    Data(
+      x = c(25, 50, 50, 75, 100, 100, 225, 300),
+      y = c(0, 0, 0, 0, 1, 1, 1, 1),
+      ID = 1:8,
+      cohort = c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L),
+      doseGrid = dose_grid
+    )
+  }
+
+  LogisticIndepBeta(
+    binDLE = c(1.05, 1.8),
+    DLEdose = c(25, 300),
+    DLEweights = c(3, 3),
+    data = data
   )
 }
 
