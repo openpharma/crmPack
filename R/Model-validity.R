@@ -294,3 +294,35 @@ v_model_dual_endpoint_emax <- function(object) {
 
   v$result()
 }
+
+#' @describeIn v_model_objects validates that [`LogisticIndepBeta`] class slots are valid.
+v_model_logistic_indep_beta <- function(object) {
+  v <- Validate()
+
+  dle_len <- length(object@binDLE)
+  v$check(
+    test_numeric(object@binDLE, finite = TRUE, any.missing = FALSE, min.len = 2),
+    "binDLE must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_numeric(object@DLEdose, finite = TRUE, any.missing = FALSE, len = dle_len),
+    "DLEdose must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_integer(object@DLEweights, any.missing = FALSE, len = dle_len),
+    "DLEweights must be an integer vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_number(object@phi1),
+    "phi1 must be a numerical scalar"
+  )
+  v$check(
+    test_number(object@phi2),
+    "phi2 must be a numerical scalar"
+  )
+  v$check(
+    h_is_positive_definite(object@Pcov),
+    "Pcov must be 2x2 positive-definite matrix without any missing values"
+  )
+  v$result()
+}

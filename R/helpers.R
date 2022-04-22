@@ -688,41 +688,6 @@ h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
   mandatory_check && allowed_check
 }
 
-#' Testing Matrix for Positive Definiteness
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' This helper function checks whether a given numeric matrix `x`
-#' is positive-definite.
-#'
-#' @details The positive definiteness test implemented in this function
-#'   is based on the following characterization valid for real matrices:
-#'   `A symmetric matrix is positive-definite if and only if all of its
-#'   eigenvalues are positive.` In this function an eigenvalue is considered
-#'   as positive if and only if it is greater than the `tolerance`.
-#'
-#' @param x (`matrix`)\cr a matrix to be checked.
-#' @param tolerance (`number`)\cr a given tolerance number used to check whether
-#'   an eigenvalue is positive or not. An eigenvalue is considered
-#'   as positive if and only if it is greater than the `tolerance`.
-#'
-#' @return `TRUE` if a given matrix is a positive-definite, `FALSE` otherwise.
-#'
-#' @export
-#'
-h_is_positive_definite <- function(x, tolerance = 1e-08) {
-  assert_matrix(x, any.missing = FALSE)
-  assert_numeric(x)
-  assert_number(tolerance)
-
-  # If x is not a square matrix or it is not a symmetric matrix.
-  if ((nrow(x) != ncol(x)) || (sum(x == t(x)) != (nrow(x)^2))) {
-    return(FALSE)
-  }
-  eigenvalues <- eigen(x, only.values = TRUE)$values
-  all(eigenvalues > tolerance)
-}
-
 #' Getting the Slots from a S4 Object
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -911,6 +876,54 @@ h_null_if_scalar <- function(x) {
     NULL
   } else {
     1L
+  }
+}
+
+#' Testing Matrix for Positive Definiteness
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' This helper function checks whether a given numerical matrix `x` is a
+#' positive-definite square matrix of a given size, without any missing
+#' values. This function is used to test if a given matrix is a covariance
+#' matrix, since every symmetric positive semi-definite matrix is a covariance
+#' matrix.
+#'
+#' @details The positive definiteness test implemented in this function
+#'   is based on the following characterization valid for real matrices:
+#'   `A symmetric matrix is positive-definite if and only if all of its
+#'   eigenvalues are positive.` In this function an eigenvalue is considered
+#'   as positive if and only if it is greater than the `tol`.
+#'
+#' @param x (`matrix`)\cr a matrix to be checked.
+#' @param size (`integer`)\cr a size of the square matrix `x` to be checked
+#'   against for.
+#' @param tol (`number`)\cr a given tolerance number used to check whether
+#'   an eigenvalue is positive or not. An eigenvalue is considered
+#'   as positive if and only if it is greater than the `tol`.
+#'
+#' @return `TRUE` if a given matrix is a positive-definite, `FALSE` otherwise.
+#'
+#' @export
+#'
+h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
+  assert_number(tol)
+
+  is_matrix <- test_matrix(
+    x,
+    mode = "numeric", nrows = size, ncols = size, any.missing = FALSE
+  )
+
+  if (is_matrix) {
+    is_symmetric <- all.equal(x, t(x), tolerance = tol)
+    if (isTRUE(is_symmetric)) {
+      ev <- eigen(x, only.values = TRUE)$values
+      all(ev > tol)
+    } else {
+      FALSE
+    }
+  } else {
+    FALSE
   }
 }
 

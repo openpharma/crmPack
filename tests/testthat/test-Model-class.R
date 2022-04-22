@@ -525,3 +525,37 @@ test_that("MCMC computes correct values for DualEndpointEmax model", {
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
 })
+
+# LogisticIndepBeta ----
+
+## constructor ----
+
+test_that("LogisticIndepBeta object can be created with user constructor (empty data)", {
+  result <- expect_silent(h_get_logistic_indep_beta(emptydata = TRUE))
+  expect_valid(result, "LogisticIndepBeta")
+})
+
+test_that("LogisticIndepBeta object can be created with user constructor", {
+  result <- expect_silent(h_get_logistic_indep_beta(emptydata = FALSE))
+  expect_valid(result, "LogisticIndepBeta")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticIndepBeta model (empty data)", {
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  set.seed(10)
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for LogisticIndepBeta model", {
+  model <- h_get_logistic_indep_beta(emptydata = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  set.seed(10)
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
