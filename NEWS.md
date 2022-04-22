@@ -1,4 +1,4 @@
-# Version 1.0.9000.9011
+# Version 1.0.9000.9012
 * Renamed `ExpEff` methods for pseudo-data efficacy models to `efficacy`.
 * Moved `dose` and `ExpEff` functions from model class slots to model class
   methods for pseudo-data efficacy models.
