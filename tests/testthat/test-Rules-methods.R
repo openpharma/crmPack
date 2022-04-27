@@ -330,12 +330,12 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   expect_identical(result, expected) # First active dose not applied.
 })
 
-test_that("NextBestInfTheory can be initiliazed ",{
+test_that("NextBestInfTheory can be initiliazed ", {
   # set up
   newMyNextBest <- NextBestInfTheory(target = 0.25, asymmetry=0.1)
 })
 
-test_that("Helper function (h_info_theory_dist) for NextBestInfTheory is correct",{
+test_that("Helper function (h_info_theory_dist) for NextBestInfTheory is correct", {
   # values calculated using a different program
   p <- c(0.01, 0.2, 0.7)
   gamma <- c(0.5, 0, 0.3)
