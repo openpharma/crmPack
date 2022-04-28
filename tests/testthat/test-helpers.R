@@ -336,8 +336,6 @@ test_that("h_test_named_numeric returns FALSE as expected", {
   expect_false(h_test_named_numeric(x, permutation.of = c("a", "c")))
   expect_false(h_test_named_numeric(x, identical.to = c("b", "a")))
   expect_false(h_test_named_numeric(x, disjunct.from = c("b", "a")))
-  x1 <- c(a = 1, b = 2, b = 3)
-  expect_false(h_test_named_numeric(x1, len = 3, permutation.of = c("a", "b")))
   expect_false(h_test_named_numeric(c(a = TRUE, b = FALSE)))
   expect_false(h_test_named_numeric(c(a = "1", b = "2")))
 })

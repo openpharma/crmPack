@@ -30,7 +30,7 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
   )
   expect_error(
     doseFunction(model, wrong = 1, alpha1 = 2),
-    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but is \\{'wrong','alpha1'\\}.$"
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but .* \\{'wrong'\\}.$"
   )
 })
 
@@ -96,7 +96,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
   )
   expect_error(
     probFunction(model, wrong = 1, alpha1 = 2),
-    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but is \\{'wrong','alpha1'\\}.$"
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but .* \\{'wrong'\\}.$"
   )
 })
 
