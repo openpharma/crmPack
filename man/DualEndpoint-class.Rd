@@ -15,14 +15,15 @@ DualEndpoint(mean, cov, ref_dose = 1, use_log_dose = FALSE, sigma2W, rho)
 \item{cov}{(\code{matrix})\cr for the probit toxicity model, the prior covariance
 matrix. The precision matrix is internally calculated as an inverse of \code{cov}.}
 
-\item{ref_dose}{(\code{number})\cr for the probit toxicity model, the reference dose.}
+\item{ref_dose}{(\code{number})\cr for the probit toxicity model, the reference
+dose \eqn{x*} (strictly positive number).}
 
 \item{use_log_dose}{(\code{flag})\cr for the probit toxicity model, whether a log
 transformation of the (standardized) dose should be used?}
 
-\item{sigma2W}{(\code{numeric})\cr either a fixed value for the biomarker variance,
-or a numeric vector with two elements named \code{a} and \code{b} for the Inverse-Gamma
-prior parameters.}
+\item{sigma2W}{(\code{numeric})\cr the biomarker variance. Either a fixed value or
+Inverse-Gamma distribution parameters, i.e. vector with two elements named
+\code{a} and \code{b}.}
 
 \item{rho}{(\code{numeric})\cr either a fixed value for the correlation
 (between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}
@@ -75,14 +76,15 @@ Please see the example vignette by typing \code{crmPackExample()} for a full exa
 contains the prior mean, covariance matrix and precision matrix which is
 internally calculated as an inverse of the covariance matrix.}
 
-\item{\code{ref_dose}}{(\code{number})\cr for the probit toxicity model,, the reference dose.}
+\item{\code{ref_dose}}{(\code{positive_number})\cr for the probit toxicity model, the
+reference dose.}
 
 \item{\code{use_log_dose}}{(\code{flag})\cr for the probit toxicity model, whether a log
 transformation of the (standardized) dose should be used?}
 
-\item{\code{sigma2W}}{(\code{numeric})\cr either a fixed value for the biomarker variance,
-or a numeric vector with two elements named \code{a} and \code{b} for the
-Inverse-Gamma prior parameters.}
+\item{\code{sigma2W}}{(\code{numeric})\cr the biomarker variance. Either a fixed value or
+Inverse-Gamma distribution parameters, i.e. vector with two elements named
+\code{a} and \code{b}.}
 
 \item{\code{rho}}{(\code{numeric})\cr either a fixed value for the correlation
 (between \code{-1} and \code{1}), or a named vector with two elements named \code{a} and \code{b}

@@ -7,7 +7,7 @@
 \alias{ModelLogNormal}
 \title{\code{ModelLogNormal}}
 \usage{
-ModelLogNormal(mean, cov, ref_dose = 0)
+ModelLogNormal(mean, cov, ref_dose = 1)
 }
 \arguments{
 \item{mean}{(\code{numeric})\cr the prior mean vector.}
@@ -15,7 +15,8 @@ ModelLogNormal(mean, cov, ref_dose = 0)
 \item{cov}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
 \code{prec} is internally calculated as an inverse of \code{cov}.}
 
-\item{ref_dose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose \eqn{x*} (strictly positive
+number).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -37,7 +38,7 @@ All ("normal") model specific classes inherit from this class.
 \describe{
 \item{\code{params}}{(\code{ModelParamsNormal})\cr bivariate normal prior parameters.}
 
-\item{\code{ref_dose}}{(\code{number})\cr the reference dose.}
+\item{\code{ref_dose}}{(\code{positive_number})\cr the reference dose.}
 }}
 
 \seealso{

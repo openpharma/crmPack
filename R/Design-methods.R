@@ -2587,11 +2587,12 @@ setMethod("simulate",
                     probDLE = prob_fun(object@data@doseGrid)
                 )
 
-                thisEffFit <- list(theta1=thisEffModel@theta1,
-                                   theta2=thisEffModel@theta2,
-                                   ExpEff=thisEffModel@ExpEff(object@data@doseGrid,
-                                                              thisEffModel@theta1,
-                                                              thisEffModel@theta2))
+                eff_fun <- efficacyFunction(thisEffModel, theta1 = thisEffModel@theta1, theta2 = thisEffModel@theta2)
+                thisEffFit <- list(
+                  theta1 = thisEffModel@theta1,
+                  theta2 = thisEffModel@theta2,
+                  ExpEff = eff_fun(object@data@doseGrid)
+                )
 
                 ## return the results
                 thisResult <- list(data=thisData,

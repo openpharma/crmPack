@@ -113,7 +113,7 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
   expected <- c(
     h_slots(data, c("nObs", "y", "x")),
     list(
-      ref_dose = model@ref_dose / 5,
+      ref_dose = as.numeric(model@ref_dose) / 5,
       cov = model@params@cov,
       mean = model@params@mean
     )

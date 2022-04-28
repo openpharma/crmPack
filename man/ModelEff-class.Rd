@@ -4,54 +4,32 @@
 \name{ModelEff-class}
 \alias{ModelEff-class}
 \alias{.ModelEff}
-\title{No Initialization function
-class for Efficacy models using pseudo data prior}
+\alias{ModelEff}
+\title{\code{ModelEff}}
 \description{
-This is a class of which contains all efficacy models for which their prior are specified in
-form of pseudo data. It inherits all slots from \code{\linkS4class{ModelPseudo}}
-}
-\details{
-The \code{dose} function has a first argument \code{ExpEff}, a scalar expected efficacy value
-which is targeted. Additional arguments are model parameters. It computes using modal estimate(s)
-or samples model parameter(s), the resulting expected efficacy value at that dose level. If samples
-of the model parameters are used, the function must vectorize over the model parameters.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-The \code{ExpEff} function has a first argument \code{dose}, a scalar dose level which is targeted.
-Additional arguments are model parameters. It computes using modal estimates or samples of the
-model parameter(s), the resulting dose level given that particular expected efficacy value. If samples
-of the model parameter(s) are used, the function must vectorize over the model parameters.
+\code{\link{ModelEff}} is the parent class for efficacy models using pseudo data prior.
+It is dedicated all efficacy models that have their prior specified in the
+form of pseudo data (as if there is some data before the trial starts).
 
-The \code{data} must obey the convention that the data input is called exactly in the
-\code{\linkS4class{DataDual}} class. This refers to any observed Efficacy/biomarker responses
-(\code{w} in
-\code{\linkS4class{DataDual}} class), the dose (levels) (\code{x} in \code{\linkS4class{DataDual}} or
-\code{Data} class)
-at which these responses are observed, all dose levels considered in the study (\code{doseGrid}
-in \code{\linkS4class{DataDual}} or \code{Data}) class and other specifications in
-\code{\linkS4class{DataDual}}
-class that can be used to generate prior or
-posterior modal estimates or samples estimates for model parameter(s). If no responses is observed,
-at least \code{doseGrid} in \code{\linkS4class{DataDual}} has to be specified in \code{data} slot
-for which prior modal estimates or samples can be obtained for model parameters based on
-the specified pseudo data.
+The \code{data} must obey the convention of the \code{\link{DataDual}} class. This refers to
+any observed efficacy/biomarker responses (\code{w} in \code{\link{DataDual}}), the dose
+levels at which these responses are observed (\code{x} in \code{\link{DataDual}}), all dose
+levels considered in the study (\code{doseGrid} in \code{\link{DataDual}}), and finally
+other specifications in \code{\link{DataDual}} class that can be used to generate prior
+or posterior modal estimates or samples estimates for model parameter(s).
+If no responses are observed, at least \code{doseGrid} has to be specified
+in \code{data} for which prior modal estimates or samples can be obtained for
+model parameters based on the specified pseudo data.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dose}}{a function computing the dose reaching a specific target value of expected efficacy, based
-on the model parameter(s). The model parameter(s) (samples) are obtained based on prior specified
-in form of pseudo data and if any together with any observed responses (see details above)}
-
-\item{\code{ExpEff}}{a function computing the expected efficacy (value) for a specific dose, based on model
-parameter(s). The model parameter(s) (samples) are obtained based on pseudo data prior and (if any)
-with observed responses (see details above)}
-
-\item{\code{data}}{refers to the data input specification in \code{\linkS4class{DataDual}} class which are used to
-obtain model parameters estimates or samples (see details above)}
+\item{\code{data}}{(\code{DataDual})\cr observed data that is used to obtain model
+parameters estimates or samples (see details above).}
 }}
 
 \seealso{
-\code{\linkS4class{Effloglog}},
-\code{\linkS4class{EffFlexi}}
+\code{\link{ModelPseudo}}, \code{\link{ModelTox}}.
 }
-\keyword{classes}

@@ -23,7 +23,18 @@ test_that("v_model_params_normal returns error for cov with NA", {
 
   expect_equal(
     v_model_params_normal(object),
-    "cov must be 2x2 matrix without any missing values"
+    "cov must be 2x2 positive-definite matrix without any missing values"
+  )
+})
+
+test_that("v_model_params_normal returns error for prec with NA", {
+  object <- h_get_model_params_normal()
+  # We assign a precision matrix of wrong dimension and including NA.
+  object@prec <- matrix(c(1:3, 4, 5, NA), ncol = 2)
+
+  expect_equal(
+    v_model_params_normal(object),
+    "prec must be 2x2 positive-definite matrix without any missing values"
   )
 })
 
@@ -34,17 +45,25 @@ test_that("v_model_params_normal returns error for wrong cov", {
 
   expect_equal(
     v_model_params_normal(object),
-    c(
-      "cov must be positive-definite matrix",
-      "prec must be inverse of cov"
-    )
+    "cov must be 2x2 positive-definite matrix without any missing values"
   )
 })
 
 test_that("v_model_params_normal returns error for wrong prec", {
   object <- h_get_model_params_normal()
-  # We assign a matrix which is not an inverse of `cov`.
-  object@prec <- matrix(c(5, 4, 1, 5), ncol = 2)
+  # We assign a precision matrix which is not a covariance matrix.
+  object@prec <- matrix(c(5, 2, 1, 5), ncol = 2)
+
+  expect_equal(
+    v_model_params_normal(object),
+    "prec must be 2x2 positive-definite matrix without any missing values"
+  )
+})
+
+test_that("v_model_params_normal returns error for wrong prec (not an inverse of cov)", {
+  object <- h_get_model_params_normal()
+  # We assign a precision matrix which is not an inverse of cov.
+  object@prec <- matrix(c(5, 1, 1, 5), ncol = 2)
 
   expect_equal(
     v_model_params_normal(object),

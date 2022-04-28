@@ -25,6 +25,7 @@ reference:
   - title: Classes
     contents:
       - Validate
+      - positive_number
       - GeneralData
       - Data
       - DataDual
@@ -43,10 +44,18 @@ reference:
       - ProbitLogNormal
       - ProbitLogNormalRel
       - LogisticKadane
+      - LogisticKadaneBetaGamma
       - LogisticNormalMixture
       - LogisticNormalFixedMixture
       - LogisticLogNormalMixture
       - DualEndpoint
+      - DualEndpointRW
+      - DualEndpointBeta
+      - DualEndpointEmax
+      - ModelPseudo
+      - ModelTox
+      - ModelEff
+      - LogisticIndepBeta
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
@@ -58,7 +67,6 @@ reference:
       - h_plot_data_df
       - h_plot_data_cohort_lines
       - h_check_fun_formals
-      - h_is_positive_definite
       - h_slots
       - h_format_number
       - h_rapply
@@ -70,9 +78,12 @@ reference:
       - h_jags_extract_samples
       - h_null_if_na
       - h_null_if_scalar
+      - h_is_positive_definite
       - h_test_named_numeric
       - h_model_dual_endpoint_sigma2W
       - h_model_dual_endpoint_rho
+      - h_model_dual_endpoint_sigma2betaW
+      - h_model_dual_endpoint_beta
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -87,10 +98,15 @@ reference:
       - v_model
       - v_model_log_normal
       - v_model_logistic_kadane
+      - v_model_logistic_kadane_beta_gamma
       - v_model_logistic_normal_mixture
       - v_model_logistic_normal_fixed_mix
       - v_model_logistic_log_normal_mixture
       - v_model_dual_endpoint
+      - v_model_dual_endpoint_rw
+      - v_model_dual_endpoint_beta
+      - v_model_dual_endpoint_emax
+      - v_model_logistic_indep_beta
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
       - v_increments_numdoselevels
@@ -112,7 +128,7 @@ reference:
       - saveSample-McmcOptions
       - doseFunction
       - doseFunction-GeneralModel
-      - doseFunction-ModelTox
+      - doseFunction-ModelPseudo
       - dose
       - dose-Model
       - dose-LogisticNormal
@@ -121,12 +137,15 @@ reference:
       - dose-ProbitLogNormal
       - dose-ProbitLogNormalRel
       - dose-LogisticKadane
+      - dose-LogisticKadaneBetaGamma
       - dose-LogisticNormalMixture
       - dose-LogisticNormalFixedMixture
       - dose-LogisticLogNormalMixture
       - dose-DualEndpoint
       - dose-LogisticIndepBeta
       - dose-LogisticIndepBeta-noSamples
+      - dose-Effloglog-noSamples
+      - dose-EffFlexi
       - probFunction
       - probFunction-GeneralModel
       - probFunction-ModelTox
@@ -138,12 +157,21 @@ reference:
       - prob-ProbitLogNormal
       - prob-ProbitLogNormalRel
       - prob-LogisticKadane
+      - prob-LogisticKadaneBetaGamma
       - prob-LogisticIndepBeta
       - prob-LogisticNormalMixture
       - prob-LogisticNormalFixedMixture
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
+      - efficacyFunction
+      - efficacyFunction-ModelEff
+      - efficacy
+      - efficacy-Effloglog
+      - efficacy-Effloglog-noSamples
+      - efficacy-EffFlexi
+      - mcmc-GeneralData
+      - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
