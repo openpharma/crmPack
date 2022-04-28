@@ -29,7 +29,7 @@ test_that(".Model works as expected", {
   # nolint start
   result <- expect_silent(
     .Model(
-      dose = function(prob, param1) {},
+      dose = function(x, param1) {},
       prob = function(dose, param1) {},
       datamodel = function(x) {},
       priormodel = function(x) {},
@@ -50,8 +50,8 @@ test_that(".ModelLogNormal works as expected", {
   result <- expect_silent(
     .ModelLogNormal(
       params = ModelParamsNormal(mean = c(0, 2), cov = diag(2)),
-      ref_dose = 1,
-      dose = function(prob, param1) {},
+      ref_dose = positive_number(1),
+      dose = function(x, param1) {},
       prob = function(dose, param1) {},
       datamodel = function(x) {},
       priormodel = function(x) {},
@@ -234,6 +234,36 @@ test_that("MCMC computes correct values for LogisticKadane model", {
   expect_snapshot(result@data)
 })
 
+# LogisticKadaneBetaGamma ----
+
+## constructor ----
+
+test_that("LogisticKadaneBetaGamma object can be created with user constructor", {
+  result <- expect_silent(
+    LogisticKadaneBetaGamma(
+      theta = 0.3,
+      xmin = 0,
+      xmax = 7,
+      alpha = 1,
+      beta = 19,
+      shape = 0.5625,
+      rate = 0.125
+    )
+  )
+  expect_valid(result, "LogisticKadaneBetaGamma")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
+  data <- h_get_data_no_plcb_k()
+  model <- h_get_logistic_kadane_beta_gam()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
 # LogisticNormalMixture ----
 
 ## constructor ----
@@ -290,10 +320,13 @@ test_that("LogisticNormalFixedMixture object can be created with user constructo
 test_that("MCMC computes correct values for LogisticNormalFixedMixture model", {
   data <- h_get_data_mixture()
   model <- h_get_logistic_normal_fixed_mix()
+  model_log_normal <- h_get_logistic_normal_fixed_mix(log_normal = TRUE)
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
   result <- mcmc(data = data, model = model, options = options)
+  result_log_normal <- mcmc(data = data, model = model_log_normal, options = options)
   expect_snapshot(result@data)
+  expect_snapshot(result_log_normal@data)
 })
 
 # LogisticLogNormalMixture ----
@@ -327,14 +360,202 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
 
 ## constructor ----
 
-test_that("DualEndpoint object can be created with user constructor", {
-  result <- expect_silent(
-    DualEndpoint(
-      mean = c(0, 1),
-      cov = diag(2),
-      sigma2W = 1,
-      rho = 0
-    )
-  )
+test_that("DualEndpoint object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint())
   expect_valid(result, "DualEndpoint")
+})
+
+test_that("DualEndpoint object can be created with user constructor", {
+  result <- expect_silent(h_get_dual_endpoint(fixed = FALSE))
+  expect_valid(result, "DualEndpoint")
+})
+
+# DualEndpointRW ----
+
+## constructor ----
+
+test_that("DualEndpointRW object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint_rw())
+  expect_valid(result, "DualEndpointRW")
+})
+
+test_that("DualEndpointRW object can be created with user constructor", {
+  result <- expect_silent(h_get_dual_endpoint_rw(fixed = FALSE))
+  expect_valid(result, "DualEndpointRW")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DualEndpointRW model (fixed params)", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw()
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw(fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model with RW2", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model (fixed params) with RW2", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE, fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, rw1 = FALSE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+# DualEndpointBeta ----
+
+## constructor ----
+
+test_that("DualEndpointBeta object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint_beta())
+  expect_valid(result, "DualEndpointBeta")
+})
+
+test_that("DualEndpointBeta object can be created with user constructor", {
+  result <- expect_silent(h_get_dual_endpoint_beta(fixed = FALSE))
+  expect_valid(result, "DualEndpointBeta")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DualEndpointBeta model with fixed parameters", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_beta()
+  model_log_dose <- h_get_dual_endpoint_beta(use_log_dose = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointBeta model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_beta(fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_beta(use_log_dose = TRUE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC throws the error when ref_dose_beta is not greater than max dose in grid)", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_beta()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  model@ref_dose_beta <- positive_number(data@doseGrid[data@nGrid] - 1)
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'model@ref_dose_beta > data@doseGrid\\[data@nGrid\\]' failed: Must be TRUE."
+  )
+})
+
+# DualEndpointEmax ----
+
+## constructor ----
+
+test_that("DualEndpointEmax object can be created with user constructor (fixed params)", {
+  result <- expect_silent(h_get_dual_endpoint_emax())
+  expect_valid(result, "DualEndpointEmax")
+})
+
+test_that("DualEndpointEmax object can be created with user constructor", {
+  result <- expect_silent(h_get_dual_endpoint_emax(fixed = FALSE))
+  expect_valid(result, "DualEndpointEmax")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DualEndpointEmax model with fixed parameters", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_emax()
+  model_log_dose <- h_get_dual_endpoint_emax(use_log_dose = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointEmax model", {
+  data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_emax(fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_emax(use_log_dose = TRUE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+# LogisticIndepBeta ----
+
+## constructor ----
+
+test_that("LogisticIndepBeta object can be created with user constructor (empty data)", {
+  result <- expect_silent(h_get_logistic_indep_beta(emptydata = TRUE))
+  expect_valid(result, "LogisticIndepBeta")
+})
+
+test_that("LogisticIndepBeta object can be created with user constructor", {
+  result <- expect_silent(h_get_logistic_indep_beta(emptydata = FALSE))
+  expect_valid(result, "LogisticIndepBeta")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for LogisticIndepBeta model (empty data)", {
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  set.seed(10)
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for LogisticIndepBeta model", {
+  model <- h_get_logistic_indep_beta(emptydata = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  set.seed(10)
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
 })

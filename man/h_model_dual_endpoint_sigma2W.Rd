@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_model.R
 \name{h_model_dual_endpoint_sigma2W}
 \alias{h_model_dual_endpoint_sigma2W}
-\title{Update \code{DualEndpoint} class model components with regard to biomarker
+\title{Update \code{\link{DualEndpoint}} class model components with regard to biomarker
 regression variance.}
 \usage{
 h_model_dual_endpoint_sigma2W(use_fixed, sigma2W, comp)
@@ -13,9 +13,9 @@ regression variance \code{sigma2W} should be used or not. If \code{sigma2W} is n
 supposed to be a fixed value, a prior distribution from the Inverse-Gamma
 distribution will be used. See the details below, under \code{sigma2W} argument.}
 
-\item{sigma2W}{(\code{numeric})\cr the biomarker regression variance. It must be
-either a fixed value or a numeric vector with two elements named \code{a} and \code{b}
-for the Inverse-Gamma prior parameters.}
+\item{sigma2W}{(\code{numeric})\cr the biomarker variance. Either a fixed value or
+Inverse-Gamma distribution parameters, i.e. vector with two elements named
+\code{a} and \code{b}.}
 
 \item{comp}{(\code{list})\cr a named list with model components that will be updated.
 The names should be: \code{priormodel}, \code{modelspecs}, \code{init}, \code{sample}. For

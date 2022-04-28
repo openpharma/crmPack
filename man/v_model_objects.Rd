@@ -4,22 +4,25 @@
 \alias{v_model_objects}
 \alias{v_general_model}
 \alias{v_model}
-\alias{v_model_log_normal}
 \alias{v_model_logistic_kadane}
+\alias{v_model_logistic_kadane_beta_gamma}
 \alias{v_model_logistic_normal_mix}
 \alias{v_model_logistic_normal_fixed_mix}
 \alias{v_model_logistic_log_normal_mix}
 \alias{v_model_dual_endpoint}
 \alias{v_model_dual_endpoint_rw}
+\alias{v_model_dual_endpoint_beta}
+\alias{v_model_dual_endpoint_emax}
+\alias{v_model_logistic_indep_beta}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 v_general_model(object)
 
 v_model(object)
 
-v_model_log_normal(object)
-
 v_model_logistic_kadane(object)
+
+v_model_logistic_kadane_beta_gamma(object)
 
 v_model_logistic_normal_mix(object)
 
@@ -30,6 +33,12 @@ v_model_logistic_log_normal_mix(object)
 v_model_dual_endpoint(object)
 
 v_model_dual_endpoint_rw(object)
+
+v_model_dual_endpoint_beta(object)
+
+v_model_dual_endpoint_emax(object)
+
+v_model_logistic_indep_beta(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -50,25 +59,30 @@ These functions are only used internally to validate the format of an input
 arguments in \code{init} function are included in \code{datanames} slot.
 
 \item \code{v_model}: validates that the names of the
-arguments in \code{dose} and \code{prob} functions contains \code{prob} and \code{dose}
-respectively, as well as they match \code{sample} slot of the \code{object}.
-
-\item \code{v_model_log_normal}: validates that the \code{ref_dose} is a positive scalar.
+arguments in \code{dose} and \code{prob} functions contains expected arguments as
+well as they match \code{sample} slot of the \code{object}.
 
 \item \code{v_model_logistic_kadane}: validates that the logistic Kadane model
 parameters are valid.
 
-\item \code{v_model_logistic_normal_mix}: validates that \code{weightpar} and \code{ref_dose} are valid.
+\item \code{v_model_logistic_kadane_beta_gamma}: validates that the logistic Kadane model
+parameters with a beta and gamma prior are valid.
+
+\item \code{v_model_logistic_normal_mix}: validates that \code{weightpar} is valid.
 
 \item \code{v_model_logistic_normal_fixed_mix}: validates that \code{component} is a list with
-valid \code{ModelParamsNormal} objects as well as \code{weights} and \code{ref_dose} are
-correct.
+valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
-\item \code{v_model_logistic_log_normal_mix}: validates that \code{ref_dose} is valid and
-\code{share_weight} represents probability.
+\item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
 
 \item \code{v_model_dual_endpoint}: validates that \code{\link{DualEndpoint}} class slots are valid.
 
 \item \code{v_model_dual_endpoint_rw}: validates that \code{\link{DualEndpointRW}} class slots are valid.
+
+\item \code{v_model_dual_endpoint_beta}: validates that \code{\link{DualEndpointBeta}} class slots are valid.
+
+\item \code{v_model_dual_endpoint_emax}: validates that \code{\link{DualEndpointEmax}} class slots are valid.
+
+\item \code{v_model_logistic_indep_beta}: validates that \code{\link{LogisticIndepBeta}} class slots are valid.
 }}
 

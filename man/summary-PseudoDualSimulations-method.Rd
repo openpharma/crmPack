@@ -78,10 +78,7 @@ design <- DualResponsesDesign(nextBest=mynextbest,
                               data=data,startingDose=25)
 ##Specify the true DLE and efficacy curves
 myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
-
-myTruthEff<- function(dose)
-{Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
-}
+myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.818429, theta2 = 3.653058)
 
 ## Then specified the simulations and generate the trial for 2 times
 mySim <-simulate(object=design,

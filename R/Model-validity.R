@@ -23,14 +23,14 @@ v_general_model <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that the names of the
-#'   arguments in `dose` and `prob` functions contains `prob` and `dose`
-#'   respectively, as well as they match `sample` slot of the `object`.
+#'   arguments in `dose` and `prob` functions contains expected arguments as
+#'   well as they match `sample` slot of the `object`.
 v_model <- function(object) {
   v <- Validate()
   v$check(
     h_check_fun_formals(
       object@dose,
-      mandatory = "prob",
+      mandatory = "x",
       allowed = object@sample
     ),
     "Arguments of dose function are incorrect"
@@ -42,16 +42,6 @@ v_model <- function(object) {
       allowed = object@sample
     ),
     "Arguments of prob function are incorrect"
-  )
-  v$result()
-}
-
-#' @describeIn v_model_objects validates that the `ref_dose` is a positive scalar.
-v_model_log_normal <- function(object) {
-  v <- Validate()
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
   )
   v$result()
 }
@@ -76,24 +66,41 @@ v_model_logistic_kadane <- function(object) {
   v$result()
 }
 
-#' @describeIn v_model_objects validates that `weightpar` and `ref_dose` are valid.
+#' @describeIn v_model_objects validates that the logistic Kadane model
+#'   parameters with a beta and gamma prior are valid.
+v_model_logistic_kadane_beta_gamma <- function(object) {
+  v <- Validate()
+  v$check(
+    is.scalar(object@alpha) & is.numeric(object@alpha) && object@alpha > 0,
+    "Beta distribution shape parameter alpha must be a positive scalar"
+  )
+  v$check(
+    is.scalar(object@beta) & is.numeric(object@beta) && object@beta > 0,
+    "Beta distribution shape parameter beta must be a positive scalar"
+  )
+  v$check(
+    is.scalar(object@shape) & is.numeric(object@shape) && object@shape > 0,
+    "Gamma distribution shape parameter must be a positive scalar"
+  )
+  v$check(
+    is.scalar(object@rate) & is.numeric(object@rate) && object@rate > 0,
+    "Gamma distribution rate parameter must be a positive scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that `weightpar` is valid.
 v_model_logistic_normal_mix <- function(object) {
   v <- Validate()
-
   v$check(
     h_test_named_numeric(object@weightpar, permutation.of = c("a", "b")),
     "weightpar must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
-  )
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
   )
   v$result()
 }
 
 #' @describeIn v_model_objects validates that `component` is a list with
-#'   valid `ModelParamsNormal` objects as well as `weights` and `ref_dose` are
-#'   correct.
+#'   valid `ModelParamsNormal` objects as well as `weights` are correct.
 v_model_logistic_normal_fixed_mix <- function(object) {
   v <- Validate()
   v$check(
@@ -124,24 +131,15 @@ v_model_logistic_normal_fixed_mix <- function(object) {
     "weights must sum to 1"
   )
   v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
-  )
-  v$check(
     test_flag(object@log_normal),
     "log_normal must be TRUE or FALSE"
   )
   v$result()
 }
 
-#' @describeIn v_model_objects validates that `ref_dose` is valid and
-#'   `share_weight` represents probability.
+#' @describeIn v_model_objects validates that `share_weight` represents probability.
 v_model_logistic_log_normal_mix <- function(object) {
   v <- Validate()
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0),
-    "ref_dose must be a non-negative scalar"
-  )
   v$check(
     is.probability(object@share_weight),
     "share_weight does not specify a probability"
@@ -154,10 +152,6 @@ v_model_dual_endpoint <- function(object) {
   rmin <- .Machine$double.xmin
   v <- Validate()
 
-  v$check(
-    test_number(object@ref_dose, na.ok = TRUE, lower = 0 + rmin),
-    "ref_dose must be a positive scalar"
-  )
   v$check(
     test_flag(object@use_log_dose),
     "use_log_dose must be TRUE or FALSE"
@@ -204,5 +198,131 @@ v_model_dual_endpoint <- function(object) {
 
 #' @describeIn v_model_objects validates that [`DualEndpointRW`] class slots are valid.
 v_model_dual_endpoint_rw <- function(object) {
-  TRUE
+  v <- Validate()
+  uf_sigma2W <- object@use_fixed["sigma2betaW"]
+  v$check(
+    test_flag(uf_sigma2W),
+    "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
+  )
+  if (isTRUE(uf_sigma2W)) {
+    v$check(
+      test_number(object@sigma2betaW, lower = 0 + .Machine$double.xmin, finite = TRUE),
+      "sigma2betaW must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2betaW is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2betaW, permutation.of = c("a", "b")),
+      "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`DualEndpointBeta`] class slots are valid.
+v_model_dual_endpoint_beta <- function(object) {
+  v <- Validate()
+
+  for (s in c("E0", "Emax", "delta1", "mode")) {
+    rmin <- .Machine$double.xmin
+    uf <- object@use_fixed[s]
+
+    v$check(
+      test_flag(uf),
+      paste0("use_fixed must be a named logical vector that contains name '", s, "'")
+    )
+    if (isTRUE(uf)) {
+      if (s %in% c("delta1", "mode")) {
+        v$check(
+          test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+          paste(s, "must be a positive and finite numerical scalar")
+        )
+      }
+    } else {
+      # s is a vector with parameters for Uniform(s[1], s[2]) prior.
+      v$check(
+        test_numeric(
+          slot(object, s),
+          lower = 0,
+          finite = TRUE,
+          any.missing = FALSE,
+          len = 2,
+          unique = TRUE,
+          sorted = TRUE
+        ),
+        paste(s, "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values")
+      )
+    }
+  }
+
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`DualEndpointEmax`] class slots are valid.
+v_model_dual_endpoint_emax <- function(object) {
+  v <- Validate()
+
+  for (s in c("E0", "Emax", "ED50")) {
+    rmin <- .Machine$double.xmin
+    uf <- object@use_fixed[s]
+
+    v$check(
+      test_flag(uf),
+      paste0("use_fixed must be a named logical vector that contains name '", s, "'")
+    )
+    if (isTRUE(uf)) {
+      v$check(
+        test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+        paste(s, "must be a positive and finite numerical scalar")
+      )
+    } else {
+      # s is a vector with parameters for Uniform(s[1], s[2]) prior.
+      v$check(
+        test_numeric(
+          slot(object, s),
+          lower = 0,
+          finite = TRUE,
+          any.missing = FALSE,
+          len = 2,
+          unique = TRUE,
+          sorted = TRUE
+        ),
+        paste(s, "must be a numerical vector of length two with non-negative, finite, unique and sorted (asc.) values")
+      )
+    }
+  }
+
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`LogisticIndepBeta`] class slots are valid.
+v_model_logistic_indep_beta <- function(object) {
+  v <- Validate()
+
+  dle_len <- length(object@binDLE)
+  v$check(
+    test_numeric(object@binDLE, finite = TRUE, any.missing = FALSE, min.len = 2),
+    "binDLE must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_numeric(object@DLEdose, finite = TRUE, any.missing = FALSE, len = dle_len),
+    "DLEdose must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_integer(object@DLEweights, any.missing = FALSE, len = dle_len),
+    "DLEweights must be an integer vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_number(object@phi1),
+    "phi1 must be a numerical scalar"
+  )
+  v$check(
+    test_number(object@phi2),
+    "phi2 must be a numerical scalar"
+  )
+  v$check(
+    h_is_positive_definite(object@Pcov),
+    "Pcov must be 2x2 positive-definite matrix without any missing values"
+  )
+  v$result()
 }

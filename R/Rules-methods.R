@@ -65,7 +65,7 @@ setMethod("nextBest",
                   }
 
               ## First, generate the MTD samples.
-              mtdSamples <- dose(prob=nextBest@target,
+              mtdSamples <- dose(x=nextBest@target,
                                  model,
                                  samples)
 
@@ -1568,7 +1568,7 @@ setMethod("stopTrial",
               ## add prior data and samples to the
               ## function environment so that they
               ## can be used.
-              mtdSamples <- dose(prob=stopping@target,
+              mtdSamples <- dose(x=stopping@target,
                                  model,
                                  samples)
 
@@ -1628,7 +1628,7 @@ setMethod(
   ),
   definition = function(stopping, dose, samples, model, data, ...) {
     mtd_samples <- dose(
-      prob = stopping@target,
+      x = stopping@target,
       model,
       samples
     )
@@ -2122,11 +2122,11 @@ setMethod("nextBest",
               ## First, generate the TDtargetDuringTrial (TDtarget During a Trial) and
               ## TDtargetEndOfTrial (TDtarget at the EndOfTrial) samples.
 
-              TDtargetDuringTrialSamples <- dose(prob=nextBest@targetDuringTrial,
+              TDtargetDuringTrialSamples <- dose(x=nextBest@targetDuringTrial,
                                                  model,
                                                  samples)
 
-              TDtargetEndOfTrialSamples <- dose(prob=nextBest@targetEndOfTrial,
+              TDtargetEndOfTrialSamples <- dose(x=nextBest@targetEndOfTrial,
                                                 model,
                                                 samples)
 
@@ -2248,13 +2248,13 @@ setMethod("nextBest",
 
               ## Find the TD30 Estimate and TD(target) Estimate
 
-              TDtargetEndOfTrialEstimate <- dose(prob=targetEndOfTrial,
+              TDtargetEndOfTrialEstimate <- dose(x=targetEndOfTrial,
                                                  model)
 
               TDEfourdg<-signif(TDtargetEndOfTrialEstimate,digits=4)
 
 
-              TDtargetDuringTrialEstimate<-dose(prob=targetDuringTrial,
+              TDtargetDuringTrialEstimate<-dose(x=targetDuringTrial,
                                                 model)
 
               TDDfourdg<-signif(TDtargetDuringTrialEstimate,digits=4)
@@ -2403,10 +2403,10 @@ setMethod("nextBest",
               ## Find the TDtarget Estimate for During Trial and End of trial
 
 
-              TDtargetEndOfTrialEstimate <- dose(prob=EndOfTrialtargetprob,model=model)
+              TDtargetEndOfTrialEstimate <- dose(x=EndOfTrialtargetprob,model=model)
 
 
-              TDtargetDuringTrialEstimate<-dose(prob=DuringTrialtargetprob,model=model)
+              TDtargetDuringTrialEstimate<-dose(x=DuringTrialtargetprob,model=model)
 
               ##Get all prob of DLE at all dose levels
               probDLE=prob(dose=data@doseGrid,
@@ -2528,7 +2528,7 @@ setMethod("nextBest",
               plotData<-data.frame(dose=rep(data@doseGrid,3),
                                    values=c(prob(dose=data@doseGrid,
                                                  model=model),
-                                            ExpEff(dose=data@doseGrid,
+                                            efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
                                                  DLEmodel=model,
@@ -2662,12 +2662,12 @@ setMethod("nextBest",
               ## Find the TDtarget samples for During Trial and End of trial
 
 
-              TDtargetEndOfTrialSamples <- dose(prob=EndOfTrialtargetprob,
+              TDtargetEndOfTrialSamples <- dose(x=EndOfTrialtargetprob,
                                                 model=model,
                                                 samples=samples)
 
 
-              TDtargetDuringTrialSamples<-dose(prob=DuringTrialtargetprob,
+              TDtargetDuringTrialSamples<-dose(x=DuringTrialtargetprob,
                                                model=model,
                                                samples=samples)
 
@@ -2697,9 +2697,9 @@ setMethod("nextBest",
               {
                 ## Now we want to evaluate for the
                 ## following dose:
-                ExpEffSamples[, i] <- ExpEff(dose=points[i],
-                                             model=Effmodel,
-                                             samples=Effsamples)
+                ExpEffSamples[, i] <- efficacy(dose=points[i],
+                                               model=Effmodel,
+                                               samples=Effsamples)
               }
 
 
@@ -2909,12 +2909,12 @@ setMethod("nextBest",
                 ## Find the TDtarget samples for During Trial and End of trial
 
 
-                TDtargetEndOfTrialSamples <- dose(prob=EndOfTrialtargetprob,
+                TDtargetEndOfTrialSamples <- dose(x=EndOfTrialtargetprob,
                                                   model=model,
                                                   samples=samples)
 
 
-                TDtargetDuringTrialSamples<-dose(prob=DuringTrialtargetprob,
+                TDtargetDuringTrialSamples<-dose(x=DuringTrialtargetprob,
                                                  model=model,
                                                  samples=samples)
 
@@ -3152,7 +3152,7 @@ setMethod("stopTrial",
               stopifnot(is.probability(targetEndOfTrial))
 
               ## find the TDtarget End of Trial samples
-              TDtargetEndOfTrialSamples <- dose(prob=targetEndOfTrial,
+              TDtargetEndOfTrialSamples <- dose(x=targetEndOfTrial,
                                                 model=model,
                                                 samples=samples)
 
@@ -3196,7 +3196,7 @@ setMethod("stopTrial",
               stopifnot(is.probability(targetEndOfTrial))
 
               ## find the TDtarget End of Trial
-              TDtargetEndOfTrial <- dose(prob=targetEndOfTrial,
+              TDtargetEndOfTrial <- dose(x=targetEndOfTrial,
                                          model=model)
 
               ##Find the variance of the log of the TDtargetEndOfTrial(eta)
@@ -3262,7 +3262,7 @@ setMethod("stopTrial",
               stopifnot(is.function(Gstarderive))
 
               ## find the TDtarget End of Trial samples
-              TDtargetEndOfTrialSamples <- dose(prob=targetEndOfTrial,
+              TDtargetEndOfTrialSamples <- dose(x=targetEndOfTrial,
                                                 model=model,
                                                 samples=samples)
               ##Find the TDtarget End of trial estimate
@@ -3360,7 +3360,7 @@ setMethod("stopTrial",
 
 
               ## find the TDtarget End of Trial
-              TDtargetEndOfTrial <- dose(prob=targetEndOfTrial,
+              TDtargetEndOfTrial <- dose(x=targetEndOfTrial,
                                          model=model)
 
               ##Find the dose with maximum gain value

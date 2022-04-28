@@ -21,27 +21,21 @@ v_model_params_normal <- function(object) {
     test_numeric(x = object@mean, len = 2L, any.missing = FALSE),
     "mean must have length 2 and no missing values are allowed"
   )
-  is_cov_2x2 <- test_matrix(
-    object@cov,
-    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+  is_cov_valid <- h_is_positive_definite(object@cov)
+  v$check(
+    is_cov_valid,
+    "cov must be 2x2 positive-definite matrix without any missing values"
   )
-  is_prec_2x2 <- test_matrix(
-    object@prec,
-    mode = "numeric", nrows = 2, ncols = 2, any.missing = FALSE
+  is_prec_valid <- h_is_positive_definite(object@prec)
+  v$check(
+    is_prec_valid,
+    "prec must be 2x2 positive-definite matrix without any missing values"
   )
-  v$check(is_cov_2x2, "cov must be 2x2 matrix without any missing values")
-  v$check(is_prec_2x2, "prec must be 2x2 matrix without any missing values")
-  if (is_cov_2x2) {
+  if (is_cov_valid && is_prec_valid) {
     v$check(
-      h_is_positive_definite(object@cov),
-      "cov must be positive-definite matrix"
+      all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
+      "prec must be inverse of cov"
     )
-    if (is_prec_2x2) {
-      v$check(
-        all.equal(object@cov %*% object@prec, diag(1, 2), check.attributes = FALSE) == TRUE,
-        "prec must be inverse of cov"
-      )
-    }
   }
   v$result()
 }

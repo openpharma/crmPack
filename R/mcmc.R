@@ -112,6 +112,46 @@ setMethod(
   }
 )
 
+# mcmc-GeneralData-DualEndpointBeta ----
+
+#' @describeIn mcmc Standard method which uses JAGS. For the
+#'   [`DualEndpointBeta`] model, it is required that the value of `ref_dose_beta`
+#'   slot is greater than the maximum dose in a grid. This requirement comes from
+#'   definition of the beta function that is used to model dose-biomarker
+#'   relationship in [`DualEndpointBeta`] model.
+#'
+#' @param from_prior (`flag`)\cr sample from the prior only? Default to `TRUE`
+#'   when number of observations in `data` is `0`. For some models it might be
+#'   necessary to specify it manually here though.
+#'
+#' @aliases mcmc-GeneralData-DualEndpointBeta
+#' @example examples/mcmc-DualEndpointBeta.R
+#'
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "DualEndpointBeta",
+    options = "McmcOptions"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    if (data@nGrid > 0) {
+      assert_true(model@ref_dose_beta > data@doseGrid[data@nGrid])
+    }
+    callNextMethod(
+      data = data,
+      model = model,
+      options = options,
+      from_prior = from_prior,
+      ...
+    )
+  }
+)
+
 # nolint start
 
 ## --------------------------------------------------
