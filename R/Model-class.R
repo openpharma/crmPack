@@ -1979,7 +1979,7 @@ LogisticIndepBeta <- function(binDLE,
 #'
 #'   The joint prior distribution of the intercept \eqn{theta1} and the slope
 #'   \eqn{theta2} of this model follows bivariate normal distribution with mean
-#'   \eqn{mu} and covariance matrix \eqn{(nu * Q^{-1}}.
+#'   \eqn{mu} and covariance matrix \eqn{(nu * Q)^{-1}}.
 #'   The mean \eqn{mu} is a \eqn{2 x 1} column vector that contains the prior
 #'   modal estimates of the intercept and the slope.
 #'   Scalar \eqn{nu} is the precision of the pseudo efficacy responses and
@@ -2117,7 +2117,7 @@ Effloglog <- function(eff,
   X <- model.matrix(fit_eff)
   Y <- w
   mu <- coef(fit_eff) # This is [theta1, theta2]^T est.
-  Q <- t(X) %*% X
+  Q <- crossprod(X)
   Pcov <- vcov(fit_eff)
 
   nobs_no_dlt <- length(eff_obsrv)
@@ -2129,12 +2129,12 @@ Effloglog <- function(eff,
     fit_eff0 <- lm(eff ~ log(log(eff_dose))) # Pseudo only.
     X0 <- model.matrix(fit_eff0)
     mu0 <- coef(fit_eff0)
-    Q0 <- t(X0) %*% X0
+    Q0 <- crossprod(X0)
     # Note that mu = (Q0 + X^T * X)^{-1} * (Q0 * mu0 + X^T * X * (X^T * X)^{-1} X^T * Y),
     # given that (X^T * X) is invertible and X, Y, mu0, Q0, are specified in this else block.
     if (!use_fixed) {
       nu["a"] <- nu["a"] + (nobs_no_dlt) / 2
-      nu["b"] <- nu["b"] + (t(Y) %*% Y + t(mu0) %*% Q0 %*% mu0 - t(mu) %*% Q %*% mu) / 2
+      nu["b"] <- nu["b"] + (crossprod(Y) + t(mu0) %*% Q0 %*% mu0 - t(mu) %*% Q %*% mu) / 2
     }
   }
 
