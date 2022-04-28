@@ -396,24 +396,22 @@ setMethod("mcmc",
                      ...){
 
               ## decide whether we sample from the prior or not
-              from_prior <- data@nObs == 0L
+              from_prior <- data@nObs == 0L # TODO shouldn't be no DLT only?
 
               thismodel <- update(object=model,data=data)
 
-
-              if (length(thismodel@nu)==2) {
-                nusamples <- rgamma(sampleSize(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
-                priornu <- mean(nusamples)} else {
-                  priornu <- thismodel@nu
-                  nusamples <- rep(nu,sampleSize(options))}
-
-
+              if (thismodel@use_fixed) {
+                priornu <- thismodel@nu
+                nusamples <- rep(nu, sampleSize(options))
+              } else {
+                nusamples <- rgamma(sampleSize(options), shape = thismodel@nu["a"], rate = thismodel@nu["b"])
+                priornu <- mean(nusamples)
+              }
 
               ## sample from the (asymptotic) bivariate normal prior for theta1 and theta2
-
               tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
                                       mean=c(thismodel@theta1,thismodel@theta2),
-                                      sigma=solve(priornu*(thismodel@matQ)))
+                                      sigma=solve(priornu*(thismodel@Q)))
 
 
               samples <- list(theta1=tmp[, 1],

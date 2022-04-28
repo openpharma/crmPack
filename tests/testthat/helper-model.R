@@ -279,10 +279,10 @@ h_get_eff_log_log <- function() {
     placebo = TRUE
   )
   Effloglog(
-    Eff = c(1.223, 2.513),
-    Effdose = c(25, 300),
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
     nu = c(a = 1, b = 0.025),
     data = dd,
-    c = 2
+    const = 2
   )
 }

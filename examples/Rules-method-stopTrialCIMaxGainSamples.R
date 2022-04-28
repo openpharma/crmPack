@@ -1,3 +1,4 @@
+# nolint start
 ##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
@@ -13,7 +14,7 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 ##for illustration purpose we use 10 burn-in and generate 50 samples
 options<-McmcOptions(burnin=10,step=2,samples=50)
 ##DLE and efficacy samples must be of 'Samples' class
@@ -34,7 +35,7 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
                         data=data,Effmodel=Effmodel,Effsamples=Effsamples)
 ##use 'stopTrial' to determine if the rule has been fulfilled
-##use 0.3 as the target proability of DLE at the end of the trial 
+##use 0.3 as the target proability of DLE at the end of the trial
 
 stopTrial(stopping=myStopping,
           dose=RecommendDose$nextdose,
@@ -49,3 +50,5 @@ stopTrial(stopping=myStopping,
             quantile(Gstarsamples,prob=0.5)})
 
 ## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end

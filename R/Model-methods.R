@@ -1151,7 +1151,7 @@ setMethod(
   definition = function(x, model) {
     theta1 <- model@theta1
     theta2 <- model@theta2
-    constant <- model@c
+    constant <- model@const
     assert_numeric(x, min.len = 1L, any.missing = FALSE, len = h_null_if_scalar(theta1))
 
     exp(exp((x - theta1) / theta2)) - constant
@@ -1177,7 +1177,7 @@ setMethod(
     assert_subset(c("theta1", "theta2"), names(samples@data))
     theta1 <- samples@data$theta1
     theta2 <- samples@data$theta2
-    constant <- model@c
+    constant <- model@const
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta1))
 
     theta1 + theta2 * log(log(dose + constant))
@@ -1464,42 +1464,42 @@ setMethod("update",
               return(model)
             })
 
-## ------------------------------------------------------------------------------------
-## Update the 'Effloglog' model
-## -----------------------------------------------------------------
+# update-Effloglog ----
 
-##' Update method for the 'Effloglog' Model class. This is a method to update the modal
-##' estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu}
-##' (nu, the precision of the efficacy responses) when new data
-##' or new observations of responses are available and added in.
-##'
-##' @param object the \code{\linkS4class{Effloglog}} class object
-##' @param data all currently available data or responses of \code{\linkS4class{DataDual}}
-##' class object
-##' @param \dots unused
-##' @return the new \code{\linkS4class{Effloglog}} class object
-##'
-##' @example examples/Model-method-updateEffloglog.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="Effloglog"),
-          def=
-            function(object,
-                     data,
-                     ...){
+#' Updating `Effloglog` Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that updates existing [`Effloglog`] object with new data.
+#'
+#' @param object (`Effloglog`)\cr object you want to update.
+#' @param data (`DataDual`)\cr all currently available data or responses.
+#' @param ... not used.
+#'
+#' @return The new, updated [`Effloglog`] object.
+#'
+#' @aliases update-Effloglog
+#' @export
+#' @example examples/Model-method-update-Effloglog.R
+#'
+setMethod(
+  f = "update",
+  signature = signature(
+    object = "Effloglog"
+  ),
+  definition = function(object,
+                        data,
+                        ...) {
+    Effloglog(
+      eff = object@eff,
+      eff_dose = object@eff_dose,
+      nu = object@nu,
+      const = object@const,
+      data = data
+    )
+  }
+)
 
-              ##update the model estimates with data
-              model <- Effloglog(Eff=object@Eff,
-                                 Effdose=object@Effdose,
-                                 nu=object@nu,
-                                 c=object@c,
-                                 data=data)
-
-              ##return the updated model
-              return(model)
-            })
 ## =================================================================================
 ## ------------------------------------------------------------------------------------
 ## Update the 'EffFlexi' model

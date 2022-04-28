@@ -4,143 +4,181 @@
 \name{Effloglog-class}
 \alias{Effloglog-class}
 \alias{.Effloglog}
-\title{Class for the linear log-log efficacy model using pseudo data prior}
+\alias{Effloglog}
+\title{\code{Effloglog}}
+\usage{
+Effloglog(eff, eff_dose, nu, data, const = 0)
+}
+\arguments{
+\item{eff}{(\code{numeric})\cr the pseudo efficacy responses.
+Elements of \code{eff} must correspond to the elements of \code{eff_dose}.}
+
+\item{eff_dose}{(\code{numeric})\cr dose levels that correspond to pseudo efficacy
+responses in \code{eff}.}
+
+\item{nu}{(\code{number})\cr the precision (inverse of the variance) of the
+efficacy responses. This is either a fixed value or a named vector with two
+positive numbers, the shape (\code{a}), and the rate (\code{b}) parameters for the
+gamma distribution.}
+
+\item{data}{(\code{DataDual})\cr observed data to update estimates of the model
+parameters.}
+
+\item{const}{(\code{number})\cr the constant value added to the dose level when
+the dose level value is less than or equal to 1 and a special form of the
+linear log-log has to applied (Yeung et al. (2015).).}
+}
 \description{
-This is the efficacy model which describe the relationship of the continuous efficacy responses and
-the dose levels. More specifically, this is a model to describe the linear relationship between the
-continuous efficacy responses and its coressponding dose level in log-log scale.
-The efficacy log-log model is given as
-\deqn{y_i=\theta_1 +theta_2 log(log(d_i))+\epsilon_i}
-where \eqn{y_i} is the efficacy responses
-for subject i, \eqn{d_i} is the dose level treated for subject i and \eqn{\epsilon_i} is the random error
-term of efficacy model at subject i such that \eqn{\epsilon_i} has a normal distribution of mean 0 and
-variance \eqn{\sigma^2=\nu^{-1}}. This variance is assumed to be the same for all subjects.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{Effloglog}} is the class for the linear log-log efficacy model using pseudo
+data prior. It describes the relationship between continuous efficacy
+responses and corresponding dose levels in log-log scale. This efficacy
+log-log model is given as
+\deqn{y_i = theta1 + theta2 * log(log(x_i)) + epsilon_i,}
+where \eqn{y_i} is the efficacy response for subject \eqn{i}, \eqn{x_i} is
+the dose level treated for subject \eqn{i} and \eqn{epsilon_i} is the random
+error term of efficacy model at subject \eqn{i}. The error term
+\eqn{epsilon_i} is a random variable that follows normal distribution with
+mean \eqn{0} and variance \eqn{nu^{-1}}, which is assumed to be the
+same for all subjects.
+There are three parameters in this model, the intercept \eqn{theta1}, the
+slope \eqn{theta2} and the precision \eqn{nu} of the efficacy responses, also
+known as the inverse of the variance of the pseudo efficacy responses. It can
+be a fixed constant or having a gamma distribution. Therefore, a single scalar
+value or a vector with two positive numbers values must be specified for \code{nu}
+slot. If there are some observed efficacy responses available, in the output,
+\code{nu} will display the updated value of the precision or the updated values
+for the parameters of the gamma distribution.
+The \code{Effloglog} inherits all slots from \code{\link{ModelEff}} class.
 }
 \details{
-There are three parameters in this model which is to intercept \eqn{\theta_1}, the slope \eqn{\theta_2}
-and the precision \eqn{\nu} of the efficacy responses.
-It inherit all slots from \code{\linkS4class{ModelEff}}
+The prior of this model is specified in form of pseudo data. First,
+at least two dose levels are fixed. Then, using e.g. experts' opinion, the
+efficacy values that correspond to these dose levels can be obtained,
+The \code{eff} and \code{eff_dose} arguments represent the prior in form of the pseudo
+data. The \code{eff} represents the pseudo efficacy values. The \code{eff_dose}
+represents the dose levels at which these pseudo efficacy values are
+observed. Hence, the positions of the elements specified in \code{eff} and
+\code{eff_dose} must correspond to each other between these vectors.
+Since at least 2 pseudo efficacy values are needed to obtain modal
+estimates of the intercept and slope parameters, both \code{eff} and \code{eff_dose}
+must be vectors of length at least 2.
 
-The prior of this model is specified in form of pseudo data. First at least two dose levels are fixed.
-Then ask for experts' opinion about the efficacy values that can be obtained at each of the dose levels
-if one subject is treated at each of these dose levels. The prior modal estimates (same as the maximum
-likelihood estimates) can be obtained for the intercept and slope paramters in this model.
-
-The \code{Eff} and \code{Effdose} are used to represent the prior in form of the pseudo data.
-The \code{Eff} represents the pseudo scalar efficacy values. The \code{Effdose} represents the dose levels
-at which these pseudo efficacy values are observed. These pseudo efficacy values are always specified by
-assuming one subject are treated in each of the dose levels. Since at least 2 pseudo efficacy values are
-needed to obtain modal estimates of the intercept and slope parameters, both \code{Eff} and \code{Effdose}
-must be vector of at least length 2. The position of the values or elements specified in \code{Eff} or
-\code{Effdose} must be corresponds to the same elements or values in the other vector.
-
-The \code{nu} represents the prior precision \eqn{\nu} of the pseudo efficacy responses. It is also known as the inverse
-of the variance of the pseudo efficacy responses. The precision can be a fixed constant or having a gamma
-distribution. Therefore, single scalar value, a fixed
-value of the precision can be specified. If not, two positive scalar values must be specified as the
-shape and rate parameter of the gamma distribution. If there are some observed efficacy responses available,
-in the output, \code{nu} will display the updated value of the precision or the updated values for the
-parameters of the gamma distribution.
-
-Given the variance of the pseudo efficacy responses, the joint prior distribution of the intercept \eqn{\theta_1}
-(theta1) and the slope \eqn{\theta_2} (theta2) of this model is a bivariate normal distribution.
-A conjugate posterior joint distribution is also used for theta1 and theta2. The joint prior bivariate
-normal distribution has
-mean \eqn{\boldsymbol\mu_0} and covariance matrix \eqn{(\nu \mathbf{Q}_0)^{-1}}. \eqn{\boldsymbol\mu_0} is a
-\eqn{2 \times 1}
-column vector contains the prior modal estimates of the intercept (theta1) and the slope (theta2). Based on
-\eqn{r} for \eqn{r \geq 2} pseudo efficacy responses specified, \eqn{\mathbf{X}_0} will be the
-\eqn{r \times 2} design matrix
-obtained for these pseudo efficacy responses. the matrix \eqn{\mathbf{Q}_0} will be calculated by
-\eqn{\mathbf{Q}_0=\mathbf{X}_0 \mathbf{X}^T_0} where \eqn{\nu} is the precision of the pseudo efficacy responses.
-For the joint posterior bivariate distribution, we have \eqn{\boldsymbol{\mu}} as the mean and
-\eqn{(\nu\mathbf{Q}_0)^{-1}} as the covariance matrix. Here, \eqn{\boldsymbol\mu} is the column vector containing the
-posterior modal estimates
-of the intercept (theta1) and the slope (theta2). The design matrix \eqn{\mathbf{X}} obtained based only on
-observed efficacy responses will give \eqn{\mathbf{Q}=\mathbf{X}\mathbf{X}^T} with \eqn{\nu} as the precision of
-the observed efficacy responses. If no observed efficacy responses are available (i.e only pseudo
-efficacy responses are used), the \code{vecmu}, \code{matX}, \code{matQ} and \code{vecY} represents
-\eqn{\boldsymbol\mu_0}, \eqn{\mathbf{X}_0}, \eqn{\mathbf{Q}_0} and the column vector of pseudo efficacy responses,
-respectively. If there are some observed efficacy responses, \code{vecmu}, \code{matX}, \code{matQ}
-and \code{vecY} will represent \eqn{\boldsymbol\mu}, \eqn{\mathbf{X}}, \eqn{\mathbf{Q}} and the column vector contains
-all observed efficacy responses, respectively. (see details in about the form of prior and posterior distribution)
+The joint prior distribution of the intercept \eqn{theta1} and the slope
+\eqn{theta2} of this model follows bivariate normal distribution with mean
+\eqn{mu} and covariance matrix \eqn{(nu * Q^{-1}}.
+The mean \eqn{mu} is a \eqn{2 x 1} column vector that contains the prior
+modal estimates of the intercept and the slope.
+Scalar \eqn{nu} is the precision of the pseudo efficacy responses and
+\eqn{Q} is the prior or posterior (given that observed, no DLT data is
+available) precision matrix.
+It is specified as \eqn{Q = X0^T * X0 + X^T * X}, where \eqn{X0} is a
+design matrix that is based on pseudo dose levels only, and \eqn{X} is a
+design matrix that is based on dose levels corresponding to the no DLT
+efficacy responses observed only (if any).
+Hence, the \eqn{X0} (or \eqn{X}) will be of size \eqn{r x 2}, if
+there are \eqn{r >= 2} pseudo efficacy responses specified (or
+if there are \eqn{r} no DLT efficacy responses observed in the \code{data}).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{Eff}}{the pseudo efficacy response, the scalar efficacy values. This must be a vector of at least
-length 2. Each element or value here must represents responses treated based on one subject. The order
-of its elements must corresponds to the values presented in vector \code{Effdose} (see details above)}
+\item{\code{eff}}{(\code{numeric})\cr the pseudo efficacy responses. Each element here
+must represent responses treated based on one subject.
+It must be a vector of length at least 2 and the order of its elements must
+correspond to values specified in \code{eff_dose}.}
 
-\item{\code{Effdose}}{the pseudo efficacy dose level. This is the dose levels at which the pseudo efficacy
-responses are observed at. This must be a vector of at least length 2 and the order of its elements must
-corresponds to values presented in vector \code{Eff} (see details above)}
+\item{\code{eff_dose}}{(\code{numeric})\cr the pseudo efficacy dose levels at which the
+pseudo efficacy responses are observed.
+It must be a vector of length at least 2 and the order of its elements must
+correspond to values specified in \code{eff}.}
 
-\item{\code{nu}}{refers to the prior precision of pseudo efficacy responses. This is either a fixed value or a
-vector of elements \code{a}, a positive scalar for the shape parameter, and \code{b}, a positive scalar
-for the rate parameter for the gamma distribution. (see detail from above)}
+\item{\code{nu}}{(\code{numeric})\cr parameter of the prior precision of pseudo efficacy
+responses. This is either a fixed value or a named vector with two positive
+numbers, the shape (\code{a}), and the rate (\code{b}) parameters for the gamma
+distribution.}
 
-\item{\code{useFixed}}{a logical value if \code{nu} specified is a fixed value or not. This slot is needed for
-internal purposes and not to be touched by the user.}
+\item{\code{use_fixed}}{(\code{flag})\cr indicates whether \code{nu} specified is a fixed value
+or a vector with two parameters for gamma distribution. This slot is for
+internal purposes only and must not be used by the user.}
 
-\item{\code{theta1}}{The intercept \eqn{\theta_1} parameter of this efficacy log-log model. This slot is used in output to display
-the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the
-observed data/ responses.}
+\item{\code{theta1}}{(\code{number})\cr the intercept in this efficacy log-log model. This
+slot is used in output to display the resulting prior or posterior modal
+estimates obtained based on the pseudo and observed (if any) data.}
 
-\item{\code{theta2}}{The slope \eqn{theta_2} parameter of the efficacy log-log model. This slot is used in output to display
-the resulting prior or posterior modal estimates obtained based on the pseudo data and (if any) the
-observed data/ responses.}
+\item{\code{theta2}}{(\code{number})\cr the slope in this efficacy log-log model. This
+slot is used in output to display the resulting prior or posterior modal
+estimates obtained based on the pseudo and observed (if any) data.}
 
-\item{\code{Pcov}}{refers to the covariance matrix of the intercept (phi1) and slope (phi2) parameters of this model.
-This slot is used in output to display the covariance matrix obtained based on the pseudo data and (if any)
-the observed data/responses. This slot is needed for internal purposes.}
+\item{\code{Pcov}}{(\code{matrix})\cr refers to the \eqn{2 x 2} covariance matrix of the
+estimators of the intercept \eqn{theta1} and the slope \eqn{theta2}
+parameters in this model.
+This is used in output to display the resulting prior and posterior
+covariance matrix of \eqn{theta1} and \eqn{theta2} obtained, based on the
+pseudo and observed (if any) data. This slot is needed for internal purposes.}
 
-\item{\code{vecmu}}{is the column vector of the prior or the posterior modal estimates of the intercept (phi1) and
-the slope (phi2).
-This slot is used in output to display as the mean of the prior or posterior bivariate normal distribution
-for phi1 and phi2. (see details from above)}
+\item{\code{X}}{(\code{matrix})\cr is the design matrix that is based on either the pseudo
+dose levels or observed dose levels (without DLT). This is used
+in the output to display the design matrix for the pseudo or the observed
+efficacy responses.}
 
-\item{\code{matX}}{is the design matrix based on either the pseudo or all observed efficacy response. This is used in
-output to display the design matrix for the pseudo or the observed efficacy responses (see details from above)}
+\item{\code{Y}}{(\code{numeric})\cr is a vector that either contains the pseudo efficacy
+responses or observed efficacy responses (without DLT).}
 
-\item{\code{matQ}}{is the square matrix of multiplying the the design matrix with its transponse. This is represented
-either using the only the pseudo efficacy responses or only with the observed efficacy responses. This is display
-in the output (see details from above)}
+\item{\code{mu}}{(\code{numeric})\cr a vector of the prior or the posterior modal estimates
+of the intercept (\eqn{theta1}) and the slope (\eqn{theta2}).
+This slot is used in output to display as the mean of the prior or posterior
+bivariate normal distribution for \eqn{theta1} and \eqn{theta2}.}
 
-\item{\code{vecY}}{is the column vector either contains the pseudo efficacy responses or all the observed efficacy
-responses. This is used in output to display the pseudo or observed efficacy responses (see detail from above)}
+\item{\code{Q}}{(\code{matrix})\cr is the prior or posterior (given that observed, no DLT
+data is available) precision matrix. It is specified as
+\eqn{Q = X0^T * X0 + X^T * X}, where \eqn{X0} is a design matrix that is
+based on pseudo dose levels only, and \eqn{X} is a design matrix that is
+based on dose levels corresponding to the observed, no DLT efficacies only
+(if any).}
 
-\item{\code{c}}{is a constant value greater or equal to 0, with the default 0 leading
-to the model form described above. In general, the model has the form
-\eqn{y_i=\theta_1 +theta_2 log(log(d_i + c))+\epsilon_i}, such that dose levels
-greater than \eqn{1-c} can be considered as described in Yeung et al. (2015).}
+\item{\code{const}}{(\code{number})\cr a non-negative number (default to 0), leading to the
+model form described above. In general, the model has the form
+\eqn{y_i = theta1 + theta2 * log(log(x_i + const)) + epsilon_i}, such that
+dose levels greater than \eqn{1 - const} can be considered as described in
+Yeung et al. (2015).}
 }}
 
 \examples{
-##Obtain prior modal estimates for the Effloglog model (efficacy model) given the pseudo data.
-##First define an empty data set by only define the dose levels used in the study,
-## 12 dose levels are usesd from 25 to 300 mg with increments of 25.
-emptydata<-DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
-data<-emptydata
-## define the pseudo data as first fixed 2 dose levels 25 and 300 mg and specified in
-## (Effdose slot).
-## Then the efficacy responses observed at these two dose levels are 1.223 and 2.513 and
-## specified in (Eff slot).
-## The prior precision of the pseudo efficacy responses. This can be either a fixed value of
-## specifying the shape (a) and the rate (b) parameters for the gamma distribution in (nu slot).
-## Then specify all data currently available in (data slot).
+# Obtain prior modal estimates given the pseudo data.
+# First we use an empty data set such that only the dose levels under
+# investigations are given. In total, 12 dose levels are under investigation
+# ranging from 25 to 300 mg with increments of 25 (i.e 25, 50, 75, ..., 300).
+emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
 
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+# Define the pseudo data as first by fixing two dose levels 25 and 300 mg (`eff_dose`).
+# Then, the efficacy responses observed at these two dose levels are 1.223 and 2.513 (`eff`).
+# We specify the prior precision of the pseudo efficacy responses (`nu`) as a vector
+# with the shape (a) and the rate (b) parameters for the gamma distribution.
+# Obtain modal estimates and other estimates from the model (no observations,
+# only pseudo data).
+my_model1 <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = emptydata
+)
 
-##Obtain posterior modal estimates and other estimates from the model given some observed responses
-## If there is some observations available
-## first specified the data
-data<-DataDual(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
-               w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-               doseGrid=seq(25,300,25))
+# Observed data.
+my_data <- DataDual(
+  x = c(25, 50, 50, 75, 100, 100, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+  doseGrid = emptydata@doseGrid
+)
 
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data)
-
-
+# Obtain posterior modal estimates and other estimates from the model given some
+# observed data.
+my_model2 <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = my_data
+)
 }
-\keyword{methods}

@@ -25,11 +25,11 @@ efficacy(dose = 75, model = my_model, samples = my_samples)
 # Obtain the expected efficacy value for a given dose, a given pseudo efficacy
 # model (linear log-log efficacy) and no samples.
 my_model_ll <- Effloglog(
-  Eff = c(1.223, 2.513),
-  Effdose = c(25, 300),
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
   nu = c(a = 1, b = 0.025),
   data = my_data,
-  c = 0
+  const = 0
 )
 
 efficacy(dose = 75, model = my_model_ll)

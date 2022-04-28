@@ -4,7 +4,7 @@
 # ranging from 25 to 300 mg with increments of 25 (i.e 25, 50, 75, ..., 300).
 emptydata <- Data(doseGrid = seq(25, 300, 25))
 
-# Fix two dose level 25 and 300 mg (DLEdose).
+# Fix two dose levels 25 and 300 mg (DLEdose).
 # Total number of subjects treated in each of these levels is 3, (DLEweights).
 # The number of subjects observed with a DLE is 1.05 at dose 25 mg and 1.8 at dose 300 mg (binDLE).
 my_model1 <- LogisticIndepBeta(

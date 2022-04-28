@@ -13,8 +13,8 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               data=data)
 
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
-                    nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),
+                    nu=c(a=1,b=0.025),data=data)
 
 ##The escalation rule using the 'NextBestMaxGain' class
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
@@ -78,7 +78,7 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
 options<-McmcOptions(burnin=10,step=1,samples=20)
 ##The simulations
 ##For illustration purpose only 1 simulation is produced (nsim=1).
-mySim<-simulate(design,
+mySim<-simulate(object=design,
                 args=NULL,
                 trueDLE=myTruthDLE,
                 trueEff=myTruthEff,
