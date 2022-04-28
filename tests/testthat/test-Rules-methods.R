@@ -346,20 +346,19 @@ test_that("Helper function (h_info_theory_dist) for NextBestInfTheory is correct
 })
 
 test_that("NextBestInfTheory produces consistent results", {
-  ##### Uploading the model and the data #####
+  #### Upload model and data ###
   doseGrid <- seq(from=40, to=200, by=10)
   emptyData <- Data(doseGrid=doseGrid)
   mcmcOptions <- McmcOptions()
 
-  sigma0<-1.0278
-  sigma1<-1.65
-  rho<-0.5
-  cov<-matrix(c(sigma0^2,rho*sigma0*sigma1,
+  sigma0 <- 1.0278
+  sigma1 <- 1.65
+  rho <- 0.5
+  cov <- matrix(c(sigma0^2,rho*sigma0*sigma1,
               rho*sigma0*sigma1,sigma1^2),
             nrow=2, ncol=2)
   model <- LogisticLogNormal(mean = c(-4.47, 0.0033),
-                           cov = cov, refDose = 1)
-
+                           cov = cov)
 
   increments <- IncrementsRelative(interval=0,increments=1)
   cohort <- CohortSizeConst(size = 3)
@@ -367,15 +366,14 @@ test_that("NextBestInfTheory produces consistent results", {
   stopRule <- StoppingMinPatients(nPatients = 30)
 
   scenario <- function(dose, ED50, alpha1){
-    alpha0 <- qlogis(0.5)-alpha1*log(ED50)
-    model@prob(dose,alpha0=alpha0, alpha1 = alpha1)}
+   alpha0 <- qlogis(0.5)-alpha1*log(ED50)
+   model@prob(dose)}
 
   ##### End of uploading  #####
+  newMyNextBest <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  design <- Design(model = model, stopping = stopRule, increments = increments, nextBest = newMyNextBest, cohortSize = cohort, data = emptyData, startingDose = 40)
 
-  newMyNextBest <- NextBestInfTheory(target = 0.25, asymmetry=0.1)
-  design <- Design(model=model, stopping=stopRule, increments=increments, nextBest=newMyNextBest, cohortSize=cohort, data=emptyData, startingDose=40)
-
-  sims.InfTh1 <- simulate(design, nsim=10, seed = 456, truth=scenario, args=list(ED50=175, alpha1=5),mcmcOptions = mcmcOptions, parallel = F)
+  simulation <- simulate(design, nsim = 10, seed = 456, truth = scenario, args = list(ED50 = 175, alpha1 = 5),mcmcOptions = mcmcOptions, parallel = F)
   # produce summary
-  summary(sims.InfTh1, truth=scenario, target=newMyNextBest@target, ED50=175, alpha1=5)
+  summary(simulation, truth = scenario, target = newMyNextBest@target, ED50 = 175, alpha1 = 5)
   # check summary
