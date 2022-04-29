@@ -135,8 +135,8 @@ bivariate normal distribution for \eqn{theta1} and \eqn{theta2}.}
 data is available) precision matrix. It is specified as
 \eqn{Q = X0^T * X0 + X^T * X}, where \eqn{X0} is a design matrix that is
 based on pseudo dose levels only, and \eqn{X} is a design matrix that is
-based on dose levels corresponding to the observed, no DLT efficacies only
-(if any).}
+based on dose levels corresponding to the observed, no DLT efficacy values
+only (if any).}
 
 \item{\code{const}}{(\code{number})\cr a non-negative number (default to 0), leading to the
 model form described above. In general, the model has the form
