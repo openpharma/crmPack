@@ -386,46 +386,44 @@ setMethod("mcmc",
 ##' will be used the generate samples of the intercept and slope parameters of the model
 ##' @example examples/mcmc-Effloglog.R
 ##' @importFrom mvtnorm rmvnorm
-setMethod("mcmc",
-          signature=
-            signature(data="DataDual",
-                      model="Effloglog",
-                      options="McmcOptions"),
-          def=
-            function(data, model, options,
-                     ...){
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "DataDual",
+    model = "Effloglog",
+    options = "McmcOptions"
+  ),
+  definition = function(data, model, options, ...) {
+    model <- update(object = model, data = data)
+    sample_size <- sampleSize(options)
 
-              ## decide whether we sample from the prior or not
-              from_prior <- data@nObs == 0L
+    if (model@use_fixed) {
+      nu <- model@nu
+      nu_samples <- rep(nu, sample_size)
+    } else {
+      nu_samples <- rgamma(sample_size, shape = model@nu["a"], rate = model@nu["b"])
+      nu <- mean(nu_samples)
+    }
 
-              thismodel <- update(object=model,data=data)
+    # Sample from the (asymptotic) bivariate normal prior for theta1 and theta2.
+    tmp <- mvtnorm::rmvnorm(
+      n = sample_size,
+      mean = model@mu,
+      sigma = solve(nu * model@Q)
+    )
 
+    samples <- list(
+      theta1 = tmp[, 1],
+      theta2 = tmp[, 2],
+      nu = nu_samples
+    )
 
-              if (length(thismodel@nu)==2) {
-                nusamples <- rgamma(sampleSize(options),shape=thismodel@nu[1],rate=thismodel@nu[2])
-                priornu <- mean(nusamples)} else {
-                  priornu <- thismodel@nu
-                  nusamples <- rep(nu,sampleSize(options))}
-
-
-
-              ## sample from the (asymptotic) bivariate normal prior for theta1 and theta2
-
-              tmp <- mvtnorm::rmvnorm(n=sampleSize(options),
-                                      mean=c(thismodel@theta1,thismodel@theta2),
-                                      sigma=solve(priornu*(thismodel@matQ)))
-
-
-              samples <- list(theta1=tmp[, 1],
-                              theta2=tmp[, 2],
-                              nu=nusamples)
-
-              ## form a Samples object for return:
-              ret <- Samples(data=samples,
-                             options=options)
-
-              return(ret)
-            })
+    Samples(
+      data = samples,
+      options = options
+    )
+  }
+)
 ## ======================================================================================
 ## -----------------------------------------------------------------------------------
 ## obtain the posterior samples for the Pseudo Efficacy Flexible form

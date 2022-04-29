@@ -2517,9 +2517,11 @@ setMethod("simulate",
                   thisNu<-thisEffModel@nu
 
 
-                  if (thisEffModel@useFixed==FALSE){
-                    thisSigma2 <- 1/(as.numeric(thisNu["a"]/thisNu["b"]))} else {
-                      thisSigma2 <- 1/thisNu}
+                  thisSigma2 <- if (thisEffModel@use_fixed) {
+                    1 / thisNu
+                  } else {
+                    1 / (as.numeric(thisNu["a"] / thisNu["b"]))
+                  }
 
 
                   ## what is the dose limit?
@@ -3408,11 +3410,11 @@ setMethod("simulate",
                                          model=thisEffModel,
                                          options=mcmcOptions)
 
-
-                  if (thisEffModel@useFixed==FALSE){
-                    thisSigma2 <- 1/(as.numeric(thisNu["a"]/thisNu["b"]))} else {
-                      thisSigma2 <- 1/thisNu}
-
+                  thisSigma2 <- if (thisEffModel@use_fixed) {
+                    1 / thisNu
+                  } else {
+                    1 / (as.numeric(thisNu["a"] / thisNu["b"]))
+                  }
 
                   ## what is the dose limit?
                   doselimit <- maxDose(object@increments,data=thisData)

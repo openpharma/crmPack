@@ -1,3 +1,5 @@
+# nolint start
+
 ##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
@@ -13,7 +15,7 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 
 
 ##define the 'StoppingGstarCIRatio' class
@@ -34,3 +36,5 @@ stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,model=DLEmodel,
 
 
 ## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end

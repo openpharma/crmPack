@@ -2437,7 +2437,7 @@ setMethod("nextBest",
               Gstarret <- data@doseGrid[Gstarindex]
 
               if (data@placebo){
-                logGstar <- log(Gstar+Effmodel@c)} else {
+                logGstar <- log(Gstar+Effmodel@const)} else {
                   logGstar <- log(Gstar)
                 }
 
@@ -3344,7 +3344,7 @@ setMethod("stopTrial",
               Gstar<-(optim(LowestDose,Gainfun,method = "L-BFGS-B",lower=LowestDose,upper=max(data@doseGrid))$par)
               MaxGain<--(optim(LowestDose,Gainfun,method = "L-BFGS-B",lower=LowestDose,upper=max(data@doseGrid))$value)
               if (data@placebo){
-                logGstar <- log(Gstar+Effmodel@c)} else {
+                logGstar <- log(Gstar+Effmodel@const)} else {
                   logGstar <- log(Gstar)
                 }
 
