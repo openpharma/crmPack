@@ -273,16 +273,37 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
   )
 }
 
-h_get_eff_log_log <- function() {
-  dd <- DataDual(
-    doseGrid = c(0.001, seq(25, 300, 25)),
-    placebo = TRUE
-  )
+h_get_eff_log_log <- function(emptydata = FALSE, dlt_observed_only = FALSE) {
+  dose_grid <- seq(25, 300, 25)
+
+  data <- if (emptydata) {
+    DataDual(
+      doseGrid = dose_grid,
+      placebo = FALSE
+    )
+  } else {
+    # Observed data.
+    y <- if (dlt_observed_only) {
+      rep(1L, 8)
+    } else {
+      c(0, 0, 0, 0, 1, 1, 1, 1)
+    }
+
+    DataDual(
+      x = c(25, 50, 50, 75, 100, 100, 225, 300),
+      y = y,
+      ID = 1:8,
+      cohort = c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L),
+      w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+      doseGrid = dose_grid
+    )
+  }
+
   Effloglog(
     eff = c(1.223, 2.513),
     eff_dose = c(25, 300),
     nu = c(a = 1, b = 0.025),
-    data = dd,
+    data = data,
     const = 2
   )
 }

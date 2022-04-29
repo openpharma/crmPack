@@ -559,3 +559,37 @@ test_that("MCMC computes correct values for LogisticIndepBeta model", {
   result <- mcmc(data = model@data, model = model, options = options)
   expect_snapshot(result@data)
 })
+
+# Effloglog ----
+
+## constructor ----
+
+test_that("Effloglog object can be created with user constructor (empty data)", {
+  result <- expect_silent(h_get_eff_log_log(emptydata = TRUE))
+  expect_valid(result, "Effloglog")
+})
+
+test_that("Effloglog object can be created with user constructor", {
+  result <- expect_silent(h_get_eff_log_log(emptydata = FALSE))
+  expect_valid(result, "Effloglog")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for Effloglog model (empty data)", {
+  model <- h_get_eff_log_log(emptydata = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  set.seed(10)
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for Effloglog model", {
+  model <- h_get_eff_log_log(emptydata = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  set.seed(10)
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})

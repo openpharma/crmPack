@@ -585,3 +585,227 @@ test_that("v_model_logistic_indep_beta returns message for wrong Pcov", {
   object@Pcov <- matrix(c(5, 2, 3, 2, 3, 2, 3, 2, 5), ncol = 3)
   expect_equal(v_model_logistic_indep_beta(object), err_msg)
 })
+
+# v_model_eff_log_log ----
+
+test_that("v_model_eff_log_log passes for valid object", {
+  object_edat <- h_get_eff_log_log(emptydata = TRUE)
+  object <- h_get_eff_log_log(emptydata = FALSE)
+
+  expect_true(v_model_eff_log_log(object_edat))
+  expect_true(v_model_eff_log_log(object))
+})
+
+test_that("v_model_eff_log_log returns message for wrong eff and eff_dose parameters (NAs)", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for eff, eff_dose (no NA allowed, min len 2).
+  object@eff <- c(2, NA)
+  object@eff_dose <- c(3, NA)
+  expect_equal(
+    v_model_eff_log_log(object),
+    c(
+      "eff must be a finite numerical vector of minimum length 2, without missing values",
+      "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+    )
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong eff and eff_dose parameters (scalars)", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for eff, eff_dose.
+  object@eff <- 2
+  object@eff_dose <- 3
+  expect_equal(
+    v_model_eff_log_log(object),
+    "eff must be a finite numerical vector of minimum length 2, without missing values"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong eff and eff_dose parameters (diff lengths)", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for eff, eff_dose.
+  object@eff <- c(20, 50)
+  object@eff_dose <- c(4, 6, 7)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong fixed nu", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for nu.
+  object@nu <- c(-5:0, Inf)
+  object@use_fixed <- TRUE
+  expect_equal(
+    v_model_eff_log_log(object),
+    "nu must be a positive and finite numerical scalar"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong nu", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for nu.
+  object@nu <- c(4, -5, b = -Inf)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "nu must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong use_fixed", {
+  object <- h_get_eff_log_log()
+  # Assigning non-valid use_fixed.
+  object@use_fixed <- c(TRUE, FALSE)
+  expect_equal(v_model_eff_log_log(object), "use_fixed must be a flag")
+})
+
+test_that("v_model_eff_log_log returns message for wrong const", {
+  object <- h_get_eff_log_log()
+  err_msg <- "const must be a non-negative number"
+
+  # Assigning non-valid const.
+  object@const <- c(5, 6)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+
+  object@const <- -4
+  expect_equal(v_model_eff_log_log(object), err_msg)
+})
+
+test_that("v_model_eff_log_log returns message for dose + const <= 1 (emptydata)", {
+  object <- h_get_eff_log_log(emptydata = TRUE)
+  # Assigning wrong combination of eff_dose and const.
+  object@eff_dose <- c(1, 2)
+  object@const <- 0
+  expect_equal(
+    v_model_eff_log_log(object),
+    "For log-log model, doses and const must be such that dose + const > 1"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for dose + const <= 1", {
+  object <- h_get_eff_log_log(emptydata = FALSE)
+  # Assigning wrong combination of dose (at observed efficacy) and const.
+  object@data@doseGrid[1] <- 1
+  object@const <- 0
+  expect_equal(
+    v_model_eff_log_log(object),
+    "For log-log model, doses and const must be such that dose + const > 1"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong theta1, theta2", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for theta1, theta2.
+  object@theta1 <- c(-5, Inf)
+  object@theta2 <- c(4, 7)
+
+  expect_equal(
+    v_model_eff_log_log(object),
+    c("theta1 must be a numerical scalar", "theta2 must be a numerical scalar")
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong Pcov", {
+  object <- h_get_eff_log_log()
+  err_msg <- "Pcov must be 2x2 positive-definite matrix without any missing values"
+
+  # Assigning wrong Pcov matrix.
+  object@Pcov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+
+  object@Pcov <- matrix(c(5, 2, 1, 5), ncol = 2)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+
+  object@Pcov <- matrix(c(5, 2, 3, 2, 3, 2, 3, 2, 5), ncol = 3)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+})
+
+test_that("v_model_eff_log_log returns message for wrong Pcov (data len <= 2)", {
+  object <- h_get_eff_log_log(dlt_observed_only = TRUE)
+  # Assigning wrong Pcov matrix.
+  object@Pcov <- matrix(c(1:3, 4, 5, NA), ncol = 2)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "Pcov must be 2x2 numeric matrix with all values missing if the length of combined data is 2"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong X (empty data)", {
+  object <- h_get_eff_log_log(emptydata = TRUE)
+  # Assigning wrong values for X (wrong dimension).
+  object@X <- matrix(c(1, 1, 1, 27, 302, 27), ncol = 2)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "X must be a finite numerical matrix of size 2 x 2, without any missing values"
+  )
+
+  # Assigning wrong values for X (wrong 1st column).
+  object@X <- matrix(c(1, 0, 27, 302), ncol = 2)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "X must be a design matrix, i.e. first column must be of 1s"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong X", {
+  object <- h_get_eff_log_log(emptydata = FALSE)
+  # Assigning wrong values for X (wrong dimension).
+  object@X <- matrix(c(1, 1, 1, 27, 302, 27), ncol = 2)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "X must be a finite numerical matrix of size 4 x 2, without any missing values"
+  )
+
+  # Assigning wrong values for X (wrong 1st column).
+  object@X <- matrix(c(1, 1, 1, 0, 25, 50, 50, 75), ncol = 2)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "X must be a design matrix, i.e. first column must be of 1s"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong Y (empty data)", {
+  object <- h_get_eff_log_log(emptydata = TRUE)
+  # Assigning wrong values for Y.
+  object@Y <- c(27, 302, 27)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "Y must be a finite numerical vector of length 2 and without any missing values"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong Y", {
+  object <- h_get_eff_log_log(emptydata = FALSE)
+  # Assigning wrong values for Y.
+  object@Y <- c(0.31, 0.42, 0.59, 0.45, 5)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "Y must be a finite numerical vector of length 4 and without any missing values"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong mu", {
+  object <- h_get_eff_log_log()
+  # Assigning wrong values for mu.
+  object@mu <- c(4, -5, b = -Inf, NA)
+  expect_equal(
+    v_model_eff_log_log(object),
+    "mu must be a finite numerical vector of length 2"
+  )
+})
+
+test_that("v_model_eff_log_log returns message for wrong Q", {
+  object <- h_get_eff_log_log()
+  err_msg <- "Q must be 2x2 positive-definite matrix without any missing values"
+
+  # Assigning wrong Pcov matrix.
+  object@Q <- matrix(c(1:3, 4, 5, NA), ncol = 2)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+
+  object@Q <- matrix(c(5, 2, 1, 5), ncol = 2)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+
+  object@Q <- matrix(c(5, 2, 3, 2, 3, 2, 3, 2, 5), ncol = 3)
+  expect_equal(v_model_eff_log_log(object), err_msg)
+})

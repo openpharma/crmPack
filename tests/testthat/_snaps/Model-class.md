@@ -744,3 +744,33 @@
       [1] 0.27003542 0.01697991 0.01697991 0.37729886
       
 
+# MCMC computes correct values for Effloglog model (empty data)
+
+    Code
+      result@data
+    Output
+      $theta1
+      [1] -0.8217308 -1.2444975 -2.4870098 -0.9905060
+      
+      $theta2
+      [1] 1.742472 1.935503 3.022090 1.968669
+      
+      $nu
+      [1] 20.533736 15.128041  4.359347 29.198563
+      
+
+# MCMC computes correct values for Effloglog model
+
+    Code
+      result@data
+    Output
+      $theta1
+      [1] -1.248083 -2.088724 -4.963567 -1.699768
+      
+      $theta2
+      [1] 1.423735 1.870617 4.347765 1.936372
+      
+      $nu
+      [1] 2.472057 2.242145 1.656834 2.802397
+      
+

@@ -336,8 +336,12 @@ v_model_eff_log_log <- function(object) {
     test_numeric(object@eff, finite = TRUE, any.missing = FALSE, min.len = 2),
     "eff must be a finite numerical vector of minimum length 2, without missing values"
   )
+  eff_dose_ok <- test_numeric(
+    object@eff_dose,
+    lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)
+  )
   v$check(
-    test_numeric(object@eff_dose, lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)),
+    eff_dose_ok,
     "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
   )
   v$check(
@@ -356,14 +360,14 @@ v_model_eff_log_log <- function(object) {
       "nu must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
     )
   }
-  v$check(
-    test_number(object@const),
-    "const must be a number"
-  )
-  v$check(
-    min(object@data@doseGrid, object@eff_dose) > 1 - object@const,
-    "For log-log model, doses and const must be such that dose + const > 1"
-  )
+  const_ok <- test_number(object@const, lower = 0)
+  v$check(const_ok, "const must be a non-negative number")
+  if (eff_dose_ok && const_ok) {
+    v$check(
+      min(object@data@doseGrid, object@eff_dose) > 1 - object@const,
+      "For log-log model, doses and const must be such that dose + const > 1"
+    )
+  }
   v$check(
     test_number(object@theta1),
     "theta1 must be a numerical scalar"
@@ -380,8 +384,8 @@ v_model_eff_log_log <- function(object) {
     )
   } else {
     v$check(
-      test_matrix(object@Pcov, mode = "numeric", nrows = 2, ncols = 2, all.missing = TRUE),
-      "Pcov must be 2x2 matrix with all values missing if the length of combined data is 2"
+      test_matrix(object@Pcov, mode = "numeric", nrows = 2, ncols = 2) && all(is.na(object@Pcov)),
+      "Pcov must be 2x2 numeric matrix with all values missing if the length of combined data is 2"
     )
   }
   v$check(
@@ -408,7 +412,7 @@ v_model_eff_log_log <- function(object) {
   v$check(
     test_numeric(object@Y, finite = TRUE, any.missing = FALSE, len = nrow_X),
     paste(
-      "Y_len must be a finite numerical vector of length",
+      "Y must be a finite numerical vector of length",
       nrow_X,
       "and without any missing values"
     )
