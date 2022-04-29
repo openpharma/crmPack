@@ -288,7 +288,6 @@ h_get_eff_log_log <- function(emptydata = FALSE, dlt_observed_only = FALSE) {
     } else {
       c(0, 0, 0, 0, 1, 1, 1, 1)
     }
-
     DataDual(
       x = c(25, 50, 50, 75, 100, 100, 225, 300),
       y = y,
