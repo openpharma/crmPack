@@ -352,22 +352,16 @@ test_that("NextBestInfTheory produces consistent results", {
   rho <- 0.5
   cov <- matrix(
     c(sigma0^2, rho * sigma0 * sigma1, rho * sigma0 * sigma1, sigma1^2),
-    nrow = 2,
-    ncol = 2
+    nrow = 2
   )
-  model <- LogisticLogNormal(
-    mean = c(-4.47, 0.0033),
-    cov = cov
-  )
-  increments <- IncrementsRelative(interval = 0, increments = 1)
-  cohort <- CohortSizeConst(size = 3)
-  stop_rule <- StoppingMinPatients(nPatients = 30)
-  scenario <- function(dose, ED50, alpha1) { # nolintr
-    alpha0 <- qlogis(0.5) - alpha1 * log(ED50)
-    model@prob(dose) # nolintr
-  }
+  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
 
+  stop_rule <- StoppingMinPatients(nPatients = 30)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
   new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
   design <- Design(
     model = model,
     stopping = stop_rule,
@@ -378,17 +372,22 @@ test_that("NextBestInfTheory produces consistent results", {
     startingDose = 40
   )
 
-  # TODO THIS THROWS THE ERROR
-  # nolint start
-  # sim <- simulate(
-  #   design,
-  #   nsim = 10,
-  #   seed = 456,
-  #   truth = scenario,
-  #   args = list(ED50 = 175, alpha1 = 5),
-  #   mcmcOptions = McmcOptions(),
-  #   parallel = FALSE
-  # )
-  # s <- summary(sim, truth = scenario, target = new_my_next_best@target, ED50 = 175, alpha1 = 5)
-  # nolint end
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+
+  expect_equal(
+    result@fitAtDoseMostSelected,
+    c(0.985602, 0.985602, 0.985602, 0.985602, 0.985602),
+    tolerance = 1e-07
+  )
+  expect_equal(result@propDLTs, rep(1L, 5))
+  expect_equal(result@meanToxRisk, rep(1L, 5))
+  expect_equal(result@doseSelected, rep(40, 5))
+  expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  expect_snapshot(result@meanFit)
 })
