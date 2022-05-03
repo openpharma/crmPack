@@ -9,34 +9,25 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Objective 
 
-What we want to do...
+Currently there is no information returned about stopping rules / frequency during scenario simulation. We would like to add a counting feature and a reporting feature for individual and complex / combined stopping rules. 
+We need to count instances in which a stopping rule is TRUE. In case we have combined (BOOLEAN logic) stopping rules we would like to summarize (concatenate) before outputting to the console.   
+Additionally differentiate between first hit and "all other" (otherwise might add up to more than 100 %).
 
-## current prototype
+## Current implementation suggestion
 
-Situation was ....
+* How to get the name of a stopping rule, i.e. get the class name (not really human friendly) or should we have a slot in stopping rule classes (would require manual adjustment of all stopping rule classes) - requires to be present in all classes otherwise will throw errors
 
-Our current prototype was this:
-
+Code snippet
 ```{r}
 
 ```
 
+* Extract "hit" (TRUE) from stopping rules object 
+* Go step-by-step through all the objects affected by a simulation; need for adjustment?
 
-## unpack combined stopping rules
+## Unpack combined stopping rules
 
 In order to be general enough for all stopping rules, we also need to be able
 to process combined stopping rules (and / or combinations).
 
-Some ideas:
-...
-
-Try out some code:
-
-```{r}
-
-```
-
-
-
-
-
+Clara will explain how that works in more detail (main effort)
