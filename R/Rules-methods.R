@@ -662,7 +662,9 @@ setMethod("nextBest",
 
 
 ## ============================================================
-
+##' @describeIn Helper function which provides the value of the divergence as given
+##'   by equation in (7) in the reference at https://doi.org/10.1002/sim.8450
+##' @export
 h_info_theory_dist <- function(probability,target,asymmetry){
   ((probability-target)^2)/(((probability^asymmetry)*(1-probability)^(2-asymmetry)))
 }
