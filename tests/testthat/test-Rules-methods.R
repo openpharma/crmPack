@@ -334,7 +334,7 @@ test_that("NextBestInfTheory can be initiliazed ", {
   expect_silent(NextBestInfTheory(target = 0.25, asymmetry = 0.1))
 })
 
-test_that("Helper function (h_info_theory_dist) for NextBestInfTheory is correct", {
+test_that("h_info_theory_dist works as expected", {
   # Values calculated using a different program.
   p <- c(0.01, 0.2, 0.7)
   gamma <- c(0.5, 0, 0.3)
