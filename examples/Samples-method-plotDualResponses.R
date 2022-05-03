@@ -1,3 +1,5 @@
+# nolint start
+
 ## we need a data object with doses >= 1:
 data <-DataDual(x=c(25,50,25,50,75,300,250,150),
                 y=c(0,0,0,0,0,1,1,0),
@@ -5,12 +7,12 @@ data <-DataDual(x=c(25,50,25,50,75,300,250,150),
                 doseGrid=seq(25,300,25),
                 placebo=FALSE)
 ##plot the dose-DLE and dose-efficacy curves in two plots with DLE and efficacy samples
-##define the DLE model which must be of 'ModelTox' class 
+##define the DLE model which must be of 'ModelTox' class
 ##(e.g 'LogisticIndepBeta' class model)
 DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ## define the efficacy model which must be of 'ModelEff' class
 ## (e.g 'Effloglog' class)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 ##define the DLE sample of 'Samples' class
 ##set up the same data set in class 'Data' for MCMC sampling for DLE
 data1 <- Data(x=data@x,y=data@y,doseGrid=data@doseGrid)
@@ -26,3 +28,5 @@ Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 plotDualResponses(DLEmodel=DLEmodel,DLEsamples=DLEsamples,
          Effmodel=Effmodel,Effsamples=Effsamples,
          data=data)
+
+# nolint end

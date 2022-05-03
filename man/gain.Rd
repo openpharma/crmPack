@@ -43,6 +43,8 @@ efficacy model of \code{\linkS4class{Effloglog}} class object without DLE and th
 }}
 
 \examples{
+# nolint start
+
 ##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,
 ## a pseudo efficacy model and an efficacy sample
 ##The DLE model must be from 'ModelTox' class (DLEmodel slot)
@@ -53,11 +55,13 @@ DLEsamples <- mcmc(data, DLEmodel, McmcOptions(burnin=100,step=2,samples=200))
 
 ##The efficacy model must be from 'ModelEff' class (Effmodel slot)
 ## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 Effsamples <- mcmc(data, Effmodel, McmcOptions(burnin=100,step=2,samples=200))
 
 ## Given a dose level 75,
 gain(dose=75,DLEmodel=DLEmodel,DLEsamples=DLEsamples,Effmodel=Effmodel,Effsamples=Effsamples)
+
+# nolint end
 ##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,
 ## the 'EffFlexi' efficacy model and an efficacy sample
 ##The DLE model must be from 'ModelTox' class (DLEmodel slot)
@@ -74,6 +78,7 @@ Effsamples <- mcmc(data, EffFleximodel, McmcOptions(burnin=100,step=2,samples=20
 
 ## Given a dose level 75,
 gain(dose=75,DLEmodel=DLEmodel,DLEsamples=DLEsamples,Effmodel=EffFleximodel,Effsamples=Effsamples)
+# nolint start
 ##Obtain the gain value for a given dose, a pseudo DLE model and  a pseudo efficacy model
 ## without samples
 ##The DLE model must be from 'ModelTox' class (DLEmodel slot)
@@ -82,8 +87,10 @@ data<-Data(doseGrid=seq(25,300,25),placebo=FALSE)
 
 DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##The efficacy model must be from 'Effloglog' class  (Effmodel slot)
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=emptydata,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=emptydata,const=0)
 ## Given a dose level 75,
 gain(dose=75,DLEmodel=DLEmodel,Effmodel=Effmodel)
+
+# nolint end
 }
 \keyword{methods}

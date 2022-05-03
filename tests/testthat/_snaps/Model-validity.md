@@ -80,9 +80,9 @@
     Code
       v_model_logistic_indep_beta(object)
     Output
-      [1] "binDLE must be a finite numerical vector of minimum length 2, without missing values" 
-      [2] "DLEdose must be a finite numerical vector of minimum length 2, without missing values"
-      [3] "DLEweights must be an integer vector of minimum length 2, without missing values"     
+      [1] "binDLE must be a finite numerical vector of minimum length 2, without missing values"            
+      [2] "DLEdose must be a finite numerical vector of the same length as 'binDLE', without missing values"
+      [3] "DLEweights must be an integer vector of the same length as 'binDLE', without missing values"     
 
 ---
 
@@ -96,20 +96,20 @@
     Code
       v_model_logistic_indep_beta(object)
     Output
-      [1] "DLEdose must be a finite numerical vector of minimum length 2, without missing values"
+      [1] "DLEdose must be a finite numerical vector of the same length as 'binDLE', without missing values"
 
 ---
 
     Code
       v_model_logistic_indep_beta(object)
     Output
-      [1] "DLEweights must be an integer vector of minimum length 2, without missing values"
+      [1] "DLEweights must be an integer vector of the same length as 'binDLE', without missing values"
 
 ---
 
     Code
       v_model_logistic_indep_beta(object)
     Output
-      [1] "DLEdose must be a finite numerical vector of minimum length 2, without missing values"
-      [2] "DLEweights must be an integer vector of minimum length 2, without missing values"     
+      [1] "DLEdose must be a finite numerical vector of the same length as 'binDLE', without missing values"
+      [2] "DLEweights must be an integer vector of the same length as 'binDLE', without missing values"     
 

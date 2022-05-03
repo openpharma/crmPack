@@ -306,11 +306,11 @@ v_model_logistic_indep_beta <- function(object) {
   )
   v$check(
     test_numeric(object@DLEdose, finite = TRUE, any.missing = FALSE, len = dle_len),
-    "DLEdose must be a finite numerical vector of minimum length 2, without missing values"
+    "DLEdose must be a finite numerical vector of the same length as 'binDLE', without missing values"
   )
   v$check(
     test_integer(object@DLEweights, any.missing = FALSE, len = dle_len),
-    "DLEweights must be an integer vector of minimum length 2, without missing values"
+    "DLEweights must be an integer vector of the same length as 'binDLE', without missing values"
   )
   v$check(
     test_number(object@phi1),
@@ -323,6 +323,99 @@ v_model_logistic_indep_beta <- function(object) {
   v$check(
     h_is_positive_definite(object@Pcov),
     "Pcov must be 2x2 positive-definite matrix without any missing values"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`Effloglog`] class slots are valid.
+v_model_eff_log_log <- function(object) {
+  rmin <- .Machine$double.xmin
+
+  v <- Validate()
+  v$check(
+    test_numeric(object@eff, finite = TRUE, any.missing = FALSE, min.len = 2),
+    "eff must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  eff_dose_ok <- test_numeric(
+    object@eff_dose,
+    lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)
+  )
+  v$check(
+    eff_dose_ok,
+    "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+  )
+  v$check(
+    test_flag(object@use_fixed),
+    "use_fixed must be a flag"
+  )
+  if (isTRUE(object@use_fixed)) {
+    v$check(
+      test_number(object@nu, lower = rmin, finite = TRUE),
+      "nu must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@nu is a vector with parameters for Gamma(a, b).
+    v$check(
+      h_test_named_numeric(object@nu, permutation.of = c("a", "b")),
+      "nu must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+  const_ok <- test_number(object@const, lower = 0)
+  v$check(const_ok, "const must be a non-negative number")
+  if (eff_dose_ok && const_ok) {
+    v$check(
+      min(object@data@doseGrid, object@eff_dose) > 1 - object@const,
+      "For log-log model, doses and const must be such that dose + const > 1"
+    )
+  }
+  v$check(
+    test_number(object@theta1),
+    "theta1 must be a numerical scalar"
+  )
+  v$check(
+    test_number(object@theta2),
+    "theta2 must be a numerical scalar"
+  )
+  nobs_no_dlt <- sum(!object@data@y)
+  if (nobs_no_dlt + length(object@eff) > 2) {
+    v$check(
+      h_is_positive_definite(object@Pcov),
+      "Pcov must be 2x2 positive-definite matrix without any missing values"
+    )
+  } else {
+    v$check(
+      test_matrix(object@Pcov, mode = "numeric", nrows = 2, ncols = 2) && all(is.na(object@Pcov)),
+      "Pcov must be 2x2 numeric matrix with all values missing if the length of combined data is 2"
+    )
+  }
+  v$check(
+    test_numeric(object@mu, finite = TRUE, len = 2),
+    "mu must be a finite numerical vector of length 2"
+  )
+  nrow_X <- ifelse(nobs_no_dlt > 0, nobs_no_dlt, length(object@eff_dose))
+  v$check(
+    test_matrix(object@X, mode = "numeric", nrows = nrow_X, ncols = 2, any.missing = FALSE),
+    paste(
+      "X must be a finite numerical matrix of size",
+      nrow_X,
+      "x 2, without any missing values"
+    )
+  )
+  v$check(
+    all(object@X[, 1] == 1),
+    "X must be a design matrix, i.e. first column must be of 1s"
+  )
+  v$check(
+    h_is_positive_definite(object@Q),
+    "Q must be 2x2 positive-definite matrix without any missing values"
+  )
+  v$check(
+    test_numeric(object@Y, finite = TRUE, any.missing = FALSE, len = nrow_X),
+    paste(
+      "Y must be a finite numerical vector of length",
+      nrow_X,
+      "and without any missing values"
+    )
   )
   v$result()
 }

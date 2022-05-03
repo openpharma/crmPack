@@ -59,14 +59,14 @@ vectors of at least length 2.
 \details{
 The pseudo data can be interpreted as if we obtain some observations
 before the trial starts. It can be used to express our prior, i.e. the
-initial beliefs for the model parameters. The pseudo data is expressed in the
-following way. First, fix at least two dose levels, then ask for experts'
+initial beliefs for the model parameters. The pseudo data is expressed in
+the following way. First, fix at least two dose levels, then ask for experts'
 opinion on how many subjects are to be treated at each of these dose levels
-and on the number of subjects observed with a DLE. At each dose level,
-the number of subjects observed with a DLE, divided by the total number of
+and on the number of subjects observed with a DLE. At each dose level, the
+number of subjects observed with a DLE, divided by the total number of
 subjects treated, is the probability of the occurrence of a DLE at that
-particular dose level. The probabilities of the occurrence of a DLE based on
-this pseudo data are independent and they follow Beta distributions.
+particular dose level. The probabilities of the occurrence of a DLE based
+on this pseudo data are independent and they follow Beta distributions.
 Therefore, the joint prior probability density function of all these
 probabilities can be obtained. Hence, by a change of variable, the joint
 prior probability density function of the two parameters in this model can
@@ -100,11 +100,11 @@ to display the resulting prior or posterior modal estimate of the slope
 obtained based on the pseudo data and (if any) the observed data/responses.}
 
 \item{\code{Pcov}}{(\code{matrix})\cr refers to the 2x2 covariance matrix of the intercept
-(\code{phi1}) and the slope parameters (\code{phi2}) of the model.
+(\eqn{phi1}) and the slope parameters (\eqn{phi2}) of the model.
 This is used in output to display the resulting prior and posterior
-covariance matrix of \code{phi1} and \code{phi2} obtained, based on the pseudo data
-and (if any) the observed data and responses. This slot is needed for
-internal purposes.}
+covariance matrix of \eqn{phi1} and \eqn{phi2} obtained, based on the
+pseudo data and (if any) the observed data and responses. This slot is
+needed for internal purposes.}
 }}
 
 \examples{
@@ -114,7 +114,7 @@ internal purposes.}
 # ranging from 25 to 300 mg with increments of 25 (i.e 25, 50, 75, ..., 300).
 emptydata <- Data(doseGrid = seq(25, 300, 25))
 
-# Fix two dose level 25 and 300 mg (DLEdose).
+# Fix two dose levels 25 and 300 mg (DLEdose).
 # Total number of subjects treated in each of these levels is 3, (DLEweights).
 # The number of subjects observed with a DLE is 1.05 at dose 25 mg and 1.8 at dose 300 mg (binDLE).
 my_model1 <- LogisticIndepBeta(

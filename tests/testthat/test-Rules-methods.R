@@ -331,12 +331,11 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 })
 
 test_that("NextBestInfTheory can be initiliazed ", {
-  # set up
-  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  expect_silent(NextBestInfTheory(target = 0.25, asymmetry = 0.1))
 })
 
 test_that("Helper function (h_info_theory_dist) for NextBestInfTheory is correct", {
-  # values calculated using a different program
+  # Values calculated using a different program.
   p <- c(0.01, 0.2, 0.7)
   gamma <- c(0.5, 0, 0.3)
   a <- c(1, 1.8, 0.5)
@@ -346,34 +345,49 @@ test_that("Helper function (h_info_theory_dist) for NextBestInfTheory is correct
 })
 
 test_that("NextBestInfTheory produces consistent results", {
-  #### Upload model and data ###
-  dose_grid <- seq(from = 40, to = 200, by = 10)
-  empty_data <- Data(doseGrid = doseGrid)
-  mcmc_options <- McmcOptions()
+  emptydata <- Data(doseGrid = seq(from = 40, to = 200, by = 10))
 
   sigma_0 <- 1.0278
   sigma_1 <- 1.65
   rho <- 0.5
-  cov <- matrix(c(sigma0^2,rho*sigma_0*sigma_1,
-              rho*sigma_0*sigma_1,sigma_1^2),
-            nrow=2, ncol=2)
-  model <- LogisticLogNormal(mean = c(-4.47, 0.0033),
-                           cov = cov)
-
-  increments <- IncrementsRelative(interval=0,increments=1)
-  cohort <- CohortSizeConst(size = 3)
+  cov <- matrix(
+    c(sigma0^2, rho * sigma0 * sigma1, rho * sigma0 * sigma1, sigma1^2),
+    nrow = 2
+  )
+  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
 
   stop_rule <- StoppingMinPatients(nPatients = 30)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
+  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
 
-  scenario <- function(dose, ED50, alpha1){
-   alpha0 <- qlogis(0.5)-alpha1*log(ED50)
-   model@prob(dose)}
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = new_my_next_best,
+    cohortSize = cohort,
+    data = emptydata,
+    startingDose = 40
+  )
 
-  ##### End of uploading  #####
-  newMyNextBest <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  design <- Design(model = model, stopping = stop_rule, increments = increments, nextBest = newMyNextBest, cohortSize = cohort, data = empty_data, startingDose = 40)
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
 
-  simulation <- simulate(design, nsim = 10, seed = 456, truth = scenario, args = list(ED50 = 175, alpha1 = 5),mcmcOptions = mcmc_options, parallel = F)
-  # produce summary
-  summary(simulation, truth = scenario, target = newMyNextBest@target, ED50 = 175, alpha1 = 5)
-  # check summary
+  expect_equal(
+    result@fitAtDoseMostSelected,
+    c(0.985602, 0.985602, 0.985602, 0.985602, 0.985602),
+    tolerance = 1e-07
+  )
+  expect_equal(result@propDLTs, rep(1L, 5))
+  expect_equal(result@meanToxRisk, rep(1L, 5))
+  expect_equal(result@doseSelected, rep(40, 5))
+  expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  expect_snapshot(result@meanFit)
+})

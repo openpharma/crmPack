@@ -1,20 +1,22 @@
+# nolint start
+
 ##Construct the DualResponsesSamplesDesign for simulations
-##The design comprises the DLE and efficacy models, the escalation rule, starting data, 
+##The design comprises the DLE and efficacy models, the escalation rule, starting data,
 ##a cohort size and a starting dose
-##Define your data set first using an empty data set 
+##Define your data set first using an empty data set
 ## with dose levels from 25 to 300 with increments 25
 data <- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
 
 ## First for the DLE model and DLE samples
-## The DLE model must be of 'ModelTox' 
-## (e.g 'LogisticIndepBeta') class and 
+## The DLE model must be of 'ModelTox'
+## (e.g 'LogisticIndepBeta') class and
 ## DLEsamples of 'Samples' class
 options<-McmcOptions(burnin=100,step=2,samples=200)
 DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),
                               DLEdose=c(25,300),data=data)
 DLEsamples<-mcmc(data,DLEmodel,options)
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class and the efficacy samples
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 Effsamples<-mcmc(data,Effmodel,options)
 ##The escalation rule using the 'NextBestMaxGainSamples' class
 mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
@@ -25,7 +27,7 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(Gstarsamples,prob=0.5)})
 
 
-##The increments (see Increments class examples) 
+##The increments (see Increments class examples)
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300
 myIncrements<-IncrementsRelative(intervals=c(25,300),
                                  increments=c(2,2))
@@ -43,4 +45,4 @@ design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      data=data,
                                      stopping=myStopping,
                                      increments=myIncrements)
-
+# nolint end

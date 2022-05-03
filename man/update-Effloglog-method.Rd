@@ -2,44 +2,48 @@
 % Please edit documentation in R/Model-methods.R
 \name{update,Effloglog-method}
 \alias{update,Effloglog-method}
-\title{Update method for the 'Effloglog' Model class. This is a method to update the modal
-estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu}
-(nu, the precision of the efficacy responses) when new data
-or new observations of responses are available and added in.}
+\alias{update-Effloglog}
+\title{Updating \code{Effloglog} Objects}
 \usage{
 \S4method{update}{Effloglog}(object, data, ...)
 }
 \arguments{
-\item{object}{the \code{\linkS4class{Effloglog}} class object}
+\item{object}{(\code{Effloglog})\cr object you want to update.}
 
-\item{data}{all currently available data or responses of \code{\linkS4class{DataDual}}
-class object}
+\item{data}{(\code{DataDual})\cr all currently available data or responses.}
 
-\item{\dots}{unused}
+\item{...}{not used.}
 }
 \value{
-the new \code{\linkS4class{Effloglog}} class object
+The new, updated \code{\link{Effloglog}} object.
 }
 \description{
-Update method for the 'Effloglog' Model class. This is a method to update the modal
-estimates of the model parameters \eqn{\theta_1} (theta1), \eqn{\theta_2} (theta2)  and \eqn{\nu}
-(nu, the precision of the efficacy responses) when new data
-or new observations of responses are available and added in.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A method that updates existing \code{\link{Effloglog}} object with new data.
 }
 \examples{
-##Update the 'Effloglog' model with new data
-## first define the data and the model
-emptydata<-DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
-data<-emptydata
+# Update the 'Effloglog' model with new data.
 
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+# First define the data and the model.
+emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
 
-##Then we have some new observations data
-data<-DataDual(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
-               w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-               doseGrid=seq(25,300,25))
+my_model <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = emptydata,
+  const = 0
+)
 
-##update the model to get new estimates
-newEffModel <- update(object=Effmodel,data=data)
+# Then we have some new observations data.
+my_data <- DataDual(
+  x = c(25, 50, 50, 75, 100, 100, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+  doseGrid = emptydata@doseGrid
+)
+
+# Update the model to get new estimates.
+new_model <- update(object = my_model, data = my_data)
 }
-\keyword{methods}
