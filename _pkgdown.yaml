@@ -61,6 +61,7 @@ reference:
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
       - IncrementsHSRBeta
+      - NextBestInfTheory
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
