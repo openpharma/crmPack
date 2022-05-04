@@ -57,12 +57,137 @@ myStopping1@name
 class(myStopping1)
 ```
 
-* Extract "hit" (TRUE) from stopping rules object 
-* Go step-by-step through all the objects affected by a simulation; need for adjustment?
+
 
 ## Unpack combined stopping rules
 
-In order to be general enough for all stopping rules, we also need to be able
-to process combined stopping rules (and / or combinations).
+Now, let's assume we have a combination of stopping rules. I'll go with class() for now so that I don't have to adjust all the stopping rule classes. How would we access all the names? 
 
-Clara will explain how that works in more detail (main effort)
+
+```{r}
+myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
+                                     prob=0.5)
+myStopping3 <- StoppingMinPatients(nPatients=20)
+
+myStopping_combined <- (myStopping1 & myStopping2) | myStopping3
+
+```
+
+```{r}
+k = 1
+max = 0
+number = list()
+names = list()
+ind = 1
+stopping_objects <- myStopping_combined@stopList
+
+
+
+for ( i in stopping_objects) {
+
+  t <- try(print(slot(i, name = "stopList")), silent = T)
+
+    if("try-error" %in% class(t)){   # only one rule
+
+
+    if ( max >= k){
+      number[ind] <- as.character(max+1)
+      #names [ind] <- slot(stopping_objects[[ind]], "name")
+      names [ind] <- class(stopping_objects[[ind]])
+      max <- max + 1
+    } else {
+    number[ind] <- as.character(k)
+    #names [ind] <- slot(stopping_objects[[ind]], "name")
+    names [ind] <- class(stopping_objects[[ind]])
+    }
+
+    k = k+1
+    ind = ind + 1
+  } else {
+
+    max = k + length(i@stopList) - 1
+   
+   number[ind] <- paste(k : max, collapse = " & ")
+   #names[ind] <- paste(sapply(stopping_objects[[ind]]@stopList, slot, "name"), collapse = " and ")
+   names[ind]  <- paste(sapply(stopping_objects[[ind]]@stopList, class), collapse = " and ")
+   ind = ind + 1
+   k = k + length(k:max)
+  }
+
+}
+
+names
+number
+
+```
+So, this is ho we can get the order and names of the stopping rules for reporting later on. To count the frequency we have to get the information per iteration fron the simulation object and adjust the summary function: 
+```{r}
+emptydata <- Data(doseGrid=
+                    c(0.1, 0.5, 1.5, 3, 6,
+                      seq(from=10, to=80, by=2)))
+
+
+data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+             y=c(0, 0, 0, 0, 0, 0, 1, 0),
+             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
+             doseGrid=
+             c(0.1, 0.5, 1.5, 3, 6,
+               seq(from=10, to=80, by=2)))
+
+model <- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov=matrix(c(1, -0.5, -0.5, 1),nrow=2),
+                           ref_dose=50)
+
+
+design <- Design(model=model,
+                 nextBest=myNextBest,
+                 stopping=myStopping_combined,
+                 increments=myIncrements,
+                 cohortSize=mySize,
+                 data=emptydata,
+                 startingDose=3)
+
+myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
+
+mySims <- simulate(design,
+                                       args=NULL,
+                                       truth=myTruth,
+                                       nsim=100,
+                                       seed=819,
+                                       mcmcOptions=options,
+                                       parallel=FALSE)
+
+
+length(mySims@stopReasons)
+
+```
+
+
+```{r}
+ stopReasonsUnique <- sapply(mySims@stopReasonsSum,colSums)
+ stopReasonsUniquePercent<- (rowSums(stopReasonsUnique)/length(stopReasonsUnique[1,]))*100
+              
+              ## %trials each stopping rule fired first based on the order of the stopping rule defined in the design
+              stopReasonsFirstHit<-apply(stopReasonsUnique,2,function(x){min(which(x == "1"))})
+              stopReasonsFirstHitFreq<-table(stopReasonsFirstHit)
+              
+              print(stopReasonsFirstHitFreq)
+              
+              if (dim(stopReasonsFirstHitFreq)<=length(object@stopReasonsSum[[1]])){
+                frame<-as.data.frame(stopReasonsFirstHitFreq)
+                framefull<-data.frame(stopReasonsFirstHit=1:length(object@stopReasonsSum[[1]]))
+                frame1 <- merge(x=framefull ,y= frame, by="stopReasonsFirstHit", all.x = TRUE)
+                frame1$Freq[is.na(frame1$Freq)] = 0
+                stopReasonsFirstHitFreq <- as.numeric(frame1$Freq)
+              }
+              
+              print(stopReasonsFirstHitFreq)
+              ## percentage of different values of the freq
+              stopReasonsFirstHitFreqPercent <- (stopReasonsFirstHitFreq/sum(stopReasonsFirstHitFreq))*100
+              
+```
+
+
+
+* Extract "hit" (TRUE) from stopping rules object 
+* Go step-by-step through all the objects affected by a simulation; need for adjustment?
