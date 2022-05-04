@@ -1,6 +1,8 @@
 ---
 title: "Design how to save atomic stopping rule results in simulations and report them"
-output: html_document
+output: 
+  html_document:
+    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
@@ -17,9 +19,42 @@ Additionally differentiate between first hit and "all other" (otherwise might ad
 
 * How to get the name of a stopping rule, i.e. get the class name (not really human friendly) or should we have a slot in stopping rule classes (would require manual adjustment of all stopping rule classes) - requires to be present in all classes otherwise will throw errors
 
-Code snippet
+For option one we would have to add a slot to the rule class, so that we can refer to the name slot later.
+```{r class.source = 'fold-hide', message = F, warning = F}
+devtools::load_all()
+.StoppingMinCohorts <-
+    setClass(Class="StoppingMinCohorts",
+             representation(nCohorts="integer",
+                            name = "character"),
+             prototype(nCohorts=3L, name = "minimum required number of cohorts"),
+             contains="Stopping",
+             validity=function(object){
+                 o <- Validate()
+
+                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
+                         "nCohorts must be positive scalar")
+
+                 o$result()
+             })
+#validObject(.StoppingMinCohorts())
+
+
+StoppingMinCohorts <- function(nCohorts, name)
+{
+    .StoppingMinCohorts(nCohorts=safeInteger(nCohorts))
+}
+
+```
+
+
+The two options we have to print the stopping rule name later: 
 ```{r}
 
+myStopping1 <- StoppingMinCohorts(nCohorts=3)
+
+myStopping1@name
+
+class(myStopping1)
 ```
 
 * Extract "hit" (TRUE) from stopping rules object 
