@@ -8,6 +8,9 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r, echo = F, message = F, warning = F}
+devtools::load_all()
+```
 
 ## Objective 
 
@@ -15,13 +18,13 @@ Currently there is no information returned about stopping rules / frequency duri
 We need to count instances in which a stopping rule is TRUE. In case we have combined (BOOLEAN logic) stopping rules we would like to summarize (concatenate) before outputting to the console.   
 Additionally differentiate between first hit and "all other" (otherwise might add up to more than 100 %).
 
-## Current implementation suggestion
+## Implementation suggestion
 
-* How to get the name of a stopping rule, i.e. get the class name (not really human friendly) or should we have a slot in stopping rule classes (would require manual adjustment of all stopping rule classes) - requires to be present in all classes otherwise will throw errors
+* How to get the name of a stopping rule, i.e. get the class name (might not be well readable) or should we have a slot in stopping rule classes (would require manual adjustment of all stopping rule classes) - requires to be present in all classes otherwise will throw errors
 
 For option one we would have to add a slot to the rule class, so that we can refer to the name slot later.
-```{r class.source = 'fold-hide', message = F, warning = F}
-devtools::load_all()
+```{r class.source = 'fold-hide',message = F, warning = F, results='hide'}
+
 .StoppingMinCohorts <-
     setClass(Class="StoppingMinCohorts",
              representation(nCohorts="integer",
@@ -59,7 +62,7 @@ class(myStopping1)
 
 
 
-## Unpack combined stopping rules
+### Unpack combined stopping rules
 
 Now, let's assume we have a combination of stopping rules. I'll go with class() for now so that I don't have to adjust all the stopping rule classes. How would we access all the names? 
 
@@ -73,6 +76,16 @@ myStopping_combined <- (myStopping1 & myStopping2) | myStopping3
 
 ```
 
+
+This is the current implementation, I have tested it with multiple combinations 
+ 
+* (Stopping_Rule1  | Stopping_Rule2 | Stopping_Rule3  | Stopping_Rule4  | Stopping_Rule5)
+* ((Stopping_Rule1  & Stopping_Rule2) | Stopping_Rule3  | Stopping_Rule4  | Stopping_Rule5)
+* Stopping_Rules_Combined3 <- (Stopping_Rule1  | Stopping_Rule2 | Stopping_Rule3  | (Stopping_Rule4  & Stopping_Rule5))
+* (Stopping_Rule1  | (Stopping_Rule2 & Stopping_Rule3  & Stopping_Rule4)  | Stopping_Rule5)
+* Stopping_Rules_Combined5 <- (Stopping_Rule1  |Stopping_Rule2) & (Stopping_Rule3  | Stopping_Rule4)
+
+and it worked fine for all of them. 
 ```{r}
 k = 1
 max = 0
@@ -85,7 +98,7 @@ stopping_objects <- myStopping_combined@stopList
 
 for ( i in stopping_objects) {
 
-  t <- try(print(slot(i, name = "stopList")), silent = T)
+  t <- try(slot(i, name = "stopList"), silent = T)
 
     if("try-error" %in% class(t)){   # only one rule
 
@@ -103,7 +116,7 @@ for ( i in stopping_objects) {
 
     k = k+1
     ind = ind + 1
-  } else {
+  } else { # multiple combined rules 
 
     max = k + length(i@stopList) - 1
    
@@ -120,74 +133,83 @@ names
 number
 
 ```
-So, this is ho we can get the order and names of the stopping rules for reporting later on. To count the frequency we have to get the information per iteration fron the simulation object and adjust the summary function: 
-```{r}
-emptydata <- Data(doseGrid=
-                    c(0.1, 0.5, 1.5, 3, 6,
-                      seq(from=10, to=80, by=2)))
 
+### Count number of hits across all iterations and calculate return measures
 
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-             c(0.1, 0.5, 1.5, 3, 6,
-               seq(from=10, to=80, by=2)))
+So, this is how we can get the order and names of the stopping rules for reporting later on. To count the frequency we have to get the information per iteration from the simulation method: 
 
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=matrix(c(1, -0.5, -0.5, 1),nrow=2),
-                           ref_dose=50)
-
-
-design <- Design(model=model,
-                 nextBest=myNextBest,
-                 stopping=myStopping_combined,
-                 increments=myIncrements,
-                 cohortSize=mySize,
-                 data=emptydata,
-                 startingDose=3)
-
-myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
-
-mySims <- simulate(design,
-                                       args=NULL,
-                                       truth=myTruth,
-                                       nsim=100,
-                                       seed=819,
-                                       mcmcOptions=options,
-                                       parallel=FALSE)
-
-
-length(mySims@stopReasons)
+```{r, eval = F}
+stopLength <-length(object@stopping@stopList)
+                stop_sum <- matrix(nrow=1,ncol=stopLength)
+                for (i in 1: stopLength){
+                  stop_sum[,i]<- stopTrial(stopping=object@stopping@stopList[[i]],
+                                           dose=thisDose,
+                                           samples=thisSamples,
+                                           model=object@model,
+                                           data=thisData)
+                  
+                }
 
 ```
+As a result we would get a matrix for each iteration that looks like this: 
 
 
 ```{r}
- stopReasonsUnique <- sapply(mySims@stopReasonsSum,colSums)
- stopReasonsUniquePercent<- (rowSums(stopReasonsUnique)/length(stopReasonsUnique[1,]))*100
+output_it1 <- matrix(nrow= 1, ncol = 2)
+output_it2 <- matrix(nrow= 1, ncol = 2)
+output_it3 <- matrix(nrow= 1, ncol = 2)
+output_it4 <- matrix(nrow= 1, ncol = 2)
+output_it1[1, ] <- c(TRUE, FALSE)
+output_it2[1, ] <- c(FALSE, TRUE)
+output_it3[1, ] <- c(TRUE, FALSE)
+output_it4[1, ] <- c(TRUE, TRUE)
+
+output <- list(output_it1, output_it2, output_it3, output_it4)
+output
+```
+
+Based on this we calculate the measure we're interested in: stopping reasons for all stopping rules and the first hit per iteration (that would happen in the summary method):
+```{r}
+stopReasonsUnique <- sapply(output,colSums)
+stopReasonsUnique
+stopReasonsUniquePercent<- (rowSums(stopReasonsUnique)/length(stopReasonsUnique[1,]))*100
+stopReasonsUniquePercent
               
-              ## %trials each stopping rule fired first based on the order of the stopping rule defined in the design
-              stopReasonsFirstHit<-apply(stopReasonsUnique,2,function(x){min(which(x == "1"))})
-              stopReasonsFirstHitFreq<-table(stopReasonsFirstHit)
+
+## %trials each stopping rule fired first based on the order of the stopping rule defined in the design
+stopReasonsFirstHit<-apply(stopReasonsUnique,2,function(x){min(which(x == "1"))})
+stopReasonsFirstHitFreq<-table(stopReasonsFirstHit)
+
+stopReasonsFirstHit              
+stopReasonsFirstHitFreq              
               
-              print(stopReasonsFirstHitFreq)
-              
-              if (dim(stopReasonsFirstHitFreq)<=length(object@stopReasonsSum[[1]])){
-                frame<-as.data.frame(stopReasonsFirstHitFreq)
-                framefull<-data.frame(stopReasonsFirstHit=1:length(object@stopReasonsSum[[1]]))
-                frame1 <- merge(x=framefull ,y= frame, by="stopReasonsFirstHit", all.x = TRUE)
-                frame1$Freq[is.na(frame1$Freq)] = 0
-                stopReasonsFirstHitFreq <- as.numeric(frame1$Freq)
+if (dim(stopReasonsFirstHitFreq)<=length(output[[1]])){
+          frame<-as.data.frame(stopReasonsFirstHitFreq)
+          framefull<-data.frame(stopReasonsFirstHit=1:length(output[[1]]))
+          frame1 <- merge(x=framefull ,y= frame, by="stopReasonsFirstHit", all.x = TRUE)
+          frame1$Freq[is.na(frame1$Freq)] = 0
+          stopReasonsFirstHitFreq <- as.numeric(frame1$Freq)
               }
               
-              print(stopReasonsFirstHitFreq)
-              ## percentage of different values of the freq
-              stopReasonsFirstHitFreqPercent <- (stopReasonsFirstHitFreq/sum(stopReasonsFirstHitFreq))*100
-              
+## percentage of different values of the freq
+stopReasonsFirstHitFreqPercent <- (stopReasonsFirstHitFreq/sum(stopReasonsFirstHitFreq))*100
+stopReasonsFirstHitFreqPercent              
 ```
 
+If we put everything together, the output can then for example look like this: 
+
+>>Stops (individual) for reason 1 & 2 StoppingMinCohorts and StoppingTargetProb : 75 %  
+>>Stops (individual) for reason 3 StoppingMinPatients : 50 %  
+
+>>Stops (first hit) for reason 1 & 2 SStoppingMinCohorts and StoppingTargetProb : 75 %  
+>>Stops (first hit) for reason 3 StoppingMinPatients : 25 %  
 
 
-* Extract "hit" (TRUE) from stopping rules object 
-* Go step-by-step through all the objects affected by a simulation; need for adjustment?
+
+### Class and Method functions affected 
+
+* method "simulate"
+* class "Simulations"
+* class "Summary"
+* method "summary
+* method "show"
