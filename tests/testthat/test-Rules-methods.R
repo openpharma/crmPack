@@ -427,4 +427,4 @@ test_that("NextBestInfTheory produces consistent results with a single dataset",
     mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
   )
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
-}
+})
