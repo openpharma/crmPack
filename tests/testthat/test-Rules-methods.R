@@ -391,3 +391,40 @@ test_that("NextBestInfTheory produces consistent results", {
   expect_equal(result@toxAtDosesSelected, rep(1L, 5))
   expect_snapshot(result@meanFit)
 })
+
+test_that("NextBestInfTheory produces consistent results with a single dataset", {
+  emptydata <- Data(doseGrid = 40)
+
+  sigma_0 <- 1.0278
+  sigma_1 <- 1.65
+  rho <- 0.5
+  cov <- matrix(
+    c(sigma0^2, rho * sigma0 * sigma1, rho * sigma0 * sigma1, sigma1^2),
+    nrow = 2
+  )
+  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
+
+  stop_rule <- StoppingMinPatients(nPatients = 30)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
+  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = new_my_next_best,
+    cohortSize = cohort,
+    data = emptydata,
+    startingDose = 40
+  )
+
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  )
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+}
