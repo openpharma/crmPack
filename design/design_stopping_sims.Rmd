@@ -14,13 +14,30 @@ devtools::load_all()
 
 ## Objective 
 
-Currently there is no information returned about stopping rules / frequency during scenario simulation. We would like to add a counting feature and a reporting feature for individual and complex / combined stopping rules. 
-We need to count instances in which a stopping rule is TRUE. In case we have combined (BOOLEAN logic) stopping rules we would like to summarize (concatenate) before outputting to the console.   
-Additionally differentiate between first hit and "all other" (otherwise might add up to more than 100 %).
+Currently there is no information (summarries i.e. counts and percentages) reported for stopping rules used as part of the study design, 
+and triggered during scenario simulations. 
 
+We would like to add a feature that counts the instnaces a stopping rule is triggered during simulation.
+This feature would ideally work for a user defined stopping rule that would consist of either a single crm-Pack stoping rule class 
+for example 
+    # Total sample size for next dose is already >= 9.
+      Stopping_Rule5 <- StoppingPatientsNearDose(nPatients = 9,percentage = 0)
+or a combination (BOOLEAN logic) of mulptiple single crm-Pack stoping rule classes. 
+
+Additionally we would like to report :
+- How many times each individual stopping rule is triggered during the simulation (add up to more than 100 %).
+- Assuming the stopping rules used for the study simulation follow a pre-defined order of importance and assuming that multple stopping rules can be trigered at the
+   end of each simulation for example: 
+     Stopping_Rules_Combined <- (Stopping_Rule1 | Stopping_Rule2 | Stopping_Rule3  | Stopping_Rule4  | Stopping_Rule5)
+   only the most import of those trigered is coutned in each simulation run (add to 100 %).
+   
 ## Implementation suggestion
 
-* How to get the name of a stopping rule, i.e. get the class name (might not be well readable) or should we have a slot in stopping rule classes (would require manual adjustment of all stopping rule classes) - requires to be present in all classes otherwise will throw errors
+# A. stopping rule naming for reporting
+  How to get the name of a stopping rule?
+  1. get the class name (might not be well readable)
+  2. should we have a slot in stopping rule classes (would require manual adjustment of all stopping rule classes) - 
+      requires to be present in all classes otherwise will throw errors.
 
 For option one we would have to add a slot to the rule class, so that we can refer to the name slot later.
 ```{r class.source = 'fold-hide',message = F, warning = F, results='hide'}
@@ -60,12 +77,9 @@ myStopping1@name
 class(myStopping1)
 ```
 
-
-
-### Unpack combined stopping rules
+# B. Unpack combined stopping rules
 
 Now, let's assume we have a combination of stopping rules. I'll go with class() for now so that I don't have to adjust all the stopping rule classes. How would we access all the names? 
-
 
 ```{r}
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
@@ -134,7 +148,7 @@ number
 
 ```
 
-### Count number of hits across all iterations and calculate return measures
+# C. Count number of hits across all iterations and calculate return measures
 
 So, this is how we can get the order and names of the stopping rules for reporting later on. To count the frequency we have to get the information per iteration from the simulation method: 
 
@@ -206,7 +220,7 @@ If we put everything together, the output can then for example look like this:
 
 
 
-### Class and Method functions affected 
+## Class and Method functions affected 
 
 * method "simulate"
 * class "Simulations"
