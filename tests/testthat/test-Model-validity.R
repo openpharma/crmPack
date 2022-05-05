@@ -809,3 +809,191 @@ test_that("v_model_eff_log_log returns message for wrong Q", {
   object@Q <- matrix(c(5, 2, 3, 2, 3, 2, 3, 2, 5), ncol = 3)
   expect_equal(v_model_eff_log_log(object), err_msg)
 })
+
+# v_model_eff_flexi ----
+
+test_that("v_model_eff_flexi passes for valid object", {
+  object_edat <- h_get_eff_flexi(emptydata = TRUE)
+  object <- h_get_eff_flexi(emptydata = FALSE)
+
+  expect_true(v_model_eff_flexi(object_edat))
+  expect_true(v_model_eff_flexi(object))
+})
+
+test_that("v_model_eff_flexi returns message for wrong eff and eff_dose parameters (NAs)", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for eff, eff_dose (no NA allowed, min len 2).
+  object@eff <- c(2, NA)
+  object@eff_dose <- c(3, NA)
+  expect_equal(
+    v_model_eff_flexi(object),
+    c(
+      "eff must be a finite numerical vector of minimum length 2, without missing values",
+      "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+    )
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong eff and eff_dose parameters (scalars)", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for eff, eff_dose.
+  object@eff <- 2
+  object@eff_dose <- 3
+  expect_equal(
+    v_model_eff_flexi(object),
+    "eff must be a finite numerical vector of minimum length 2, without missing values"
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong eff and eff_dose parameters (diff lengths)", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for eff, eff_dose.
+  object@eff <- c(20, 50)
+  object@eff_dose <- c(4, 6, 7)
+  expect_equal(
+    v_model_eff_flexi(object),
+    "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong use_fixed", {
+  object <- h_get_eff_flexi()
+  # Assigning non-valid use_fixed.
+  object@use_fixed <- TRUE
+
+  expect_equal(
+    v_model_eff_flexi(object),
+    c(
+      "use_fixed must be a named logical vector that contains name 'sigma2W'",
+      "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
+    )
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong fixed sigma2W", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for sigma2W.
+  object@sigma2W <- c(-5:0, Inf)
+  object@use_fixed <- TRUE
+  expect_snapshot(v_model_eff_flexi(object))
+})
+
+test_that("v_model_eff_flexi returns message for wrong sigma2W", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for sigma2W.
+  object@sigma2W <- c(4, -5, b = -Inf)
+  expect_equal(
+    v_model_eff_flexi(object),
+    "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong fixed sigma2betaW", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for sigma2betaW.
+  object@sigma2betaW <- c(-5:0, Inf)
+  object@use_fixed <- TRUE
+  expect_snapshot(v_model_eff_flexi(object))
+})
+
+test_that("v_model_eff_flexi returns message for wrong sigma2betaW", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for sigma2betaW.
+  object@sigma2betaW <- c(4, -5, b = -Inf)
+  expect_equal(
+    v_model_eff_flexi(object),
+    "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong rw1", {
+  object <- h_get_eff_flexi()
+  # Assigning non-valid rw1.
+  object@rw1 <- c(TRUE, FALSE)
+  expect_equal(
+    v_model_eff_flexi(object),
+    c("rw1 must be a flag", "RW_rank must be an integer equal to data@nGrid - 2L")
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong ncol of X (empty data)", {
+  object <- h_get_eff_flexi(emptydata = TRUE)
+  # Assigning wrong values for X (wrong ncol).
+  object@X <- matrix(c(1, 1, 1, 0, 0, 1), ncol = 2)
+  expect_equal(
+    v_model_eff_flexi(object),
+    "X must be an integer matrix with 12 columns and without any missing values"
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong X (empty data)", {
+  object <- h_get_eff_flexi(emptydata = TRUE)
+  # Assigning wrong values for X (wrong values and ncol).
+  object@X <- matrix(c(1, 1, 1, 27, 302, 27), ncol = 2)
+  expect_equal(
+    v_model_eff_flexi(object),
+    c(
+      "X must be an integer matrix with 12 columns and without any missing values",
+      "X must be a matrix with 0-1 values only"
+    )
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong ncol of X", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for X (wrong ncol).
+  object@X <- matrix(c(1, 1, 1, 0, 0, 1), ncol = 2)
+  expect_equal(
+    v_model_eff_flexi(object),
+    "X must be an integer matrix with 12 columns and without any missing values"
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong X", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for X (wrong values and ncol).
+  object@X <- matrix(c(1, 1, 1, 27, 302, 27), ncol = 2)
+  expect_equal(
+    v_model_eff_flexi(object),
+    c(
+      "X must be an integer matrix with 12 columns and without any missing values",
+      "X must be a matrix with 0-1 values only"
+    )
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong RW", {
+  object <- h_get_eff_flexi()
+  # Assigning wrong values for X (wrong dimension and va).
+  object@RW <- matrix(c(1, 1, 1, 27, 302, 27), ncol = 2)
+  expect_equal(
+    v_model_eff_flexi(object),
+    c(
+      "RW must be 12x12 matrix without any missing values"
+    )
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong RW (RW2)", {
+  object <- h_get_eff_flexi(rw1 = FALSE)
+  # Assigning wrong values for RW (wrong dimension).
+  object@RW <- matrix(c(1, 1, 1, 27, 302, 27), ncol = 2)
+  expect_equal(
+    v_model_eff_flexi(object),
+    c(
+      "RW must be 12x12 matrix without any missing values"
+    )
+  )
+})
+
+test_that("v_model_eff_flexi returns message for wrong RW_rank", {
+  object <- h_get_eff_flexi()
+  err_msg <- "RW_rank must be an integer equal to data@nGrid - 2L"
+
+  # Assigning wrong RW_rank.
+  object@RW_rank <- c(5L, 6L)
+  expect_equal(v_model_eff_flexi(object), err_msg)
+
+  object@RW_rank <- 5L
+  expect_equal(v_model_eff_flexi(object), err_msg)
+})
