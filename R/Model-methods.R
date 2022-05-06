@@ -1528,14 +1528,14 @@ setMethod("update",
                      ...){
               ##Get Pseudo Eff responses (prior) of the model
 
-              PseudoEff<-object@Eff
+              PseudoEff<-object@eff
 
               ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoEffdose<- object@Effdose
+              PseudoEffdose<- object@eff_dose
 
               ## Get the initial values of parameters for Sigma2 (if it is not fixed)
-              ##OR get the fixed value of sigma2
-              PseudoSigma2<- object@sigma2
+              ##OR get the fixed value of sigma2W
+              PseudoSigma2<- object@sigma2W
 
 
               ## Get the initial values of parameters for Sigma2betaW (if it is not fixed)
@@ -1543,7 +1543,7 @@ setMethod("update",
               PseudoSigma2betaW<- object@sigma2betaW
 
               ##update the model estimates with data
-              model<- EffFlexi(Eff=PseudoEff,Effdose=PseudoEffdose,sigma2=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
+              model<- EffFlexi(eff=PseudoEff,eff_dose=PseudoEffdose,sigma2W=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
 
               ##return the updated model
               return(model)

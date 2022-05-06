@@ -5,11 +5,11 @@
 my_data <- DataDual(doseGrid = seq(25, 300, 25))
 
 my_model <- EffFlexi(
-  Eff = c(1.223, 2.513),
-  Effdose = c(25, 300),
-  sigma2 = c(a = 0.1, b = 0.1),
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
   sigma2betaW = c(a = 20, b = 50),
-  smooth = "RW2",
+  rw1 = FALSE,
   data = my_data
 )
 

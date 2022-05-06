@@ -123,7 +123,7 @@ v_model_logistic_normal_fixed_mix <- function(object) {
     "components must have same length as weights"
   )
   v$check(
-    test_numeric(object@weights, lower = 0 + .Machine$double.xmin, finite = TRUE, any.missing = FALSE),
+    test_numeric(object@weights, lower = .Machine$double.xmin, finite = TRUE, any.missing = FALSE),
     "weights must be positive"
   )
   v$check(
@@ -169,7 +169,7 @@ v_model_dual_endpoint <- function(object) {
 
   if (isTRUE(uf_sigma2W)) {
     v$check(
-      test_number(object@sigma2W, lower = 0 + rmin, finite = TRUE),
+      test_number(object@sigma2W, lower = rmin, finite = TRUE),
       "sigma2W must be a positive and finite numerical scalar"
     )
   } else {
@@ -206,7 +206,7 @@ v_model_dual_endpoint_rw <- function(object) {
   )
   if (isTRUE(uf_sigma2W)) {
     v$check(
-      test_number(object@sigma2betaW, lower = 0 + .Machine$double.xmin, finite = TRUE),
+      test_number(object@sigma2betaW, lower = .Machine$double.xmin, finite = TRUE),
       "sigma2betaW must be a positive and finite numerical scalar"
     )
   } else {
@@ -234,7 +234,7 @@ v_model_dual_endpoint_beta <- function(object) {
     if (isTRUE(uf)) {
       if (s %in% c("delta1", "mode")) {
         v$check(
-          test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+          test_number(slot(object, s), lower = rmin, finite = TRUE),
           paste(s, "must be a positive and finite numerical scalar")
         )
       }
@@ -272,7 +272,7 @@ v_model_dual_endpoint_emax <- function(object) {
     )
     if (isTRUE(uf)) {
       v$check(
-        test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+        test_number(slot(object, s), lower = rmin, finite = TRUE),
         paste(s, "must be a positive and finite numerical scalar")
       )
     } else {
@@ -416,6 +416,82 @@ v_model_eff_log_log <- function(object) {
       nrow_X,
       "and without any missing values"
     )
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`EffFlexi`] class slots are valid.
+v_model_eff_flexi <- function(object) {
+  rmin <- .Machine$double.xmin
+
+  v <- Validate()
+  v$check(
+    test_numeric(object@eff, finite = TRUE, any.missing = FALSE, min.len = 2),
+    "eff must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_numeric(
+      object@eff_dose,
+      lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)
+    ),
+    "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+  )
+
+  uf_sigma2W <- object@use_fixed["sigma2W"]
+  v$check(
+    test_flag(uf_sigma2W),
+    "use_fixed must be a named logical vector that contains name 'sigma2W'"
+  )
+  uf_sigma2betaW <- object@use_fixed["sigma2betaW"]
+  v$check(
+    test_flag(uf_sigma2betaW),
+    "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
+  )
+
+  if (isTRUE(uf_sigma2W)) {
+    v$check(
+      test_number(object@sigma2W, lower = rmin, finite = TRUE),
+      "sigma2W must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2W is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2W, permutation.of = c("a", "b")),
+      "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+  if (isTRUE(uf_sigma2betaW)) {
+    v$check(
+      test_number(object@sigma2betaW, lower = rmin, finite = TRUE),
+      "sigma2betaW must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2betaW is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2betaW, permutation.of = c("a", "b")),
+      "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+
+  v$check(
+    test_flag(object@rw1),
+    "rw1 must be a flag"
+  )
+  v$check(
+    test_matrix(object@X, mode = "integer", ncols = object@data@nGrid, any.missing = FALSE),
+    paste("X must be an integer matrix with", object@data@nGrid, "columns and without any missing values")
+  )
+  v$check(
+    all(object@X == 0L | object@X == 1L),
+    "X must be a matrix with 0-1 values only"
+  )
+  v$check(
+    test_matrix(object@RW, nrows = object@data@nGrid, ncols = object@data@nGrid, any.missing = FALSE),
+    paste0("RW must be ", object@data@nGrid, "x", object@data@nGrid, " matrix without any missing values")
+  )
+  v$check(
+    test_int(object@RW_rank) && (object@RW_rank == (object@data@nGrid - ifelse(isTRUE(object@rw1), 1L, 2L))),
+    "RW_rank must be an integer equal to data@nGrid - 2L"
   )
   v$result()
 }

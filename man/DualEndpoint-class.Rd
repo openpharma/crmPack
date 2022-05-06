@@ -91,9 +91,9 @@ Inverse-Gamma distribution parameters, i.e. vector with two elements named
 for the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is
 in \verb{(0, 1)}. For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
 
-\item{\code{use_fixed}}{rho (\code{logical})\cr indicates whether a fixed value for
-\code{sigma2W} and \code{rho} (for each parameter separately) is used or not. This
-slot is needed for internal purposes and must not be touched by the user.}
+\item{\code{use_fixed}}{(\code{logical})\cr indicates whether a fixed value for \code{sigma2W}
+or \code{rho} (for each parameter separately) is used or not. This slot is
+needed for internal purposes and must not be touched by the user.}
 }}
 
 \seealso{

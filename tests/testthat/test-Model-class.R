@@ -593,3 +593,61 @@ test_that("MCMC computes correct values for Effloglog model", {
   result <- mcmc(data = model@data, model = model, options = options)
   expect_snapshot(result@data)
 })
+
+# EffFlexi ----
+
+## constructor ----
+
+test_that("EffFlexi object can be created with user constructor (empty data)", {
+  result <- expect_silent(h_get_eff_flexi(emptydata = TRUE))
+  expect_valid(result, "EffFlexi")
+})
+
+test_that("EffFlexi object can be created with user constructor (empty data, RW2)", {
+  result <- expect_silent(h_get_eff_flexi(emptydata = TRUE, rw1 = FALSE))
+  expect_valid(result, "EffFlexi")
+})
+
+test_that("EffFlexi object can be created with user constructor", {
+  result <- expect_silent(h_get_eff_flexi())
+  expect_valid(result, "EffFlexi")
+})
+
+test_that("EffFlexi object can be created with user constructor (RW2)", {
+  result <- expect_silent(h_get_eff_flexi(rw1 = FALSE))
+  expect_valid(result, "EffFlexi")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for EffFlexi model (empty data)", {
+  model <- h_get_eff_flexi(emptydata = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for EffFlexi model (empty data, RW2)", {
+  model <- h_get_eff_flexi(emptydata = TRUE, rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for EffFlexi model", {
+  model <- h_get_eff_flexi()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for EffFlexi model (RW2)", {
+  model <- h_get_eff_flexi(rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = model@data, model = model, options = options)
+  expect_snapshot(result@data)
+})

@@ -1844,9 +1844,14 @@ This flexible form can be specified by using the \texttt{EffFlexi} class object.
 class is inheriting from the \texttt{ModelEff} class and its prior is also specified with pseudo data:
 
 <<modelEffFlexi>>=
-Effmodel2<- EffFlexi(Eff=c(1.223, 2.513),
-                    Effdose=c(25,300),sigma2=c(a=0.1,b=0.1),
-                    sigma2betaW=c(a=20,b=50),smooth="RW2",data=data2)
+Effmodel2 <- EffFlexi(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = data2
+)
 @
 
 Here, similarly to above, we also fixed two dose levels 25 and 300 mg and supplied the prior expected efficacy responses 1.223 and 2.513. The variance of the efficacy responses $\sigma^2$ under this model can be specified with a single positive scalar value or two positive scalar values for the shape $a$ and the scale $b$ parameters of the inverse gamma distribution in the slot \texttt{sigma2}. In here, we specified the variance of the efficacy responses with the inverse gamma distribution with shape parameter $a=0.1$ and scale parameter $b=0.1$. Then, the variance of the random walk model $\sigma^2_{\beta_W}$ can also be specified either with a single positive scalar or two positive scalar for the parameters of the inverse gamma distribution in the slot \texttt{sigma2betaW}. In here, we specified the variance of the random walk model with the inverse gamma distribution with shape parameter $a=20$ and scale parameter $b=50$. In addition, we can also specify how we would like to smooth the mean efficacy response function. Either the first order (with \texttt{RW1}) or the second order (with \texttt{RW2}) random walk model can be used to describe the relationship between the neighbouring mean efficacy responses and is specified in the the slot \texttt{smooth}. As seen in our example, \texttt{RW2}, the second order random walk model is used. Finally, we also have to specify the data set in \texttt{data} to be used for the model which is \texttt{data2} in this example.
@@ -1886,7 +1891,7 @@ The posterior modal estimates of $\theta_1$ and $\theta_2$ and the updated value
 Similarly we can update with new data for the \texttt{EffFlexi} class model:
 <<update-Effmodel2>>=
 newEffmodel2 <- update(object=Effmodel2,data=data4)
-newEffmodel2@RWmat
+newEffmodel2@RW
 @
 % such that the updated random walk difference matrix can be obtained.
 

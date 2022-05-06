@@ -113,3 +113,21 @@
       [1] "DLEdose must be a finite numerical vector of the same length as 'binDLE', without missing values"
       [2] "DLEweights must be an integer vector of the same length as 'binDLE', without missing values"     
 
+# v_model_eff_flexi returns message for wrong fixed sigma2W
+
+    Code
+      v_model_eff_flexi(object)
+    Output
+      [1] "use_fixed must be a named logical vector that contains name 'sigma2W'"                                
+      [2] "use_fixed must be a named logical vector that contains name 'sigma2betaW'"                            
+      [3] "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+
+# v_model_eff_flexi returns message for wrong fixed sigma2betaW
+
+    Code
+      v_model_eff_flexi(object)
+    Output
+      [1] "use_fixed must be a named logical vector that contains name 'sigma2W'"                                    
+      [2] "use_fixed must be a named logical vector that contains name 'sigma2betaW'"                                
+      [3] "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+
