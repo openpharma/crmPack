@@ -783,6 +783,8 @@ LogisticNormalMixture <- function(comp1,
                                   comp2,
                                   weightpar,
                                   ref_dose) {
+  assert_number(ref_dose)
+
   .LogisticNormalMixture(
     comp1 = comp1,
     comp2 = comp2,
@@ -913,6 +915,10 @@ LogisticNormalFixedMixture <- function(components,
                                        weights,
                                        ref_dose,
                                        log_normal = FALSE) {
+  assert_numeric(weights)
+  assert_number(ref_dose)
+  assert_flag(log_normal)
+
   # Normalize weights to sum to 1.
   weights <- weights / sum(weights)
 
@@ -1021,6 +1027,8 @@ LogisticLogNormalMixture <- function(mean,
                                      cov,
                                      ref_dose,
                                      share_weight) {
+  assert_number(ref_dose)
+
   params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormalMixture(
     params = params,
@@ -1185,6 +1193,10 @@ DualEndpoint <- function(mean,
                          use_log_dose = FALSE,
                          sigma2W,
                          rho) {
+  assert_number(ref_dose)
+  assert_numeric(sigma2W, min.len = 1, max.len = 2)
+  assert_numeric(rho, min.len = 1, max.len = 2)
+
   use_fixed <- c(sigma2W = is.scalar(sigma2W), rho = is.scalar(rho))
   betaZ_params <- ModelParamsNormal(mean, cov)
 
@@ -1339,6 +1351,9 @@ DualEndpoint <- function(mean,
 DualEndpointRW <- function(sigma2betaW,
                            rw1 = TRUE,
                            ...) {
+  assert_numeric(sigma2betaW, min.len = 1, max.len = 2)
+  assert_flag(rw1)
+
   start <- DualEndpoint(...)
   start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
 
@@ -1485,6 +1500,12 @@ DualEndpointBeta <- function(E0,
                              mode,
                              ref_dose_beta = 1,
                              ...) {
+  assert_numeric(E0, min.len = 1, max.len = 2)
+  assert_numeric(Emax, min.len = 1, max.len = 2)
+  assert_numeric(delta1, min.len = 1, max.len = 2)
+  assert_numeric(mode, min.len = 1, max.len = 2)
+  assert_number(ref_dose_beta)
+
   start <- DualEndpoint(...)
 
   start@sample <- c(start@sample, "betaW")
@@ -1636,6 +1657,11 @@ DualEndpointEmax <- function(E0,
                              ED50,
                              ref_dose_emax = 1,
                              ...) {
+  assert_numeric(E0, min.len = 1, max.len = 2)
+  assert_numeric(Emax, min.len = 1, max.len = 2)
+  assert_numeric(ED50, min.len = 1, max.len = 2)
+  assert_number(ref_dose_emax)
+
   start <- DualEndpoint(...)
 
   start@sample <- c(start@sample, "betaW")
@@ -1911,6 +1937,10 @@ LogisticIndepBeta <- function(binDLE,
                               DLEdose,
                               DLEweights,
                               data) {
+  assert_numeric(binDLE)
+  assert_numeric(DLEdose)
+  assert_numeric(DLEweights)
+  assert_class(data, "Data")
 
   # Combine pseudo and observed data. It can also happen that data@nObs == 0.
   y <- c(binDLE, data@y)
@@ -2101,6 +2131,7 @@ Effloglog <- function(eff,
   assert_numeric(eff)
   assert_numeric(eff_dose, len = length(eff))
   assert_numeric(nu, min.len = 1, max.len = 2)
+  assert_class(data, "Data")
   assert_number(const, finite = TRUE)
 
   use_fixed <- length(nu) == 1L
@@ -2287,7 +2318,10 @@ EffFlexi <- function(eff,
                      data) {
   assert_numeric(eff)
   assert_numeric(eff_dose)
+  assert_numeric(sigma2W, min.len = 1, max.len = 2)
+  assert_numeric(sigma2betaW, min.len = 1, max.len = 2)
   assert_flag(rw1)
+  assert_class(data, "DataDual")
 
   use_fixed <- c(sigma2W = is.scalar(sigma2W), sigma2betaW = is.scalar(sigma2betaW))
 
