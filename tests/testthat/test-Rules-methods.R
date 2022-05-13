@@ -351,7 +351,7 @@ test_that("NextBestInfTheory produces consistent results", {
   sigma_1 <- 1.65
   rho <- 0.5
   cov <- matrix(
-    c(sigma0^2, rho * sigma0 * sigma1, rho * sigma0 * sigma1, sigma1^2),
+    c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
     nrow = 2
   )
   model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
@@ -399,7 +399,7 @@ test_that("NextBestInfTheory produces consistent results with a single dataset",
   sigma_1 <- 1.65
   rho <- 0.5
   cov <- matrix(
-    c(sigma0^2, rho * sigma0 * sigma1, rho * sigma0 * sigma1, sigma1^2),
+    c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
     nrow = 2
   )
   model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
