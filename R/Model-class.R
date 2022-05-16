@@ -284,7 +284,8 @@ LogisticNormal <- function(mean, cov, ref_dose = 1) {
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
 #' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`], [`LogisticLogNormalMixture`]
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`], [`LogisticLogNormalMixture`],
+#'   [`DALogisticLogNormal`].
 #'
 #' @aliases LogisticLogNormal
 #' @export
@@ -2357,216 +2358,162 @@ EffFlexi <- function(eff,
   )
 }
 
-# nolint start
-
 # DALogisticLogNormal ----
 
-##' Logistic model with bivariate (log) normal prior and data augmentation
-##'
-##' This is a modified data augmented CRM with logistic regression model using
-##' a bivariate normal prior on the intercept and log slope parameters.
-##' This class inherits from the normal logistic model class.
-##'
-##' We still need to include here formula for the lambda prior.
-##'
-##' @slot npiece the number of pieces in the `PEM`
-##' @slot l a vector used in the lambda prior
-##' @slot C_par a parameter used in the lambda prior,
-##' according to Liu's paper, `C_par=2` is recommended.
-##' @slot conditionalPEM is a conditional piecewise-exponential model used?
-##' (default) Otherwise an unconditional model is used.
-##'
-##' @example examples/Model-class-DALogisticLogNormal.R
-##' @export
-##' @keywords classes
-.DALogisticLogNormal <-
-  setClass(Class="DALogisticLogNormal",
-           representation(npiece="numeric",
-                          l="numeric",
-                          C_par="numeric",
-                          conditionalPEM="logical"),
-           prototype(npiece=3,
-                     l=0.5,
-                     C_par=2, #according to Liu's paper, C_par=2 is recommended
-                     conditionalPEM=TRUE),
-           contains="LogisticLogNormal",
-           validity=
-             function(object){
-               o <-  Validate()
+## class ----
 
-               o$check(all(object@l >= 0),
-                       "l, prior parameter of lambda must be positive scalar")
+#' `DALogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DALogisticLogNormal`] is the class for the logistic model with bivariate
+#' (log) normal prior and data augmentation. This class inherits from the
+#' [`LogisticLogNormal`] class.
+#'
+#' @note We still need to include here formula for the lambda prior.
+#'
+#' @slot npiece (`number`)\cr the number of pieces in the `PEM`.
+#' @slot l (`numeric`)\cr a vector used in the lambda prior.
+#' @slot c_par (`numeric`)\cr a parameter used in the lambda prior; according to
+#'   Liu's paper, `c_par = 2` is recommended.
+#' @slot cond_pem (`flag`)\cr is a conditional piecewise-exponential model used?
+#'   (default). Otherwise an unconditional model is used.
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`].
+#'
+#' @aliases DALogisticLogNormal
+#' @export
+#'
+.DALogisticLogNormal <- setClass(
+  Class = "DALogisticLogNormal",
+  slots = c(
+    npiece = "integer",
+    l = "numeric",
+    c_par = "numeric",
+    cond_pem = "logical"
+  ),
+  prototype = prototype(
+    npiece = 3L,
+    l = 0.5,
+    c_par = 2,
+    cond_pem = TRUE
+  ),
+  contains = "LogisticLogNormal",
+  validity = v_model_da_logistic_log_normal
+)
 
-               ## need to check C_par here.
-
-               o$check(is.scalar(object@conditionalPEM))
-
-               o$result()
-             })
-
-
-##' Initialization function for the `DALogisticLogNormal` class
-##'
-##' @param npiece see \code{\linkS4class{DALogisticLogNormal}}
-##' @param l see \code{\linkS4class{DALogisticLogNormal}}
-##' @param C_par see \code{\linkS4class{DALogisticLogNormal}}
-##' @param conditionalPEM see \code{\linkS4class{DALogisticLogNormal}}
-##' @param \dots additional parameters from \code{\link{LogisticLogNormal}}
-##' @return the \code{\linkS4class{DALogisticLogNormal}} object
-##'
-##' @export
-##' @keywords programming
-DALogisticLogNormal <- function(npiece=3,
+#' @rdname DALogisticLogNormal-class
+#'
+#' @param npiece (`number`)\cr the number of pieces in the `PEM`.
+#' @param l (`numeric`)\cr a vector used in the lambda prior.
+#' @param c_par (`numeric`)\cr a parameter used in the lambda prior; according to
+#'   Liu's paper, `c_par = 2` is recommended.
+#' @param cond_pem (`flag`)\cr is a conditional piecewise-exponential model used?
+#'   (default). Otherwise an unconditional model is used.
+#' @inheritDotParams LogisticLogNormal
+#'
+#' @export
+#' @example examples/Model-class-DALogisticLogNormal.R
+#'
+DALogisticLogNormal <- function(npiece = 3,
                                 l,
-                                C_par=2,
-                                conditionalPEM=TRUE,
-                                ...)
-{
+                                c_par = 2,
+                                cond_pem = TRUE,
+                                ...) {
   start <- LogisticLogNormal(...)
 
-  .DALogisticLogNormal(start,
-                       npiece=safeInteger(npiece),
-                       l=l,
-                       C_par=C_par,
-                       conditionalPEM=conditionalPEM,
-                       datamodel=
-                         function(){
-                           # user should be able to specified time interval and number of pieces;
-                           #time intervals of piecewise exponential distribution;
-                           ## has this been done already?
-                           for (i in 1:nObs) #for each patient
-                           {
-                             #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
-                             #  NOTE: In the original r2JAGs code, the notation "y[i]" was "event[i]" and "DLT[i]" was "y[i]";
-                             #other notations: t[i]-- the true DLT time of patient i if he/she has DLT eventually;
-                             #                 u[i]-- DLT free survival
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      # Part I: describe the logistic model of DLTs vs dose.
+      logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
 
-                             #Part I: describe the logistic model of DLTs vs dose;
-                             logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                             StandLogDose[i] <- log(x[i] / ref_dose)
+      # Part II: describe the piecewise exponential.
+      # Notice that:
+      # when y=1             -> DLT=1 and u=<T;
+      # when y=0 & T<t (u=T) -> DLT=0;
+      # when y=0 & T>t (u<T) -> DLT=NA/missing;
+      # when indx=0 -> censored, i.e u<T and event=0;
+      # when indx=1 -> not censored, i.e. u>=T or event=1;
+      indx[i] <- 1 - step(Tmax - u[i] - eps) * (1 - y[i])
 
-                             #Part II: describe the piecewise exponential;
-                             #please notice:
-                             #when y=1             -> DLT=1 and u=<T;
-                             #when y=0 & T<t (u=T) -> DLT=0;
-                             #when y=0 & T>t (u<T) -> DLT=NA/missing;
+      for  (j in 1:npiece) {
+        # When not censored, i.e DLT!=NA & t[i]=u[i];
+        # if t[i]<h[j], d[i,j]=0;
+        # if h[j]<t[i]=<h[j+1], d[i,j]=1
+        # if h[j+1]<t[i], d[i,j]=0
+        # When censored t[i]>u[i] -> d[i,j]=0
+        d[i, j] <- y[i] * step(u[i] - h[j] - eps) * step(h[j + 1] - u[i])
 
-                             #when indx=0 -> censored, i.e u<T and event=0;
-                             #when indx=1 -> not censored, i.e. u>=T or event=1;
-                             indx[i]<-1-step(Tmax-u[i]-eps)*(1-y[i])
+        # DLT free survival(time) for patient i in interval I(j);
+        # if t[i]<h[j], s[i,j]=0;
+        # if h[j]<t[i]<=h[j+1], s[i,j]=t[i]-h[j]
+        # if h[j+1]<=t[i], s[i,j]=h[j+1]-h[j]
+        s[i, j] <- min(u[i] - h[j], h[j + 1] - h[j]) * step(u[i] - h[j])
 
-                             #a loop which goes through all pieces
-                             for  (j in 1:npiece){
-                               #When not censored, i.e DLT!=NA & t[i]=u[i];
-                               #if t[i]<h[j], d[i,j]=0;
-                               #if h[j]<t[i]=<h[j+1], d[i,j]=1
-                               #if h[j+1]<t[i], d[i,j]=0
+        # piecewise exponential hazard rate lambda[j];
+        mu_u[i, j] <- lambda[j] * s[i, j]
+        mu[i, j] <- d[i, j] * log(lambda[j]) - y[i] * mu_u[i, j]
+      }
 
-                               #When censored t[i]>u[i] -> d[i,j]=0
-                               d[i,j]<-y[i]*step(u[i]-h[j]-eps)*step(h[j+1]-u[i])
+      # The likelihood function.
+      L_obs[i] <- exp(sum(mu[i, ])) * pow(p[i] / A, y[i]) * pow(1 - p[i], 1 - y[i]) # Not censored.
+      L_cnsr[i] <- 1 - p[i] * (1 - exp(-sum(mu_u[i, ]))) / A # Censored.
+      L[i] <- pow(L_obs[i], indx[i]) * pow(L_cnsr[i], 1 - indx[i])
 
-                               #DLT free survival(time) for patient i in interval I(j);
-                               #if t[i]<h[j], s[i,j]=0;
-                               #if h[j]<t[i]<=h[j+1], s[i,j]=t[i]-h[j]
-                               #if h[j+1]<=t[i], s[i,j]=h[j+1]-h[j]
-                               s[i,j]<-min(u[i]-h[j],h[j+1]-h[j])*step(u[i]-h[j])
+      # Apply zero trick in JAGS.
+      phi[i] <- -log(L[i]) + cadj
+      zeros[i] ~ dpois(phi[i])
+    }
+  }
 
-                               #piecewise exponential hazard rate lambda[j];
-                               mu_u[i,j] <- lambda[j]*s[i,j]
-                               mu[i,j]<- d[i,j]*log(lambda[j])-y[i]*mu_u[i,j]
-                             }
+  priormodel <- h_jags_join_models(
+    start@priormodel,
+    function() {
+      g_beta <- 1 / c_par
+      for  (j in 1:npiece) {
+        g_alpha[j] <- l[j] / c_par
+        lambda[j] ~ dgamma(g_alpha[j], g_beta)
+        mu_T[j] <- lambda[j] * (h[j + 1] - h[j])
+      }
+      # If cond = 1, then conditional PEM is used and A is defined as
+      # the probability to have DLT, i.e. t<T, otherwise
+      # cond = 0 and A is just 1 (so no impact in likelihood).
+      A <- cond * (1 - exp(-sum(mu_T))) + (1 - cond)
+    }
+  )
 
-                             #apply zero trick in JAGS;
-                             zeros[i]~dpois(phi[i])
+  modelspecs <- function(nObs, Tmax) {
+    specs <- list(
+      ref_dose = start@ref_dose,
+      prec = start@params@prec,
+      mean = start@params@mean,
+      npiece = npiece,
+      l = l,
+      c_par = c_par,
+      h = seq(from = 0L, to = Tmax, length = npiece + 1),
+      cond = safeInteger(cond_pem)
+    )
+    if (nObs > 0L) {
+      specs <- c(specs, list(zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10))
+    }
+    specs
+  }
 
-                             phi[i]<- -log(L[i]) + cadj
-
-                             #the likelihood function;
-                             L[i]<- pow(L_obs[i],indx[i])*pow(L_miss[i],1-indx[i])
-                             #not censored
-                             L_obs[i]<-exp(sum(mu[i,]))*pow(p[i]/A,y[i])*pow(1-p[i],1-y[i])
-                             #censored
-                             L_miss[i]<- 1-p[i]*(1-exp(-sum(mu_u[i,])))/A
-
-                           }
-
-                         },
-
-                       priormodel=
-                         h_jags_join_models(start@priormodel,
-                                            function(){
-                                              # ## the multivariate normal prior on the (transformed)
-                                              # ## coefficients
-                                              # priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                                              # theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                              # ## extract actual coefficients
-                                              # alpha0 <- theta[1]
-                                              # alpha1 <- exp(theta[2])
-                                              #
-                                              # ## dummy to use refDose here.
-                                              # ## It is contained in the modelspecs list below,
-                                              # ## so it must occur here
-                                              # bla <- refDose + 1
-
-                                              # dummies to use eps and cadj. Otherwise
-                                              # empty data sampling fails.
-                                              blu <- eps + cadj
-
-                                              ## the piecewise exponential prior;
-                                              g_beta<- 1/C_par
-
-                                              for  (j in 1:npiece){
-
-                                                muT[j]<- lambda[j]*sT[j]
-
-                                                sT[j]<-h[j+1]-h[j]
-
-                                                #prior of lambda ;
-
-                                                g_alpha[j]<-l[j]/C_par
-
-                                                lambda_p[j]~dgamma(g_alpha[j],g_beta)
-
-                                                lambda[j]<-lambda_p[j]
-                                              }
-
-                                              ## for conditional:
-                                              sum_muT <- sum(muT[])
-
-                                              ## If cond = 1, then conditional PEM is used and this
-                                              ## is defined as the probability to have DLT, i.e. t<T
-                                              ## otherwise cond = 0 and it is just 1 (so no
-                                              ## impact in likelihood)
-                                              A <- cond * (1-exp(-sum_muT)) + (1 - cond)
-                                            }),
-
-                       datanames=c("nObs", "y", "x", "u", "Tmax"),
-                       modelspecs=
-                         function(nObs, Tmax){
-                           list(ref_dose=start@ref_dose,
-                                prec=start@params@prec,
-                                mean=start@params@mean,
-                                npiece=npiece,
-                                l=l,
-                                C_par=C_par,
-                                zeros=rep(0, nObs),
-                                eps=1e-10,
-                                cadj=1e10,
-                                h=seq(from=0L, to=Tmax, length=npiece + 1),
-                                cond=as.integer(conditionalPEM) ## here pass the option to JAGS code
-                           )
-                         },
-                       sample=
-                         c("alpha0", "alpha1", "lambda")
-
+  .DALogisticLogNormal(
+    start,
+    npiece = safeInteger(npiece),
+    l = l,
+    c_par = c_par,
+    cond_pem = cond_pem,
+    datamodel = datamodel,
+    priormodel = priormodel,
+    modelspecs = modelspecs,
+    sample = c("alpha0", "alpha1", "lambda"),
+    datanames = c("nObs", "y", "x", "u", "Tmax")
   )
 }
-validObject(DALogisticLogNormal(mean=c(0, 1),
-                                cov=diag(2),
-                                ref_dose=1,
-                                npiece=3,
-                                l=0.5,
-                                C_par=2))
+
+# nolint start
 
 # TITELogisticLogNormal ----
 

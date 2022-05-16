@@ -1,16 +1,26 @@
-h_get_data <- function() {
-  plcb <- 0.001
-  x <- c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100)
+h_get_data <- function(empty = FALSE, placebo = TRUE) {
+  plcb <- if (placebo) {
+    0.001
+  } else {
+    NULL
+  }
   dose_grid <- c(plcb, seq(25, 300, 25))
 
-  Data(
-    x = x,
-    y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
-    doseGrid = dose_grid,
-    placebo = TRUE,
-    ID = 1:12,
-    cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
-  )
+  if (empty) {
+    Data(
+      doseGrid = dose_grid,
+      placebo = placebo
+    )
+  } else {
+    Data(
+      x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+      y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+      doseGrid = dose_grid,
+      placebo = placebo,
+      ID = 1:12,
+      cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+    )
+  }
 }
 
 h_get_data_no_plcb <- function() {
@@ -84,17 +94,16 @@ h_get_data_mixture <- function() {
   )
 }
 
-h_get_data_augmented <- function() { # nolintr
-  d <- h_get_data()
-  DataDA(
-    u = c(42, 30, 15, 5, 20, 25, 30, 60, 25, 30, 35, 40),
-    t0 = c(0, 15, 30, 40, 55, 70, 75, 85, 95, 105, 120, 125),
-    Tmax = 60,
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
-  )
+h_get_data_da <- function(empty = FALSE, placebo = TRUE) {
+  d <- h_get_data(empty, placebo)
+  if (empty) {
+    .DataDA(d)
+  } else {
+    .DataDA(
+      d,
+      u = c(42, 30, 15, 5, 20, 25, 30, 60, 25, 30, 35, 40),
+      t0 = c(0, 15, 30, 40, 55, 70, 75, 85, 95, 105, 120, 125),
+      Tmax = 60
+    )
+  }
 }

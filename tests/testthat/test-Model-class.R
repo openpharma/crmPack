@@ -651,3 +651,41 @@ test_that("MCMC computes correct values for EffFlexi model (RW2)", {
   result <- mcmc(data = model@data, model = model, options = options)
   expect_snapshot(result@data)
 })
+
+# DALogisticLogNormal ----
+
+## constructor ----
+
+test_that("DALogisticLogNormal object can be created with user constructor", {
+  result <- expect_silent(
+    DALogisticLogNormal(
+      mean = c(0, 1),
+      cov = diag(2),
+      ref_dose = 1,
+      npiece = 3,
+      l = c(0.5, 0.5, 0.5),
+      c_par = 2
+    )
+  )
+  expect_valid(result, "DALogisticLogNormal")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for DALogisticLogNormal model", {
+  data <- h_get_data_da()
+  model <- h_get_da_logistic_log_normal()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for DALogisticLogNormal model and empty data", {
+  empty_data <- h_get_data_da(empty = TRUE)
+  model <- h_get_da_logistic_log_normal()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = empty_data, model = model, options = options)
+  expect_snapshot(result@data)
+})

@@ -11,5 +11,5 @@ model <- DALogisticLogNormal(
   ref_dose = 56,
   npiece = npiece,
   l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
-  C_par = 2
+  c_par = 2
 )

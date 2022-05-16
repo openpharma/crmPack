@@ -997,3 +997,55 @@ test_that("v_model_eff_flexi returns message for wrong RW_rank", {
   object@RW_rank <- 5L
   expect_equal(v_model_eff_flexi(object), err_msg)
 })
+
+# v_model_da_logistic_log_normal ----
+
+test_that("v_model_da_logistic_log_normal passes for valid object", {
+  object <- h_get_da_logistic_log_normal()
+  expect_true(v_model_da_logistic_log_normal(object))
+})
+
+test_that("v_model_da_logistic_log_normal returns message for wrong npiece", {
+  object <- h_get_da_logistic_log_normal()
+
+  # Assigning wrong npiece.
+  object@npiece <- c(5L, 6L)
+  expect_equal(
+    v_model_da_logistic_log_normal(object),
+    "npiece must be a is a single integerish value"
+  )
+})
+
+test_that("v_model_da_logistic_log_normal returns message for wrong l vector", {
+  object <- h_get_da_logistic_log_normal()
+  err_msg <- "prior parameter vector l of lambda must be a non-negative vector of length equal to npiece"
+
+  # Assigning wrong l.
+  object@l <- c(5L, 6L, Inf)
+  expect_equal(v_model_da_logistic_log_normal(object), err_msg)
+
+  object@l <- 5L
+  expect_equal(v_model_da_logistic_log_normal(object), err_msg)
+})
+
+test_that("v_model_da_logistic_log_normal returns message for wrong c_par", {
+  object <- h_get_da_logistic_log_normal()
+
+  # Assigning wrong c_par.
+  object@c_par <- c(5, 6, Inf)
+  expect_equal(
+    v_model_da_logistic_log_normal(object),
+    "c_par must be a finite numerical scalar"
+  )
+})
+
+test_that("v_model_da_logistic_log_normal returns message for wrong cond_pem", {
+  object <- h_get_da_logistic_log_normal()
+
+  # Assigning non-valid cond_pem.
+  object@cond_pem <- c(TRUE, FALSE)
+  expect_equal(
+    v_model_da_logistic_log_normal(object),
+    "cond_pem must be a flag"
+  )
+})

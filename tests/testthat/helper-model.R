@@ -341,3 +341,14 @@ h_get_eff_flexi <- function(emptydata = FALSE, rw1 = TRUE, dlt_observed_only = F
     data = data
   )
 }
+
+h_get_da_logistic_log_normal <- function() {
+  DALogisticLogNormal(
+    mean = c(0, 1),
+    cov = diag(2),
+    ref_dose = 1,
+    npiece = 3,
+    l = c(0.5, 0.5, 0.5),
+    c_par = 2
+  )
+}
