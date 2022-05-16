@@ -1,4 +1,4 @@
-# Version 1.0.9000.9013
+# Version 1.0.9000.9014
 * Renamed several slots in `EffFlexi` and `DALogisticLogNormal` classes and
   adjusted corresponding constructor functions.
 * Renamed `Eff` argument to `eff` and `Effdose` to `eff_dose` in `Effloglog` class
