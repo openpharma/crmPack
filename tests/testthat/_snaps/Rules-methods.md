@@ -1,4 +1,4 @@
-# NextBestInfTheory produces consistent results
+# NextBestInfTheory produces consistent results for empty data
 
     Code
       result@meanFit

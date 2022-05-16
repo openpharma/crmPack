@@ -344,7 +344,7 @@ test_that("h_info_theory_dist works as expected", {
   expect_equal(calculated, expected, tolerance = 0.01)
 })
 
-test_that("NextBestInfTheory produces consistent results", {
+test_that("NextBestInfTheory produces consistent results for empty data", {
   emptydata <- Data(doseGrid = seq(from = 40, to = 200, by = 10))
 
   sigma_0 <- 1.0278
@@ -393,7 +393,7 @@ test_that("NextBestInfTheory produces consistent results", {
 })
 
 test_that("NextBestInfTheory produces consistent results with a single dataset", {
-  emptydata <- Data(doseGrid = 40)
+  my_data <- h_get_data_no_plcb()
 
   sigma_0 <- 1.0278
   sigma_1 <- 1.65
@@ -404,7 +404,7 @@ test_that("NextBestInfTheory produces consistent results with a single dataset",
   )
   model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
 
-  stop_rule <- StoppingMinPatients(nPatients = 30)
+  stop_rule <- StoppingMinPatients(nPatients = 5)
   increments <- IncrementsRelative(interval = 0, increments = 1)
   new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
   cohort <- CohortSizeConst(size = 3)
@@ -416,8 +416,8 @@ test_that("NextBestInfTheory produces consistent results with a single dataset",
     increments = increments,
     nextBest = new_my_next_best,
     cohortSize = cohort,
-    data = emptydata,
-    startingDose = 40
+    data = my_data,
+    startingDose = 25
   )
 
   sim <- simulate(
@@ -427,4 +427,5 @@ test_that("NextBestInfTheory produces consistent results with a single dataset",
     mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
   )
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+  expect_equal(TRUE, TRUE) # TODO
 })
