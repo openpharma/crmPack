@@ -495,3 +495,26 @@ v_model_eff_flexi <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_model_objects validates that [`DALogisticLogNormal`] class slots are valid.
+v_model_da_logistic_log_normal <- function(object) {
+  v <- Validate()
+
+  npiece_ok <- test_int(object@npiece)
+  v$check(npiece_ok, "npiece must be a is a single integerish value")
+  if (npiece_ok) {
+    v$check(
+      test_numeric(object@l, lower = 0, finite = TRUE, any.missing = FALSE, len = object@npiece),
+      "prior parameter vector l of lambda must be a non-negative vector of length equal to npiece"
+    )
+  }
+  v$check(
+    test_number(object@c_par, finite = TRUE),
+    "c_par must be a finite numerical scalar"
+  )
+  v$check(
+    test_flag(object@cond_pem),
+    "cond_pem must be a flag"
+  )
+  v$result()
+}

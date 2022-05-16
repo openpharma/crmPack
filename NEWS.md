@@ -1,6 +1,6 @@
 # Version 1.0.9000.9013
-* Renamed several slots in `EffFlexi` class and adjusted corresponding constructor
-  function.
+* Renamed several slots in `EffFlexi` and `DALogisticLogNormal` classes and
+  adjusted corresponding constructor functions.
 * Renamed `Eff` argument to `eff` and `Effdose` to `eff_dose` in `Effloglog` class
   constructor.
 * Renamed `ExpEff` methods for pseudo-data efficacy models to `efficacy`.

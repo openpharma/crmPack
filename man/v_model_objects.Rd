@@ -16,6 +16,7 @@
 \alias{v_model_logistic_indep_beta}
 \alias{v_model_eff_log_log}
 \alias{v_model_eff_flexi}
+\alias{v_model_da_logistic_log_normal}
 \title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
 \usage{
 v_general_model(object)
@@ -45,6 +46,8 @@ v_model_logistic_indep_beta(object)
 v_model_eff_log_log(object)
 
 v_model_eff_flexi(object)
+
+v_model_da_logistic_log_normal(object)
 }
 \arguments{
 \item{object}{(\code{AllModels})\cr object to validate.}
@@ -94,5 +97,7 @@ valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 \item \code{v_model_eff_log_log}: validates that \code{\link{Effloglog}} class slots are valid.
 
 \item \code{v_model_eff_flexi}: validates that \code{\link{EffFlexi}} class slots are valid.
+
+\item \code{v_model_da_logistic_log_normal}: validates that \code{\link{DALogisticLogNormal}} class slots are valid.
 }}
 

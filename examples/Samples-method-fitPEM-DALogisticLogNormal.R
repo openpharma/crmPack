@@ -21,7 +21,7 @@ model<-DALogisticLogNormal(mean=c(-0.85,1),
                            ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
-                           C_par=2)
+                           c_par=2)
 
 #Obtain the posterior
 
@@ -33,9 +33,9 @@ set.seed(94)
 samples <- mcmc (data,model,options)
 
 
-# Extract the posterior mean hazard (and empirical 2.5 and 97.5 percentile) 
+# Extract the posterior mean hazard (and empirical 2.5 and 97.5 percentile)
 # for the piecewise exponential model
-# If hazard=FALSE, the posterior PEM will be plot 
+# If hazard=FALSE, the posterior PEM will be plot
 fitted  <- fitPEM(object = samples,
                   model = model,
                   data=data,
