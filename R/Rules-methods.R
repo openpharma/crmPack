@@ -663,9 +663,12 @@ setMethod("nextBest",
 #' @describeIn nextBest Helper function which provides the value of the
 #'   divergence as given by equation in (7) in the reference at
 #'   https://doi.org/10.1002/sim.8450.
+#' @param prob of a DLT occuring
+#' @param target probablity of a DLT
+#' @param asymmetry describes the rate of penalisation for overly toxic does, range 0 to 2
 #' @export
-h_info_theory_dist <- function(probability, target, asymmetry) {
-  ((probability - target)^2) / (((probability^asymmetry) * (1 - probability)^(2 - asymmetry)))
+h_info_theory_dist <- function(prob, target, asymmetry) {
+  ((prob - target)^2) / (((prob^asymmetry) * (1 - prob)^(2 - asymmetry)))
 }
 
 ##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
