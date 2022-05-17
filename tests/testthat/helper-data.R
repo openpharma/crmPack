@@ -1,10 +1,8 @@
 h_get_data <- function(empty = FALSE, placebo = TRUE) {
-  plcb <- if (placebo) {
-    0.001
-  } else {
-    NULL
+  dose_grid <- seq(25, 300, 25)
+  if (placebo) {
+    dose_grid <- c(0.001, dose_grid)
   }
-  dose_grid <- c(plcb, seq(25, 300, 25))
 
   if (empty) {
     Data(
@@ -12,8 +10,13 @@ h_get_data <- function(empty = FALSE, placebo = TRUE) {
       placebo = placebo
     )
   } else {
+    x <- if (placebo) {
+      c(0.001, 25, 25, 25, 0.001, 50, 50, 50, 0.001, 100, 100, 100)
+    } else {
+      c(25, 25, 25, 25, 50, 50, 50, 50, 100, 100, 100, 100)
+    }
     Data(
-      x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+      x = x,
       y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
       doseGrid = dose_grid,
       placebo = placebo,
@@ -23,75 +26,67 @@ h_get_data <- function(empty = FALSE, placebo = TRUE) {
   }
 }
 
-h_get_data_no_plcb <- function() {
-  x <- c(25, 25, 25, 50, 50, 50, 100, 100, 100)
-  dose_grid <- c(seq(25, 300, 25))
-
+# Sample data to test e.g. maxDose of IncrementsNumDoseLevels method.
+h_get_data_1 <- function() {
   Data(
-    x = x,
-    y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
-    doseGrid = dose_grid,
-    placebo = FALSE,
-    ID = 1:9,
-    cohort = c(1L, 1L, 1L, 2L, 2L, 2L, 3L, 3L, 3L)
+    x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+    ID = 1:17,
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
   )
 }
 
-h_get_data_no_plcb_k <- function() {
-  x <- c(1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5)
-  dose_grid <- c(1.5, 2.5, 3.5, 4.5, 6, 7)
-
+# Used e.g. by mcmc for LogisticKadaneBetaGamma.
+h_get_data_2 <- function() {
   Data(
-    x = x,
+    x = c(1.5, 1.5, 1.5, 2.5, 2.5, 2.5, 3.5, 3.5, 3.5),
     y = c(0, 0, 0, 0, 0, 0, 0, 1, 0),
-    doseGrid = dose_grid,
-    placebo = FALSE,
     ID = 1:9,
-    cohort = c(1, 1, 1, 2, 2, 2, 3, 3, 3)
+    cohort = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
+    doseGrid = c(1.5, 2.5, 3.5, 4.5, 6, 7),
+    placebo = FALSE
   )
 }
 
-h_get_data_dual <- function() {
-  d <- h_get_data()
-  DataDual(
-    w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
-  )
+h_get_data_dual <- function(empty = FALSE, placebo = TRUE) {
+  d <- h_get_data(empty, placebo)
+  if (empty) {
+    .DataDual(d)
+  } else {
+    .DataDual(
+      d,
+      w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48)
+    )
+  }
 }
 
-h_get_data_parts <- function() {
-  d <- h_get_data()
-  DataParts(
-    part = c(1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 2L, 2L),
-    nextPart = 1L,
-    part1Ladder = seq(25, 250, 25),
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
-  )
+h_get_data_parts <- function(empty = FALSE, placebo = TRUE) {
+  d <- h_get_data(empty, placebo)
+  if (empty) {
+    .DataParts(d)
+  } else {
+    .DataParts(
+      d,
+      part = c(1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 2L, 2L),
+      nextPart = 1L,
+      part1Ladder = seq(25, 250, 25)
+    )
+  }
 }
 
-h_get_data_mixture <- function() {
-  d <- h_get_data()
-  DataMixture(
-    xshare = seq(25, 100, 25),
-    yshare = c(0L, 1L, 1L, 1L),
-    nObsshare = 4L,
-    x = d@x,
-    y = d@y,
-    doseGrid = d@doseGrid,
-    placebo = d@placebo,
-    ID = d@ID,
-    cohort = d@cohort
-  )
+h_get_data_mixture <- function(empty = FALSE, placebo = TRUE) {
+  d <- h_get_data(empty, placebo)
+  if (empty) {
+    .DataMixture(d)
+  } else {
+    .DataMixture(
+      d,
+      xshare = seq(25, 100, 25),
+      yshare = c(0L, 1L, 1L, 1L),
+      nObsshare = 4L
+    )
+  }
 }
 
 h_get_data_da <- function(empty = FALSE, placebo = TRUE) {
