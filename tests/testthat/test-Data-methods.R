@@ -290,6 +290,8 @@ test_that("getEff-DataDual works as expected (no DLT)", {
   data <- DataDual(
     x = c(25, 50),
     y = c(0, 0),
+    ID = 1:2,
+    cohort = 1:2,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )
@@ -308,6 +310,8 @@ test_that("getEff-DataDual works as expected (DLT only)", {
   data <- DataDual(
     x = c(25, 50),
     y = c(1, 1),
+    ID = 1:2,
+    cohort = 1:2,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )
