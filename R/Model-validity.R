@@ -1,12 +1,13 @@
-#' Internal Helper Functions for Validation of [`AllModels`] Objects
+#' Internal Helper Functions for Validation of [`GeneralModel`] and [`ModelPseudo`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' These functions are only used internally to validate the format of an input
-#' [`AllModels`] or inherited classes and therefore not exported.
+#' [`GeneralModel`] and [`ModelPseudo`] or inherited classes and therefore are
+#' not exported.
 #'
 #' @name v_model_objects
-#' @param object (`AllModels`)\cr object to validate.
+#' @param object (`GeneralModel`) or (`ModelPseudo`) \cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL

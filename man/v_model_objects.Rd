@@ -17,7 +17,7 @@
 \alias{v_model_eff_log_log}
 \alias{v_model_eff_flexi}
 \alias{v_model_da_logistic_log_normal}
-\title{Internal Helper Functions for Validation of \code{\link{AllModels}} Objects}
+\title{Internal Helper Functions for Validation of \code{\link{GeneralModel}} and \code{\link{ModelPseudo}} Objects}
 \usage{
 v_general_model(object)
 
@@ -50,7 +50,7 @@ v_model_eff_flexi(object)
 v_model_da_logistic_log_normal(object)
 }
 \arguments{
-\item{object}{(\code{AllModels})\cr object to validate.}
+\item{object}{(\code{GeneralModel}) or (\code{ModelPseudo}) \cr object to validate.}
 }
 \value{
 A \code{character} vector with the validation failure messages,
@@ -60,7 +60,8 @@ or \code{TRUE} in case validation passes.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 These functions are only used internally to validate the format of an input
-\code{\link{AllModels}} or inherited classes and therefore not exported.
+\code{\link{GeneralModel}} and \code{\link{ModelPseudo}} or inherited classes and therefore are
+not exported.
 }
 \section{Functions}{
 \itemize{

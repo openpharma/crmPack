@@ -4,21 +4,6 @@
 #' @include ModelParams-class.R
 NULL
 
-# AllModels-class ----
-
-#' `AllModels`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`AllModels`] is a parent class for all models.
-#'
-#' @aliases AllModels
-#' @export
-#'
-.AllModels <- setClass(
-  Class = "AllModels"
-)
-
 # GeneralModel-class ----
 
 #' `GeneralModel`
@@ -26,8 +11,7 @@ NULL
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`GeneralModel`] is a general model class, from which all other specific
-#' model-like classes inherit. The [`GeneralModel`] class inherits from
-#' [`AllModels`].
+#' model-like classes inherit.
 #'
 #' @note The `datamodel` must obey the convention that the data input is
 #'   called exactly in the same way as in the corresponding data class.
@@ -53,12 +37,13 @@ NULL
 #' @slot sample (`character`)\cr names of all parameters from which you would
 #'   like to save the MCMC samples.
 #'
+#' @seealso [`ModelPseudo`].
+#'
 #' @aliases GeneralModel
 #' @export
 #'
 .GeneralModel <- setClass(
   Class = "GeneralModel",
-  contains = "AllModels",
   slots = c(
     datamodel = "function",
     priormodel = "function",
@@ -1731,14 +1716,13 @@ DualEndpointEmax <- function(E0,
 #' [`ModelPseudo`] is the parent class for models that express their prior in
 #' the form of pseudo data (as if there is some data before the trial starts).
 #'
-#' @seealso [`ModelEff`], [`ModelTox`].
+#' @seealso [`GeneralModel`].
 #'
 #' @aliases ModelPseudo
 #' @export
 #'
 .ModelPseudo <- setClass(
-  Class = "ModelPseudo",
-  contains = "AllModels"
+  Class = "ModelPseudo"
 )
 
 # ModelTox ----
@@ -1767,7 +1751,7 @@ DualEndpointEmax <- function(E0,
 #' @slot data (`Data`)\cr observed data that is used to obtain model parameters
 #'   estimates or samples (see details above).
 #'
-#' @seealso [`ModelPseudo`], [`ModelEff`].
+#' @seealso [`ModelEff`].
 #'
 #' @aliases ModelTox
 #' @export
@@ -1805,7 +1789,7 @@ DualEndpointEmax <- function(E0,
 #' @slot data (`DataDual`)\cr observed data that is used to obtain model
 #'   parameters estimates or samples (see details above).
 #'
-#' @seealso [`ModelPseudo`], [`ModelTox`].
+#' @seealso [`ModelTox`].
 #'
 #' @aliases ModelEff
 #' @export
