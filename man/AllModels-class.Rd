@@ -9,13 +9,5 @@
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{AllModels}} is a class from which all the models inherit.
+\code{\link{AllModels}} is a parent class for all models.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{datanames}}{(\code{character})\cr the names of all data slots that are used
-in all the models. In particular, those are also used in the \code{datamodel} or
-\code{priormodel} definition for \code{\link{GeneralModel}}.}
-}}
-

@@ -65,7 +65,8 @@ These functions are only used internally to validate the format of an input
 \section{Functions}{
 \itemize{
 \item \code{v_general_model}: validates that the names of the
-arguments in \code{init} function are included in \code{datanames} slot.
+arguments in \code{init} function are included in \code{datanames} or \code{datanames_prior}
+slots.
 
 \item \code{v_model}: validates that the names of the
 arguments in \code{dose} and \code{prob} functions contains expected arguments as

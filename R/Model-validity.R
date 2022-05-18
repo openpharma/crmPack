@@ -12,11 +12,12 @@
 NULL
 
 #' @describeIn v_model_objects validates that the names of the
-#'   arguments in `init` function are included in `datanames` slot.
+#'   arguments in `init` function are included in `datanames` or `datanames_prior`
+#'   slots.
 v_general_model <- function(object) {
   v <- Validate()
   v$check(
-    h_check_fun_formals(object@init, allowed = object@datanames),
+    h_check_fun_formals(object@init, allowed = union(object@datanames, object@datanames_prior)),
     "Arguments of the init function must be data names"
   )
   v$result()

@@ -122,25 +122,30 @@ h_jags_get_data <- function(model, data, from_prior) {
   assert_class(data, "GeneralData")
   assert_flag(from_prior)
 
+  # 1) Extract variables from `data` as required by `modelspecs`.
   modelspecs <- do.call(
     model@modelspecs,
     h_slots(data, formalArgs(model@modelspecs))
   )
   assert_list(modelspecs)
 
-  data_model <- if (from_prior) {
-    # Remove elements named "ref_dose" to avoid JAGS error of unused variables.
-    modelspecs <- modelspecs[setdiff(names(modelspecs), "ref_dose")]
-    NULL
+  # 2) Extract variables from `data` as required by `datanames`.
+
+  datanames <- if (from_prior) {
+    # This is a workarround to avoid JAGS error of unused variables.
+    # Probably new slot `modelspecs_proir` should be added.
+    modelspecs <- modelspecs[setdiff(names(modelspecs), c("ref_dose", "use_log_dose"))]
+    model@datanames_prior
   } else {
-    # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
-    # scalars by `JAGS` if `data@nObs == 0`, which leads to failures.
-    add_where <- setdiff(
-      model@datanames,
-      c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax")
-    )
-    h_slots(h_jags_add_dummy(data, where = add_where), model@datanames)
+    union(model@datanames, model@datanames_prior)
   }
+
+  # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
+  # scalars by `JAGS` if `data@nObs == 1`, which leads to failures.
+  add_where <- setdiff(datanames, c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax"))
+  data <- h_jags_add_dummy(data, where = add_where)
+
+  data_model <- h_slots(data, datanames)
   c(data_model, modelspecs)
 }
 

@@ -31,6 +31,12 @@ slots that are required as arguments of this function.}
 for parameters required to be initialized in the MCMC sampler, based on the
 data slots that are required as arguments of this function.}
 
+\item{\code{datanames}}{(\code{character})\cr the names of all data slots that are used
+by \code{datamodel} JAGS function.}
+
+\item{\code{datanames_prior}}{(\code{character})\cr the names of all data slots that are
+used by \code{priormodel} JAGS function.}
+
 \item{\code{sample}}{(\code{character})\cr names of all parameters from which you would
 like to save the MCMC samples.}
 }}
