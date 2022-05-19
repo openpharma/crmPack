@@ -1,22 +1,24 @@
-#' Internal Helper Functions for Validation of [`AllModels`] Objects
+#' Internal Helper Functions for Validation of [`GeneralModel`] and [`ModelPseudo`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' These functions are only used internally to validate the format of an input
-#' [`AllModels`] or inherited classes and therefore not exported.
+#' [`GeneralModel`] and [`ModelPseudo`] or inherited classes and therefore are
+#' not exported.
 #'
 #' @name v_model_objects
-#' @param object (`AllModels`)\cr object to validate.
+#' @param object (`GeneralModel`) or (`ModelPseudo`) \cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
 #' @describeIn v_model_objects validates that the names of the
-#'   arguments in `init` function are included in `datanames` slot.
+#'   arguments in `init` function are included in `datanames` or `datanames_prior`
+#'   slots.
 v_general_model <- function(object) {
   v <- Validate()
   v$check(
-    h_check_fun_formals(object@init, allowed = object@datanames),
+    h_check_fun_formals(object@init, allowed = union(object@datanames, object@datanames_prior)),
     "Arguments of the init function must be data names"
   )
   v$result()

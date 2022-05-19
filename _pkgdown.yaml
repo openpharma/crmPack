@@ -34,7 +34,6 @@ reference:
       - DataDA
       - McmcOptions
       - ModelParamsNormal
-      - AllModels
       - GeneralModel
       - Model
       - ModelLogNormal

@@ -4,26 +4,6 @@
 #' @include ModelParams-class.R
 NULL
 
-# AllModels-class ----
-
-#' `AllModels`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`AllModels`] is a class from which all the models inherit.
-#'
-#' @slot datanames (`character`)\cr the names of all data slots that are used
-#'   in all the models. In particular, those are also used in the `datamodel` or
-#'   `priormodel` definition for [`GeneralModel`].
-#'
-#' @aliases AllModels
-#' @export
-#'
-.AllModels <- setClass(
-  Class = "AllModels",
-  slots = c(datanames = "character")
-)
-
 # GeneralModel-class ----
 
 #' `GeneralModel`
@@ -31,8 +11,7 @@ NULL
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`GeneralModel`] is a general model class, from which all other specific
-#' model-like classes inherit. The [`GeneralModel`] class inherits from
-#' [`AllModels`].
+#' model-like classes inherit.
 #'
 #' @note The `datamodel` must obey the convention that the data input is
 #'   called exactly in the same way as in the corresponding data class.
@@ -51,20 +30,27 @@ NULL
 #' @slot init (`function`)\cr a function computing the list of starting values
 #'   for parameters required to be initialized in the MCMC sampler, based on the
 #'   data slots that are required as arguments of this function.
+#' @slot datanames (`character`)\cr the names of all data slots that are used
+#'   by `datamodel` JAGS function.
+#' @slot datanames_prior (`character`)\cr the names of all data slots that are
+#'   used by `priormodel` JAGS function.
 #' @slot sample (`character`)\cr names of all parameters from which you would
 #'   like to save the MCMC samples.
+#'
+#' @seealso [`ModelPseudo`].
 #'
 #' @aliases GeneralModel
 #' @export
 #'
 .GeneralModel <- setClass(
   Class = "GeneralModel",
-  contains = "AllModels",
   slots = c(
     datamodel = "function",
     priormodel = "function",
     modelspecs = "function",
     init = "function",
+    datanames = "character",
+    datanames_prior = "character",
     sample = "character"
   ),
   prototype = prototype(
@@ -205,8 +191,8 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
     init = function() {
       list(theta = c(0, 1))
     },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1")
   )
 }
 
@@ -387,8 +373,8 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
     init = function() {
       list(theta = c(0, -20))
     },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1")
   )
 }
 
@@ -589,8 +575,8 @@ LogisticKadane <- function(theta, xmin, xmax) {
     init = function() {
       list(rho0 = theta / 10, gamma = (xmax - xmin) / 2)
     },
-    sample = c("rho0", "gamma"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("rho0", "gamma")
   )
 }
 
@@ -820,8 +806,8 @@ LogisticNormalMixture <- function(comp1,
     init = function() {
       list(theta = c(0, 1))
     },
-    sample = c("alpha0", "alpha1", "w"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1", "w")
   )
 }
 
@@ -963,8 +949,8 @@ LogisticNormalFixedMixture <- function(components,
     init = function() {
       list(theta = c(0, 1))
     },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1")
   )
 }
 
@@ -1068,8 +1054,8 @@ LogisticLogNormalMixture <- function(mean,
     init = function() {
       list(theta = matrix(c(0, 0, 1, 1), nrow = 2))
     },
-    sample = c("alpha0", "alpha1", "comp"),
-    datanames = c("nObs", "y", "x", "nObsshare", "yshare", "xshare")
+    datanames = c("nObs", "y", "x", "nObsshare", "yshare", "xshare"),
+    sample = c("alpha0", "alpha1", "comp")
   )
 }
 
@@ -1264,8 +1250,9 @@ DualEndpoint <- function(mean,
     init = function(y) {
       c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
     },
-    sample = comp$sample,
-    datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid")
+    datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid"),
+    datanames_prior = c("nGrid", "doseGrid"),
+    sample = comp$sample
   )
 }
 
@@ -1729,14 +1716,13 @@ DualEndpointEmax <- function(E0,
 #' [`ModelPseudo`] is the parent class for models that express their prior in
 #' the form of pseudo data (as if there is some data before the trial starts).
 #'
-#' @seealso [`ModelEff`], [`ModelTox`].
+#' @seealso [`GeneralModel`].
 #'
 #' @aliases ModelPseudo
 #' @export
 #'
 .ModelPseudo <- setClass(
-  Class = "ModelPseudo",
-  contains = "AllModels"
+  Class = "ModelPseudo"
 )
 
 # ModelTox ----
@@ -1765,7 +1751,7 @@ DualEndpointEmax <- function(E0,
 #' @slot data (`Data`)\cr observed data that is used to obtain model parameters
 #'   estimates or samples (see details above).
 #'
-#' @seealso [`ModelPseudo`], [`ModelEff`].
+#' @seealso [`ModelEff`].
 #'
 #' @aliases ModelTox
 #' @export
@@ -1803,7 +1789,7 @@ DualEndpointEmax <- function(E0,
 #' @slot data (`DataDual`)\cr observed data that is used to obtain model
 #'   parameters estimates or samples (see details above).
 #'
-#' @seealso [`ModelPseudo`], [`ModelTox`].
+#' @seealso [`ModelTox`].
 #'
 #' @aliases ModelEff
 #' @export
@@ -1962,8 +1948,7 @@ LogisticIndepBeta <- function(binDLE,
     phi1 = phi1,
     phi2 = phi2,
     Pcov = Pcov,
-    data = data,
-    datanames = c("nObs", "y", "x")
+    data = data
   )
 }
 
@@ -2183,8 +2168,7 @@ Effloglog <- function(eff,
     mu = as.vector(mu),
     Q = Q,
     const = const,
-    data = data,
-    datanames = c("nObs", "w", "x")
+    data = data
   )
 }
 
@@ -2353,8 +2337,7 @@ EffFlexi <- function(eff,
     X = X,
     RW = RW,
     RW_rank = RW_rank,
-    data = data,
-    datanames = c("nObs", "w", "x")
+    data = data
   )
 }
 
@@ -2508,8 +2491,8 @@ DALogisticLogNormal <- function(npiece = 3,
     datamodel = datamodel,
     priormodel = priormodel,
     modelspecs = modelspecs,
-    sample = c("alpha0", "alpha1", "lambda"),
-    datanames = c("nObs", "y", "x", "u", "Tmax")
+    datanames = c("nObs", "y", "x", "u", "Tmax"),
+    sample = c("alpha0", "alpha1", "lambda")
   )
 }
 

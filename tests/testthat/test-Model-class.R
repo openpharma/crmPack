@@ -1,10 +1,3 @@
-# AllModels-class ----
-
-test_that(".AllModels works as expected", {
-  result <- expect_silent(.AllModels(datanames = "x"))
-  expect_valid(result, "AllModels")
-})
-
 # GeneralModel-class ----
 
 test_that(".GeneralModel works as expected", {
@@ -16,31 +9,12 @@ test_that(".GeneralModel works as expected", {
       modelspecs = function(x) {},
       init = function(x) {},
       sample = "param1",
-      datanames = "x"
+      datanames = "x",
+      datanames_prior = "x1"
     )
   )
   # nolint end
   expect_valid(result, "GeneralModel")
-})
-
-# Model-class ----
-
-test_that(".Model works as expected", {
-  # nolint start
-  result <- expect_silent(
-    .Model(
-      dose = function(x, param1) {},
-      prob = function(dose, param1) {},
-      datamodel = function(x) {},
-      priormodel = function(x) {},
-      modelspecs = function(x) {},
-      init = function(x) {},
-      sample = "param1",
-      datanames = "x"
-    )
-  )
-  # nolint end
-  expect_valid(result, "Model")
 })
 
 # ModelLogNormal-class ----
@@ -58,7 +32,8 @@ test_that(".ModelLogNormal works as expected", {
       modelspecs = function(x) {},
       init = function(x) {},
       sample = "param1",
-      datanames = "x"
+      datanames = "x",
+      datanames_prior = "x1"
     )
   )
   # nolint end
@@ -105,11 +80,11 @@ test_that("MCMC computes correct values for LogisticNormal model", {
 })
 
 test_that("MCMC computes correct values for LogisticNormal model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_logistic_normal()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -140,11 +115,11 @@ test_that("MCMC computes correct values for LogisticLogNormal model", {
 })
 
 test_that("MCMC computes correct values for LogisticLogNormal model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_logistic_log_normal()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -175,11 +150,11 @@ test_that("MCMC computes correct values for LogisticLogNormalSub model", {
 })
 
 test_that("MCMC computes correct values for LogisticLogNormalSub model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_logistic_log_normal_sub()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -210,11 +185,11 @@ test_that("MCMC computes correct values for ProbitLogNormal model", {
 })
 
 test_that("MCMC computes correct values for ProbitLogNormal model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_probit_log_normal()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -245,11 +220,11 @@ test_that("MCMC computes correct values for ProbitLogNormalRel model", {
 })
 
 test_that("MCMC computes correct values for ProbitLogNormalRel model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_probit_log_normal_rel()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -280,11 +255,11 @@ test_that("MCMC computes correct values for LogisticKadane model", {
 })
 
 test_that("MCMC computes correct values for LogisticKadane model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_logistic_kadane()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -319,11 +294,11 @@ test_that("MCMC computes correct values for LogisticKadaneBetaGamma model", {
 })
 
 test_that("MCMC computes correct values for LogisticKadaneBetaGamma model and empty data", {
-  empty_data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE)
   model <- h_get_logistic_kadane_beta_gam()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -355,11 +330,11 @@ test_that("MCMC computes correct values for LogisticNormalMixture model", {
 })
 
 test_that("MCMC computes correct values for LogisticNormalMixture model and empty data", {
-  empty_data <- h_get_data_mixture(empty = TRUE)
+  data <- h_get_data_mixture(empty = TRUE)
   model <- h_get_logistic_normal_mix()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -402,13 +377,13 @@ test_that("MCMC computes correct values for LogisticNormalFixedMixture model", {
 })
 
 test_that("MCMC computes correct values for LogisticNormalFixedMixture model and empty data", {
-  empty_data <- h_get_data_mixture(empty = TRUE)
+  data <- h_get_data_mixture(empty = TRUE)
   model <- h_get_logistic_normal_fixed_mix()
   model_log_normal <- h_get_logistic_normal_fixed_mix(log_normal = TRUE)
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
-  result_log_normal <- mcmc(data = empty_data, model = model_log_normal, options = options)
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_normal <- mcmc(data = data, model = model_log_normal, options = options)
   expect_snapshot(result@data)
   expect_snapshot(result_log_normal@data)
 })
@@ -441,11 +416,11 @@ test_that("MCMC computes correct values for LogisticLogNormalMixture model", {
 })
 
 test_that("MCMC computes correct values for LogisticLogNormalMixture model and empty data", {
-  empty_data <- h_get_data_mixture(empty = TRUE)
+  data <- h_get_data_mixture(empty = TRUE)
   model <- h_get_logistic_log_normal_mix()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -527,6 +502,54 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params) 
   expect_snapshot(result_log_dose@data)
 })
 
+test_that("MCMC computes correct values for DualEndpointRW model (fixed params, empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_rw()
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model (empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_rw(fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model with RW2 (empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointRW model (fixed params, empty data) with RW2", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE, fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_rw(use_log_dose = TRUE, rw1 = FALSE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
 # DualEndpointBeta ----
 
 ## constructor ----
@@ -579,6 +602,30 @@ test_that("MCMC throws the error for DualEndpointBeta model when 'ref_dose_beta 
   )
 })
 
+test_that("MCMC computes correct values for DualEndpointBeta model with fixed parameters (empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_beta()
+  model_log_dose <- h_get_dual_endpoint_beta(use_log_dose = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointBeta model (empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_beta(fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_beta(use_log_dose = TRUE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
 # DualEndpointEmax ----
 
 ## constructor ----
@@ -609,6 +656,30 @@ test_that("MCMC computes correct values for DualEndpointEmax model with fixed pa
 
 test_that("MCMC computes correct values for DualEndpointEmax model", {
   data <- h_get_data_dual()
+  model <- h_get_dual_endpoint_emax(fixed = FALSE)
+  model_log_dose <- h_get_dual_endpoint_emax(use_log_dose = TRUE, fixed = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointEmax model with fixed parameters (empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_emax()
+  model_log_dose <- h_get_dual_endpoint_emax(use_log_dose = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
+  expect_snapshot(result@data)
+  expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC computes correct values for DualEndpointEmax model (empty data)", {
+  data <- h_get_data_dual(empty = TRUE)
   model <- h_get_dual_endpoint_emax(fixed = FALSE)
   model_log_dose <- h_get_dual_endpoint_emax(use_log_dose = TRUE, fixed = FALSE)
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
@@ -775,10 +846,10 @@ test_that("MCMC computes correct values for DALogisticLogNormal model", {
 })
 
 test_that("MCMC computes correct values for DALogisticLogNormal model and empty data", {
-  empty_data <- h_get_data_da(empty = TRUE)
+  data <- h_get_data_da(empty = TRUE)
   model <- h_get_da_logistic_log_normal()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  result <- mcmc(data = empty_data, model = model, options = options)
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })

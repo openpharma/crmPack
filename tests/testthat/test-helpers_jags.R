@@ -99,6 +99,41 @@ test_that("h_jags_get_data works as expected", {
   expect_identical(result, expected)
 })
 
+test_that("h_jags_get_data works as expected (datanames and datanames_prior redundant)", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  model@datanames_prior <- "nObs"
+
+  result <- h_jags_get_data(model, data, FALSE)
+  expected <- c(
+    h_slots(data, c("nObs", "y", "x")),
+    model@modelspecs() # nolintr
+  )
+  expect_identical(result, expected)
+})
+
+test_that("h_jags_get_data works as expected (from prior)", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+
+  result <- h_jags_get_data(model, data, TRUE)
+  expected <- model@modelspecs()[c("mean", "prec")] # nolintr
+  expect_identical(result, expected)
+})
+
+test_that("h_jags_get_data works as expected (from prior and datanames_prior)", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  model@datanames_prior <- "nGrid"
+
+  result <- h_jags_get_data(model, data, TRUE)
+  expected <- c(
+    h_slots(data, "nGrid"),
+    model@modelspecs()[c("mean", "prec")] # nolintr
+  )
+  expect_identical(result, expected)
+})
+
 test_that("h_jags_get_data works with arguments to modelspecs", {
   data <- h_get_data()
   data@y <- c(1L, 0L, 0L, 1L, 1L, 0L, 0L, 0L, 0L, 0L, 1L, 1L)
