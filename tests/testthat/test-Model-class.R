@@ -853,3 +853,75 @@ test_that("MCMC computes correct values for DALogisticLogNormal model and empty 
   result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
+
+# TITELogisticLogNormal ----
+
+## constructor ----
+
+test_that("TITELogisticLogNormal object can be created with user constructor (linear weight)", {
+  result <- expect_silent(h_get_tite_logistic_log_normal("linear"))
+  expect_valid(result, "TITELogisticLogNormal")
+})
+
+test_that("TITELogisticLogNormal object can be created with user constructor (adaptive weight)", {
+  result <- expect_silent(h_get_tite_logistic_log_normal("adaptive"))
+  expect_valid(result, "TITELogisticLogNormal")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for TITELogisticLogNormal model (linear)", {
+  data <- h_get_data_da()
+  model <- h_get_tite_logistic_log_normal("linear")
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormal model (linear, data 2)", {
+  data <- h_get_data_da_2()
+  model <- h_get_tite_logistic_log_normal("linear")
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormal model (linear, empty data)", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_tite_logistic_log_normal("linear")
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  # Suppress JAGS warnings about unused variables `zeros` and `cadj`.
+  result <- suppressWarnings(mcmc(data = data, model = model, options = options))
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptive)", {
+  data <- h_get_data_da()
+  model <- h_get_tite_logistic_log_normal("adaptive")
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptive, data 2)", {
+  data <- h_get_data_da_2()
+  model <- h_get_tite_logistic_log_normal("adaptive")
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptive, empty data)", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_tite_logistic_log_normal("adaptive")
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  # Suppress JAGS warnings about unused variables `zeros` and `cadj`.
+  result <- suppressWarnings(mcmc(data = data, model = model, options = options))
+  expect_snapshot(result@data)
+})

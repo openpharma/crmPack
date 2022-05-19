@@ -1049,3 +1049,27 @@ test_that("v_model_da_logistic_log_normal returns message for wrong cond_pem", {
     "cond_pem must be a flag"
   )
 })
+
+# v_model_tite_logistic_log_normal ----
+
+test_that("v_model_tite_logistic_log_normal passes for valid object", {
+  object <- h_get_tite_logistic_log_normal()
+  expect_true(v_model_tite_logistic_log_normal(object))
+})
+
+test_that("v_model_da_logistic_log_normal returns message for wrong weight_method", {
+  object <- h_get_tite_logistic_log_normal()
+
+  # Assigning wrong weight_method.
+  object@weight_method <- "linearadaptive"
+  expect_equal(
+    v_model_tite_logistic_log_normal(object),
+    "weight_method must be a string equal either to linear or adaptive"
+  )
+
+  object@weight_method <- c("linear", "adaptive")
+  expect_equal(
+    v_model_tite_logistic_log_normal(object),
+    "weight_method must be a string equal either to linear or adaptive"
+  )
+})

@@ -1672,3 +1672,75 @@
       [4,] 3.430421e-05 1.14915573 0.38080491
       
 
+# MCMC computes correct values for TITELogisticLogNormal model (linear)
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -1.379114 -1.379114 -1.379114 -1.780157
+      
+      $alpha1
+      [1] 0.5018051 0.5018051 0.5018051 0.3285917
+      
+
+# MCMC computes correct values for TITELogisticLogNormal model (adaptive)
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -1.389973 -1.389973 -1.389973 -1.797080
+      
+      $alpha1
+      [1] 0.5051006 0.5051006 0.5051006 0.3286390
+      
+
+# MCMC computes correct values for TITELogisticLogNormal model (linear, empty data)
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -0.7258644 -1.6047136 -2.3268647  0.6697347
+      
+      $alpha1
+      [1] 9.323290 2.114870 5.552484 2.024655
+      
+
+# MCMC computes correct values for TITELogisticLogNormal model (adaptive, empty data)
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -0.7258644 -1.6047136 -2.3268647  0.6697347
+      
+      $alpha1
+      [1] 9.323290 2.114870 5.552484 2.024655
+      
+
+# MCMC computes correct values for TITELogisticLogNormal model (linear) 2
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -0.1830693 -0.1830693 -0.1830693 -0.5301295
+      
+      $alpha1
+      [1] 0.5047497 0.5047497 0.5047497 0.3499039
+      
+
+# MCMC computes correct values for TITELogisticLogNormal model (adaptive) 2
+
+    Code
+      result@data
+    Output
+      $alpha0
+      [1] -0.1830693 -0.1830693 -0.1830693 -0.5301295
+      
+      $alpha1
+      [1] 0.5047497 0.5047497 0.5047497 0.3499039
+      
+

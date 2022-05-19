@@ -176,7 +176,9 @@ h_get_dual_endpoint <- function(use_log_dose = FALSE, fixed = TRUE) {
   )
 }
 
-h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE, fixed = TRUE) {
+h_get_dual_endpoint_rw <- function(use_log_dose = FALSE,
+                                   rw1 = TRUE,
+                                   fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   sigma2betaW <- if (fixed) { # nolint
     0.01
@@ -196,7 +198,8 @@ h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE, fixed = TRU
   )
 }
 
-h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
+h_get_dual_endpoint_beta <- function(use_log_dose = FALSE,
+                                     fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   if (fixed) {
     E0 <- 10 # nolint
@@ -225,7 +228,8 @@ h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
   )
 }
 
-h_get_dual_endpoint_emax <- function(use_log_dose = FALSE, fixed = TRUE) {
+h_get_dual_endpoint_emax <- function(use_log_dose = FALSE,
+                                     fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   if (fixed) {
     E0 <- 10 # nolint
@@ -273,7 +277,8 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
   )
 }
 
-h_get_eff_log_log <- function(emptydata = FALSE, dlt_observed_only = FALSE) {
+h_get_eff_log_log <- function(emptydata = FALSE,
+                              dlt_observed_only = FALSE) {
   dose_grid <- seq(25, 300, 25)
 
   data <- if (emptydata) {
@@ -307,7 +312,9 @@ h_get_eff_log_log <- function(emptydata = FALSE, dlt_observed_only = FALSE) {
   )
 }
 
-h_get_eff_flexi <- function(emptydata = FALSE, rw1 = TRUE, dlt_observed_only = FALSE) {
+h_get_eff_flexi <- function(emptydata = FALSE,
+                            rw1 = TRUE,
+                            dlt_observed_only = FALSE) {
   dose_grid <- seq(25, 300, 25)
 
   data <- if (emptydata) {
@@ -350,5 +357,14 @@ h_get_da_logistic_log_normal <- function() {
     npiece = 3,
     l = c(0.5, 0.5, 0.5),
     c_par = 2
+  )
+}
+
+h_get_tite_logistic_log_normal <- function(weight_method = "linear") {
+  TITELogisticLogNormal(
+    mean = c(0, 1),
+    cov = diag(2),
+    ref_dose = 1,
+    weight_method = weight_method
   )
 }
