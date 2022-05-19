@@ -2385,6 +2385,8 @@ EffFlexi <- function(eff,
   validity = v_model_da_logistic_log_normal
 )
 
+## constructor ----
+
 #' @rdname DALogisticLogNormal-class
 #'
 #' @param npiece (`number`)\cr the number of pieces in the `PEM`.
@@ -2496,160 +2498,121 @@ DALogisticLogNormal <- function(npiece = 3,
   )
 }
 
-# nolint start
-
 # TITELogisticLogNormal ----
 
-## ============================================================
+## class ----
 
-##' Standard logistic model with bivariate (log) normal prior (for TITE-CRM use)
-##'
-##' This is a TITE-CRM based on a logistic regression model using
-##' a bivariate normal prior on the intercept and log slope parameters.
-##' This class inherits from the normal logistic model class.
-##'
-##' @slot weightMethod weight function method: linear or adaptive
-##' (this was used in Liu, Yin and Yuan's paper)
-##'
-##' @export
-##' @keywords classes
-.TITELogisticLogNormal <-
-  setClass(Class="TITELogisticLogNormal",
-           representation(weightMethod="character"),
-           prototype(weightMethod="linear"),
-           contains="LogisticLogNormal",
-           validity=
-             function(object){
-               o <- Validate()
+#' `TITELogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TITELogisticLogNormal`] is the class for TITE-CRM based on a logistic
+#' regression model using a bivariate normal prior on the intercept and log
+#' slope parameters.
+#' This class inherits from the [`LogisticLogNormal`].
+#'
+#' @slot weight_method (`string`)\cr the weight function method: either linear
+#'   or adaptive. This was used in Liu, Yin and Yuan's paper.
+#'
+#' @seealso [`DALogisticLogNormal`].
+#'
+#' @aliases TITELogisticLogNormal
+#' @export
+#'
+.TITELogisticLogNormal <- setClass(
+  Class = "TITELogisticLogNormal",
+  slots = c(weight_method = "character"),
+  prototype = prototype(weight_method = "linear"),
+  contains = "LogisticLogNormal",
+  validity = v_model_tite_logistic_log_normal
+)
 
-               allweightMethod <- c("linear", "adaptive")
+## constructor ----
 
-               o$check(all((object@weightMethod) %in%
-                             allweightMethod),
-                       "weightMethod must be either linear or adaptive")
-
-               o$check(identical(length(object@weightMethod), 1L),
-                       "weightMethod must have length 1")
-             })
-
-
-##' Initialization function for the `TITELogisticLogNormal` class
-##'
-##' @param weightMethod see \code{\linkS4class{TITELogisticLogNormal}}
-##' @param \dots see \code{\linkS4class{LogisticLogNormal}}
-##' @return the \code{\linkS4class{TITELogisticLogNormal}} object
-##'
-##' @export
-##' @keywords methods
-TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
-                                  ...)
-{
-  weightMethod <- match.arg(weightMethod)
+#' @rdname TITELogisticLogNormal-class
+#'
+#' @param weight_method (`string`)\cr the weight function method: either linear
+#'   or adaptive. This was used in Liu, Yin and Yuan's paper.
+#' @inheritDotParams LogisticLogNormal
+#'
+#' @export
+#' @example examples/Model-class-TITELogisticLogNormal.R
+#'
+TITELogisticLogNormal <- function(weight_method = "linear",
+                                  ...) {
+  assert_character(weight_method, min.len = 1L, max.len = 2L, any.missing = FALSE)
 
   start <- LogisticLogNormal(...)
 
-  .TITELogisticLogNormal(start,
-                         weightMethod=weightMethod,
-                         datamodel=
-                           function(){
-                             # here need to dummy use u and Tmax from the DataDA object
-                             use_u <- u + 1
-                             use_Tmax <- Tmax + 1
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
 
-                             for (i in 1:nObs) #for each patient
-                             {
-                               #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
+      # The piecewise exponential likelihood. Notice that:
+      # when y=1             -> DLT=1 and u=<T;
+      # when y=0 & T<t (u=T) -> DLT=0;
+      # when y=0 & T>t (u<T) -> DLT=NA/missing;
+      # when indx=0 -> censored, i.e u<T and event=0;
+      # when indx=1 -> not censored, i.e. u>=T or event=1;
+      L[i] <- pow(p[i], y[i]) * pow((1 - w[i] * p[i]), (1 - y[i]))
 
-                               #  NOTE: In the original r2JAGs code, the notation "y[i]" was "event[i]"
-                               #        and "DLT[i]" was "y[i]";
-                               #  Other notations: t[i]-- the true DLT time of patient i if he/she has
-                               #                          DLT eventually;
-                               #                   u[i]-- DLT free survival
+      # Apply zero trick in JAGS.
+      phi[i] <- -log(L[i]) + cadj
+      zeros[i] ~ dpois(phi[i])
+    }
+  }
 
+  modelspecs <- function(nObs, u, Tmax, y) {
+    ms <- list(
+      ref_dose = start@ref_dose,
+      prec = start@params@prec,
+      mean = start@params@mean,
+      zeros = rep(0, nObs),
+      cadj = 1e10
+    )
 
-                               #Part I: describe the logistic model of DLTs vs dose;
+    # Calculate weights `w` based on the input data.
+    if (nObs > 0) {
+      if (weight_method == "linear") {
+        w <- u / Tmax
+      } else if (weight_method == "adaptive") {
+        nDLT <- sum(y)
+        if (nDLT > 0) {
+          u_dlt <- sort(u[y == 1])
+          w <- sapply(u, function(u_i) {
+            m <- sum(u_i >= u_dlt)
+            w_i <- if (m == 0) {
+              u_i / u_dlt[1]
+            } else if (m < nDLT) {
+              m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
+            } else { # m == nDLT
+              m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
+            }
+            w_i / (nDLT + 1)
+          })
+        } else {
+          w <- u / Tmax
+        }
+      }
+      w[y == 1] <- 1
+      w[u == Tmax] <- 1
 
-                               logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                               StandLogDose[i] <- log(x[i] / ref_dose)
+      c(ms, list(w = w))
+    } else {
+      ms
+    }
+  }
 
-                               #Part II: describe the piecewise exponential;
-                               #please notice:
-                               #when y=1             -> DLT=1 and u=<T;
-                               #when y=0 & T<t (u=T) -> DLT=0;
-                               #when y=0 & T>t (u<T) -> DLT=NA/missing;
-
-                               #when indx=0 -> censored, i.e u<T and event=0;
-                               #when indx=1 -> not censored, i.e. u>=T or event=1;
-
-
-                               #apply zero trick in JAGS;
-                               zeros[i]~dpois(phi[i])
-                               phi[i]<- -log(L[i]) + cadj
-
-                               #the likelihood function;
-                               L[i]<- pow(p[i],y[i])*pow((1-w[i]*p[i]),(1-y[i]))
-                             }
-                           },
-
-                         datanames=c("nObs", "y", "x", "u", "Tmax"),
-
-                         modelspecs=
-                           function(nObs, u, Tmax, y){
-
-                             ## calculate weight w based on the input data
-                             if(length(u)){
-
-                               if(weightMethod=="linear"){
-                                 w<-u/Tmax
-                               }
-                               else if(weightMethod=="adaptive"){
-
-                                 w <- NA
-                                 support <- sort(u[y == 1])
-                                 totalToxic <- sum(y)
-
-                                 if (totalToxic) {
-                                   for (i in 1:length(u)) {
-                                     m <- length(support[support <= u[i]])
-                                     if (!m){
-                                       w[i] <- u[i]/support[1]/(totalToxic + 1)
-                                     }
-
-                                     else if (m == totalToxic){
-                                       w[i] <- (totalToxic + (u[i] - support[totalToxic])/(Tmax+0.00000001 -
-                                                                                             support[totalToxic]))/(totalToxic + 1)
-                                     }
-
-                                     else {
-                                       w[i] <- (m + (u[i] - support[m])/(support[m + 1] - support[m]))/(totalToxic + 1)
-                                     }
-                                   }
-                                 }
-                                 else{
-                                   w <- u/Tmax
-                                 }
-                               }
-                             }
-                             else{
-                               w <- 1
-                             }
-                             w[y == 1] <- 1
-                             w[u==Tmax] <- 1
-
-
-                             list(ref_dose=start@ref_dose,
-                                  prec=start@params@prec,
-                                  mean=start@params@mean,
-                                  zeros=rep(0, nObs),
-                                  cadj=1e10,
-                                  w=w)
-                           })
-
+  .TITELogisticLogNormal(
+    start,
+    weight_method = weight_method,
+    datamodel = datamodel,
+    modelspecs = modelspecs,
+    datanames = c("nObs", "y", "x")
+  )
 }
-validObject(TITELogisticLogNormal(mean=c(0, 1),
-                                  cov=diag(2),
-                                  ref_dose=1,
-                                  weightMethod="linear"))
+
+# nolint start
 
 # OneParExpNormalPrior ----
 

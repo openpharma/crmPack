@@ -2,8 +2,8 @@
 * Removed `AllModels` class.
 * Added new slot `datanames_prior` for `GeneralModel` class.
 * Moved `datanames` slot from `AllModels` class to its child class `GeneralModel`.
-* Renamed several slots in `EffFlexi` and `DALogisticLogNormal` classes and
-  adjusted corresponding constructor functions.
+* Renamed several slots in `EffFlexi`, `DALogisticLogNormal` and
+  `TITELogisticLogNormal` classes and adjusted corresponding constructor functions.
 * Renamed `Eff` argument to `eff` and `Effdose` to `eff_dose` in `Effloglog` class
   constructor.
 * Renamed `ExpEff` methods for pseudo-data efficacy models to `efficacy`.

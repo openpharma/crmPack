@@ -58,6 +58,7 @@ reference:
       - Effloglog
       - EffFlexi
       - DALogisticLogNormal
+      - TITELogisticLogNormal
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
@@ -112,6 +113,7 @@ reference:
       - v_model_eff_log_log
       - v_model_eff_flexi
       - v_model_da_logistic_log_normal
+      - v_model_tite_logistic_log_normal
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
       - v_increments_numdoselevels

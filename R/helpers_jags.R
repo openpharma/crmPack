@@ -132,7 +132,7 @@ h_jags_get_data <- function(model, data, from_prior) {
   # 2) Extract variables from `data` as required by `datanames`.
 
   datanames <- if (from_prior) {
-    # A workaround to avoid JAGS error of unused variables.
+    # A workaround to avoid JAGS warning about unused variables.
     modelspecs <- modelspecs[setdiff(names(modelspecs), c("ref_dose", "use_log_dose"))]
     model@datanames_prior
   } else {

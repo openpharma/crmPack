@@ -520,3 +520,13 @@ v_model_da_logistic_log_normal <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_model_objects validates that [`TITELogisticLogNormal`] class slots are valid.
+v_model_tite_logistic_log_normal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_string(object@weight_method, pattern = "^linear$|^adaptive$"),
+    "weight_method must be a string equal either to linear or adaptive"
+  )
+  v$result()
+}
