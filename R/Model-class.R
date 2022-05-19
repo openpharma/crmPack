@@ -2585,7 +2585,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
               u_i / u_dlt[1]
             } else if (m < nDLT) {
               m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
-            } else { # m == DLT
+            } else { # m == nDLT
               m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
             }
             w_i / (nDLT + 1)
