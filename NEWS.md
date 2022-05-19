@@ -1,4 +1,4 @@
-# Version 1.0.9000.9015
+# Version 1.0.9000.9016
 * Removed `AllModels` class.
 * Added new slot `datanames_prior` for `GeneralModel` class.
 * Moved `datanames` slot from `AllModels` class to its child class `GeneralModel`.
