@@ -45,12 +45,27 @@ myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
-# Combine the stopping rules, obtaining (in this specific example) a list of stopping 
+# Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAny'
-myStopping <- (myStopping1 | myStopping2) | myStopping3
+myStopping <- (myStopping1 & myStopping2) | myStopping3
 
 # Evaluate if to stop the Trial
-stopTrial(stopping=myStopping, dose=doseRecommendation$value,
+result <- stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
+ind_results <- attr(result, "individual")
+str(ind_results)
+unlist(ind_results)
+
+str(result)
+
+attr(result, "highest")
 
 # nolint end
+
+# Report:
+# A = (myStopping1 & myStopping2) | B = myStopping3
+# A (stoppingName1 & stoppingName2) : 70%
+# B (stoppingName3) : 30%
+
+
+

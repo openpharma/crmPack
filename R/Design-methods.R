@@ -367,7 +367,8 @@ setMethod("simulate",
                                   select=c(middle, lower, upper)),
                            stop=
                            attr(stopit,
-                                "message"))
+                                "message"),
+                           highestStop = attr(stopit, "highest"))
                   return(thisResult)
               }
 
@@ -397,11 +398,16 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+              ## highest level stopping reasons
+              highestStoppingParts <- lapply(resultList, "[[", "highestStop")
+              highestStoppingMatrix <- do.call(rbind, highestStoppingParts)
+
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,
                                  doses=recommendedDoses,
                                  fit=fitList,
                                  stopReasons=stopReasons,
+                                 highestStoppingMatrix = highestStoppingMatrix,
                                  seed=RNGstate)
 
               return(ret)

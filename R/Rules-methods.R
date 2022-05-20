@@ -1218,6 +1218,7 @@ setMethod("stopTrial",
               overallText <- lapply(individualResults, attr, "message")
 
               return(structure(overallResult,
+                               individual=individualResults,
                                message=overallText))
           })
 
@@ -1266,7 +1267,17 @@ setMethod("stopTrial",
               ## but let them in the list structure
               overallText <- lapply(individualResults, attr, "message")
 
+              highestLevelNames <- sapply(individualResults, as.character)
+
+              highestLevelResults <- stats::setNames(
+                unlist(ind_results),
+                overallNames
+              )
+
+
               return(structure(overallResult,
+                               individual=individualResults,
+                               highest = highestLevelResults,
                                message=overallText))
           })
 
