@@ -187,6 +187,20 @@
     Output
       [1]  75.82941 108.33195
 
+# dose-OneParExpNormalPrior works as expected
+
+    Code
+      result
+    Output
+      [1] 2.500000 3.368185 4.069243 4.916871
+
+# dose-OneParExpNormalPrior works as expected for scalar samples
+
+    Code
+      result
+    Output
+      [1] 3.710803 4.885153
+
 # prob-LogisticNormal works as expected
 
     Code
@@ -375,4 +389,18 @@
       result
     Output
       [1] 0.8722965 0.9371023
+
+# prob-OneParExpNormalPrior works as expected
+
+    Code
+      result
+    Output
+      [1] 0.9000000 0.8405405 0.7509625 0.4590874
+
+# prob-OneParExpNormalPrior works as expected for scalar samples
+
+    Code
+      result
+    Output
+      [1] 0.7509625 0.7509625
 

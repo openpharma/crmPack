@@ -4,7 +4,7 @@
 
 test_that("doseFunction-GeneralModel returns correct dose function", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
@@ -38,7 +38,7 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
 
 test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
-  samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
@@ -70,7 +70,7 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
 
 test_that("probFunction-GeneralModel returns correct prob function", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
@@ -104,7 +104,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
 
 test_that("probFunction-ModelTox returns correct prob function", {
   model <- h_get_logistic_indep_beta()
-  samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
@@ -136,7 +136,7 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
 
 test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   model <- h_get_eff_log_log()
-  samples <- Samples(data = list(theta1 = -4.8, theta2 = 3.7), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7))
   eff_args <- c("dose", "model", "samples")
 
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
@@ -618,6 +618,42 @@ test_that("dose-LogisticIndepBeta-noSamples throws the error when x is not a val
   )
 })
 
+## OneParExpNormalPrior ----
+
+test_that("dose-OneParExpNormalPrior works as expected", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
+
+  result <- dose(0.4, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = 1))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scalar", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
+  )
+  expect_error(
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
+  )
+})
+
 # prob ----
 
 ## LogisticNormal ----
@@ -656,13 +692,7 @@ test_that("prob-LogisticNormal throws the error when dose is not a valid scalar"
 
 test_that("prob-LogisticLogNormal works as expected", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(
-    data = list(
-      alpha0 = c(0, -1, 1, 2),
-      alpha1 = c(0, 2, 1, -1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
-  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
   expect_snapshot(result)
@@ -1048,6 +1078,38 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
 
   expect_error(
     prob(-3, dlt_model),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## OneParExpNormalPrior ----
+
+test_that("prob-OneParExpNormalPrior works as expected", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
+
+  result <- prob(60, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = 1))
+
+  result <- prob(c(20, 60), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid scalar", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    prob(c(40, 50), model, samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
