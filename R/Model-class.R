@@ -2612,85 +2612,86 @@ TITELogisticLogNormal <- function(weight_method = "linear",
   )
 }
 
-# nolint start
-
 # OneParExpNormalPrior ----
 
-## ============================================================
+## class ----
 
-##' CRM Model with Skeleton Prior Probabilities
-##'
-##' This is a standard CRM with a normal prior on the log power parameter
-##' for the skeleton prior probabilities.
-##'
-##' @slot skeletonFun function to calculate the prior DLT probabilities.
-##' @slot skeletonProbs skeleton prior probabilities.
-##' @slot sigma2 prior variance of log power parameter alpha.
-##'
-##' @export
-##' @aliases OneParExpNormalPrior
-##' @keywords classes
-.OneParExpNormalPrior <-
-  setClass(Class = "OneParExpNormalPrior",
-           contains = "Model",
-           representation(skeletonFun = "function",
-                          skeletonProbs = "numeric",
-                          sigma2 = "numeric"),
-           validity=
-             function(object){
-               o <- Validate()
+#' `OneParExpNormalPrior`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`OneParExpNormalPrior`] is the class a standard CRM with a normal prior on
+#' the log power parameter for the skeleton prior probabilities.
+#'
+#' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
+#' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
+#' @slot skel_probs (`numeric`)\cr skeleton prior probabilities.
+#' @slot sigma2 (`number`)\cr prior variance of log power parameter alpha.
+#'
+#' @seealso [`ModelLogNormal`].
+#'
+#' @aliases OneParExpNormalPrior
+#' @export
+#'
+.OneParExpNormalPrior <- setClass(
+  Class = "OneParExpNormalPrior",
+  slots = c(
+    skel_fun = "function",
+    skel_fun_inv = "function",
+    skel_probs = "numeric",
+    sigma2 = "numeric"
+  ),
+  contains = "Model",
+  validity = v_model_one_par_exp_normal_prior
+)
 
-               o$check(identical(length(object@sigma2), 1L) &&
-                         object@sigma2 > 0 && is.finite(object@sigma2),
-                       "sigma2 must be a positive finite number")
+## constructor ----
 
-               o$check(all(object@skeletonProbs >= 0 & object@skeletonProbs <= 1),
-                       "skeletonProbs must be probabilities between 0 and 1")
-             })
+#' @rdname OneParExpNormalPrior-class
+#'
+#' @param skel_probs (`numeric`)\cr skeleton prior probabilities.
+#' @param dose_grid (`numeric`)\cr dose grid.
+#' @param sigma2 (`number`)\cr prior variance of log power parameter alpha.
+#'
+#' @export
+#' @example examples/Model-class-OneParExpNormalPrior.R
+#'
+OneParExpNormalPrior <- function(skel_probs,
+                                 dose_grid,
+                                 sigma2) {
+  assert_numeric(skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE)
+  assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
+  assert_number(sigma2, lower = .Machine$double.xmin, finite = TRUE)
 
-##' @describeIn OneParExpNormalPrior-class Initialization function for the
-##'   `OneParExpNormalPrior` class.
-##' @param skeletonProbs skeleton prior probabilities.
-##' @param doseGrid dose grid.
-##' @param sigma2 prior variance of log power parameter alpha.
-##'
-##' @export
-##' @keywords methods
-OneParExpNormalPrior <- function(skeletonProbs,
-                                 doseGrid,
-                                 sigma2)
-{
-  skeletonFun <- approxfun(x = doseGrid, y = skeletonProbs, rule = 2)
-  invSkeletonFun <- approxfun(x = skeletonProbs, y = doseGrid, rule = 1)
+  skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
+  skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 1)
 
   .OneParExpNormalPrior(
-    skeletonFun = skeletonFun,
-    skeletonProbs = skeletonProbs,
+    skel_fun = skel_fun,
+    skel_fun_inv = skel_fun_inv,
+    skel_probs = skel_probs,
     sigma2 = sigma2,
-    datamodel = function(){
-      for (i in 1:nObs)
-      {
+    datamodel = function() {
+      for (i in 1:nObs) {
+        p[i] <- skel_probs[xLevel[i]]^exp(alpha)
         y[i] ~ dbern(p[i])
-        p[i] <- skeletonProbs[xLevel[i]]^exp(alpha)
-      }},
+      }
+    },
+    priormodel = function() {
+      alpha ~ dnorm(0, 1 / sigma2)
+    },
+    modelspecs = function() {
+      list(skel_probs = skel_probs, sigma2 = sigma2)
+    },
+    init = function() {
+      list(alpha = 1)
+    },
     datanames = c("nObs", "y", "xLevel"),
-    prob = function(dose, alpha){ skeletonFun(dose)^exp(alpha) },
-    dose = function(x, alpha){ invSkeletonFun(x^(1 / exp(alpha))) },
-    priormodel = function(){ alpha ~ dnorm(0, 1 / sigma2) },
-    modelspecs = function(){ list(skeletonProbs = skeletonProbs,
-                                  sigma2 = sigma2) },
-    init = function(){ list(alpha = 1) }, sample = "alpha")
+    sample = "alpha"
+  )
 }
 
-data <- Data(doseGrid = c(1, 2, 3, 4, 5))
-skeletonProbs <- seq(from = 0.1, to = 0.9, length = length(data@doseGrid))
-validObject(OneParExpNormalPrior(
-  skeletonProbs = skeletonProbs,
-  doseGrid = data@doseGrid,
-  sigma2 = 2
-))
-
-## ============================================================
+# nolint start
 
 # FractionalCRM ----
 
@@ -2729,7 +2730,7 @@ FractionalCRM <- function(...) {
         for (i in 1:nObs) #for each patient
         {
           #  DLT[i] ~ dbern(p[i])  # but part of DLTs are fractions.
-          p[i] <- skeletonProbs[xLevel[i]]^exp(alpha)
+          p[i] <- skel_probs[xLevel[i]]^exp(alpha)
 
           #please notice:
           #when y=1             -> DLT=1 and u=<T;
@@ -2765,7 +2766,7 @@ FractionalCRM <- function(...) {
         }
 
         list(
-          skeletonProbs = start@skeletonProbs,
+          skel_probs = start@skel_probs,
           sigma2 = start@sigma2,
           zeros = rep(0, nObs),
           cadj = 1e10,
@@ -2776,8 +2777,8 @@ FractionalCRM <- function(...) {
   )
 }
 validObject(FractionalCRM(
-  skeletonProbs = c(0.1, 0.2, 0.3, 0.4),
-  doseGrid = c(10, 30, 50, 100),
+  skel_probs = c(0.1, 0.2, 0.3, 0.4),
+  dose_grid = c(10, 30, 50, 100),
   sigma2 = 2
 ))
 

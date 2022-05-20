@@ -5,36 +5,42 @@
 \alias{OneParExpNormalPrior-class}
 \alias{.OneParExpNormalPrior}
 \alias{OneParExpNormalPrior}
-\title{CRM Model with Skeleton Prior Probabilities}
+\title{\code{OneParExpNormalPrior}}
 \usage{
-OneParExpNormalPrior(skeletonProbs, doseGrid, sigma2)
+OneParExpNormalPrior(skel_probs, dose_grid, sigma2)
 }
 \arguments{
-\item{skeletonProbs}{skeleton prior probabilities.}
+\item{skel_probs}{(\code{numeric})\cr skeleton prior probabilities.}
 
-\item{doseGrid}{dose grid.}
+\item{dose_grid}{(\code{numeric})\cr dose grid.}
 
-\item{sigma2}{prior variance of log power parameter alpha.}
+\item{sigma2}{(\code{number})\cr prior variance of log power parameter alpha.}
 }
 \description{
-This is a standard CRM with a normal prior on the log power parameter
-for the skeleton prior probabilities.
-}
-\section{Functions}{
-\itemize{
-\item \code{OneParExpNormalPrior}: Initialization function for the
-\code{OneParExpNormalPrior} class.
-}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
+\code{\link{OneParExpNormalPrior}} is the class a standard CRM with a normal prior on
+the log power parameter for the skeleton prior probabilities.
+}
 \section{Slots}{
 
 \describe{
-\item{\code{skeletonFun}}{function to calculate the prior DLT probabilities.}
+\item{\code{skel_fun}}{(\code{function})\cr function to calculate the prior DLT probabilities.}
 
-\item{\code{skeletonProbs}}{skeleton prior probabilities.}
+\item{\code{skel_fun_inv}}{(\code{function})\cr inverse function of \code{skel_fun}.}
 
-\item{\code{sigma2}}{prior variance of log power parameter alpha.}
+\item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities.}
+
+\item{\code{sigma2}}{(\code{number})\cr prior variance of log power parameter alpha.}
 }}
 
-\keyword{classes}
-\keyword{methods}
+\examples{
+my_model <- OneParExpNormalPrior(
+  skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+  dose_grid = 1:5,
+  sigma2 = 2
+)
+}
+\seealso{
+\code{\link{ModelLogNormal}}.
+}

@@ -368,3 +368,11 @@ h_get_tite_logistic_log_normal <- function(weight_method = "linear") {
     weight_method = weight_method
   )
 }
+
+h_get_one_par_exp_normal_prior <- function() {
+  OneParExpNormalPrior(
+    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+    dose_grid = 1:5,
+    sigma2 = 2
+  )
+}

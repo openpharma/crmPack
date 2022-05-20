@@ -1289,6 +1289,57 @@ setMethod(
   }
 )
 
+# OneParExpNormalPrior ----
+
+## dose ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' @aliases dose-OneParExpNormalPrior
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "OneParExpNormalPrior",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun_inv <- model@skel_fun_inv
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha))
+
+    skel_fun_inv(x^(1 / exp(alpha)))
+  }
+)
+
+## prob ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-OneParExpNormalPrior
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "OneParExpNormalPrior",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun <- model@skel_fun
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
+
+    skel_fun(dose)^exp(alpha)
+  }
+)
+
 # NOT CLEANED UP YET! ----
 
 # nolint start

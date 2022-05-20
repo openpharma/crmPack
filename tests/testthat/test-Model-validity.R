@@ -1057,7 +1057,7 @@ test_that("v_model_tite_logistic_log_normal passes for valid object", {
   expect_true(v_model_tite_logistic_log_normal(object))
 })
 
-test_that("v_model_da_logistic_log_normal returns message for wrong weight_method", {
+test_that("v_model_tite_logistic_log_normal returns message for wrong weight_method", {
   object <- h_get_tite_logistic_log_normal()
 
   # Assigning wrong weight_method.
@@ -1071,5 +1071,52 @@ test_that("v_model_da_logistic_log_normal returns message for wrong weight_metho
   expect_equal(
     v_model_tite_logistic_log_normal(object),
     "weight_method must be a string equal either to linear or adaptive"
+  )
+})
+
+# v_model_one_par_exp_normal_prior ----
+
+test_that("v_model_one_par_exp_normal_prior passes for valid object", {
+  object <- h_get_one_par_exp_normal_prior()
+  expect_true(v_model_one_par_exp_normal_prior(object))
+})
+
+test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_fun - skel_fun_inv", {
+  object <- h_get_one_par_exp_normal_prior()
+
+  # Assigning wrong skel_probs.
+  object@skel_fun <- function(x) 2 * x
+  object@skel_fun_inv <- function(x) x^2
+  expect_equal(
+    v_model_one_par_exp_normal_prior(object),
+    "skel_fun_inv must be an inverse funtion of skel_fun function"
+  )
+})
+
+test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_probs", {
+  object <- h_get_one_par_exp_normal_prior()
+
+  # Assigning wrong skel_probs.
+  object@skel_probs <- c(-1, 0.5, Inf)
+  expect_equal(
+    v_model_one_par_exp_normal_prior(object),
+    "skel_probs must be probabilities between 0 and 1"
+  )
+})
+
+test_that("v_model_one_par_exp_normal_prior returns message for wrong sigma2", {
+  object <- h_get_one_par_exp_normal_prior()
+
+  # Assigning wrong sigma2.
+  object@sigma2 <- -1
+  expect_equal(
+    v_model_one_par_exp_normal_prior(object),
+    "sigma2 must be a positive finite number"
+  )
+
+  object@sigma2 <- 1:2
+  expect_equal(
+    v_model_one_par_exp_normal_prior(object),
+    "sigma2 must be a positive finite number"
   )
 })
