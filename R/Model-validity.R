@@ -530,3 +530,24 @@ v_model_tite_logistic_log_normal <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_model_objects validates that [`OneParExpNormalPrior`] class slots are valid.
+v_model_one_par_exp_normal_prior <- function(object) {
+  v <- Validate()
+  y <- seq(from = 0, to = 1, by = 0.1) # Skeleton prior probabilities.
+  x <- object@skel_fun_inv(y) # Dose grid.
+  not_NA <- !is.na(x)
+  v$check(
+    all(object@skel_fun(x[not_NA]) == y[not_NA]),
+    "skel_fun_inv must be an inverse funtion of skel_fun function"
+  )
+  v$check(
+    test_numeric(object@skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE),
+    "skel_probs must be probabilities between 0 and 1"
+  )
+  v$check(
+    test_number(object@sigma2, lower = .Machine$double.xmin, finite = TRUE),
+    "sigma2 must be a positive finite number"
+  )
+  v$result()
+}

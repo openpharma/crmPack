@@ -925,3 +925,38 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   result <- suppressWarnings(mcmc(data = data, model = model, options = options))
   expect_snapshot(result@data)
 })
+
+# OneParExpNormalPrior ----
+
+## constructor ----
+
+test_that("OneParExpNormalPrior object can be created with user constructor", {
+  result <- expect_silent(
+    OneParExpNormalPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = 1:5,
+      sigma2 = 2
+    )
+  )
+  expect_valid(result, "OneParExpNormalPrior")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for OneParExpNormalPrior model", {
+  data <- h_get_data()
+  model <- h_get_one_par_exp_normal_prior()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for OneParExpNormalPrior model and empty data", {
+  data <- h_get_data(empty = TRUE)
+  model <- h_get_one_par_exp_normal_prior()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  suppressWarnings(result <- mcmc(data = data, model = model, options = options))
+  expect_snapshot(result@data)
+})

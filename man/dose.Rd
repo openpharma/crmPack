@@ -34,6 +34,8 @@
 \alias{dose-Effloglog-noSamples}
 \alias{dose,numeric,EffFlexi,Samples-method}
 \alias{dose-EffFlexi}
+\alias{dose,numeric,OneParExpNormalPrior,Samples-method}
+\alias{dose-OneParExpNormalPrior}
 \title{Computing the Doses for a given independent variable, Model and Samples}
 \usage{
 dose(x, model, samples, ...)
@@ -69,6 +71,8 @@ dose(x, model, samples, ...)
 \S4method{dose}{numeric,Effloglog,missing}(x, model)
 
 \S4method{dose}{numeric,EffFlexi,Samples}(x, model, samples)
+
+\S4method{dose}{numeric,OneParExpNormalPrior,Samples}(x, model, samples)
 }
 \arguments{
 \item{x}{(\code{proportion} or \code{numeric})\cr a value of an independent variable
@@ -163,6 +167,9 @@ probability of the occurrence of a DLE (\code{x}).
 All model parameters (except \code{x}) should be present in the \code{model} object.
 
 \item \code{dose,numeric,EffFlexi,Samples-method}: compute the dose level reaching a specific target
+probability of the occurrence of a DLE (\code{x}).
+
+\item \code{dose,numeric,OneParExpNormalPrior,Samples-method}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 }}
 
