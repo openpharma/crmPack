@@ -1,4 +1,4 @@
-# Version 1.0.9000.9017
+# Version 1.0.9000.9018
 * Added new slot `skel_fun_inv` into `OneParExpNormalPrior` class.
 * Removed `AllModels` class.
 * Added new slot `datanames_prior` for `GeneralModel` class.
