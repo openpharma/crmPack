@@ -1762,3 +1762,21 @@
       [1] -1.0265273  0.3965024 -2.2694077  0.6403072
       
 
+# MCMC computes correct values for FractionalCRM model
+
+    Code
+      result@data
+    Output
+      $alpha
+      [1] -0.2035109  0.4162697  0.7082235  0.4419355
+      
+
+# MCMC computes correct values for FractionalCRM model and empty data
+
+    Code
+      result@data
+    Output
+      $alpha
+      [1] -1.0265273  0.3965024 -2.2694077  0.6403072
+      
+

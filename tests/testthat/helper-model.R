@@ -376,3 +376,11 @@ h_get_one_par_exp_normal_prior <- function() {
     sigma2 = 2
   )
 }
+
+h_get_fractional_crm <- function() {
+  FractionalCRM(
+    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+    dose_grid = c(10, 30, 50, 70, 100),
+    sigma2 = 2
+  )
+}

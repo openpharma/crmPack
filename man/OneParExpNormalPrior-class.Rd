@@ -19,7 +19,7 @@ OneParExpNormalPrior(skel_probs, dose_grid, sigma2)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{OneParExpNormalPrior}} is the class a standard CRM with a normal prior on
+\code{\link{OneParExpNormalPrior}} is the class for a standard CRM with a normal prior on
 the log power parameter for the skeleton prior probabilities.
 }
 \section{Slots}{
