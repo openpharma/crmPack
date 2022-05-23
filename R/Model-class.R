@@ -334,7 +334,7 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 1) {
   Class = "LogisticLogNormalSub",
   slots = c(
     params = "ModelParamsNormal",
-    ref_dose = "number"
+    ref_dose = "numeric"
   ),
   contains = "Model"
 )
@@ -2620,7 +2620,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`OneParExpNormalPrior`] is the class a standard CRM with a normal prior on
+#' [`OneParExpNormalPrior`] is the class for a standard CRM with a normal prior on
 #' the log power parameter for the skeleton prior probabilities.
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
@@ -2691,96 +2691,88 @@ OneParExpNormalPrior <- function(skel_probs,
   )
 }
 
-# nolint start
-
 # FractionalCRM ----
 
-##' Fractional CRM following paper and code by Guosheng Yin et al
-##'
-##' This is a fractional CRM model based on a one parameter CRM (with normal
-##' prior on the log-power parameter) as well as Kaplan-Meier based estimation
-##' of the conditional probability to experience a DLT for non-complete
-##' observations.
-##'
-##' @export
-##' @aliases FractionalCRM
-##' @keywords classes
-.FractionalCRM <-
-  setClass(Class = "FractionalCRM",
-           contains="OneParExpNormalPrior")
+## class ----
 
-##' @describeIn FractionalCRM-class Initialization function for the fractional CRM.
-##'   Takes the same arguments as [OneParExpNormalPrior()].
-##' @param \dots inputs as in [OneParExpNormalPrior()].
-##' @importFrom survival survfit Surv
-##' @export
+#' `FractionalCRM`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`FractionalCRM`] is the class for a fractional CRM model based on a one
+#' parameter CRM (with normal prior on the log-power parameter) as well as
+#' Kaplan-Meier based estimation of the conditional probability to experience a
+#' DLT for non-complete observations.
+#' This fractional CRM model follows the paper and code by Guosheng Yin et al.
+#'
+#' @seealso [`TITELogisticLogNormal`].
+#'
+#' @aliases FractionalCRM
+#' @export
+#'
+.FractionalCRM <- setClass(
+  Class = "FractionalCRM",
+  contains = "OneParExpNormalPrior"
+)
+
+## constructor ----
+
+#' @rdname FractionalCRM-class
+#'
+#' @inheritDotParams OneParExpNormalPrior
+#'
+#' @export
+#' @example examples/Model-class-FractionalCRM.R
+#'
 FractionalCRM <- function(...) {
   start <- OneParExpNormalPrior(...)
 
+  # This is adapted from the TITELogisticLogNormal class.
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      p[i] <- skel_probs[xLevel[i]]^exp(alpha)
+
+      # The piecewise exponential likelihood. Notice that:
+      # when y=1             -> DLT=1 and u=<T;
+      # when y=0 & T<t (u=T) -> DLT=0;
+      # when y=0 & T>t (u<T) -> DLT=NA/missing.
+      # Therefore, `yhat` is used instead of `y` for the likelihood f. (see `modelspecs`).
+      L[i] <- pow(p[i], yhat[i]) * pow((1 - p[i]), (1 - yhat[i]))
+
+      # Apply zero trick in JAGS.
+      phi[i] <- -log(L[i]) + cadj
+      zeros[i] ~ dpois(phi[i])
+    }
+  }
+
+  modelspecs <- function(nObs, u, Tmax, y) {
+    # Calculate fractional contribution `yhat`
+    # based on the input data using the Kaplan-Meier method.
+    yhat <- if (nObs > 0) {
+      km <- survival::survfit(survival::Surv(u, y) ~ 1)
+      s_tau <- tail(km$surv[km$time <= Tmax], 1) # Survival probability = S(Tmax).
+      ifelse(
+        u < Tmax & y == 0L, # Within the assessment window and so far no DLT.
+        yes = 1 - s_tau / sapply(u, function(u_i) tail(km$surv[km$time <= u_i], 1)),
+        no = y
+      )
+    } else {
+      1L
+    }
+
+    list(
+      skel_probs = start@skel_probs,
+      sigma2 = start@sigma2,
+      zeros = rep(0, nObs),
+      cadj = 1e10,
+      yhat = yhat
+    )
+  }
+
   .FractionalCRM(
     start,
-    datamodel=
-      # This is adapted from the TITELogisticLogNormal class.
-      function(){
-        # Note: here we need to dummy use stuff from the DataDA object.
-        use_u <- u + 1
-        use_Tmax <- Tmax + 1
-        use_y <- y + 1
-
-        for (i in 1:nObs) #for each patient
-        {
-          #  DLT[i] ~ dbern(p[i])  # but part of DLTs are fractions.
-          p[i] <- skel_probs[xLevel[i]]^exp(alpha)
-
-          #please notice:
-          #when y=1             -> DLT=1 and u=<T;
-          #when y=0 & T<t (u=T) -> DLT=0;
-          #when y=0 & T>t (u<T) -> DLT=is a fraction
-          # therefore not y directly is used but yhat, which is specified
-          # in modelspecs below.
-
-          #apply zero trick in JAGS;
-          zeros[i] ~ dpois(phi[i])
-          phi[i]<- -log(L[i]) + cadj
-
-          #the likelihood function;
-          L[i] <- pow(p[i], yhat[i]) * pow((1 - p[i]), (1 - yhat[i]))
-        }
-      },
-    modelspecs=
-      function(nObs, u, Tmax, y){
-
-        ## calculate yhat based on the input data using the Kaplan-Meier method.
-        if(length(u)){
-          km   <- survival::survfit(survival::Surv(u, y) ~ 1)  ## K-M Method for Estimating Survival Probability
-          stau <- km$surv[which.min(km$surv[km$time <= Tmax])] ## Calc the Survival Probability = S(Tmax)
-          yhat <- y                                         ## initialize yhat with original y.
-          for(k in seq_len(nObs)){
-            if(u < Tmax && y[k] == 0){ ##  Within the Assessment Window and so far no DLT
-              sTime   <- km$surv[which.min(km$surv[km$time <= u[k]])]
-              yhat[k] <- (sTime - stau) / sTime                   ## Calculate the Fractional Contribution
-            }
-          }
-        } else {
-          yhat <- 1 # just for logistics we need this
-        }
-
-        list(
-          skel_probs = start@skel_probs,
-          sigma2 = start@sigma2,
-          zeros = rep(0, nObs),
-          cadj = 1e10,
-          yhat = yhat
-        )
-      },
-    datanames=c("nObs", "y", "xLevel", "u", "Tmax")
+    datamodel = datamodel,
+    modelspecs = modelspecs,
+    datanames = c("nObs", "xLevel")
   )
 }
-validObject(FractionalCRM(
-  skel_probs = c(0.1, 0.2, 0.3, 0.4),
-  dose_grid = c(10, 30, 50, 100),
-  sigma2 = 2
-))
-
-## ============================================================
-# nolint end

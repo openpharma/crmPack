@@ -60,6 +60,7 @@ reference:
       - DALogisticLogNormal
       - TITELogisticLogNormal
       - OneParExpNormalPrior
+      - FractionalCRM
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta

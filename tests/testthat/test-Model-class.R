@@ -960,3 +960,38 @@ test_that("MCMC computes correct values for OneParExpNormalPrior model and empty
   suppressWarnings(result <- mcmc(data = data, model = model, options = options))
   expect_snapshot(result@data)
 })
+
+# FractionalCRM ----
+
+## constructor ----
+
+test_that("FractionalCRM object can be created with user constructor", {
+  result <- expect_silent(
+    FractionalCRM(
+      skel_probs = c(0.1, 0.2, 0.3, 0.4),
+      dose_grid = c(10, 30, 50, 100),
+      sigma2 = 2
+    )
+  )
+  expect_valid(result, "FractionalCRM")
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for FractionalCRM model", {
+  data <- h_get_data_da()
+  model <- h_get_fractional_crm()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for FractionalCRM model and empty data", {
+  data <- h_get_data_da(empty = TRUE)
+  model <- h_get_fractional_crm()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  suppressWarnings(result <- mcmc(data = data, model = model, options = options))
+  expect_snapshot(result@data)
+})
