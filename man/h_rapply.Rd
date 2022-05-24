@@ -7,8 +7,8 @@
 h_rapply(x, fun, classes, ...)
 }
 \arguments{
-\item{x}{any "list-like" object for which subsetting operator \code{\link[=Extract]{[[}}
-is defined.}
+\item{x}{(\code{any})\cr "list-like" object for which subsetting operator
+\code{\link[=Extract]{[[}} is defined.}
 
 \item{fun}{(\code{function})\cr a function of one "principal" argument, passing
 further arguments via \code{...}.}

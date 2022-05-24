@@ -5,23 +5,35 @@
 \alias{FractionalCRM-class}
 \alias{.FractionalCRM}
 \alias{FractionalCRM}
-\title{Fractional CRM following paper and code by Guosheng Yin et al}
+\title{\code{FractionalCRM}}
 \usage{
 FractionalCRM(...)
 }
 \arguments{
-\item{\dots}{inputs as in \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior()}}.}
+\item{...}{
+  Arguments passed on to \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior}}
+  \describe{
+    \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities.}
+    \item{\code{dose_grid}}{(\code{numeric})\cr dose grid.}
+    \item{\code{sigma2}}{(\code{number})\cr prior variance of log power parameter alpha.}
+  }}
 }
 \description{
-This is a fractional CRM model based on a one parameter CRM (with normal
-prior on the log-power parameter) as well as Kaplan-Meier based estimation
-of the conditional probability to experience a DLT for non-complete
-observations.
-}
-\section{Functions}{
-\itemize{
-\item \code{FractionalCRM}: Initialization function for the fractional CRM.
-Takes the same arguments as \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior()}}.
-}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\keyword{classes}
+\code{\link{FractionalCRM}} is the class for a fractional CRM model based on a one
+parameter CRM (with normal prior on the log-power parameter) as well as
+Kaplan-Meier based estimation of the conditional probability to experience a
+DLT for non-complete observations.
+This fractional CRM model follows the paper and code by Guosheng Yin et al.
+}
+\examples{
+my_model <- FractionalCRM(
+  skel_probs = c(0.1, 0.2, 0.3, 0.4),
+  dose_grid = c(10, 30, 50, 100),
+  sigma2 = 2
+)
+}
+\seealso{
+\code{\link{TITELogisticLogNormal}}.
+}

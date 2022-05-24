@@ -7,8 +7,8 @@
 h_null_if_na(x)
 }
 \arguments{
-\item{x}{any atomic object of length \code{1}. For the definition of "atomic",
-see \code{\link[=is.atomic]{is.atomic()}}.}
+\item{x}{(\code{any})\cr atomic object of length \code{1}. For the definition of
+"atomic", see \code{\link[=is.atomic]{is.atomic()}}.}
 }
 \value{
 \code{NULL} if \code{x} is \code{NA}, otherwise, \code{x}.

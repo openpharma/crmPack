@@ -4,17 +4,17 @@
 
 test_that("doseFunction-GeneralModel returns correct dose function", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
-  dose_args <- c("prob", "model", "samples")
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
+  dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
   dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
   dose_fun_env <- environment(dose_fun)
 
-  expect_function(dose_fun, args = "prob", nargs = 1, null.ok = FALSE)
+  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
   expect_equal(dose_fun_dose_args, dose_args)
   expect_subset(
-    setdiff(dose_fun_dose_args, "prob"),
+    setdiff(dose_fun_dose_args, "x"),
     ls(envir = dose_fun_env)
   )
   expect_identical(dose_fun_env[["model"]], model)
@@ -30,32 +30,32 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
   )
   expect_error(
     doseFunction(model, wrong = 1, alpha1 = 2),
-    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but is \\{'wrong','alpha1'\\}.$"
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but .* \\{'wrong'\\}.$"
   )
 })
 
-## ModelTox ----
+## ModelPseudo ----
 
-test_that("doseFunction-ModelTox returns correct dose function", {
+test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
-  samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
-  dose_args <- c("prob", "model", "samples")
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
+  dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
   dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
   dose_fun_env <- environment(dose_fun)
 
-  expect_function(dose_fun, args = "prob", nargs = 1, null.ok = FALSE)
+  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
   expect_equal(dose_fun_dose_args, dose_args)
   expect_subset(
-    setdiff(dose_fun_dose_args, "prob"),
+    setdiff(dose_fun_dose_args, "x"),
     ls(envir = dose_fun_env)
   )
   expect_identical(dose_fun_env[["model"]], model)
   expect_identical(dose_fun_env[["samples"]], samples)
 })
 
-test_that("doseFunction-ModelTox throws the error when no params are provided", {
+test_that("doseFunction-ModelPseudo throws the error when no params are provided", {
   model <- h_get_logistic_indep_beta()
 
   expect_error(
@@ -70,7 +70,7 @@ test_that("doseFunction-ModelTox throws the error when no params are provided", 
 
 test_that("probFunction-GeneralModel returns correct prob function", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(data = list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
@@ -96,7 +96,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
   )
   expect_error(
     probFunction(model, wrong = 1, alpha1 = 2),
-    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but is \\{'wrong','alpha1'\\}.$"
+    "Assertion on .* failed: Must be a subset of \\{'alpha0','alpha1'\\}, but .* \\{'wrong'\\}.$"
   )
 })
 
@@ -104,7 +104,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
 
 test_that("probFunction-ModelTox returns correct prob function", {
   model <- h_get_logistic_indep_beta()
-  samples <- Samples(data = list(phi1 = 35, phi2 = 5), options = McmcOptions(samples = 1))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
@@ -130,6 +130,38 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
   )
 })
 
+# efficacyFunction ----
+
+## ModelEff ----
+
+test_that("efficacyFunction-ModelEff returns correct efficacy function", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7))
+  eff_args <- c("dose", "model", "samples")
+
+  eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
+  eff_fun_eff_args <- as.character(body(eff_fun)[[2]][-1])
+  eff_fun_env <- environment(eff_fun)
+
+  expect_function(eff_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_equal(eff_fun_eff_args, eff_args)
+  expect_subset(
+    setdiff(eff_fun_eff_args, "dose"),
+    ls(envir = eff_fun_env)
+  )
+  expect_identical(eff_fun_env[["model"]], model)
+  expect_identical(eff_fun_env[["samples"]], samples)
+})
+
+test_that("efficacyFunction-ModelEff throws the error when no params are provided", {
+  model <- h_get_eff_log_log()
+
+  expect_error(
+    efficacyFunction(model),
+    "Assertion on .* failed: Must be of type 'character', not 'NULL'.$"
+  )
+})
+
 # dose ----
 
 ## LogisticNormal ----
@@ -139,11 +171,7 @@ test_that("dose-LogisticNormal works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.4, model, samples)
-  expect_equal(
-    result,
-    c(0.00000, 67.30876, 12.26265, 554.17921),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticNormal works as expected for scalar samples", {
@@ -151,23 +179,23 @@ test_that("dose-LogisticNormal works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.6), model, samples)
-  expect_equal(result, c(27.86282, 31.58144), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticNormal throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticNormal throws the error when x is not a valid scalar", {
   model <- h_get_logistic_normal()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
   expect_error(
-    dose(prob = c(0.4, 0.6), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(0.4, 0.6), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -178,11 +206,7 @@ test_that("dose-LogisticLogNormal works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.4, model, samples)
-  expect_equal(
-    result,
-    c(0.00000, 67.30876, 12.26265, 554.17921),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticLogNormal works as expected for scalar samples", {
@@ -190,24 +214,24 @@ test_that("dose-LogisticLogNormal works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(27.86282, 33.00809), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticLogNormal throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticLogNormal throws the error when x is not a valid scalar", {
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -218,11 +242,7 @@ test_that("dose-LogisticLogNormalSub works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.4, model, samples)
-  expect_equal(
-    result,
-    c(-Inf, 2.2972674, 0.5945349, 4.4054651),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticLogNormalSub works as expected for scalar samples", {
@@ -230,24 +250,24 @@ test_that("dose-LogisticLogNormalSub works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(1.41527, 1.58473), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticLogNormalSub throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticLogNormalSub throws the error when x is not a valid scalar", {
   model <- h_get_logistic_log_normal_sub()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -258,11 +278,7 @@ test_that("dose-ProbitLogNormal works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.4, model, samples)
-  expect_equal(
-    result,
-    c(0, 10.458421, 2.055942, 68.540727),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-ProbitLogNormal works as expected for scalar samples", {
@@ -270,24 +286,24 @@ test_that("dose-ProbitLogNormal works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(4.143915, 4.602138), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-ProbitLogNormal throws the error when prob is not a valid scalar", {
+test_that("dose-ProbitLogNormal throws the error when x is not a valid scalar", {
   model <- h_get_probit_log_normal()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -298,11 +314,7 @@ test_that("dose-ProbitLogNormalRel works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.4, model, samples)
-  expect_equal(
-    result,
-    c(-Inf, 0.7466529, -2.5066942, 4.5066942),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-ProbitLogNormalRel works as expected for scalar samples", {
@@ -310,24 +322,24 @@ test_that("dose-ProbitLogNormalRel works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(-1.1048801, -0.8951199), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-ProbitLogNormalRel throws the error when prob is not a valid scalar", {
+test_that("dose-ProbitLogNormalRel throws the error when x is not a valid scalar", {
   model <- h_get_probit_log_normal_rel()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -338,11 +350,7 @@ test_that("dose-LogisticKadane works as expected", {
   samples <- h_as_samples(list(rho0 = c(0.1, 0.2, 0.3), gamma = c(10, 40, 80)))
 
   result <- dose(0.2, model, samples)
-  expect_equal(
-    result,
-    c(5.901396, 1, -305.087742),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticKadane works as expected for scalar samples", {
@@ -350,24 +358,63 @@ test_that("dose-LogisticKadane works as expected for scalar samples", {
   samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(43.3589, 124.2571), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticKadane throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticKadane throws the error when x is not a valid scalar", {
   model <- h_get_logistic_kadane()
   samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
+  )
+})
+
+
+## LogisticKadaneBetaGamma ----
+
+test_that("dose-LogisticKadaneBetaGamma works as expected", {
+  model <- h_get_logistic_kadane_beta_gam()
+  samples <- h_as_samples(
+    list(rho0 = c(0.05, 0.1, 0.15), gamma = c(3, 7, 10))
+  )
+
+  result <- dose(0.2, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-LogisticKadaneBetaGamma works as expected for scalar samples", {
+  model <- h_get_logistic_kadane_beta_gam()
+  samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-LogisticKadaneBetaGamma throws the error when x is not a valid scalar", {
+  model <- h_get_logistic_kadane_beta_gam()
+  samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
+
+  expect_error(
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
+  )
+  expect_error(
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -378,11 +425,7 @@ test_that("dose-LogisticNormalMixture works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.2, model, samples)
-  expect_equal(
-    result,
-    c(0, 1.6487213, 0.1839397, 59.1124488),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticNormalMixture works as expected for scalar samples", {
@@ -390,24 +433,24 @@ test_that("dose-LogisticNormalMixture works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(1.114513, 1.320324), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticNormalMixture throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticNormalMixture throws the error when x is not a valid scalar", {
   model <- h_get_logistic_normal_mix()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -418,11 +461,7 @@ test_that("dose-LogisticNormalFixedMixture works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- dose(0.2, model, samples)
-  expect_equal(
-    result,
-    c(0, 41.218032, 4.598493, 1477.811220),
-    tolerance = 1e-05
-  )
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticNormalFixedMixture works as expected for scalar samples", {
@@ -430,24 +469,24 @@ test_that("dose-LogisticNormalFixedMixture works as expected for scalar samples"
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- dose(c(0.3, 0.7), model, samples)
-  expect_equal(result, c(27.86282, 33.00809), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticNormalFixedMixture throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticNormalFixedMixture throws the error when x is not a valid scalar", {
   model <- h_get_logistic_normal_fixed_mix()
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    dose(prob = c(40, 50), model = model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -457,15 +496,62 @@ test_that("dose-LogisticLogNormalMixture is not implemented", {
   model <- h_get_logistic_log_normal_mix()
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
   expect_error(
-    dose(prob = 2, model = model, samples = samples),
+    dose(2, model, samples),
     "not implemented"
+  )
+})
+
+## DualEndpoint ----
+
+test_that("dose-DualEndpoint works as expected", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  betaZ <- matrix(c(0.4, -0.2, 0.5, 0.9, -1.3, 0.1, 0.24, -1.03), ncol = 2) # nolintr
+  samples <- h_as_samples(list(betaZ = betaZ))
+
+  result <- dose(0.2, model, samples)
+  result_log_dose <- dose(0.2, model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("dose-DualEndpoint works as expected for scalar samples", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2), ncol = 2)))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  result_log_dose <- dose(c(0.3, 0.7), model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("dose-DualEndpoint throws the error when x is not a valid scalar", {
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+
+  expect_error(
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
+  )
+  expect_error(
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
 ## LogisticIndepBeta ----
 
 test_that("dose-LogisticIndepBeta works as expected", {
-  dlt_model <- h_get_logistic_indep_beta()
+  dlt_model_emptydat <- h_get_logistic_indep_beta(emptydata = TRUE)
+  dlt_model <- h_get_logistic_indep_beta(emptydata = FALSE)
+
   samples <- h_as_samples(
     list(
       phi1 = seq(from = -1.96, to = 1.96, length = 5),
@@ -473,56 +559,98 @@ test_that("dose-LogisticIndepBeta works as expected", {
     )
   )
 
-  result <- dose(prob = 0.45, model = dlt_model, samples = samples)
-  expected <- c(0.4075, 0.4515, 0, 0.2998, 0.3321)
-  expect_equal(result, expected, tolerance = 0.0001)
+  result_emptydat <- dose(0.45, dlt_model_emptydat, samples)
+  result <- dose(0.45, dlt_model, samples)
+
+  expect_snapshot(result_emptydat)
+  expect_snapshot(result)
 })
 
 test_that("dose-LogisticIndepBeta works as expected for scalar samples", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = -1, phi2 = 1))
 
-  result <- dose(prob = c(0.45, 0.7), model = dlt_model, samples = samples)
-  expect_equal(result, c(2.224049, 6.342658), tolerance = 1e-05)
+  result <- dose(c(0.45, 0.7), dlt_model, samples)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticIndepBeta throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticIndepBeta throws the error when x is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = c(-1, 0.5), phi2 = c(1, 0.6)))
 
   expect_error(
-    dose(prob = c(40, 50), model = dlt_model, samples = samples),
-    "Assertion on 'prob' failed: Must have length 1."
+    dose(c(40, 50), dlt_model, samples),
+    "Assertion on 'x' failed: Must have length 1."
   )
   expect_error(
-    dose(prob = 2, model = dlt_model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, dlt_model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = dlt_model, samples = samples),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, dlt_model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
 ## LogisticIndepBeta-noSamples ----
 
 test_that("dose-LogisticIndepBeta-noSamples works as expected", {
-  dlt_model <- h_get_logistic_indep_beta()
+  dlt_model_emptydat <- h_get_logistic_indep_beta(emptydata = TRUE)
+  dlt_model <- h_get_logistic_indep_beta(emptydata = FALSE)
 
-  result <- dose(prob = c(0.45, 0.55), model = dlt_model)
-  expect_equal(result, expected = c(188.1673, 289.2156), tolerance = 0.0001)
+  result_emptydat <- dose(c(0.45, 0.55), dlt_model_emptydat)
+  result <- dose(c(0.45, 0.55), dlt_model)
+
+  expect_snapshot(result_emptydat)
+  expect_snapshot(result)
 })
 
-test_that("dose-LogisticIndepBeta-noSamples throws the error when prob is not a valid scalar", {
+test_that("dose-LogisticIndepBeta-noSamples throws the error when x is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
 
   expect_error(
-    dose(prob = 2, model = dlt_model),
-    "Assertion on 'prob' failed: Element 1 is not <= 1."
+    dose(2, dlt_model),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
   )
   expect_error(
-    dose(prob = -2, model = dlt_model),
-    "Assertion on 'prob' failed: Element 1 is not >= 0."
+    dose(-2, dlt_model),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
+  )
+})
+
+## OneParExpNormalPrior ----
+
+test_that("dose-OneParExpNormalPrior works as expected", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
+
+  result <- dose(0.4, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = 1))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scalar", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
+  )
+  expect_error(
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not <= 1."
+  )
+  expect_error(
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Element 1 is not >= 0."
   )
 })
 
@@ -535,11 +663,7 @@ test_that("prob-LogisticNormal works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
-  expect_equal(
-    result,
-    c(0.5, 0.346297, 0.765365, 0.860287),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticNormal works as expected for scalar samples", {
@@ -547,7 +671,7 @@ test_that("prob-LogisticNormal works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- prob(c(20, 60), model, samples)
-  expect_equal(result, c(0.01532378, 0.99891297), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticNormal throws the error when dose is not a valid scalar", {
@@ -555,11 +679,11 @@ test_that("prob-LogisticNormal throws the error when dose is not a valid scalar"
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -568,20 +692,10 @@ test_that("prob-LogisticNormal throws the error when dose is not a valid scalar"
 
 test_that("prob-LogisticLogNormal works as expected", {
   model <- h_get_logistic_log_normal()
-  samples <- Samples(
-    data = list(
-      alpha0 = c(0, -1, 1, 2),
-      alpha1 = c(0, 2, 1, -1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
-  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
-  expect_equal(
-    result,
-    c(0.5000000, 0.3462969, 0.7653650, 0.8602873),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticLogNormal works as expected for scalar samples", {
@@ -589,7 +703,7 @@ test_that("prob-LogisticLogNormal works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- prob(c(20, 60), model, samples)
-  expect_equal(result, c(0.01532378, 0.99891297), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticLogNormal throws the error when dose is not a valid scalar", {
@@ -597,11 +711,11 @@ test_that("prob-LogisticLogNormal throws the error when dose is not a valid scal
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -613,11 +727,7 @@ test_that("prob-LogisticLogNormalSub works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(4, model, samples)
-  expect_equal(
-    result,
-    c(0.5, 0.9525741, 0.9525741, 0.5),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticLogNormalSub works as expected for scalar samples", {
@@ -625,7 +735,7 @@ test_that("prob-LogisticLogNormalSub works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 2, alpha1 = 0.5))
 
   result <- prob(c(4, 10), model, samples)
-  expect_equal(result, c(0.9525741, 0.9975274), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticLogNormalSub throws the error when dose is not a valid scalar", {
@@ -633,11 +743,11 @@ test_that("prob-LogisticLogNormalSub throws the error when dose is not a valid s
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -649,11 +759,7 @@ test_that("prob-ProbitLogNormal works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(4, model, samples)
-  expect_equal(
-    result,
-    c(0.5, 0.01479359, 0.65990847, 0.99517026),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-ProbitLogNormal works as expected for scalar samples", {
@@ -661,7 +767,7 @@ test_that("prob-ProbitLogNormal works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 2, alpha1 = 0.5))
 
   result <- prob(c(4, 10), model, samples)
-  expect_equal(result, c(0.9560059, 0.9847775), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-ProbitLogNormal throws the error when dose is not a valid scalar", {
@@ -669,11 +775,11 @@ test_that("prob-ProbitLogNormal throws the error when dose is not a valid scalar
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -685,11 +791,7 @@ test_that("prob-ProbitLogNormalRel works as expected", {
   samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(4, model, samples)
-  expect_equal(
-    result,
-    c(0.5, 0.9986501, 0.9986501, 0.5),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-ProbitLogNormalRel works as expected for scalar samples", {
@@ -697,7 +799,7 @@ test_that("prob-ProbitLogNormalRel works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 2, alpha1 = 0.5))
 
   result <- prob(c(2, 2.5), model, samples)
-  expect_equal(result, c(0.9937903, 0.9956676), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-ProbitLogNormalRel throws the error when dose is not a valid scalar", {
@@ -705,11 +807,11 @@ test_that("prob-ProbitLogNormalRel throws the error when dose is not a valid sca
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -721,11 +823,7 @@ test_that("prob-LogisticKadane works as expected", {
   samples <- h_as_samples(list(rho0 = c(0.1, 0.2, 0.3), gamma = c(10, 40, 80)))
 
   result <- prob(4, model, samples)
-  expect_equal(
-    result,
-    c(0.1543506, 0.2084767, 0.3011106),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticKadane works as expected for scalar samples", {
@@ -733,7 +831,7 @@ test_that("prob-LogisticKadane works as expected for scalar samples", {
   samples <- h_as_samples(list(rho0 = 0.15, gamma = 50))
 
   result <- prob(c(2, 2.5), model, samples)
-  expect_equal(result, c(0.1526904, 0.1540504), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticKadane throws the error when dose is not a valid scalar", {
@@ -741,11 +839,11 @@ test_that("prob-LogisticKadane throws the error when dose is not a valid scalar"
   samples <- h_as_samples(list(rho0 = c(0.1, 0.2), gamma = c(10, 40)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -754,20 +852,10 @@ test_that("prob-LogisticKadane throws the error when dose is not a valid scalar"
 
 test_that("prob-LogisticNormalMixture works as expected", {
   model <- h_get_logistic_normal_mix()
-  samples <- Samples(
-    data = list(
-      alpha0 = c(0, -1, 1, 2),
-      alpha1 = c(0, 2, 1, -1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
-  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
-  expect_equal(
-    result,
-    c(0.5, 0.9969888, 0.9878859, 0.1976262),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticNormalMixture works as expected for scalar samples", {
@@ -775,7 +863,7 @@ test_that("prob-LogisticNormalMixture works as expected for scalar samples", {
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- prob(c(1, 1.5), model, samples)
-  expect_equal(result, c(0.1265878, 0.8931358), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticNormalMixture throws the error when dose is not a valid scalar", {
@@ -783,11 +871,11 @@ test_that("prob-LogisticNormalMixture throws the error when dose is not a valid 
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -796,20 +884,10 @@ test_that("prob-LogisticNormalMixture throws the error when dose is not a valid 
 
 test_that("prob-LogisticNormalFixedMixture works as expected", {
   model <- h_get_logistic_normal_fixed_mix()
-  samples <- Samples(
-    data = list(
-      alpha0 = c(0, -1, 1, 2),
-      alpha1 = c(0, 2, 1, -1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
-  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   result <- prob(60, model, samples)
-  expect_equal(
-    result,
-    c(0.5, 0.3462969, 0.7653650, 0.8602873),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticNormalFixedMixture works as expected for scalar samples", {
@@ -817,7 +895,7 @@ test_that("prob-LogisticNormalFixedMixture works as expected for scalar samples"
   samples <- h_as_samples(list(alpha0 = 5, alpha1 = 10))
 
   result <- prob(c(30, 45), model, samples)
-  expect_equal(result, c(0.4729623, 0.9810421), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticNormalFixedMixture throws the error when dose is not a valid scalar", {
@@ -825,11 +903,11 @@ test_that("prob-LogisticNormalFixedMixture throws the error when dose is not a v
   samples <- h_as_samples(list(alpha0 = c(5, 6), alpha1 = c(10, 11)))
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -838,8 +916,8 @@ test_that("prob-LogisticNormalFixedMixture throws the error when dose is not a v
 
 test_that("prob-LogisticLogNormalMixture works as expected", {
   model <- h_get_logistic_log_normal_mix()
-  samples <- Samples(
-    data = list(
+  samples <- h_as_samples(
+    list(
       alpha0 = matrix(
         c(-0.93, -0.67, -0.94, -0.67, -2.37, -1.28, -2.37, -1.08),
         ncol = 2,
@@ -851,16 +929,11 @@ test_that("prob-LogisticLogNormalMixture works as expected", {
         byrow = TRUE
       ),
       comp = c(1, 1, 1, 1)
-    ),
-    options = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+    )
   )
 
   result <- prob(60, model, samples)
-  expect_equal(
-    result,
-    c(0.6748043, 0.6726061, 0.2901927, 0.2901927),
-    tolerance = 1e-06
-  )
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticLogNormalMixture works as expected for single samples", {
@@ -873,7 +946,7 @@ test_that("prob-LogisticLogNormalMixture works as expected for single samples", 
     )
   )
   result <- prob(c(1, 1.5), model, samples)
-  expect_equal(result, c(0.2474127, 0.2829247), tolerance = 1e-05)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticLogNormalMixture throws the error when dose is not a valid scalar", {
@@ -895,11 +968,52 @@ test_that("prob-LogisticLogNormalMixture throws the error when dose is not a val
   )
 
   expect_error(
-    prob(dose = c(40, 50), model = model, samples = samples),
+    prob(c(40, 50), model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = model, samples = samples),
+    prob(-3, model, samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## DualEndpoint ----
+
+test_that("prob-DualEndpoint works as expected", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  betaZ <- matrix(c(0.4, -0.6, 0.5, 0.09, -0.3, 0.1, 0.24, -1.03), ncol = 2) # nolintr
+  samples <- h_as_samples(list(betaZ = betaZ))
+
+  result <- prob(5, model, samples)
+  result_log_dose <- prob(5, model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("prob-DualEndpoint works as expected for scalar samples", {
+  model <- h_get_dual_endpoint()
+  model_log_dose <- h_get_dual_endpoint(use_log_dose = TRUE)
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.6), ncol = 2)))
+
+  result <- prob(c(5, 8), model, samples)
+  result_log_dose <- prob(c(5, 8), model_log_dose, samples)
+  expect_false(identical(result, result_log_dose))
+  expect_snapshot(result)
+  expect_snapshot(result_log_dose)
+})
+
+test_that("prob-DualEndpoint throws the error when dose is not a valid scalar", {
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaZ = matrix(c(0.4, -0.2, 0.5, 0.9), ncol = 2)))
+
+  expect_error(
+    prob(c(40, 50), model, samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -907,7 +1021,9 @@ test_that("prob-LogisticLogNormalMixture throws the error when dose is not a val
 ## LogisticIndepBeta ----
 
 test_that("prob-LogisticIndepBeta works as expected", {
-  dlt_model <- h_get_logistic_indep_beta()
+  dlt_model_emptydat <- h_get_logistic_indep_beta(emptydata = TRUE)
+  dlt_model <- h_get_logistic_indep_beta(emptydata = FALSE)
+
   samples <- h_as_samples(
     list(
       phi1 = seq(from = -1.96, to = 1.96, length = 5),
@@ -915,17 +1031,19 @@ test_that("prob-LogisticIndepBeta works as expected", {
     )
   )
 
-  result <- prob(dose = 100, model = dlt_model, samples = samples)
-  expected <- c(1.7e-05, 0.004098, 0.5, 0.995902, 0.999983)
-  expect_equal(result, expected, tolerance = 0.000001)
+  result_emptydat <- prob(100, dlt_model_emptydat, samples)
+  result <- prob(100, dlt_model, samples)
+
+  expect_snapshot(result_emptydat)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticIndepBeta works as expected for scalar samples", {
   dlt_model <- h_get_logistic_indep_beta()
   samples <- h_as_samples(list(phi1 = -1, phi2 = 1))
 
-  result <- prob(dose = c(6, 15), model = dlt_model, samples = samples)
-  expect_equal(result, c(0.6882090, 0.8465832), tolerance = 1e-05)
+  result <- prob(c(6, 15), dlt_model, samples)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticIndepBeta throws the error when dose is not a valid scalar", {
@@ -933,11 +1051,11 @@ test_that("prob-LogisticIndepBeta throws the error when dose is not a valid scal
   samples <- h_as_samples(list(phi1 = c(-1, 0.5), phi2 = c(1, 0.6)))
 
   expect_error(
-    prob(dose = c(40, 50), model = dlt_model, samples = samples),
+    prob(c(40, 50), dlt_model, samples),
     "Assertion on 'dose' failed: Must have length 1."
   )
   expect_error(
-    prob(dose = -3, model = dlt_model, samples = samples),
+    prob(-3, dlt_model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
@@ -945,17 +1063,53 @@ test_that("prob-LogisticIndepBeta throws the error when dose is not a valid scal
 ## LogisticIndepBeta-noSamples ----
 
 test_that("prob-LogisticIndepBeta-noSamples works as expected", {
-  dlt_model <- h_get_logistic_indep_beta()
+  dlt_model_emptydat <- h_get_logistic_indep_beta(emptydata = TRUE)
+  dlt_model <- h_get_logistic_indep_beta(emptydata = FALSE)
 
-  result <- prob(dose = c(500, 1000), model = dlt_model)
-  expect_equal(result, expected = c(0.6708009, 0.7955970), tolerance = 0.000001)
+  result_emptydat <- prob(c(500, 1000), dlt_model_emptydat)
+  result <- prob(c(500, 1000), dlt_model)
+
+  expect_snapshot(result_emptydat)
+  expect_snapshot(result)
 })
 
 test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a valid scalar", {
   dlt_model <- h_get_logistic_indep_beta()
 
   expect_error(
-    prob(dose = -3, model = dlt_model),
+    prob(-3, dlt_model),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## OneParExpNormalPrior ----
+
+test_that("prob-OneParExpNormalPrior works as expected", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
+
+  result <- prob(60, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = 1))
+
+  result <- prob(c(20, 60), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid scalar", {
+  model <- h_get_one_par_exp_normal_prior()
+  samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    prob(c(40, 50), model, samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })

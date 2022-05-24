@@ -1,25 +1,26 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
+Version: 1.0.9000.9019
 Authors@R: c(
-  person("Daniel", "Sabanes Bove", email = "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
-  person("Wai", "Yin Yeung", email = "winnie.yeung@roche.com", role = "aut"),
-  person("Burak Kuersad", "Guenhan", email = "burakgunhan@gmail.com", role = "aut"),
-  person("Giuseppe", "Palermo", email = "giuseppe.palermo@roche.com", role = "aut"),
-  person("Thomas", "Jaki", email = "jaki.thomas@gmail.com", role = "aut"),
-  person("Jiawen", "Zhu", email = "zhu.jiawen@gene.com", role = "aut"),
-  person("Ziwei", "Liao", email = "ziwei.liao.fdu@gmail.com", role = "aut"),
-  person("Dimitris", "Kontos", email = "dimitris.kontos@clinbay.com", role = "aut")
+    person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
+    person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
+    person("Burak Kuersad", "Guenhan", , "burakgunhan@gmail.com", role = "aut"),
+    person("Giuseppe", "Palermo", , "giuseppe.palermo@roche.com", role = "aut"),
+    person("Thomas", "Jaki", , "jaki.thomas@gmail.com", role = "aut"),
+    person("Jiawen", "Zhu", , "zhu.jiawen@gene.com", role = "aut"),
+    person("Ziwei", "Liao", , "ziwei.liao.fdu@gmail.com", role = "aut"),
+    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut")
   )
-Description: Implements a wide range of model-based dose
-    escalation designs, ranging from classical and modern continual
-    reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
-    dual-endpoint designs taking into account a biomarker/efficacy outcome. The
-    focus is on Bayesian inference, making it very easy to setup a new design
-    with its own JAGS code. However, it is also possible to implement 3+3
-    designs for comparison or models with non-Bayesian estimation. The whole
-    package is written in a modular form in the S4 class system, making it very
-    flexible for adaptation to new models, escalation or stopping rules.
-Version: 1.0.9000
+Description: Implements a wide range of model-based dose escalation
+    designs, ranging from classical and modern continual reassessment
+    methods (CRMs) based on dose-limiting toxicity endpoints to
+    dual-endpoint designs taking into account a biomarker/efficacy
+    outcome. The focus is on Bayesian inference, making it very easy to
+    setup a new design with its own JAGS code. However, it is also
+    possible to implement 3+3 designs for comparison or models with
+    non-Bayesian estimation. The whole package is written in a modular
+    form in the S4 class system, making it very flexible for adaptation to
+    new models, escalation or stopping rules.
 License: GPL (>= 2)
 URL: https://github.com/roche/crmPack
 BugReports: https://github.com/roche/crmPack/issues
@@ -28,12 +29,12 @@ Depends:
     graphics,
     R (>= 3.0.0)
 Imports:
-    futile.logger,
     checkmate,
-    lifecycle,
+    futile.logger,
     GenSA,
     grid,
     gridExtra,
+    lifecycle,
     MASS,
     methods,
     mvtnorm,
@@ -43,21 +44,22 @@ Imports:
     tools,
     utils
 Suggests:
-    testthat (>= 3.0.0),
     ggmcmc,
     knitr,
     Rcpp,
     RcppArmadillo,
+    testthat (>= 3.0.0),
     vdiffr
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
-Encoding: UTF-8
 VignetteBuilder: 
     knitr
-Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions by 
-    Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
+Config/testthat/edition: 3
+Copyright: F. Hoffmann-La Roche Ltd, except Google LLC for contributions
+    by Daniel Sabanes Bove between 6 August 2018 and 31 May 2020.
+Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
 Collate:
     'Data-validity.R'
     'helpers.R'
@@ -84,6 +86,6 @@ Collate:
     'Samples-methods.R'
     'Simulations-methods.R'
     'crmPack-package.R'
+    'helpers_model.R'
     'logger.R'
     'utils.R'
-Config/testthat/edition: 3

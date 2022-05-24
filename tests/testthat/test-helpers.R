@@ -149,24 +149,6 @@ test_that("h_check_fun_formals returns FALSE for non-valid arguments", {
   expect_false(result)
 })
 
-# h_is_positive_definite ----
-
-test_that("h_is_positive_definite returns TRUE for positive-definite matrix", {
-  matrix <- matrix(c(5, 2, 2, 5), ncol = 2)
-  expect_true(h_is_positive_definite(matrix))
-})
-
-test_that("h_is_positive_definite returns FALSE for not a pos-def matrices", {
-  m1 <- matrix(c(-5, 2, 2, 85), ncol = 2)
-  m2 <- matrix(c(5, 2, 1, 5), ncol = 2)
-  m3 <- matrix(c(-5, 2, 2, 85, 2, 4), ncol = 2)
-
-  is_pf_m1 <- h_is_positive_definite(m1)
-  is_pf_m2 <- h_is_positive_definite(m2)
-  is_pf_m3 <- h_is_positive_definite(m3)
-  expect_false(any(is_pf_m1, is_pf_m2, is_pf_m3))
-})
-
 # h_slots ----
 
 test_that("h_slots returns two slots as expected", {
@@ -206,6 +188,15 @@ test_that("h_slots throws the error for non-existing slots", {
     h_slots(object, c("placebo", "not_existing_slot_name")),
     "Assertion on 'all\\(names %in% slotNames\\(object\\)\\)' failed: Must be TRUE." # nolintr
   )
+})
+
+test_that("h_slots returns empty list for empty request", {
+  object <- h_get_data()
+  result1 <- h_slots(object, character(0))
+  result2 <- h_slots(object, NULL)
+
+  expect_identical(result1, list())
+  expect_identical(result2, list())
 })
 
 # h_format_number ----
@@ -293,4 +284,67 @@ test_that("h_null_if_scalar returns NULL as expected", {
 test_that("h_null_if_scalar returns 1L as expected", {
   expect_identical(h_null_if_scalar(c(1, 3)), 1L)
   expect_identical(h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4))), 1L)
+})
+
+# h_is_positive_definite ----
+
+test_that("h_is_positive_definite returns TRUE for 2x2 positive-definite matrix", {
+  m <- matrix(c(5, 2, 2, 5), ncol = 2)
+  expect_true(h_is_positive_definite(m))
+})
+
+test_that("h_is_positive_definite returns TRUE for 3x3 positive-definite matrix", {
+  m <- matrix(c(5, 2, 3, 2, 3, 2, 3, 2, 5), ncol = 3)
+  expect_true(h_is_positive_definite(m, 3))
+})
+
+test_that("h_is_positive_definite returns FALSE for matrix with NA", {
+  m <- matrix(c(5, 2, 1, NA), ncol = 2)
+  expect_false(h_is_positive_definite(m))
+})
+
+test_that("h_is_positive_definite returns FALSE for non-square matrix", {
+  m <- matrix(c(-5, 2, 2, 85, 2, 4), ncol = 2)
+  expect_false(h_is_positive_definite(m))
+})
+
+test_that("h_is_positive_definite returns FALSE for non-symmetric matrix", {
+  m <- matrix(c(5, 2, 1, 5), ncol = 2)
+  expect_false(h_is_positive_definite(m))
+})
+
+test_that("h_is_positive_definite returns FALSE for not a pos-def matrix", {
+  m <- matrix(c(-5, 2, 2, 85), ncol = 2)
+  expect_false(h_is_positive_definite(m))
+})
+
+# h_test_named_numeric ----
+
+test_that("h_test_named_numeric returns TRUE as expected", {
+  x <- c(a = 1, b = 2)
+  expect_true(h_test_named_numeric(x, subset.of = c("a", "b", "c")))
+  expect_true(h_test_named_numeric(x, must.include = "a"))
+  expect_true(h_test_named_numeric(x, must.include = "b"))
+  expect_true(h_test_named_numeric(x, permutation.of = c("a", "b")))
+  expect_true(h_test_named_numeric(x, permutation.of = c("b", "a")))
+  expect_true(h_test_named_numeric(x, identical.to = c("a", "b")))
+  expect_true(h_test_named_numeric(x, disjunct.from = c("c", "d", "e")))
+})
+
+test_that("h_test_named_numeric returns TRUE as expected for duplicated names", {
+  x <- c(a = 1, b = 2, b = 3)
+  expect_true(h_test_named_numeric(x, len = 3, subset.of = c("a", "b", "c")))
+  expect_true(h_test_named_numeric(x, len = 3, identical.to = c("a", "b", "b")))
+  expect_true(h_test_named_numeric(x, len = 3, disjunct.from = c("c", "d", "e")))
+})
+
+test_that("h_test_named_numeric returns FALSE as expected", {
+  x <- c(a = 1, b = 2)
+  expect_false(h_test_named_numeric(x, subset.of = c("a", "c")))
+  expect_false(h_test_named_numeric(x, must.include = "c"))
+  expect_false(h_test_named_numeric(x, permutation.of = c("a", "c")))
+  expect_false(h_test_named_numeric(x, identical.to = c("b", "a")))
+  expect_false(h_test_named_numeric(x, disjunct.from = c("b", "a")))
+  expect_false(h_test_named_numeric(c(a = TRUE, b = FALSE)))
+  expect_false(h_test_named_numeric(c(a = "1", b = "2")))
 })

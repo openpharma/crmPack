@@ -15,7 +15,7 @@ LogisticLogNormalSub(mean, cov, ref_dose = 0)
 \item{cov}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
 \code{prec} is internally calculated as an inverse of \code{cov}.}
 
-\item{ref_dose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose \eqn{x*}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -30,6 +30,14 @@ i.e.:
 where \eqn{p(x)} is the probability of observing a DLT for a given dose \eqn{x}.
 The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 }
+\section{Slots}{
+
+\describe{
+\item{\code{params}}{(\code{ModelParamsNormal})\cr bivariate normal prior parameters.}
+
+\item{\code{ref_dose}}{(\code{number})\cr the reference dose \eqn{x*}.}
+}}
+
 \examples{
 my_model <- LogisticLogNormalSub(
   mean = c(-0.85, 1),
@@ -38,6 +46,6 @@ my_model <- LogisticLogNormalSub(
 )
 }
 \seealso{
-\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
+\code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}, \code{\link{ProbitLogNormal}},
+\code{\link{ProbitLogNormalRel}}.
 }

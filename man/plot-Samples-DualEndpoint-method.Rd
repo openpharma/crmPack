@@ -30,6 +30,7 @@ When we have the dual endpoint model,
 also the dose-biomarker fit is shown in the plot
 }
 \examples{
+# nolint start
 
 # Create some data
 data <- DataDual(
@@ -43,12 +44,12 @@ data <- DataDual(
              seq(from=10, to=80, by=2)))
 
 # Initialize the Dual-Endpoint model (in this case RW1)
-model <- DualEndpointRW(mu = c(0, 1),
-                        Sigma = matrix(c(1, 0, 0, 1), nrow=2),
+model <- DualEndpointRW(mean = c(0, 1),
+                        cov = matrix(c(1, 0, 0, 1), nrow=2),
                         sigma2betaW = 0.01,
                         sigma2W = c(a=0.1, b=0.1),
                         rho = c(a=1, b=1),
-                        smooth = "RW1")
+                        rw1 = TRUE)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -60,8 +61,8 @@ samples <- mcmc(data, model, options)
 # Plot the posterior mean  (and empirical 2.5 and 97.5 percentile)
 # for the prob(DLT) by doses and the Biomarker by doses
 #grid.arrange(plot(x = samples, y = model, data = data))
-              
+
 plot(x = samples, y = model, data = data)
 
-
+# nolint end
 }

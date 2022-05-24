@@ -4,44 +4,71 @@
 \name{DualEndpointEmax-class}
 \alias{DualEndpointEmax-class}
 \alias{.DualEndpointEmax}
-\title{Dual endpoint model with emax function for dose-biomarker relationship}
+\alias{DualEndpointEmax}
+\title{\code{DualEndpointEmax}}
+\usage{
+DualEndpointEmax(E0, Emax, ED50, ref_dose_emax = 1, ...)
+}
+\arguments{
+\item{E0}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
+
+\item{Emax}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
+
+\item{ED50}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
+
+\item{ref_dose_emax}{(\code{number})\cr the reference dose \eqn{x*} (strictly
+positive number). Note that this is different from the \code{ref_dose} in the
+inherited \code{\link{DualEndpoint}} model).}
+
+\item{...}{parameters passed to \code{\link[=DualEndpoint]{DualEndpoint()}}.}
+}
 \description{
-This class extends the \code{\linkS4class{DualEndpoint}} class. Here the
-dose-biomarker relationship \eqn{f(x)} is modelled by a parametric EMAX function:
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DualEndpointEmax}} is the class for the dual endpoint model with \code{Emax}
+function for dose-biomarker relationship.
 }
 \details{
-\deqn{f(x) = E_{0} + \frac{(E_{max} - E_{0}) * (x/x^{*})}{ED_{50} + (x/x^{*})}}
-
-where \eqn{x^{*}} is a reference dose, \eqn{E_{0}} and \eqn{E_{max}} are the
-minimum and maximum levels for the biomarker and \eqn{ED_{50}} is the dose
-achieving half of the maximum effect \eqn{0.5 * E_{max}}.
-
-All parameters can currently be assigned uniform distributions or be fixed
-in advance.
+This class extends the \code{\link{DualEndpoint}} class so that the dose-biomarker
+relationship \eqn{f(x)} is modelled by a parametric \code{Emax} function:
+\deqn{f(x) = E0 + [(Emax - E0) * (x/x*)]/[ED50 + (x/x*)],}
+where \eqn{x*} is a reference dose, \eqn{E0} and \eqn{Emax} are the minimum
+and maximum levels for the biomarker, and \eqn{ED50} is the dose achieving
+half of the maximum effect \eqn{0.5 * Emax}.
+All parameters can currently be assigned uniform distributions or be fixed.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{E0}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{E0}}{(\code{numeric})\cr either a fixed number or the two uniform distribution
+parameters.}
 
-\item{\code{Emax}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{Emax}}{(\code{numeric})\cr either a fixed number or the two uniform
+distribution parameters.}
 
-\item{\code{ED50}}{either a fixed number or the two uniform distribution parameters}
+\item{\code{ED50}}{(\code{numeric})\cr either a fixed number or the two uniform
+distribution parameters.}
 
-\item{\code{refDoseEmax}}{the reference dose \eqn{x^{*}}}
+\item{\code{ref_dose_emax}}{(\code{positive_number})\cr the reference dose \eqn{x*} (note
+that this is different from the \code{ref_dose} in the inherited \code{\link{DualEndpoint}}
+model).}
 }}
 
 \examples{
-
-model <- DualEndpointEmax(E0 = c(0, 100),
-                          Emax = c(0, 500),
-                          ED50 = c(10,200),
-                          refDoseEmax = 1000,
-                          mu = c(0, 1),
-                          Sigma = matrix(c(1, 0, 0, 1), nrow=2),
-                          sigma2W = c(a=0.1, b=0.1),
-                          rho = c(a=1, b=1))
-
-
+my_model <- DualEndpointEmax(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  E0 = c(0, 100),
+  Emax = c(0, 500),
+  ED50 = c(10, 200),
+  ref_dose_emax = 1000
+)
 }
-\keyword{classes}
+\seealso{
+\code{\link{DualEndpoint}}, \code{\link{DualEndpointRW}}, \code{\link{DualEndpointBeta}}.
+}

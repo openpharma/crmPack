@@ -152,6 +152,7 @@ samples <- mcmc(data,model,options)
 fitted <- fit(object=samples, model=model, data=data)
 
 # nolint end
+# nolint start
 
 # Create some data
 data <- DataDual(
@@ -165,12 +166,12 @@ data <- DataDual(
              seq(from=10, to=80, by=2)))
 
 # Initialize the Dual-Endpoint model (in this case RW1)
-model <- DualEndpointRW(mu = c(0, 1),
-                        Sigma = matrix(c(1, 0, 0, 1), nrow=2),
+model <- DualEndpointRW(mean = c(0, 1),
+                        cov = matrix(c(1, 0, 0, 1), nrow=2),
                         sigma2betaW = 0.01,
                         sigma2W = c(a=0.1, b=0.1),
                         rho = c(a=1, b=1),
-                        smooth = "RW1")
+                        rw1 = TRUE)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -186,6 +187,8 @@ fitted <- fit(object = samples,
               data = data,
               quantiles=c(0.025, 0.975),
               middle=mean)
+
+# nolint end
 ##Obtain the 'fit' the middle, uppper and lower quantiles for the dose-DLE curve
 ## at all dose levels using a DLE sample, a DLE model and the data
 ## samples must be from 'Samples' class (object slot)
@@ -215,6 +218,8 @@ Effmodel<-Effloglog(c(1.223,2.513),c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
 options<-McmcOptions(burnin=100,step=2,samples=200)
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 fit(object=Effsamples, model=Effmodel,data=data)
+# nolint start
+
 ##Obtain the 'fit' the middle, uppper and lower quantiles for the dose-efficacy curve
 ## at all dose levels using an efficacy sample, the 'EffFlexi' efficacy model and the data
 ## data must be from 'DataDual' class
@@ -224,12 +229,14 @@ data<-DataDual(x=c(25,50,25,50,75,300,250,150),
                doseGrid=seq(25,300,25),
                placebo=FALSE)
 ## model must be from 'ModelEff' e.g using 'Effloglog' class
-Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
-                    sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+Effmodel<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
+                    sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
 
 ## samples must be from 'Samples' class (object slot in fit)
 options<-McmcOptions(burnin=100,step=2,samples=200)
 Effsamples <- mcmc(data=data,model=Effmodel,options=options)
 fit(object=Effsamples, model=Effmodel,data=data)
+
+# nolint end
 }
 \keyword{methods}

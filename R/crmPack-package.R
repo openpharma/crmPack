@@ -33,7 +33,7 @@
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
 #' optim pgamma plogis pnorm qgamma qlogis qnorm quantile rbinom rgamma approxfun
-#' rnorm runif uniroot var vcov step mad pbeta
+#' rnorm runif uniroot var vcov step mad pbeta dbeta dgamma setNames
 #' @importFrom utils data head tail capture.output
 #' @importFrom lifecycle badge
 #' @importFrom rjags jags.model jags.samples
@@ -127,8 +127,12 @@ globalVariables(c("log.betaZ",
                   "tend_case",
                   "yhat",
                   "ref_dose",
+
                   "y.values",
                   "y.ind",
-                  "comp"))
+                  "comp",
+                  "X",
+                  "skel_probs"))
+
 
 # nolint end

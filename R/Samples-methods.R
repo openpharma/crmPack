@@ -686,7 +686,7 @@ setMethod("fit",
               {
                 ## Now we want to evaluate for the
                 ## following dose:
-                ExpEffSamples[, i] <- ExpEff(dose=points[i],
+                ExpEffSamples[, i] <- efficacy(dose=points[i],
                                              model,
                                              object)
               }
@@ -742,7 +742,7 @@ setMethod("fit",
               {
                 ## Now we want to evaluate for the
                 ## following dose:
-                ExpEffSamples[, i] <- ExpEff(dose=points[i],
+                ExpEffSamples[, i] <- efficacy(dose=points[i],
                                              model,
                                              object)
               }
@@ -1055,9 +1055,9 @@ setMethod("plot",
                                      probDLE=prob(dose=x@doseGrid,
                                                   model=y))
               ##Look for TD30 and TD35
-              TD30 <-dose(prob=0.30,
+              TD30 <-dose(x=0.30,
                           model=y)
-              TD35 <-dose(prob=0.35,
+              TD35 <-dose(x=0.35,
                           model=y)
 
               ##make the plot
@@ -1126,7 +1126,7 @@ setMethod("plot",
               ##create data frame
 
               plotEffData<- data.frame(dose=x@doseGrid,
-                                       ExpEff=ExpEff(dose=x@doseGrid,
+                                       ExpEff=efficacy(dose=x@doseGrid,
                                                      model=y))
 
               ##make the second plot
@@ -1264,7 +1264,7 @@ setMethod("plotGain",
               plotData<-data.frame(dose=rep(data@doseGrid,3),
                                    values=c(prob(dose=data@doseGrid,
                                                  model=DLEmodel),
-                                            ExpEff(dose=data@doseGrid,
+                                            efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
                                                  DLEmodel=DLEmodel,
@@ -1288,7 +1288,7 @@ setMethod("plotGain",
 
 
 
-              TD30 <- dose(prob=0.3,model=DLEmodel)
+              TD30 <- dose(x=0.3,model=DLEmodel)
 
               Gainfun<-function(DOSE){
                 -gain(DOSE,DLEmodel=DLEmodel,Effmodel=Effmodel)
@@ -1409,7 +1409,7 @@ setMethod("plotDualResponses",
               for (i in seq_along(xLevels))
               {
                 ##Now we want to evaluate for the following dose
-                functionSamples[,i] <- ExpEff(dose=data@doseGrid[xLevels[i]],
+                functionSamples[,i] <- efficacy(dose=data@doseGrid[xLevels[i]],
                                               model=Effmodel,
                                               samples=Effsamples)
               }
@@ -1517,7 +1517,7 @@ setMethod("plotDualResponses",
 
               ##get the plot data for the efficacy
               plotEffData<- data.frame(dose=data@doseGrid,
-                                       ExpEff=ExpEff(dose=data@doseGrid,
+                                       ExpEff=efficacy(dose=data@doseGrid,
                                                      model=Effmodel))
 
               ##make the second plot
