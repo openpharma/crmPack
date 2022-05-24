@@ -4,16 +4,14 @@
 \name{ModelPseudo-class}
 \alias{ModelPseudo-class}
 \alias{.ModelPseudo}
-\title{Class of models using expressing their prior in form of Pseudo data}
+\alias{ModelPseudo}
+\title{\code{ModelPseudo}}
 \description{
-This is the Pseudo model class, from which all models where their prior
-are expressed in form of pseudo data (as if some data are
-available before the trial starts) inherit. It also inherits all slots
-from \code{\linkS4class{AllModels}}.No slots for this class
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{ModelPseudo}} is the parent class for models that express their prior in
+the form of pseudo data (as if there is some data before the trial starts).
 }
 \seealso{
-\code{\linkS4class{LogisticIndepBeta}},
-\code{\linkS4class{Effloglog}},
-\code{\linkS4class{EffFlexi}}
+\code{\link{GeneralModel}}.
 }
-\keyword{classes}

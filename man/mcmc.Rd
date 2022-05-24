@@ -4,6 +4,8 @@
 \alias{mcmc}
 \alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
 \alias{mcmc-GeneralData}
+\alias{mcmc,GeneralData,DualEndpointBeta,McmcOptions-method}
+\alias{mcmc-GeneralData-DualEndpointBeta}
 \alias{mcmc,DataMixture,GeneralModel,McmcOptions-method}
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
@@ -13,6 +15,8 @@
 mcmc(data, model, options, ...)
 
 \S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+
+\S4method{mcmc}{GeneralData,DualEndpointBeta,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{DataMixture,GeneralModel,McmcOptions}(
   data,
@@ -56,6 +60,12 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 \section{Functions}{
 \itemize{
 \item \code{mcmc,GeneralData,GeneralModel,McmcOptions-method}: Standard method which uses JAGS.
+
+\item \code{mcmc,GeneralData,DualEndpointBeta,McmcOptions-method}: Standard method which uses JAGS. For the
+\code{\link{DualEndpointBeta}} model, it is required that the value of \code{ref_dose_beta}
+slot is greater than the maximum dose in a grid. This requirement comes from
+definition of the beta function that is used to model dose-biomarker
+relationship in \code{\link{DualEndpointBeta}} model.
 
 \item \code{mcmc,DataMixture,GeneralModel,McmcOptions-method}: Method for DataMixture with different from_prior default
 
@@ -119,6 +129,44 @@ my_options <- McmcOptions(
 
 samples <- mcmc(data = my_data, model = my_model, options = my_options)
 samples
+# Create some data from the class `DataDual`.
+plcb <- 0.001
+my_data <- DataDual(
+  w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
+  x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+  y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+  doseGrid = c(plcb, seq(25, 300, 25)),
+  placebo = TRUE,
+  ID = 1:12,
+  cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+)
+
+# Initialize the CRM model.
+my_model <- DualEndpointBeta(
+  mean = c(0, 1),
+  cov = diag(2),
+  ref_dose = 2,
+  use_log_dose = FALSE,
+  sigma2W = c(a = 1, b = 2),
+  rho = c(a = 1.5, b = 2.5),
+  E0 = 2,
+  Emax = 50,
+  delta1 = 6,
+  mode = 9,
+  ref_dose_beta = my_data@doseGrid[my_data@nGrid] + 10
+)
+
+# Sample from the posterior distribution.
+my_options <- McmcOptions(
+  burnin = 50,
+  step = 2,
+  samples = 4,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 1
+)
+
+samples <- mcmc(data = my_data, model = my_model, options = my_options)
+samples
 ##obtain mcmc DLE samples given the data, LogisticIndepBeta (DLE model) and mcmc simulations options
 ## data must be of 'Data' class
 data<-Data(x=c(25,50,50,75,100,100,225,300),y=c(0,0,0,0,1,1,1,1),
@@ -129,6 +177,7 @@ model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),
 options<-McmcOptions(burnin=100,step=2,samples=200)
 set.seed(94)
 samples<-mcmc(data=data,model=model,options=options)
+# nolint start
 ##obtain mcmc efficacy samples given the data, 'Effloglog' model (efficacy model) and
 ## mcmc simulations options data must be of 'DataDual' class
 data<-DataDual(x=c(25,50,25,50,75,300,250,150),
@@ -136,26 +185,31 @@ data<-DataDual(x=c(25,50,25,50,75,300,250,150),
               w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
               doseGrid=seq(25,300,25),placebo=FALSE)
 ## model must be of 'Effloglog' class
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 
 ## options must be ''McmcOptions' class
 options<-McmcOptions(burnin=100,step=2,samples=200)
 set.seed(94)
 samples<-mcmc(data=data,model=Effmodel,options=options)
-##obtain mcmc efficacy samples given the data, 'EffFlexi' model (efficacy model) and 
+# nolint end
+## obtain mcmc efficacy samples given the data, 'EffFlexi' model (efficacy model) and
 ## mcmc simulations options
 ## data must be of 'DataDual' class
-data<-DataDual(x=c(25,50,25,50,75,300,250,150),
-               y=c(0,0,0,0,0,1,1,0),
-               w=c(0.31,0.42,0.59,0.45,0.6,0.7,0.6,0.52),
-               doseGrid=seq(25,300,25))
+data <- DataDual(
+  x = c(25, 50, 25, 50, 75, 300, 250, 150),
+  y = c(0, 0, 0, 0, 0, 1, 1, 0),
+  w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+  doseGrid = seq(25, 300, 25)
+)
 ## model must be of 'EffFlexi' class
 
-Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
-                    sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+effmodel <- EffFlexi(
+  eff = c(1.223, 2.513), eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1), sigma2betaW = c(a = 20, b = 50), rw1 = FALSE, data = data
+)
 
 ## options must be ''McmcOptions' class
-options<-McmcOptions(burnin=100,step=2,samples=200)
+options <- McmcOptions(burnin = 100, step = 2, samples = 200)
 set.seed(94)
-samples<-mcmc(data=data,model=Effmodel,options=options)
+samples <- mcmc(data = data, model = effmodel, options = options)
 }

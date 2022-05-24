@@ -17,7 +17,8 @@ prior.}
 \item{weights}{(\code{numeric})\cr the weights of the components; these must be
 positive and will be normalized to sum to 1.}
 
-\item{ref_dose}{(\code{number})\cr the reference dose.}
+\item{ref_dose}{(\code{number})\cr the reference dose \eqn{x*}
+(strictly positive number).}
 
 \item{log_normal}{(\code{flag})\cr should a log normal prior be specified, such
 that the mean vectors and covariance matrices are valid for the intercept
@@ -61,7 +62,7 @@ prior.}
 \item{\code{weights}}{(\code{numeric})\cr the weights of the components; these must be
 positive and must sum to 1.}
 
-\item{\code{ref_dose}}{(\code{number})\cr the reference dose.}
+\item{\code{ref_dose}}{(\code{positive_number})\cr the reference dose.}
 
 \item{\code{log_normal}}{(\code{flag})\cr should a log normal prior be used, such
 that the mean vectors and covariance matrices are valid for the intercept

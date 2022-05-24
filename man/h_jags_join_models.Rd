@@ -19,7 +19,8 @@ joined models.
 
 This helper function joins two JAGS models in the way that the body of the
 second model is appended to the body of the first model (in this order).
-After that, the first, body-extended model is returned.
+After that, the first, body-extended model is returned. The arguments of
+\code{model1}, \code{model2} model functions (if any) are not combined in any way.
 }
 \note{
 \code{model1} and \code{model2} functions must have a multi-expression

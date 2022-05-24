@@ -7,7 +7,7 @@
 h_null_if_scalar(x)
 }
 \arguments{
-\item{x}{any object for which length function is defined.}
+\item{x}{(\code{any})\cr an object for which length function is defined.}
 }
 \value{
 \code{NULL} if \code{x} is of length 1 or the first dimension equals to 1,

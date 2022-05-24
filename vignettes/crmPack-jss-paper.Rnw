@@ -594,7 +594,7 @@ DLTmodel <- LogisticIndepBeta(binDLE = c(1.05, 1.8), DLEweights = c(3, 3),
 The efficacy model can similarly be specified as
 <<Effmodel>>=
 emptydata2 <- DataDual(doseGrid = emptydata@doseGrid, placebo = TRUE)
-Effmodel <- Effloglog(Eff = c(1.223, 2.513), Effdose = c(25, 300),
+Effmodel <- Effloglog(eff = c(1.223, 2.513), eff_dose = c(25, 300),
                       nu = c(a = 1, b = 0.025), data = emptydata2, c = 2)
 @
 Here the argument \code{Eff} takes the vector of pseudo efficacy responses at the two fixed dose levels, assuming one subject is treated at each of these dose levels. The argument \code{nu} specifies a Gamma prior distribution with shape 1 and rate 0.025 for the precision parameter of the pseudo efficacy responses.
@@ -660,9 +660,10 @@ design2 <- DualResponsesDesign(nextBest = GainNextBest, model = DLTmodel,
 Note that an additional slot for the efficacy model is included in this design class. We can then specify the scenario for the simulation, by defining the true DLT and efficacy curves that we will be using:
 <<scenario>>=
 myTruthDLT <- probFunction(DLTmodel, phi1 = -53, phi2 = 10)
-myTruthEff<- function(dose){Effmodel@ExpEff(dose, theta1 = -4.8,
-                                            theta2 = 3.7)}
-myTruthGain <- function(dose){myTruthEff(dose) * (1 - myTruthDLT(dose))}
+myTruthEff<- efficacyFunction(Effmodel, theta1 = -4.8, theta2 = 3.7)
+myTruthGain <- function(dose) {
+  myTruthEff(dose) * (1 - myTruthDLT(dose))
+}
 @
 Please note that the parameter names \code{phi1}, \code{phi2}, \code{theta1} and
 \code{theta2} correspond to $\alpha_0, \alpha_1, \gamma$ and $\delta$, respectively.
@@ -744,7 +745,7 @@ OneParExp <- function(skeletonProbs, doseGrid, lambda)
       }},
     datanames = c("nObs", "y", "xLevel"),
     prob = function(dose, theta){ skeletonFun(dose)^theta },
-    dose = function(prob, theta){ invSkeletonFun(prob^(1 / theta)) },
+    dose = function(x, theta){ invSkeletonFun(x^(1 / theta)) },
     priormodel = function(){ theta ~ dexp(lambda) },
     modelspecs = function(){ list(skeletonProbs = skeletonProbs,
                                   lambda = lambda) },

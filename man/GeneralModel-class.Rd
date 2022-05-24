@@ -10,8 +10,7 @@
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{GeneralModel}} is a general model class, from which all other specific
-model-like classes inherit. The \code{\link{GeneralModel}} class inherits from
-\code{\link{AllModels}}.
+model-like classes inherit.
 }
 \section{Slots}{
 
@@ -31,6 +30,12 @@ slots that are required as arguments of this function.}
 for parameters required to be initialized in the MCMC sampler, based on the
 data slots that are required as arguments of this function.}
 
+\item{\code{datanames}}{(\code{character})\cr the names of all data slots that are used
+by \code{datamodel} JAGS function.}
+
+\item{\code{datanames_prior}}{(\code{character})\cr the names of all data slots that are
+used by \code{priormodel} JAGS function.}
+
 \item{\code{sample}}{(\code{character})\cr names of all parameters from which you would
 like to save the MCMC samples.}
 }}
@@ -41,4 +46,7 @@ called exactly in the same way as in the corresponding data class.
 All prior distributions for parameters should be contained in the
 model function \code{priormodel}. The background is that this can
 be used to simulate from the prior distribution, before obtaining any data.
+}
+\seealso{
+\code{\link{ModelPseudo}}.
 }

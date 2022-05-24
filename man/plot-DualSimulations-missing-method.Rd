@@ -32,24 +32,25 @@ the simulated trials}
 }
 }
 \examples{
+# nolint start
 
 # Define the dose-grid
 emptydata <- DataDual(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
-# Initialize the CRM model 
-model <- DualEndpointRW(mu = c(0, 1),
-                        Sigma = matrix(c(1, 0, 0, 1), nrow=2),
+# Initialize the CRM model
+model <- DualEndpointRW(mean = c(0, 1),
+                        cov = matrix(c(1, 0, 0, 1), nrow=2),
                         sigma2betaW = 0.01,
                         sigma2W = c(a=0.1, b=0.1),
                         rho = c(a=1, b=1),
-                        smooth="RW1")
+                        rw1 = TRUE)
 
-# Choose the rule for selecting the next dose 
+# Choose the rule for selecting the next dose
 myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
                                    maxOverdoseProb=0.25)
 
-# Choose the rule for the cohort-size 
+# Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohortSize=c(1, 3))
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
@@ -73,7 +74,7 @@ design <- DualDesign(model = model,
                      increments = myIncrements,
                      cohortSize = CohortSizeConst(3),
                      startingDose = 3)
-  
+
 # define scenarios for the TRUE toxicity and efficacy profiles
 betaMod <- function (dose, e0, eMax, delta1, delta2, scal)
 {
@@ -98,7 +99,7 @@ curve(trueTox(x), from=0, to=80)
 curve(trueBiomarker(x), from=0, to=80)
 
 # Run the simulation on the desired design
-# We only generate 1 trial outcome here for illustration, for the actual study 
+# We only generate 1 trial outcome here for illustration, for the actual study
 ##Also for illustration purpose, we will use 5 burn-ins to generate 20 samples
 # this should be increased of course
 mySims <- simulate(design,
@@ -118,8 +119,6 @@ mySims <- simulate(design,
 # Plot the results of the simulation
 print(plot(mySims))
 
-
-
-  
+# nolint end
 }
 \keyword{methods}

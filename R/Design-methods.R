@@ -2517,9 +2517,11 @@ setMethod("simulate",
                   thisNu<-thisEffModel@nu
 
 
-                  if (thisEffModel@useFixed==FALSE){
-                    thisSigma2 <- 1/(as.numeric(thisNu["a"]/thisNu["b"]))} else {
-                      thisSigma2 <- 1/thisNu}
+                  thisSigma2 <- if (thisEffModel@use_fixed) {
+                    1 / thisNu
+                  } else {
+                    1 / (as.numeric(thisNu["a"] / thisNu["b"]))
+                  }
 
 
                   ## what is the dose limit?
@@ -2587,11 +2589,12 @@ setMethod("simulate",
                     probDLE = prob_fun(object@data@doseGrid)
                 )
 
-                thisEffFit <- list(theta1=thisEffModel@theta1,
-                                   theta2=thisEffModel@theta2,
-                                   ExpEff=thisEffModel@ExpEff(object@data@doseGrid,
-                                                              thisEffModel@theta1,
-                                                              thisEffModel@theta2))
+                eff_fun <- efficacyFunction(thisEffModel, theta1 = thisEffModel@theta1, theta2 = thisEffModel@theta2)
+                thisEffFit <- list(
+                  theta1 = thisEffModel@theta1,
+                  theta2 = thisEffModel@theta2,
+                  ExpEff = eff_fun(object@data@doseGrid)
+                )
 
                 ## return the results
                 thisResult <- list(data=thisData,
@@ -3407,11 +3410,11 @@ setMethod("simulate",
                                          model=thisEffModel,
                                          options=mcmcOptions)
 
-
-                  if (thisEffModel@useFixed==FALSE){
-                    thisSigma2 <- 1/(as.numeric(thisNu["a"]/thisNu["b"]))} else {
-                      thisSigma2 <- 1/thisNu}
-
+                  thisSigma2 <- if (thisEffModel@use_fixed) {
+                    1 / thisNu
+                  } else {
+                    1 / (as.numeric(thisNu["a"] / thisNu["b"]))
+                  }
 
                   ## what is the dose limit?
                   doselimit <- maxDose(object@increments,data=thisData)

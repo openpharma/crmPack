@@ -1,4 +1,22 @@
-# Version 1.0.9000
+# Version 1.0.9000.9019
+* Added new slot `skel_fun_inv` into `OneParExpNormalPrior` class.
+* Removed `AllModels` class.
+* Added new slot `datanames_prior` for `GeneralModel` class.
+* Moved `datanames` slot from `AllModels` class to its child class `GeneralModel`.
+* Renamed several slots in `EffFlexi`, `DALogisticLogNormal`, `TITELogisticLogNormal`
+  and `OneParExpNormalPrior` classes and adjusted corresponding constructor functions.
+* Renamed `Eff` argument to `eff` and `Effdose` to `eff_dose` in `Effloglog` class
+  constructor.
+* Renamed `ExpEff` methods for pseudo-data efficacy models to `efficacy`.
+* Moved `dose` and `ExpEff` functions from model class slots to model class
+  methods for pseudo-data efficacy models.
+* Created new generic function - `efficacy`.
+* Renamed `prob` argument to `x` for `dose` methods.
+* Added `positive_number` class to handle strictly positive valued slots
+  (e.g. `ref_dose` in many model classes).
+* Renamed `refDoseBeta` slot to `ref_dose_beta` in `DualEndpointEmax` class.
+* Renamed `refDoseEmax` slot to `ref_dose_emax` in `DualEndpointBeta` class.
+* Replaced `smooth` character vector argument of `DualEndpointRW()` to `rw1` flag. 
 * Added new `ModelParamsNormal` class to represent parameters of bivariate normal
   distribution.
 * Added new `doseFunction` and `probFunction` functions which return dose

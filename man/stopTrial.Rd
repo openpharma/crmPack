@@ -785,6 +785,7 @@ stopTrial(
   model = model,
   data = data
 )
+# nolint start
 
 # Create the data
 data <- DataDual(
@@ -798,12 +799,12 @@ data <- DataDual(
              seq(from=10, to=80, by=2)))
 
 # Initialize the Dual-Endpoint model (in this case RW1)
-model <- DualEndpointRW(mu = c(0, 1),
-                        Sigma = matrix(c(1, 0, 0, 1), nrow=2),
+model <- DualEndpointRW(mean = c(0, 1),
+                        cov = matrix(c(1, 0, 0, 1), nrow=2),
                         sigma2betaW = 0.01,
                         sigma2W = c(a=0.1, b=0.1),
                         rho = c(a=1, b=1),
-                        smooth = "RW1")
+                        rw1 = TRUE)
 
 # Set-up some MCMC parameters and generate samples from the posterior
 options <- McmcOptions(burnin=100,
@@ -832,19 +833,20 @@ doseRecommendation <- nextBest(myNextBest,
                                model=model,
                                data=data)
 
-# Define the stopping rule such that the study would be stopped if if there is at 
-# least 0.5 posterior probability that the biomarker (efficacy) is within the 
-# biomarker target range of [0.9, 1.0] (relative to the maximum for the biomarker). 
+# Define the stopping rule such that the study would be stopped if if there is at
+# least 0.5 posterior probability that the biomarker (efficacy) is within the
+# biomarker target range of [0.9, 1.0] (relative to the maximum for the biomarker).
 myStopping <- StoppingTargetBiomarker(target = c(0.9, 1),
                                       prob = 0.5)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           samples=samples,
           model=model,
           data=data)
 
+# nolint end
 # nolint start
 
 # Create the data
@@ -965,6 +967,7 @@ RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),model=model,data
 stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,
           model=model,data=data)
 ## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+# nolint start
 ##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
@@ -980,7 +983,7 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 ##for illustration purpose we use 10 burn-in and generate 50 samples
 options<-McmcOptions(burnin=10,step=2,samples=50)
 ##DLE and efficacy samples must be of 'Samples' class
@@ -1001,7 +1004,7 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
                         data=data,Effmodel=Effmodel,Effsamples=Effsamples)
 ##use 'stopTrial' to determine if the rule has been fulfilled
-##use 0.3 as the target proability of DLE at the end of the trial 
+##use 0.3 as the target proability of DLE at the end of the trial
 
 stopTrial(stopping=myStopping,
           dose=RecommendDose$nextdose,
@@ -1016,6 +1019,10 @@ stopTrial(stopping=myStopping,
             quantile(Gstarsamples,prob=0.5)})
 
 ## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end
+# nolint start
+
 ##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
 ## we need a data object with doses >= 1:
@@ -1031,7 +1038,7 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 
 ##Effmodel must be  of 'ModelEff' class
 ##For example, the 'Effloglog' class model
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 
 
 ##define the 'StoppingGstarCIRatio' class
@@ -1052,5 +1059,7 @@ stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,model=DLEmodel,
 
 
 ## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end
 }
 \keyword{methods}

@@ -52,8 +52,7 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
                               data=data)
 
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class
-Effmodel<-Effloglog(Eff=c(1.223,2.513),Effdose=c(25,300),
-                    nu=c(a=1,b=0.025),data=data,c=0)
+Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300), nu=c(a=1,b=0.025),data=data)
 
 ##The escalation rule using the 'NextBestMaxGain' class
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
@@ -80,10 +79,7 @@ design <- DualResponsesDesign(nextBest=mynextbest,
                               data=data,startingDose=25)
 ##Specify the true DLE and efficacy curves
 myTruthDLE <- probFunction(DLEmodel, phi1 = -53.66584, phi2 = 10.50499)
-
-myTruthEff<- function(dose)
-{Effmodel@ExpEff(dose,theta1=-4.818429,theta2=3.653058)
-}
+myTruthEff <- efficacyFunction(Effmodel, theta1 = -4.818429, theta2 = 3.653058)
 
 ## Then specified the simulations and generate the trial
 ##For illustration purpose only 1 simulation is produced (nsim=1).
@@ -155,8 +151,8 @@ options<-McmcOptions(burnin=10,step=2,samples=50)
 ##OR if the 'EffFlexi' class is used
 ## for the efficacy model
 
-Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
-                    sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+Effmodel<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
+                    sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
 
 ##Specified the design
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
