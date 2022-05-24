@@ -92,10 +92,15 @@ test_that("h_jags_get_data works as expected", {
   model <- h_get_logistic_log_normal()
 
   result <- h_jags_get_data(model, data, FALSE)
+  expected_prior <- c(
+    h_slots(data, c("nObs", "y", "x")),
+    model@modelspecs(TRUE) # nolintr
+  )
   expected <- c(
     h_slots(data, c("nObs", "y", "x")),
-    model@modelspecs() # nolintr
+    model@modelspecs(FALSE) # nolintr
   )
+  expect_identical(result[setdiff(names(result), "ref_dose")], expected_prior)
   expect_identical(result, expected)
 })
 
@@ -107,7 +112,7 @@ test_that("h_jags_get_data works as expected (datanames and datanames_prior redu
   result <- h_jags_get_data(model, data, FALSE)
   expected <- c(
     h_slots(data, c("nObs", "y", "x")),
-    model@modelspecs() # nolintr
+    model@modelspecs(FALSE) # nolintr
   )
   expect_identical(result, expected)
 })
@@ -117,7 +122,7 @@ test_that("h_jags_get_data works as expected (from prior)", {
   model <- h_get_logistic_log_normal()
 
   result <- h_jags_get_data(model, data, TRUE)
-  expected <- model@modelspecs()[c("mean", "prec")] # nolintr
+  expected <- model@modelspecs(TRUE) # nolintr
   expect_identical(result, expected)
 })
 
@@ -129,7 +134,7 @@ test_that("h_jags_get_data works as expected (from prior and datanames_prior)", 
   result <- h_jags_get_data(model, data, TRUE)
   expected <- c(
     h_slots(data, "nGrid"),
-    model@modelspecs()[c("mean", "prec")] # nolintr
+    model@modelspecs(TRUE) # nolintr
   )
   expect_identical(result, expected)
 })

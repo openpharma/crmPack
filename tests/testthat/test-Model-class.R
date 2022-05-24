@@ -893,8 +893,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (linear,
   model <- h_get_tite_logistic_log_normal("linear")
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  # Suppress JAGS warnings about unused variables `zeros` and `cadj`.
-  result <- suppressWarnings(mcmc(data = data, model = model, options = options))
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -921,8 +920,7 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   model <- h_get_tite_logistic_log_normal("adaptive")
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  # Suppress JAGS warnings about unused variables `zeros` and `cadj`.
-  result <- suppressWarnings(mcmc(data = data, model = model, options = options))
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -957,7 +955,7 @@ test_that("MCMC computes correct values for OneParExpNormalPrior model and empty
   model <- h_get_one_par_exp_normal_prior()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  suppressWarnings(result <- mcmc(data = data, model = model, options = options))
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
@@ -992,6 +990,6 @@ test_that("MCMC computes correct values for FractionalCRM model and empty data",
   model <- h_get_fractional_crm()
   options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
 
-  suppressWarnings(result <- mcmc(data = data, model = model, options = options))
+  result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })

@@ -27,6 +27,18 @@ NULL
 #'   model and prior model specifications that are required to be specified
 #'   completely (e.g. prior parameters, reference dose, etc.), based on the data
 #'   slots that are required as arguments of this function.
+#'   Apart of data arguments, this function can be specified with one additional
+#'   (optional) argument `from_prior` of type `logical` and length one. This
+#'   `from_prior` flag can be used to differentiate the output of the `modelspecs`,
+#'   as its value is taken directly from the `from_prior` argument of the `mcmc`
+#'   method that invokes `modelspecs` function. That is, when `from_prior` is
+#'   `TRUE`, then only `priormodel` JAGS model is used (`datamodel` is not used)
+#'   by the `mcmc`, and hence `modelspecs` function should return all the parameters
+#'   that are required by the `priormodel` only. If the value of `from_prior` is
+#'   `FALSE`, then both JAGS models `datamodel` and `priormodel` are used in the
+#'   MCMC sampler, and hence `modelspecs` function should return all the parameters
+#'   required by both `datamodel` and `priormodel`.
+#'
 #' @slot init (`function`)\cr a function computing the list of starting values
 #'   for parameters required to be initialized in the MCMC sampler, based on the
 #'   data slots that are required as arguments of this function.
@@ -185,8 +197,12 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
       alpha0 <- theta[1]
       alpha1 <- exp(theta[2])
     },
-    modelspecs = function() {
-      list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+    modelspecs = function(from_prior) {
+      if (from_prior) {
+        list(mean = params@mean, prec = params@prec)
+      } else {
+        list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+      }
     },
     init = function() {
       list(theta = c(0, 1))
@@ -367,8 +383,12 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
       alpha0 <- theta[1]
       alpha1 <- exp(theta[2])
     },
-    modelspecs = function() {
-      list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+    modelspecs = function(from_prior) {
+      if (from_prior) {
+        list(mean = params@mean, prec = params@prec)
+      } else {
+        list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+      }
     },
     init = function() {
       list(theta = c(0, -20))
@@ -795,13 +815,17 @@ LogisticNormalMixture <- function(comp1,
       alpha0 <- theta[1]
       alpha1 <- theta[2]
     },
-    modelspecs = function() {
-      list(
-        ref_dose = ref_dose,
+    modelspecs = function(from_prior) {
+      ms <- list(
         mean = cbind(comp1@mean, comp2@mean),
         prec = array(data = c(comp1@prec, comp2@prec), dim = c(2, 2, 2)),
         weightpar = weightpar
       )
+      if (from_prior) {
+        ms
+      } else {
+        c(list(ref_dose = ref_dose), ms)
+      }
     },
     init = function() {
       list(theta = c(0, 1))
@@ -935,9 +959,8 @@ LogisticNormalFixedMixture <- function(components,
         alpha1 <- theta[2]
       }
     },
-    modelspecs = function() {
-      list(
-        ref_dose = ref_dose,
+    modelspecs = function(from_prior) {
+      ms <- list(
         weights = weights,
         mean = do.call(cbind, lapply(components, h_slots, "mean", simplify = TRUE)),
         prec = array(
@@ -945,6 +968,11 @@ LogisticNormalFixedMixture <- function(components,
           dim = c(2, 2, length(components))
         )
       )
+      if (from_prior) {
+        ms
+      } else {
+        c(list(ref_dose = ref_dose), ms)
+      }
     },
     init = function() {
       list(theta = c(0, 1))
@@ -1043,13 +1071,17 @@ LogisticLogNormalMixture <- function(mean,
       # The component indicator.
       comp ~ dcat(cat_probs)
     },
-    modelspecs = function() {
-      list(
-        ref_dose = ref_dose,
+    modelspecs = function(from_prior) {
+      ms <- list(
         cat_probs = c(1 - share_weight, share_weight),
         mean = params@mean,
         prec = params@prec
       )
+      if (from_prior) {
+        ms
+      } else {
+        c(list(ref_dose = ref_dose), ms)
+      }
     },
     init = function() {
       list(theta = matrix(c(0, 0, 1, 1), nrow = 2))
@@ -1207,20 +1239,22 @@ DualEndpoint <- function(mean,
     betaZ[1] <- theta[1]
     betaZ[2] <- exp(theta[2])
     # Conditional precision for biomarker.
+    # Code for `precW` and `rho` will be added by
+    # `h_model_dual_endpoint_sigma2W()`, `h_model_dual_endpoint_rho()` helpers, below.
     condPrecW <- precW / (1 - pow(rho, 2))
   }
-  modelspecs <- list(
-    use_log_dose = use_log_dose,
-    ref_dose = ref_dose,
+  modelspecs_prior <- list(
     betaZ_mean = betaZ_params@mean,
     betaZ_prec = betaZ_params@prec
   )
-  init <- NULL
-  sample <- "betaZ"
 
   comp <- list(
-    priormodel = priormodel, modelspecs = modelspecs, init = init, sample = sample
+    priormodel = priormodel,
+    modelspecs = modelspecs_prior,
+    init = NULL,
+    sample = "betaZ"
   )
+
   # Update model components with regard to biomarker regression variance.
   comp <- h_model_dual_endpoint_sigma2W(
     use_fixed["sigma2W"],
@@ -1244,8 +1278,12 @@ DualEndpoint <- function(mean,
     use_fixed = use_fixed,
     datamodel = datamodel,
     priormodel = comp$priormodel,
-    modelspecs = function() {
-      comp$modelspecs
+    modelspecs = function(from_prior) {
+      if (from_prior) {
+        comp$modelspecs
+      } else {
+        c(list(use_log_dose = use_log_dose, ref_dose = ref_dose), comp$modelspecs)
+      }
     },
     init = function(y) {
       c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
@@ -1370,9 +1408,8 @@ DualEndpointRW <- function(sigma2betaW,
     }
   }
   start@priormodel <- h_jags_join_models(start@priormodel, priormodel)
-
-  start@sample <- c(start@sample, "betaW", "delta")
   start@datanames <- c(start@datanames, "doseGrid")
+  start@sample <- c(start@sample, "betaW", "delta")
 
   # Update model components with regard to biomarker regression variance.
   start <- h_model_dual_endpoint_sigma2betaW(
@@ -1496,12 +1533,12 @@ DualEndpointBeta <- function(E0,
 
   start <- DualEndpoint(...)
 
-  start@sample <- c(start@sample, "betaW")
-  start@datanames <- c(start@datanames, "doseGrid")
   ms <- start@modelspecs
-  start@modelspecs <- function() {
-    c(ms(), list(ref_dose_beta = ref_dose_beta))
+  start@modelspecs <- function(from_prior) {
+    c(list(ref_dose_beta = ref_dose_beta), ms(from_prior))
   }
+  start@datanames <- c(start@datanames, "doseGrid")
+  start@sample <- c(start@sample, "betaW")
 
   start <- h_model_dual_endpoint_beta(
     param = E0,
@@ -1655,8 +1692,8 @@ DualEndpointEmax <- function(E0,
   start@sample <- c(start@sample, "betaW")
   start@datanames <- c(start@datanames, "doseGrid")
   ms <- start@modelspecs
-  start@modelspecs <- function() {
-    c(ms(), list(ref_dose_emax = ref_dose_emax))
+  start@modelspecs <- function(from_prior) {
+    c(list(ref_dose_emax = ref_dose_emax), ms(from_prior))
   }
 
   start <- h_model_dual_endpoint_beta(
@@ -2467,9 +2504,8 @@ DALogisticLogNormal <- function(npiece = 3,
     }
   )
 
-  modelspecs <- function(nObs, Tmax) {
-    specs <- list(
-      ref_dose = start@ref_dose,
+  modelspecs <- function(nObs, Tmax, from_prior) {
+    ms <- list(
       prec = start@params@prec,
       mean = start@params@mean,
       npiece = npiece,
@@ -2478,10 +2514,11 @@ DALogisticLogNormal <- function(npiece = 3,
       h = seq(from = 0L, to = Tmax, length = npiece + 1),
       cond = safeInteger(cond_pem)
     )
-    if (nObs > 0L) {
-      specs <- c(specs, list(zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10))
+    if (from_prior) {
+      ms
+    } else {
+      c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
     }
-    specs
   }
 
   .DALogisticLogNormal(
@@ -2562,17 +2599,14 @@ TITELogisticLogNormal <- function(weight_method = "linear",
     }
   }
 
-  modelspecs <- function(nObs, u, Tmax, y) {
-    ms <- list(
-      ref_dose = start@ref_dose,
-      prec = start@params@prec,
-      mean = start@params@mean,
-      zeros = rep(0, nObs),
-      cadj = 1e10
-    )
-
+  modelspecs <- function(nObs, u, Tmax, y, from_prior) {
     # Calculate weights `w` based on the input data.
-    if (nObs > 0) {
+    if (from_prior || nObs == 0L) {
+      list(
+        prec = start@params@prec,
+        mean = start@params@mean
+      )
+    } else {
       if (weight_method == "linear") {
         w <- u / Tmax
       } else if (weight_method == "adaptive") {
@@ -2597,9 +2631,14 @@ TITELogisticLogNormal <- function(weight_method = "linear",
       w[y == 1] <- 1
       w[u == Tmax] <- 1
 
-      c(ms, list(w = w))
-    } else {
-      ms
+      list(
+        ref_dose = start@ref_dose,
+        prec = start@params@prec,
+        mean = start@params@mean,
+        zeros = rep(0, nObs),
+        cadj = 1e10,
+        w = w
+      )
     }
   }
 
@@ -2680,8 +2719,12 @@ OneParExpNormalPrior <- function(skel_probs,
     priormodel = function() {
       alpha ~ dnorm(0, 1 / sigma2)
     },
-    modelspecs = function() {
-      list(skel_probs = skel_probs, sigma2 = sigma2)
+    modelspecs = function(from_prior) {
+      if (from_prior) {
+        list(sigma2 = sigma2)
+      } else {
+        list(skel_probs = skel_probs, sigma2 = sigma2)
+      }
     },
     init = function() {
       list(alpha = 1)
@@ -2745,28 +2788,31 @@ FractionalCRM <- function(...) {
     }
   }
 
-  modelspecs <- function(nObs, u, Tmax, y) {
-    # Calculate fractional contribution `yhat`
-    # based on the input data using the Kaplan-Meier method.
-    yhat <- if (nObs > 0) {
-      km <- survival::survfit(survival::Surv(u, y) ~ 1)
-      s_tau <- tail(km$surv[km$time <= Tmax], 1) # Survival probability = S(Tmax).
-      ifelse(
-        u < Tmax & y == 0L, # Within the assessment window and so far no DLT.
-        yes = 1 - s_tau / sapply(u, function(u_i) tail(km$surv[km$time <= u_i], 1)),
-        no = y
-      )
+  modelspecs <- function(nObs, u, Tmax, y, from_prior) {
+    if (from_prior) {
+      list(sigma2 = start@sigma2)
     } else {
-      1L
+      # Calculate fractional contribution `yhat`
+      # based on the input data using the Kaplan-Meier method.
+      yhat <- if (nObs > 0) {
+        km <- survival::survfit(survival::Surv(u, y) ~ 1)
+        s_tau <- tail(km$surv[km$time <= Tmax], 1) # Survival probability = S(Tmax).
+        ifelse(
+          u < Tmax & y == 0L, # Within the assessment window and so far no DLT.
+          yes = 1 - s_tau / sapply(u, function(u_i) tail(km$surv[km$time <= u_i], 1)),
+          no = y
+        )
+      } else {
+        1L
+      }
+      list(
+        skel_probs = start@skel_probs,
+        sigma2 = start@sigma2,
+        zeros = rep(0, nObs),
+        cadj = 1e10,
+        yhat = yhat
+      )
     }
-
-    list(
-      skel_probs = start@skel_probs,
-      sigma2 = start@sigma2,
-      zeros = rep(0, nObs),
-      cadj = 1e10,
-      yhat = yhat
-    )
   }
 
   .FractionalCRM(
