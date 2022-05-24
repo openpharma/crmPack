@@ -8,7 +8,7 @@
 \description{
 This class is similar to NCRM class, the only difference is the addition of
 loss function. As in NCRM rule, first admissible doses are found, which are those
-with probability to fall in \code{overdose} category being below
+with probability to fall in overdose category being below
 \code{maxOverdoseProb}. Next, within the admissible doses, the loss function is
 calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
 dose with lowest loss function (Bayes risk) is recommended for the next dose.
@@ -16,15 +16,29 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the target toxicity interval (limits included)}
+\item{\code{target}}{A numeric vector specifying the target toxicity interval
+(limits included)}
 
-\item{\code{overdose}}{the overdose toxicity interval (lower limit excluded, upper limit included)}
+\item{\code{overdose}}{A numeric vector specifying the overdose toxicity interval
+(lower limit excluded, upper limit included).}
 
-\item{\code{maxOverdoseProb}}{maximum overdose probability that is allowed}
+\item{\code{unacceptable}}{An optional numeric vector specifying the unacceptable toxicity interval
+(lower limit excluded, upper limit included).}
 
-\item{\code{losses}}{loss function}
+\item{\code{maxOverdoseProb}}{A numeric value specifying the maximum overdose
+(overdose or excessive + unacceptable) probability that is allowed.}
+
+\item{\code{losses}}{A numeric vector specifying the loss function. If the \code{unacceptable}
+is provided, the vector length must be 4, otherwise is 3.}
 }}
 
+\note{
+The loss function should be a vector of either 3 or 4 values.
+This is because the loss function values must be specified for each interval,
+that is under-dosing, target toxicity, and overdosing toxicity or
+under-dosing, target toxicity, overdosing (excessive) toxicity, and unacceptable
+toxicity intervals.
+}
 \examples{
 
 # In the example below, the target toxicity interval [0.2, 0.35] while the
@@ -32,9 +46,10 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose.
 # of overdosing below 25\%. The loss function is c(1, 0, 1, 2)
 my_next_best <- NextBestNCRMLoss(
   target = c(0.2, 0.35),
-  overdose = c(0.35, 0.6, 1),
+  overdose = c(0.35, 0.6),
+  unacceptable = c(0.6, 1),
   maxOverdoseProb = 0.25,
-  losses <- c(1, 0, 1, 2)
+  losses = c(1, 0, 1, 2)
 )
 }
 \keyword{classes}

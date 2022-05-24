@@ -1,4 +1,4 @@
-# nolint start
+
 
 # Create the data
 data <- Data(
@@ -36,21 +36,22 @@ my_increments <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
-nextMaxDose <- maxDose(my_increments,
+next_max_dose <- maxDose(my_increments,
   data = data
 )
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRMLoss'
-myNextBest <- NextBestNCRMLoss(
+my_next_best <- NextBestNCRMLoss(
   target = c(0.2, 0.35),
-  overdose = c(0.35, 0.6, 1),
+  overdose = c(0.35, 0.6),
+  unacceptable = c(0.6, 1),
   maxOverdoseProb = 0.25,
-  losses <- c(1, 0, 1, 2)
+  losses = c(1, 0, 1, 2)
 )
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
+dose_recommendation <- nextBest(myNextBest,
   doselimit = nextMaxDose,
   samples = samples,
   model = model,
@@ -59,5 +60,3 @@ doseRecommendation <- nextBest(myNextBest,
 
 # Look at the probabilities
 doseRecommendation$`Interval probabilities`
-
-# nolint end

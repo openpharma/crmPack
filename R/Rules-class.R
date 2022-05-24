@@ -271,7 +271,7 @@ validObject(.NextBestNCRMLoss())
 ##' @export
 NextBestNCRMLoss <- function(target,
                              overdose,
-                             unacceptable,
+                             unacceptable = c(1, 1),
                              maxOverdoseProb,
                              losses) {
   .NextBestNCRMLoss(

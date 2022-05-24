@@ -4,19 +4,27 @@
 \alias{NextBestNCRMLoss}
 \title{Initialization function for "NextBestNCRMLoss"}
 \usage{
-NextBestNCRMLoss(target, overdose, maxOverdoseProb, losses)
+NextBestNCRMLoss(
+  target,
+  overdose,
+  unacceptable = c(1, 1),
+  maxOverdoseProb,
+  losses
+)
 }
 \arguments{
-\item{target}{see \code{\linkS4class{NextBestNCRMLoss}}}
+\item{target}{see \linkS4class{NextBestNCRMLoss}}
 
-\item{overdose}{see \code{\linkS4class{NextBestNCRMLoss}}}
+\item{overdose}{see \linkS4class{NextBestNCRMLoss}}
 
-\item{maxOverdoseProb}{see \code{\linkS4class{NextBestNCRMLoss}}}
+\item{unacceptable}{see \linkS4class{NextBestNCRMLoss}}
 
-\item{losses}{see \code{\linkS4class{NextBestNCRMLoss}}}
+\item{maxOverdoseProb}{see \linkS4class{NextBestNCRMLoss}}
+
+\item{losses}{see \linkS4class{NextBestNCRMLoss}}
 }
 \value{
-the \code{\linkS4class{NextBestNCRMLoss}} object
+the \linkS4class{NextBestNCRMLoss} object
 }
 \description{
 Initialization function for "NextBestNCRMLoss"

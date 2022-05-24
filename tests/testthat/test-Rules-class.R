@@ -110,7 +110,7 @@ test_that("NextBestNCRMLoss error: overdose has to be a probability range", {
   expect_error(
     NextBestNCRMLoss(
       target = c(0.2, 0.35),
-      overdose = c(0.35, 0.6, 2),
+      overdose = c(0.35, 0.6, 1),
       maxOverdoseProb = 0.25,
       losses = c(1, 0, 1, 2)
     ),
@@ -134,7 +134,8 @@ test_that("NextBestNCRMLoss error: losses has to be a vector of non-negative ele
   expect_error(
     NextBestNCRMLoss(
       target = c(0.2, 0.35),
-      overdose = c(0.35, 0.6, 1),
+      overdose = c(0.35, 0.6),
+      unacceptable = c(0.6, 1),
       maxOverdoseProb = 0.25,
       losses = c(-1, 0, 1, 2)
     ),

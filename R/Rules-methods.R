@@ -482,7 +482,7 @@ setMethod("nextBest",
 
               ## plot in case of 3 toxicity intervals
               if (length(nextBest@overdose) <= 2) {
-                dat <- data.frame(x = data@doseGrid, y = stack(data.frame(probMat[, 3:1])))
+                dat <- data.frame(x = data@doseGrid, y = utils::stack(data.frame(probMat[, 3:1])))
                 plotJoint <- ggplot(data = dat, aes(x, y.values, fill = y.ind)) +
                   scale_x_continuous(breaks = data@doseGrid) +
                   geom_bar(stat = "identity", width = min(diff(data@doseGrid)) / 2) +
