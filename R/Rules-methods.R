@@ -331,11 +331,6 @@ setMethod("nextBest",
 ##' --------------------------------------------------
 ##' @describeIn nextBest Find the next best dose based on the NCRM method and
 ##' loss function.
-##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
-##' geom_hline geom_point
-##' @importFrom gridExtra arrangeGrob
-##' @importFrom stats sd
-##' @importFrom utils stack
 ##' @example examples/Rules-method-NextBestNCRMLoss.R
 
 setMethod("nextBest",

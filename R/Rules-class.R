@@ -177,18 +177,32 @@ NextBestNCRM <- function(target,
   )
 }
 
+# nolint start
+
 ##' Next best dose based on NCRM rule and loss function
 ##'
 ##' This class is similar to NCRM class, the only difference is the addition of
 ##' loss function. As in NCRM rule, first admissible doses are found, which are those
-##' with probability to fall in \code{overdose} category being below
-##' \code{maxOverdoseProb}. Next, within the admissible doses, the loss function is
-##' calculated, i.e. \code{losses} %*% \code{target}. Finally, the corresponding
+##' with probability to fall in overdose category being below
+##' `maxOverdoseProb`. Next, within the admissible doses, the loss function is
+##' calculated, i.e. `losses` %*% `target`. Finally, the corresponding
 ##' dose with lowest loss function (Bayes risk) is recommended for the next dose.
-##' @slot target the target toxicity interval (limits included)
-##' @slot overdose the overdose toxicity interval (lower limit excluded, upper limit included)
-##' @slot maxOverdoseProb maximum overdose probability that is allowed
-##' @slot losses loss function
+##' @slot target A numeric vector specifying the target toxicity interval
+##' (limits included)
+##' @slot overdose A numeric vector specifying the overdose toxicity interval
+##' (lower limit excluded, upper limit included).
+##' @slot unacceptable An optional numeric vector specifying the unacceptable toxicity interval
+##' (lower limit excluded, upper limit included).
+##' @slot maxOverdoseProb A numeric value specifying the maximum overdose
+##' (overdose or excessive + unacceptable) probability that is allowed.
+##' @slot losses A numeric vector specifying the loss function. If the `unacceptable`
+##' is provided, the vector length must be 4, otherwise is 3.
+##'
+##' @note The loss function should be a vector of either 3 or 4 values.
+##' This is because the loss function values must be specified for each interval,
+##' that is under-dosing, target toxicity, and overdosing toxicity or
+##' under-dosing, target toxicity, overdosing (excessive) toxicity, and unacceptable
+##' toxicity intervals.
 ##'
 ##' @example examples/Rules-class-NextBestNCRMLoss.R
 ##' @export
@@ -199,16 +213,18 @@ NextBestNCRM <- function(target,
     representation(
       target = "numeric",
       overdose = "numeric",
+      unacceptable = "numeric",
       maxOverdoseProb = "numeric",
       losses = "numeric"
     ),
     prototype(
       target = c(0.2, 0.35),
-      overdose = c(0.35, 0.6, 1),
+      overdose = c(0.35, 1),
+      unacceptable = c(1, 1),
       maxOverdoseProb = 0.25,
       losses = c(1, 0, 1, 2)
     ),
-    contains = list("NextBest"),
+    contains = list("NextBestNCRM"),
     validity =
       function(object) {
         o <- Validate()
@@ -218,13 +234,15 @@ NextBestNCRM <- function(target,
           "target has to be a probability range"
         )
         o$check(
-          is.probRange(object@overdose[1:2]),
+          is.probRange(object@overdose),
           "overdose has to be a probability range"
         )
-        o$check(
-          is.probRange(object@overdose[2:3]),
-          "overdose has to be a probability range"
-        )
+        if (object@unacceptable[1] != 1) {
+          o$check(
+            is.probRange(object@unacceptable),
+            "unacceptable has to be a probability range"
+          )
+        }
 
         o$check(
           is.probability(object@maxOverdoseProb),
@@ -243,26 +261,29 @@ validObject(.NextBestNCRMLoss())
 
 ##' Initialization function for "NextBestNCRMLoss"
 ##'
-##' @param target see \code{\linkS4class{NextBestNCRMLoss}}
-##' @param overdose see \code{\linkS4class{NextBestNCRMLoss}}
-##' @param maxOverdoseProb see \code{\linkS4class{NextBestNCRMLoss}}
-##' @param losses see \code{\linkS4class{NextBestNCRMLoss}}
-##' @return the \code{\linkS4class{NextBestNCRMLoss}} object
+##' @param target see [NextBestNCRMLoss-class]
+##' @param overdose see [NextBestNCRMLoss-class]
+##' @param unacceptable see [NextBestNCRMLoss-class]
+##' @param maxOverdoseProb see [NextBestNCRMLoss-class]
+##' @param losses see [NextBestNCRMLoss-class]
+##' @return the [NextBestNCRMLoss-class] object
 ##'
 ##' @export
 NextBestNCRMLoss <- function(target,
                              overdose,
+                             unacceptable,
                              maxOverdoseProb,
                              losses) {
   .NextBestNCRMLoss(
     target = target,
     overdose = overdose,
+    unacceptable = unacceptable,
     maxOverdoseProb = maxOverdoseProb,
     losses = losses
   )
 }
 
-
+# nolint start
 
 ## --------------------------------------------------
 ## Next best dose based on 3+3 rule
