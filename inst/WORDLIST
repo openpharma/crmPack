@@ -217,6 +217,7 @@ NextBestMaxGain
 NextBestMaxGainSamples
 NextBestMTD
 NextBestNCRM
+NextBestNCRMLoss
 NextBestTD
 NextBestTDsamples
 NextBestTDSamples
