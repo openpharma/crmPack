@@ -198,11 +198,11 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
       alpha1 <- exp(theta[2])
     },
     modelspecs = function(from_prior) {
-      if (from_prior) {
-        list(mean = params@mean, prec = params@prec)
-      } else {
-        list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+      ms <- list(mean = params@mean, prec = params@prec)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
       }
+      ms
     },
     init = function() {
       list(theta = c(0, 1))
@@ -384,11 +384,11 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
       alpha1 <- exp(theta[2])
     },
     modelspecs = function(from_prior) {
-      if (from_prior) {
-        list(mean = params@mean, prec = params@prec)
-      } else {
-        list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+      ms <- list(mean = params@mean, prec = params@prec)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
       }
+      ms
     },
     init = function() {
       list(theta = c(0, -20))
@@ -821,11 +821,10 @@ LogisticNormalMixture <- function(comp1,
         prec = array(data = c(comp1@prec, comp2@prec), dim = c(2, 2, 2)),
         weightpar = weightpar
       )
-      if (from_prior) {
-        ms
-      } else {
-        c(list(ref_dose = ref_dose), ms)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
       }
+      ms
     },
     init = function() {
       list(theta = c(0, 1))
@@ -968,11 +967,10 @@ LogisticNormalFixedMixture <- function(components,
           dim = c(2, 2, length(components))
         )
       )
-      if (from_prior) {
-        ms
-      } else {
-        c(list(ref_dose = ref_dose), ms)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
       }
+      ms
     },
     init = function() {
       list(theta = c(0, 1))
@@ -1077,11 +1075,10 @@ LogisticLogNormalMixture <- function(mean,
         mean = params@mean,
         prec = params@prec
       )
-      if (from_prior) {
-        ms
-      } else {
-        c(list(ref_dose = ref_dose), ms)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
       }
+      ms
     },
     init = function() {
       list(theta = matrix(c(0, 0, 1, 1), nrow = 2))
@@ -1279,11 +1276,11 @@ DualEndpoint <- function(mean,
     datamodel = datamodel,
     priormodel = comp$priormodel,
     modelspecs = function(from_prior) {
-      if (from_prior) {
-        comp$modelspecs
-      } else {
-        c(list(use_log_dose = use_log_dose, ref_dose = ref_dose), comp$modelspecs)
+      if (!from_prior) {
+        comp$modelspecs$ref_dose <- ref_dose
+        comp$modelspecs$use_log_dose <- use_log_dose
       }
+      comp$modelspecs
     },
     init = function(y) {
       c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
@@ -2514,11 +2511,10 @@ DALogisticLogNormal <- function(npiece = 3,
       h = seq(from = 0L, to = Tmax, length = npiece + 1),
       cond = safeInteger(cond_pem)
     )
-    if (from_prior) {
-      ms
-    } else {
-      c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
+    if (!from_prior) {
+      ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
     }
+    ms
   }
 
   .DALogisticLogNormal(
@@ -2600,13 +2596,9 @@ TITELogisticLogNormal <- function(weight_method = "linear",
   }
 
   modelspecs <- function(nObs, u, Tmax, y, from_prior) {
+    ms <- list(prec = start@params@prec, mean = start@params@mean)
     # Calculate weights `w` based on the input data.
-    if (from_prior || nObs == 0L) {
-      list(
-        prec = start@params@prec,
-        mean = start@params@mean
-      )
-    } else {
+    if (!from_prior && nObs > 0L) {
       if (weight_method == "linear") {
         w <- u / Tmax
       } else if (weight_method == "adaptive") {
@@ -2631,15 +2623,9 @@ TITELogisticLogNormal <- function(weight_method = "linear",
       w[y == 1] <- 1
       w[u == Tmax] <- 1
 
-      list(
-        ref_dose = start@ref_dose,
-        prec = start@params@prec,
-        mean = start@params@mean,
-        zeros = rep(0, nObs),
-        cadj = 1e10,
-        w = w
-      )
+      ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), cadj = 1e10, w = w), ms)
     }
+    ms
   }
 
   .TITELogisticLogNormal(
@@ -2720,11 +2706,11 @@ OneParExpNormalPrior <- function(skel_probs,
       alpha ~ dnorm(0, 1 / sigma2)
     },
     modelspecs = function(from_prior) {
-      if (from_prior) {
-        list(sigma2 = sigma2)
-      } else {
-        list(skel_probs = skel_probs, sigma2 = sigma2)
+      ms <- list(sigma2 = sigma2)
+      if (!from_prior) {
+        ms$skel_probs <- skel_probs
       }
+      ms
     },
     init = function() {
       list(alpha = 1)
@@ -2789,9 +2775,8 @@ FractionalCRM <- function(...) {
   }
 
   modelspecs <- function(nObs, u, Tmax, y, from_prior) {
-    if (from_prior) {
-      list(sigma2 = start@sigma2)
-    } else {
+    ms <- list(sigma2 = start@sigma2)
+    if (!from_prior) {
       # Calculate fractional contribution `yhat`
       # based on the input data using the Kaplan-Meier method.
       yhat <- if (nObs > 0) {
@@ -2805,14 +2790,12 @@ FractionalCRM <- function(...) {
       } else {
         1L
       }
-      list(
-        skel_probs = start@skel_probs,
-        sigma2 = start@sigma2,
-        zeros = rep(0, nObs),
-        cadj = 1e10,
-        yhat = yhat
+      ms <- c(
+        list(skel_probs = start@skel_probs, zeros = rep(0, nObs), cadj = 1e10, yhat = yhat),
+        ms
       )
     }
+    ms
   }
 
   .FractionalCRM(

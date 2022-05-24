@@ -103,8 +103,8 @@ test_that("h_model_dual_endpoint_sigma2betaW updates model components for fixed 
     c(ms(from_prior), list(precBetaW = 1 / 5))
   }
 
-  expect_identical(result@modelspecs(TRUE), de@modelspecs(TRUE)) # nolintr
-  expect_identical(result@modelspecs(FALSE), de@modelspecs(FALSE)) # nolintr
+  expect_identical(result@modelspecs(from_prior = TRUE), de@modelspecs(from_prior = TRUE)) # nolintr
+  expect_identical(result@modelspecs(from_prior = FALSE), de@modelspecs(from_prior = FALSE)) # nolintr
 })
 
 test_that("h_model_dual_endpoint_sigma2betaW updates model components", {
@@ -128,12 +128,14 @@ test_that("h_model_dual_endpoint_sigma2betaW updates model components", {
   }
   de@sample <- c(de@sample, "precBetaW")
 
-  expect_identical(result@priormodel, de@priormodel) # nolintr
-  expect_identical(result@modelspecs(TRUE), de@modelspecs(TRUE)) # nolintr
-  expect_identical(result@modelspecs(FALSE), de@modelspecs(FALSE)) # nolintr
-  expect_identical(result@init(0), de@init(0)) # nolintr
-  expect_identical(result@init(2), de@init(2)) # nolintr
-  expect_identical(result@sample, de@sample) # nolintr
+  # nolint start
+  expect_identical(result@priormodel, de@priormodel)
+  expect_identical(result@modelspecs(from_prior = TRUE), de@modelspecs(from_prior = TRUE))
+  expect_identical(result@modelspecs(from_prior = FALSE), de@modelspecs(from_prior = FALSE))
+  expect_identical(result@init(0), de@init(0))
+  expect_identical(result@init(2), de@init(2))
+  expect_identical(result@sample, de@sample)
+  # nolint end
 })
 
 test_that("h_model_dual_endpoint_sigma2betaW throws error for non-valid fixed sigma2betaW", {
@@ -167,10 +169,12 @@ test_that("h_model_dual_endpoint_beta updates model components for scalar param"
   )
 
   # Expect that modelspecs is updated correctly.
-  expected_ms <- c(de@modelspecs(TRUE), c(list(some_name = 5))) # nolintr
-  expect_identical(result@modelspecs(TRUE), expected_ms) # nolintr
-  expected_ms <- c(de@modelspecs(FALSE), c(list(some_name = 5))) # nolintr
-  expect_identical(result@modelspecs(FALSE), expected_ms) # nolintr
+  # nolint start
+  expected_ms <- c(de@modelspecs(from_prior = TRUE), c(list(some_name = 5)))
+  expect_identical(result@modelspecs(from_prior = TRUE), expected_ms)
+  expected_ms <- c(de@modelspecs(from_prior = FALSE), c(list(some_name = 5)))
+  expect_identical(result@modelspecs(from_prior = FALSE), expected_ms)
+  # nolint end
 
   # Expect that use_fixed is updated correctly, and others (except modelspecs) are not changed.
   de@use_fixed <- c(de@use_fixed, some_name = TRUE)
@@ -200,14 +204,16 @@ test_that("h_model_dual_endpoint_beta updates model components", {
   expect_identical(result@priormodel, expected_prior)
 
   # Expect that modelspecs is updated correctly.
-  expected_ms <- c(de@modelspecs(TRUE), c(list(E0a = 2, E0b = 6))) # nolintr
-  expect_identical(result@modelspecs(TRUE), expected_ms) # nolintr
-  expected_ms <- c(de@modelspecs(FALSE), c(list(E0a = 2, E0b = 6))) # nolintr
-  expect_identical(result@modelspecs(FALSE), expected_ms) # nolintr
+  # nolint start
+  expected_ms <- c(de@modelspecs(from_prior = TRUE), c(list(E0a = 2, E0b = 6)))
+  expect_identical(result@modelspecs(from_prior = TRUE), expected_ms)
+  expected_ms <- c(de@modelspecs(from_prior = FALSE), c(list(E0a = 2, E0b = 6)))
+  expect_identical(result@modelspecs(from_prior = FALSE), expected_ms)
 
   # Expect that init is updated correctly.
-  expected_init <- c(de@init(0), c(list(E0 = 4))) # nolintr
-  expect_identical(result@init(0), expected_init) # nolintr
+  expected_init <- c(de@init(0), c(list(E0 = 4)))
+  expect_identical(result@init(0), expected_init)
+  # nolint end
 
   # Expect that use_fixed is updated correctly, and others are not changed.
   de@use_fixed <- c(de@use_fixed, E0 = FALSE)
