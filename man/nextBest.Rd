@@ -8,7 +8,6 @@
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
 \alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
-\alias{h_info_theory_dist}
 \alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
@@ -29,8 +28,6 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestMinDist,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
-
-h_info_theory_dist(probability, target, asymmetry)
 
 \S4method{nextBest}{NextBestInfTheory,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
 
@@ -111,10 +108,6 @@ derivation of the next best dose.
 \item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: Method for \code{NextBestMinDist} class, which will give
 the dose which is below the dose limit and has an estimated DLT probability
 which is closest to the target dose.
-
-\item \code{h_info_theory_dist}: Helper function which provides the value of the
-divergence as given by equation in (7) in the reference at
-https://doi.org/10.1002/sim.8450.
 
 \item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: Method for \code{NextBestInfTheory} class, which will give
 the appropriate dose within an information theoretic framework
