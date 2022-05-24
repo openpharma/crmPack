@@ -24,7 +24,18 @@ specification.}
 \item{\code{modelspecs}}{(\code{function})\cr a function computing the list of the data
 model and prior model specifications that are required to be specified
 completely (e.g. prior parameters, reference dose, etc.), based on the data
-slots that are required as arguments of this function.}
+slots that are required as arguments of this function.
+Apart of data arguments, this function can be specified with one additional
+(optional) argument \code{from_prior} of type \code{logical} and length one. This
+\code{from_prior} flag can be used to differentiate the output of the \code{modelspecs},
+as its value is taken directly from the \code{from_prior} argument of the \code{mcmc}
+method that invokes \code{modelspecs} function. That is, when \code{from_prior} is
+\code{TRUE}, then only \code{priormodel} JAGS model is used (\code{datamodel} is not used)
+by the \code{mcmc}, and hence \code{modelspecs} function should return all the parameters
+that are required by the \code{priormodel} only. If the value of \code{from_prior} is
+\code{FALSE}, then both JAGS models \code{datamodel} and \code{priormodel} are used in the
+MCMC sampler, and hence \code{modelspecs} function should return all the parameters
+required by both \code{datamodel} and \code{priormodel}.}
 
 \item{\code{init}}{(\code{function})\cr a function computing the list of starting values
 for parameters required to be initialized in the MCMC sampler, based on the

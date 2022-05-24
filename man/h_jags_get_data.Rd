@@ -12,7 +12,8 @@ h_jags_get_data(model, data, from_prior)
 \item{data}{(\code{GeneralData})\cr an input data.}
 
 \item{from_prior}{(\code{flag})\cr sample from the prior only? In this case
-data will not be appended to the output.}
+data will not be appended to the output, i.e. only the variables required
+by the \code{model@priormodel} model will be returned in data.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
