@@ -1,3 +1,4 @@
+# nolint start
 #' Internal Helper Functions for Validation of [`Increments`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -84,3 +85,39 @@ v_stopping_mtd_cv <- function(object) {
   )
   v$result()
 }
+
+# nolint end
+
+#' @describeIn v_NextBestNCRMLoss validates that the [`.NextBestNCRMLoss`] object
+#'   contains valid probability target and percentage threshold.
+v_NextBestNCRMLoss <- function(object) {
+
+    v <- Validate()
+
+    v$check(
+      is.probRange(object@target),
+      "target has to be a probability range"
+    )
+    v$check(
+      is.probRange(object@overdose),
+      "overdose has to be a probability range"
+    )
+    if (object@unacceptable[1] != 1) {
+      v$check(
+        is.probRange(object@unacceptable),
+        "unacceptable has to be a probability range"
+      )
+    }
+
+    v$check(
+      is.probability(object@maxOverdoseProb),
+      "maxOverdoseProb has to be a probability"
+    )
+
+    v$check(
+      all(!(object@losses < 0)),
+      "losses has to be a vector of non-negative elements"
+    )
+
+    v$result()
+  }

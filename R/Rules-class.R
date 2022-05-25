@@ -224,38 +224,8 @@ NextBestNCRM <- function(target,
       maxOverdoseProb = 0.25,
       losses = c(1, 0, 1, 2)
     ),
-    contains = list("NextBestNCRM"),
-    validity =
-      function(object) {
-        o <- Validate()
+    contains = list("NextBestNCRM")
 
-        o$check(
-          is.probRange(object@target),
-          "target has to be a probability range"
-        )
-        o$check(
-          is.probRange(object@overdose),
-          "overdose has to be a probability range"
-        )
-        if (object@unacceptable[1] != 1) {
-          o$check(
-            is.probRange(object@unacceptable),
-            "unacceptable has to be a probability range"
-          )
-        }
-
-        o$check(
-          is.probability(object@maxOverdoseProb),
-          "maxOverdoseProb has to be a probability"
-        )
-
-        o$check(
-          all(!(object@losses < 0)),
-          "losses has to be a vector of non-negative elements"
-        )
-
-        o$result()
-      }
   )
 validObject(.NextBestNCRMLoss())
 
