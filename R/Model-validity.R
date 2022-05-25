@@ -1,22 +1,24 @@
-#' Internal Helper Functions for Validation of [`AllModels`] Objects
+#' Internal Helper Functions for Validation of [`GeneralModel`] and [`ModelPseudo`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' These functions are only used internally to validate the format of an input
-#' [`AllModels`] or inherited classes and therefore not exported.
+#' [`GeneralModel`] and [`ModelPseudo`] or inherited classes and therefore are
+#' not exported.
 #'
 #' @name v_model_objects
-#' @param object (`AllModels`)\cr object to validate.
+#' @param object (`GeneralModel`) or (`ModelPseudo`) \cr object to validate.
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
 
 #' @describeIn v_model_objects validates that the names of the
-#'   arguments in `init` function are included in `datanames` slot.
+#'   arguments in `init` function are included in `datanames` or `datanames_prior`
+#'   slots.
 v_general_model <- function(object) {
   v <- Validate()
   v$check(
-    h_check_fun_formals(object@init, allowed = object@datanames),
+    h_check_fun_formals(object@init, allowed = union(object@datanames, object@datanames_prior)),
     "Arguments of the init function must be data names"
   )
   v$result()
@@ -123,7 +125,7 @@ v_model_logistic_normal_fixed_mix <- function(object) {
     "components must have same length as weights"
   )
   v$check(
-    test_numeric(object@weights, lower = 0 + .Machine$double.xmin, finite = TRUE, any.missing = FALSE),
+    test_numeric(object@weights, lower = .Machine$double.xmin, finite = TRUE, any.missing = FALSE),
     "weights must be positive"
   )
   v$check(
@@ -169,7 +171,7 @@ v_model_dual_endpoint <- function(object) {
 
   if (isTRUE(uf_sigma2W)) {
     v$check(
-      test_number(object@sigma2W, lower = 0 + rmin, finite = TRUE),
+      test_number(object@sigma2W, lower = rmin, finite = TRUE),
       "sigma2W must be a positive and finite numerical scalar"
     )
   } else {
@@ -206,7 +208,7 @@ v_model_dual_endpoint_rw <- function(object) {
   )
   if (isTRUE(uf_sigma2W)) {
     v$check(
-      test_number(object@sigma2betaW, lower = 0 + .Machine$double.xmin, finite = TRUE),
+      test_number(object@sigma2betaW, lower = .Machine$double.xmin, finite = TRUE),
       "sigma2betaW must be a positive and finite numerical scalar"
     )
   } else {
@@ -234,7 +236,7 @@ v_model_dual_endpoint_beta <- function(object) {
     if (isTRUE(uf)) {
       if (s %in% c("delta1", "mode")) {
         v$check(
-          test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+          test_number(slot(object, s), lower = rmin, finite = TRUE),
           paste(s, "must be a positive and finite numerical scalar")
         )
       }
@@ -272,7 +274,7 @@ v_model_dual_endpoint_emax <- function(object) {
     )
     if (isTRUE(uf)) {
       v$check(
-        test_number(slot(object, s), lower = 0 + rmin, finite = TRUE),
+        test_number(slot(object, s), lower = rmin, finite = TRUE),
         paste(s, "must be a positive and finite numerical scalar")
       )
     } else {
@@ -416,6 +418,136 @@ v_model_eff_log_log <- function(object) {
       nrow_X,
       "and without any missing values"
     )
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`EffFlexi`] class slots are valid.
+v_model_eff_flexi <- function(object) {
+  rmin <- .Machine$double.xmin
+
+  v <- Validate()
+  v$check(
+    test_numeric(object@eff, finite = TRUE, any.missing = FALSE, min.len = 2),
+    "eff must be a finite numerical vector of minimum length 2, without missing values"
+  )
+  v$check(
+    test_numeric(
+      object@eff_dose,
+      lower = rmin, finite = TRUE, any.missing = FALSE, len = length(object@eff)
+    ),
+    "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
+  )
+
+  uf_sigma2W <- object@use_fixed["sigma2W"]
+  v$check(
+    test_flag(uf_sigma2W),
+    "use_fixed must be a named logical vector that contains name 'sigma2W'"
+  )
+  uf_sigma2betaW <- object@use_fixed["sigma2betaW"]
+  v$check(
+    test_flag(uf_sigma2betaW),
+    "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
+  )
+
+  if (isTRUE(uf_sigma2W)) {
+    v$check(
+      test_number(object@sigma2W, lower = rmin, finite = TRUE),
+      "sigma2W must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2W is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2W, permutation.of = c("a", "b")),
+      "sigma2W must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+  if (isTRUE(uf_sigma2betaW)) {
+    v$check(
+      test_number(object@sigma2betaW, lower = rmin, finite = TRUE),
+      "sigma2betaW must be a positive and finite numerical scalar"
+    )
+  } else {
+    # object@sigma2betaW is a vector with parameters for InverseGamma(a, b).
+    v$check(
+      h_test_named_numeric(object@sigma2betaW, permutation.of = c("a", "b")),
+      "sigma2betaW must be a named numerical vector of length two with positive finite values and names 'a', 'b'"
+    )
+  }
+
+  v$check(
+    test_flag(object@rw1),
+    "rw1 must be a flag"
+  )
+  v$check(
+    test_matrix(object@X, mode = "integer", ncols = object@data@nGrid, any.missing = FALSE),
+    paste("X must be an integer matrix with", object@data@nGrid, "columns and without any missing values")
+  )
+  v$check(
+    all(object@X == 0L | object@X == 1L),
+    "X must be a matrix with 0-1 values only"
+  )
+  v$check(
+    test_matrix(object@RW, nrows = object@data@nGrid, ncols = object@data@nGrid, any.missing = FALSE),
+    paste0("RW must be ", object@data@nGrid, "x", object@data@nGrid, " matrix without any missing values")
+  )
+  v$check(
+    test_int(object@RW_rank) && (object@RW_rank == (object@data@nGrid - ifelse(isTRUE(object@rw1), 1L, 2L))),
+    "RW_rank must be an integer equal to data@nGrid - 2L"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`DALogisticLogNormal`] class slots are valid.
+v_model_da_logistic_log_normal <- function(object) {
+  v <- Validate()
+
+  npiece_ok <- test_int(object@npiece)
+  v$check(npiece_ok, "npiece must be a is a single integerish value")
+  if (npiece_ok) {
+    v$check(
+      test_numeric(object@l, lower = 0, finite = TRUE, any.missing = FALSE, len = object@npiece),
+      "prior parameter vector l of lambda must be a non-negative vector of length equal to npiece"
+    )
+  }
+  v$check(
+    test_number(object@c_par, finite = TRUE),
+    "c_par must be a finite numerical scalar"
+  )
+  v$check(
+    test_flag(object@cond_pem),
+    "cond_pem must be a flag"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`TITELogisticLogNormal`] class slots are valid.
+v_model_tite_logistic_log_normal <- function(object) {
+  v <- Validate()
+  v$check(
+    test_string(object@weight_method, pattern = "^linear$|^adaptive$"),
+    "weight_method must be a string equal either to linear or adaptive"
+  )
+  v$result()
+}
+
+#' @describeIn v_model_objects validates that [`OneParExpNormalPrior`] class slots are valid.
+v_model_one_par_exp_normal_prior <- function(object) {
+  v <- Validate()
+  y <- seq(from = 0, to = 1, by = 0.1) # Skeleton prior probabilities.
+  x <- object@skel_fun_inv(y) # Dose grid.
+  not_NA <- !is.na(x)
+  v$check(
+    all(object@skel_fun(x[not_NA]) == y[not_NA]),
+    "skel_fun_inv must be an inverse funtion of skel_fun function"
+  )
+  v$check(
+    test_numeric(object@skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE),
+    "skel_probs must be probabilities between 0 and 1"
+  )
+  v$check(
+    test_number(object@sigma2, lower = .Machine$double.xmin, finite = TRUE),
+    "sigma2 must be a positive finite number"
   )
   v$result()
 }

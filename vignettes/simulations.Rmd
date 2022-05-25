@@ -70,8 +70,7 @@ myStopping <- StoppingMinPatients(nPatients=48)
 
 mySize <- CohortSizeConst(size=3)
 
-emptydata <- DataDA(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_,weightMethod = "adaptive")
-
+emptydata <- DataDA(doseGrid=seq(from=2, to=50, by=2),Tmax=Tmax_)
 
 mysafetywindow <- SafetyWindowConst(c(7,7),7,7)
 
@@ -83,8 +82,6 @@ design <- DADesign(model=model,
                    data=emptydata,
                    safetyWindow=mysafetywindow,
                    startingDose=8)
-
-
 ```
 
 

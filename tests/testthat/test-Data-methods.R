@@ -44,14 +44,14 @@ test_that("Plot works for DataDual object with placebo and blinding", {
 # plot-DataDA ----
 
 test_that("Plot works as expected for DataDA object with placebo", {
-  data <- h_get_data_augmented()
+  data <- h_get_data_da()
   result <- plot(data)
 
   vdiffr::expect_doppelganger("Plot of DataDA with placebo", result)
 })
 
 test_that("Plot works for DataDA object with placebo and blinding", {
-  data <- h_get_data_augmented()
+  data <- h_get_data_da()
   result <- plot(data, blind = TRUE)
 
   vdiffr::expect_doppelganger(
@@ -204,7 +204,7 @@ test_that("Update of DataDual works as expected", {
 # update-DataDA ----
 
 test_that("Update of DataDA works as expected", {
-  object <- h_get_data_augmented()
+  object <- h_get_data_da()
   result <- update(
     object = object,
     y = c(object@y, 0),
@@ -242,7 +242,7 @@ test_that("Update of DataDA works for empty update of empty object", {
 })
 
 test_that("Update of DataDA works when no update of non-empty object", {
-  object <- h_get_data_augmented()
+  object <- h_get_data_da()
   result <- update(
     object = object,
     y = object@y,
@@ -257,7 +257,7 @@ test_that("Update of DataDA works when no update of non-empty object", {
 })
 
 test_that("Update of DataDA throws the error for empty trialtime", {
-  object <- h_get_data_augmented()
+  object <- h_get_data_da()
   expect_error(
     update(
       object = object,
@@ -290,6 +290,8 @@ test_that("getEff-DataDual works as expected (no DLT)", {
   data <- DataDual(
     x = c(25, 50),
     y = c(0, 0),
+    ID = 1:2,
+    cohort = 1:2,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )
@@ -308,6 +310,8 @@ test_that("getEff-DataDual works as expected (DLT only)", {
   data <- DataDual(
     x = c(25, 50),
     y = c(1, 1),
+    ID = 1:2,
+    cohort = 1:2,
     w = c(0.31, 0.42),
     doseGrid = c(25, 50)
   )

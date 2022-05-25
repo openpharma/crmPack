@@ -112,7 +112,8 @@ h_jags_get_model_inits <- function(model, data) {
 #' @param model (`GeneralModel`)\cr an input model.
 #' @param data (`GeneralData`)\cr an input data.
 #' @param from_prior (`flag`)\cr sample from the prior only? In this case
-#'   data will not be appended to the output.
+#'   data will not be appended to the output, i.e. only the variables required
+#'   by the `model@priormodel` model will be returned in data.
 #'
 #' @export
 #' @example examples/helpers-jags_get_data.R
@@ -122,25 +123,29 @@ h_jags_get_data <- function(model, data, from_prior) {
   assert_class(data, "GeneralData")
   assert_flag(from_prior)
 
-  modelspecs <- do.call(
-    model@modelspecs,
-    h_slots(data, formalArgs(model@modelspecs))
-  )
+  # 1) Extract variables from `data` as required by `modelspecs`.
+  ms_args_names <- formalArgs(model@modelspecs)
+  ms_args <- if ("from_prior" %in% ms_args_names) {
+    c(h_slots(data, setdiff(ms_args_names, "from_prior")), list(from_prior = from_prior))
+  } else {
+    h_slots(data, ms_args_names)
+  }
+  modelspecs <- do.call(model@modelspecs, ms_args)
   assert_list(modelspecs)
 
-  data_model <- if (from_prior) {
-    # Remove elements named "ref_dose" to avoid JAGS error of unused variables.
-    modelspecs <- modelspecs[setdiff(names(modelspecs), "ref_dose")]
-    NULL
+  # 2) Extract variables from `data` as required by `datanames`.
+  datanames <- if (from_prior) {
+    model@datanames_prior
   } else {
-    # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
-    # scalars by `JAGS` if `data@nObs == 0`, which leads to failures.
-    add_where <- setdiff(
-      model@datanames,
-      c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax")
-    )
-    h_slots(h_jags_add_dummy(data, where = add_where), model@datanames)
+    union(model@datanames, model@datanames_prior)
   }
+
+  # Add dummy to ensure that e.g. `x` and `y` in `data` won't be treated as
+  # scalars by `JAGS` if `data@nObs == 1`, which leads to failures.
+  add_where <- setdiff(datanames, c("nObs", "nGrid", "nObsshare", "yshare", "xshare", "Tmax"))
+  data <- h_jags_add_dummy(data, where = add_where)
+
+  data_model <- h_slots(data, datanames)
   c(data_model, modelspecs)
 }
 

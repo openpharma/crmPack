@@ -31,5 +31,5 @@ parameters estimates or samples (see details above).}
 }}
 
 \seealso{
-\code{\link{ModelPseudo}}, \code{\link{ModelTox}}.
+\code{\link{ModelTox}}.
 }

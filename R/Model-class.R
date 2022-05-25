@@ -4,26 +4,6 @@
 #' @include ModelParams-class.R
 NULL
 
-# AllModels-class ----
-
-#' `AllModels`
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' [`AllModels`] is a class from which all the models inherit.
-#'
-#' @slot datanames (`character`)\cr the names of all data slots that are used
-#'   in all the models. In particular, those are also used in the `datamodel` or
-#'   `priormodel` definition for [`GeneralModel`].
-#'
-#' @aliases AllModels
-#' @export
-#'
-.AllModels <- setClass(
-  Class = "AllModels",
-  slots = c(datanames = "character")
-)
-
 # GeneralModel-class ----
 
 #' `GeneralModel`
@@ -31,8 +11,7 @@ NULL
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`GeneralModel`] is a general model class, from which all other specific
-#' model-like classes inherit. The [`GeneralModel`] class inherits from
-#' [`AllModels`].
+#' model-like classes inherit.
 #'
 #' @note The `datamodel` must obey the convention that the data input is
 #'   called exactly in the same way as in the corresponding data class.
@@ -48,23 +27,42 @@ NULL
 #'   model and prior model specifications that are required to be specified
 #'   completely (e.g. prior parameters, reference dose, etc.), based on the data
 #'   slots that are required as arguments of this function.
+#'   Apart of data arguments, this function can be specified with one additional
+#'   (optional) argument `from_prior` of type `logical` and length one. This
+#'   `from_prior` flag can be used to differentiate the output of the `modelspecs`,
+#'   as its value is taken directly from the `from_prior` argument of the `mcmc`
+#'   method that invokes `modelspecs` function. That is, when `from_prior` is
+#'   `TRUE`, then only `priormodel` JAGS model is used (`datamodel` is not used)
+#'   by the `mcmc`, and hence `modelspecs` function should return all the parameters
+#'   that are required by the `priormodel` only. If the value of `from_prior` is
+#'   `FALSE`, then both JAGS models `datamodel` and `priormodel` are used in the
+#'   MCMC sampler, and hence `modelspecs` function should return all the parameters
+#'   required by both `datamodel` and `priormodel`.
+#'
 #' @slot init (`function`)\cr a function computing the list of starting values
 #'   for parameters required to be initialized in the MCMC sampler, based on the
 #'   data slots that are required as arguments of this function.
+#' @slot datanames (`character`)\cr the names of all data slots that are used
+#'   by `datamodel` JAGS function.
+#' @slot datanames_prior (`character`)\cr the names of all data slots that are
+#'   used by `priormodel` JAGS function.
 #' @slot sample (`character`)\cr names of all parameters from which you would
 #'   like to save the MCMC samples.
+#'
+#' @seealso [`ModelPseudo`].
 #'
 #' @aliases GeneralModel
 #' @export
 #'
 .GeneralModel <- setClass(
   Class = "GeneralModel",
-  contains = "AllModels",
   slots = c(
     datamodel = "function",
     priormodel = "function",
     modelspecs = "function",
     init = "function",
+    datanames = "character",
+    datanames_prior = "character",
     sample = "character"
   ),
   prototype = prototype(
@@ -199,14 +197,18 @@ ModelLogNormal <- function(mean, cov, ref_dose = 1) {
       alpha0 <- theta[1]
       alpha1 <- exp(theta[2])
     },
-    modelspecs = function() {
-      list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+    modelspecs = function(from_prior) {
+      ms <- list(mean = params@mean, prec = params@prec)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
     },
     init = function() {
       list(theta = c(0, 1))
     },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1")
   )
 }
 
@@ -284,7 +286,8 @@ LogisticNormal <- function(mean, cov, ref_dose = 1) {
 #'   The prior \deqn{(alpha0, log(alpha1)) ~ Normal(mean, cov).}
 #'
 #' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormalSub`],
-#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`], [`LogisticLogNormalMixture`]
+#'   [`ProbitLogNormal`], [`ProbitLogNormalRel`], [`LogisticLogNormalMixture`],
+#'   [`DALogisticLogNormal`].
 #'
 #' @aliases LogisticLogNormal
 #' @export
@@ -347,7 +350,7 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 1) {
   Class = "LogisticLogNormalSub",
   slots = c(
     params = "ModelParamsNormal",
-    ref_dose = "number"
+    ref_dose = "numeric"
   ),
   contains = "Model"
 )
@@ -380,14 +383,18 @@ LogisticLogNormalSub <- function(mean, cov, ref_dose = 0) {
       alpha0 <- theta[1]
       alpha1 <- exp(theta[2])
     },
-    modelspecs = function() {
-      list(ref_dose = ref_dose, mean = params@mean, prec = params@prec)
+    modelspecs = function(from_prior) {
+      ms <- list(mean = params@mean, prec = params@prec)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
     },
     init = function() {
       list(theta = c(0, -20))
     },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1")
   )
 }
 
@@ -588,8 +595,8 @@ LogisticKadane <- function(theta, xmin, xmax) {
     init = function() {
       list(rho0 = theta / 10, gamma = (xmax - xmin) / 2)
     },
-    sample = c("rho0", "gamma"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("rho0", "gamma")
   )
 }
 
@@ -783,6 +790,8 @@ LogisticNormalMixture <- function(comp1,
                                   comp2,
                                   weightpar,
                                   ref_dose) {
+  assert_number(ref_dose)
+
   .LogisticNormalMixture(
     comp1 = comp1,
     comp2 = comp2,
@@ -806,19 +815,22 @@ LogisticNormalMixture <- function(comp1,
       alpha0 <- theta[1]
       alpha1 <- theta[2]
     },
-    modelspecs = function() {
-      list(
-        ref_dose = ref_dose,
+    modelspecs = function(from_prior) {
+      ms <- list(
         mean = cbind(comp1@mean, comp2@mean),
         prec = array(data = c(comp1@prec, comp2@prec), dim = c(2, 2, 2)),
         weightpar = weightpar
       )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
     },
     init = function() {
       list(theta = c(0, 1))
     },
-    sample = c("alpha0", "alpha1", "w"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1", "w")
   )
 }
 
@@ -913,6 +925,10 @@ LogisticNormalFixedMixture <- function(components,
                                        weights,
                                        ref_dose,
                                        log_normal = FALSE) {
+  assert_numeric(weights)
+  assert_number(ref_dose)
+  assert_flag(log_normal)
+
   # Normalize weights to sum to 1.
   weights <- weights / sum(weights)
 
@@ -942,9 +958,8 @@ LogisticNormalFixedMixture <- function(components,
         alpha1 <- theta[2]
       }
     },
-    modelspecs = function() {
-      list(
-        ref_dose = ref_dose,
+    modelspecs = function(from_prior) {
+      ms <- list(
         weights = weights,
         mean = do.call(cbind, lapply(components, h_slots, "mean", simplify = TRUE)),
         prec = array(
@@ -952,12 +967,16 @@ LogisticNormalFixedMixture <- function(components,
           dim = c(2, 2, length(components))
         )
       )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
     },
     init = function() {
       list(theta = c(0, 1))
     },
-    sample = c("alpha0", "alpha1"),
-    datanames = c("nObs", "y", "x")
+    datanames = c("nObs", "y", "x"),
+    sample = c("alpha0", "alpha1")
   )
 }
 
@@ -1021,6 +1040,8 @@ LogisticLogNormalMixture <- function(mean,
                                      cov,
                                      ref_dose,
                                      share_weight) {
+  assert_number(ref_dose)
+
   params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormalMixture(
     params = params,
@@ -1048,19 +1069,22 @@ LogisticLogNormalMixture <- function(mean,
       # The component indicator.
       comp ~ dcat(cat_probs)
     },
-    modelspecs = function() {
-      list(
-        ref_dose = ref_dose,
+    modelspecs = function(from_prior) {
+      ms <- list(
         cat_probs = c(1 - share_weight, share_weight),
         mean = params@mean,
         prec = params@prec
       )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
     },
     init = function() {
       list(theta = matrix(c(0, 0, 1, 1), nrow = 2))
     },
-    sample = c("alpha0", "alpha1", "comp"),
-    datanames = c("nObs", "y", "x", "nObsshare", "yshare", "xshare")
+    datanames = c("nObs", "y", "x", "nObsshare", "yshare", "xshare"),
+    sample = c("alpha0", "alpha1", "comp")
   )
 }
 
@@ -1121,9 +1145,9 @@ LogisticLogNormalMixture <- function(mean,
 #'   (between `-1` and `1`), or a named vector with two elements named `a` and `b`
 #'   for the Beta prior on the transformation `kappa = (rho + 1) / 2`, which is
 #'   in `(0, 1)`. For example, `a = 1, b = 1` leads to a uniform prior on `rho`.
-#' @slot use_fixed rho (`logical`)\cr indicates whether a fixed value for
-#'   `sigma2W` and `rho` (for each parameter separately) is used or not. This
-#'   slot is needed for internal purposes and must not be touched by the user.
+#' @slot use_fixed (`logical`)\cr indicates whether a fixed value for `sigma2W`
+#'   or `rho` (for each parameter separately) is used or not. This slot is
+#'   needed for internal purposes and must not be touched by the user.
 #'
 #' @seealso [`DualEndpointRW`], [`DualEndpointBeta`], [`DualEndpointEmax`].
 #'
@@ -1185,6 +1209,10 @@ DualEndpoint <- function(mean,
                          use_log_dose = FALSE,
                          sigma2W,
                          rho) {
+  assert_number(ref_dose)
+  assert_numeric(sigma2W, min.len = 1, max.len = 2)
+  assert_numeric(rho, min.len = 1, max.len = 2)
+
   use_fixed <- c(sigma2W = is.scalar(sigma2W), rho = is.scalar(rho))
   betaZ_params <- ModelParamsNormal(mean, cov)
 
@@ -1208,20 +1236,22 @@ DualEndpoint <- function(mean,
     betaZ[1] <- theta[1]
     betaZ[2] <- exp(theta[2])
     # Conditional precision for biomarker.
+    # Code for `precW` and `rho` will be added by
+    # `h_model_dual_endpoint_sigma2W()`, `h_model_dual_endpoint_rho()` helpers, below.
     condPrecW <- precW / (1 - pow(rho, 2))
   }
-  modelspecs <- list(
-    use_log_dose = use_log_dose,
-    ref_dose = ref_dose,
+  modelspecs_prior <- list(
     betaZ_mean = betaZ_params@mean,
     betaZ_prec = betaZ_params@prec
   )
-  init <- NULL
-  sample <- "betaZ"
 
   comp <- list(
-    priormodel = priormodel, modelspecs = modelspecs, init = init, sample = sample
+    priormodel = priormodel,
+    modelspecs = modelspecs_prior,
+    init = NULL,
+    sample = "betaZ"
   )
+
   # Update model components with regard to biomarker regression variance.
   comp <- h_model_dual_endpoint_sigma2W(
     use_fixed["sigma2W"],
@@ -1245,14 +1275,19 @@ DualEndpoint <- function(mean,
     use_fixed = use_fixed,
     datamodel = datamodel,
     priormodel = comp$priormodel,
-    modelspecs = function() {
+    modelspecs = function(from_prior) {
+      if (!from_prior) {
+        comp$modelspecs$ref_dose <- ref_dose
+        comp$modelspecs$use_log_dose <- use_log_dose
+      }
       comp$modelspecs
     },
     init = function(y) {
       c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
     },
-    sample = comp$sample,
-    datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid")
+    datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid"),
+    datanames_prior = c("nGrid", "doseGrid"),
+    sample = comp$sample
   )
 }
 
@@ -1293,7 +1328,7 @@ DualEndpoint <- function(mean,
 #' @slot sigma2betaW (`numeric`)\cr the prior variance factor of the random walk
 #'   prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
 #'   parameters, i.e. vector with two elements named `a` and `b`.
-#' @slot rw1 rho (`flag`)\cr for specifying the random walk prior on the biomarker
+#' @slot rw1 (`flag`)\cr for specifying the random walk prior on the biomarker
 #'   level. When `TRUE`, random walk of first order is used. Otherwise, the
 #'   random walk of second order is used.
 #'
@@ -1339,6 +1374,9 @@ DualEndpoint <- function(mean,
 DualEndpointRW <- function(sigma2betaW,
                            rw1 = TRUE,
                            ...) {
+  assert_numeric(sigma2betaW, min.len = 1, max.len = 2)
+  assert_flag(rw1)
+
   start <- DualEndpoint(...)
   start@use_fixed["sigma2betaW"] <- length(sigma2betaW) == 1L
 
@@ -1367,9 +1405,8 @@ DualEndpointRW <- function(sigma2betaW,
     }
   }
   start@priormodel <- h_jags_join_models(start@priormodel, priormodel)
-
-  start@sample <- c(start@sample, "betaW", "delta")
   start@datanames <- c(start@datanames, "doseGrid")
+  start@sample <- c(start@sample, "betaW", "delta")
 
   # Update model components with regard to biomarker regression variance.
   start <- h_model_dual_endpoint_sigma2betaW(
@@ -1485,14 +1522,20 @@ DualEndpointBeta <- function(E0,
                              mode,
                              ref_dose_beta = 1,
                              ...) {
+  assert_numeric(E0, min.len = 1, max.len = 2)
+  assert_numeric(Emax, min.len = 1, max.len = 2)
+  assert_numeric(delta1, min.len = 1, max.len = 2)
+  assert_numeric(mode, min.len = 1, max.len = 2)
+  assert_number(ref_dose_beta)
+
   start <- DualEndpoint(...)
 
-  start@sample <- c(start@sample, "betaW")
-  start@datanames <- c(start@datanames, "doseGrid")
   ms <- start@modelspecs
-  start@modelspecs <- function() {
-    c(ms(), list(ref_dose_beta = ref_dose_beta))
+  start@modelspecs <- function(from_prior) {
+    c(list(ref_dose_beta = ref_dose_beta), ms(from_prior))
   }
+  start@datanames <- c(start@datanames, "doseGrid")
+  start@sample <- c(start@sample, "betaW")
 
   start <- h_model_dual_endpoint_beta(
     param = E0,
@@ -1636,13 +1679,18 @@ DualEndpointEmax <- function(E0,
                              ED50,
                              ref_dose_emax = 1,
                              ...) {
+  assert_numeric(E0, min.len = 1, max.len = 2)
+  assert_numeric(Emax, min.len = 1, max.len = 2)
+  assert_numeric(ED50, min.len = 1, max.len = 2)
+  assert_number(ref_dose_emax)
+
   start <- DualEndpoint(...)
 
   start@sample <- c(start@sample, "betaW")
   start@datanames <- c(start@datanames, "doseGrid")
   ms <- start@modelspecs
-  start@modelspecs <- function() {
-    c(ms(), list(ref_dose_emax = ref_dose_emax))
+  start@modelspecs <- function(from_prior) {
+    c(list(ref_dose_emax = ref_dose_emax), ms(from_prior))
   }
 
   start <- h_model_dual_endpoint_beta(
@@ -1702,14 +1750,13 @@ DualEndpointEmax <- function(E0,
 #' [`ModelPseudo`] is the parent class for models that express their prior in
 #' the form of pseudo data (as if there is some data before the trial starts).
 #'
-#' @seealso [`ModelEff`], [`ModelTox`].
+#' @seealso [`GeneralModel`].
 #'
 #' @aliases ModelPseudo
 #' @export
 #'
 .ModelPseudo <- setClass(
-  Class = "ModelPseudo",
-  contains = "AllModels"
+  Class = "ModelPseudo"
 )
 
 # ModelTox ----
@@ -1738,7 +1785,7 @@ DualEndpointEmax <- function(E0,
 #' @slot data (`Data`)\cr observed data that is used to obtain model parameters
 #'   estimates or samples (see details above).
 #'
-#' @seealso [`ModelPseudo`], [`ModelEff`].
+#' @seealso [`ModelEff`].
 #'
 #' @aliases ModelTox
 #' @export
@@ -1776,7 +1823,7 @@ DualEndpointEmax <- function(E0,
 #' @slot data (`DataDual`)\cr observed data that is used to obtain model
 #'   parameters estimates or samples (see details above).
 #'
-#' @seealso [`ModelPseudo`], [`ModelTox`].
+#' @seealso [`ModelTox`].
 #'
 #' @aliases ModelEff
 #' @export
@@ -1911,6 +1958,10 @@ LogisticIndepBeta <- function(binDLE,
                               DLEdose,
                               DLEweights,
                               data) {
+  assert_numeric(binDLE)
+  assert_numeric(DLEdose)
+  assert_numeric(DLEweights)
+  assert_class(data, "Data")
 
   # Combine pseudo and observed data. It can also happen that data@nObs == 0.
   y <- c(binDLE, data@y)
@@ -1931,8 +1982,7 @@ LogisticIndepBeta <- function(binDLE,
     phi1 = phi1,
     phi2 = phi2,
     Pcov = Pcov,
-    data = data,
-    datanames = c("nObs", "y", "x")
+    data = data
   )
 }
 
@@ -2080,7 +2130,7 @@ LogisticIndepBeta <- function(binDLE,
 #'   Elements of `eff` must correspond to the elements of `eff_dose`.
 #' @param eff_dose (`numeric`)\cr dose levels that correspond to pseudo efficacy
 #'   responses in `eff`.
-#' @param nu (`number`)\cr the precision (inverse of the variance) of the
+#' @param nu (`numeric`)\cr the precision (inverse of the variance) of the
 #'   efficacy responses. This is either a fixed value or a named vector with two
 #'   positive numbers, the shape (`a`), and the rate (`b`) parameters for the
 #'   gamma distribution.
@@ -2101,6 +2151,7 @@ Effloglog <- function(eff,
   assert_numeric(eff)
   assert_numeric(eff_dose, len = length(eff))
   assert_numeric(nu, min.len = 1, max.len = 2)
+  assert_class(data, "Data")
   assert_number(const, finite = TRUE)
 
   use_fixed <- length(nu) == 1L
@@ -2151,721 +2202,606 @@ Effloglog <- function(eff,
     mu = as.vector(mu),
     Q = Q,
     const = const,
-    data = data,
-    datanames = c("nObs", "w", "x")
+    data = data
   )
 }
-
-# nolint start
 
 # EffFlexi ----
 
-## =========================================================================================
-##' Class for the efficacy model in flexible form for prior expressed in form of pseudo data
-##'
-##' This is a class where a flexible form is used to describe the relationship between the efficacy
-##' responses and the dose levels. This flexible form aims to capture different shape for the
-##' dose-efficacy curve and the mean efficacy responses at each dose level are estimated using MCMC.
-##' In addition, the first (RW1) or second order (RW2) random walk model can be used for smoothing data. That is
-##' the random walk model is used to model the first or the second order difference of the mean
-##' efficacy responses to its neighboring dose levels of their mean efficacy responses.
-##' The flexible form is specified as
-##' \deqn{\mathbf{W}\vert\boldsymbol{\beta_w}, \sigma^2 \sim Normal (\mathbf{X}_w \boldsymbol{\beta_w}, \sigma^2 \mathbf{I})}
-##' where \eqn{\mathbf{W}} represent the column vector of the efficacy responses, \eqn{\boldsymbol{\beta_w}}
-##' is th column vector of the mean efficacy responses for all dose levels, \eqn{\mathbf{X_w}} is the
-##' design matrix with entries \eqn{I_{i(j)}} which gives a value 1 if subject i is allocated to
-##' dose j. The \eqn{\sigma^2} (sigma2) is the variance of the efficacy responses which can be either fixed or from
-##' an inverse gamma distribution.
-##'
-##' The RW1 model is given as
-##' \deqn{\beta_{W,(j)} - \beta_{W,(j-1)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
-##' where \eqn{\beta_{W,(j)}} is the mean efficacy responses at dose j
-##' For the RW2 is given as
-##' \deqn{\beta_{W,(j-2)} - 2 \beta_{W,(j-1)} + \beta_{W,(j)} \sim Normal(0, \sigma^{2}_{\beta_{W}})}
-##' The variance parameter \eqn{\sigma^{2}_{\beta_{W}}}. The variance \eqn{\sigma^{2}_{\beta_{W}}}
-##' (sigma2betaW) will be the same at all dose levels and can
-##' either be fixed or assigned an inverse gamma prior distribution.
-##'
-##' The \code{Eff} and \code{Effdose} are the pseudo efficacy responses and dose levels at which these
-##' pseudo efficacy responses are observed at. (see more details for \code{\linkS4class{Effloglog}} class)
-##' \code{Eff} and \code{Effdose} must be vector of at least length 2. The values or elements in vectors
-##' \code{Eff} or \code{Effdose} must put in the same position with its corresponding value in the other
-##' vector. The \code{sigma2} is the prior variance of the flexible efficacy form. The variance is either specified
-##' with a single scalar value (fixed) or positive scalar value have to be specified for the \code{a} shape and
-##' \code{b} slope parameter for th inverse gamma distribution. Similarly, \code{sigma2betaW} is the prior variance
-##' of the random walk model which can be specified with a single scalar (fixed) value or specifying positive
-##' scalar values for the shape \code{a} and rate \code{b} parameters for the inverse gamma distributions.
-##' This model will output the updated value or the updated values of the parameters of the inverse gamma
-##' distributions for \eqn{sigma^2} (sigma2) and \eqn{\sigma^2_{\beta_W}} (`sigma2betaW`)
-##'
-##' @slot Eff the pseudo efficacy responses. A vector of at least length 2 with the elements here and its
-##' corresponding value in \code{Effdose} must be specified in the same position. (see details above)
-##' @slot Effdose the dose levels at which the pseudo efficacy responses are observed. This is a vector of at
-##' least length 2 and the elements here and its corresponding value in \code{Eff} must be specified in the
-##' same position. (see details from above)
-##' @slot sigma2 the prior variance of the flexible efficacy form. It can be specified with a single positive
-##' scalar or specifying \code{a}, the shape and \code{b}, the rate parameter of the inverse gamma
-##' distribution. (see details from above)
-##' @slot sigma2betaW the prior variance of the random walk model for the mean efficacy responses. A single
-##' positive scalar can be specified or specifying \code{a}, the shape and \code{b}, the rate parameter of
-##' the inverse gamma distribution (see details from above)
-##' @slot useFixed a list of with logical value to each of the parameters \code{sigma2} and \code{sigma2betaw}
-##' indicating whether a fixed value is used or not; this slot is needed for internal purposes and not to
-##' be touched by the user.
-##' @slot useRW1 for specifying the random walk model for the mean efficacy responses; if \code{TRUE},
-##' first order random walk model is used, otherwise the second-order random walk model.
-##' @slot designW is the design matrix for the efficacy responses. If only the pseudo efficacy responses
-##' are used, this will be the design matrix of the pseudo efficacy responses. If there are some observed
-##' efficacy responses available. It will be the design matrix based on both the pseudo and the observed
-##' efficacy responses.
-##' @slot RWmat is the the difference matrix for the random walk model. This slot is needed for internal
-##' purposes and not to be touched by the user.
-##' @slot RWmatRank is the rank of the difference matrix. This slot is needed for internal purposes and not
-##' to be touched by the user.
-##'
-##' @example examples/Model-class-EffFlexi.R
-##' @export
-##' @keywords class
-.EffFlexi<-setClass(Class="EffFlexi",
-                    representation(Eff="numeric",
-                                   Effdose="numeric",
-                                   sigma2="numeric",
-                                   sigma2betaW="numeric",
-                                   useFixed="list",
-                                   useRW1="logical",
-                                   designW="matrix",
-                                   RWmat="matrix",
-                                   RWmatRank="integer"),
-                    prototype(Eff=c(0,0),
-                              Effdose=c(1,1),
-                              sigma2=0.025,
-                              sigma2betaW=1,
-                              useRW1=TRUE,
-                              useFixed=list(sigma2=TRUE,sigma2betaW=TRUE)),
-                    contains="ModelEff",
-                    validity=
-                      function(object){
-                        o<- Validate()
-                        o$check(length(object@Eff) >= 2,
-                                "length of Eff must be at least 2")
-                        o$check(length(object@Effdose) >= 2,
-                                "length of Effdose must be at least 2")
-                        o$check(length(object@Eff)==length(object@Effdose),
-                                "length of Eff and Effdose must be equal")
-                        for (parName in c("sigma2","sigma2betaW"))
-                        {
-                          if (object@useFixed[[parName]]){
-                            o$check(slot(object,parName) > 0,
-                                    paste(parName, "must be positive"))} else {
-                                      o$check(identical(names(slot(object,parName)),c("a","b")),
-                                              paste(parName,"must have names 'a' and 'b'"))
-                                      o$check(all(slot(object,parName) > 0),
-                                              paste(parName, "must have positive prior parameters"))
-                                    }
-                        }
-                        o$result()
-                      })
-validObject(.EffFlexi())
+## class ----
 
-##' Initialization function for the "EffFlexi" class
-##'
-##' @param Eff the pseudo efficacy responses
-##' @param Effdose the corresponding dose levels for the pseudo efficacy responses
-##' @param sigma2 the prior variance of the efficacy responses which can be specified
-##' with a single positive scalar or with two positive scalar values for the shape \code{a} and
-##' the rate \code{b} parameters of the inverse gamma distribution.
-##' @param sigma2betaW the prior variance of the random walk model used for smoothing which can be
-##' specified with a single positive scalar or with two positive scalars representing the shape \code{a}
-##' and the rate \code{b} parameter of the inverse gamma distribution.
-##' @param smooth used for smoothing data for this efficacy model. That is either the "RW1", the
-##' first-order random walk model or "RW2", the second-order random walk model is used of the mean
-##' efficacy responses.
-##' @param data the input data to update estimates of model parameters and
-##' follow the \code{\linkS4class{DataDual}} object class specification
-##' @return the \code{\linkS4class{EffFlexi}} class object
-##'
-##' @export
-##' @keywords methods
-
-EffFlexi <- function(Eff,
-                     Effdose,
-                     sigma2,
-                     sigma2betaW,
-                     smooth=c("RW1","RW2"),
-                     data
+#' `EffFlexi`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`EffFlexi`] is the class for the efficacy model in flexible form of prior
+#' expressed in form of pseudo data. In this class, a flexible form is used to
+#' describe the relationship between the efficacy responses and the dose levels
+#' and it is specified as
+#' \deqn{(W | betaW, sigma2W) ~ Normal(X * betaW, sigma2W * I),}
+#' where \eqn{W} is a vector of the efficacy responses, \eqn{betaW} is a column
+#' vector of the mean efficacy responses for all dose levels, and \eqn{X} is
+#' the design matrix with entries \eqn{I_i,j} that are equal to 1 if subject
+#' \eqn{i} is allocated to dose \eqn{j}, and \eqn{0} otherwise. The \eqn{sigma2W}
+#' is the variance of the efficacy responses which can be either a fixed number
+#' or a number from an inverse gamma distribution.
+#' This flexible form aims to capture different shapes of the dose-efficacy
+#' curve. In addition, the first (RW1) or second order (RW2) random walk model
+#' can be used for smoothing data. That is the random walk model is used to model
+#' the first or the second order differences of the mean efficacy responses to
+#' its neighboring dose levels of their mean efficacy responses.
+#'
+#' The RW1 model is given as
+#' \deqn{betaW_j - betaW_j-1) ~ Normal(0, sigma2betaW),}
+#' and for RW2 as
+#' \deqn{betaW_j-2 - 2 * betaW_j-1 + beta_j ~ Normal(0, sigma2betaW),}
+#' where \eqn{betaW_j} is the vector of mean efficacy responses at dose j, and
+#' the \eqn{sigma2betaW} is the prior variance which can be either a fixed
+#' number or a number from an inverse gamma distribution.
+#'
+#' The `eff` and `eff_dose` are the pseudo efficacy responses and dose levels at
+#' which these pseudo efficacy responses are observed. Both, `eff` and `eff_dose`
+#' must be vectors of length at least 2. The positions of the elements specified
+#' in `eff` and `eff_dose` must correspond to each other between these vectors.
+#'
+#' @details This model will output the updated value or the updated values of the
+#'   parameters of the inverse gamma distributions for \eqn{sigma2W} and
+#'   \eqn{sigma2betaW}. The `EffFlexi` inherits all slots from [`ModelEff`] class.
+#'
+#' @slot eff (`numeric`)\cr the pseudo efficacy responses. Each element here
+#'   must represent responses treated based on one subject.
+#'   It must be a vector of length at least 2 and the order of its elements must
+#'   correspond to values specified in `eff_dose`.
+#' @slot eff_dose (`numeric`)\cr the pseudo efficacy dose levels at which the
+#'   pseudo efficacy responses are observed.
+#'   It must be a vector of length at least 2 and the order of its elements must
+#'   correspond to values specified in `eff`.
+#' @slot sigma2W (`numeric`)\cr the prior variance of the flexible efficacy form.
+#'   This is either a fixed value or a named vector with two positive numbers,
+#'   the shape (`a`), and the rate (`b`) parameters for the gamma distribution.
+#' @slot sigma2betaW (`numeric`)\cr the prior variance of the random walk model
+#'   for the mean efficacy responses. This is either a fixed value or a named
+#'   vector with two positive numbers, the shape (`a`), and the rate (`b`)
+#'   parameters for the gamma distribution.
+#' @slot use_fixed (`logical`)\cr indicates whether a fixed value for
+#'   `sigma2W` and `sigma2betaW` (for each parameter separately) is used or not.
+#'   This slot is needed for internal purposes and must not be touched by the user.
+#' @slot rw1 (`flag`)\cr used for smoothing data for this efficacy model. If it
+#'   is `TRUE`, the first-order random walk model is used for the mean efficacy
+#'   responses. Otherwise, the random walk of second order is used.
+#' @slot X (`matrix`)\cr the design matrix for the efficacy responses. It is
+#'   based on both the pseudo and the observed efficacy responses.
+#' @slot RW (`matrix`)\cr the difference matrix for the random walk model. This
+#'   slot is needed for internal purposes and must not be used by the user.
+#' @slot RW_rank (`integer`)\cr is the rank of the difference matrix. This
+#'   slot is needed for internal purposes and must not be used by the user.
+#'
+#' @aliases EffFlexi
+#' @export
+#'
+.EffFlexi <- setClass(
+  Class = "EffFlexi",
+  slots = c(
+    eff = "numeric",
+    eff_dose = "numeric",
+    sigma2W = "numeric",
+    sigma2betaW = "numeric",
+    use_fixed = "logical",
+    rw1 = "logical",
+    X = "matrix",
+    RW = "matrix",
+    RW_rank = "integer"
+  ),
+  prototype = prototype(
+    eff = c(0, 0),
+    eff_dose = c(1, 1),
+    sigma2W = 0.025,
+    sigma2betaW = 1,
+    rw1 = TRUE,
+    use_fixed = c(sigma2W = TRUE, sigma2betaW = TRUE)
+  ),
+  contains = "ModelEff",
+  validity = v_model_eff_flexi
 )
-{##No observed Efficacy response
-  if (length(data@w)==0){
-    w1<-Eff
-    x1<-Effdose} else {
-      ## with observed efficacy responses and no DLT observed
-      w1<-c(Eff, getEff(data)$w_no_dlt)
-      x1<-c(Effdose, getEff(data)$x_no_dlt)
-    }
-  ## Match dose levels in x1 with the all dose levels for evaluations
-  x1Level <- matchTolerance(x1,data@doseGrid)
-  smooth<-match.arg(smooth)
-  useRW1<- smooth == "RW1"
-  useFixed<-list()
-  for (parName in c("sigma2","sigma2betaW"))
-  {useFixed[[parName]] <- identical(length(get(parName)),1L)}
-  #design matrics
-  designW <- model.matrix(~ -1 + I(factor(x1Level, levels=seq_len(data@nGrid))))
-  dimnames(designW) <- list(NULL,NULL)
 
-  ##difference matrix of order 1:
-  D1mat<- cbind(0,diag(data@nGrid-1)) - cbind(diag(data@nGrid - 1),0)
+## constructor ----
 
-  ## set up the random walk penalty matrix and its rank:
-  if (useRW1)
-  {## the rank-deficient prior precision for the RW1 prior:
-    RWmat <- crossprod(D1mat)
-    ##Rank: dimension -1
-    RWmatRank <- data@nGrid-1L
-  } else {##second-order difference
-    D2mat <- D1mat[-1,-1] %*% D1mat
-    RWmat <- crossprod(D2mat)
-    RWmatRank <- data@nGrid-2L
+#' @rdname EffFlexi-class
+#'
+#' @param eff (`numeric`)\cr the pseudo efficacy responses.
+#'   Elements of `eff` must correspond to the elements of `eff_dose`.
+#' @param eff_dose (`numeric`)\cr dose levels that correspond to pseudo efficacy
+#'   responses in `eff`.
+#' @param sigma2W (`numeric`)\cr the prior variance of the efficacy responses.
+#'   This is either a fixed value or a named vector with two positive numbers,
+#'   the shape (`a`), and the rate (`b`) parameters for the inverse gamma
+#'   distribution.
+#' @param sigma2betaW (`numeric`)\cr the prior variance of the random walk model
+#'   used for smoothing. This is either a fixed value or a named vector with two
+#'   positive numbers, the shape (`a`), and the rate (`b`) parameters for the
+#'   inverse gamma distribution.
+#' @param rw1 (`flag`)\cr used for smoothing data for this efficacy model. If it
+#'   is `TRUE`, the first-order random walk model is used for the mean efficacy
+#'   responses. Otherwise, the random walk of second order is used.
+#' @param data (`DataDual`)\cr observed data to update estimates of the model
+#'   parameters.
+#'
+#' @export
+#' @example examples/Model-class-EffFlexi.R
+#'
+EffFlexi <- function(eff,
+                     eff_dose,
+                     sigma2W,
+                     sigma2betaW,
+                     rw1 = TRUE,
+                     data) {
+  assert_numeric(eff)
+  assert_numeric(eff_dose)
+  assert_numeric(sigma2W, min.len = 1, max.len = 2)
+  assert_numeric(sigma2betaW, min.len = 1, max.len = 2)
+  assert_flag(rw1)
+  assert_class(data, "DataDual")
+
+  use_fixed <- c(sigma2W = is.scalar(sigma2W), sigma2betaW = is.scalar(sigma2betaW))
+
+  x <- c(eff_dose, getEff(data)$x_no_dlt)
+  x_level <- matchTolerance(x, data@doseGrid)
+  X <- model.matrix(~ -1L + factor(x_level, levels = seq_len(data@nGrid)))
+  X <- matrix(as.integer(X), ncol = ncol(X)) # To remove some obsolete attributes.
+
+  # Set up the random walk penalty matrix and its rank.
+  # D1: difference matrix of order 1.
+  D1 <- cbind(0, diag(data@nGrid - 1)) - cbind(diag(data@nGrid - 1), 0)
+  if (rw1) { # the rank-deficient prior precision for the RW1 prior.
+    RW <- crossprod(D1)
+    RW_rank <- data@nGrid - 1L # rank = dimension - 1.
+  } else { # Second-order difference.
+    D2 <- D1[-1, -1] %*% D1
+    RW <- crossprod(D2)
+    RW_rank <- data@nGrid - 2L
   }
-  .EffFlexi(Eff=Eff,
-            Effdose=Effdose,
-            sigma2=sigma2,
-            sigma2betaW=sigma2betaW,
-            datanames=c("nObs","w","x"),
-            data=data,
-            useFixed=useFixed,
-            useRW1=useRW1,
-            designW=designW,
-            RWmat=RWmat,
-            RWmatRank=RWmatRank)}
-## ---------------------------------------------------------------------------------------------------------
+
+  .EffFlexi(
+    eff = eff,
+    eff_dose = eff_dose,
+    sigma2W = sigma2W,
+    sigma2betaW = sigma2betaW,
+    use_fixed = use_fixed,
+    rw1 = rw1,
+    X = X,
+    RW = RW,
+    RW_rank = RW_rank,
+    data = data
+  )
+}
 
 # DALogisticLogNormal ----
 
-##' Logistic model with bivariate (log) normal prior and data augmentation
-##'
-##' This is a modified data augmented CRM with logistic regression model using
-##' a bivariate normal prior on the intercept and log slope parameters.
-##' This class inherits from the normal logistic model class.
-##'
-##' We still need to include here formula for the lambda prior.
-##'
-##' @slot npiece the number of pieces in the `PEM`
-##' @slot l a vector used in the lambda prior
-##' @slot C_par a parameter used in the lambda prior,
-##' according to Liu's paper, `C_par=2` is recommended.
-##' @slot conditionalPEM is a conditional piecewise-exponential model used?
-##' (default) Otherwise an unconditional model is used.
-##'
-##' @example examples/Model-class-DALogisticLogNormal.R
-##' @export
-##' @keywords classes
-.DALogisticLogNormal <-
-  setClass(Class="DALogisticLogNormal",
-           representation(npiece="numeric",
-                          l="numeric",
-                          C_par="numeric",
-                          conditionalPEM="logical"),
-           prototype(npiece=3,
-                     l=0.5,
-                     C_par=2, #according to Liu's paper, C_par=2 is recommended
-                     conditionalPEM=TRUE),
-           contains="LogisticLogNormal",
-           validity=
-             function(object){
-               o <-  Validate()
+## class ----
 
-               o$check(all(object@l >= 0),
-                       "l, prior parameter of lambda must be positive scalar")
+#' `DALogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`DALogisticLogNormal`] is the class for the logistic model with bivariate
+#' (log) normal prior and data augmentation. This class inherits from the
+#' [`LogisticLogNormal`] class.
+#'
+#' @note We still need to include here formula for the lambda prior.
+#'
+#' @slot npiece (`number`)\cr the number of pieces in the `PEM`.
+#' @slot l (`numeric`)\cr a vector used in the lambda prior.
+#' @slot c_par (`numeric`)\cr a parameter used in the lambda prior; according to
+#'   Liu's paper, `c_par = 2` is recommended.
+#' @slot cond_pem (`flag`)\cr is a conditional piecewise-exponential model used?
+#'   (default). Otherwise an unconditional model is used.
+#'
+#' @seealso [`ModelLogNormal`], [`LogisticNormal`], [`LogisticLogNormal`].
+#'
+#' @aliases DALogisticLogNormal
+#' @export
+#'
+.DALogisticLogNormal <- setClass(
+  Class = "DALogisticLogNormal",
+  slots = c(
+    npiece = "integer",
+    l = "numeric",
+    c_par = "numeric",
+    cond_pem = "logical"
+  ),
+  prototype = prototype(
+    npiece = 3L,
+    l = 0.5,
+    c_par = 2,
+    cond_pem = TRUE
+  ),
+  contains = "LogisticLogNormal",
+  validity = v_model_da_logistic_log_normal
+)
 
-               ## need to check C_par here.
+## constructor ----
 
-               o$check(is.scalar(object@conditionalPEM))
-
-               o$result()
-             })
-
-
-##' Initialization function for the `DALogisticLogNormal` class
-##'
-##' @param npiece see \code{\linkS4class{DALogisticLogNormal}}
-##' @param l see \code{\linkS4class{DALogisticLogNormal}}
-##' @param C_par see \code{\linkS4class{DALogisticLogNormal}}
-##' @param conditionalPEM see \code{\linkS4class{DALogisticLogNormal}}
-##' @param \dots additional parameters from \code{\link{LogisticLogNormal}}
-##' @return the \code{\linkS4class{DALogisticLogNormal}} object
-##'
-##' @export
-##' @keywords programming
-DALogisticLogNormal <- function(npiece=3,
+#' @rdname DALogisticLogNormal-class
+#'
+#' @param npiece (`number`)\cr the number of pieces in the `PEM`.
+#' @param l (`numeric`)\cr a vector used in the lambda prior.
+#' @param c_par (`numeric`)\cr a parameter used in the lambda prior; according to
+#'   Liu's paper, `c_par = 2` is recommended.
+#' @param cond_pem (`flag`)\cr is a conditional piecewise-exponential model used?
+#'   (default). Otherwise an unconditional model is used.
+#' @inheritDotParams LogisticLogNormal
+#'
+#' @export
+#' @example examples/Model-class-DALogisticLogNormal.R
+#'
+DALogisticLogNormal <- function(npiece = 3,
                                 l,
-                                C_par=2,
-                                conditionalPEM=TRUE,
-                                ...)
-{
+                                c_par = 2,
+                                cond_pem = TRUE,
+                                ...) {
   start <- LogisticLogNormal(...)
 
-  .DALogisticLogNormal(start,
-                       npiece=safeInteger(npiece),
-                       l=l,
-                       C_par=C_par,
-                       conditionalPEM=conditionalPEM,
-                       datamodel=
-                         function(){
-                           # user should be able to specified time interval and number of pieces;
-                           #time intervals of piecewise exponential distribution;
-                           ## has this been done already?
-                           for (i in 1:nObs) #for each patient
-                           {
-                             #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
-                             #  NOTE: In the original r2JAGs code, the notation "y[i]" was "event[i]" and "DLT[i]" was "y[i]";
-                             #other notations: t[i]-- the true DLT time of patient i if he/she has DLT eventually;
-                             #                 u[i]-- DLT free survival
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      # Part I: describe the logistic model of DLTs vs dose.
+      logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
 
-                             #Part I: describe the logistic model of DLTs vs dose;
-                             logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                             StandLogDose[i] <- log(x[i] / ref_dose)
+      # Part II: describe the piecewise exponential.
+      # Notice that:
+      # when y=1             -> DLT=1 and u=<T;
+      # when y=0 & T<t (u=T) -> DLT=0;
+      # when y=0 & T>t (u<T) -> DLT=NA/missing;
+      # when indx=0 -> censored, i.e u<T and event=0;
+      # when indx=1 -> not censored, i.e. u>=T or event=1;
+      indx[i] <- 1 - step(Tmax - u[i] - eps) * (1 - y[i])
 
-                             #Part II: describe the piecewise exponential;
-                             #please notice:
-                             #when y=1             -> DLT=1 and u=<T;
-                             #when y=0 & T<t (u=T) -> DLT=0;
-                             #when y=0 & T>t (u<T) -> DLT=NA/missing;
+      for  (j in 1:npiece) {
+        # When not censored, i.e DLT!=NA & t[i]=u[i];
+        # if t[i]<h[j], d[i,j]=0;
+        # if h[j]<t[i]=<h[j+1], d[i,j]=1
+        # if h[j+1]<t[i], d[i,j]=0
+        # When censored t[i]>u[i] -> d[i,j]=0
+        d[i, j] <- y[i] * step(u[i] - h[j] - eps) * step(h[j + 1] - u[i])
 
-                             #when indx=0 -> censored, i.e u<T and event=0;
-                             #when indx=1 -> not censored, i.e. u>=T or event=1;
-                             indx[i]<-1-step(Tmax-u[i]-eps)*(1-y[i])
+        # DLT free survival(time) for patient i in interval I(j);
+        # if t[i]<h[j], s[i,j]=0;
+        # if h[j]<t[i]<=h[j+1], s[i,j]=t[i]-h[j]
+        # if h[j+1]<=t[i], s[i,j]=h[j+1]-h[j]
+        s[i, j] <- min(u[i] - h[j], h[j + 1] - h[j]) * step(u[i] - h[j])
 
-                             #a loop which goes through all pieces
-                             for  (j in 1:npiece){
-                               #When not censored, i.e DLT!=NA & t[i]=u[i];
-                               #if t[i]<h[j], d[i,j]=0;
-                               #if h[j]<t[i]=<h[j+1], d[i,j]=1
-                               #if h[j+1]<t[i], d[i,j]=0
+        # piecewise exponential hazard rate lambda[j];
+        mu_u[i, j] <- lambda[j] * s[i, j]
+        mu[i, j] <- d[i, j] * log(lambda[j]) - y[i] * mu_u[i, j]
+      }
 
-                               #When censored t[i]>u[i] -> d[i,j]=0
-                               d[i,j]<-y[i]*step(u[i]-h[j]-eps)*step(h[j+1]-u[i])
+      # The likelihood function.
+      L_obs[i] <- exp(sum(mu[i, ])) * pow(p[i] / A, y[i]) * pow(1 - p[i], 1 - y[i]) # Not censored.
+      L_cnsr[i] <- 1 - p[i] * (1 - exp(-sum(mu_u[i, ]))) / A # Censored.
+      L[i] <- pow(L_obs[i], indx[i]) * pow(L_cnsr[i], 1 - indx[i])
 
-                               #DLT free survival(time) for patient i in interval I(j);
-                               #if t[i]<h[j], s[i,j]=0;
-                               #if h[j]<t[i]<=h[j+1], s[i,j]=t[i]-h[j]
-                               #if h[j+1]<=t[i], s[i,j]=h[j+1]-h[j]
-                               s[i,j]<-min(u[i]-h[j],h[j+1]-h[j])*step(u[i]-h[j])
+      # Apply zero trick in JAGS.
+      phi[i] <- -log(L[i]) + cadj
+      zeros[i] ~ dpois(phi[i])
+    }
+  }
 
-                               #piecewise exponential hazard rate lambda[j];
-                               mu_u[i,j] <- lambda[j]*s[i,j]
-                               mu[i,j]<- d[i,j]*log(lambda[j])-y[i]*mu_u[i,j]
-                             }
+  priormodel <- h_jags_join_models(
+    start@priormodel,
+    function() {
+      g_beta <- 1 / c_par
+      for  (j in 1:npiece) {
+        g_alpha[j] <- l[j] / c_par
+        lambda[j] ~ dgamma(g_alpha[j], g_beta)
+        mu_T[j] <- lambda[j] * (h[j + 1] - h[j])
+      }
+      # If cond = 1, then conditional PEM is used and A is defined as
+      # the probability to have DLT, i.e. t<T, otherwise
+      # cond = 0 and A is just 1 (so no impact in likelihood).
+      A <- cond * (1 - exp(-sum(mu_T))) + (1 - cond)
+    }
+  )
 
-                             #apply zero trick in JAGS;
-                             zeros[i]~dpois(phi[i])
+  modelspecs <- function(nObs, Tmax, from_prior) {
+    ms <- list(
+      prec = start@params@prec,
+      mean = start@params@mean,
+      npiece = npiece,
+      l = l,
+      c_par = c_par,
+      h = seq(from = 0L, to = Tmax, length = npiece + 1),
+      cond = safeInteger(cond_pem)
+    )
+    if (!from_prior) {
+      ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), eps = 1e-10, cadj = 1e10), ms)
+    }
+    ms
+  }
 
-                             phi[i]<- -log(L[i]) + cadj
-
-                             #the likelihood function;
-                             L[i]<- pow(L_obs[i],indx[i])*pow(L_miss[i],1-indx[i])
-                             #not censored
-                             L_obs[i]<-exp(sum(mu[i,]))*pow(p[i]/A,y[i])*pow(1-p[i],1-y[i])
-                             #censored
-                             L_miss[i]<- 1-p[i]*(1-exp(-sum(mu_u[i,])))/A
-
-                           }
-
-                         },
-
-                       priormodel=
-                         h_jags_join_models(start@priormodel,
-                                            function(){
-                                              # ## the multivariate normal prior on the (transformed)
-                                              # ## coefficients
-                                              # priorPrec[1:2,1:2] <- inverse(priorCov[,])
-                                              # theta[1:2] ~ dmnorm(priorMean[1:2], priorPrec[1:2,1:2])
-                                              # ## extract actual coefficients
-                                              # alpha0 <- theta[1]
-                                              # alpha1 <- exp(theta[2])
-                                              #
-                                              # ## dummy to use refDose here.
-                                              # ## It is contained in the modelspecs list below,
-                                              # ## so it must occur here
-                                              # bla <- refDose + 1
-
-                                              # dummies to use eps and cadj. Otherwise
-                                              # empty data sampling fails.
-                                              blu <- eps + cadj
-
-                                              ## the piecewise exponential prior;
-                                              g_beta<- 1/C_par
-
-                                              for  (j in 1:npiece){
-
-                                                muT[j]<- lambda[j]*sT[j]
-
-                                                sT[j]<-h[j+1]-h[j]
-
-                                                #prior of lambda ;
-
-                                                g_alpha[j]<-l[j]/C_par
-
-                                                lambda_p[j]~dgamma(g_alpha[j],g_beta)
-
-                                                lambda[j]<-lambda_p[j]
-                                              }
-
-                                              ## for conditional:
-                                              sum_muT <- sum(muT[])
-
-                                              ## If cond = 1, then conditional PEM is used and this
-                                              ## is defined as the probability to have DLT, i.e. t<T
-                                              ## otherwise cond = 0 and it is just 1 (so no
-                                              ## impact in likelihood)
-                                              A <- cond * (1-exp(-sum_muT)) + (1 - cond)
-                                            }),
-
-                       datanames=c("nObs", "y", "x", "u", "Tmax"),
-                       modelspecs=
-                         function(nObs, Tmax){
-                           list(ref_dose=start@ref_dose,
-                                prec=start@params@prec,
-                                mean=start@params@mean,
-                                npiece=npiece,
-                                l=l,
-                                C_par=C_par,
-                                zeros=rep(0, nObs),
-                                eps=1e-10,
-                                cadj=1e10,
-                                h=seq(from=0L, to=Tmax, length=npiece + 1),
-                                cond=as.integer(conditionalPEM) ## here pass the option to JAGS code
-                           )
-                         },
-                       sample=
-                         c("alpha0", "alpha1", "lambda")
-
+  .DALogisticLogNormal(
+    start,
+    npiece = safeInteger(npiece),
+    l = l,
+    c_par = c_par,
+    cond_pem = cond_pem,
+    datamodel = datamodel,
+    priormodel = priormodel,
+    modelspecs = modelspecs,
+    datanames = c("nObs", "y", "x", "u", "Tmax"),
+    sample = c("alpha0", "alpha1", "lambda")
   )
 }
-validObject(DALogisticLogNormal(mean=c(0, 1),
-                                cov=diag(2),
-                                ref_dose=1,
-                                npiece=3,
-                                l=0.5,
-                                C_par=2))
 
 # TITELogisticLogNormal ----
 
-## ============================================================
+## class ----
 
-##' Standard logistic model with bivariate (log) normal prior (for TITE-CRM use)
-##'
-##' This is a TITE-CRM based on a logistic regression model using
-##' a bivariate normal prior on the intercept and log slope parameters.
-##' This class inherits from the normal logistic model class.
-##'
-##' @slot weightMethod weight function method: linear or adaptive
-##' (this was used in Liu, Yin and Yuan's paper)
-##'
-##' @export
-##' @keywords classes
-.TITELogisticLogNormal <-
-  setClass(Class="TITELogisticLogNormal",
-           representation(weightMethod="character"),
-           prototype(weightMethod="linear"),
-           contains="LogisticLogNormal",
-           validity=
-             function(object){
-               o <- Validate()
+#' `TITELogisticLogNormal`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`TITELogisticLogNormal`] is the class for TITE-CRM based on a logistic
+#' regression model using a bivariate normal prior on the intercept and log
+#' slope parameters.
+#' This class inherits from the [`LogisticLogNormal`].
+#'
+#' @slot weight_method (`string`)\cr the weight function method: either linear
+#'   or adaptive. This was used in Liu, Yin and Yuan's paper.
+#'
+#' @seealso [`DALogisticLogNormal`].
+#'
+#' @aliases TITELogisticLogNormal
+#' @export
+#'
+.TITELogisticLogNormal <- setClass(
+  Class = "TITELogisticLogNormal",
+  slots = c(weight_method = "character"),
+  prototype = prototype(weight_method = "linear"),
+  contains = "LogisticLogNormal",
+  validity = v_model_tite_logistic_log_normal
+)
 
-               allweightMethod <- c("linear", "adaptive")
+## constructor ----
 
-               o$check(all((object@weightMethod) %in%
-                             allweightMethod),
-                       "weightMethod must be either linear or adaptive")
-
-               o$check(identical(length(object@weightMethod), 1L),
-                       "weightMethod must have length 1")
-             })
-
-
-##' Initialization function for the `TITELogisticLogNormal` class
-##'
-##' @param weightMethod see \code{\linkS4class{TITELogisticLogNormal}}
-##' @param \dots see \code{\linkS4class{LogisticLogNormal}}
-##' @return the \code{\linkS4class{TITELogisticLogNormal}} object
-##'
-##' @export
-##' @keywords methods
-TITELogisticLogNormal <- function(weightMethod=c("linear", "adaptive"),
-                                  ...)
-{
-  weightMethod <- match.arg(weightMethod)
+#' @rdname TITELogisticLogNormal-class
+#'
+#' @param weight_method (`string`)\cr the weight function method: either linear
+#'   or adaptive. This was used in Liu, Yin and Yuan's paper.
+#' @inheritDotParams LogisticLogNormal
+#'
+#' @export
+#' @example examples/Model-class-TITELogisticLogNormal.R
+#'
+TITELogisticLogNormal <- function(weight_method = "linear",
+                                  ...) {
+  assert_character(weight_method, min.len = 1L, max.len = 2L, any.missing = FALSE)
 
   start <- LogisticLogNormal(...)
 
-  .TITELogisticLogNormal(start,
-                         weightMethod=weightMethod,
-                         datamodel=
-                           function(){
-                             # here need to dummy use u and Tmax from the DataDA object
-                             use_u <- u + 1
-                             use_Tmax <- Tmax + 1
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      logit(p[i]) <- alpha0 + alpha1 * log(x[i] / ref_dose)
 
-                             for (i in 1:nObs) #for each patient
-                             {
-                               #  DLT[i] ~ dbern(p[i]) #Use y[i] and u[i] to represent DLT[i]
+      # The piecewise exponential likelihood. Notice that:
+      # when y=1             -> DLT=1 and u=<T;
+      # when y=0 & T<t (u=T) -> DLT=0;
+      # when y=0 & T>t (u<T) -> DLT=NA/missing;
+      # when indx=0 -> censored, i.e u<T and event=0;
+      # when indx=1 -> not censored, i.e. u>=T or event=1;
+      L[i] <- pow(p[i], y[i]) * pow((1 - w[i] * p[i]), (1 - y[i]))
 
-                               #  NOTE: In the original r2JAGs code, the notation "y[i]" was "event[i]"
-                               #        and "DLT[i]" was "y[i]";
-                               #  Other notations: t[i]-- the true DLT time of patient i if he/she has
-                               #                          DLT eventually;
-                               #                   u[i]-- DLT free survival
+      # Apply zero trick in JAGS.
+      phi[i] <- -log(L[i]) + cadj
+      zeros[i] ~ dpois(phi[i])
+    }
+  }
 
+  modelspecs <- function(nObs, u, Tmax, y, from_prior) {
+    ms <- list(prec = start@params@prec, mean = start@params@mean)
+    # Calculate weights `w` based on the input data.
+    if (!from_prior && nObs > 0L) {
+      if (weight_method == "linear") {
+        w <- u / Tmax
+      } else if (weight_method == "adaptive") {
+        nDLT <- sum(y)
+        if (nDLT > 0) {
+          u_dlt <- sort(u[y == 1])
+          w <- sapply(u, function(u_i) {
+            m <- sum(u_i >= u_dlt)
+            w_i <- if (m == 0) {
+              u_i / u_dlt[1]
+            } else if (m < nDLT) {
+              m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
+            } else { # m == nDLT
+              m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
+            }
+            w_i / (nDLT + 1)
+          })
+        } else {
+          w <- u / Tmax
+        }
+      }
+      w[y == 1] <- 1
+      w[u == Tmax] <- 1
 
-                               #Part I: describe the logistic model of DLTs vs dose;
+      ms <- c(list(ref_dose = start@ref_dose, zeros = rep(0, nObs), cadj = 1e10, w = w), ms)
+    }
+    ms
+  }
 
-                               logit(p[i]) <- alpha0 + alpha1 * StandLogDose[i]
-                               StandLogDose[i] <- log(x[i] / ref_dose)
-
-                               #Part II: describe the piecewise exponential;
-                               #please notice:
-                               #when y=1             -> DLT=1 and u=<T;
-                               #when y=0 & T<t (u=T) -> DLT=0;
-                               #when y=0 & T>t (u<T) -> DLT=NA/missing;
-
-                               #when indx=0 -> censored, i.e u<T and event=0;
-                               #when indx=1 -> not censored, i.e. u>=T or event=1;
-
-
-                               #apply zero trick in JAGS;
-                               zeros[i]~dpois(phi[i])
-                               phi[i]<- -log(L[i]) + cadj
-
-                               #the likelihood function;
-                               L[i]<- pow(p[i],y[i])*pow((1-w[i]*p[i]),(1-y[i]))
-                             }
-                           },
-
-                         datanames=c("nObs", "y", "x", "u", "Tmax"),
-
-                         modelspecs=
-                           function(nObs, u, Tmax, y){
-
-                             ## calculate weight w based on the input data
-                             if(length(u)){
-
-                               if(weightMethod=="linear"){
-                                 w<-u/Tmax
-                               }
-                               else if(weightMethod=="adaptive"){
-
-                                 w <- NA
-                                 support <- sort(u[y == 1])
-                                 totalToxic <- sum(y)
-
-                                 if (totalToxic) {
-                                   for (i in 1:length(u)) {
-                                     m <- length(support[support <= u[i]])
-                                     if (!m){
-                                       w[i] <- u[i]/support[1]/(totalToxic + 1)
-                                     }
-
-                                     else if (m == totalToxic){
-                                       w[i] <- (totalToxic + (u[i] - support[totalToxic])/(Tmax+0.00000001 -
-                                                                                             support[totalToxic]))/(totalToxic + 1)
-                                     }
-
-                                     else {
-                                       w[i] <- (m + (u[i] - support[m])/(support[m + 1] - support[m]))/(totalToxic + 1)
-                                     }
-                                   }
-                                 }
-                                 else{
-                                   w <- u/Tmax
-                                 }
-                               }
-                             }
-                             else{
-                               w <- 1
-                             }
-                             w[y == 1] <- 1
-                             w[u==Tmax] <- 1
-
-
-                             list(ref_dose=start@ref_dose,
-                                  prec=start@params@prec,
-                                  mean=start@params@mean,
-                                  zeros=rep(0, nObs),
-                                  cadj=1e10,
-                                  w=w)
-                           })
-
+  .TITELogisticLogNormal(
+    start,
+    weight_method = weight_method,
+    datamodel = datamodel,
+    modelspecs = modelspecs,
+    datanames = c("nObs", "y", "x")
+  )
 }
-validObject(TITELogisticLogNormal(mean=c(0, 1),
-                                  cov=diag(2),
-                                  ref_dose=1,
-                                  weightMethod="linear"))
 
 # OneParExpNormalPrior ----
 
-## ============================================================
+## class ----
 
-##' CRM Model with Skeleton Prior Probabilities
-##'
-##' This is a standard CRM with a normal prior on the log power parameter
-##' for the skeleton prior probabilities.
-##'
-##' @slot skeletonFun function to calculate the prior DLT probabilities.
-##' @slot skeletonProbs skeleton prior probabilities.
-##' @slot sigma2 prior variance of log power parameter alpha.
-##'
-##' @export
-##' @aliases OneParExpNormalPrior
-##' @keywords classes
-.OneParExpNormalPrior <-
-  setClass(Class = "OneParExpNormalPrior",
-           contains = "Model",
-           representation(skeletonFun = "function",
-                          skeletonProbs = "numeric",
-                          sigma2 = "numeric"),
-           validity=
-             function(object){
-               o <- Validate()
+#' `OneParExpNormalPrior`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`OneParExpNormalPrior`] is the class for a standard CRM with a normal prior on
+#' the log power parameter for the skeleton prior probabilities.
+#'
+#' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
+#' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
+#' @slot skel_probs (`numeric`)\cr skeleton prior probabilities.
+#' @slot sigma2 (`number`)\cr prior variance of log power parameter alpha.
+#'
+#' @seealso [`ModelLogNormal`].
+#'
+#' @aliases OneParExpNormalPrior
+#' @export
+#'
+.OneParExpNormalPrior <- setClass(
+  Class = "OneParExpNormalPrior",
+  slots = c(
+    skel_fun = "function",
+    skel_fun_inv = "function",
+    skel_probs = "numeric",
+    sigma2 = "numeric"
+  ),
+  contains = "Model",
+  validity = v_model_one_par_exp_normal_prior
+)
 
-               o$check(identical(length(object@sigma2), 1L) &&
-                         object@sigma2 > 0 && is.finite(object@sigma2),
-                       "sigma2 must be a positive finite number")
+## constructor ----
 
-               o$check(all(object@skeletonProbs >= 0 & object@skeletonProbs <= 1),
-                       "skeletonProbs must be probabilities between 0 and 1")
-             })
+#' @rdname OneParExpNormalPrior-class
+#'
+#' @param skel_probs (`numeric`)\cr skeleton prior probabilities.
+#' @param dose_grid (`numeric`)\cr dose grid.
+#' @param sigma2 (`number`)\cr prior variance of log power parameter alpha.
+#'
+#' @export
+#' @example examples/Model-class-OneParExpNormalPrior.R
+#'
+OneParExpNormalPrior <- function(skel_probs,
+                                 dose_grid,
+                                 sigma2) {
+  assert_numeric(skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE)
+  assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
+  assert_number(sigma2, lower = .Machine$double.xmin, finite = TRUE)
 
-##' @describeIn OneParExpNormalPrior-class Initialization function for the
-##'   `OneParExpNormalPrior` class.
-##' @param skeletonProbs skeleton prior probabilities.
-##' @param doseGrid dose grid.
-##' @param sigma2 prior variance of log power parameter alpha.
-##'
-##' @export
-##' @keywords methods
-OneParExpNormalPrior <- function(skeletonProbs,
-                                 doseGrid,
-                                 sigma2)
-{
-  skeletonFun <- approxfun(x = doseGrid, y = skeletonProbs, rule = 2)
-  invSkeletonFun <- approxfun(x = skeletonProbs, y = doseGrid, rule = 1)
+  skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
+  skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 1)
 
   .OneParExpNormalPrior(
-    skeletonFun = skeletonFun,
-    skeletonProbs = skeletonProbs,
+    skel_fun = skel_fun,
+    skel_fun_inv = skel_fun_inv,
+    skel_probs = skel_probs,
     sigma2 = sigma2,
-    datamodel = function(){
-      for (i in 1:nObs)
-      {
+    datamodel = function() {
+      for (i in 1:nObs) {
+        p[i] <- skel_probs[xLevel[i]]^exp(alpha)
         y[i] ~ dbern(p[i])
-        p[i] <- skeletonProbs[xLevel[i]]^exp(alpha)
-      }},
+      }
+    },
+    priormodel = function() {
+      alpha ~ dnorm(0, 1 / sigma2)
+    },
+    modelspecs = function(from_prior) {
+      ms <- list(sigma2 = sigma2)
+      if (!from_prior) {
+        ms$skel_probs <- skel_probs
+      }
+      ms
+    },
+    init = function() {
+      list(alpha = 1)
+    },
     datanames = c("nObs", "y", "xLevel"),
-    prob = function(dose, alpha){ skeletonFun(dose)^exp(alpha) },
-    dose = function(x, alpha){ invSkeletonFun(x^(1 / exp(alpha))) },
-    priormodel = function(){ alpha ~ dnorm(0, 1 / sigma2) },
-    modelspecs = function(){ list(skeletonProbs = skeletonProbs,
-                                  sigma2 = sigma2) },
-    init = function(){ list(alpha = 1) }, sample = "alpha")
+    sample = "alpha"
+  )
 }
 
-data <- Data(doseGrid = c(1, 2, 3, 4, 5))
-skeletonProbs <- seq(from = 0.1, to = 0.9, length = length(data@doseGrid))
-validObject(OneParExpNormalPrior(
-  skeletonProbs = skeletonProbs,
-  doseGrid = data@doseGrid,
-  sigma2 = 2
-))
+# FractionalCRM ----
 
-## ============================================================
+## class ----
 
-##' Fractional CRM following paper and code by Guosheng Yin et al
-##'
-##' This is a fractional CRM model based on a one parameter CRM (with normal
-##' prior on the log-power parameter) as well as Kaplan-Meier based estimation
-##' of the conditional probability to experience a DLT for non-complete
-##' observations.
-##'
-##' @export
-##' @aliases FractionalCRM
-##' @keywords classes
-.FractionalCRM <-
-  setClass(Class = "FractionalCRM",
-           contains="OneParExpNormalPrior")
+#' `FractionalCRM`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`FractionalCRM`] is the class for a fractional CRM model based on a one
+#' parameter CRM (with normal prior on the log-power parameter) as well as
+#' Kaplan-Meier based estimation of the conditional probability to experience a
+#' DLT for non-complete observations.
+#' This fractional CRM model follows the paper and code by Guosheng Yin et al.
+#'
+#' @seealso [`TITELogisticLogNormal`].
+#'
+#' @aliases FractionalCRM
+#' @export
+#'
+.FractionalCRM <- setClass(
+  Class = "FractionalCRM",
+  contains = "OneParExpNormalPrior"
+)
 
-##' @describeIn FractionalCRM-class Initialization function for the fractional CRM.
-##'   Takes the same arguments as [OneParExpNormalPrior()].
-##' @param \dots inputs as in [OneParExpNormalPrior()].
-##' @importFrom survival survfit Surv
-##' @export
+## constructor ----
+
+#' @rdname FractionalCRM-class
+#'
+#' @inheritDotParams OneParExpNormalPrior
+#'
+#' @export
+#' @example examples/Model-class-FractionalCRM.R
+#'
 FractionalCRM <- function(...) {
   start <- OneParExpNormalPrior(...)
 
+  # This is adapted from the TITELogisticLogNormal class.
+  datamodel <- function() {
+    for (i in 1:nObs) {
+      p[i] <- skel_probs[xLevel[i]]^exp(alpha)
+
+      # The piecewise exponential likelihood. Notice that:
+      # when y=1             -> DLT=1 and u=<T;
+      # when y=0 & T<t (u=T) -> DLT=0;
+      # when y=0 & T>t (u<T) -> DLT=NA/missing.
+      # Therefore, `yhat` is used instead of `y` for the likelihood f. (see `modelspecs`).
+      L[i] <- pow(p[i], yhat[i]) * pow((1 - p[i]), (1 - yhat[i]))
+
+      # Apply zero trick in JAGS.
+      phi[i] <- -log(L[i]) + cadj
+      zeros[i] ~ dpois(phi[i])
+    }
+  }
+
+  modelspecs <- function(nObs, u, Tmax, y, from_prior) {
+    ms <- list(sigma2 = start@sigma2)
+    if (!from_prior) {
+      # Calculate fractional contribution `yhat`
+      # based on the input data using the Kaplan-Meier method.
+      yhat <- if (nObs > 0) {
+        km <- survival::survfit(survival::Surv(u, y) ~ 1)
+        s_tau <- tail(km$surv[km$time <= Tmax], 1) # Survival probability = S(Tmax).
+        ifelse(
+          u < Tmax & y == 0L, # Within the assessment window and so far no DLT.
+          yes = 1 - s_tau / sapply(u, function(u_i) tail(km$surv[km$time <= u_i], 1)),
+          no = y
+        )
+      } else {
+        1L
+      }
+      ms <- c(
+        list(skel_probs = start@skel_probs, zeros = rep(0, nObs), cadj = 1e10, yhat = yhat),
+        ms
+      )
+    }
+    ms
+  }
+
   .FractionalCRM(
     start,
-    datamodel=
-      # This is adapted from the TITELogisticLogNormal class.
-      function(){
-        # Note: here we need to dummy use stuff from the DataDA object.
-        use_u <- u + 1
-        use_Tmax <- Tmax + 1
-        use_y <- y + 1
-
-        for (i in 1:nObs) #for each patient
-        {
-          #  DLT[i] ~ dbern(p[i])  # but part of DLTs are fractions.
-          p[i] <- skeletonProbs[xLevel[i]]^exp(alpha)
-
-          #please notice:
-          #when y=1             -> DLT=1 and u=<T;
-          #when y=0 & T<t (u=T) -> DLT=0;
-          #when y=0 & T>t (u<T) -> DLT=is a fraction
-          # therefore not y directly is used but yhat, which is specified
-          # in modelspecs below.
-
-          #apply zero trick in JAGS;
-          zeros[i] ~ dpois(phi[i])
-          phi[i]<- -log(L[i]) + cadj
-
-          #the likelihood function;
-          L[i] <- pow(p[i], yhat[i]) * pow((1 - p[i]), (1 - yhat[i]))
-        }
-      },
-    modelspecs=
-      function(nObs, u, Tmax, y){
-
-        ## calculate yhat based on the input data using the Kaplan-Meier method.
-        if(length(u)){
-          km   <- survival::survfit(survival::Surv(u, y) ~ 1)  ## K-M Method for Estimating Survival Probability
-          stau <- km$surv[which.min(km$surv[km$time <= Tmax])] ## Calc the Survival Probability = S(Tmax)
-          yhat <- y                                         ## initialize yhat with original y.
-          for(k in seq_len(nObs)){
-            if(u < Tmax && y[k] == 0){ ##  Within the Assessment Window and so far no DLT
-              sTime   <- km$surv[which.min(km$surv[km$time <= u[k]])]
-              yhat[k] <- (sTime - stau) / sTime                   ## Calculate the Fractional Contribution
-            }
-          }
-        } else {
-          yhat <- 1 # just for logistics we need this
-        }
-
-        list(
-          skeletonProbs = start@skeletonProbs,
-          sigma2 = start@sigma2,
-          zeros = rep(0, nObs),
-          cadj = 1e10,
-          yhat = yhat
-        )
-      },
-    datanames=c("nObs", "y", "xLevel", "u", "Tmax")
+    datamodel = datamodel,
+    modelspecs = modelspecs,
+    datanames = c("nObs", "xLevel")
   )
 }
-validObject(FractionalCRM(
-  skeletonProbs = c(0.1, 0.2, 0.3, 0.4),
-  doseGrid = c(10, 30, 50, 100),
-  sigma2 = 2
-))
-
-## ============================================================
-# nolint end

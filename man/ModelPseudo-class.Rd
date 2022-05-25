@@ -13,5 +13,5 @@
 the form of pseudo data (as if there is some data before the trial starts).
 }
 \seealso{
-\code{\link{ModelEff}}, \code{\link{ModelTox}}.
+\code{\link{GeneralModel}}.
 }

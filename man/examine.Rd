@@ -171,7 +171,7 @@ model<-DALogisticLogNormal(mean=c(-0.85,1),
                            ref_dose=56,
                            npiece=npiece_,
                            l=as.numeric(t(apply(as.matrix(c(1:npiece_),1,npiece_),2,lambda_prior))),
-                           C_par=2)
+                           c_par=2)
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0,20),
                                    increments=c(1,0.33))
