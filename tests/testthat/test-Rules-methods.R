@@ -393,7 +393,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
 })
 
 test_that("NextBestInfTheory produces consistent results with a dataset", {
-  my_data <- h_get_data_no_plcb()
+  my_data <- h_get_data(placebo = FALSE)
 
   sigma_0 <- 1.0278
   sigma_1 <- 1.65

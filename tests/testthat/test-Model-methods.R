@@ -1067,7 +1067,7 @@ test_that("Information Theory approach returns correct next dose", {
   )
   model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
 
-  data <- h_get_data_no_plcb()
+  data <- h_get_data(placebo = FALSE)
 
   result <- nextBest(nextBest = nb_it, doselimit = 75, samples = samples, model = model, data = data)
   expected <- list(value = c(25))
