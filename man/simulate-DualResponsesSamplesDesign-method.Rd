@@ -162,8 +162,8 @@ mySim<-simulate(design,
 ##Simulate dose-escalation procedure based on DLE and efficacy responses where DLE
 ## and efficacy samples are used
 ## when the efficacy model is of 'EffFlexi' class
-Effmodel<- EffFlexi(Eff=c(1.223, 2.513),Effdose=c(25,300),
-                    sigma2=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),smooth="RW2",data=data)
+Effmodel<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
+                    sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
 
 
 ##Specified the design

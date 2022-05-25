@@ -32,5 +32,5 @@ estimates or samples (see details above).}
 }}
 
 \seealso{
-\code{\link{ModelPseudo}}, \code{\link{ModelEff}}.
+\code{\link{ModelEff}}.
 }

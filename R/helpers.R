@@ -710,8 +710,12 @@ h_check_fun_formals <- function(fun, mandatory = NULL, allowed = NULL) {
 #'
 h_slots <- function(object, names, simplify = FALSE) {
   assert_true(isS4(object))
-  assert_character(names, min.len = 1, any.missing = FALSE, null.ok = TRUE)
+  assert_character(names, any.missing = FALSE, null.ok = TRUE)
   assert_true(all(names %in% slotNames(object)))
+
+  if (is.null(names) || length(names) == 0L) {
+    return(list())
+  }
 
   slots_list <- sapply(names, function(n) slot(object, n), simplify = FALSE, USE.NAMES = TRUE)
 

@@ -50,7 +50,7 @@ distribution.
 prior for the biomarker model. Either a fixed value or Inverse-Gamma distribution
 parameters, i.e. vector with two elements named \code{a} and \code{b}.}
 
-\item{\code{rw1}}{rho (\code{flag})\cr for specifying the random walk prior on the biomarker
+\item{\code{rw1}}{(\code{flag})\cr for specifying the random walk prior on the biomarker
 level. When \code{TRUE}, random walk of first order is used. Otherwise, the
 random walk of second order is used.}
 }}

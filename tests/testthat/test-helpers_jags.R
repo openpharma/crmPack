@@ -91,10 +91,50 @@ test_that("h_jags_get_data works as expected", {
   data <- h_get_data()
   model <- h_get_logistic_log_normal()
 
-  result <- h_jags_get_data(model, data, FALSE)
+  result <- h_jags_get_data(model, data, from_prior = FALSE)
+  expected_prior <- c(
+    h_slots(data, c("nObs", "y", "x")),
+    model@modelspecs(from_prior = TRUE) # nolintr
+  )
   expected <- c(
     h_slots(data, c("nObs", "y", "x")),
-    model@modelspecs() # nolintr
+    model@modelspecs(from_prior = FALSE) # nolintr
+  )
+  expect_identical(result[setdiff(names(result), "ref_dose")], expected_prior)
+  expect_identical(result, expected)
+})
+
+test_that("h_jags_get_data works as expected (datanames and datanames_prior redundant)", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  model@datanames_prior <- "nObs"
+
+  result <- h_jags_get_data(model, data, from_prior = FALSE)
+  expected <- c(
+    h_slots(data, c("nObs", "y", "x")),
+    model@modelspecs(from_prior = FALSE) # nolintr
+  )
+  expect_identical(result, expected)
+})
+
+test_that("h_jags_get_data works as expected (from prior)", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+
+  result <- h_jags_get_data(model, data, from_prior = TRUE)
+  expected <- model@modelspecs(from_prior = TRUE) # nolintr
+  expect_identical(result, expected)
+})
+
+test_that("h_jags_get_data works as expected (from prior and datanames_prior)", {
+  data <- h_get_data()
+  model <- h_get_logistic_log_normal()
+  model@datanames_prior <- "nGrid"
+
+  result <- h_jags_get_data(model, data, from_prior = TRUE)
+  expected <- c(
+    h_slots(data, "nGrid"),
+    model@modelspecs(from_prior = TRUE) # nolintr
   )
   expect_identical(result, expected)
 })
@@ -109,7 +149,7 @@ test_that("h_jags_get_data works with arguments to modelspecs", {
   }
   environment(model@modelspecs) <- e
 
-  result <- h_jags_get_data(model, data, FALSE)
+  result <- h_jags_get_data(model, data, from_prior = FALSE)
   expected <- c(
     h_slots(data, c("nObs", "y", "x")),
     list(
@@ -128,7 +168,7 @@ test_that("h_jags_get_data throws the error when `modelspecs` does not return li
     c(p1 = 3)
   }
   expect_error(
-    h_jags_get_data(model = model, data = data, FALSE),
+    h_jags_get_data(model = model, data = data, from_prior = FALSE),
     "Assertion on 'modelspecs' failed: Must be of type 'list', not 'double'."
   )
 })

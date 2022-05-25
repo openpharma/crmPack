@@ -176,7 +176,9 @@ h_get_dual_endpoint <- function(use_log_dose = FALSE, fixed = TRUE) {
   )
 }
 
-h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE, fixed = TRUE) {
+h_get_dual_endpoint_rw <- function(use_log_dose = FALSE,
+                                   rw1 = TRUE,
+                                   fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   sigma2betaW <- if (fixed) { # nolint
     0.01
@@ -196,7 +198,8 @@ h_get_dual_endpoint_rw <- function(use_log_dose = FALSE, rw1 = TRUE, fixed = TRU
   )
 }
 
-h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
+h_get_dual_endpoint_beta <- function(use_log_dose = FALSE,
+                                     fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   if (fixed) {
     E0 <- 10 # nolint
@@ -225,7 +228,8 @@ h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
   )
 }
 
-h_get_dual_endpoint_emax <- function(use_log_dose = FALSE, fixed = TRUE) {
+h_get_dual_endpoint_emax <- function(use_log_dose = FALSE,
+                                     fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   if (fixed) {
     E0 <- 10 # nolint
@@ -273,7 +277,8 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
   )
 }
 
-h_get_eff_log_log <- function(emptydata = FALSE, dlt_observed_only = FALSE) {
+h_get_eff_log_log <- function(emptydata = FALSE,
+                              dlt_observed_only = FALSE) {
   dose_grid <- seq(25, 300, 25)
 
   data <- if (emptydata) {
@@ -304,5 +309,78 @@ h_get_eff_log_log <- function(emptydata = FALSE, dlt_observed_only = FALSE) {
     nu = c(a = 1, b = 0.025),
     data = data,
     const = 2
+  )
+}
+
+h_get_eff_flexi <- function(emptydata = FALSE,
+                            rw1 = TRUE,
+                            dlt_observed_only = FALSE) {
+  dose_grid <- seq(25, 300, 25)
+
+  data <- if (emptydata) {
+    DataDual(
+      doseGrid = dose_grid,
+      placebo = FALSE
+    )
+  } else {
+    # Observed data.
+    y <- if (dlt_observed_only) {
+      rep(1L, 8)
+    } else {
+      c(0, 0, 0, 0, 1, 1, 1, 1)
+    }
+    DataDual(
+      x = c(25, 50, 50, 75, 100, 100, 225, 300),
+      y = y,
+      ID = 1:8,
+      cohort = c(1L, 2L, 2L, 3L, 4L, 4L, 5L, 6L),
+      w = c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.6, 0.52),
+      doseGrid = dose_grid
+    )
+  }
+
+  EffFlexi(
+    eff = c(1.223, 2.513),
+    eff_dose = c(25, 300),
+    sigma2W = c(a = 0.1, b = 0.1),
+    sigma2betaW = c(a = 20, b = 50),
+    rw1 = rw1,
+    data = data
+  )
+}
+
+h_get_da_logistic_log_normal <- function() {
+  DALogisticLogNormal(
+    mean = c(0, 1),
+    cov = diag(2),
+    ref_dose = 1,
+    npiece = 3,
+    l = c(0.5, 0.5, 0.5),
+    c_par = 2
+  )
+}
+
+h_get_tite_logistic_log_normal <- function(weight_method = "linear") {
+  TITELogisticLogNormal(
+    mean = c(0, 1),
+    cov = diag(2),
+    ref_dose = 1,
+    weight_method = weight_method
+  )
+}
+
+h_get_one_par_exp_normal_prior <- function() {
+  OneParExpNormalPrior(
+    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+    dose_grid = 1:5,
+    sigma2 = 2
+  )
+}
+
+h_get_fractional_crm <- function() {
+  FractionalCRM(
+    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+    dose_grid = c(10, 30, 50, 70, 100),
+    sigma2 = 2
   )
 }

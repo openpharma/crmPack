@@ -16,7 +16,7 @@ Elements of \code{eff} must correspond to the elements of \code{eff_dose}.}
 \item{eff_dose}{(\code{numeric})\cr dose levels that correspond to pseudo efficacy
 responses in \code{eff}.}
 
-\item{nu}{(\code{number})\cr the precision (inverse of the variance) of the
+\item{nu}{(\code{numeric})\cr the precision (inverse of the variance) of the
 efficacy responses. This is either a fixed value or a named vector with two
 positive numbers, the shape (\code{a}), and the rate (\code{b}) parameters for the
 gamma distribution.}

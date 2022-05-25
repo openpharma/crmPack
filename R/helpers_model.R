@@ -29,7 +29,7 @@ h_model_dual_endpoint_sigma2W <- function(use_fixed,
                                           comp) {
   if (use_fixed) {
     assert_number(sigma2W, lower = 0 + .Machine$double.xmin, finite = TRUE)
-    comp$modelspecs <- c(comp$modelspecs, list(precW = 1 / sigma2W))
+    comp$modelspecs$precW <- 1 / sigma2W
   } else {
     assert_true(h_test_named_numeric(sigma2W, permutation.of = c("a", "b")))
     comp$priormodel <- h_jags_join_models(
@@ -38,10 +38,8 @@ h_model_dual_endpoint_sigma2W <- function(use_fixed,
         precW ~ dgamma(precWa, precWb)
       }
     )
-    comp$modelspecs <- c(
-      comp$modelspecs,
-      list(precWa = sigma2W[["a"]], precWb = sigma2W[["b"]])
-    )
+    comp$modelspecs$precWa <- sigma2W[["a"]]
+    comp$modelspecs$precWb <- sigma2W[["b"]]
     comp$init$precW <- 1
     comp$sample <- c(comp$sample, "precW")
   }
@@ -82,7 +80,7 @@ h_model_dual_endpoint_rho <- function(use_fixed,
   rmin <- .Machine$double.xmin
   if (use_fixed) {
     assert_number(rho, lower = -1 + rmin, upper = 1 - rmin)
-    comp$modelspecs <- c(comp$modelspecs, list(rho = rho))
+    comp$modelspecs$rho <- rho
   } else {
     assert_true(h_test_named_numeric(rho, permutation.of = c("a", "b")))
     comp$priormodel <- h_jags_join_models(
@@ -92,10 +90,8 @@ h_model_dual_endpoint_rho <- function(use_fixed,
         rho <- 2 * kappa - 1
       }
     )
-    comp$modelspecs <- c(
-      comp$modelspecs,
-      list(rhoa = rho[["a"]], rhob = rho[["b"]])
-    )
+    comp$modelspecs$rhoa <- rho[["a"]]
+    comp$modelspecs$rhob <- rho[["b"]]
     comp$init$kappa <- 0.5
     comp$sample <- c(comp$sample, "rho")
   }
@@ -123,6 +119,7 @@ h_model_dual_endpoint_rho <- function(use_fixed,
 #' @return A [`DualEndpoint`] model with updated `priormodel`, `modelspecs`,
 #'   `init`, `sample` slots.
 #'
+#' @seealso [`DualEndpointRW`].
 #' @export
 h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
                                               sigma2betaW,
@@ -132,9 +129,7 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
 
   if (use_fixed) {
     assert_number(sigma2betaW, lower = 0 + .Machine$double.xmin, finite = TRUE)
-    de@modelspecs <- function() {
-      c(modelspecs(), list(precBetaW = 1 / sigma2betaW))
-    }
+    ms <- list(precBetaW = 1 / sigma2betaW)
   } else {
     assert_true(h_test_named_numeric(sigma2betaW, permutation.of = c("a", "b")))
     # gamma prior for random walk precision.
@@ -144,16 +139,14 @@ h_model_dual_endpoint_sigma2betaW <- function(use_fixed,
         precBetaW ~ dgamma(precBetaWa, precBetaWb)
       }
     )
-    de@modelspecs <- function() {
-      c(
-        modelspecs(),
-        list(precBetaWa = sigma2betaW[["a"]], precBetaWb = sigma2betaW[["b"]])
-      )
-    }
+    ms <- list(precBetaWa = sigma2betaW[["a"]], precBetaWb = sigma2betaW[["b"]])
     de@init <- function(y) {
       c(init(y), list(precBetaW = 1))
     }
     de@sample <- c(de@sample, "precBetaW")
+  }
+  de@modelspecs <- function(from_prior) {
+    c(modelspecs(from_prior), ms)
   }
   de
 }
@@ -204,37 +197,29 @@ h_model_dual_endpoint_beta <- function(param,
   assert_class(de, "DualEndpoint")
 
   use_fixed <- setNames(is.scalar(param), param_name)
-  ms <- de@modelspecs
+  modelspecs <- de@modelspecs
+  init <- de@init
 
   if (use_fixed) {
-    de@modelspecs <- function() {
-      c(ms(), setNames(list(param), param_name))
-    }
+    ms <- setNames(list(param), param_name)
   } else {
     assert_character(param_suffix, len = 2, unique = TRUE, any.missing = FALSE)
     assert_function(priormodel)
     param_name2 <- paste0(param_name, param_suffix)
 
-    init <- de@init
     de@priormodel <- h_jags_join_models(
       de@priormodel,
       priormodel
     )
-    de@modelspecs <- function() {
-      c(
-        ms(),
-        setNames(list(param[1], param[2]), param_name2)
-      )
-    }
+    ms <- setNames(list(param[1], param[2]), param_name2)
     de@init <- function(y) {
-      c(
-        init(y),
-        setNames(list(mean(param)), param_name)
-      )
+      c(init(y), setNames(list(mean(param)), param_name))
     }
     de@sample <- c(de@sample, param_name)
   }
-
+  de@modelspecs <- function(from_prior) {
+    c(modelspecs(from_prior), ms)
+  }
   de@use_fixed <- c(de@use_fixed, use_fixed)
   de
 }

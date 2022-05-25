@@ -34,7 +34,6 @@ reference:
       - DataDA
       - McmcOptions
       - ModelParamsNormal
-      - AllModels
       - GeneralModel
       - Model
       - ModelLogNormal
@@ -57,6 +56,11 @@ reference:
       - ModelEff
       - LogisticIndepBeta
       - Effloglog
+      - EffFlexi
+      - DALogisticLogNormal
+      - TITELogisticLogNormal
+      - OneParExpNormalPrior
+      - FractionalCRM
       - IncrementsNumDoseLevels
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
@@ -111,6 +115,10 @@ reference:
       - v_model_dual_endpoint_emax
       - v_model_logistic_indep_beta
       - v_model_eff_log_log
+      - v_model_eff_flexi
+      - v_model_da_logistic_log_normal
+      - v_model_tite_logistic_log_normal
+      - v_model_one_par_exp_normal_prior
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
       - v_increments_numdoselevels
@@ -150,6 +158,7 @@ reference:
       - dose-LogisticIndepBeta-noSamples
       - dose-Effloglog-noSamples
       - dose-EffFlexi
+      - dose-OneParExpNormalPrior
       - probFunction
       - probFunction-GeneralModel
       - probFunction-ModelTox
@@ -168,6 +177,7 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
+      - prob-OneParExpNormalPrior
       - efficacyFunction
       - efficacyFunction-ModelEff
       - efficacy

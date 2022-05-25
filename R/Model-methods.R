@@ -1289,6 +1289,57 @@ setMethod(
   }
 )
 
+# OneParExpNormalPrior ----
+
+## dose ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' @aliases dose-OneParExpNormalPrior
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "OneParExpNormalPrior",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun_inv <- model@skel_fun_inv
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha))
+
+    skel_fun_inv(x^(1 / exp(alpha)))
+  }
+)
+
+## prob ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-OneParExpNormalPrior
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "OneParExpNormalPrior",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun <- model@skel_fun
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
+
+    skel_fun(dose)^exp(alpha)
+  }
+)
+
 # NOT CLEANED UP YET! ----
 
 # nolint start
@@ -1528,14 +1579,14 @@ setMethod("update",
                      ...){
               ##Get Pseudo Eff responses (prior) of the model
 
-              PseudoEff<-object@Eff
+              PseudoEff<-object@eff
 
               ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoEffdose<- object@Effdose
+              PseudoEffdose<- object@eff_dose
 
               ## Get the initial values of parameters for Sigma2 (if it is not fixed)
-              ##OR get the fixed value of sigma2
-              PseudoSigma2<- object@sigma2
+              ##OR get the fixed value of sigma2W
+              PseudoSigma2<- object@sigma2W
 
 
               ## Get the initial values of parameters for Sigma2betaW (if it is not fixed)
@@ -1543,7 +1594,7 @@ setMethod("update",
               PseudoSigma2betaW<- object@sigma2betaW
 
               ##update the model estimates with data
-              model<- EffFlexi(Eff=PseudoEff,Effdose=PseudoEffdose,sigma2=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
+              model<- EffFlexi(eff=PseudoEff,eff_dose=PseudoEffdose,sigma2W=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
 
               ##return the updated model
               return(model)

@@ -4,29 +4,56 @@
 \name{DALogisticLogNormal-class}
 \alias{DALogisticLogNormal-class}
 \alias{.DALogisticLogNormal}
-\title{Logistic model with bivariate (log) normal prior and data augmentation}
-\description{
-This is a modified data augmented CRM with logistic regression model using
-a bivariate normal prior on the intercept and log slope parameters.
-This class inherits from the normal logistic model class.
+\alias{DALogisticLogNormal}
+\title{\code{DALogisticLogNormal}}
+\usage{
+DALogisticLogNormal(npiece = 3, l, c_par = 2, cond_pem = TRUE, ...)
 }
-\details{
-We still need to include here formula for the lambda prior.
+\arguments{
+\item{npiece}{(\code{number})\cr the number of pieces in the \code{PEM}.}
+
+\item{l}{(\code{numeric})\cr a vector used in the lambda prior.}
+
+\item{c_par}{(\code{numeric})\cr a parameter used in the lambda prior; according to
+Liu's paper, \code{c_par = 2} is recommended.}
+
+\item{cond_pem}{(\code{flag})\cr is a conditional piecewise-exponential model used?
+(default). Otherwise an unconditional model is used.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=LogisticLogNormal]{LogisticLogNormal}}
+  \describe{
+    \item{\code{mean}}{(\code{numeric})\cr the prior mean vector.}
+    \item{\code{cov}}{(\code{matrix})\cr the prior covariance matrix. The precision matrix
+\code{prec} is internally calculated as an inverse of \code{cov}.}
+    \item{\code{ref_dose}}{(\code{number})\cr the reference dose \eqn{x*} (strictly positive
+number).}
+  }}
+}
+\description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{DALogisticLogNormal}} is the class for the logistic model with bivariate
+(log) normal prior and data augmentation. This class inherits from the
+\code{\link{LogisticLogNormal}} class.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{npiece}}{the number of pieces in the \code{PEM}}
+\item{\code{npiece}}{(\code{number})\cr the number of pieces in the \code{PEM}.}
 
-\item{\code{l}}{a vector used in the lambda prior}
+\item{\code{l}}{(\code{numeric})\cr a vector used in the lambda prior.}
 
-\item{\code{C_par}}{a parameter used in the lambda prior,
-according to Liu's paper, \code{C_par=2} is recommended.}
+\item{\code{c_par}}{(\code{numeric})\cr a parameter used in the lambda prior; according to
+Liu's paper, \code{c_par = 2} is recommended.}
 
-\item{\code{conditionalPEM}}{is a conditional piecewise-exponential model used?
-(default) Otherwise an unconditional model is used.}
+\item{\code{cond_pem}}{(\code{flag})\cr is a conditional piecewise-exponential model used?
+(default). Otherwise an unconditional model is used.}
 }}
 
+\note{
+We still need to include here formula for the lambda prior.
+}
 \examples{
 npiece <- 10
 Tmax <- 60 # nolintr
@@ -41,7 +68,9 @@ model <- DALogisticLogNormal(
   ref_dose = 56,
   npiece = npiece,
   l = as.numeric(t(apply(as.matrix(c(1:npiece), 1, npiece), 2, lambda_prior))),
-  C_par = 2
+  c_par = 2
 )
 }
-\keyword{classes}
+\seealso{
+\code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}}.
+}

@@ -190,6 +190,15 @@ test_that("h_slots throws the error for non-existing slots", {
   )
 })
 
+test_that("h_slots returns empty list for empty request", {
+  object <- h_get_data()
+  result1 <- h_slots(object, character(0))
+  result2 <- h_slots(object, NULL)
+
+  expect_identical(result1, list())
+  expect_identical(result2, list())
+})
+
 # h_format_number ----
 
 test_that("h_format_number works as expected", {

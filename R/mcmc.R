@@ -455,69 +455,67 @@ setMethod("mcmc",
 
               ##Prepare samples container
               ###List parameter samples to save
-              samples<- list(ExpEff=
-                               matrix(ncol=data@nGrid, nrow=nSamples),
-                             sigma2betaW=matrix(nrow=nSamples),
-                             sigma2=matrix(nrow=nSamples))
+              samples<- list(ExpEff=matrix(ncol=data@nGrid, nrow=nSamples),
+                             sigma2W = matrix(nrow=nSamples),
+                             sigma2betaW = matrix(nrow=nSamples))
               ##Prepare starting values
               ##Index of the next sample to be saved:
 
               iterSave <- 1L
               ##Monitoring the Metropolis-Hastings update for sigma2
 
-              acceptHistory <- list(sigma2=logical(options@iterations))
+              acceptHistory <- list(sigma2W=logical(options@iterations))
 
               ## Current parameter values and also the starting values for the MCMC are set
               ## EstEff: constant, the average of the observed efficacy values
 
               if (length(data@w)==0){
-                w1<-thismodel@Eff
-                x1<-thismodel@Effdose} else {
+                w1<-thismodel@eff
+                x1<-thismodel@eff_dose} else {
                   ## Combine pseudo data with observed efficacy responses and no DLT observed
-                  w1<-c(thismodel@Eff, getEff(data)$w_no_dlt)
-                  x1<-c(thismodel@Effdose, getEff(data)$x_no_dlt)
+                  w1<-c(thismodel@eff, getEff(data)$w_no_dlt)
+                  x1<-c(thismodel@eff_dose, getEff(data)$x_no_dlt)
                 }
               x1Level <- matchTolerance(x1,data@doseGrid)
               ##betaW is constant, the average of the efficacy values
               betaW <- rep(mean(w1), data@nGrid)
               ##sigma2betaW use fixed value or prior mean
               sigma2betaW <-
-                if (thismodel@useFixed[["sigma2betaW"]])
+                if (thismodel@use_fixed[["sigma2betaW"]])
                 {thismodel@sigma2betaW
                 } else {thismodel@sigma2betaW["b"]/(thismodel@sigma2betaW["a"]-1)}
               ##sigma2: fixed value or just the empirical variance
-              sigma2 <- if (thismodel@useFixed[["sigma2"]])
+              sigma2W <- if (thismodel@use_fixed[["sigma2W"]])
               {
-                thismodel@sigma2
+                thismodel@sigma2W
               } else {
                 var(w1)
               }
               ##Set up diagonal matrix with the number of patients in the corresponding dose levels on the diagonal
-              designWcrossprod <- crossprod(thismodel@designW)
+              designWcrossprod <- crossprod(thismodel@X)
 
               ###The MCMC cycle
 
               for (iterMcmc in seq_len(options@iterations))
               {## 1) Generate coefficients for the Flexible Efficacy model
                 ## the variance
-                adjustedVar <- sigma2
+                adjustedVar <- sigma2W
                 ## New precision matrix
-                thisPrecW <- designWcrossprod/adjustedVar + thismodel@RWmat/sigma2betaW
+                thisPrecW <- designWcrossprod/adjustedVar + thismodel@RW/sigma2betaW
                 ##draw random normal vector
                 normVec <- rnorm(data@nGrid)
                 ##and its Cholesky factor
                 thisPrecWchol <- chol(thisPrecW)
                 ## solve betaW for L^T * betaW = normVec
-                betaW <- backsolve(r=thisPrecWchol,
-                                   x=normVec)
+                betaW <- backsolve(r=thisPrecWchol, x=normVec)
                 ##the residual
-                adjustedW <- w1-thismodel@designW%*%betaW
+                adjustedW <- w1 - thismodel@X %*% betaW
 
                 ##forward substitution
-                ## solve L^T * tmp =designW ^T * adjustedW/ adjustedVar
+                ## solve L^T * tmp = designW ^T * adjustedW/ adjustedVar
 
                 tmp <- forwardsolve(l=thisPrecWchol,
-                                    x=crossprod(thismodel@designW,adjustedW)/adjustedVar,
+                                    x=crossprod(thismodel@X, adjustedW)/adjustedVar,
                                     upper.tri=TRUE,
                                     transpose=TRUE)
                 ##Backward substitution solve R*tepNew =tmp
@@ -533,30 +531,30 @@ setMethod("mcmc",
                 ## if fixed, do nothing
                 ## Otherwise sample from full condition
 
-                if (!thismodel@useFixed$sigma2betaW)
+                if (!thismodel@use_fixed[["sigma2betaW"]])
                 {
                   sigma2betaW <- rinvGamma (n=1L,
-                                            a=thismodel@sigma2betaW["a"]+thismodel@RWmatRank/2,
-                                            b=thismodel@sigma2betaW["b"]+crossprod(betaW,thismodel@RWmat%*%betaW)/2)
+                                            a=thismodel@sigma2betaW["a"]+thismodel@RW_rank/2,
+                                            b=thismodel@sigma2betaW["b"]+crossprod(betaW,thismodel@RW%*%betaW)/2)
                 }
                 ##3) Generate variance for the flexible efficacy model
                 ##if fixed variance is used
-                if (thismodel@useFixed$sigma2)
+                if (thismodel@use_fixed[["sigma2W"]])
                 {##do nothing
-                  acceptHistory$sigma2[iterMcmc] <- TRUE
+                  acceptHistory$sigma2W[iterMcmc] <- TRUE
                 } else {
                   ##Metropolis-Hastings update step here, using
                   ##an inverse gamma distribution
-                  aStar <- thismodel@sigma2["a"] + length(x1)/2
-                  ##Second paramter bStar depends on the value for sigma2
+                  aStar <- thismodel@sigma2W["a"] + length(x1)/2
+                  ##Second paramter bStar depends on the value for sigma2W
                   bStar <- function(x)
                   {adjW <-w1
-                  ret <- sum((adjW - betaW[x1Level])^2)/2 + thismodel@sigma2["b"]
+                  ret <- sum((adjW - betaW[x1Level])^2)/2 + thismodel@sigma2W["b"]
                   return(ret)
                   }
                   ###Draw proposal:
-                  bStarProposal <- bStar(sigma2)
-                  sigma2<- rinvGamma(n=1L,a=aStar,b=bStarProposal)
+                  bStarProposal <- bStar(sigma2W)
+                  sigma2W<- rinvGamma(n=1L,a=aStar,b=bStarProposal)
 
 
                 }
@@ -566,7 +564,7 @@ setMethod("mcmc",
 
                 if (saveSample(options, iterMcmc)){
                   samples$ExpEff[iterSave,]<-betaW
-                  samples$sigma2[iterSave,1]<-sigma2
+                  samples$sigma2W[iterSave,1]<-sigma2W
                   samples$sigma2betaW[iterSave,1] <-sigma2betaW
                   iterSave <- iterSave+1L
                 }

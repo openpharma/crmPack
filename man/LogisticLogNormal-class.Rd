@@ -41,5 +41,6 @@ my_model
 }
 \seealso{
 \code{\link{ModelLogNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormalSub}},
-\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}, \code{\link{LogisticLogNormalMixture}}
+\code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}, \code{\link{LogisticLogNormalMixture}},
+\code{\link{DALogisticLogNormal}}.
 }
