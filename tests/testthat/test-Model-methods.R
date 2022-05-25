@@ -1054,9 +1054,8 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
 
 ## Information Theory Approach
 
-test_that("Information Theory approach returns correct next dose",{
-
-  nb_it <- NextBestInfTheory(target=0.25, asymmetry=0.1)
+test_that("Information Theory approach returns correct next dose", {
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
   samples <- samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
 
   # set up the model
@@ -1074,5 +1073,4 @@ test_that("Information Theory approach returns correct next dose",{
   expected <- list(value = c(25))
 
   expect_identical(result, expected)
-}
-)
+})
