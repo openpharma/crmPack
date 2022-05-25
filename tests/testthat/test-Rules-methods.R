@@ -412,10 +412,10 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
   expect_equal(
     result@fitAtDoseMostSelected,
-    c(0.23991, 0.23991, 0.23991, 0.23991, 0.23991),
-    tolerance = 1e-05
+    c(0.222, 0.222, 0.222, 0.222, 0.222),
+    tolerance = 1e-02
   )
-  expect_equal(result@propDLTs, rep(0.333, 5), tolerance = 1e-02)
+  expect_equal(result@propDLTs, rep(0.267, 5), tolerance = 1e-02)
   expect_equal(result@meanToxRisk, rep(1L, 5))
   expect_equal(result@doseSelected, rep(50, 5))
   expect_equal(result@toxAtDosesSelected, rep(1L, 5))
