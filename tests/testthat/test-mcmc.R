@@ -41,4 +41,3 @@ test_that("mcmc-GeneralData respects fixed RNG settings", {
 })
 
 # mcmc-GeneralData ----
-
