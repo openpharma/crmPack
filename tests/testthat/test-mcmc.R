@@ -39,3 +39,6 @@ test_that("mcmc-GeneralData respects fixed RNG settings", {
   expect_true(all(result_1@data$alpha0 == result_2@data$alpha0))
   expect_true(all(result_1@data$alpha1 == result_2@data$alpha1))
 })
+
+# mcmc-GeneralData ----
+

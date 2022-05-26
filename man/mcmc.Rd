@@ -4,8 +4,14 @@
 \alias{mcmc}
 \alias{mcmc,GeneralData,GeneralModel,McmcOptions-method}
 \alias{mcmc-GeneralData}
+\alias{mcmc,GeneralData,DualEndpointRW,McmcOptions-method}
+\alias{mcmc-GeneralData-DualEndpointRW}
 \alias{mcmc,GeneralData,DualEndpointBeta,McmcOptions-method}
 \alias{mcmc-GeneralData-DualEndpointBeta}
+\alias{mcmc,GeneralData,DualEndpointEmax,McmcOptions-method}
+\alias{mcmc-GeneralData-DualEndpointEmax}
+\alias{mcmc,GeneralData,OneParExpNormalPrior,McmcOptions-method}
+\alias{mcmc-GeneralData-OneParExpNormalPrior}
 \alias{mcmc,DataMixture,GeneralModel,McmcOptions-method}
 \alias{mcmc,Data,LogisticIndepBeta,McmcOptions-method}
 \alias{mcmc,DataDual,Effloglog,McmcOptions-method}
@@ -16,7 +22,13 @@ mcmc(data, model, options, ...)
 
 \S4method{mcmc}{GeneralData,GeneralModel,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
+\S4method{mcmc}{GeneralData,DualEndpointRW,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+
 \S4method{mcmc}{GeneralData,DualEndpointBeta,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+
+\S4method{mcmc}{GeneralData,DualEndpointEmax,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+
+\S4method{mcmc}{GeneralData,OneParExpNormalPrior,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{DataMixture,GeneralModel,McmcOptions}(
   data,
@@ -61,11 +73,26 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 \itemize{
 \item \code{mcmc,GeneralData,GeneralModel,McmcOptions-method}: Standard method which uses JAGS.
 
+\item \code{mcmc,GeneralData,DualEndpointRW,McmcOptions-method}: Standard method which uses JAGS. For the
+\code{\link{DualEndpointRW}} model, it is required that there are at least two (in
+case of random walk prior of the first order on the biomarker level) or
+three doses in the grid.
+
 \item \code{mcmc,GeneralData,DualEndpointBeta,McmcOptions-method}: Standard method which uses JAGS. For the
 \code{\link{DualEndpointBeta}} model, it is required that the value of \code{ref_dose_beta}
 slot is greater than the maximum dose in a grid. This requirement comes from
 definition of the beta function that is used to model dose-biomarker
-relationship in \code{\link{DualEndpointBeta}} model.
+relationship in \code{\link{DualEndpointBeta}} model. The other requirement is that
+there must be at least one dose in the grid.
+
+\item \code{mcmc,GeneralData,DualEndpointEmax,McmcOptions-method}: Standard method which uses JAGS. For the
+\code{\link{DualEndpointEmax}} model, it is required that there is at least one dose
+in the grid.
+
+\item \code{mcmc,GeneralData,OneParExpNormalPrior,McmcOptions-method}: Standard method which uses JAGS. For the
+\code{\link{OneParExpNormalPrior}} model, it is required that the length of
+skeleton prior probabilities vector should be equal to the maximum dose
+level observed in data.
 
 \item \code{mcmc,DataMixture,GeneralModel,McmcOptions-method}: Method for DataMixture with different from_prior default
 
@@ -125,6 +152,39 @@ my_options <- McmcOptions(
   burnin = 100,
   step = 2,
   samples = 1000
+)
+
+samples <- mcmc(data = my_data, model = my_model, options = my_options)
+samples
+# Create some data from the class `DataDual`.
+plcb <- 0.001
+my_data <- DataDual(
+  w = c(13, 77, 86, 26, 27, 36, 37, 97, 21, 49, 87, 48),
+  x = c(plcb, 25, 25, 25, plcb, 50, 50, 50, plcb, 100, 100, 100),
+  y = c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L),
+  doseGrid = c(plcb, seq(25, 300, 25)),
+  placebo = TRUE,
+  ID = 1:12,
+  cohort = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L)
+)
+
+# Initialize the CRM model.
+my_model <- DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  sigma2betaW = 0.01,
+  rw1 = TRUE
+)
+
+# Sample from the posterior distribution.
+my_options <- McmcOptions(
+  burnin = 50,
+  step = 2,
+  samples = 4,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 1
 )
 
 samples <- mcmc(data = my_data, model = my_model, options = my_options)

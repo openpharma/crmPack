@@ -1225,7 +1225,7 @@ DualEndpoint <- function(mean,
       z[i] ~ dnorm(meanZ[i], 1)
       y[i] ~ dinterval(z[i], 0)
 
-      # The conditional biomarker model. betaW defined in subclasses!
+      # The conditional biomarker model; betaW defined in subclasses!
       condMeanW[i] <- betaW[xLevel[i]] + rho / sqrt(precW) * (z[i] - meanZ[i])
       w[i] ~ dnorm(condMeanW[i], condPrecW)
     }
