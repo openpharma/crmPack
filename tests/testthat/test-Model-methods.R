@@ -4,7 +4,7 @@
 
 test_that("doseFunction-GeneralModel returns correct dose function", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2), burnin = 10000, fixed = FALSE)
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
@@ -38,7 +38,7 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
 
 test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
@@ -70,7 +70,7 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
 
 test_that("probFunction-GeneralModel returns correct prob function", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2), burnin = 10000, fixed = FALSE)
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
@@ -104,7 +104,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
 
 test_that("probFunction-ModelTox returns correct prob function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
@@ -136,7 +136,7 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
 
 test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7))
+  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7), burnin = 10000, fixed = FALSE)
   eff_args <- c("dose", "model", "samples")
 
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
