@@ -1,4 +1,4 @@
-# Version 1.0.9000.9022
+# Version 1.0.9000.9023
 * Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel`
   class.
 * Added new slot `skel_fun_inv` into `OneParExpNormalPrior` class.
