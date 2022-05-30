@@ -550,6 +550,42 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params, 
   expect_snapshot(result_log_dose@data)
 })
 
+test_that("MCMC throws the error for DualEndpointRW model when 'nGrid == 1' for RW 1", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_rw(rw1 = TRUE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  data@nGrid <- 1L
+  data@doseGrid <- data@doseGrid[1]
+
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'data@nGrid >= 2' failed: Must be TRUE"
+  )
+})
+
+test_that("MCMC throws the error for DualEndpointRW model when 'nGrid <= 2' for RW 2", {
+  data <- h_get_data_dual(empty = TRUE)
+  model <- h_get_dual_endpoint_rw(rw1 = FALSE)
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  data@nGrid <- 1L
+  data@doseGrid <- data@doseGrid[1]
+
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'data@nGrid >= 3' failed: Must be TRUE"
+  )
+
+  data@nGrid <- 2L
+  data@doseGrid <- data@doseGrid[1:2]
+
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'data@nGrid >= 3' failed: Must be TRUE"
+  )
+})
+
 # DualEndpointBeta ----
 
 ## constructor ----
@@ -599,6 +635,17 @@ test_that("MCMC throws the error for DualEndpointBeta model when 'ref_dose_beta 
   expect_error(
     mcmc(data = data, model = model, options = options),
     "Assertion on 'model@ref_dose_beta > data@doseGrid\\[data@nGrid\\]' failed: Must be TRUE."
+  )
+})
+
+test_that("MCMC throws the error for DualEndpointBeta model when 'nGrid == 0'", {
+  data <- DataDual()
+  model <- h_get_dual_endpoint_beta()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'data@nGrid >= 1' failed: Must be TRUE"
   )
 })
 
@@ -688,6 +735,17 @@ test_that("MCMC computes correct values for DualEndpointEmax model (empty data)"
   result_log_dose <- mcmc(data = data, model = model_log_dose, options = options)
   expect_snapshot(result@data)
   expect_snapshot(result_log_dose@data)
+})
+
+test_that("MCMC throws the error for DualEndpointEmax model when 'nGrid == 0'", {
+  data <- DataDual()
+  model <- h_get_dual_endpoint_emax()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  expect_error(
+    mcmc(data = data, model = model, options = options),
+    "Assertion on 'data@nGrid >= 1' failed: Must be TRUE"
+  )
 })
 
 # LogisticIndepBeta ----
@@ -959,6 +1017,19 @@ test_that("MCMC computes correct values for OneParExpNormalPrior model and empty
   expect_snapshot(result@data)
 })
 
+test_that("MCMC throws the error for OneParExpNormalPrior model when 'xLevel' does not match 'skel_probs'", {
+  data <- h_get_data()
+  model <- h_get_one_par_exp_normal_prior()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  model@skel_probs <- model@skel_probs[-1]
+
+  expect_error(
+    mcmc(data = data, model = model, options = options, from_prior = FALSE),
+    "Assertion on 'length\\(model@skel_probs\\) == max\\(data@xLevel\\)' failed: Must be TRUE"
+  )
+})
+
 # FractionalCRM ----
 
 ## constructor ----
@@ -992,4 +1063,17 @@ test_that("MCMC computes correct values for FractionalCRM model and empty data",
 
   result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
+})
+
+test_that("MCMC throws the error for FractionalCRM model when 'xLevel' does not match 'skel_probs'", {
+  data <- h_get_data()
+  model <- h_get_fractional_crm()
+  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+
+  model@skel_probs <- model@skel_probs[-1]
+
+  expect_error(
+    mcmc(data = data, model = model, options = options, from_prior = FALSE),
+    "Assertion on 'length\\(model@skel_probs\\) == max\\(data@xLevel\\)' failed: Must be TRUE"
+  )
 })
