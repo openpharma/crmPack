@@ -50,7 +50,7 @@ setClass(
     target = "numeric",
     derive = "function"
   ),
-  contains = list("NextBest"),
+  contains = "NextBest",
   prototype = prototype(
     target = 0.3,
     derive = function(mtd_samples) {
