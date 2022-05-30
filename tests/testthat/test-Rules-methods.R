@@ -144,7 +144,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
   result <- stopTrial(
     stopping = stopping,
@@ -163,7 +163,7 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
 test_that("StoppingMTDCV works correctly if CV is above threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
   result <- stopTrial(
     stopping = stopping,
@@ -184,7 +184,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
   result <- stopTrial(
     stopping = stopping,
@@ -207,7 +207,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -231,7 +231,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   my_data <- h_get_data()
   my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -250,7 +250,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data(placebo = FALSE)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
   result <- stopTrial(
     stopping = stopping,
@@ -273,7 +273,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
   my_data <- h_get_data(placebo = FALSE)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -297,7 +297,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   my_data <- h_get_data(placebo = FALSE)
   my_data@x[my_data@cohort == 1] <- c(75, 75, 75, 75)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,

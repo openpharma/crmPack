@@ -32,8 +32,8 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestMTD'
 mtdNextBest <- NextBestMTD(target=0.33,
                            derive=
-                             function(mtdSamples){
-                               quantile(mtdSamples, probs=0.25)
+                             function(mtd_samples){
+                               quantile(mtd_samples, probs=0.25)
                              })
 
 # Calculate the next best dose

@@ -3,9 +3,12 @@
 \name{v_increments}
 \alias{v_increments}
 \alias{v_increments_numdoselevels}
+\alias{v_increments_hsr_beta}
 \title{Internal Helper Functions for Validation of \code{\link{Increments}} Objects}
 \usage{
 v_increments_numdoselevels(object)
+
+v_increments_hsr_beta(object)
 }
 \arguments{
 \item{object}{(\code{Increments})\cr object to validate.}
@@ -24,5 +27,8 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{v_increments_numdoselevels}: validates that the \code{\link{IncrementsNumDoseLevels}} object
 contains valid \code{maxLevels} and \code{basisLevel} option.
+
+\item \code{v_increments_hsr_beta}: validates that the \code{\link{IncrementsHSRBeta}}
+object contains valid probability target, threshold and shape parameters.
 }}
 

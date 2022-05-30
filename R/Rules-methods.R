@@ -85,12 +85,12 @@ setMethod("nextBest",
                   }
 
               ## First, generate the MTD samples.
-              mtdSamples <- dose(x=nextBest@target,
+              mtd_samples <- dose(x=nextBest@target,
                                  model,
                                  samples)
 
               ## then derive the next best dose
-              mtdEstimate <- nextBest@derive(mtdSamples=mtdSamples)
+              mtdEstimate <- nextBest@derive(mtd_samples=mtd_samples)
 
               ## be sure which doses are ok with respect to maximum
               ## possible dose - if one was specified
@@ -107,7 +107,7 @@ setMethod("nextBest",
               ## produce plot
               plot1 <- ggplot() +
                       geom_density(data=
-                                   data.frame(x=mtdSamples),
+                                   data.frame(x=mtd_samples),
                                    aes(x=x),
                                    fill = "grey50", colour = "grey50") +
                           xlab("MTD") + ylab("Posterior density") +
