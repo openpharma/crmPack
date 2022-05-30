@@ -1,3 +1,35 @@
+# NextBest ----
+
+#' Internal Helper Functions for Validation of [`NextBest`] Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`NextBest`] or inherited classes and therefore not exported.
+#'
+#' @name v_next_best
+#' @param object (`NextBest`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_next_best validates that the [`NextBestMTD`] object
+#'   contains valid `target` probability and `derive` function.
+v_next_best_mtd <- function(object) {
+  v <- Validate()
+  v$check(
+    is.probability(object@target, bounds = FALSE),
+    "target must be probability > 0 and < 1"
+  )
+  v$check(
+    formalArgs(object@derive) == "mtd_samples",
+    "derive must have as single argument 'mtd_samples'"
+  )
+  v$result()
+}
+
+# Increments ----
+
 #' Internal Helper Functions for Validation of [`Increments`] Objects
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -29,7 +61,7 @@ v_increments_numdoselevels <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`IncrementsHSRBeta`]
+#' @describeIn v_increments validates that the [`IncrementsHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_increments_hsr_beta <- function(object) {
   v <- Validate()
@@ -53,9 +85,7 @@ v_increments_hsr_beta <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
+# Stopping ----
 
 #' Internal Helper Functions for Validation of [`Stopping`] Objects
 #'
@@ -69,6 +99,10 @@ v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
 #' @return A `character` vector with the validation failure messages,
 #'   or `TRUE` in case validation passes.
 NULL
+
+#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
+#'  object contains valid probability target, threshold and shape parameters.
+v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
 
 #' @describeIn v_stopping validates that the [`StoppingMTDCV`] object
 #'   contains valid probability target and percentage threshold.
