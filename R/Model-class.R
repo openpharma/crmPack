@@ -38,14 +38,13 @@ NULL
 #'   `FALSE`, then both JAGS models `datamodel` and `priormodel` are used in the
 #'   MCMC sampler, and hence `modelspecs` function should return all the parameters
 #'   required by both `datamodel` and `priormodel`.
-#'
 #' @slot init (`function`)\cr a function computing the list of starting values
 #'   for parameters required to be initialized in the MCMC sampler, based on the
 #'   data slots that are required as arguments of this function.
 #' @slot datanames (`character`)\cr the names of all data slots that are used
-#'   by `datamodel` JAGS function.
+#'   by `datamodel` JAGS function. No other names should be specified here.
 #' @slot datanames_prior (`character`)\cr the names of all data slots that are
-#'   used by `priormodel` JAGS function.
+#'   used by `priormodel` JAGS function. No other names should be specified here.
 #' @slot sample (`character`)\cr names of all parameters from which you would
 #'   like to save the MCMC samples.
 #'
@@ -1165,18 +1164,12 @@ LogisticLogNormalMixture <- function(mean,
     use_fixed = "logical"
   ),
   prototype = prototype(
-    betaZ_params = ModelParamsNormal(
-      mean = c(0, 1),
-      cov = diag(2)
-    ),
+    betaZ_params = ModelParamsNormal(mean = c(0, 1), cov = diag(2)),
     ref_dose = positive_number(1),
     use_log_dose = FALSE,
     sigma2W = 1,
     rho = 0,
-    use_fixed = c(
-      sigma2W = TRUE,
-      rho = TRUE
-    )
+    use_fixed = c(sigma2W = TRUE, rho = TRUE)
   ),
   contains = "Model",
   validity = v_model_dual_endpoint
@@ -1285,8 +1278,7 @@ DualEndpoint <- function(mean,
     init = function(y) {
       c(comp$init, list(z = ifelse(y == 0, -1, 1), theta = c(0, 1)))
     },
-    datanames = c("nObs", "w", "x", "xLevel", "y", "nGrid"),
-    datanames_prior = c("nGrid", "doseGrid"),
+    datanames = c("nObs", "w", "x", "xLevel", "y"),
     sample = comp$sample
   )
 }
@@ -1405,7 +1397,7 @@ DualEndpointRW <- function(sigma2betaW,
     }
   }
   start@priormodel <- h_jags_join_models(start@priormodel, priormodel)
-  start@datanames <- c(start@datanames, "doseGrid")
+  start@datanames_prior <- c("nGrid", "doseGrid")
   start@sample <- c(start@sample, "betaW", "delta")
 
   # Update model components with regard to biomarker regression variance.
@@ -1534,7 +1526,7 @@ DualEndpointBeta <- function(E0,
   start@modelspecs <- function(from_prior) {
     c(list(ref_dose_beta = ref_dose_beta), ms(from_prior))
   }
-  start@datanames <- c(start@datanames, "doseGrid")
+  start@datanames_prior <- c("nGrid", "doseGrid")
   start@sample <- c(start@sample, "betaW")
 
   start <- h_model_dual_endpoint_beta(
@@ -1687,7 +1679,7 @@ DualEndpointEmax <- function(E0,
   start <- DualEndpoint(...)
 
   start@sample <- c(start@sample, "betaW")
-  start@datanames <- c(start@datanames, "doseGrid")
+  start@datanames_prior <- c("nGrid", "doseGrid")
   ms <- start@modelspecs
   start@modelspecs <- function(from_prior) {
     c(list(ref_dose_emax = ref_dose_emax), ms(from_prior))
