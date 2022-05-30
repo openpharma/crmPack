@@ -732,8 +732,8 @@ the MTD, we specify
 <<mtd-spec>>=
 mtdNextBest <- NextBestMTD(target=0.33,
                            derive=
-                               function(mtdSamples){
-                                   quantile(mtdSamples, probs=0.25)
+                               function(mtd_samples){
+                                   quantile(mtd_samples, probs=0.25)
                                })
 @
 Note that the \texttt{NextBestMTD} class is quite flexible, because you can

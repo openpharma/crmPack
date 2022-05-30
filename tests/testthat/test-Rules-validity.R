@@ -1,3 +1,34 @@
+# v_next_best_mtd ----
+
+test_that("v_next_best_mtd passes for valid object", {
+  object <- h_next_best_mtd()
+  expect_true(v_next_best_mtd(object))
+})
+
+test_that("v_next_best_mtd returns message for non-valid target", {
+  object <- h_next_best_mtd()
+  # Changing `target` so that it does not represent a probability value.
+  object@target <- 1.2
+
+  expect_equal(
+    v_next_best_mtd(object),
+    "target must be probability > 0 and < 1"
+  )
+})
+
+test_that("v_next_best_mtd returns message for non-valid derive", {
+  object <- h_next_best_mtd()
+  # Changing `derive` so that it does not have one `mtd_samples` argument.
+  object@derive <- function(x) {
+    mean(x)
+  }
+
+  expect_equal(
+    v_next_best_mtd(object),
+    "derive must have as single argument 'mtd_samples'"
+  )
+})
+
 # v_increments_numdoselevels ----
 
 test_that("v_increments_numdoselevels passes for valid object", {

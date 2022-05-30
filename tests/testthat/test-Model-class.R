@@ -553,7 +553,7 @@ test_that("MCMC computes correct values for DualEndpointRW model (fixed params, 
 test_that("MCMC throws the error for DualEndpointRW model when 'nGrid == 1' for RW 1", {
   data <- h_get_data_dual(empty = TRUE)
   model <- h_get_dual_endpoint_rw(rw1 = TRUE)
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  options <- h_get_mcmc_options()
 
   data@nGrid <- 1L
   data@doseGrid <- data@doseGrid[1]
@@ -567,7 +567,7 @@ test_that("MCMC throws the error for DualEndpointRW model when 'nGrid == 1' for 
 test_that("MCMC throws the error for DualEndpointRW model when 'nGrid <= 2' for RW 2", {
   data <- h_get_data_dual(empty = TRUE)
   model <- h_get_dual_endpoint_rw(rw1 = FALSE)
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  options <- h_get_mcmc_options()
 
   data@nGrid <- 1L
   data@doseGrid <- data@doseGrid[1]
@@ -641,7 +641,7 @@ test_that("MCMC throws the error for DualEndpointBeta model when 'ref_dose_beta 
 test_that("MCMC throws the error for DualEndpointBeta model when 'nGrid == 0'", {
   data <- DataDual()
   model <- h_get_dual_endpoint_beta()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  options <- h_get_mcmc_options()
 
   expect_error(
     mcmc(data = data, model = model, options = options),
@@ -740,7 +740,7 @@ test_that("MCMC computes correct values for DualEndpointEmax model (empty data)"
 test_that("MCMC throws the error for DualEndpointEmax model when 'nGrid == 0'", {
   data <- DataDual()
   model <- h_get_dual_endpoint_emax()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  options <- h_get_mcmc_options()
 
   expect_error(
     mcmc(data = data, model = model, options = options),
@@ -1020,7 +1020,7 @@ test_that("MCMC computes correct values for OneParExpNormalPrior model and empty
 test_that("MCMC throws the error for OneParExpNormalPrior model when 'xLevel' does not match 'skel_probs'", {
   data <- h_get_data()
   model <- h_get_one_par_exp_normal_prior()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  options <- h_get_mcmc_options()
 
   model@skel_probs <- model@skel_probs[-1]
 
@@ -1068,7 +1068,7 @@ test_that("MCMC computes correct values for FractionalCRM model and empty data",
 test_that("MCMC throws the error for FractionalCRM model when 'xLevel' does not match 'skel_probs'", {
   data <- h_get_data()
   model <- h_get_fractional_crm()
-  options <- h_get_mcmc_options(small = TRUE, fixed = TRUE)
+  options <- h_get_mcmc_options()
 
   model@skel_probs <- model@skel_probs[-1]
 
