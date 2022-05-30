@@ -1,4 +1,4 @@
-# Version 1.0.9000.9023
+# Version 1.0.9000.9024
 * Renamed the argument of `derive` function from `mtdSamples` to `mtd_samples` in
   `NextBestMTD` class.
 * Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel`
