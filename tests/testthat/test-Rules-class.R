@@ -17,28 +17,22 @@ test_that("NextBestMTD object can be created with user constructor", {
   expect_valid(result, "NextBestMTD")
 })
 
-test_that("NextBestMTD throws the error for non valid target", {
-  expect_error(
-    NextBestMTD(
-      target = 1.2,
-      derive = function(mtd_samples) {
-        mean(mtd_samples)
-      }
-    ),
-    ".* target must be probability > 0 and < 1"
-  )
+# NextBestNCRM ----
+
+test_that(".NextBestNCRM works as expected", {
+  result <- expect_silent(.NextBestNCRM())
+  expect_valid(result, "NextBestNCRM")
 })
 
-test_that("NextBestMTD throws the error for non valid argument of derive", {
-  expect_error(
-    NextBestMTD(
-      target = 0.4,
-      derive = function(x) {
-        mean(mtd_samples)
-      }
-    ),
-    ".* derive must have as single argument 'mtd_samples'"
+test_that("NextBestNCRM object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    )
   )
+  expect_valid(result, "NextBestNCRM")
 })
 
 # IncrementsRelativeDLTCurrent-class ----

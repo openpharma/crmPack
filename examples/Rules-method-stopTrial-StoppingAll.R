@@ -32,7 +32,7 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
@@ -45,7 +45,7 @@ myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
-# Combine the stopping rules, obtaining (in this specific example) a list of stopping 
+# Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAll'
 myStopping <- (myStopping1 | myStopping2) & myStopping3
 

@@ -29,6 +29,46 @@ test_that("v_next_best_mtd returns message for non-valid derive", {
   )
 })
 
+# v_next_best_ncrm ----
+
+test_that("v_next_best_ncrm passes for valid object", {
+  object <- h_next_best_ncrm()
+  expect_true(v_next_best_ncrm(object))
+})
+
+test_that("v_next_best_ncrm returns message for non-valid target", {
+  object <- h_next_best_ncrm()
+  # Changing `target` so that it is not an interval.
+  object@target <- 1.2
+  expect_equal(v_next_best_ncrm(object), "target has to be a probability range")
+
+  # Changing `target` so that the one bound is not a valid probability.
+  object@target <- c(0.4, 2)
+  expect_equal(v_next_best_ncrm(object), "target has to be a probability range")
+})
+
+test_that("v_next_best_ncrm returns message for non-valid overdose", {
+  object <- h_next_best_ncrm()
+  # Changing `overdose` so that it is not an interval.
+  object@overdose <- 1.2
+  expect_equal(v_next_best_ncrm(object), "overdose has to be a probability range")
+
+  # Changing `overdose` so that the one bound is not a valid probability.
+  object@overdose <- c(0.4, 2)
+  expect_equal(v_next_best_ncrm(object), "overdose has to be a probability range")
+})
+
+test_that("h_next_best_ncrm returns message for non-valid max_overdose_prob", {
+  object <- h_next_best_ncrm()
+  # Changing `max_overdose_prob` so that it does not represent a probability value.
+  object@max_overdose_prob <- 1.2
+
+  expect_equal(
+    v_next_best_ncrm(object),
+    "max_overdose_prob must be probability > 0 and < 1"
+  )
+})
+
 # v_increments_numdoselevels ----
 
 test_that("v_increments_numdoselevels passes for valid object", {

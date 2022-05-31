@@ -37,12 +37,8 @@ setClass(
 #' @slot derive (`function`)\cr a function which derives the final next best MTD
 #'   estimate, based on vector of posterior MTD samples, called `mtd_samples`.
 #'
-#' @seealso [`ModelParamsNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
-#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalRel`].
-#'
 #' @aliases NextBestMTD
 #' @export
-#'
 #'
 .NextBestMTD <- setClass(
   Class = "NextBestMTD",
@@ -78,73 +74,74 @@ NextBestMTD <- function(target, derive) {
   )
 }
 
-# nolint start
+# NextBestNCRM ----
 
-## --------------------------------------------------
-## Next best dose based on NCRM rule
-## --------------------------------------------------
+## class ----
 
-##' The class with the input for finding the next dose in target interval
-##'
-##' Note that to avoid numerical problems, the dose selection algorithm has been
-##' implemented as follows: First admissible doses are found, which are those
-##' with probability to fall in \code{overdose} category being below
-##' \code{maxOverdoseProb}. Next, within the admissible doses, the maximum
-##' probability to fall in the \code{target} category is calculated. If that is
-##' above 5% (i.e., it is not just numerical error), then the corresponding
-##' dose is the next recommended dose. Otherwise, the highest admissible dose is
-##' the next recommended dose.
-##'
-##' @slot target the target toxicity interval (limits included)
-##' @slot overdose the overdose toxicity interval (lower limit excluded, upper
-##' limit included)
-##' @slot maxOverdoseProb maximum overdose probability that is allowed
-##'
-##' @example examples/Rules-class-NextBestNCRM.R
-##' @export
-##' @keywords classes
-.NextBestNCRM <-
-    setClass(Class="NextBestNCRM",
-             representation(target="numeric",
-                            overdose="numeric",
-                            maxOverdoseProb="numeric"),
-             prototype(target=c(0.2, 0.35),
-                       overdose=c(0.35, 1),
-                       maxOverdoseProb=0.25),
-             contains=list("NextBest"),
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `NextBestNCRM`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestNCRM`] is the class for next best dose that finds the next dose in
+#' target interval.
+#'
+#' @details To avoid numerical problems, the dose selection algorithm has been
+#' implemented as follows: First admissible doses are found, which are those
+#' with probability to fall in `overdose` category being below `max_overdose_prob`.
+#' Next, within the admissible doses, the maximum probability to fall in the
+#' `target` category is calculated. If that is above 5% (i.e. it is not just
+#' numerical error), then the corresponding dose is the next recommended dose.
+#' Otherwise, the highest admissible dose is the next recommended dose.
+#'
+#' @slot target (`numeric`)\cr the target toxicity interval (limits included).
+#' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
+#'   excluded, upper limit included).
+#' @slot max_overdose_prob (`proportion`)\cr maximum overdose probability that
+#'   is allowed.
+#'
+#' @aliases NextBestNCRM
+#' @export
+#'
+.NextBestNCRM <- setClass(
+  Class = "NextBestNCRM",
+  slots = c(
+    target = "numeric",
+    overdose = "numeric",
+    max_overdose_prob = "numeric"
+  ),
+  contains = "NextBest",
+  prototype = prototype(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  ),
+  validity = v_next_best_ncrm
+)
 
-                     o$check(is.probRange(object@target),
-                             "target has to be a probability range")
-                     o$check(is.probRange(object@overdose),
-                             "overdose has to be a probability range")
-                     o$check(is.probability(object@maxOverdoseProb),
-                             "maxOverdoseProb has to be a probability")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.NextBestNCRM())
-
-
-##' Initialization function for "NextBestNCRM"
-##'
-##' @param target see \code{\linkS4class{NextBestNCRM}}
-##' @param overdose see \code{\linkS4class{NextBestNCRM}}
-##' @param maxOverdoseProb see \code{\linkS4class{NextBestNCRM}}
-##' @return the \code{\linkS4class{NextBestNCRM}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname NextBestNCRM-class
+#'
+#' @param target (`numeric`)\cr the target toxicity interval (limits included).
+#' @param overdose (`numeric`)\cr the overdose toxicity interval (lower limit
+#'   excluded, upper limit included).
+#' @param max_overdose_prob (`proportion`)\cr maximum overdose probability that
+#'   is allowed.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestNCRM.R
+#'
 NextBestNCRM <- function(target,
                          overdose,
-                         maxOverdoseProb)
-{
-    .NextBestNCRM(target=target,
-                  overdose=overdose,
-                  maxOverdoseProb=maxOverdoseProb)
+                         max_overdose_prob) {
+  .NextBestNCRM(
+    target = target,
+    overdose = overdose,
+    max_overdose_prob = max_overdose_prob
+  )
 }
+
+# nolint start
 
 ## --------------------------------------------------
 ## Next best dose based on 3+3 rule

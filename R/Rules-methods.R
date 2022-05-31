@@ -207,7 +207,7 @@ setMethod("nextBest",
                       rep(TRUE, length(data@doseGrid))
 
               dosesOK <- which(dosesBelowLimit &
-                               (probOverdose < nextBest@maxOverdoseProb))
+                               (probOverdose < nextBest@max_overdose_prob))
 
               ## check if there are doses that are OK
               if(length(dosesOK))
@@ -294,7 +294,7 @@ setMethod("nextBest",
                                        ylim(c(0, 100))
 
               plot2 <- plot2 +
-                  geom_hline(yintercept=nextBest@maxOverdoseProb * 100,
+                  geom_hline(yintercept=nextBest@max_overdose_prob * 100,
                              lwd=1.1,
                              lty=2,
                              colour="black")

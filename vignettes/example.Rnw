@@ -722,7 +722,7 @@ to 35\%, and a maximum overdosing probability of 25\%, we specify:
 <<ncrm-spec>>=
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 @
 
 Alternatively, we could use an MTD driven recommendation rule. For example, with

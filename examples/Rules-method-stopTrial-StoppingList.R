@@ -32,7 +32,7 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
@@ -46,7 +46,7 @@ myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
 # Create a list of stopping rules (of class 'StoppingList') which will then be
-# summarized (in this specific example) with the 'any' function, meaning that the study 
+# summarized (in this specific example) with the 'any' function, meaning that the study
 # would be stopped if 'any' of the single stopping rules is TRUE.
 mystopping <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
                            summary=any)

@@ -4,37 +4,54 @@
 \name{NextBestNCRM-class}
 \alias{NextBestNCRM-class}
 \alias{.NextBestNCRM}
-\title{The class with the input for finding the next dose in target interval}
+\alias{NextBestNCRM}
+\title{\code{NextBestNCRM}}
+\usage{
+NextBestNCRM(target, overdose, max_overdose_prob)
+}
+\arguments{
+\item{target}{(\code{numeric})\cr the target toxicity interval (limits included).}
+
+\item{overdose}{(\code{numeric})\cr the overdose toxicity interval (lower limit
+excluded, upper limit included).}
+
+\item{max_overdose_prob}{(\code{proportion})\cr maximum overdose probability that
+is allowed.}
+}
 \description{
-Note that to avoid numerical problems, the dose selection algorithm has been
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBestNCRM}} is the class for next best dose that finds the next dose in
+target interval.
+}
+\details{
+To avoid numerical problems, the dose selection algorithm has been
 implemented as follows: First admissible doses are found, which are those
-with probability to fall in \code{overdose} category being below
-\code{maxOverdoseProb}. Next, within the admissible doses, the maximum
-probability to fall in the \code{target} category is calculated. If that is
-above 5\% (i.e., it is not just numerical error), then the corresponding
-dose is the next recommended dose. Otherwise, the highest admissible dose is
-the next recommended dose.
+with probability to fall in \code{overdose} category being below \code{max_overdose_prob}.
+Next, within the admissible doses, the maximum probability to fall in the
+\code{target} category is calculated. If that is above 5\% (i.e. it is not just
+numerical error), then the corresponding dose is the next recommended dose.
+Otherwise, the highest admissible dose is the next recommended dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the target toxicity interval (limits included)}
+\item{\code{target}}{(\code{numeric})\cr the target toxicity interval (limits included).}
 
-\item{\code{overdose}}{the overdose toxicity interval (lower limit excluded, upper
-limit included)}
+\item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
+excluded, upper limit included).}
 
-\item{\code{maxOverdoseProb}}{maximum overdose probability that is allowed}
+\item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum overdose probability that
+is allowed.}
 }}
 
 \examples{
-
-# In the example below, the target toxiciy interval [0.2, 0.35] while the 
-# overdose interval is (0.35,1]. Finally we would like to constrain the probability
-# of overdosing below 25\%.
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
-
-
+# In the example below, the target toxicity interval [0.2, 0.35] while the
+# overdose interval is (0.35,1]. Finally we would like to constrain the
+# probability of overdosing below 25\%.
+my_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 }
-\keyword{classes}

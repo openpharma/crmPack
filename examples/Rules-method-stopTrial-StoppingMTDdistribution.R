@@ -32,22 +32,22 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if there is at least 
-# 0.9 probability that MTD > 0.5*next_best_dose. Here MTD is defined as the dose for 
+# Define the stopping rule such that the study would be stopped if there is at least
+# 0.9 probability that MTD > 0.5*next_best_dose. Here MTD is defined as the dose for
 # which prob(DLE)=0.33
 myStopping <- StoppingMTDdistribution(target = 0.33,
                                       thresh = 0.5,
                                       prob = 0.9)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           samples=samples,
           model=model,

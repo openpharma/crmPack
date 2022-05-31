@@ -28,6 +28,26 @@ v_next_best_mtd <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestNCRM`] object
+#'   contains valid `target` probability, `overdose` and `max_overdose_prob`
+#'   probability ranges.
+v_next_best_ncrm <- function(object) {
+  v <- Validate()
+  v$check(
+    is.probRange(object@target),
+    "target has to be a probability range"
+  )
+  v$check(
+    is.probRange(object@overdose),
+    "overdose has to be a probability range"
+  )
+  v$check(
+    is.probability(object@max_overdose_prob, bounds = FALSE),
+    "max_overdose_prob must be probability > 0 and < 1"
+  )
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects
