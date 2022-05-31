@@ -359,7 +359,7 @@ test_that("NextBestInfTheory produces consistent results for empty data", {
     design,
     nsim = 5,
     truth = my_truth,
-    mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+    mcmcOptions = h_get_mcmc_options()
   )
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
 
@@ -407,7 +407,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
     design,
     nsim = 5,
     truth = my_truth,
-    mcmcOptions = h_get_mcmc_options(small = TRUE, fixed = TRUE)
+    mcmcOptions = h_get_mcmc_options()
   )
   result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
   expect_equal(
