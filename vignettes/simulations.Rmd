@@ -62,8 +62,8 @@ myIncrements <- IncrementsRelative(intervals=c(0,20),
 
 myNextBest <- NextBestMTD(target=0.3,
                           derive=
-                            function(mtdSamples){
-                              mean(mtdSamples)
+                            function(mtd_samples){
+                              mean(mtd_samples)
                             })
 
 myStopping <- StoppingMinPatients(nPatients=48)

@@ -3,14 +3,15 @@
 \docType{class}
 \name{NextBest-class}
 \alias{NextBest-class}
-\title{The virtual class for finding next best dose}
+\alias{NextBest}
+\title{\code{NextBest}}
 \description{
-The virtual class for finding next best dose
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBest}} is a virtual class for finding next best dose, from which all
+other specific next best dose classes inherit.
 }
 \seealso{
-\code{\linkS4class{NextBestMTD}},
-\code{\linkS4class{NextBestNCRM}},
-\code{\linkS4class{NextBestDualEndpoint}},
-\code{\linkS4class{NextBestThreePlusThree}}
+\code{\link{NextBestMTD}}, \code{\link{NextBestNCRM}}, \code{\link{NextBestDualEndpoint}},
+\code{\link{NextBestThreePlusThree}}.
 }
-\keyword{classes}

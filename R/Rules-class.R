@@ -1,102 +1,84 @@
-# nolint start
-
 #' @include helpers.R
 #' @include Rules-validity.R
 NULL
 
-# nolint start
+# NextBest ----
 
-## ============================================================
+## class ----
 
-## --------------------------------------------------
-## Virtual class for finding next best dose
-## --------------------------------------------------
-
-##' The virtual class for finding next best dose
-##'
-##' @seealso \code{\linkS4class{NextBestMTD}},
-##' \code{\linkS4class{NextBestNCRM}},
-##' \code{\linkS4class{NextBestDualEndpoint}},
-##' \code{\linkS4class{NextBestThreePlusThree}}
-##'
-##' @export
-##' @keywords classes
+#' `NextBest`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBest`] is a virtual class for finding next best dose, from which all
+#' other specific next best dose classes inherit.
+#'
+#' @seealso [`NextBestMTD`], [`NextBestNCRM`], [`NextBestDualEndpoint`],
+#'   [`NextBestThreePlusThree`].
+#'
+#' @aliases NextBest
+#' @export
+#'
 setClass(
-  Class = "NextBest",
-  contains = list("VIRTUAL")
+  Class = "NextBest"
 )
 
+# NextBestMTD ----
 
-## --------------------------------------------------
-## Next best dose based on MTD estimate
-## --------------------------------------------------
+## class ----
 
-##' The class with the input for finding the next best MTD estimate
-##'
-##' @slot target the target toxicity probability
-##' @slot derive the function which derives from the input, a vector of
-##' posterior MTD samples called \code{mtdSamples}, the final next best MTD
-##' estimate.
-##'
-##' @example examples/Rules-class-NextBestMTD.R
-##' @export
-##' @keywords classes
-.NextBestMTD <-
-  setClass(
-    Class = "NextBestMTD",
-    representation(
-      target = "numeric",
-      derive = "function"
-    ),
-    prototype(
-      target = 0.3,
-      derive =
-        function(mtdSamples) {
-          quantile(mtdSamples,
-            probs = 0.3
-          )
-        }
-    ),
-    contains = list("NextBest"),
-    validity =
-      function(object) {
-        o <- Validate()
+#' `NextBestMTD`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestMTD`] is the class for next best dose based on MTD estimate.
+#'
+#' @slot target (`proportion`)\cr the target toxicity probability.
+#' @slot derive (`function`)\cr a function which derives the final next best MTD
+#'   estimate, based on vector of posterior MTD samples, called `mtd_samples`.
+#'
+#' @seealso [`ModelParamsNormal`], [`LogisticNormal`], [`LogisticLogNormal`],
+#'   [`LogisticLogNormalSub`], [`ProbitLogNormal`], [`ProbitLogNormalRel`].
+#'
+#' @aliases NextBestMTD
+#' @export
+#'
+#'
+.NextBestMTD <- setClass(
+  Class = "NextBestMTD",
+  slots = c(
+    target = "numeric",
+    derive = "function"
+  ),
+  contains = "NextBest",
+  prototype = prototype(
+    target = 0.3,
+    derive = function(mtd_samples) {
+      quantile(mtd_samples, probs = 0.3)
+    }
+  ),
+  validity = v_next_best_mtd
+)
 
-        o$check(
-          is.probability(object@target,
-            bounds = FALSE
-          ),
-          "target must be probability > 0 and < 1"
-        )
-        o$check(
-          identical(
-            names(formals(object@derive)),
-            c("mtdSamples")
-          ),
-          "derive must have as single argument 'mtdSamples'"
-        )
+## constructor ----
 
-        o$result()
-      }
-  )
-validObject(.NextBestMTD())
-
-##' Initialization function for class "NextBestMTD"
-##'
-##' @param target see \code{\linkS4class{NextBestMTD}}
-##' @param derive see \code{\linkS4class{NextBestMTD}}
-##' @return the \code{\linkS4class{NextBestMTD}} object
-##'
-##' @export
-##' @keywords methods
-NextBestMTD <- function(target,
-                        derive) {
+#' @rdname NextBestMTD-class
+#'
+#' @param target (`proportion`)\cr the target toxicity probability.
+#' @param derive (`function`)\cr a function which derives the final next best MTD
+#'   estimate, based on vector of posterior MTD samples, called `mtd_samples`.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestMTD.R
+#'
+NextBestMTD <- function(target, derive) {
   .NextBestMTD(
     target = target,
     derive = derive
   )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Next best dose based on NCRM rule
@@ -412,20 +394,34 @@ NextBestDualEndpoint <- function(target,
 #'
 #' @export
 #' @aliases NextBestMinDist
-.NextBestMinDist <- setClass(
-  Class = "NextBestMinDist",
-  contains = "NextBest",
-  representation(target = "numeric")
-)
-validObject(.NextBestMinDist())
+.NextBestMinDist <- setClass(Class = "NextBestMinDist",
+                             contains = "NextBest",
+                             representation(target = "numeric"))
 
 #' @describeIn NextBestMinDist-class Initialization function for `NextBestMinDist`.
 #' @param target target DLT probability.
 #' @export
-NextBestMinDist <- function(target) {
-  .NextBestMinDist(target = target)
-}
-validObject(NextBestMinDist(0.1))
+NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
+
+## ============================================================
+
+#' Class for Next Best Dose based on Information Theory.
+#'
+#'
+#' @slot target target DLT probability.
+#' @slot asymmetry value of the asymmetry exponent
+#'
+#' @export
+#' @aliases NextBestInfTheory
+.NextBestInfTheory <- setClass(Class = "NextBestInfTheory",
+                           contains = "NextBest",
+                           representation(target = "numeric", asymmetry="numeric"))
+
+#' @describeIn NextBestInfTheory-class Initialization function for `NextBestInfTheory`.
+#' @param target target DLT probability.
+#' @param asymmetry value of the asymmetry exponent
+#' @export
+NextBestInfTheory <- function(target,asymmetry){ .NextBestInfTheory(target = target, asymmetry = asymmetry) }
 
 ## ============================================================
 

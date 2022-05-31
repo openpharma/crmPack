@@ -61,10 +61,13 @@ reference:
       - TITELogisticLogNormal
       - OneParExpNormalPrior
       - FractionalCRM
+      - NextBest
+      - NextBestMTD
+      - NextBestInfTheory
       - IncrementsNumDoseLevels
+      - IncrementsHSRBeta
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
-      - IncrementsHSRBeta
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -75,6 +78,7 @@ reference:
       - h_slots
       - h_format_number
       - h_rapply
+      - h_info_theory_dist
       - h_jags_add_dummy
       - h_jags_join_models
       - h_jags_get_model_inits
@@ -117,10 +121,11 @@ reference:
       - v_model_da_logistic_log_normal
       - v_model_tite_logistic_log_normal
       - v_model_one_par_exp_normal_prior
-      - v_stopping_mtd_cv
-      - v_stopping_lowest_dose_hsr_beta
+      - v_next_best_mtd
       - v_increments_numdoselevels
       - v_increments_hsr_beta
+      - v_stopping_mtd_cv
+      - v_stopping_lowest_dose_hsr_beta
   - title: Methods
     contents:
       - plot-Data

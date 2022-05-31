@@ -144,7 +144,7 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 50)
   result <- stopTrial(
     stopping = stopping,
@@ -163,7 +163,7 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
 test_that("StoppingMTDCV works correctly if CV is above threshold", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
   stopping <- StoppingMTDCV(target = 0.3, thresh_cv = 20)
   result <- stopTrial(
     stopping = stopping,
@@ -184,7 +184,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
   result <- stopTrial(
     stopping = stopping,
@@ -207,7 +207,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
   my_data <- h_get_data()
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -231,7 +231,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   my_data <- h_get_data()
   my_data@x[my_data@cohort == 1] <- c(0.001, 75, 75, 75)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -250,7 +250,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data(placebo = FALSE)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.9)
   result <- stopTrial(
     stopping = stopping,
@@ -273,7 +273,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is toxic", {
   my_data <- h_get_data(placebo = FALSE)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -297,7 +297,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   my_data <- h_get_data(placebo = FALSE)
   my_data@x[my_data@cohort == 1] <- c(75, 75, 75, 75)
   my_model <- h_get_logistic_kadane()
-  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(small = TRUE))
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(fixed = FALSE))
   stopping <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.1)
   result <- stopTrial(
     stopping = stopping,
@@ -311,4 +311,113 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
     message = "Lowest active dose not tested, stopping rule not applied."
   )
   expect_identical(result, expected) # First active dose not applied.
+})
+
+test_that("NextBestInfTheory can be initiliazed ", {
+  expect_silent(NextBestInfTheory(target = 0.25, asymmetry = 0.1))
+})
+
+test_that("h_info_theory_dist works as expected", {
+  # Values calculated using a different program.
+  p <- c(0.01, 0.2, 0.7)
+  gamma <- c(0.5, 0, 0.3)
+  a <- c(1, 1.8, 0.5)
+  expected <- c(24.25, 0.76, 1.16)
+  calculated <- h_info_theory_dist(p, gamma, a)
+  expect_equal(calculated, expected, tolerance = 0.01)
+})
+
+test_that("NextBestInfTheory produces consistent results for empty data", {
+  emptydata <- Data(doseGrid = seq(from = 40, to = 200, by = 10))
+
+  sigma_0 <- 1.0278
+  sigma_1 <- 1.65
+  rho <- 0.5
+  cov <- matrix(
+    c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
+    nrow = 2
+  )
+  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
+
+  stop_rule <- StoppingMinPatients(nPatients = 30)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
+  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = new_my_next_best,
+    cohortSize = cohort,
+    data = emptydata,
+    startingDose = 40
+  )
+
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options()
+  )
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+
+  expect_equal(
+    result@fitAtDoseMostSelected,
+    c(0.985602, 0.985602, 0.985602, 0.985602, 0.985602),
+    tolerance = 1e-07
+  )
+  expect_equal(result@propDLTs, rep(1L, 5))
+  expect_equal(result@meanToxRisk, rep(1L, 5))
+  expect_equal(result@doseSelected, rep(40, 5))
+  expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  expect_snapshot(result@meanFit)
+})
+
+test_that("NextBestInfTheory produces consistent results with a dataset", {
+  my_data <- h_get_data(placebo = FALSE)
+
+  sigma_0 <- 1.0278
+  sigma_1 <- 1.65
+  rho <- 0.5
+  cov <- matrix(
+    c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
+    nrow = 2
+  )
+  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
+
+  stop_rule <- StoppingMinPatients(nPatients = 5)
+  increments <- IncrementsRelative(interval = 0, increments = 1)
+  new_my_next_best <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  cohort <- CohortSizeConst(size = 3)
+  my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
+
+  design <- Design(
+    model = model,
+    stopping = stop_rule,
+    increments = increments,
+    nextBest = new_my_next_best,
+    cohortSize = cohort,
+    data = my_data,
+    startingDose = 25
+  )
+
+  sim <- simulate(
+    design,
+    nsim = 5,
+    truth = my_truth,
+    mcmcOptions = h_get_mcmc_options()
+  )
+  result <- summary(sim, truth = my_truth, target = new_my_next_best@target)
+  expect_equal(
+    result@fitAtDoseMostSelected,
+    c(0.222, 0.222, 0.222, 0.222, 0.222),
+    tolerance = 1e-02
+  )
+  expect_equal(result@propDLTs, rep(0.267, 5), tolerance = 1e-02)
+  expect_equal(result@meanToxRisk, rep(1L, 5))
+  expect_equal(result@doseSelected, rep(50, 5))
+  expect_equal(result@toxAtDosesSelected, rep(1L, 5))
+  expect_snapshot(result@meanFit)
 })

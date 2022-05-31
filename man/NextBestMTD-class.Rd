@@ -4,30 +4,42 @@
 \name{NextBestMTD-class}
 \alias{NextBestMTD-class}
 \alias{.NextBestMTD}
-\title{The class with the input for finding the next best MTD estimate}
+\alias{NextBestMTD}
+\title{\code{NextBestMTD}}
+\usage{
+NextBestMTD(target, derive)
+}
+\arguments{
+\item{target}{(\code{proportion})\cr the target toxicity probability.}
+
+\item{derive}{(\code{function})\cr a function which derives the final next best MTD
+estimate, based on vector of posterior MTD samples, called \code{mtd_samples}.}
+}
 \description{
-The class with the input for finding the next best MTD estimate
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBestMTD}} is the class for next best dose based on MTD estimate.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the target toxicity probability}
+\item{\code{target}}{(\code{proportion})\cr the target toxicity probability.}
 
-\item{\code{derive}}{the function which derives from the input, a vector of
-posterior MTD samples called \code{mtdSamples}, the final next best MTD
-estimate.}
+\item{\code{derive}}{(\code{function})\cr a function which derives the final next best MTD
+estimate, based on vector of posterior MTD samples, called \code{mtd_samples}.}
 }}
 
 \examples{
-
-# In the example below the MTD is defined as the dose for which prob(DLE)=0.33 and
-# we will use the 25th quantile of the posterior of MTD as our next best dose.
-mtdNextBest <- NextBestMTD(target=0.33,
-                           derive=
-                             function(mtdSamples){
-                               quantile(mtdSamples, probs=0.25)
-                             })
-
-
+# In the example below, the MTD is defined as the dose for which prob(DLE) = 0.33
+# and we will use the 25th quantile of the posterior of MTD as our next best dose.
+next_best_mtd <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
 }
-\keyword{classes}
+\seealso{
+\code{\link{ModelParamsNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
+\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
+}
