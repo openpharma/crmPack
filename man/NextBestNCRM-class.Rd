@@ -21,8 +21,8 @@ is allowed.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{NextBestNCRM}} is the class for next best dose that finds the next dose in
-target interval.
+\code{\link{NextBestNCRM}} is the class for next best dose that finds the next dose
+with high posterior probability to be in the target toxicity interval.
 }
 \details{
 To avoid numerical problems, the dose selection algorithm has been

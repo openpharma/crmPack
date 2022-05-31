@@ -58,7 +58,7 @@ test_that("v_next_best_ncrm returns message for non-valid overdose", {
   expect_equal(v_next_best_ncrm(object), "overdose has to be a probability range")
 })
 
-test_that("h_next_best_ncrm returns message for non-valid max_overdose_prob", {
+test_that("v_next_best_ncrm returns message for non-valid max_overdose_prob", {
   object <- h_next_best_ncrm()
   # Changing `max_overdose_prob` so that it does not represent a probability value.
   object@max_overdose_prob <- 1.2
