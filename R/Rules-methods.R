@@ -3,6 +3,26 @@
 #' @include Rules-class.R
 NULL
 
+#' Calculating the Information Theoretic Distance
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function which provides the value of the
+#' divergence as given by equation in (7) in the reference at
+#' https://doi.org/10.1002/sim.8450.
+#'
+#' @param prob (`numeric`)\cr probability of a DLT occurring.
+#' @param target (`numeric `)\cr target probability of a DLT.
+#' @param asymmetry (`number`)\cr describes the rate of penalization
+#'   for overly toxic does, range 0 to 2.
+#'
+#' @export
+#' @examples
+#' h_info_theory_dist(c(0.5, 0.2), c(0.5, 0.1), 1.2)
+h_info_theory_dist <- function(prob, target, asymmetry) {
+  ((prob - target)^2) / (((prob^asymmetry) * (1 - prob)^(2 - asymmetry)))
+}
+
 # nolint start
 
 ##' Find the next best dose
@@ -660,9 +680,35 @@ setMethod("nextBest",
             return(list(value = bestDose))
           })
 
+##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
+##'   the appropriate dose within an information theoretic framework
+##' @export
+setMethod("nextBest", signature = signature(nextBest = "NextBestInfTheory", doselimit = "numeric", samples = "Samples",
+                                            model = "Model", data = "Data"),
+          def = function(nextBest, doselimit, samples, model, data, ...){
 
-## ============================================================
+            probSamples <- matrix(nrow=sampleSize(samples@options),
+                                  ncol=data@nGrid)
 
+            for(i in seq_len(data@nGrid))
+            {
+              probSamples[, i] <- prob(dose=data@doseGrid[i],
+                                       model,
+                                       samples)
+            }
+
+            dosesOK <-
+              if(length(doselimit))
+                (data@doseGrid <= doselimit)
+            else
+              rep(TRUE, length(data@doseGrid))
+
+           criterion <-colMeans(h_info_theory_dist(probSamples,nextBest@target,nextBest@asymmetry))
+
+           doseLevel <-which.min(criterion[dosesOK])
+           ret <- data@doseGrid[dosesOK][doseLevel]
+           return(list(value=ret))
+          })
 
 ## --------------------------------------------------
 ## Determine the maximum possible next dose

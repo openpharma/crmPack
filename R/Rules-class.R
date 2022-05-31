@@ -287,13 +287,31 @@ NextBestDualEndpoint <- function(target,
 .NextBestMinDist <- setClass(Class = "NextBestMinDist",
                              contains = "NextBest",
                              representation(target = "numeric"))
-validObject(.NextBestMinDist())
 
 #' @describeIn NextBestMinDist-class Initialization function for `NextBestMinDist`.
 #' @param target target DLT probability.
 #' @export
 NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
-validObject(NextBestMinDist(0.1))
+
+## ============================================================
+
+#' Class for Next Best Dose based on Information Theory.
+#'
+#'
+#' @slot target target DLT probability.
+#' @slot asymmetry value of the asymmetry exponent
+#'
+#' @export
+#' @aliases NextBestInfTheory
+.NextBestInfTheory <- setClass(Class = "NextBestInfTheory",
+                           contains = "NextBest",
+                           representation(target = "numeric", asymmetry="numeric"))
+
+#' @describeIn NextBestInfTheory-class Initialization function for `NextBestInfTheory`.
+#' @param target target DLT probability.
+#' @param asymmetry value of the asymmetry exponent
+#' @export
+NextBestInfTheory <- function(target,asymmetry){ .NextBestInfTheory(target = target, asymmetry = asymmetry) }
 
 ## ============================================================
 

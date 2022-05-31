@@ -63,6 +63,7 @@ reference:
       - FractionalCRM
       - NextBest
       - NextBestMTD
+      - NextBestInfTheory
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
       - StoppingMTDCV
@@ -77,6 +78,7 @@ reference:
       - h_slots
       - h_format_number
       - h_rapply
+      - h_info_theory_dist
       - h_jags_add_dummy
       - h_jags_join_models
       - h_jags_get_model_inits
