@@ -3,9 +3,12 @@
 \name{v_next_best}
 \alias{v_next_best}
 \alias{v_next_best_mtd}
+\alias{v_next_best_ncrm}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
 v_next_best_mtd(object)
+
+v_next_best_ncrm(object)
 }
 \arguments{
 \item{object}{(\code{NextBest})\cr object to validate.}
@@ -24,5 +27,9 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{v_next_best_mtd}: validates that the \code{\link{NextBestMTD}} object
 contains valid \code{target} probability and \code{derive} function.
+
+\item \code{v_next_best_ncrm}: validates that the \code{\link{NextBestNCRM}} object
+contains valid \code{target} probability, \code{overdose} and \code{max_overdose_prob}
+probability ranges.
 }}
 

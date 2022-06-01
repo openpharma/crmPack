@@ -468,7 +468,7 @@ the \code{maxDose} function to obtain the maximum next dose $t_{N+1} = \tau({\ca
 We then define the function $\nu$ for selecting a dose for the next cohort. In this case we would like to select the dose which maximizes the probability of the DLT rate being in the target toxicity range from 20\% to 35\%, but with the probability of overdosing not exceeding 25\% \citep{Neuenschwander2008}, using the \code{NextBestNCRM} class:
 <<nextBest-ncrm-def>>=
 myNextBest <- NextBestNCRM(target = c(0.2, 0.35), overdose = c(0.35, 1),
-                           maxOverdoseProb = 0.25)
+                           max_overdose_prob = 0.25)
 @
 This rule can then be evaluated with the function \code{nextBest} to obtain the next dose $x_{N+1}=\nu({\cal D}_{N}, t_{N+1})$:
 <<nextBest-ncrm-eval>>=
