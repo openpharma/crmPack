@@ -1,4 +1,6 @@
-# NextBestMTD ----
+# nextBest ----
+
+## NextBestMTD ----
 
 test_that(".NextBestMTD works as expected", {
   result <- expect_silent(.NextBestMTD())
@@ -17,7 +19,7 @@ test_that("NextBestMTD object can be created with user constructor", {
   expect_valid(result, "NextBestMTD")
 })
 
-# NextBestNCRM ----
+## NextBestNCRM ----
 
 test_that(".NextBestNCRM works as expected", {
   result <- expect_silent(.NextBestNCRM())
@@ -33,6 +35,17 @@ test_that("NextBestNCRM object can be created with user constructor", {
     )
   )
   expect_valid(result, "NextBestNCRM")
+})
+
+## NextBestInfTheory ----
+
+test_that(".NextBestInfTheory works as expected", {
+  result <- expect_silent(.NextBestInfTheory())
+  expect_valid(result, "NextBestInfTheory")
+})
+
+test_that("NextBestNCRM object can be created with user constructor", {
+  expect_silent(NextBestInfTheory(target = 0.25, asymmetry = 0.1))
 })
 
 # IncrementsRelativeDLTCurrent-class ----

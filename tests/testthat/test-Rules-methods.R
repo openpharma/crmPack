@@ -1,3 +1,24 @@
+# nextBest ----
+
+## NextBestInfTheory ----
+
+test_that("nextBest-NextBestInfTheory returns correct next dose", {
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  samples <- samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+
+  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
+  model <- LogisticLogNormal(
+    mean = c(-4.47, 0.0033),
+    cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
+  )
+  data <- h_get_data(placebo = FALSE)
+
+  result <- nextBest(nextBest = nb_it, doselimit = 75, samples = samples, model = model, data = data)
+  expected <- list(value = c(25))
+
+  expect_identical(result, expected)
+})
+
 # maxDose-IncrementsNumDoseLevels ----
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
@@ -311,10 +332,6 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
     message = "Lowest active dose not tested, stopping rule not applied."
   )
   expect_identical(result, expected) # First active dose not applied.
-})
-
-test_that("NextBestInfTheory can be initiliazed ", {
-  expect_silent(NextBestInfTheory(target = 0.25, asymmetry = 0.1))
 })
 
 test_that("h_info_theory_dist works as expected", {

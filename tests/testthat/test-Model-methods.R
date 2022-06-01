@@ -1082,30 +1082,6 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
   )
 })
 
-
-## Information Theory Approach
-
-test_that("Information Theory approach returns correct next dose", {
-  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  samples <- samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
-
-  # set up the model
-  sigma_0 <- 1.0278
-  sigma_1 <- 1.65
-  rho <- 0.5
-  cov <- matrix(c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
-    nrow = 2
-  )
-  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
-
-  data <- h_get_data(placebo = FALSE)
-
-  result <- nextBest(nextBest = nb_it, doselimit = 75, samples = samples, model = model, data = data)
-  expected <- list(value = c(25))
-
-  expect_identical(result, expected)
-})
-
 ## OneParExpNormalPrior ----
 
 test_that("prob-OneParExpNormalPrior works as expected", {
