@@ -64,6 +64,7 @@ reference:
       - NextBest
       - NextBestMTD
       - NextBestNCRM
+      - NextBestThreePlusThree
       - NextBestInfTheory
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta

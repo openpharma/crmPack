@@ -37,6 +37,18 @@ test_that("NextBestNCRM object can be created with user constructor", {
   expect_valid(result, "NextBestNCRM")
 })
 
+## NextBestThreePlusThree ----
+
+test_that(".NextBestThreePlusThree works as expected", {
+  result <- expect_silent(.NextBestThreePlusThree())
+  expect_valid(result, "NextBestThreePlusThree")
+})
+
+test_that("NextBestThreePlusThree object can be created with user constructor", {
+  result <- expect_silent(NextBestThreePlusThree())
+  expect_valid(result, "NextBestThreePlusThree")
+})
+
 ## NextBestInfTheory ----
 
 test_that(".NextBestInfTheory works as expected", {
