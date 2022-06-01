@@ -1,4 +1,4 @@
-# Version 1.0.9000.9027
+# Version 1.0.9000.9028
 * Renamed the `maxOverdoseProb` slot to `max_overdose_prob` in `NextBestNCRM` class.
 * Renamed the argument of `derive` function from `mtdSamples` to `mtd_samples` in
   `NextBestMTD` class.
