@@ -79,6 +79,7 @@ Collate:
     'Samples-class.R'
     'mcmc.R'
     'Simulations-class.R'
+    'helpers_rules.R'
     'Model-methods.R'
     'Rules-methods.R'
     'Design-methods.R'
