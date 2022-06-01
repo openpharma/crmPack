@@ -141,35 +141,39 @@ NextBestNCRM <- function(target,
   )
 }
 
-# nolint start
+# NextBestThreePlusThree ----
 
-## --------------------------------------------------
-## Next best dose based on 3+3 rule
-## --------------------------------------------------
+## class ----
 
-##' The class with the input for finding the next dose in target interval
-##'
-##' Implements the classical 3+3 dose recommendation.
-##' No input is required, hence this class has no slots.
-##'
-##' @example examples/Rules-class-NextBestThreePlusThree.R
-##' @export
-##' @keywords classes
-.NextBestThreePlusThree <-
-    setClass(Class="NextBestThreePlusThree",
-             contains=list("NextBest"))
+#' `NextBestThreePlusThree`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestThreePlusThree`] is the class for next best dose that
+#' implements the classical 3+3 dose recommendation. No input is required,
+#' hence this class has no slots.
+#'
+#' @aliases NextBestThreePlusThree
+#' @export
+#'
+.NextBestThreePlusThree <- setClass(
+  Class = "NextBestThreePlusThree",
+  contains = "NextBest"
+)
 
-##' Initialization function for "NextBestThreePlusThree"
-##'
-##' @return the \code{\linkS4class{NextBestThreePlusThree}} object
-##'
-##' @export
-##' @keywords methods
-NextBestThreePlusThree <- function()
-{
-    .NextBestThreePlusThree()
+## constructor ----
+
+#' @rdname NextBestThreePlusThree-class
+#'
+#' @export
+#' @examples
+#' # Next best dose class object using the classical 3+3 design.
+#' my_next_best <- NextBestThreePlusThree()
+NextBestThreePlusThree <- function() {
+  .NextBestThreePlusThree()
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Next best dose based on dual endpoint model
