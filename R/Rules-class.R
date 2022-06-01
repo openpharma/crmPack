@@ -169,7 +169,9 @@ NextBestNCRM <- function(target,
 #' @examples
 #' # Next best dose class object using the classical 3+3 design.
 #' my_next_best <- NextBestThreePlusThree()
-NextBestThreePlusThree <- .NextBestThreePlusThree
+NextBestThreePlusThree <- function() {
+  .NextBestThreePlusThree()
+}
 
 # nolint start
 
