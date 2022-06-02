@@ -179,7 +179,7 @@ NextBestThreePlusThree <- function() {
 
 #' `NextBestDualEndpoint`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`NextBestDualEndpoint`] is the class for next best dose that is based on the
 #' dual endpoint model.
