@@ -21,7 +21,7 @@ random walk of second order is used.}
 \item{...}{parameters passed to \code{\link[=DualEndpoint]{DualEndpoint()}}.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{DualEndpointRW}} is the class for the dual endpoint model with random walk
 prior for biomarker.

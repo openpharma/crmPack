@@ -1093,7 +1093,7 @@ LogisticLogNormalMixture <- function(mean,
 
 #' `DualEndpoint`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`DualEndpoint`] is the general class for the dual endpoint model.
 #'
@@ -1289,7 +1289,7 @@ DualEndpoint <- function(mean,
 
 #' `DualEndpointRW`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`DualEndpointRW`] is the class for the dual endpoint model with random walk
 #' prior for biomarker.
@@ -1420,7 +1420,7 @@ DualEndpointRW <- function(sigma2betaW,
 
 #' `DualEndpointBeta`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`DualEndpointBeta`] is the class for the dual endpoint model with beta
 #' function for dose-biomarker relationship.
@@ -1595,7 +1595,7 @@ DualEndpointBeta <- function(E0,
 
 #' `DualEndpointEmax`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`DualEndpointEmax`] is the class for the dual endpoint model with `Emax`
 #' function for dose-biomarker relationship.

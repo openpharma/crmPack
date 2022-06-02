@@ -39,7 +39,7 @@ needs to be fulfilled before the target probability will be used for
 deriving the next best dose (default to \eqn{0.01}).}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{NextBestDualEndpoint}} is the class for next best dose that is based on the
 dual endpoint model.
