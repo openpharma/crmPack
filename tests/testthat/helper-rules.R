@@ -14,3 +14,18 @@ h_next_best_ncrm <- function() {
     max_overdose_prob = 0.25
   )
 }
+
+h_next_best_dual_endpoint <- function(target_relative = TRUE) {
+  target <- if (target_relative) {
+    c(0.9, 1)
+  } else {
+    c(200, 300)
+  }
+
+  NextBestDualEndpoint(
+    target = target,
+    target_relative = target_relative,
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+}

@@ -16,7 +16,7 @@ model <- DualEndpointRW(mean = c(0, 1),
 # Choose the rule for selecting the next dose
 myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
-                                   maxOverdoseProb=0.25)
+                                   max_overdose_prob=0.25)
 
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),

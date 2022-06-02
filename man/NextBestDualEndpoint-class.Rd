@@ -4,56 +4,97 @@
 \name{NextBestDualEndpoint-class}
 \alias{NextBestDualEndpoint-class}
 \alias{.NextBestDualEndpoint}
-\title{The class with the input for finding the next dose
-based on the dual endpoint model}
+\alias{NextBestDualEndpoint}
+\title{\code{NextBestDualEndpoint}}
+\usage{
+NextBestDualEndpoint(
+  target,
+  target_relative = TRUE,
+  overdose,
+  max_overdose_prob,
+  target_thresh = 0.01
+)
+}
+\arguments{
+\item{target}{(\code{numeric})\cr the biomarker target range that needs to be
+reached. For example, the target range \eqn{(0.8, 1.0)} and
+\code{target_relative = TRUE} means that we target a dose with at least
+\eqn{80\%} of maximum biomarker level. As an other example,
+\eqn{(0.5, 0.8)} would mean that we target a dose between \eqn{50\%} and
+\eqn{80\%} of the maximum biomarker level.}
+
+\item{target_relative}{(\code{flag})\cr is \code{target} specified as relative? If
+\code{TRUE}, then the \code{target} is interpreted relative to the maximum, so it
+must be a probability range. Otherwise, the \code{target} is interpreted as
+absolute biomarker range.}
+
+\item{overdose}{(\code{numeric})\cr the overdose toxicity interval (lower limit
+excluded, upper limit included).}
+
+\item{max_overdose_prob}{(\code{proportion})\cr maximum overdose probability that
+is allowed.}
+
+\item{target_thresh}{(\code{proportion})\cr a target probability threshold that
+needs to be fulfilled before the target probability will be used for
+deriving the next best dose (default to \eqn{0.01}).}
+}
 \description{
-This rule first excludes all doses that exceed the probability
-\code{maxOverdoseProb} of having an overdose toxicity, as specified by the
-overdose interval \code{overdose}. Then, it picks under the remaining
-admissible doses the one that maximizes the probability to be in the
-\code{target} biomarker range, by default relative to the maximum biomarker level
-across the dose grid or relative to the Emax parameter in case a parametric
-model was selected (e.g. \code{\linkS4class{DualEndpointBeta}},
-\code{\linkS4class{DualEndpointEmax}})) However, is \code{scale} is set to
-"absolute" then the natural absolute biomarker scale can be used to set a target.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBestDualEndpoint}} is the class for next best dose that is based on the
+dual endpoint model.
+}
+\details{
+Under this rule, at first admissible doses are found, which are those
+with toxicity probability to fall in \code{overdose} category and being below
+\code{max_overdose_prob}. Next, it picks (from the remaining admissible doses) the
+one that maximizes the probability to be in the \code{target} biomarker range. By
+default (\code{target_relative = TRUE}) the target is specified as relative to the
+maximum biomarker level across the dose grid or relative to the \code{Emax}
+parameter in case a parametric model was selected (i.e. \code{\link{DualEndpointBeta}},
+\code{\link{DualEndpointEmax}}). However, if \code{target_relative = FALSE}, then the
+absolute biomarker range can be used as a target.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the biomarker target range, that
-needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
-means we target a dose
-with at least 80\% of maximum biomarker level. As an other example,
-(0.5, 0.8) would mean that we target a dose between 50\% and 80\% of
-the maximum biomarker level.}
+\item{\code{target}}{(\code{numeric})\cr the biomarker target range that needs to be
+reached. For example, the target range \eqn{(0.8, 1.0)} and
+\code{target_relative = TRUE} means that we target a dose with at least
+\eqn{80\%} of maximum biomarker level. As an other example,
+\eqn{(0.5, 0.8)} would mean that we target a dose between \eqn{50\%} and
+\eqn{80\%} of the maximum biomarker level.}
 
-\item{\code{scale}}{either \code{relative} (default, then the \code{target} is interpreted
-relative to the maximum, so must be a probability range) or \code{absolute}
-(then the \code{target} is interpreted as absolute biomarker range)}
+\item{\code{target_relative}}{(\code{flag})\cr is \code{target} specified as relative? If
+\code{TRUE}, then the \code{target} is interpreted relative to the maximum, so it
+must be a probability range. Otherwise, the \code{target} is interpreted as
+absolute biomarker range.}
 
-\item{\code{overdose}}{the overdose toxicity interval (lower limit excluded, upper
-limit included)}
+\item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
+excluded, upper limit included).}
 
-\item{\code{maxOverdoseProb}}{maximum overdose probability that is allowed}
+\item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum overdose probability that
+is allowed.}
 
-\item{\code{targetThresh}}{which target probability threshold needs to be fulfilled before the
-target probability will be used for deriving the next best dose (default: 0.01)}
+\item{\code{target_thresh}}{(\code{proportion})\cr a target probability threshold that
+needs to be fulfilled before the target probability will be used for
+deriving the next best dose (default to \eqn{0.01}).}
 }}
 
 \examples{
-
 # Target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
-# and with a probability below 0.25 that prob(DLT)>0.35 (safety)
+# and with a probability below 0.25 that prob(DLT) > 0.35 (safety).
+my_next_best <- NextBestDualEndpoint(
+  target = c(0.9, 1),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
-myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
-                                   overdose=c(0.35, 1),
-                                   maxOverdoseProb=0.25)
-
-## now do it with an absolute target on the natural biomarker scale:
-
-myNextBest <- NextBestDualEndpoint(target=c(200, 300),
-                                   scale="absolute",
-                                   overdose=c(0.35, 1),
-                                   maxOverdoseProb=0.25)
+# Now, using absolute target on the natural biomarker scale.
+my_next_best_absolute <- NextBestDualEndpoint(
+  target = c(200, 300),
+  target_relative = FALSE,
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 }
-\keyword{classes}

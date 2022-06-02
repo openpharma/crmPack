@@ -48,6 +48,40 @@ v_next_best_ncrm <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestDualEndpoint`] object
+#'   contains valid probability objects.
+v_next_best_dual_endpoint <- function(object) {
+  v <- Validate()
+  v$check(
+    test_flag(object@target_relative),
+    "target_relative must be a flag"
+  )
+  if (isTRUE(object@target_relative)) {
+    v$check(
+      is.probRange(object@target),
+      "target has to be a probability range when target_relative is TRUE"
+    )
+  } else {
+    v$check(
+      test_numeric(object@target, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      "target must be a numeric range"
+    )
+  }
+  v$check(
+    is.probRange(object@overdose),
+    "overdose has to be a probability range"
+  )
+  v$check(
+    is.probability(object@max_overdose_prob, bounds = FALSE),
+    "max_overdose_prob must be probability > 0 and < 1"
+  )
+  v$check(
+    is.probability(object@target_thresh),
+    "target_thresh has to be a probability"
+  )
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects

@@ -1,4 +1,4 @@
-# nextBest ----
+# NextBest ----
 
 ## NextBestMTD ----
 
@@ -47,6 +47,37 @@ test_that(".NextBestThreePlusThree works as expected", {
 test_that("NextBestThreePlusThree object can be created with user constructor", {
   result <- expect_silent(NextBestThreePlusThree())
   expect_valid(result, "NextBestThreePlusThree")
+})
+
+## NextBestDualEndpoint ----
+
+test_that(".NextBestDualEndpoint works as expected", {
+  result <- expect_silent(.NextBestDualEndpoint())
+  expect_valid(result, "NextBestDualEndpoint")
+})
+
+test_that("NextBestDualEndpoint object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestDualEndpoint(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25
+    )
+  )
+  expect_valid(result, "NextBestDualEndpoint")
+})
+
+test_that("NextBestDualEndpoint object can be created with user constructor 2", {
+  result <- expect_silent(
+    NextBestDualEndpoint(
+      target = c(0.2, 0.35),
+      target_relative = FALSE,
+      overdose = c(0.35, 1),
+      max_overdose_prob = 0.25,
+      target_thresh = 0.05
+    )
+  )
+  expect_valid(result, "NextBestDualEndpoint")
 })
 
 ## NextBestInfTheory ----
@@ -151,14 +182,16 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
   expect_snapshot(result@meanFit)
 })
 
-# IncrementsRelativeDLTCurrent-class ----
+# NextBest ----
+
+## IncrementsRelativeDLTCurrent-class ----
 
 test_that(".IncrementsRelativeDLTCurrent works as expected", {
   result <- expect_silent(.IncrementsRelativeDLTCurrent())
   expect_valid(result, "IncrementsRelativeDLTCurrent")
 })
 
-# IncrementsRelativeDLTCurrent-constructor ----
+## IncrementsRelativeDLTCurrent-constructor ----
 
 test_that("IncrementsRelativeDLTCurrent object can be created with user constructor", {
   result <- expect_silent(IncrementsRelativeDLTCurrent())
@@ -195,61 +228,58 @@ test_that("IncrementsRelativeDLTCurrent warns if increments does not have same l
   )
 })
 
-# IncrementsNumDoseLevels-class ----
+## IncrementsNumDoseLevels-class ----
 
 test_that(".IncrementsNumDoseLevels works as expected", {
   result <- expect_silent(.IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
 })
 
-# IncrementsNumDoseLevels-constructor ----
+## IncrementsNumDoseLevels-constructor ----
 
 test_that("IncrementsNumDoseLevels object can be created with user constructor", {
   result <- expect_silent(IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
 })
 
-
-
-# IncrementsHSRBeta-class ----
+## IncrementsHSRBeta-class ----
 
 test_that(".IncrementsHSRBeta works as expected", {
   result <- expect_silent(.IncrementsHSRBeta())
   expect_valid(result, "IncrementsHSRBeta")
 })
 
-# IncrementsHSRBeta-constructor ----
+## IncrementsHSRBeta-constructor ----
 
 test_that("IncrementsHSRBeta object can be created with user constructor", {
   result <- expect_silent(IncrementsHSRBeta())
   expect_valid(result, "IncrementsHSRBeta")
 })
 
+# Stopping ----
 
-
-# StoppingMTDCV-class ----
+## StoppingMTDCV-class ----
 
 test_that(".StoppingMTDCV works as expected", {
   result <- expect_silent(.StoppingMTDCV())
   expect_valid(result, "StoppingMTDCV")
 })
 
-# StoppingMTDCV-constructor ----
+## StoppingMTDCV-constructor ----
 
 test_that("StoppingMTDCV object can be created with user constructor", {
   result <- expect_silent(StoppingMTDCV())
   expect_valid(result, "StoppingMTDCV")
 })
 
-
-# StoppingLowestDoseHSRBeta-class ----
+## StoppingLowestDoseHSRBeta-class ----
 
 test_that(".StoppingLowestDoseHSRBeta works as expected", {
   result <- expect_silent(.StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
 })
 
-# StoppingLowestDoseHSRBeta-constructor ----
+## StoppingLowestDoseHSRBeta-constructor ----
 
 test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
   result <- expect_silent(StoppingLowestDoseHSRBeta())
