@@ -1,4 +1,4 @@
-# Version 1.0.9000.9029
+# Version 1.0.9000.9030
 * Renamed several slots in `NextBestNCRM` and `NextBestDualEndpoint` classes.
 * Changed the `scale` character slot into `target_relative` flag slot in
   `NextBestDualEndpoint` class.
