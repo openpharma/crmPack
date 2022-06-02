@@ -824,7 +824,7 @@ nextMaxDose <- maxDose(myIncrements,
 # and with a probability below 0.25 that prob(DLT)>0.35 (safety)
 myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
-                                   maxOverdoseProb=0.25)
+                                   max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,

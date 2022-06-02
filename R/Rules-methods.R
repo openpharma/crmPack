@@ -462,7 +462,7 @@ setMethod("nextBest",
               }
 
               ## if target is relative to maximum
-              if(nextBest@scale == "relative")
+              if(nextBest@target_relative)
               {
 
                 # If there is an 'Emax' parameter, target biomarker level will
@@ -527,7 +527,7 @@ setMethod("nextBest",
                       rep(TRUE, length(data@doseGrid))
 
               dosesOK <- which(dosesBelowLimit &
-                               (probOverdose < nextBest@maxOverdoseProb))
+                               (probOverdose < nextBest@max_overdose_prob))
 
               ## check if there are doses that are OK
               if(length(dosesOK))
@@ -544,7 +544,7 @@ setMethod("nextBest",
                   ## threshold, then take that level, otherwise stick to the
                   ## maximum level that is OK:
                   doseLevel <-
-                      if(max(probTarget[dosesOK]) > nextBest@targetThresh)
+                      if(max(probTarget[dosesOK]) > nextBest@target_thresh)
                       {
                           which.max(probTarget[dosesOK])
                       } else {
@@ -620,7 +620,7 @@ setMethod("nextBest",
                                        ylim(c(0, 100))
 
               plot2 <- plot2 +
-                  geom_hline(yintercept=nextBest@maxOverdoseProb * 100,
+                  geom_hline(yintercept=nextBest@max_overdose_prob * 100,
                              lwd=1.1,
                              lty=2,
                              colour="black")

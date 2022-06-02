@@ -4,11 +4,14 @@
 \alias{v_next_best}
 \alias{v_next_best_mtd}
 \alias{v_next_best_ncrm}
+\alias{v_next_best_dual_endpoint}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
 v_next_best_mtd(object)
 
 v_next_best_ncrm(object)
+
+v_next_best_dual_endpoint(object)
 }
 \arguments{
 \item{object}{(\code{NextBest})\cr object to validate.}
@@ -31,5 +34,8 @@ contains valid \code{target} probability and \code{derive} function.
 \item \code{v_next_best_ncrm}: validates that the \code{\link{NextBestNCRM}} object
 contains valid \code{target} probability, \code{overdose} and \code{max_overdose_prob}
 probability ranges.
+
+\item \code{v_next_best_dual_endpoint}: validates that the \code{\link{NextBestDualEndpoint}} object
+contains valid probability objects.
 }}
 

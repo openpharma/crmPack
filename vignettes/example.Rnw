@@ -1625,7 +1625,7 @@ probability for the next dose, we specify:
 <<dual-nextbest>>=
 myNextBest <- NextBestDualEndpoint(target=c(0.9,1),
                                    overdose=c(0.35, 1),
-                                   maxOverdoseProb=0.25)
+                                   max_overdose_prob=0.25)
 @
 
 In our example, and assuming a dose limit of 50~mg given by the maximum
