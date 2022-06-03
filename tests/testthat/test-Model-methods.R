@@ -1113,3 +1113,36 @@ test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid s
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
 })
+
+# biomarker ----
+
+## DualEndpoint ----
+
+test_that("biomarker-DualEndpoint works as expected", {
+  beta_w <- matrix(c(0.54, 0.61, 0.44, 0.62, 0.66, 0.41, 0.7, 0.56), nrow = 4)
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaW = beta_w))
+
+  result <- biomarker(xLevel = 2L, model, samples)
+  expect_identical(result, beta_w[, 2])
+})
+
+test_that("biomarker-DualEndpoint works as expected for xLevel vector", {
+  beta_w <- matrix(c(0.54, 0.61, 0.44, 0.62, 0.66, 0.41, 0.7, 0.56), nrow = 4)
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaW = beta_w))
+
+  result <- biomarker(xLevel = 1:2, model, samples)
+  expect_identical(result, beta_w)
+})
+
+test_that("biomarker-DualEndpoint throws the error when xLevel is not valid", {
+  beta_w <- matrix(c(0.54, 0.61, 0.44, 0.62, 0.66, 0.41, 0.7, 0.56), nrow = 4)
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaW = beta_w))
+
+  expect_error(
+    biomarker(xLevel = 1.5, model, samples),
+    "unable to find an inherited method for function 'biomarker' *"
+  )
+})

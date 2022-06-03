@@ -244,6 +244,36 @@ setGeneric(
   valueClass = "function"
 )
 
+## biomarker ----
+
+#' Get the Biomarker Levels for a Given Dual-Endpoint Model, Given Dose Levels and Samples
+#'
+#' @details This function simply returns a specific columns (with the indices equal
+#' to `xLevel`) of the biomarker samples matrix, which is included in the the
+#' `samples` object.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param xLevel (`integer`)\cr the levels for the doses the
+#'   patients have been given w.r.t dose grid. See [`Data`] for more details.
+#' @param model (`DualEndpoint`)\cr the model.
+#' @param samples (`Samples`)\cr the samples of model's parameters that store
+#'   the value of biomarker levels for all doses on the dose grid.
+#' @param ... not used.
+#'
+#' @return The biomarker levels.
+#'
+#' @export
+#' @example examples/Model-method-biomarker.R
+#'
+setGeneric(
+  name = "biomarker",
+  def = function(xLevel, model, samples, ...) {
+    standardGeneric("biomarker")
+  },
+  valueClass = c("numeric", "array")
+)
+
 # GeneralModel ----
 
 ## doseFunction ----
@@ -1017,6 +1047,33 @@ setMethod(
   }
 )
 
+## biomarker ----
+
+#' @describeIn biomarker
+#'
+#' @aliases biomarker-DualEndpoint
+#' @export
+#'
+setMethod(
+  f = "biomarker",
+  signature = signature(
+    xLevel = "integer",
+    model = "DualEndpoint",
+    samples = "Samples"
+  ),
+  def = function(xLevel, model, samples, ...) {
+    assert_integer(
+      xLevel,
+      lower = 1,
+      upper = ncol(samples@data$betaW),
+      any.missing = FALSE,
+      min.len = 1
+    )
+
+    samples@data$betaW[, xLevel]
+  }
+)
+
 # LogisticIndepBeta ----
 
 ## dose ----
@@ -1341,43 +1398,7 @@ setMethod(
 )
 
 # NOT CLEANED UP YET! ----
-
 # nolint start
-
-##' Compute the biomarker level for a given dose, given model and samples
-##'
-##' @param dose the dose
-##' @param model the \code{\linkS4class{DualEndpoint}} object
-##' @param samples the \code{\linkS4class{Samples}} object
-##' @param \dots unused
-##'
-##' @export
-##' @keywords methods
-setGeneric("biomLevel",
-           def=
-             function(dose, model, samples, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("biomLevel")
-             },
-           valueClass="numeric")
-
-##' @param xLevel the grid index of \code{dose}
-##' @describeIn biomLevel Here it is very easy, we just return the corresponding
-##' column (index \code{xLevel}) of the biomarker samples matrix, since we save
-##' that in the samples
-##' @example examples/Model-method-biomLevel.R
-setMethod("biomLevel",
-          signature=
-            signature(dose="numeric",
-                      model="DualEndpoint",
-                      samples="Samples"),
-          def=
-            function(dose, model, samples, xLevel, ...){
-
-              return(samples@data$betaW[, xLevel])
-
-            })
 
 ## ---------------------------------------------------------------------------------
 ## Compute gain value using a Pseudo DLE and a pseduo Efficacy log-log model
