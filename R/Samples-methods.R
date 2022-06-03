@@ -253,7 +253,7 @@ setMethod("fit",
 
               ## get the biomarker level samples
               ## at the dose grid points.
-              biomLevelSamples <- biomarker(xLevel = seq_len(my_data@nGrid), model, samples)
+              biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples = object)
 
               ## extract middle curve
               middleCurve <- apply(biomLevelSamples, 2L, FUN=middle)
