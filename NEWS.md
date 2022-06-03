@@ -1,4 +1,4 @@
-# Version 1.0.9000.9030
+# Version 1.0.9000.9031
 * Renamed generic function and method `biomLevel` to `biomarker`.
   Changed its arguments.
 * Renamed several slots in `NextBestNCRM` and `NextBestDualEndpoint` classes.
