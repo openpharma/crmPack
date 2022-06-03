@@ -192,6 +192,8 @@ reference:
       - efficacy-Effloglog
       - efficacy-Effloglog-noSamples
       - efficacy-EffFlexi
+      - biomarker
+      - biomarker-DualEndpoint
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta

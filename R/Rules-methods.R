@@ -428,22 +428,10 @@ setMethod("nextBest",
                       warning("doselimit is empty, therefore no dose limit will be applied")
                   }
 
-              ## get the biomarker level samples
-              ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
-                                         ncol=data@nGrid)
-
-              ## evaluate the biomLevels, for all samples.
-              for(i in seq_len(data@nGrid))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
-                                                     xLevel=i,
-                                                     model,
-                                                     samples)
-              }
-              ## biomLevelSamples <- samples@data$betaW
+            ## get the biomarker level samples
+            ## at the dose grid points.
+            biomLevelSamples <- biomarker(xLevel = seq_len(my_data@nGrid), model, samples)
+            ## biomLevelSamples <- samples@data$betaW
 
 
               ## now get samples from the dose-tox
@@ -1721,23 +1709,10 @@ setMethod("stopTrial",
                     data="ANY"),
           def=
           function(stopping, dose, samples, model, data, ...){
-              ## compute the target biomarker prob at this dose
-
-              ## get the biomarker level samples
-              ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
-                                         ncol=data@nGrid)
-
-              ## evaluate the biomLevels, for all samples.
-              for(i in seq_len(data@nGrid))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
-                                                     xLevel=i,
-                                                     model,
-                                                     samples)
-              }
+            ## compute the target biomarker prob at this dose
+            ## get the biomarker level samples
+            ## at the dose grid points.
+            biomLevelSamples <- biomarker(xLevel = seq_len(my_data@nGrid), model, samples)
 
               ## if target is relative to maximum
               if(stopping@scale == "relative")
