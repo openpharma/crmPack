@@ -403,12 +403,13 @@ setMethod("simulate",
               highestStoppingMatrix <- do.call(rbind, highestStoppingParts)
 
               ## return the results in the Simulations class object
-              ret <- Simulations(data=dataList,
-                                 doses=recommendedDoses,
-                                 fit=fitList,
-                                 stopReasons=stopReasons,
-                                 highestStoppingMatrix = highestStoppingMatrix,
-                                 seed=RNGstate)
+
+               ret <- Simulations(data=dataList,
+                                  doses=recommendedDoses,
+                                  fit=fitList,
+                                  stopReasons=stopReasons,
+                                  highestStoppingMatrix = highestStoppingMatrix,
+                                  seed=RNGstate)
 
               return(ret)
           })

@@ -48,18 +48,26 @@ myStopping3 <- StoppingMinPatients(nPatients=20)
 # Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAny'
 myStopping <- (myStopping1 & myStopping2) | myStopping3
-
+is(myStopping)
 # Evaluate if to stop the Trial
 result <- stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)
-ind_results <- attr(result, "individual")
-str(ind_results)
-unlist(ind_results)
 
-str(result)
 
-attr(result, "highest")
+#lapply(attr(result, "message"), function(x) paste(x, collapse=" & "))
 
+#ind_results <- attr(result, "individual")
+
+#str(ind_results)
+
+#unlist(ind_results)
+
+#str(result)
+
+#rbind(attr(result, "highest"),attr(result, "highest"))
+
+#attr(result, "highest")
+#lapply(resultList, "[[", "highestStop")
 # nolint end
 
 # Report:
