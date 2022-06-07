@@ -1,4 +1,4 @@
-# Version 1.0.9000.9031
+# Version 1.0.9000.9032
 * Renamed arguments of `gain` function.
 * Renamed generic function and method `biomLevel` to `biomarker`.
   Changed its arguments.
