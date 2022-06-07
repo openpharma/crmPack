@@ -2,99 +2,142 @@
 % Please edit documentation in R/Model-methods.R
 \name{gain}
 \alias{gain}
-\alias{gain,numeric,ModelTox,Samples,Effloglog,Samples-method}
-\alias{gain,numeric,ModelTox,Samples,EffFlexi,Samples-method}
+\alias{gain,numeric,ModelTox,Samples,ModelEff,Samples-method}
+\alias{gain-ModelTox-ModelEff}
 \alias{gain,numeric,ModelTox,missing,Effloglog,missing-method}
-\title{Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample,
-a pseudo Efficacy log-log model and a Efficacy sample}
+\alias{gain-ModelTox-Effloglog-noSamples}
+\title{Compute Gain Values based on Pseudo DLE and a Pseudo Efficacy Models and
+Using Optional Samples.}
 \usage{
-gain(dose, DLEmodel, DLEsamples, Effmodel, Effsamples, ...)
+gain(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 
-\S4method{gain}{numeric,ModelTox,Samples,Effloglog,Samples}(dose, DLEmodel, DLEsamples, Effmodel, Effsamples, ...)
+\S4method{gain}{numeric,ModelTox,Samples,ModelEff,Samples}(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 
-\S4method{gain}{numeric,ModelTox,Samples,EffFlexi,Samples}(dose, DLEmodel, DLEsamples, Effmodel, Effsamples, ...)
-
-\S4method{gain}{numeric,ModelTox,missing,Effloglog,missing}(dose, DLEmodel, DLEsamples, Effmodel, Effsamples, ...)
+\S4method{gain}{numeric,ModelTox,missing,Effloglog,missing}(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 }
 \arguments{
-\item{dose}{the dose}
+\item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
+This must be a scalar if number of samples in \code{samples} is greater than
+one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
+finite length, if there is only one sample in \code{samples}, or \code{samples} are
+not used at all, as e.g. in case of pseudo DLE
+(dose-limiting events)/toxicity model.}
 
-\item{DLEmodel}{the \code{\linkS4class{ModelTox}} object}
+\item{model_dle}{(\code{ModelTox})\cr pseudo DLE (dose-limiting events)/toxicity
+model.}
 
-\item{DLEsamples}{the \code{\linkS4class{Samples}} object (can also be missing)}
+\item{samples_dle}{(\code{Samples})\cr the samples of model's
+parameters that will be used to compute toxicity probabilities. Can also be
+missing for some models.}
 
-\item{Effmodel}{the \code{\linkS4class{Effloglog}} or the \code{\linkS4class{EffFlexi}} object}
+\item{model_eff}{(\code{ModelEff})\cr the efficacy model with pseudo data prior.}
 
-\item{Effsamples}{the \code{\linkS4class{Samples}} object (can also be missing)}
+\item{samples_eff}{(\code{Samples})\cr samples of model's parameters that will be
+used to compute expected efficacy values. Can also be missing for some
+models.}
 
-\item{\dots}{unused}
+\item{...}{not used.}
+}
+\value{
+The gain values.
 }
 \description{
-Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample,
-a pseudo Efficacy log-log model and a Efficacy sample
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
+\details{
+This function computes the gain values for a given dose level,
+pseudo DLE and Efficacy models as well as a given DLE and Efficacy samples.
 }
 \section{Functions}{
 \itemize{
-\item \code{gain,numeric,ModelTox,Samples,EffFlexi,Samples-method}: Compute the gain given a dose level, a pseduo DLE model, a DLE sample,
-the pseudo EffFlexi model and an Efficacy sample
+\item \code{gain,numeric,ModelTox,Samples,ModelEff,Samples-method}: 
 
-\item \code{gain,numeric,ModelTox,missing,Effloglog,missing-method}: Compute the gain value given a dose level, a pseudo DLE model and a pseudo
-efficacy model of \code{\linkS4class{Effloglog}} class object without DLE and the efficacy sample
+\item \code{gain,numeric,ModelTox,missing,Effloglog,missing-method}: Compute the gain value for a given dose level, pseudo DLE
+and Efficacy models without DLE and the Efficacy samples.
 }}
 
 \examples{
-# nolint start
+# Obtain the gain value for a given dose, a pseudo DLE and efficacy models
+# as well as DLE and efficacy samples.
+emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+mcmc_opts <- McmcOptions(burnin = 100, step = 2, samples = 200)
 
-##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,
-## a pseudo efficacy model and an efficacy sample
-##The DLE model must be from 'ModelTox' class (DLEmodel slot)
-emptydata<- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
-data<-emptydata
-DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-DLEsamples <- mcmc(data, DLEmodel, McmcOptions(burnin=100,step=2,samples=200))
+# DLE model and samples.
+model_dle <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = emptydata
+)
 
-##The efficacy model must be from 'ModelEff' class (Effmodel slot)
-## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
-Effsamples <- mcmc(data, Effmodel, McmcOptions(burnin=100,step=2,samples=200))
+samples_dle <- mcmc(emptydata, model_dle, mcmc_opts)
 
-## Given a dose level 75,
-gain(dose=75,DLEmodel=DLEmodel,DLEsamples=DLEsamples,Effmodel=Effmodel,Effsamples=Effsamples)
+# Efficacy model (Effloglog) and samples.
+model_effloglog <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = emptydata
+)
 
-# nolint end
-# nolint start
+samples_effloglog <- mcmc(emptydata, model_effloglog, mcmc_opts)
 
-##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,
-## the 'EffFlexi' efficacy model and an efficacy sample
-##The DLE model must be from 'ModelTox' class (DLEmodel slot)
-emptydata<- DataDual(doseGrid=seq(25,300,25))
-data<-emptydata
-DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-DLEsamples <- mcmc(data, DLEmodel, McmcOptions(burnin=100,step=2,samples=200))
+# Gain values for dose level 75 and Effloglog efficacy model.
+gain(
+  dose = 75,
+  model_dle = model_dle,
+  samples_dle = samples_dle,
+  model_eff = model_effloglog,
+  samples_eff = samples_effloglog
+)
 
-##The efficacy model must be from 'EffFlexi' class (Effmodel slot)
-## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)
-EffFleximodel <- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
-                          sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
-Effsamples <- mcmc(data, EffFleximodel, McmcOptions(burnin=100,step=2,samples=200))
+# Efficacy model (EffFlexi) and samples.
+model_effflexi <- EffFlexi(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = emptydata
+)
 
-## Given a dose level 75,
-gain(dose=75,DLEmodel=DLEmodel,DLEsamples=DLEsamples,Effmodel=EffFleximodel,Effsamples=Effsamples)
+samples_effflexi <- mcmc(emptydata, model_effflexi, mcmc_opts)
 
-# nolint end
-# nolint start
-##Obtain the gain value for a given dose, a pseudo DLE model and  a pseudo efficacy model
-## without samples
-##The DLE model must be from 'ModelTox' class (DLEmodel slot)
-emptydata<- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
-data<-Data(doseGrid=seq(25,300,25),placebo=FALSE)
+# Gain values for dose level 75 and EffFlexi efficacy model.
+gain(
+  dose = 75,
+  model_dle = model_dle,
+  samples_dle = samples_dle,
+  model_eff = model_effflexi,
+  samples_eff = samples_effflexi
+)
 
-DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-##The efficacy model must be from 'Effloglog' class  (Effmodel slot)
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=emptydata,const=0)
-## Given a dose level 75,
-gain(dose=75,DLEmodel=DLEmodel,Effmodel=Effmodel)
+# Obtain the gain value for a given dose, a pseudo DLE and efficacy models
+# without DLE and efficacy samples.
+emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+data <- Data(doseGrid = seq(25, 300, 25), placebo = FALSE)
+mcmc_opts <- McmcOptions(burnin = 100, step = 2, samples = 200)
 
-# nolint end
+# DLE model and samples.
+model_dle <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = data
+)
+
+# Efficacy model and samples.
+model_eff <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = emptydata
+)
+
+# Gain value for dose level 75.
+gain(
+  dose = 75,
+  model_dle = model_dle,
+  model_eff = model_eff
+)
 }
-\keyword{methods}

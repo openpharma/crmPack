@@ -194,6 +194,9 @@ reference:
       - efficacy-EffFlexi
       - biomarker
       - biomarker-DualEndpoint
+      - gain
+      - gain-ModelTox-ModelEff
+      - gain-ModelTox-Effloglog-noSamples
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta

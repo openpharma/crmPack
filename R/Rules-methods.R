@@ -2383,7 +2383,7 @@ setMethod("nextBest",
 
               ##Define gain function
               Gainfun<-function(DOSE){
-                -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
+                -gain(DOSE,model_dle=model,model_eff=Effmodel)
               }
 
               #if(data@placebo) {
@@ -2500,8 +2500,8 @@ setMethod("nextBest",
                                             efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
-                                                 DLEmodel=model,
-                                                 Effmodel=Effmodel)))
+                                                 model_dle=model,
+                                                 model_eff=Effmodel)))
               gdata<-with(plotData,
                           data.frame(x=dose,
                                      y=values,
@@ -2684,10 +2684,10 @@ setMethod("nextBest",
                 ## Now we want to evaluate for the
                 ## following dose:
                 GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel=model,
-                                         DLEsamples=samples,
-                                         Effmodel=Effmodel,
-                                         Effsamples=Effsamples)
+                                         model,
+                                         samples,
+                                         Effmodel,
+                                         Effsamples)
               }
 
               ##Find the maximum gain value samples
@@ -2919,10 +2919,10 @@ setMethod("nextBest",
                   ## Now we want to evaluate for the
                   ## following dose:
                   GainSamples[, i] <- gain(dose=points[i],
-                                           DLEmodel=model,
-                                           DLEsamples=samples,
-                                           Effmodel=Effmodel,
-                                           Effsamples=Effsamples)
+                                           model,
+                                           samples,
+                                           Effmodel,
+                                           Effsamples)
                 }
 
                 ##Find the maximum gain value samples
@@ -3249,10 +3249,10 @@ setMethod("stopTrial",
                 ## Now we want to evaluate for the
                 ## following dose:
                 GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel=model,
-                                         DLEsamples=samples,
-                                         Effmodel=Effmodel,
-                                         Effsamples=Effsamples)
+                                         model,
+                                         samples,
+                                         Effmodel,
+                                         Effsamples)
               }
 
               ##Find the maximum gain value samples
@@ -3334,7 +3334,7 @@ setMethod("stopTrial",
 
               ##Find the dose with maximum gain value
               Gainfun<-function(DOSE){
-                -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
+                -gain(DOSE,model_dle=model,model_eff=Effmodel)
               }
 
               #if(data@placebo) {

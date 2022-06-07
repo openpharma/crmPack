@@ -1146,3 +1146,67 @@ test_that("biomarker-DualEndpoint throws the error when xLevel is not valid", {
     "unable to find an inherited method for function 'biomarker' *"
   )
 })
+
+# gain ----
+
+## ModelTox-ModelEff ----
+
+test_that("gain-ModelTox-ModelEff works as expected", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = TRUE)
+  samples_dle <- h_as_samples(
+    list(phi1 = c(1.72, -1.45, -4.52, -1.54), phi2 = c(0.17, 0.79, -0.11, 0.06))
+  )
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-1.08, -0.87, -1.91, -1.51),
+      theta2 = c(1.93, 1.51, 2, 1.73),
+      nu = c(6.48, 63.36, 2.14, 20.75)
+    )
+  )
+
+  result <- gain(dose = 75, model_dle, samples_dle, model_eff, samples_eff)
+  expect_snapshot(result)
+})
+
+test_that("gain-ModelTox-ModelEff works as expected for scalar samples", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = TRUE)
+  samples_dle <- h_as_samples(list(phi1 = 1.72, phi2 = 0.17))
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+  samples_eff <- h_as_samples(list(theta1 = -1.08, theta2 = 1.93, nu = 6.48))
+
+  result <- gain(dose = c(50, 75), model_dle, samples_dle, model_eff, samples_eff)
+  expect_equal(result, c(0.1325413, 0.1388810), tolerance = 10e-7)
+})
+
+test_that("gain-ModelTox-ModelEff throws the error when dose is not a valid scalar", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = TRUE)
+  samples_dle <- h_as_samples(list(phi1 = c(1.72, -1.45), phi2 = c(0.17, 0.79)))
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+  samples_eff <- h_as_samples(
+    list(theta1 = c(-1.08, -0.87), theta2 = c(1.93, 1.51), nu = c(6.48, 63.36))
+  )
+
+  expect_error(
+    gain(dose = c(50, 75), model_dle, samples_dle, model_eff, samples_eff),
+    "Assertion on 'dose' failed: Must have length 1, but has length 2."
+  )
+})
+
+## ModelTox-Effloglog-noSamples ----
+
+test_that("gain-ModelTox-Effloglog-noSamples works as expected", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = FALSE)
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+
+  result <- gain(dose = 75, model_dle = model_dle, model_eff = model_eff)
+  expect_equal(result, 1.034771, tolerance = 10e-7)
+})
+
+test_that("gain-ModelTox-Effloglog-noSamples works as expected for vector dose", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = FALSE)
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+
+  result <- gain(dose = c(50, 75), model_dle = model_dle, model_eff = model_eff)
+  expect_equal(result, c(1.090325, 1.034771), tolerance = 10e-7)
+})

@@ -38,7 +38,7 @@ NULL
 #'   (dose-limiting events)/toxicity model.
 #' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute the resulting doses.
+#'   used to compute the resulting doses. Can also be missing for some models.
 #' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `number` or `numeric` vector with the doses.
@@ -119,7 +119,7 @@ setGeneric(
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
 #'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute toxicity probabilities.
+#'   used to compute toxicity probabilities. Can also be missing for some models.
 #' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `proportion` or `numeric` vector with the toxicity probabilities.
@@ -195,7 +195,8 @@ setGeneric(
 #'   (dose-limiting events)/toxicity model.
 #' @param model (`ModelEff`)\cr the efficacy model with pseudo data prior.
 #' @param samples (`Samples`)\cr samples of model's parameters that will be
-#'   used to compute toxicity probabilities.
+#'   used to compute expected efficacy values. Can also be missing for some
+#'   models.
 #' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `numeric` vector with the values of expected efficacy.
@@ -272,6 +273,46 @@ setGeneric(
     standardGeneric("biomarker")
   },
   valueClass = c("numeric", "array")
+)
+
+## gain ----
+
+#' Compute Gain Values based on Pseudo DLE and a Pseudo Efficacy Models and
+#' Using Optional Samples.
+#'
+#' @details This function computes the gain values for a given dose level,
+#' pseudo DLE and Efficacy models as well as a given DLE and Efficacy samples.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
+#'   This must be a scalar if number of samples in `samples` is greater than
+#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
+#'   finite length, if there is only one sample in `samples`, or `samples` are
+#'   not used at all, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model_dle (`ModelTox`)\cr pseudo DLE (dose-limiting events)/toxicity
+#'   model.
+#' @param samples_dle (`Samples`)\cr the samples of model's
+#'   parameters that will be used to compute toxicity probabilities. Can also be
+#'   missing for some models.
+#' @param model_eff (`ModelEff`)\cr the efficacy model with pseudo data prior.
+#' @param samples_eff (`Samples`)\cr samples of model's parameters that will be
+#'   used to compute expected efficacy values. Can also be missing for some
+#'   models.
+#' @param ... not used.
+#'
+#' @return The gain values.
+#'
+#' @export
+#' @example examples/Model-method-gain.R
+#'
+setGeneric(
+  name = "gain",
+  def = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
+    standardGeneric("gain")
+  },
+  valueClass = "numeric"
 )
 
 # GeneralModel ----
@@ -1397,101 +1438,56 @@ setMethod(
   }
 )
 
+## gain ----
+
+#' @describeIn gain
+#'
+#' @aliases gain-ModelTox-ModelEff
+#' @export
+#'
+setMethod(
+  f = "gain",
+  signature = signature(
+    dose = "numeric",
+    model_dle = "ModelTox",
+    samples_dle = "Samples",
+    model_eff = "ModelEff",
+    samples_eff = "Samples"
+  ),
+  definition = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
+    dle <- prob(dose, model_dle, samples_dle)
+    eff <- efficacy(dose, model_eff, samples_eff)
+    eff / (1 + (dle / (1 - dle)))
+  }
+)
+
+## gain-noSamples----
+
+#' @describeIn gain Compute the gain value for a given dose level, pseudo DLE
+#'   and Efficacy models without DLE and the Efficacy samples.
+#'
+#' @aliases gain-ModelTox-Effloglog-noSamples
+#' @export
+#' @example examples/Model-method-gainNoSamples.R
+#'
+setMethod(
+  f = "gain",
+  signature = signature(
+    dose = "numeric",
+    model_dle = "ModelTox",
+    samples_dle = "missing",
+    model_eff = "Effloglog",
+    samples_eff = "missing"
+  ),
+  definition = function(dose, model_dle, model_eff, ...) {
+    dle <- prob(dose, model_dle)
+    eff <- efficacy(dose, model_eff)
+    eff / (1 + (dle / (1 - dle)))
+  }
+)
+
 # NOT CLEANED UP YET! ----
 # nolint start
-
-## ---------------------------------------------------------------------------------
-## Compute gain value using a Pseudo DLE and a pseduo Efficacy log-log model
-## -------------------------------------------------------------------------------
-
-##' Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample,
-##' a pseudo Efficacy log-log model and a Efficacy sample
-##'
-##' @param dose the dose
-##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
-##' @param DLEsamples the \code{\linkS4class{Samples}} object (can also be missing)
-##' @param Effmodel the \code{\linkS4class{Effloglog}} or the \code{\linkS4class{EffFlexi}} object
-##' @param Effsamples the \code{\linkS4class{Samples}} object (can also be missing)
-##' @param \dots unused
-##'
-##' @export
-##' @keywords methods
-setGeneric("gain",
-           def=
-             function(dose,DLEmodel,DLEsamples,Effmodel,Effsamples,...){
-               standardGeneric("gain")
-             },
-           valueClass="numeric")
-
-##' @rdname gain
-##' @example examples/Model-method-gain.R
-setMethod("gain",
-          signature=
-            signature(dose="numeric",
-                      DLEmodel="ModelTox",
-                      DLEsamples="Samples",
-                      Effmodel="Effloglog",
-                      Effsamples="Samples"),
-          def=
-            function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
-
-              DLEret <- prob(dose, DLEmodel, DLEsamples)
-              Effret <- efficacy(dose, Effmodel, Effsamples)
-
-
-              ## return the resulting vector
-              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
-              return(Gainret)
-            })
-
-## ===================================================================
-
-
-##' @describeIn gain Compute the gain given a dose level, a pseduo DLE model, a DLE sample,
-##' the pseudo EffFlexi model and an Efficacy sample
-##' @example examples/Model-method-gainFlexi.R
-setMethod(
-  f = "gain",
-  signature = signature(
-    dose = "numeric",
-    DLEmodel = "ModelTox",
-    DLEsamples = "Samples",
-    Effmodel = "EffFlexi",
-    Effsamples = "Samples"
-  ),
-  definition = function(dose,
-                        DLEmodel,
-                        DLEsamples,
-                        Effmodel,
-                        Effsamples,
-                        ...) {
-    DLEret <- prob(dose, DLEmodel, DLEsamples)
-    Effret <- efficacy(dose, Effmodel, Effsamples)
-    Effret / (1 + (DLEret / (1 - DLEret)))
-  }
-)
-
-##' @describeIn gain Compute the gain value given a dose level, a pseudo DLE model and a pseudo
-##' efficacy model of \code{\linkS4class{Effloglog}} class object without DLE and the efficacy sample
-##' @example examples/Model-method-gainNoSamples.R
-setMethod(
-  f = "gain",
-  signature = signature(
-    dose = "numeric",
-    DLEmodel = "ModelTox",
-    DLEsamples = "missing",
-    Effmodel = "Effloglog",
-    Effsamples = "missing"
-  ),
-  definition = function(dose,
-                        DLEmodel,
-                        Effmodel,
-                        ...) {
-    DLEret <- prob(dose, DLEmodel)
-    Effret <- efficacy(dose, Effmodel)
-    Effret / (1 + (DLEret / (1 - DLEret)))
-  }
-)
 
 ## ------------------------------------------------------------------------------------
 ## Update Pseduo models object to obtain new modal estimates for pseudo model parameters

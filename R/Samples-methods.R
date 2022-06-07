@@ -810,10 +810,10 @@ setMethod("fitGain",
                 ## Now we want to evaluate for the
                 ## following dose:
                 GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel=DLEmodel,
-                                         DLEsamples=DLEsamples,
-                                         Effmodel=Effmodel,
-                                         Effsamples=Effsamples)
+                                         DLEmodel,
+                                         DLEsamples,
+                                         Effmodel,
+                                         Effsamples)
               }
 
               ## extract middle curve
@@ -1242,8 +1242,8 @@ setMethod("plotGain",
                                             efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
-                                                 DLEmodel=DLEmodel,
-                                                 Effmodel=Effmodel)))
+                                                 model_dle=DLEmodel,
+                                                 model_eff=Effmodel)))
               gdata<-with(plotData,
                           data.frame(x=dose,
                                      y=values,
@@ -1266,7 +1266,7 @@ setMethod("plotGain",
               TD30 <- dose(x=0.3,model=DLEmodel)
 
               Gainfun<-function(DOSE){
-                -gain(DOSE,DLEmodel=DLEmodel,Effmodel=Effmodel)
+                -gain(DOSE,model_dle=DLEmodel,model_eff=Effmodel)
               }
               Gstar<-(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$par)
               MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$value)
