@@ -78,7 +78,7 @@ not used at all, as e.g. in case of pseudo DLE
 dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
 
 \item{samples}{(\code{Samples})\cr the samples of model's parameters that will be
-used to compute toxicity probabilities.}
+used to compute toxicity probabilities. Can also be missing for some models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
 }

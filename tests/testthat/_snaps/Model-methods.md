@@ -404,3 +404,17 @@
     Output
       [1] 0.7509625 0.7509625
 
+# gain-ModelTox-ModelEff works as expected
+
+    Code
+      result
+    Output
+      [1] 0.1388810 0.1662916 1.0205899 0.8068247
+
+# gain-ModelTox-ModelEff works as expected for scalar samples
+
+    Code
+      result
+    Output
+      [1] 0.1325413 0.1388810
+
