@@ -1176,7 +1176,7 @@ test_that("gain-ModelTox-ModelEff works as expected for scalar samples", {
   samples_eff <- h_as_samples(list(theta1 = -1.08, theta2 = 1.93, nu = 6.48))
 
   result <- gain(dose = c(50, 75), model_dle, samples_dle, model_eff, samples_eff)
-  expect_snapshot(result)
+  expect_equal(result, c(0.1325413, 0.1388810), tolerance = 10e-7)
 })
 
 test_that("gain-ModelTox-ModelEff throws the error when dose is not a valid scalar", {
