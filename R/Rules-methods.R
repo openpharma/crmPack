@@ -1736,6 +1736,171 @@ setMethod("stopTrial",
                                        "highest dose")))
             })
 
+######## Stopping Individuals
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingMinCohorts",
+  definition = function(x, ...) {
+    paste("At least",
+          x@nCohorts,
+          "cohorts have been observed")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingCohortsNearDose",
+  definition = function(x, ...) {
+    paste("At least",
+          x@nCohorts,
+          "cohorts have been observed that lie within",
+          x@percentage,
+          "% of the next best dose")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingPatientsNearDose",
+  definition = function(x, ...) {
+    paste("At least",
+          x@nPatients,
+          "patients observed that lie within",
+          x@percentage,
+          "% of the next best dose")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingMinPatients",
+  definition = function(x, ...) {
+    paste("At least",x@nPatients,"patients dosed")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingTargetProb",
+  definition = function(x, ...) {
+    paste("Posterior probability [",
+          x@target[1],
+          "=< Prob(DLT | dose) <=",
+          x@target[2],
+          "] for the next best dose is above",
+          x@prob)
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingMTDdistribution",
+  definition = function(x, ...) {
+    paste("At least",
+          x@prob,
+          "probability that MTD ( prob(DLE) ="
+          ,x@target,
+          ") >"
+          ,x@thresh,
+          " * next_dose")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingMTDCV",
+  definition = function(x, ...) {
+    paste("Coefficient of variation for target toxicity probability for MTD of",
+          x@target,
+          "is below",
+          x@thresh_cv,
+          "%")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingTargetBiomarker",
+  definition = function(x, ...) {
+    paste("At least",
+          x@prob,
+          "probability that the biomarker (efficacy) is within the biomarker target range of [",
+          x@target[1],
+          ",",
+          x@target[2],
+          ifelse(x@scale=="relative",
+                 paste("] (",
+                 x@scale,
+                 "to the maximum of the biomarker )"),
+                 "] ( absolute )"
+                 )
+          )
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingHighestDose",
+  definition = function(x, ...) {
+    paste("Highest dose is reached")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingTDCIRatio",
+  definition = function(x, ...) {
+    paste("Target stopping ratio (TD) of",
+          x@targetRatio,
+          "for",
+          x@targetEndOfTrial,
+          "target probability of DLE used at the end of the trial")
+  }
+)
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingGstarCIRatio",
+  definition = function(x, ...) {
+    paste("Target stopping ratio (GStar) of",
+          x@targetRatio,
+          "for",
+          x@targetEndOfTrial,
+          "target probability of DLE used at the end of the trial")
+  }
+)
+
+######## Stopping List
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingList",
+  definition = function(x, ...) {
+    ind_strings <- sapply(x@stopList, as.character)
+    ind_strings
+  }
+)
+
+######## Stopping Any & All
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingAny",
+  definition = function(x, ...) {
+    ind_strings <- sapply(x@stopList, as.character)
+    paste(ind_strings, collapse = " | ")
+  }
+  )
+
+setMethod(
+  f = "as.character",
+  signature = "StoppingAll",
+  definition = function(x, ...) {
+    ind_strings <- sapply(x@stopList, as.character)
+    paste(ind_strings, collapse = " & ")
+  } )
+
 ## ============================================================
 
 ## --------------------------------------------------

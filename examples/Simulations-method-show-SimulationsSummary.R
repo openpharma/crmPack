@@ -27,7 +27,29 @@ myStopping1 <- StoppingMinCohorts(nCohorts=3)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
+
 myStopping <- (myStopping1 & myStopping2) | myStopping3
+
+as.character(StoppingMinCohorts(nCohorts = 4))
+as.character(StoppingCohortsNearDose(n=5,percentage = 76))
+as.character(StoppingPatientsNearDose(nPatients=5,percentage = 75))
+as.character(StoppingMinPatients(nPatients = 5))
+as.character(StoppingTargetProb(target=c(0.2,0.35),prob=0.5))
+as.character(StoppingMTDdistribution(target=0.33,thresh=0.5,prob=0.9))
+as.character(StoppingMTDCV(target=0.3,thresh_cv=40))
+as.character(StoppingTargetBiomarker(target = c(0.9, 1),scale="relative",prob = 0.5))
+as.character(StoppingHighestDose())
+as.character(StoppingTDCIRatio(targetRatio = 5,targetEndOfTrial = 0.3))
+as.character(StoppingGstarCIRatio(targetRatio = 5,targetEndOfTrial = 0.3))
+as.character(StoppingGstarCIRatio(targetRatio = 5,targetEndOfTrial = 0.3))
+
+
+mystoppinglist <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
+                           summary=any)
+
+as.character(mystoppinglist)
+
+as.character(myStopping)
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
