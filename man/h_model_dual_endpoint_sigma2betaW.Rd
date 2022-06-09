@@ -30,3 +30,6 @@ A simple helper function that takes \code{\link{DualEndpoint}} object and update
 \code{priormodel}, \code{modelspecs}, \code{init}, \code{sample} slots according to the random walk
 variance.
 }
+\seealso{
+\code{\link{DualEndpointRW}}.
+}

@@ -112,7 +112,8 @@ h_jags_get_model_inits <- function(model, data) {
 #' @param model (`GeneralModel`)\cr an input model.
 #' @param data (`GeneralData`)\cr an input data.
 #' @param from_prior (`flag`)\cr sample from the prior only? In this case
-#'   data will not be appended to the output.
+#'   data will not be appended to the output, i.e. only the variables required
+#'   by the `model@priormodel` model will be returned in data.
 #'
 #' @export
 #' @example examples/helpers-jags_get_data.R
@@ -123,17 +124,17 @@ h_jags_get_data <- function(model, data, from_prior) {
   assert_flag(from_prior)
 
   # 1) Extract variables from `data` as required by `modelspecs`.
-  modelspecs <- do.call(
-    model@modelspecs,
-    h_slots(data, formalArgs(model@modelspecs))
-  )
+  ms_args_names <- formalArgs(model@modelspecs)
+  ms_args <- if ("from_prior" %in% ms_args_names) {
+    c(h_slots(data, setdiff(ms_args_names, "from_prior")), list(from_prior = from_prior))
+  } else {
+    h_slots(data, ms_args_names)
+  }
+  modelspecs <- do.call(model@modelspecs, ms_args)
   assert_list(modelspecs)
 
   # 2) Extract variables from `data` as required by `datanames`.
-
   datanames <- if (from_prior) {
-    # A workaround to avoid JAGS warning about unused variables.
-    modelspecs <- modelspecs[setdiff(names(modelspecs), c("ref_dose", "use_log_dose"))]
     model@datanames_prior
   } else {
     union(model@datanames, model@datanames_prior)

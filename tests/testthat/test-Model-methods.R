@@ -4,7 +4,7 @@
 
 test_that("doseFunction-GeneralModel returns correct dose function", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2), burnin = 10000, fixed = FALSE)
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
@@ -38,7 +38,7 @@ test_that("doseFunction-GeneralModel throws the error when valid params are not 
 
 test_that("doseFunction-ModelPseudo returns correct dose function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
   dose_args <- c("x", "model", "samples")
 
   dose_fun <- doseFunction(model, phi1 = 35, phi2 = 5)
@@ -70,7 +70,7 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
 
 test_that("probFunction-GeneralModel returns correct prob function", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2))
+  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2), burnin = 10000, fixed = FALSE)
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
@@ -104,7 +104,7 @@ test_that("probFunction-GeneralModel throws the error when valid params are not 
 
 test_that("probFunction-ModelTox returns correct prob function", {
   model <- h_get_logistic_indep_beta()
-  samples <- h_as_samples(list(phi1 = 35, phi2 = 5))
+  samples <- h_as_samples(list(phi1 = 35, phi2 = 5), burnin = 10000, fixed = FALSE)
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, phi1 = 35, phi2 = 5)
@@ -136,7 +136,7 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
 
 test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7))
+  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7), burnin = 10000, fixed = FALSE)
   eff_args <- c("dose", "model", "samples")
 
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
@@ -1080,6 +1080,30 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
     prob(-3, dlt_model),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
   )
+})
+
+
+## Information Theory Approach
+
+test_that("Information Theory approach returns correct next dose", {
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+  samples <- samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+
+  # set up the model
+  sigma_0 <- 1.0278
+  sigma_1 <- 1.65
+  rho <- 0.5
+  cov <- matrix(c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
+    nrow = 2
+  )
+  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
+
+  data <- h_get_data(placebo = FALSE)
+
+  result <- nextBest(nextBest = nb_it, doselimit = 75, samples = samples, model = model, data = data)
+  expected <- list(value = c(25))
+
+  expect_identical(result, expected)
 })
 
 ## OneParExpNormalPrior ----

@@ -1,4 +1,8 @@
-# Version 1.0.9000.9019
+# Version 1.0.9000.9025
+* Renamed the argument of `derive` function from `mtdSamples` to `mtd_samples` in
+  `NextBestMTD` class.
+* Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel`
+  class.
 * Added new slot `skel_fun_inv` into `OneParExpNormalPrior` class.
 * Removed `AllModels` class.
 * Added new slot `datanames_prior` for `GeneralModel` class.
