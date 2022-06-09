@@ -1,4 +1,4 @@
-# Version 1.0.9000.9033
+# Version 1.0.9000.9034
 * Created one `update` method for `ModelPseudo` and removed specific methods for
   `LogisticIndepBeta`, `Effloglog`, `EffFlexi`. 
 * Renamed arguments of `gain` function.
