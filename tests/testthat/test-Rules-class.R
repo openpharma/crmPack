@@ -122,7 +122,7 @@ test_that("NextBestNCRMLoss error: maxOverdoseProb has to be a probability", {
   expect_error(
     NextBestNCRMLoss(
       target = c(0.2, 0.35),
-      overdose = c(0.35, 0.6, 1),
+      overdose = c(0.35, 0.6),
       maxOverdoseProb = 1.25,
       losses = c(1, 0, 1, 2)
     ),

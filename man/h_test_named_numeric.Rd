@@ -38,7 +38,7 @@ Names provided in \code{x} must be identical to the vector \code{identical.to}.
 Use this argument instead of \code{permutation.of} if the order of the names is relevant.}
 
 \item{disjunct.from}{[\code{character}]\cr
-Names provided in \code{x} must may not be present in the vector \code{disjunct.from}.}
+Names provided in \code{x} must may not be present in the vector \code{identical.to}.}
 
 \item{lower}{[\code{numeric(1)}]\cr
 Lower value all elements of \code{x} must be greater than or equal to.}

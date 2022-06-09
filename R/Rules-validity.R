@@ -88,36 +88,45 @@ v_stopping_mtd_cv <- function(object) {
 
 # nolint end
 
-#' @describeIn v_NextBestNCRMLoss validates that the [`.NextBestNCRMLoss`] object
+#' These functions are only used internally to validate the format of an input
+#' [`NextBestNCRMLoss`] or inherited classes and therefore not exported.
+
+
+#' @name v_NextBestNCRMLoss
+#' @param object (`NextBestNCRMLoss`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_NextBestNCRMLoss validates the [`.NextBestNCRMLoss`] object
 #'   contains valid probability target and percentage threshold.
 v_NextBestNCRMLoss <- function(object) {
+  v <- Validate()
 
-    v <- Validate()
-
+  v$check(
+    is.probRange(object@target),
+    "target has to be a probability range"
+  )
+  v$check(
+    is.probRange(object@overdose),
+    "overdose has to be a probability range"
+  )
+  if (object@unacceptable[1] != 1) {
     v$check(
-      is.probRange(object@target),
-      "target has to be a probability range"
+      is.probRange(object@unacceptable),
+      "unacceptable has to be a probability range"
     )
-    v$check(
-      is.probRange(object@overdose),
-      "overdose has to be a probability range"
-    )
-    if (object@unacceptable[1] != 1) {
-      v$check(
-        is.probRange(object@unacceptable),
-        "unacceptable has to be a probability range"
-      )
-    }
-
-    v$check(
-      is.probability(object@maxOverdoseProb),
-      "maxOverdoseProb has to be a probability"
-    )
-
-    v$check(
-      all(!(object@losses < 0)),
-      "losses has to be a vector of non-negative elements"
-    )
-
-    v$result()
   }
+
+#  v$check(
+#   is.probability(object@maxOverdoseProb),
+#    "maxOverdoseProb has to be a probability"
+#  )
+
+ # v$check(
+ #   all(!(object@losses < 0)),
+ #   "losses has to be a vector of non-negative elements"
+ # )
+
+  v$result()
+}
