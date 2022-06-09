@@ -1,4 +1,6 @@
 # Version 1.0.9000.9033
+* Created one `update` method for `ModelPseudo` and removed specific methods for
+  `LogisticIndepBeta`, `Effloglog`, `EffFlexi`. 
 * Renamed arguments of `gain` function.
 * Renamed generic function and method `biomLevel` to `biomarker`.
   Changed its arguments.
