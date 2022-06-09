@@ -206,10 +206,11 @@ NextBestNCRM <- function(target,
       maxOverdoseProb = 0.25,
       losses = c(1, 0, 1, 2)
     ),
-    contains = list("NextBestNCRM")
+    contains = list("NextBestNCRM"),
+    validity = v_NextBestNCRMLoss
 
   )
-validObject(.NextBestNCRMLoss())
+
 
 ##' Initialization function for "NextBestNCRMLoss"
 ##'

@@ -151,15 +151,15 @@ v_NextBestNCRMLoss <- function(object) {
     )
   }
 
-#  v$check(
-#   is.probability(object@maxOverdoseProb),
-#    "maxOverdoseProb has to be a probability"
-#  )
+  v$check(
+    is.probability(object@maxOverdoseProb),
+    "maxOverdoseProb has to be a probability"
+  )
 
- # v$check(
- #   all(!(object@losses < 0)),
- #   "losses has to be a vector of non-negative elements"
- # )
+  v$check(
+    all(!(object@losses < 0)),
+    "losses has to be a vector of non-negative elements"
+  )
 
   v$result()
 }
