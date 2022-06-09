@@ -1,19 +1,54 @@
-# nolint start
+# Obtain the gain value for a given dose, a pseudo DLE and efficacy models
+# as well as DLE and efficacy samples.
+emptydata <- DataDual(doseGrid = seq(25, 300, 25), placebo = FALSE)
+mcmc_opts <- McmcOptions(burnin = 100, step = 2, samples = 200)
 
-##Obtain the gain value for a given dose, a pseudo DLE model, a DLE sample,
-## a pseudo efficacy model and an efficacy sample
-##The DLE model must be from 'ModelTox' class (DLEmodel slot)
-emptydata<- DataDual(doseGrid=seq(25,300,25),placebo=FALSE)
-data<-emptydata
-DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-DLEsamples <- mcmc(data, DLEmodel, McmcOptions(burnin=100,step=2,samples=200))
+# DLE model and samples.
+model_dle <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = emptydata
+)
 
-##The efficacy model must be from 'ModelEff' class (Effmodel slot)
-## The DLE and efficacy samples must be from 'Samples' class (DLEsamples and Effsamples slot)
-Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
-Effsamples <- mcmc(data, Effmodel, McmcOptions(burnin=100,step=2,samples=200))
+samples_dle <- mcmc(emptydata, model_dle, mcmc_opts)
 
-## Given a dose level 75,
-gain(dose=75,DLEmodel=DLEmodel,DLEsamples=DLEsamples,Effmodel=Effmodel,Effsamples=Effsamples)
+# Efficacy model (Effloglog) and samples.
+model_effloglog <- Effloglog(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  nu = c(a = 1, b = 0.025),
+  data = emptydata
+)
 
-# nolint end
+samples_effloglog <- mcmc(emptydata, model_effloglog, mcmc_opts)
+
+# Gain values for dose level 75 and Effloglog efficacy model.
+gain(
+  dose = 75,
+  model_dle = model_dle,
+  samples_dle = samples_dle,
+  model_eff = model_effloglog,
+  samples_eff = samples_effloglog
+)
+
+# Efficacy model (EffFlexi) and samples.
+model_effflexi <- EffFlexi(
+  eff = c(1.223, 2.513),
+  eff_dose = c(25, 300),
+  sigma2W = c(a = 0.1, b = 0.1),
+  sigma2betaW = c(a = 20, b = 50),
+  rw1 = FALSE,
+  data = emptydata
+)
+
+samples_effflexi <- mcmc(emptydata, model_effflexi, mcmc_opts)
+
+# Gain values for dose level 75 and EffFlexi efficacy model.
+gain(
+  dose = 75,
+  model_dle = model_dle,
+  samples_dle = samples_dle,
+  model_eff = model_effflexi,
+  samples_eff = samples_effflexi
+)

@@ -1,27 +1,8 @@
 #' @include Model-methods.R
 #' @include Samples-class.R
 #' @include Rules-class.R
+#' @include helpers_rules.R
 NULL
-
-#' Calculating the Information Theoretic Distance
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' Helper function which provides the value of the
-#' divergence as given by equation in (7) in the reference at
-#' https://doi.org/10.1002/sim.8450.
-#'
-#' @param prob (`numeric`)\cr probability of a DLT occurring.
-#' @param target (`numeric `)\cr target probability of a DLT.
-#' @param asymmetry (`number`)\cr describes the rate of penalization
-#'   for overly toxic does, range 0 to 2.
-#'
-#' @export
-#' @examples
-#' h_info_theory_dist(c(0.5, 0.2), c(0.5, 0.1), 1.2)
-h_info_theory_dist <- function(prob, target, asymmetry) {
-  ((prob - target)^2) / (((prob^asymmetry) * (1 - prob)^(2 - asymmetry)))
-}
 
 # nolint start
 
@@ -207,7 +188,7 @@ setMethod("nextBest",
                       rep(TRUE, length(data@doseGrid))
 
               dosesOK <- which(dosesBelowLimit &
-                               (probOverdose < nextBest@maxOverdoseProb))
+                               (probOverdose < nextBest@max_overdose_prob))
 
               ## check if there are doses that are OK
               if(length(dosesOK))
@@ -294,7 +275,7 @@ setMethod("nextBest",
                                        ylim(c(0, 100))
 
               plot2 <- plot2 +
-                  geom_hline(yintercept=nextBest@maxOverdoseProb * 100,
+                  geom_hline(yintercept=nextBest@max_overdose_prob * 100,
                              lwd=1.1,
                              lty=2,
                              colour="black")
@@ -628,22 +609,10 @@ setMethod("nextBest",
                       warning("doselimit is empty, therefore no dose limit will be applied")
                   }
 
-              ## get the biomarker level samples
-              ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
-                                         ncol=data@nGrid)
-
-              ## evaluate the biomLevels, for all samples.
-              for(i in seq_len(data@nGrid))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
-                                                     xLevel=i,
-                                                     model,
-                                                     samples)
-              }
-              ## biomLevelSamples <- samples@data$betaW
+            ## get the biomarker level samples
+            ## at the dose grid points.
+            biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
+            ## biomLevelSamples <- samples@data$betaW
 
 
               ## now get samples from the dose-tox
@@ -662,7 +631,7 @@ setMethod("nextBest",
               }
 
               ## if target is relative to maximum
-              if(nextBest@scale == "relative")
+              if(nextBest@target_relative)
               {
 
                 # If there is an 'Emax' parameter, target biomarker level will
@@ -727,7 +696,7 @@ setMethod("nextBest",
                       rep(TRUE, length(data@doseGrid))
 
               dosesOK <- which(dosesBelowLimit &
-                               (probOverdose < nextBest@maxOverdoseProb))
+                               (probOverdose < nextBest@max_overdose_prob))
 
               ## check if there are doses that are OK
               if(length(dosesOK))
@@ -744,7 +713,7 @@ setMethod("nextBest",
                   ## threshold, then take that level, otherwise stick to the
                   ## maximum level that is OK:
                   doseLevel <-
-                      if(max(probTarget[dosesOK]) > nextBest@targetThresh)
+                      if(max(probTarget[dosesOK]) > nextBest@target_thresh)
                       {
                           which.max(probTarget[dosesOK])
                       } else {
@@ -820,7 +789,7 @@ setMethod("nextBest",
                                        ylim(c(0, 100))
 
               plot2 <- plot2 +
-                  geom_hline(yintercept=nextBest@maxOverdoseProb * 100,
+                  geom_hline(yintercept=nextBest@max_overdose_prob * 100,
                              lwd=1.1,
                              lty=2,
                              colour="black")
@@ -1921,23 +1890,10 @@ setMethod("stopTrial",
                     data="ANY"),
           def=
           function(stopping, dose, samples, model, data, ...){
-              ## compute the target biomarker prob at this dose
-
-              ## get the biomarker level samples
-              ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sampleSize(samples@options),
-                                         ncol=data@nGrid)
-
-              ## evaluate the biomLevels, for all samples.
-              for(i in seq_len(data@nGrid))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
-                                                     xLevel=i,
-                                                     model,
-                                                     samples)
-              }
+            ## compute the target biomarker prob at this dose
+            ## get the biomarker level samples
+            ## at the dose grid points.
+            biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
 
               ## if target is relative to maximum
               if(stopping@scale == "relative")
@@ -2608,7 +2564,7 @@ setMethod("nextBest",
 
               ##Define gain function
               Gainfun<-function(DOSE){
-                -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
+                -gain(DOSE,model_dle=model,model_eff=Effmodel)
               }
 
               #if(data@placebo) {
@@ -2725,8 +2681,8 @@ setMethod("nextBest",
                                             efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
-                                                 DLEmodel=model,
-                                                 Effmodel=Effmodel)))
+                                                 model_dle=model,
+                                                 model_eff=Effmodel)))
               gdata<-with(plotData,
                           data.frame(x=dose,
                                      y=values,
@@ -2909,10 +2865,10 @@ setMethod("nextBest",
                 ## Now we want to evaluate for the
                 ## following dose:
                 GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel=model,
-                                         DLEsamples=samples,
-                                         Effmodel=Effmodel,
-                                         Effsamples=Effsamples)
+                                         model,
+                                         samples,
+                                         Effmodel,
+                                         Effsamples)
               }
 
               ##Find the maximum gain value samples
@@ -3144,10 +3100,10 @@ setMethod("nextBest",
                   ## Now we want to evaluate for the
                   ## following dose:
                   GainSamples[, i] <- gain(dose=points[i],
-                                           DLEmodel=model,
-                                           DLEsamples=samples,
-                                           Effmodel=Effmodel,
-                                           Effsamples=Effsamples)
+                                           model,
+                                           samples,
+                                           Effmodel,
+                                           Effsamples)
                 }
 
                 ##Find the maximum gain value samples
@@ -3474,10 +3430,10 @@ setMethod("stopTrial",
                 ## Now we want to evaluate for the
                 ## following dose:
                 GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel=model,
-                                         DLEsamples=samples,
-                                         Effmodel=Effmodel,
-                                         Effsamples=Effsamples)
+                                         model,
+                                         samples,
+                                         Effmodel,
+                                         Effsamples)
               }
 
               ##Find the maximum gain value samples
@@ -3559,7 +3515,7 @@ setMethod("stopTrial",
 
               ##Find the dose with maximum gain value
               Gainfun<-function(DOSE){
-                -gain(DOSE,DLEmodel=model,Effmodel=Effmodel)
+                -gain(DOSE,model_dle=model,model_eff=Effmodel)
               }
 
               #if(data@placebo) {

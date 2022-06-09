@@ -1,4 +1,12 @@
-# Version 1.0.9000.9025
+# Version 1.0.9000.9034
+* Created one `update` method for `ModelPseudo` and removed specific methods for
+  `LogisticIndepBeta`, `Effloglog`, `EffFlexi`. 
+* Renamed arguments of `gain` function.
+* Renamed generic function and method `biomLevel` to `biomarker`.
+  Changed its arguments.
+* Renamed several slots in `NextBestNCRM` and `NextBestDualEndpoint` classes.
+* Changed the `scale` character slot into `target_relative` flag slot in
+  `NextBestDualEndpoint` class.
 * Renamed the argument of `derive` function from `mtdSamples` to `mtd_samples` in
   `NextBestMTD` class.
 * Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel`

@@ -1082,30 +1082,6 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
   )
 })
 
-
-## Information Theory Approach
-
-test_that("Information Theory approach returns correct next dose", {
-  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  samples <- samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
-
-  # set up the model
-  sigma_0 <- 1.0278
-  sigma_1 <- 1.65
-  rho <- 0.5
-  cov <- matrix(c(sigma_0^2, rho * sigma_0 * sigma_1, rho * sigma_0 * sigma_1, sigma_1^2),
-    nrow = 2
-  )
-  model <- LogisticLogNormal(mean = c(-4.47, 0.0033), cov = cov)
-
-  data <- h_get_data(placebo = FALSE)
-
-  result <- nextBest(nextBest = nb_it, doselimit = 75, samples = samples, model = model, data = data)
-  expected <- list(value = c(25))
-
-  expect_identical(result, expected)
-})
-
 ## OneParExpNormalPrior ----
 
 test_that("prob-OneParExpNormalPrior works as expected", {
@@ -1135,5 +1111,145 @@ test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid s
   expect_error(
     prob(-3, model, samples),
     "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+# biomarker ----
+
+## DualEndpoint ----
+
+test_that("biomarker-DualEndpoint works as expected", {
+  beta_w <- matrix(c(0.54, 0.61, 0.44, 0.62, 0.66, 0.41, 0.7, 0.56), nrow = 4)
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaW = beta_w))
+
+  result <- biomarker(xLevel = 2L, model, samples)
+  expect_identical(result, beta_w[, 2])
+})
+
+test_that("biomarker-DualEndpoint works as expected for xLevel vector", {
+  beta_w <- matrix(c(0.54, 0.61, 0.44, 0.62, 0.66, 0.41, 0.7, 0.56), nrow = 4)
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaW = beta_w))
+
+  result <- biomarker(xLevel = 1:2, model, samples)
+  expect_identical(result, beta_w)
+})
+
+test_that("biomarker-DualEndpoint throws the error when xLevel is not valid", {
+  beta_w <- matrix(c(0.54, 0.61, 0.44, 0.62, 0.66, 0.41, 0.7, 0.56), nrow = 4)
+  model <- h_get_dual_endpoint()
+  samples <- h_as_samples(list(betaW = beta_w))
+
+  expect_error(
+    biomarker(xLevel = 1.5, model, samples),
+    "unable to find an inherited method for function 'biomarker' *"
+  )
+})
+
+# gain ----
+
+## ModelTox-ModelEff ----
+
+test_that("gain-ModelTox-ModelEff works as expected", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = TRUE)
+  samples_dle <- h_as_samples(
+    list(phi1 = c(1.72, -1.45, -4.52, -1.54), phi2 = c(0.17, 0.79, -0.11, 0.06))
+  )
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-1.08, -0.87, -1.91, -1.51),
+      theta2 = c(1.93, 1.51, 2, 1.73),
+      nu = c(6.48, 63.36, 2.14, 20.75)
+    )
+  )
+
+  result <- gain(dose = 75, model_dle, samples_dle, model_eff, samples_eff)
+  expect_snapshot(result)
+})
+
+test_that("gain-ModelTox-ModelEff works as expected for scalar samples", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = TRUE)
+  samples_dle <- h_as_samples(list(phi1 = 1.72, phi2 = 0.17))
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+  samples_eff <- h_as_samples(list(theta1 = -1.08, theta2 = 1.93, nu = 6.48))
+
+  result <- gain(dose = c(50, 75), model_dle, samples_dle, model_eff, samples_eff)
+  expect_equal(result, c(0.1325413, 0.1388810), tolerance = 10e-7)
+})
+
+test_that("gain-ModelTox-ModelEff throws the error when dose is not a valid scalar", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = TRUE)
+  samples_dle <- h_as_samples(list(phi1 = c(1.72, -1.45), phi2 = c(0.17, 0.79)))
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+  samples_eff <- h_as_samples(
+    list(theta1 = c(-1.08, -0.87), theta2 = c(1.93, 1.51), nu = c(6.48, 63.36))
+  )
+
+  expect_error(
+    gain(dose = c(50, 75), model_dle, samples_dle, model_eff, samples_eff),
+    "Assertion on 'dose' failed: Must have length 1, but has length 2."
+  )
+})
+
+## ModelTox-Effloglog-noSamples ----
+
+test_that("gain-ModelTox-Effloglog-noSamples works as expected", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = FALSE)
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+
+  result <- gain(dose = 75, model_dle = model_dle, model_eff = model_eff)
+  expect_equal(result, 1.034771, tolerance = 10e-7)
+})
+
+test_that("gain-ModelTox-Effloglog-noSamples works as expected for vector dose", {
+  model_dle <- h_get_logistic_indep_beta(emptydata = FALSE)
+  model_eff <- h_get_eff_log_log(emptydata = TRUE)
+
+  result <- gain(dose = c(50, 75), model_dle = model_dle, model_eff = model_eff)
+  expect_equal(result, c(1.090325, 1.034771), tolerance = 10e-7)
+})
+
+# update ----
+
+## ModelPseudo ----
+
+test_that("update-ModelPseudo works as expected for LogisticIndepBeta", {
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  new_data <- h_get_data()
+
+  result <- update(object = model, data = new_data)
+  model@phi1 <- -5.090751
+  model@phi2 <- 0.933697
+  model@Pcov[] <- matrix(c(9.455109, -2.023160, -2.023160, 0.452532), nrow = 2)
+  model@data <- new_data
+  expect_equal(result, model, tolerance = 10e-8)
+})
+
+test_that("update-ModelPseudo works as expected for Effloglog", {
+  model <- h_get_eff_log_log(emptydata = TRUE)
+  new_data <- h_get_data_dual()
+
+  result <- update(object = model, data = new_data)
+  expect_snapshot(result)
+})
+
+test_that("update-ModelPseudo works as expected for EffFlexi", {
+  model <- h_get_eff_flexi(emptydata = TRUE)
+  new_data <- h_get_data_dual()
+
+  result <- update(object = model, data = new_data)
+  expect_snapshot(result)
+})
+
+test_that("update-ModelPseudo throws the error when data is not an object of Data class", {
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  new_data <- h_get_data()
+  new_data <- h_slots(new_data, names = slotNames(new_data)) # a list.
+
+  expect_error(
+    update(object = model, data = new_data),
+    "Assertion on 'data' failed: Must inherit from class 'Data' *"
   )
 })

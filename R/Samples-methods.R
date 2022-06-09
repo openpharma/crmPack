@@ -253,19 +253,7 @@ setMethod("fit",
 
               ## get the biomarker level samples
               ## at the dose grid points.
-              biomLevelSamples <- matrix(nrow=sampleSize(object@options),
-                                         ncol=data@nGrid)
-
-              ## evaluate the biomLevels, for all samples.
-              for(i in seq_len(data@nGrid))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  biomLevelSamples[, i] <- biomLevel(dose=data@doseGrid[i],
-                                                     xLevel=i,
-                                                     model,
-                                                     object)
-              }
+              biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples = object)
 
               ## extract middle curve
               middleCurve <- apply(biomLevelSamples, 2L, FUN=middle)
@@ -527,20 +515,7 @@ setMethod("plot",
                       1:max(data@xLevel)
 
               ## get the plot data for the biomarker plot
-              functionSamples <- matrix(nrow=sampleSize(x@options),
-                                        ncol=length(xLevels))
-
-              ## evaluate the biomLevels, for all samples.
-              for(i in seq_along(xLevels))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  functionSamples[, i] <-
-                      biomLevel(dose=data@doseGrid[xLevels[i]],
-                                xLevel=xLevels[i],
-                                model=y,
-                                samples=x)
-              }
+              functionSamples <- biomarker(xLevel = xLevels, model = y, samples = x)
 
               ## extract mean curve
               meanCurve <- colMeans(functionSamples)
@@ -835,10 +810,10 @@ setMethod("fitGain",
                 ## Now we want to evaluate for the
                 ## following dose:
                 GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel=DLEmodel,
-                                         DLEsamples=DLEsamples,
-                                         Effmodel=Effmodel,
-                                         Effsamples=Effsamples)
+                                         DLEmodel,
+                                         DLEsamples,
+                                         Effmodel,
+                                         Effsamples)
               }
 
               ## extract middle curve
@@ -1267,8 +1242,8 @@ setMethod("plotGain",
                                             efficacy(dose=data@doseGrid,
                                                    model=Effmodel),
                                             gain(dose=data@doseGrid,
-                                                 DLEmodel=DLEmodel,
-                                                 Effmodel=Effmodel)))
+                                                 model_dle=DLEmodel,
+                                                 model_eff=Effmodel)))
               gdata<-with(plotData,
                           data.frame(x=dose,
                                      y=values,
@@ -1291,7 +1266,7 @@ setMethod("plotGain",
               TD30 <- dose(x=0.3,model=DLEmodel)
 
               Gainfun<-function(DOSE){
-                -gain(DOSE,DLEmodel=DLEmodel,Effmodel=Effmodel)
+                -gain(DOSE,model_dle=DLEmodel,model_eff=Effmodel)
               }
               Gstar<-(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$par)
               MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$value)

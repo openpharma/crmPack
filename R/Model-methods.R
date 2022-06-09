@@ -2,9 +2,217 @@
 #' @include Samples-class.R
 NULL
 
-# generic ----
+# doseFunction ----
 
-## dose ----
+## generic ----
+
+#' Getting the Dose Function for a Given Model Type
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A function that returns a [dose()] method that computes the dose reaching a
+#' specific target value of a given independent variable, based on the model
+#' specific parameters.
+#'
+#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
+#' @param ... model specific parameters.
+#'
+#' @return A [dose()] method that computes doses.
+#'
+#' @seealso [dose()], [probFunction()].
+#'
+#' @export
+#' @example examples/Model-method-doseFunction.R
+#'
+setGeneric(
+  name = "doseFunction",
+  def = function(model, ...) {
+    standardGeneric("doseFunction")
+  },
+  valueClass = "function"
+)
+
+## GeneralModel ----
+
+#' @describeIn doseFunction
+#'
+#' @aliases doseFunction-GeneralModel
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "GeneralModel",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(x) {
+      dose(x, model, samples)
+    }
+  }
+)
+
+## ModelPseudo ----
+
+#' @describeIn doseFunction
+#'
+#' @aliases doseFunction-ModelPseudo
+#' @export
+#'
+setMethod(
+  f = "doseFunction",
+  signature = "ModelPseudo",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(x) {
+      dose(x, model, samples)
+    }
+  }
+)
+
+# probFunction ----
+
+## generic ----
+
+#' Getting the Prob Function for a Given Model Type
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A function that returns a [prob()] function that computes the toxicity
+#' probabilities for a given dose level, based on the model specific parameters.
+#'
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
+#' @param ... model specific parameters.
+#'
+#' @return A [prob()] function that computes toxicity probabilities.
+#'
+#' @seealso [prob()], [doseFunction()].
+#'
+#' @export
+#' @example examples/Model-method-probFunction.R
+#'
+setGeneric(
+  name = "probFunction",
+  def = function(model, ...) {
+    standardGeneric("probFunction")
+  },
+  valueClass = "function"
+)
+
+## GeneralModel ----
+
+#' @describeIn probFunction
+#'
+#' @aliases probFunction-GeneralModel
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "GeneralModel",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose, model, samples)
+    }
+  }
+)
+
+## ModelTox ----
+
+#' @describeIn probFunction
+#'
+#' @aliases probFunction-ModelTox
+#' @export
+#'
+setMethod(
+  f = "probFunction",
+  signature = "ModelTox",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      prob(dose, model, samples)
+    }
+  }
+)
+
+# efficacyFunction ----
+
+## generic ----
+
+#' Getting the Efficacy Function for a Given Model Type
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' A function that returns an [efficacy()] function that computes expected
+#' efficacy for a given dose level, based on the model specific parameters.
+#'
+#' @param model (`ModelEff`)\cr the model.
+#' @param ... model specific parameters.
+#'
+#' @return A [efficacy()] function that computes expected efficacy.
+#'
+#' @seealso [efficacy()].
+#'
+#' @export
+#' @example examples/Model-method-efficacyFunction.R
+#'
+setGeneric(
+  name = "efficacyFunction",
+  def = function(model, ...) {
+    standardGeneric("efficacyFunction")
+  },
+  valueClass = "function"
+)
+
+## ModelEff ----
+
+#' @describeIn efficacyFunction
+#'
+#' @aliases efficacyFunction-ModelEff
+#' @export
+#'
+setMethod(
+  f = "efficacyFunction",
+  signature = "ModelEff",
+  definition = function(model, ...) {
+    model_params <- list(...)
+    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
+
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    function(dose) {
+      efficacy(dose, model, samples)
+    }
+  }
+)
+
+# dose ----
+
+## generic ----
 
 #' Computing the Doses for a given independent variable, Model and Samples
 #'
@@ -38,7 +246,7 @@ NULL
 #'   (dose-limiting events)/toxicity model.
 #' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute the resulting doses.
+#'   used to compute the resulting doses. Can also be missing for some models.
 #' @param ... model specific parameters when `samples` are not used.
 #'
 #' @return A `number` or `numeric` vector with the doses.
@@ -61,320 +269,7 @@ setGeneric(
   valueClass = "numeric"
 )
 
-## doseFunction ----
-
-#' Getting the Dose Function for a Given Model Type
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' A function that returns a [dose()] method that computes the dose reaching a
-#' specific target value of a given independent variable, based on the model
-#' specific parameters.
-#'
-#' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
-#' @param ... model specific parameters.
-#'
-#' @return A [dose()] method that computes doses.
-#'
-#' @seealso [dose()], [probFunction()].
-#'
-#' @export
-#' @example examples/Model-method-doseFunction.R
-#'
-setGeneric(
-  name = "doseFunction",
-  def = function(model, ...) {
-    standardGeneric("doseFunction")
-  },
-  valueClass = "function"
-)
-
-## prob ----
-
-#' Computing Toxicity Probabilities for a Given Dose, Model and Samples
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' A function that computes the probability of the occurrence of a DLE at a
-#' specified dose level, based on the model parameters (samples).
-#'
-#' @details The `prob()` function computes the probability of toxicity for given
-#'   doses, using samples of the model parameter(s).
-#'   If you work with multivariate model parameters, then assume that your model
-#'   specific `prob()` method receives a samples matrix where the rows
-#'   correspond to the sampling index, i.e. the layout is then
-#'   `nSamples x dimParameter`.
-#'
-#' @note The [prob()] and [dose()] functions are the inverse of
-#'   each other, for all [dose()] methods for which its first argument, i.e. a
-#'   given independent variable that dose depends on, represents toxicity
-#'   probability.
-#'
-#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if number of samples in `samples` is greater than
-#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
-#'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
-#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
-#'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
-#' @param samples (`Samples`)\cr the samples of model's parameters that will be
-#'   used to compute toxicity probabilities.
-#' @param ... model specific parameters when `samples` are not used.
-#'
-#' @return A `proportion` or `numeric` vector with the toxicity probabilities.
-#'   If non-scalar `samples` were used, then every element in the returned vector
-#'   corresponds to one element of a sample. Hence, in this case, the output
-#'   vector is of the same length as the sample vector. If scalar `samples` were
-#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
-#'   then the output is of the same length as the length of the `dose`.
-#'
-#' @seealso [probFunction()], [dose()], [efficacy()].
-#'
-#' @export
-#' @example examples/Model-method-prob.R
-#'
-setGeneric(
-  name = "prob",
-  def = function(dose, model, samples, ...) {
-    standardGeneric("prob")
-  },
-  valueClass = "numeric"
-)
-
-## probFunction ----
-
-#' Getting the Prob Function for a Given Model Type
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' A function that returns a [prob()] function that computes the toxicity
-#' probabilities for a given dose level, based on the model specific parameters.
-#'
-#' @param model (`GeneralModel` or `ModelTox`)\cr the model.
-#' @param ... model specific parameters.
-#'
-#' @return A [prob()] function that computes toxicity probabilities.
-#'
-#' @seealso [prob()], [doseFunction()].
-#'
-#' @export
-#' @example examples/Model-method-probFunction.R
-#'
-setGeneric(
-  name = "probFunction",
-  def = function(model, ...) {
-    standardGeneric("probFunction")
-  },
-  valueClass = "function"
-)
-
-## efficacy ----
-
-#' Computing Expected Efficacy for a Given Dose, Model and Samples
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' A function that computes the value of expected efficacy at a specified dose
-#' level, based on the model specific parameters. The model parameters (samples)
-#' are obtained based on prior specified in form of pseudo data combined with
-#' observed responses (if any).
-#'
-#' @details The `efficacy()` function computes the expected efficacy for given
-#'   doses, using samples of the model parameter(s).
-#'   If you work with multivariate model parameters, then assume that your model
-#'   specific `efficacy()` method receives a samples matrix where the rows
-#'   correspond to the sampling index, i.e. the layout is then
-#'   `nSamples x dimParameter`.
-#'
-#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if number of samples in `samples` is greater than
-#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
-#'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
-#' @param model (`ModelEff`)\cr the efficacy model with pseudo data prior.
-#' @param samples (`Samples`)\cr samples of model's parameters that will be
-#'   used to compute toxicity probabilities.
-#' @param ... model specific parameters when `samples` are not used.
-#'
-#' @return A `numeric` vector with the values of expected efficacy.
-#'   If non-scalar `samples` were used, then every element in the returned vector
-#'   corresponds to one element of a sample. Hence, in this case, the output
-#'   vector is of the same length as the sample vector. If scalar `samples` were
-#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
-#'   then the output is of the same length as the length of the `dose`.
-#'
-#' @seealso [dose()], [prob()].
-#'
-#' @export
-#' @example examples/Model-method-efficacy.R
-setGeneric(
-  name = "efficacy",
-  def = function(dose, model, samples, ...) {
-    standardGeneric("efficacy")
-  },
-  valueClass = "numeric"
-)
-
-## efficacyFunction ----
-
-#' Getting the Efficacy Function for a Given Model Type
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' A function that returns an [efficacy()] function that computes expected
-#' efficacy for a given dose level, based on the model specific parameters.
-#'
-#' @param model (`ModelEff`)\cr the model.
-#' @param ... model specific parameters.
-#'
-#' @return A [efficacy()] function that computes expected efficacy.
-#'
-#' @seealso [efficacy()].
-#'
-#' @export
-#' @example examples/Model-method-efficacyFunction.R
-#'
-setGeneric(
-  name = "efficacyFunction",
-  def = function(model, ...) {
-    standardGeneric("efficacyFunction")
-  },
-  valueClass = "function"
-)
-
-# GeneralModel ----
-
-## doseFunction ----
-
-#' @describeIn doseFunction
-#'
-#' @aliases doseFunction-GeneralModel
-#' @export
-#'
-setMethod(
-  f = "doseFunction",
-  signature = "GeneralModel",
-  definition = function(model, ...) {
-    model_params <- list(...)
-    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
-
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    function(x) {
-      dose(x, model, samples)
-    }
-  }
-)
-
-## probFunction ----
-
-#' @describeIn probFunction
-#'
-#' @aliases probFunction-GeneralModel
-#' @export
-#'
-setMethod(
-  f = "probFunction",
-  signature = "GeneralModel",
-  definition = function(model, ...) {
-    model_params <- list(...)
-    assert_subset(names(model_params), model@sample, empty.ok = FALSE)
-
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    function(dose) {
-      prob(dose, model, samples)
-    }
-  }
-)
-
-# ModelPseudo ----
-
-## doseFunction ----
-
-#' @describeIn doseFunction
-#'
-#' @aliases doseFunction-ModelPseudo
-#' @export
-#'
-setMethod(
-  f = "doseFunction",
-  signature = "ModelPseudo",
-  definition = function(model, ...) {
-    model_params <- list(...)
-    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
-
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    function(x) {
-      dose(x, model, samples)
-    }
-  }
-)
-
-# ModelTox ----
-
-## probFunction ----
-
-#' @describeIn probFunction
-#'
-#' @aliases probFunction-ModelTox
-#' @export
-#'
-setMethod(
-  f = "probFunction",
-  signature = "ModelTox",
-  definition = function(model, ...) {
-    model_params <- list(...)
-    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
-
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    function(dose) {
-      prob(dose, model, samples)
-    }
-  }
-)
-
-# ModelEff ----
-
-## efficacyFunction ----
-
-#' @describeIn efficacyFunction
-#'
-#' @aliases efficacyFunction-ModelEff
-#' @export
-#'
-setMethod(
-  f = "efficacyFunction",
-  signature = "ModelEff",
-  definition = function(model, ...) {
-    model_params <- list(...)
-    assert_character(names(model_params), len = length(model_params), any.missing = FALSE, unique = TRUE)
-
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    function(dose) {
-      efficacy(dose, model, samples)
-    }
-  }
-)
-
-# Model (TO REMOVE SOON) ----
-
-## dose ----
+## Model (TO REMOVE SOON) ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -399,32 +294,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-Model
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "Model",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples, ...) {
-    assert_number(dose, lower = 0L)
-    prob_fun <- model@prob
-    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(samples@data[prob_args_names], dose = dose)
-    do.call(prob_fun, prob_args)
-  }
-)
-
-# LogisticNormal ----
-
-## dose ----
+## LogisticNormal ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -450,34 +320,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticNormal
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticNormal",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    plogis(alpha0 + alpha1 * log(dose / ref_dose))
-  }
-)
-
-# LogisticLogNormal ----
-
-## dose ----
+## LogisticLogNormal ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -503,34 +346,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticLogNormal
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticLogNormal",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    plogis(alpha0 + alpha1 * log(dose / ref_dose))
-  }
-)
-
-# LogisticLogNormalSub ----
-
-## dose ----
+## LogisticLogNormalSub ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -556,34 +372,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticLogNormalSub
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticLogNormalSub",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- model@ref_dose
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    plogis(alpha0 + alpha1 * (dose - ref_dose))
-  }
-)
-
-# ProbitLogNormal ----
-
-## dose ----
+## ProbitLogNormal ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -609,34 +398,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-ProbitLogNormal
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "ProbitLogNormal",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    pnorm(alpha0 + alpha1 * log(dose / ref_dose))
-  }
-)
-
-# ProbitLogNormalRel ----
-
-## dose ----
+## ProbitLogNormalRel ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -662,34 +424,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-ProbitLogNormalRel
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "ProbitLogNormalRel",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    pnorm(alpha0 + alpha1 * (dose / ref_dose))
-  }
-)
-
-# LogisticKadane ----
-
-## dose ----
+## LogisticKadane ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -717,36 +452,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticKadane
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticKadane",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("rho0", "gamma"), names(samples@data))
-    rho0 <- samples@data$rho0
-    gamma <- samples@data$gamma
-    theta <- model@theta
-    xmin <- model@xmin
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
-
-    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
-    plogis(num / (gamma - xmin))
-  }
-)
-
-# LogisticKadaneBetaGamma ----
-
-## dose ----
+## LogisticKadaneBetaGamma ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -774,36 +480,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticKadaneBetaGamma
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticKadaneBetaGamma",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("rho0", "gamma"), names(samples@data))
-    rho0 <- samples@data$rho0
-    gamma <- samples@data$gamma
-    theta <- model@theta
-    xmin <- model@xmin
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
-
-    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
-    plogis(num / (gamma - xmin))
-  }
-)
-
-# LogisticNormalMixture ----
-
-## dose ----
+## LogisticNormalMixture ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -829,34 +506,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticNormalMixture
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticNormalMixture",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    plogis(alpha0 + alpha1 * log(dose / ref_dose))
-  }
-)
-
-# LogisticNormalFixedMixture ----
-
-## dose ----
+## LogisticNormalFixedMixture ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -882,34 +532,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticNormalFixedMixture
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticNormalFixedMixture",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    plogis(alpha0 + alpha1 * log(dose / ref_dose))
-  }
-)
-
-# LogisticLogNormalMixture ----
-
-## dose ----
+## LogisticLogNormalMixture ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -929,36 +552,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-LogisticLogNormalMixture
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticLogNormalMixture",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    alpha0 <- samples@data$alpha0
-    alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
-    comp <- samples@data$comp
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    sel <- cbind(seq_len(nrow(alpha0)), comp)
-    plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
-  }
-)
-
-# DualEndpoint ----
-
-## dose ----
+## DualEndpoint ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -988,38 +582,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-DualEndpoint
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "DualEndpoint",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset("betaZ", names(samples@data))
-    betaZ <- samples@data$betaZ
-    ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
-
-    stand_dose <- if (model@use_log_dose) {
-      log(dose / ref_dose)
-    } else {
-      dose / ref_dose
-    }
-    pnorm(betaZ[, 1] + betaZ[, 2] * stand_dose)
-  }
-)
-
-# LogisticIndepBeta ----
-
-## dose ----
+## LogisticIndepBeta ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -1045,7 +608,7 @@ setMethod(
   }
 )
 
-## dose-noSamples ----
+## LogisticIndepBeta-noSamples ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -1074,65 +637,7 @@ setMethod(
   }
 )
 
-## prob ----
-
-#' @describeIn prob compute toxicity probabilities of the occurrence of a DLE at
-#' a specified dose level, based on the samples of [`LogisticIndepBeta`] model
-#' parameters.
-#'
-#' @aliases prob-LogisticIndepBeta
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticIndepBeta",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("phi1", "phi2"), names(samples@data))
-    phi1 <- samples@data$phi1
-    phi2 <- samples@data$phi2
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
-
-    log_dose <- log(dose)
-    exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
-  }
-)
-
-## prob-noSamples ----
-
-#' @describeIn prob compute toxicity probabilities of the occurrence of a DLE at
-#' a specified dose level, based on the [`LogisticIndepBeta`] model parameters.
-#' All model parameters (except `dose`) should be present in the `model` object.
-#'
-#' @aliases prob-LogisticIndepBeta-noSamples
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "LogisticIndepBeta",
-    samples = "missing"
-  ),
-  definition = function(dose, model) {
-    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
-
-    model_params <- h_slots(model, c("phi1", "phi2"))
-    assert_subset(c("phi1", "phi2"), names(model_params))
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    prob(dose, model, samples)
-  }
-)
-
-# Effloglog ----
-
-## dose-noSamples ----
+## Effloglog-noSamples ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -1158,64 +663,7 @@ setMethod(
   }
 )
 
-## efficacy ----
-
-#' @describeIn efficacy compute the expected efficacy at a specified dose level,
-#' based on the samples of [`Effloglog`] model parameters.
-#'
-#' @aliases efficacy-Effloglog
-#' @export
-#'
-setMethod(
-  f = "efficacy",
-  signature = signature(
-    dose = "numeric",
-    model = "Effloglog",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset(c("theta1", "theta2"), names(samples@data))
-    theta1 <- samples@data$theta1
-    theta2 <- samples@data$theta2
-    constant <- model@const
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta1))
-
-    theta1 + theta2 * log(log(dose + constant))
-  }
-)
-
-## efficacy-noSamples ----
-
-#' @describeIn efficacy compute the expected efficacy at a specified dose level,
-#' based on the [`Effloglog`] model parameters.
-#' All model parameters (except `dose`) should be present in the `model` object.
-#'
-#' @aliases efficacy-Effloglog-noSamples
-#' @export
-#'
-setMethod(
-  f = "efficacy",
-  signature = signature(
-    dose = "numeric",
-    model = "Effloglog",
-    samples = "missing"
-  ),
-  definition = function(dose, model) {
-    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
-
-    model_params <- h_slots(model, c("theta1", "theta2"))
-    assert_subset(c("theta1", "theta2"), names(model_params))
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
-    efficacy(dose, model, samples)
-  }
-)
-
-# EffFlexi ----
-
-## dose ----
+## EffFlexi ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLE (`x`).
@@ -1250,7 +698,581 @@ setMethod(
   }
 )
 
-## efficacy ----
+## OneParExpNormalPrior ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' @aliases dose-OneParExpNormalPrior
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "OneParExpNormalPrior",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun_inv <- model@skel_fun_inv
+    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha))
+
+    skel_fun_inv(x^(1 / exp(alpha)))
+  }
+)
+
+# prob ----
+
+## generic ----
+
+#' Computing Toxicity Probabilities for a Given Dose, Model and Samples
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A function that computes the probability of the occurrence of a DLE at a
+#' specified dose level, based on the model parameters (samples).
+#'
+#' @details The `prob()` function computes the probability of toxicity for given
+#'   doses, using samples of the model parameter(s).
+#'   If you work with multivariate model parameters, then assume that your model
+#'   specific `prob()` method receives a samples matrix where the rows
+#'   correspond to the sampling index, i.e. the layout is then
+#'   `nSamples x dimParameter`.
+#'
+#' @note The [prob()] and [dose()] functions are the inverse of
+#'   each other, for all [dose()] methods for which its first argument, i.e. a
+#'   given independent variable that dose depends on, represents toxicity
+#'   probability.
+#'
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
+#'   This must be a scalar if number of samples in `samples` is greater than
+#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
+#'   finite length, if there is only one sample in `samples`, or `samples` are
+#'   not used at all, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
+#'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
+#' @param samples (`Samples`)\cr the samples of model's parameters that will be
+#'   used to compute toxicity probabilities. Can also be missing for some models.
+#' @param ... model specific parameters when `samples` are not used.
+#'
+#' @return A `proportion` or `numeric` vector with the toxicity probabilities.
+#'   If non-scalar `samples` were used, then every element in the returned vector
+#'   corresponds to one element of a sample. Hence, in this case, the output
+#'   vector is of the same length as the sample vector. If scalar `samples` were
+#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
+#'   then the output is of the same length as the length of the `dose`.
+#'
+#' @seealso [probFunction()], [dose()], [efficacy()].
+#'
+#' @export
+#' @example examples/Model-method-prob.R
+#'
+setGeneric(
+  name = "prob",
+  def = function(dose, model, samples, ...) {
+    standardGeneric("prob")
+  },
+  valueClass = "numeric"
+)
+
+## Model (TO REMOVE SOON) ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-Model
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "Model",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples, ...) {
+    assert_number(dose, lower = 0L)
+    prob_fun <- model@prob
+    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
+    prob_args <- c(samples@data[prob_args_names], dose = dose)
+    do.call(prob_fun, prob_args)
+  }
+)
+
+## LogisticNormal ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticNormal
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticNormal",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+## LogisticLogNormal ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticLogNormal
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormal",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+## LogisticLogNormalSub ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticLogNormalSub
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalSub",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- model@ref_dose
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * (dose - ref_dose))
+  }
+)
+
+## ProbitLogNormal ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-ProbitLogNormal
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "ProbitLogNormal",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    pnorm(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+## ProbitLogNormalRel ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-ProbitLogNormalRel
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "ProbitLogNormalRel",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    pnorm(alpha0 + alpha1 * (dose / ref_dose))
+  }
+)
+
+## LogisticKadane ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticKadane
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticKadane",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("rho0", "gamma"), names(samples@data))
+    rho0 <- samples@data$rho0
+    gamma <- samples@data$gamma
+    theta <- model@theta
+    xmin <- model@xmin
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
+
+    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
+    plogis(num / (gamma - xmin))
+  }
+)
+
+## LogisticKadaneBetaGamma ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticKadaneBetaGamma
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticKadaneBetaGamma",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("rho0", "gamma"), names(samples@data))
+    rho0 <- samples@data$rho0
+    gamma <- samples@data$gamma
+    theta <- model@theta
+    xmin <- model@xmin
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
+
+    num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
+    plogis(num / (gamma - xmin))
+  }
+)
+
+## LogisticNormalMixture ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticNormalMixture
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+## LogisticNormalFixedMixture ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticNormalFixedMixture
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticNormalFixedMixture",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    plogis(alpha0 + alpha1 * log(dose / ref_dose))
+  }
+)
+
+## LogisticLogNormalMixture ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-LogisticLogNormalMixture
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticLogNormalMixture",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    alpha0 <- samples@data$alpha0
+    alpha1 <- samples@data$alpha1
+    ref_dose <- as.numeric(model@ref_dose)
+    comp <- samples@data$comp
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+
+    sel <- cbind(seq_len(nrow(alpha0)), comp)
+    plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
+  }
+)
+
+## DualEndpoint ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-DualEndpoint
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "DualEndpoint",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("betaZ", names(samples@data))
+    betaZ <- samples@data$betaZ
+    ref_dose <- as.numeric(model@ref_dose)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+
+    stand_dose <- if (model@use_log_dose) {
+      log(dose / ref_dose)
+    } else {
+      dose / ref_dose
+    }
+    pnorm(betaZ[, 1] + betaZ[, 2] * stand_dose)
+  }
+)
+
+## LogisticIndepBeta ----
+
+#' @describeIn prob compute toxicity probabilities of the occurrence of a DLE at
+#' a specified dose level, based on the samples of [`LogisticIndepBeta`] model
+#' parameters.
+#'
+#' @aliases prob-LogisticIndepBeta
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticIndepBeta",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("phi1", "phi2"), names(samples@data))
+    phi1 <- samples@data$phi1
+    phi2 <- samples@data$phi2
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
+
+    log_dose <- log(dose)
+    exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
+  }
+)
+
+## LogisticIndepBeta-noSamples ----
+
+#' @describeIn prob compute toxicity probabilities of the occurrence of a DLE at
+#' a specified dose level, based on the [`LogisticIndepBeta`] model parameters.
+#' All model parameters (except `dose`) should be present in the `model` object.
+#'
+#' @aliases prob-LogisticIndepBeta-noSamples
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "LogisticIndepBeta",
+    samples = "missing"
+  ),
+  definition = function(dose, model) {
+    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
+
+    model_params <- h_slots(model, c("phi1", "phi2"))
+    assert_subset(c("phi1", "phi2"), names(model_params))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    prob(dose, model, samples)
+  }
+)
+
+## OneParExpNormalPrior ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-OneParExpNormalPrior
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "OneParExpNormalPrior",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun <- model@skel_fun
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
+
+    skel_fun(dose)^exp(alpha)
+  }
+)
+
+# efficacy ----
+
+## generic ----
+
+#' Computing Expected Efficacy for a Given Dose, Model and Samples
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A function that computes the value of expected efficacy at a specified dose
+#' level, based on the model specific parameters. The model parameters (samples)
+#' are obtained based on prior specified in form of pseudo data combined with
+#' observed responses (if any).
+#'
+#' @details The `efficacy()` function computes the expected efficacy for given
+#'   doses, using samples of the model parameter(s).
+#'   If you work with multivariate model parameters, then assume that your model
+#'   specific `efficacy()` method receives a samples matrix where the rows
+#'   correspond to the sampling index, i.e. the layout is then
+#'   `nSamples x dimParameter`.
+#'
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
+#'   This must be a scalar if number of samples in `samples` is greater than
+#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
+#'   finite length, if there is only one sample in `samples`, or `samples` are
+#'   not used at all, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model (`ModelEff`)\cr the efficacy model with pseudo data prior.
+#' @param samples (`Samples`)\cr samples of model's parameters that will be
+#'   used to compute expected efficacy values. Can also be missing for some
+#'   models.
+#' @param ... model specific parameters when `samples` are not used.
+#'
+#' @return A `numeric` vector with the values of expected efficacy.
+#'   If non-scalar `samples` were used, then every element in the returned vector
+#'   corresponds to one element of a sample. Hence, in this case, the output
+#'   vector is of the same length as the sample vector. If scalar `samples` were
+#'   used or no `samples` were used, e.g. for pseudo DLE/toxicity `model`,
+#'   then the output is of the same length as the length of the `dose`.
+#'
+#' @seealso [dose()], [prob()].
+#'
+#' @export
+#' @example examples/Model-method-efficacy.R
+setGeneric(
+  name = "efficacy",
+  def = function(dose, model, samples, ...) {
+    standardGeneric("efficacy")
+  },
+  valueClass = "numeric"
+)
+
+## Effloglog ----
+
+#' @describeIn efficacy compute the expected efficacy at a specified dose level,
+#' based on the samples of [`Effloglog`] model parameters.
+#'
+#' @aliases efficacy-Effloglog
+#' @export
+#'
+setMethod(
+  f = "efficacy",
+  signature = signature(
+    dose = "numeric",
+    model = "Effloglog",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset(c("theta1", "theta2"), names(samples@data))
+    theta1 <- samples@data$theta1
+    theta2 <- samples@data$theta2
+    constant <- model@const
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta1))
+
+    theta1 + theta2 * log(log(dose + constant))
+  }
+)
+
+## Effloglog-noSamples ----
+
+#' @describeIn efficacy compute the expected efficacy at a specified dose level,
+#' based on the [`Effloglog`] model parameters.
+#' All model parameters (except `dose`) should be present in the `model` object.
+#'
+#' @aliases efficacy-Effloglog-noSamples
+#' @export
+#'
+setMethod(
+  f = "efficacy",
+  signature = signature(
+    dose = "numeric",
+    model = "Effloglog",
+    samples = "missing"
+  ),
+  definition = function(dose, model) {
+    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
+
+    model_params <- h_slots(model, c("theta1", "theta2"))
+    assert_subset(c("theta1", "theta2"), names(model_params))
+    samples <- Samples(
+      data = model_params,
+      options = McmcOptions(samples = length(model_params[[1]]))
+    )
+    efficacy(dose, model, samples)
+  }
+)
+
+## EffFlexi ----
 
 #' @describeIn efficacy compute the expected efficacy at a specified dose level,
 #' based on the samples of [`EffFlexi`] model parameters.
@@ -1289,315 +1311,187 @@ setMethod(
   }
 )
 
-# OneParExpNormalPrior ----
+# biomarker ----
 
-## dose ----
+## generic ----
 
-#' @describeIn dose compute the dose level reaching a specific target
-#'   probability of the occurrence of a DLE (`x`).
+#' Get the Biomarker Levels for a Given Dual-Endpoint Model, Given Dose Levels and Samples
 #'
-#' @aliases dose-OneParExpNormalPrior
+#' @details This function simply returns a specific columns (with the indices equal
+#' to `xLevel`) of the biomarker samples matrix, which is included in the the
+#' `samples` object.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' @param xLevel (`integer`)\cr the levels for the doses the
+#'   patients have been given w.r.t dose grid. See [`Data`] for more details.
+#' @param model (`DualEndpoint`)\cr the model.
+#' @param samples (`Samples`)\cr the samples of model's parameters that store
+#'   the value of biomarker levels for all doses on the dose grid.
+#' @param ... not used.
+#'
+#' @return The biomarker levels.
+#'
+#' @export
+#' @example examples/Model-method-biomarker.R
+#'
+setGeneric(
+  name = "biomarker",
+  def = function(xLevel, model, samples, ...) {
+    standardGeneric("biomarker")
+  },
+  valueClass = c("numeric", "array")
+)
+
+## DualEndpoint ----
+
+#' @describeIn biomarker
+#'
+#' @aliases biomarker-DualEndpoint
 #' @export
 #'
 setMethod(
-  f = "dose",
+  f = "biomarker",
   signature = signature(
-    x = "numeric",
-    model = "OneParExpNormalPrior",
+    xLevel = "integer",
+    model = "DualEndpoint",
     samples = "Samples"
   ),
-  definition = function(x, model, samples) {
-    assert_subset("alpha", names(samples@data))
-    alpha <- samples@data$alpha
-    skel_fun_inv <- model@skel_fun_inv
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha))
+  def = function(xLevel, model, samples, ...) {
+    assert_integer(
+      xLevel,
+      lower = 1,
+      upper = ncol(samples@data$betaW),
+      any.missing = FALSE,
+      min.len = 1
+    )
 
-    skel_fun_inv(x^(1 / exp(alpha)))
+    samples@data$betaW[, xLevel]
   }
 )
 
-## prob ----
+# gain ----
 
-#' @describeIn prob
+## generic ----
+
+#' Compute Gain Values based on Pseudo DLE and a Pseudo Efficacy Models and
+#' Using Optional Samples.
 #'
-#' @aliases prob-OneParExpNormalPrior
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "OneParExpNormalPrior",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples) {
-    assert_subset("alpha", names(samples@data))
-    alpha <- samples@data$alpha
-    skel_fun <- model@skel_fun
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
-
-    skel_fun(dose)^exp(alpha)
-  }
-)
-
-# NOT CLEANED UP YET! ----
-
-# nolint start
-
-##' Compute the biomarker level for a given dose, given model and samples
-##'
-##' @param dose the dose
-##' @param model the \code{\linkS4class{DualEndpoint}} object
-##' @param samples the \code{\linkS4class{Samples}} object
-##' @param \dots unused
-##'
-##' @export
-##' @keywords methods
-setGeneric("biomLevel",
-           def=
-             function(dose, model, samples, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("biomLevel")
-             },
-           valueClass="numeric")
-
-##' @param xLevel the grid index of \code{dose}
-##' @describeIn biomLevel Here it is very easy, we just return the corresponding
-##' column (index \code{xLevel}) of the biomarker samples matrix, since we save
-##' that in the samples
-##' @example examples/Model-method-biomLevel.R
-setMethod("biomLevel",
-          signature=
-            signature(dose="numeric",
-                      model="DualEndpoint",
-                      samples="Samples"),
-          def=
-            function(dose, model, samples, xLevel, ...){
-
-              return(samples@data$betaW[, xLevel])
-
-            })
-
-## ---------------------------------------------------------------------------------
-## Compute gain value using a Pseudo DLE and a pseduo Efficacy log-log model
-## -------------------------------------------------------------------------------
-
-##' Compute the gain value with a given dose level, given a pseudo DLE model, a DLE sample,
-##' a pseudo Efficacy log-log model and a Efficacy sample
-##'
-##' @param dose the dose
-##' @param DLEmodel the \code{\linkS4class{ModelTox}} object
-##' @param DLEsamples the \code{\linkS4class{Samples}} object (can also be missing)
-##' @param Effmodel the \code{\linkS4class{Effloglog}} or the \code{\linkS4class{EffFlexi}} object
-##' @param Effsamples the \code{\linkS4class{Samples}} object (can also be missing)
-##' @param \dots unused
-##'
-##' @export
-##' @keywords methods
-setGeneric("gain",
-           def=
-             function(dose,DLEmodel,DLEsamples,Effmodel,Effsamples,...){
-               standardGeneric("gain")
-             },
-           valueClass="numeric")
-
-##' @rdname gain
-##' @example examples/Model-method-gain.R
-setMethod("gain",
-          signature=
-            signature(dose="numeric",
-                      DLEmodel="ModelTox",
-                      DLEsamples="Samples",
-                      Effmodel="Effloglog",
-                      Effsamples="Samples"),
-          def=
-            function(dose,DLEmodel,DLEsamples, Effmodel,Effsamples,...){
-
-              DLEret <- prob(dose, DLEmodel, DLEsamples)
-              Effret <- efficacy(dose, Effmodel, Effsamples)
-
-
-              ## return the resulting vector
-              Gainret <- Effret/(1+(DLEret/(1-DLEret)))
-              return(Gainret)
-            })
-
-## ===================================================================
-
-
-##' @describeIn gain Compute the gain given a dose level, a pseduo DLE model, a DLE sample,
-##' the pseudo EffFlexi model and an Efficacy sample
-##' @example examples/Model-method-gainFlexi.R
-setMethod(
-  f = "gain",
-  signature = signature(
-    dose = "numeric",
-    DLEmodel = "ModelTox",
-    DLEsamples = "Samples",
-    Effmodel = "EffFlexi",
-    Effsamples = "Samples"
-  ),
-  definition = function(dose,
-                        DLEmodel,
-                        DLEsamples,
-                        Effmodel,
-                        Effsamples,
-                        ...) {
-    DLEret <- prob(dose, DLEmodel, DLEsamples)
-    Effret <- efficacy(dose, Effmodel, Effsamples)
-    Effret / (1 + (DLEret / (1 - DLEret)))
-  }
-)
-
-##' @describeIn gain Compute the gain value given a dose level, a pseudo DLE model and a pseudo
-##' efficacy model of \code{\linkS4class{Effloglog}} class object without DLE and the efficacy sample
-##' @example examples/Model-method-gainNoSamples.R
-setMethod(
-  f = "gain",
-  signature = signature(
-    dose = "numeric",
-    DLEmodel = "ModelTox",
-    DLEsamples = "missing",
-    Effmodel = "Effloglog",
-    Effsamples = "missing"
-  ),
-  definition = function(dose,
-                        DLEmodel,
-                        Effmodel,
-                        ...) {
-    DLEret <- prob(dose, DLEmodel)
-    Effret <- efficacy(dose, Effmodel)
-    Effret / (1 + (DLEret / (1 - DLEret)))
-  }
-)
-
-## ------------------------------------------------------------------------------------
-## Update Pseduo models object to obtain new modal estimates for pseudo model parameters
-## ------------------------------------------------------------------------------------
-## Update the 'LogisticIndepBeta' model
-## -----------------------------------------------------------------
-
-##' Update method for the 'LogisticIndepBeta'Model class. This is a method to update the modal
-##' estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data
-##' or new observations of responses are available and added in.
-##'
-##' @param object the model of \code{\linkS4class{LogisticIndepBeta}} class object
-##' @param data all currently available of \code{\linkS4class{Data}} class object
-##' @param \dots unused
-##' @return the new \code{\linkS4class{LogisticIndepBeta}} class object
-##'
-##' @example examples/Model-method-updateLogisticIndepBeta.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="LogisticIndepBeta"),
-          def=
-            function(object,
-                     data,
-                     ...){
-              ##Get Pseudo DLE responses (prior) of the model
-
-              PseudoDLE<-object@binDLE
-
-              ##Get Pseudo DLE weights of the DLE responses of the model
-              PseudoDLEweight<-object@DLEweights
-
-
-              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoDLEdose<- object@DLEdose
-
-              ##update the model estimates with data
-              model<- LogisticIndepBeta(binDLE=PseudoDLE,DLEweights=PseudoDLEweight,DLEdose=PseudoDLEdose,data=data)
-
-              ##return the updated model
-              return(model)
-            })
-
-# update-Effloglog ----
-
-#' Updating `Effloglog` Objects
+#' @details This function computes the gain values for a given dose level,
+#' pseudo DLE and Efficacy models as well as a given DLE and Efficacy samples.
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A method that updates existing [`Effloglog`] object with new data.
-#'
-#' @param object (`Effloglog`)\cr object you want to update.
-#' @param data (`DataDual`)\cr all currently available data or responses.
+#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
+#'   This must be a scalar if number of samples in `samples` is greater than
+#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
+#'   finite length, if there is only one sample in `samples`, or `samples` are
+#'   not used at all, as e.g. in case of pseudo DLE
+#'   (dose-limiting events)/toxicity model.
+#' @param model_dle (`ModelTox`)\cr pseudo DLE (dose-limiting events)/toxicity
+#'   model.
+#' @param samples_dle (`Samples`)\cr the samples of model's
+#'   parameters that will be used to compute toxicity probabilities. Can also be
+#'   missing for some models.
+#' @param model_eff (`ModelEff`)\cr the efficacy model with pseudo data prior.
+#' @param samples_eff (`Samples`)\cr samples of model's parameters that will be
+#'   used to compute expected efficacy values. Can also be missing for some
+#'   models.
 #' @param ... not used.
 #'
-#' @return The new, updated [`Effloglog`] object.
+#' @return The gain values.
 #'
-#' @aliases update-Effloglog
 #' @export
-#' @example examples/Model-method-update-Effloglog.R
+#' @example examples/Model-method-gain.R
+#'
+setGeneric(
+  name = "gain",
+  def = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
+    standardGeneric("gain")
+  },
+  valueClass = "numeric"
+)
+
+## ModelTox-ModelEff ----
+
+#' @describeIn gain
+#'
+#' @aliases gain-ModelTox-ModelEff
+#' @export
+#'
+setMethod(
+  f = "gain",
+  signature = signature(
+    dose = "numeric",
+    model_dle = "ModelTox",
+    samples_dle = "Samples",
+    model_eff = "ModelEff",
+    samples_eff = "Samples"
+  ),
+  definition = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
+    dle <- prob(dose, model_dle, samples_dle)
+    eff <- efficacy(dose, model_eff, samples_eff)
+    eff / (1 + (dle / (1 - dle)))
+  }
+)
+
+## ModelTox-ModelEff-noSamples----
+
+#' @describeIn gain Compute the gain value for a given dose level, pseudo DLE
+#'   and Efficacy models without DLE and the Efficacy samples.
+#'
+#' @aliases gain-ModelTox-Effloglog-noSamples
+#' @export
+#' @example examples/Model-method-gainNoSamples.R
+#'
+setMethod(
+  f = "gain",
+  signature = signature(
+    dose = "numeric",
+    model_dle = "ModelTox",
+    samples_dle = "missing",
+    model_eff = "Effloglog",
+    samples_eff = "missing"
+  ),
+  definition = function(dose, model_dle, model_eff, ...) {
+    dle <- prob(dose, model_dle)
+    eff <- efficacy(dose, model_eff)
+    eff / (1 + (dle / (1 - dle)))
+  }
+)
+
+# update ----
+
+## ModelPseudo ----
+
+#' Update method for the [`ModelPseudo`] model class. This is a method to update
+#' the model class slots (estimates, parameters, variables and etc.), when the
+#' new data (e.g. new observations of responses) are available. This method is
+#' mostly used to obtain new modal estimates for pseudo model parameters.
+#'
+#' @param object (`ModelPseudo`)\cr the model to update.
+#' @param data (`Data`)\cr all currently available of data.
+#' @param ... not used.
+#'
+#' @return the new [`ModelPseudo`] class object.
+#'
+#' @aliases update-ModelPseudo
+#' @export
+#' @example examples/Model-method-update.R
 #'
 setMethod(
   f = "update",
   signature = signature(
-    object = "Effloglog"
+    object = "ModelPseudo"
   ),
-  definition = function(object,
-                        data,
-                        ...) {
-    Effloglog(
-      eff = object@eff,
-      eff_dose = object@eff_dose,
-      nu = object@nu,
-      const = object@const,
-      data = data
+  definition = function(object, data, ...) {
+    assert_class(data, "Data")
+
+    constructor_name <- class(object)
+    arg_names <- setdiff(formalArgs(constructor_name), "data")
+    do.call(
+      constructor_name,
+      c(h_slots(object, arg_names), list(data = data))
     )
   }
 )
-
-## =================================================================================
-## ------------------------------------------------------------------------------------
-## Update the 'EffFlexi' model
-## -----------------------------------------------------------------
-
-##' Update method for the 'EffFlexi' Model class. This is a method to update
-##' estimates both for the flexible form model and the random walk model (see details in
-##' \code{\linkS4class{EffFlexi}} class object) when new data
-##' or new observations of responses are available and added in.
-##'
-##' @param object is the model which follow \code{\linkS4class{EffFlexi}} class object
-##' @param data all currently available data and responses of \code{\linkS4class{DataDual}}
-##' class object
-##' @param \dots unused
-##' @return the new \code{\linkS4class{EffFlexi}} class object
-##'
-##' @example examples/Model-method-updateEffFlexi.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="EffFlexi"),
-          def=
-            function(object,
-                     data,
-                     ...){
-              ##Get Pseudo Eff responses (prior) of the model
-
-              PseudoEff<-object@eff
-
-              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoEffdose<- object@eff_dose
-
-              ## Get the initial values of parameters for Sigma2 (if it is not fixed)
-              ##OR get the fixed value of sigma2W
-              PseudoSigma2<- object@sigma2W
-
-
-              ## Get the initial values of parameters for Sigma2betaW (if it is not fixed)
-              ##OR get the fixed value of sigma2betaW
-              PseudoSigma2betaW<- object@sigma2betaW
-
-              ##update the model estimates with data
-              model<- EffFlexi(eff=PseudoEff,eff_dose=PseudoEffdose,sigma2W=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
-
-              ##return the updated model
-              return(model)
-            })
-
-# nolint end

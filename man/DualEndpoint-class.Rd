@@ -31,7 +31,7 @@ for the Beta prior on the transformation \code{kappa = (rho + 1) / 2}, which is
 in \verb{(0, 1)}. For example, \verb{a = 1, b = 1} leads to a uniform prior on \code{rho}.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{DualEndpoint}} is the general class for the dual endpoint model.
 }

@@ -63,6 +63,9 @@ reference:
       - FractionalCRM
       - NextBest
       - NextBestMTD
+      - NextBestNCRM
+      - NextBestThreePlusThree
+      - NextBestDualEndpoint
       - NextBestInfTheory
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
@@ -122,6 +125,8 @@ reference:
       - v_model_tite_logistic_log_normal
       - v_model_one_par_exp_normal_prior
       - v_next_best_mtd
+      - v_next_best_ncrm
+      - v_next_best_dual_endpoint
       - v_increments_numdoselevels
       - v_increments_hsr_beta
       - v_stopping_mtd_cv
@@ -187,6 +192,12 @@ reference:
       - efficacy-Effloglog
       - efficacy-Effloglog-noSamples
       - efficacy-EffFlexi
+      - biomarker
+      - biomarker-DualEndpoint
+      - gain
+      - gain-ModelTox-ModelEff
+      - gain-ModelTox-Effloglog-noSamples
+      - update-ModelPseudo
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta

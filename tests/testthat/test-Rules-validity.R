@@ -1,4 +1,6 @@
-# v_next_best_mtd ----
+# NextBest ----
+
+## v_next_best_mtd ----
 
 test_that("v_next_best_mtd passes for valid object", {
   object <- h_next_best_mtd()
@@ -7,9 +9,8 @@ test_that("v_next_best_mtd passes for valid object", {
 
 test_that("v_next_best_mtd returns message for non-valid target", {
   object <- h_next_best_mtd()
-  # Changing `target` so that it does not represent a probability value.
-  object@target <- 1.2
-
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
   expect_equal(
     v_next_best_mtd(object),
     "target must be probability > 0 and < 1"
@@ -22,14 +23,130 @@ test_that("v_next_best_mtd returns message for non-valid derive", {
   object@derive <- function(x) {
     mean(x)
   }
-
   expect_equal(
     v_next_best_mtd(object),
     "derive must have as single argument 'mtd_samples'"
   )
 })
 
-# v_increments_numdoselevels ----
+## v_next_best_ncrm ----
+
+test_that("v_next_best_ncrm passes for valid object", {
+  object <- h_next_best_ncrm()
+  expect_true(v_next_best_ncrm(object))
+})
+
+test_that("v_next_best_ncrm returns message for non-valid target", {
+  err_msg <- "target has to be a probability range"
+
+  object <- h_next_best_ncrm()
+  # Changing `target` so that it is not an interval.
+  object@target <- 0.6
+  expect_equal(v_next_best_ncrm(object), err_msg)
+
+  # Changing `target` so that the one bound is not a valid probability.
+  object@target <- c(0.4, 1.2)
+  expect_equal(v_next_best_ncrm(object), err_msg)
+})
+
+test_that("v_next_best_ncrm returns message for non-valid overdose", {
+  err_msg <- "overdose has to be a probability range"
+
+  object <- h_next_best_ncrm()
+  # Changing `overdose` so that it is not an interval.
+  object@overdose <- 0.6
+  expect_equal(v_next_best_ncrm(object), err_msg)
+
+  # Changing `overdose` so that the one bound is not a valid probability.
+  object@overdose <- c(0.4, 1.2)
+  expect_equal(v_next_best_ncrm(object), err_msg)
+})
+
+test_that("v_next_best_ncrm returns message for non-valid max_overdose_prob", {
+  object <- h_next_best_ncrm()
+  # Changing `max_overdose_prob` so that it does not represent allowed probability value.
+  object@max_overdose_prob <- 1
+
+  expect_equal(
+    v_next_best_ncrm(object),
+    "max_overdose_prob must be probability > 0 and < 1"
+  )
+})
+
+## v_next_best_dual_endpoint ----
+
+test_that("v_next_best_dual_endpoint passes for valid object", {
+  object <- h_next_best_dual_endpoint()
+  expect_true(v_next_best_dual_endpoint(object))
+})
+
+test_that("v_next_best_dual_endpoint returns message for non-valid target (relative)", {
+  err_msg <- "target has to be a probability range when target_relative is TRUE"
+
+  object <- h_next_best_dual_endpoint()
+  # Changing `target` so that it is not an interval.
+  object@target <- 0.6
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+
+  # Changing `target` so that the one bound is not a valid probability.
+  object@target <- c(0.4, 1.2)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+})
+
+test_that("v_next_best_dual_endpoint returns message for non-valid target (absolute)", {
+  err_msg <- "target must be a numeric range"
+
+  object <- h_next_best_dual_endpoint(target_relative = FALSE)
+  # Changing `target` so that it is not an interval.
+  object@target <- 0.6
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+
+  # Changing `target` so that the one bound is not a valid interval.
+  object@target <- c(20, 10)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+})
+
+test_that("v_next_best_dual_endpoint returns message for non-valid target_relative flag", {
+  object <- h_next_best_dual_endpoint()
+  # Changing `target_relative` so that it is not a flag.
+  object@target_relative <- c(TRUE, FALSE)
+  expect_equal(v_next_best_dual_endpoint(object), "target_relative must be a flag")
+})
+
+test_that("v_next_best_dual_endpoint returns message for non-valid overdose", {
+  err_msg <- "overdose has to be a probability range"
+
+  object <- h_next_best_dual_endpoint()
+  # Changing `overdose` so that it is not an interval.
+  object@overdose <- 0.6
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+
+  # Changing `overdose` so that the one bound is not a valid probability.
+  object@overdose <- c(0.4, 1.2)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+})
+
+test_that("v_next_best_dual_endpoint returns message for non-valid max_overdose_prob", {
+  object <- h_next_best_dual_endpoint()
+  # Changing `max_overdose_prob` so that it does not represent allowed probability value.
+  object@max_overdose_prob <- 1
+
+  expect_equal(
+    v_next_best_dual_endpoint(object),
+    "max_overdose_prob must be probability > 0 and < 1"
+  )
+})
+
+test_that("v_next_best_dual_endpoint returns message for non-valid target_thresh", {
+  object <- h_next_best_dual_endpoint()
+  # Changing `target` so that the one bound is not a valid probability.
+  object@target_thresh <- 1.1
+  expect_equal(v_next_best_dual_endpoint(object), "target_thresh has to be a probability")
+})
+
+# Increments ----
+
+## v_increments_numdoselevels ----
 
 test_that("v_increments_numdoselevels passes for valid object", {
   object <- IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
@@ -60,7 +177,7 @@ test_that("v_increments_numdoselevels returns expected messages for non-valid ob
   )
 })
 
-# v_increments_hsr_beta ----
+## v_increments_hsr_beta ----
 
 test_that("v_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
@@ -108,7 +225,9 @@ test_that("v_increments_hsr_beta returns expected messages for non-valid object"
   )
 })
 
-# v_stopping_mtd_cv ----
+# Stopping ----
+
+## v_stopping_mtd_cv ----
 
 test_that("v_stopping_mtd_cv passes for valid object", {
   object <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
@@ -157,8 +276,7 @@ test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
   )
 })
 
-
-# v_stopping_lowest_dose_hsr_beta ----
+## v_stopping_lowest_dose_hsr_beta ----
 
 test_that("v_stopping_lowest_dose_hsr_beta passes for valid object", {
   object <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95)

@@ -32,13 +32,13 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
-                               samples=samples, 
-                               model=model, 
+                               samples=samples,
+                               model=model,
                                data=data)
 
 # nolint end

@@ -29,7 +29,8 @@ not used at all, as e.g. in case of pseudo DLE
 \item{model}{(\code{ModelEff})\cr the efficacy model with pseudo data prior.}
 
 \item{samples}{(\code{Samples})\cr samples of model's parameters that will be
-used to compute toxicity probabilities.}
+used to compute expected efficacy values. Can also be missing for some
+models.}
 
 \item{...}{model specific parameters when \code{samples} are not used.}
 }

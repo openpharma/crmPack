@@ -65,19 +65,19 @@ listed.
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25))
 
-# Initialize the CRM model 
+# Initialize the CRM model
 model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
                            ref_dose=56)
 
-# Choose the rule for selecting the next dose 
+# Choose the rule for selecting the next dose
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
-# Choose the rule for the cohort-size 
+# Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohortSize=c(1, 3))
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
@@ -110,7 +110,7 @@ set.seed(4235)
 # increased for a real case.
 options <- McmcOptions(burnin=10,step=1,samples=20)
 examine(design, options)
-  
+
 ## example where examine stops because stopping rule already fulfilled
 myStopping4 <- StoppingMinPatients(nPatients=3)
 myStopping <- (myStopping1 & myStopping2) | myStopping4
@@ -128,7 +128,7 @@ examine(design,mcmcOptions=options)
 ## "maxNoIncrement" in "examine" to keep the execution time short)
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
                                    increments=c(1, 0.00001))
-myStopping <- (myStopping1 & myStopping2) 
+myStopping <- (myStopping1 & myStopping2)
 design <- Design(model=model,
                  nextBest=myNextBest,
                  stopping=myStopping,
@@ -180,7 +180,7 @@ nextMaxDose <- maxDose(myIncrements,data=emptydata)
 
 myNextBest <- NextBestNCRM(target=c(0.2,0.35),
                            overdose=c(0.35,1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),

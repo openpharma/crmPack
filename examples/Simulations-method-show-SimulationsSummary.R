@@ -3,19 +3,19 @@
 # Define the dose-grid
 emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
-# Initialize the CRM model 
+# Initialize the CRM model
 model <- LogisticLogNormal(mean=c(-0.85, 1),
                            cov=
                              matrix(c(1, -0.5, -0.5, 1),
                                     nrow=2),
                            ref_dose=56)
 
-# Choose the rule for selecting the next dose 
+# Choose the rule for selecting the next dose
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
-# Choose the rule for the cohort-size 
+# Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
                            cohortSize=c(1, 3))
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
@@ -46,7 +46,7 @@ design <- Design(model=model,
 myTruth <- probFunction(model, alpha0 = 7, alpha1 = 8)
 
 # Run the simulation on the desired design
-# We only generate 1 trial outcome here for illustration, for the actual study 
+# We only generate 1 trial outcome here for illustration, for the actual study
 # this should be increased of course
 options <- McmcOptions(burnin=100,
                        step=2,

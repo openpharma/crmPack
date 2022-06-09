@@ -40,7 +40,7 @@ next_max_dose <- maxDose(my_increments, data = data)
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
-  maxOverdoseProb = 0.25
+  max_overdose_prob = 0.25
 )
 
 # Calculate the next best dose.

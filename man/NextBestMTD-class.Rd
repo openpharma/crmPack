@@ -39,7 +39,3 @@ next_best_mtd <- NextBestMTD(
   }
 )
 }
-\seealso{
-\code{\link{ModelParamsNormal}}, \code{\link{LogisticNormal}}, \code{\link{LogisticLogNormal}},
-\code{\link{LogisticLogNormalSub}}, \code{\link{ProbitLogNormal}}, \code{\link{ProbitLogNormalRel}}.
-}

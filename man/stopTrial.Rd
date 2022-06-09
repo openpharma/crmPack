@@ -212,7 +212,7 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
@@ -226,7 +226,7 @@ myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
 # Create a list of stopping rules (of class 'StoppingList') which will then be
-# summarized (in this specific example) with the 'any' function, meaning that the study 
+# summarized (in this specific example) with the 'any' function, meaning that the study
 # would be stopped if 'any' of the single stopping rules is TRUE.
 mystopping <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
                            summary=any)
@@ -270,7 +270,7 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
@@ -283,7 +283,7 @@ myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
-# Combine the stopping rules, obtaining (in this specific example) a list of stopping 
+# Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAll'
 myStopping <- (myStopping1 | myStopping2) & myStopping3
 
@@ -326,7 +326,7 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
@@ -339,7 +339,7 @@ myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
-# Combine the stopping rules, obtaining (in this specific example) a list of stopping 
+# Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAny'
 myStopping <- (myStopping1 | myStopping2) | myStopping3
 
@@ -382,20 +382,20 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if at least 3 
+# Define the stopping rule such that the study would be stopped if at least 3
 # cohorts were already dosed within 1 +/- 0.2 of the next best dose
 myStopping <- StoppingCohortsNearDose(nCohorts = 3,
                                       percentage = 0.2)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
@@ -434,20 +434,20 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if at least 9 
+# Define the stopping rule such that the study would be stopped if at least 9
 # patients were already dosed within 1 +/- 0.2 of the next best dose
 myStopping <- StoppingPatientsNearDose(nPatients = 9,
                                        percentage = 0.2)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
@@ -486,19 +486,19 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if at least 6 
-# cohorts were already dosed 
+# Define the stopping rule such that the study would be stopped if at least 6
+# cohorts were already dosed
 myStopping <- StoppingMinCohorts(nCohorts = 6)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
@@ -537,19 +537,19 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if at least 20 
-# patients were already dosed 
+# Define the stopping rule such that the study would be stopped if at least 20
+# patients were already dosed
 myStopping <- StoppingMinPatients(nPatients = 20)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           data=data)
 
@@ -588,20 +588,20 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if there is at least 
-# 0.5 posterior probability that [0.2 =< Prob(DLT | next-best-dose) <= 0.35] 
+# Define the stopping rule such that the study would be stopped if there is at least
+# 0.5 posterior probability that [0.2 =< Prob(DLT | next-best-dose) <= 0.35]
 myStopping <- StoppingTargetProb(target=c(0.2, 0.35),
                                  prob=0.5)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           samples=samples,
           model=model,
@@ -642,22 +642,22 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if there is at least 
-# 0.9 probability that MTD > 0.5*next_best_dose. Here MTD is defined as the dose for 
+# Define the stopping rule such that the study would be stopped if there is at least
+# 0.9 probability that MTD > 0.5*next_best_dose. Here MTD is defined as the dose for
 # which prob(DLE)=0.33
 myStopping <- StoppingMTDdistribution(target = 0.33,
                                       thresh = 0.5,
                                       prob = 0.9)
 
 # Evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           samples=samples,
           model=model,
@@ -694,7 +694,7 @@ next_max_dose <- maxDose(my_increments, data = my_data)
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
-  maxOverdoseProb = 0.25
+  max_overdose_prob = 0.25
 )
 
 # Calculate the next best dose.
@@ -761,7 +761,7 @@ next_max_dose <- maxDose(my_increments, data = data)
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
-  maxOverdoseProb = 0.25
+  max_overdose_prob = 0.25
 )
 
 # Calculate the next best dose.
@@ -824,7 +824,7 @@ nextMaxDose <- maxDose(myIncrements,
 # and with a probability below 0.25 that prob(DLT)>0.35 (safety)
 myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
                                    overdose=c(0.35, 1),
-                                   maxOverdoseProb=0.25)
+                                   max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
@@ -882,15 +882,15 @@ nextMaxDose <- maxDose(myIncrements,
 # based on the class 'NextBestNCRM'
 myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
                            overdose=c(0.35, 1),
-                           maxOverdoseProb=0.25)
+                           max_overdose_prob=0.25)
 
 # Calculate the next best dose
 doseRecommendation <- nextBest(myNextBest,
                                doselimit=nextMaxDose,
                                samples=samples, model=model, data=data)
 
-# Define the stopping rule such that the study would be stopped if there is at least 
-# 0.5 posterior probability that [0.2 =< Prob(DLT | next-best-dose) <= 0.35] 
+# Define the stopping rule such that the study would be stopped if there is at least
+# 0.5 posterior probability that [0.2 =< Prob(DLT | next-best-dose) <= 0.35]
 stopTarget <- StoppingTargetProb(target=c(0.2, 0.35),
                                  prob=0.5)
 
@@ -905,7 +905,7 @@ stopHigh <-
 myStopping <- stopTarget | stopHigh
 
 # Then evaluate if to stop the trial
-stopTrial(stopping=myStopping, 
+stopTrial(stopping=myStopping,
           dose=doseRecommendation$value,
           samples=samples,
           model=model,
