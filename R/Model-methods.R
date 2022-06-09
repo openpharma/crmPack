@@ -1460,135 +1460,38 @@ setMethod(
   }
 )
 
-# NOT CLEANED UP YET! ----
-# nolint start
+# update ----
 
-## ------------------------------------------------------------------------------------
-## Update Pseduo models object to obtain new modal estimates for pseudo model parameters
-## ------------------------------------------------------------------------------------
-## Update the 'LogisticIndepBeta' model
-## -----------------------------------------------------------------
+## ModelPseudo ----
 
-##' Update method for the 'LogisticIndepBeta'Model class. This is a method to update the modal
-##' estimates of the model parameters \eqn{\phi_1} (phi1) and \eqn{\phi_2} (phi2) when new data
-##' or new observations of responses are available and added in.
-##'
-##' @param object the model of \code{\linkS4class{LogisticIndepBeta}} class object
-##' @param data all currently available of \code{\linkS4class{Data}} class object
-##' @param \dots unused
-##' @return the new \code{\linkS4class{LogisticIndepBeta}} class object
-##'
-##' @example examples/Model-method-updateLogisticIndepBeta.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="LogisticIndepBeta"),
-          def=
-            function(object,
-                     data,
-                     ...){
-              ##Get Pseudo DLE responses (prior) of the model
-
-              PseudoDLE<-object@binDLE
-
-              ##Get Pseudo DLE weights of the DLE responses of the model
-              PseudoDLEweight<-object@DLEweights
-
-
-              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoDLEdose<- object@DLEdose
-
-              ##update the model estimates with data
-              model<- LogisticIndepBeta(binDLE=PseudoDLE,DLEweights=PseudoDLEweight,DLEdose=PseudoDLEdose,data=data)
-
-              ##return the updated model
-              return(model)
-            })
-
-# update-Effloglog ----
-
-#' Updating `Effloglog` Objects
+#' Update method for the [`ModelPseudo`] model class. This is a method to update
+#' the model class slots (estimates, parameters, variables and etc.), when the
+#' new data (e.g. new observations of responses) are available. This method is
+#' mostly used to obtain new modal estimates for pseudo model parameters.
 #'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' A method that updates existing [`Effloglog`] object with new data.
-#'
-#' @param object (`Effloglog`)\cr object you want to update.
-#' @param data (`DataDual`)\cr all currently available data or responses.
+#' @param object (`ModelPseudo`)\cr the model to update.
+#' @param data (`Data`)\cr all currently available of data.
 #' @param ... not used.
 #'
-#' @return The new, updated [`Effloglog`] object.
+#' @return the new [`ModelPseudo`] class object.
 #'
-#' @aliases update-Effloglog
+#' @aliases update-ModelPseudo
 #' @export
-#' @example examples/Model-method-update-Effloglog.R
+#' @example examples/Model-method-update.R
 #'
 setMethod(
   f = "update",
   signature = signature(
-    object = "Effloglog"
+    object = "ModelPseudo"
   ),
-  definition = function(object,
-                        data,
-                        ...) {
-    Effloglog(
-      eff = object@eff,
-      eff_dose = object@eff_dose,
-      nu = object@nu,
-      const = object@const,
-      data = data
+  definition = function(object, data, ...) {
+    assert_class(data, "Data")
+
+    constructor_name <- class(object)
+    arg_names <- setdiff(formalArgs(constructor_name), "data")
+    do.call(
+      constructor_name,
+      c(h_slots(object, arg_names), list(data = data))
     )
   }
 )
-
-## =================================================================================
-## ------------------------------------------------------------------------------------
-## Update the 'EffFlexi' model
-## -----------------------------------------------------------------
-
-##' Update method for the 'EffFlexi' Model class. This is a method to update
-##' estimates both for the flexible form model and the random walk model (see details in
-##' \code{\linkS4class{EffFlexi}} class object) when new data
-##' or new observations of responses are available and added in.
-##'
-##' @param object is the model which follow \code{\linkS4class{EffFlexi}} class object
-##' @param data all currently available data and responses of \code{\linkS4class{DataDual}}
-##' class object
-##' @param \dots unused
-##' @return the new \code{\linkS4class{EffFlexi}} class object
-##'
-##' @example examples/Model-method-updateEffFlexi.R
-##' @export
-##' @keywords methods
-setMethod("update",
-          signature=
-            signature(object="EffFlexi"),
-          def=
-            function(object,
-                     data,
-                     ...){
-              ##Get Pseudo Eff responses (prior) of the model
-
-              PseudoEff<-object@eff
-
-              ##Get the corresponding dose levels for the Pseudo DLE responses from the model
-              PseudoEffdose<- object@eff_dose
-
-              ## Get the initial values of parameters for Sigma2 (if it is not fixed)
-              ##OR get the fixed value of sigma2W
-              PseudoSigma2<- object@sigma2W
-
-
-              ## Get the initial values of parameters for Sigma2betaW (if it is not fixed)
-              ##OR get the fixed value of sigma2betaW
-              PseudoSigma2betaW<- object@sigma2betaW
-
-              ##update the model estimates with data
-              model<- EffFlexi(eff=PseudoEff,eff_dose=PseudoEffdose,sigma2W=PseudoSigma2,sigma2betaW=PseudoSigma2betaW,data=data)
-
-              ##return the updated model
-              return(model)
-            })
-
-# nolint end

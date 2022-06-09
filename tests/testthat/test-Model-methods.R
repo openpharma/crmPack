@@ -1210,3 +1210,46 @@ test_that("gain-ModelTox-Effloglog-noSamples works as expected for vector dose",
   result <- gain(dose = c(50, 75), model_dle = model_dle, model_eff = model_eff)
   expect_equal(result, c(1.090325, 1.034771), tolerance = 10e-7)
 })
+
+# update ----
+
+## ModelPseudo ----
+
+test_that("update-ModelPseudo works as expected for LogisticIndepBeta", {
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  new_data <- h_get_data()
+
+  result <- update(object = model, data = new_data)
+  model@phi1 <- -5.090751
+  model@phi2 <- 0.933697
+  model@Pcov[] <- matrix(c(9.455109, -2.023160, -2.023160, 0.452532), nrow = 2)
+  model@data <- new_data
+  expect_equal(result, model, tolerance = 10e-8)
+})
+
+test_that("update-ModelPseudo works as expected for Effloglog", {
+  model <- h_get_eff_log_log(emptydata = TRUE)
+  new_data <- h_get_data_dual()
+
+  result <- update(object = model, data = new_data)
+  expect_snapshot(result)
+})
+
+test_that("update-ModelPseudo works as expected for EffFlexi", {
+  model <- h_get_eff_flexi(emptydata = TRUE)
+  new_data <- h_get_data_dual()
+
+  result <- update(object = model, data = new_data)
+  expect_snapshot(result)
+})
+
+test_that("update-ModelPseudo throws the error when data is not an object of Data class", {
+  model <- h_get_logistic_indep_beta(emptydata = TRUE)
+  new_data <- h_get_data()
+  new_data <- h_slots(new_data, names = slotNames(new_data)) # a list.
+
+  expect_error(
+    update(object = model, data = new_data),
+    "Assertion on 'data' failed: Must inherit from class 'Data' *"
+  )
+})

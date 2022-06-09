@@ -197,6 +197,7 @@ reference:
       - gain
       - gain-ModelTox-ModelEff
       - gain-ModelTox-Effloglog-noSamples
+      - update-ModelPseudo
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - stopTrial-StoppingLowestDoseHSRBeta
