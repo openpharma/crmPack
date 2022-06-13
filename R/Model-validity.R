@@ -53,7 +53,7 @@ v_model <- function(object) {
 v_model_logistic_kadane <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@theta, bounds = FALSE),
+    test_probability(object@theta, bounds_closed = FALSE),
     "theta must be a probability scalar > 0 and < 1"
   )
   is_xmin_number <- test_number(object@xmin)
@@ -143,7 +143,7 @@ v_model_logistic_normal_fixed_mix <- function(object) {
 v_model_logistic_log_normal_mix <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@share_weight),
+    test_probability(object@share_weight),
     "share_weight does not specify a probability"
   )
   v$result()

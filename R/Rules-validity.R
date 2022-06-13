@@ -18,7 +18,7 @@ NULL
 v_next_best_mtd <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@target, bounds = FALSE),
+    test_probability(object@target, bounds_closed = FALSE),
     "target must be probability > 0 and < 1"
   )
   v$check(
@@ -34,15 +34,15 @@ v_next_best_mtd <- function(object) {
 v_next_best_ncrm <- function(object) {
   v <- Validate()
   v$check(
-    is.probRange(object@target),
+    test_probability_range(object@target),
     "target has to be a probability range"
   )
   v$check(
-    is.probRange(object@overdose),
+    test_probability_range(object@overdose),
     "overdose has to be a probability range"
   )
   v$check(
-    is.probability(object@max_overdose_prob, bounds = FALSE),
+    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
     "max_overdose_prob must be probability > 0 and < 1"
   )
   v$result()
@@ -58,7 +58,7 @@ v_next_best_dual_endpoint <- function(object) {
   )
   if (isTRUE(object@target_relative)) {
     v$check(
-      is.probRange(object@target),
+      test_probability_range(object@target),
       "target has to be a probability range when target_relative is TRUE"
     )
   } else {
@@ -68,15 +68,15 @@ v_next_best_dual_endpoint <- function(object) {
     )
   }
   v$check(
-    is.probRange(object@overdose),
+    test_probability_range(object@overdose),
     "overdose has to be a probability range"
   )
   v$check(
-    is.probability(object@max_overdose_prob, bounds = FALSE),
+    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
     "max_overdose_prob must be probability > 0 and < 1"
   )
   v$check(
-    is.probability(object@target_thresh),
+    test_probability(object@target_thresh),
     "target_thresh has to be a probability"
   )
   v$result()
@@ -120,11 +120,11 @@ v_increments_numdoselevels <- function(object) {
 v_increments_hsr_beta <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@target, bounds = FALSE),
+    test_probability(object@target, bounds_closed = FALSE),
     "target must be a probability"
   )
   v$check(
-    is.probability(object@prob, bounds = FALSE),
+    test_probability(object@prob, bounds_closed = FALSE),
     "prob must be a probability"
   )
   v$check(
@@ -163,11 +163,11 @@ v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
 v_stopping_mtd_cv <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@target, bounds = FALSE),
+    test_probability(object@target, bounds_closed = FALSE),
     "target must be probability > 0 and < 1"
   )
   v$check(
-    is.probability(object@thresh_cv / 100, bounds = FALSE),
+    test_probability(object@thresh_cv / 100, bounds_closed = FALSE),
     "thresh_cv must be percentage > 0"
   )
   v$result()
