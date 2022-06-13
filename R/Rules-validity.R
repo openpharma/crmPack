@@ -82,6 +82,17 @@ v_next_best_dual_endpoint <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestMinDist`] object
+#'   contains valid `target` object.
+v_next_best_min_dist <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be probability > 0 and < 1"
+  )
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects

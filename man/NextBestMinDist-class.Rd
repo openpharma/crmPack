@@ -5,25 +5,22 @@
 \alias{NextBestMinDist-class}
 \alias{.NextBestMinDist}
 \alias{NextBestMinDist}
-\title{Class for Next Best Dose based on Minimum Distance to Target Probability}
+\title{\code{NextBestMinDist}}
 \usage{
 NextBestMinDist(target)
 }
 \arguments{
-\item{target}{target DLT probability.}
+\item{target}{(\code{numeric})\cr the target toxicity probability.}
 }
 \description{
-This is typically used for CRM designs where a single target DLT probability
-is targeted.
-}
-\section{Functions}{
-\itemize{
-\item \code{NextBestMinDist}: Initialization function for \code{NextBestMinDist}.
-}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
+\code{\link{NextBestMinDist}} is the class for next best dose that is based on minimum
+distance to target probability.
+}
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{target DLT probability.}
+\item{\code{target}}{(\code{proportion})\cr the target toxicity probability.}
 }}
 

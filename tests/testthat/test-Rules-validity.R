@@ -144,6 +144,23 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target_thresh
   expect_equal(v_next_best_dual_endpoint(object), "target_thresh has to be a probability")
 })
 
+## v_next_best_min_dist ----
+
+test_that("v_next_best_min_dist passes for valid object", {
+  object <- NextBestMinDist(target = 0.3)
+  expect_true(v_next_best_min_dist(object))
+})
+
+test_that("v_next_best_min_dist returns message for non-valid target", {
+  object <- NextBestMinDist(target = 0.3)
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(
+    v_next_best_min_dist(object),
+    "target must be probability > 0 and < 1"
+  )
+})
+
 # Increments ----
 
 ## v_increments_numdoselevels ----
