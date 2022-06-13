@@ -1,4 +1,5 @@
 # Version 1.0.9000.9034
+* Added new customized `checkmate` functions for probability values checking.
 * Created one `update` method for `ModelPseudo` and removed specific methods for
   `LogisticIndepBeta`, `Effloglog`, `EffFlexi`. 
 * Renamed arguments of `gain` function.
