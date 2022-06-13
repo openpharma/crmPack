@@ -86,6 +86,7 @@ Collate:
     'fromQuantiles.R'
     'Samples-methods.R'
     'Simulations-methods.R'
+    'checkmate.R'
     'crmPack-package.R'
     'helpers_model.R'
     'logger.R'
