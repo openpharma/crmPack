@@ -53,7 +53,7 @@ v_model <- function(object) {
 v_model_logistic_kadane <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@theta, bounds = FALSE),
+    test_probability(object@theta, bounds_closed = FALSE),
     "theta must be a probability scalar > 0 and < 1"
   )
   is_xmin_number <- test_number(object@xmin)
@@ -143,7 +143,7 @@ v_model_logistic_normal_fixed_mix <- function(object) {
 v_model_logistic_log_normal_mix <- function(object) {
   v <- Validate()
   v$check(
-    is.probability(object@share_weight),
+    test_probability(object@share_weight),
     "share_weight does not specify a probability"
   )
   v$result()
@@ -542,7 +542,7 @@ v_model_one_par_exp_normal_prior <- function(object) {
     "skel_fun_inv must be an inverse funtion of skel_fun function"
   )
   v$check(
-    test_numeric(object@skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE),
+    test_probabilities(object@skel_probs),
     "skel_probs must be probabilities between 0 and 1"
   )
   v$check(

@@ -285,7 +285,7 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples, ...) {
-    assert_number(x, lower = 0L, upper = 1L)
+    assert_probability(x)
 
     dose_fun <- model@dose
     dose_args_names <- setdiff(formalArgs(dose_fun), "x")
@@ -314,7 +314,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
@@ -340,7 +340,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
@@ -366,7 +366,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     ((logit(x) - alpha0) / alpha1) + ref_dose
   }
@@ -392,7 +392,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     exp((probit(x) - alpha0) / alpha1) * ref_dose
   }
@@ -418,7 +418,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     ((probit(x) - alpha0) / alpha1) * ref_dose
   }
@@ -445,7 +445,7 @@ setMethod(
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
+    assert_probabilities(x, len = h_null_if_scalar(rho0))
 
     num <- gamma * (logit(x) - logit(rho0)) + xmin * (logit(theta) - logit(x))
     num / (logit(theta) - logit(rho0))
@@ -473,7 +473,7 @@ setMethod(
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(rho0))
+    assert_probabilities(x, len = h_null_if_scalar(rho0))
 
     num <- gamma * (logit(x) - logit(rho0)) + xmin * (logit(theta) - logit(x))
     num / (logit(theta) - logit(rho0))
@@ -500,7 +500,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
@@ -526,7 +526,7 @@ setMethod(
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha0))
+    assert_probabilities(x, len = h_null_if_scalar(alpha0))
 
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
@@ -571,7 +571,7 @@ setMethod(
     assert_subset("betaZ", names(samples@data))
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(betaZ))
+    assert_probabilities(x, len = h_null_if_scalar(betaZ))
 
     dose_temp <- (qnorm(x) - betaZ[, 1]) / betaZ[, 2]
     if (model@use_log_dose) {
@@ -601,7 +601,7 @@ setMethod(
     assert_subset(c("phi1", "phi2"), names(samples@data))
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(phi1))
+    assert_probabilities(x, len = h_null_if_scalar(phi1))
 
     log_dose <- (log(x / (1 - x)) - phi1) / phi2
     exp(log_dose)
@@ -717,7 +717,7 @@ setMethod(
     assert_subset("alpha", names(samples@data))
     alpha <- samples@data$alpha
     skel_fun_inv <- model@skel_fun_inv
-    assert_numeric(x, lower = 0L, upper = 1, any.missing = FALSE, len = h_null_if_scalar(alpha))
+    assert_probabilities(x, len = h_null_if_scalar(alpha))
 
     skel_fun_inv(x^(1 / exp(alpha)))
   }

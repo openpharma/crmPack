@@ -191,11 +191,11 @@ test_that("dose-LogisticNormal throws the error when x is not a valid scalar", {
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -227,11 +227,11 @@ test_that("dose-LogisticLogNormal throws the error when x is not a valid scalar"
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -263,11 +263,11 @@ test_that("dose-LogisticLogNormalSub throws the error when x is not a valid scal
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -299,11 +299,11 @@ test_that("dose-ProbitLogNormal throws the error when x is not a valid scalar", 
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -335,11 +335,11 @@ test_that("dose-ProbitLogNormalRel throws the error when x is not a valid scalar
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -371,11 +371,11 @@ test_that("dose-LogisticKadane throws the error when x is not a valid scalar", {
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -410,11 +410,11 @@ test_that("dose-LogisticKadaneBetaGamma throws the error when x is not a valid s
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -446,11 +446,11 @@ test_that("dose-LogisticNormalMixture throws the error when x is not a valid sca
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -482,11 +482,11 @@ test_that("dose-LogisticNormalFixedMixture throws the error when x is not a vali
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -538,11 +538,11 @@ test_that("dose-DualEndpoint throws the error when x is not a valid scalar", {
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -584,11 +584,11 @@ test_that("dose-LogisticIndepBeta throws the error when x is not a valid scalar"
   )
   expect_error(
     dose(2, dlt_model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, dlt_model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
@@ -646,11 +646,11 @@ test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scal
   )
   expect_error(
     dose(2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not <= 1."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
   expect_error(
     dose(-2, model, samples),
-    "Assertion on 'x' failed: Element 1 is not >= 0."
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
   )
 })
 
