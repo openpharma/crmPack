@@ -2676,7 +2676,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 OneParExpNormalPrior <- function(skel_probs,
                                  dose_grid,
                                  sigma2) {
-  assert_numeric(skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE)
+  assert_probabilities(skel_probs)
   assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
   assert_number(sigma2, lower = .Machine$double.xmin, finite = TRUE)
 

@@ -542,7 +542,7 @@ v_model_one_par_exp_normal_prior <- function(object) {
     "skel_fun_inv must be an inverse funtion of skel_fun function"
   )
   v$check(
-    test_numeric(object@skel_probs, lower = 0, upper = 1, finite = TRUE, any.missing = FALSE),
+    test_probabilities(object@skel_probs),
     "skel_probs must be probabilities between 0 and 1"
   )
   v$check(
