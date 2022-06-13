@@ -15,12 +15,13 @@
 #'   error message.
 #' - `test_` functions just return `TRUE` or `FALSE`.
 #'
-#' @seealso [assert_probability()], [assert_prob()], [assert_prob_range()].
+#' @seealso [assert_probabilities()], [assert_probability()],
+#'   [assert_probability_range()].
 #'
 #' @name assertions
 NULL
 
-# assert_probability ----
+# assert_probabilities ----
 
 #' Check if an Argument is a Probability Vector
 #'
@@ -45,10 +46,10 @@ NULL
 #' @export
 #' @examples
 #' x <- c(0, 0.2, 0.1, 0.3, 1)
-#' check_probability(x)
-#' check_probability(x, bounds_closed = FALSE)
-#' check_probability(x, bounds_closed = c(FALSE, TRUE))
-check_probability <- function(x, bounds_closed = TRUE, len = NULL, sorted = FALSE) {
+#' check_probabilities(x)
+#' check_probabilities(x, bounds_closed = FALSE)
+#' check_probabilities(x, bounds_closed = c(FALSE, TRUE))
+check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, sorted = FALSE) {
   assert_logical(bounds_closed, min.len = 1, max.len = 2, any.missing = FALSE)
 
   is_valid <- check_numeric(
@@ -81,6 +82,45 @@ check_probability <- function(x, bounds_closed = TRUE, len = NULL, sorted = FALS
   is_valid
 }
 
+#' @rdname check_probabilities
+#' @inheritParams check_probabilities
+#' @export
+assert_probabilities <- makeAssertionFunction(check_probabilities)
+
+#' @rdname check_probabilities
+#' @export
+test_probabilities <- makeTestFunction(check_probabilities)
+
+#' @rdname check_probabilities
+#' @inheritParams check_probabilities
+#' @export
+expect_probabilities <- makeExpectationFunction(check_probabilities)
+
+# assert_probability ----
+
+#' Check if an Argument is a Single Probability Value
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Check if a given value represents a probability, that is a number within
+#' (0, 1) interval, that can optionally be closed at any side.
+#'
+#' @param x (`number`)\cr a single value to check.
+#' @inheritParams check_probabilities
+#'
+#' @return `TRUE` if successful, otherwise a string with the error message.
+#'
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#' @examples
+#' check_probability(0.5)
+#' check_probability(0, bounds_closed = FALSE)
+#' check_probability(0, bounds_closed = c(FALSE, TRUE))
+check_probability <- function(x, bounds_closed = TRUE) {
+  check_probabilities(x = x, bounds_closed = bounds_closed, len = 1)
+}
+
 #' @rdname check_probability
 #' @inheritParams check_probability
 #' @export
@@ -95,46 +135,7 @@ test_probability <- makeTestFunction(check_probability)
 #' @export
 expect_probability <- makeExpectationFunction(check_probability)
 
-# assert_prob ----
-
-#' Check if an Argument is a Single Probability Value
-#'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' Check if a given value represents a probability, that is a number within
-#' (0, 1) interval, that can optionally be closed at any side.
-#'
-#' @param x (`number`)\cr a single value to check.
-#' @inheritParams check_probability
-#'
-#' @return `TRUE` if successful, otherwise a string with the error message.
-#'
-#' @seealso [`assertions`] for more details.
-#'
-#' @export
-#' @examples
-#' check_prob(0.5)
-#' check_prob(0, bounds_closed = FALSE)
-#' check_prob(0, bounds_closed = c(FALSE, TRUE))
-check_prob <- function(x, bounds_closed = TRUE) {
-  check_probability(x = x, bounds_closed = bounds_closed, len = 1)
-}
-
-#' @rdname check_prob
-#' @inheritParams check_prob
-#' @export
-assert_prob <- makeAssertionFunction(check_prob)
-
-#' @rdname check_prob
-#' @export
-test_prob <- makeTestFunction(check_prob)
-
-#' @rdname check_prob
-#' @inheritParams check_prob
-#' @export
-expect_prob <- makeExpectationFunction(check_prob)
-
-# assert_prob_range ----
+# assert_probability_range ----
 
 #' Check if an Argument is a Probability Range
 #'
@@ -144,7 +145,7 @@ expect_prob <- makeExpectationFunction(check_prob)
 #' a sub-interval of (0, 1) interval, that can optionally be closed at any side.
 #'
 #' @param x (`number`)\cr an interval to check.
-#' @inheritParams check_probability
+#' @inheritParams check_probabilities
 #'
 #' @return `TRUE` if successful, otherwise a string with the error message.
 #'
@@ -153,24 +154,24 @@ expect_prob <- makeExpectationFunction(check_prob)
 #' @export
 #' @examples
 #' x <- c(0, 0.2)
-#' check_prob_range(x)
-#' check_prob_range(rev(x))
-#' check_prob_range(x, bounds_closed = FALSE)
-#' check_prob_range(x, bounds_closed = c(FALSE, TRUE))
-check_prob_range <- function(x, bounds_closed = TRUE) {
-  check_probability(x = x, bounds_closed = bounds_closed, len = 2, sorted = TRUE)
+#' check_probability_range(x)
+#' check_probability_range(rev(x))
+#' check_probability_range(x, bounds_closed = FALSE)
+#' check_probability_range(x, bounds_closed = c(FALSE, TRUE))
+check_probability_range <- function(x, bounds_closed = TRUE) {
+  check_probabilities(x = x, bounds_closed = bounds_closed, len = 2, sorted = TRUE)
 }
 
-#' @rdname check_prob_range
-#' @inheritParams check_prob_range
+#' @rdname check_probability_range
+#' @inheritParams check_probability_range
 #' @export
-assert_prob_range <- makeAssertionFunction(check_prob_range)
+assert_probability_range <- makeAssertionFunction(check_probability_range)
 
-#' @rdname check_prob_range
+#' @rdname check_probability_range
 #' @export
-test_prob_range <- makeTestFunction(check_prob_range)
+test_probability_range <- makeTestFunction(check_probability_range)
 
-#' @rdname check_prob_range
-#' @inheritParams check_prob_range
+#' @rdname check_probability_range
+#' @inheritParams check_probability_range
 #' @export
-expect_prob_range <- makeExpectationFunction(check_prob_range)
+expect_probability_range <- makeExpectationFunction(check_probability_range)

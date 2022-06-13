@@ -131,6 +131,20 @@ reference:
       - v_increments_hsr_beta
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
+  - title: Custom Checkmate Assertions
+    contents:
+      - assert_probabilities
+      - assert_probability
+      - assert_probability_range
+      - check_probabilities
+      - check_probability
+      - check_probability_range
+      - test_probabilities
+      - test_probability
+      - test_probability_range
+      - expect_probabilities
+      - expect_probability
+      - expect_probability_range
   - title: Methods
     contents:
       - plot-Data

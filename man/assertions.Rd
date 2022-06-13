@@ -21,5 +21,6 @@ the \code{checkmate} functions. These are described in individual help pages
 linked below.
 }
 \seealso{
-\code{\link[=assert_probability]{assert_probability()}}, \code{\link[=assert_prob]{assert_prob()}}, \code{\link[=assert_prob_range]{assert_prob_range()}}.
+\code{\link[=assert_probabilities]{assert_probabilities()}}, \code{\link[=assert_probability]{assert_probability()}},
+\code{\link[=assert_probability_range]{assert_probability_range()}}.
 }
