@@ -1,4 +1,4 @@
-# Version 1.0.9000.9036
+# Version 1.0.9000.9037
 * Set prototype for `target = 0.3` for `NextBestMinDist` class.
 * Added new customized `checkmate` functions for probability values checking.
 * Created one `update` method for `ModelPseudo` and removed specific methods for
