@@ -6,6 +6,7 @@
 \alias{v_next_best_ncrm}
 \alias{v_next_best_dual_endpoint}
 \alias{v_next_best_min_dist}
+\alias{v_next_best_ncrm_loss}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
 v_next_best_mtd(object)
@@ -15,6 +16,8 @@ v_next_best_ncrm(object)
 v_next_best_dual_endpoint(object)
 
 v_next_best_min_dist(object)
+
+v_next_best_ncrm_loss(object)
 }
 \arguments{
 \item{object}{(\code{NextBest})\cr object to validate.}
@@ -43,5 +46,8 @@ contains valid probability objects.
 
 \item \code{v_next_best_min_dist}: validates that the \code{\link{NextBestMinDist}} object
 contains valid \code{target} object.
+
+\item \code{v_next_best_ncrm_loss}: validates that the \code{\link{NextBestNCRMLoss}} object
+contains valid objects.
 }}
 

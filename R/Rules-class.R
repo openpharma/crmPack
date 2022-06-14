@@ -314,8 +314,6 @@ NextBestMinDist <- function(target) {
   .NextBestMinDist(target = target)
 }
 
-# nolint start
-
 #' Class for Next Best Dose based on Information Theory.
 #'
 #'
@@ -333,6 +331,87 @@ NextBestMinDist <- function(target) {
 #' @param asymmetry value of the asymmetry exponent
 #' @export
 NextBestInfTheory <- function(target,asymmetry){ .NextBestInfTheory(target = target, asymmetry = asymmetry) }
+
+# NextBestNCRMLoss ----
+
+## class ----
+
+#' Next best dose based on NCRM rule and loss function
+#'
+#' This class is similar to NCRM class, the only difference is the addition of
+#' loss function. As in NCRM rule, first admissible doses are found, which are those
+#' with probability to fall in overdose category being below
+#' `maxOverdoseProb`. Next, within the admissible doses, the loss function is
+#' calculated, i.e. `losses` %*% `target`. Finally, the corresponding
+#' dose with lowest loss function (Bayes risk) is recommended for the next dose.
+#'
+#' @slot target A numeric vector specifying the target toxicity interval
+#' (limits included)
+#' @slot overdose A numeric vector specifying the overdose toxicity interval
+#' (lower limit excluded, upper limit included).
+#' @slot unacceptable An optional numeric vector specifying the unacceptable toxicity interval
+#' (lower limit excluded, upper limit included).
+#' @slot maxOverdoseProb A numeric value specifying the maximum overdose
+#' (overdose or excessive + unacceptable) probability that is allowed.
+#' @slot losses A numeric vector specifying the loss function. If the `unacceptable`
+#' is provided, the vector length must be 4, otherwise is 3.
+#'
+#' @note The loss function should be a vector of either 3 or 4 values.
+#' This is because the loss function values must be specified for each interval,
+#' that is under-dosing, target toxicity, and overdosing toxicity or
+#' under-dosing, target toxicity, overdosing (excessive) toxicity, and unacceptable
+#' toxicity intervals.
+#'
+#' @export
+#'
+# #' @example examples/Rules-class-NextBestNCRMLoss.R
+.NextBestNCRMLoss <- setClass(
+  Class = "NextBestNCRMLoss",
+  slots = c(
+    target = "numeric",
+    overdose = "numeric",
+    unacceptable = "numeric",
+    max_overdose_prob = "numeric",
+    losses = "numeric"
+  ),
+  prototype = prototype(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    unacceptable = c(1, 1),
+    max_overdose_prob = 0.25,
+    losses = c(1, 0, 1, 2)
+  ),
+  contains = "NextBestNCRM",
+  validity = v_next_best_ncrm_loss
+)
+
+## constructor ----
+
+#' Initialization function for "NextBestNCRMLoss"
+#'
+#' @param target see [NextBestNCRMLoss-class]
+#' @param overdose see [NextBestNCRMLoss-class]
+#' @param unacceptable see [NextBestNCRMLoss-class]
+#' @param maxOverdoseProb see [NextBestNCRMLoss-class]
+#' @param losses see [NextBestNCRMLoss-class]
+#' @return the [NextBestNCRMLoss-class] object
+#'
+#' @export
+NextBestNCRMLoss <- function(target,
+                             overdose,
+                             unacceptable = c(1, 1),
+                             max_overdose_prob,
+                             losses) {
+  .NextBestNCRMLoss(
+    target = target,
+    overdose = overdose,
+    unacceptable = unacceptable,
+    max_overdose_prob = max_overdose_prob,
+    losses = losses
+  )
+}
+
+# nolint start
 
 ## ============================================================
 

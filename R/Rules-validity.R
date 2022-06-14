@@ -93,6 +93,12 @@ v_next_best_min_dist <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestNCRMLoss`] object
+#'   contains valid objects.
+v_next_best_ncrm_loss <- function(object) {
+  TRUE
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects
