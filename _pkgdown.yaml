@@ -66,6 +66,7 @@ reference:
       - NextBestNCRM
       - NextBestThreePlusThree
       - NextBestDualEndpoint
+      - NextBestMinDist
       - NextBestInfTheory
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
@@ -127,6 +128,7 @@ reference:
       - v_next_best_mtd
       - v_next_best_ncrm
       - v_next_best_dual_endpoint
+      - v_next_best_min_dist
       - v_increments_numdoselevels
       - v_increments_hsr_beta
       - v_stopping_mtd_cv

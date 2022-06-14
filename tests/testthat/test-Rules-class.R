@@ -80,6 +80,23 @@ test_that("NextBestDualEndpoint object can be created with user constructor 2", 
   expect_valid(result, "NextBestDualEndpoint")
 })
 
+## NextBestMinDist ----
+
+test_that("NextBestMinDist works as expected", {
+  result <- expect_silent(.NextBestMinDist())
+  expect_valid(result, "NextBestMinDist")
+})
+
+test_that("NextBestMinDist object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestMinDist(
+      target = 0.3
+    )
+  )
+  expect_valid(result, "NextBestMinDist")
+  expect_equal(result@target, 0.3)
+})
+
 ## NextBestInfTheory ----
 
 test_that(".NextBestInfTheory works as expected", {

@@ -274,27 +274,47 @@ NextBestDualEndpoint <- function(target,
   )
 }
 
-# nolint start
+# NextBestMinDist ----
 
-#' Class for Next Best Dose based on Minimum Distance to Target Probability
+## class ----
+
+#' `NextBestMinDist`
 #'
-#' This is typically used for CRM designs where a single target DLT probability
-#' is targeted.
+#' @description `r lifecycle::badge("stable")`
 #'
-#' @slot target target DLT probability.
+#' [`NextBestMinDist`] is the class for next best dose that is based on minimum
+#' distance to target probability.
 #'
-#' @export
+#' @slot target (`proportion`)\cr the target toxicity probability.
+#'
 #' @aliases NextBestMinDist
-.NextBestMinDist <- setClass(Class = "NextBestMinDist",
-                             contains = "NextBest",
-                             representation(target = "numeric"))
-
-#' @describeIn NextBestMinDist-class Initialization function for `NextBestMinDist`.
-#' @param target target DLT probability.
 #' @export
-NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
+#'
+.NextBestMinDist <- setClass(
+  Class = "NextBestMinDist",
+  slots = c(
+    target = "numeric"
+  ),
+  contains = "NextBest",
+  prototype = prototype(
+    target = 0.3
+  ),
+  validity = v_next_best_min_dist
+)
 
-## ============================================================
+## constructor ----
+
+#' @rdname NextBestMinDist-class
+#'
+#' @param target (`numeric`)\cr the target toxicity probability.
+#'
+#' @export
+#'
+NextBestMinDist <- function(target) {
+  .NextBestMinDist(target = target)
+}
+
+# nolint start
 
 #' Class for Next Best Dose based on Information Theory.
 #'
