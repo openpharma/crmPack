@@ -10,13 +10,15 @@ test_that(".NextBestMTD works as expected", {
 test_that("NextBestMTD object can be created with user constructor", {
   result <- expect_silent(
     NextBestMTD(
-      target = 0.3,
+      target = 0.4,
       derive = function(mtd_samples) {
         mean(mtd_samples)
       }
     )
   )
   expect_valid(result, "NextBestMTD")
+  expect_equal(result@target, 0.4)
+  expect_equal(result@derive(c(1:5)), 3) # nolintr
 })
 
 ## NextBestNCRM ----
@@ -29,12 +31,15 @@ test_that(".NextBestNCRM works as expected", {
 test_that("NextBestNCRM object can be created with user constructor", {
   result <- expect_silent(
     NextBestNCRM(
-      target = c(0.2, 0.35),
-      overdose = c(0.35, 1),
-      max_overdose_prob = 0.25
+      target = c(0.5, 0.8),
+      overdose = c(0.4, 1),
+      max_overdose_prob = 0.3
     )
   )
   expect_valid(result, "NextBestNCRM")
+  expect_equal(result@target, c(0.5, 0.8))
+  expect_equal(result@overdose, c(0.4, 1))
+  expect_equal(result@max_overdose_prob, 0.3)
 })
 
 ## NextBestThreePlusThree ----
@@ -59,25 +64,33 @@ test_that(".NextBestDualEndpoint works as expected", {
 test_that("NextBestDualEndpoint object can be created with user constructor", {
   result <- expect_silent(
     NextBestDualEndpoint(
-      target = c(0.2, 0.35),
-      overdose = c(0.35, 1),
-      max_overdose_prob = 0.25
+      target = c(0.5, 0.8),
+      overdose = c(0.4, 1),
+      max_overdose_prob = 0.3
     )
   )
   expect_valid(result, "NextBestDualEndpoint")
+  expect_equal(result@target, c(0.5, 0.8))
+  expect_equal(result@overdose, c(0.4, 1))
+  expect_equal(result@target_relative, TRUE)
+  expect_equal(result@target_thresh, 0.01)
 })
 
 test_that("NextBestDualEndpoint object can be created with user constructor 2", {
   result <- expect_silent(
     NextBestDualEndpoint(
-      target = c(0.2, 0.35),
+      target = c(0.5, 0.8),
       target_relative = FALSE,
-      overdose = c(0.35, 1),
-      max_overdose_prob = 0.25,
+      overdose = c(0.4, 1),
+      max_overdose_prob = 0.3,
       target_thresh = 0.05
     )
   )
   expect_valid(result, "NextBestDualEndpoint")
+  expect_equal(result@target, c(0.5, 0.8))
+  expect_equal(result@overdose, c(0.4, 1))
+  expect_equal(result@target_relative, FALSE)
+  expect_equal(result@target_thresh, 0.05)
 })
 
 ## NextBestMinDist ----
