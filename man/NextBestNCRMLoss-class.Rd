@@ -4,31 +4,59 @@
 \name{NextBestNCRMLoss-class}
 \alias{NextBestNCRMLoss-class}
 \alias{.NextBestNCRMLoss}
-\title{Next best dose based on NCRM rule and loss function}
+\alias{NextBestNCRMLoss}
+\title{NextBestNCRMLoss}
+\usage{
+NextBestNCRMLoss(
+  target_int,
+  overdose_int,
+  unacceptable_int = c(1, 1),
+  max_overdose_prob,
+  losses
+)
+}
+\arguments{
+\item{target_int}{(\code{numeric})\cr A vector specifying the target toxicity interval
+(limits included)}
+
+\item{overdose_int}{(\code{numeric})\cr A vector specifying the overdose toxicity interval
+(lower limit excluded, upper limit included).}
+
+\item{unacceptable_int}{(\code{numeric})\cr An optional vector specifying the unacceptable toxicity interval
+(lower limit excluded, upper limit included).}
+
+\item{max_overdose_prob}{(\code{numeric})\cr A value specifying the maximum overdose
+(overdose or excessive + unacceptable) probability that is allowed.}
+
+\item{losses}{(\code{numeric})\cr A vector specifying the loss function. If the \code{unacceptable}
+is provided, the vector length must be 4, otherwise is 3.}
+}
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\code{\link{NextBestNCRMLoss}} is the class based on NCRM rule and loss function.
 This class is similar to NCRM class, the only difference is the addition of
 loss function. As in NCRM rule, first admissible doses are found, which are those
 with probability to fall in overdose category being below
-\code{maxOverdoseProb}. Next, within the admissible doses, the loss function is
-calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
+\code{max_overdose_prob}. Next, within the admissible doses, the loss function is
+calculated, i.e. \code{losses} \%*\% \code{target_int}. Finally, the corresponding
 dose with lowest loss function (Bayes risk) is recommended for the next dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{A numeric vector specifying the target toxicity interval
+\item{\code{target_int}}{(\code{numeric})\cr A vector specifying the target toxicity interval
 (limits included)}
 
-\item{\code{overdose}}{A numeric vector specifying the overdose toxicity interval
+\item{\code{overdose_int}}{(\code{numeric})\cr A vector specifying the overdose toxicity interval
 (lower limit excluded, upper limit included).}
 
-\item{\code{unacceptable}}{An optional numeric vector specifying the unacceptable toxicity interval
+\item{\code{unacceptable_int}}{(\code{numeric})\cr An optional vector specifying the unacceptable toxicity interval
 (lower limit excluded, upper limit included).}
 
-\item{\code{maxOverdoseProb}}{A numeric value specifying the maximum overdose
+\item{\code{max_overdose_prob}}{(\code{numeric})\cr A value specifying the maximum overdose
 (overdose or excessive + unacceptable) probability that is allowed.}
 
-\item{\code{losses}}{A numeric vector specifying the loss function. If the \code{unacceptable}
+\item{\code{losses}}{(\code{numeric})\cr A vector specifying the loss function. If the \code{unacceptable}
 is provided, the vector length must be 4, otherwise is 3.}
 }}
 
@@ -38,4 +66,17 @@ This is because the loss function values must be specified for each interval,
 that is under-dosing, target toxicity, and overdosing toxicity or
 under-dosing, target toxicity, overdosing (excessive) toxicity, and unacceptable
 toxicity intervals.
+}
+\examples{
+
+# In the example below, the target toxicity interval [0.2, 0.35] while the
+# overdose interval is (0.35,1]. We would like to constrain the probability
+# of overdosing below 25\%. The loss function is c(1, 0, 1, 2)
+my_next_best <- NextBestNCRMLoss(
+  target_int = c(0.2, 0.35),
+  overdose_int = c(0.35, 0.6),
+  unacceptable_int = c(0.6, 1),
+  max_overdose_prob = 0.25,
+  losses = c(1, 0, 1, 2)
+)
 }

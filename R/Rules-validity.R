@@ -96,7 +96,37 @@ v_next_best_min_dist <- function(object) {
 #' @describeIn v_next_best validates that the [`NextBestNCRMLoss`] object
 #'   contains valid objects.
 v_next_best_ncrm_loss <- function(object) {
-  TRUE
+  v <- Validate()
+
+  v$check(
+    test_probability_range(object@target_int),
+    "target_int has to be a probability range"
+  )
+  v$check(
+    test_probability_range(object@overdose_int),
+    "overdose_int has to be a probability range"
+  )
+
+  if (object@unacceptable_int[1] != 1) {
+    v$check(
+      test_probability_range(object@unacceptable_int),
+      "unacceptable_int has to be a probability range"
+    )
+  }
+
+
+  v$check(
+    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
+    "max_overdose_prob must be probability > 0 and < 1"
+  )
+
+
+  v$check(
+    all(!(object@losses < 0)),
+    "losses has to be a vector of non-negative elements"
+  )
+
+  v$result()
 }
 
 # Increments ----
