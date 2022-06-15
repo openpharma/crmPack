@@ -14,7 +14,8 @@ NULL
 #' other specific next best dose classes inherit.
 #'
 #' @seealso [`NextBestMTD`], [`NextBestNCRM`], [`NextBestDualEndpoint`],
-#'   [`NextBestThreePlusThree`].
+#'   [`NextBestThreePlusThree`], [`NextBestDualEndpoint`], [`NextBestMinDist`],
+#'   [`NextBestInfTheory`].
 #'
 #' @aliases NextBest
 #' @export
@@ -33,7 +34,7 @@ setClass(
 #'
 #' [`NextBestMTD`] is the class for next best dose based on MTD estimate.
 #'
-#' @slot target (`proportion`)\cr the target toxicity probability.
+#' @slot target (`proportion`)\cr target toxicity probability.
 #' @slot derive (`function`)\cr a function which derives the final next best MTD
 #'   estimate, based on vector of posterior MTD samples, called `mtd_samples`.
 #'
@@ -60,7 +61,7 @@ setClass(
 
 #' @rdname NextBestMTD-class
 #'
-#' @param target (`proportion`)\cr the target toxicity probability.
+#' @param target (`proportion`)\cr target toxicity probability.
 #' @param derive (`function`)\cr a function which derives the final next best MTD
 #'   estimate, based on vector of posterior MTD samples, called `mtd_samples`.
 #'
@@ -122,8 +123,8 @@ NextBestMTD <- function(target, derive) {
 
 #' @rdname NextBestNCRM-class
 #'
-#' @param target (`numeric`)\cr the target toxicity interval (limits included).
-#' @param overdose (`numeric`)\cr the overdose toxicity interval (lower limit
+#' @param target (`numeric`)\cr target toxicity interval (limits included).
+#' @param overdose (`numeric`)\cr overdose toxicity interval (lower limit
 #'   excluded, upper limit included).
 #' @param max_overdose_prob (`proportion`)\cr maximum overdose probability that
 #'   is allowed.
@@ -285,7 +286,7 @@ NextBestDualEndpoint <- function(target,
 #' [`NextBestMinDist`] is the class for next best dose that is based on minimum
 #' distance to target probability.
 #'
-#' @slot target (`proportion`)\cr the target toxicity probability.
+#' @slot target (`proportion`)\cr target toxicity probability.
 #'
 #' @aliases NextBestMinDist
 #' @export
@@ -306,7 +307,7 @@ NextBestDualEndpoint <- function(target,
 
 #' @rdname NextBestMinDist-class
 #'
-#' @param target (`numeric`)\cr the target toxicity probability.
+#' @param target (`proportion`)\cr target toxicity probability.
 #'
 #' @export
 #'
@@ -314,23 +315,57 @@ NextBestMinDist <- function(target) {
   .NextBestMinDist(target = target)
 }
 
-#' Class for Next Best Dose based on Information Theory.
-#'
-#'
-#' @slot target target DLT probability.
-#' @slot asymmetry value of the asymmetry exponent
-#'
-#' @export
-#' @aliases NextBestInfTheory
-.NextBestInfTheory <- setClass(Class = "NextBestInfTheory",
-                           contains = "NextBest",
-                           representation(target = "numeric", asymmetry="numeric"))
 
-#' @describeIn NextBestInfTheory-class Initialization function for `NextBestInfTheory`.
-#' @param target target DLT probability.
-#' @param asymmetry value of the asymmetry exponent
+# NextBestInfTheory ----
+
+## class ----
+
+#' `NextBestInfTheory`
+
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestInfTheory`] is the class for next best dose that is based on
+#' information theory as proposed in https://doi.org/10.1002/sim.8450.
+#'
+#' @slot target (`proportion`)\cr target toxicity probability.
+#' @slot asymmetry (`number`)\cr value of the asymmetry exponent in the
+#'   divergence function that describes the rate of penalization for overly
+#'   toxic does. It must be a value from (0, 2) interval.
+#'
+#' @aliases NextBestInfTheory
 #' @export
-NextBestInfTheory <- function(target,asymmetry){ .NextBestInfTheory(target = target, asymmetry = asymmetry) }
+#'
+.NextBestInfTheory <- setClass(
+  Class = "NextBestInfTheory",
+  slots = c(
+    target = "numeric",
+    asymmetry = "numeric"
+  ),
+  contains = "NextBest",
+  prototype = prototype(
+    target = 0.3,
+    asymmetry = 1
+  ),
+  validity = v_next_best_inf_theory
+)
+
+## constructor ----
+
+#' @rdname NextBestInfTheory-class
+#'
+#' @param target (`proportion`)\cr target toxicity probability.
+#' @param asymmetry (`number`)\cr value of the asymmetry exponent in the
+#'   divergence function that describes the rate of penalization for overly
+#'   toxic does. It must be a value from (0, 2) interval.
+#'
+#' @export
+#'
+NextBestInfTheory <- function(target, asymmetry) {
+  .NextBestInfTheory(target = target, asymmetry = asymmetry)
+}
+
+# nolint start
 
 # NextBestNCRMLoss ----
 

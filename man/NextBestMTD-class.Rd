@@ -10,7 +10,7 @@
 NextBestMTD(target, derive)
 }
 \arguments{
-\item{target}{(\code{proportion})\cr the target toxicity probability.}
+\item{target}{(\code{proportion})\cr target toxicity probability.}
 
 \item{derive}{(\code{function})\cr a function which derives the final next best MTD
 estimate, based on vector of posterior MTD samples, called \code{mtd_samples}.}
@@ -23,7 +23,7 @@ estimate, based on vector of posterior MTD samples, called \code{mtd_samples}.}
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr the target toxicity probability.}
+\item{\code{target}}{(\code{proportion})\cr target toxicity probability.}
 
 \item{\code{derive}}{(\code{function})\cr a function which derives the final next best MTD
 estimate, based on vector of posterior MTD samples, called \code{mtd_samples}.}
