@@ -8,13 +8,16 @@ test_that("v_next_best_mtd passes for valid object", {
 })
 
 test_that("v_next_best_mtd returns message for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
   object <- h_next_best_mtd()
+
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
-  expect_equal(
-    v_next_best_mtd(object),
-    "target must be probability > 0 and < 1"
-  )
+  expect_equal(v_next_best_mtd(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_next_best_mtd(object), err_msg)
 })
 
 test_that("v_next_best_mtd returns message for non-valid derive", {
@@ -25,7 +28,7 @@ test_that("v_next_best_mtd returns message for non-valid derive", {
   }
   expect_equal(
     v_next_best_mtd(object),
-    "derive must have as single argument 'mtd_samples'"
+    "derive must have a single argument 'mtd_samples'"
   )
 })
 
@@ -38,39 +41,47 @@ test_that("v_next_best_ncrm passes for valid object", {
 
 test_that("v_next_best_ncrm returns message for non-valid target", {
   err_msg <- "target has to be a probability range"
-
   object <- h_next_best_ncrm()
+
   # Changing `target` so that it is not an interval.
   object@target <- 0.6
   expect_equal(v_next_best_ncrm(object), err_msg)
 
-  # Changing `target` so that the one bound is not a valid probability.
+  object@target <- c(0.5, 0.6, 0.8)
+  expect_equal(v_next_best_ncrm(object), err_msg)
+
+  # Changing `target` so that one bound is not a valid probability value.
   object@target <- c(0.4, 1.2)
   expect_equal(v_next_best_ncrm(object), err_msg)
 })
 
 test_that("v_next_best_ncrm returns message for non-valid overdose", {
   err_msg <- "overdose has to be a probability range"
-
   object <- h_next_best_ncrm()
+
   # Changing `overdose` so that it is not an interval.
   object@overdose <- 0.6
   expect_equal(v_next_best_ncrm(object), err_msg)
 
-  # Changing `overdose` so that the one bound is not a valid probability.
+  object@overdose <- c(0.5, 0.6, 0.8)
+  expect_equal(v_next_best_ncrm(object), err_msg)
+
+  # Changing `overdose` so that one bound is not a valid probability value.
   object@overdose <- c(0.4, 1.2)
   expect_equal(v_next_best_ncrm(object), err_msg)
 })
 
 test_that("v_next_best_ncrm returns message for non-valid max_overdose_prob", {
+  err_msg <- "max_overdose_prob must be a probability value from (0, 1) interval"
   object <- h_next_best_ncrm()
+
   # Changing `max_overdose_prob` so that it does not represent allowed probability value.
   object@max_overdose_prob <- 1
+  expect_equal(v_next_best_ncrm(object), err_msg)
 
-  expect_equal(
-    v_next_best_ncrm(object),
-    "max_overdose_prob must be probability > 0 and < 1"
-  )
+  # Changing `max_overdose_prob` so that it is not a scalar.
+  object@max_overdose_prob <- c(0.5, 0.6)
+  expect_equal(v_next_best_ncrm(object), err_msg)
 })
 
 ## v_next_best_dual_endpoint ----
@@ -82,27 +93,29 @@ test_that("v_next_best_dual_endpoint passes for valid object", {
 
 test_that("v_next_best_dual_endpoint returns message for non-valid target (relative)", {
   err_msg <- "target has to be a probability range when target_relative is TRUE"
+  object <- h_next_best_dual_endpoint(target_relative = TRUE)
 
-  object <- h_next_best_dual_endpoint()
   # Changing `target` so that it is not an interval.
   object@target <- 0.6
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
-  # Changing `target` so that the one bound is not a valid probability.
+  object@target <- c(0.5, 0.6, 0.8)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+
+  # Changing `target` so that one bound is not a valid probability value.
   object@target <- c(0.4, 1.2)
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 })
 
 test_that("v_next_best_dual_endpoint returns message for non-valid target (absolute)", {
   err_msg <- "target must be a numeric range"
-
   object <- h_next_best_dual_endpoint(target_relative = FALSE)
-  # Changing `target` so that it is not an interval.
+
+  # Changing `target` so that it is not a numeric range.
   object@target <- 0.6
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
-  # Changing `target` so that the one bound is not a valid interval.
-  object@target <- c(20, 10)
+  object@target <- c(1, 5, 7)
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 })
 
@@ -115,33 +128,44 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target_relati
 
 test_that("v_next_best_dual_endpoint returns message for non-valid overdose", {
   err_msg <- "overdose has to be a probability range"
-
   object <- h_next_best_dual_endpoint()
+
   # Changing `overdose` so that it is not an interval.
   object@overdose <- 0.6
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
-  # Changing `overdose` so that the one bound is not a valid probability.
+  object@overdose <- c(0.5, 0.6, 0.8)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+
+  # Changing `overdose` so that one bound is not a valid probability value.
   object@overdose <- c(0.4, 1.2)
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 })
 
 test_that("v_next_best_dual_endpoint returns message for non-valid max_overdose_prob", {
+  err_msg <- "max_overdose_prob must be a probability value from (0, 1) interval"
   object <- h_next_best_dual_endpoint()
+
   # Changing `max_overdose_prob` so that it does not represent allowed probability value.
   object@max_overdose_prob <- 1
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
-  expect_equal(
-    v_next_best_dual_endpoint(object),
-    "max_overdose_prob must be probability > 0 and < 1"
-  )
+  # Changing `max_overdose_prob` so that it is not a scalar.
+  object@max_overdose_prob <- c(0.5, 0.6)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
 })
 
 test_that("v_next_best_dual_endpoint returns message for non-valid target_thresh", {
+  err_msg <- "target_thresh must be a probability value from [0, 1] interval"
   object <- h_next_best_dual_endpoint()
-  # Changing `target` so that the one bound is not a valid probability.
-  object@target_thresh <- 1.1
-  expect_equal(v_next_best_dual_endpoint(object), "target_thresh has to be a probability")
+
+  # Changing `target_thresh` so that it does not represent allowed probability value.
+  object@target_thresh <- 2
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+
+  # Changing `target_thresh` so that it is not a scalar.
+  object@target_thresh <- c(0.5, 0.6)
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
 })
 
 ## v_next_best_min_dist ----
@@ -152,13 +176,49 @@ test_that("v_next_best_min_dist passes for valid object", {
 })
 
 test_that("v_next_best_min_dist returns message for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
   object <- NextBestMinDist(target = 0.3)
+
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
-  expect_equal(
-    v_next_best_min_dist(object),
-    "target must be probability > 0 and < 1"
-  )
+  expect_equal(v_next_best_min_dist(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_next_best_min_dist(object), err_msg)
+})
+
+## v_next_best_inf_theory ----
+
+test_that("v_next_best_inf_theory passes for valid object", {
+  object <- NextBestInfTheory(target = 0.4, asymmetry = 1.5)
+  expect_true(v_next_best_inf_theory(object))
+})
+
+test_that("v_next_best_inf_theory returns message for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
+  object <- NextBestInfTheory(target = 0.4, asymmetry = 1.5)
+
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_next_best_inf_theory(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_next_best_inf_theory(object), err_msg)
+})
+
+test_that("v_next_best_inf_theory returns message for non-valid asymmetry", {
+  err_msg <- "asymmetry must be a number from (0, 2) interval"
+  object <- NextBestInfTheory(target = 0.4, asymmetry = 1.5)
+
+  # Changing `asymmetry` so that it is outside of (0, 2).
+  object@asymmetry <- 5
+  expect_equal(v_next_best_inf_theory(object), err_msg)
+
+  # Changing `asymmetry` so that it is not a scalar.
+  object@asymmetry <- c(1, 1.8)
+  expect_equal(v_next_best_inf_theory(object), err_msg)
 })
 
 # Increments ----
@@ -259,7 +319,7 @@ test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
   expect_equal(
     v_stopping_mtd_cv(object),
     c(
-      "target must be probability > 0 and < 1",
+      "target must be probability value from (0, 1) interval",
       "thresh_cv must be percentage > 0"
     )
   )
@@ -273,7 +333,7 @@ test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
   expect_equal(
     v_stopping_mtd_cv(object),
     c(
-      "target must be probability > 0 and < 1",
+      "target must be probability value from (0, 1) interval",
       "thresh_cv must be percentage > 0"
     )
   )
@@ -287,7 +347,7 @@ test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
   expect_equal(
     v_stopping_mtd_cv(object),
     c(
-      "target must be probability > 0 and < 1",
+      "target must be probability value from (0, 1) interval",
       "thresh_cv must be percentage > 0"
     )
   )

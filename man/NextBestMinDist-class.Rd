@@ -10,7 +10,7 @@
 NextBestMinDist(target)
 }
 \arguments{
-\item{target}{(\code{numeric})\cr the target toxicity probability.}
+\item{target}{(\code{proportion})\cr target toxicity probability.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -21,6 +21,6 @@ distance to target probability.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr the target toxicity probability.}
+\item{\code{target}}{(\code{proportion})\cr target toxicity probability.}
 }}
 

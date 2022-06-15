@@ -5,28 +5,30 @@
 \alias{NextBestInfTheory-class}
 \alias{.NextBestInfTheory}
 \alias{NextBestInfTheory}
-\title{Class for Next Best Dose based on Information Theory.}
+\title{\code{NextBestInfTheory}}
 \usage{
 NextBestInfTheory(target, asymmetry)
 }
 \arguments{
-\item{target}{target DLT probability.}
+\item{target}{(\code{proportion})\cr target toxicity probability.}
 
-\item{asymmetry}{value of the asymmetry exponent}
+\item{asymmetry}{(\code{number})\cr value of the asymmetry exponent in the
+divergence function that describes the rate of penalization for overly
+toxic does. It must be a value from (0, 2) interval.}
 }
 \description{
-Class for Next Best Dose based on Information Theory.
-}
-\section{Functions}{
-\itemize{
-\item \code{NextBestInfTheory}: Initialization function for \code{NextBestInfTheory}.
-}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
+\code{\link{NextBestInfTheory}} is the class for next best dose that is based on
+information theory as proposed in https://doi.org/10.1002/sim.8450.
+}
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{target DLT probability.}
+\item{\code{target}}{(\code{proportion})\cr target toxicity probability.}
 
-\item{\code{asymmetry}}{value of the asymmetry exponent}
+\item{\code{asymmetry}}{(\code{number})\cr value of the asymmetry exponent in the
+divergence function that describes the rate of penalization for overly
+toxic does. It must be a value from (0, 2) interval.}
 }}
 
