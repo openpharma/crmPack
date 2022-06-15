@@ -16,20 +16,20 @@ NextBestNCRMLoss(
 )
 }
 \arguments{
-\item{target_int}{(\code{numeric})\cr A vector specifying the target toxicity interval
-(limits included)}
+\item{target_int}{(\code{numeric})\cr target toxicity interval (limits included).}
 
-\item{overdose_int}{(\code{numeric})\cr A vector specifying the overdose toxicity interval
-(lower limit excluded, upper limit included).}
+\item{overdose_int}{(\code{numeric})\cr the overdose toxicity interval (lower
+limit excluded, upper limit included).}
 
-\item{unacceptable_int}{(\code{numeric})\cr An optional vector specifying the unacceptable toxicity interval
-(lower limit excluded, upper limit included).}
+\item{unacceptable_int}{(\code{numeric})\cr an optional unacceptable toxicity
+interval (lower limit excluded, upper limit included).}
 
-\item{max_overdose_prob}{(\code{numeric})\cr A value specifying the maximum overdose
+\item{max_overdose_prob}{(\code{proportion})\cr the maximum overdose
 (overdose or excessive + unacceptable) probability that is allowed.}
 
-\item{losses}{(\code{numeric})\cr A vector specifying the loss function. If the \code{unacceptable}
-is provided, the vector length must be 4, otherwise is 3.}
+\item{losses}{(\code{numeric})\cr a vector specifying the loss function. If the
+\code{unacceptable} is provided, the vector length must be \eqn{4}, otherwise
+\eqn{3}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -44,20 +44,20 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose.
 \section{Slots}{
 
 \describe{
-\item{\code{target_int}}{(\code{numeric})\cr A vector specifying the target toxicity interval
-(limits included)}
+\item{\code{target_int}}{(\code{numeric})\cr target toxicity interval (limits included).}
 
-\item{\code{overdose_int}}{(\code{numeric})\cr A vector specifying the overdose toxicity interval
-(lower limit excluded, upper limit included).}
+\item{\code{overdose_int}}{(\code{numeric})\cr the overdose toxicity interval (lower
+limit excluded, upper limit included).}
 
-\item{\code{unacceptable_int}}{(\code{numeric})\cr An optional vector specifying the unacceptable toxicity interval
-(lower limit excluded, upper limit included).}
+\item{\code{unacceptable_int}}{(\code{numeric})\cr an optional unacceptable toxicity
+interval (lower limit excluded, upper limit included).}
 
-\item{\code{max_overdose_prob}}{(\code{numeric})\cr A value specifying the maximum overdose
+\item{\code{max_overdose_prob}}{(\code{proportion})\cr the maximum overdose
 (overdose or excessive + unacceptable) probability that is allowed.}
 
-\item{\code{losses}}{(\code{numeric})\cr A vector specifying the loss function. If the \code{unacceptable}
-is provided, the vector length must be 4, otherwise is 3.}
+\item{\code{losses}}{(\code{numeric})\cr a vector specifying the loss function. If the
+\code{unacceptable} is provided, the vector length must be \eqn{4}, otherwise
+\eqn{3}.}
 }}
 
 \note{

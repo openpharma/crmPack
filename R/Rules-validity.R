@@ -48,6 +48,35 @@ v_next_best_ncrm <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestNCRMLoss`] object
+#'   contains valid objects.
+v_next_best_ncrm_loss <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability_range(object@target_int),
+    "target_int has to be a probability range"
+  )
+  v$check(
+    test_probability_range(object@overdose_int),
+    "overdose_int has to be a probability range"
+  )
+  if (object@unacceptable_int[1] != 1) {
+    v$check(
+      test_probability_range(object@unacceptable_int),
+      "unacceptable_int has to be a probability range"
+    )
+  }
+  v$check(
+    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
+    "max_overdose_prob must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    all(object@losses >= 0),
+    "losses has to be a numeric vector with all elements non-negative"
+  )
+  v$result()
+}
+
 #' @describeIn v_next_best validates that the [`NextBestDualEndpoint`] object
 #'   contains valid probability objects.
 v_next_best_dual_endpoint <- function(object) {
@@ -105,42 +134,6 @@ v_next_best_inf_theory <- function(object) {
     test_number(object@asymmetry, finite = TRUE) && object@asymmetry > 0 && object@asymmetry < 2,
     "asymmetry must be a number from (0, 2) interval"
   )
-  v$result()
-}
-
-#' @describeIn v_next_best validates that the [`NextBestNCRMLoss`] object
-#'   contains valid objects.
-v_next_best_ncrm_loss <- function(object) {
-  v <- Validate()
-
-  v$check(
-    test_probability_range(object@target_int),
-    "target_int has to be a probability range"
-  )
-  v$check(
-    test_probability_range(object@overdose_int),
-    "overdose_int has to be a probability range"
-  )
-
-  if (object@unacceptable_int[1] != 1) {
-    v$check(
-      test_probability_range(object@unacceptable_int),
-      "unacceptable_int has to be a probability range"
-    )
-  }
-
-
-  v$check(
-    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
-    "max_overdose_prob must be probability > 0 and < 1"
-  )
-
-
-  v$check(
-    all(!(object@losses < 0)),
-    "losses has to be a vector of non-negative elements"
-  )
-
   v$result()
 }
 

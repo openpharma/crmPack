@@ -42,7 +42,7 @@ test_that("NextBestNCRM object can be created with user constructor", {
   expect_equal(result@max_overdose_prob, 0.3)
 })
 
-# NextBestNCRMLoss-class ----
+## NextBestNCRMLoss-class ----
 
 test_that("NextBestNCRMLoss error: overdose has to be a probability range", {
   expect_error(
@@ -63,8 +63,8 @@ test_that("NextBestNCRMLoss error: maxOverdoseProb has to be a probability", {
       overdose_int = c(0.35, 0.6),
       max_overdose_prob = 1.25,
       losses = c(1, 0, 1, 2)
-   ),
-    "max_overdose_prob must be probability > 0 and < 1"
+    ),
+    "max_overdose_prob must be a probability value from \\(0, 1\\) interval"
   )
 })
 
@@ -77,7 +77,7 @@ test_that("NextBestNCRMLoss error: losses has to be a vector of non-negative ele
       max_overdose_prob = 0.25,
       losses = c(-1, 0, 1, 2)
     ),
-    "losses has to be a vector of non-negative elements"
+    "losses has to be a numeric vector with all elements non-negative"
   )
 })
 
