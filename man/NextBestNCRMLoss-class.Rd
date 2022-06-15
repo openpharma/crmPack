@@ -5,7 +5,7 @@
 \alias{NextBestNCRMLoss-class}
 \alias{.NextBestNCRMLoss}
 \alias{NextBestNCRMLoss}
-\title{NextBestNCRMLoss}
+\title{\code{NextBestNCRMLoss}}
 \usage{
 NextBestNCRMLoss(
   target_int,
@@ -33,10 +33,11 @@ interval (lower limit excluded, upper limit included).}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 \code{\link{NextBestNCRMLoss}} is the class based on NCRM rule and loss function.
-This class is similar to NCRM class, the only difference is the addition of
-loss function. As in NCRM rule, first admissible doses are found, which are those
-with probability to fall in overdose category being below
+This class is similar to \code{\link{NextBestNCRM}} class, the only difference is the
+addition of loss function. As in NCRM rule, first admissible doses are found,
+which are those with probability to fall in overdose category being below
 \code{max_overdose_prob}. Next, within the admissible doses, the loss function is
 calculated, i.e. \code{losses} \%*\% \code{target_int}. Finally, the corresponding
 dose with lowest loss function (Bayes risk) is recommended for the next dose.
@@ -62,10 +63,10 @@ interval (lower limit excluded, upper limit included).}
 
 \note{
 The loss function should be a vector of either 3 or 4 values.
-This is because the loss function values must be specified for each interval,
-that is under-dosing, target toxicity, and overdosing toxicity or
-under-dosing, target toxicity, overdosing (excessive) toxicity, and unacceptable
-toxicity intervals.
+This is because the loss function values must be specified for each
+interval, that is under-dosing, target toxicity, and overdosing toxicity or
+under-dosing, target toxicity, overdosing (excessive) toxicity, and
+unacceptable toxicity intervals.
 }
 \examples{
 

@@ -146,13 +146,14 @@ NextBestNCRM <- function(target,
 
 ## class ----
 
-#' NextBestNCRMLoss
+#' `NextBestNCRMLoss`
 #'
 #' @description `r lifecycle::badge("stable")`
+#'
 #' [`NextBestNCRMLoss`] is the class based on NCRM rule and loss function.
-#' This class is similar to NCRM class, the only difference is the addition of
-#' loss function. As in NCRM rule, first admissible doses are found, which are those
-#' with probability to fall in overdose category being below
+#' This class is similar to [`NextBestNCRM`] class, the only difference is the
+#' addition of loss function. As in NCRM rule, first admissible doses are found,
+#' which are those with probability to fall in overdose category being below
 #' `max_overdose_prob`. Next, within the admissible doses, the loss function is
 #' calculated, i.e. `losses` %*% `target_int`. Finally, the corresponding
 #' dose with lowest loss function (Bayes risk) is recommended for the next dose.
@@ -169,10 +170,10 @@ NextBestNCRM <- function(target,
 #'   \eqn{3}.
 #'
 #' @note The loss function should be a vector of either 3 or 4 values.
-#' This is because the loss function values must be specified for each interval,
-#' that is under-dosing, target toxicity, and overdosing toxicity or
-#' under-dosing, target toxicity, overdosing (excessive) toxicity, and unacceptable
-#' toxicity intervals.
+#'   This is because the loss function values must be specified for each
+#'   interval, that is under-dosing, target toxicity, and overdosing toxicity or
+#'   under-dosing, target toxicity, overdosing (excessive) toxicity, and
+#'   unacceptable toxicity intervals.
 #'
 #' @aliases NextBestNCRMLoss
 #' @export
@@ -407,7 +408,6 @@ NextBestMinDist <- function(target) {
 ## class ----
 
 #' `NextBestInfTheory`
-
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
