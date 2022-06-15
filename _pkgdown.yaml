@@ -97,6 +97,7 @@ reference:
       - h_model_dual_endpoint_rho
       - h_model_dual_endpoint_sigma2betaW
       - h_model_dual_endpoint_beta
+      - h_info_theory_dist
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -129,6 +130,7 @@ reference:
       - v_next_best_ncrm
       - v_next_best_dual_endpoint
       - v_next_best_min_dist
+      - v_next_best_inf_theory
       - v_increments_numdoselevels
       - v_increments_hsr_beta
       - v_stopping_mtd_cv
