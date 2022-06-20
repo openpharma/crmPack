@@ -3,6 +3,7 @@
 \name{nextBest}
 \alias{nextBest}
 \alias{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}
+\alias{nextBest-NextBestMTD}
 \alias{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
@@ -13,7 +14,7 @@
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
 \alias{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}
-\title{Find the next best dose}
+\title{Finding the Next Best Dose}
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
@@ -50,19 +51,19 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 )
 }
 \arguments{
-\item{nextBest}{The rule, an object of class \code{\linkS4class{NextBest}}}
+\item{nextBest}{(\code{NextBest})\cr the rule for the next best dose.}
 
-\item{doselimit}{The maximum allowed next dose. If this is an empty (length
-0) vector, then no dose limit will be applied in the course of dose
+\item{doselimit}{(\code{number})\cr the maximum allowed next dose. If it an empty
+vector, then no dose limit will be applied in the course of dose
 recommendation calculation, and a corresponding warning is given.}
 
-\item{samples}{the \code{\linkS4class{Samples}} object}
+\item{samples}{(\code{Samples})\cr a samples.}
 
-\item{model}{The model input, an object of class \code{\linkS4class{Model}}}
+\item{model}{(\code{Model})\cr model input.}
 
-\item{data}{The data input, an object of class \code{\linkS4class{Data}}}
+\item{data}{(\code{Data})\cr data input.}
 
-\item{\dots}{possible additional arguments without method dispatch}
+\item{...}{additional arguments without method dispatch.}
 
 \item{SIM}{internal command to notify if this method is used within simulations. Default as FALSE}
 
@@ -71,24 +72,23 @@ recommendation calculation, and a corresponding warning is given.}
 \item{Effsamples}{the efficacy samples of \code{\linkS4class{Samples}} class object}
 }
 \value{
-a list with the next best dose (element \code{value})
-on the grid defined in \code{data}, and a plot depicting this recommendation
-(element \code{plot}). In case of multiple plots also an element \code{singlePlots}
-is included which returns the list of single plots, which allows for further
-customization of these. Also additional list elements describing the outcome
-of the rule can be contained.
+a list with the next best dose recommendation  (element named \code{value})
+from the grid defined in \code{data}, and a plot depicting this recommendation
+(element named \code{plot}). In case of multiple plots also an element
+named \code{singlePlots} is included. The \code{singlePlots} is itself a list with
+single plots. An additional list with elements describing the outcome
+of the rule can be contained too.
 }
 \description{
-Compute the recommended next best dose.
-}
-\details{
-This function outputs the next best dose recommendation based on the
-corresponding rule \code{nextBest}, the posterior \code{samples} from the
-\code{model} and the underlying \code{data}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+A function that computes the recommended next best dose based on the
+corresponding rule \code{nextBest}, the posterior \code{samples} from the \code{model} and
+the underlying \code{data}.
 }
 \section{Functions}{
 \itemize{
-\item \code{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}: Find the next best dose based on the MTD rule
+\item \code{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}: find the next best dose based on the MTD rule.
 
 \item \code{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}: Find the next best dose based on the NCRM method. The
 additional list element \code{probs} contains the target and overdosing
@@ -133,50 +133,50 @@ efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or
 }}
 
 \examples{
-# nolint start
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
-# Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+my_samples <- mcmc(my_data, my_model, my_options)
 
-# Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
-set.seed(94)
-samples <- mcmc(data, model, options)
-
-# Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose
-# based on the class 'NextBestMTD'
-mtdNextBest <- NextBestMTD(target=0.33,
-                           derive=
-                             function(mtd_samples){
-                               quantile(mtd_samples, probs=0.25)
-                             })
+# based on the 'NextBestMTD' class.
+mtd_next_best <- NextBestMTD(
+  target = 0.33,
+  derive = function(mtd_samples) {
+    quantile(mtd_samples, probs = 0.25)
+  }
+)
 
-# Calculate the next best dose
-doseRecommendation <- nextBest(mtdNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
-
-# nolint end
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = mtd_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
 # nolint start
 
 # Create the data
