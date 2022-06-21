@@ -4,127 +4,146 @@
 #' @include helpers_rules.R
 NULL
 
+# nextBest ----
+
+## generic ----
+
+#' Finding the Next Best Dose
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A function that computes the recommended next best dose based on the
+#' corresponding rule `nextBest`, the posterior `samples` from the `model` and
+#' the underlying `data`.
+#'
+#' @param nextBest (`NextBest`)\cr the rule for the next best dose.
+#' @param doselimit (`number`)\cr the maximum allowed next dose. If it an empty
+#'   vector, then no dose limit will be applied in the course of dose
+#'   recommendation calculation, and a corresponding warning is given.
+#' @param samples (`Samples`)\cr posterior samples from `model` parameters given
+#'   `data`.
+#' @param model (`Model`)\cr model that was used to generate the samples.
+#' @param data (`Data`)\cr data that was used to generate the samples.
+#' @param ... additional arguments without method dispatch.
+#'
+#' @return A list with the next best dose recommendation  (element named `value`)
+#'   from the grid defined in `data`, and a plot depicting this recommendation
+#'   (element named `plot`). In case of multiple plots also an element
+#'   named `singlePlots` is included. The `singlePlots` is itself a list with
+#'   single plots. An additional list with elements describing the outcome
+#'   of the rule can be contained too.
+#'
+#' @export
+#'
+setGeneric(
+  name = "nextBest",
+  def = function(nextBest,
+                 doselimit,
+                 samples,
+                 model,
+                 data,
+                 ...) {
+    if (!missing(doselimit) && length(doselimit) != 0) {
+      assert_number(doselimit, lower = 0, finite = TRUE)
+    }
+    standardGeneric("nextBest")
+  },
+  valueClass = "list"
+)
+
+## NextBestMTD ----
+
+#' @describeIn nextBest find the next best dose based on the MTD rule.
+#'
+#' @aliases nextBest-NextBestMTD
+#'
+#' @export
+#' @example examples/Rules-method-NextBestMTD.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestMTD",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "Model",
+    data = "Data"
+  ),
+  definition = function(nextBest,
+                        doselimit,
+                        samples,
+                        model,
+                        data,
+                        ...) {
+
+    # Which doses on grid are <= maximum possible dose (if specified).
+    doseGrid_leq_limit <- if (length(doselimit) == 0) {
+      warning("doselimit is not provided, therefore no dose limit will be applied")
+      data@doseGrid
+    } else {
+      data@doseGrid[data@doseGrid <= doselimit]
+    }
+
+    # Generate the MTD samples and derive the next best dose.
+    mtd_samples <- dose(x = nextBest@target, model, samples)
+    mtd_estimate <- nextBest@derive(mtd_samples = mtd_samples)
+    # Round to the next possible grid point.
+    min_dist_ind <- which.min(abs(doseGrid_leq_limit - mtd_estimate))
+    ret <- doseGrid_leq_limit[min_dist_ind]
+
+    # Create a plot.
+    p <- ggplot(
+      data = data.frame(x = mtd_samples),
+      aes(.data$x),
+      fill = "grey50",
+      colour = "grey50"
+    ) +
+      geom_density() +
+      coord_cartesian(xlim = range(data@doseGrid)) +
+      geom_vline(xintercept = mtd_estimate, colour = "black", lwd = 1.1) +
+      geom_text(
+        data = data.frame(x = mtd_estimate),
+        aes(.data$x, 0),
+        label = "Est",
+        vjust = -0.5,
+        hjust = 0.5,
+        colour = "black",
+        angle = 90
+      ) +
+      xlab("MTD") +
+      ylab("Posterior density")
+
+    if (length(doselimit) != 0) {
+      p <- p +
+        geom_vline(xintercept = doselimit, colour = "red", lwd = 1.1) +
+        geom_text(
+          data = data.frame(x = doselimit),
+          aes(.data$x, 0),
+          label = "Max",
+          vjust = -0.5,
+          hjust = -0.5,
+          colour = "red",
+          angle = 90
+        )
+    }
+
+    p <- p +
+      geom_vline(xintercept = ret, colour = "blue", lwd = 1.1) +
+      geom_text(
+        data = data.frame(x = ret),
+        aes(.data$x, 0),
+        label = "Next",
+        vjust = -0.5,
+        hjust = -1.5,
+        colour = "blue",
+        angle = 90
+      )
+
+    list(value = ret, plot = p)
+  }
+)
+
 # nolint start
-
-##' Find the next best dose
-##'
-##' Compute the recommended next best dose.
-##'
-##' This function outputs the next best dose recommendation based on the
-##' corresponding rule \code{nextBest}, the posterior \code{samples} from the
-##' \code{model} and the underlying \code{data}.
-##'
-##' @param nextBest The rule, an object of class \code{\linkS4class{NextBest}}
-##' @param doselimit The maximum allowed next dose. If this is an empty (length
-##' 0) vector, then no dose limit will be applied in the course of dose
-##' recommendation calculation, and a corresponding warning is given.
-##' @param samples the \code{\linkS4class{Samples}} object
-##' @param model The model input, an object of class \code{\linkS4class{Model}}
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param \dots possible additional arguments without method dispatch
-##' @return a list with the next best dose (element \code{value})
-##' on the grid defined in \code{data}, and a plot depicting this recommendation
-##' (element \code{plot}). In case of multiple plots also an element \code{singlePlots}
-##' is included which returns the list of single plots, which allows for further
-##' customization of these. Also additional list elements describing the outcome
-##' of the rule can be contained.
-##'
-##' @export
-##' @keywords methods
-setGeneric("nextBest",
-           def=
-               function(nextBest, doselimit, samples, model, data, ...){
-
-                   ## there should be no default method,
-                   ## therefore just forward to next method!
-                   standardGeneric("nextBest")
-               },
-           valueClass="list")
-
-## --------------------------------------------------
-## The MTD method
-## --------------------------------------------------
-
-##' @describeIn nextBest Find the next best dose based on the MTD rule
-##'
-##' @example examples/Rules-method-NextBestMTD.R
-##' @importFrom ggplot2 ggplot geom_density xlab ylab xlim aes geom_vline
-##' geom_text
-setMethod("nextBest",
-          signature=
-          signature(nextBest="NextBestMTD",
-                    doselimit="numeric",
-                    samples="Samples",
-                    model="Model",
-                    data="Data"),
-          def=
-              function(nextBest, doselimit, samples, model, data, ...){
-
-                  if(identical(length(doselimit), 0L))
-                  {
-                      warning("doselimit is empty, therefore no dose limit will be applied")
-                  }
-
-              ## First, generate the MTD samples.
-              mtd_samples <- dose(x=nextBest@target,
-                                 model,
-                                 samples)
-
-              ## then derive the next best dose
-              mtdEstimate <- nextBest@derive(mtd_samples=mtd_samples)
-
-              ## be sure which doses are ok with respect to maximum
-              ## possible dose - if one was specified
-              dosesOK <-
-                  if(length(doselimit))
-                      which(data@doseGrid <= doselimit)
-                  else
-                      seq_along(data@doseGrid)
-
-              ## but now, round to the next possible grid point
-              index <- which.min(abs(data@doseGrid[dosesOK] - mtdEstimate))
-              ret <- data@doseGrid[dosesOK][index]
-
-              ## produce plot
-              plot1 <- ggplot() +
-                      geom_density(data=
-                                   data.frame(x=mtd_samples),
-                                   aes(x=x),
-                                   fill = "grey50", colour = "grey50") +
-                          xlab("MTD") + ylab("Posterior density") +
-                              xlim(range(data@doseGrid))
-
-              plot1 <- plot1 +
-                  geom_vline(xintercept=mtdEstimate, colour="black", lwd=1.1) +
-                      geom_text(data=
-                                data.frame(x=mtdEstimate),
-                                aes(x, 0,
-                                    label = "Est", hjust=+1, vjust = +1),
-                                colour="black")
-
-              if(length(doselimit))
-              {
-                  plot1 <- plot1 +
-                      geom_vline(xintercept=doselimit, colour="red", lwd=1.1) +
-                          geom_text(data=
-                                        data.frame(x=doselimit),
-                                    aes(x, 0,
-                                        label = "Max", hjust = +1, vjust = +1),
-                                    colour="red")
-              }
-
-              plot1 <- plot1 +
-                  geom_vline(xintercept=ret, colour="blue", lwd=1.1) +
-                      geom_text(data=
-                                data.frame(x=ret),
-                                aes(x, 0,
-                                    label = "Next", hjust = 0, vjust = +1),
-                                colour="blue")
-
-              ## return next best dose and plot
-              return(list(value=ret,
-                          plot=plot1))
-          })
 
 ## --------------------------------------------------
 ## The NCRM method
