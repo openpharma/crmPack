@@ -20,12 +20,13 @@ NULL
 #' @param doselimit (`number`)\cr the maximum allowed next dose. If it an empty
 #'   vector, then no dose limit will be applied in the course of dose
 #'   recommendation calculation, and a corresponding warning is given.
-#' @param samples (`Samples`)\cr a samples.
-#' @param model (`Model`)\cr model input.
-#' @param data (`Data`)\cr data input.
+#' @param samples (`Samples`)\cr posterior samples from `model` parameters given
+#'   `data`.
+#' @param model (`Model`)\cr model that was used to generate the samples.
+#' @param data (`Data`)\cr data that was used to generate the samples.
 #' @param ... additional arguments without method dispatch.
 #'
-#' @return a list with the next best dose recommendation  (element named `value`)
+#' @return A list with the next best dose recommendation  (element named `value`)
 #'   from the grid defined in `data`, and a plot depicting this recommendation
 #'   (element named `plot`). In case of multiple plots also an element
 #'   named `singlePlots` is included. The `singlePlots` is itself a list with
@@ -93,18 +94,22 @@ setMethod(
     # Create a plot.
     p <- ggplot(
       data = data.frame(x = mtd_samples),
-      aes(x = x),
+      aes(.data$x),
       fill = "grey50",
       colour = "grey50"
     ) +
       geom_density() +
+      coord_cartesian(xlim = range(data@doseGrid)) +
       geom_vline(xintercept = mtd_estimate, colour = "black", lwd = 1.1) +
       geom_text(
         data = data.frame(x = mtd_estimate),
-        aes(mtd_estimate, 0, label = "Est", hjust = +1, vjust = +1),
-        colour = "black"
+        aes(.data$x, 0),
+        label = "Est",
+        vjust = -0.5,
+        hjust = 0.5,
+        colour = "black",
+        angle = 90
       ) +
-      xlim(range(data@doseGrid)) +
       xlab("MTD") +
       ylab("Posterior density")
 
@@ -113,8 +118,12 @@ setMethod(
         geom_vline(xintercept = doselimit, colour = "red", lwd = 1.1) +
         geom_text(
           data = data.frame(x = doselimit),
-          aes(x, 0, label = "Max", hjust = +1, vjust = +1),
-          colour = "red"
+          aes(.data$x, 0),
+          label = "Max",
+          vjust = -0.5,
+          hjust = -0.5,
+          colour = "red",
+          angle = 90
         )
     }
 
@@ -122,8 +131,12 @@ setMethod(
       geom_vline(xintercept = ret, colour = "blue", lwd = 1.1) +
       geom_text(
         data = data.frame(x = ret),
-        aes(x, 0, label = "Next", hjust = 0, vjust = +1),
-        colour = "blue"
+        aes(.data$x, 0),
+        label = "Next",
+        vjust = -0.5,
+        hjust = -1.5,
+        colour = "blue",
+        angle = 90
       )
 
     list(value = ret, plot = p)

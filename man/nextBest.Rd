@@ -57,11 +57,12 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 vector, then no dose limit will be applied in the course of dose
 recommendation calculation, and a corresponding warning is given.}
 
-\item{samples}{(\code{Samples})\cr a samples.}
+\item{samples}{(\code{Samples})\cr posterior samples from \code{model} parameters given
+\code{data}.}
 
-\item{model}{(\code{Model})\cr model input.}
+\item{model}{(\code{Model})\cr model that was used to generate the samples.}
 
-\item{data}{(\code{Data})\cr data input.}
+\item{data}{(\code{Data})\cr data that was used to generate the samples.}
 
 \item{...}{additional arguments without method dispatch.}
 
@@ -72,7 +73,7 @@ recommendation calculation, and a corresponding warning is given.}
 \item{Effsamples}{the efficacy samples of \code{\linkS4class{Samples}} class object}
 }
 \value{
-a list with the next best dose recommendation  (element named \code{value})
+A list with the next best dose recommendation  (element named \code{value})
 from the grid defined in \code{data}, and a plot depicting this recommendation
 (element named \code{plot}). In case of multiple plots also an element
 named \code{singlePlots} is included. The \code{singlePlots} is itself a list with
