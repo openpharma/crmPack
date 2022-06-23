@@ -161,8 +161,10 @@ NextBestNCRM <- function(target,
 #' @slot target_int (`numeric`)\cr target toxicity interval (limits included).
 #' @slot overdose_int (`numeric`)\cr the overdose toxicity interval (lower
 #'   limit excluded, upper limit included).
-#' @slot unacceptable_int (`numeric`)\cr an optional unacceptable toxicity
-#'   interval (lower limit excluded, upper limit included).
+#' @slot unacceptable_int (`numeric`)\cr an unacceptable toxicity
+#'   interval (lower limit excluded, upper limit included). This must be
+#'   specified if the `overdose_int` does not include 1. Otherwise, it is
+#'   c(1, 1) (default), which is essentially a scalar equals 1.
 #' @slot max_overdose_prob (`proportion`)\cr the maximum overdose
 #'   (overdose or excessive + unacceptable) probability that is allowed.
 #' @slot losses (`numeric`)\cr a vector specifying the loss function. If the
