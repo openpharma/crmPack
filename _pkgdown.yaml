@@ -218,6 +218,8 @@ reference:
       - update-ModelPseudo
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
+      - nextBest
+      - nextBest-NextBestMTD
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
