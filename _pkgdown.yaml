@@ -220,6 +220,8 @@ reference:
       - mcmc-GeneralData-DualEndpointBeta
       - nextBest
       - nextBest-NextBestMTD
+      - nextBest-NextBestNCRM
+      - nextBest-NextBestNCRM-DataParts
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels

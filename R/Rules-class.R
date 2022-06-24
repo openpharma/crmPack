@@ -95,10 +95,11 @@ NextBestMTD <- function(target, derive) {
 #' Otherwise, the highest admissible dose is the next recommended dose.
 #'
 #' @slot target (`numeric`)\cr the target toxicity interval (limits included).
+#'   It is used to filter probability samples.
 #' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
-#'   excluded, upper limit included).
-#' @slot max_overdose_prob (`proportion`)\cr maximum overdose probability that
-#'   is allowed.
+#'   excluded, upper limit included). It is used to filter probability samples.
+#' @slot max_overdose_prob (`proportion`)\cr maximum overdose posterior
+#'   probability that is allowed.
 #'
 #' @aliases NextBestNCRM
 #' @export

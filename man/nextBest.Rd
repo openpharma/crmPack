@@ -5,7 +5,9 @@
 \alias{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}
 \alias{nextBest-NextBestMTD}
 \alias{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}
+\alias{nextBest-NextBestNCRM}
 \alias{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}
+\alias{nextBest-NextBestNCRM-DataParts}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
 \alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
@@ -91,12 +93,12 @@ the underlying \code{data}.
 \itemize{
 \item \code{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}: find the next best dose based on the MTD rule.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}: Find the next best dose based on the NCRM method. The
-additional list element \code{probs} contains the target and overdosing
-probabilities (across all doses in the dose grid)
-used in the derivation of the next best dose.
+\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}: find the next best dose based on the NCRM method. The
+additional element \code{probs} in the output's list contains the target and
+overdosing probabilities (across all doses in the dose grid) used in the
+derivation of the next best dose.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: Find the next best dose based on the NCRM method when
+\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: find the next best dose based on the NCRM method when
 two parts trial is used.
 
 \item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: Find the next best dose based on the 3+3 method
@@ -151,7 +153,7 @@ my_model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior.
-my_options <- McmcOptions(burnin = 100, step = 2, samples = 2000)
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
@@ -178,51 +180,52 @@ dose_recommendation <- nextBest(
   model = my_model,
   data = my_data
 )
-# nolint start
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
-# Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_samples <- mcmc(my_data, my_model, my_options)
 
-# Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
-set.seed(94)
-samples <- mcmc(data, model, options)
-
-# Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose
-# based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+# based on the 'NextBestNCRM' class.
+nrcm_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
-# Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples, model=model, data=data)
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
 
-# Look at the probabilities
-doseRecommendation$probs
-
-# nolint end
+# See the probabilities.
+dose_recommendation$probs
 # nolint start
 
 # create an object of class 'DataParts'
