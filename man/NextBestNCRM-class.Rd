@@ -13,7 +13,7 @@ NextBestNCRM(target, overdose, max_overdose_prob)
 \item{target}{(\code{numeric})\cr target toxicity interval (limits included).}
 
 \item{overdose}{(\code{numeric})\cr overdose toxicity interval (lower limit
-excluded, upper limit included).}
+excluded, upper limit included). It is used to filter probability samples.}
 
 \item{max_overdose_prob}{(\code{proportion})\cr maximum overdose probability that
 is allowed.}
@@ -36,8 +36,7 @@ Otherwise, the highest admissible dose is the next recommended dose.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{numeric})\cr the target toxicity interval (limits included).
-It is used to filter probability samples.}
+\item{\code{target}}{(\code{numeric})\cr the target toxicity interval (limits included).}
 
 \item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
 excluded, upper limit included). It is used to filter probability samples.}

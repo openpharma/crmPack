@@ -17,9 +17,10 @@ NULL
 #' the underlying `data`.
 #'
 #' @param nextBest (`NextBest`)\cr the rule for the next best dose.
-#' @param doselimit (`number`)\cr the maximum allowed next dose. If it an empty
-#'   vector, then no dose limit will be applied in the course of dose
+#' @param doselimit (`number`)\cr the maximum allowed next dose. If it is an
+#'   empty vector, then no dose limit will be applied in the course of dose
 #'   recommendation calculation, and a corresponding warning is given.
+#'   It is used to filter probability samples.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
 #' @param model (`Model`)\cr model that was used to generate the samples.
@@ -75,7 +76,6 @@ setMethod(
                         model,
                         data,
                         ...) {
-    # TODO: Below line - to be removed after issue #261 is solved.
     doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
     # Which doses on grid are <= maximum possible dose.
@@ -161,8 +161,6 @@ setMethod("nextBest",
     data = "Data"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
-
-    # TODO: Below line - to be removed after issue #261 is solved.
     doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
     # Matrix with samples from the dose-tox curve at the dose grid points.
