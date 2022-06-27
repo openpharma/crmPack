@@ -17,8 +17,8 @@ NULL
 #' the underlying `data`.
 #'
 #' @param nextBest (`NextBest`)\cr the rule for the next best dose.
-#' @param doselimit (`number`)\cr the maximum allowed next dose. If it an empty
-#'   vector, then no dose limit will be applied in the course of dose
+#' @param doselimit (`number`)\cr the maximum allowed next dose. If it is an
+#'   empty vector, then no dose limit will be applied in the course of dose
 #'   recommendation calculation, and a corresponding warning is given.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
@@ -58,7 +58,7 @@ setGeneric(
 #' @aliases nextBest-NextBestMTD
 #'
 #' @export
-#' @example examples/Rules-method-NextBestMTD.R
+#' @example examples/Rules-method-nextBest-NextBestMTD.R
 #'
 setMethod(
   f = "nextBest",
@@ -75,21 +75,17 @@ setMethod(
                         model,
                         data,
                         ...) {
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
-    # Which doses on grid are <= maximum possible dose (if specified).
-    doseGrid_leq_limit <- if (length(doselimit) == 0) {
-      warning("doselimit is not provided, therefore no dose limit will be applied")
-      data@doseGrid
-    } else {
-      data@doseGrid[data@doseGrid <= doselimit]
-    }
+    # Which doses on grid are <= maximum possible dose.
+    doses_eligible <- data@doseGrid[data@doseGrid <= doselimit]
 
     # Generate the MTD samples and derive the next best dose.
     mtd_samples <- dose(x = nextBest@target, model, samples)
     mtd_estimate <- nextBest@derive(mtd_samples = mtd_samples)
     # Round to the next possible grid point.
-    min_dist_ind <- which.min(abs(doseGrid_leq_limit - mtd_estimate))
-    ret <- doseGrid_leq_limit[min_dist_ind]
+    min_dist_ind <- which.min(abs(doses_eligible - mtd_estimate))
+    next_best <- doses_eligible[min_dist_ind]
 
     # Create a plot.
     p <- ggplot(
@@ -113,7 +109,7 @@ setMethod(
       xlab("MTD") +
       ylab("Posterior density")
 
-    if (length(doselimit) != 0) {
+    if (is.finite(doselimit)) {
       p <- p +
         geom_vline(xintercept = doselimit, colour = "red", lwd = 1.1) +
         geom_text(
@@ -128,9 +124,9 @@ setMethod(
     }
 
     p <- p +
-      geom_vline(xintercept = ret, colour = "blue", lwd = 1.1) +
+      geom_vline(xintercept = next_best, colour = "blue", lwd = 1.1) +
       geom_text(
-        data = data.frame(x = ret),
+        data = data.frame(x = next_best),
         aes(.data$x, 0),
         label = "Next",
         vjust = -0.5,
@@ -139,216 +135,166 @@ setMethod(
         angle = 90
       )
 
-    list(value = ret, plot = p)
+    list(value = next_best, plot = p)
   }
 )
 
+## NextBestNCRM ----
+
+#' @describeIn nextBest find the next best dose based on the NCRM method. The
+#'   additional element `probs` in the output's list contains the target and
+#'   overdosing probabilities (across all doses in the dose grid) used in the
+#'   derivation of the next best dose.
+#'
+#' @aliases nextBest-NextBestNCRM
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestNCRM.R
+#'
+setMethod("nextBest",
+  signature = signature(
+    nextBest = "NextBestNCRM",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "Model",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    samples_prob <- sapply(data@doseGrid, prob, model = model, samples = samples)
+
+    # Estimates of posterior probabilities that are based on the prob. samples
+    # which are within overdose/target interval.
+    prob_overdose <- colMeans(
+      samples_prob > nextBest@overdose[1] & samples_prob <= nextBest@overdose[2]
+    )
+    prob_target <- colMeans(
+      samples_prob >= nextBest@target[1] & samples_prob <= nextBest@target[2]
+    )
+
+    # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
+    is_dose_eligible <- data@doseGrid <= doselimit & prob_overdose < nextBest@max_overdose_prob
+
+    next_best <- if (any(is_dose_eligible)) {
+      # If maximum target probability is higher than some numerical threshold,
+      # then take that level, otherwise stick to the maximum level that is OK.
+      # next_best_level is relative to eligible doses.
+      next_best_level <- ifelse(
+        test = any(prob_target[is_dose_eligible] > 0.05),
+        yes = which.max(prob_target[is_dose_eligible]),
+        no = sum(is_dose_eligible)
+      )
+      data@doseGrid[is_dose_eligible][next_best_level]
+    } else {
+      NA
+    }
+
+    # Build plots, first for the target probability.
+    p1 <- ggplot() +
+      geom_bar(
+        data = data.frame(Dose = data@doseGrid, y = prob_target * 100),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(data@doseGrid)) / 2,
+        colour = "darkgreen",
+        fill = "darkgreen"
+      ) +
+      ylim(c(0, 100)) +
+      ylab(paste("Target probability [%]"))
+
+    if (is.finite(doselimit)) {
+      p1 <- p1 + geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+    }
+
+    if (any(is_dose_eligible)) {
+      p1 <- p1 +
+        geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
+        geom_point(
+          aes(x = next_best, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          size = 3,
+          pch = 25,
+          col = "red",
+          bg = "red"
+        )
+    }
+
+    # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_bar(
+        data = data.frame(Dose = data@doseGrid, y = prob_overdose * 100),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(data@doseGrid)) / 2,
+        colour = "red",
+        fill = "red"
+      ) +
+      geom_hline(yintercept = nextBest@max_overdose_prob * 100, lwd = 1.1, lty = 2, colour = "black") +
+      ylim(c(0, 100)) +
+      ylab("Overdose probability [%]")
+
+    # Place them below each other.
+    plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
+
+    list(
+      value = next_best,
+      plot = plot_joint,
+      singlePlots = list(plot1 = p1, plot2 = p2),
+      probs = cbind(
+        dose = data@doseGrid,
+        target = prob_target,
+        overdose = prob_overdose
+      )
+    )
+  }
+)
+
+## NextBestNCRM-DataParts ----
+
+#' @describeIn nextBest find the next best dose based on the NCRM method when
+#'   two parts trial is used.
+#'
+#' @aliases nextBest-NextBestNCRM-DataParts
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestNCRM-DataParts.R
+#'
+setMethod("nextBest",
+  signature =
+    signature(
+      nextBest = "NextBestNCRM",
+      doselimit = "numeric",
+      samples = "Samples",
+      model = "Model",
+      data = "DataParts"
+    ),
+  def =
+    function(nextBest, doselimit, samples, model, data, ...) {
+
+      ## exception when we are in part I or about to start part II!
+      if (all(data@part == 1L)) {
+        ## here we will always propose the highest possible dose
+        ## (assuming that the dose limit came from reasonable
+        ## increments rule, i.e. inrementsRelativeParts)
+        if (identical(length(doselimit), 0L)) {
+          stop("doselimit needs to be given for Part I")
+        }
+
+        return(list(
+          value = doselimit,
+          plot = NULL
+        ))
+      } else {
+        ## otherwise we will just do the standard thing
+        callNextMethod(nextBest, doselimit, samples, model, data, ...)
+      }
+    }
+)
+
 # nolint start
-
-## --------------------------------------------------
-## The NCRM method
-## --------------------------------------------------
-
-##' @describeIn nextBest Find the next best dose based on the NCRM method. The
-##' additional list element \code{probs} contains the target and overdosing
-##' probabilities (across all doses in the dose grid)
-##' used in the derivation of the next best dose.
-##'
-##' @example examples/Rules-method-NextBestNCRM.R
-##' @importFrom ggplot2 ggplot geom_bar xlab ylab ylim aes geom_vline
-##' geom_hline geom_point
-##' @importFrom gridExtra arrangeGrob
-setMethod("nextBest",
-          signature=
-          signature(nextBest="NextBestNCRM",
-                    doselimit="numeric",
-                    samples="Samples",
-                    model="Model",
-                    data="Data"),
-          def=
-              function(nextBest, doselimit, samples, model, data, ...){
-
-                  if(identical(length(doselimit), 0L))
-                  {
-                      warning("doselimit is empty, therefore no dose limit will be applied")
-                  }
-
-              ## first we have to get samples from the dose-tox
-              ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(samples@options),
-                                    ncol=data@nGrid)
-
-              ## evaluate the probs, for all samples.
-              for(i in seq_len(data@nGrid))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  probSamples[, i] <- prob(dose=data@doseGrid[i],
-                                           model,
-                                           samples)
-              }
-
-              ## Now compute probabilities to be in target and
-              ## overdose tox interval
-              probTarget <-
-                  colMeans((probSamples >= nextBest@target[1]) &
-                           (probSamples <= nextBest@target[2]))
-
-              probOverdose <-
-                  colMeans((probSamples > nextBest@overdose[1]) &
-                           (probSamples <= nextBest@overdose[2]))
-
-              ## which doses are eligible after accounting
-              ## for maximum possible dose and  discarding overdoses?
-              dosesBelowLimit <-
-                  if(length(doselimit))
-                      (data@doseGrid <= doselimit)
-                  else
-                      rep(TRUE, length(data@doseGrid))
-
-              dosesOK <- which(dosesBelowLimit &
-                               (probOverdose < nextBest@max_overdose_prob))
-
-              ## check if there are doses that are OK
-              if(length(dosesOK))
-              {
-                  ## what is the recommended dose level?
-
-                  ## if maximum target probability is higher than some numerical
-                  ## threshold, then take that level, otherwise stick to the
-                  ## maximum level that is OK:
-                  doseLevel <-
-                      if(max(probTarget[dosesOK]) > 0.05)
-                      {
-                          which.max(probTarget[dosesOK])
-                      } else {
-                          which.max(data@doseGrid[dosesOK])
-                      }
-
-                  ret <- data@doseGrid[dosesOK][doseLevel]
-              } else {
-                  ## if none of the doses is OK:
-                  doseLevel <- NA
-                  ret <- NA
-              }
-
-              ## produce plot
-
-              ## first for the target probability
-              plot1 <- ggplot() +
-                  geom_bar(data=
-                           data.frame(x=data@doseGrid,
-                                      y=probTarget * 100),
-                           aes(x=x, y=y),
-                           stat="identity",
-                           position="identity",
-                           width=min(diff(data@doseGrid)) / 2,
-                           colour="darkgreen",
-                           fill="darkgreen") +
-                               xlab("Dose") +
-                                   ylab(paste("Target probability [%]")) +
-                                       ylim(c(0, 100))
-
-              if(length(doselimit))
-              {
-                  plot1 <- plot1 +
-                      geom_vline(xintercept=doselimit,
-                                 lwd=1.1,
-                                 lty=2,
-                                 colour="black")
-              }
-
-              if(length(dosesOK))
-              {
-                  plot1 <- plot1 +
-                      geom_vline(xintercept=data@doseGrid[max(dosesOK)],
-                                 lwd=1.1,
-                                 lty=2,
-                                 colour="red")
-
-                  plot1 <- plot1 +
-                      geom_point(data=
-                                 data.frame(x=ret,
-                                            y=probTarget[dosesOK][doseLevel] *
-                                            100 + 0.03),
-                                 aes(x=x, y=y),
-                                 size=3,
-                                 pch=25,
-                                 col="red",
-                                 bg="red")
-              }
-
-              ## second for the overdosing probability
-              plot2 <- ggplot() +
-                  geom_bar(data=
-                           data.frame(x=data@doseGrid,
-                                      y=probOverdose * 100),
-                           aes(x=x, y=y),
-                           stat="identity",
-                           position="identity",
-                           width=min(diff(data@doseGrid)) / 2,
-                           colour="red",
-                           fill="red") +
-                               xlab("Dose") +
-                                   ylab("Overdose probability [%]") +
-                                       ylim(c(0, 100))
-
-              plot2 <- plot2 +
-                  geom_hline(yintercept=nextBest@max_overdose_prob * 100,
-                             lwd=1.1,
-                             lty=2,
-                             colour="black")
-
-              ## now plot them below each other
-              plotJoint <- gridExtra::arrangeGrob(plot1, plot2, nrow=2)
-
-              ## return value and plot
-              return(list(value=ret,
-                          plot=plotJoint,
-                          singlePlots=list(plot1=plot1,
-                                           plot2=plot2),
-                          probs=cbind(dose=data@doseGrid,
-                                      target=probTarget,
-                                      overdose=probOverdose)))
-          })
-
-
-##' @describeIn nextBest Find the next best dose based on the NCRM method when
-##' two parts trial is used.
-##' @example examples/Rules-method-NextBestNCRM-DataParts.R
-setMethod("nextBest",
-          signature=
-          signature(nextBest="NextBestNCRM",
-                    doselimit="numeric",
-                    samples="Samples",
-                    model="Model",
-                    data="DataParts"),
-          def=
-              function(nextBest, doselimit, samples, model, data, ...){
-
-              ## exception when we are in part I or about to start part II!
-              if(all(data@part == 1L))
-              {
-                  ## here we will always propose the highest possible dose
-                  ## (assuming that the dose limit came from reasonable
-                  ## increments rule, i.e. inrementsRelativeParts)
-                  if(identical(length(doselimit), 0L))
-                  {
-                      stop("doselimit needs to be given for Part I")
-                  }
-
-                  return(list(value=doselimit,
-                              plot=NULL))
-              } else {
-                  ## otherwise we will just do the standard thing
-                  callNextMethod(nextBest, doselimit, samples, model, data, ...)
-              }
-          })
-
-
-## --------------------------------------------------
-## The 3+3 method
-## --------------------------------------------------
 
 ##' @describeIn nextBest Find the next best dose based on the 3+3 method
 ##' @example examples/Rules-method-NextBestThreePlusThree.R

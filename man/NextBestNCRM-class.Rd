@@ -39,10 +39,10 @@ Otherwise, the highest admissible dose is the next recommended dose.
 \item{\code{target}}{(\code{numeric})\cr the target toxicity interval (limits included).}
 
 \item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
-excluded, upper limit included).}
+excluded, upper limit included). It is used to filter probability samples.}
 
-\item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum overdose probability that
-is allowed.}
+\item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum overdose posterior
+probability that is allowed.}
 }}
 
 \examples{

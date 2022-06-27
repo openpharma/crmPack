@@ -15,7 +15,7 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot", {
     }
   )
 
-  result <- nextBest(nb_mtd, 90, samples, model, data)
+  result <- nextBest(nb_mtd, doselimit = 90, samples, model, data)
   expect_identical(result$value, 75)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD", result$plot)
 })
@@ -33,31 +33,59 @@ test_that("nextBest-NextBestMTD returns correct next dose and plot (no doselimit
     }
   )
 
-  expect_warning(
-    result <- nextBest(nb_mtd, numeric(0), samples, model, data),
-    "doselimit is not provided, therefore no dose limit will be applied"
-  )
+  result <- nextBest(nb_mtd, doselimit = numeric(0), samples, model, data)
   expect_identical(result$value, 100)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMTD without doselimit", result$plot)
+})
+
+## NextBestNCRM ----
+
+test_that("nextBest-NextBestNCRM returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_ncrm, doselimit = 45, samples, model, data)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM", result$plot)
+})
+
+test_that("nextBest-NextBestNCRM returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_ncrm, doselimit = numeric(0), samples, model, data)
+  expect_identical(result$value, 50)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
 ## NextBestInfTheory ----
 
 test_that("nextBest-NextBestInfTheory returns correct next dose", {
-  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
-  samples <- samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
-
+  data <- h_get_data(placebo = FALSE)
   # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
   model <- LogisticLogNormal(
     mean = c(-4.47, 0.0033),
-    cov = matrix(c(1.056373, 0.847935, 0.847935, 2.722500), nrow = 2)
+    cov = matrix(c(1.06, 0.85, 0.85, 2.72), nrow = 2)
   )
-  data <- h_get_data(placebo = FALSE)
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
 
-  result <- nextBest(nextBest = nb_it, doselimit = 75, samples = samples, model = model, data = data)
-  expected <- list(value = c(25))
-
-  expect_identical(result, expected)
+  result <- nextBest(nb_it, doselimit = 75, samples, model, data)
+  expect_identical(result$value, 25)
 })
 
 # maxDose-IncrementsNumDoseLevels ----
