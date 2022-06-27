@@ -294,6 +294,173 @@ setMethod("nextBest",
     }
 )
 
+## NextBestNCRMLoss ----
+
+#' @describeIn nextBest find the next best dose based on the NCRM method and
+#'   loss function.
+#'
+#' @aliases nextBest-NextBestNCRMLoss
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestNCRMLoss.R
+#'
+setMethod("nextBest",
+  signature = signature(
+    nextBest = "NextBestNCRMLoss",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "Model",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    if (identical(length(doselimit), 0L)) {
+      warning("doselimit is empty, therefore no dose limit will be applied")
+    }
+
+    # first we have to get samples from the dose-tox
+    # curve at the dose grid points.
+    probSamples <- matrix(
+      nrow = sampleSize(samples@options),
+      ncol = data@nGrid
+    )
+
+    ## evaluate the probs, for all samples.
+    for (i in seq_len(data@nGrid)) {
+      ## Now we want to evaluate for the following dose:
+      probSamples[, i] <- prob(
+        dose = data@doseGrid[i],
+        model,
+        samples
+      )
+    }
+
+    ## Now compute probabilities to be in target and overdose tox interval
+    if (length(nextBest@overdose) <= 2) {
+      probUnderdosing <- colMeans((probSamples < nextBest@target[1]))
+      probTarget <- colMeans(
+        (probSamples >= nextBest@target[1]) & (probSamples <= nextBest@target[2])
+      )
+      probOverdose <- colMeans(
+        (probSamples > nextBest@overdose[1]) & (probSamples <= nextBest@overdose[2])
+      )
+      Mean <- colMeans(probSamples)
+      Std.dev <- apply(probSamples, 2, stats::sd)
+
+      probMat <- cbind(probUnderdosing, probTarget, probOverdose)
+      colnames(probMat) <- c("underdosing", "target", "overdose")
+      posterior_loss <- nextBest@losses %*% t(probMat)
+      colnames(posterior_loss) <- data@doseGrid
+
+      probs <- cbind(
+        dose = data@doseGrid,
+        underdosing = probUnderdosing,
+        target = probTarget,
+        overdose = probOverdose,
+        Mean = Mean,
+        STD.dev = Std.dev
+      )
+    }
+
+    if (length(nextBest@overdose) > 2) {
+      probUnderdosing <- colMeans((probSamples < nextBest@target[1]))
+      probTarget <- colMeans(
+        (probSamples >= nextBest@target[1]) & (probSamples <= nextBest@target[2])
+      )
+      probExcessive <- colMeans(
+        (probSamples > nextBest@overdose[1]) & (probSamples <= nextBest@overdose[2])
+      )
+      probUnacceptable <- colMeans(
+        (probSamples > nextBest@overdose[2]) & (probSamples <= nextBest@overdose[3])
+      )
+      probOverdose <- probExcessive + probUnacceptable
+      Mean <- colMeans(probSamples)
+      Std.dev <- apply(probSamples, 2, stats::sd)
+
+      probMat <- cbind(probUnderdosing, probTarget, probExcessive, probUnacceptable)
+      colnames(probMat) <- c("underdosing", "target", "excessive", "unacceptable")
+      posterior_loss <- nextBest@losses %*% t(probMat)
+      colnames(posterior_loss) <- data@doseGrid
+
+      probs <- cbind(
+        dose = data@doseGrid,
+        underdosing = probUnderdosing,
+        target = probTarget,
+        excessive = probExcessive,
+        unacceptable = probUnacceptable,
+        overdose = probOverdose,
+        Mean = Mean,
+        STD.dev = Std.dev
+      )
+    }
+
+    ## which doses are eligible after accounting
+    ## for maximum possible dose and  discarding overdoses?
+    dosesBelowLimit <- if (length(doselimit)) {
+      data@doseGrid <= doselimit
+    } else {
+      rep(TRUE, length(data@doseGrid))
+    }
+
+    dosesOK <- which(dosesBelowLimit & (probOverdose < nextBest@maxOverdoseProb))
+
+    ## check if there are doses that are OK
+    if (length(dosesOK)) {
+      ## what is the recommended dose level?
+      ## maximum level that is OK:
+      doseLevel <- which.min(posterior_loss[dosesOK])
+      ret <- data@doseGrid[dosesOK][doseLevel]
+    } else {
+      ## if none of the doses is OK:
+      doseLevel <- NA
+      ret <- NA
+    }
+
+    ## return value and plot
+    ## plot in case of 4 toxicity intervals
+    if (length(nextBest@overdose) > 2) {
+      dat <- data.frame(x = data@doseGrid, y = utils::stack(data.frame(probMat[, 4:1])))
+      plotJoint <- ggplot(data = dat, aes(x, y.values, fill = y.ind)) +
+        scale_x_continuous(breaks = data@doseGrid) +
+        geom_bar(stat = "identity", width = min(diff(data@doseGrid)) / 2) +
+        xlab("Dose") +
+        ylab("Posterior Probability") +
+        theme(legend.position = "bottom", legend.title = element_blank()) +
+        scale_fill_manual(
+          "",
+          labels = c("Pr(Unacceptable)", "Pr(Excessive)", "Pr(Target)", "Pr(Underdosing)"),
+          values = c("underdosing" = "steelblue3", "target" = "mediumseagreen", "excessive" = "orange", "unacceptable" = "red1"),
+          guide = guide_legend(reverse = TRUE)
+        )
+    }
+
+    ## plot in case of 3 toxicity intervals
+    if (length(nextBest@overdose) <= 2) {
+      dat <- data.frame(x = data@doseGrid, y = utils::stack(data.frame(probMat[, 3:1])))
+      plotJoint <- ggplot(data = dat, aes(x, y.values, fill = y.ind)) +
+        scale_x_continuous(breaks = data@doseGrid) +
+        geom_bar(stat = "identity", width = min(diff(data@doseGrid)) / 2) +
+        xlab("Dose") +
+        ylab("Posterior Probability") +
+        theme(legend.position = "bottom", legend.title = element_blank()) +
+        scale_fill_manual(
+          "",
+          labels = c("Pr(Overdose)", "Pr(Target)", "Pr(Underdosing)"),
+          values = c("underdosing" = "steelblue3", "target" = "mediumseagreen", "overdose" = "red1"),
+          guide = guide_legend(reverse = TRUE)
+        )
+    }
+
+    print(plotJoint)
+
+    list(
+      value = ret,
+      dosesOK = dosesOK,
+      "Posterior expected loss at each dose" = posterior_loss,
+      "Interval probabilities" = probs
+    )
+  }
+)
+
 # nolint start
 
 ##' @describeIn nextBest Find the next best dose based on the 3+3 method
