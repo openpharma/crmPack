@@ -59,7 +59,6 @@ test_that("NextBestNCRMLoss object can be created with user constructor", {
       losses = c(1, 0, 1, 2)
     )
   )
-  #expect_valid(result, "NextBestNCRMLoss")
   expect_equal(result@target_int, c(0.2, 0.35))
   expect_equal(result@overdose_int, c(0.35, 0.6))
   expect_equal(result@unacceptable_int, c(0.6, 1))

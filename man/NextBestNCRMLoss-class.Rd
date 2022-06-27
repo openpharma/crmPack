@@ -71,7 +71,6 @@ under-dosing, target toxicity, overdosing (excessive) toxicity, and
 unacceptable toxicity intervals.
 }
 \examples{
-
 # In the example below, the target toxicity interval [0.2, 0.35] while the
 # overdose interval is (0.35, 1]. We would like to constrain the probability
 # of overdosing below 25\%. The loss function is c(1, 0, 1, 2).

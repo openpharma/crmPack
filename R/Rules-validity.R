@@ -53,34 +53,42 @@ v_next_best_ncrm <- function(object) {
 v_next_best_ncrm_loss <- function(object) {
   v <- Validate()
   v$check(
-    test_probability_range(object@target_int, bounds = FALSE),
+    test_probability_range(object@target_int, bounds_closed = FALSE),
     "target_int has to be a probability range excluding 0 and 1"
   )
+  is_overdose_int_valid <- test_probability_range(
+    object@overdose_int,
+    bounds_closed = c(FALSE, TRUE)
+  )
   v$check(
-    test_probability_range(object@overdose_int, bounds = c(FALSE, TRUE)),
+    is_overdose_int_valid,
     "overdose_int has to be a probability range excluding 0"
   )
+  is_unacceptable_int_valid <- test_probability_range(
+    object@unacceptable_int,
+    bounds_closed = c(FALSE, TRUE)
+  )
   v$check(
-    test_probability_range(object@unacceptable_int, bounds = c(FALSE, TRUE)),
+    is_unacceptable_int_valid,
     "unacceptable_int has to be a probability range excluding 0"
   )
-  v$check(
-    object@overdose_int[2] <= object@unacceptable_int[1],
-    "lower bound of unacceptable_int has to be >= than upper bound of overdose_int"
-  )
+  if (is_overdose_int_valid && is_unacceptable_int_valid) {
+    v$check(
+      object@overdose_int[2] <= object@unacceptable_int[1],
+      "lower bound of unacceptable_int has to be >= than upper bound of overdose_int"
+    )
+  }
   v$check(
     test_probability(object@max_overdose_prob, bounds_closed = FALSE),
     "max_overdose_prob must be a probability value from (0, 1) interval"
   )
-  v$check(
-    all(object@losses >= 0),
-    "losses has to be a numeric vector with all elements non-negative"
-  )
-  losses_len <- ifelse(all(object@unacceptable_int == c(1, 1)), 3L, 4L)
-  v$check(
-    test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
-    "losses must be a vector of non-negative numbers of length 3 if unacceptable_int is c(1, 1), otherwise 4"
-  )
+  if (is_unacceptable_int_valid) {
+    losses_len <- ifelse(all(object@unacceptable_int == c(1, 1)), 3L, 4L)
+    v$check(
+      test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
+      "losses must be a vector of non-negative numbers of length 3 if unacceptable_int is c(1, 1), otherwise 4"
+    )
+  }
   v$result()
 }
 

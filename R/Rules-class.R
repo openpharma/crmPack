@@ -194,7 +194,7 @@ NextBestNCRM <- function(target,
     overdose_int = c(0.35, 1),
     unacceptable_int = c(1, 1),
     max_overdose_prob = 0.25,
-    losses = c(1, 0, 1, 2)
+    losses = c(1, 0, 2)
   ),
   contains = "NextBestNCRM",
   validity = v_next_best_ncrm_loss
