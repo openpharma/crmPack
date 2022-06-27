@@ -125,7 +125,7 @@ NextBestMTD <- function(target, derive) {
 #'
 #' @param target (`numeric`)\cr target toxicity interval (limits included).
 #' @param overdose (`numeric`)\cr overdose toxicity interval (lower limit
-#'   excluded, upper limit included). It is used to filter probability samples.
+#'   excluded, upper limit included).
 #' @param max_overdose_prob (`proportion`)\cr maximum overdose probability that
 #'   is allowed.
 #'

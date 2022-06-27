@@ -57,8 +57,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 \item{doselimit}{(\code{number})\cr the maximum allowed next dose. If it is an
 empty vector, then no dose limit will be applied in the course of dose
-recommendation calculation, and a corresponding warning is given.
-It is used to filter probability samples.}
+recommendation calculation, and a corresponding warning is given.}
 
 \item{samples}{(\code{Samples})\cr posterior samples from \code{model} parameters given
 \code{data}.}

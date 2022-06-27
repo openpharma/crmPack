@@ -20,7 +20,6 @@ NULL
 #' @param doselimit (`number`)\cr the maximum allowed next dose. If it is an
 #'   empty vector, then no dose limit will be applied in the course of dose
 #'   recommendation calculation, and a corresponding warning is given.
-#'   It is used to filter probability samples.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
 #' @param model (`Model`)\cr model that was used to generate the samples.
