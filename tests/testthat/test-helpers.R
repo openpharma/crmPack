@@ -348,3 +348,108 @@ test_that("h_test_named_numeric returns FALSE as expected", {
   expect_false(h_test_named_numeric(c(a = TRUE, b = FALSE)))
   expect_false(h_test_named_numeric(c(a = "1", b = "2")))
 })
+
+# h_in_range ----
+
+test_that("h_in_range returns expected vector of flags for finite interval", {
+  x <- c(0.5, -4, 0, -1, 2, 5, 10, Inf, NA, -Inf)
+  interval <- c(-1, 5)
+
+  expect_identical(
+    h_in_range(c(0.9, -0.4, 0, 0.2, 1, -3, 4, Inf, NA, -Inf)),
+    c(TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval),
+    c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval, FALSE),
+    c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval, c(FALSE, TRUE)),
+    c(TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval, c(TRUE, FALSE)),
+    c(TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, NA, FALSE)
+  )
+})
+
+test_that("h_in_range returns expected vector of flags for non-finite bound", {
+  x <- c(0.5, -4, 0, -1, 2, 5, 10, Inf, NA, -Inf)
+  interval <- c(-1, Inf)
+
+  expect_identical(
+    h_in_range(x, interval),
+    c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval, FALSE),
+    c(TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval, c(FALSE, TRUE)),
+    c(TRUE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, NA, FALSE)
+  )
+  expect_identical(
+    h_in_range(x, interval, c(TRUE, FALSE)),
+    c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, NA, FALSE)
+  )
+})
+
+test_that("h_in_range returns expected matrix of flags", {
+  mat <- matrix(c(2, 5, 3, 10, 4, 9, 1, 8, 7), nrow = 3)
+  interval <- c(1, 5)
+
+  expect_identical(
+    h_in_range(mat, interval),
+    matrix(c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE), nrow = 3)
+  )
+  expect_identical(
+    h_in_range(mat, interval, FALSE),
+    matrix(c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE), nrow = 3)
+  )
+  expect_identical(
+    h_in_range(mat, interval, c(FALSE, TRUE)),
+    matrix(c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE), nrow = 3)
+  )
+  expect_identical(
+    h_in_range(mat, interval, c(TRUE, FALSE)),
+    matrix(c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE), nrow = 3)
+  )
+})
+
+test_that("h_in_range throws the error message as expected", {
+  x <- 1:3
+
+  expect_error(
+    h_in_range(c("a", "b")),
+    "Assertion on 'x' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    h_in_range(x, c("a", "b")),
+    "Assertion on 'range' failed: Must be of type 'numeric', not 'character'."
+  )
+  expect_error(
+    h_in_range(x, c(1, 4, 5)),
+    "Assertion on 'range' failed: Must have length 2, but has length 3."
+  )
+  expect_error(
+    h_in_range(x, c(1, NA)),
+    "Assertion on 'range' failed: Contains missing values \\(element 2\\)."
+  )
+  expect_error(
+    h_in_range(x, c(3, 1)),
+    "Assertion on 'range' failed: Must be sorted."
+  )
+  expect_error(
+    h_in_range(x, bounds_closed = c(TRUE, FALSE, FALSE, FALSE)),
+    "Assertion on 'bounds_closed' failed: Must have length <= 2, but has length 4."
+  )
+  expect_error(
+    h_in_range(x, bounds_closed = c(TRUE, NA)),
+    "Assertion on 'bounds_closed' failed: Contains missing values \\(element 2\\)."
+  )
+})

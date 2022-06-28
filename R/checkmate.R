@@ -50,30 +50,26 @@ NULL
 #' check_probabilities(x, bounds_closed = FALSE)
 #' check_probabilities(x, bounds_closed = c(FALSE, TRUE))
 check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, sorted = FALSE) {
+  assert_numeric(x)
   assert_logical(bounds_closed, min.len = 1, max.len = 2, any.missing = FALSE)
+  assert_number(len, null.ok = TRUE)
+  assert_flag(sorted)
 
   is_valid <- check_numeric(
     x,
-    finite = TRUE,
-    any.missing = FALSE,
-    len = len,
-    sorted = sorted
+    finite = TRUE, any.missing = FALSE, len = len, sorted = sorted
   )
 
-  if (length(bounds_closed) == 1L) {
-    bounds_closed <- rep(bounds_closed, 2L)
-  }
-
   if (isTRUE(is_valid)) {
-    lwr <- ifelse(bounds_closed[1], all(x >= 0), all(x > 0))
-    upr <- ifelse(bounds_closed[2], all(x <= 1), all(x < 1))
-    in_bounds <- lwr && upr
+    in_bounds <- all(
+      h_in_range(x, range = c(0L, 1L), bounds_closed = bounds_closed)
+    )
 
     if (!in_bounds) {
       is_valid <- paste(
         "Probability must be within",
         ifelse(bounds_closed[1], "[0,", "(0,"),
-        ifelse(bounds_closed[2], "1]", "1)"),
+        ifelse(tail(bounds_closed, 1), "1]", "1)"),
         "bounds but it is not"
       )
     }

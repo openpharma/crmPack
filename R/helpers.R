@@ -983,3 +983,50 @@ h_test_named_numeric <- function(x,
   )
   is_valid_num && are_names_valid
 }
+
+#' Check which elements are in a given range
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple helper function that tests whether elements of a given vector or
+#' matrix are within specified interval.
+#'
+#' @param x (`numeric`)\cr vector or matrix with elements to test.
+#' @param range (`numeric`)\cr an interval, i.e. sorted two-elements vector.
+#' @param bounds_closed (`logical`)\cr should bounds in the `range` be treated
+#'   as closed? This can be a scalar or vector of length two. If it is a scalar,
+#'   then its value applies to lower bound `range[1]` and upper bound
+#'   `range[2]`. If this is a vector with two flags, the first flag corresponds
+#'   to the lower bound only, and the second to the upper bound only.
+#'
+#' @return A logical vector or matrix of length equal to the length of `x`, that
+#'   for every element of `x`, indicates whether a given element of `x` is in
+#'   the `range`.
+#'
+#' @export
+#' @examples
+#' x <- 1:4
+#' h_in_range(x, range = c(1, 3))
+#' h_in_range(x, range = c(1, 3), bounds_closed = FALSE)
+#' h_in_range(x, range = c(1, 3), bounds_closed = c(FALSE, TRUE))
+#' mat <- matrix(c(2, 5, 3, 10, 4, 9, 1, 8, 7), nrow = 3)
+#' h_in_range(mat, range = c(1, 5))
+h_in_range <- function(x, range = c(0, 1), bounds_closed = TRUE) {
+  assert_numeric(x)
+  assert_numeric(range, any.missing = FALSE, len = 2, sorted = TRUE)
+  assert_logical(bounds_closed, min.len = 1, max.len = 2, any.missing = FALSE)
+
+  above_lwr <- if (bounds_closed[1]) {
+    x >= range[1]
+  } else {
+    x > range[1]
+  }
+
+  below_upr <- if (tail(bounds_closed, 1)) {
+    x <= range[2]
+  } else {
+    x < range[2]
+  }
+
+  above_lwr & below_upr
+}
