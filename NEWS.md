@@ -1,4 +1,4 @@
-# Version 1.0.9000.9041
+# Version 1.0.9000.9042
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
   specified.
 * Set prototype for `target = 0.3` for `NextBestMinDist` class.
