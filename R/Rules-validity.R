@@ -102,7 +102,7 @@ v_next_best_inf_theory <- function(object) {
     "target must be a probability value from (0, 1) interval"
   )
   v$check(
-    test_number(object@asymmetry, finite = TRUE) && object@asymmetry > 0 && object@asymmetry < 2,
+    test_number(object@asymmetry, finite = TRUE) && h_in_range(object@asymmetry, c(0, 2), FALSE),
     "asymmetry must be a number from (0, 2) interval"
   )
   v$result()

@@ -93,6 +93,7 @@ reference:
       - h_null_if_scalar
       - h_is_positive_definite
       - h_test_named_numeric
+      - h_in_range
       - h_model_dual_endpoint_sigma2W
       - h_model_dual_endpoint_rho
       - h_model_dual_endpoint_sigma2betaW
