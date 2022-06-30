@@ -9,6 +9,7 @@
 \alias{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}
 \alias{nextBest-NextBestNCRM-DataParts}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
+\alias{nextBest-NextBestThreePlusThree}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
 \alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
@@ -101,7 +102,7 @@ derivation of the next best dose.
 \item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: find the next best dose based on the NCRM method when
 two parts trial is used.
 
-\item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: Find the next best dose based on the 3+3 method
+\item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: find the next best dose based on the 3+3 method.
 
 \item \code{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}: Find the next best dose based on the dual endpoint
 model. The additional list element \code{probs} contains the target and
@@ -274,23 +275,20 @@ dose_recommendation <- nextBest(
 )
 
 dose_recommendation
+# Create the data.
+my_data <- Data(
+  x = c(5, 5, 5, 10, 10, 10),
+  y = c(0, 0, 0, 0, 1, 0),
+  ID = 1:6,
+  cohort = c(0, 0, 0, 1, 1, 1),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 5, seq(from = 10, to = 80, by = 2))
+)
 
-# Create the data
-data <- Data(x=c(5, 5, 5, 10, 10, 10),
-             y=c(0, 0, 0, 0, 1, 0),
-             cohort=c(0, 0, 0, 1, 1, 1),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 5,
-                 seq(from=10, to=80, by=2)))
+# The rule to select the next best dose will be based on the 3+3 method.
+my_next_best <- NextBestThreePlusThree()
 
-
-# The rule to select the next best dose will be based on the 3+3 method
-myNextBest <- NextBestThreePlusThree()
-
-# Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               data=data)
-
+# Calculate the next best dose.
+dose_recommendation <- nextBest(my_next_best, data = my_data)
 # nolint start
 
 # Create the data
