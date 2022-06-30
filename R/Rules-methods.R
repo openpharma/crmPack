@@ -338,10 +338,6 @@ setMethod(
 
 # nolint start
 
-## --------------------------------------------------
-## The method for the dual endpoint model
-## --------------------------------------------------
-
 ##' @describeIn nextBest Find the next best dose based on the dual endpoint
 ##' model. The additional list element \code{probs} contains the target and
 ##' overdosing probabilities (across all doses in the dose grid) used in the
