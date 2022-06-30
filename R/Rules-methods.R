@@ -151,7 +151,8 @@ setMethod(
 #' @export
 #' @example examples/Rules-method-nextBest-NextBestNCRM.R
 #'
-setMethod("nextBest",
+setMethod(
+  f = "nextBest",
   signature = signature(
     nextBest = "NextBestNCRM",
     doselimit = "numeric",
@@ -258,36 +259,29 @@ setMethod("nextBest",
 #' @export
 #' @example examples/Rules-method-nextBest-NextBestNCRM-DataParts.R
 #'
-setMethod("nextBest",
-  signature =
-    signature(
-      nextBest = "NextBestNCRM",
-      doselimit = "numeric",
-      samples = "Samples",
-      model = "Model",
-      data = "DataParts"
-    ),
-  def =
-    function(nextBest, doselimit, samples, model, data, ...) {
-
-      ## exception when we are in part I or about to start part II!
-      if (all(data@part == 1L)) {
-        ## here we will always propose the highest possible dose
-        ## (assuming that the dose limit came from reasonable
-        ## increments rule, i.e. inrementsRelativeParts)
-        if (identical(length(doselimit), 0L)) {
-          stop("doselimit needs to be given for Part I")
-        }
-
-        return(list(
-          value = doselimit,
-          plot = NULL
-        ))
-      } else {
-        ## otherwise we will just do the standard thing
-        callNextMethod(nextBest, doselimit, samples, model, data, ...)
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestNCRM",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "Model",
+    data = "DataParts"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    # Exception when we are in part I or about to start part II!
+    if (all(data@part == 1L)) {
+      # Propose the highest possible dose (assuming that the dose limit came
+      # from reasonable increments rule, i.e. inrementsRelativeParts).
+      if (length(doselimit) == 0L) {
+        stop("doselimit needs to be specified given for Part I")
       }
+      list(value = doselimit, plot = NULL)
+    } else {
+      # Otherwise we will just do the standard thing.
+      callNextMethod(nextBest, doselimit, samples, model, data, ...)
     }
+  }
 )
 
 # nolint start
