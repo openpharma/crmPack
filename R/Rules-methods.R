@@ -313,8 +313,7 @@ setMethod(
     DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level]
 
     next_level <- last_level + if (DLT_rate_last_level < 1 / 3) {
-      # Escalate it, unless this is the highest level or the higher level
-      # already tried (and it was not safe).
+      # Escalate it, unless this is the highest level or the higher already tried.
       ifelse((last_level == data@nGrid) || (nPatients[last_level + 1L] > 0), 0L, 1L)
     } else {
       # Rate is too high, deescalate it, unless an edge case of 1/3, where the decision
