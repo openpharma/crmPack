@@ -284,81 +284,59 @@ setMethod(
   }
 )
 
+## NextBestThreePlusThree ----
+
+#' @describeIn nextBest find the next best dose based on the 3+3 method.
+#'
+#' @aliases nextBest-NextBestThreePlusThree
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestThreePlusThree.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestThreePlusThree",
+    doselimit = "missing",
+    samples = "missing",
+    model = "missing",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+
+    # The last dose level tested (not necessarily the maximum one).
+    last_level <- tail(data@xLevel, 1L)
+
+    # Get number of patients per grid's dose and DLT rate at the last level.
+    nPatients <- table(factor(data@x, levels = data@doseGrid))
+    nDLTs_last_level <- sum(data@y[data@xLevel == last_level])
+    DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level]
+
+    level_change <- if (DLT_rate_last_level < 1 / 3) {
+      # Escalate it, unless this is the highest level or the higher dose was already tried.
+      ifelse((last_level == data@nGrid) || (nPatients[last_level + 1L] > 0), 0L, 1L)
+    } else {
+      # Rate is too high, deescalate it, unless an edge case of 1/3, where the decision
+      # depends on the num. of patients: if >3, then deescalate it, otherwise stay.
+      ifelse((DLT_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
+    }
+    next_level <- last_level + level_change
+
+    # Do we stop here? Only if we have no MTD, or the next level has been tried
+    # enough (more than three patients already).
+    if (next_level == 0L) {
+      next_best <- NA
+      stop_here <- TRUE
+    } else {
+      next_best <- data@doseGrid[next_level]
+      stop_here <- nPatients[next_level] > 3L
+    }
+
+    list(value = next_best, stopHere = stop_here)
+  }
+)
+
 # nolint start
-
-##' @describeIn nextBest Find the next best dose based on the 3+3 method
-##' @example examples/Rules-method-NextBestThreePlusThree.R
-setMethod("nextBest",
-          signature=
-          signature(nextBest="NextBestThreePlusThree",
-                    doselimit="missing",
-                    samples="missing",
-                    model="missing",
-                    data="Data"),
-          def=
-          function(nextBest, doselimit, samples, model, data, ...){
-
-              ## split the DLTs into the dose level groups
-              dltSplit <- split(data@y,
-                                factor(data@x,
-                                       levels=data@doseGrid))
-
-              ## number of patients and number of DLTs per dose level group
-              nPatients <- sapply(dltSplit, length)
-              nDLTs <- sapply(dltSplit, sum)
-
-              ## what was the last dose level tested?
-              lastLevel <- tail(data@xLevel, 1)
-
-              ## if there are less than 1/3 DLTs at that level
-              if(nDLTs[lastLevel]/nPatients[lastLevel] < 1/3)
-              {
-                  ## we could escalate, unless this is the highest
-                  ## level or the higher level was tried already
-                  ## (in which case it was not safe)
-                  if((lastLevel == length(data@doseGrid)) ||
-                     (nPatients[lastLevel+1] > 0))
-                  {
-                      nextLevel <- lastLevel
-                  } else {
-                      nextLevel <- lastLevel + 1
-                  }
-              } else if(nDLTs[lastLevel]/nPatients[lastLevel] > 1/3) {
-                  ## rate here is too high, therefore deescalate
-                  nextLevel <- lastLevel - 1
-              } else {
-                  ## otherwise: rate is 1/3 == 2/6,
-                  ## then it depends on the number of patients:
-                  ## if more than 3, then deescalate, otherwise stay.
-                  nextLevel <-
-                      if(nPatients[lastLevel] > 3)
-                          lastLevel - 1
-                      else
-                          lastLevel
-              }
-
-              ## do we stop here? only if we have no MTD
-              ## or the next level has been tried enough (more than
-              ## three patients already)
-              stopHere <-
-                  if(nextLevel == 0)
-                  {
-                      TRUE
-                  } else {
-                      nPatients[nextLevel] > 3
-                  }
-
-              ## return value and plot
-              return(list(value=
-                          if(nextLevel == 0) NA else data@doseGrid[nextLevel],
-                          stopHere=stopHere))
-          })
-
-
-
-## --------------------------------------------------
-## The method for the dual endpoint model
-## --------------------------------------------------
 
 ##' @describeIn nextBest Find the next best dose based on the dual endpoint
 ##' model. The additional list element \code{probs} contains the target and

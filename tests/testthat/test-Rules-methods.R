@@ -137,6 +137,70 @@ test_that("nextBest-NextBestNCRM-DataParts throws the error for all parts 1 and 
   )
 })
 
+## NextBestThreePlusThree ----
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (< 33% and escalated)", {
+  data <- h_get_data(placebo = FALSE)
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 125)
+  expect_identical(result$stopHere, setNames(FALSE, 125))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (< 33%, max dose, no escalation)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[data@nGrid], y = c(0L, 1L, 0L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 300)
+  expect_identical(result$stopHere, setNames(TRUE, 300))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (< 33% and no escalation)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[tail(data@xLevel, 1) - 1], y = c(0L, 1L, 0L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 75)
+  expect_identical(result$stopHere, setNames(TRUE, 75))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (> 33%)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = 175, y = 1L)
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 150)
+  expect_identical(result$stopHere, setNames(FALSE, 150))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (== 33%, 3 patients at last_lev)", {
+  data <- h_get_data()
+  data <- update(data, x = 200, y = c(1L, 0L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 200)
+  expect_identical(result$stopHere, setNames(FALSE, 200))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (== 33%, 6 patients at last_lev)", {
+  data <- h_get_data()
+  data <- update(data, x = 200, y = c(0L, 0L, 1L, 0L, 1L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 175)
+  expect_identical(result$stopHere, setNames(FALSE, 175))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (next_level == 0)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[1], y = c(1L, 1L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, NA)
+  expect_identical(result$stopHere, TRUE)
+})
+
 ## NextBestInfTheory ----
 
 test_that("nextBest-NextBestInfTheory returns correct next dose", {
