@@ -314,23 +314,45 @@ nrcm_loss_next_best <- NextBestNCRMLoss(
   losses = c(1, 0, 1, 2)
 )
 
-# nolint start
+
 
 # Calculate the next best dose.
-# dose_recommendation <- nextBest(
-#  nextBest = nrcm_loss_next_best,
-#  doselimit = next_max_dose,
-# samples = my_samples,
-# model = my_model,
-#  data = my_data
-# )
+dose_recommendation <- nextBest(
+  nextBest = nrcm_loss_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
 
 # Next best dose.
-# dose_recommendation$value
+dose_recommendation$value
 # Look at the probabilities.
-# dose_recommendation$probs
+dose_recommendation$probs
 
-# nolint end
+# Define another rule (loss function of 3 elements)
+nrcm_loss_next_best_losses_3 <- NextBestNCRMLoss(
+  target_int = c(0.2, 0.35),
+  overdose_int = c(0.35, 1),
+  max_overdose_prob = 0.25,
+  losses = c(1, 0, 2)
+)
+
+
+
+# Calculate the next best dose.
+dose_recommendation_losses_3 <- nextBest(
+  nextBest = nrcm_loss_next_best_losses_3,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+# Next best dose.
+dose_recommendation_losses_3$value
+# Look at the probabilities.
+dose_recommendation_losses_3$probs
 
 # Create the data
 data <- Data(x=c(5, 5, 5, 10, 10, 10),
