@@ -312,14 +312,15 @@ setMethod(
     nDLTs_last_level <- sum(data@y[data@xLevel == last_level])
     DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level]
 
-    next_level <- last_level + if (DLT_rate_last_level < 1 / 3) {
-      # Escalate it, unless this is the highest level or the higher already tried.
+    level_change <- if (DLT_rate_last_level < 1 / 3) {
+      # Escalate it, unless this is the highest level or the higher dose was already tried.
       ifelse((last_level == data@nGrid) || (nPatients[last_level + 1L] > 0), 0L, 1L)
     } else {
       # Rate is too high, deescalate it, unless an edge case of 1/3, where the decision
       # depends on the num. of patients: if >3, then deescalate it, otherwise stay.
       ifelse((DLT_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
     }
+    next_level <- last_level + level_change
 
     # Do we stop here? Only if we have no MTD, or the next level has been tried
     # enough (more than three patients already).
