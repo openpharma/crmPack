@@ -75,6 +75,20 @@ h_get_data_parts <- function(empty = FALSE, placebo = TRUE) {
   }
 }
 
+h_get_data_parts_1 <- function(empty = FALSE, placebo = TRUE) {
+  d <- h_get_data(empty, placebo)
+  if (empty) {
+    .DataParts(d)
+  } else {
+    .DataParts(
+      d,
+      part = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),
+      nextPart = 1L,
+      part1Ladder = seq(25, 250, 25)
+    )
+  }
+}
+
 h_get_data_mixture <- function(empty = FALSE, placebo = TRUE) {
   d <- h_get_data(empty, placebo)
   if (empty) {

@@ -1,4 +1,4 @@
-# Version 1.0.9000.9042
+# Version 1.0.9000.9044
 * Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
   specified.

@@ -72,6 +72,71 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
 
+## NextBestNCRM-DataParts ----
+
+test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects", {
+  data <- h_get_data_parts(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_ncrm, doselimit = 45, samples, model, data)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts", result$plot)
+})
+
+test_that("nextBest-NextBestNCRM-DataParts returns expected values of the objects (no doselimit)", {
+  data <- h_get_data_parts(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_ncrm, doselimit = numeric(0), samples, model, data)
+  expect_identical(result$value, 50)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts without doselimit", result$plot)
+})
+
+test_that("nextBest-NextBestNCRM-DataParts returns expected value for all parts 1", {
+  data <- h_get_data_parts_1(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_ncrm, doselimit = 45, samples, model, data)
+  expect_identical(result$value, 45)
+  expect_null(result$plot)
+})
+
+test_that("nextBest-NextBestNCRM-DataParts throws the error for all parts 1 and no doselimit", {
+  data <- h_get_data_parts_1(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm <- NextBestNCRM(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25
+  )
+
+  expect_error(
+    nextBest(nb_ncrm, doselimit = numeric(0), samples, model, data),
+    "doselimit needs to be specified given for Part I"
+  )
+})
+
 ## NextBestNCRMLoss ----
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
@@ -107,6 +172,69 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot)
 })
 
+## NextBestThreePlusThree ----
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (< 33% and escalated)", {
+  data <- h_get_data(placebo = FALSE)
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 125)
+  expect_identical(result$stopHere, setNames(FALSE, 125))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (< 33%, max dose, no escalation)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[data@nGrid], y = c(0L, 1L, 0L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 300)
+  expect_identical(result$stopHere, setNames(TRUE, 300))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (< 33% and no escalation)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[tail(data@xLevel, 1) - 1], y = c(0L, 1L, 0L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 75)
+  expect_identical(result$stopHere, setNames(TRUE, 75))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (> 33%)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = 175, y = 1L)
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 150)
+  expect_identical(result$stopHere, setNames(FALSE, 150))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (== 33%, 3 patients at last_lev)", {
+  data <- h_get_data()
+  data <- update(data, x = 200, y = c(1L, 0L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 200)
+  expect_identical(result$stopHere, setNames(FALSE, 200))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (== 33%, 6 patients at last_lev)", {
+  data <- h_get_data()
+  data <- update(data, x = 200, y = c(0L, 0L, 1L, 0L, 1L, 0L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, 175)
+  expect_identical(result$stopHere, setNames(FALSE, 175))
+})
+
+test_that("nextBest-NextBestThreePlusThree returns expected values (next_level == 0)", {
+  data <- h_get_data(placebo = FALSE)
+  data <- update(data, x = data@doseGrid[1], y = c(1L, 1L))
+
+  result <- nextBest(NextBestThreePlusThree(), data = data)
+  expect_identical(result$value, NA)
+  expect_identical(result$stopHere, TRUE)
+})
 
 ## NextBestInfTheory ----
 

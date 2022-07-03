@@ -11,6 +11,7 @@
 \alias{nextBest,NextBestNCRMLoss,numeric,Samples,Model,Data-method}
 \alias{nextBest-NextBestNCRMLoss}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
+\alias{nextBest-NextBestThreePlusThree}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
 \alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
@@ -108,7 +109,7 @@ two parts trial is used.
 \item \code{nextBest,NextBestNCRMLoss,numeric,Samples,Model,Data-method}: find the next best dose based on the NCRM method and
 loss function.
 
-\item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: Find the next best dose based on the 3+3 method
+\item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: find the next best dose based on the 3+3 method.
 
 \item \code{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}: Find the next best dose based on the dual endpoint
 model. The additional list element \code{probs} contains the target and
@@ -233,50 +234,54 @@ dose_recommendation <- nextBest(
 
 # See the probabilities.
 dose_recommendation$probs
-# nolint start
+# Create the data.
+my_data <- DataParts(
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  ID = 1:3,
+  cohort = 1:3,
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  part = c(1L, 1L, 1L),
+  nextPart = 1L,
+  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+)
 
-# create an object of class 'DataParts'
-data <- DataParts(x=c(0.1,0.5,1.5),
-                    y=c(0,0,0),
-                    doseGrid=c(0.1,0.5,1.5,3,6,
-                               seq(from=10,to=80,by=2)),
-                    part=c(1L,1L,1L),
-                    nextPart=1L,
-                    part1Ladder=c(0.1,0.5,1.5,3,6,10))
+# Initialize the CRM model used to model the data.
+my_model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 56
+)
 
-# Initialize the CRM model used to model the data
-model <- LogisticLogNormal(mean=c(-0.85, 1),
-                           cov=
-                             matrix(c(1, -0.5, -0.5, 1),
-                                    nrow=2),
-                           ref_dose=56)
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_samples <- mcmc(my_data, my_model, my_options)
 
-# Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=2000)
-set.seed(94)
-samples <- mcmc(data, model, options)
-
-myIncrements <- IncrementsRelativeParts(dltStart=0,
-                                        cleanStart=1)
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelativeParts(
+  dltStart = 0,
+  cleanStart = 1
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
 
 # Define the rule which will be used to select the next best dose
-# based on the class 'NextBestNCRM'
-myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
-                           overdose=c(0.35, 1),
-                           max_overdose_prob=0.25)
+# based on the 'NextBestNCRM' class.
+nrcm_next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
-# Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples,
-                               model=model,
-                               data=data)
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = nrcm_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
 
-# nolint end
+dose_recommendation
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -353,23 +358,20 @@ dose_recommendation_losses_3 <- nextBest(
 dose_recommendation_losses_3$value
 # Look at the probabilities.
 dose_recommendation_losses_3$probs
+# Create the data.
+my_data <- Data(
+  x = c(5, 5, 5, 10, 10, 10),
+  y = c(0, 0, 0, 0, 1, 0),
+  ID = 1:6,
+  cohort = c(0, 0, 0, 1, 1, 1),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 5, seq(from = 10, to = 80, by = 2))
+)
 
-# Create the data
-data <- Data(x=c(5, 5, 5, 10, 10, 10),
-             y=c(0, 0, 0, 0, 1, 0),
-             cohort=c(0, 0, 0, 1, 1, 1),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 5,
-                 seq(from=10, to=80, by=2)))
+# The rule to select the next best dose will be based on the 3+3 method.
+my_next_best <- NextBestThreePlusThree()
 
-
-# The rule to select the next best dose will be based on the 3+3 method
-myNextBest <- NextBestThreePlusThree()
-
-# Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               data=data)
-
+# Calculate the next best dose.
+dose_recommendation <- nextBest(my_next_best, data = my_data)
 # nolint start
 
 # Create the data
