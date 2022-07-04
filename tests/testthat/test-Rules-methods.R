@@ -146,7 +146,9 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm_loss <- NextBestNCRMLoss(
-    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25,
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25,
     losses = c(1, 0, 2)
   )
 
@@ -163,9 +165,13 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
     list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
   )
   nb_ncrm_loss <- NextBestNCRMLoss(
-    target = c(0.2, 0.35), overdose = c(0.35, 0.6), unacceptable_int = c(0.6, 1),
-    max_overdose_prob = 0.25, losses = c(1, 0, 1, 2)
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 0.6),
+    unacceptable_int = c(0.6, 1),
+    max_overdose_prob = 0.25,
+    losses = c(1, 0, 1, 2)
   )
+
   result <- nextBest(nb_ncrm_loss, samples, doselimit = numeric(0), model, data)
   expect_identical(result$value, 50)
   expect_snapshot(result$probs)
