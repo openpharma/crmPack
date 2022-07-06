@@ -153,7 +153,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
   )
 
   result <- nextBest(nb_ncrm_loss, doselimit = 60, samples, model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 25)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot)
 })
@@ -173,7 +173,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   )
 
   result <- nextBest(nb_ncrm_loss, samples, doselimit = numeric(0), model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 25)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot)
 })
@@ -189,7 +189,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
   )
 
   result <- nextBest(nb_ncrm_loss, doselimit = numeric(0), samples, model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 25)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot)
 })
