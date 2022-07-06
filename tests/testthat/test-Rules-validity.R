@@ -91,70 +91,70 @@ test_that("v_next_best_ncrm_loss passes for valid object", {
   expect_true(v_next_best_ncrm_loss(object))
 })
 
-test_that("v_next_best_ncrm_loss returns message for non-valid target_int", {
-  err_msg <- "target_int has to be a probability range excluding 0 and 1"
+test_that("v_next_best_ncrm_loss returns message for non-valid target", {
+  err_msg <- "target has to be a probability range excluding 0 and 1"
   object <- h_next_best_ncrm_loss()
 
-  # Changing `target_int` so that it is not an interval.
-  object@target_int <- 0.6
+  # Changing `target` so that it is not an interval.
+  object@target <- 0.6
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  object@target_int <- c(0.5, 0.6, 0.8)
+  object@target <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  # Changing `target_int` so that one bound is not a valid probability value.
-  object@target_int <- c(0.4, 1)
+  # Changing `target` so that one bound is not a valid probability value.
+  object@target <- c(0.4, 1)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  object@target_int <- c(0, 0.9)
+  object@target <- c(0, 0.9)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })
 
-test_that("v_next_best_ncrm_loss returns message for non-valid overdose_int", {
-  err_msg <- "overdose_int has to be a probability range excluding 0"
+test_that("v_next_best_ncrm_loss returns message for non-valid overdose", {
+  err_msg <- "overdose has to be a probability range excluding 0"
   object <- h_next_best_ncrm_loss()
 
-  # Changing `overdose_int` so that it is not an interval.
-  object@overdose_int <- 0.6
+  # Changing `overdose` so that it is not an interval.
+  object@overdose <- 0.6
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  object@overdose_int <- c(0.5, 0.6, 0.8)
+  object@overdose <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  # Changing `overdose_int` so that one bound is not a valid probability value.
-  object@overdose_int <- c(0, 0.3)
+  # Changing `overdose` so that one bound is not a valid probability value.
+  object@overdose <- c(0, 0.3)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })
 
-test_that("v_next_best_ncrm_loss returns message for non-valid unacceptable_int", {
-  err_msg <- "unacceptable_int has to be a probability range excluding 0"
+test_that("v_next_best_ncrm_loss returns message for non-valid unacceptable", {
+  err_msg <- "unacceptable has to be a probability range excluding 0"
   object <- h_next_best_ncrm_loss()
 
-  # Changing `unacceptable_int` so that it is not an interval.
-  object@unacceptable_int <- 0.6
+  # Changing `unacceptable` so that it is not an interval.
+  object@unacceptable <- 0.6
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  object@unacceptable_int <- c(0.5, 0.6, 0.8)
+  object@unacceptable <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
-  # Changing `unacceptable_int` so that one bound is not a valid probability value.
-  object@unacceptable_int <- c(0, 0.3)
+  # Changing `unacceptable` so that one bound is not a valid probability value.
+  object@unacceptable <- c(0, 0.3)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })
 
-test_that("v_next_best_ncrm_loss returns message for wrong overdose_int-unacceptable_int relation", {
+test_that("v_next_best_ncrm_loss returns message for wrong overdose-unacceptable relation", {
   object <- h_next_best_ncrm_loss()
 
-  # Changing `unacceptable_int` so that `overdose_int[2]` > `unacceptable_int[1]`.
-  object@unacceptable_int <- c(0.34, 0.5)
+  # Changing `unacceptable` so that `overdose[2]` > `unacceptable[1]`.
+  object@unacceptable <- c(0.34, 0.5)
   expect_equal(
     v_next_best_ncrm_loss(object),
-    "lower bound of unacceptable_int has to be >= than upper bound of overdose_int"
+    "lower bound of unacceptable has to be >= than upper bound of overdose"
   )
 })
 
 test_that("v_next_best_ncrm_loss returns message for wrong losses", {
-  err_msg <- "losses must be a vector of non-negative numbers of length 3 if unacceptable_int is c(1, 1), otherwise 4"
+  err_msg <- "losses must be a vector of non-negative numbers of length 3 if unacceptable is c(1, 1), otherwise 4"
   object <- h_next_best_ncrm_loss()
 
   # Changing `losses` so that it contains negative values.
@@ -166,7 +166,7 @@ test_that("v_next_best_ncrm_loss returns message for wrong losses", {
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
   # Changing `losses` so that it is of wrong length.
-  object@unacceptable_int <- c(1, 1)
+  object@unacceptable <- c(1, 1)
   object@losses <- c(1, 2, 4, 6)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })

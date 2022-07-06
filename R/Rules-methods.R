@@ -305,81 +305,55 @@ setMethod("nextBest",
   definition = function(nextBest, doselimit, samples, model, data, ...) {
     doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
+    is_unacceptable_specified <- any(nextBest@unacceptable != c(1, 1))
+
     # Matrix with samples from the dose-tox curve at the dose grid points.
     samples_prob <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
     prob_underdosing <- colMeans(samples_prob < nextBest@target[1])
-    prob_target <- colMeans(
-      (samples_prob >= nextBest@target[1]) & (samples_prob <= nextBest@target[2])
-    )
-    prob_overdose <- colMeans(
-      (samples_prob > nextBest@overdose[1]) & (samples_prob <= nextBest@overdose[2])
-    )
+    prob_target <- colMeans(h_in_range(samples_prob, nextBest@target))
+    prob_overdose <- colMeans(h_in_range(samples_prob, nextBest@overdose, c(FALSE, TRUE)))
     prob_mean <- colMeans(samples_prob)
     prob_sd <- apply(samples_prob, 2, sd)
 
     # Now compute probabilities to be in target and overdose tox interval.
-    if (setequal(nextBest@unacceptable_int, c(1, 1))) {
-      prob_mat <- cbind(prob_underdosing, prob_target, prob_overdose)
-      colnames(prob_mat) <- c("underdosing", "target", "overdose")
-    }
-
-    if (!setequal(nextBest@unacceptable_int, c(1, 1))) {
-      prob_excessive <- colMeans(
-        (samples_prob > nextBest@overdose_int[1]) & (samples_prob <= nextBest@overdose_int[2])
+    prob_mat <- if (!is_unacceptable_specified) {
+      cbind(
+        underdosing = prob_underdosing, target = prob_target, overdose = prob_overdose
       )
-      prob_unacceptable <- colMeans(
-        (samples_prob > nextBest@unacceptable_int[1]) & (samples_prob <= nextBest@unacceptable_int[2])
-      )
+    } else {
+      prob_unacceptable <- colMeans(h_in_range(
+        samples_prob,
+        nextBest@unacceptable,
+        c(FALSE, TRUE)
+      ))
+      prob_excessive <- prob_overdose
       prob_overdose <- prob_excessive + prob_unacceptable
-
-      prob_mat <- cbind(prob_underdosing, prob_target, prob_excessive, prob_unacceptable)
-      colnames(prob_mat) <- c("underdosing", "target", "excessive", "unacceptable")
-      posterior_loss <- nextBest@losses %*% t(prob_mat)
-      colnames(posterior_loss) <- data@doseGrid
-    }
-
-    posterior_loss <- nextBest@losses %*% t(prob_mat)
-    colnames(posterior_loss) <- data@doseGrid
-
-    probs <- cbind(
-      dose = data@doseGrid,
-      underdosing = prob_underdosing,
-      target = prob_target,
-      overdose = prob_overdose,
-      mean = prob_mean,
-      std_dev = prob_sd
-    )
-
-    if (!setequal(nextBest@unacceptable_int, c(1, 1))) {
-      probs <- cbind(
-        probs,
+      cbind(
+        underdosing = prob_underdosing,
+        target = prob_target,
         excessive = prob_excessive,
         unacceptable = prob_unacceptable
       )
     }
 
-    # Which doses are eligible after accounting for maximum possible dose and
-    # discarding overdoses?
-    doses_below_limit <- if (length(doselimit)) {
-      data@doseGrid <= doselimit
-    } else {
-      rep(TRUE, length(data@doseGrid))
-    }
+    posterior_loss <- as.vector(nextBest@losses %*% t(prob_mat))
+    names(posterior_loss) <- data@doseGrid
 
-    doses_eligible <- which(doses_below_limit & (prob_overdose < nextBest@max_overdose_prob))
+    probs <- cbind(
+      dose = data@doseGrid,
+      prob_mat = prob_mat,
+      mean = prob_mean,
+      std_dev = prob_sd,
+      posterior_loss = posterior_loss
+    )
+
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- data@doseGrid <= doselimit & prob_overdose < nextBest@max_overdose_prob
-
+    doses_eligible <- data@doseGrid[is_dose_eligible]
+    # next best dose is the dose with the minimum loss function
     next_best <- if (any(is_dose_eligible)) {
-      # If maximum target probability is higher than some numerical threshold,
-      # then take that level, otherwise stick to the maximum level that is OK.
-      # next_best_level is relative to eligible doses.
-      next_best_level <- ifelse(
-        test = any(prob_target[is_dose_eligible] > 0.05),
-        yes = which.min(posterior_loss[doses_eligible]),
-        no = sum(is_dose_eligible)
-      )
+      next_best_level <- which.min(posterior_loss[is_dose_eligible])
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
       NA
@@ -408,16 +382,29 @@ setMethod("nextBest",
         geom_vline(
           xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1,
           lty = 2, colour = "red"
-        ) +
-        geom_point(
-          aes(x = next_best, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
-          size = 3,
-          pch = 25,
-          col = "red",
-          bg = "red"
         )
     }
-    if (setequal(nextBest@unacceptable_int, c(1, 1))) {
+    p_loss <- ggplot() +
+      # For the loss function
+      geom_bar(
+        data = data.frame(Dose = data@doseGrid, y = posterior_loss),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(data@doseGrid)) / 2,
+        colour = "darkgreen",
+        fill = "darkgreen"
+      ) +
+      geom_point(
+        aes(x = next_best, y = max(posterior_loss) + 0.2),
+        size = 3,
+        pch = 25,
+        col = "red",
+        bg = "red"
+      ) +
+      ylab(paste("Loss function"))
+
+    if (!is_unacceptable_specified) {
       # Second, for the overdosing probability.
       p2 <- ggplot() +
         geom_bar(
@@ -437,11 +424,10 @@ setMethod("nextBest",
         ylab("Overdose probability [%]")
 
       # Place them below each other.
-      plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
-    }
+      plot_joint <- gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3)
+    } else {
 
-    # Plot in case of 4 toxicity intervals.
-    if (!setequal(nextBest@unacceptable_int, c(1, 1))) {
+      # Plot in case of 4 toxicity intervals.
       # Second, for the overdosing probability.
       p2 <- ggplot() +
         geom_bar(
@@ -452,10 +438,6 @@ setMethod("nextBest",
           width = min(diff(data@doseGrid)) / 2,
           colour = "red",
           fill = "red"
-        ) +
-        geom_hline(
-          yintercept = nextBest@max_overdose_prob * 100, lwd = 1.1, lty = 2,
-          colour = "black"
         ) +
         ylim(c(0, 100)) +
         ylab("Excessive probability [%]")
@@ -470,22 +452,17 @@ setMethod("nextBest",
           colour = "red",
           fill = "red"
         ) +
-        geom_hline(
-          yintercept = nextBest@max_overdose_prob * 100, lwd = 1.1, lty = 2,
-          colour = "black"
-        ) +
         ylim(c(0, 100)) +
         ylab("Unacceptable probability [%]")
 
 
       # Place them below each other.
-      plot_joint <- gridExtra::arrangeGrob(p1, p2, p3, nrow = 3)
+      plot_joint <- gridExtra::arrangeGrob(p1, p2, p3, p_loss, nrow = 4)
     }
-    if (setequal(nextBest@unacceptable_int, c(1, 1))) {
-      singlePlots <- list(plot1 = p1, plot2 = p2)
-    }
-    if (!setequal(nextBest@unacceptable_int, c(1, 1))) {
-      singlePlots <- list(plot1 = p1, plot2 = p2, plot3 = p3)
+    if (!is_unacceptable_specified) {
+      singlePlots <- list(plot1 = p1, plot2 = p2, plot_loss = p_loss)
+    } else {
+      singlePlots <- list(plot1 = p1, plot2 = p2, plot3 = p3, plot_loss = p_loss)
     }
 
     list(

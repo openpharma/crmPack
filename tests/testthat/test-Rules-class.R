@@ -52,16 +52,16 @@ test_that(".NextBestNCRMLoss works as expected", {
 test_that("NextBestNCRMLoss object can be created with user constructor", {
   result <- expect_silent(
     NextBestNCRMLoss(
-      target_int = c(0.2, 0.35),
-      overdose_int = c(0.35, 0.6),
-      unacceptable_int = c(0.6, 1),
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 0.6),
+      unacceptable = c(0.6, 1),
       max_overdose_prob = 0.25,
       losses = c(1, 0, 1, 2)
     )
   )
-  expect_equal(result@target_int, c(0.2, 0.35))
-  expect_equal(result@overdose_int, c(0.35, 0.6))
-  expect_equal(result@unacceptable_int, c(0.6, 1))
+  expect_equal(result@target, c(0.2, 0.35))
+  expect_equal(result@overdose, c(0.35, 0.6))
+  expect_equal(result@unacceptable, c(0.6, 1))
   expect_equal(result@max_overdose_prob, 0.25)
   expect_equal(result@losses, c(1, 0, 1, 2))
 })

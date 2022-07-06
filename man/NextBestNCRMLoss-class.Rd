@@ -8,20 +8,22 @@
 \title{\code{NextBestNCRMLoss}}
 \usage{
 NextBestNCRMLoss(
-  target_int,
-  overdose_int,
-  unacceptable_int = c(1, 1),
+  target,
+  overdose,
+  unacceptable = c(1, 1),
   max_overdose_prob,
   losses
 )
 }
 \arguments{
-\item{target_int}{(\code{numeric})\cr target toxicity interval (limits included).}
+\item{target}{(\code{numeric})\cr target toxicity interval (limits included).}
 
-\item{overdose_int}{(\code{numeric})\cr the overdose toxicity interval (lower
-limit excluded, upper limit included).}
+\item{overdose}{(\code{numeric})\cr the overdose toxicity interval (lower limit
+excluded, upper limit included) or the excessive toxicity interval (lower
+limit excluded, upper limit included) if
+unacceptable is not provided.}
 
-\item{unacceptable_int}{(\code{numeric})\cr an optional unacceptable toxicity
+\item{unacceptable}{(\code{numeric})\cr an unacceptable toxicity
 interval (lower limit excluded, upper limit included).}
 
 \item{max_overdose_prob}{(\code{proportion})\cr the maximum overdose
@@ -39,24 +41,21 @@ This class is similar to \code{\link{NextBestNCRM}} class, the only difference i
 addition of loss function. As in NCRM rule, first admissible doses are found,
 which are those with probability to fall in overdose category being below
 \code{max_overdose_prob}. Next, within the admissible doses, the loss function is
-calculated, i.e. \code{losses} \%*\% \code{target_int}. Finally, the corresponding
+calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
 dose with lowest loss function (Bayes risk) is recommended for the next dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target_int}}{(\code{numeric})\cr target toxicity interval (limits included).}
+\item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
+excluded, upper limit included) or the excessive toxicity interval (lower
+limit excluded, upper limit included) if
+unacceptable is not provided. It is used to filter probability samples.}
 
-\item{\code{overdose_int}}{(\code{numeric})\cr the overdose toxicity interval (lower
-limit excluded, upper limit included).}
-
-\item{\code{unacceptable_int}}{(\code{numeric})\cr an unacceptable toxicity
+\item{\code{unacceptable}}{(\code{numeric})\cr an unacceptable toxicity
 interval (lower limit excluded, upper limit included). This must be
-specified if the \code{overdose_int} does not include 1. Otherwise, it is
+specified if the \code{overdose} does not include 1. Otherwise, it is
 c(1, 1) (default), which is essentially a scalar equals 1.}
-
-\item{\code{max_overdose_prob}}{(\code{proportion})\cr the maximum overdose
-(overdose or excessive + unacceptable) probability that is allowed.}
 
 \item{\code{losses}}{(\code{numeric})\cr a vector specifying the loss function. If the
 \code{unacceptable} is provided, the vector length must be \eqn{4}, otherwise
@@ -75,9 +74,9 @@ unacceptable toxicity intervals.
 # overdose interval is (0.35, 1]. We would like to constrain the probability
 # of overdosing below 25\%. The loss function is c(1, 0, 1, 2).
 my_next_best <- NextBestNCRMLoss(
-  target_int = c(0.2, 0.35),
-  overdose_int = c(0.35, 0.6),
-  unacceptable_int = c(0.6, 1),
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 0.6),
+  unacceptable = c(0.6, 1),
   max_overdose_prob = 0.25,
   losses = c(1, 0, 1, 2)
 )

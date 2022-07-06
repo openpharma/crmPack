@@ -17,9 +17,9 @@ h_next_best_ncrm <- function() {
 
 h_next_best_ncrm_loss <- function() {
   NextBestNCRMLoss(
-    target_int = c(0.2, 0.35),
-    overdose_int = c(0.35, 0.6),
-    unacceptable_int = c(0.6, 1),
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 0.6),
+    unacceptable = c(0.6, 1),
     max_overdose_prob = 0.25,
     losses = c(1, 0, 1, 2)
   )

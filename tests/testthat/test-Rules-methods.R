@@ -148,12 +148,12 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
   nb_ncrm_loss <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 1),
-    max_overdose_prob = 0.25,
+    max_overdose_prob = 0.999,
     losses = c(1, 0, 2)
   )
 
-  result <- nextBest(nb_ncrm_loss, doselimit = 45, samples, model, data)
-  expect_identical(result$value, 25)
+  result <- nextBest(nb_ncrm_loss, doselimit = 60, samples, model, data)
+  expect_identical(result$value, 50)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot)
 })
@@ -167,7 +167,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   nb_ncrm_loss <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
-    unacceptable_int = c(0.6, 1),
+    unacceptable = c(0.6, 1),
     max_overdose_prob = 0.25,
     losses = c(1, 0, 1, 2)
   )
@@ -177,6 +177,23 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot)
 })
+
+test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_ncrm_loss <- NextBestNCRMLoss(
+    target = c(0.2, 0.35), overdose = c(0.35, 1), max_overdose_prob = 0.25, losses = c(1, 0, 2)
+  )
+
+  result <- nextBest(nb_ncrm_loss, doselimit = numeric(0), samples, model, data)
+  expect_identical(result$value, 50)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot)
+})
+
 
 ## NextBestThreePlusThree ----
 

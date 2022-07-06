@@ -312,10 +312,10 @@ next_max_dose <- maxDose(my_increments, data = my_data)
 # Define the rule which will be used to select the next best dose
 # based on the class `NextBestNCRMLoss`.
 nrcm_loss_next_best <- NextBestNCRMLoss(
-  target_int = c(0.2, 0.35),
-  overdose_int = c(0.35, 0.6),
-  unacceptable_int = c(0.6, 1),
-  max_overdose_prob = 0.25,
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 0.6),
+  unacceptable = c(0.6, 1),
+  max_overdose_prob = 0.999,
   losses = c(1, 0, 1, 2)
 )
 
@@ -336,9 +336,9 @@ dose_recommendation$probs
 
 # Define another rule (loss function of 3 elements).
 nrcm_loss_next_best_losses_3 <- NextBestNCRMLoss(
-  target_int = c(0.2, 0.35),
-  overdose_int = c(0.35, 1),
-  max_overdose_prob = 0.25,
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.30,
   losses = c(1, 0, 2)
 )
 
