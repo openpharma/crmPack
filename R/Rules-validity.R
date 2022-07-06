@@ -48,6 +48,50 @@ v_next_best_ncrm <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best_ncrm_loss validates that the [`NextBestNCRMLoss`] object
+#'   contains valid objects.
+v_next_best_ncrm_loss <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability_range(object@target, bounds_closed = FALSE),
+    "target has to be a probability range excluding 0 and 1"
+  )
+  is_overdose_valid <- test_probability_range(
+    object@overdose,
+    bounds_closed = c(FALSE, TRUE)
+  )
+  v$check(
+    is_overdose_valid,
+    "overdose has to be a probability range excluding 0"
+  )
+  is_unacceptable_valid <- test_probability_range(
+    object@unacceptable,
+    bounds_closed = c(FALSE, TRUE)
+  )
+  v$check(
+    is_unacceptable_valid,
+    "unacceptable has to be a probability range excluding 0"
+  )
+  if (is_overdose_valid && is_unacceptable_valid) {
+    v$check(
+      object@overdose[2] <= object@unacceptable[1],
+      "lower bound of unacceptable has to be >= than upper bound of overdose"
+    )
+  }
+  v$check(
+    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
+    "max_overdose_prob must be a probability value from (0, 1) interval"
+  )
+  if (is_unacceptable_valid) {
+    losses_len <- ifelse(all(object@unacceptable == c(1, 1)), 3L, 4L)
+    v$check(
+      test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
+      "losses must be a vector of non-negative numbers of length 3 if unacceptable is c(1, 1), otherwise 4"
+    )
+  }
+  v$result()
+}
+
 #' @describeIn v_next_best validates that the [`NextBestDualEndpoint`] object
 #'   contains valid probability objects.
 v_next_best_dual_endpoint <- function(object) {
