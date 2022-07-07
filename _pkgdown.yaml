@@ -64,6 +64,7 @@ reference:
       - NextBest
       - NextBestMTD
       - NextBestNCRM
+      - NextBestNCRMLoss
       - NextBestThreePlusThree
       - NextBestDualEndpoint
       - NextBestMinDist
@@ -129,6 +130,7 @@ reference:
       - v_model_one_par_exp_normal_prior
       - v_next_best_mtd
       - v_next_best_ncrm
+      - v_next_best_ncrm_loss
       - v_next_best_dual_endpoint
       - v_next_best_min_dist
       - v_next_best_inf_theory
@@ -223,6 +225,7 @@ reference:
       - nextBest-NextBestMTD
       - nextBest-NextBestNCRM
       - nextBest-NextBestNCRM-DataParts
+      - nextBest-NextBestNCRMLoss
       - nextBest-NextBestThreePlusThree
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV

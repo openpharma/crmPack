@@ -142,6 +142,91 @@ NextBestNCRM <- function(target,
   )
 }
 
+# NextBestNCRMLoss ----
+
+## class ----
+
+#' `NextBestNCRMLoss`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestNCRMLoss`] is the class based on NCRM rule and loss function.
+#' This class is similar to [`NextBestNCRM`] class, the only difference is the
+#' addition of loss function. As in NCRM rule, first admissible doses are found,
+#' which are those with probability to fall in overdose category being below
+#' `max_overdose_prob`. Next, within the admissible doses, the loss function is
+#' calculated, i.e. `losses` %*% `target`. Finally, the corresponding
+#' dose with lowest loss function (Bayes risk) is recommended for the next dose.
+#'
+#' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
+#'   excluded, upper limit included) or the excessive toxicity interval (lower
+#'   limit excluded, upper limit included) if
+#'   unacceptable is not provided. It is used to filter probability samples.
+#' @slot unacceptable (`numeric`)\cr an unacceptable toxicity
+#'   interval (lower limit excluded, upper limit included). This must be
+#'   specified if the `overdose` does not include 1. Otherwise, it is
+#'   c(1, 1) (default), which is essentially a scalar equals 1.
+#' @slot losses (`numeric`)\cr a vector specifying the loss function. If the
+#'   `unacceptable` is provided, the vector length must be \eqn{4}, otherwise
+#'   \eqn{3}.
+#'
+#' @note The loss function should be a vector of either 3 or 4 values.
+#'   This is because the loss function values must be specified for each
+#'   interval, that is under-dosing, target toxicity, and overdosing toxicity or
+#'   under-dosing, target toxicity, overdosing (excessive) toxicity, and
+#'   unacceptable toxicity intervals.
+#'
+#' @aliases NextBestNCRMLoss
+#' @export
+#'
+.NextBestNCRMLoss <- setClass(
+  Class = "NextBestNCRMLoss",
+  slots = c(
+    unacceptable = "numeric",
+    losses = "numeric"
+  ),
+  prototype = prototype(
+    unacceptable = c(1, 1),
+    losses = c(1, 0, 2)
+  ),
+  contains = "NextBestNCRM",
+  validity = v_next_best_ncrm_loss
+)
+
+## constructor ----
+
+#' @rdname NextBestNCRMLoss-class
+#'
+#' @param target (`numeric`)\cr target toxicity interval (limits included).
+#' @param overdose (`numeric`)\cr the overdose toxicity interval (lower limit
+#'   excluded, upper limit included) or the excessive toxicity interval (lower
+#'   limit excluded, upper limit included) if
+#'   unacceptable is not provided.
+#' @param unacceptable (`numeric`)\cr an unacceptable toxicity
+#'   interval (lower limit excluded, upper limit included).
+#' @param max_overdose_prob (`proportion`)\cr the maximum overdose
+#'   (overdose or excessive + unacceptable) probability that is allowed.
+#' @param losses (`numeric`)\cr a vector specifying the loss function. If the
+#'   `unacceptable` is provided, the vector length must be \eqn{4}, otherwise
+#'   \eqn{3}.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestNCRMLoss.R
+#'
+NextBestNCRMLoss <- function(target,
+                             overdose,
+                             unacceptable = c(1, 1),
+                             max_overdose_prob,
+                             losses) {
+  .NextBestNCRMLoss(
+    target = target,
+    overdose = overdose,
+    unacceptable = unacceptable,
+    max_overdose_prob = max_overdose_prob,
+    losses = losses
+  )
+}
+
 # NextBestThreePlusThree ----
 
 ## class ----
