@@ -168,11 +168,11 @@ setMethod(
 
     # Estimates of posterior probabilities that are based on the prob. samples
     # which are within overdose/target interval.
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, c(FALSE, TRUE)))
+    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- data@doseGrid <= doselimit & prob_overdose < nextBest@max_overdose_prob
+    is_dose_eligible <- (data@doseGrid <= doselimit) & (prob_overdose < nextBest@max_overdose_prob)
 
     next_best <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
@@ -310,9 +310,9 @@ setMethod("nextBest",
     # Now compute probabilities to be in target and overdose tox interval.
     prob_underdosing <- colMeans(prob_samples < nextBest@target[1])
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, c(FALSE, TRUE)))
+    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
     prob_mean <- colMeans(prob_samples)
-    prob_sd <- apply(prob_samples, 2, sd)
+    prob_sd <- apply(prob_samples, 2, stats::sd)
 
     is_unacceptable_specified <- any(nextBest@unacceptable != c(1, 1))
 
@@ -322,7 +322,7 @@ setMethod("nextBest",
       )
     } else {
       prob_unacceptable <- colMeans(
-        h_in_range(prob_samples, nextBest@unacceptable, c(FALSE, TRUE))
+        h_in_range(prob_samples, nextBest@unacceptable, bounds_closed = c(FALSE, TRUE))
       )
       prob_excessive <- prob_overdose
       prob_overdose <- prob_excessive + prob_unacceptable
@@ -548,31 +548,31 @@ setMethod(
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
-    if (nextBest@target_relative) {
+    prob_target <- if (nextBest@target_relative) {
       # If 'Emax' parameter available, target biomarker level will be relative to 'Emax',
       # otherwise, it will be relative to the maximum biomarker level achieved
       # in dose range for a given sample.
       if ("Emax" %in% names(samples@data)) {
         lwr <- nextBest@target[1] * samples@data$Emax
         upr <- nextBest@target[2] * samples@data$Emax
-        prob_target <- colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
+        colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
       } else {
         target_levels <- apply(biom_samples, 1L, function(x) {
           rng <- range(x)
-          min(which(h_in_range(x, nextBest@target * diff(rng) + rng[1] + c(0, 1e-10), c(FALSE, TRUE))))
+          min(which(h_in_range(x, nextBest@target * diff(rng) + rng[1] + c(0, 1e-10), bounds_closed = c(FALSE, TRUE))))
         })
         prob_target <- as.vector(table(factor(target_levels, levels = 1:data@nGrid)))
-        prob_target <- prob_target / nrow(biom_samples)
+        prob_target / nrow(biom_samples)
       }
     } else {
-      prob_target <- colMeans(h_in_range(biom_samples, nextBest@target))
+      colMeans(h_in_range(biom_samples, nextBest@target))
     }
 
     # Now, compute probabilities to be in overdose tox interval, then flag
     # eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
-    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, c(FALSE, TRUE)))
-    is_dose_eligible <- data@doseGrid <= doselimit & prob_overdose < nextBest@max_overdose_prob
+    prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
+    is_dose_eligible <- (data@doseGrid <= doselimit) & (prob_overdose < nextBest@max_overdose_prob)
     # Exclude placebo (if any) from the recommended next doses.
     if (data@placebo & data@nObs >= 2L) {
       is_dose_eligible <- is_dose_eligible[-1]
