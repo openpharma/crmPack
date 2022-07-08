@@ -198,8 +198,7 @@ h_get_dual_endpoint_rw <- function(use_log_dose = FALSE,
   )
 }
 
-h_get_dual_endpoint_beta <- function(use_log_dose = FALSE,
-                                     fixed = TRUE) {
+h_get_dual_endpoint_beta <- function(use_log_dose = FALSE, fixed = TRUE) {
   de <- h_get_dual_endpoint(use_log_dose = use_log_dose, fixed = fixed)
   if (fixed) {
     E0 <- 10 # nolint

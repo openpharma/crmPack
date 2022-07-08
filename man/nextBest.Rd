@@ -13,6 +13,7 @@
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
 \alias{nextBest-NextBestThreePlusThree}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
+\alias{nextBest-NextBestDualEndpoint}
 \alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
@@ -111,7 +112,7 @@ loss function.
 
 \item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: find the next best dose based on the 3+3 method.
 
-\item \code{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}: Find the next best dose based on the dual endpoint
+\item \code{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}: find the next best dose based on the dual endpoint
 model. The additional list element \code{probs} contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
@@ -370,62 +371,67 @@ my_next_best <- NextBestThreePlusThree()
 
 # Calculate the next best dose.
 dose_recommendation <- nextBest(my_next_best, data = my_data)
-# nolint start
+# Create the data.
+my_data <- DataDual(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1),
+  ID = 1:17,
+  cohort = c(1L, 2L, 3L, 4L, 5L, 6L, 6L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 9L, 9L),
+  w = c(
+    0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6, 0.52, 0.54,
+    0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21
+  ),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
 
-# Create the data
-data <- DataDual(
-  x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10,
-      20, 20, 20, 40, 40, 40, 50, 50, 50),
-  y=c(0, 0, 0, 0, 0, 0, 1, 0,
-      0, 1, 1, 0, 0, 1, 0, 1, 1),
-  w=c(0.31, 0.42, 0.59, 0.45, 0.6, 0.7, 0.55, 0.6,
-      0.52, 0.54, 0.56, 0.43, 0.41, 0.39, 0.34, 0.38, 0.21),
-  doseGrid=c(0.1, 0.5, 1.5, 3, 6,
-             seq(from=10, to=80, by=2)))
+# Initialize the Dual-Endpoint model (in this case RW1).
+my_model <- DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2betaW = 0.01,
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  rw1 = TRUE
+)
 
-# Initialize the Dual-Endpoint model (in this case RW1)
-model <- DualEndpointRW(mean = c(0, 1),
-                        cov = matrix(c(1, 0, 0, 1), nrow=2),
-                        sigma2betaW = 0.01,
-                        sigma2W = c(a=0.1, b=0.1),
-                        rho = c(a=1, b=1),
-                        rw1 = TRUE)
+# Set-up some MCMC parameters and generate samples from the posterior.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+my_samples <- mcmc(my_data, my_model, my_options)
 
-# Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(burnin=100,
-                       step=2,
-                       samples=500)
-set.seed(94)
-samples <- mcmc(data, model, options)
+# Define the rule for dose increments and calculate the maximum dose allowed.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
+next_max_dose <- maxDose(my_increments, data = my_data)
 
-# Define the rule for dose increments and calculate the maximum dose allowed
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
+# Define the rule which will be used to select the next best dose. In this case,
+# target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
+# and with a probability below 0.25 that prob(DLT)>0.35 (safety).
+de_next_best <- NextBestDualEndpoint(
+  target = c(0.9, 1),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
-# Define the rule which will be used to select the next best dose
-# In this case target a dose achieving at least 0.9 of maximum biomarker level (efficacy)
-# and with a probability below 0.25 that prob(DLT)>0.35 (safety)
-myNextBest <- NextBestDualEndpoint(target=c(0.9, 1),
-                                   overdose=c(0.35, 1),
-                                   max_overdose_prob=0.25)
+# Calculate the next best dose.
+dose_recommendation <- nextBest(
+  nextBest = de_next_best,
+  doselimit = next_max_dose,
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
 
-# Calculate the next best dose
-doseRecommendation <- nextBest(myNextBest,
-                               doselimit=nextMaxDose,
-                               samples=samples,
-                               model=model,
-                               data=data)
+# See the probabilities.
+dose_recommendation$probs
 
-## joint plot
-print(doseRecommendation$plot)
+# Joint plot.
+print(dose_recommendation$plot)
 
-## show customization of single plot
-variant1 <- doseRecommendation$singlePlots$plot1 + xlim(0, 20)
+# Show customization of single plot.
+variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
-
-# nolint end
 ## we need a data object with doses >= 1:
 data<-Data(x=c(25,50,50,75,150,200,225,300),
            y=c(0,0,0,0,1,1,1,1),

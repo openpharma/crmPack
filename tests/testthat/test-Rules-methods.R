@@ -54,6 +54,8 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects", {
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM_p1", result$singlePlots$plot1)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM_p2", result$singlePlots$plot2)
 })
 
 test_that("nextBest-NextBestNCRM returns expected values of the objects (no doselimit)", {
@@ -103,7 +105,7 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
   result <- nextBest(nb_ncrm, doselimit = numeric(0), samples, model, data)
   expect_identical(result$value, 50)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
 })
 
 test_that("nextBest-NextBestNCRM-DataParts returns expected value for all parts 1", {
@@ -156,6 +158,9 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p1", result$singlePlots$plot1)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p2", result$singlePlots$plot2)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_ploss", result$singlePlots$plot_loss)
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (loss function of 4 elements)", {
@@ -193,7 +198,6 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot)
 })
-
 
 ## NextBestThreePlusThree ----
 
@@ -257,6 +261,76 @@ test_that("nextBest-NextBestThreePlusThree returns expected values (next_level =
   result <- nextBest(NextBestThreePlusThree(), data = data)
   expect_identical(result$value, NA)
   expect_identical(result$stopHere, TRUE)
+})
+
+## NextBestDualEndpoint ----
+
+test_that("nextBest-NextBestDualEndpoint returns expected elements", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_rw()
+  samples <- h_samples_dual_endpoint_rw()
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.45, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_de, doselimit = 133, samples, model, data)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_p1", result$singlePlots$plot1)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_p2", result$singlePlots$plot2)
+})
+
+test_that("nextBest-NextBestDualEndpoint returns expected elements (with Emax param)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_beta(fixed = FALSE)
+  samples <- h_samples_dual_endpoint_beta(fixed = FALSE)
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    overdose = c(0.45, 1),
+    max_overdose_prob = 0.25
+  )
+
+  result <- nextBest(nb_de, doselimit = 133, samples, model, data)
+  expect_identical(result$value, 50)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_Emax", result$plot)
+})
+
+test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute target)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_rw()
+  samples <- h_samples_dual_endpoint_rw()
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    target_relative = FALSE,
+    overdose = c(0.65, 1),
+    max_overdose_prob = 0.55
+  )
+
+  result <- nextBest(nb_de, doselimit = 90, samples, model, data)
+  expect_identical(result$value, 75)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_abstarget", result$plot)
+})
+
+test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute target, no doselimit)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model <- h_get_dual_endpoint_rw()
+  samples <- h_samples_dual_endpoint_rw()
+  nb_de <- NextBestDualEndpoint(
+    target = c(0.9, 1),
+    target_relative = FALSE,
+    overdose = c(0.65, 1),
+    max_overdose_prob = 0.55
+  )
+
+  result <- nextBest(nb_de, doselimit = numeric(0), samples, model, data)
+  expect_identical(result$value, 100)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
 ## NextBestInfTheory ----
