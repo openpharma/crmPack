@@ -4,6 +4,7 @@
 \alias{v_next_best}
 \alias{v_next_best_mtd}
 \alias{v_next_best_ncrm}
+\alias{v_next_best_ncrm_loss}
 \alias{v_next_best_dual_endpoint}
 \alias{v_next_best_min_dist}
 \alias{v_next_best_inf_theory}
@@ -12,6 +13,8 @@
 v_next_best_mtd(object)
 
 v_next_best_ncrm(object)
+
+v_next_best_ncrm_loss(object)
 
 v_next_best_dual_endpoint(object)
 
@@ -40,6 +43,9 @@ contains valid \code{target} probability and \code{derive} function.
 \item \code{v_next_best_ncrm}: validates that the \code{\link{NextBestNCRM}} object
 contains valid \code{target} probability, \code{overdose} and \code{max_overdose_prob}
 probability ranges.
+
+\item \code{v_next_best_ncrm_loss}: validates that the \code{\link{NextBestNCRMLoss}} object
+contains valid objects.
 
 \item \code{v_next_best_dual_endpoint}: validates that the \code{\link{NextBestDualEndpoint}} object
 contains valid probability objects.

@@ -48,7 +48,7 @@ v_next_best_ncrm <- function(object) {
   v$result()
 }
 
-#' @describeIn v_next_best_ncrm_loss validates that the [`NextBestNCRMLoss`] object
+#' @describeIn v_next_best validates that the [`NextBestNCRMLoss`] object
 #'   contains valid objects.
 v_next_best_ncrm_loss <- function(object) {
   v <- Validate()
