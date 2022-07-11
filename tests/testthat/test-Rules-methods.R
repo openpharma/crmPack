@@ -333,6 +333,44 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestDualEndpoint_atgt_nodlim", result$plot)
 })
 
+## NextBestMinDist ----
+
+test_that("nextBest-NextBestMinDist returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_md <- NextBestMinDist(target = 0.3)
+
+  result <- nextBest(nb_md, doselimit = 50, samples, model, data)
+  expect_identical(result, list(value = 50))
+})
+
+test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_md <- NextBestMinDist(target = 0.3)
+
+  result <- nextBest(nb_md, doselimit = numeric(0), samples, model, data)
+  expect_identical(result, list(value = 75))
+})
+
+test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
+  )
+  nb_md <- NextBestMinDist(target = 0.7)
+
+  result <- nextBest(nb_md, doselimit = numeric(0), samples, model, data)
+  expect_identical(result, list(value = 175))
+})
+
 ## NextBestInfTheory ----
 
 test_that("nextBest-NextBestInfTheory returns correct next dose", {

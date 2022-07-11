@@ -228,6 +228,7 @@ reference:
       - nextBest-NextBestNCRMLoss
       - nextBest-NextBestThreePlusThree
       - nextBest-NextBestDualEndpoint
+      - nextBest-NextBestMinDist
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels
