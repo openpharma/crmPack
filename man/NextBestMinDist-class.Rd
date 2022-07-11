@@ -21,6 +21,6 @@ distance to target probability.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr target toxicity probability.}
+\item{\code{target}}{(\code{proportion})\cr target toxicity probability, a scalar value.}
 }}
 

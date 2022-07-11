@@ -650,33 +650,39 @@ setMethod(
   }
 )
 
-# nolint start
+## NextBestMinDist ----
 
-##' @describeIn nextBest Method for `NextBestMinDist` class, which will give
-##'   the dose which is below the dose limit and has an estimated DLT probability
-##'   which is closest to the target dose.
-##' @export
-setMethod("nextBest",
+#' @describeIn nextBest gives the dose which is below the dose limit and has an
+#'   estimated DLT probability which is closest to the target dose.
+#'
+#' @aliases nextBest-NextBestMinDist
+#'
+#' @export
+#'
+setMethod(
+  f = "nextBest",
   signature = signature(
     nextBest = "NextBestMinDist",
-    doselimit = "numeric", samples = "Samples",
-    model = "Model", data = "Data"
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "Model",
+    data = "Data"
   ),
-  def = function(nextBest, doselimit, samples, model, data, ...) {
-    dosesOK <-
-      if (length(doselimit)) {
-        which(data@doseGrid <= doselimit)
-      } else {
-        seq_along(data@doseGrid)
-      }
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+
     modelfit <- fit(samples, model, data)
-    probDLT <- modelfit$middle[dosesOK]
-    doses <- modelfit$dose[dosesOK]
-    bestIndex <- which.min(abs(probDLT - nextBest@target))
-    bestDose <- doses[bestIndex]
-    return(list(value = bestDose))
+    doses <- modelfit$dose
+    is_dose_eligible <- doses <= doselimit
+    dlt_prob <- modelfit$middle[is_dose_eligible]
+    next_best_level <- which.min(abs(dlt_prob - nextBest@target))
+    next_best <- doses[is_dose_eligible][next_best_level]
+
+    list(value = next_best)
   }
 )
+
+# nolint start
 
 ##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
 ##'   the appropriate dose within an information theoretic framework
