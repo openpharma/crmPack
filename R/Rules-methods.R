@@ -674,9 +674,10 @@ setMethod(
     modelfit <- fit(samples, model, data)
     doses <- modelfit$dose
     is_dose_eligible <- doses <= doselimit
+    doses_eligible <- doses[is_dose_eligible]
     dlt_prob <- modelfit$middle[is_dose_eligible]
     next_best_level <- which.min(abs(dlt_prob - nextBest@target))
-    next_best <- doses[is_dose_eligible][next_best_level]
+    next_best <- doses_eligible[next_best_level]
 
     list(value = next_best)
   }

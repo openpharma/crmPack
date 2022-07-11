@@ -371,7 +371,7 @@ NextBestDualEndpoint <- function(target,
 #' [`NextBestMinDist`] is the class for next best dose that is based on minimum
 #' distance to target probability.
 #'
-#' @slot target (`proportion`)\cr target toxicity probability, a scalar value.
+#' @slot target (`proportion`)\cr single target toxicity probability.
 #'
 #' @aliases NextBestMinDist
 #' @export
