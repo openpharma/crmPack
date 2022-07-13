@@ -7,9 +7,9 @@
 h_info_theory_dist(prob, target, asymmetry)
 }
 \arguments{
-\item{prob}{(\code{numeric})\cr probability of a DLT occurring.}
+\item{prob}{(\code{numeric})\cr vector or matrix with probabilities of a DLT occurring.}
 
-\item{target}{(\code{numeric })\cr target probability of a DLT.}
+\item{target}{(\code{number })\cr single target probability of a DLT.}
 
 \item{asymmetry}{(\code{number})\cr describes the rate of penalization
 for overly toxic does, range 0 to 2.}
@@ -22,5 +22,5 @@ divergence as given by equation in (7) in the reference at
 https://doi.org/10.1002/sim.8450.
 }
 \examples{
-h_info_theory_dist(c(0.5, 0.2), c(0.5, 0.1), 1.2)
+h_info_theory_dist(c(0.5, 0.2), 0.4, 1.2)
 }

@@ -683,45 +683,41 @@ setMethod(
   }
 )
 
-# nolint start
+## NextBestInfTheory ----
 
-##' @describeIn nextBest Method for `NextBestInfTheory` class, which will give
-##'   the appropriate dose within an information theoretic framework
-##' @export
-setMethod("nextBest",
+#' @describeIn nextBest gives the appropriate dose within an information
+#'   theoretic framework.
+#'
+#' @aliases nextBest-NextBestInfTheory
+#'
+#' @export
+#'
+setMethod(
+  f = "nextBest",
   signature = signature(
-    nextBest = "NextBestInfTheory", doselimit = "numeric", samples = "Samples",
-    model = "Model", data = "Data"
+    nextBest = "NextBestInfTheory",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "Model",
+    data = "Data"
   ),
-  def = function(nextBest, doselimit, samples, model, data, ...) {
-    probSamples <- matrix(
-      nrow = sampleSize(samples@options),
-      ncol = data@nGrid
-    )
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
-    for (i in seq_len(data@nGrid))
-    {
-      probSamples[, i] <- prob(
-        dose = data@doseGrid[i],
-        model,
-        samples
-      )
-    }
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
-    dosesOK <-
-      if (length(doselimit)) {
-        (data@doseGrid <= doselimit)
-      } else {
-        rep(TRUE, length(data@doseGrid))
-      }
+    criterion <- colMeans(h_info_theory_dist(prob_samples, nextBest@target, nextBest@asymmetry))
 
-    criterion <- colMeans(h_info_theory_dist(probSamples, nextBest@target, nextBest@asymmetry))
-
-    doseLevel <- which.min(criterion[dosesOK])
-    ret <- data@doseGrid[dosesOK][doseLevel]
-    return(list(value = ret))
+    is_dose_eligible <- data@doseGrid <= doselimit
+    doses_eligible <- data@doseGrid[is_dose_eligible]
+    next_best_level <- which.min(criterion[is_dose_eligible])
+    next_best <- doses_eligible[next_best_level]
+    list(value = next_best)
   }
 )
+
+# nolint start
 
 ## --------------------------------------------------
 ## Determine the maximum possible next dose
