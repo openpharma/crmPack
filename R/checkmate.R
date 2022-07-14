@@ -27,11 +27,14 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Check if every element in a given numerical vector represent a probability,
-#' that is a number within (0, 1) interval, that can optionally be closed at any
-#' side.
+#' Check if every element in a given numerical vector or matrix represents a
+#' probability, that is a number within (0, 1) interval, that can optionally be
+#' closed at any side.
 #'
-#' @param x (`numeric`)\cr vector with numerical values to check.
+#' @note If there are any missing or non-finite values in `x`, this functions
+#'   returns `FALSE`, regardless of the values of other elements in `x`.
+#'
+#' @param x (`numeric`)\cr vector or matrix with numerical values to check.
 #' @param bounds_closed (`logical`)\cr should bounds be closed? This can be a
 #'   scalar or vector of length two. If it is a scalar, then its value applies
 #'   equally to lower bound \eqn{0} and upper bound \eqn{1}. If this is a vector

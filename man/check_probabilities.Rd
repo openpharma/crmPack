@@ -30,7 +30,7 @@ expect_probabilities(
 )
 }
 \arguments{
-\item{x}{(\code{numeric})\cr vector with numerical values to check.}
+\item{x}{(\code{numeric})\cr vector or matrix with numerical values to check.}
 
 \item{bounds_closed}{(\code{logical})\cr should bounds be closed? This can be a
 scalar or vector of length two. If it is a scalar, then its value applies
@@ -65,9 +65,13 @@ the heuristic implemented in \code{\link[checkmate]{vname}}.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Check if every element in a given numerical vector represent a probability,
-that is a number within (0, 1) interval, that can optionally be closed at any
-side.
+Check if every element in a given numerical vector or matrix represents a
+probability, that is a number within (0, 1) interval, that can optionally be
+closed at any side.
+}
+\note{
+If there are any missing or non-finite values in \code{x}, this functions
+returns \code{FALSE}, regardless of the values of other elements in \code{x}.
 }
 \examples{
 x <- c(0, 0.2, 0.1, 0.3, 1)

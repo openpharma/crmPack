@@ -17,6 +17,7 @@
 \alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
 \alias{nextBest-NextBestMinDist}
 \alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
+\alias{nextBest-NextBestInfTheory}
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
@@ -121,8 +122,8 @@ derivation of the next best dose.
 \item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: gives the dose which is below the dose limit and has an
 estimated DLT probability which is closest to the target dose.
 
-\item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: Method for \code{NextBestInfTheory} class, which will give
-the appropriate dose within an information theoretic framework
+\item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: gives the appropriate dose within an information
+theoretic framework.
 
 \item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTDsamples'
 class rule. This a method based only on the DLE responses and for

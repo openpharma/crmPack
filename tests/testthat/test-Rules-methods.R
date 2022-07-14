@@ -384,7 +384,21 @@ test_that("nextBest-NextBestInfTheory returns correct next dose", {
   nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
 
   result <- nextBest(nb_it, doselimit = 75, samples, model, data)
-  expect_identical(result$value, 25)
+  expect_identical(result, list(value = 25))
+})
+
+test_that("nextBest-NextBestInfTheory returns correct next dose (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  # Set up the model; sigma0 = 1.0278, sigma1 = 1.65, rho = 0.5.
+  model <- LogisticLogNormal(
+    mean = c(-4.47, 0.0033),
+    cov = matrix(c(1.06, 0.85, 0.85, 2.72), nrow = 2)
+  )
+  samples <- h_as_samples(list(alpha0 = c(0, -1, 1, 2), alpha1 = c(0, 2, 1, -1)))
+  nb_it <- NextBestInfTheory(target = 0.25, asymmetry = 0.1)
+
+  result <- nextBest(nb_it, doselimit = numeric(0), samples, model, data)
+  expect_identical(result, list(value = 25))
 })
 
 # maxDose-IncrementsNumDoseLevels ----
