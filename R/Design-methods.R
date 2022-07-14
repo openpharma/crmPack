@@ -400,7 +400,7 @@ setMethod("simulate",
 
               ## highest level stopping reasons
               highestStoppingParts <- lapply(resultList, "[[", "highestStop")
-              highestStoppingMatrix <- do.call(rbind, highestStoppingParts)
+              highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
 
               ## return the results in the Simulations class object
 

@@ -1270,7 +1270,7 @@ setMethod("stopTrial",
 
               highestLevelResults <- stats::setNames(
                 unlist(individualResults),
-                lapply(overallText, function(x) paste(paste0("(",x,")"), collapse=" & "))
+                as.character(stopping)
                 #overallNames
               )
 
@@ -1736,143 +1736,187 @@ setMethod("stopTrial",
                                        "highest dose")))
             })
 
-######## Stopping Individuals
 
+## --------------------------------------------------
+## Convert stopping rules to character descriptions
+## --------------------------------------------------
+
+##' Convert stopping rules to character descriptions for usage in reporting tables
+##'
+##'
+##' This function outputs a short description of a stopping rule.
+##'
+##' @param x The stopping rule object
+##' \code{\linkS4class{Stopping}}
+##' @param \dots further arguments
+##' @return Stopping rule description
+##'
+##' @export
+##' @keywords methods
+##' @name as.character
+NULL
+
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingMinCohorts",
   definition = function(x, ...) {
-    paste("At least",
+    paste("\u2265",
           x@nCohorts,
-          "cohorts have been observed")
+          "cohorts")
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingCohortsNearDose",
   definition = function(x, ...) {
-    paste("At least",
-          x@nCohorts,
-          "cohorts have been observed that lie within",
-          x@percentage,
-          "% of the next best dose")
+      paste("\u2265",x@nCohorts,
+            "cohorts in",
+            x@percentage,
+            "% of NBD")
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingPatientsNearDose",
   definition = function(x, ...) {
-    paste("At least",
-          x@nPatients,
-          "patients observed that lie within",
-          x@percentage,
-          "% of the next best dose")
+      paste("\u2265",
+            x@nPatients,
+            "patients in",
+            x@percentage,
+            "% of NBD")
   }
 )
 
+
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingMinPatients",
   definition = function(x, ...) {
-    paste("At least",x@nPatients,"patients dosed")
+      paste("\u2265",
+            x@nPatients,
+            "patients dosed")
   }
 )
 
+
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingTargetProb",
   definition = function(x, ...) {
-    paste("Posterior probability [",
+    paste("[",
           x@target[1],
-          "=< Prob(DLT | dose) <=",
+          "\u2264 prob(DLT | dose) \u2264",
           x@target[2],
-          "] for the next best dose is above",
+          "] for NBD \u2265",
           x@prob)
   }
 )
 
+
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingMTDdistribution",
   definition = function(x, ...) {
-    paste("At least",
+    paste("\u2265",
           x@prob,
-          "probability that MTD ( prob(DLE) ="
+          "prob MTD ( prob(DLE) ="
           ,x@target,
           ") >"
           ,x@thresh,
-          " * next_dose")
+          " * next dose")
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingMTDCV",
   definition = function(x, ...) {
-    paste("Coefficient of variation for target toxicity probability for MTD of",
+    paste("CV of target tox prob for MTD",
           x@target,
-          "is below",
+          "\u2264",
           x@thresh_cv,
           "%")
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingTargetBiomarker",
   definition = function(x, ...) {
-    paste("At least",
+    paste("\u2265",
           x@prob,
-          "probability that the biomarker (efficacy) is within the biomarker target range of [",
+          "prob biomarker target range in [",
           x@target[1],
           ",",
           x@target[2],
           ifelse(x@scale=="relative",
-                 paste("] (",
-                 x@scale,
-                 "to the maximum of the biomarker )"),
+                 paste("] ( relative )"),
                  "] ( absolute )"
                  )
           )
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingHighestDose",
   definition = function(x, ...) {
-    paste("Highest dose is reached")
+    paste("Reached highest dose")
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingTDCIRatio",
   definition = function(x, ...) {
-    paste("Target stopping ratio (TD) of",
+    paste("TD",
           x@targetRatio,
           "for",
           x@targetEndOfTrial,
-          "target probability of DLE used at the end of the trial")
+          "target prob")
   }
 )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingGstarCIRatio",
   definition = function(x, ...) {
-    paste("Target stopping ratio (GStar) of",
+    paste("GStar",
           x@targetRatio,
           "for",
           x@targetEndOfTrial,
-          "target probability of DLE used at the end of the trial")
+          "target prob")
   }
 )
 
 ######## Stopping List
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingList",
@@ -1884,21 +1928,30 @@ setMethod(
 
 ######## Stopping Any & All
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingAny",
-  definition = function(x, ...) {
-    ind_strings <- sapply(x@stopList, as.character)
-    paste(ind_strings, collapse = " | ")
+  definition = function(x, individuals = TRUE, ...) {
+    if(individuals==FALSE) {
+      ind_strings <- sapply(x@stopList, as.character)
+      paste(ind_strings, collapse = " | ")
+    } else if (individuals==TRUE) {
+      ind_strings <- sapply(x@stopList, as.character)
+      ind_strings
+    }
   }
   )
 
+##' @describeIn as.character Convert stopping rules to character description
+##'
 setMethod(
   f = "as.character",
   signature = "StoppingAll",
-  definition = function(x, ...) {
-    ind_strings <- sapply(x@stopList, as.character)
-    paste(ind_strings, collapse = " & ")
+  definition = function(x, individuals = TRUE, ...) {
+      ind_strings <- sapply(x@stopList, as.character)
+      paste(ind_strings, collapse = " & ")
   } )
 
 ## ============================================================
