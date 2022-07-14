@@ -19,7 +19,7 @@ test_that("h_info_theory_dist works as expected for matrices", {
   expect_equal(result, expected, tolerance = 0.001)
 })
 
-test_that("h_info_theory_dist trhows the error for non-conformable args", {
+test_that("h_info_theory_dist throws the error for non-conformable args", {
   expect_error(
     h_info_theory_dist(0.2, c(0.4, 0.5), 1.2),
     "Assertion on 'target' failed: Must have length 1."
@@ -30,7 +30,7 @@ test_that("h_info_theory_dist trhows the error for non-conformable args", {
   )
 })
 
-test_that("h_info_theory_dist trhows the error for wrong asymmetry", {
+test_that("h_info_theory_dist throws the error for wrong asymmetry", {
   expect_error(
     h_info_theory_dist(0.2, 0.4, 4),
     "Assertion on 'asymmetry' failed: Element 1 is not <= 2."
