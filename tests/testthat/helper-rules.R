@@ -39,3 +39,13 @@ h_next_best_dual_endpoint <- function(target_relative = TRUE) {
     max_overdose_prob = 0.25
   )
 }
+
+h_next_best_tdsamples <- function(td = 0.45, te = 0.4, p = 0.3) {
+  NextBestTDsamples(
+    targetDuringTrial = td,
+    targetEndOfTrial = te,
+    derive = function(TDsamples) { # nolintr
+      quantile(TDsamples, probs = p)
+    }
+  )
+}

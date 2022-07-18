@@ -1,3 +1,6 @@
+
+# Example of usage for `NextBestNCRM-DataParts` NextBest class.
+
 # Create the data.
 my_data <- DataParts(
   x = c(0.1, 0.5, 1.5),

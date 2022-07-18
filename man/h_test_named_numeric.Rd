@@ -52,7 +52,7 @@ Are vectors with missing values allowed? Default is \code{TRUE}.}
 \item{len}{[\code{integer(1)}]\cr
 Exact expected length of \code{x}.}
 
-\item{...}{further parameters passed to \code{\link[checkmate:checkNumeric]{checkmate::test_numeric}}.}
+\item{...}{further parameters passed to \code{\link[checkmate:checkNumeric]{checkmate::test_numeric()}}.}
 }
 \value{
 \code{TRUE} if \code{x} is a named vector of type numeric, otherwise \code{FALSE}.
@@ -64,8 +64,8 @@ A simple helper function that tests whether an object is a named numerical
 vector.
 }
 \note{
-This function is based on \code{\link[checkmate:checkNumeric]{checkmate::test_numeric}} and
-\code{\link[checkmate:checkNames]{checkmate::test_names}} functions.
+This function is based on \code{\link[checkmate:checkNumeric]{checkmate::test_numeric()}} and
+\code{\link[checkmate:checkNames]{checkmate::test_names()}} functions.
 }
 \examples{
 h_test_named_numeric(1:2, permutation.of = c("a", "b"))

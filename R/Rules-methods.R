@@ -717,6 +717,119 @@ setMethod(
   }
 )
 
+## NextBestTDsamples ----
+
+#' @describeIn nextBest find the next best dose based only on the DLE responses
+#'   and for [`LogisticIndepBeta`] model class object involving DLE samples.
+#'
+#' @aliases nextBest-NextBestTDsamples
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestTDsamples.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestTDsamples",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "LogisticIndepBeta",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+
+    # Generate TDtarget during a trial and TDtarget at the end of trial samples.
+    target_in_trial_samples <- dose(x = nextBest@targetDuringTrial, model, samples)
+    target_trial_end_samples <- dose(x = nextBest@targetEndOfTrial, model, samples)
+
+    # Derive the prior/posterior estimates based on two above samples.
+    target_in_trial_est <- as.numeric(nextBest@derive(TDsamples = target_in_trial_samples))
+    target_trial_end_est <- as.numeric(nextBest@derive(TDsamples = target_trial_end_samples))
+
+    # Get eligible doses that do not exceed maximum possible dose.
+    is_dose_eligible <- data@doseGrid <= doselimit
+    doses_eligible <- data@doseGrid[is_dose_eligible]
+
+    # Find the next doses in the doseGrid. The next dose is the dose at level
+    # closest and below the target_in_trial_est (or target_trial_end_est, respectively).
+    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+    next_best_level <- h_find_interval(target_in_trial_est, doses_eligible)
+    next_best <- doses_eligible[next_best_level]
+
+    next_best_level1 <- h_find_interval(target_trial_end_est, doses_eligible)
+    next_best1 <- doses_eligible[next_best_level1]
+
+    # 95% credibility interval.
+    CITDEOT <- as.numeric(quantile(target_trial_end_samples, probs = c(0.025, 0.975)))
+    TDEOT_ratio <- CITDEOT[2] / CITDEOT[1]
+
+    # Build plot.
+    p <- ggplot(
+      data = rbind(
+        data.frame(period = "during", TD = target_in_trial_samples),
+        data.frame(period = "end", TD = target_trial_end_samples)
+      ),
+      aes(x = .data$TD, colour = .data$period),
+    ) +
+      geom_density(fill = "grey50") +
+      coord_cartesian(xlim = range(data@doseGrid)) +
+      scale_color_manual(values = c(during = "grey50", end = "violet")) +
+      theme(legend.position = "none") +
+      ylab("Posterior density") +
+      geom_vline(xintercept = target_in_trial_est, colour = "orange", lwd = 1.1) +
+      annotate(
+        geom = "text",
+        label = paste("TD", nextBest@targetDuringTrial * 100, "Estimate"),
+        x = target_in_trial_est,
+        y = 0,
+        hjust = -0.1,
+        vjust = -20,
+        size = 5,
+        colour = "orange"
+      ) +
+      geom_vline(xintercept = target_trial_end_est, colour = "violet", lwd = 1.1) +
+      annotate(
+        geom = "text",
+        label = paste("TD", nextBest@targetEndOfTrial * 100, "Estimate"),
+        x = target_trial_end_est,
+        y = 0,
+        hjust = -0.1,
+        vjust = -25,
+        size = 5,
+        colour = "violet"
+      )
+
+    maxdoselimit <- min(doselimit, max(data@doseGrid))
+
+    p <- p +
+      geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
+      geom_text(
+        data = data.frame(x = maxdoselimit),
+        aes(x, 0, label = "Max", hjust = +1, vjust = -35),
+        colour = "red"
+      ) +
+      geom_vline(xintercept = next_best, colour = "blue", lwd = 1.1) +
+      geom_text(
+        data = data.frame(x = next_best),
+        aes(x, 0, label = "Next", hjust = 0.1, vjust = -30),
+        colour = "blue"
+      )
+
+    list(
+      nextdose = next_best,
+      targetDuringTrial = nextBest@targetDuringTrial,
+      TDtargetDuringTrialEstimate = target_in_trial_est,
+      targetEndOfTrial = nextBest@targetEndOfTrial,
+      TDtargetEndOfTrialEstimate = target_trial_end_est,
+      TDtargetEndOfTrialAtDoseGrid = next_best1,
+      CITDEOT = CITDEOT,
+      ratioTDEOT = TDEOT_ratio,
+      plot = p
+    )
+  }
+)
+
 # nolint start
 
 ## --------------------------------------------------
@@ -2243,152 +2356,6 @@ setMethod("size",
     }
 )
 
-
-## ================================================================
-## The nextBest method based only on DLE responses with samples
-## ================================================================
-##' @describeIn nextBest Find the next best dose based on the 'NextBestTDsamples'
-##' class rule. This a method based only on the DLE responses and for
-##' \code{\linkS4class{LogisticIndepBeta}} model class object involving DLE samples
-##'
-##' @importFrom ggplot2 ggplot geom_density xlab ylab xlim aes geom_vline
-##' geom_text
-##'
-##' @example examples/Rules-method-nextbest_TDsamples.R
-##'
-##' @export
-##' @keywords methods
-setMethod("nextBest",
-  signature =
-    signature(
-      nextBest = "NextBestTDsamples",
-      doselimit = "numeric",
-      samples = "Samples",
-      model = "LogisticIndepBeta",
-      data = "Data"
-    ),
-  def =
-    function(nextBest, doselimit, samples, model, data, ...) {
-      ## First, generate the TDtargetDuringTrial (TDtarget During a Trial) and
-      ## TDtargetEndOfTrial (TDtarget at the EndOfTrial) samples.
-
-      TDtargetDuringTrialSamples <- dose(
-        x = nextBest@targetDuringTrial,
-        model,
-        samples
-      )
-
-      TDtargetEndOfTrialSamples <- dose(
-        x = nextBest@targetEndOfTrial,
-        model,
-        samples
-      )
-
-      ## then derive the prior/posterior mean of the above two samples
-
-      TDtargetDuringTrialEstimate <- as.numeric(nextBest@derive(TDsamples = TDtargetDuringTrialSamples))
-      TDtargetEndOfTrialEstimate <- as.numeric(nextBest@derive(TDsamples = TDtargetEndOfTrialSamples))
-
-      ## be sure which doses are ok with respect to maximum
-      ## possible dose
-      dosesOK <- which(data@doseGrid <= doselimit)
-
-      ## Find the index of next dose in the doseGrid
-      ## next dose is the dose level closest below the TDtargetDuringTrialEstimate
-      index <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-      ret <- data@doseGrid[dosesOK][index]
-
-
-      ## Find the dose level (in doseGrid) closest below the TDtargetEndOfTrialEstimate
-      index1 <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-      ret1 <- data@doseGrid[dosesOK][index1]
-
-      CITDEOT <- as.numeric(quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975)))
-
-      ## The ratio of the upper to the lower 95% credibility interval
-      ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-
-      ## produce plot
-      plot1 <- ggplot() +
-        geom_density(
-          data =
-            data.frame(x = TDtargetDuringTrialSamples),
-          aes(x = x),
-          fill = "grey50", colour = "grey50"
-        )
-
-
-      plot1 <- plot1 +
-        geom_density(
-          data =
-            data.frame(x = TDtargetEndOfTrialSamples),
-          aes(x = x),
-          fill = "grey50", colour = "violet"
-        ) +
-        xlab("TD") + ylab("Posterior density") +
-        xlim(range(data@doseGrid))
-
-
-      plot1 <- plot1 +
-        geom_vline(xintercept = TDtargetDuringTrialEstimate, colour = "orange", lwd = 1.1) +
-        annotate("text",
-          label = paste(paste("TD", nextBest@targetDuringTrial * 100), "Estimate"),
-          x = TDtargetDuringTrialEstimate, y = 0, hjust = -0.1, vjust = -20, size = 5, colour = "orange"
-        )
-
-
-      plot1 <- plot1 +
-        geom_vline(xintercept = TDtargetEndOfTrialEstimate, colour = "violet", lwd = 1.1) +
-        annotate("text",
-          label = paste(paste("TD", nextBest@targetEndOfTrial * 100), "Estimate"),
-          x = TDtargetEndOfTrialEstimate, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "violet"
-        )
-
-
-
-      if (doselimit > max(data@doseGrid)) {
-        maxdoselimit <- max(data@doseGrid)
-      } else {
-        maxdoselimit <- doselimit
-      }
-
-      plot1 <- plot1 +
-        geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
-        geom_text(
-          data =
-            data.frame(x = maxdoselimit),
-          aes(x, 0,
-            label = "Max", hjust = +1, vjust = -35
-          ),
-          colour = "red"
-        )
-
-      plot1 <- plot1 +
-        geom_vline(xintercept = ret, colour = "blue", lwd = 1.1) +
-        geom_text(
-          data =
-            data.frame(x = ret),
-          aes(x, 0,
-            label = "Next", hjust = 0.1, vjust = -30
-          ),
-          colour = "blue"
-        )
-
-      ## return next best dose and plot
-      return(list(
-        nextdose = ret,
-        targetDuringTrial = nextBest@targetDuringTrial,
-        TDtargetDuringTrialEstimate = TDtargetDuringTrialEstimate,
-        targetEndOfTrial = nextBest@targetEndOfTrial,
-        TDtargetEndOfTrialEstimate = TDtargetEndOfTrialEstimate,
-        TDtargetEndOfTrialAtDoseGrid = ret1,
-        CITDEOT = CITDEOT,
-        ratioTDEOT = ratioTDEOT,
-        plot = plot1
-      ))
-    }
-)
 ## -------------------------------------------------------------------------------
 ## The nextBest method based only on DLE responses without samples
 ## -----------------------------------------------------------------------------

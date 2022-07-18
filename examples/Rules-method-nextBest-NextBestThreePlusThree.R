@@ -1,3 +1,6 @@
+
+# Example of usage for `NextBestThreePlusThree` NextBest class.
+
 # Create the data.
 my_data <- Data(
   x = c(5, 5, 5, 10, 10, 10),

@@ -453,3 +453,21 @@ test_that("h_in_range throws the error message as expected", {
     "Assertion on 'bounds_closed' failed: Contains missing values \\(element 2\\)."
   )
 })
+
+test_that("h_find_interval works as expected", {
+  expect_identical(h_find_interval(-Inf, c(2, 4, 6)), -Inf)
+  expect_identical(h_find_interval(1, c(2, 4, 6)), -Inf)
+  expect_equal(h_find_interval(2, c(2, 4, 6)), 1)
+  expect_equal(h_find_interval(3, c(2, 4, 6)), 1)
+  expect_equal(h_find_interval(4, c(2, 4, 6)), 2)
+  expect_equal(h_find_interval(5, c(2, 4, 6)), 2)
+  expect_equal(h_find_interval(6, c(2, 4, 6)), 3)
+  expect_equal(h_find_interval(7, c(2, 4, 6)), 3)
+  expect_equal(h_find_interval(Inf, c(2, 4, 6)), 3)
+})
+
+test_that("h_find_interval works as expected for custom replacement", {
+  expect_identical(h_find_interval(-Inf, c(2, 4, 6), replacement = -1), -1)
+  expect_identical(h_find_interval(1, c(2, 4, 6), replacement = -1), -1)
+  expect_equal(h_find_interval(2, c(2, 4, 6)), 1)
+})
