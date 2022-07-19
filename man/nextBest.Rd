@@ -126,8 +126,8 @@ estimated DLT probability which is closest to the target dose.
 \item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: gives the appropriate dose within an information
 theoretic framework.
 
-\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLE responses
-and for \code{\link{LogisticIndepBeta}} model class object involving DLE samples.
+\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
 \item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTD'
 class rule. This a method based only on the DLE responses and for

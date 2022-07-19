@@ -719,8 +719,8 @@ setMethod(
 
 ## NextBestTDsamples ----
 
-#' @describeIn nextBest find the next best dose based only on the DLE responses
-#'   and for [`LogisticIndepBeta`] model class object involving DLE samples.
+#' @describeIn nextBest find the next best dose based only on the DLT responses
+#'   and for [`LogisticIndepBeta`] model class object involving DLT samples.
 #'
 #' @aliases nextBest-NextBestTDsamples
 #'
@@ -761,60 +761,20 @@ setMethod(
     next_best1 <- doses_eligible[next_best_level1]
 
     # 95% credibility interval.
-    CITDEOT <- as.numeric(quantile(target_trial_end_samples, probs = c(0.025, 0.975)))
-    TDEOT_ratio <- CITDEOT[2] / CITDEOT[1]
+    ci_td_eot <- as.numeric(quantile(target_trial_end_samples, probs = c(0.025, 0.975)))
+    td_eot_ratio <- ci_td_eot[2] / ci_td_eot[1]
 
     # Build plot.
-    p <- ggplot(
-      data = rbind(
-        data.frame(period = "during", TD = target_in_trial_samples),
-        data.frame(period = "end", TD = target_trial_end_samples)
-      ),
-      aes(x = .data$TD, colour = .data$period),
-    ) +
-      geom_density(fill = "grey50") +
-      coord_cartesian(xlim = range(data@doseGrid)) +
-      scale_color_manual(values = c(during = "grey50", end = "violet")) +
-      theme(legend.position = "none") +
-      ylab("Posterior density") +
-      geom_vline(xintercept = target_in_trial_est, colour = "orange", lwd = 1.1) +
-      annotate(
-        geom = "text",
-        label = paste("TD", nextBest@targetDuringTrial * 100, "Estimate"),
-        x = target_in_trial_est,
-        y = 0,
-        hjust = -0.1,
-        vjust = -20,
-        size = 5,
-        colour = "orange"
-      ) +
-      geom_vline(xintercept = target_trial_end_est, colour = "violet", lwd = 1.1) +
-      annotate(
-        geom = "text",
-        label = paste("TD", nextBest@targetEndOfTrial * 100, "Estimate"),
-        x = target_trial_end_est,
-        y = 0,
-        hjust = -0.1,
-        vjust = -25,
-        size = 5,
-        colour = "violet"
-      )
-
-    maxdoselimit <- min(doselimit, max(data@doseGrid))
-
-    p <- p +
-      geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
-      geom_text(
-        data = data.frame(x = maxdoselimit),
-        aes(x, 0, label = "Max", hjust = +1, vjust = -35),
-        colour = "red"
-      ) +
-      geom_vline(xintercept = next_best, colour = "blue", lwd = 1.1) +
-      geom_text(
-        data = data.frame(x = next_best),
-        aes(x, 0, label = "Next", hjust = 0.1, vjust = -30),
-        colour = "blue"
-      )
+    p <- h_next_best_tdsamples_plot(
+      target_in_trial_samples = target_in_trial_samples,
+      target_trial_end_samples = target_trial_end_samples,
+      target_in_trial_est = target_in_trial_est,
+      target_trial_end_est = target_trial_end_est,
+      nextBest = nextBest,
+      dose_grid_range = range(data@doseGrid),
+      doselimit = doselimit,
+      next_best_dose = next_best
+    )
 
     list(
       nextdose = next_best,
@@ -823,8 +783,8 @@ setMethod(
       targetEndOfTrial = nextBest@targetEndOfTrial,
       TDtargetEndOfTrialEstimate = target_trial_end_est,
       TDtargetEndOfTrialAtDoseGrid = next_best1,
-      CITDEOT = CITDEOT,
-      ratioTDEOT = TDEOT_ratio,
+      CITDEOT = ci_td_eot,
+      ratioTDEOT = td_eot_ratio,
       plot = p
     )
   }
