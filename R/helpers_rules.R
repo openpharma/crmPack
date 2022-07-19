@@ -48,8 +48,8 @@ h_next_best_tdsamples_plot <- function(target_in_trial_samples,
                                        nextBest,
                                        doselimit,
                                        next_best_dose) {
-  assert_numeric(target_in_trial_samples, finite = TRUE, any.missing = FALSE)
-  assert_numeric(target_trial_end_samples, finite = TRUE, any.missing = FALSE)
+  assert_numeric(target_in_trial_samples, any.missing = FALSE)
+  assert_numeric(target_trial_end_samples, any.missing = FALSE)
   assert_number(target_in_trial_est)
   assert_number(target_trial_end_est)
   assert_numeric(dose_grid_range, finite = TRUE, any.missing = FALSE, len = 2, sorted = TRUE)
