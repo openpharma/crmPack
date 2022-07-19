@@ -83,18 +83,18 @@ reference:
       - h_slots
       - h_format_number
       - h_rapply
-      - h_info_theory_dist
+      - h_null_if_na
+      - h_null_if_scalar
+      - h_is_positive_definite
+      - h_test_named_numeric
+      - h_in_range
+      - h_find_interval
       - h_jags_add_dummy
       - h_jags_join_models
       - h_jags_get_model_inits
       - h_jags_get_data
       - h_jags_write_model
       - h_jags_extract_samples
-      - h_null_if_na
-      - h_null_if_scalar
-      - h_is_positive_definite
-      - h_test_named_numeric
-      - h_in_range
       - h_model_dual_endpoint_sigma2W
       - h_model_dual_endpoint_rho
       - h_model_dual_endpoint_sigma2betaW

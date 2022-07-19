@@ -36,3 +36,33 @@ test_that("h_info_theory_dist throws the error for wrong asymmetry", {
     "Assertion on 'asymmetry' failed: Element 1 is not <= 2."
   )
 })
+
+# h_next_best_tdsamples_plot ----
+
+test_that("h_next_best_tdsamples_plot works as expected", {
+  result <- h_next_best_tdsamples_plot(
+    target_in_trial_samples = 1:100,
+    target_trial_end_samples = 50:150,
+    target_in_trial_est = 100,
+    target_trial_end_est = 120,
+    dose_grid_range = c(25, 300),
+    nextBest = h_next_best_tdsamples(),
+    doselimit = 75,
+    next_best_dose = 60
+  )
+  vdiffr::expect_doppelganger("h_next_best_tdsamples_plot", result)
+})
+
+test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
+  result <- h_next_best_tdsamples_plot(
+    target_in_trial_samples = 1:100,
+    target_trial_end_samples = 50:150,
+    target_in_trial_est = 100,
+    target_trial_end_est = 120,
+    dose_grid_range = c(25, 300),
+    nextBest = h_next_best_tdsamples(),
+    doselimit = Inf,
+    next_best_dose = 60
+  )
+  vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
+})

@@ -13,8 +13,9 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 ## Effmodel e.g 'Effloglog' class
 Effmodel<-Effloglog(eff = c(1.223,2.513), eff_dose = c(25,300),nu=c(a=1,b=0.025),data=data)
 ##DLE and efficacy samples must be of 'Samples' Class
-DLEsamples<-mcmc(data,DLEmodel,options)
-Effsamples<-mcmc(data,Effmodel,options)
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+DLEsamples<-mcmc(data,DLEmodel,my_options)
+Effsamples<-mcmc(data,Effmodel,my_options)
 
 ##target probabilities of the occurrence of a DLE during trial and at the end of trial
 ## are defined as 0.35 and 0.3, respectively
@@ -42,8 +43,8 @@ Effmodel<- EffFlexi(eff=c(1.223, 2.513), eff_dose=c(25,300),
                     sigma2betaW=c(a=20,b=50), rw1 = FALSE, data=data)
 
 ##DLE and efficacy samples must be of 'Samples' Class
-DLEsamples<-mcmc(data,DLEmodel,options)
-Effsamples<-mcmc(data,Effmodel,options)
+DLEsamples<-mcmc(data,DLEmodel,my_options)
+Effsamples<-mcmc(data,Effmodel,my_options)
 
 ##target probabilities of the occurrence of a DLE during trial and at the
 ## end of trial are defined as 0.35 and 0.3, respectively

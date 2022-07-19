@@ -19,6 +19,7 @@
 \alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
 \alias{nextBest-NextBestInfTheory}
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
+\alias{nextBest-NextBestTDsamples}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
 \alias{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}
@@ -125,9 +126,8 @@ estimated DLT probability which is closest to the target dose.
 \item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: gives the appropriate dose within an information
 theoretic framework.
 
-\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTDsamples'
-class rule. This a method based only on the DLE responses and for
-\code{\linkS4class{LogisticIndepBeta}} model class object involving DLE samples
+\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
 \item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTD'
 class rule. This a method based only on the DLE responses and for
@@ -146,6 +146,8 @@ efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or
 }}
 
 \examples{
+# Example of usage for `NextBestMTD` NextBest class.
+
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -190,6 +192,9 @@ dose_recommendation <- nextBest(
   model = my_model,
   data = my_data
 )
+
+# Example of usage for `NextBestNCRM` NextBest class.
+
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -236,6 +241,9 @@ dose_recommendation <- nextBest(
 
 # See the probabilities.
 dose_recommendation$probs
+
+# Example of usage for `NextBestNCRM-DataParts` NextBest class.
+
 # Create the data.
 my_data <- DataParts(
   x = c(0.1, 0.5, 1.5),
@@ -284,6 +292,9 @@ dose_recommendation <- nextBest(
 )
 
 dose_recommendation
+
+# Example of usage for `NextBestNCRMLoss` NextBest class.
+
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
@@ -358,6 +369,9 @@ dose_recommendation_losses_3$value
 
 # Look at the probabilities.
 dose_recommendation_losses_3$probs
+
+# Example of usage for `NextBestThreePlusThree` NextBest class.
+
 # Create the data.
 my_data <- Data(
   x = c(5, 5, 5, 10, 10, 10),
@@ -372,6 +386,9 @@ my_next_best <- NextBestThreePlusThree()
 
 # Calculate the next best dose.
 dose_recommendation <- nextBest(my_next_best, data = my_data)
+
+# Example of usage for `NextBestDualEndpoint` NextBest class.
+
 # Create the data.
 my_data <- DataDual(
   x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 20, 20, 20, 40, 40, 40, 50, 50, 50),
@@ -433,30 +450,50 @@ print(dose_recommendation$plot)
 # Show customization of single plot.
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
-## we need a data object with doses >= 1:
-data<-Data(x=c(25,50,50,75,150,200,225,300),
-           y=c(0,0,0,0,1,1,1,1),
-           doseGrid=seq(from=25,to=300,by=25))
-##The 'nextBest' method using NextBestTDsamples' rules class object
-## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples
-## model must be of 'LogisticIndepBeta' class
-model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 
-##Define the options for MCMC
-options <- McmcOptions(burnin=100,step=2,samples=1000)
-##Then genreate the samples
-samples <- mcmc(data, model, options)
+# Example of usage for `NextBestTDsamples` NextBest class.
+my_data <- Data(
+  x = c(25, 50, 50, 75, 150, 200, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  ID = 1:8,
+  cohort = c(1L, 2L, 2L, 3L, 4L, 5L, 6L, 7L),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
 
-##target probabilities of the occurrence of a DLE during trial and at the end of trial are 
-## defined as 0.35 and 0.3, respectively
-##Specified in 'derive' such that the 30\% posterior quantile of the TD35 and TD30 samples 
-## will be used as TD35 and TD30 estimates
-tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,targetEndOfTrial=0.3,
-                              derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
+my_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = my_data
+)
 
-##doselimit is the maximum allowable dose level to be given to subjects
-RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
-                        model=model,data=data)
+# Set-up some MCMC parameters and generate samples.
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 800)
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Target probabilities of the occurrence of a DLE during trial and
+# at the end of the trial are defined as 0.35 and 0.3, respectively.
+# 'derive' is specified such that the 30\% posterior quantile of the TD35 and
+# TD30 samples will be used as TD35 and TD30 estimates.
+td_next_best <- NextBestTDsamples(
+  targetDuringTrial = 0.35,
+  targetEndOfTrial = 0.3,
+  derive = function(TDsamples) { # nolintr
+    quantile(TDsamples, probs = 0.3)
+  }
+)
+
+# doselimit is the maximum allowable dose level to be given to subjects.
+dose_recommendation <- nextBest(
+  nextBest = td_next_best,
+  doselimit = max(my_data@doseGrid),
+  samples = my_samples,
+  model = my_model,
+  data = my_data
+)
+
+dose_recommendation$nextdose
+dose_recommendation$plot
 ## we need a data object with doses >= 1:
 data<-Data(x=c(25,50,50,75,150,200,225,300),
            y=c(0,0,0,0,1,1,1,1),
@@ -515,8 +552,9 @@ DLEmodel<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,30
 ## Effmodel e.g 'Effloglog' class
 Effmodel<-Effloglog(eff = c(1.223,2.513), eff_dose = c(25,300),nu=c(a=1,b=0.025),data=data)
 ##DLE and efficacy samples must be of 'Samples' Class
-DLEsamples<-mcmc(data,DLEmodel,options)
-Effsamples<-mcmc(data,Effmodel,options)
+my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
+DLEsamples<-mcmc(data,DLEmodel,my_options)
+Effsamples<-mcmc(data,Effmodel,my_options)
 
 ##target probabilities of the occurrence of a DLE during trial and at the end of trial
 ## are defined as 0.35 and 0.3, respectively
@@ -544,8 +582,8 @@ Effmodel<- EffFlexi(eff=c(1.223, 2.513), eff_dose=c(25,300),
                     sigma2betaW=c(a=20,b=50), rw1 = FALSE, data=data)
 
 ##DLE and efficacy samples must be of 'Samples' Class
-DLEsamples<-mcmc(data,DLEmodel,options)
-Effsamples<-mcmc(data,Effmodel,options)
+DLEsamples<-mcmc(data,DLEmodel,my_options)
+Effsamples<-mcmc(data,Effmodel,my_options)
 
 ##target probabilities of the occurrence of a DLE during trial and at the
 ## end of trial are defined as 0.35 and 0.3, respectively

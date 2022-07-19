@@ -938,13 +938,13 @@ h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
 #' A simple helper function that tests whether an object is a named numerical
 #' vector.
 #'
-#' @note This function is based on [`checkmate::test_numeric`] and
-#'   [`checkmate::test_names`] functions.
+#' @note This function is based on [`checkmate::test_numeric()`] and
+#'   [`checkmate::test_names()`] functions.
 #'
 #' @param x (`any`)\cr object to check.
 #' @inheritParams checkmate::test_names
 #' @inheritParams checkmate::test_numeric
-#' @param ... further parameters passed to [`checkmate::test_numeric`].
+#' @param ... further parameters passed to [`checkmate::test_numeric()`].
 #'
 #' @return `TRUE` if `x` is a named vector of type numeric, otherwise `FALSE`.
 #'
@@ -1029,4 +1029,29 @@ h_in_range <- function(x, range = c(0, 1), bounds_closed = TRUE) {
   }
 
   above_lwr & below_upr
+}
+
+#' Find Interval Numbers or Indices and Return Custom Number For 0.
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A simple wrapper of [`findInterval()`] function that invokes
+#' [`findInterval()`], takes its output and replaces all the
+#' elements with \eqn{0} value to a custom number as specified in `replacement`
+#' argument.
+#'
+#' @inheritDotParams base::findInterval
+#' @param replacement (`number`)\cr a custom number to be used as a replacement
+#'   for \eqn{0}. Default to `-Inf`.
+#'
+#' @export
+#' @examples
+#' h_find_interval(1, c(2, 4, 6))
+#' h_find_interval(3, c(2, 4, 6))
+#' h_find_interval(1, c(2, 4, 6), replacement = -1)
+h_find_interval <- function(..., replacement = -Inf) {
+  assert_number(replacement)
+
+  x <- findInterval(...)
+  ifelse(x == 0, yes = replacement, no = x)
 }

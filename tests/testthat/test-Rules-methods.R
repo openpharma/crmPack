@@ -359,7 +359,7 @@ test_that("nextBest-NextBestMinDist returns expected values of the objects (no d
   expect_identical(result, list(value = 75))
 })
 
-test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit)", {
+test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit, target = 0.7)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
@@ -399,6 +399,85 @@ test_that("nextBest-NextBestInfTheory returns correct next dose (no doselimit)",
 
   result <- nextBest(nb_it, doselimit = numeric(0), samples, model, data)
   expect_identical(result, list(value = 25))
+})
+
+## NextBestTDsamples ----
+
+test_that("nextBest-NextBestTDsamples returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  samples <- h_as_samples(
+    list(
+      phi1 = c(-6.99, -6.99, -8.58, -8.62, -8.62, -8.62, -8.62, -8.23, -8.71, -8.71),
+      phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
+    )
+  )
+  nb_tds <- h_next_best_tdsamples()
+
+  result <- nextBest(nb_tds, doselimit = 90, samples, model, data)
+  expected <- list(
+    nextdose = 75,
+    targetDuringTrial = 0.45,
+    TDtargetDuringTrialEstimate = 120.4065,
+    targetEndOfTrial = 0.4,
+    TDtargetEndOfTrialEstimate = 107.1014,
+    TDtargetEndOfTrialAtDoseGrid = 75,
+    CITDEOT = c(49.21382, 535.88506),
+    ratioTDEOT = 10.88891
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
+})
+
+test_that("nextBest-NextBestTDsamples returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  samples <- h_as_samples(
+    list(
+      phi1 = c(-6.99, -6.99, -8.58, -8.62, -8.62, -8.62, -8.62, -8.23, -8.71, -8.71),
+      phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
+    )
+  )
+  nb_tds <- h_next_best_tdsamples()
+
+  result <- nextBest(nb_tds, doselimit = numeric(), samples, model, data)
+  expected <- list(
+    nextdose = 100,
+    targetDuringTrial = 0.45,
+    TDtargetDuringTrialEstimate = 120.4065,
+    targetEndOfTrial = 0.4,
+    TDtargetEndOfTrialEstimate = 107.1014,
+    TDtargetEndOfTrialAtDoseGrid = 100,
+    CITDEOT = c(49.21382, 535.88506),
+    ratioTDEOT = 10.88891
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
+})
+
+test_that("nextBest-NextBestTDsamples returns expected values of the objects (other targets)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  samples <- h_as_samples(
+    list(
+      phi1 = c(-6.99, -6.99, -8.58, -8.62, -8.62, -8.62, -8.62, -8.23, -8.71, -8.71),
+      phi2 = c(1.69, 1.69, 1.26, 1.72, 1.72, 1.72, 1.72, 1.78, 1.74, 1.74)
+    )
+  )
+  nb_tds <- h_next_best_tdsamples(0.6, 0.55, 0.45)
+
+  result <- nextBest(nb_tds, doselimit = 150, samples, model, data)
+  expected <- list(
+    nextdose = 150,
+    targetDuringTrial = 0.6,
+    TDtargetDuringTrialEstimate = 188.52,
+    targetEndOfTrial = 0.55,
+    TDtargetEndOfTrialEstimate = 167.5761,
+    TDtargetEndOfTrialAtDoseGrid = 150,
+    CITDEOT = c(70.44517, 861.73632),
+    ratioTDEOT = 12.23272
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
 
 # maxDose-IncrementsNumDoseLevels ----
