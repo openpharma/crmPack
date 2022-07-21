@@ -480,6 +480,67 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (ot
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
 
+## NextBestTD ----
+
+test_that("nextBest-NextBestTD returns expected values of the objects", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  nb_td <- NextBestTD(targetDuringTrial = 0.45, targetEndOfTrial = 0.4)
+
+  result <- nextBest(nb_td, doselimit = 70, model = model, data = data)
+  expected <- list(
+    nextdose = 50,
+    targetDuringTrial = 0.45,
+    TDtargetDuringTrialEstimate = 75.82941,
+    TDtargetEndOfTrialatdoseGrid = 50,
+    targetEndOfTrial = 0.4,
+    TDtargetEndOfTrialEstimate = 63.21009,
+    CITDEOT = c(20.38729, 195.98072),
+    ratioTDEOT = 9.612886
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTD", result$plot)
+})
+
+test_that("nextBest-NextBestTD returns expected values of the objects (no doselimit)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  nb_td <- NextBestTD(targetDuringTrial = 0.45, targetEndOfTrial = 0.4)
+
+  result <- nextBest(nb_td, doselimit = numeric(0), model = model, data = data)
+  expected <- list(
+    nextdose = 75,
+    targetDuringTrial = 0.45,
+    TDtargetDuringTrialEstimate = 75.82941,
+    TDtargetEndOfTrialatdoseGrid = 50,
+    targetEndOfTrial = 0.4,
+    TDtargetEndOfTrialEstimate = 63.21009,
+    CITDEOT = c(20.38729, 195.98072),
+    ratioTDEOT = 9.612886
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestTD_nodoselim", result$plot)
+})
+
+test_that("nextBest-NextBestTD returns expected values of the objects (other targets)", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_logistic_indep_beta()
+  nb_td <- NextBestTD(targetDuringTrial = 0.25, targetEndOfTrial = 0.2)
+
+  result <- nextBest(nb_td, doselimit = 70, model = model, data = data)
+  expected <- list(
+    nextdose = 25,
+    targetDuringTrial = 0.25,
+    TDtargetDuringTrialEstimate = 34.13734,
+    TDtargetEndOfTrialatdoseGrid = 25,
+    targetEndOfTrial = 0.2,
+    TDtargetEndOfTrialEstimate = 26.43526,
+    CITDEOT = c(4.628141, 150.994299),
+    ratioTDEOT = 32.62526
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+})
+
 # maxDose-IncrementsNumDoseLevels ----
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {

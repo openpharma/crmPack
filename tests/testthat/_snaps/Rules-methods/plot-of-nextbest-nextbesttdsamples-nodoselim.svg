@@ -51,9 +51,9 @@
 <line x1='257.17' y1='545.11' x2='257.17' y2='22.78' style='stroke-width: 2.35; stroke: #EE82EE; stroke-linecap: butt;' />
 <text x='266.97' y='276.61' style='font-size: 14.23px; fill: #EE82EE; font-family: sans;' textLength='98.05px' lengthAdjust='spacingAndGlyphs'>TD 40 Estimate</text>
 <line x1='684.09' y1='545.11' x2='684.09' y2='22.78' style='stroke-width: 2.35; stroke: #FF0000; stroke-linecap: butt;' />
-<text x='684.09' y='255.46' text-anchor='end' style='font-size: 11.04px; fill: #FF0000; font-family: sans;' textLength='20.86px' lengthAdjust='spacingAndGlyphs'>Max</text>
+<text transform='translate(695.49,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.04px; fill: #FF0000; font-family: sans;' textLength='20.86px' lengthAdjust='spacingAndGlyphs'>Max</text>
 <line x1='241.45' y1='545.11' x2='241.45' y2='22.78' style='stroke-width: 2.35; stroke: #0000FF; stroke-linecap: butt;' />
-<text x='239.18' y='293.45' style='font-size: 11.04px; fill: #0000FF; font-family: sans;' textLength='22.71px' lengthAdjust='spacingAndGlyphs'>Next</text>
+<text transform='translate(237.65,521.37) rotate(-90)' text-anchor='middle' style='font-size: 11.04px; fill: #0000FF; font-family: sans;' textLength='22.71px' lengthAdjust='spacingAndGlyphs'>Next</text>
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <text x='40.10' y='524.40' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='22.02px' lengthAdjust='spacingAndGlyphs'>0.000</text>

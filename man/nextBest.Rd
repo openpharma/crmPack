@@ -21,6 +21,7 @@
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
 \alias{nextBest-NextBestTDsamples}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
+\alias{nextBest-NextBestTD}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
 \alias{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}
 \title{Finding the Next Best Dose}
@@ -77,7 +78,10 @@ recommendation calculation, and a corresponding warning is given.}
 
 \item{...}{additional arguments without method dispatch.}
 
-\item{SIM}{internal command to notify if this method is used within simulations. Default as FALSE}
+\item{SIM}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
+If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)
+are outside of the dose gride range, the information message is printed by
+this method.}
 
 \item{Effmodel}{the efficacy model of \code{\linkS4class{ModelEff}} class object}
 
@@ -129,9 +133,8 @@ theoretic framework.
 \item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
 and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
-\item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: Find the next best dose based on the 'NextBestTD'
-class rule. This a method based only on the DLE responses and for
-\code{\linkS4class{LogisticIndepBeta}} model class object without DLE samples
+\item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+and for \code{\link{LogisticIndepBeta}} model class object without DLT samples.
 
 \item \code{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}: for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is
 a function to find the next best dose based on the 'NextBestMaxGain'
@@ -471,11 +474,11 @@ my_model <- LogisticIndepBeta(
 my_options <- McmcOptions(burnin = 100, step = 2, samples = 800)
 my_samples <- mcmc(my_data, my_model, my_options)
 
-# Target probabilities of the occurrence of a DLE during trial and
+# Target probabilities of the occurrence of a DLT during trial and
 # at the end of the trial are defined as 0.35 and 0.3, respectively.
 # 'derive' is specified such that the 30\% posterior quantile of the TD35 and
 # TD30 samples will be used as TD35 and TD30 estimates.
-td_next_best <- NextBestTDsamples(
+tds_next_best <- NextBestTDsamples(
   targetDuringTrial = 0.35,
   targetEndOfTrial = 0.3,
   derive = function(TDsamples) { # nolintr
@@ -485,7 +488,7 @@ td_next_best <- NextBestTDsamples(
 
 # doselimit is the maximum allowable dose level to be given to subjects.
 dose_recommendation <- nextBest(
-  nextBest = td_next_best,
+  nextBest = tds_next_best,
   doselimit = max(my_data@doseGrid),
   samples = my_samples,
   model = my_model,
@@ -494,23 +497,37 @@ dose_recommendation <- nextBest(
 
 dose_recommendation$nextdose
 dose_recommendation$plot
-## we need a data object with doses >= 1:
-data<-Data(x=c(25,50,50,75,150,200,225,300),
-           y=c(0,0,0,0,1,1,1,1),
-           doseGrid=seq(from=25,to=300,by=25))
-##The 'nextBest' method using NextBestTD' rules class object
-## That is dose-esclation procedure using the 'logisticIndepBeta' DLE model involving DLE samples
-## model must be of 'LogisticIndepBeta' class
-model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
-##target probabilities of the occurrence of a DLE during trial and at the end of trial 
-## are defined as 0.35 and 0.3, respectively
-tdNextBest<-NextBestTD(targetDuringTrial=0.35,targetEndOfTrial=0.3)
 
-##doselimit is the maximum allowable dose level to be given to subjects
-RecommendDose<- nextBest(tdNextBest,
-              doselimit=max(data@doseGrid),
-              model=model,
-              data=data)
+# Example of usage for `NextBestTD` NextBest class.
+my_data <- Data(
+  x = c(25, 50, 50, 75, 150, 200, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  ID = 1:8,
+  cohort = c(1L, 2L, 2L, 3L, 4L, 5L, 6L, 7L),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
+
+my_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = my_data
+)
+
+# Target probabilities of the occurrence of a DLT during trial and
+# at the end of the trial are defined as 0.35 and 0.3, respectively.
+td_next_best <- NextBestTD(targetDuringTrial = 0.35, targetEndOfTrial = 0.3)
+
+# doselimit is the maximum allowable dose level to be given to subjects.
+dose_recommendation <- nextBest(
+  nextBest = td_next_best,
+  doselimit = max(my_data@doseGrid),
+  model = my_model,
+  data = my_data
+)
+
+dose_recommendation$nextdose
+dose_recommendation$plot
 # nolint start
 
 ## we need a data object with doses >= 1:
