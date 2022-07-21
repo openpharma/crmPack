@@ -80,7 +80,7 @@ recommendation calculation, and a corresponding warning is given.}
 
 \item{SIM}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)
-are outside of the dose gride range, the information message is printed by
+are outside of the dose grid range, the information message is printed by
 this method.}
 
 \item{Effmodel}{the efficacy model of \code{\linkS4class{ModelEff}} class object}

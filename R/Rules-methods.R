@@ -797,7 +797,7 @@ setMethod(
 #'
 #' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
 #'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
-#'   are outside of the dose gride range, the information message is printed by
+#'   are outside of the dose grid range, the information message is printed by
 #'   this method.
 #'
 #' @aliases nextBest-NextBestTD
