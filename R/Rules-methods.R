@@ -790,6 +790,106 @@ setMethod(
   }
 )
 
+## NextBestTD ----
+
+#' @describeIn nextBest find the next best dose based only on the DLT responses
+#'   and for [`LogisticIndepBeta`] model class object without DLT samples.
+#'
+#' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
+#'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
+#'   are outside of the dose grid range, the information message is printed by
+#'   this method.
+#'
+#' @aliases nextBest-NextBestTD
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestTD.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestTD",
+    doselimit = "numeric",
+    samples = "missing",
+    model = "LogisticIndepBeta",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, model, data, SIM = FALSE, ...) {
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+
+    # 'drt' - during the trial, 'eot' end of trial.
+    prob_target_drt <- nextBest@targetDuringTrial
+    prob_target_eot <- nextBest@targetEndOfTrial
+
+    # Target dose estimates, i.e. the dose with probability of the occurrence of
+    # a DLT that equals to the prob_target_drt or prob_target_eot.
+    dose_target_drt <- dose(x = prob_target_drt, model)
+    dose_target_eot <- dose(x = prob_target_eot, model)
+
+    # Get eligible doses that do not exceed maximum possible dose.
+    is_dose_eligible <- data@doseGrid <= doselimit
+    doses_eligible <- data@doseGrid[is_dose_eligible]
+
+    # Find the next best doses in the doseGrid. The next best dose is the dose
+    # at level closest and below the target dose estimate.
+    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
+    next_dose_drt <- doses_eligible[next_dose_lev_drt]
+
+    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
+    next_dose_eot <- doses_eligible[next_dose_lev_eot]
+
+    # Find the variance of the log of the dose_target_eot.
+    mat <- matrix(
+      c(
+        -1 / (model@phi2),
+        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
+      ),
+      nrow = 1
+    )
+    var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
+
+    # 95% credibility interval.
+    ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
+    td_eot_ratio <- ci_td_eot[2] / ci_td_eot[1]
+
+    # Build plot.
+    p <- h_next_best_td_plot(
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      data = data,
+      prob_dlt = prob(dose = data@doseGrid, model = model),
+      doselimit = doselimit,
+      next_dose = next_dose_drt
+    )
+
+    dose_grid_range <- c(
+      data@doseGrid[ifelse(data@placebo && data@nGrid >= 2, 2, 1)],
+      data@doseGrid[data@nGrid]
+    )
+    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = TRUE) && !SIM) {
+      print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+    }
+    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = TRUE) && !SIM) {
+      print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+    }
+
+    list(
+      nextdose = next_dose_drt,
+      targetDuringTrial = prob_target_drt,
+      TDtargetDuringTrialEstimate = dose_target_drt,
+      TDtargetEndOfTrialatdoseGrid = next_dose_eot,
+      targetEndOfTrial = prob_target_eot,
+      TDtargetEndOfTrialEstimate = dose_target_eot,
+      CITDEOT = ci_td_eot,
+      ratioTDEOT = td_eot_ratio,
+      plot = p
+    )
+  }
+)
+
 # nolint start
 
 ## --------------------------------------------------
@@ -2315,198 +2415,6 @@ setMethod("size",
       return(cohortSize@sizes[data@nextPart])
     }
 )
-
-## -------------------------------------------------------------------------------
-## The nextBest method based only on DLE responses without samples
-## -----------------------------------------------------------------------------
-##' @describeIn nextBest Find the next best dose based on the 'NextBestTD'
-##' class rule. This a method based only on the DLE responses and for
-##' \code{\linkS4class{LogisticIndepBeta}} model class object without DLE samples
-##'
-##' @param SIM internal command to notify if this method is used within simulations. Default as FALSE
-##' @importFrom ggplot2 ggplot  xlab ylab xlim aes geom_vline
-##' geom_text
-##'
-##' @example examples/Rules-method-nextbest_TD.R
-##'
-##' @export
-##' @keywords methods
-setMethod("nextBest",
-  signature =
-    signature(
-      nextBest = "NextBestTD",
-      doselimit = "numeric",
-      samples = "missing",
-      model = "LogisticIndepBeta",
-      data = "Data"
-    ),
-  def =
-    function(nextBest, doselimit, model, data, SIM = FALSE, ...) {
-      ## Find the target prob During Trial
-      targetDuringTrial <- nextBest@targetDuringTrial
-      ## Find the target prob End of Trial
-      targetEndOfTrial <- nextBest@targetEndOfTrial
-
-      mylabel <- targetDuringTrial * 100
-      label2 <- targetEndOfTrial * 100
-
-      ## Find the TD30 Estimate and TD(target) Estimate
-
-      TDtargetEndOfTrialEstimate <- dose(
-        x = targetEndOfTrial,
-        model
-      )
-
-      TDEfourdg <- signif(TDtargetEndOfTrialEstimate, digits = 4)
-
-
-      TDtargetDuringTrialEstimate <- dose(
-        x = targetDuringTrial,
-        model
-      )
-
-      TDDfourdg <- signif(TDtargetDuringTrialEstimate, digits = 4)
-
-      probDLE <- prob(
-        dose = data@doseGrid,
-        model = model
-      )
-
-      ## be sure which doses are ok with respect to maximum
-      ## possible dose
-      dosesOK <- which(data@doseGrid <= doselimit)
-
-      ## Find the index of next dose in the doseGrid
-      ## next dose is the dose level closest below the TDtargetEstimate
-
-      index <- suppressWarnings(max(which((TDDfourdg - data@doseGrid[dosesOK]) >= 0)))
-      ret <- data@doseGrid[dosesOK][index]
-
-
-      ## Find the dose level (in doseGrid) closest below the TD30Estimate
-      index <- suppressWarnings(max(which((TDEfourdg - data@doseGrid[dosesOK]) >= 0)))
-      retTDE <- data@doseGrid[dosesOK][index]
-
-
-      ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-      M1 <- matrix(c(-1 / (model@phi2), -(log(targetEndOfTrial / (1 - targetEndOfTrial)) - model@phi1) / (model@phi2)^2), 1, 2)
-      M2 <- model@Pcov
-
-      varEta <- M1 %*% M2 %*% t(M1)
-
-      ## Find the upper and lower limit of the 95% credibility interval
-      CITDEOT <- c()
-      CITDEOT[2] <- exp(log(TDtargetEndOfTrialEstimate) + 1.96 * sqrt(varEta))
-      CITDEOT[1] <- exp(log(TDtargetEndOfTrialEstimate) - 1.96 * sqrt(varEta))
-
-      ## The ratio of the upper to the lower 95% credibility interval
-      ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-
-
-      plotData <- data.frame(
-        dose = data@doseGrid,
-        probDLE = prob(
-          dose = data@doseGrid,
-          model = model
-        )
-      )
-
-      ## make the plot
-      gdata <- with(
-        plotData,
-        data.frame(
-          x = dose,
-          y = probDLE,
-          group = rep("Estimated DLE", each = nrow(plotData)),
-          Type = factor(rep("Estimated DLE", nrow(plotData)), levels = "Estimated DLE")
-        )
-      )
-
-      plot1 <- ggplot(data = gdata, aes(x = x, y = y), group = group) +
-        xlab("Dose Levels") +
-        ylab(paste("Probability of DLE")) +
-        ylim(c(0, 1)) +
-        xlim(c(0, max(data@doseGrid))) +
-        geom_line(colour = I("red"), size = 1.5)
-
-      # if(data@placebo) {
-      # n <- length(data@doseGrid)
-      # LowestDose <- sort(data@doseGrid)[2]} else {
-      LowestDose <- min(data@doseGrid)
-      # }
-
-      if ((TDDfourdg < LowestDose) | (TDDfourdg > max(data@doseGrid))) {
-        if (SIM == FALSE) {
-          plot1 <- plot1
-          print(paste(paste("TD", targetDuringTrial * 100), paste("=", paste(TDtargetDuringTrialEstimate, " not within dose Grid"))))
-        } else {
-          plot1 <- plot1
-        }
-      } else {
-        plot1 <- plot1 +
-          geom_point(data = data.frame(x = TDtargetDuringTrialEstimate, y = targetDuringTrial), aes(x = x, y = y), colour = "orange", shape = 15, size = 8) +
-          annotate("text", label = paste(paste("TD", mylabel), "Estimate"), x = TDtargetDuringTrialEstimate + 1, y = targetDuringTrial - 0.2, size = 5, colour = "orange")
-      }
-
-
-      if ((TDEfourdg < LowestDose) | (TDEfourdg > max(data@doseGrid))) {
-        if (SIM == FALSE) {
-          plot1 <- plot1
-          print(paste(paste("TD", targetEndOfTrial * 100), paste("=", paste(TDtargetEndOfTrialEstimate, " not within dose Grid"))))
-        } else {
-          plot1 <- plot1
-        }
-      } else {
-        plot1 <- plot1 +
-          geom_point(data = data.frame(x = TDtargetEndOfTrialEstimate, y = 0.3), aes(x = x, y = y), colour = "violet", shape = 16, size = 8) +
-          annotate("text", label = paste(paste("TD", label2), "Estimate"), x = TDtargetEndOfTrialEstimate + 1, y = targetEndOfTrial - 0.1, size = 5, colour = "violet")
-      }
-
-      if (doselimit > max(data@doseGrid)) {
-        maxdoselimit <- max(data@doseGrid)
-      } else {
-        maxdoselimit <- doselimit
-      }
-
-      plot1 <- plot1 +
-        geom_vline(xintercept = maxdoselimit, colour = "brown", lwd = 1.1) +
-        geom_text(
-          data =
-            data.frame(x = maxdoselimit),
-          aes(x, 0,
-            label = "Max", hjust = +1, vjust = -30
-          ),
-          colour = "brown"
-        )
-
-      plot1 <- plot1 +
-        geom_vline(xintercept = ret, colour = "purple", lwd = 1.1) +
-        geom_text(
-          data =
-            data.frame(x = ret),
-          aes(x, 0,
-            label = "Next", hjust = 0, vjust = -30
-          ),
-          colour = "purple"
-        )
-
-
-      ## return next best dose and plot
-      return(list(
-        nextdose = ret,
-        targetDuringTrial = targetDuringTrial,
-        TDtargetDuringTrialEstimate = TDtargetDuringTrialEstimate,
-        targetEndOfTrial = targetEndOfTrial,
-        TDtargetEndOfTrialEstimate = TDtargetEndOfTrialEstimate,
-        TDtargetEndOfTrialatdoseGrid = retTDE,
-        CITDEOT = CITDEOT,
-        ratioTDEOT = ratioTDEOT,
-        plot = plot1
-      ))
-    }
-)
-
 
 ## ------------------------------------------------------------------------------------
 ## the nextBest method based on DLE and efficacy responses without DLE and efficacy samples

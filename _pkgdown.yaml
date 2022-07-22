@@ -100,6 +100,8 @@ reference:
       - h_model_dual_endpoint_sigma2betaW
       - h_model_dual_endpoint_beta
       - h_info_theory_dist
+      - h_next_best_tdsamples_plot
+      - h_next_best_td_plot
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -230,6 +232,8 @@ reference:
       - nextBest-NextBestDualEndpoint
       - nextBest-NextBestMinDist
       - nextBest-NextBestInfTheory
+      - nextBest-NextBestTDsamples
+      - nextBest-NextBestTD
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels

@@ -66,3 +66,35 @@ test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
   )
   vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
 })
+
+# h_next_best_td_plot ----
+
+test_that("h_next_best_td_plot works as expected", {
+  data <- h_get_data(empty = TRUE, placebo = FALSE)
+  result <- h_next_best_td_plot(
+    prob_target_drt = 0.33,
+    dose_target_drt = 80,
+    prob_target_eot = 0.27,
+    dose_target_eot = 70,
+    data = data,
+    prob_dlt = c(0.11, 0.22, 0.31, 0.37, 0.43, 0.47, 0.5, 0.53, 0.55, 0.57, 0.59, 0.6),
+    doselimit = 200,
+    next_dose = 75
+  )
+  vdiffr::expect_doppelganger("h_next_best_td_plot", result)
+})
+
+test_that("h_next_best_td_plot works as expected (no doselimit)", {
+  data <- h_get_data(empty = TRUE, placebo = FALSE)
+  result <- h_next_best_td_plot(
+    prob_target_drt = 0.33,
+    dose_target_drt = 80,
+    prob_target_eot = 0.27,
+    dose_target_eot = 70,
+    data = data,
+    prob_dlt = c(0.11, 0.22, 0.31, 0.37, 0.43, 0.47, 0.5, 0.53, 0.55, 0.57, 0.59, 0.6),
+    doselimit = Inf,
+    next_dose = 75
+  )
+  vdiffr::expect_doppelganger("h_next_best_td_plot_nodoselim", result)
+})
