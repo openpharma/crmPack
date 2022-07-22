@@ -653,6 +653,33 @@ h_plot_data_cohort_lines <- function(cohort,
   }
 }
 
+#' Getting the Dose Grid Range
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This helper function gets the dose range for a given data object.
+#' It returns `c(-Inf, Inf)` if the range cannot be determined. This happens
+#' if and only if dose grid is empty or there is only placebo in the grid.
+#'
+#' @param data (`Data`)\cr a data object that contains a dose grid.
+#'
+#' @export
+#'
+h_dose_grid_range <- function(data) {
+  assert_class(data, "Data")
+
+  dg <- data@doseGrid
+  ngrid <- data@nGrid
+
+  if (ngrid >= 2L && data@placebo) {
+    c(dg[2], dg[ngrid])
+  } else if (ngrid >= 1L && !data@placebo) {
+    c(dg[1], dg[ngrid])
+  } else {
+    c(-Inf, Inf)
+  }
+}
+
 #' Checking Formals of a Function
 #'
 #' @description `r lifecycle::badge("experimental")`
