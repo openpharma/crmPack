@@ -840,17 +840,17 @@ setMethod(
     next_dose_eot <- doses_eligible[next_dose_lev_eot]
 
     # Find the variance of the log of the dose_target_eot.
-    M <- matrix(
+    mat <- matrix(
       c(
         -1 / (model@phi2),
         -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
       ),
       nrow = 1
     )
-    var_eta <- as.vector(M %*% model@Pcov %*% t(M))
+    var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
 
     # 95% credibility interval.
-    ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_eta))
+    ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
     td_eot_ratio <- ci_td_eot[2] / ci_td_eot[1]
 
     # Build plot.
