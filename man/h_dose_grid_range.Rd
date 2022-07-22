@@ -9,10 +9,14 @@ h_dose_grid_range(data)
 \arguments{
 \item{data}{(\code{Data})\cr a data object that contains a dose grid.}
 }
+\value{
+A \code{numeric} vector containing the minimum and maximum of all the
+doses in a grid or \code{c(-Inf, Inf)}.
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-This helper function gets the dose range for a given data object.
+This helper function gets the dose grid range for a given data object.
 It returns \code{c(-Inf, Inf)} if the range cannot be determined. This happens
 if and only if dose grid is empty or there is only placebo in the grid.
 }

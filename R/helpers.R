@@ -657,11 +657,14 @@ h_plot_data_cohort_lines <- function(cohort,
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' This helper function gets the dose range for a given data object.
+#' This helper function gets the dose grid range for a given data object.
 #' It returns `c(-Inf, Inf)` if the range cannot be determined. This happens
 #' if and only if dose grid is empty or there is only placebo in the grid.
 #'
 #' @param data (`Data`)\cr a data object that contains a dose grid.
+#'
+#' @return A `numeric` vector containing the minimum and maximum of all the
+#'   doses in a grid or `c(-Inf, Inf)`.
 #'
 #' @export
 #'
