@@ -865,14 +865,10 @@ setMethod(
       next_dose = next_dose_drt
     )
 
-    dose_grid_range <- c(
-      data@doseGrid[ifelse(data@placebo && data@nGrid >= 2, 2, 1)],
-      data@doseGrid[data@nGrid]
-    )
-    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = TRUE) && !SIM) {
+    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !SIM) {
       print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = TRUE) && !SIM) {
+    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !SIM) {
       print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
 

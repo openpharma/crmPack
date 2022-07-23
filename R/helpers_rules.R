@@ -149,10 +149,7 @@ h_next_best_td_plot <- function(prob_target_drt,
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
 
-  dose_grid_range <- c(
-    data@doseGrid[ifelse(data@placebo && data@nGrid >= 2, 2, 1)],
-    data@doseGrid[data@nGrid]
-  )
+  dose_grid_range <- h_dose_grid_range(data)
 
   p <- ggplot(
     data = data.frame(x = data@doseGrid, y = prob_dlt),
