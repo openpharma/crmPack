@@ -1,4 +1,4 @@
-# Version 1.0.9000.9051
+# Version 1.0.9000.9052
 * Added new helper function `h_dose_grid_range`.
 * Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
