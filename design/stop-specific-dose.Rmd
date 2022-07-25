@@ -1,0 +1,184 @@
+---
+title: "Design for stopping rule evaluated at specific dose"
+output: html_document
+date: '2022-07-21'
+editor_options: 
+  chunk_output_type: console
+---
+
+# Objective
+
+When defining a simulation design, we would like to have the option to assess if 
+Stopping rules are met for specific doses of the planned dose grid and not just 
+for the next best dose.
+
+Currently all the stopping rules are assessed at the next best dose and not at a
+predefined dose of the planned dose grid.
+
+# Idea
+
+We can define a wrapper class say `StopSpecificDose` which takes as slots
+any stopping rule as well as one specific dose, and then always evaluates this
+stopping rule at this specific dose (instead of the next best dose).
+
+Maybe we should name it `StoppingSpecificDose`?
+
+# Prototype
+
+## Validation function
+
+```{r}
+v_stop_specific_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@dose, finite = TRUE),
+    "dose needs to be a single finite number"
+  )
+  v$result()
+}
+```
+
+
+## Rule class
+
+This is the class definition, returning the default constructor:
+
+```{r}
+.StopSpecificDose <- setClass(
+  Class = "StopSpecificDose",
+  slots = c(
+    rule = "Stopping",
+    dose = "numeric"
+  ),
+  contains = "Stopping",
+  validity = v_stop_specific_dose
+)
+```
+
+Let's also define a constructor function such that it can be easily used.
+
+```{r}
+StopSpecificDose <- function(rule, dose) {
+  .StopSpecificDose(rule = rule, dose = dose)
+}
+```
+
+
+## Rule method
+
+Here comes the most interesting part. Note that here `dose` is the next best dose.
+
+```{r}
+setMethod("stopTrial",
+  signature =
+    signature(
+      stopping = "StopSpecificDose",
+      dose = "numeric",
+      samples = "ANY",
+      model = "ANY",
+      data = "Data"
+    ),
+  def =
+    function(stopping, dose, samples, model, data, ...) {
+      # Make sure that the specific dose is part of the dose grid.
+      assert_subset(x = stopping@dose, choices = data@doseGrid)
+
+      # Now we evaluate the original (wrapped) stopping rule at the specific dose.
+      result <- stopTrial(
+        stopping = stopping@rule,
+        dose = stopping@dose,
+        samples = samples,
+        model = model,
+        data = data,
+        ...
+      )
+      
+      # We can now try to correct the text from the original stopping rule.
+      original_text <- attr(result, "message")
+      new_text <- gsub(pattern = "next best", replacement = "specific", x = original_text)
+      attr(result, "message") <- new_text
+      
+      result
+    }
+)
+```
+
+Note that in production later we could consider just removing the "next best"
+part from existing stopping rule messages. Or provide some wrapper text around
+original text or similar.
+
+## Trying it out
+
+For example we could evaluate one rule at the highest dose.
+
+```{r}
+highest_dose_safe <- StopSpecificDose(
+  rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  dose = 80
+)
+max_patients <- StoppingMinPatients(nPatients = 20)
+patients_near_dose <- StoppingPatientsNearDose(nPatients = 3, percentage = 0)
+my_stopping <- highest_dose_safe | max_patients | patients_near_dose
+```
+
+Then we create some data and model with MCMC samples.
+
+```{r}
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid =
+    c(
+      0.1, 0.5, 1.5, 3, 6,
+      seq(from = 10, to = 80, by = 2)
+    )
+)
+
+model <- LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov =
+    matrix(c(1, -0.5, -0.5, 1),
+      nrow = 2
+    ),
+  ref_dose = 50
+)
+
+options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 2000
+)
+set.seed(94)
+samples <- mcmc(data, model, options)
+
+next_best <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
+
+doseRecommendation <- nextBest(next_best,
+  doselimit = 100,
+  samples = samples, model = model, data = data
+)
+doseRecommendation$value
+```
+
+20 is the next best dose.
+
+Now we can evaluate the stopping rule:
+
+```{r}
+stopTrial(
+  stopping = my_stopping, 
+  dose = doseRecommendation$value,
+  samples = samples, 
+  model = model, 
+  data = data
+)
+```
+
+This shows that it works, because the text for the first stopping rule is citing
+the dose 80 (which we specified above as the specific dose to evaluate the
+`StopSpecificDose` rule), while the last one cites the next best dose 20.
