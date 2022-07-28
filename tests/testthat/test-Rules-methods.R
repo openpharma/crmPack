@@ -541,6 +541,85 @@ test_that("nextBest-NextBestTD returns expected values of the objects (other tar
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
 
+## NextBestMaxGain ----
+
+test_that("nextBest-NextBestMaxGain returns expected values of the objects", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
+
+  result <- nextBest(nb_mg, 49, model = model_dlt, data = data, Effmodel = model_eff)
+  expected <- list(
+    nextdose = 25,
+    DLEDuringTrialtarget = 0.35,
+    TDtargetDuringTrialEstimate = 52.28128,
+    TDtargetDuringTrialAtDoseGrid = 25,
+    DLEEndOfTrialtarget = 0.3,
+    TDtargetEndOfTrialEstimate = 42.68131,
+    TDtargetEndOfTrialAtDoseGrid = 25,
+    GstarEstimate = 83.96469,
+    GstarAtDoseGrid = 25,
+    CITDEOT = c(11.06619, 164.61798),
+    ratioTDEOT = 14.87575,
+    CIGstar = c(23.09875, 305.21431),
+    ratioGstar = 13.21345
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGain", result$plot)
+})
+
+test_that("nextBest-NextBestMaxGain returns expected values of the objects (no doselimit)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
+
+  result <- nextBest(nb_mg, numeric(0), model = model_dlt, data = data, Effmodel = model_eff)
+  expected <- list(
+    nextdose = 50,
+    DLEDuringTrialtarget = 0.35,
+    TDtargetDuringTrialEstimate = 52.28128,
+    TDtargetDuringTrialAtDoseGrid = 50,
+    DLEEndOfTrialtarget = 0.3,
+    TDtargetEndOfTrialEstimate = 42.68131,
+    TDtargetEndOfTrialAtDoseGrid = 25,
+    GstarEstimate = 83.96469,
+    GstarAtDoseGrid = 75,
+    CITDEOT = c(11.06619, 164.61798),
+    ratioTDEOT = 14.87575,
+    CIGstar = c(23.09875, 305.21431),
+    ratioGstar = 13.21345
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGain_nodoselim", result$plot)
+})
+
+test_that("nextBest-NextBestMaxGain returns expected values of the objects (other targets, placebo)", {
+  data <- h_get_data_dual(placebo = TRUE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.45, DLEEndOfTrialtarget = 0.4)
+
+  result <- nextBest(nb_mg, 150, model = model_dlt, data = data, Effmodel = model_eff)
+  expected <- list(
+    nextdose = 75,
+    DLEDuringTrialtarget = 0.45,
+    TDtargetDuringTrialEstimate = 75.82941,
+    TDtargetDuringTrialAtDoseGrid = 75,
+    DLEEndOfTrialtarget = 0.4,
+    TDtargetEndOfTrialEstimate = 63.21009,
+    TDtargetEndOfTrialAtDoseGrid = 50,
+    GstarEstimate = 83.96469,
+    GstarAtDoseGrid = 75,
+    CITDEOT = c(20.38729, 195.98072),
+    ratioTDEOT = 9.612886,
+    CIGstar = c(26.95037, 293.67744),
+    ratioGstar = 10.89697
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+})
+
 # maxDose-IncrementsNumDoseLevels ----
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {

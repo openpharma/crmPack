@@ -35,5 +35,6 @@ h_next_best_tdsamples_plot(
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Helper function which creates the plot for nextBest-NextBestTDsamples Method.
+Helper function which creates the plot for \code{\link[=nextBest-NextBestTDsamples]{nextBest-NextBestTDsamples()}}
+method.
 }
