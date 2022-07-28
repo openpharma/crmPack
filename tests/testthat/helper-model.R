@@ -277,7 +277,8 @@ h_get_logistic_indep_beta <- function(emptydata = FALSE) {
 }
 
 h_get_eff_log_log <- function(emptydata = FALSE,
-                              dlt_observed_only = FALSE) {
+                              dlt_observed_only = FALSE,
+                              const = 2) {
   dose_grid <- seq(25, 300, 25)
 
   data <- if (emptydata) {
@@ -307,7 +308,7 @@ h_get_eff_log_log <- function(emptydata = FALSE,
     eff_dose = c(25, 300),
     nu = c(a = 1, b = 0.025),
     data = data,
-    const = 2
+    const = const
   )
 }
 

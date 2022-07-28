@@ -1,3 +1,5 @@
+# specific helpers ----
+
 #' Calculating the Information Theoretic Distance
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -23,11 +25,48 @@ h_info_theory_dist <- function(prob, target, asymmetry) {
   ((prob - target)^2) / (((prob^asymmetry) * (1 - prob)^(2 - asymmetry)))
 }
 
+#' Find a Matrix for Variance According to Yeung et. al (2015)
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function which computes the matrix required for calculation of the
+#' variance of the logarithm of the maximum gain dose, based on Yeung et. al (2015)
+#' paper. This helper function is used by [`nextBest-NextBestMaxGain()`] method.
+#'
+#' @param log_dose_mg (`number`)\cr the log of dose corresponding to the maximum gain.
+#' @param model (`ModelTox`)\cr the DLT model.
+#' @param eff_model (`Effloglog`)\cr the efficacy model.
+#'
+#' @references
+#'   Yeung, W.Y., Whitehead, J., Reigner, B., Beyer, U., Diack, Ch., Jaki, T. (2015),
+#'   Bayesian adaptive dose-escalation procedures for binary and continuous responses utilizing a gain function,
+#'   *Pharmaceutical Statistics*,
+#'   \doi{10.1002/pst.1706} \cr
+#'
+#' @export
+#'
+h_delta_g_yeung <- function(log_dose_mg, model, eff_model) {
+  assert_number(log_dose_mg, na.ok = TRUE)
+  assert_class(model, "ModelTox")
+  assert_class(eff_model, "Effloglog")
+
+  mean_eff_mg <- eff_model@theta1 + eff_model@theta2 * log(log_dose_mg)
+  denom <- model@phi2 * mean_eff_mg * (1 + model@phi2 * log_dose_mg)
+  dgphi1 <- -(mean_eff_mg * log_dose_mg * model@phi2 - eff_model@theta2) / denom
+  dgphi2 <- -(log_dose_mg * (mean_eff_mg * (1 + log_dose_mg * model@phi2) - eff_model@theta2)) / denom
+  dgtheta1 <- -(log_dose_mg * model@phi2) / denom
+  dgtheta2 <- -(exp(model@phi1 + model@phi2 * log_dose_mg) * (model@phi2 * log_dose_mg * log(log_dose_mg) - 1) - 1) / denom
+  matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
+}
+
+# plot ----
+
 #' Building the Plot for nextBest-NextBestTDsamples Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' Helper function which creates the plot for nextBest-NextBestTDsamples Method.
+#' Helper function which creates the plot for [`nextBest-NextBestTDsamples()`]
+#' method.
 #'
 #' @param target_in_trial_samples (`numeric`)\cr vector of in-trial samples.
 #' @param target_trial_end_samples (`numeric`)\cr vector of end-of-trial samples.
@@ -119,14 +158,14 @@ h_next_best_tdsamples_plot <- function(target_in_trial_samples,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' Helper function which creates the plot for nextBest-NextBestTD Method.
+#' Helper function which creates the plot for [`nextBest-NextBestTD()`] method.
 #'
 #' @param prob_target_drt (`proportion`)\cr target DLT probability during the trial.
 #' @param dose_target_drt (`number`)\cr target dose estimate during the trial.
 #' @param prob_target_eot (`proportion`)\cr target DLT probability at the end of the trial.
 #' @param dose_target_eot (`number`)\cr target dose estimate at the end of the trial.
 #' @param data (`Data`)\cr the data object from which the dose grid will be fetched.
-#' @param prob_dlt (`numeric`)\cr
+#' @param prob_dlt (`numeric`)\cr DLT probabilities for doses in grid.
 #' @param doselimit (`number`)\cr the maximum allowed next dose.
 #' @param next_dose (`number`)\cr next best dose.
 #'
@@ -219,5 +258,126 @@ h_next_best_td_plot <- function(prob_target_drt,
       vjust = -0.5,
       hjust = 0.5,
       colour = "purple"
+    )
+}
+
+#' Building the Plot for nextBest-NextBestMaxGain Method.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function which creates the plot for [`nextBest-NextBestMaxGain()`] method.
+#'
+#' @param prob_target_drt (`proportion`)\cr target DLT probability during the trial.
+#' @param dose_target_drt (`number`)\cr target dose estimate during the trial.
+#' @param prob_target_eot (`proportion`)\cr target DLT probability at the end of the trial.
+#' @param dose_target_eot (`number`)\cr target dose estimate at the end of the trial.
+#' @param dose_mg (`number`)\cr the dose corresponding to the maximum gain.
+#' @param max_gain (`number`)\cr the dose corresponding to the maximum gain.
+#' @param next_dose (`number`)\cr next best dose.
+#' @param doselimit (`number`)\cr the maximum allowed next dose.
+#' @param data (`DataDual`)\cr the data object from which the dose grid will be fetched.
+#' @param model (`ModelTox`)\cr the DLT model.
+#' @param eff_model (`Effloglog`)\cr the efficacy model.
+#'
+#' @export
+#'
+h_next_best_mg_plot <- function(prob_target_drt,
+                                dose_target_drt,
+                                prob_target_eot,
+                                dose_target_eot,
+                                dose_mg,
+                                max_gain,
+                                next_dose,
+                                doselimit,
+                                data,
+                                model,
+                                eff_model) {
+  assert_probability(prob_target_drt)
+  assert_number(dose_target_drt)
+  assert_probability(prob_target_eot)
+  assert_number(dose_target_eot)
+  assert_number(dose_mg, na.ok = TRUE)
+  assert_number(max_gain, na.ok = TRUE)
+  assert_number(next_dose, na.ok = TRUE)
+  assert_number(doselimit)
+  assert_class(data, "Data")
+  assert_class(model, "ModelTox")
+  assert_class(eff_model, "Effloglog")
+
+  dose_grid_range <- h_dose_grid_range(data)
+
+  data_plot <- data.frame(
+    dose = rep(data@doseGrid, 3),
+    y = c(
+      prob(dose = data@doseGrid, model = model),
+      efficacy(dose = data@doseGrid, model = eff_model),
+      gain(dose = data@doseGrid, model_dle = model, model_eff = eff_model)
+    ),
+    group = c(
+      rep("p(DLE)", data@nGrid),
+      rep("Expected Efficacy", data@nGrid),
+      rep("Gain", data@nGrid)
+    )
+  )
+
+  p <- ggplot(data = data_plot, aes(x = .data$dose, y = .data$y)) +
+    geom_line(aes(group = group, color = group), size = 1.5) +
+    ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
+    coord_cartesian(xlim = c(0, dose_grid_range[2])) +
+    ylim(range(data_plot$y)) +
+    xlab("Dose Level") +
+    ylab("Values")
+
+  if (h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE)) {
+    lab <- paste("TD", prob_target_eot * 100, "Estimate")
+    p <- p +
+      geom_point(
+        data = data.frame(x = dose_target_eot, y = prob_target_eot),
+        aes(x = .data$x, y = .data$y),
+        colour = "violet",
+        shape = 16,
+        size = 8
+      ) +
+      annotate(
+        geom = "text", label = lab, x = dose_target_eot - 1, y = 0.2, size = 5, colour = "violet"
+      )
+  }
+
+  if (h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE)) {
+    p <- p +
+      geom_point(
+        data = data.frame(x = dose_mg, y = max_gain), aes(x = .data$x, y = .data$y), colour = "green3", shape = 17, size = 8
+      ) +
+      annotate(
+        "text",
+        label = "Max Gain Estimate", x = dose_mg, y = max_gain - 0.1, size = 5, colour = "green3"
+      )
+  }
+
+  if (h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE)) {
+    lab <- paste("TD", prob_target_drt * 100, "Estimate")
+    p <- p +
+      geom_point(
+        data = data.frame(x = dose_target_drt, y = prob_target_drt),
+        aes(x = .data$x, y = .data$y),
+        colour = "orange",
+        shape = 15,
+        size = 8
+      ) +
+      annotate(
+        geom = "text", label = lab, x = dose_target_drt + 25, y = prob_target_drt + 0.01, size = 5, colour = "orange"
+      )
+  }
+
+  maxdoselimit <- min(doselimit, dose_grid_range[2])
+
+  p +
+    geom_vline(xintercept = maxdoselimit, colour = "brown", lwd = 1.1) +
+    annotate(
+      geom = "text", label = "Max", x = maxdoselimit - 2, y = max(data_plot$y), size = 5, angle = 90, vjust = -0.5, hjust = 0.5, colour = "brown"
+    ) +
+    geom_vline(xintercept = next_dose, colour = "purple", lwd = 1.1) +
+    annotate(
+      geom = "text", label = "Next", x = next_dose + 1, y = max(data_plot$y) - 0.05, size = 5, angle = 90, vjust = 1.5, hjust = 0.5, color = "purple"
     )
 }
