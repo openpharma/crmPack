@@ -942,57 +942,6 @@ setMethod(
     dose_mg <- opt$par # G*.
     max_gain <- -opt$value
 
-    # Get eligible doses that do not exceed maximum possible dose.
-    is_dose_eligible <- data@doseGrid <= doselimit
-    # For placebo design, if safety allows, exclude placebo from the recommended next doses.
-    if (data@placebo && sum(is_dose_eligible) > 1L) {
-      is_dose_eligible <- is_dose_eligible[-1]
-    }
-    doses_eligible <- data@doseGrid[is_dose_eligible]
-
-    # Find the next best doses in the doseGrid. The next best dose is the dose
-    # at level closest and below the target. Here, there are four different
-    # targets: min(dose_mg, dose_target_drt), dose_mg, dose_target_drt or dose_target_eot.
-    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
-    next_dose_lev <- h_find_interval(min(dose_mg, dose_target_drt), doses_eligible)
-    next_dose <- doses_eligible[next_dose_lev]
-
-    next_dose_mg_lev <- h_find_interval(dose_mg, doses_eligible)
-    next_dose_mg <- doses_eligible[next_dose_mg_lev]
-
-    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
-    next_dose_drt <- doses_eligible[next_dose_lev_drt]
-
-    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
-    next_dose_eot <- doses_eligible[next_dose_lev_eot]
-
-    # Find the variance of the log of dose_mg.
-    # First, find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
-    # given that phi1 and phi2 are independent of theta1 and theta2.
-    log_dose_mg <- log(dose_mg + ifelse(data@placebo, Effmodel@const, 0))
-    delta_g <- h_delta_g_yeung(log_dose_mg, model, Effmodel)
-    zero_matrix <- matrix(0, 2, 2)
-    cov_beta <- cbind(rbind(model@Pcov, zero_matrix), rbind(zero_matrix, Effmodel@Pcov))
-    var_log_dose_mg <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
-
-    # 95% credibility interval.
-    ci_dose_mg <- exp(log_dose_mg + c(-1, 1) * 1.96 * sqrt(var_log_dose_mg))
-    ci_ratio_dose_mg <- as.numeric(ci_dose_mg[2] / ci_dose_mg[1])
-
-    # Find the variance of the log of the dose_target_eot.
-    mat <- matrix(
-      c(
-        -1 / (model@phi2),
-        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
-      ),
-      nrow = 1
-    )
-    var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
-
-    # 95% credibility interval.
-    ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
-    ci_ratio_td_eot <- ci_td_eot[2] / ci_td_eot[1]
-
     # Print info message if dose target is outside of the range.
     if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = FALSE) && !SIM) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
@@ -1004,6 +953,25 @@ setMethod(
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
+    # Get eligible doses that do not exceed maximum possible dose.
+    is_dose_eligible <- data@doseGrid <= doselimit
+    if (data@placebo && sum(is_dose_eligible) > 1L) {
+      is_dose_eligible <- is_dose_eligible[-1]
+    }
+    doses_eligible <- data@doseGrid[is_dose_eligible]
+
+    # Get closest grid doses for a given target doses.
+    nb_doses_at_grid <- h_next_best_mg_doses_at_grid(
+      dose_target_drt,
+      dose_target_eot,
+      dose_mg,
+      prob_target_eot,
+      doses_eligible,
+      data@placebo,
+      model,
+      Effmodel
+    )
+
     # Build plot.
     p <- h_next_best_mg_plot(
       prob_target_drt,
@@ -1012,7 +980,7 @@ setMethod(
       dose_target_eot,
       dose_mg,
       max_gain,
-      next_dose,
+      nb_doses_at_grid$next_dose,
       doselimit,
       data,
       model,
@@ -1020,19 +988,19 @@ setMethod(
     )
 
     list(
-      nextdose = next_dose,
+      nextdose = nb_doses_at_grid$next_dose,
       DLEDuringTrialtarget = prob_target_drt,
       TDtargetDuringTrialEstimate = dose_target_drt,
-      TDtargetDuringTrialAtDoseGrid = next_dose_drt,
+      TDtargetDuringTrialAtDoseGrid = nb_doses_at_grid$next_dose_drt,
       DLEEndOfTrialtarget = prob_target_eot,
       TDtargetEndOfTrialEstimate = dose_target_eot,
-      TDtargetEndOfTrialAtDoseGrid = next_dose_eot,
+      TDtargetEndOfTrialAtDoseGrid = nb_doses_at_grid$next_dose_eot,
       GstarEstimate = dose_mg,
-      GstarAtDoseGrid = next_dose_mg,
-      CITDEOT = ci_td_eot,
-      ratioTDEOT = ci_ratio_td_eot,
-      CIGstar = ci_dose_mg,
-      ratioGstar = ci_ratio_dose_mg,
+      GstarAtDoseGrid = nb_doses_at_grid$next_dose_mg,
+      CITDEOT = nb_doses_at_grid$ci_td_eot,
+      ratioTDEOT = nb_doses_at_grid$ci_ratio_td_eot,
+      CIGstar = nb_doses_at_grid$ci_dose_mg,
+      ratioGstar = nb_doses_at_grid$ci_ratio_dose_mg,
       plot = p
     )
   }

@@ -1,4 +1,6 @@
-# specific helpers ----
+# for nextBest methods ----
+
+## some specific helpers ----
 
 #' Calculating the Information Theoretic Distance
 #'
@@ -35,7 +37,7 @@ h_info_theory_dist <- function(prob, target, asymmetry) {
 #'
 #' @param log_dose_mg (`number`)\cr the log of dose corresponding to the maximum gain.
 #' @param model (`ModelTox`)\cr the DLT model.
-#' @param eff_model (`Effloglog`)\cr the efficacy model.
+#' @param model_eff (`Effloglog`)\cr the efficacy model.
 #'
 #' @references
 #'   Yeung, W.Y., Whitehead, J., Reigner, B., Beyer, U., Diack, Ch., Jaki, T. (2015),
@@ -45,21 +47,118 @@ h_info_theory_dist <- function(prob, target, asymmetry) {
 #'
 #' @export
 #'
-h_delta_g_yeung <- function(log_dose_mg, model, eff_model) {
+h_delta_g_yeung <- function(log_dose_mg, model, model_eff) {
   assert_number(log_dose_mg, na.ok = TRUE)
   assert_class(model, "ModelTox")
-  assert_class(eff_model, "Effloglog")
+  assert_class(model_eff, "Effloglog")
 
-  mean_eff_mg <- eff_model@theta1 + eff_model@theta2 * log(log_dose_mg)
+  mean_eff_mg <- model_eff@theta1 + model_eff@theta2 * log(log_dose_mg)
   denom <- model@phi2 * mean_eff_mg * (1 + model@phi2 * log_dose_mg)
-  dgphi1 <- -(mean_eff_mg * log_dose_mg * model@phi2 - eff_model@theta2) / denom
-  dgphi2 <- -(log_dose_mg * (mean_eff_mg * (1 + log_dose_mg * model@phi2) - eff_model@theta2)) / denom
+  dgphi1 <- -(mean_eff_mg * log_dose_mg * model@phi2 - model_eff@theta2) / denom
+  dgphi2 <- -(log_dose_mg * (mean_eff_mg * (1 + log_dose_mg * model@phi2) - model_eff@theta2)) / denom
   dgtheta1 <- -(log_dose_mg * model@phi2) / denom
   dgtheta2 <- -(exp(model@phi1 + model@phi2 * log_dose_mg) * (model@phi2 * log_dose_mg * log(log_dose_mg) - 1) - 1) / denom
   matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
 }
 
-# plot ----
+## next best at grid ----
+
+#' Get Closest Grid Doses for a Given Target Doses for nextBest-NextBestMaxGain Method.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function that for a given target doses finds the dose in grid that is
+#' closest and below the target. There are four different targets in the context
+#' of [`nextBest-NextBestMaxGain()`] method: min(`dose_mg`, `dose_target_drt`),
+#' `dose_mg`, `dose_target_drt` or `dose_target_eot`.
+#'
+#' @note For placebo design, if safety allows, exclude placebo from the
+#'   recommended next doses.
+#'
+#' @param dose_target_drt (`number`)\cr target dose estimate during the trial.
+#' @param dose_target_eot (`number`)\cr target dose estimate at the end of the trial.
+#' @param dose_mg (`number`)\cr the dose corresponding to the maximum gain.
+#' @param prob_target_eot (`proportion`)\cr target DLT probability at the end of the trial.
+#' @param doses_eligible (`numeric`)\cr eligible doses from the grid.
+#' @param placebo (`flag`)\cr if `TRUE` the first dose level in the dose grid used
+#'   is considered as placebo. This is needed to adjust the max gain dose using
+#'   efficacy constant value. If the `placebo` was used, then the `model_eff@const`
+#'   is added to `dose_mg`.
+#' @param model (`ModelTox`)\cr the DLT model.
+#' @param model_eff (`Effloglog`)\cr the efficacy model.
+#'
+#' @export
+#'
+h_next_best_mg_doses_at_grid <- function(dose_target_drt,
+                                         dose_target_eot,
+                                         dose_mg,
+                                         prob_target_eot,
+                                         doses_eligible,
+                                         placebo,
+                                         model,
+                                         model_eff) {
+  assert_number(dose_target_drt, na.ok = TRUE)
+  assert_number(dose_target_eot, na.ok = TRUE)
+  assert_number(dose_mg, na.ok = TRUE)
+  assert_probability(prob_target_eot)
+  assert_numeric(doses_eligible, finite = TRUE, any.missing = FALSE)
+  assert_flag(placebo)
+  assert_class(model, "ModelTox")
+  assert_class(model_eff, "Effloglog")
+
+  # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+  next_dose_lev <- h_find_interval(min(dose_mg, dose_target_drt), doses_eligible)
+  next_dose <- doses_eligible[next_dose_lev]
+
+  next_dose_mg_lev <- h_find_interval(dose_mg, doses_eligible)
+  next_dose_mg <- doses_eligible[next_dose_mg_lev]
+
+  next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
+  next_dose_drt <- doses_eligible[next_dose_lev_drt]
+
+  next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
+  next_dose_eot <- doses_eligible[next_dose_lev_eot]
+
+  # Find the variance of the log of dose_mg.
+  # First, find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
+  # given that phi1 and phi2 are independent of theta1 and theta2.
+  log_dose_mg <- log(dose_mg + ifelse(placebo, model_eff@const, 0))
+  delta_g <- h_delta_g_yeung(log_dose_mg, model, model_eff)
+  zero_matrix <- matrix(0, 2, 2)
+  cov_beta <- cbind(rbind(model@Pcov, zero_matrix), rbind(zero_matrix, model_eff@Pcov))
+  var_log_dose_mg <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
+
+  # 95% credibility interval.
+  ci_dose_mg <- exp(log_dose_mg + c(-1, 1) * 1.96 * sqrt(var_log_dose_mg))
+  ci_ratio_dose_mg <- as.numeric(ci_dose_mg[2] / ci_dose_mg[1])
+
+  # Find the variance of the log of the dose_target_eot.
+  mat <- matrix(
+    c(
+      -1 / (model@phi2),
+      -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
+    ),
+    nrow = 1
+  )
+  var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
+
+  # 95% credibility interval.
+  ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
+  ci_ratio_td_eot <- ci_td_eot[2] / ci_td_eot[1]
+
+  list(
+    next_dose = next_dose,
+    next_dose_drt = next_dose_drt,
+    next_dose_eot = next_dose_eot,
+    next_dose_mg = next_dose_mg,
+    ci_td_eot = ci_td_eot,
+    ci_ratio_td_eot = ci_ratio_td_eot,
+    ci_dose_mg = ci_dose_mg,
+    ci_ratio_dose_mg = ci_ratio_dose_mg
+  )
+}
+
+## plot ----
 
 #' Building the Plot for nextBest-NextBestTDsamples Method.
 #'
@@ -277,7 +376,7 @@ h_next_best_td_plot <- function(prob_target_drt,
 #' @param doselimit (`number`)\cr the maximum allowed next dose.
 #' @param data (`DataDual`)\cr the data object from which the dose grid will be fetched.
 #' @param model (`ModelTox`)\cr the DLT model.
-#' @param eff_model (`Effloglog`)\cr the efficacy model.
+#' @param model_eff (`Effloglog`)\cr the efficacy model.
 #'
 #' @export
 #'
@@ -291,7 +390,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
                                 doselimit,
                                 data,
                                 model,
-                                eff_model) {
+                                model_eff) {
   assert_probability(prob_target_drt)
   assert_number(dose_target_drt)
   assert_probability(prob_target_eot)
@@ -302,7 +401,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
   assert_number(doselimit)
   assert_class(data, "Data")
   assert_class(model, "ModelTox")
-  assert_class(eff_model, "Effloglog")
+  assert_class(model_eff, "Effloglog")
 
   dose_grid_range <- h_dose_grid_range(data)
 
@@ -310,8 +409,8 @@ h_next_best_mg_plot <- function(prob_target_drt,
     dose = rep(data@doseGrid, 3),
     y = c(
       prob(dose = data@doseGrid, model = model),
-      efficacy(dose = data@doseGrid, model = eff_model),
-      gain(dose = data@doseGrid, model_dle = model, model_eff = eff_model)
+      efficacy(dose = data@doseGrid, model = model_eff),
+      gain(dose = data@doseGrid, model_dle = model, model_eff = model_eff)
     ),
     group = c(
       rep("p(DLE)", data@nGrid),

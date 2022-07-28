@@ -1,6 +1,8 @@
-# specific helpers ----
+# for nextBest methods ----
 
-## h_info_theory_dist ----
+## some specific helpers ----
+
+### h_info_theory_dist ----
 
 test_that("h_info_theory_dist works as expected for scalars", {
   result <- h_info_theory_dist(0.2, 0.4, 1.2)
@@ -39,7 +41,7 @@ test_that("h_info_theory_dist throws the error for wrong asymmetry", {
   )
 })
 
-## h_delta_g_yeung ----
+### h_delta_g_yeung ----
 
 test_that("h_delta_g_yeung works as expected", {
   model <- h_get_logistic_indep_beta()
@@ -50,9 +52,34 @@ test_that("h_delta_g_yeung works as expected", {
   expect_equal(result, expected)
 })
 
-# plot ----
+## next best at grid ----
 
-## h_next_best_tdsamples_plot ----
+### h_next_best_mg_doses_at_grid ----
+
+test_that("h_next_best_mg_doses_at_grid works as expected", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+
+  result <- h_next_best_mg_doses_at_grid(
+    52.3, 42.7, 84, 0.3, seq(25, 200, 25), FALSE, model_dlt, model_eff
+  )
+  expected <- list(
+    next_dose = 50,
+    next_dose_drt = 50,
+    next_dose_eot = 25,
+    next_dose_mg = 75,
+    ci_td_eot = c(11.071039, 164.690056),
+    ci_ratio_td_eot = 14.8757545,
+    ci_dose_mg = c(23.127108, 305.096515),
+    ci_ratio_dose_mg = 13.1921604
+  )
+  expect_equal(result, expected)
+})
+
+## plot ----
+
+### h_next_best_tdsamples_plot ----
 
 test_that("h_next_best_tdsamples_plot works as expected", {
   result <- h_next_best_tdsamples_plot(
@@ -82,7 +109,7 @@ test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
   vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
 })
 
-## h_next_best_td_plot ----
+### h_next_best_td_plot ----
 
 test_that("h_next_best_td_plot works as expected", {
   data <- h_get_data(empty = TRUE, placebo = FALSE)
@@ -98,7 +125,7 @@ test_that("h_next_best_td_plot works as expected (no doselimit)", {
   vdiffr::expect_doppelganger("h_next_best_td_plot_nodoselim", result)
 })
 
-## h_next_best_mg_plot ----
+### h_next_best_mg_plot ----
 
 test_that("h_next_best_mg_plot works as expected", {
   data <- h_get_data_dual(placebo = FALSE)

@@ -15,7 +15,7 @@ h_next_best_mg_plot(
   doselimit,
   data,
   model,
-  eff_model
+  model_eff
 )
 }
 \arguments{
@@ -39,7 +39,7 @@ h_next_best_mg_plot(
 
 \item{model}{(\code{ModelTox})\cr the DLT model.}
 
-\item{eff_model}{(\code{Effloglog})\cr the efficacy model.}
+\item{model_eff}{(\code{Effloglog})\cr the efficacy model.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

@@ -4,14 +4,14 @@
 \alias{h_delta_g_yeung}
 \title{Find a Matrix for Variance According to Yeung et. al (2015)}
 \usage{
-h_delta_g_yeung(log_dose_mg, model, eff_model)
+h_delta_g_yeung(log_dose_mg, model, model_eff)
 }
 \arguments{
 \item{log_dose_mg}{(\code{number})\cr the log of dose corresponding to the maximum gain.}
 
 \item{model}{(\code{ModelTox})\cr the DLT model.}
 
-\item{eff_model}{(\code{Effloglog})\cr the efficacy model.}
+\item{model_eff}{(\code{Effloglog})\cr the efficacy model.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
