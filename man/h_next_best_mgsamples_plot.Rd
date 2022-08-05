@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_rules.R
 \name{h_next_best_mgsamples_plot}
 \alias{h_next_best_mgsamples_plot}
-\title{Building the Plot for nextBest-NextBestMaxGainSamples Method.}
+\title{Building the Plot for \code{nextBest-NextBestMaxGainSamples} Method.}
 \usage{
 h_next_best_mgsamples_plot(
   prob_target_drt,

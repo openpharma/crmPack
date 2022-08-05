@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_rules.R
 \name{h_next_best_tdsamples_plot}
 \alias{h_next_best_tdsamples_plot}
-\title{Building the Plot for nextBest-NextBestTDsamples Method.}
+\title{Building the Plot for \code{nextBest-NextBestTDsamples} Method.}
 \usage{
 h_next_best_tdsamples_plot(
   target_in_trial_samples,

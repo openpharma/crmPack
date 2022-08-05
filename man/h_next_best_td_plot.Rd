@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_rules.R
 \name{h_next_best_td_plot}
 \alias{h_next_best_td_plot}
-\title{Building the Plot for nextBest-NextBestTD Method.}
+\title{Building the Plot for \code{nextBest-NextBestTD} Method.}
 \usage{
 h_next_best_td_plot(
   prob_target_drt,

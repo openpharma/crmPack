@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_rules.R
 \name{h_next_best_mg_doses_at_grid}
 \alias{h_next_best_mg_doses_at_grid}
-\title{Get Closest Grid Doses for a Given Target Doses for nextBest-NextBestMaxGain Method.}
+\title{Get Closest Grid Doses for a Given Target Doses for \code{nextBest-NextBestMaxGain} Method.}
 \usage{
 h_next_best_mg_doses_at_grid(
   dose_target_drt,

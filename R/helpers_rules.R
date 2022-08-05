@@ -63,7 +63,7 @@ h_delta_g_yeung <- function(log_dose_mg, model, model_eff) {
 
 ## next best at grid ----
 
-#' Get Closest Grid Doses for a Given Target Doses for nextBest-NextBestMaxGain Method.
+#' Get Closest Grid Doses for a Given Target Doses for `nextBest-NextBestMaxGain` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -174,7 +174,7 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
 
 ## plot ----
 
-#' Building the Plot for nextBest-NextBestTDsamples Method.
+#' Building the Plot for `nextBest-NextBestTDsamples` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -267,7 +267,7 @@ h_next_best_tdsamples_plot <- function(target_in_trial_samples,
     )
 }
 
-#' Building the Plot for nextBest-NextBestTD Method.
+#' Building the Plot for `nextBest-NextBestTD` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -374,7 +374,7 @@ h_next_best_td_plot <- function(prob_target_drt,
     )
 }
 
-#' Building the Plot for nextBest-NextBestMaxGain Method.
+#' Building the Plot for `nextBest-NextBestMaxGain` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
@@ -495,7 +495,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
     )
 }
 
-#' Building the Plot for nextBest-NextBestMaxGainSamples Method.
+#' Building the Plot for `nextBest-NextBestMaxGainSamples` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
