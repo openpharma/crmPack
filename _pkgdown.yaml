@@ -106,6 +106,7 @@ reference:
       - h_next_best_tdsamples_plot
       - h_next_best_td_plot
       - h_next_best_mg_plot
+      - h_next_best_mgsamples_plot
   - title: Internal Validation Functions
     contents:
       - v_general_data
@@ -239,6 +240,7 @@ reference:
       - nextBest-NextBestTDsamples
       - nextBest-NextBestTD
       - nextBest-NextBestMaxGain
+      - nextBest-NextBestMaxGainSamples
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels

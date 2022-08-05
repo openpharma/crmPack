@@ -620,6 +620,115 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (othe
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
 
+## NextBestMaxGainSamples ----
+
+test_that("nextBest-NextBestMaxGainSamples returns expected values of the objects", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  samples_dlt <- h_as_samples(
+    list(phi1 = c(-4.03, -4.48, -4.07, -4.37), phi2 = c(1.45, 0.86, 0.56, 0.42))
+  )
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-2.93, -0.54, 0.01, -2.42),
+      theta2 = c(3.41, 0.61, 0.58, 1.35),
+      nu = c(2.14, 4.63, 0.83, 2.98)
+    )
+  )
+  nb_mgs <- h_next_best_mgsamples()
+
+  result <- nextBest(nb_mgs, 49, samples_dlt, model_dlt, data, model_eff, samples_eff)
+  expected <- list(
+    nextdose = 25,
+    DLEDuringTrialtarget = 0.45,
+    TDtargetDuringTrialEstimate = 131.8022,
+    TDtargetDuringTrialAtDoseGrid = 25,
+    DLEEndOfTrialtarget = 0.4,
+    TDtargetEndOfTrialEstimate = 103.9855,
+    TDtargetEndOfTrialAtDoseGrid = 25,
+    GstarEstimate = 125,
+    GstarAtDoseGrid = 25,
+    CITDEOT = c(103.9855, 103.9855),
+    ratioTDEOT = 1,
+    CIGstar = c(30.625, 288.750),
+    ratioGstar = 9.428571
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGainSamples", result$plot)
+})
+
+test_that("nextBest-NextBestMaxGainSamples returns expected values of the objects (no doselimit)", {
+  data <- h_get_data_dual(placebo = FALSE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  samples_dlt <- h_as_samples(
+    list(phi1 = c(-4.03, -4.48, -4.07, -4.37), phi2 = c(1.45, 0.86, 0.56, 0.42))
+  )
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-2.93, -0.54, 0.01, -2.42),
+      theta2 = c(3.41, 0.61, 0.58, 1.35),
+      nu = c(2.14, 4.63, 0.83, 2.98)
+    )
+  )
+  nb_mgs <- h_next_best_mgsamples()
+
+  result <- nextBest(nb_mgs, numeric(0), samples_dlt, model_dlt, data, model_eff, samples_eff)
+  expected <- list(
+    nextdose = 125,
+    DLEDuringTrialtarget = 0.45,
+    TDtargetDuringTrialEstimate = 131.8022,
+    TDtargetDuringTrialAtDoseGrid = 125,
+    DLEEndOfTrialtarget = 0.4,
+    TDtargetEndOfTrialEstimate = 103.9855,
+    TDtargetEndOfTrialAtDoseGrid = 100,
+    GstarEstimate = 125,
+    GstarAtDoseGrid = 125,
+    CITDEOT = c(103.9855, 103.9855),
+    ratioTDEOT = 1,
+    CIGstar = c(30.625, 288.750),
+    ratioGstar = 9.428571
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGainSamples_nodoselim", result$plot)
+})
+
+test_that("nextBest-NextBestMaxGainSamples returns expected values of the objects (other targets, placebo)", {
+  data <- h_get_data_dual(placebo = TRUE)
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+  samples_dlt <- h_as_samples(
+    list(phi1 = c(-4.03, -4.48, -4.07, -4.37, -4.5), phi2 = c(1.45, 0.86, 0.56, 0.42, 0.6))
+  )
+  samples_eff <- h_as_samples(
+    list(
+      theta1 = c(-2.93, -0.54, 0.01, -2.42, -1.5),
+      theta2 = c(3.41, 0.61, 0.58, 1.35, 2),
+      nu = c(2.14, 4.63, 0.83, 2.98, 1.6)
+    )
+  )
+  nb_mgs <- h_next_best_mgsamples(td = 0.5, te = 0.45, p = 0.25, p_gstar = 0.3)
+
+  result <- nextBest(nb_mgs, 60, samples_dlt, model_dlt, data, model_eff, samples_eff)
+  expected <- list(
+    nextdose = 25,
+    DLEDuringTrialtarget = 0.5,
+    TDtargetDuringTrialEstimate = 182.9664,
+    TDtargetDuringTrialAtDoseGrid = 25,
+    DLEEndOfTrialtarget = 0.45,
+    TDtargetEndOfTrialEstimate = 144.8885,
+    TDtargetEndOfTrialAtDoseGrid = 25,
+    GstarEstimate = 110,
+    GstarAtDoseGrid = 25,
+    CITDEOT = c(144.8885, 144.8885),
+    ratioTDEOT = 1,
+    CIGstar = c(32.5, 300.0),
+    ratioGstar = 9.230769
+  )
+  expect_identical(result[names(expected)], expected, tolerance = 10e-7)
+})
+
 # maxDose-IncrementsNumDoseLevels ----
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {

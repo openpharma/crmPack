@@ -86,6 +86,9 @@ h_delta_g_yeung <- function(log_dose_mg, model, model_eff) {
 #'   is added to `dose_mg`.
 #' @param model (`ModelTox`)\cr the DLT model.
 #' @param model_eff (`Effloglog`)\cr the efficacy model.
+#' @param compute_ci (`flag`)\cr if `TRUE` the 95% credibility intervals (and
+#'   corresponding ratios) are computed for target dose (end of the trial) and
+#'   the maximum gain dose.
 #'
 #' @export
 #'
@@ -96,7 +99,8 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
                                          doses_eligible,
                                          placebo,
                                          model,
-                                         model_eff) {
+                                         model_eff,
+                                         compute_ci = TRUE) {
   assert_number(dose_target_drt, na.ok = TRUE)
   assert_number(dose_target_eot, na.ok = TRUE)
   assert_number(dose_mg, na.ok = TRUE)
@@ -104,7 +108,8 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
   assert_numeric(doses_eligible, finite = TRUE, any.missing = FALSE)
   assert_flag(placebo)
   assert_class(model, "ModelTox")
-  assert_class(model_eff, "Effloglog")
+  assert_true(test_class(model_eff, "Effloglog") || test_class(model_eff, "EffFlexi"))
+  assert_flag(compute_ci)
 
   # h_find_interval assumes that elements in doses_eligible are strictly increasing.
   next_dose_lev <- h_find_interval(min(dose_mg, dose_target_drt), doses_eligible)
@@ -119,43 +124,52 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
   next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
   next_dose_eot <- doses_eligible[next_dose_lev_eot]
 
-  # Find the variance of the log of dose_mg.
-  # First, find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
-  # given that phi1 and phi2 are independent of theta1 and theta2.
-  log_dose_mg <- log(dose_mg + ifelse(placebo, model_eff@const, 0))
-  delta_g <- h_delta_g_yeung(log_dose_mg, model, model_eff)
-  zero_matrix <- matrix(0, 2, 2)
-  cov_beta <- cbind(rbind(model@Pcov, zero_matrix), rbind(zero_matrix, model_eff@Pcov))
-  var_log_dose_mg <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
-
-  # 95% credibility interval.
-  ci_dose_mg <- exp(log_dose_mg + c(-1, 1) * 1.96 * sqrt(var_log_dose_mg))
-  ci_ratio_dose_mg <- as.numeric(ci_dose_mg[2] / ci_dose_mg[1])
-
-  # Find the variance of the log of the dose_target_eot.
-  mat <- matrix(
-    c(
-      -1 / (model@phi2),
-      -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
-    ),
-    nrow = 1
-  )
-  var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
-
-  # 95% credibility interval.
-  ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
-  ci_ratio_td_eot <- ci_td_eot[2] / ci_td_eot[1]
-
-  list(
+  next_dose_list <- list(
     next_dose = next_dose,
     next_dose_drt = next_dose_drt,
     next_dose_eot = next_dose_eot,
-    next_dose_mg = next_dose_mg,
-    ci_td_eot = ci_td_eot,
-    ci_ratio_td_eot = ci_ratio_td_eot,
-    ci_dose_mg = ci_dose_mg,
-    ci_ratio_dose_mg = ci_ratio_dose_mg
+    next_dose_mg = next_dose_mg
   )
+
+  if (compute_ci) {
+    # Find the variance of the log of dose_mg.
+    # First, find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
+    # given that phi1 and phi2 are independent of theta1 and theta2.
+    log_dose_mg <- log(dose_mg + ifelse(placebo, model_eff@const, 0))
+    delta_g <- h_delta_g_yeung(log_dose_mg, model, model_eff)
+    zero_matrix <- matrix(0, 2, 2)
+    cov_beta <- cbind(rbind(model@Pcov, zero_matrix), rbind(zero_matrix, model_eff@Pcov))
+    var_log_dose_mg <- as.vector(t(delta_g) %*% cov_beta %*% delta_g)
+
+    # 95% credibility interval.
+    ci_dose_mg <- exp(log_dose_mg + c(-1, 1) * 1.96 * sqrt(var_log_dose_mg))
+    ci_ratio_dose_mg <- as.numeric(ci_dose_mg[2] / ci_dose_mg[1])
+
+    # Find the variance of the log of the dose_target_eot.
+    mat <- matrix(
+      c(
+        -1 / (model@phi2),
+        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
+      ),
+      nrow = 1
+    )
+    var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
+
+    # 95% credibility interval.
+    ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
+    ci_ratio_td_eot <- ci_td_eot[2] / ci_td_eot[1]
+
+    next_dose_list <- c(
+      next_dose_list,
+      list(
+        ci_td_eot = ci_td_eot,
+        ci_ratio_td_eot = ci_ratio_td_eot,
+        ci_dose_mg = ci_dose_mg,
+        ci_ratio_dose_mg = ci_ratio_dose_mg
+      )
+    )
+  }
+  next_dose_list
 }
 
 ## plot ----
@@ -371,7 +385,7 @@ h_next_best_td_plot <- function(prob_target_drt,
 #' @param prob_target_eot (`proportion`)\cr target DLT probability at the end of the trial.
 #' @param dose_target_eot (`number`)\cr target dose estimate at the end of the trial.
 #' @param dose_mg (`number`)\cr the dose corresponding to the maximum gain.
-#' @param max_gain (`number`)\cr the dose corresponding to the maximum gain.
+#' @param max_gain (`number`)\cr the maximum gain estimate.
 #' @param next_dose (`number`)\cr next best dose.
 #' @param doselimit (`number`)\cr the maximum allowed next dose.
 #' @param data (`DataDual`)\cr the data object from which the dose grid will be fetched.
@@ -478,5 +492,94 @@ h_next_best_mg_plot <- function(prob_target_drt,
     geom_vline(xintercept = next_dose, colour = "purple", lwd = 1.1) +
     annotate(
       geom = "text", label = "Next", x = next_dose + 1, y = max(data_plot$y) - 0.05, size = 5, angle = 90, vjust = 1.5, hjust = 0.5, color = "purple"
+    )
+}
+
+#' Building the Plot for nextBest-NextBestMaxGainSamples Method.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function which creates the plot for [`nextBest-NextBestMaxGainSamples()`] method.
+#'
+#' @param prob_target_drt (`proportion`)\cr target DLT probability during the trial.
+#' @param dose_target_drt (`number`)\cr target dose estimate during the trial.
+#' @param prob_target_eot (`proportion`)\cr target DLT probability at the end of the trial.
+#' @param dose_target_eot (`number`)\cr target dose estimate at the end of the trial.
+#' @param dose_mg (`number`)\cr the dose corresponding to the maximum gain.
+#' @param dose_mg_samples (`numeric`)\cr for every sample, the dose (from the dose grid)
+#'   that gives the maximum gain value.
+#' @param next_dose (`number`)\cr next best dose.
+#' @param doselimit (`number`)\cr the maximum allowed next dose.
+#' @param dose_grid_range (`numeric`)\cr dose grid range.
+#'
+#' @export
+#'
+h_next_best_mgsamples_plot <- function(prob_target_drt,
+                                       dose_target_drt,
+                                       prob_target_eot,
+                                       dose_target_eot,
+                                       dose_mg,
+                                       dose_mg_samples,
+                                       next_dose,
+                                       doselimit,
+                                       dose_grid_range) {
+  assert_numeric(dose_grid_range, len = 2, sorted = TRUE)
+  assert_probability(prob_target_drt)
+  assert_number(dose_target_drt)
+  assert_probability(prob_target_eot)
+  assert_number(dose_target_eot)
+  assert_number(dose_mg, na.ok = TRUE)
+  assert_numeric(dose_mg_samples, lower = dose_grid_range[1], upper = dose_grid_range[2], finite = TRUE, any.missing = FALSE)
+  assert_number(next_dose, na.ok = TRUE)
+  assert_number(doselimit)
+
+  p <- ggplot() +
+    geom_histogram(
+      data = data.frame(Gstar = dose_mg_samples),
+      aes(x = .data$Gstar),
+      fill = "darkgreen",
+      colour = "green3",
+      binwidth = 25
+    ) +
+    coord_cartesian(xlim = c(0, dose_grid_range[2])) +
+    ylab("Posterior density")
+
+  if (h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE)) {
+    lab <- paste("TD", prob_target_drt * 100, "Estimate")
+    p <- p +
+      geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1.1) +
+      annotate(
+        geom = "text", label = lab, x = dose_target_drt, y = 0, hjust = -0.1, vjust = -20, size = 5, colour = "orange"
+      )
+  }
+
+  if (h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE)) {
+    lab <- paste("TD", prob_target_eot * 100, "Estimate")
+    p <- p +
+      geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1.1) +
+      annotate(
+        geom = "text", label = lab, x = dose_target_eot, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "violet"
+      )
+  }
+
+  if (h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE)) {
+    lab <- "Gstar Estimate"
+    p <- p +
+      geom_vline(xintercept = dose_mg, colour = "green", lwd = 1.1) +
+      annotate(
+        geom = "text", label = lab, x = dose_mg, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "green"
+      )
+  }
+
+  maxdoselimit <- min(doselimit, dose_grid_range[2])
+
+  p +
+    geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
+    annotate(
+      geom = "text", label = "Max", x = maxdoselimit, y = 0, hjust = +1, vjust = -35, colour = "red"
+    ) +
+    geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
+    annotate(
+      geom = "text", label = "Next", x = next_dose, y = 0, hjust = 0.1, vjust = -30, colour = "blue"
     )
 }
