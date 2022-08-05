@@ -49,3 +49,16 @@ h_next_best_tdsamples <- function(td = 0.45, te = 0.4, p = 0.3) {
     }
   )
 }
+
+h_next_best_mgsamples <- function(td = 0.45, te = 0.4, p = 0.3, p_gstar = 0.5) {
+  NextBestMaxGainSamples(
+    DLEDuringTrialtarget = td,
+    DLEEndOfTrialtarget = te,
+    TDderive = function(TDsamples) { # nolintr
+      quantile(TDsamples, prob = p)
+    },
+    Gstarderive = function(Gstarsamples) { # nolintr
+      quantile(Gstarsamples, prob = p_gstar)
+    }
+  )
+}

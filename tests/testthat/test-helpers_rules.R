@@ -148,3 +148,35 @@ test_that("h_next_best_mg_plot works as expected (no doselimit)", {
   )
   vdiffr::expect_doppelganger("h_next_best_mg_plot_nodoselim", result)
 })
+
+### h_next_best_mgsamples_plot ----
+
+test_that("h_next_best_mgsamples_plot works as expected", {
+  result <- h_next_best_mgsamples_plot(
+    prob_target_drt = 0.45,
+    dose_target_drt = 104,
+    prob_target_eot = 0.4,
+    dose_target_eot = 83,
+    dose_mg = 200,
+    dose_mg_samples = c(100, 300, 250, 125, 100, 175, 50, 300, 300, 150),
+    next_dose = 75,
+    doselimit = 80,
+    dose_grid_range = c(50, 320)
+  )
+  vdiffr::expect_doppelganger("h_next_best_mgsamples_plot", result)
+})
+
+test_that("h_next_best_mgsamples_plot works as expected (no doselimit)", {
+  result <- h_next_best_mgsamples_plot(
+    prob_target_drt = 0.35,
+    dose_target_drt = 67.5,
+    prob_target_eot = 0.3,
+    dose_target_eot = 53,
+    dose_mg = 125,
+    dose_mg_samples = c(300, 225, 50, 175, 75, 125, 25, 125, 125, 250),
+    next_dose = 50,
+    doselimit = Inf,
+    dose_grid_range = c(25, 300)
+  )
+  vdiffr::expect_doppelganger("h_next_best_mgsamples_plot_nodoselim", result)
+})

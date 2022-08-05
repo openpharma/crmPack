@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers_rules.R
 \name{h_next_best_mg_doses_at_grid}
 \alias{h_next_best_mg_doses_at_grid}
-\title{Get Closest Grid Doses for a Given Target Doses for nextBest-NextBestMaxGain Method.}
+\title{Get Closest Grid Doses for a Given Target Doses for \code{nextBest-NextBestMaxGain} Method.}
 \usage{
 h_next_best_mg_doses_at_grid(
   dose_target_drt,
@@ -12,7 +12,8 @@ h_next_best_mg_doses_at_grid(
   doses_eligible,
   placebo,
   model,
-  model_eff
+  model_eff,
+  compute_ci = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,10 @@ is added to \code{dose_mg}.}
 \item{model}{(\code{ModelTox})\cr the DLT model.}
 
 \item{model_eff}{(\code{Effloglog})\cr the efficacy model.}
+
+\item{compute_ci}{(\code{flag})\cr if \code{TRUE} the 95\% credibility intervals (and
+corresponding ratios) are computed for target dose (end of the trial) and
+the maximum gain dose.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

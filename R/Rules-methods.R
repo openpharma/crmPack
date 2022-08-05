@@ -1006,6 +1006,133 @@ setMethod(
   }
 )
 
+## NextBestMaxGainSamples ----
+
+#' @describeIn nextBest find the next best dose based on DLT and efficacy
+#'   responses with DLT and efficacy samples.
+#'
+#' @param model (`ModelTox`)\cr the DLT model.
+#' @param Effmodel (`Effloglog` or `EffFlexi`)\cr the efficacy model.
+#' @param Effsamples (`Samples`)\cr posterior samples from `Effmodel` parameters
+#'   given `data`.
+#' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
+#'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
+#'   are outside of the dose grid range, the information message is printed by
+#'   this method.
+#'
+#' @aliases nextBest-NextBestMaxGainSamples
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestMaxGainSamples.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestMaxGainSamples",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "ModelTox",
+    data = "DataDual"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, Effmodel, Effsamples, SIM = FALSE, ...) {
+    assert_true(test_class(Effmodel, "Effloglog") || test_class(Effmodel, "EffFlexi"))
+    assert_class(Effsamples, "Samples")
+    assert_flag(SIM)
+    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+
+    # 'drt' - during the trial, 'eot' end of trial.
+    prob_target_drt <- nextBest@DLEDuringTrialtarget
+    prob_target_eot <- nextBest@DLEEndOfTrialtarget
+
+    # Generate target dose samples, i.e. the doses with probability of the
+    # occurrence of a DLT that equals to the prob_target_drt or prob_target_eot.
+    dose_target_samples_drt <- dose(x = prob_target_drt, model, samples = samples)
+    dose_target_samples_eot <- dose(x = prob_target_eot, model, samples = samples)
+
+    # Derive the prior/posterior estimates based on two above samples.
+    dose_target_drt <- as.numeric(nextBest@TDderive(TDsamples = dose_target_samples_drt))
+    dose_target_eot <- as.numeric(nextBest@TDderive(TDsamples = dose_target_samples_eot))
+
+    # Gain samples.
+    gain_samples <- sapply(data@doseGrid, gain, model, samples, Effmodel, Effsamples)
+    # For every sample, get the dose (from the dose grid) that gives the maximum gain value.
+    dose_lev_mg_samples <- apply(gain_samples, 1, which.max)
+    dose_mg_samples <- data@doseGrid[dose_lev_mg_samples]
+    # Maximum gain dose estimate is the nth percentile of the maximum gain dose samples.
+    dose_mg <- as.numeric(nextBest@Gstarderive(dose_mg_samples))
+    gain_values <- apply(gain_samples, 2, FUN = nextBest@Gstarderive)
+
+    # Print info message if dose target is outside of the range.
+    dose_grid_range <- h_dose_grid_range(data)
+    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE) && !SIM) {
+      print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+    }
+    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE) && !SIM) {
+      print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+    }
+    if (!h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE) && !SIM) {
+      print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
+    }
+
+    # Get eligible doses that do not exceed maximum possible dose.
+    is_dose_eligible <- data@doseGrid <= doselimit
+    if (data@placebo && sum(is_dose_eligible) > 1L) {
+      is_dose_eligible <- is_dose_eligible[-1]
+    }
+    doses_eligible <- data@doseGrid[is_dose_eligible]
+
+    # Get closest grid doses for a given target doses.
+    nb_doses_at_grid <- h_next_best_mg_doses_at_grid(
+      dose_target_drt,
+      dose_target_eot,
+      dose_mg,
+      prob_target_eot,
+      doses_eligible,
+      data@placebo,
+      model,
+      Effmodel,
+      compute_ci = FALSE
+    )
+
+    # 95% credibility intervals and corresponding ratios for maximum gain dose and target dose eot.
+    ci_dose_mg <- as.numeric(quantile(dose_mg_samples, probs = c(0.025, 0.975)))
+    cir_dose_mg <- ci_dose_mg[2] / ci_dose_mg[1]
+
+    ci_dose_target_eot <- as.numeric(quantile(dose_target_eot, probs = c(0.025, 0.975)))
+    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
+
+    # Build plot.
+    p <- h_next_best_mgsamples_plot(
+      prob_target_drt,
+      dose_target_drt,
+      prob_target_eot,
+      dose_target_eot,
+      dose_mg,
+      dose_mg_samples,
+      nb_doses_at_grid$next_dose,
+      doselimit,
+      dose_grid_range
+    )
+
+    list(
+      nextdose = nb_doses_at_grid$next_dose,
+      DLEDuringTrialtarget = prob_target_drt,
+      TDtargetDuringTrialEstimate = dose_target_drt,
+      TDtargetDuringTrialAtDoseGrid = nb_doses_at_grid$next_dose_drt,
+      DLEEndOfTrialtarget = prob_target_eot,
+      TDtargetEndOfTrialEstimate = dose_target_eot,
+      TDtargetEndOfTrialAtDoseGrid = nb_doses_at_grid$next_dose_eot,
+      GstarEstimate = dose_mg,
+      GstarAtDoseGrid = nb_doses_at_grid$next_dose_mg,
+      CITDEOT = ci_dose_target_eot,
+      ratioTDEOT = cir_dose_target_eot,
+      CIGstar = ci_dose_mg,
+      ratioGstar = cir_dose_mg,
+      plot = p
+    )
+  }
+)
+
 # nolint start
 
 ## --------------------------------------------------
@@ -2529,622 +2656,6 @@ setMethod("size",
   def =
     function(cohortSize, dose, data, ...) {
       return(cohortSize@sizes[data@nextPart])
-    }
-)
-
-## =====================================================================================
-## the nextBest method based on DLE and efficacy responses with DLE and efficacy samples
-## -------------------------------------------------------------------------- ----------
-##' @describeIn nextBest for slots \code{nextBest},\code{doselimit}, \code{data} and \code{SIM}. This is
-##' a function to find the next best dose based on the 'NextBestMaxGainSamples'
-##' class rule. This a method based on the DLE responses and efficacy responses with DLE and
-##' efficacy samples. Effmodel must be of class \code{\linkS4class{Effloglog}} or
-##' \code{\linkS4class{EffFlexi}}.
-##' @param Effsamples the efficacy samples of \code{\linkS4class{Samples}} class object
-##'
-##' @importFrom ggplot2 ggplot geom_histogram xlab ylab xlim aes geom_vline
-##' geom_text
-##' @example examples/Rules-method-nextbest_MaxGainSamples.R
-setMethod("nextBest",
-  signature =
-    signature(
-      nextBest = "NextBestMaxGainSamples",
-      doselimit = "numeric",
-      samples = "Samples",
-      model = "ModelTox",
-      data = "DataDual"
-    ),
-  def =
-    function(nextBest, doselimit, samples, model, data, Effmodel, Effsamples, SIM = FALSE, ...) {
-      if (is(Effmodel, "Effloglog")) {
-
-        ## first get the probDLE samples
-        points <- data@doseGrid
-        probDLESamples <- matrix(
-          nrow = sampleSize(samples@options),
-          ncol = length(points)
-        )
-
-        ## evaluate the probs, for all gain samples.
-        for (i in seq_along(points))
-        {
-          ## Now we want to evaluate for the
-          ## following dose:
-          probDLESamples[, i] <- prob(
-            dose = points[i],
-            model = model,
-            samples = samples
-          )
-        }
-        probDLE <- apply(probDLESamples, 2, FUN = nextBest@TDderive)
-
-        DuringTrialtargetprob <- nextBest@DLEDuringTrialtarget
-        EndOfTrialtargetprob <- nextBest@DLEEndOfTrialtarget
-
-        ## Find the TDtarget samples for During Trial and End of trial
-
-
-        TDtargetEndOfTrialSamples <- dose(
-          x = EndOfTrialtargetprob,
-          model = model,
-          samples = samples
-        )
-
-
-        TDtargetDuringTrialSamples <- dose(
-          x = DuringTrialtargetprob,
-          model = model,
-          samples = samples
-        )
-
-
-
-        ## Find the TDtarget Estimate for During Trial and End of trial
-
-
-        TDtargetEndOfTrialEstimate <- as.numeric(nextBest@TDderive(TDtargetEndOfTrialSamples))
-        ## Ensure the estimate is within dose range
-        # TDtargetEndOfTrialEstimate <- min(TDtargetEndOfTrialEstimate,max(data@doseGrid))
-
-
-        TDtargetDuringTrialEstimate <- as.numeric(nextBest@TDderive(TDtargetDuringTrialSamples))
-
-        ## Ensure the estimate is within dose range
-        # TDtargetDuringTrialEstimate <- min(TDtargetDuringTrialEstimate,max(data@doseGrid))
-
-
-        ## we have to get samples from the gain values at all dose levels
-
-        ExpEffSamples <- matrix(
-          nrow = sampleSize(Effsamples@options),
-          ncol = length(points)
-        )
-
-        ## evaluate the probs, for all gain samples.
-        for (i in seq_along(points))
-        {
-          ## Now we want to evaluate for the
-          ## following dose:
-          ExpEffSamples[, i] <- efficacy(
-            dose = points[i],
-            model = Effmodel,
-            samples = Effsamples
-          )
-        }
-
-
-        ExpEff <- apply(ExpEffSamples, 2, FUN = nextBest@Gstarderive)
-
-
-        GainSamples <- matrix(
-          nrow = sampleSize(samples@options),
-          ncol = length(points)
-        )
-
-        ## evaluate the probs, for all gain samples.
-        for (i in seq_along(points))
-        {
-          ## Now we want to evaluate for the
-          ## following dose:
-          GainSamples[, i] <- gain(
-            dose = points[i],
-            model,
-            samples,
-            Effmodel,
-            Effsamples
-          )
-        }
-
-        ## Find the maximum gain value samples
-        MaxGainSamples <- apply(GainSamples, 1, max)
-
-        ## Obtain Gstar samples, samples for the dose level which gives the maximum gain value
-        IndexG <- apply(GainSamples, 1, which.max)
-        GstarSamples <- data@doseGrid[IndexG]
-
-        ## Obtain the Gstar estimate which is the nth percentile of the Gstar samples
-        Gstar <- as.numeric(nextBest@Gstarderive(GstarSamples))
-        ## Ensure the estimate is within dose range
-
-        # Gstar <- min(Gstar,max(data@doseGrid))
-
-        gainvalues <- apply(GainSamples, 2, FUN = nextBest@Gstarderive)
-
-        dosesOK <- which(data@doseGrid <= doselimit)
-
-        ## For placebo design, if safety allow, exclude placebo from
-        ## the recommended next doses
-        if (data@placebo & (length(dosesOK) > 1L)) {
-          dosesOK <- dosesOK[-1]
-        }
-
-        ## FIND the next dose which is the minimum between TDtargetDuringTrial and Gstar
-        nextdose <- min(TDtargetDuringTrialEstimate, Gstar)
-
-        ## Find the dose level in doseGrid closest below nextdose
-
-        index <- suppressWarnings(max(which((signif(nextdose, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        ret <- data@doseGrid[dosesOK][index]
-
-        ## Find the dose level in doseGrid closest below TDtargetEndOfTrial
-
-        indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        retE <- data@doseGrid[indexE]
-
-        ## Find the dose level in doseGrid closest below TDtargetDuringTrial
-
-        indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        retD <- data@doseGrid[indexD]
-
-        ## Find the dose level in doseGrid closest below Gstar
-
-        Gstarindex <- suppressWarnings(max(which((signif(Gstar, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        Gstarret <- data@doseGrid[Gstarindex]
-
-        ## Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-        CIGstar <- as.numeric(quantile(GstarSamples, probs = c(0.025, 0.975)))
-        ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
-
-        ## Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-        CITDEOT <- as.numeric(quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975)))
-        ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-
-        plotData <- data.frame(
-          dose = rep(data@doseGrid, 3),
-          values = c(
-            probDLE,
-            ExpEff,
-            gainvalues
-          )
-        )
-
-        gdata <- with(
-          plotData,
-          data.frame(
-            x = dose,
-            y = values,
-            group = c(
-              rep("p(DLE)", length(data@doseGrid)),
-              rep("Expected Efficacy", length(data@doseGrid)),
-              rep("Gain", length(data@doseGrid))
-            ),
-            Type = factor("Estimate", levels = "Estimate")
-          )
-        )
-
-
-        ## produce plot
-        plot1 <- ggplot() +
-          geom_histogram(
-            data =
-              data.frame(x = GstarSamples),
-            aes(x = x),
-            fill = "darkgreen", colour = "green3", binwidth = 25
-          ) +
-          xlab("Gstar") +
-          xlim(c(0, max(data@doseGrid))) +
-          ylab("Posterior density")
-
-        # if(data@placebo) {
-        # n <- length(data@doseGrid)
-        # LowestDose <- sort(data@doseGrid)[2]} else {
-        LowestDose <- min(data@doseGrid)
-        # }
-
-
-        if (signif(TDtargetDuringTrialEstimate, 4) < LowestDose | signif(TDtargetDuringTrialEstimate, 4) > max(data@doseGrid)) {
-          if (SIM == FALSE) {
-            plot1 <- plot1
-            print(paste(paste("Estimated TD", DuringTrialtargetprob * 100), paste("=", paste(TDtargetDuringTrialEstimate, " not within dose Grid"))))
-          } else {
-            plot1 <- plot1
-          }
-        } else {
-          plot1 <- plot1 +
-            geom_vline(xintercept = TDtargetDuringTrialEstimate, colour = "orange", lwd = 1.1) +
-            annotate("text",
-              label = paste(paste("TD", DuringTrialtargetprob * 100), "Estimate"),
-              x = TDtargetDuringTrialEstimate, y = 0, hjust = -0.1, vjust = -20, size = 5, colour = "orange"
-            )
-        }
-
-        if (signif(TDtargetEndOfTrialEstimate, 4) < LowestDose | signif(TDtargetEndOfTrialEstimate, 4) > max(data@doseGrid)) {
-          if (SIM == FALSE) {
-            plot1 <- plot1
-            print(paste(paste("Estimated TD", EndOfTrialtargetprob * 100), paste("=", paste(TDtargetEndOfTrialEstimate, " not within dose Grid"))))
-          } else {
-            plot1 <- plot1
-          }
-        } else {
-          plot1 <- plot1 +
-            geom_vline(xintercept = TDtargetEndOfTrialEstimate, colour = "violet", lwd = 1.1) +
-            annotate("text",
-              label = paste(paste("TD", EndOfTrialtargetprob * 100), "Estimate"),
-              x = TDtargetEndOfTrialEstimate, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "violet"
-            )
-        }
-
-        if (signif(Gstar, 4) < LowestDose | signif(Gstar, 4) > max(data@doseGrid)) {
-          if (SIM == FALSE) {
-            plot1 <- plot1
-            print(paste("Estimated Gstar=", paste(Gstar, " not within dose Grid")))
-          } else {
-            plot1 <- plot1
-          }
-        } else {
-          plot1 <- plot1 +
-            geom_vline(xintercept = Gstar, colour = "green", lwd = 1.1) +
-            annotate("text",
-              label = " Gstar Estimate",
-              x = Gstar, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "green"
-            )
-        }
-
-
-        if (doselimit > max(data@doseGrid)) {
-          maxdoselimit <- max(data@doseGrid)
-        } else {
-          maxdoselimit <- doselimit
-        }
-
-        plot1 <- plot1 +
-          geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
-          geom_text(
-            data =
-              data.frame(x = maxdoselimit),
-            aes(x, 0,
-              label = "Max", hjust = +1, vjust = -35
-            ),
-            colour = "red"
-          )
-
-        plot1 <- plot1 +
-          geom_vline(xintercept = ret, colour = "blue", lwd = 1.1) +
-          geom_text(
-            data =
-              data.frame(x = ret),
-            aes(x, 0,
-              label = "Next", hjust = 0.1, vjust = -30
-            ),
-            colour = "blue"
-          )
-
-
-
-        ## return next best dose and plot
-        return(list(
-          nextdose = ret,
-          DLEDuringTrialtarget = DuringTrialtargetprob,
-          TDtargetDuringTrialEstimate = TDtargetDuringTrialEstimate,
-          TDtargetDuringTrialAtDoseGrid = retD,
-          DLEEndOfTrialtarget = EndOfTrialtargetprob,
-          TDtargetEndOfTrialEstimate = TDtargetEndOfTrialEstimate,
-          TDtargetEndOfTrialAtDoseGrid = retE,
-          GstarEstimate = Gstar,
-          GstarAtDoseGrid = Gstarret,
-          CITDEOT = CITDEOT,
-          ratioTDEOT = ratioTDEOT,
-          CIGstar = CIGstar,
-          ratioGstar = ratioGstar,
-          plot = plot1
-        ))
-      } else if (is(Effmodel, "EffFlexi")) {
-
-        ## first get the probDLE samples
-        points <- data@doseGrid
-        probDLESamples <- matrix(
-          nrow = sampleSize(samples@options),
-          ncol = length(points)
-        )
-
-        ## evaluate the probs, for all gain samples.
-        for (i in seq_along(points))
-        {
-          ## Now we want to evaluate for the
-          ## following dose:
-          probDLESamples[, i] <- prob(
-            dose = points[i],
-            model = model,
-            samples = samples
-          )
-        }
-        probDLE <- apply(probDLESamples, 2, FUN = nextBest@TDderive)
-
-        DuringTrialtargetprob <- nextBest@DLEDuringTrialtarget
-        EndOfTrialtargetprob <- nextBest@DLEEndOfTrialtarget
-
-        ## Find the TDtarget samples for During Trial and End of trial
-
-
-        TDtargetEndOfTrialSamples <- dose(
-          x = EndOfTrialtargetprob,
-          model = model,
-          samples = samples
-        )
-
-
-        TDtargetDuringTrialSamples <- dose(
-          x = DuringTrialtargetprob,
-          model = model,
-          samples = samples
-        )
-
-
-
-        ## Find the TDtarget Estimate for During Trial and End of trial
-
-
-        TDtargetEndOfTrialEstimate <- as.numeric(nextBest@TDderive(TDtargetEndOfTrialSamples))
-        ## Ensure the estimate is within dose range
-        # TDtargetEndOfTrialEstimate <- min(TDtargetEndOfTrialEstimate,max(data@doseGrid))
-
-
-        TDtargetDuringTrialEstimate <- as.numeric(nextBest@TDderive(TDtargetDuringTrialSamples))
-
-        ## Ensure the estimate is within dose range
-        # TDtargetDuringTrialEstimate <- min(TDtargetDuringTrialEstimate,max(data@doseGrid))
-
-
-        ## we have to get samples from the gain values at all dose levels
-
-        ExpEffsamples <- Effsamples@data$ExpEff
-
-        ExpEff <- apply(ExpEffsamples, 2, FUN = nextBest@Gstarderive)
-
-
-        GainSamples <- matrix(
-          nrow = sampleSize(samples@options),
-          ncol = length(points)
-        )
-
-        ## evaluate the probs, for all gain samples.
-        for (i in seq_along(points))
-        {
-          ## Now we want to evaluate for the
-          ## following dose:
-          GainSamples[, i] <- gain(
-            dose = points[i],
-            model,
-            samples,
-            Effmodel,
-            Effsamples
-          )
-        }
-
-        ## Find the maximum gain value samples
-        MaxGainSamples <- apply(GainSamples, 1, max)
-
-        ## Obtain Gstar samples, samples for the dose level which gives the maximum gain value
-        IndexG <- apply(GainSamples, 1, which.max)
-        GstarSamples <- data@doseGrid[IndexG]
-
-        ## Obtain the Gstar estimate which is the 50th percentile of the Gstar samples
-        Gstar <- as.numeric(nextBest@Gstarderive(GstarSamples))
-        ## Ensure the estimate is within dose range
-
-        # Gstar <- min(Gstar,max(data@doseGrid))
-
-        gainvalues <- apply(GainSamples, 2, FUN = nextBest@Gstarderive)
-
-        dosesOK <- which(data@doseGrid <= doselimit)
-
-        ## For placebo design, if safety allow, exclude placebo from
-        ## the recommended next doses
-        if (data@placebo & (length(dosesOK) > 1L)) {
-          dosesOK <- dosesOK[-1]
-        }
-
-        ## FIND the next dose which is the minimum between TDtargetDuringTrial and Gstar
-        nextdose <- min(TDtargetDuringTrialEstimate, Gstar)
-
-        ## Find the dose level in doseGrid closest below nextdose
-
-        index <- suppressWarnings(max(which((signif(nextdose, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        ret <- data@doseGrid[dosesOK][index]
-
-        ## Find the dose level in doseGrid closest below TDtargetEndOfTrial
-
-        indexE <- suppressWarnings(max(which((signif(TDtargetEndOfTrialEstimate, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        retE <- data@doseGrid[indexE]
-
-        ## Find the dose level in doseGrid closest below TDtargetDuringTrial
-
-        indexD <- suppressWarnings(max(which((signif(TDtargetDuringTrialEstimate, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        retD <- data@doseGrid[indexD]
-
-        ## Find the dose level in doseGrid closest below Gstar
-
-        Gstarindex <- suppressWarnings(max(which((signif(Gstar, digits = 4) - data@doseGrid[dosesOK]) >= 0)))
-
-
-        Gstarret <- data@doseGrid[Gstarindex]
-
-        ## Find the 95% credibility interval of Gstar and its ratio of the upper to the lower limit
-        CIGstar <- as.numeric(quantile(GstarSamples, probs = c(0.025, 0.975)))
-        ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
-
-        ## Find the 95% credibility interval of TDtargetEndOfTrial and its ratio of the upper to the lower limit
-        CITDEOT <- as.numeric(quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975)))
-        ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
-
-
-        plotData <- data.frame(
-          dose = rep(data@doseGrid, 3),
-          values = c(
-            probDLE,
-            ExpEff,
-            gainvalues
-          )
-        )
-
-        gdata <- with(
-          plotData,
-          data.frame(
-            x = dose,
-            y = values,
-            group = c(
-              rep("p(DLE)", length(data@doseGrid)),
-              rep("Expected Efficacy", length(data@doseGrid)),
-              rep("Gain", length(data@doseGrid))
-            ),
-            Type = factor("Estimate", levels = "Estimate")
-          )
-        )
-
-
-        ## produce plot
-        plot1 <- ggplot() +
-          geom_histogram(
-            data =
-              data.frame(x = GstarSamples),
-            aes(x = x),
-            fill = "darkgreen", colour = "green3", binwidth = 25
-          ) +
-          xlab("Gstar") +
-          xlim(c(0, max(data@doseGrid))) +
-          ylab("Posterior density")
-
-        # if(data@placebo) {
-        # n <- length(data@doseGrid)
-        # LowestDose <- sort(data@doseGrid)[2]} else {
-        LowestDose <- min(data@doseGrid)
-        # }
-
-
-        if (signif(TDtargetDuringTrialEstimate, 4) < LowestDose | signif(TDtargetDuringTrialEstimate, 4) > max(data@doseGrid)) {
-          if (SIM == FALSE) {
-            plot1 <- plot1
-            print(paste(paste("Estimated TD", DuringTrialtargetprob * 100), paste("=", paste(TDtargetDuringTrialEstimate, " not within dose Grid"))))
-          } else {
-            plo1 <- plot1
-          }
-        } else {
-          plot1 <- plot1 +
-            geom_vline(xintercept = TDtargetDuringTrialEstimate, colour = "orange", lwd = 1.1) +
-            annotate("text",
-              label = paste(paste("TD", DuringTrialtargetprob * 100), "Estimate"),
-              x = TDtargetDuringTrialEstimate, y = 0, hjust = -0.1, vjust = -20, size = 5, colour = "orange"
-            )
-        }
-
-        if (signif(TDtargetEndOfTrialEstimate, 4) < LowestDose | signif(TDtargetEndOfTrialEstimate, 4) > max(data@doseGrid)) {
-          if (SIM == FALSE) {
-            plot1 <- plot1
-            print(paste(paste("Estimated TD", EndOfTrialtargetprob * 100), paste("=", paste(TDtargetEndOfTrialEstimate, " not within dose Grid"))))
-          } else {
-            plot1 <- plot1
-          }
-        } else {
-          plot1 <- plot1 +
-            geom_vline(xintercept = TDtargetEndOfTrialEstimate, colour = "violet", lwd = 1.1) +
-            annotate("text",
-              label = paste(paste("TD", EndOfTrialtargetprob * 100), "Estimate"),
-              x = TDtargetEndOfTrialEstimate, y = 0, hjust = -0.1, vjust = -25, size = 5, colour = "violet"
-            )
-        }
-
-        if (signif(Gstar, 4) < LowestDose | signif(Gstar, 4) > max(data@doseGrid)) {
-          if (SIM == FALSE) {
-            plot1 <- plot1
-            print(paste("Estimated Gstar=", paste(Gstar, " not within dose Grid")))
-          } else {
-            plot1 <- plot1
-          }
-        } else {
-          plot1 <- plot1 +
-            geom_vline(xintercept = Gstar, colour = "green", lwd = 1.1) +
-            annotate("text",
-              label = " Gstar Estimate",
-              x = Gstar, y = 0, hjust = +0.6, vjust = -25, size = 5, colour = "green"
-            )
-        }
-
-
-        if (doselimit > max(data@doseGrid)) {
-          maxdoselimit <- max(data@doseGrid)
-        } else {
-          maxdoselimit <- doselimit
-        }
-
-        plot1 <- plot1 +
-          geom_vline(xintercept = maxdoselimit, colour = "red", lwd = 1.1) +
-          geom_text(
-            data =
-              data.frame(x = maxdoselimit),
-            aes(x, 0,
-              label = "Max", hjust = +1, vjust = -35
-            ),
-            colour = "red"
-          )
-
-        plot1 <- plot1 +
-          geom_vline(xintercept = ret, colour = "blue", lwd = 1.1) +
-          geom_text(
-            data =
-              data.frame(x = ret),
-            aes(x, 0,
-              label = "Next", hjust = 0.1, vjust = -30
-            ),
-            colour = "blue"
-          )
-
-
-
-        ## return next best dose and plot
-        return(list(
-          nextdose = ret,
-          DLEDuringTrialtarget = DuringTrialtargetprob,
-          TDtargetDuringTrialEstimate = TDtargetDuringTrialEstimate,
-          TDtargetDuringTrialAtDoseGrid = retD,
-          DLEEndOfTrialtarget = EndOfTrialtargetprob,
-          TDtargetEndOfTrialEstimate = TDtargetEndOfTrialEstimate,
-          TDtargetEndOfTrialAtDoseGrid = retE,
-          GstarEstimate = Gstar,
-          GstarAtDoseGrid = Gstarret,
-          CITDEOT = CITDEOT,
-          ratioTDEOT = ratioTDEOT,
-          CIGstar = CIGstar,
-          ratioGstar = ratioGstar,
-          plot = plot1
-        ))
-      } else {
-        stop("Effmodel needs to be of class Effloglog or EffFlexi")
-      }
     }
 )
 
