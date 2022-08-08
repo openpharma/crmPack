@@ -8,12 +8,7 @@ h_next_best_mg_doses_at_grid(
   dose_target_drt,
   dose_target_eot,
   dose_mg,
-  prob_target_eot,
-  doses_eligible,
-  placebo,
-  model,
-  model_eff,
-  compute_ci = TRUE
+  doses_eligible
 )
 }
 \arguments{
@@ -23,32 +18,13 @@ h_next_best_mg_doses_at_grid(
 
 \item{dose_mg}{(\code{number})\cr the dose corresponding to the maximum gain.}
 
-\item{prob_target_eot}{(\code{proportion})\cr target DLT probability at the end of the trial.}
-
 \item{doses_eligible}{(\code{numeric})\cr eligible doses from the grid.}
-
-\item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level in the dose grid used
-is considered as placebo. This is needed to adjust the max gain dose using
-efficacy constant value. If the \code{placebo} was used, then the \code{model_eff@const}
-is added to \code{dose_mg}.}
-
-\item{model}{(\code{ModelTox})\cr the DLT model.}
-
-\item{model_eff}{(\code{Effloglog})\cr the efficacy model.}
-
-\item{compute_ci}{(\code{flag})\cr if \code{TRUE} the 95\% credibility intervals (and
-corresponding ratios) are computed for target dose (end of the trial) and
-the maximum gain dose.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Helper function that for a given target doses finds the dose in grid that is
 closest and below the target. There are four different targets in the context
-of \code{\link[=nextBest-NextBestMaxGain]{nextBest-NextBestMaxGain()}} method: min(\code{dose_mg}, \code{dose_target_drt}),
+of \code{\link[=nextBest-NextBestMaxGain]{nextBest-NextBestMaxGain()}} method: \eqn{min(`dose_mg`, `dose_target_drt`)},
 \code{dose_mg}, \code{dose_target_drt} or \code{dose_target_eot}.
-}
-\note{
-For placebo design, if safety allows, exclude placebo from the
-recommended next doses.
 }
