@@ -41,15 +41,34 @@ test_that("h_info_theory_dist throws the error for wrong asymmetry", {
   )
 })
 
-### h_delta_g_yeung ----
+### h_next_best_mg_ci ----
 
-test_that("h_delta_g_yeung works as expected", {
-  model <- h_get_logistic_indep_beta()
-  eff_model <- h_get_eff_log_log()
+test_that("h_next_best_mg_ci works as expected", {
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
 
-  result <- h_delta_g_yeung(10, model, eff_model)
-  expected <- matrix(c(-0.7573726, -8.2992172, -0.2311984, -247.2734106), ncol = 1)
+  result <- h_next_best_mg_ci(42.7, 84, 0.3, FALSE, model_dlt, model_eff)
+  expected <- list(
+    ci_dose_target = c(11.071039, 164.690056),
+    ci_ratio_dose_target = 14.8757545,
+    ci_dose_mg = c(23.127108, 305.096515),
+    ci_ratio_dose_mg = 13.1921604
+  )
   expect_equal(result, expected)
+})
+
+test_that("h_next_best_mg_ci works as expected (with placebo)", {
+  model_dlt <- h_get_logistic_indep_beta()
+  model_eff <- h_get_eff_log_log(const = 5)
+
+  result <- h_next_best_mg_ci(42.7, 84, 0.3, TRUE, model_dlt, model_eff)
+  expected <- list(
+    ci_dose_target = c(11.071039, 164.690056),
+    ci_ratio_dose_target = 14.8757545,
+    ci_dose_mg = c(26.97598, 293.63161),
+    ci_ratio_dose_mg = 10.88493
+  )
+  expect_equal(result, expected, tolerance = 1e-6)
 })
 
 ## next best at grid ----
@@ -57,22 +76,23 @@ test_that("h_delta_g_yeung works as expected", {
 ### h_next_best_mg_doses_at_grid ----
 
 test_that("h_next_best_mg_doses_at_grid works as expected", {
-  data <- h_get_data_dual(placebo = FALSE)
-  model_dlt <- h_get_logistic_indep_beta()
-  model_eff <- h_get_eff_log_log(const = 5)
-
-  result <- h_next_best_mg_doses_at_grid(
-    52.3, 42.7, 84, 0.3, seq(25, 200, 25), FALSE, model_dlt, model_eff
-  )
+  result <- h_next_best_mg_doses_at_grid(52.3, 42.7, 84, seq(25, 200, 25))
   expected <- list(
     next_dose = 50,
     next_dose_drt = 50,
     next_dose_eot = 25,
-    next_dose_mg = 75,
-    ci_td_eot = c(11.071039, 164.690056),
-    ci_ratio_td_eot = 14.8757545,
-    ci_dose_mg = c(23.127108, 305.096515),
-    ci_ratio_dose_mg = 13.1921604
+    next_dose_mg = 75
+  )
+  expect_equal(result, expected)
+})
+
+test_that("h_next_best_mg_doses_at_grid works as expected (td > mg)", {
+  result <- h_next_best_mg_doses_at_grid(94, 42.7, 84, seq(25, 200, 25))
+  expected <- list(
+    next_dose = 75,
+    next_dose_drt = 75,
+    next_dose_eot = 25,
+    next_dose_mg = 75
   )
   expect_equal(result, expected)
 })

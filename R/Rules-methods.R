@@ -954,6 +954,7 @@ setMethod(
     }
 
     # Get eligible doses that do not exceed maximum possible dose.
+    # For placebo design, if safety allows, exclude placebo from the recommended next doses.
     is_dose_eligible <- data@doseGrid <= doselimit
     if (data@placebo && sum(is_dose_eligible) > 1L) {
       is_dose_eligible <- is_dose_eligible[-1]
@@ -962,14 +963,20 @@ setMethod(
 
     # Get closest grid doses for a given target doses.
     nb_doses_at_grid <- h_next_best_mg_doses_at_grid(
-      dose_target_drt,
-      dose_target_eot,
-      dose_mg,
-      prob_target_eot,
-      doses_eligible,
-      data@placebo,
-      model,
-      Effmodel
+      dose_target_drt = dose_target_drt,
+      dose_target_eot = dose_target_eot,
+      dose_mg = dose_mg,
+      doses_eligible = doses_eligible
+    )
+
+    # 95% credibility intervals and corresponding ratios for maximum gain dose and target dose eot.
+    ci <- h_next_best_mg_ci(
+      dose_target = dose_target_eot,
+      dose_mg = dose_mg,
+      prob_target = prob_target_eot,
+      placebo = data@placebo,
+      model = model,
+      model_eff = Effmodel
     )
 
     # Build plot.
@@ -997,10 +1004,10 @@ setMethod(
       TDtargetEndOfTrialAtDoseGrid = nb_doses_at_grid$next_dose_eot,
       GstarEstimate = dose_mg,
       GstarAtDoseGrid = nb_doses_at_grid$next_dose_mg,
-      CITDEOT = nb_doses_at_grid$ci_td_eot,
-      ratioTDEOT = nb_doses_at_grid$ci_ratio_td_eot,
-      CIGstar = nb_doses_at_grid$ci_dose_mg,
-      ratioGstar = nb_doses_at_grid$ci_ratio_dose_mg,
+      CITDEOT = ci$ci_dose_target,
+      ratioTDEOT = ci$ci_ratio_dose_target,
+      CIGstar = ci$ci_dose_mg,
+      ratioGstar = ci$ci_ratio_dose_mg,
       plot = p
     )
   }
@@ -1075,6 +1082,7 @@ setMethod(
     }
 
     # Get eligible doses that do not exceed maximum possible dose.
+    # For placebo design, if safety allows, exclude placebo from the recommended next doses.
     is_dose_eligible <- data@doseGrid <= doselimit
     if (data@placebo && sum(is_dose_eligible) > 1L) {
       is_dose_eligible <- is_dose_eligible[-1]
@@ -1083,15 +1091,10 @@ setMethod(
 
     # Get closest grid doses for a given target doses.
     nb_doses_at_grid <- h_next_best_mg_doses_at_grid(
-      dose_target_drt,
-      dose_target_eot,
-      dose_mg,
-      prob_target_eot,
-      doses_eligible,
-      data@placebo,
-      model,
-      Effmodel,
-      compute_ci = FALSE
+      dose_target_drt = dose_target_drt,
+      dose_target_eot = dose_target_eot,
+      dose_mg = dose_mg,
+      doses_eligible = doses_eligible
     )
 
     # 95% credibility intervals and corresponding ratios for maximum gain dose and target dose eot.

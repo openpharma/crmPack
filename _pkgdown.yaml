@@ -101,7 +101,7 @@ reference:
       - h_model_dual_endpoint_sigma2betaW
       - h_model_dual_endpoint_beta
       - h_info_theory_dist
-      - h_delta_g_yeung
+      - h_next_best_mg_ci
       - h_next_best_mg_doses_at_grid
       - h_next_best_tdsamples_plot
       - h_next_best_td_plot
