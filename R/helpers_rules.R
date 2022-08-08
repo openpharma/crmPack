@@ -118,7 +118,7 @@ h_next_best_mg_ci <- function(dose_target,
 #'
 #' Helper function that for a given target doses finds the dose in grid that is
 #' closest and below the target. There are four different targets in the context
-#' of [`nextBest-NextBestMaxGain()`] method: \eqm{min(`dose_mg`, `dose_target_drt`)},
+#' of [`nextBest-NextBestMaxGain()`] method: \eqn{min(`dose_mg`, `dose_target_drt`)},
 #' `dose_mg`, `dose_target_drt` or `dose_target_eot`.
 #'
 #' @param dose_target_drt (`number`)\cr target dose estimate during the trial.

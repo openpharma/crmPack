@@ -25,6 +25,6 @@ h_next_best_mg_doses_at_grid(
 
 Helper function that for a given target doses finds the dose in grid that is
 closest and below the target. There are four different targets in the context
-of \code{\link[=nextBest-NextBestMaxGain]{nextBest-NextBestMaxGain()}} method: \eqm{min(\code{dose_mg}, \code{dose_target_drt})},
+of \code{\link[=nextBest-NextBestMaxGain]{nextBest-NextBestMaxGain()}} method: \eqn{min(`dose_mg`, `dose_target_drt`)},
 \code{dose_mg}, \code{dose_target_drt} or \code{dose_target_eot}.
 }
