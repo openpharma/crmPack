@@ -351,7 +351,11 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
+
+
                   }
+
+
 
                   ## get the fit
                   thisFit <- fit(object=thisSamples,
@@ -359,6 +363,10 @@ setMethod("simulate",
                                     data=thisData)
 
                   ## return the results
+
+
+                  if(class(object@stopping) == "StoppingAny"){
+
                   thisResult <-
                       list(data=thisData,
                            dose=thisDose,
@@ -369,8 +377,36 @@ setMethod("simulate",
                            attr(stopit,
                                 "message"),
                            highestStop = attr(stopit, "highest"))
+
                   return(thisResult)
+
+
+                  } else {
+
+                      attr(stopit, "highest") <- stats::setNames(
+                          stopit,
+                          as.character(object@stopping)
+
+                      )
+
+                      thisResult <-
+                          list(data=thisData,
+                               dose=thisDose,
+                               fit=
+                                   subset(thisFit,
+                                          select=c(middle, lower, upper)),
+                               stop=
+                                   attr(stopit,
+                                        "message"),
+                               highestStop = attr(stopit, "highest"))
+
+
+                      return(thisResult)
+                  }
+
               }
+
+
 
               resultList <- getResultList(fun=runSim,
                                           nsim=nsim,
@@ -384,12 +420,14 @@ setMethod("simulate",
                                             "mcmcOptions"),
                                           parallel=if(parallel) nCores else NULL)
 
+
+
               ## put everything in the Simulations format:
 
               ## setup the list for the simulated data objects
               dataList <- lapply(resultList, "[[", "data")
 
-              ## the vector of the final dose recommendations
+#              ## the vector of the final dose recommendations
               recommendedDoses <- as.numeric(sapply(resultList, "[[", "dose"))
 
               ## setup the list for the final fits
@@ -398,9 +436,15 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+
+
               ## highest level stopping reasons
+
               highestStoppingParts <- lapply(resultList, "[[", "highestStop")
+
+              print(highestStoppingParts)
               highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
+            print(highestStoppingMatrix)
 
               ## return the results in the Simulations class object
 
@@ -530,6 +574,7 @@ setMethod("simulate",
                       thisOutcome <- nextBest(object@nextBest,
                                               data=thisData)
 
+                      browser()
                       thisDose <- thisOutcome$value
                       stopit <- thisOutcome$stopHere
                   }

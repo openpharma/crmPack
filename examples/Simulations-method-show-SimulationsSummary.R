@@ -23,12 +23,12 @@ mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
 mySize <- maxSize(mySize1, mySize2)
 
 # Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping1 <- StoppingMinCohorts(nCohorts = 4)
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
 
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+
 
 as.character(StoppingMinCohorts(nCohorts = 4))
 as.character(StoppingCohortsNearDose(n=5,percentage = 76))
@@ -44,8 +44,14 @@ as.character(StoppingGstarCIRatio(targetRatio = 5,targetEndOfTrial = 0.3))
 as.character(StoppingGstarCIRatio(targetRatio = 5,targetEndOfTrial = 0.3))
 
 
-mystoppinglist <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
-                           summary=any)
+
+
+myStoppingAny <- (myStopping1 & myStopping2) | myStopping3
+myStoppingAll <- myStopping1 & myStopping2
+
+
+#mystoppinglist <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
+#                           summary=any)
 
 as.character(mystoppinglist)
 
@@ -58,7 +64,7 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 # Initialize the design
 design <- Design(model=model,
                  nextBest=myNextBest,
-                 stopping=myStopping,
+                 stopping=myStoppingAny,
                  increments=myIncrements,
                  cohortSize=mySize,
                  data=emptydata,
@@ -76,7 +82,7 @@ options <- McmcOptions(burnin=100,
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
                                        truth=myTruth,
-                                       nsim=2,
+                                       nsim=5,
                                        seed=819,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
@@ -84,4 +90,5 @@ time <- system.time(mySims <- simulate(design,
 # Show the Summary of the Simulations
 show(summary(mySims,truth=myTruth))
 
+summary(mySims,truth=myTruth)
 # nolint end

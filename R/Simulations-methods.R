@@ -450,6 +450,8 @@ setMethod("summary",
 
               highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
 
+
+
               ## give back an object of class GeneralSimulationsSummary,
               ## for which we then define a print / plot method
                 ret <-
@@ -716,14 +718,16 @@ setMethod("show",
                   "simulations\n\n")
 
 
+              cat("Stopping rules:\n")
               for(i in 1:length(object@highestStoppingReport)){
                 cat(paste(names(object@highestStoppingReport[i]),":"),
                     r$dfSave(object@highestStoppingReport[i],
                              "highestStoppingReport"),
                     "%\n")
+
               }
 
-              cat("Target toxicity interval was",
+              cat("\nTarget toxicity interval was",
                   r$dfSave(paste(round(object@target * 100),
                                collapse=", "),
                          "targetToxInterval"),
