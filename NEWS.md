@@ -1,4 +1,4 @@
-# Version 1.0.9000.9055
+# Version 1.0.9000.9056
 * Added new helper functions for `nextBest` methods, particularly for plotting
   and finding the dose closest to the grid.
 * Added new helper function `h_dose_grid_range`.
