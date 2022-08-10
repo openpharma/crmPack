@@ -171,8 +171,8 @@ setMethod(
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
-    is_dose_eligible <- is_dose_eligible & (prob_overdose < nextBest@max_overdose_prob)
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+      (prob_overdose < nextBest@max_overdose_prob)
 
     next_best <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
@@ -346,8 +346,8 @@ setMethod("nextBest",
     )
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
-    is_dose_eligible <- is_dose_eligible & (prob_overdose < nextBest@max_overdose_prob)
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+      (prob_overdose < nextBest@max_overdose_prob)
 
     # Next best dose is the dose with the minimum loss function.
     next_best <- if (any(is_dose_eligible)) {
@@ -574,8 +574,8 @@ setMethod(
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
 
-    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
-    is_dose_eligible <- is_dose_eligible & (prob_overdose < nextBest@max_overdose_prob)
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+      (prob_overdose < nextBest@max_overdose_prob)
 
     next_best <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher the threshold, then take that
