@@ -8,7 +8,9 @@ h_next_best_mg_doses_at_grid(
   dose_target_drt,
   dose_target_eot,
   dose_mg,
-  doses_eligible
+  dose_grid,
+  doselimit,
+  placebo
 )
 }
 \arguments{
@@ -18,7 +20,12 @@ h_next_best_mg_doses_at_grid(
 
 \item{dose_mg}{(\code{number})\cr the dose corresponding to the maximum gain.}
 
-\item{doses_eligible}{(\code{numeric})\cr eligible doses from the grid.}
+\item{dose_grid}{(\code{numeric})\cr all possible doses.}
+
+\item{doselimit}{(\code{number})\cr the maximum allowed next dose.}
+
+\item{placebo}{(\code{flag})\cr if \code{TRUE} the first dose level in the \code{dose_grid}
+is considered as placebo.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

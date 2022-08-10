@@ -77,13 +77,12 @@ setMethod(
                         ...) {
     doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
-    # Which doses on grid are <= maximum possible dose.
-    doses_eligible <- data@doseGrid[data@doseGrid <= doselimit]
-
     # Generate the MTD samples and derive the next best dose.
     mtd_samples <- dose(x = nextBest@target, model, samples)
     mtd_estimate <- nextBest@derive(mtd_samples = mtd_samples)
+
     # Round to the next possible grid point.
+    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
     min_dist_ind <- which.min(abs(doses_eligible - mtd_estimate))
     next_best <- doses_eligible[min_dist_ind]
 
@@ -172,7 +171,8 @@ setMethod(
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- (data@doseGrid <= doselimit) & (prob_overdose < nextBest@max_overdose_prob)
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+      (prob_overdose < nextBest@max_overdose_prob)
 
     next_best <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
@@ -346,8 +346,9 @@ setMethod("nextBest",
     )
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
-    is_dose_eligible <- (data@doseGrid <= doselimit) & (prob_overdose < nextBest@max_overdose_prob)
-    doses_eligible <- data@doseGrid[is_dose_eligible]
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+      (prob_overdose < nextBest@max_overdose_prob)
+
     # Next best dose is the dose with the minimum loss function.
     next_best <- if (any(is_dose_eligible)) {
       next_best_level <- which.min(posterior_loss[is_dose_eligible])
@@ -572,11 +573,9 @@ setMethod(
     # eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
-    is_dose_eligible <- (data@doseGrid <= doselimit) & (prob_overdose < nextBest@max_overdose_prob)
-    # Exclude placebo (if any) from the recommended next doses.
-    if (data@placebo & data@nObs >= 2L) {
-      is_dose_eligible <- is_dose_eligible[-1]
-    }
+
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
+      (prob_overdose < nextBest@max_overdose_prob)
 
     next_best <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher the threshold, then take that
@@ -709,7 +708,7 @@ setMethod(
 
     criterion <- colMeans(h_info_theory_dist(prob_samples, nextBest@target, nextBest@asymmetry))
 
-    is_dose_eligible <- data@doseGrid <= doselimit
+    is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
     doses_eligible <- data@doseGrid[is_dose_eligible]
     next_best_level <- which.min(criterion[is_dose_eligible])
     next_best <- doses_eligible[next_best_level]
@@ -747,13 +746,11 @@ setMethod(
     target_in_trial_est <- as.numeric(nextBest@derive(TDsamples = target_in_trial_samples))
     target_trial_end_est <- as.numeric(nextBest@derive(TDsamples = target_trial_end_samples))
 
-    # Get eligible doses that do not exceed maximum possible dose.
-    is_dose_eligible <- data@doseGrid <= doselimit
-    doses_eligible <- data@doseGrid[is_dose_eligible]
-
     # Find the next doses in the doseGrid. The next dose is the dose at level
     # closest and below the target_in_trial_est (or target_trial_end_est, respectively).
     # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+
     next_best_level <- h_find_interval(target_in_trial_est, doses_eligible)
     next_best <- doses_eligible[next_best_level]
 
@@ -828,13 +825,11 @@ setMethod(
     dose_target_drt <- dose(x = prob_target_drt, model)
     dose_target_eot <- dose(x = prob_target_eot, model)
 
-    # Get eligible doses that do not exceed maximum possible dose.
-    is_dose_eligible <- data@doseGrid <= doselimit
-    doses_eligible <- data@doseGrid[is_dose_eligible]
-
     # Find the next best doses in the doseGrid. The next best dose is the dose
     # at level closest and below the target dose estimate.
     # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+
     next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
     next_dose_drt <- doses_eligible[next_dose_lev_drt]
 
@@ -953,20 +948,14 @@ setMethod(
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
-    # Get eligible doses that do not exceed maximum possible dose.
-    # For placebo design, if safety allows, exclude placebo from the recommended next doses.
-    is_dose_eligible <- data@doseGrid <= doselimit
-    if (data@placebo && sum(is_dose_eligible) > 1L) {
-      is_dose_eligible <- is_dose_eligible[-1]
-    }
-    doses_eligible <- data@doseGrid[is_dose_eligible]
-
     # Get closest grid doses for a given target doses.
     nb_doses_at_grid <- h_next_best_mg_doses_at_grid(
       dose_target_drt = dose_target_drt,
       dose_target_eot = dose_target_eot,
       dose_mg = dose_mg,
-      doses_eligible = doses_eligible
+      dose_grid = data@doseGrid,
+      doselimit = doselimit,
+      placebo = data@placebo
     )
 
     # 95% credibility intervals and corresponding ratios for maximum gain dose and target dose eot.
@@ -1081,20 +1070,14 @@ setMethod(
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
-    # Get eligible doses that do not exceed maximum possible dose.
-    # For placebo design, if safety allows, exclude placebo from the recommended next doses.
-    is_dose_eligible <- data@doseGrid <= doselimit
-    if (data@placebo && sum(is_dose_eligible) > 1L) {
-      is_dose_eligible <- is_dose_eligible[-1]
-    }
-    doses_eligible <- data@doseGrid[is_dose_eligible]
-
     # Get closest grid doses for a given target doses.
     nb_doses_at_grid <- h_next_best_mg_doses_at_grid(
       dose_target_drt = dose_target_drt,
       dose_target_eot = dose_target_eot,
       dose_mg = dose_mg,
-      doses_eligible = doses_eligible
+      dose_grid = data@doseGrid,
+      doselimit = doselimit,
+      placebo = data@placebo
     )
 
     # 95% credibility intervals and corresponding ratios for maximum gain dose and target dose eot.
