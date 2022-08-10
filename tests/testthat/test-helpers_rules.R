@@ -76,7 +76,7 @@ test_that("h_next_best_mg_ci works as expected (with placebo)", {
 ### h_next_best_mg_doses_at_grid ----
 
 test_that("h_next_best_mg_doses_at_grid works as expected", {
-  result <- h_next_best_mg_doses_at_grid(52.3, 42.7, 84, seq(25, 200, 25))
+  result <- h_next_best_mg_doses_at_grid(52.3, 42.7, 84, seq(25, 200, 25), 100, FALSE)
   expected <- list(
     next_dose = 50,
     next_dose_drt = 50,
@@ -86,8 +86,30 @@ test_that("h_next_best_mg_doses_at_grid works as expected", {
   expect_equal(result, expected)
 })
 
+test_that("h_next_best_mg_doses_at_grid works as expected (small doselimit)", {
+  result <- h_next_best_mg_doses_at_grid(52.3, 42.7, 84, seq(25, 200, 25), 49, FALSE)
+  expected <- list(
+    next_dose = 25,
+    next_dose_drt = 25,
+    next_dose_eot = 25,
+    next_dose_mg = 25
+  )
+  expect_equal(result, expected)
+})
+
+test_that("h_next_best_mg_doses_at_grid works as expected (small doselimit, placebo)", {
+  result <- h_next_best_mg_doses_at_grid(24, 42.7, 84, c(0.001, seq(25, 200, 25)), 49, TRUE)
+  expected <- list(
+    next_dose = NA_real_,
+    next_dose_drt = NA_real_,
+    next_dose_eot = 25,
+    next_dose_mg = 25
+  )
+  expect_equal(result, expected)
+})
+
 test_that("h_next_best_mg_doses_at_grid works as expected (td > mg)", {
-  result <- h_next_best_mg_doses_at_grid(94, 42.7, 84, seq(25, 200, 25))
+  result <- h_next_best_mg_doses_at_grid(94, 42.7, 84, seq(25, 200, 25), 100, FALSE)
   expected <- list(
     next_dose = 75,
     next_dose_drt = 75,
@@ -95,6 +117,63 @@ test_that("h_next_best_mg_doses_at_grid works as expected (td > mg)", {
     next_dose_mg = 75
   )
   expect_equal(result, expected)
+})
+
+## eligible doses ----
+
+### h_next_best_eligible_doses ----
+
+test_that("h_next_best_eligible_doses works as expected", {
+  dose_grid <- c(0.001, seq(25, 200, 25))
+
+  # doses
+  expect_identical(h_next_best_eligible_doses(dose_grid, 79, TRUE), dose_grid[2:4])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 250, TRUE), dose_grid[-1])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 200, TRUE), dose_grid[-1])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 75, TRUE), dose_grid[2:4])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 0.001, TRUE), dose_grid[1])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 0.00001, TRUE), numeric(0))
+
+  # levels
+  ftttf <- c(FALSE, rep(TRUE, 3), rep(FALSE, 5))
+  ft <- c(FALSE, rep(TRUE, 8))
+  expect_identical(h_next_best_eligible_doses(dose_grid, 79, TRUE, TRUE), ftttf)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 250, TRUE, TRUE), ft)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 200, TRUE, TRUE), ft)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 75, TRUE, TRUE), ftttf)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 0.001, TRUE, TRUE), !ft)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 0.00001, TRUE, TRUE), rep(FALSE, 9))
+})
+
+test_that("h_next_best_eligible_doses works as expected (no placebo)", {
+  dose_grid <- seq(25, 200, 25)
+
+  # doses
+  expect_identical(h_next_best_eligible_doses(dose_grid, 79, FALSE), dose_grid[1:3])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 250, FALSE), dose_grid)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 200, FALSE), dose_grid)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 75, FALSE), dose_grid[1:3])
+  expect_identical(h_next_best_eligible_doses(dose_grid, 1, FALSE), numeric(0))
+
+  # levels
+  tttf <- c(rep(TRUE, 3), rep(FALSE, 5))
+  all_true <- rep(TRUE, 8)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 79, FALSE, TRUE), tttf)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 250, FALSE, TRUE), all_true)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 200, FALSE, TRUE), all_true)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 75, FALSE, TRUE), tttf)
+  expect_identical(h_next_best_eligible_doses(dose_grid, 1, FALSE, TRUE), !all_true)
+})
+
+test_that("h_next_best_eligible_doses throws the error for empty dose grid or not sorted", {
+  expect_error(
+    h_next_best_eligible_doses(numeric(0), 80, FALSE),
+    "Assertion on 'dose_grid' failed: Must have length >= 1, but has length 0."
+  )
+  expect_error(
+    h_next_best_eligible_doses(c(2, 1), 80, FALSE),
+    "Assertion on 'dose_grid' failed: Must be sorted."
+  )
 })
 
 ## plot ----

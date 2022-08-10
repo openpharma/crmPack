@@ -712,15 +712,15 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 
   result <- nextBest(nb_mgs, 60, samples_dlt, model_dlt, data, model_eff, samples_eff)
   expected <- list(
-    nextdose = 25,
+    nextdose = 50,
     DLEDuringTrialtarget = 0.5,
     TDtargetDuringTrialEstimate = 182.9664,
-    TDtargetDuringTrialAtDoseGrid = 25,
+    TDtargetDuringTrialAtDoseGrid = 50,
     DLEEndOfTrialtarget = 0.45,
     TDtargetEndOfTrialEstimate = 144.8885,
-    TDtargetEndOfTrialAtDoseGrid = 25,
+    TDtargetEndOfTrialAtDoseGrid = 50,
     GstarEstimate = 110,
-    GstarAtDoseGrid = 25,
+    GstarAtDoseGrid = 50,
     CITDEOT = c(144.8885, 144.8885),
     ratioTDEOT = 1,
     CIGstar = c(32.5, 300.0),

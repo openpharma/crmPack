@@ -124,18 +124,25 @@ h_next_best_mg_ci <- function(dose_target,
 #' @param dose_target_drt (`number`)\cr target dose estimate during the trial.
 #' @param dose_target_eot (`number`)\cr target dose estimate at the end of the trial.
 #' @param dose_mg (`number`)\cr the dose corresponding to the maximum gain.
-#' @param doses_eligible (`numeric`)\cr eligible doses from the grid.
+#' @param dose_grid (`numeric`)\cr all possible doses.
+#' @param doselimit (`number`)\cr the maximum allowed next dose.
+#' @param placebo (`flag`)\cr if `TRUE` the first dose level in the `dose_grid`
+#'   is considered as placebo.
 #'
 #' @export
 #'
 h_next_best_mg_doses_at_grid <- function(dose_target_drt,
                                          dose_target_eot,
                                          dose_mg,
-                                         doses_eligible) {
+                                         dose_grid,
+                                         doselimit,
+                                         placebo
+                                         ) {
   assert_number(dose_target_drt, na.ok = TRUE)
   assert_number(dose_target_eot, na.ok = TRUE)
   assert_number(dose_mg, na.ok = TRUE)
-  assert_numeric(doses_eligible, finite = TRUE, any.missing = FALSE)
+
+  doses_eligible <- h_next_best_eligible_doses(dose_grid, doselimit, placebo)
 
   # h_find_interval assumes that elements in doses_eligible are strictly increasing.
   next_dose_lev <- h_find_interval(min(dose_mg, dose_target_drt), doses_eligible)
@@ -156,6 +163,54 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
     next_dose_eot = next_dose_eot,
     next_dose_mg = next_dose_mg
   )
+}
+
+## eligible doses ----
+
+#' Get Eligible Doses from the Dose Grid.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function that gets the eligible doses from the dose grid.
+#' The eligible doses are the doses which do not exceed a given
+#' `doselimit`. For placebo design, if safety allows (i.e. if there is at least
+#' one non-placebo dose which does not exceed the dose limit), the placebo dose
+#' it then excluded from the eligible doses.
+#'
+#' @param dose_grid (`numeric`)\cr all possible doses.
+#' @param doselimit (`number`)\cr the maximum allowed next dose.
+#' @param placebo (`flag`)\cr if `TRUE` the first dose level in the `dose_grid`
+#'   is considered as placebo.
+#' @param levels (`flag`)\cr if `TRUE` the levels of eligible doses are returned,
+#'   otherwise, the doses (default).
+#'
+#' @return A numeric vector with eligible doses or eligible dose levels if `levels`
+#'   flag is `TRUE`.
+#'
+#' @export
+#' @examples
+#' dose_grid <- c(0.001, seq(25, 200, 25))
+#' h_next_best_eligible_doses(dose_grid, 79, TRUE)
+#' h_next_best_eligible_doses(dose_grid, 24, TRUE)
+h_next_best_eligible_doses <- function(dose_grid,
+                                       doselimit,
+                                       placebo,
+                                       levels = FALSE) {
+  assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, min.len = 1L, sorted = TRUE)
+  assert_number(doselimit)
+  assert_flag(placebo)
+  assert_flag(levels)
+
+  is_dose_eligible <- dose_grid <= doselimit
+  if (placebo && sum(is_dose_eligible) > 1L) {
+    is_dose_eligible[1] <- FALSE
+  }
+
+  if (levels) {
+    is_dose_eligible
+  } else {
+    dose_grid[is_dose_eligible]
+  }
 }
 
 ## plot ----
