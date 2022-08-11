@@ -30,31 +30,31 @@
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMTD,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestMTD,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,DataParts}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestThreePlusThree,missing,missing,missing,Data}(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMinDist,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestMinDist,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestInfTheory,numeric,Samples,Model,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestInfTheory,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit, samples, model, data, ...)
+\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit, model, data, SIM = FALSE, ...)
+\S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, SIM = FALSE, ...)
 
-\S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(nextBest, doselimit, model, data, Effmodel, SIM = FALSE, ...)
+\S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(nextBest, doselimit = Inf, model, data, Effmodel, SIM = FALSE, ...)
 
 \S4method{nextBest}{NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual}(
   nextBest,
-  doselimit,
+  doselimit = Inf,
   samples,
   model,
   data,
@@ -68,8 +68,8 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 \item{nextBest}{(\code{NextBest})\cr the rule for the next best dose.}
 
 \item{doselimit}{(\code{number})\cr the maximum allowed next dose. If it is an
-empty vector, then no dose limit will be applied in the course of dose
-recommendation calculation, and a corresponding warning is given.}
+infinity (default), then essentially no dose limit will be applied in the
+course of dose recommendation calculation.}
 
 \item{samples}{(\code{Samples})\cr posterior samples from \code{model} parameters given
 \code{data}.}
