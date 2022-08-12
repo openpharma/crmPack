@@ -1,4 +1,4 @@
-# Version 1.0.9000.9056
+# Version 1.0.9000.9057
 * `doselimit` argument in `nextBest` method is now specified as `Inf` instead of
   `numeric(0)`.
 * Added new helper functions for `nextBest` methods, particularly for plotting
