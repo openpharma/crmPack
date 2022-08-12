@@ -18,8 +18,8 @@ NULL
 #'
 #' @param nextBest (`NextBest`)\cr the rule for the next best dose.
 #' @param doselimit (`number`)\cr the maximum allowed next dose. If it is an
-#'   empty vector, then no dose limit will be applied in the course of dose
-#'   recommendation calculation, and a corresponding warning is given.
+#'   infinity (default), then essentially no dose limit will be applied in the
+#'   course of dose recommendation calculation.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
 #' @param model (`Model`)\cr model that was used to generate the samples.
@@ -37,14 +37,9 @@ NULL
 #'
 setGeneric(
   name = "nextBest",
-  def = function(nextBest,
-                 doselimit,
-                 samples,
-                 model,
-                 data,
-                 ...) {
-    if (!missing(doselimit) && length(doselimit) != 0) {
-      assert_number(doselimit, lower = 0, finite = TRUE)
+  def = function(nextBest, doselimit, samples, model, data, ...) {
+    if (!missing(doselimit)) {
+      assert_number(doselimit, lower = 0, finite = FALSE)
     }
     standardGeneric("nextBest")
   },
@@ -69,13 +64,7 @@ setMethod(
     model = "Model",
     data = "Data"
   ),
-  definition = function(nextBest,
-                        doselimit,
-                        samples,
-                        model,
-                        data,
-                        ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Generate the MTD samples and derive the next best dose.
     mtd_samples <- dose(x = nextBest@target, model, samples)
@@ -159,8 +148,7 @@ setMethod(
     model = "Model",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
@@ -268,13 +256,13 @@ setMethod(
     model = "Model",
     data = "DataParts"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Exception when we are in part I or about to start part II!
     if (all(data@part == 1L)) {
       # Propose the highest possible dose (assuming that the dose limit came
       # from reasonable increments rule, i.e. inrementsRelativeParts).
-      if (length(doselimit) == 0L) {
-        stop("doselimit needs to be specified given for Part I")
+      if (is.infinite(doselimit)) {
+        stop("A finite doselimit needs to be specified for Part I.")
       }
       list(value = doselimit, plot = NULL)
     } else {
@@ -302,8 +290,7 @@ setMethod("nextBest",
     model = "Model",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
@@ -543,8 +530,7 @@ setMethod(
     model = "DualEndpoint",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
@@ -667,9 +653,7 @@ setMethod(
     model = "Model",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
-
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     modelfit <- fit(samples, model, data)
     doses <- modelfit$dose
     is_dose_eligible <- doses <= doselimit
@@ -700,8 +684,7 @@ setMethod(
     model = "Model",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
@@ -735,8 +718,7 @@ setMethod(
     model = "LogisticIndepBeta",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, ...) {
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Generate TDtarget during a trial and TDtarget at the end of trial samples.
     target_in_trial_samples <- dose(x = nextBest@targetDuringTrial, model, samples)
@@ -812,9 +794,8 @@ setMethod(
     model = "LogisticIndepBeta",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit, model, data, SIM = FALSE, ...) {
+  definition = function(nextBest, doselimit = Inf, model, data, SIM = FALSE, ...) {
     assert_flag(SIM)
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
     # 'drt' - during the trial, 'eot' end of trial.
     prob_target_drt <- nextBest@targetDuringTrial
@@ -909,10 +890,9 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit, model, data, Effmodel, SIM = FALSE, ...) {
+  definition = function(nextBest, doselimit = Inf, model, data, Effmodel, SIM = FALSE, ...) {
     assert_class(Effmodel, "Effloglog")
     assert_flag(SIM)
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
     # 'drt' - during the trial, 'eot' end of trial.
     prob_target_drt <- nextBest@DLEDuringTrialtarget
@@ -1030,11 +1010,10 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit, samples, model, data, Effmodel, Effsamples, SIM = FALSE, ...) {
+  definition = function(nextBest, doselimit = Inf, samples, model, data, Effmodel, Effsamples, SIM = FALSE, ...) {
     assert_true(test_class(Effmodel, "Effloglog") || test_class(Effmodel, "EffFlexi"))
     assert_class(Effsamples, "Samples")
     assert_flag(SIM)
-    doselimit <- ifelse(missing(doselimit) || length(doselimit) == 0, Inf, doselimit)
 
     # 'drt' - during the trial, 'eot' end of trial.
     prob_target_drt <- nextBest@DLEDuringTrialtarget
