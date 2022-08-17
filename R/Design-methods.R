@@ -351,7 +351,7 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
-
+                      browser()
 
                   }
 
@@ -400,7 +400,6 @@ setMethod("simulate",
                                         "message"),
                                highestStop = attr(stopit, "highest"))
 
-
                       return(thisResult)
                   }
 
@@ -442,9 +441,9 @@ setMethod("simulate",
 
               highestStoppingParts <- lapply(resultList, "[[", "highestStop")
 
-              print(highestStoppingParts)
+              #print(paste("Rule 1 and 2",highestStoppingParts))
               highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
-            print(highestStoppingMatrix)
+              #print(highestStoppingMatrix)
 
               ## return the results in the Simulations class object
 

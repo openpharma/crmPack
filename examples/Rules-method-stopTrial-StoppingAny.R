@@ -47,8 +47,8 @@ myStopping3 <- StoppingMinPatients(nPatients=20)
 
 # Combine the stopping rules, obtaining (in this specific example) a list of stopping
 # rules of class 'StoppingAny'
-myStopping <- (myStopping1 & myStopping2) | myStopping3
-is(myStopping)
+myStopping <- (myStopping1 | myStopping2) & myStopping3
+#is(myStopping)
 # Evaluate if to stop the Trial
 result <- stopTrial(stopping=myStopping, dose=doseRecommendation$value,
           samples=samples, model=model, data=data)

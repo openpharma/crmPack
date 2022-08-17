@@ -1210,12 +1210,28 @@ setMethod("stopTrial",
                          ...)
                 }
 
+
+
               ## summarize to obtain overall result
               overallResult <- all(as.logical(individualResults))
 
               ## retrieve individual text messages,
               ## but let them in the list structure
               overallText <- lapply(individualResults, attr, "message")
+
+              highestLevelResults <- stats::setNames(
+                unlist(individualResults),
+                as.character(stopping)
+                #overallNames
+              )
+
+              # print("######################")
+              # print(paste("ALL: individualResults",individualResults))
+              # print(paste("ALL: highestLevelResults",highestLevelResults))
+              # print(paste("ALL: Names of highestLevelResults",names(highestLevelResults)))
+              # print(paste("ALL: overallText",overallText))
+              # print(paste("ALL: overallResult",overallResult))
+              # print("***********************")
 
               return(structure(overallResult,
                                individual=individualResults,
@@ -1268,11 +1284,20 @@ setMethod("stopTrial",
               ## but let them in the list structure
               overallText <- lapply(individualResults, attr, "message")
 
+
               highestLevelResults <- stats::setNames(
                 unlist(individualResults),
                 as.character(stopping)
                 #overallNames
               )
+
+              # print("######################")
+              # print(paste("ANY: individualResults",individualResults))
+              # print(paste("ANY: highestLevelResults",highestLevelResults))
+              # print(paste("ANY: Names of highestLevelResults",names(highestLevelResults)))
+              # print(paste("ANY: overallText",overallText))
+              # print(paste("ANY: overallResult",overallResult))
+              # print("***********************")
 
              return(
                structure(
