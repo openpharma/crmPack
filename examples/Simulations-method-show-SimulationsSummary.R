@@ -46,8 +46,8 @@ as.character(StoppingGstarCIRatio(targetRatio = 5,targetEndOfTrial = 0.3))
 
 
 
-myStoppingAny <- (myStopping1 & myStopping2) | myStopping3
-myStoppingAll <- myStopping1 & myStopping2
+myStopping <- (myStopping1 | myStopping2) & myStopping3
+#myStoppingAll <- myStopping1 & myStopping2
 
 
 #mystoppinglist <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
@@ -64,7 +64,7 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 # Initialize the design
 design <- Design(model=model,
                  nextBest=myNextBest,
-                 stopping=myStoppingAny,
+                 stopping=myStopping,
                  increments=myIncrements,
                  cohortSize=mySize,
                  data=emptydata,
@@ -82,13 +82,13 @@ options <- McmcOptions(burnin=100,
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
                                        truth=myTruth,
-                                       nsim=5,
+                                       nsim=2,
                                        seed=819,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]
 
 # Show the Summary of the Simulations
-show(summary(mySims,truth=myTruth))
+#show(summary(mySims,truth=myTruth))
 
-summary(mySims,truth=myTruth)
+#summary(mySims,truth=myTruth)
 # nolint end

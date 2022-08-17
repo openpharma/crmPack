@@ -351,7 +351,7 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
-
+                      #browser()
 
                   }
 
@@ -383,11 +383,11 @@ setMethod("simulate",
 
                   } else {
 
-                      attr(stopit, "highest") <- stats::setNames(
-                          stopit,
-                          as.character(object@stopping)
-
-                      )
+                      # attr(stopit, "highest") <- stats::setNames(
+                      #     stopit,
+                      #     as.character(object@stopping)
+                      #
+                      # )
 
                       thisResult <-
                           list(data=thisData,
@@ -399,7 +399,6 @@ setMethod("simulate",
                                    attr(stopit,
                                         "message"),
                                highestStop = attr(stopit, "highest"))
-
 
                       return(thisResult)
                   }
@@ -442,9 +441,9 @@ setMethod("simulate",
 
               highestStoppingParts <- lapply(resultList, "[[", "highestStop")
 
-              print(highestStoppingParts)
+              #print(paste("Rule 1 and 2",highestStoppingParts))
               highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
-            print(highestStoppingMatrix)
+              #print(highestStoppingMatrix)
 
               ## return the results in the Simulations class object
 
