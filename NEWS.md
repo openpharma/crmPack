@@ -1,4 +1,4 @@
-# Version 1.0.9000.9057
+# Version 1.0.9000.9058
 * Renamed the elements of the list returned by `nextBest` methods for `NextBestMaxGain`
   and `NextBestMaxGainSamples`.
 * Renamed two arguments of `nextBest` methods for `NextBestTDsamples`, `NextBestTD`,
