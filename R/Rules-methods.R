@@ -1212,6 +1212,8 @@ setMethod("stopTrial",
 
               ## summarize to obtain overall result
               overallResult <- all(as.logical(individualResults))
+              print(paste("Individual results = ", individualResults))
+              print(paste("overallResult = ", overallResult))
 
               ## retrieve individual text messages,
               ## but let them in the list structure
@@ -1762,9 +1764,12 @@ setMethod(
   f = "as.character",
   signature = "StoppingMinCohorts",
   definition = function(x, ...) {
-    paste("\u2265",
+    #paste("\u2265",
+    #      x@nCohorts,
+    #      "cohorts")
+    paste("Minimum number of ",
           x@nCohorts,
-          "cohorts")
+          " cohorts reached.")
   }
 )
 
@@ -1777,7 +1782,7 @@ setMethod(
       paste("\u2265",x@nCohorts,
             "cohorts in",
             x@percentage,
-            "% of NBD")
+            "% dose range around NBD.")
   }
 )
 
@@ -1791,7 +1796,7 @@ setMethod(
             x@nPatients,
             "patients in",
             x@percentage,
-            "% of NBD")
+            "% dose range around NBD")
   }
 )
 
@@ -1802,9 +1807,9 @@ setMethod(
   f = "as.character",
   signature = "StoppingMinPatients",
   definition = function(x, ...) {
-      paste("\u2265",
+      paste("Minimum number of",
             x@nPatients,
-            "patients dosed")
+            "patients reached")
   }
 )
 
@@ -1817,9 +1822,9 @@ setMethod(
   definition = function(x, ...) {
     paste("[",
           x@target[1],
-          "\u2264 prob(DLT | dose) \u2264",
+          "\u2264 prob(DLT | NBD) \u2264",
           x@target[2],
-          "] for NBD \u2265",
+          "] \u2265",
           x@prob)
   }
 )
@@ -1831,13 +1836,14 @@ setMethod(
   f = "as.character",
   signature = "StoppingMTDdistribution",
   definition = function(x, ...) {
-    paste("\u2265",
-          x@prob,
-          "prob MTD ( prob(DLE) ="
-          ,x@target,
-          ") >"
-          ,x@thresh,
-          " * next dose")
+    paste("P(MTD >",
+          x@thresh,
+          "* NBD | P(DLE) = ",
+          x@target,
+          ") C",
+          x@prob
+    )
+
   }
 )
 
@@ -1847,7 +1853,7 @@ setMethod(
   f = "as.character",
   signature = "StoppingMTDCV",
   definition = function(x, ...) {
-    paste("CV of target tox prob for MTD",
+    paste("CV(MTD | P(DLE) = ",
           x@target,
           "\u2264",
           x@thresh_cv,
@@ -1861,15 +1867,16 @@ setMethod(
   f = "as.character",
   signature = "StoppingTargetBiomarker",
   definition = function(x, ...) {
-    paste("\u2265",
-          x@prob,
-          "prob biomarker target range in [",
+    paste("P(",
           x@target[1],
-          ",",
+          "\u2264",
+          "Biomarker \u2264",
           x@target[2],
+          ") \u2265 ",
+          x@prob,
           ifelse(x@scale=="relative",
-                 paste("] ( relative )"),
-                 "] ( absolute )"
+                 paste(" ( relative )"),
+                 " ( absolute )"
                  )
           )
   }
