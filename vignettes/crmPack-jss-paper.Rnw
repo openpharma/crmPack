@@ -626,16 +626,16 @@ $\tau$ using \code{maxDose} to obtain $t_{N+1}$:
 <<nextBest>>=
 (nextMaxDose <- maxDose(myIncrements, data2))
 doseRecGain <- nextBest(GainNextBest, doselimit = nextMaxDose,
-                        model = newDLTmodel, Effmodel = newEffmodel,
+                        model = newDLTmodel, model_eff = newEffmodel,
                         data = data2)
-(nextDoseVal <- doseRecGain$nextdose)
+(nextDoseVal <- doseRecGain$next_dose)
 @
 The plot for the next dose allocation is contained in \code{doseRecGain$plot} and shown in Figure~\ref{fig:doseRecommendation}.
 \begin{figure}
 <<doseRecommendation, echo=FALSE, fig.width=7,fig.height=5,out.width='.6\\linewidth',fig.align='center'>>=
 print(doseRecGain$plot)
 @
-\caption{Dose recommendation plot from dual endpoint design. The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = \Sexpr{nextMaxDose}$~mg and the vertical violet line shows the next dose $x_{N+1} = \Sexpr{nextDoseVal}$~mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (\Sexpr{doseRecGain$TDtargetDuringTrialAtDoseGrid}~mg for 35\% DLT probability during the trial and \Sexpr{doseRecGain$TDtargetEndOfTrialAtDoseGrid}~mg for 30\% DLT probability at the end of trial) and the estimated dose with maximum gain, \Sexpr{doseRecGain$GstarAtDoseGrid}~mg. The numbers can be obtained from the \code{doseRecGain} list.}
+\caption{Dose recommendation plot from dual endpoint design. The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = \Sexpr{nextMaxDose}$~mg and the vertical violet line shows the next dose $x_{N+1} = \Sexpr{nextDoseVal}$~mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (\Sexpr{doseRecGain$next_dose_drt}~mg for 35\% DLT probability during the trial and \Sexpr{doseRecGain$next_dose_eot}~mg for 30\% DLT probability at the end of trial) and the estimated dose with maximum gain, \Sexpr{doseRecGain$next_dose_max_gain}~mg. The numbers can be obtained from the \code{doseRecGain} list.}
 \label{fig:doseRecommendation}
 \end{figure}
 

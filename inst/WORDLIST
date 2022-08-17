@@ -95,6 +95,7 @@ doseMostSelected
 doseRec
 doseRecGain
 dosesTried
+drt
 DSB
 DualDesign
 DualEndpoint
@@ -114,6 +115,7 @@ emax
 Emax
 EMAX
 emptydata
+eot
 equi
 et
 firstSeparate

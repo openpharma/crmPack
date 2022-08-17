@@ -416,14 +416,14 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects", {
 
   result <- nextBest(nb_tds, 90, samples, model, data)
   expected <- list(
-    nextdose = 75,
-    targetDuringTrial = 0.45,
-    TDtargetDuringTrialEstimate = 120.4065,
-    targetEndOfTrial = 0.4,
-    TDtargetEndOfTrialEstimate = 107.1014,
-    TDtargetEndOfTrialAtDoseGrid = 75,
-    CITDEOT = c(49.21382, 535.88506),
-    ratioTDEOT = 10.88891
+    next_dose_drt = 75,
+    prob_target_drt = 0.45,
+    dose_target_drt = 120.4065,
+    next_dose_eot = 75,
+    prob_target_eot = 0.4,
+    dose_target_eot = 107.1014,
+    ci_dose_target_eot = c(49.21382, 535.88506),
+    ci_ratio_dose_target_eot = 10.88891
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples", result$plot)
@@ -442,14 +442,14 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (no
 
   result <- nextBest(nb_tds, Inf, samples, model, data)
   expected <- list(
-    nextdose = 100,
-    targetDuringTrial = 0.45,
-    TDtargetDuringTrialEstimate = 120.4065,
-    targetEndOfTrial = 0.4,
-    TDtargetEndOfTrialEstimate = 107.1014,
-    TDtargetEndOfTrialAtDoseGrid = 100,
-    CITDEOT = c(49.21382, 535.88506),
-    ratioTDEOT = 10.88891
+    next_dose_drt = 100,
+    prob_target_drt = 0.45,
+    dose_target_drt = 120.4065,
+    next_dose_eot = 100,
+    prob_target_eot = 0.4,
+    dose_target_eot = 107.1014,
+    ci_dose_target_eot = c(49.21382, 535.88506),
+    ci_ratio_dose_target_eot = 10.88891
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestTDsamples_nodoselim", result$plot)
@@ -468,14 +468,14 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (ot
 
   result <- nextBest(nb_tds, 150, samples, model, data)
   expected <- list(
-    nextdose = 150,
-    targetDuringTrial = 0.6,
-    TDtargetDuringTrialEstimate = 188.52,
-    targetEndOfTrial = 0.55,
-    TDtargetEndOfTrialEstimate = 167.5761,
-    TDtargetEndOfTrialAtDoseGrid = 150,
-    CITDEOT = c(70.44517, 861.73632),
-    ratioTDEOT = 12.23272
+    next_dose_drt = 150,
+    prob_target_drt = 0.6,
+    dose_target_drt = 188.52,
+    next_dose_eot = 150,
+    prob_target_eot = 0.55,
+    dose_target_eot = 167.5761,
+    ci_dose_target_eot = c(70.44517, 861.73632),
+    ci_ratio_dose_target_eot = 12.23272
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
@@ -489,14 +489,14 @@ test_that("nextBest-NextBestTD returns expected values of the objects", {
 
   result <- nextBest(nb_td, 70, model = model, data = data)
   expected <- list(
-    nextdose = 50,
-    targetDuringTrial = 0.45,
-    TDtargetDuringTrialEstimate = 75.82941,
-    TDtargetEndOfTrialatdoseGrid = 50,
-    targetEndOfTrial = 0.4,
-    TDtargetEndOfTrialEstimate = 63.21009,
-    CITDEOT = c(20.38729, 195.98072),
-    ratioTDEOT = 9.612886
+    next_dose_drt = 50,
+    prob_target_drt = 0.45,
+    dose_target_drt = 75.82941,
+    next_dose_eot = 50,
+    prob_target_eot = 0.4,
+    dose_target_eot = 63.21009,
+    ci_dose_target_eot = c(20.38729, 195.98072),
+    ci_ratio_dose_target_eot = 9.612886
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestTD", result$plot)
@@ -509,14 +509,14 @@ test_that("nextBest-NextBestTD returns expected values of the objects (no doseli
 
   result <- nextBest(nb_td, Inf, model = model, data = data)
   expected <- list(
-    nextdose = 75,
-    targetDuringTrial = 0.45,
-    TDtargetDuringTrialEstimate = 75.82941,
-    TDtargetEndOfTrialatdoseGrid = 50,
-    targetEndOfTrial = 0.4,
-    TDtargetEndOfTrialEstimate = 63.21009,
-    CITDEOT = c(20.38729, 195.98072),
-    ratioTDEOT = 9.612886
+    next_dose_drt = 75,
+    prob_target_drt = 0.45,
+    dose_target_drt = 75.82941,
+    next_dose_eot = 50,
+    prob_target_eot = 0.4,
+    dose_target_eot = 63.21009,
+    ci_dose_target_eot = c(20.38729, 195.98072),
+    ci_ratio_dose_target_eot = 9.612886
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestTD_nodoselim", result$plot)
@@ -529,14 +529,14 @@ test_that("nextBest-NextBestTD returns expected values of the objects (other tar
 
   result <- nextBest(nb_td, 70, model = model, data = data)
   expected <- list(
-    nextdose = 25,
-    targetDuringTrial = 0.25,
-    TDtargetDuringTrialEstimate = 34.13734,
-    TDtargetEndOfTrialatdoseGrid = 25,
-    targetEndOfTrial = 0.2,
-    TDtargetEndOfTrialEstimate = 26.43526,
-    CITDEOT = c(4.628141, 150.994299),
-    ratioTDEOT = 32.62526
+    next_dose_drt = 25,
+    prob_target_drt = 0.25,
+    dose_target_drt = 34.13734,
+    next_dose_eot = 25,
+    prob_target_eot = 0.2,
+    dose_target_eot = 26.43526,
+    ci_dose_target_eot = c(4.628141, 150.994299),
+    ci_ratio_dose_target_eot = 32.62526
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
@@ -549,21 +549,21 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects", {
   model_eff <- h_get_eff_log_log(const = 5)
   nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
 
-  result <- nextBest(nb_mg, 49, model = model_dlt, data = data, Effmodel = model_eff)
+  result <- nextBest(nb_mg, 49, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
-    nextdose = 25,
-    DLEDuringTrialtarget = 0.35,
-    TDtargetDuringTrialEstimate = 52.28128,
-    TDtargetDuringTrialAtDoseGrid = 25,
-    DLEEndOfTrialtarget = 0.3,
-    TDtargetEndOfTrialEstimate = 42.68131,
-    TDtargetEndOfTrialAtDoseGrid = 25,
-    GstarEstimate = 83.96469,
-    GstarAtDoseGrid = 25,
-    CITDEOT = c(11.06619, 164.61798),
-    ratioTDEOT = 14.87575,
-    CIGstar = c(23.09875, 305.21431),
-    ratioGstar = 13.21345
+    next_dose = 25,
+    prob_target_drt = 0.35,
+    dose_target_drt = 52.28128,
+    next_dose_drt = 25,
+    prob_target_eot = 0.3,
+    dose_target_eot = 42.68131,
+    next_dose_eot = 25,
+    dose_max_gain = 83.96469,
+    next_dose_max_gain = 25,
+    ci_dose_target_eot = c(11.06619, 164.61798),
+    ci_ratio_dose_target_eot = 14.87575,
+    ci_dose_max_gain = c(23.09875, 305.21431),
+    ci_ratio_dose_max_gain = 13.21345
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGain", result$plot)
@@ -575,21 +575,21 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (no d
   model_eff <- h_get_eff_log_log(const = 5)
   nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
 
-  result <- nextBest(nb_mg, Inf, model = model_dlt, data = data, Effmodel = model_eff)
+  result <- nextBest(nb_mg, Inf, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
-    nextdose = 50,
-    DLEDuringTrialtarget = 0.35,
-    TDtargetDuringTrialEstimate = 52.28128,
-    TDtargetDuringTrialAtDoseGrid = 50,
-    DLEEndOfTrialtarget = 0.3,
-    TDtargetEndOfTrialEstimate = 42.68131,
-    TDtargetEndOfTrialAtDoseGrid = 25,
-    GstarEstimate = 83.96469,
-    GstarAtDoseGrid = 75,
-    CITDEOT = c(11.06619, 164.61798),
-    ratioTDEOT = 14.87575,
-    CIGstar = c(23.09875, 305.21431),
-    ratioGstar = 13.21345
+    next_dose = 50,
+    prob_target_drt = 0.35,
+    dose_target_drt = 52.28128,
+    next_dose_drt = 50,
+    prob_target_eot = 0.3,
+    dose_target_eot = 42.68131,
+    next_dose_eot = 25,
+    dose_max_gain = 83.96469,
+    next_dose_max_gain = 75,
+    ci_dose_target_eot = c(11.06619, 164.61798),
+    ci_ratio_dose_target_eot = 14.87575,
+    ci_dose_max_gain = c(23.09875, 305.21431),
+    ci_ratio_dose_max_gain = 13.21345
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGain_nodoselim", result$plot)
@@ -601,21 +601,21 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (othe
   model_eff <- h_get_eff_log_log(const = 5)
   nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.45, DLEEndOfTrialtarget = 0.4)
 
-  result <- nextBest(nb_mg, 150, model = model_dlt, data = data, Effmodel = model_eff)
+  result <- nextBest(nb_mg, 150, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
-    nextdose = 75,
-    DLEDuringTrialtarget = 0.45,
-    TDtargetDuringTrialEstimate = 75.82941,
-    TDtargetDuringTrialAtDoseGrid = 75,
-    DLEEndOfTrialtarget = 0.4,
-    TDtargetEndOfTrialEstimate = 63.21009,
-    TDtargetEndOfTrialAtDoseGrid = 50,
-    GstarEstimate = 83.96469,
-    GstarAtDoseGrid = 75,
-    CITDEOT = c(20.38729, 195.98072),
-    ratioTDEOT = 9.612886,
-    CIGstar = c(26.95037, 293.67744),
-    ratioGstar = 10.89697
+    next_dose = 75,
+    prob_target_drt = 0.45,
+    dose_target_drt = 75.82941,
+    next_dose_drt = 75,
+    prob_target_eot = 0.4,
+    dose_target_eot = 63.21009,
+    next_dose_eot = 50,
+    dose_max_gain = 83.96469,
+    next_dose_max_gain = 75,
+    ci_dose_target_eot = c(20.38729, 195.98072),
+    ci_ratio_dose_target_eot = 9.612886,
+    ci_dose_max_gain = c(26.95037, 293.67744),
+    ci_ratio_dose_max_gain = 10.89697
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
@@ -640,19 +640,19 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 
   result <- nextBest(nb_mgs, 49, samples_dlt, model_dlt, data, model_eff, samples_eff)
   expected <- list(
-    nextdose = 25,
-    DLEDuringTrialtarget = 0.45,
-    TDtargetDuringTrialEstimate = 131.8022,
-    TDtargetDuringTrialAtDoseGrid = 25,
-    DLEEndOfTrialtarget = 0.4,
-    TDtargetEndOfTrialEstimate = 103.9855,
-    TDtargetEndOfTrialAtDoseGrid = 25,
-    GstarEstimate = 125,
-    GstarAtDoseGrid = 25,
-    CITDEOT = c(103.9855, 103.9855),
-    ratioTDEOT = 1,
-    CIGstar = c(30.625, 288.750),
-    ratioGstar = 9.428571
+    next_dose = 25,
+    prob_target_drt = 0.45,
+    dose_target_drt = 131.8022,
+    next_dose_drt = 25,
+    prob_target_eot = 0.4,
+    dose_target_eot = 103.9855,
+    next_dose_eot = 25,
+    dose_max_gain = 125,
+    next_dose_max_gain = 25,
+    ci_dose_target_eot = c(103.9855, 103.9855),
+    ci_ratio_dose_target_eot = 1,
+    ci_dose_max_gain = c(30.625, 288.750),
+    ci_ratio_dose_max_gain = 9.428571
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGainSamples", result$plot)
@@ -676,19 +676,19 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 
   result <- nextBest(nb_mgs, Inf, samples_dlt, model_dlt, data, model_eff, samples_eff)
   expected <- list(
-    nextdose = 125,
-    DLEDuringTrialtarget = 0.45,
-    TDtargetDuringTrialEstimate = 131.8022,
-    TDtargetDuringTrialAtDoseGrid = 125,
-    DLEEndOfTrialtarget = 0.4,
-    TDtargetEndOfTrialEstimate = 103.9855,
-    TDtargetEndOfTrialAtDoseGrid = 100,
-    GstarEstimate = 125,
-    GstarAtDoseGrid = 125,
-    CITDEOT = c(103.9855, 103.9855),
-    ratioTDEOT = 1,
-    CIGstar = c(30.625, 288.750),
-    ratioGstar = 9.428571
+    next_dose = 125,
+    prob_target_drt = 0.45,
+    dose_target_drt = 131.8022,
+    next_dose_drt = 125,
+    prob_target_eot = 0.4,
+    dose_target_eot = 103.9855,
+    next_dose_eot = 100,
+    dose_max_gain = 125,
+    next_dose_max_gain = 125,
+    ci_dose_target_eot = c(103.9855, 103.9855),
+    ci_ratio_dose_target_eot = 1,
+    ci_dose_max_gain = c(30.625, 288.750),
+    ci_ratio_dose_max_gain = 9.428571
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestMaxGainSamples_nodoselim", result$plot)
@@ -712,19 +712,19 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 
   result <- nextBest(nb_mgs, 60, samples_dlt, model_dlt, data, model_eff, samples_eff)
   expected <- list(
-    nextdose = 50,
-    DLEDuringTrialtarget = 0.5,
-    TDtargetDuringTrialEstimate = 182.9664,
-    TDtargetDuringTrialAtDoseGrid = 50,
-    DLEEndOfTrialtarget = 0.45,
-    TDtargetEndOfTrialEstimate = 144.8885,
-    TDtargetEndOfTrialAtDoseGrid = 50,
-    GstarEstimate = 110,
-    GstarAtDoseGrid = 50,
-    CITDEOT = c(144.8885, 144.8885),
-    ratioTDEOT = 1,
-    CIGstar = c(32.5, 300.0),
-    ratioGstar = 9.230769
+    next_dose = 50,
+    prob_target_drt = 0.5,
+    dose_target_drt = 182.9664,
+    next_dose_drt = 50,
+    prob_target_eot = 0.45,
+    dose_target_eot = 144.8885,
+    next_dose_eot = 50,
+    dose_max_gain = 110,
+    next_dose_max_gain = 50,
+    ci_dose_target_eot = c(144.8885, 144.8885),
+    ci_ratio_dose_target_eot = 1,
+    ci_dose_max_gain = c(32.5, 300.0),
+    ci_ratio_dose_max_gain = 9.230769
   )
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })

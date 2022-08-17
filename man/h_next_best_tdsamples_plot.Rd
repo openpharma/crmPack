@@ -5,24 +5,24 @@
 \title{Building the Plot for \code{nextBest-NextBestTDsamples} Method.}
 \usage{
 h_next_best_tdsamples_plot(
-  target_in_trial_samples,
-  target_trial_end_samples,
-  target_in_trial_est,
-  target_trial_end_est,
+  dose_target_drt_samples,
+  dose_target_eot_samples,
+  dose_target_drt,
+  dose_target_eot,
   dose_grid_range,
   nextBest,
   doselimit,
-  next_best_dose
+  next_dose
 )
 }
 \arguments{
-\item{target_in_trial_samples}{(\code{numeric})\cr vector of in-trial samples.}
+\item{dose_target_drt_samples}{(\code{numeric})\cr vector of in-trial samples.}
 
-\item{target_trial_end_samples}{(\code{numeric})\cr vector of end-of-trial samples.}
+\item{dose_target_eot_samples}{(\code{numeric})\cr vector of end-of-trial samples.}
 
-\item{target_in_trial_est}{(\code{number})\cr target in-trial estimate.}
+\item{dose_target_drt}{(\code{number})\cr target in-trial estimate.}
 
-\item{target_trial_end_est}{(\code{number})\cr target end-of-trial estimate.}
+\item{dose_target_eot}{(\code{number})\cr target end-of-trial estimate.}
 
 \item{dose_grid_range}{(\code{numeric})\cr range of dose grid.}
 
@@ -30,7 +30,7 @@ h_next_best_tdsamples_plot(
 
 \item{doselimit}{(\code{number})\cr the maximum allowed next dose.}
 
-\item{next_best_dose}{(\code{number})\cr next best dose.}
+\item{next_dose}{(\code{number})\cr next best dose.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

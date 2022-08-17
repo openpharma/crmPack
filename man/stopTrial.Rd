@@ -912,6 +912,8 @@ stopTrial(stopping=myStopping,
           data=data)
 
 # nolint end
+# nolint start
+
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
 ##Using only DLE responses with samples
 ## we need a data object with doses >= 1:
@@ -940,11 +942,14 @@ RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,
+stopTrial(stopping=myStopping,dose=RecommendDose$next_dose_drt,
           samples=samples,model=model,data=data)
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end
+# nolint start
+
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
-##Using only DLE responses 
+##Using only DLE responses
 ## we need a data object with doses >= 1:
 data<-Data(x=c(25,50,50,75,150,200,225,300),
            y=c(0,0,0,0,1,1,1,1),
@@ -964,9 +969,10 @@ RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),model=model,data
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,
+stopTrial(stopping=myStopping,dose=RecommendDose$next_dose_drt,
           model=model,data=data)
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end
 # nolint start
 ##define the stopping rules based on the 'StoppingGstarCIRatio' class
 ##Using both DLE and efficacy responses
@@ -1002,12 +1008,12 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(Gstarsamples,prob=0.5)})
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
-                        data=data,Effmodel=Effmodel,Effsamples=Effsamples)
+                        data=data,model_eff=Effmodel,samples_eff=Effsamples)
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
 stopTrial(stopping=myStopping,
-          dose=RecommendDose$nextdose,
+          dose=RecommendDose$next_dose,
           samples=DLEsamples,
           model=DLEmodel,
           data=data,
@@ -1017,8 +1023,6 @@ stopTrial(stopping=myStopping,
           Effsamples=Effsamples,
           Gstarderive=function(Gstarsamples){
             quantile(Gstarsamples,prob=0.5)})
-
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
 
 # nolint end
 # nolint start
@@ -1048,17 +1052,14 @@ myStopping <- StoppingGstarCIRatio(targetRatio=5,
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,DLEEndOfTrialtarget=0.3)
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,
-                        Effmodel=Effmodel,data=data)
+                        model_eff=Effmodel,data=data)
 
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
 
-stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,model=DLEmodel,
+stopTrial(stopping=myStopping,dose=RecommendDose$next_dose,model=DLEmodel,
           data=data, Effmodel=Effmodel)
-
-
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
 
 # nolint end
 }

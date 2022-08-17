@@ -1,4 +1,9 @@
 # Version 1.0.9000.9057
+* Renamed the elements of the list returned by `nextBest` methods for `NextBestMaxGain`
+  and `NextBestMaxGainSamples`.
+* Renamed two arguments of `nextBest` methods for `NextBestTDsamples`, `NextBestTD`,
+  `NextBestMaxGain` and `NextBestMaxGainSamples`: `Effmodel` to `model_eff`
+  and `Effsamples` to `samples_eff`.
 * `doselimit` argument in `nextBest` method is now specified as `Inf` instead of
   `numeric(0)`.
 * Added new helper functions for `nextBest` methods, particularly for plotting

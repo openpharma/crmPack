@@ -77,8 +77,8 @@ h_next_best_mg_ci <- function(dose_target,
   var_dose_target <- as.vector(mat %*% model@Pcov %*% t(mat))
 
   # 95% credibility interval for target dose.
-  ci_td <- exp(log(dose_target) + c(-1, 1) * 1.96 * sqrt(var_dose_target))
-  ci_ratio_td <- ci_td[2] / ci_td[1]
+  ci_dose_target <- exp(log(dose_target) + c(-1, 1) * 1.96 * sqrt(var_dose_target))
+  cir_dose_target <- ci_dose_target[2] / ci_dose_target[1]
 
   # Find the variance of the log of dose_mg.
   # First, find the covariance matrix of all the parameters, phi1, phi2, theta1 and theta2
@@ -103,8 +103,8 @@ h_next_best_mg_ci <- function(dose_target,
   ci_ratio_mg <- ci_mg[2] / ci_mg[1]
 
   list(
-    ci_dose_target = ci_td,
-    ci_ratio_dose_target = ci_ratio_td,
+    ci_dose_target = ci_dose_target,
+    ci_ratio_dose_target = cir_dose_target,
     ci_dose_mg = ci_mg,
     ci_ratio_dose_mg = ci_ratio_mg
   )
@@ -136,8 +136,7 @@ h_next_best_mg_doses_at_grid <- function(dose_target_drt,
                                          dose_mg,
                                          dose_grid,
                                          doselimit,
-                                         placebo
-                                         ) {
+                                         placebo) {
   assert_number(dose_target_drt, na.ok = TRUE)
   assert_number(dose_target_eot, na.ok = TRUE)
   assert_number(dose_mg, na.ok = TRUE)
@@ -222,38 +221,38 @@ h_next_best_eligible_doses <- function(dose_grid,
 #' Helper function which creates the plot for [`nextBest-NextBestTDsamples()`]
 #' method.
 #'
-#' @param target_in_trial_samples (`numeric`)\cr vector of in-trial samples.
-#' @param target_trial_end_samples (`numeric`)\cr vector of end-of-trial samples.
-#' @param target_in_trial_est (`number`)\cr target in-trial estimate.
-#' @param target_trial_end_est (`number`)\cr target end-of-trial estimate.
+#' @param dose_target_drt_samples (`numeric`)\cr vector of in-trial samples.
+#' @param dose_target_eot_samples (`numeric`)\cr vector of end-of-trial samples.
+#' @param dose_target_drt (`number`)\cr target in-trial estimate.
+#' @param dose_target_eot (`number`)\cr target end-of-trial estimate.
 #' @param dose_grid_range (`numeric`)\cr range of dose grid.
 #' @param nextBest (`NextBestTDsamples`)\cr the rule for the next best dose.
 #' @param doselimit (`number`)\cr the maximum allowed next dose.
-#' @param next_best_dose (`number`)\cr next best dose.
+#' @param next_dose (`number`)\cr next best dose.
 #'
 #' @export
 #'
-h_next_best_tdsamples_plot <- function(target_in_trial_samples,
-                                       target_trial_end_samples,
-                                       target_in_trial_est,
-                                       target_trial_end_est,
+h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
+                                       dose_target_eot_samples,
+                                       dose_target_drt,
+                                       dose_target_eot,
                                        dose_grid_range,
                                        nextBest,
                                        doselimit,
-                                       next_best_dose) {
-  assert_numeric(target_in_trial_samples, any.missing = FALSE)
-  assert_numeric(target_trial_end_samples, any.missing = FALSE)
-  assert_number(target_in_trial_est)
-  assert_number(target_trial_end_est)
+                                       next_dose) {
+  assert_numeric(dose_target_drt_samples, any.missing = FALSE)
+  assert_numeric(dose_target_eot_samples, any.missing = FALSE)
+  assert_number(dose_target_drt)
+  assert_number(dose_target_eot)
   assert_numeric(dose_grid_range, finite = TRUE, any.missing = FALSE, len = 2, sorted = TRUE)
   assert_class(nextBest, "NextBestTDsamples")
   assert_number(doselimit)
-  assert_number(next_best_dose, na.ok = TRUE)
+  assert_number(next_dose, na.ok = TRUE)
 
   p <- ggplot(
     data = rbind(
-      data.frame(period = "during", TD = target_in_trial_samples),
-      data.frame(period = "end", TD = target_trial_end_samples)
+      data.frame(period = "during", TD = dose_target_drt_samples),
+      data.frame(period = "end", TD = dose_target_eot_samples)
     ),
     aes(x = .data$TD, colour = .data$period),
   ) +
@@ -262,22 +261,22 @@ h_next_best_tdsamples_plot <- function(target_in_trial_samples,
     scale_color_manual(values = c(during = "grey50", end = "violet")) +
     theme(legend.position = "none") +
     ylab("Posterior density") +
-    geom_vline(xintercept = target_in_trial_est, colour = "orange", lwd = 1.1) +
+    geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1.1) +
     annotate(
       geom = "text",
       label = paste("TD", nextBest@targetDuringTrial * 100, "Estimate"),
-      x = target_in_trial_est,
+      x = dose_target_drt,
       y = 0,
       hjust = -0.1,
       vjust = -20,
       size = 5,
       colour = "orange"
     ) +
-    geom_vline(xintercept = target_trial_end_est, colour = "violet", lwd = 1.1) +
+    geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1.1) +
     annotate(
       geom = "text",
       label = paste("TD", nextBest@targetEndOfTrial * 100, "Estimate"),
-      x = target_trial_end_est,
+      x = dose_target_eot,
       y = 0,
       hjust = -0.1,
       vjust = -25,
@@ -297,9 +296,9 @@ h_next_best_tdsamples_plot <- function(target_in_trial_samples,
       hjust = 0.5,
       colour = "red"
     ) +
-    geom_vline(xintercept = next_best_dose, colour = "blue", lwd = 1.1) +
+    geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
     geom_text(
-      data = data.frame(x = next_best_dose),
+      data = data.frame(x = next_dose),
       aes(x, 0, label = "Next", hjust = 0.1, vjust = -30),
       angle = 90,
       vjust = -0.5,

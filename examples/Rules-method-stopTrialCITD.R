@@ -1,5 +1,7 @@
+# nolint start
+
 ##define the stopping rules based on the 'StoppingTDCIRatio' class
-##Using only DLE responses 
+##Using only DLE responses
 ## we need a data object with doses >= 1:
 data<-Data(x=c(25,50,50,75,150,200,225,300),
            y=c(0,0,0,0,1,1,1,1),
@@ -19,6 +21,7 @@ RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),model=model,data
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
-stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,
+stopTrial(stopping=myStopping,dose=RecommendDose$next_dose_drt,
           model=model,data=data)
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
+
+# nolint end
