@@ -1191,6 +1191,7 @@ setMethod("stopTrial",
           function(stopping, dose, samples, model, data, ...){
               ## evaluate the individual stopping rules
               ## in the list
+
               individualResults <-
                 if(missing(samples))
                 {
@@ -1209,6 +1210,7 @@ setMethod("stopTrial",
                          data=data,
                          ...)
                 }
+              browser()
 
 
 
@@ -1232,8 +1234,10 @@ setMethod("stopTrial",
               # print(paste("ALL: overallText",overallText))
               # print(paste("ALL: overallResult",overallResult))
               # print("***********************")
+              browser()
 
               return(structure(overallResult,
+                               highest = highestLevelResults,
                                individual=individualResults,
                                message=overallText))
           })

@@ -351,7 +351,7 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
-                      browser()
+                      #browser()
 
                   }
 
@@ -383,11 +383,11 @@ setMethod("simulate",
 
                   } else {
 
-                      attr(stopit, "highest") <- stats::setNames(
-                          stopit,
-                          as.character(object@stopping)
-
-                      )
+                      # attr(stopit, "highest") <- stats::setNames(
+                      #     stopit,
+                      #     as.character(object@stopping)
+                      #
+                      # )
 
                       thisResult <-
                           list(data=thisData,
