@@ -56,11 +56,11 @@ dose_recommendation <- nextBest(
   samples = my_samples_dlt,
   model = my_model_dlt,
   data = my_data,
-  Effmodel = my_model_effll,
-  Effsamples = my_samples_effll
+  model_eff = my_model_effll,
+  samples_eff = my_samples_effll
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose
 dose_recommendation$plot
 
 # Now using the 'EffFlexi' class efficacy model:
@@ -93,9 +93,9 @@ dose_recommendation <- nextBest(
   samples = my_samples_dlt,
   model = my_model_dlt,
   data = my_data,
-  Effmodel = my_model_effflexi,
-  Effsamples = my_samples_effflexi
+  model_eff = my_model_effflexi,
+  samples_eff = my_samples_effflexi
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose
 dose_recommendation$plot

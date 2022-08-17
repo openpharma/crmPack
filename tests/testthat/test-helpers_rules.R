@@ -182,28 +182,14 @@ test_that("h_next_best_eligible_doses throws the error for empty dose grid or no
 
 test_that("h_next_best_tdsamples_plot works as expected", {
   result <- h_next_best_tdsamples_plot(
-    target_in_trial_samples = 1:100,
-    target_trial_end_samples = 50:150,
-    target_in_trial_est = 100,
-    target_trial_end_est = 120,
-    dose_grid_range = c(25, 300),
-    nextBest = h_next_best_tdsamples(),
-    doselimit = 75,
-    next_best_dose = 60
+    1:100, 50:150, 100, 120, c(25, 300), h_next_best_tdsamples(), 75, 60
   )
   vdiffr::expect_doppelganger("h_next_best_tdsamples_plot", result)
 })
 
 test_that("h_next_best_tdsamples_plot works as expected (no doselimit)", {
   result <- h_next_best_tdsamples_plot(
-    target_in_trial_samples = 1:100,
-    target_trial_end_samples = 50:150,
-    target_in_trial_est = 100,
-    target_trial_end_est = 120,
-    dose_grid_range = c(25, 300),
-    nextBest = h_next_best_tdsamples(),
-    doselimit = Inf,
-    next_best_dose = 60
+    1:100, 50:150, 100, 120, c(25, 300), h_next_best_tdsamples(), Inf, 60
   )
   vdiffr::expect_doppelganger("h_next_best_tdsamples_plot_nodoselim", result)
 })
@@ -252,30 +238,14 @@ test_that("h_next_best_mg_plot works as expected (no doselimit)", {
 
 test_that("h_next_best_mgsamples_plot works as expected", {
   result <- h_next_best_mgsamples_plot(
-    prob_target_drt = 0.45,
-    dose_target_drt = 104,
-    prob_target_eot = 0.4,
-    dose_target_eot = 83,
-    dose_mg = 200,
-    dose_mg_samples = c(100, 300, 250, 125, 100, 175, 50, 300, 300, 150),
-    next_dose = 75,
-    doselimit = 80,
-    dose_grid_range = c(50, 320)
+    0.45, 104, 0.4, 83, 200, c(100, 300, 250, 125, 100, 175, 50, 300, 300, 150), 75, 80, c(50, 320)
   )
   vdiffr::expect_doppelganger("h_next_best_mgsamples_plot", result)
 })
 
 test_that("h_next_best_mgsamples_plot works as expected (no doselimit)", {
   result <- h_next_best_mgsamples_plot(
-    prob_target_drt = 0.35,
-    dose_target_drt = 67.5,
-    prob_target_eot = 0.3,
-    dose_target_eot = 53,
-    dose_mg = 125,
-    dose_mg_samples = c(300, 225, 50, 175, 75, 125, 25, 125, 125, 250),
-    next_dose = 50,
-    doselimit = Inf,
-    dose_grid_range = c(25, 300)
+    0.35, 67.5, 0.3, 53, 125, c(300, 225, 50, 175, 75, 125, 25, 125, 125, 250), 50, Inf, c(25, 300)
   )
   vdiffr::expect_doppelganger("h_next_best_mgsamples_plot_nodoselim", result)
 })

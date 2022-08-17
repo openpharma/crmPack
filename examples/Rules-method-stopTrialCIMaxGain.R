@@ -25,16 +25,13 @@ myStopping <- StoppingGstarCIRatio(targetRatio=5,
 mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,DLEEndOfTrialtarget=0.3)
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,
-                        Effmodel=Effmodel,data=data)
+                        model_eff=Effmodel,data=data)
 
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
 
-stopTrial(stopping=myStopping,dose=RecommendDose$nextdose,model=DLEmodel,
+stopTrial(stopping=myStopping,dose=RecommendDose$next_dose,model=DLEmodel,
           data=data, Effmodel=Effmodel)
-
-
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
 
 # nolint end

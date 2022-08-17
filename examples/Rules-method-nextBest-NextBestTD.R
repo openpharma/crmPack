@@ -27,5 +27,5 @@ dose_recommendation <- nextBest(
   data = my_data
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose_drt
 dose_recommendation$plot

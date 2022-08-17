@@ -50,7 +50,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, SIM = FALSE, ...)
 
-\S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(nextBest, doselimit = Inf, model, data, Effmodel, SIM = FALSE, ...)
+\S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(nextBest, doselimit = Inf, model, data, model_eff, SIM = FALSE, ...)
 
 \S4method{nextBest}{NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual}(
   nextBest,
@@ -58,8 +58,8 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   samples,
   model,
   data,
-  Effmodel,
-  Effsamples,
+  model_eff,
+  samples_eff,
   SIM = FALSE,
   ...
 )
@@ -85,9 +85,9 @@ If this flag is \code{TRUE} and target dose estimates (during trial and end-of-t
 are outside of the dose grid range, the information message is printed by
 this method.}
 
-\item{Effmodel}{(\code{Effloglog} or \code{EffFlexi})\cr the efficacy model.}
+\item{model_eff}{(\code{Effloglog} or \code{EffFlexi})\cr the efficacy model.}
 
-\item{Effsamples}{(\code{Samples})\cr posterior samples from \code{Effmodel} parameters
+\item{samples_eff}{(\code{Samples})\cr posterior samples from \code{model_eff} parameters
 given \code{data}.}
 }
 \value{
@@ -493,7 +493,7 @@ dose_recommendation <- nextBest(
   data = my_data
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose_drt
 dose_recommendation$plot
 
 # Example of usage for `NextBestTD` NextBest class.
@@ -524,7 +524,7 @@ dose_recommendation <- nextBest(
   data = my_data
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose_drt
 dose_recommendation$plot
 
 # Example of usage for `NextBestMaxGain` NextBest class.
@@ -568,11 +568,11 @@ dose_recommendation <- nextBest(
   nextBest = mg_next_best,
   doselimit = 300,
   model = my_model_dlt,
-  Effmodel = my_model_eff,
+  model_eff = my_model_eff,
   data = my_data
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose
 dose_recommendation$plot
 
 # Example of usage for `NextBestMaxGainSamples` NextBest class.
@@ -632,11 +632,11 @@ dose_recommendation <- nextBest(
   samples = my_samples_dlt,
   model = my_model_dlt,
   data = my_data,
-  Effmodel = my_model_effll,
-  Effsamples = my_samples_effll
+  model_eff = my_model_effll,
+  samples_eff = my_samples_effll
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose
 dose_recommendation$plot
 
 # Now using the 'EffFlexi' class efficacy model:
@@ -669,10 +669,10 @@ dose_recommendation <- nextBest(
   samples = my_samples_dlt,
   model = my_model_dlt,
   data = my_data,
-  Effmodel = my_model_effflexi,
-  Effsamples = my_samples_effflexi
+  model_eff = my_model_effflexi,
+  samples_eff = my_samples_effflexi
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose
 dose_recommendation$plot
 }

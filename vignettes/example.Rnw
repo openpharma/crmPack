@@ -792,17 +792,17 @@ Similarly, we can use the the generic \texttt{nextBest} function for the\texttt{
 doseRecDLT <- nextBest(TDNextBest,doselimit=300,model=newDLTmodel,data=data3)
 @
 
-A list of numerical values and a plot showing how the next best dose was computed will be given. This list of results will provide the numerical values for the next dose level, \texttt{nextdose}; the target probability of DLT used during the trial, \texttt{targetDuringTrial}; the estimated dose level for which its probability of DLT equals the target probability used during the trial, \texttt{TDtargetDuringTrial}; the target probability of DLT used at the end of a trial, \texttt{targetEndOfTrial}; the estimated dose level for which its probability of DLT equals the target probability of DLT used at the end of a trial. \texttt{TDtargetEndOfTrial}; and the dose level at dose grid closest and less than the \texttt{TDtargetEndOfTrial}, \texttt{TDtargetEndOfTrialdoseGrid}. We can use the \verb|$| operator to obtain these values and the plot from the list. For example,
+A list of numerical values and a plot showing how the next best dose was computed will be given. This list of results will provide the numerical values for the next dose level, \texttt{next_dose_drt}; the target probability of DLT used during the trial, \texttt{prob_target_drt}; the estimated dose level for which its probability of DLT equals the target probability used during the trial, \texttt{dose_target_drt}; the target probability of DLT used at the end of a trial, \texttt{prob_target_eot}; the estimated dose level for which its probability of DLT equals the target probability of DLT used at the end of a trial \texttt{dose_target_eot}; and the dose level at dose grid closest and less than the \texttt{dose_target_eot}, \texttt{next_dose_eot}. We can use the \verb|$| operator to obtain these values and the plot from the list. For example,
 
 <<next-bestTD-results,fig=TRUE>>=
-doseRecDLT$nextdose
-doseRecDLT$targetDuringTrial
-doseRecDLT$TDtargetDuringTrial
+doseRecDLT$next_dose_drt
+doseRecDLT$prob_target_drt
+doseRecDLT$dose_target_drt
 print(doseRecDLT$plot)
 @
 
 
-We can see that the next dose suggested to be given to the next cohort of subjects is 50 mg. The target probability of DLT during the trial is 0.35 and the TD35 (the tolerated dose with probability of DLT equal to 0.35) is estimated to be 52.28 mg. As we are using 12 dose levels or dose grids from 25 mg to 300 mg with increments of 25 mg for this data set, \texttt{data3}, we can see that what is suggested for the next dose 50 mg is also the dose level closest below 52.28 mg, the estimated \texttt{TDtargetDuringTrial}. Similarly, at the end of a trial we could also obtain all "End Of Trial" estimates by using the \verb|$| operator. In addition, we also have a plot to show next dose allocation. The red curve shows the estimated DLT curve obtained using the posterior modal estimates of the model parameters. We also assumed the maximum allowable dose be 300 mg which was specified as the \texttt{doselimit} parameter of the \texttt{nextBest} function call and the red vertical line denoted with "Max" shows the maximum dose level (at x-axis) that is allowed in this case. The vertical purple line denoted with "Next" marks the dose level to be allocated to the next cohort of subjects. In this example, the target probability of DLT used during trial and at the end of a trial were 0.35 and 0.3, respectively. The circle and the square on the DLT curve show  where the probability of DLT is estimated to be equal to 0.3 and 0.35, respectively. Hence, the value of the estimated TD30 and TD35 can be checked at the x-axis vertically below these symbols.
+We can see that the next dose suggested to be given to the next cohort of subjects is 50 mg. The target probability of DLT during the trial is 0.35 and the TD35 (the tolerated dose with probability of DLT equal to 0.35) is estimated to be 52.28 mg. As we are using 12 dose levels or dose grids from 25 mg to 300 mg with increments of 25 mg for this data set, \texttt{data3}, we can see that what is suggested for the next dose 50 mg is also the dose level closest below 52.28 mg, the estimated \texttt{dose_target_drt}. Similarly, at the end of a trial we could also obtain all "End Of Trial" estimates by using the \verb|$| operator. In addition, we also have a plot to show next dose allocation. The red curve shows the estimated DLT curve obtained using the posterior modal estimates of the model parameters. We also assumed the maximum allowable dose be 300 mg which was specified as the \texttt{doselimit} parameter of the \texttt{nextBest} function call and the red vertical line denoted with "Max" shows the maximum dose level (at x-axis) that is allowed in this case. The vertical purple line denoted with "Next" marks the dose level to be allocated to the next cohort of subjects. In this example, the target probability of DLT used during trial and at the end of a trial were 0.35 and 0.3, respectively. The circle and the square on the DLT curve show  where the probability of DLT is estimated to be equal to 0.3 and 0.35, respectively. Hence, the value of the estimated TD30 and TD35 can be checked at the x-axis vertically below these symbols.
 
 When MCMC sampling is involved, we will use the samples of model parameters to choose the next best dose. For example, in the following code chunk we use the data set, \texttt{data3}, with some DLT observations and the posterior samples of the model parameters, \texttt{DLTpostsamples} to compute the next best dose:
 <<next-bestTDsamples-run>>=
@@ -811,7 +811,7 @@ doseRecDLTSamples <- nextBest(TDsamplesNextBest,doselimit=300,
                               data=data3)
 @
 
-The same list of results will be produced as in the example before: The values of the \texttt{nextdose}, \texttt{targetDuringTrial}, \texttt{TDtargetDuringTrial}, \texttt{targetEndOfTrial}, \texttt{TDtargetEndOfTrial} and \texttt{TDtargetEndOfTrialdoseGrid} can be obtained using the \verb|$| operator. The only difference is that the plot in this example will look slightly different than in the previous example:
+The same list of results will be produced as in the example before: The values of the \texttt{next_dose_drt}, \texttt{prob_target_drt}, \texttt{dose_target_drt}, \texttt{prob_target_eot}, \texttt{dose_target_eot} and \texttt{next_dose_eot} can be obtained using the \verb|$| operator. The only difference is that the plot in this example will look slightly different than in the previous example:
 
 <<next-bestTDsamples-results, fig=TRUE>>=
 print(doseRecDLTSamples$plot)
@@ -993,10 +993,10 @@ shall continue.
 
 In the same way the stopping rule \texttt{myStopping4} (no samples and with samples) can be evaluated:
 <<rules2-try>>=
-stopTrial(stopping= myStopping4, dose=doseRecDLTSamples$nextdose,
+stopTrial(stopping= myStopping4, dose=doseRecDLTSamples$next_dose_drt,
           samples=DLTpostsamples,model=newDLTmodel,data=data3)
 
-stopTrial(stopping= myStopping4, dose=doseRecDLT$nextdose,
+stopTrial(stopping= myStopping4, dose=doseRecDLT$next_dose_drt,
           model=newDLTmodel,data=data3)
 @
 % when DLT samples or no DLT samples are involved.
@@ -1960,7 +1960,7 @@ To use the \texttt{NextBestMaxGain}, we have to specify the target probability o
 doseRecGain <- nextBest(GainNextBest,
                         doselimit=max(data4@doseGrid),
                         model=newDLTmodel,
-                        Effmodel=newEffmodel,
+                        model_eff=newEffmodel,
                         data=data4)
 @
 The results will be a list of numerical values with a plot illustrating how the next best dose was computed. The list of numerical values include the next best dose suggested, the values of the target probabilities of DLT used during and at the end of a trial. Furthermore, the estimated doses for these two targets, as well as the "Gstar" estimated dose (the dose with gives the maximum gain value) are provided along with the corresponding dose level in the dose grid for the above three estimates. We can also get to see the plot about the next best dose recommendation using the \verb|$| operator.
@@ -1991,8 +1991,8 @@ doseRecGainSamples <- nextBest(GainsamplesNextBest,
                                doselimit=max(data4@doseGrid),
                                model=newDLTmodel,
                                samples=DLTpostsamples,
-                               Effmodel=newEffmodel,
-                               Effsamples=Effpostsamples,
+                               model_eff=newEffmodel,
+                               samples_eff=Effpostsamples,
                                data=data4)
 @
 The list of numerical results given in the output will be the same as those given using \texttt{NextBestMaxGain} class object which includes the next dose suggested, the current estimates of TD30, TD35 and Gstar and their corresponding dose levels at dose Grid. We can also see the plot:
@@ -2021,11 +2021,11 @@ To note here, at the moment the class \texttt{StoppingGstarCIRatio} cannot be us
 Similarly, the \texttt{stopTrial} function can then be used in order to determine if the rule has been fulfilled:
 <<StopTrial-stoppingGstar>>=
 
-stopTrial(stopping=myStopping7,dose=doseRecGain$nextdose,model=newDLTmodel,
+stopTrial(stopping=myStopping7,dose=doseRecGain$next_dose,model=newDLTmodel,
           data=data4, Effmodel=newEffmodel)
 
 stopTrial(stopping=myStopping7,
-          dose=doseRecGainSamples$nextdose,
+          dose=doseRecGainSamples$next_dose,
           samples=DLTpostsamples,
           model=newDLTmodel,
           data=data4,

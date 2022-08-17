@@ -33,12 +33,12 @@ mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
                                      quantile(Gstarsamples,prob=0.5)})
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
-                        data=data,Effmodel=Effmodel,Effsamples=Effsamples)
+                        data=data,model_eff=Effmodel,samples_eff=Effsamples)
 ##use 'stopTrial' to determine if the rule has been fulfilled
 ##use 0.3 as the target proability of DLE at the end of the trial
 
 stopTrial(stopping=myStopping,
-          dose=RecommendDose$nextdose,
+          dose=RecommendDose$next_dose,
           samples=DLEsamples,
           model=DLEmodel,
           data=data,
@@ -48,7 +48,5 @@ stopTrial(stopping=myStopping,
           Effsamples=Effsamples,
           Gstarderive=function(Gstarsamples){
             quantile(Gstarsamples,prob=0.5)})
-
-## RecommendDose$nextdose refers to the next dose obtained in RecommendDose
 
 # nolint end

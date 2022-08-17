@@ -720,50 +720,51 @@ setMethod(
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
-    # Generate TDtarget during a trial and TDtarget at the end of trial samples.
-    target_in_trial_samples <- dose(x = nextBest@targetDuringTrial, model, samples)
-    target_trial_end_samples <- dose(x = nextBest@targetEndOfTrial, model, samples)
+    # Generate target dose samples, i.e. the doses with probability of the
+    # occurrence of a DLT that equals to the nextBest@targetDuringTrial (or nextBest@targetEndOfTrial, respectively).
+    dose_target_drt_samples <- dose(x = nextBest@targetDuringTrial, model, samples)
+    dose_target_eot_samples <- dose(x = nextBest@targetEndOfTrial, model, samples)
 
     # Derive the prior/posterior estimates based on two above samples.
-    target_in_trial_est <- as.numeric(nextBest@derive(TDsamples = target_in_trial_samples))
-    target_trial_end_est <- as.numeric(nextBest@derive(TDsamples = target_trial_end_samples))
+    dose_target_drt <- as.numeric(nextBest@derive(TDsamples = dose_target_drt_samples))
+    dose_target_eot <- as.numeric(nextBest@derive(TDsamples = dose_target_eot_samples))
 
     # Find the next doses in the doseGrid. The next dose is the dose at level
-    # closest and below the target_in_trial_est (or target_trial_end_est, respectively).
+    # closest and below the dose_target_drt (or dose_target_eot, respectively).
     # h_find_interval assumes that elements in doses_eligible are strictly increasing.
     doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
 
-    next_best_level <- h_find_interval(target_in_trial_est, doses_eligible)
-    next_best <- doses_eligible[next_best_level]
+    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
+    next_dose_drt <- doses_eligible[next_dose_lev_drt]
 
-    next_best_level1 <- h_find_interval(target_trial_end_est, doses_eligible)
-    next_best1 <- doses_eligible[next_best_level1]
+    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
+    next_dose_eot <- doses_eligible[next_dose_lev_eot]
 
     # 95% credibility interval.
-    ci_td_eot <- as.numeric(quantile(target_trial_end_samples, probs = c(0.025, 0.975)))
-    td_eot_ratio <- ci_td_eot[2] / ci_td_eot[1]
+    ci_dose_target_eot <- as.numeric(quantile(dose_target_eot_samples, probs = c(0.025, 0.975)))
+    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
     # Build plot.
     p <- h_next_best_tdsamples_plot(
-      target_in_trial_samples = target_in_trial_samples,
-      target_trial_end_samples = target_trial_end_samples,
-      target_in_trial_est = target_in_trial_est,
-      target_trial_end_est = target_trial_end_est,
-      nextBest = nextBest,
+      dose_target_drt_samples = dose_target_drt_samples,
+      dose_target_eot_samples = dose_target_eot_samples,
+      dose_target_drt = dose_target_drt,
+      dose_target_eot = dose_target_eot,
       dose_grid_range = range(data@doseGrid),
+      nextBest = nextBest,
       doselimit = doselimit,
-      next_best_dose = next_best
+      next_dose = next_dose_drt
     )
 
     list(
-      nextdose = next_best,
-      targetDuringTrial = nextBest@targetDuringTrial,
-      TDtargetDuringTrialEstimate = target_in_trial_est,
-      targetEndOfTrial = nextBest@targetEndOfTrial,
-      TDtargetEndOfTrialEstimate = target_trial_end_est,
-      TDtargetEndOfTrialAtDoseGrid = next_best1,
-      CITDEOT = ci_td_eot,
-      ratioTDEOT = td_eot_ratio,
+      next_dose_drt = next_dose_drt,
+      prob_target_drt = nextBest@targetDuringTrial,
+      dose_target_drt = dose_target_drt,
+      next_dose_eot = next_dose_eot,
+      prob_target_eot = nextBest@targetEndOfTrial,
+      dose_target_eot = dose_target_eot,
+      ci_dose_target_eot = ci_dose_target_eot,
+      ci_ratio_dose_target_eot = cir_dose_target_eot,
       plot = p
     )
   }
@@ -828,19 +829,19 @@ setMethod(
     var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
 
     # 95% credibility interval.
-    ci_td_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
-    ci_ratio_td_eot <- ci_td_eot[2] / ci_td_eot[1]
+    ci_dose_target_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
+    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
 
     # Build plot.
     p <- h_next_best_td_plot(
-      prob_target_drt,
-      dose_target_drt,
-      prob_target_eot,
-      dose_target_eot,
-      data,
-      prob(dose = data@doseGrid, model = model),
-      doselimit,
-      next_dose_drt
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      data = data,
+      prob_dlt = prob(dose = data@doseGrid, model = model),
+      doselimit = doselimit,
+      next_dose = next_dose_drt
     )
 
     if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !SIM) {
@@ -851,14 +852,14 @@ setMethod(
     }
 
     list(
-      nextdose = next_dose_drt,
-      targetDuringTrial = prob_target_drt,
-      TDtargetDuringTrialEstimate = dose_target_drt,
-      TDtargetEndOfTrialatdoseGrid = next_dose_eot,
-      targetEndOfTrial = prob_target_eot,
-      TDtargetEndOfTrialEstimate = dose_target_eot,
-      CITDEOT = ci_td_eot,
-      ratioTDEOT = ci_ratio_td_eot,
+      next_dose_drt = next_dose_drt,
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      next_dose_eot = next_dose_eot,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      ci_dose_target_eot = ci_dose_target_eot,
+      ci_ratio_dose_target_eot = cir_dose_target_eot,
       plot = p
     )
   }
@@ -870,7 +871,7 @@ setMethod(
 #'   [`ModelTox`] and [`Effloglog`] efficacy model without samples.
 #'
 #' @param model (`ModelTox`)\cr the DLT model.
-#' @param Effmodel (`Effloglog`)\cr the efficacy model.
+#' @param model_eff (`Effloglog`)\cr the efficacy model.
 #' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
 #'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
 #'   are outside of the dose grid range, the information message is printed by
@@ -890,8 +891,8 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit = Inf, model, data, Effmodel, SIM = FALSE, ...) {
-    assert_class(Effmodel, "Effloglog")
+  definition = function(nextBest, doselimit = Inf, model, data, model_eff, SIM = FALSE, ...) {
+    assert_class(model_eff, "Effloglog")
     assert_flag(SIM)
 
     # 'drt' - during the trial, 'eot' end of trial.
@@ -908,7 +909,7 @@ setMethod(
     opt <- optim(
       par = dose_grid_range[1],
       fn = function(DOSE) {
-        -gain(DOSE, model_dle = model, model_eff = Effmodel)
+        -gain(DOSE, model_dle = model, model_eff = model_eff)
       },
       method = "L-BFGS-B",
       lower = dose_grid_range[1],
@@ -945,38 +946,38 @@ setMethod(
       prob_target = prob_target_eot,
       placebo = data@placebo,
       model = model,
-      model_eff = Effmodel
+      model_eff = model_eff
     )
 
     # Build plot.
     p <- h_next_best_mg_plot(
-      prob_target_drt,
-      dose_target_drt,
-      prob_target_eot,
-      dose_target_eot,
-      dose_mg,
-      max_gain,
-      nb_doses_at_grid$next_dose,
-      doselimit,
-      data,
-      model,
-      Effmodel
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      dose_mg = dose_mg,
+      max_gain = max_gain,
+      next_dose = nb_doses_at_grid$next_dose,
+      doselimit = doselimit,
+      data = data,
+      model = model,
+      model_eff = model_eff
     )
 
     list(
-      nextdose = nb_doses_at_grid$next_dose,
-      DLEDuringTrialtarget = prob_target_drt,
-      TDtargetDuringTrialEstimate = dose_target_drt,
-      TDtargetDuringTrialAtDoseGrid = nb_doses_at_grid$next_dose_drt,
-      DLEEndOfTrialtarget = prob_target_eot,
-      TDtargetEndOfTrialEstimate = dose_target_eot,
-      TDtargetEndOfTrialAtDoseGrid = nb_doses_at_grid$next_dose_eot,
-      GstarEstimate = dose_mg,
-      GstarAtDoseGrid = nb_doses_at_grid$next_dose_mg,
-      CITDEOT = ci$ci_dose_target,
-      ratioTDEOT = ci$ci_ratio_dose_target,
-      CIGstar = ci$ci_dose_mg,
-      ratioGstar = ci$ci_ratio_dose_mg,
+      next_dose = nb_doses_at_grid$next_dose,
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      next_dose_drt = nb_doses_at_grid$next_dose_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      next_dose_eot = nb_doses_at_grid$next_dose_eot,
+      dose_max_gain = dose_mg,
+      next_dose_max_gain = nb_doses_at_grid$next_dose_mg,
+      ci_dose_target_eot = ci$ci_dose_target,
+      ci_ratio_dose_target_eot = ci$ci_ratio_dose_target,
+      ci_dose_max_gain = ci$ci_dose_mg,
+      ci_ratio_dose_max_gain = ci$ci_ratio_dose_mg,
       plot = p
     )
   }
@@ -988,8 +989,8 @@ setMethod(
 #'   responses with DLT and efficacy samples.
 #'
 #' @param model (`ModelTox`)\cr the DLT model.
-#' @param Effmodel (`Effloglog` or `EffFlexi`)\cr the efficacy model.
-#' @param Effsamples (`Samples`)\cr posterior samples from `Effmodel` parameters
+#' @param model_eff (`Effloglog` or `EffFlexi`)\cr the efficacy model.
+#' @param samples_eff (`Samples`)\cr posterior samples from `model_eff` parameters
 #'   given `data`.
 #' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
 #'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
@@ -1010,9 +1011,9 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, Effmodel, Effsamples, SIM = FALSE, ...) {
-    assert_true(test_class(Effmodel, "Effloglog") || test_class(Effmodel, "EffFlexi"))
-    assert_class(Effsamples, "Samples")
+  definition = function(nextBest, doselimit = Inf, samples, model, data, model_eff, samples_eff, SIM = FALSE, ...) {
+    assert_true(test_class(model_eff, "Effloglog") || test_class(model_eff, "EffFlexi"))
+    assert_class(samples_eff, "Samples")
     assert_flag(SIM)
 
     # 'drt' - during the trial, 'eot' end of trial.
@@ -1021,15 +1022,15 @@ setMethod(
 
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the prob_target_drt or prob_target_eot.
-    dose_target_samples_drt <- dose(x = prob_target_drt, model, samples = samples)
-    dose_target_samples_eot <- dose(x = prob_target_eot, model, samples = samples)
+    dose_target_drt_samples <- dose(x = prob_target_drt, model, samples = samples)
+    dose_target_eot_samples <- dose(x = prob_target_eot, model, samples = samples)
 
     # Derive the prior/posterior estimates based on two above samples.
-    dose_target_drt <- as.numeric(nextBest@TDderive(TDsamples = dose_target_samples_drt))
-    dose_target_eot <- as.numeric(nextBest@TDderive(TDsamples = dose_target_samples_eot))
+    dose_target_drt <- as.numeric(nextBest@TDderive(TDsamples = dose_target_drt_samples))
+    dose_target_eot <- as.numeric(nextBest@TDderive(TDsamples = dose_target_eot_samples))
 
     # Gain samples.
-    gain_samples <- sapply(data@doseGrid, gain, model, samples, Effmodel, Effsamples)
+    gain_samples <- sapply(data@doseGrid, gain, model, samples, model_eff, samples_eff)
     # For every sample, get the dose (from the dose grid) that gives the maximum gain value.
     dose_lev_mg_samples <- apply(gain_samples, 1, which.max)
     dose_mg_samples <- data@doseGrid[dose_lev_mg_samples]
@@ -1068,31 +1069,31 @@ setMethod(
 
     # Build plot.
     p <- h_next_best_mgsamples_plot(
-      prob_target_drt,
-      dose_target_drt,
-      prob_target_eot,
-      dose_target_eot,
-      dose_mg,
-      dose_mg_samples,
-      nb_doses_at_grid$next_dose,
-      doselimit,
-      dose_grid_range
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      dose_mg = dose_mg,
+      dose_mg_samples = dose_mg_samples,
+      next_dose = nb_doses_at_grid$next_dose,
+      doselimit = doselimit,
+      dose_grid_range = dose_grid_range
     )
 
     list(
-      nextdose = nb_doses_at_grid$next_dose,
-      DLEDuringTrialtarget = prob_target_drt,
-      TDtargetDuringTrialEstimate = dose_target_drt,
-      TDtargetDuringTrialAtDoseGrid = nb_doses_at_grid$next_dose_drt,
-      DLEEndOfTrialtarget = prob_target_eot,
-      TDtargetEndOfTrialEstimate = dose_target_eot,
-      TDtargetEndOfTrialAtDoseGrid = nb_doses_at_grid$next_dose_eot,
-      GstarEstimate = dose_mg,
-      GstarAtDoseGrid = nb_doses_at_grid$next_dose_mg,
-      CITDEOT = ci_dose_target_eot,
-      ratioTDEOT = cir_dose_target_eot,
-      CIGstar = ci_dose_mg,
-      ratioGstar = cir_dose_mg,
+      next_dose = nb_doses_at_grid$next_dose,
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      next_dose_drt = nb_doses_at_grid$next_dose_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      next_dose_eot = nb_doses_at_grid$next_dose_eot,
+      dose_max_gain = dose_mg,
+      next_dose_max_gain = nb_doses_at_grid$next_dose_mg,
+      ci_dose_target_eot = ci_dose_target_eot,
+      ci_ratio_dose_target_eot = cir_dose_target_eot,
+      ci_dose_max_gain = ci_dose_mg,
+      ci_ratio_dose_max_gain = cir_dose_mg,
       plot = p
     )
   }

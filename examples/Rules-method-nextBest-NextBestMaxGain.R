@@ -40,9 +40,9 @@ dose_recommendation <- nextBest(
   nextBest = mg_next_best,
   doselimit = 300,
   model = my_model_dlt,
-  Effmodel = my_model_eff,
+  model_eff = my_model_eff,
   data = my_data
 )
 
-dose_recommendation$nextdose
+dose_recommendation$next_dose
 dose_recommendation$plot
