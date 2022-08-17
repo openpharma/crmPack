@@ -2136,7 +2136,7 @@ setMethod("simulate",
                   thisTDtargetDuringTrial<- NEXT$dose_target_drt
                   thisTDtargetEndOfTrial<- NEXT$dose_target_eot
                   thisTDtargetEndOfTrialatdoseGrid <- NEXT$next_dose_eot
-                  thisCITDEOT <- list(lower=NEXT$ci_dose_target_eot[1], upper=NEXT$ci_dose_target_eot[2])
+                  thisCITDEOT <- list(lower = NEXT$ci_dose_target_eot[1], upper = NEXT$ci_dose_target_eot[2])
                   thisratioTDEOT <- NEXT$ci_ratio_dose_target_eot
 
                   ## evaluate stopping rules
