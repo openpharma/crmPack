@@ -67,26 +67,26 @@ setMethod(
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Generate the MTD samples and derive the next best dose.
-    mtd_samples <- dose(x = nextBest@target, model, samples)
-    mtd_estimate <- nextBest@derive(mtd_samples = mtd_samples)
+    dose_target_samples <- dose(x = nextBest@target, model, samples)
+    dose_target <- nextBest@derive(mtd_samples = dose_target_samples)
 
     # Round to the next possible grid point.
     doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
-    min_dist_ind <- which.min(abs(doses_eligible - mtd_estimate))
-    next_best <- doses_eligible[min_dist_ind]
+    next_dose_level <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level]
 
     # Create a plot.
     p <- ggplot(
-      data = data.frame(x = mtd_samples),
+      data = data.frame(x = dose_target_samples),
       aes(.data$x),
       fill = "grey50",
       colour = "grey50"
     ) +
       geom_density() +
       coord_cartesian(xlim = range(data@doseGrid)) +
-      geom_vline(xintercept = mtd_estimate, colour = "black", lwd = 1.1) +
+      geom_vline(xintercept = dose_target, colour = "black", lwd = 1.1) +
       geom_text(
-        data = data.frame(x = mtd_estimate),
+        data = data.frame(x = dose_target),
         aes(.data$x, 0),
         label = "Est",
         vjust = -0.5,
@@ -112,9 +112,9 @@ setMethod(
     }
 
     p <- p +
-      geom_vline(xintercept = next_best, colour = "blue", lwd = 1.1) +
+      geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
       geom_text(
-        data = data.frame(x = next_best),
+        data = data.frame(x = next_dose),
         aes(.data$x, 0),
         label = "Next",
         vjust = -0.5,
@@ -123,7 +123,7 @@ setMethod(
         angle = 90
       )
 
-    list(value = next_best, plot = p)
+    list(value = next_dose, plot = p)
   }
 )
 
@@ -162,7 +162,7 @@ setMethod(
     is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
       (prob_overdose < nextBest@max_overdose_prob)
 
-    next_best <- if (any(is_dose_eligible)) {
+    next_dose <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
       # then take that level, otherwise stick to the maximum level that is OK.
       # next_best_level is relative to eligible doses.
@@ -198,7 +198,7 @@ setMethod(
       p1 <- p1 +
         geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
         geom_point(
-          aes(x = next_best, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          aes(x = next_dose, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
           size = 3,
           pch = 25,
           col = "red",
@@ -225,7 +225,7 @@ setMethod(
     plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
 
     list(
-      value = next_best,
+      value = next_dose,
       plot = plot_joint,
       singlePlots = list(plot1 = p1, plot2 = p2),
       probs = cbind(
@@ -337,7 +337,7 @@ setMethod("nextBest",
       (prob_overdose < nextBest@max_overdose_prob)
 
     # Next best dose is the dose with the minimum loss function.
-    next_best <- if (any(is_dose_eligible)) {
+    next_dose <- if (any(is_dose_eligible)) {
       next_best_level <- which.min(posterior_loss[is_dose_eligible])
       data@doseGrid[is_dose_eligible][next_best_level]
     } else {
@@ -381,7 +381,7 @@ setMethod("nextBest",
         fill = "darkgreen"
       ) +
       geom_point(
-        aes(x = next_best, y = max(posterior_loss) + 0.2),
+        aes(x = next_dose, y = max(posterior_loss) + 0.2),
         size = 3,
         pch = 25,
         col = "red",
@@ -449,7 +449,7 @@ setMethod("nextBest",
     }
 
     list(
-      value = next_best,
+      value = next_dose,
       plot = plot_joint,
       singlePlots = singlePlots,
       probs = probs
@@ -493,19 +493,19 @@ setMethod(
       # depends on the num. of patients: if >3, then deescalate it, otherwise stay.
       ifelse((DLT_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
     }
-    next_level <- last_level + level_change
+    next_dose_level <- last_level + level_change
 
     # Do we stop here? Only if we have no MTD, or the next level has been tried
     # enough (more than three patients already).
-    if (next_level == 0L) {
-      next_best <- NA
+    if (next_dose_level == 0L) {
+      next_dose <- NA
       stop_here <- TRUE
     } else {
-      next_best <- data@doseGrid[next_level]
-      stop_here <- nPatients[next_level] > 3L
+      next_dose <- data@doseGrid[next_dose_level]
+      stop_here <- nPatients[next_dose_level] > 3L
     }
 
-    list(value = next_best, stopHere = stop_here)
+    list(value = next_dose, stopHere = stop_here)
   }
 )
 
@@ -563,16 +563,16 @@ setMethod(
     is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
       (prob_overdose < nextBest@max_overdose_prob)
 
-    next_best <- if (any(is_dose_eligible)) {
+    next_dose <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher the threshold, then take that
       # level, otherwise stick to the maximum level that is eligible.
-      # next_best_level is relative to eligible doses.
-      next_best_level <- ifelse(
+      # next_dose_level is relative to eligible doses.
+      next_dose_level <- ifelse(
         test = any(prob_target[is_dose_eligible] > nextBest@target_thresh),
         yes = which.max(prob_target[is_dose_eligible]),
         no = sum(is_dose_eligible)
       )
-      data@doseGrid[is_dose_eligible][next_best_level]
+      data@doseGrid[is_dose_eligible][next_dose_level]
     } else {
       NA
     }
@@ -599,7 +599,7 @@ setMethod(
       p1 <- p1 +
         geom_vline(xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1, lty = 2, colour = "red") +
         geom_point(
-          data = data.frame(x = next_best, y = prob_target[is_dose_eligible][next_best_level] * 100 + 0.03),
+          data = data.frame(x = next_dose, y = prob_target[is_dose_eligible][next_dose_level] * 100 + 0.03),
           aes(x = x, y = y),
           size = 3,
           pch = 25,
@@ -627,7 +627,7 @@ setMethod(
     plot_joint <- gridExtra::arrangeGrob(p1, p2, nrow = 2)
 
     list(
-      value = next_best,
+      value = next_dose,
       plot = plot_joint,
       singlePlots = list(plot1 = p1, plot2 = p2),
       probs = cbind(dose = data@doseGrid, target = prob_target, overdose = prob_overdose)
@@ -659,10 +659,10 @@ setMethod(
     is_dose_eligible <- doses <= doselimit
     doses_eligible <- doses[is_dose_eligible]
     dlt_prob <- modelfit$middle[is_dose_eligible]
-    next_best_level <- which.min(abs(dlt_prob - nextBest@target))
-    next_best <- doses_eligible[next_best_level]
+    next_dose_level <- which.min(abs(dlt_prob - nextBest@target))
+    next_dose <- doses_eligible[next_dose_level]
 
-    list(value = next_best)
+    list(value = next_dose)
   }
 )
 
@@ -776,7 +776,7 @@ setMethod(
 #'   and for [`LogisticIndepBeta`] model class object without DLT samples.
 #'
 #' @param model (`ModelTox`)\cr the DLT model.
-#' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
+#' @param in_sim (`flag`)\cr is this method used in simulations? Default as `FALSE`.
 #'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
 #'   are outside of the dose grid range, the information message is printed by
 #'   this method.
@@ -795,8 +795,8 @@ setMethod(
     model = "LogisticIndepBeta",
     data = "Data"
   ),
-  definition = function(nextBest, doselimit = Inf, model, data, SIM = FALSE, ...) {
-    assert_flag(SIM)
+  definition = function(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...) {
+    assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
     prob_target_drt <- nextBest@targetDuringTrial
@@ -844,10 +844,10 @@ setMethod(
       next_dose = next_dose_drt
     )
 
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !SIM) {
+    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
       print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !SIM) {
+    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
       print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
 
@@ -872,7 +872,7 @@ setMethod(
 #'
 #' @param model (`ModelTox`)\cr the DLT model.
 #' @param model_eff (`Effloglog`)\cr the efficacy model.
-#' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
+#' @param in_sim (`flag`)\cr is this method used in simulations? Default as `FALSE`.
 #'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
 #'   are outside of the dose grid range, the information message is printed by
 #'   this method.
@@ -891,9 +891,9 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit = Inf, model, data, model_eff, SIM = FALSE, ...) {
+  definition = function(nextBest, doselimit = Inf, model, data, model_eff, in_sim = FALSE, ...) {
     assert_class(model_eff, "Effloglog")
-    assert_flag(SIM)
+    assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
     prob_target_drt <- nextBest@DLEDuringTrialtarget
@@ -919,13 +919,13 @@ setMethod(
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = FALSE) && !SIM) {
+    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = FALSE) && !SIM) {
+    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
-    if (!h_in_range(dose_mg, range = h_dose_grid_range(data), bounds_closed = FALSE) && !SIM) {
+    if (!h_in_range(dose_mg, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -992,7 +992,7 @@ setMethod(
 #' @param model_eff (`Effloglog` or `EffFlexi`)\cr the efficacy model.
 #' @param samples_eff (`Samples`)\cr posterior samples from `model_eff` parameters
 #'   given `data`.
-#' @param SIM (`flag`)\cr is this method used in simulations? Default as `FALSE`.
+#' @param in_sim (`flag`)\cr is this method used in simulations? Default as `FALSE`.
 #'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
 #'   are outside of the dose grid range, the information message is printed by
 #'   this method.
@@ -1011,10 +1011,10 @@ setMethod(
     model = "ModelTox",
     data = "DataDual"
   ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, model_eff, samples_eff, SIM = FALSE, ...) {
+  definition = function(nextBest, doselimit = Inf, samples, model, data, model_eff, samples_eff, in_sim = FALSE, ...) {
     assert_true(test_class(model_eff, "Effloglog") || test_class(model_eff, "EffFlexi"))
     assert_class(samples_eff, "Samples")
-    assert_flag(SIM)
+    assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
     prob_target_drt <- nextBest@DLEDuringTrialtarget
@@ -1040,13 +1040,13 @@ setMethod(
 
     # Print info message if dose target is outside of the range.
     dose_grid_range <- h_dose_grid_range(data)
-    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE) && !SIM) {
+    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE) && !SIM) {
+    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
-    if (!h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE) && !SIM) {
+    if (!h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
