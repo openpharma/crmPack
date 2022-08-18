@@ -1,3 +1,5 @@
+# nolint start
+
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ##         Wai Yin Yeung [ w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
@@ -497,6 +499,4 @@ validObject(DADesign(model=.DALogisticLogNormal(),
                      stopping=StoppingMinCohorts(10),
                      increments=IncrementsNumDoseLevels(2)))
 
-
-
-## ===============================================================================
+# nolint end
