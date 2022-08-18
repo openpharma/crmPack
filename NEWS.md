@@ -1,4 +1,4 @@
-# Version 1.0.9000.9058
+# Version 1.0.9000.9059
 * Renamed `SIM` argument of `nextBest` methods to `in_sim`.
 * Renamed the elements of the list returned by `nextBest` methods for `NextBestMaxGain`
   and `NextBestMaxGainSamples`.
