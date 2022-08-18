@@ -29,13 +29,7 @@ h_get_general_model <- function() {
 }
 
 h_get_model <- function() {
-  .Model(
-    dose = function(x, param1) {
-      x
-    },
-    prob = function(dose, param1) {
-      dose
-    },
+  .GeneralModel(
     datamodel = function(x) {
       x
     },

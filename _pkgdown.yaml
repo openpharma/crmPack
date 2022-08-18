@@ -35,7 +35,6 @@ reference:
       - McmcOptions
       - ModelParamsNormal
       - GeneralModel
-      - Model
       - ModelLogNormal
       - LogisticNormal
       - LogisticLogNormal

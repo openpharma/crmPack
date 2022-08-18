@@ -1600,7 +1600,7 @@ setMethod("|",
 ##' \code{\linkS4class{Stopping}}
 ##' @param dose the recommended next best dose
 ##' @param samples the \code{\linkS4class{Samples}} object
-##' @param model The model input, an object of class \code{\linkS4class{Model}}
+##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
 ##' @param data The data input, an object of class \code{\linkS4class{Data}}
 ##' @param \dots additional arguments
 ##'
@@ -1995,7 +1995,7 @@ setMethod("stopTrial",
       stopping = "StoppingTargetProb",
       dose = "numeric",
       samples = "Samples",
-      model = "Model",
+      model = "GeneralModel",
       data = "ANY"
     ),
   def =
@@ -2051,7 +2051,7 @@ setMethod("stopTrial",
       stopping = "StoppingMTDdistribution",
       dose = "numeric",
       samples = "Samples",
-      model = "Model",
+      model = "GeneralModel",
       data = "ANY"
     ),
   def =

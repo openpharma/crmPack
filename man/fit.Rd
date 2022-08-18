@@ -2,7 +2,7 @@
 % Please edit documentation in R/Samples-methods.R
 \name{fit}
 \alias{fit}
-\alias{fit,Samples,Model,Data-method}
+\alias{fit,Samples,GeneralModel,Data-method}
 \alias{fit,Samples,DualEndpoint,DataDual-method}
 \alias{fit,Samples,LogisticIndepBeta,Data-method}
 \alias{fit,Samples,Effloglog,DataDual-method}
@@ -11,7 +11,7 @@
 \usage{
 fit(object, model, data, ...)
 
-\S4method{fit}{Samples,Model,Data}(
+\S4method{fit}{Samples,GeneralModel,Data}(
   object,
   model,
   data,
@@ -56,7 +56,7 @@ fit(object, model, data, ...)
 \arguments{
 \item{object}{the \code{\linkS4class{Samples}} object}
 
-\item{model}{the \code{\linkS4class{Model}} object}
+\item{model}{the \code{\linkS4class{GeneralModel}} object}
 
 \item{data}{the \code{\linkS4class{Data}} object}
 
@@ -81,7 +81,7 @@ signature. But we need also other arguments in the signature.
 }
 \section{Functions}{
 \itemize{
-\item \code{fit,Samples,Model,Data-method}: This method returns a data frame with dose, middle, lower
+\item \code{fit,Samples,GeneralModel,Data-method}: This method returns a data frame with dose, middle, lower
 and upper quantiles for the dose-toxicity curve
 
 \item \code{fit,Samples,DualEndpoint,DataDual-method}: This method returns a data frame with dose, and middle,

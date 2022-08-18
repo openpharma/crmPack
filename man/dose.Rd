@@ -2,8 +2,6 @@
 % Please edit documentation in R/Model-methods.R
 \name{dose}
 \alias{dose}
-\alias{dose,numeric,Model,Samples-method}
-\alias{dose-Model}
 \alias{dose,numeric,LogisticNormal,Samples-method}
 \alias{dose-LogisticNormal}
 \alias{dose,numeric,LogisticLogNormal,Samples-method}
@@ -39,8 +37,6 @@
 \title{Computing the Doses for a given independent variable, Model and Samples}
 \usage{
 dose(x, model, samples, ...)
-
-\S4method{dose}{numeric,Model,Samples}(x, model, samples, ...)
 
 \S4method{dose}{numeric,LogisticNormal,Samples}(x, model, samples)
 
@@ -119,9 +115,6 @@ correspond to the sampling index, i.e. the layout is then
 }
 \section{Functions}{
 \itemize{
-\item \code{dose,numeric,Model,Samples-method}: compute the dose level reaching a specific target
-probability of the occurrence of a DLE (\code{x}).
-
 \item \code{dose,numeric,LogisticNormal,Samples-method}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
