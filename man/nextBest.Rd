@@ -48,9 +48,17 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, SIM = FALSE, ...)
+\S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...)
 
-\S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(nextBest, doselimit = Inf, model, data, model_eff, SIM = FALSE, ...)
+\S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(
+  nextBest,
+  doselimit = Inf,
+  model,
+  data,
+  model_eff,
+  in_sim = FALSE,
+  ...
+)
 
 \S4method{nextBest}{NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual}(
   nextBest,
@@ -60,7 +68,7 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
   data,
   model_eff,
   samples_eff,
-  SIM = FALSE,
+  in_sim = FALSE,
   ...
 )
 }
@@ -80,7 +88,7 @@ course of dose recommendation calculation.}
 
 \item{...}{additional arguments without method dispatch.}
 
-\item{SIM}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
+\item{in_sim}{(\code{flag})\cr is this method used in simulations? Default as \code{FALSE}.
 If this flag is \code{TRUE} and target dose estimates (during trial and end-of-trial)
 are outside of the dose grid range, the information message is printed by
 this method.}

@@ -1820,19 +1820,19 @@ setMethod("simulate",
 
                   ## => what is the next best dose?
 
-                  NEXT<-nextBest(object@nextBest,
+                  next_bd<-nextBest(object@nextBest,
                                  doselimit=doselimit,
                                  samples=thisSamples,
                                  model=thisModel,
                                  data=thisData,
-                                 SIM=TRUE)
+                                 in_sim=TRUE)
 
-                  thisDose <- NEXT$next_dose_drt
-                  thisTDtargetDuringTrial<- NEXT$dose_target_drt
-                  thisTDtargetEndOfTrial<- NEXT$dose_target_eot
-                  thisTDtargetEndOfTrialatdoseGrid <- NEXT$next_dose_eot
-                  thisCITDEOT <- list(lower = NEXT$ci_dose_target_eot[1], upper = NEXT$ci_dose_target_eot[2])
-                  thisratioTDEOT <- NEXT$ci_ratio_dose_target_eot
+                  thisDose <- next_bd$next_dose_drt
+                  thisTDtargetDuringTrial<- next_bd$dose_target_drt
+                  thisTDtargetEndOfTrial<- next_bd$dose_target_eot
+                  thisTDtargetEndOfTrialatdoseGrid <- next_bd$next_dose_eot
+                  thisCITDEOT <- list(lower = next_bd$ci_dose_target_eot[1], upper = next_bd$ci_dose_target_eot[2])
+                  thisratioTDEOT <- next_bd$ci_ratio_dose_target_eot
 
                   ## evaluate stopping rules
                   stopit <- stopTrial(object@stopping,
@@ -2126,18 +2126,18 @@ setMethod("simulate",
 
 
                   ## => what is the next best dose?
-                  NEXT<-nextBest(object@nextBest,
+                  next_bd<-nextBest(object@nextBest,
                                  doselimit=doselimit,
                                  model=thisModel,
                                  data=thisData,
-                                 SIM=TRUE)
+                                 in_sim=TRUE)
 
-                  thisDose <- NEXT$next_dose_drt
-                  thisTDtargetDuringTrial<- NEXT$dose_target_drt
-                  thisTDtargetEndOfTrial<- NEXT$dose_target_eot
-                  thisTDtargetEndOfTrialatdoseGrid <- NEXT$next_dose_eot
-                  thisCITDEOT <- list(lower = NEXT$ci_dose_target_eot[1], upper = NEXT$ci_dose_target_eot[2])
-                  thisratioTDEOT <- NEXT$ci_ratio_dose_target_eot
+                  thisDose <- next_bd$next_dose_drt
+                  thisTDtargetDuringTrial<- next_bd$dose_target_drt
+                  thisTDtargetEndOfTrial<- next_bd$dose_target_eot
+                  thisTDtargetEndOfTrialatdoseGrid <- next_bd$next_dose_eot
+                  thisCITDEOT <- list(lower = next_bd$ci_dose_target_eot[1], upper = next_bd$ci_dose_target_eot[2])
+                  thisratioTDEOT <- next_bd$ci_ratio_dose_target_eot
 
                   ## evaluate stopping rules
                   stopit <- stopTrial(object@stopping,
@@ -2512,29 +2512,29 @@ setMethod("simulate",
 
 
                   ## => what is the next best dose?
-                  NEXT<-nextBest(object@nextBest,
+                  next_bd<-nextBest(object@nextBest,
                                  doselimit=doselimit,
                                  model=thisDLEModel,
                                  data=thisData,
                                  model_eff=thisEffModel,
-                                 SIM=TRUE)
+                                 in_sim=TRUE)
 
-                  thisDose <- NEXT$next_dose
-                  thisTDtargetDuringTrial <- NEXT$dose_target_drt
-                  thisTDtargetDuringTrialAtDoseGrid<- NEXT$next_dose_drt
-                  thisTDtargetEndOfTrial <- NEXT$dose_target_eot
-                  thisTDtargetEndOfTrialAtDoseGrid <- NEXT$next_dose_eot
-                  thisGstar <- NEXT$dose_max_gain
-                  thisGstarAtDoseGrid <- NEXT$next_dose_max_gain
+                  thisDose <- next_bd$next_dose
+                  thisTDtargetDuringTrial <- next_bd$dose_target_drt
+                  thisTDtargetDuringTrialAtDoseGrid<- next_bd$next_dose_drt
+                  thisTDtargetEndOfTrial <- next_bd$dose_target_eot
+                  thisTDtargetEndOfTrialAtDoseGrid <- next_bd$next_dose_eot
+                  thisGstar <- next_bd$dose_max_gain
+                  thisGstarAtDoseGrid <- next_bd$next_dose_max_gain
 
                   Recommend <- min(thisTDtargetEndOfTrialAtDoseGrid,thisGstarAtDoseGrid)
 
                   ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
-                  thisCITDEOT <- list(lower = NEXT$ci_dose_target_eot[1], upper = NEXT$ci_dose_target_eot[2])
-                  thisratioTDEOT <- NEXT$ci_ratio_dose_target_eot
+                  thisCITDEOT <- list(lower = next_bd$ci_dose_target_eot[1], upper = next_bd$ci_dose_target_eot[2])
+                  thisratioTDEOT <- next_bd$ci_ratio_dose_target_eot
 
-                  thisCIGstar <- list(lower = NEXT$ci_dose_max_gain[1], upper = NEXT$ci_dose_max_gain[2])
-                  thisratioGstar <- NEXT$ci_ratio_dose_max_gain
+                  thisCIGstar <- list(lower = next_bd$ci_dose_max_gain[1], upper = next_bd$ci_dose_max_gain[2])
+                  thisratioGstar <- next_bd$ci_ratio_dose_max_gain
 
                   ## Find the optimal dose
                   OptimalDose <- min(thisGstar, thisTDtargetEndOfTrial)
@@ -2983,31 +2983,31 @@ setMethod("simulate",
 
                     ## => what is the next best dose?
 
-                    NEXT<-nextBest(object@nextBest,
+                    next_bd<-nextBest(object@nextBest,
                                    doselimit=doselimit,
                                    samples=thisDLEsamples,
                                    model=thisDLEModel,
                                    model_eff=thisEffModel,
                                    samples_eff=thisEffsamples,
                                    data=thisData,
-                                   SIM=TRUE)
+                                   in_sim=TRUE)
 
-                    thisDose <- NEXT$next_dose
-                    thisTDtargetDuringTrial <- NEXT$dose_target_drt
-                    thisTDtargetDuringTrialAtDoseGrid<- NEXT$next_dose_drt
-                    thisTDtargetEndOfTrial <- NEXT$dose_target_eot
-                    thisTDtargetEndOfTrialAtDoseGrid <- NEXT$next_dose_eot
-                    thisGstar <- NEXT$dose_max_gain
-                    thisGstarAtDoseGrid <- NEXT$next_dose_max_gain
+                    thisDose <- next_bd$next_dose
+                    thisTDtargetDuringTrial <- next_bd$dose_target_drt
+                    thisTDtargetDuringTrialAtDoseGrid<- next_bd$next_dose_drt
+                    thisTDtargetEndOfTrial <- next_bd$dose_target_eot
+                    thisTDtargetEndOfTrialAtDoseGrid <- next_bd$next_dose_eot
+                    thisGstar <- next_bd$dose_max_gain
+                    thisGstarAtDoseGrid <- next_bd$next_dose_max_gain
 
                     Recommend<- min(thisTDtargetEndOfTrialAtDoseGrid, thisGstarAtDoseGrid)
 
                     ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
-                    thisCITDEOT <- list(lower = NEXT$ci_dose_target_eot[1], upper = NEXT$ci_dose_target_eot[2])
-                    thisratioTDEOT <- NEXT$ci_ratio_dose_target_eot
+                    thisCITDEOT <- list(lower = next_bd$ci_dose_target_eot[1], upper = next_bd$ci_dose_target_eot[2])
+                    thisratioTDEOT <- next_bd$ci_ratio_dose_target_eot
 
-                    thisCIGstar <- list(lower = NEXT$ci_dose_max_gain[1], upper = NEXT$ci_dose_max_gain[2])
-                    thisratioGstar <- NEXT$ci_ratio_dose_max_gain
+                    thisCIGstar <- list(lower = next_bd$ci_dose_max_gain[1], upper = next_bd$ci_dose_max_gain[2])
+                    thisratioGstar <- next_bd$ci_ratio_dose_max_gain
 
                     ## Find the optimal dose
                     OptimalDose <- min(thisGstar, thisTDtargetEndOfTrial)
@@ -3388,31 +3388,31 @@ setMethod("simulate",
 
 
                   ## => what is the next best dose?
-                  NEXT<-nextBest(object@nextBest,
+                  next_bd<-nextBest(object@nextBest,
                                  doselimit=doselimit,
                                  samples=thisDLEsamples,
                                  model=thisDLEModel,
                                  data=thisData,
                                  model_eff=thisEffModel,
                                  samples_eff=thisEffsamples,
-                                 SIM=TRUE)
+                                 in_sim=TRUE)
 
-                  thisDose <- NEXT$next_dose
-                  thisTDtargetDuringTrial <- NEXT$dose_target_drt
-                  thisTDtargetDuringTrialAtDoseGrid<- NEXT$next_dose_drt
-                  thisTDtargetEndOfTrial <- NEXT$dose_target_eot
-                  thisTDtargetEndOfTrialAtDoseGrid <- NEXT$next_dose_eot
-                  thisGstar <- NEXT$dose_max_gain
-                  thisGstarAtDoseGrid <- NEXT$next_dose_max_gain
+                  thisDose <- next_bd$next_dose
+                  thisTDtargetDuringTrial <- next_bd$dose_target_drt
+                  thisTDtargetDuringTrialAtDoseGrid<- next_bd$next_dose_drt
+                  thisTDtargetEndOfTrial <- next_bd$dose_target_eot
+                  thisTDtargetEndOfTrialAtDoseGrid <- next_bd$next_dose_eot
+                  thisGstar <- next_bd$dose_max_gain
+                  thisGstarAtDoseGrid <- next_bd$next_dose_max_gain
 
                   Recommend <- min(thisTDtargetEndOfTrialAtDoseGrid, thisGstarAtDoseGrid)
 
                   ##Find the 95 % CI and its ratio (upper to the lower of this 95% CI of each of the estimates)
-                  thisCITDEOT <- list(lower = NEXT$ci_dose_target_eot[1], upper = NEXT$ci_dose_target_eot[2])
-                  thisratioTDEOT <- NEXT$ci_ratio_dose_target_eot
+                  thisCITDEOT <- list(lower = next_bd$ci_dose_target_eot[1], upper = next_bd$ci_dose_target_eot[2])
+                  thisratioTDEOT <- next_bd$ci_ratio_dose_target_eot
 
-                  thisCIGstar <- list(lower = NEXT$ci_dose_max_gain[1], upper = NEXT$ci_dose_max_gain[2])
-                  thisratioGstar <- NEXT$ci_ratio_dose_max_gain
+                  thisCIGstar <- list(lower = next_bd$ci_dose_max_gain[1], upper = next_bd$ci_dose_max_gain[2])
+                  thisratioGstar <- next_bd$ci_ratio_dose_max_gain
 
                   ## Find the optimal dose
                   OptimalDose <- min(thisGstar,thisTDtargetEndOfTrial)
