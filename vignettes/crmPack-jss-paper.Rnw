@@ -226,7 +226,7 @@ the framework in a schematic.
 \includegraphics[width=.8\linewidth]{schematic.pdf}
 \caption{Schematic of the framework. Separate design features are implemented as classes
 (shown as gray boxes) and bundled together in the overarching \code{Design} object.
-They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the \code{Data} and \code{Model} objects can be processed by the \code{mcmc} method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated \code{Data} closes the dose escalation loop. On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling \code{crmPackHelp()}.}
+They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the \code{Data} and \code{GeneralModel} objects can be processed by the \code{mcmc} method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated \code{Data} closes the dose escalation loop. On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling \code{crmPackHelp()}.}
 \label{fig:schematic}
 \end{figure}
 
@@ -258,7 +258,7 @@ a patient who receives treatment $x$ assuming the parameter (vector) $\theta$,
 and secondly the prior $p(\theta \given \xi)$ for $\theta$ given fixed
 hyperparameters $\xi$.
 %
-In \pkg{crmPack} the virtual \proglang{S4} class \code{AllModels} encapsulates this
+In \pkg{crmPack} the virtual \proglang{S4} class \code{GeneralModel} encapsulates this
 notion and subclasses implement concrete models.
 
 For example, the class \code{LogisticLogNormal} implements
@@ -700,10 +700,10 @@ dose grid is often called ``skeleton'' of the CRM. An exponential distribution w
 The next dose should then be chosen such that the distance of the posterior mean estimated DLT probability to a predefined target toxicity level is minimized.
 
 \paragraph{Creating a new model}
-To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack} we first need to define an appropriate \proglang{S4} class inheriting from the general model class \code{Model}:
+To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack} we first need to define an appropriate \proglang{S4} class inheriting from the general model class \code{GeneralModel}:
 <<classOnePara>>=
 .OneParExp <-
-    setClass(Class = "OneParExp", contains = "Model",
+    setClass(Class = "OneParExp", contains = "GeneralModel",
              representation(skeletonFun = "function",
                             skeletonProbs = "numeric",
                             lambda = "numeric"))
@@ -713,7 +713,7 @@ two additional slots containing the function $f(x)$, the resulting skeleton
 prior probabilities and the prior parameter $\lambda$.
 
 Second we have to create a convenient initialization function, which specifies
-the likelihood and prior distributions in the underlying \code{Model} in \proglang{JAGS}.
+the likelihood and prior distributions in the underlying \code{GeneralModel} in \proglang{JAGS}.
 We choose to let the user supply just the skeleton probabilities along with the
 intended dose grid to use. Then internally we will create a function $f(x)$
 interpolating between the grid points (\code{skeletonFun} with inverse \code{invSkeletonFun}), in order to obtain a general \proglang{R} function
@@ -781,7 +781,7 @@ such that this rule could also be used with other models.
 setMethod("nextBest",
           signature = signature(nextBest = "NextBestMinDist",
                                 doselimit = "numeric", samples = "Samples",
-                                model = "Model", data = "Data"),
+                                model = "GeneralModel", data = "Data"),
           def = function(nextBest, doselimit, samples, model, data, ...){
             dosesOK <-
                 if(length(doselimit))
