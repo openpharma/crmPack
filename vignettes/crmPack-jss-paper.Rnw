@@ -775,7 +775,6 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
-    assert_subset("theta", names(samples@data))
     theta <- samples@data$theta
     invSkeletonFun <- approxfun(x = model@skeleton_probs, y = model@dose_grid, rule = 1)
     invSkeletonFun(x^(1 / theta))
@@ -790,7 +789,6 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_subset("theta", names(samples@data))
     theta <- samples@data$theta
     skeletonFun <- approxfun(x = model@dose_grid, y = model@skeleton_probs, rule = 2)
     skeletonFun(dose)^theta
