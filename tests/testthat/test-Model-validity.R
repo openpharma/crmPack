@@ -17,39 +17,6 @@ test_that("v_general_model returns message for non-valid object", {
   )
 })
 
-# v_model ----
-
-test_that("v_model passes for valid object", {
-  object <- h_get_model()
-  expect_true(v_model(object))
-})
-
-test_that("v_model returns message for wrong dose function", {
-  object <- h_get_model()
-  # Assigning a function with wrong parameter, i.e. not a `x` and `param1`.
-  object@dose <- function(wrong_param) {
-    wrong_param
-  }
-
-  expect_equal(
-    v_model(object),
-    "Arguments of dose function are incorrect"
-  )
-})
-
-test_that("v_model returns message for wrong prob function", {
-  object <- h_get_model()
-  # Assigning a function with wrong parameter, i.e. not a `dose` and `param1`.
-  object@prob <- function(wrong_param) {
-    wrong_param
-  }
-
-  expect_equal(
-    v_model(object),
-    "Arguments of prob function are incorrect"
-  )
-})
-
 # v_model_logistic_kadane ----
 
 test_that("v_model_logistic_kadane passes for valid object", {

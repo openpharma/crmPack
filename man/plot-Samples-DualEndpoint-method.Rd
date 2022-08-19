@@ -19,7 +19,7 @@ dose grid? (default)}
 \item{showLegend}{should the legend be shown? (not default)}
 
 \item{\dots}{additional arguments for the parent method
-\code{\link{plot,Samples,Model-method}}}
+\code{\link{plot,Samples,GeneralModel-method}}}
 }
 \value{
 This returns the \code{\link[ggplot2]{ggplot}}

@@ -13,7 +13,7 @@ objects of this class contain:
 
 \describe{
 \item{\code{model}}{the model to be used, an object of class
-\code{\linkS4class{Model}}}
+\code{\linkS4class{GeneralModel}}}
 
 \item{\code{stopping}}{stopping rule(s) for the trial, an object of class
 \code{\linkS4class{Stopping}}}

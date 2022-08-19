@@ -9,8 +9,8 @@
 \alias{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
-\alias{stopTrial,StoppingTargetProb,numeric,Samples,Model,ANY-method}
-\alias{stopTrial,StoppingMTDdistribution,numeric,Samples,Model,ANY-method}
+\alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
+\alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
@@ -39,9 +39,9 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMinPatients,ANY,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingTargetProb,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingTargetProb,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMTDCV,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -78,7 +78,7 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \item{samples}{the \code{\linkS4class{Samples}} object}
 
-\item{model}{The model input, an object of class \code{\linkS4class{Model}}}
+\item{model}{The model input, an object of class \code{\linkS4class{GeneralModel}}}
 
 \item{data}{The data input, an object of class \code{\linkS4class{Data}}}
 
@@ -137,9 +137,9 @@ dose
 
 \item \code{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}: Stop based on minimum number of patients
 
-\item \code{stopTrial,StoppingTargetProb,numeric,Samples,Model,ANY-method}: Stop based on probability of target tox interval
+\item \code{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}: Stop based on probability of target tox interval
 
-\item \code{stopTrial,StoppingMTDdistribution,numeric,Samples,Model,ANY-method}: Stop based on MTD distribution
+\item \code{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}: Stop based on MTD distribution
 
 \item \code{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}: Stop based on probability of targeting biomarker
 

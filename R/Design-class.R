@@ -1,3 +1,5 @@
+# nolint start
+
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ##         Wai Yin Yeung [ w*.* yeung1 *a*t* lancaster *.* ac *.* uk]
@@ -97,7 +99,7 @@ RuleDesign <- function(nextBest,
 ##' objects of this class contain:
 ##'
 ##' @slot model the model to be used, an object of class
-##' \code{\linkS4class{Model}}
+##' \code{\linkS4class{GeneralModel}}
 ##' @slot stopping stopping rule(s) for the trial, an object of class
 ##' \code{\linkS4class{Stopping}}
 ##' @slot increments how to control increments between dose levels,
@@ -111,7 +113,7 @@ RuleDesign <- function(nextBest,
 ##' @keywords classes
 .Design <-
     setClass(Class="Design",
-             representation(model="Model",
+             representation(model="GeneralModel",
                             stopping="Stopping",
                             increments="Increments",
                             PLcohortSize="CohortSize"),
@@ -442,7 +444,7 @@ DualResponsesDesign <- function(Effmodel,
 ##' slots in comparison to the parent class \code{\linkS4class{Design}}:
 ##'
 ##' @slot model the model to be used, an object of or inheriting from class
-##' \code{\linkS4class{Model}}, see in particular
+##' \code{\linkS4class{GeneralModel}}, see in particular
 ##' \code{\linkS4class{DALogisticLogNormal}} and
 ##' \code{\linkS4class{TITELogisticLogNormal}} which make use of the
 ##' time-to-DLT data
@@ -455,7 +457,7 @@ DualResponsesDesign <- function(Effmodel,
 ##' @keywords classes
 .DADesign <-
   setClass(Class="DADesign",
-           representation(model="Model",
+           representation(model="GeneralModel",
                           data="DataDA",
                           safetyWindow="SafetyWindow"),
            prototype(model=.DALogisticLogNormal(),
@@ -497,6 +499,4 @@ validObject(DADesign(model=.DALogisticLogNormal(),
                      stopping=StoppingMinCohorts(10),
                      increments=IncrementsNumDoseLevels(2)))
 
-
-
-## ===============================================================================
+# nolint end

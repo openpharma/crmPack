@@ -22,7 +22,7 @@ NULL
 #'   course of dose recommendation calculation.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
-#' @param model (`Model`)\cr model that was used to generate the samples.
+#' @param model (`GeneralModel`)\cr model that was used to generate the samples.
 #' @param data (`Data`)\cr data that was used to generate the samples.
 #' @param ... additional arguments without method dispatch.
 #'
@@ -61,7 +61,7 @@ setMethod(
     nextBest = "NextBestMTD",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -145,7 +145,7 @@ setMethod(
     nextBest = "NextBestNCRM",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -253,7 +253,7 @@ setMethod(
     nextBest = "NextBestNCRM",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "DataParts"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -287,7 +287,7 @@ setMethod("nextBest",
     nextBest = "NextBestNCRMLoss",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -650,7 +650,7 @@ setMethod(
     nextBest = "NextBestMinDist",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -681,7 +681,7 @@ setMethod(
     nextBest = "NextBestInfTheory",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -1600,7 +1600,7 @@ setMethod("|",
 ##' \code{\linkS4class{Stopping}}
 ##' @param dose the recommended next best dose
 ##' @param samples the \code{\linkS4class{Samples}} object
-##' @param model The model input, an object of class \code{\linkS4class{Model}}
+##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
 ##' @param data The data input, an object of class \code{\linkS4class{Data}}
 ##' @param \dots additional arguments
 ##'
@@ -1995,7 +1995,7 @@ setMethod("stopTrial",
       stopping = "StoppingTargetProb",
       dose = "numeric",
       samples = "Samples",
-      model = "Model",
+      model = "GeneralModel",
       data = "ANY"
     ),
   def =
@@ -2051,7 +2051,7 @@ setMethod("stopTrial",
       stopping = "StoppingMTDdistribution",
       dose = "numeric",
       samples = "Samples",
-      model = "Model",
+      model = "GeneralModel",
       data = "ANY"
     ),
   def =

@@ -13,7 +13,7 @@ slots in comparison to the parent class \code{\linkS4class{Design}}:
 
 \describe{
 \item{\code{model}}{the model to be used, an object of or inheriting from class
-\code{\linkS4class{Model}}, see in particular
+\code{\linkS4class{GeneralModel}}, see in particular
 \code{\linkS4class{DALogisticLogNormal}} and
 \code{\linkS4class{TITELogisticLogNormal}} which make use of the
 time-to-DLT data}

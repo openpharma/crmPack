@@ -2,8 +2,6 @@
 % Please edit documentation in R/Model-methods.R
 \name{prob}
 \alias{prob}
-\alias{prob,numeric,Model,Samples-method}
-\alias{prob-Model}
 \alias{prob,numeric,LogisticNormal,Samples-method}
 \alias{prob-LogisticNormal}
 \alias{prob,numeric,LogisticLogNormal,Samples-method}
@@ -35,8 +33,6 @@
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
-
-\S4method{prob}{numeric,Model,Samples}(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticNormal,Samples}(dose, model, samples)
 
@@ -106,8 +102,6 @@ correspond to the sampling index, i.e. the layout is then
 }
 \section{Functions}{
 \itemize{
-\item \code{prob,numeric,Model,Samples-method}: 
-
 \item \code{prob,numeric,LogisticNormal,Samples-method}: 
 
 \item \code{prob,numeric,LogisticLogNormal,Samples-method}: 

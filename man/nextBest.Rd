@@ -2,21 +2,21 @@
 % Please edit documentation in R/Rules-methods.R
 \name{nextBest}
 \alias{nextBest}
-\alias{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestMTD,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestMTD}
-\alias{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestNCRM}
-\alias{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}
+\alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}
 \alias{nextBest-NextBestNCRM-DataParts}
-\alias{nextBest,NextBestNCRMLoss,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestNCRMLoss}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
 \alias{nextBest-NextBestThreePlusThree}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
 \alias{nextBest-NextBestDualEndpoint}
-\alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestMinDist,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestMinDist}
-\alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestInfTheory}
 \alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
 \alias{nextBest-NextBestTDsamples}
@@ -30,21 +30,21 @@
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMTD,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestMTD,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestThreePlusThree,missing,missing,missing,Data}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMinDist,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestMinDist,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestInfTheory,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestInfTheory,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
@@ -115,17 +115,17 @@ the underlying \code{data}.
 }
 \section{Functions}{
 \itemize{
-\item \code{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}: find the next best dose based on the MTD rule.
+\item \code{nextBest,NextBestMTD,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the MTD rule.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}: find the next best dose based on the NCRM method. The
+\item \code{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the NCRM method. The
 additional element \code{probs} in the output's list contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: find the next best dose based on the NCRM method when
+\item \code{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}: find the next best dose based on the NCRM method when
 two parts trial is used.
 
-\item \code{nextBest,NextBestNCRMLoss,numeric,Samples,Model,Data-method}: find the next best dose based on the NCRM method and
+\item \code{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the NCRM method and
 loss function.
 
 \item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: find the next best dose based on the 3+3 method.
@@ -135,10 +135,10 @@ model. The additional list element \code{probs} contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: gives the dose which is below the dose limit and has an
+\item \code{nextBest,NextBestMinDist,numeric,Samples,GeneralModel,Data-method}: gives the dose which is below the dose limit and has an
 estimated DLT probability which is closest to the target dose.
 
-\item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: gives the appropriate dose within an information
+\item \code{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}: gives the appropriate dose within an information
 theoretic framework.
 
 \item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses

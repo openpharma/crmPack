@@ -3,7 +3,6 @@
 \name{v_model_objects}
 \alias{v_model_objects}
 \alias{v_general_model}
-\alias{v_model}
 \alias{v_model_logistic_kadane}
 \alias{v_model_logistic_kadane_beta_gamma}
 \alias{v_model_logistic_normal_mix}
@@ -22,8 +21,6 @@
 \title{Internal Helper Functions for Validation of \code{\link{GeneralModel}} and \code{\link{ModelPseudo}} Objects}
 \usage{
 v_general_model(object)
-
-v_model(object)
 
 v_model_logistic_kadane(object)
 
@@ -74,10 +71,6 @@ not exported.
 \item \code{v_general_model}: validates that the names of the
 arguments in \code{init} function are included in \code{datanames} or \code{datanames_prior}
 slots.
-
-\item \code{v_model}: validates that the names of the
-arguments in \code{dose} and \code{prob} functions contains expected arguments as
-well as they match \code{sample} slot of the \code{object}.
 
 \item \code{v_model_logistic_kadane}: validates that the logistic Kadane model
 parameters are valid.
