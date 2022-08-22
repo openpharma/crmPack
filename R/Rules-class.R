@@ -881,7 +881,7 @@ IncrementMin <- function(IncrementsList)
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`].
+#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StopSpecificDose`].
 #'
 #' @aliases Stopping
 #' @export
@@ -1656,8 +1656,50 @@ StoppingGstarCIRatio <- function(targetRatio,
                         targetEndOfTrial=targetEndOfTrial)
 }
 
+# nolint end
 
+# StopSpecificDose -class ----
 
+#' `StopSpecificDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StopSpecificDose`] is a wrapper class which takes as slots any stopping
+#' rule as well as one specific dose, and then always evaluates this stopping
+#' rule at this specific dose (instead of the next best dose).
+#'
+#' @aliases StopSpecificDose
+#' @export
+#'
+.StopSpecificDose <- setClass(
+  Class = "StopSpecificDose",
+  slots = c(
+    rule = "Stopping",
+    dose = "numeric"
+  ),
+  contains = "Stopping",
+  validity = v_stop_specific_dose
+)
+
+# .StopSpecificDose-constructor ----
+
+#' @rdname .StopSpecificDose-class
+#'
+#' @param target (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#' @param a (`number`)\cr see slot definition.
+#' @param b (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
+#'
+StopSpecificDose <- function(rule, dose) {
+  .StopSpecificDose(rule = rule,
+                    dose = dose
+                    )
+}
+
+# nolint start
 ## ============================================================
 
 
