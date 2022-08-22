@@ -242,3 +242,15 @@ v_stopping_mtd_cv <- function(object) {
   )
   v$result()
 }
+
+
+#' @describeIn v_stop_specific_dose validates that the [`StopSpecificDose`] object
+#'   contains valid dose assigned as input.
+v_stop_specific_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@dose, finite = TRUE),
+    "dose needs to be a single finite number"
+  )
+  v$result()
+}
