@@ -1794,9 +1794,54 @@ setMethod("stopTrial",
     }
 )
 
+# nolint end
 
+# stopTrial-StopSpecificDose ----
 
+#' @rdname stopTrial
+#'
+#' @description When defining a simulation design, we would like to have the
+#' option to assess if Stopping rules are met for specific doses of the planned
+#' dose grid and not just for the next best dose.
+#' Currently all the stopping rules are assessed at the next best dose and not
+#' at a predefined dose of the planned dose grid.
+#'
+#' @aliases stopTrial-StopSpecificDose
+#' @example examples/Rules-method-stopTrial-StopSpecificDose.R
+#' @export
+setMethod("stopTrial",
+          signature =
+            signature(
+              stopping = "StopSpecificDose",
+              dose = "numeric",
+              samples = "ANY",
+              model = "ANY",
+              data = "Data"
+            ),
+          def =
+            function(stopping, dose, samples, model, data, ...) {
+              # Make sure that the specific dose is part of the dose grid.
+              assert_subset(x = stopping@dose, choices = data@doseGrid)
+              # Now we evaluate the original (wrapped) stopping rule at the specific dose.
+              result <- stopTrial(
+                stopping = stopping@rule,
+                dose = stopping@dose,
+                samples = samples,
+                model = model,
+                data = data,
+                ...
+              )
 
+              # We can now try to correct the text from the original stopping rule.
+              original_text <- attr(result, "message")
+              new_text <- gsub(pattern = "next best", replacement = "specific", x = original_text)
+              attr(result, "message") <- new_text
+
+              result
+            }
+)
+
+# nolint start
 ## --------------------------------------------------
 ## Stopping based on number of cohorts near to next best dose
 ## --------------------------------------------------
