@@ -157,10 +157,10 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
   result <- nextBest(nb_ncrm_loss, 60, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p1", result$singlePlots$plot1)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p2", result$singlePlots$plot2)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_ploss", result$singlePlots$plot_loss)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot_joint)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p1", result$plots_single$plot1)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p2", result$plots_single$plot2)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_ploss", result$plots_single$plot_loss)
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (loss function of 4 elements)", {
@@ -180,7 +180,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot_joint)
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no doselimit)", {
@@ -196,7 +196,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot_joint)
 })
 
 ## NextBestThreePlusThree ----
