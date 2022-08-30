@@ -1,4 +1,4 @@
-# Version 1.0.9000.9060
+# Version 1.0.9000.9061
 * Removed `Model` class.
 * Renamed `SIM` argument of `nextBest` methods to `in_sim`.
 * Renamed the elements of the list returned by `nextBest` methods for `NextBestMaxGain`
