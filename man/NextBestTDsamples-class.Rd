@@ -10,17 +10,11 @@
 NextBestTDsamples(prob_target_drt, prob_target_eot, derive)
 }
 \arguments{
-\item{prob_target_drt}{(\code{proportion})\cr the target probability of the
-occurrence of a DLT to be used during the trial.}
+\item{prob_target_drt}{(\code{proportion})\cr see slot definition.}
 
-\item{prob_target_eot}{(\code{proportion})\cr the target probability of the
-occurrence of a DLT to be used at the end of the trial.}
+\item{prob_target_eot}{(\code{proportion})\cr see slot definition.}
 
-\item{derive}{(\code{function})\cr the function which derives, based on a vector of
-the posterior dose samples, the target dose, which has the probability of
-the occurrence of DLT equals to either the \code{prob_target_drt} or
-\code{prob_target_eot}. It must therefore accept one and only one argument,
-which is a numeric vector, and return a number.}
+\item{derive}{(\code{function})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -41,11 +35,11 @@ occurrence of a DLT to be used during the trial.}
 \item{\code{prob_target_eot}}{(\code{proportion})\cr the target probability of the
 occurrence of a DLT to be used at the end of the trial.}
 
-\item{\code{derive}}{(\code{function})\cr the function which derives, based on a vector of
-the posterior dose samples, the target dose, which has the probability of
-the occurrence of DLT equals to either the \code{prob_target_drt} or
-\code{prob_target_eot}. It must therefore accept one and only one argument,
-which is a numeric vector, and return a number.}
+\item{\code{derive}}{(\code{function})\cr derives, based on a vector of posterior dose
+samples, the target dose that has the probability of the occurrence of
+DLT equals to either the \code{prob_target_drt} or \code{prob_target_eot}. It must
+therefore accept one and only one argument, which is a numeric vector, and
+return a number.}
 }}
 
 \examples{
