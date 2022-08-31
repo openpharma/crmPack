@@ -22,13 +22,18 @@ test_that("v_next_best_mtd returns message for non-valid target", {
 
 test_that("v_next_best_mtd returns message for non-valid derive", {
   object <- h_next_best_mtd()
-  # Changing `derive` so that it does not have one `mtd_samples` argument.
-  object@derive <- function(x) {
-    mean(x)
-  }
+  # Changing `derive` so that it has many arguments.
+  object@derive <- function(x, y) 1L
   expect_equal(
     v_next_best_mtd(object),
-    "derive must have a single argument 'mtd_samples'"
+    "derive must have a single argument"
+  )
+
+  # Changing `derive` so that it does not return a number.
+  object@derive <- function(x) c(1, 2)
+  expect_equal(
+    v_next_best_mtd(object),
+    "derive must accept numerical vector as an argument and return a number"
   )
 })
 

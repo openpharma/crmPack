@@ -22,8 +22,12 @@ v_next_best_mtd <- function(object) {
     "target must be a probability value from (0, 1) interval"
   )
   v$check(
-    formalArgs(object@derive) == "mtd_samples",
-    "derive must have a single argument 'mtd_samples'"
+    length(formalArgs(object@derive)) == 1L,
+    "derive must have a single argument"
+  )
+  v$check(
+    test_number(object@derive(1:5)),
+    "derive must accept numerical vector as an argument and return a number"
   )
   v$result()
 }
@@ -170,7 +174,7 @@ v_next_best_td_samples <- function(object) {
     "derive must have a single argument"
   )
   v$check(
-    test_number(object@derive(1:10)),
+    test_number(object@derive(1:5)),
     "derive must accept numerical vector as an argument and return a number"
   )
   v$result()

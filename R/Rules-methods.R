@@ -68,7 +68,7 @@ setMethod(
 
     # Generate the MTD samples and derive the next best dose.
     dose_target_samples <- dose(x = nextBest@target, model, samples)
-    dose_target <- nextBest@derive(mtd_samples = dose_target_samples)
+    dose_target <- nextBest@derive(dose_target_samples)
 
     # Round to the next possible grid point.
     doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
