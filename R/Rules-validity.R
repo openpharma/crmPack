@@ -152,6 +152,30 @@ v_next_best_inf_theory <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestTDsamples`] object
+#'   contains valid `prob_target_drt` and `prob_target_eot` probabilities
+#'   as well as `derive` function.
+v_next_best_td_samples <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@prob_target_drt, bounds_closed = FALSE),
+    "prob_target_drt must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@prob_target_eot, bounds_closed = FALSE),
+    "prob_target_eot must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    length(formalArgs(object@derive)) == 1L,
+    "derive must have a single argument"
+  )
+  v$check(
+    test_number(object@derive(1:10)),
+    "derive must accept numerical vector as an argument and return a number"
+  )
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects

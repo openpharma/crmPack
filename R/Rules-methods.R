@@ -622,13 +622,14 @@ setMethod(
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Generate target dose samples, i.e. the doses with probability of the
-    # occurrence of a DLT that equals to the nextBest@targetDuringTrial (or nextBest@targetEndOfTrial, respectively).
-    dose_target_drt_samples <- dose(x = nextBest@targetDuringTrial, model, samples)
-    dose_target_eot_samples <- dose(x = nextBest@targetEndOfTrial, model, samples)
+    # occurrence of a DLT that equals to the nextBest@prob_target_drt
+    # (or nextBest@prob_target_eot, respectively).
+    dose_target_drt_samples <- dose(x = nextBest@prob_target_drt, model, samples)
+    dose_target_eot_samples <- dose(x = nextBest@prob_target_eot, model, samples)
 
     # Derive the prior/posterior estimates based on two above samples.
-    dose_target_drt <- as.numeric(nextBest@derive(TDsamples = dose_target_drt_samples))
-    dose_target_eot <- as.numeric(nextBest@derive(TDsamples = dose_target_eot_samples))
+    dose_target_drt <- nextBest@derive(dose_target_drt_samples)
+    dose_target_eot <- nextBest@derive(dose_target_eot_samples)
 
     # Find the next doses in the doseGrid. The next dose is the dose at level
     # closest and below the dose_target_drt (or dose_target_eot, respectively).
@@ -659,10 +660,10 @@ setMethod(
 
     list(
       next_dose_drt = next_dose_drt,
-      prob_target_drt = nextBest@targetDuringTrial,
+      prob_target_drt = nextBest@prob_target_drt,
       dose_target_drt = dose_target_drt,
       next_dose_eot = next_dose_eot,
-      prob_target_eot = nextBest@targetEndOfTrial,
+      prob_target_eot = nextBest@prob_target_eot,
       dose_target_eot = dose_target_eot,
       ci_dose_target_eot = ci_dose_target_eot,
       ci_ratio_dose_target_eot = cir_dose_target_eot,

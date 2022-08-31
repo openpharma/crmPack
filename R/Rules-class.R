@@ -448,6 +448,77 @@ NextBestInfTheory <- function(target, asymmetry) {
   .NextBestInfTheory(target = target, asymmetry = asymmetry)
 }
 
+# NextBestTDsamples ----
+
+## class ----
+
+#' `NextBestTDsamples`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestTDsamples`] is the class to find a next best dose based on Pseudo
+#' DLT model with samples. Namely, it is to find two next best doses, one
+#' for allocation during the trial and the second for final recommendation at
+#' the end of a trial. Hence, there are two target probabilities of the
+#' occurrence of a DLT that must be specified: target probability to be used
+#' during the trial and target probability to be used at the end of the trial.
+#'
+#' @slot prob_target_drt (`proportion`)\cr the target probability of the
+#'   occurrence of a DLT to be used during the trial.
+#' @slot prob_target_eot (`proportion`)\cr the target probability of the
+#'   occurrence of a DLT to be used at the end of the trial.
+#' @slot derive (`function`)\cr the function which derives, based on a vector of
+#'   the posterior dose samples, the target dose, which has the probability of
+#'   the occurrence of DLT equals to either the `prob_target_drt` or
+#'   `prob_target_eot`. It must therefore accept one and only one argument,
+#'   which is a numeric vector, and return a number.
+#'
+#' @aliases NextBestTDsamples
+#' @export
+#'
+.NextBestTDsamples <- setClass(
+  Class = "NextBestTDsamples",
+  slots = c(
+    prob_target_drt = "numeric",
+    prob_target_eot = "numeric",
+    derive = "function"
+  ),
+  prototype = prototype(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(dose_samples) {
+      quantile(dose_samples, prob = 0.3)
+    }
+  ),
+  contains = "NextBest",
+  validity = v_next_best_td_samples
+)
+
+## constructor ----
+
+#' @rdname NextBestTDsamples-class
+#'
+#' @param prob_target_drt (`proportion`)\cr the target probability of the
+#'   occurrence of a DLT to be used during the trial.
+#' @param prob_target_eot (`proportion`)\cr the target probability of the
+#'   occurrence of a DLT to be used at the end of the trial.
+#' @param derive (`function`)\cr the function which derives, based on a vector of
+#'   the posterior dose samples, the target dose, which has the probability of
+#'   the occurrence of DLT equals to either the `prob_target_drt` or
+#'   `prob_target_eot`. It must therefore accept one and only one argument,
+#'   which is a numeric vector, and return a number.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestTDsamples.R
+#'
+NextBestTDsamples <- function(prob_target_drt, prob_target_eot, derive) {
+  .NextBestTDsamples(
+    prob_target_drt = prob_target_drt,
+    prob_target_eot = prob_target_eot,
+    derive = derive
+  )
+}
+
 # nolint start
 
 ## ============================================================
@@ -1979,81 +2050,6 @@ validObject(.CohortSizeMin())
 CohortSizeMin <- function(cohortSizeList)
 {
     .CohortSizeMin(cohortSizeList=cohortSizeList)
-}
-
-
-
-## ==========================================================================================
-## ------------------------------------------------------------------------------------
-## Class for next best based on Pseudo DLE Model with samples
-## -----------------------------------------------------------------------------------------
-
-##' Next best dose based on Pseudo DLE Model with samples
-##'
-##' The class is to find the next best dose for allocation and the dose for final recommendation
-##' at the end of a trial. There are two input target probabilities of the occurrence of a DLE
-##' used during trial and used at the end of trial to find the two doses. For this class, only
-##' DLE response will be incorporated for the dose allocation and DLEsamples
-##' must be used to obtain the next dose for allocation.
-##'
-##' @slot targetDuringTrial the target probability of the occurrence of a DLE to be used
-##' during the trial
-##' @slot targetEndOfTrial the target probability of the occurrence of a DLE to be used at the end
-##' of the trial. This target is particularly used to recommend the dose at the end of a trial
-##' for which its posterior
-##' probability of the occurrence of a DLE is equal to this target
-##' @slot derive the function which derives from the input, a vector of the posterior samples called
-##' \code{TDsamples} of the dose
-##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
-##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
-##'
-##' @example examples/Rules-class-NextBestTDsamples.R
-##' @export
-##' @keywords class
-.NextBestTDsamples<-
-  setClass(Class="NextBestTDsamples",
-           representation(targetDuringTrial="numeric",
-                          targetEndOfTrial="numeric",
-                          derive="function"),
-           ##targetDuringTrial is the target DLE probability during the trial
-           ##targetEndOfTrial is the target DLE probability at the End of the trial
-           prototype(targetDuringTrial=0.35,
-                     targetEndOfTrial=0.3,
-                     derive=function(TDsamples){
-                       quantile(TDsamples,prob=0.3)}),
-           contains=list("NextBest"),
-           validity=
-             function(object){
-               o<-Validate()
-               o$check(is.probability(object@targetDuringTrial,
-                                      bounds=FALSE),
-                       "targetDuringTrial must be probability > 0 and < 1")
-               o$check(is.probability(object@targetEndOfTrial,
-                                      bounds=FALSE),
-                       "targetEndOfTrial must be probability > 0 and < 1")
-               o$check(identical(names(formals(object@derive)),
-                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
-
-               o$result()
-             })
-validObject(.NextBestTDsamples())
-
-## ---------------------------------------------------------------------------
-##' Initialization function for class "NextBestTDsamples"
-##'
-##' @param targetDuringTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{NextBestTDsamples}} class object
-##' @param derive please refer to \code{\linkS4class{NextBestTDsamples}} class object
-##' @return the \code{\linkS4class{NextBestTDsamples}} class object
-##'
-##' @export
-##' @keywords methods
-NextBestTDsamples<- function(targetDuringTrial,targetEndOfTrial,derive)
-{
-  .NextBestTDsamples(targetDuringTrial=targetDuringTrial,
-                     targetEndOfTrial=targetEndOfTrial,
-                     derive=derive)
 }
 
 ## ------------------------------------------------------------------------------

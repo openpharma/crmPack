@@ -86,12 +86,10 @@ MYSUM <- summary(mySim,
 ##plot the summary of the simulations
 print(plot(MYSUM))
 
-
-
 ##If DLE samples are involved
 ##The escalation rule
-tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,
-                              targetEndOfTrial=0.3,
+tdNextBest<-NextBestTDsamples(prob_target_drt=0.35,
+                              prob_target_eot=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
 ##specify the design
 design <- TDsamplesDesign(model=model,
