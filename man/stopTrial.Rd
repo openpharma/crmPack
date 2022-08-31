@@ -933,9 +933,8 @@ samples<-mcmc(data,model,options)
 myStopping <- StoppingTDCIRatio(targetRatio=5,
                                        targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,targetEndOfTrial=0.3,
+tdNextBest<-NextBestTDsamples(prob_target_drt=0.35,prob_target_eot=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
-
 
 RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
                         model=model,data=data)

@@ -42,10 +42,10 @@ h_next_best_dual_endpoint <- function(target_relative = TRUE) {
 
 h_next_best_tdsamples <- function(td = 0.45, te = 0.4, p = 0.3) {
   NextBestTDsamples(
-    targetDuringTrial = td,
-    targetEndOfTrial = te,
-    derive = function(TDsamples) { # nolintr
-      quantile(TDsamples, probs = p)
+    prob_target_drt = td,
+    prob_target_eot = te,
+    derive = function(dose_samples) { # nolintr
+      as.numeric(quantile(dose_samples, probs = p))
     }
   )
 }

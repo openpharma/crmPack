@@ -24,10 +24,10 @@ my_samples <- mcmc(my_data, my_model, my_options)
 # 'derive' is specified such that the 30% posterior quantile of the TD35 and
 # TD30 samples will be used as TD35 and TD30 estimates.
 tds_next_best <- NextBestTDsamples(
-  targetDuringTrial = 0.35,
-  targetEndOfTrial = 0.3,
-  derive = function(TDsamples) { # nolintr
-    quantile(TDsamples, probs = 0.3)
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(dose_samples) { # nolintr
+    as.numeric(quantile(dose_samples, probs = 0.3))
   }
 )
 

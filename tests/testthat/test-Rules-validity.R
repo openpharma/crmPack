@@ -308,6 +308,56 @@ test_that("v_next_best_inf_theory returns message for non-valid asymmetry", {
   expect_equal(v_next_best_inf_theory(object), err_msg)
 })
 
+## v_next_best_td_samples ----
+
+test_that("v_next_best_td_samples passes for valid object", {
+  object <- h_next_best_tdsamples()
+  expect_true(v_next_best_td_samples(object))
+})
+
+test_that("v_next_best_td_samples returns message for non-valid prob_target_drt", {
+  err_msg <- "prob_target_drt must be a probability value from (0, 1) interval"
+  object <- h_next_best_tdsamples()
+
+  # Changing `prob_target_drt` so that it does not represent allowed probability value.
+  object@prob_target_drt <- 1
+  expect_equal(v_next_best_td_samples(object), err_msg)
+
+  # Changing `prob_target_drt` so that it is not a scalar.
+  object@prob_target_drt <- c(0.5, 0.6)
+  expect_equal(v_next_best_td_samples(object), err_msg)
+})
+
+test_that("v_next_best_td_samples returns message for non-valid prob_target_eot", {
+  err_msg <- "prob_target_eot must be a probability value from (0, 1) interval"
+  object <- h_next_best_tdsamples()
+
+  # Changing `prob_target_eot` so that it does not represent allowed probability value.
+  object@prob_target_eot <- 1
+  expect_equal(v_next_best_td_samples(object), err_msg)
+
+  # Changing `prob_target_eot` so that it is not a scalar.
+  object@prob_target_eot <- c(0.5, 0.6)
+  expect_equal(v_next_best_td_samples(object), err_msg)
+})
+
+test_that("v_next_best_td_samples returns message for non-valid derive", {
+  object <- h_next_best_tdsamples()
+  # Changing `derive` so that it has many arguments.
+  object@derive <- function(x, y) 1L
+  expect_equal(
+    v_next_best_td_samples(object),
+    "derive must have a single argument"
+  )
+
+  # Changing `derive` so that it does not return a number.
+  object@derive <- function(x) c(1, 2)
+  expect_equal(
+    v_next_best_td_samples(object),
+    "derive must accept numerical vector as an argument and return a number"
+  )
+})
+
 # Increments ----
 
 ## v_increments_numdoselevels ----

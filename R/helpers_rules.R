@@ -413,7 +413,7 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
     geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1.1) +
     annotate(
       geom = "text",
-      label = paste("TD", nextBest@targetDuringTrial * 100, "Estimate"),
+      label = paste("TD", nextBest@prob_target_drt * 100, "Estimate"),
       x = dose_target_drt,
       y = 0,
       hjust = -0.1,
@@ -424,7 +424,7 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
     geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1.1) +
     annotate(
       geom = "text",
-      label = paste("TD", nextBest@targetEndOfTrial * 100, "Estimate"),
+      label = paste("TD", nextBest@prob_target_eot * 100, "Estimate"),
       x = dose_target_eot,
       y = 0,
       hjust = -0.1,

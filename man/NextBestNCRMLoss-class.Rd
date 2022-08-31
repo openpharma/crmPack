@@ -23,15 +23,12 @@ excluded, upper limit included) or the excessive toxicity interval (lower
 limit excluded, upper limit included) if
 unacceptable is not provided.}
 
-\item{unacceptable}{(\code{numeric})\cr an unacceptable toxicity
-interval (lower limit excluded, upper limit included).}
+\item{unacceptable}{(\code{numeric})\cr see slot definition.}
 
 \item{max_overdose_prob}{(\code{proportion})\cr the maximum overdose
 (overdose or excessive + unacceptable) probability that is allowed.}
 
-\item{losses}{(\code{numeric})\cr a vector specifying the loss function. If the
-\code{unacceptable} is provided, the vector length must be \eqn{4}, otherwise
-\eqn{3}.}
+\item{losses}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

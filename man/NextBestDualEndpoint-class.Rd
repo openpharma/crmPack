@@ -16,27 +16,15 @@ NextBestDualEndpoint(
 )
 }
 \arguments{
-\item{target}{(\code{numeric})\cr the biomarker target range that needs to be
-reached. For example, the target range \eqn{(0.8, 1.0)} and
-\code{target_relative = TRUE} means that we target a dose with at least
-\eqn{80\%} of maximum biomarker level. As an other example,
-\eqn{(0.5, 0.8)} would mean that we target a dose between \eqn{50\%} and
-\eqn{80\%} of the maximum biomarker level.}
+\item{target}{(\code{numeric})\cr see slot definition.}
 
-\item{target_relative}{(\code{flag})\cr is \code{target} specified as relative? If
-\code{TRUE}, then the \code{target} is interpreted relative to the maximum, so it
-must be a probability range. Otherwise, the \code{target} is interpreted as
-absolute biomarker range.}
+\item{target_relative}{(\code{flag})\cr see slot definition.}
 
-\item{overdose}{(\code{numeric})\cr the overdose toxicity interval (lower limit
-excluded, upper limit included).}
+\item{overdose}{(\code{numeric})\cr see slot definition.}
 
-\item{max_overdose_prob}{(\code{proportion})\cr maximum overdose probability that
-is allowed.}
+\item{max_overdose_prob}{(\code{proportion})\cr see slot definition.}
 
-\item{target_thresh}{(\code{proportion})\cr a target probability threshold that
-needs to be fulfilled before the target probability will be used for
-deriving the next best dose (default to \eqn{0.01}).}
+\item{target_thresh}{(\code{proportion})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
