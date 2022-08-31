@@ -22,7 +22,7 @@ v_next_best_mtd <- function(object) {
     "target must be a probability value from (0, 1) interval"
   )
   v$check(
-    length(formalArgs(object@derive)) == 1L,
+    test_function(object@derive, nargs = 1),
     "derive must have a single argument"
   )
   v$check(
@@ -170,7 +170,7 @@ v_next_best_td_samples <- function(object) {
     "prob_target_eot must be a probability value from (0, 1) interval"
   )
   v$check(
-    length(formalArgs(object@derive)) == 1L,
+    test_function(object@derive, nargs = 1),
     "derive must have a single argument"
   )
   v$check(
