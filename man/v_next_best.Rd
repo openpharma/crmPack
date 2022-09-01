@@ -8,6 +8,7 @@
 \alias{v_next_best_dual_endpoint}
 \alias{v_next_best_min_dist}
 \alias{v_next_best_inf_theory}
+\alias{v_next_best_td}
 \alias{v_next_best_td_samples}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
@@ -22,6 +23,8 @@ v_next_best_dual_endpoint(object)
 v_next_best_min_dist(object)
 
 v_next_best_inf_theory(object)
+
+v_next_best_td(object)
 
 v_next_best_td_samples(object)
 }
@@ -59,8 +62,10 @@ contains valid \code{target} object.
 \item \code{v_next_best_inf_theory}: validates that the \code{\link{NextBestInfTheory}} object
 contains valid \code{target} and \code{asymmetry} objects.
 
+\item \code{v_next_best_td}: validates that the \code{\link{NextBestTD}} object
+contains valid \code{prob_target_drt} and \code{prob_target_eot} probabilities.
+
 \item \code{v_next_best_td_samples}: validates that the \code{\link{NextBestTDsamples}} object
-contains valid \code{prob_target_drt} and \code{prob_target_eot} probabilities
-as well as \code{derive} function.
+contains valid \code{derive} function.
 }}
 

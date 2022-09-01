@@ -4,36 +4,42 @@
 \name{NextBestTD-class}
 \alias{NextBestTD-class}
 \alias{.NextBestTD}
-\title{Next best dose based on Pseudo DLE model without sample}
+\alias{NextBestTD}
+\title{\code{NextBestTD}}
+\usage{
+NextBestTD(prob_target_drt, prob_target_eot)
+}
+\arguments{
+\item{prob_target_drt}{(\code{proportion})\cr see slot definition.}
+
+\item{prob_target_eot}{(\code{proportion})\cr see slot definition.}
+}
 \description{
-The class is to find the next best dose for allocation and the dose for final recommendation
-at the end of a trial without involving any samples. This is a class for which only
-DLE response will be incorporated for the dose-allocation.
-This is only based on the probabilities of
-the occurrence of a DLE obtained by using the modal estimates of the model paramters.
-There are two inputs inputs which are the two target
-probabilities of the occurrence of a DLE used during trial
-and used at the end of trial, for finding the next best dose for allocation and the dose
-for recommendation at the end of the trial.
-It is only suitable to use with the model specified in \code{ModelTox} class.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBestTD}} is the class to find a next best dose based on pseudo
+DLT model without samples. Namely, it is to find two next best doses, one
+for allocation during the trial and the second for final recommendation at
+the end of a trial without involving any samples, i.e. only DLT responses
+will be incorporated for the dose-allocation. This is based solely on the
+probabilities of the occurrence of a DLT obtained by using the modal estimates
+of the model parameters. There are two target probabilities of the
+occurrence of a DLT that must be specified: target probability to be used
+during the trial and target probability to be used at the end of the trial.
+It is only suitable to use it with the \code{\link{ModelTox}} model class.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{targetDuringTrial}}{the target probability of the occurrence of a DLE to be used
-during the trial}
+\item{\code{prob_target_drt}}{(\code{proportion})\cr the target probability of the
+occurrence of a DLT to be used during the trial.}
 
-\item{\code{targetEndOfTrial}}{the target probability of the occurrence of a DLE to be used at the end
-of the trial. This target is particularly used to recommend the dose for which its posterior
-probability of the occurrence of a DLE is equal to this target}
+\item{\code{prob_target_eot}}{(\code{proportion})\cr the target probability of the
+occurrence of a DLT to be used at the end of the trial.}
 }}
 
 \examples{
-##define the NextBestTD class (no samples and based a pseudo DLE model)
-##specified the target probability of the occurrence of a DLE during the trial be 0.35
-##specified the target probability of the occurrence of a DLE at the end of trial be 0.3
-
-myNextBest <-NextBestTD(targetDuringTrial=0.35,
-                        targetEndOfTrial=0.3)
+# Target probability of the occurrence of a DLT during the trial is set to 0.35.
+# Target probability of the occurrence of a DLT at the end of the trial is set to 0.3.
+my_next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
 }
-\keyword{class}

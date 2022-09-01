@@ -961,7 +961,7 @@ model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),
 myStopping <- StoppingTDCIRatio(targetRatio=5,
                                 targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-tdNextBest<-NextBestTD(targetDuringTrial=0.35,targetEndOfTrial=0.3)
+tdNextBest<-NextBestTD(prob_target_drt=0.35,prob_target_eot=0.3)
 
 
 RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),model=model,data=data)

@@ -68,6 +68,7 @@ reference:
       - NextBestDualEndpoint
       - NextBestMinDist
       - NextBestInfTheory
+      - NextBestTD
       - NextBestTDsamples
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
@@ -143,6 +144,7 @@ reference:
       - v_next_best_dual_endpoint
       - v_next_best_min_dist
       - v_next_best_inf_theory
+      - v_next_best_td
       - v_next_best_td_samples
       - v_increments_numdoselevels
       - v_increments_hsr_beta

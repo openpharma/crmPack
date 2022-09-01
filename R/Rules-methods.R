@@ -600,6 +600,101 @@ setMethod(
   }
 )
 
+## NextBestTD ----
+
+#' @describeIn nextBest find the next best dose based only on the DLT responses
+#'   and for [`LogisticIndepBeta`] model class object without DLT samples.
+#'
+#' @param model (`ModelTox`)\cr the DLT model.
+#' @param in_sim (`flag`)\cr is this method used in simulations? Default as `FALSE`.
+#'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
+#'   are outside of the dose grid range, the information message is printed by
+#'   this method.
+#'
+#' @aliases nextBest-NextBestTD
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestTD.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestTD",
+    doselimit = "numeric",
+    samples = "missing",
+    model = "LogisticIndepBeta",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...) {
+    assert_flag(in_sim)
+
+    # 'drt' - during the trial, 'eot' end of trial.
+    prob_target_drt <- nextBest@prob_target_drt
+    prob_target_eot <- nextBest@prob_target_eot
+
+    # Target dose estimates, i.e. the dose with probability of the occurrence of
+    # a DLT that equals to the prob_target_drt or prob_target_eot.
+    dose_target_drt <- dose(x = prob_target_drt, model)
+    dose_target_eot <- dose(x = prob_target_eot, model)
+
+    # Find the next best doses in the doseGrid. The next best dose is the dose
+    # at level closest and below the target dose estimate.
+    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+
+    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
+    next_dose_drt <- doses_eligible[next_dose_lev_drt]
+
+    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
+    next_dose_eot <- doses_eligible[next_dose_lev_eot]
+
+    # Find the variance of the log of the dose_target_eot.
+    mat <- matrix(
+      c(
+        -1 / (model@phi2),
+        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
+      ),
+      nrow = 1
+    )
+    var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
+
+    # 95% credibility interval.
+    ci_dose_target_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
+    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
+
+    # Build plot.
+    p <- h_next_best_td_plot(
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      data = data,
+      prob_dlt = prob(dose = data@doseGrid, model = model),
+      doselimit = doselimit,
+      next_dose = next_dose_drt
+    )
+
+    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
+      print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
+    }
+    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
+      print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
+    }
+
+    list(
+      next_dose_drt = next_dose_drt,
+      prob_target_drt = prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      next_dose_eot = next_dose_eot,
+      prob_target_eot = prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      ci_dose_target_eot = ci_dose_target_eot,
+      ci_ratio_dose_target_eot = cir_dose_target_eot,
+      plot = p
+    )
+  }
+)
+
 ## NextBestTDsamples ----
 
 #' @describeIn nextBest find the next best dose based only on the DLT responses
@@ -664,101 +759,6 @@ setMethod(
       dose_target_drt = dose_target_drt,
       next_dose_eot = next_dose_eot,
       prob_target_eot = nextBest@prob_target_eot,
-      dose_target_eot = dose_target_eot,
-      ci_dose_target_eot = ci_dose_target_eot,
-      ci_ratio_dose_target_eot = cir_dose_target_eot,
-      plot = p
-    )
-  }
-)
-
-## NextBestTD ----
-
-#' @describeIn nextBest find the next best dose based only on the DLT responses
-#'   and for [`LogisticIndepBeta`] model class object without DLT samples.
-#'
-#' @param model (`ModelTox`)\cr the DLT model.
-#' @param in_sim (`flag`)\cr is this method used in simulations? Default as `FALSE`.
-#'   If this flag is `TRUE` and target dose estimates (during trial and end-of-trial)
-#'   are outside of the dose grid range, the information message is printed by
-#'   this method.
-#'
-#' @aliases nextBest-NextBestTD
-#'
-#' @export
-#' @example examples/Rules-method-nextBest-NextBestTD.R
-#'
-setMethod(
-  f = "nextBest",
-  signature = signature(
-    nextBest = "NextBestTD",
-    doselimit = "numeric",
-    samples = "missing",
-    model = "LogisticIndepBeta",
-    data = "Data"
-  ),
-  definition = function(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...) {
-    assert_flag(in_sim)
-
-    # 'drt' - during the trial, 'eot' end of trial.
-    prob_target_drt <- nextBest@targetDuringTrial
-    prob_target_eot <- nextBest@targetEndOfTrial
-
-    # Target dose estimates, i.e. the dose with probability of the occurrence of
-    # a DLT that equals to the prob_target_drt or prob_target_eot.
-    dose_target_drt <- dose(x = prob_target_drt, model)
-    dose_target_eot <- dose(x = prob_target_eot, model)
-
-    # Find the next best doses in the doseGrid. The next best dose is the dose
-    # at level closest and below the target dose estimate.
-    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
-
-    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
-    next_dose_drt <- doses_eligible[next_dose_lev_drt]
-
-    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
-    next_dose_eot <- doses_eligible[next_dose_lev_eot]
-
-    # Find the variance of the log of the dose_target_eot.
-    mat <- matrix(
-      c(
-        -1 / (model@phi2),
-        -(log(prob_target_eot / (1 - prob_target_eot)) - model@phi1) / (model@phi2)^2
-      ),
-      nrow = 1
-    )
-    var_dose_target_eot <- as.vector(mat %*% model@Pcov %*% t(mat))
-
-    # 95% credibility interval.
-    ci_dose_target_eot <- exp(log(dose_target_eot) + c(-1, 1) * 1.96 * sqrt(var_dose_target_eot))
-    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
-
-    # Build plot.
-    p <- h_next_best_td_plot(
-      prob_target_drt = prob_target_drt,
-      dose_target_drt = dose_target_drt,
-      prob_target_eot = prob_target_eot,
-      dose_target_eot = dose_target_eot,
-      data = data,
-      prob_dlt = prob(dose = data@doseGrid, model = model),
-      doselimit = doselimit,
-      next_dose = next_dose_drt
-    )
-
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
-    }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
-      print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
-    }
-
-    list(
-      next_dose_drt = next_dose_drt,
-      prob_target_drt = prob_target_drt,
-      dose_target_drt = dose_target_drt,
-      next_dose_eot = next_dose_eot,
-      prob_target_eot = prob_target_eot,
       dose_target_eot = dose_target_eot,
       ci_dose_target_eot = ci_dose_target_eot,
       ci_ratio_dose_target_eot = cir_dose_target_eot,

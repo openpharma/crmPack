@@ -485,7 +485,7 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (ot
 test_that("nextBest-NextBestTD returns expected values of the objects", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_indep_beta()
-  nb_td <- NextBestTD(targetDuringTrial = 0.45, targetEndOfTrial = 0.4)
+  nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- nextBest(nb_td, 70, model = model, data = data)
   expected <- list(
@@ -505,7 +505,7 @@ test_that("nextBest-NextBestTD returns expected values of the objects", {
 test_that("nextBest-NextBestTD returns expected values of the objects (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_indep_beta()
-  nb_td <- NextBestTD(targetDuringTrial = 0.45, targetEndOfTrial = 0.4)
+  nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- nextBest(nb_td, Inf, model = model, data = data)
   expected <- list(
@@ -525,7 +525,7 @@ test_that("nextBest-NextBestTD returns expected values of the objects (no doseli
 test_that("nextBest-NextBestTD returns expected values of the objects (other targets)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_indep_beta()
-  nb_td <- NextBestTD(targetDuringTrial = 0.25, targetEndOfTrial = 0.2)
+  nb_td <- NextBestTD(prob_target_drt = 0.25, prob_target_eot = 0.2)
 
   result <- nextBest(nb_td, 70, model = model, data = data)
   expected <- list(

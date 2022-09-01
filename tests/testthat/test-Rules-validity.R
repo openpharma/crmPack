@@ -313,37 +313,44 @@ test_that("v_next_best_inf_theory returns message for non-valid asymmetry", {
   expect_equal(v_next_best_inf_theory(object), err_msg)
 })
 
+## v_next_best_td ----
+
+test_that("v_next_best_td passes for valid object", {
+  object <- NextBestTD(0.4, 0.35)
+  expect_true(v_next_best_td(object))
+})
+
+test_that("v_next_best_td returns message for non-valid prob_target_drt", {
+  err_msg <- "prob_target_drt must be a probability value from (0, 1) interval"
+  object <- NextBestTD(0.4, 0.35)
+
+  # Changing `prob_target_drt` so that it does not represent allowed probability value.
+  object@prob_target_drt <- 1
+  expect_equal(v_next_best_td(object), err_msg)
+
+  # Changing `prob_target_drt` so that it is not a scalar.
+  object@prob_target_drt <- c(0.5, 0.6)
+  expect_equal(v_next_best_td(object), err_msg)
+})
+
+test_that("v_next_best_td returns message for non-valid prob_target_eot", {
+  err_msg <- "prob_target_eot must be a probability value from (0, 1) interval"
+  object <- NextBestTD(0.4, 0.35)
+
+  # Changing `prob_target_eot` so that it does not represent allowed probability value.
+  object@prob_target_eot <- 1
+  expect_equal(v_next_best_td(object), err_msg)
+
+  # Changing `prob_target_eot` so that it is not a scalar.
+  object@prob_target_eot <- c(0.5, 0.6)
+  expect_equal(v_next_best_td(object), err_msg)
+})
+
 ## v_next_best_td_samples ----
 
 test_that("v_next_best_td_samples passes for valid object", {
   object <- h_next_best_tdsamples()
   expect_true(v_next_best_td_samples(object))
-})
-
-test_that("v_next_best_td_samples returns message for non-valid prob_target_drt", {
-  err_msg <- "prob_target_drt must be a probability value from (0, 1) interval"
-  object <- h_next_best_tdsamples()
-
-  # Changing `prob_target_drt` so that it does not represent allowed probability value.
-  object@prob_target_drt <- 1
-  expect_equal(v_next_best_td_samples(object), err_msg)
-
-  # Changing `prob_target_drt` so that it is not a scalar.
-  object@prob_target_drt <- c(0.5, 0.6)
-  expect_equal(v_next_best_td_samples(object), err_msg)
-})
-
-test_that("v_next_best_td_samples returns message for non-valid prob_target_eot", {
-  err_msg <- "prob_target_eot must be a probability value from (0, 1) interval"
-  object <- h_next_best_tdsamples()
-
-  # Changing `prob_target_eot` so that it does not represent allowed probability value.
-  object@prob_target_eot <- 1
-  expect_equal(v_next_best_td_samples(object), err_msg)
-
-  # Changing `prob_target_eot` so that it is not a scalar.
-  object@prob_target_eot <- c(0.5, 0.6)
-  expect_equal(v_next_best_td_samples(object), err_msg)
 })
 
 test_that("v_next_best_td_samples returns message for non-valid derive", {
