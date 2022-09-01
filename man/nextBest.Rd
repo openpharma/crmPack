@@ -567,8 +567,8 @@ my_model_eff <- Effloglog(
 # Target probabilities of the occurrence of a DLT during trial and at the
 # end of trial are defined as 0.35 and 0.3, respectively.
 mg_next_best <- NextBestMaxGain(
-  DLEDuringTrialtarget = 0.35,
-  DLEEndOfTrialtarget = 0.3
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3
 )
 
 # doselimit is the maximum allowable dose level to be given to subjects.

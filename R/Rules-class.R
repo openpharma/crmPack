@@ -445,7 +445,7 @@ NextBestInfTheory <- function(target, asymmetry) {
 #' of the model parameters. There are two target probabilities of the
 #' occurrence of a DLT that must be specified: target probability to be used
 #' during the trial and target probability to be used at the end of the trial.
-#' It is only suitable to use it with the [`ModelTox`] model class.
+#' It is suitable to use it only with the [`ModelTox`] model class.
 #'
 #' @slot prob_target_drt (`proportion`)\cr the target probability of the
 #'   occurrence of a DLT to be used during the trial.
@@ -477,8 +477,8 @@ NextBestInfTheory <- function(target, asymmetry) {
 #' @param prob_target_eot (`proportion`)\cr see slot definition.
 #'
 #' @export
-#' @example examples/Rules-class-NextBestTD.R
-#'
+#' @examples
+#' my_next_best <- NextBestTD(0.35, 0.3)
 NextBestTD <- function(prob_target_drt, prob_target_eot) {
   .NextBestTD(
     prob_target_drt = prob_target_drt,
@@ -543,9 +543,64 @@ NextBestTDsamples <- function(prob_target_drt, prob_target_eot, derive) {
   )
 }
 
-# nolint start
+# NextBestMaxGain ----
 
-## ============================================================
+## class ----
+
+#' `NextBestMaxGain`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestMaxGain`] is the class to find a next best dose with maximum gain
+#' value based on a pseudo DLT and efficacy models without samples. It is based
+#' solely on the probabilities of the occurrence of a DLT and the values
+#' of the mean efficacy responses obtained by using the modal estimates of the
+#' DLT and efficacy model parameters. There are two target probabilities of the
+#' occurrence of a DLT that must be specified: target probability to be used
+#' during the trial and target probability to be used at the end of the trial.
+#' It is suitable to use it only with the [`ModelTox`] model and [`ModelEff`]
+#' classes (except [`EffFlexi`]).
+#'
+#' @slot prob_target_drt (`proportion`)\cr the target probability of the
+#'   occurrence of a DLT to be used during the trial.
+#' @slot prob_target_eot (`proportion`)\cr the target probability of the
+#'   occurrence of a DLT to be used at the end of the trial.
+#'
+#' @aliases NextBestMaxGain
+#' @export
+#'
+.NextBestMaxGain <- setClass(
+  Class = "NextBestMaxGain",
+  slots = c(
+    prob_target_drt = "numeric",
+    prob_target_eot = "numeric"
+  ),
+  prototype = prototype(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3
+  ),
+  contains = "NextBest",
+  validity = v_next_best_td
+)
+
+## constructor ----
+
+#' @rdname NextBestMaxGain-class
+#'
+#' @param prob_target_drt (`proportion`)\cr see slot definition.
+#' @param prob_target_eot (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @examples
+#' my_next_best <- NextBestMaxGain(0.35, 0.3)
+NextBestMaxGain <- function(prob_target_drt, prob_target_eot) {
+  .NextBestMaxGain(
+    prob_target_drt = prob_target_drt,
+    prob_target_eot = prob_target_eot
+  )
+}
+
+# nolint start
 
 ## --------------------------------------------------
 ## Virtual class for increments control
@@ -2075,62 +2130,6 @@ CohortSizeMin <- function(cohortSizeList)
 {
     .CohortSizeMin(cohortSizeList=cohortSizeList)
 }
-
-##------------------------------------------------------------------------------------------------------
-## Class for next best with maximum gain value based on a pseudo DLE and efficacy model without samples
-## ----------------------------------------------------------------------------------------------------
-##' Next best dose with maximum gain value based on a pseudo DLE and efficacy model without samples
-##'
-##' This is a class for which to find the next dose which is safe and give the maximum gain value
-##' for allocation. This is a class where no DLE and efficacy samples are involved. This is only based
-##' on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
-##' obtained by using the modal estimates of the DLE and efficacy model parameters.
-##' There are two inputs which are the two target
-##' probabilities of the occurrence of a DLE used during trial
-##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum
-##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
-##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
-##' class
-##'
-##' @slot DLEDuringTrialtarget the target probability of the occurrence of a DLE to be used
-##' during the trial
-##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end
-##' of the trial. This target is particularly used to recommend the dose for which its posterior
-##' probability of the occurrence of a DLE is equal to this target
-##'
-##' @example examples/Rules-class-NextBestMaxGain.R
-##' @export
-##' @keywords class
-.NextBestMaxGain<-
-  setClass(Class="NextBestMaxGain",
-           representation(DLEDuringTrialtarget="numeric",
-                          DLEEndOfTrialtarget="numeric"),
-           prototype(DLEDuringTrialtarget=0.35,
-                     DLEEndOfTrialtarget=0.3),
-           contains=list("NextBest"),
-           validity=
-             function(object){
-               o <- Validate()
-               o$check(is.probability(object@DLEDuringTrialtarget),
-                       "DLE DuringTrialtarget has to be a probability")
-               o$check(is.probability(object@DLEEndOfTrialtarget),
-                       "DLE EndOfTrialtarget has to be a probability")
-               o$result()
-             })
-validObject(.NextBestMaxGain())
-
-##' Initialization function for the class 'NextBestMaxGain'
-##'
-##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
-##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGain}} class object
-##' @return the \code{\linkS4class{NextBestMaxGain}} class object
-##'
-##' @export
-##' @keywords methods
-NextBestMaxGain <- function(DLEDuringTrialtarget,
-                            DLEEndOfTrialtarget)
-{.NextBestMaxGain(DLEDuringTrialtarget=DLEDuringTrialtarget,
-                  DLEEndOfTrialtarget=DLEEndOfTrialtarget)}
 
 ##------------------------------------------------------------------------------------------------------
 ## Class for next best with maximum gain value based on a pseudo DLE and efficacy model with samples

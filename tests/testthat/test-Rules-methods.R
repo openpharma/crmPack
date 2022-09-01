@@ -547,7 +547,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects", {
   data <- h_get_data_dual(placebo = FALSE)
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
-  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
   result <- nextBest(nb_mg, 49, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
@@ -573,7 +573,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (no d
   data <- h_get_data_dual(placebo = FALSE)
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
-  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
   result <- nextBest(nb_mg, Inf, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
@@ -599,7 +599,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (othe
   data <- h_get_data_dual(placebo = TRUE)
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
-  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.45, DLEEndOfTrialtarget = 0.4)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- nextBest(nb_mg, 150, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(

@@ -1,5 +1,5 @@
 # Version 1.0.9000.9064
-* Renamed slots in `NextBestTDsamples` and `NextBestTD` classes.
+* Renamed slots in `NextBestTD`, `NextBestTDsamples`, and `NextBestMaxGain` classes.
 * Removed `Model` class.
 * Renamed `SIM` argument of `nextBest` methods to `in_sim`.
 * Renamed the elements of the list returned by `nextBest` methods for `NextBestMaxGain`
