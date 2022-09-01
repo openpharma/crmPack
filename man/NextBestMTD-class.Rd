@@ -25,7 +25,8 @@ NextBestMTD(target, derive)
 \item{\code{target}}{(\code{proportion})\cr target toxicity probability.}
 
 \item{\code{derive}}{(\code{function})\cr a function which derives the final next best MTD
-estimate, based on vector of posterior MTD samples, called \code{mtd_samples}.}
+estimate, based on vector of posterior MTD samples. It must therefore accept
+one and only one argument, which is a numeric vector, and return a number.}
 }}
 
 \examples{
