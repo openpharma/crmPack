@@ -1,7 +1,9 @@
+# nolint start
+
 ##Specified the design to run simulations
-##The design comprises a model, the escalation rule, starting data, 
+##The design comprises a model, the escalation rule, starting data,
 ##a cohort size and a starting dose
-##Define your data set first using an empty data set 
+##Define your data set first using an empty data set
 ## with dose levels from 25 to 300 with increments 25
 data <- Data(doseGrid=seq(25,300,25))
 
@@ -9,8 +11,8 @@ data <- Data(doseGrid=seq(25,300,25))
 ##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##Then the escalation rule
-tdNextBest <- NextBestTD(targetDuringTrial=0.35,
-                         targetEndOfTrial=0.3)
+tdNextBest <- NextBestTD(prob_target_drt=0.35,
+                         prob_target_eot=0.3)
 
 ## The cohort size, size of 3 subjects
 mySize <-CohortSizeConst(size=3)
@@ -18,7 +20,7 @@ mySize <-CohortSizeConst(size=3)
 ##The maximum increase of 200% for doses up to the maximum of the dose specified in the doseGrid
 ##The maximum increase of 200% for dose above the maximum of the dose specified in the doseGrid
 ##This is to specified a maximum of 3-fold restriction in dose-esclation
-myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)), 
+myIncrements<-IncrementsRelative(intervals=c(min(data@doseGrid),max(data@doseGrid)),
                                  increments=c(2,2))
 ##Specified the stopping rule e.g stop when the maximum sample size of 36 patients has been reached
 myStopping <- StoppingMinPatients(nPatients=36)
@@ -29,3 +31,5 @@ design <- TDDesign(model=model,
                    increments=myIncrements,
                    cohortSize=mySize,
                    data=data,startingDose=25)
+
+# nolint end

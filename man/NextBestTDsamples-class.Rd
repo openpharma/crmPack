@@ -10,9 +10,9 @@
 NextBestTDsamples(prob_target_drt, prob_target_eot, derive)
 }
 \arguments{
-\item{prob_target_drt}{(\code{proportion})\cr see slot definition.}
+\item{prob_target_drt}{(\code{proportion})\cr see slot definition in \code{\link{NextBestTD}}.}
 
-\item{prob_target_eot}{(\code{proportion})\cr see slot definition.}
+\item{prob_target_eot}{(\code{proportion})\cr see slot definition in \code{\link{NextBestTD}}.}
 
 \item{derive}{(\code{function})\cr see slot definition.}
 }
@@ -29,12 +29,6 @@ during the trial and target probability to be used at the end of the trial.
 \section{Slots}{
 
 \describe{
-\item{\code{prob_target_drt}}{(\code{proportion})\cr the target probability of the
-occurrence of a DLT to be used during the trial.}
-
-\item{\code{prob_target_eot}}{(\code{proportion})\cr the target probability of the
-occurrence of a DLT to be used at the end of the trial.}
-
 \item{\code{derive}}{(\code{function})\cr derives, based on a vector of posterior dose
 samples, the target dose that has the probability of the occurrence of
 DLT equals to either the \code{prob_target_drt} or \code{prob_target_eot}. It must

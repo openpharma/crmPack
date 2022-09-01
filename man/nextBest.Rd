@@ -18,10 +18,10 @@
 \alias{nextBest-NextBestMinDist}
 \alias{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestInfTheory}
-\alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
-\alias{nextBest-NextBestTDsamples}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
 \alias{nextBest-NextBestTD}
+\alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
+\alias{nextBest-NextBestTDsamples}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
 \alias{nextBest-NextBestMaxGain}
 \alias{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}
@@ -46,9 +46,9 @@ nextBest(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestInfTheory,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
-
 \S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...)
+
+\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(
   nextBest,
@@ -141,11 +141,11 @@ estimated DLT probability which is closest to the target dose.
 \item \code{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}: gives the appropriate dose within an information
 theoretic framework.
 
-\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
-and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
-
 \item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
 and for \code{\link{LogisticIndepBeta}} model class object without DLT samples.
+
+\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
 \item \code{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}: find the next best dose based only on pseudo DLT model
 \code{\link{ModelTox}} and \code{\link{Effloglog}} efficacy model without samples.
@@ -460,6 +460,37 @@ print(dose_recommendation$plot)
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
 
+# Example of usage for `NextBestTD` NextBest class.
+my_data <- Data(
+  x = c(25, 50, 50, 75, 150, 200, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  ID = 1:8,
+  cohort = c(1L, 2L, 2L, 3L, 4L, 5L, 6L, 7L),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
+
+my_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = my_data
+)
+
+# Target probabilities of the occurrence of a DLT during trial and
+# at the end of the trial are defined as 0.35 and 0.3, respectively.
+td_next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
+
+# doselimit is the maximum allowable dose level to be given to subjects.
+dose_recommendation <- nextBest(
+  nextBest = td_next_best,
+  doselimit = max(my_data@doseGrid),
+  model = my_model,
+  data = my_data
+)
+
+dose_recommendation$next_dose_drt
+dose_recommendation$plot
+
 # Example of usage for `NextBestTDsamples` NextBest class.
 my_data <- Data(
   x = c(25, 50, 50, 75, 150, 200, 225, 300),
@@ -497,37 +528,6 @@ dose_recommendation <- nextBest(
   nextBest = tds_next_best,
   doselimit = max(my_data@doseGrid),
   samples = my_samples,
-  model = my_model,
-  data = my_data
-)
-
-dose_recommendation$next_dose_drt
-dose_recommendation$plot
-
-# Example of usage for `NextBestTD` NextBest class.
-my_data <- Data(
-  x = c(25, 50, 50, 75, 150, 200, 225, 300),
-  y = c(0, 0, 0, 0, 1, 1, 1, 1),
-  ID = 1:8,
-  cohort = c(1L, 2L, 2L, 3L, 4L, 5L, 6L, 7L),
-  doseGrid = seq(from = 25, to = 300, by = 25)
-)
-
-my_model <- LogisticIndepBeta(
-  binDLE = c(1.05, 1.8),
-  DLEweights = c(3, 3),
-  DLEdose = c(25, 300),
-  data = my_data
-)
-
-# Target probabilities of the occurrence of a DLT during trial and
-# at the end of the trial are defined as 0.35 and 0.3, respectively.
-td_next_best <- NextBestTD(targetDuringTrial = 0.35, targetEndOfTrial = 0.3)
-
-# doselimit is the maximum allowable dose level to be given to subjects.
-dose_recommendation <- nextBest(
-  nextBest = td_next_best,
-  doselimit = max(my_data@doseGrid),
   model = my_model,
   data = my_data
 )

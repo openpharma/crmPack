@@ -17,7 +17,7 @@ my_model <- LogisticIndepBeta(
 
 # Target probabilities of the occurrence of a DLT during trial and
 # at the end of the trial are defined as 0.35 and 0.3, respectively.
-td_next_best <- NextBestTD(targetDuringTrial = 0.35, targetEndOfTrial = 0.3)
+td_next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
 # doselimit is the maximum allowable dose level to be given to subjects.
 dose_recommendation <- nextBest(
