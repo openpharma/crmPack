@@ -643,9 +643,10 @@ print(doseRecGain$plot)
 
 \paragraph{Stopping rules} In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum gain:
 <<newdualstopping-rule>>=
-myStopping4 <- StoppingGstarCIRatio(targetRatio = 5,
-                                    targetEndOfTrial =
-                                      GainNextBest@DLEEndOfTrialtarget)
+myStopping4 <- StoppingGstarCIRatio(
+  targetRatio = 5,
+  targetEndOfTrial = GainNextBest@prob_target_eot
+)
 myStoppingDual <- myStopping1 | myStopping4
 @
 This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
