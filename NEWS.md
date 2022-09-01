@@ -1,4 +1,4 @@
-# Version 1.0.9000.9063
+# Version 1.0.9000.9064
 * Renamed slots in `NextBestTDsamples` and `NextBestTD` classes.
 * Removed `Model` class.
 * Renamed `SIM` argument of `nextBest` methods to `in_sim`.
