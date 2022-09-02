@@ -214,6 +214,155 @@ h_next_best_eligible_doses <- function(dose_grid,
 
 ## plot ----
 
+#' Building the Plot for `nextBest-NextBestNCRMLoss` Method.
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Helper function which creates the plot for [`nextBest-NextBestNCRMLoss()`]
+#' method.
+#'
+#' @param prob_mat (`numeric`)\cr matrix with probabilities of a grid doses
+#'   to be in a given interval. If `is_unacceptable_specified` is `TRUE`, there
+#'   must be 4 intervals (columns) in `prob_mat`: `underdosing`, `target`,
+#'   `excessive`, `unacceptable`. Otherwise, there must be 3 intervals (columns):
+#'   `underdosing`, `target`, `overdose`. Number of rows must be equal to number
+#'   of doses in a grid.
+#' @param posterior_loss (`numeric`)\cr posterior losses.
+#' @param max_overdose_prob (`number`)\cr maximum overdose posterior
+#'   probability that is allowed.
+#' @param dose_grid (`numeric`)\cr dose grid.
+#' @param max_eligible_dose_level (`number`)\cr maximum eligible dose level in
+#'   the `dose_grid`.
+#' @param doselimit (`number`)\cr the maximum allowed next dose.
+#' @param next_dose (`number`)\cr next best dose.
+#' @param is_unacceptable_specified (`flag`)\cr is unacceptable interval specified?
+#'
+#' @export
+h_next_best_ncrm_loss_plot <- function(prob_mat,
+                                       posterior_loss,
+                                       max_overdose_prob,
+                                       dose_grid,
+                                       max_eligible_dose_level,
+                                       doselimit,
+                                       next_dose,
+                                       is_unacceptable_specified) {
+  assert_numeric(dose_grid, finite = TRUE, any.missing = FALSE, sorted = TRUE)
+  n_grid <- length(dose_grid)
+  assert_flag(is_unacceptable_specified)
+  assert_probabilities(prob_mat)
+  assert_matrix(prob_mat, min.cols = 3, max.cols = 4, nrows = n_grid, col.names = "named")
+  if (!is_unacceptable_specified) {
+    assert_names(colnames(prob_mat), permutation.of = c("underdosing", "target", "overdose"))
+  } else {
+    assert_names(colnames(prob_mat), permutation.of = c("underdosing", "target", "excessive", "unacceptable"))
+  }
+  assert_numeric(posterior_loss, finite = TRUE, any.missing = FALSE, len = n_grid)
+  assert_probability(max_overdose_prob)
+  assert_number(max_eligible_dose_level, lower = 0, upper = n_grid)
+  assert_number(doselimit)
+  assert_number(next_dose, na.ok = TRUE)
+
+  # Build plots, first for the target probability.
+  p1 <- ggplot() +
+    geom_bar(
+      data = data.frame(Dose = dose_grid, y = prob_mat[, "target"] * 100),
+      aes(x = .data$Dose, y = .data$y),
+      stat = "identity",
+      position = "identity",
+      width = min(diff(dose_grid)) / 2,
+      colour = "darkgreen",
+      fill = "darkgreen"
+    ) +
+    ylim(c(0, 100)) +
+    ylab(paste("Target probability [%]"))
+
+  if (is.finite(doselimit)) {
+    p1 <- p1 + geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
+  }
+
+  if (max_eligible_dose_level > 0) {
+    p1 <- p1 +
+      geom_vline(xintercept = dose_grid[max_eligible_dose_level], lwd = 1.1, lty = 2, colour = "red")
+  }
+
+  p_loss <- ggplot() +
+    # For the loss function.
+    geom_bar(
+      data = data.frame(Dose = dose_grid, y = posterior_loss),
+      aes(x = .data$Dose, y = .data$y),
+      stat = "identity",
+      position = "identity",
+      width = min(diff(dose_grid)) / 2,
+      colour = "darkgreen",
+      fill = "darkgreen"
+    ) +
+    geom_point(
+      aes(x = next_dose, y = max(posterior_loss) + 0.2),
+      size = 3,
+      pch = 25,
+      col = "red",
+      bg = "red"
+    ) +
+    ylab(paste("Loss function"))
+
+  if (!is_unacceptable_specified) {
+    # Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_bar(
+        data = data.frame(Dose = dose_grid, y = prob_mat[, "overdose"] * 100),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(dose_grid)) / 2,
+        colour = "red",
+        fill = "red"
+      ) +
+      geom_hline(
+        yintercept = max_overdose_prob * 100, lwd = 1.1, lty = 2,
+        colour = "black"
+      ) +
+      ylim(c(0, 100)) +
+      ylab("Overdose probability [%]")
+
+    # Combine it all together.
+    plots_single <- list(plot1 = p1, plot2 = p2, plot_loss = p_loss)
+    plot_joint <- gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3)
+  } else {
+    # Plot in case of 4 toxicity intervals. Second, for the overdosing probability.
+    p2 <- ggplot() +
+      geom_bar(
+        data = data.frame(Dose = dose_grid, y = prob_mat[, "excessive"] * 100),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(dose_grid)) / 2,
+        colour = "red",
+        fill = "red"
+      ) +
+      ylim(c(0, 100)) +
+      ylab("Excessive probability [%]")
+
+    p3 <- ggplot() +
+      geom_bar(
+        data = data.frame(Dose = dose_grid, y = prob_mat[, "unacceptable"] * 100),
+        aes(x = .data$Dose, y = .data$y),
+        stat = "identity",
+        position = "identity",
+        width = min(diff(dose_grid)) / 2,
+        colour = "red",
+        fill = "red"
+      ) +
+      ylim(c(0, 100)) +
+      ylab("Unacceptable probability [%]")
+
+    # Combine it all together.
+    plots_single <- list(plot1 = p1, plot2 = p2, plot3 = p3, plot_loss = p_loss)
+    plot_joint <- gridExtra::arrangeGrob(p1, p2, p3, p_loss, nrow = 4)
+  }
+
+  list(plots_single = plots_single, plot_joint = plot_joint)
+}
+
 #' Building the Plot for `nextBest-NextBestTDsamples` Method.
 #'
 #' @description `r lifecycle::badge("experimental")`
@@ -264,7 +413,7 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
     geom_vline(xintercept = dose_target_drt, colour = "orange", lwd = 1.1) +
     annotate(
       geom = "text",
-      label = paste("TD", nextBest@targetDuringTrial * 100, "Estimate"),
+      label = paste("TD", nextBest@prob_target_drt * 100, "Estimate"),
       x = dose_target_drt,
       y = 0,
       hjust = -0.1,
@@ -275,7 +424,7 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
     geom_vline(xintercept = dose_target_eot, colour = "violet", lwd = 1.1) +
     annotate(
       geom = "text",
-      label = paste("TD", nextBest@targetEndOfTrial * 100, "Estimate"),
+      label = paste("TD", nextBest@prob_target_eot * 100, "Estimate"),
       x = dose_target_eot,
       y = 0,
       hjust = -0.1,

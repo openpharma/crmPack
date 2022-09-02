@@ -746,18 +746,22 @@ There are also two further next best dose recommendation rules when the model is
 The details about these rules are as follows. First, two probabilities of the occurrence of a DLT have to be fixed. The first one is called \texttt{targetDuringTrial} which is the target probability of the occurrence of a DLT to be used during the trial. The second probability is called \texttt{targetEndOfTrial} is the target probability of the occurrence of a DLT to be used at the end of a trial. The above two targets always have to be specified. For cases when samples are involved, an additional argument has to be used, which is a function to advise what we should recommend using the samples that we have. This will be elaborated in details in the example below.
 
 <<TD-spec>>=
-TDNextBest <- NextBestTD(targetDuringTrial=0.35,
-                         targetEndOfTrial=0.3)
+TDNextBest <- NextBestTD(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3
+)
 @
 
 In this example, we fixed the target probability of the occurrence of a DLT to be used during the trial be 0.35. This means we will allow subjects to dose levels with probability of DLT closest and less than or equal 0.35 during the trial. At the end of the trial, we will therefore recommend a dose level which is closest and with probability of DLT less than or equal to 0.3. This \texttt{NextBestTD} rule class can be only used when no samples are involved in the escalation procedure. Next we will show an example of the \texttt{NextBestTDsamples} rule class when samples are involved in the escalation process.
 
 <<TDsamples-spec>>=
-TDsamplesNextBest <- NextBestTDsamples(targetDuringTrial=0.35,
-                                       targetEndOfTrial=0.3,
-                                       derive=function(TDsamples){
-                                         quantile(TDsamples,probs=0.3)})
-
+TDsamplesNextBest <- NextBestTDsamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(TDsamples) {
+    quantile(TDsamples, probs = 0.3)
+  }
+)
 @
 
 The slot for \texttt{targetDuringTrial} and \texttt{targetEndOfTrial} are specified in the same way as in the last example given the value of 0.35 and 0.3, respectively. The \texttt{derive} slot should always be specified with a function.
@@ -1951,8 +1955,10 @@ This is a case where no MCMC sampling is involved such that the prior and poster
 There are two implemented \texttt{NextBest} rules for the dual responses using the gain function: the \texttt{NextBestMaxGain} and the \texttt{NextBestMaxGainSamples} class object. The \texttt{NextBestMaxGain} is used when no MCMC sampling are involved and we will use the prior or the posterior modal estimates of the model parameters to obtain the gain values at each of the dose levels, while the \texttt{NextBestMaxGainSamples} is used when MCMC sampling is involved to obtain the posterior estimates. For example, when no MCMC sampling is involved:
 
 <<nextbestmaxgain>>=
-GainNextBest <-NextBestMaxGain(DLEDuringTrialtarget=0.35,
-                               DLEEndOfTrialtarget=0.3)
+GainNextBest <- NextBestMaxGain(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3
+)
 @
 
 To use the \texttt{NextBestMaxGain}, we have to specify the target probability of the occurrence of a DLT to be used during the trial or at the end of the trial. In this example, the target probability of DLT to be used during the trial and at the end of the trial are 0.35 and 0.3, respectively. Therefore, under this rule we will suggest the dose level which gives the maximum gain value and has a probability of DLT less than or equal to 0.35 to administer to the next cohort of subjects. At the end of the trial, we will recommend the dose with maximum gain value and probability of DLT less than or equal to 0.3. In order to derive the next best dose for administration, we have to use the \texttt{nextBest} function with this \texttt{NextBestMaxGain} object given the doselimit, both the DLT and the efficacy models and the data set, which includes all currently available observations:

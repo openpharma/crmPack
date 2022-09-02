@@ -178,6 +178,66 @@ test_that("h_next_best_eligible_doses throws the error for empty dose grid or no
 
 ## plot ----
 
+### h_next_best_ncrm_loss_plot ----
+
+test_that("h_next_best_ncrm_loss_plot works as expected", {
+  prob_mat <- matrix(
+    c(
+      0.084, 0.024, 0.156, 0.172, 0.024, 1,
+      0.284, 0.122, 0.348, 0.336, 0.138, 0.22,
+      0.632, 0.854, 0.496, 0.492, 0.838, 0.42
+    ),
+    byrow = FALSE, ncol = 3, dimnames = list(NULL, c("underdosing", "target", "overdose"))
+  )
+  posterior_loss <- c(0.856, 1.182, 0.746, 0.738, 1.152, 1)
+
+  result <- h_next_best_ncrm_loss_plot(
+    prob_mat, posterior_loss, 0.9, seq(10, by = 5, length.out = 6), 5, 20, 15, FALSE
+  )
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot", result$plot_joint)
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_p1", result$plots_single$plot1)
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_p2", result$plots_single$plot2)
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_p2_ploss", result$plots_single$plot_loss)
+})
+
+test_that("h_next_best_ncrm_loss_plot works as expected (unacceptable specified)", {
+  prob_mat <- matrix(
+    c(
+      0.61, 0.084, 0.024, 0.982, 0.244, 0.024,
+      0.326, 0.284, 0.138, 0.016, 0.338, 0.154,
+      0.058, 0.492, 0.548, 0.002, 0.378, 0.544,
+      0.006, 0.14, 0.29, 0.17, 0.04, 0.278
+    ),
+    byrow = FALSE, ncol = 4, dimnames = list(NULL, c("underdosing", "target", "excessive", "unacceptable"))
+  )
+  posterior_loss <- c(0.68, 0.856, 1.152, 0.984, 0.702, 1.124)
+
+  result <- h_next_best_ncrm_loss_plot(
+    prob_mat, posterior_loss, 0.9, seq(10, by = 5, length.out = 6), 5, 20, 15, TRUE
+  )
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt", result$plot_joint)
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt_p1", result$plots_single$plot1)
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt_p2", result$plots_single$plot2)
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_unacpt_p2_ploss", result$plots_single$plot_loss)
+})
+
+test_that("h_next_best_ncrm_loss_plot works as expected (no doselimit)", {
+  prob_mat <- matrix(
+    c(
+      0.084, 0.024, 0.156, 0.172, 0.024, 1,
+      0.284, 0.122, 0.348, 0.336, 0.138, 0.22,
+      0.632, 0.854, 0.496, 0.492, 0.838, 0.42
+    ),
+    byrow = FALSE, ncol = 3, dimnames = list(NULL, c("underdosing", "target", "overdose"))
+  )
+  posterior_loss <- c(0.856, 1.182, 0.746, 0.738, 1.152, 1)
+
+  result <- h_next_best_ncrm_loss_plot(
+    prob_mat, posterior_loss, 0.9, seq(10, by = 5, length.out = 6), 5, Inf, 25, FALSE
+  )
+  vdiffr::expect_doppelganger("h_next_best_ncrm_loss_plot_nodoselim", result$plot_joint)
+})
+
 ### h_next_best_tdsamples_plot ----
 
 test_that("h_next_best_tdsamples_plot works as expected", {

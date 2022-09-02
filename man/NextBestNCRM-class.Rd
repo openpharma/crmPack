@@ -10,13 +10,11 @@
 NextBestNCRM(target, overdose, max_overdose_prob)
 }
 \arguments{
-\item{target}{(\code{numeric})\cr target toxicity interval (limits included).}
+\item{target}{(\code{numeric})\cr see slot definition.}
 
-\item{overdose}{(\code{numeric})\cr overdose toxicity interval (lower limit
-excluded, upper limit included).}
+\item{overdose}{(\code{numeric})\cr see slot definition.}
 
-\item{max_overdose_prob}{(\code{proportion})\cr maximum overdose probability that
-is allowed.}
+\item{max_overdose_prob}{(\code{proportion})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

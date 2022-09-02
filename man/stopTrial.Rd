@@ -9,8 +9,8 @@
 \alias{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
-\alias{stopTrial,StoppingTargetProb,numeric,Samples,Model,ANY-method}
-\alias{stopTrial,StoppingMTDdistribution,numeric,Samples,Model,ANY-method}
+\alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
+\alias{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial,StoppingMTDCV,numeric,Samples,GeneralModel,ANY-method}
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
@@ -39,9 +39,9 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMinPatients,ANY,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingTargetProb,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingTargetProb,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
-\S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,Model,ANY}(stopping, dose, samples, model, data, ...)
+\S4method{stopTrial}{StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingMTDCV,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -78,7 +78,7 @@ stopTrial(stopping, dose, samples, model, data, ...)
 
 \item{samples}{the \code{\linkS4class{Samples}} object}
 
-\item{model}{The model input, an object of class \code{\linkS4class{Model}}}
+\item{model}{The model input, an object of class \code{\linkS4class{GeneralModel}}}
 
 \item{data}{The data input, an object of class \code{\linkS4class{Data}}}
 
@@ -137,9 +137,9 @@ dose
 
 \item \code{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}: Stop based on minimum number of patients
 
-\item \code{stopTrial,StoppingTargetProb,numeric,Samples,Model,ANY-method}: Stop based on probability of target tox interval
+\item \code{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}: Stop based on probability of target tox interval
 
-\item \code{stopTrial,StoppingMTDdistribution,numeric,Samples,Model,ANY-method}: Stop based on MTD distribution
+\item \code{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}: Stop based on MTD distribution
 
 \item \code{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}: Stop based on probability of targeting biomarker
 
@@ -933,9 +933,8 @@ samples<-mcmc(data,model,options)
 myStopping <- StoppingTDCIRatio(targetRatio=5,
                                        targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,targetEndOfTrial=0.3,
+tdNextBest<-NextBestTDsamples(prob_target_drt=0.35,prob_target_eot=0.3,
                               derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
-
 
 RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
                         model=model,data=data)
@@ -962,7 +961,7 @@ model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),
 myStopping <- StoppingTDCIRatio(targetRatio=5,
                                 targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-tdNextBest<-NextBestTD(targetDuringTrial=0.35,targetEndOfTrial=0.3)
+tdNextBest<-NextBestTD(prob_target_drt=0.35,prob_target_eot=0.3)
 
 
 RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),model=model,data=data)
@@ -1049,7 +1048,7 @@ Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data
 myStopping <- StoppingGstarCIRatio(targetRatio=5,
                                    targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,DLEEndOfTrialtarget=0.3)
+mynextbest<-NextBestMaxGain(prob_target_drt=0.35, prob_target_eot=0.3)
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,
                         model_eff=Effmodel,data=data)

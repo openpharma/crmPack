@@ -9,8 +9,8 @@ data <- Data(doseGrid=seq(25,300,25))
 ##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##Then the escalation rule
-tdNextBest <- NextBestTD(targetDuringTrial=0.35,
-                         targetEndOfTrial=0.3)
+tdNextBest <- NextBestTD(prob_target_drt=0.35,
+                         prob_target_eot=0.3)
 
 ##Then the starting data, an empty data set
 emptydata<-Data(doseGrid=seq(25,300,25))
@@ -49,14 +49,10 @@ mySim <- simulate(design,
 summary(mySim,
         truth=myTruth)
 
-
-
-
-
 ##If DLE samples are involved
 ##specify the next best
-tdNextBest<-NextBestTDsamples(targetDuringTrial=0.35,
-                              targetEndOfTrial=0.3,
+tdNextBest<-NextBestTDsamples(prob_target_drt=0.35,
+                              prob_target_eot=0.3,
                              derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
 ##The design
 design <- TDsamplesDesign(model=model,

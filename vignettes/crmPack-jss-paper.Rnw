@@ -226,7 +226,7 @@ the framework in a schematic.
 \includegraphics[width=.8\linewidth]{schematic.pdf}
 \caption{Schematic of the framework. Separate design features are implemented as classes
 (shown as gray boxes) and bundled together in the overarching \code{Design} object.
-They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the \code{Data} and \code{Model} objects can be processed by the \code{mcmc} method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated \code{Data} closes the dose escalation loop. On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling \code{crmPackHelp()}.}
+They can be processed with various methods (blue text) to run the dose escalation trial and produce results (blue boxes). For example, the \code{Data} and \code{GeneralModel} objects can be processed by the \code{mcmc} method in order to obtain posterior samples of the model parameters, and given the sample size and the dose for the next cohort, the updated \code{Data} closes the dose escalation loop. On the higher level, designs can be investigated with the \code{examine} and \code{simulate} methods to obtain hypothetical trial courses and operating characteristics, respectively. Note that individual model classes and methods are not shown here for clarity, please refer to the package documentation for details, e.g., by calling \code{crmPackHelp()}.}
 \label{fig:schematic}
 \end{figure}
 
@@ -258,7 +258,7 @@ a patient who receives treatment $x$ assuming the parameter (vector) $\theta$,
 and secondly the prior $p(\theta \given \xi)$ for $\theta$ given fixed
 hyperparameters $\xi$.
 %
-In \pkg{crmPack} the virtual \proglang{S4} class \code{AllModels} encapsulates this
+In \pkg{crmPack} the virtual \proglang{S4} class \code{GeneralModel} encapsulates this
 notion and subclasses implement concrete models.
 
 For example, the class \code{LogisticLogNormal} implements
@@ -614,11 +614,13 @@ newEffmodel <- update(object = Effmodel, data = data2)
 With \pkg{crmPack} we can implement the next best dose recommendation
 based on maximizing the gain function as follows:
 <<NextBestGain>>=
-GainNextBest <- NextBestMaxGain(DLEDuringTrialtarget = 0.35,
-                                DLEEndOfTrialtarget = 0.3)
+GainNextBest <- NextBestMaxGain(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3
+)
 @
-where \code{DLEDuringTrialtarget} specifies the maximum estimated DLT rate tolerated
-during the study and \code{DLEEndOfTrialtarget} the maximum estimated DLT rate tolerated
+where \code{prob_target_drt} specifies the maximum estimated DLT rate tolerated
+during the study and \code{prob_target_eot} the maximum estimated DLT rate tolerated
 at the end of the study.
 As in Section~\ref{subsec:crmtrial} this rule $\nu$ can be evaluated using
 \code{nextBest} to obtain $x_{N+1}$, after evaluating the maximum increments rule
@@ -641,9 +643,10 @@ print(doseRecGain$plot)
 
 \paragraph{Stopping rules} In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum gain:
 <<newdualstopping-rule>>=
-myStopping4 <- StoppingGstarCIRatio(targetRatio = 5,
-                                    targetEndOfTrial =
-                                      GainNextBest@DLEEndOfTrialtarget)
+myStopping4 <- StoppingGstarCIRatio(
+  targetRatio = 5,
+  targetEndOfTrial = GainNextBest@prob_target_eot
+)
 myStoppingDual <- myStopping1 | myStopping4
 @
 This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
@@ -689,75 +692,123 @@ the existing functionality easily to the specific needs of the study.
 \paragraph{Objective}
 The example will implement a version of the one-parameter CRM
 \citep{oquigley1990}, which is currently not (yet) included in the package.
-It is based on a one-parameter power model to describe the relationship between the binary DLT responses $Y$ and their corresponding dose levels $x$:
+It is based on a one-parameter power model to describe the relationship between
+the binary DLT responses $Y$ and their corresponding dose levels $x$:
 \begin{equation}
 \label{eq:oneparameter}
 \pi(x, \theta) = \Prob(Y=1 \given x, \theta) = f(x)^{\theta}
 \end{equation}
 Here $0 < f(x) < 1$ is monotonically increasing in $x$ and is specified by the
 investigator upfront. The sequence $f(x_{1}), \dotsc, f(x_{k})$ along the
-dose grid is often called ``skeleton'' of the CRM. An exponential distribution with parameter $\lambda$ is imposed as the prior distribution for the unknown parameter $\theta$.
-The next dose should then be chosen such that the distance of the posterior mean estimated DLT probability to a predefined target toxicity level is minimized.
+dose grid is often called ``skeleton'' of the CRM. An exponential distribution
+with parameter $\lambda$ is imposed as the prior distribution for the unknown
+parameter $\theta$. The next dose should then be chosen such that the distance
+of the posterior mean estimated DLT probability to a predefined target toxicity
+level is minimized.
 
 \paragraph{Creating a new model}
-To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack} we first need to define an appropriate \proglang{S4} class inheriting from the general model class \code{Model}:
-<<classOnePara>>=
-.OneParExp <-
-    setClass(Class = "OneParExp", contains = "Model",
-             representation(skeletonFun = "function",
-                            skeletonProbs = "numeric",
-                            lambda = "numeric"))
+To implement the one-parameter model~\eqref{eq:oneparameter} in \pkg{crmPack}
+we first need to define an appropriate \proglang{S4} class inheriting from the
+general model class \code{GeneralModel}:
+<<classOneParExp>>=
+.OneParExp <- setClass(
+  Class = "OneParExp",
+  contains = "GeneralModel",
+  slots = c(
+    skeleton_probs = "numeric",
+    dose_grid = "numeric",
+    lambda = "numeric"
+  )
+)
 @
 Here we specify that the new class is called \code{OneParExp} and contains
-two additional slots containing the function $f(x)$, the resulting skeleton
-prior probabilities and the prior parameter $\lambda$.
+three additional slots containing the resulting skeleton prior probabilities,
+the dose grid, and the prior parameter $\lambda$.
 
 Second we have to create a convenient initialization function, which specifies
-the likelihood and prior distributions in the underlying \code{Model} in \proglang{JAGS}.
-We choose to let the user supply just the skeleton probabilities along with the
-intended dose grid to use. Then internally we will create a function $f(x)$
-interpolating between the grid points (\code{skeletonFun} with inverse \code{invSkeletonFun}), in order to obtain a general \proglang{R} function
-in slot \code{prob} for the DLT probability $\pi(x, \theta)$ which is later needed by other methods. Also the inverse function
+the likelihood and prior distributions in the underlying \code{GeneralModel} in
+\proglang{JAGS}. We choose to let the user supply just the skeleton probabilities
+along with the intended dose grid to use. The likelihood with the power model
+is specified in \code{datamodel} and uses the \code{Data} slots which are
+specified in \code{datanames}. The prior is defined in \code{priormodel}.
+Model parameters are passed to \proglang{JAGS} via \code{modelspecs}.
+The \code{init} slot contains a function giving the starting values for the MCMC
+sampler, and \code{sample} defines which parameter samples will be returned:
+<<classOneParExp-init>>=
+OneParExp <- function(skeleton_probs, dose_grid, lambda) {
+  .OneParExp(
+    skeleton_probs = skeleton_probs,
+    dose_grid = dose_grid,
+    lambda = lambda,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        y[i] ~ dbern(p[i])
+        p[i] <- skeleton_probs[xLevel[i]]^theta
+      }
+    },
+    priormodel = function() {
+      theta ~ dexp(lambda)
+    },
+    modelspecs = function() {
+      list(skeleton_probs = skeleton_probs, lambda = lambda)
+    },
+    init = function() {
+      list(theta = 1)
+    }, sample = "theta",
+    datanames = c("nObs", "y", "xLevel")
+  )
+}
+@
+
+Finally, we will create the \code{dose} and \code{prob} methods. The \code{prob}
+method is based on the (a skeleton) function which does the interpolation
+between the dose grid points in order to obtain the probability of a DLT.
+The \code{dose}, on the other hand, uses an inverse of (the skeleton) function
 \begin{equation}
 \label{eq:oneparameterInverse}
 \pi^{-1}(p, \theta) = f^{-1}(p^{1/\theta})
 \end{equation}
-mapping a probability $p$ to a dose $x$ is required by some methods and
-should be defined (slot \code{dose}). The likelihood with the power model
-is specified in \code{datamodel}
-and uses the \code{Data} slots which are specified in \code{datanames}. The prior is
-defined in \code{priormodel}. Model parameters are passed to \proglang{JAGS} via \code{modelspecs}. The \code{init} slot contains a function giving the starting values for the MCMC sampler,
-and \code{sample} defines which parameter samples will be returned:
-<<classOnePara-init>>=
-OneParExp <- function(skeletonProbs, doseGrid, lambda)
-{
-  skeletonFun <- approxfun(x = doseGrid, y = skeletonProbs, rule = 2)
-  invSkeletonFun <- approxfun(x = skeletonProbs, y = doseGrid, rule = 1)
+which maps the probability $p$ to a dose $x$.
+<<classOneParExp-dose_prob>>=
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "OneParExp",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples) {
+    theta <- samples@data$theta
+    invSkeletonFun <- approxfun(x = model@skeleton_probs, y = model@dose_grid, rule = 1)
+    invSkeletonFun(x^(1 / theta))
+  }
+)
 
-  .OneParExp(
-    skeletonFun = skeletonFun, skeletonProbs = skeletonProbs,
-    lambda = lambda,
-    datamodel = function(){
-      for (i in 1:nObs)
-      {
-        y[i] ~ dbern(p[i])
-        p[i] <- skeletonProbs[xLevel[i]]^theta
-      }},
-    datanames = c("nObs", "y", "xLevel"),
-    prob = function(dose, theta){ skeletonFun(dose)^theta },
-    dose = function(x, theta){ invSkeletonFun(x^(1 / theta)) },
-    priormodel = function(){ theta ~ dexp(lambda) },
-    modelspecs = function(){ list(skeletonProbs = skeletonProbs,
-                                  lambda = lambda) },
-    init = function(){ list(theta = 1) }, sample = "theta")
-}
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "OneParExp",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    theta <- samples@data$theta
+    skeletonFun <- approxfun(x = model@dose_grid, y = model@skeleton_probs, rule = 2)
+    skeletonFun(dose)^theta
+  }
+)
 @
-Now we can already use the model, for example in the following we specify the skeleton probabilities via the dose grid and use a standard exponential prior for $\theta$. The resulting
-posterior fit can be plotted as usual, see Figure~\ref{fig:oneParaExp-model-example}.
-<<oneParaExp-model-example, fig.width=5,fig.height=4,out.width='.5\\linewidth',fig.align='center', fig.env='figure', fig.cap='Model fit of the one parameter power model'>>=
-(skeletonProbs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
-newModel <- OneParExp(skeletonProbs = skeletonProbs,
-                      doseGrid = data@doseGrid, lambda = 1)
+Now we can already use the model, for example in the following we specify the
+skeleton probabilities via the dose grid and use a standard exponential prior
+for $\theta$. The resulting posterior fit can be plotted as usual,
+see Figure~\ref{fig:OneParExp-model-example}.
+<<OneParExp-model-example, fig.width=5,fig.height=4,out.width='.5\\linewidth',fig.align='center', fig.env='figure', fig.cap='Model fit of the one parameter power model'>>=
+(skeleton_probs <- round(data@doseGrid / max(data@doseGrid) / 2, 2))
+newModel <- OneParExp(
+  skeleton_probs = skeleton_probs,
+  dose_grid = data@doseGrid,
+  lambda = 1
+)
 newSamples <- mcmc(data, newModel, options)
 plot(newSamples, newModel, data)
 @
@@ -774,15 +825,20 @@ NextBestMinDist <- function(target){ .NextBestMinDist(target = target) }
 @
 Note that here we keep to the convention of separate class definition and
 initialization function, although there is no technical need in this case.
-In order to make it useable we need to define the \code{nextBest} method for this
+In order to make it usable we need to define the \code{nextBest} method for this
 new rule. Note that we do only specialize the method for the first argument,
 such that this rule could also be used with other models.
 <<newNextBest-method, results='hide'>>=
-setMethod("nextBest",
-          signature = signature(nextBest = "NextBestMinDist",
-                                doselimit = "numeric", samples = "Samples",
-                                model = "Model", data = "Data"),
-          def = function(nextBest, doselimit, samples, model, data, ...){
+setMethod(
+  "nextBest",
+  signature = signature(
+    nextBest = "NextBestMinDist",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  def = function(nextBest, doselimit, samples, model, data, ...){
             dosesOK <-
                 if(length(doselimit))
                   which(data@doseGrid <= doselimit)

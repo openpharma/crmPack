@@ -22,8 +22,12 @@ v_next_best_mtd <- function(object) {
     "target must be a probability value from (0, 1) interval"
   )
   v$check(
-    formalArgs(object@derive) == "mtd_samples",
-    "derive must have a single argument 'mtd_samples'"
+    test_function(object@derive, nargs = 1),
+    "derive must have a single argument"
+  )
+  v$check(
+    test_number(object@derive(1:5)),
+    "derive must accept numerical vector as an argument and return a number"
   )
   v$result()
 }
@@ -148,6 +152,36 @@ v_next_best_inf_theory <- function(object) {
   v$check(
     test_number(object@asymmetry, finite = TRUE) && h_in_range(object@asymmetry, c(0, 2), FALSE),
     "asymmetry must be a number from (0, 2) interval"
+  )
+  v$result()
+}
+
+#' @describeIn v_next_best validates that the [`NextBestTD`] object
+#'   contains valid `prob_target_drt` and `prob_target_eot` probabilities.
+v_next_best_td <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@prob_target_drt, bounds_closed = FALSE),
+    "prob_target_drt must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@prob_target_eot, bounds_closed = FALSE),
+    "prob_target_eot must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
+#' @describeIn v_next_best validates that the [`NextBestTDsamples`] object
+#'   contains valid `derive` function.
+v_next_best_td_samples <- function(object) {
+  v <- Validate()
+  v$check(
+    test_function(object@derive, nargs = 1),
+    "derive must have a single argument"
+  )
+  v$check(
+    test_number(object@derive(1:5)),
+    "derive must accept numerical vector as an argument and return a number"
   )
   v$result()
 }

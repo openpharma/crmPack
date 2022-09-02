@@ -4,36 +4,39 @@
 \name{NextBestMaxGain-class}
 \alias{NextBestMaxGain-class}
 \alias{.NextBestMaxGain}
-\title{Next best dose with maximum gain value based on a pseudo DLE and efficacy model without samples}
+\alias{NextBestMaxGain}
+\title{\code{NextBestMaxGain}}
+\usage{
+NextBestMaxGain(prob_target_drt, prob_target_eot)
+}
+\arguments{
+\item{prob_target_drt}{(\code{proportion})\cr see slot definition.}
+
+\item{prob_target_eot}{(\code{proportion})\cr see slot definition.}
+}
 \description{
-This is a class for which to find the next dose which is safe and give the maximum gain value
-for allocation. This is a class where no DLE and efficacy samples are involved. This is only based
-on the probabilities of the occurrence of a DLE and the values of the mean efficacy responses
-obtained by using the modal estimates of the DLE and efficacy model parameters.
-There are two inputs which are the two target
-probabilities of the occurrence of a DLE used during trial
-and used at the end of trial, for finding the next best dose that is safe and gives the maximum
-gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
-specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' (except 'EffFlexi' model)
-class
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBestMaxGain}} is the class to find a next best dose with maximum gain
+value based on a pseudo DLT and efficacy models without samples. It is based
+solely on the probabilities of the occurrence of a DLT and the values
+of the mean efficacy responses obtained by using the modal estimates of the
+DLT and efficacy model parameters. There are two target probabilities of the
+occurrence of a DLT that must be specified: target probability to be used
+during the trial and target probability to be used at the end of the trial.
+It is suitable to use it only with the \code{\link{ModelTox}} model and \code{\link{ModelEff}}
+classes (except \code{\link{EffFlexi}}).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{DLEDuringTrialtarget}}{the target probability of the occurrence of a DLE to be used
-during the trial}
+\item{\code{prob_target_drt}}{(\code{proportion})\cr the target probability of the
+occurrence of a DLT to be used during the trial.}
 
-\item{\code{DLEEndOfTrialtarget}}{the target probability of the occurrence of a DLE to be used at the end
-of the trial. This target is particularly used to recommend the dose for which its posterior
-probability of the occurrence of a DLE is equal to this target}
+\item{\code{prob_target_eot}}{(\code{proportion})\cr the target probability of the
+occurrence of a DLT to be used at the end of the trial.}
 }}
 
 \examples{
-##define the NextBestMaxGain class (no samples and based a pseudo DLE model and a efficacy model)
-##specified the target probability of the occurrence of a DLE during the trial be 0.35
-##specified the target probability of the occurrence of a DLE at the end of trial be 0.3
-
-myNextBest <-NextBestMaxGain(DLEDuringTrialtarget=0.35,
-                             DLEEndOfTrialtarget=0.3)
+my_next_best <- NextBestMaxGain(0.35, 0.3)
 }
-\keyword{class}

@@ -25,8 +25,6 @@ test_that(".ModelLogNormal works as expected", {
     .ModelLogNormal(
       params = ModelParamsNormal(mean = c(0, 2), cov = diag(2)),
       ref_dose = positive_number(1),
-      dose = function(x, param1) {},
-      prob = function(dose, param1) {},
       datamodel = function(x) {},
       priormodel = function(x) {},
       modelspecs = function(x) {},

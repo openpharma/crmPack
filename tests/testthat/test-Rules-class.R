@@ -153,7 +153,56 @@ test_that("NextBestInfTheory object can be created with user constructor", {
   expect_equal(result@asymmetry, 1.5)
 })
 
-# NextBest ----
+## NextBestTD ----
+
+test_that(".NextBestTD works as expected", {
+  result <- expect_silent(.NextBestTD())
+  expect_valid(result, "NextBestTD")
+})
+
+test_that("NextBestTD object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestTD(0.4, 0.35)
+  )
+  expect_valid(result, "NextBestTD")
+  expect_equal(result@prob_target_drt, 0.4)
+  expect_equal(result@prob_target_eot, 0.35)
+})
+
+## NextBestTDsamples ----
+
+test_that(".NextBestTDsamples works as expected", {
+  result <- expect_silent(.NextBestTDsamples())
+  expect_valid(result, "NextBestTDsamples")
+})
+
+test_that("NextBestTDsamples object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestTDsamples(0.4, 0.35, function(x) mean(x))
+  )
+  expect_valid(result, "NextBestTDsamples")
+  expect_equal(result@prob_target_drt, 0.4)
+  expect_equal(result@prob_target_eot, 0.35)
+  expect_equal(result@derive(c(1:5)), 3) # nolintr
+})
+
+## NextBestMaxGain ----
+
+test_that(".NextBestMaxGain works as expected", {
+  result <- expect_silent(.NextBestMaxGain())
+  expect_valid(result, "NextBestMaxGain")
+})
+
+test_that("NextBestMaxGain object can be created with user constructor", {
+  result <- expect_silent(
+    NextBestMaxGain(0.4, 0.35)
+  )
+  expect_valid(result, "NextBestMaxGain")
+  expect_equal(result@prob_target_drt, 0.4)
+  expect_equal(result@prob_target_eot, 0.35)
+})
+
+# Increments ----
 
 ## IncrementsRelativeDLTCurrent-class ----
 

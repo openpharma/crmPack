@@ -16,8 +16,8 @@ DLEmodel <- LogisticIndepBeta(binDLE=c(1.05,1.8),
 Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300), nu=c(a=1,b=0.025),data=data)
 
 ##The escalation rule using the 'NextBestMaxGain' class
-mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,
-                            DLEEndOfTrialtarget=0.3)
+mynextbest<-NextBestMaxGain(prob_target_drt=0.35,
+                            prob_target_eot=0.3)
 
 
 ##The increments (see Increments class examples)

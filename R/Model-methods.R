@@ -269,31 +269,6 @@ setGeneric(
   valueClass = "numeric"
 )
 
-## Model (TO REMOVE SOON) ----
-
-#' @describeIn dose compute the dose level reaching a specific target
-#'   probability of the occurrence of a DLE (`x`).
-#'
-#' @aliases dose-Model
-#' @export
-#'
-setMethod(
-  f = "dose",
-  signature = signature(
-    x = "numeric",
-    model = "Model",
-    samples = "Samples"
-  ),
-  definition = function(x, model, samples, ...) {
-    assert_probability(x)
-
-    dose_fun <- model@dose
-    dose_args_names <- setdiff(formalArgs(dose_fun), "x")
-    dose_args <- c(samples@data[dose_args_names], x = x)
-    do.call(dose_fun, dose_args)
-  }
-)
-
 ## LogisticNormal ----
 
 #' @describeIn dose compute the dose level reaching a specific target
@@ -776,29 +751,6 @@ setGeneric(
     standardGeneric("prob")
   },
   valueClass = "numeric"
-)
-
-## Model (TO REMOVE SOON) ----
-
-#' @describeIn prob
-#'
-#' @aliases prob-Model
-#' @export
-#'
-setMethod(
-  f = "prob",
-  signature = signature(
-    dose = "numeric",
-    model = "Model",
-    samples = "Samples"
-  ),
-  definition = function(dose, model, samples, ...) {
-    assert_number(dose, lower = 0L)
-    prob_fun <- model@prob
-    prob_args_names <- setdiff(formalArgs(prob_fun), "dose")
-    prob_args <- c(samples@data[prob_args_names], dose = dose)
-    do.call(prob_fun, prob_args)
-  }
 )
 
 ## LogisticNormal ----

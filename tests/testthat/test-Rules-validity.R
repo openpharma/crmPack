@@ -22,13 +22,18 @@ test_that("v_next_best_mtd returns message for non-valid target", {
 
 test_that("v_next_best_mtd returns message for non-valid derive", {
   object <- h_next_best_mtd()
-  # Changing `derive` so that it does not have one `mtd_samples` argument.
-  object@derive <- function(x) {
-    mean(x)
-  }
+  # Changing `derive` so that it has many arguments.
+  object@derive <- function(x, y) 1L
   expect_equal(
     v_next_best_mtd(object),
-    "derive must have a single argument 'mtd_samples'"
+    "derive must have a single argument"
+  )
+
+  # Changing `derive` so that it does not return a number.
+  object@derive <- function(x) c(1, 2)
+  expect_equal(
+    v_next_best_mtd(object),
+    "derive must accept numerical vector as an argument and return a number"
   )
 })
 
@@ -306,6 +311,63 @@ test_that("v_next_best_inf_theory returns message for non-valid asymmetry", {
   # Changing `asymmetry` so that it is not a scalar.
   object@asymmetry <- c(1, 1.8)
   expect_equal(v_next_best_inf_theory(object), err_msg)
+})
+
+## v_next_best_td ----
+
+test_that("v_next_best_td passes for valid object", {
+  object <- NextBestTD(0.4, 0.35)
+  expect_true(v_next_best_td(object))
+})
+
+test_that("v_next_best_td returns message for non-valid prob_target_drt", {
+  err_msg <- "prob_target_drt must be a probability value from (0, 1) interval"
+  object <- NextBestTD(0.4, 0.35)
+
+  # Changing `prob_target_drt` so that it does not represent allowed probability value.
+  object@prob_target_drt <- 1
+  expect_equal(v_next_best_td(object), err_msg)
+
+  # Changing `prob_target_drt` so that it is not a scalar.
+  object@prob_target_drt <- c(0.5, 0.6)
+  expect_equal(v_next_best_td(object), err_msg)
+})
+
+test_that("v_next_best_td returns message for non-valid prob_target_eot", {
+  err_msg <- "prob_target_eot must be a probability value from (0, 1) interval"
+  object <- NextBestTD(0.4, 0.35)
+
+  # Changing `prob_target_eot` so that it does not represent allowed probability value.
+  object@prob_target_eot <- 1
+  expect_equal(v_next_best_td(object), err_msg)
+
+  # Changing `prob_target_eot` so that it is not a scalar.
+  object@prob_target_eot <- c(0.5, 0.6)
+  expect_equal(v_next_best_td(object), err_msg)
+})
+
+## v_next_best_td_samples ----
+
+test_that("v_next_best_td_samples passes for valid object", {
+  object <- h_next_best_tdsamples()
+  expect_true(v_next_best_td_samples(object))
+})
+
+test_that("v_next_best_td_samples returns message for non-valid derive", {
+  object <- h_next_best_tdsamples()
+  # Changing `derive` so that it has many arguments.
+  object@derive <- function(x, y) 1L
+  expect_equal(
+    v_next_best_td_samples(object),
+    "derive must have a single argument"
+  )
+
+  # Changing `derive` so that it does not return a number.
+  object@derive <- function(x) c(1, 2)
+  expect_equal(
+    v_next_best_td_samples(object),
+    "derive must accept numerical vector as an argument and return a number"
+  )
 })
 
 # Increments ----

@@ -10,11 +10,9 @@
 NextBestInfTheory(target, asymmetry)
 }
 \arguments{
-\item{target}{(\code{proportion})\cr target toxicity probability.}
+\item{target}{(\code{proportion})\cr see slot definition.}
 
-\item{asymmetry}{(\code{number})\cr value of the asymmetry exponent in the
-divergence function that describes the rate of penalization for overly
-toxic does. It must be a value from (0, 2) interval.}
+\item{asymmetry}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

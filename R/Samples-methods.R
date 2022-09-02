@@ -132,7 +132,7 @@ setMethod("get",
 ##' signature. But we need also other arguments in the signature.
 ##'
 ##' @param object the \code{\linkS4class{Samples}} object
-##' @param model the \code{\linkS4class{Model}} object
+##' @param model the \code{\linkS4class{GeneralModel}} object
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param \dots unused
 ##' @return the data frame with required information (see method details)
@@ -169,7 +169,7 @@ setGeneric("fit",
 setMethod("fit",
           signature=
           signature(object="Samples",
-                    model="Model",
+                    model="GeneralModel",
                     data="Data"),
           def=
           function(object,
@@ -282,7 +282,7 @@ setMethod("fit",
 ##' to be able to reproduce the resulting approximating model exactly.
 ##'
 ##' @param object the \code{\linkS4class{Samples}} object
-##' @param model the \code{\linkS4class{Model}} object
+##' @param model the \code{\linkS4class{GeneralModel}} object
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param \dots additional arguments (see methods)
 ##' @return the approximation model
@@ -295,7 +295,7 @@ setGeneric("approximate",
                ## there should be no default method,
                ## therefore just forward to next method!
                standardGeneric("approximate")},
-           valueClass="Model")
+           valueClass="GeneralModel")
 
 
 
@@ -401,7 +401,7 @@ setMethod("approximate",
 ##' Plotting dose-toxicity model fits
 ##'
 ##' @param x the \code{\linkS4class{Samples}} object
-##' @param y the \code{\linkS4class{Model}} object
+##' @param y the \code{\linkS4class{GeneralModel}} object
 ##' @param data the \code{\linkS4class{Data}} object
 ##' @param xlab the x axis label
 ##' @param ylab the y axis label
@@ -416,7 +416,7 @@ setMethod("approximate",
 setMethod("plot",
           signature=
           signature(x="Samples",
-                    y="Model"),
+                    y="GeneralModel"),
           def=
           function(x, y, data, ...,
                    xlab="Dose level",
@@ -489,7 +489,7 @@ setMethod("plot",
 ##' dose grid? (default)
 ##' @param showLegend should the legend be shown? (not default)
 ##' @param \dots additional arguments for the parent method
-##' \code{\link{plot,Samples,Model-method}}
+##' \code{\link{plot,Samples,GeneralModel-method}}
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object with the dose-toxicity and dose-biomarker model fits
 ##'
@@ -1303,7 +1303,7 @@ setMethod("plotGain",
 ##' dose grid? (default)
 ##' @param showLegend should the legend be shown? (not default)
 ##' @param \dots additional arguments for the parent method
-##' \code{\link{plot,Samples,Model-method}}
+##' \code{\link{plot,Samples,GeneralModel-method}}
 ##' @return This returns the \code{\link[ggplot2]{ggplot}}
 ##' object with the dose-toxicity and dose-efficacy model fits
 ##'

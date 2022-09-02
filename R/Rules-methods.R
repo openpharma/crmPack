@@ -22,7 +22,7 @@ NULL
 #'   course of dose recommendation calculation.
 #' @param samples (`Samples`)\cr posterior samples from `model` parameters given
 #'   `data`.
-#' @param model (`Model`)\cr model that was used to generate the samples.
+#' @param model (`GeneralModel`)\cr model that was used to generate the samples.
 #' @param data (`Data`)\cr data that was used to generate the samples.
 #' @param ... additional arguments without method dispatch.
 #'
@@ -61,14 +61,14 @@ setMethod(
     nextBest = "NextBestMTD",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Generate the MTD samples and derive the next best dose.
     dose_target_samples <- dose(x = nextBest@target, model, samples)
-    dose_target <- nextBest@derive(mtd_samples = dose_target_samples)
+    dose_target <- nextBest@derive(dose_target_samples)
 
     # Round to the next possible grid point.
     doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
@@ -145,7 +145,7 @@ setMethod(
     nextBest = "NextBestNCRM",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -253,14 +253,14 @@ setMethod(
     nextBest = "NextBestNCRM",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "DataParts"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
     # Exception when we are in part I or about to start part II!
     if (all(data@part == 1L)) {
       # Propose the highest possible dose (assuming that the dose limit came
-      # from reasonable increments rule, i.e. inrementsRelativeParts).
+      # from reasonable increments rule, i.e. incrementsRelativeParts).
       if (is.infinite(doselimit)) {
         stop("A finite doselimit needs to be specified for Part I.")
       }
@@ -287,14 +287,14 @@ setMethod("nextBest",
     nextBest = "NextBestNCRMLoss",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
 
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
-    # Now compute probabilities to be in target and overdose tox interval.
+    # Compute probabilities to be in target and overdose tox interval.
     prob_underdosing <- colMeans(prob_samples < nextBest@target[1])
     prob_target <- colMeans(h_in_range(prob_samples, nextBest@target))
     prob_overdose <- colMeans(h_in_range(prob_samples, nextBest@overdose, bounds_closed = c(FALSE, TRUE)))
@@ -304,9 +304,7 @@ setMethod("nextBest",
     is_unacceptable_specified <- any(nextBest@unacceptable != c(1, 1))
 
     prob_mat <- if (!is_unacceptable_specified) {
-      cbind(
-        underdosing = prob_underdosing, target = prob_target, overdose = prob_overdose
-      )
+      cbind(underdosing = prob_underdosing, target = prob_target, overdose = prob_overdose)
     } else {
       prob_unacceptable <- colMeans(
         h_in_range(prob_samples, nextBest@unacceptable, bounds_closed = c(FALSE, TRUE))
@@ -344,116 +342,19 @@ setMethod("nextBest",
       NA
     }
 
-    # Build plots, first for the target probability.
-    p1 <- ggplot() +
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = prob_target * 100),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "darkgreen",
-        fill = "darkgreen"
-      ) +
-      ylim(c(0, 100)) +
-      ylab(paste("Target probability [%]"))
-
-    if (is.finite(doselimit)) {
-      p1 <- p1 + geom_vline(xintercept = doselimit, lwd = 1.1, lty = 2, colour = "black")
-    }
-
-    if (any(is_dose_eligible)) {
-      p1 <- p1 +
-        geom_vline(
-          xintercept = data@doseGrid[sum(is_dose_eligible)], lwd = 1.1,
-          lty = 2, colour = "red"
-        )
-    }
-    p_loss <- ggplot() +
-      # For the loss function.
-      geom_bar(
-        data = data.frame(Dose = data@doseGrid, y = posterior_loss),
-        aes(x = .data$Dose, y = .data$y),
-        stat = "identity",
-        position = "identity",
-        width = min(diff(data@doseGrid)) / 2,
-        colour = "darkgreen",
-        fill = "darkgreen"
-      ) +
-      geom_point(
-        aes(x = next_dose, y = max(posterior_loss) + 0.2),
-        size = 3,
-        pch = 25,
-        col = "red",
-        bg = "red"
-      ) +
-      ylab(paste("Loss function"))
-
-    if (!is_unacceptable_specified) {
-      # Second, for the overdosing probability.
-      p2 <- ggplot() +
-        geom_bar(
-          data = data.frame(Dose = data@doseGrid, y = prob_overdose * 100),
-          aes(x = .data$Dose, y = .data$y),
-          stat = "identity",
-          position = "identity",
-          width = min(diff(data@doseGrid)) / 2,
-          colour = "red",
-          fill = "red"
-        ) +
-        geom_hline(
-          yintercept = nextBest@max_overdose_prob * 100, lwd = 1.1, lty = 2,
-          colour = "black"
-        ) +
-        ylim(c(0, 100)) +
-        ylab("Overdose probability [%]")
-
-      # Place them below each other.
-      plot_joint <- gridExtra::arrangeGrob(p1, p2, p_loss, nrow = 3)
-    } else {
-
-      # Plot in case of 4 toxicity intervals. Second, for the overdosing probability.
-      p2 <- ggplot() +
-        geom_bar(
-          data = data.frame(Dose = data@doseGrid, y = prob_excessive * 100),
-          aes(x = .data$Dose, y = .data$y),
-          stat = "identity",
-          position = "identity",
-          width = min(diff(data@doseGrid)) / 2,
-          colour = "red",
-          fill = "red"
-        ) +
-        ylim(c(0, 100)) +
-        ylab("Excessive probability [%]")
-
-      p3 <- ggplot() +
-        geom_bar(
-          data = data.frame(Dose = data@doseGrid, y = prob_unacceptable * 100),
-          aes(x = .data$Dose, y = .data$y),
-          stat = "identity",
-          position = "identity",
-          width = min(diff(data@doseGrid)) / 2,
-          colour = "red",
-          fill = "red"
-        ) +
-        ylim(c(0, 100)) +
-        ylab("Unacceptable probability [%]")
-
-      # Place them below each other.
-      plot_joint <- gridExtra::arrangeGrob(p1, p2, p3, p_loss, nrow = 4)
-    }
-    if (!is_unacceptable_specified) {
-      singlePlots <- list(plot1 = p1, plot2 = p2, plot_loss = p_loss)
-    } else {
-      singlePlots <- list(plot1 = p1, plot2 = p2, plot3 = p3, plot_loss = p_loss)
-    }
-
-    list(
-      value = next_dose,
-      plot = plot_joint,
-      singlePlots = singlePlots,
-      probs = probs
+    # Build plot.
+    p <- h_next_best_ncrm_loss_plot(
+      prob_mat = prob_mat,
+      posterior_loss = posterior_loss,
+      max_overdose_prob = nextBest@max_overdose_prob,
+      dose_grid = data@doseGrid,
+      max_eligible_dose_level = sum(is_dose_eligible),
+      doselimit = doselimit,
+      next_dose = next_dose,
+      is_unacceptable_specified = is_unacceptable_specified
     )
+
+    c(list(value = next_dose, probs = probs), p)
   }
 )
 
@@ -650,7 +551,7 @@ setMethod(
     nextBest = "NextBestMinDist",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -681,7 +582,7 @@ setMethod(
     nextBest = "NextBestInfTheory",
     doselimit = "numeric",
     samples = "Samples",
-    model = "Model",
+    model = "GeneralModel",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
@@ -696,77 +597,6 @@ setMethod(
     next_best_level <- which.min(criterion[is_dose_eligible])
     next_best <- doses_eligible[next_best_level]
     list(value = next_best)
-  }
-)
-
-## NextBestTDsamples ----
-
-#' @describeIn nextBest find the next best dose based only on the DLT responses
-#'   and for [`LogisticIndepBeta`] model class object involving DLT samples.
-#'
-#' @aliases nextBest-NextBestTDsamples
-#'
-#' @export
-#' @example examples/Rules-method-nextBest-NextBestTDsamples.R
-#'
-setMethod(
-  f = "nextBest",
-  signature = signature(
-    nextBest = "NextBestTDsamples",
-    doselimit = "numeric",
-    samples = "Samples",
-    model = "LogisticIndepBeta",
-    data = "Data"
-  ),
-  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
-    # Generate target dose samples, i.e. the doses with probability of the
-    # occurrence of a DLT that equals to the nextBest@targetDuringTrial (or nextBest@targetEndOfTrial, respectively).
-    dose_target_drt_samples <- dose(x = nextBest@targetDuringTrial, model, samples)
-    dose_target_eot_samples <- dose(x = nextBest@targetEndOfTrial, model, samples)
-
-    # Derive the prior/posterior estimates based on two above samples.
-    dose_target_drt <- as.numeric(nextBest@derive(TDsamples = dose_target_drt_samples))
-    dose_target_eot <- as.numeric(nextBest@derive(TDsamples = dose_target_eot_samples))
-
-    # Find the next doses in the doseGrid. The next dose is the dose at level
-    # closest and below the dose_target_drt (or dose_target_eot, respectively).
-    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
-
-    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
-    next_dose_drt <- doses_eligible[next_dose_lev_drt]
-
-    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
-    next_dose_eot <- doses_eligible[next_dose_lev_eot]
-
-    # 95% credibility interval.
-    ci_dose_target_eot <- as.numeric(quantile(dose_target_eot_samples, probs = c(0.025, 0.975)))
-    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
-
-    # Build plot.
-    p <- h_next_best_tdsamples_plot(
-      dose_target_drt_samples = dose_target_drt_samples,
-      dose_target_eot_samples = dose_target_eot_samples,
-      dose_target_drt = dose_target_drt,
-      dose_target_eot = dose_target_eot,
-      dose_grid_range = range(data@doseGrid),
-      nextBest = nextBest,
-      doselimit = doselimit,
-      next_dose = next_dose_drt
-    )
-
-    list(
-      next_dose_drt = next_dose_drt,
-      prob_target_drt = nextBest@targetDuringTrial,
-      dose_target_drt = dose_target_drt,
-      next_dose_eot = next_dose_eot,
-      prob_target_eot = nextBest@targetEndOfTrial,
-      dose_target_eot = dose_target_eot,
-      ci_dose_target_eot = ci_dose_target_eot,
-      ci_ratio_dose_target_eot = cir_dose_target_eot,
-      plot = p
-    )
   }
 )
 
@@ -799,8 +629,8 @@ setMethod(
     assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
-    prob_target_drt <- nextBest@targetDuringTrial
-    prob_target_eot <- nextBest@targetEndOfTrial
+    prob_target_drt <- nextBest@prob_target_drt
+    prob_target_eot <- nextBest@prob_target_eot
 
     # Target dose estimates, i.e. the dose with probability of the occurrence of
     # a DLT that equals to the prob_target_drt or prob_target_eot.
@@ -865,6 +695,78 @@ setMethod(
   }
 )
 
+## NextBestTDsamples ----
+
+#' @describeIn nextBest find the next best dose based only on the DLT responses
+#'   and for [`LogisticIndepBeta`] model class object involving DLT samples.
+#'
+#' @aliases nextBest-NextBestTDsamples
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestTDsamples.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestTDsamples",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "LogisticIndepBeta",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+
+    # Generate target dose samples, i.e. the doses with probability of the
+    # occurrence of a DLT that equals to the nextBest@prob_target_drt
+    # (or nextBest@prob_target_eot, respectively).
+    dose_target_drt_samples <- dose(x = nextBest@prob_target_drt, model, samples)
+    dose_target_eot_samples <- dose(x = nextBest@prob_target_eot, model, samples)
+
+    # Derive the prior/posterior estimates based on two above samples.
+    dose_target_drt <- nextBest@derive(dose_target_drt_samples)
+    dose_target_eot <- nextBest@derive(dose_target_eot_samples)
+
+    # Find the next doses in the doseGrid. The next dose is the dose at level
+    # closest and below the dose_target_drt (or dose_target_eot, respectively).
+    # h_find_interval assumes that elements in doses_eligible are strictly increasing.
+    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+
+    next_dose_lev_drt <- h_find_interval(dose_target_drt, doses_eligible)
+    next_dose_drt <- doses_eligible[next_dose_lev_drt]
+
+    next_dose_lev_eot <- h_find_interval(dose_target_eot, doses_eligible)
+    next_dose_eot <- doses_eligible[next_dose_lev_eot]
+
+    # 95% credibility interval.
+    ci_dose_target_eot <- as.numeric(quantile(dose_target_eot_samples, probs = c(0.025, 0.975)))
+    cir_dose_target_eot <- ci_dose_target_eot[2] / ci_dose_target_eot[1]
+
+    # Build plot.
+    p <- h_next_best_tdsamples_plot(
+      dose_target_drt_samples = dose_target_drt_samples,
+      dose_target_eot_samples = dose_target_eot_samples,
+      dose_target_drt = dose_target_drt,
+      dose_target_eot = dose_target_eot,
+      dose_grid_range = range(data@doseGrid),
+      nextBest = nextBest,
+      doselimit = doselimit,
+      next_dose = next_dose_drt
+    )
+
+    list(
+      next_dose_drt = next_dose_drt,
+      prob_target_drt = nextBest@prob_target_drt,
+      dose_target_drt = dose_target_drt,
+      next_dose_eot = next_dose_eot,
+      prob_target_eot = nextBest@prob_target_eot,
+      dose_target_eot = dose_target_eot,
+      ci_dose_target_eot = ci_dose_target_eot,
+      ci_ratio_dose_target_eot = cir_dose_target_eot,
+      plot = p
+    )
+  }
+)
+
 ## NextBestMaxGain ----
 
 #' @describeIn nextBest find the next best dose based only on pseudo DLT model
@@ -896,8 +798,8 @@ setMethod(
     assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
-    prob_target_drt <- nextBest@DLEDuringTrialtarget
-    prob_target_eot <- nextBest@DLEEndOfTrialtarget
+    prob_target_drt <- nextBest@prob_target_drt
+    prob_target_eot <- nextBest@prob_target_eot
 
     # Target dose estimates, i.e. the dose with probability of the occurrence of
     # a DLT that equals to the prob_target_drt or prob_target_eot.
@@ -1600,7 +1502,7 @@ setMethod("|",
 ##' \code{\linkS4class{Stopping}}
 ##' @param dose the recommended next best dose
 ##' @param samples the \code{\linkS4class{Samples}} object
-##' @param model The model input, an object of class \code{\linkS4class{Model}}
+##' @param model The model input, an object of class \code{\linkS4class{GeneralModel}}
 ##' @param data The data input, an object of class \code{\linkS4class{Data}}
 ##' @param \dots additional arguments
 ##'
@@ -2040,7 +1942,7 @@ setMethod("stopTrial",
       stopping = "StoppingTargetProb",
       dose = "numeric",
       samples = "Samples",
-      model = "Model",
+      model = "GeneralModel",
       data = "ANY"
     ),
   def =
@@ -2096,7 +1998,7 @@ setMethod("stopTrial",
       stopping = "StoppingMTDdistribution",
       dose = "numeric",
       samples = "Samples",
-      model = "Model",
+      model = "GeneralModel",
       data = "ANY"
     ),
   def =

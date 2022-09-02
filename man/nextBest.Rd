@@ -2,26 +2,26 @@
 % Please edit documentation in R/Rules-methods.R
 \name{nextBest}
 \alias{nextBest}
-\alias{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestMTD,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestMTD}
-\alias{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestNCRM}
-\alias{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}
+\alias{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}
 \alias{nextBest-NextBestNCRM-DataParts}
-\alias{nextBest,NextBestNCRMLoss,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestNCRMLoss}
 \alias{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}
 \alias{nextBest-NextBestThreePlusThree}
 \alias{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}
 \alias{nextBest-NextBestDualEndpoint}
-\alias{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestMinDist,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestMinDist}
-\alias{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}
+\alias{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}
 \alias{nextBest-NextBestInfTheory}
-\alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
-\alias{nextBest-NextBestTDsamples}
 \alias{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}
 \alias{nextBest-NextBestTD}
+\alias{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}
+\alias{nextBest-NextBestTDsamples}
 \alias{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}
 \alias{nextBest-NextBestMaxGain}
 \alias{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}
@@ -30,25 +30,25 @@
 \usage{
 nextBest(nextBest, doselimit, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMTD,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestMTD,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRM,numeric,Samples,Model,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRM,numeric,Samples,GeneralModel,DataParts}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestNCRMLoss,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestThreePlusThree,missing,missing,missing,Data}(nextBest, doselimit, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestMinDist,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestMinDist,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
-\S4method{nextBest}{NextBestInfTheory,numeric,Samples,Model,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
-
-\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
+\S4method{nextBest}{NextBestInfTheory,numeric,Samples,GeneralModel,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestTD,numeric,missing,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, model, data, in_sim = FALSE, ...)
+
+\S4method{nextBest}{NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data}(nextBest, doselimit = Inf, samples, model, data, ...)
 
 \S4method{nextBest}{NextBestMaxGain,numeric,missing,ModelTox,DataDual}(
   nextBest,
@@ -115,17 +115,17 @@ the underlying \code{data}.
 }
 \section{Functions}{
 \itemize{
-\item \code{nextBest,NextBestMTD,numeric,Samples,Model,Data-method}: find the next best dose based on the MTD rule.
+\item \code{nextBest,NextBestMTD,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the MTD rule.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,Data-method}: find the next best dose based on the NCRM method. The
+\item \code{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the NCRM method. The
 additional element \code{probs} in the output's list contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,Model,DataParts-method}: find the next best dose based on the NCRM method when
+\item \code{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}: find the next best dose based on the NCRM method when
 two parts trial is used.
 
-\item \code{nextBest,NextBestNCRMLoss,numeric,Samples,Model,Data-method}: find the next best dose based on the NCRM method and
+\item \code{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the NCRM method and
 loss function.
 
 \item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: find the next best dose based on the 3+3 method.
@@ -135,17 +135,17 @@ model. The additional list element \code{probs} contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestMinDist,numeric,Samples,Model,Data-method}: gives the dose which is below the dose limit and has an
+\item \code{nextBest,NextBestMinDist,numeric,Samples,GeneralModel,Data-method}: gives the dose which is below the dose limit and has an
 estimated DLT probability which is closest to the target dose.
 
-\item \code{nextBest,NextBestInfTheory,numeric,Samples,Model,Data-method}: gives the appropriate dose within an information
+\item \code{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}: gives the appropriate dose within an information
 theoretic framework.
-
-\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
-and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
 \item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
 and for \code{\link{LogisticIndepBeta}} model class object without DLT samples.
+
+\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
 \item \code{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}: find the next best dose based only on pseudo DLT model
 \code{\link{ModelTox}} and \code{\link{Effloglog}} efficacy model without samples.
@@ -460,6 +460,37 @@ print(dose_recommendation$plot)
 variant1 <- dose_recommendation$singlePlots$plot1 + xlim(0, 20)
 print(variant1)
 
+# Example of usage for `NextBestTD` NextBest class.
+my_data <- Data(
+  x = c(25, 50, 50, 75, 150, 200, 225, 300),
+  y = c(0, 0, 0, 0, 1, 1, 1, 1),
+  ID = 1:8,
+  cohort = c(1L, 2L, 2L, 3L, 4L, 5L, 6L, 7L),
+  doseGrid = seq(from = 25, to = 300, by = 25)
+)
+
+my_model <- LogisticIndepBeta(
+  binDLE = c(1.05, 1.8),
+  DLEweights = c(3, 3),
+  DLEdose = c(25, 300),
+  data = my_data
+)
+
+# Target probabilities of the occurrence of a DLT during trial and
+# at the end of the trial are defined as 0.35 and 0.3, respectively.
+td_next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
+
+# doselimit is the maximum allowable dose level to be given to subjects.
+dose_recommendation <- nextBest(
+  nextBest = td_next_best,
+  doselimit = max(my_data@doseGrid),
+  model = my_model,
+  data = my_data
+)
+
+dose_recommendation$next_dose_drt
+dose_recommendation$plot
+
 # Example of usage for `NextBestTDsamples` NextBest class.
 my_data <- Data(
   x = c(25, 50, 50, 75, 150, 200, 225, 300),
@@ -485,10 +516,10 @@ my_samples <- mcmc(my_data, my_model, my_options)
 # 'derive' is specified such that the 30\% posterior quantile of the TD35 and
 # TD30 samples will be used as TD35 and TD30 estimates.
 tds_next_best <- NextBestTDsamples(
-  targetDuringTrial = 0.35,
-  targetEndOfTrial = 0.3,
-  derive = function(TDsamples) { # nolintr
-    quantile(TDsamples, probs = 0.3)
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(dose_samples) { # nolintr
+    as.numeric(quantile(dose_samples, probs = 0.3))
   }
 )
 
@@ -497,37 +528,6 @@ dose_recommendation <- nextBest(
   nextBest = tds_next_best,
   doselimit = max(my_data@doseGrid),
   samples = my_samples,
-  model = my_model,
-  data = my_data
-)
-
-dose_recommendation$next_dose_drt
-dose_recommendation$plot
-
-# Example of usage for `NextBestTD` NextBest class.
-my_data <- Data(
-  x = c(25, 50, 50, 75, 150, 200, 225, 300),
-  y = c(0, 0, 0, 0, 1, 1, 1, 1),
-  ID = 1:8,
-  cohort = c(1L, 2L, 2L, 3L, 4L, 5L, 6L, 7L),
-  doseGrid = seq(from = 25, to = 300, by = 25)
-)
-
-my_model <- LogisticIndepBeta(
-  binDLE = c(1.05, 1.8),
-  DLEweights = c(3, 3),
-  DLEdose = c(25, 300),
-  data = my_data
-)
-
-# Target probabilities of the occurrence of a DLT during trial and
-# at the end of the trial are defined as 0.35 and 0.3, respectively.
-td_next_best <- NextBestTD(targetDuringTrial = 0.35, targetEndOfTrial = 0.3)
-
-# doselimit is the maximum allowable dose level to be given to subjects.
-dose_recommendation <- nextBest(
-  nextBest = td_next_best,
-  doselimit = max(my_data@doseGrid),
   model = my_model,
   data = my_data
 )
@@ -567,8 +567,8 @@ my_model_eff <- Effloglog(
 # Target probabilities of the occurrence of a DLT during trial and at the
 # end of trial are defined as 0.35 and 0.3, respectively.
 mg_next_best <- NextBestMaxGain(
-  DLEDuringTrialtarget = 0.35,
-  DLEEndOfTrialtarget = 0.3
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3
 )
 
 # doselimit is the maximum allowable dose level to be given to subjects.

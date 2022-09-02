@@ -35,7 +35,6 @@ reference:
       - McmcOptions
       - ModelParamsNormal
       - GeneralModel
-      - Model
       - ModelLogNormal
       - LogisticNormal
       - LogisticLogNormal
@@ -69,6 +68,9 @@ reference:
       - NextBestDualEndpoint
       - NextBestMinDist
       - NextBestInfTheory
+      - NextBestTD
+      - NextBestTDsamples
+      - NextBestMaxGain
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
       - StoppingMTDCV
@@ -104,6 +106,7 @@ reference:
       - h_next_best_mg_ci
       - h_next_best_mg_doses_at_grid
       - h_next_best_eligible_doses
+      - h_next_best_ncrm_loss_plot
       - h_next_best_tdsamples_plot
       - h_next_best_td_plot
       - h_next_best_mg_plot
@@ -142,6 +145,8 @@ reference:
       - v_next_best_dual_endpoint
       - v_next_best_min_dist
       - v_next_best_inf_theory
+      - v_next_best_td
+      - v_next_best_td_samples
       - v_increments_numdoselevels
       - v_increments_hsr_beta
       - v_stopping_mtd_cv

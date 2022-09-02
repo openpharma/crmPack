@@ -34,7 +34,7 @@ plotDualResponses(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...)
 \item{data}{the data input of \code{\linkS4class{DataDual}} class object}
 
 \item{\dots}{additional arguments for the parent method
-\code{\link{plot,Samples,Model-method}}}
+\code{\link{plot,Samples,GeneralModel-method}}}
 
 \item{extrapolate}{should the biomarker fit be extrapolated to the whole
 dose grid? (default)}

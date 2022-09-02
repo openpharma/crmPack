@@ -74,68 +74,6 @@ NULL
   validity = v_general_model
 )
 
-# Model-class (TO REMOVE) ----
-
-#' `Model`
-#'
-#' @description `r lifecycle::badge("superseded")`
-#'
-#' [`Model`] is the old class for single agent dose escalation, from which all
-#' other specific models inherit. The [`Model`] class inherits from
-#' [`GeneralModel`]. It will be soon removed as the `dose` and `prob` are
-#' moved to a separate S4 class-specific methods.
-#'
-#' @note The `datamodel` must obey the convention that the data input is called
-#'   exactly as in the [`Data`] class. All prior distributions for parameters
-#'   should be contained in the model function `priormodel`. The background is
-#'   that this can be used to simulate from the prior distribution, before
-#'   obtaining any data.
-#'
-#' @details The first argument of `dose` function must be the `x`, which is a
-#'   scalar toxicity probability which is targeted. Further arguments are the
-#'   model parameters. The `dose` function computes, using model parameter(s)
-#'   (samples), the resulting dose. The model parameters are called exactly as
-#'   in the `model` and must be included in the `sample` vector. The vectors
-#'   of all samples for these parameters will then be supplied to the function.
-#'   Hence, a user function must be able to handle vectorized model parameters.
-#'
-#'   The first argument of `prob` function must be the `dose`, which is a scalar
-#'   dose. Further arguments are the model parameters. The `prob` function
-#'   computes, using model parameter(s) (samples), the resulting probability of
-#'   toxicity at that dose. Again here, the function should support vectorized
-#'   model parameters.
-#'
-#'   Note that `dose` and `prob` are the inverse functions of each other.
-#'
-#'   If you work with multivariate parameters, then assume that your functions
-#'   receive either one parameter value as a row vector, or a samples matrix
-#'   where the rows correspond to the sampling index, i.e. the layout is then
-#'   `nSamples x dimParameter`.
-#'
-#' @slot dose (`function`)\cr a function computing the dose reaching a specific
-#'   target probability, based on the model parameters and additional prior
-#'   settings (see the details above).
-#' @slot prob (`function`)\cr a function computing the probability of toxicity
-#'   for a specific dose, based on the model parameters and additional prior
-#'   settings (see the details above).
-#'
-#' @aliases Model
-#' @export
-#'
-.Model <- setClass(
-  Class = "Model",
-  contains = "GeneralModel",
-  slots = c(
-    dose = "function",
-    prob = "function"
-  ),
-  prototype = prototype(
-    dose = function(x) {},
-    prob = function(dose) {}
-  ),
-  validity = v_model
-)
-
 # ModelLogNormal ----
 
 ## class ----
@@ -167,7 +105,7 @@ NULL
 #'
 .ModelLogNormal <- setClass(
   Class = "ModelLogNormal",
-  contains = "Model",
+  contains = "GeneralModel",
   slots = c(
     params = "ModelParamsNormal",
     ref_dose = "positive_number"
@@ -351,7 +289,7 @@ LogisticLogNormal <- function(mean, cov, ref_dose = 1) {
     params = "ModelParamsNormal",
     ref_dose = "numeric"
   ),
-  contains = "Model"
+  contains = "GeneralModel"
 )
 
 ## constructor ----
@@ -1171,7 +1109,7 @@ LogisticLogNormalMixture <- function(mean,
     rho = 0,
     use_fixed = c(sigma2W = TRUE, rho = TRUE)
   ),
-  contains = "Model",
+  contains = "GeneralModel",
   validity = v_model_dual_endpoint
 )
 
@@ -2658,7 +2596,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
     skel_probs = "numeric",
     sigma2 = "numeric"
   ),
-  contains = "Model",
+  contains = "GeneralModel",
   validity = v_model_one_par_exp_normal_prior
 )
 

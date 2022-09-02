@@ -157,10 +157,10 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects", {
   result <- nextBest(nb_ncrm_loss, 60, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p1", result$singlePlots$plot1)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p2", result$singlePlots$plot2)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_ploss", result$singlePlots$plot_loss)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss", result$plot_joint)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p1", result$plots_single$plot1)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_p2", result$plots_single$plot2)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss_ploss", result$plots_single$plot_loss)
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (loss function of 4 elements)", {
@@ -180,7 +180,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (los
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss with losses of 4", result$plot_joint)
 })
 
 test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no doselimit)", {
@@ -196,7 +196,7 @@ test_that("nextBest-NextBestNCRMLoss returns expected values of the objects (no 
   result <- nextBest(nb_ncrm_loss, Inf, samples, model, data)
   expect_identical(result$value, 25)
   expect_snapshot(result$probs)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRMLoss without doselimit", result$plot_joint)
 })
 
 ## NextBestThreePlusThree ----
@@ -485,7 +485,7 @@ test_that("nextBest-NextBestTDsamples returns expected values of the objects (ot
 test_that("nextBest-NextBestTD returns expected values of the objects", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_indep_beta()
-  nb_td <- NextBestTD(targetDuringTrial = 0.45, targetEndOfTrial = 0.4)
+  nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- nextBest(nb_td, 70, model = model, data = data)
   expected <- list(
@@ -505,7 +505,7 @@ test_that("nextBest-NextBestTD returns expected values of the objects", {
 test_that("nextBest-NextBestTD returns expected values of the objects (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_indep_beta()
-  nb_td <- NextBestTD(targetDuringTrial = 0.45, targetEndOfTrial = 0.4)
+  nb_td <- NextBestTD(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- nextBest(nb_td, Inf, model = model, data = data)
   expected <- list(
@@ -525,7 +525,7 @@ test_that("nextBest-NextBestTD returns expected values of the objects (no doseli
 test_that("nextBest-NextBestTD returns expected values of the objects (other targets)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_indep_beta()
-  nb_td <- NextBestTD(targetDuringTrial = 0.25, targetEndOfTrial = 0.2)
+  nb_td <- NextBestTD(prob_target_drt = 0.25, prob_target_eot = 0.2)
 
   result <- nextBest(nb_td, 70, model = model, data = data)
   expected <- list(
@@ -547,7 +547,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects", {
   data <- h_get_data_dual(placebo = FALSE)
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
-  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
   result <- nextBest(nb_mg, 49, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
@@ -573,7 +573,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (no d
   data <- h_get_data_dual(placebo = FALSE)
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
-  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.35, DLEEndOfTrialtarget = 0.3)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.35, prob_target_eot = 0.3)
 
   result <- nextBest(nb_mg, Inf, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
@@ -599,7 +599,7 @@ test_that("nextBest-NextBestMaxGain returns expected values of the objects (othe
   data <- h_get_data_dual(placebo = TRUE)
   model_dlt <- h_get_logistic_indep_beta()
   model_eff <- h_get_eff_log_log(const = 5)
-  nb_mg <- NextBestMaxGain(DLEDuringTrialtarget = 0.45, DLEEndOfTrialtarget = 0.4)
+  nb_mg <- NextBestMaxGain(prob_target_drt = 0.45, prob_target_eot = 0.4)
 
   result <- nextBest(nb_mg, 150, model = model_dlt, data = data, model_eff = model_eff)
   expected <- list(
