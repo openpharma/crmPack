@@ -281,14 +281,14 @@ NextBestThreePlusThree <- function() {
 #'   \eqn{80\%} of maximum biomarker level. As an other example,
 #'   \eqn{(0.5, 0.8)} would mean that we target a dose between \eqn{50\%} and
 #'   \eqn{80\%} of the maximum biomarker level.
-#' @slot target_relative (`flag`)\cr is `target` specified as relative? If
-#'   `TRUE`, then the `target` is interpreted relative to the maximum, so it
-#'   must be a probability range. Otherwise, the `target` is interpreted as
-#'   absolute biomarker range.
 #' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
 #'   excluded, upper limit included).
 #' @slot max_overdose_prob (`proportion`)\cr maximum overdose probability that
 #'   is allowed.
+#' @slot target_relative (`flag`)\cr is `target` specified as relative? If
+#'   `TRUE`, then the `target` is interpreted relative to the maximum, so it
+#'   must be a probability range. Otherwise, the `target` is interpreted as
+#'   absolute biomarker range.
 #' @slot target_thresh (`proportion`)\cr a target probability threshold that
 #'   needs to be fulfilled before the target probability will be used for
 #'   deriving the next best dose (default to \eqn{0.01}).
@@ -300,17 +300,17 @@ NextBestThreePlusThree <- function() {
   Class = "NextBestDualEndpoint",
   slots = c(
     target = "numeric",
-    target_relative = "logical",
     overdose = "numeric",
     max_overdose_prob = "numeric",
+    target_relative = "logical",
     target_thresh = "numeric"
   ),
   contains = "NextBest",
   prototype = prototype(
     target = c(0.9, 1),
-    target_relative = TRUE,
     overdose = c(0.35, 1),
     max_overdose_prob = 0.25,
+    target_relative = TRUE,
     target_thresh = 0.01
   ),
   validity = v_next_best_dual_endpoint
@@ -321,24 +321,24 @@ NextBestThreePlusThree <- function() {
 #' @rdname NextBestDualEndpoint-class
 #'
 #' @param target (`numeric`)\cr see slot definition.
-#' @param target_relative (`flag`)\cr see slot definition.
 #' @param overdose (`numeric`)\cr see slot definition.
 #' @param max_overdose_prob (`proportion`)\cr see slot definition.
+#' @param target_relative (`flag`)\cr see slot definition.
 #' @param target_thresh (`proportion`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-NextBestDualEndpoint.R
 #'
 NextBestDualEndpoint <- function(target,
-                                 target_relative = TRUE,
                                  overdose,
                                  max_overdose_prob,
+                                 target_relative = TRUE,
                                  target_thresh = 0.01) {
   .NextBestDualEndpoint(
     target = target,
-    target_relative = target_relative,
     overdose = overdose,
     max_overdose_prob = max_overdose_prob,
+    target_relative = target_relative,
     target_thresh = target_thresh
   )
 }

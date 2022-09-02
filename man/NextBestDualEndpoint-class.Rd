@@ -9,20 +9,20 @@
 \usage{
 NextBestDualEndpoint(
   target,
-  target_relative = TRUE,
   overdose,
   max_overdose_prob,
+  target_relative = TRUE,
   target_thresh = 0.01
 )
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
 
-\item{target_relative}{(\code{flag})\cr see slot definition.}
-
 \item{overdose}{(\code{numeric})\cr see slot definition.}
 
 \item{max_overdose_prob}{(\code{proportion})\cr see slot definition.}
+
+\item{target_relative}{(\code{flag})\cr see slot definition.}
 
 \item{target_thresh}{(\code{proportion})\cr see slot definition.}
 }
@@ -53,16 +53,16 @@ reached. For example, the target range \eqn{(0.8, 1.0)} and
 \eqn{(0.5, 0.8)} would mean that we target a dose between \eqn{50\%} and
 \eqn{80\%} of the maximum biomarker level.}
 
-\item{\code{target_relative}}{(\code{flag})\cr is \code{target} specified as relative? If
-\code{TRUE}, then the \code{target} is interpreted relative to the maximum, so it
-must be a probability range. Otherwise, the \code{target} is interpreted as
-absolute biomarker range.}
-
 \item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
 excluded, upper limit included).}
 
 \item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum overdose probability that
 is allowed.}
+
+\item{\code{target_relative}}{(\code{flag})\cr is \code{target} specified as relative? If
+\code{TRUE}, then the \code{target} is interpreted relative to the maximum, so it
+must be a probability range. Otherwise, the \code{target} is interpreted as
+absolute biomarker range.}
 
 \item{\code{target_thresh}}{(\code{proportion})\cr a target probability threshold that
 needs to be fulfilled before the target probability will be used for
@@ -81,8 +81,8 @@ my_next_best <- NextBestDualEndpoint(
 # Now, using absolute target on the natural biomarker scale.
 my_next_best_absolute <- NextBestDualEndpoint(
   target = c(200, 300),
-  target_relative = FALSE,
   overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
+  max_overdose_prob = 0.25,
+  target_relative = FALSE
 )
 }
