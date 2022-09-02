@@ -229,28 +229,26 @@ test_that("IncrementsHSRBeta object can be created with user constructor", {
 
 # Stopping ----
 
-## StoppingMTDCV-class ----
+## StoppingMTDCV ----
 
 test_that(".StoppingMTDCV works as expected", {
   result <- expect_silent(.StoppingMTDCV())
   expect_valid(result, "StoppingMTDCV")
 })
 
-## StoppingMTDCV-constructor ----
-
 test_that("StoppingMTDCV object can be created with user constructor", {
-  result <- expect_silent(StoppingMTDCV())
+  result <- expect_silent(StoppingMTDCV(0.2, 30))
   expect_valid(result, "StoppingMTDCV")
+  expect_identical(result@target, 0.2)
+  expect_identical(result@thresh_cv, 30)
 })
 
-## StoppingLowestDoseHSRBeta-class ----
+## StoppingLowestDoseHSRBeta ----
 
 test_that(".StoppingLowestDoseHSRBeta works as expected", {
   result <- expect_silent(.StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
 })
-
-## StoppingLowestDoseHSRBeta-constructor ----
 
 test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
   result <- expect_silent(StoppingLowestDoseHSRBeta())
