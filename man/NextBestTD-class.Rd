@@ -26,7 +26,7 @@ probabilities of the occurrence of a DLT obtained by using the modal estimates
 of the model parameters. There are two target probabilities of the
 occurrence of a DLT that must be specified: target probability to be used
 during the trial and target probability to be used at the end of the trial.
-It is only suitable to use it with the \code{\link{ModelTox}} model class.
+It is suitable to use it only with the \code{\link{ModelTox}} model class.
 }
 \section{Slots}{
 
@@ -39,7 +39,5 @@ occurrence of a DLT to be used at the end of the trial.}
 }}
 
 \examples{
-# Target probability of the occurrence of a DLT during the trial is set to 0.35.
-# Target probability of the occurrence of a DLT at the end of the trial is set to 0.3.
-my_next_best <- NextBestTD(prob_target_drt = 0.35, prob_target_eot = 0.3)
+my_next_best <- NextBestTD(0.35, 0.3)
 }

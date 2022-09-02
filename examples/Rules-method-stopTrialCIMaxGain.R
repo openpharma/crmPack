@@ -22,7 +22,7 @@ Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data
 myStopping <- StoppingGstarCIRatio(targetRatio=5,
                                    targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-mynextbest<-NextBestMaxGain(DLEDuringTrialtarget=0.35,DLEEndOfTrialtarget=0.3)
+mynextbest<-NextBestMaxGain(prob_target_drt=0.35, prob_target_eot=0.3)
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),model=DLEmodel,
                         model_eff=Effmodel,data=data)

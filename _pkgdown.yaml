@@ -70,6 +70,7 @@ reference:
       - NextBestInfTheory
       - NextBestTD
       - NextBestTDsamples
+      - NextBestMaxGain
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
       - StoppingMTDCV

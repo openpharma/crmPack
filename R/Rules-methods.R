@@ -798,8 +798,8 @@ setMethod(
     assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
-    prob_target_drt <- nextBest@DLEDuringTrialtarget
-    prob_target_eot <- nextBest@DLEEndOfTrialtarget
+    prob_target_drt <- nextBest@prob_target_drt
+    prob_target_eot <- nextBest@prob_target_eot
 
     # Target dose estimates, i.e. the dose with probability of the occurrence of
     # a DLT that equals to the prob_target_drt or prob_target_eot.
