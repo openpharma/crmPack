@@ -15,13 +15,17 @@ Effmodel<- EffFlexi(eff=c(1.223, 2.513),eff_dose=c(25,300),
                     sigma2W=c(a=0.1,b=0.1),sigma2betaW=c(a=20,b=50),rw1 = FALSE,data=data)
 
 
-##specified the next best
-mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
-                                   DLEEndOfTrialtarget=0.3,
-                                   TDderive=function(TDsamples){
-                                     quantile(TDsamples,prob=0.3)},
-                                   Gstarderive=function(Gstarsamples){
-                                     quantile(Gstarsamples,prob=0.5)})
+## specified the next best
+mynextbest <- NextBestMaxGainSamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
+  },
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
+  }
+)
 
 ##The increments (see Increments class examples)
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300

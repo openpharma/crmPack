@@ -933,8 +933,12 @@ samples<-mcmc(data,model,options)
 myStopping <- StoppingTDCIRatio(targetRatio=5,
                                        targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-tdNextBest<-NextBestTDsamples(prob_target_drt=0.35,prob_target_eot=0.3,
-                              derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
+tdNextBest <- NextBestTDsamples(
+  prob_target_drt = 0.35, prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, probs = 0.3))
+  }
+)
 
 RecommendDose<-nextBest(tdNextBest,doselimit=max(data@doseGrid),samples=samples,
                         model=model,data=data)
@@ -999,12 +1003,16 @@ Effsamples<-mcmc(data,Effmodel,options)
 myStopping <- StoppingGstarCIRatio(targetRatio=5,
                                           targetEndOfTrial=0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
-mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
-                                   DLEEndOfTrialtarget=0.3,
-                                   TDderive=function(TDsamples){
-                                     quantile(TDsamples,prob=0.3)},
-                                   Gstarderive=function(Gstarsamples){
-                                     quantile(Gstarsamples,prob=0.5)})
+mynextbest <- NextBestMaxGainSamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
+  },
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
+  }
+)
 
 RecommendDose<-nextBest(mynextbest,doselimit=max(data@doseGrid),samples=DLEsamples,model=DLEmodel,
                         data=data,model_eff=Effmodel,samples_eff=Effsamples)

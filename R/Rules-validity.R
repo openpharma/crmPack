@@ -186,6 +186,29 @@ v_next_best_td_samples <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestMaxGainSamples`] object
+#'   contains valid `derive` and `mg_derive` functions.
+v_next_best_max_gain_samples <- function(object) {
+  v <- Validate()
+  v$check(
+    test_function(object@derive, nargs = 1),
+    "derive must have a single argument"
+  )
+  v$check(
+    test_number(object@derive(1:5)),
+    "derive must accept numerical vector as an argument and return a number"
+  )
+  v$check(
+    test_function(object@mg_derive, nargs = 1),
+    "mg_derive must have a single argument"
+  )
+  v$check(
+    test_number(object@mg_derive(1:5)),
+    "mg_derive must accept numerical vector as an argument and return a number"
+  )
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects

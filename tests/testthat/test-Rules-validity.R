@@ -22,6 +22,7 @@ test_that("v_next_best_mtd returns message for non-valid target", {
 
 test_that("v_next_best_mtd returns message for non-valid derive", {
   object <- h_next_best_mtd()
+
   # Changing `derive` so that it has many arguments.
   object@derive <- function(x, y) 1L
   expect_equal(
@@ -213,6 +214,7 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target (absol
 
 test_that("v_next_best_dual_endpoint returns message for non-valid target_relative flag", {
   object <- h_next_best_dual_endpoint()
+
   # Changing `target_relative` so that it is not a flag.
   object@target_relative <- c(TRUE, FALSE)
   expect_equal(v_next_best_dual_endpoint(object), "target_relative must be a flag")
@@ -355,6 +357,7 @@ test_that("v_next_best_td_samples passes for valid object", {
 
 test_that("v_next_best_td_samples returns message for non-valid derive", {
   object <- h_next_best_tdsamples()
+
   # Changing `derive` so that it has many arguments.
   object@derive <- function(x, y) 1L
   expect_equal(
@@ -367,6 +370,49 @@ test_that("v_next_best_td_samples returns message for non-valid derive", {
   expect_equal(
     v_next_best_td_samples(object),
     "derive must accept numerical vector as an argument and return a number"
+  )
+})
+
+## v_next_best_max_gain_samples ----
+
+test_that("v_next_best_max_gain_samples passes for valid object", {
+  object <- h_next_best_mgsamples()
+  expect_true(v_next_best_max_gain_samples(object))
+})
+
+test_that("v_next_best_max_gain_samples returns message for non-valid derive", {
+  object <- h_next_best_mgsamples()
+
+  # Changing `derive` so that it has many arguments.
+  object@derive <- function(x, y) 1L
+  expect_equal(
+    v_next_best_max_gain_samples(object),
+    "derive must have a single argument"
+  )
+
+  # Changing `derive` so that it does not return a number.
+  object@derive <- function(x) c(1, 2)
+  expect_equal(
+    v_next_best_max_gain_samples(object),
+    "derive must accept numerical vector as an argument and return a number"
+  )
+})
+
+test_that("v_next_best_max_gain_samples returns message for non-valid mg_derive", {
+  object <- h_next_best_mgsamples()
+
+  # Changing `mg_derive` so that it has many arguments.
+  object@mg_derive <- function(x, y) 1L
+  expect_equal(
+    v_next_best_max_gain_samples(object),
+    "mg_derive must have a single argument"
+  )
+
+  # Changing `mg_derive` so that it does not return a number.
+  object@mg_derive <- function(x) c(1, 2)
+  expect_equal(
+    v_next_best_max_gain_samples(object),
+    "mg_derive must accept numerical vector as an argument and return a number"
   )
 })
 

@@ -79,9 +79,13 @@ data <- Data(doseGrid=seq(25,300,25))
 ##Specified the model of 'ModelTox' class eg 'LogisticIndepBeta' class model
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##Then the escalation rule
-tdNextBest<-NextBestTDsamples(prob_target_drt=0.35,
-                              prob_target_eot=0.3,
-                              derive=function(TDsamples){quantile(TDsamples,probs=0.3)})
+tdNextBest <- NextBestTDsamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, probs = 0.3))
+  }
+)
 
 ## The cohort size, size of 3 subjects
 mySize <-CohortSizeConst(size=3)

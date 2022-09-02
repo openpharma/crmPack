@@ -59,12 +59,17 @@ print(plot(mySim))
 
 ##If DLE and efficacy samples are involved
 ##The escalation rule using the 'NextBestMaxGainSamples' class
-mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
-                                   DLEEndOfTrialtarget=0.3,
-                                   TDderive=function(TDsamples){
-                                     quantile(TDsamples,prob=0.3)},
-                                   Gstarderive=function(Gstarsamples){
-                                     quantile(Gstarsamples,prob=0.5)})
+mynextbest <- NextBestMaxGainSamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
+  },
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
+  }
+)
+
 ##The design of 'DualResponsesSamplesDesign' class
 design <- DualResponsesSamplesDesign(nextBest=mynextbest,
                                      cohortSize=mySize,
