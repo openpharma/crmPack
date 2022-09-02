@@ -18,14 +18,18 @@ DLEsamples<-mcmc(data,DLEmodel,options)
 ##The efficacy model of 'ModelEff' (e.g 'Effloglog') class and the efficacy samples
 Effmodel<-Effloglog(eff=c(1.223,2.513),eff_dose=c(25,300),nu=c(a=1,b=0.025),data=data)
 Effsamples<-mcmc(data,Effmodel,options)
-##The escalation rule using the 'NextBestMaxGainSamples' class
-mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
-                                   DLEEndOfTrialtarget=0.3,
-                                   TDderive=function(TDsamples){
-                                     quantile(TDsamples,prob=0.3)},
-                                   Gstarderive=function(Gstarsamples){
-                                     quantile(Gstarsamples,prob=0.5)})
 
+##The escalation rule using the 'NextBestMaxGainSamples' class
+mynextbest <- NextBestMaxGainSamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
+  },
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
+  }
+)
 
 ##The increments (see Increments class examples)
 ## 200% allowable increase for dose below 300 and 200% increase for dose above 300

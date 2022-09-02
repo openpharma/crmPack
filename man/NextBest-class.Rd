@@ -14,5 +14,6 @@ other specific next best dose classes inherit.
 \seealso{
 \code{\link{NextBestMTD}}, \code{\link{NextBestNCRM}}, \code{\link{NextBestDualEndpoint}},
 \code{\link{NextBestThreePlusThree}}, \code{\link{NextBestDualEndpoint}}, \code{\link{NextBestMinDist}},
-\code{\link{NextBestInfTheory}}.
+\code{\link{NextBestInfTheory}}, \code{\link{NextBestTD}}, \code{\link{NextBestTDsamples}},
+\code{\link{NextBestMaxGain}}, \code{\link{NextBestMaxGainSamples}}.
 }

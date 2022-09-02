@@ -4,54 +4,62 @@
 \name{NextBestMaxGainSamples-class}
 \alias{NextBestMaxGainSamples-class}
 \alias{.NextBestMaxGainSamples}
-\title{Next best dose with maximum gain value based on a pseudo DLE and efficacy model with samples}
+\alias{NextBestMaxGainSamples}
+\title{\code{NextBestMaxGainSamples}}
+\usage{
+NextBestMaxGainSamples(prob_target_drt, prob_target_eot, derive, mg_derive)
+}
+\arguments{
+\item{prob_target_drt}{(\code{proportion})\cr see slot definition in \code{\link{NextBestMaxGain}}.}
+
+\item{prob_target_eot}{(\code{proportion})\cr see slot definition in \code{\link{NextBestMaxGain}}.}
+
+\item{derive}{(\code{function})\cr see slot definition.}
+
+\item{mg_derive}{(\code{function})\cr see slot definition.}
+}
 \description{
-This is a class for which to find the next dose which is safe and give the maximum gain value
-for allocation. This is a class where DLE and efficacy samples are involved.
-There are two inputs which are the two target
-probabilities of the occurrence of a DLE used during trial
-and used at the end of trial, for finding the next best dose that is safe and gives the maximum
-gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
-specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
-class
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{NextBestMaxGainSamples}} is the class to find a next best dose with maximum
+gain value based on a pseudo DLT and efficacy models and DLT and efficacy
+samples. There are two target probabilities of the occurrence of a DLT that
+must be specified: target probability to be used during the trial and target
+probability to be used at the end of the trial.
+It is suitable to use it only with the \code{\link{ModelTox}} model and \code{\link{ModelEff}}
+classes.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{DLEDuringTrialtarget}}{the target probability of the occurrence of a DLE to be used
-during the trial}
+\item{\code{derive}}{(\code{function})\cr derives, based on a vector of posterior dose
+samples, the target dose that has the probability of the occurrence of
+DLT equals to either the \code{prob_target_drt} or \code{prob_target_eot}. It must
+therefore accept one and only one argument, which is a numeric vector, and
+return a number.}
 
-\item{\code{DLEEndOfTrialtarget}}{the target probability of the occurrence of a DLE to be used at the end
-of the trial. This target is particularly used to recommend the dose for which its posterior
-probability of the occurrence of a DLE is equal to this target}
-
-\item{\code{TDderive}}{the function which derives from the input, a vector of the posterior samples called
-\code{TDsamples} of the dose
-which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
-occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.}
-
-\item{\code{Gstarderive}}{the function which derives from the input, a vector of the posterior Gstar (the dose
-which gives the maximum gain value) samples
-called \code{Gstarsamples}, the final next best Gstar estimate.}
+\item{\code{mg_derive}}{(\code{function})\cr derives, based on a vector of posterior dose
+samples that give the maximum gain value, the final next best estimate of
+the dose that gives the maximum gain value. It must therefore accept one
+and only one argument, which is a numeric vector, and return a number.}
 }}
 
 \examples{
-##define the NextBestMaxGainsamples class
-##specified the target probability of the occurrence of a DLE during the trial be 0.35
-##specified the target probability of the occurrence of a DLE at the end of trial be 0.3
-## we want the use the 30\% posterior quantile (the 30th percentaile) of the TD35 
-## (the dose level with probability of DLE equals 0.35) and TD30 samples
-## For Gstar (the dose which gives tha maximum
-##gain) samples, we will use the 50\% posterio quantile (the median or th 50th percentile) 
-## of the Gstar sample
-##A function is then defined in the 'TDderive' slot for the TD30 and TD35 samples
-## and another function is defined in the 'Gstarderive' slot for Gstar samples
-mynextbest<-NextBestMaxGainSamples(DLEDuringTrialtarget=0.35,
-                                   DLEEndOfTrialtarget=0.3,
-                                   TDderive=function(TDsamples){
-                                     quantile(TDsamples,prob=0.3)},
-                                   Gstarderive=function(Gstarsamples){
-                                     quantile(Gstarsamples,prob=0.5)})
+# Target probability of the occurrence of a DLT during the trial is set to 0.35.
+# Target probability of the occurrence of a DLT at the end of the trial is set to 0.3.
+# We want the use the 30\% posterior quantile (the 30th percentile) of the TD35
+# (the dose level with probability of the DLT equals 0.35) and TD30 samples.
+# For `mg_derive` function (which takes the sample of doses which give the maximum
+# gain), we will use the 50\% posterior quantile (the median or th 50th percentile)
+# of the sample.
+my_next_best <- NextBestMaxGainSamples(
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
+  },
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
+  }
+)
 }
-\keyword{class}

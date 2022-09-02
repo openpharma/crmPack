@@ -49,8 +49,8 @@ samples <- mcmc(data=data, model=model, options=McmcOptions(burnin=100,step=2,sa
 tdNextBest <- NextBestTDsamples(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3,
-  derive = function(TDsamples) {
-    quantile(TDsamples, probs = 0.3)
+  derive = function(samples) {
+    as.numeric(quantile(samples, probs = 0.3))
   }
 )
 

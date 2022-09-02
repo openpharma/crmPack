@@ -3026,10 +3026,10 @@ setMethod("simulate",
                                         samples=thisDLEsamples,
                                         model=thisDLEModel,
                                         data=thisData,
-                                        TDderive=object@nextBest@TDderive,
+                                        TDderive=object@nextBest@derive,
                                         Effmodel=thisEffModel,
                                         Effsamples=thisEffsamples,
-                                        Gstarderive=object@nextBest@Gstarderive)
+                                        Gstarderive=object@nextBest@mg_derive)
                   }
 
                   ##get the fits
@@ -3430,10 +3430,10 @@ setMethod("simulate",
                                       samples=thisDLEsamples,
                                       model=thisDLEModel,
                                       data=thisData,
-                                      TDderive=object@nextBest@TDderive,
+                                      TDderive=object@nextBest@derive,
                                       Effmodel=thisEffModel,
                                       Effsamples=thisEffsamples,
-                                      Gstarderive=object@nextBest@Gstarderive)
+                                      Gstarderive=object@nextBest@mg_derive)
 
                 }
                 ## get the fit

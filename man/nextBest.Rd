@@ -518,8 +518,8 @@ my_samples <- mcmc(my_data, my_model, my_options)
 tds_next_best <- NextBestTDsamples(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3,
-  derive = function(dose_samples) { # nolintr
-    as.numeric(quantile(dose_samples, probs = 0.3))
+  derive = function(samples) {
+    as.numeric(quantile(samples, probs = 0.3))
   }
 )
 
@@ -624,13 +624,13 @@ my_samples_effll <- mcmc(my_data, my_model_effll, my_options)
 # Use 50\% posterior quantile of the Gstar (the dose which gives the maxim gain value)
 # samples as Gstar estimate.
 mgs_next_best <- NextBestMaxGainSamples(
-  DLEDuringTrialtarget = 0.35,
-  DLEEndOfTrialtarget = 0.3,
-  TDderive = function(TDsamples) { # nolintr
-    quantile(TDsamples, prob = 0.3)
+  prob_target_drt = 0.35,
+  prob_target_eot = 0.3,
+  derive = function(samples) {
+    as.numeric(quantile(samples, prob = 0.3))
   },
-  Gstarderive = function(Gstarsamples) { # nolintr
-    quantile(Gstarsamples, prob = 0.5)
+  mg_derive = function(mg_samples) {
+    as.numeric(quantile(mg_samples, prob = 0.5))
   }
 )
 
@@ -659,17 +659,6 @@ my_model_effflexi <- EffFlexi(
 )
 
 my_samples_effflexi <- mcmc(my_data, my_model_effflexi, my_options)
-
-mgs_next_best <- NextBestMaxGainSamples(
-  DLEDuringTrialtarget = 0.35,
-  DLEEndOfTrialtarget = 0.3,
-  TDderive = function(TDsamples) { # nolintr
-    quantile(TDsamples, prob = 0.3)
-  },
-  Gstarderive = function(Gstarsamples) { # nolintr
-    quantile(Gstarsamples, prob = 0.5)
-  }
-)
 
 dose_recommendation <- nextBest(
   nextBest = mgs_next_best,

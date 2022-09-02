@@ -15,7 +15,8 @@ NULL
 #'
 #' @seealso [`NextBestMTD`], [`NextBestNCRM`], [`NextBestDualEndpoint`],
 #'   [`NextBestThreePlusThree`], [`NextBestDualEndpoint`], [`NextBestMinDist`],
-#'   [`NextBestInfTheory`].
+#'   [`NextBestInfTheory`], [`NextBestTD`], [`NextBestTDsamples`],
+#'   [`NextBestMaxGain`], [`NextBestMaxGainSamples`].
 #'
 #' @aliases NextBest
 #' @export
@@ -597,6 +598,79 @@ NextBestMaxGain <- function(prob_target_drt, prob_target_eot) {
   .NextBestMaxGain(
     prob_target_drt = prob_target_drt,
     prob_target_eot = prob_target_eot
+  )
+}
+
+# NextBestMaxGainSamples ----
+
+## class ----
+
+#' `NextBestMaxGainSamples`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`NextBestMaxGainSamples`] is the class to find a next best dose with maximum
+#' gain value based on a pseudo DLT and efficacy models and DLT and efficacy
+#' samples. There are two target probabilities of the occurrence of a DLT that
+#' must be specified: target probability to be used during the trial and target
+#' probability to be used at the end of the trial.
+#' It is suitable to use it only with the [`ModelTox`] model and [`ModelEff`]
+#' classes.
+#'
+#' @slot derive (`function`)\cr derives, based on a vector of posterior dose
+#'   samples, the target dose that has the probability of the occurrence of
+#'   DLT equals to either the `prob_target_drt` or `prob_target_eot`. It must
+#'   therefore accept one and only one argument, which is a numeric vector, and
+#'   return a number.
+#' @slot mg_derive (`function`)\cr derives, based on a vector of posterior dose
+#'   samples that give the maximum gain value, the final next best estimate of
+#'   the dose that gives the maximum gain value. It must therefore accept one
+#'   and only one argument, which is a numeric vector, and return a number.
+#'
+#' @aliases NextBestMaxGainSamples
+#' @export
+#'
+.NextBestMaxGainSamples <- setClass(
+  Class = "NextBestMaxGainSamples",
+  slots = c(
+    derive = "function",
+    mg_derive = "function"
+  ),
+  prototype = prototype(
+    prob_target_drt = 0.35,
+    prob_target_eot = 0.3,
+    derive = function(dose_samples) {
+      as.numeric(quantile(dose_samples, prob = 0.3))
+    },
+    mg_derive = function(dose_samples) {
+      as.numeric(quantile(dose_samples, prob = 0.5))
+    }
+  ),
+  contains = "NextBestMaxGain",
+  validity = v_next_best_max_gain_samples
+)
+
+## constructor ----
+
+#' @rdname NextBestMaxGainSamples-class
+#'
+#' @param prob_target_drt (`proportion`)\cr see slot definition in [`NextBestMaxGain`].
+#' @param prob_target_eot (`proportion`)\cr see slot definition in [`NextBestMaxGain`].
+#' @param derive (`function`)\cr see slot definition.
+#' @param mg_derive (`function`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-NextBestMaxGainSamples.R
+#'
+NextBestMaxGainSamples <- function(prob_target_drt,
+                                   prob_target_eot,
+                                   derive,
+                                   mg_derive) {
+  .NextBestMaxGainSamples(
+    prob_target_drt = prob_target_drt,
+    prob_target_eot = prob_target_eot,
+    derive = derive,
+    mg_derive = mg_derive
   )
 }
 
@@ -2130,89 +2204,6 @@ CohortSizeMin <- function(cohortSizeList)
 {
     .CohortSizeMin(cohortSizeList=cohortSizeList)
 }
-
-##------------------------------------------------------------------------------------------------------
-## Class for next best with maximum gain value based on a pseudo DLE and efficacy model with samples
-## ----------------------------------------------------------------------------------------------------
-##' Next best dose with maximum gain value based on a pseudo DLE and efficacy model with samples
-##'
-##' This is a class for which to find the next dose which is safe and give the maximum gain value
-##' for allocation. This is a class where DLE and efficacy samples are involved.
-##' There are two inputs which are the two target
-##' probabilities of the occurrence of a DLE used during trial
-##' and used at the end of trial, for finding the next best dose that is safe and gives the maximum
-##' gain value and the dose to recommend at the end of a trial. This is only suitable to use with DLE models
-##' specified in 'ModelTox' class and efficacy models  specified in 'ModelEff' class
-##' class
-##'
-##' @slot DLEDuringTrialtarget the target probability of the occurrence of a DLE to be used
-##' during the trial
-##' @slot DLEEndOfTrialtarget the target probability of the occurrence of a DLE to be used at the end
-##' of the trial. This target is particularly used to recommend the dose for which its posterior
-##' probability of the occurrence of a DLE is equal to this target
-##' @slot TDderive the function which derives from the input, a vector of the posterior samples called
-##' \code{TDsamples} of the dose
-##' which has the probability of the occurrence of DLE equals to either the targetDuringTrial or
-##' targetEndOfTrial, the final next best TDtargetDuringTrial (the dose with probability of the
-##' occurrence of DLE equals to the targetDuringTrial)and TDtargetEndOfTrial estimate.
-##' @slot Gstarderive the function which derives from the input, a vector of the posterior Gstar (the dose
-##' which gives the maximum gain value) samples
-##' called \code{Gstarsamples}, the final next best Gstar estimate.
-##'
-##' @example examples/Rules-class-NextBestMaxGainSamples.R
-##'
-##' @export
-##' @keywords class
-.NextBestMaxGainSamples<-
-  setClass(Class="NextBestMaxGainSamples",
-           representation(DLEDuringTrialtarget="numeric",
-                          DLEEndOfTrialtarget="numeric",
-                          TDderive="function",
-                          Gstarderive="function"),
-           prototype(DLEDuringTrialtarget=0.35,
-                     DLEEndOfTrialtarget=0.3,
-                     TDderive=function(TDsamples){
-                       quantile(TDsamples,prob=0.3)},
-                     Gstarderive=function(Gstarsamples){
-                       quantile(Gstarsamples,prob=0.5)}),
-           contains=list("NextBest"),
-           validity=
-             function(object){
-               o <- Validate()
-               o$check(is.probability(object@DLEDuringTrialtarget),
-                       "DLE DuringTrialtarget has to be a probability")
-               o$check(is.probability(object@DLEEndOfTrialtarget),
-                       "DLE EndOfTrialtarget has to be a probability")
-               o$check(identical(names(formals(object@TDderive)),
-                                 c("TDsamples")),"derive must have as single argument 'TDsamples'")
-               o$check(identical(names(formals(object@Gstarderive)),
-                                 c("Gstarsamples")),"derive must have as single argument 'Gstarsamples'")
-
-               o$result()
-             })
-validObject(.NextBestMaxGainSamples)
-
-##' Initialization function for class "NextBestMaxGainSamples"
-##'
-##' @param DLEDuringTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
-##' @param DLEEndOfTrialtarget please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
-##' @param TDderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
-##' @param Gstarderive please refer to \code{\linkS4class{NextBestMaxGainSamples}} class object
-##'
-##' @return the \code{\linkS4class{NextBestMaxGainSamples}} class object
-##'
-##' @export
-##' @keywords methods
-NextBestMaxGainSamples <- function(DLEDuringTrialtarget,
-                                   DLEEndOfTrialtarget,TDderive,Gstarderive)
-{.NextBestMaxGainSamples(DLEDuringTrialtarget=DLEDuringTrialtarget,
-                         DLEEndOfTrialtarget=DLEEndOfTrialtarget,
-                         TDderive=TDderive,
-                         Gstarderive=Gstarderive)
-}
-
-
-## ============================================================
 
 ## --------------------------------------------------
 ## Virtual class for safety window

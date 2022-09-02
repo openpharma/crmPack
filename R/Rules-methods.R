@@ -919,8 +919,8 @@ setMethod(
     assert_flag(in_sim)
 
     # 'drt' - during the trial, 'eot' end of trial.
-    prob_target_drt <- nextBest@DLEDuringTrialtarget
-    prob_target_eot <- nextBest@DLEEndOfTrialtarget
+    prob_target_drt <- nextBest@prob_target_drt
+    prob_target_eot <- nextBest@prob_target_eot
 
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the prob_target_drt or prob_target_eot.
@@ -928,8 +928,8 @@ setMethod(
     dose_target_eot_samples <- dose(x = prob_target_eot, model, samples = samples)
 
     # Derive the prior/posterior estimates based on two above samples.
-    dose_target_drt <- as.numeric(nextBest@TDderive(TDsamples = dose_target_drt_samples))
-    dose_target_eot <- as.numeric(nextBest@TDderive(TDsamples = dose_target_eot_samples))
+    dose_target_drt <- nextBest@derive(dose_target_drt_samples)
+    dose_target_eot <- nextBest@derive(dose_target_eot_samples)
 
     # Gain samples.
     gain_samples <- sapply(data@doseGrid, gain, model, samples, model_eff, samples_eff)
@@ -937,8 +937,8 @@ setMethod(
     dose_lev_mg_samples <- apply(gain_samples, 1, which.max)
     dose_mg_samples <- data@doseGrid[dose_lev_mg_samples]
     # Maximum gain dose estimate is the nth percentile of the maximum gain dose samples.
-    dose_mg <- as.numeric(nextBest@Gstarderive(dose_mg_samples))
-    gain_values <- apply(gain_samples, 2, FUN = nextBest@Gstarderive)
+    dose_mg <- nextBest@mg_derive(dose_mg_samples)
+    gain_values <- apply(gain_samples, 2, FUN = nextBest@mg_derive)
 
     # Print info message if dose target is outside of the range.
     dose_grid_range <- h_dose_grid_range(data)
