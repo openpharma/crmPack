@@ -1,4 +1,4 @@
-# Version 1.0.9000.9065
+# Version 1.0.9000.9066
 * Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
   `NextBestMaxGainSamples` classes.
 * Removed `Model` class.
