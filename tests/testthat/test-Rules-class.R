@@ -73,7 +73,7 @@ test_that(".NextBestDualEndpoint works as expected", {
 
 test_that("NextBestDualEndpoint object can be created with user constructor", {
   result <- expect_silent(
-    NextBestDualEndpoint(c(0.5, 0.8), overdose = c(0.4, 1), max_overdose_prob = 0.3)
+    NextBestDualEndpoint(c(0.5, 0.8), c(0.4, 1), 0.3)
   )
   expect_valid(result, "NextBestDualEndpoint")
   expect_identical(result@target, c(0.5, 0.8))
@@ -84,7 +84,7 @@ test_that("NextBestDualEndpoint object can be created with user constructor", {
 
 test_that("NextBestDualEndpoint object can be created with user constructor 2", {
   result <- expect_silent(
-    NextBestDualEndpoint(c(0.5, 0.8), FALSE, c(0.4, 1), 0.3, 0.05)
+    NextBestDualEndpoint(c(0.5, 0.8), c(0.4, 1), 0.3, FALSE, 0.05)
   )
   expect_valid(result, "NextBestDualEndpoint")
   expect_identical(result@target, c(0.5, 0.8))

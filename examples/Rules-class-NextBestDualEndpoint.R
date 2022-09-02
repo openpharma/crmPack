@@ -9,7 +9,7 @@ my_next_best <- NextBestDualEndpoint(
 # Now, using absolute target on the natural biomarker scale.
 my_next_best_absolute <- NextBestDualEndpoint(
   target = c(200, 300),
-  target_relative = FALSE,
   overdose = c(0.35, 1),
-  max_overdose_prob = 0.25
+  max_overdose_prob = 0.25,
+  target_relative = FALSE
 )
