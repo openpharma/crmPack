@@ -305,9 +305,9 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   samples <- h_samples_dual_endpoint_rw()
   nb_de <- NextBestDualEndpoint(
     target = c(0.9, 1),
-    target_relative = FALSE,
     overdose = c(0.65, 1),
-    max_overdose_prob = 0.55
+    max_overdose_prob = 0.55,
+    target_relative = FALSE
   )
 
   result <- nextBest(nb_de, 90, samples, model, data)
@@ -322,9 +322,9 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
   samples <- h_samples_dual_endpoint_rw()
   nb_de <- NextBestDualEndpoint(
     target = c(0.9, 1),
-    target_relative = FALSE,
     overdose = c(0.65, 1),
-    max_overdose_prob = 0.55
+    max_overdose_prob = 0.55,
+    target_relative = FALSE
   )
 
   result <- nextBest(nb_de, Inf, samples, model, data)

@@ -34,9 +34,9 @@ h_next_best_dual_endpoint <- function(target_relative = TRUE) {
 
   NextBestDualEndpoint(
     target = target,
-    target_relative = target_relative,
     overdose = c(0.35, 1),
-    max_overdose_prob = 0.25
+    max_overdose_prob = 0.25,
+    target_relative = target_relative,
   )
 }
 
@@ -44,21 +44,15 @@ h_next_best_tdsamples <- function(td = 0.45, te = 0.4, p = 0.3) {
   NextBestTDsamples(
     prob_target_drt = td,
     prob_target_eot = te,
-    derive = function(dose_samples) { # nolintr
-      as.numeric(quantile(dose_samples, probs = p))
-    }
+    derive = function(samples) as.numeric(quantile(samples, probs = p))
   )
 }
 
 h_next_best_mgsamples <- function(td = 0.45, te = 0.4, p = 0.3, p_gstar = 0.5) {
   NextBestMaxGainSamples(
-    DLEDuringTrialtarget = td,
-    DLEEndOfTrialtarget = te,
-    TDderive = function(TDsamples) { # nolintr
-      quantile(TDsamples, prob = p)
-    },
-    Gstarderive = function(Gstarsamples) { # nolintr
-      quantile(Gstarsamples, prob = p_gstar)
-    }
+    prob_target_drt = td,
+    prob_target_eot = te,
+    derive = function(s) as.numeric(quantile(s, prob = p)),
+    mg_derive = function(s) as.numeric(quantile(s, prob = p_gstar))
   )
 }

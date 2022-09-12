@@ -10,6 +10,7 @@
 \alias{v_next_best_inf_theory}
 \alias{v_next_best_td}
 \alias{v_next_best_td_samples}
+\alias{v_next_best_max_gain_samples}
 \title{Internal Helper Functions for Validation of \code{\link{NextBest}} Objects}
 \usage{
 v_next_best_mtd(object)
@@ -27,6 +28,8 @@ v_next_best_inf_theory(object)
 v_next_best_td(object)
 
 v_next_best_td_samples(object)
+
+v_next_best_max_gain_samples(object)
 }
 \arguments{
 \item{object}{(\code{NextBest})\cr object to validate.}
@@ -67,5 +70,8 @@ contains valid \code{prob_target_drt} and \code{prob_target_eot} probabilities.
 
 \item \code{v_next_best_td_samples}: validates that the \code{\link{NextBestTDsamples}} object
 contains valid \code{derive} function.
+
+\item \code{v_next_best_max_gain_samples}: validates that the \code{\link{NextBestMaxGainSamples}} object
+contains valid \code{derive} and \code{mg_derive} functions.
 }}
 

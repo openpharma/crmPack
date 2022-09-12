@@ -44,8 +44,8 @@ return a number.}
 my_next_best <- NextBestTDsamples(
   prob_target_drt = 0.35,
   prob_target_eot = 0.3,
-  derive = function(dose_samples) {
-    quantile(dose_samples, probs = 0.3)
+  derive = function(samples) {
+    as.numeric(quantile(samples, probs = 0.3))
   }
 )
 }
