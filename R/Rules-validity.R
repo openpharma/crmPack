@@ -236,10 +236,7 @@ v_increments_relative <- function(object) {
     "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
   )
   v$check(
-    test_numeric(
-      object@increments,
-      finite = TRUE, any.missing = FALSE, len = length(object@intervals), unique = TRUE
-    ),
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
     "increments has to be a numerical vector of the same length as `intervals` with finite values"
   )
   v$result()

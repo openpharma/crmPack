@@ -451,10 +451,6 @@ test_that("v_increments_relative returns message for non-valid increments", {
   object@increments <- c(1, 2, 3, 4)
   expect_equal(v_increments_relative(object), err_msg)
 
-  # Changing `increments` so that it contains non-unique values.
-  object@increments <- c(1, 2, 2)
-  expect_equal(v_increments_relative(object), err_msg)
-
   # Changing `increments` so that it contains missing, or infinite values.
   object@increments <- c(NA, 2, Inf)
   expect_equal(v_increments_relative(object), err_msg)
