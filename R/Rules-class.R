@@ -49,13 +49,13 @@ setClass(
     target = "numeric",
     derive = "function"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = 0.3,
     derive = function(mtd_samples) {
       quantile(mtd_samples, probs = 0.3)
     }
   ),
+  contains = "NextBest",
   validity = v_next_best_mtd
 )
 
@@ -111,12 +111,12 @@ NextBestMTD <- function(target, derive) {
     overdose = "numeric",
     max_overdose_prob = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = c(0.2, 0.35),
     overdose = c(0.35, 1),
     max_overdose_prob = 0.25
   ),
+  contains = "NextBest",
   validity = v_next_best_ncrm
 )
 
@@ -305,7 +305,6 @@ NextBestThreePlusThree <- function() {
     target_relative = "logical",
     target_thresh = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = c(0.9, 1),
     overdose = c(0.35, 1),
@@ -313,6 +312,7 @@ NextBestThreePlusThree <- function() {
     target_relative = TRUE,
     target_thresh = 0.01
   ),
+  contains = "NextBest",
   validity = v_next_best_dual_endpoint
 )
 
@@ -364,10 +364,10 @@ NextBestDualEndpoint <- function(target,
   slots = c(
     target = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = 0.3
   ),
+  contains = "NextBest",
   validity = v_next_best_min_dist
 )
 
@@ -408,11 +408,11 @@ NextBestMinDist <- function(target) {
     target = "numeric",
     asymmetry = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = 0.3,
     asymmetry = 1
   ),
+  contains = "NextBest",
   validity = v_next_best_inf_theory
 )
 
@@ -674,81 +674,79 @@ NextBestMaxGainSamples <- function(prob_target_drt,
   )
 }
 
-# nolint start
+# Increments ----
 
-## --------------------------------------------------
-## Virtual class for increments control
-## --------------------------------------------------
+## class ----
 
-##' The virtual class for controlling increments
-##'
-##' @seealso \code{\linkS4class{IncrementsRelative}},
-##' \code{\linkS4class{IncrementsRelativeDLT}},
-##' \code{\linkS4class{IncrementsRelativeParts}},
-##' [`IncrementsNumDoseLevels`]
-##' [`IncrementsHSRBeta`]
-##'
-##' @aliases Increments
-##' @export
-##' @keywords classes
-setClass(Class="Increments",
-         contains=list("VIRTUAL"))
+#' `Increments`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`Increments`] is a virtual class for controlling increments, from which all
+#' other specific increments classes inherit.
+#'
+#' @seealso [`IncrementsRelative`], [`IncrementsRelativeDLT`],
+#'   [`IncrementsNumDoseLevels`], [`IncrementsHSRBeta`], [`IncrementMin`].
+#'
+#' @aliases Increments
+#' @export
+#'
+setClass(
+  Class = "Increments"
+)
 
+# IncrementsRelative ----
 
-## --------------------------------------------------
-## Increments control based on relative differences in intervals
-## --------------------------------------------------
+## class ----
 
-##' Increments control based on relative differences in intervals
-##'
-##' Note that \code{intervals} is to be read as follows. If for example,
-##' we want to specify three intervals: First 0 to less than 50, second at least
-##' 50 up to less than 100 mg, and third at least 100 mg, then we specify
-##' \code{intervals} to be \code{c(0, 50, 100)}. That means, the right
-##' bound of the intervals are exclusive to the interval, and the last interval
-##' goes from the last value until infinity.
-##'
-##' @slot intervals a vector with the left bounds of the relevant intervals
-##' @slot increments a vector of the same length with the maximum allowable
-##' relative increments in the \code{intervals}
-##'
-##' @example examples/Rules-class-IncrementsRelative.R
-##' @export
-##' @keywords classes
-.IncrementsRelative <-
-    setClass(Class="IncrementsRelative",
-             representation(intervals="numeric",
-                            increments="numeric"),
-             prototype(intervals=c(0, 2),
-                       increments=c(2, 1)),
-             contains="Increments",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `IncrementsRelative`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsRelative`] is the class for increments control based on relative
+#' differences in intervals.
+#'
+#' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
+#'   intervals. This parameters specifies the right bounds of the intervals.
+#'   For example, `intervals  = c(0, 50, 100)` specifies three intervals:
+#'   (0, 50), [50, 100) and [100, +Inf). That means, the right bound of the
+#'   intervals are exclusive to the interval and the last interval goes from the
+#'   last value to infinity.
+#' @slot increments (`numeric`)\cr a vector of the same length with the maximum
+#'   allowable relative increments in the `intervals`.
+#'
+#' @aliases IncrementsRelative
+#' @export
+#'
+.IncrementsRelative <- setClass(
+  Class = "IncrementsRelative",
+  slots = c(
+    intervals = "numeric",
+    increments = "numeric"
+  ),
+  prototype = prototype(
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  ),
+  contains = "Increments",
+  validity = v_increments_relative
+)
 
-                     o$check(identical(length(object@increments),
-                                       length(object@intervals)),
-                             "increments must have same length as intervals")
-                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
-                             "intervals has to be sorted and have unique values")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.IncrementsRelative())
-
-##' Initialization function for "IncrementsRelative"
-##'
-##' @param intervals see \code{\linkS4class{IncrementsRelative}}
-##' @param increments see \code{\linkS4class{IncrementsRelative}}
-##' @return the \code{\linkS4class{IncrementsRelative}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsRelative <- function(intervals,
-                               increments)
-{
-    .IncrementsRelative(intervals=intervals,
-                        increments=increments)
+#' @rdname IncrementsRelative-class
+#'
+#' @param intervals (`numeric`)\cr see slot definition in [`IncrementsRelative`].
+#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelative`].
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelative.R
+#'
+IncrementsRelative <- function(intervals, increments) {
+  .IncrementsRelative(
+    intervals = intervals,
+    increments = increments
+  )
 }
 
 # nolint end
