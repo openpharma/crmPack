@@ -4,32 +4,43 @@
 \name{IncrementsRelative-class}
 \alias{IncrementsRelative-class}
 \alias{.IncrementsRelative}
-\title{Increments control based on relative differences in intervals}
+\alias{IncrementsRelative}
+\title{\code{IncrementsRelative}}
+\usage{
+IncrementsRelative(intervals, increments)
+}
+\arguments{
+\item{intervals}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
+
+\item{increments}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
+}
 \description{
-Note that \code{intervals} is to be read as follows. If for example,
-we want to specify three intervals: First 0 to less than 50, second at least
-50 up to less than 100 mg, and third at least 100 mg, then we specify
-\code{intervals} to be \code{c(0, 50, 100)}. That means, the right
-bound of the intervals are exclusive to the interval, and the last interval
-goes from the last value until infinity.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{IncrementsRelative}} is the class for increments control based on relative
+differences in intervals.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{intervals}}{a vector with the left bounds of the relevant intervals}
+\item{\code{intervals}}{(\code{numeric})\cr a vector with the left bounds of the relevant
+intervals. This parameters specifies the right bounds of the intervals.
+For example, \code{intervals  = c(0, 50, 100)} specifies three intervals:
+(0, 50), [50, 100) and [100, +Inf). That means, the right bound of the
+intervals are exclusive to the interval and the last interval goes from the
+last value to infinity.}
 
-\item{\code{increments}}{a vector of the same length with the maximum allowable
-relative increments in the \code{intervals}}
+\item{\code{increments}}{(\code{numeric})\cr a vector of the same length with the maximum
+allowable relative increments in the \code{intervals}.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-#   maximum doubling the dose if the current dose is <20
-#   OR only maximum increasing the dose by 1.33 if the current dose is >=20
-
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-
+# This is the example of a rule for:
+# maximum doubling the dose if the current dose is <20
+# or only maximum increasing the dose by 1.33 if the current dose is >=20.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 }
-\keyword{classes}

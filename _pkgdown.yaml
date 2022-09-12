@@ -72,6 +72,8 @@ reference:
       - NextBestTDsamples
       - NextBestMaxGain
       - NextBestMaxGainSamples
+      - Increments
+      - IncrementsRelative
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
       - StoppingMTDCV
@@ -149,6 +151,7 @@ reference:
       - v_next_best_td
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
+      - v_increments_relative
       - v_increments_numdoselevels
       - v_increments_hsr_beta
       - v_stopping_mtd_cv

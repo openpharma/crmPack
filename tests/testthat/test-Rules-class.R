@@ -193,6 +193,22 @@ test_that("NextBestMaxGainSamples object can be created with user constructor", 
 
 # Increments ----
 
+## IncrementsRelative ----
+
+test_that(".IncrementsRelative works as expected", {
+  result <- expect_silent(.IncrementsRelative())
+  expect_valid(result, "IncrementsRelative")
+})
+
+test_that("IncrementsRelative object can be created with user constructor", {
+  result <- expect_silent(
+    IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  )
+  expect_valid(result, "IncrementsRelative")
+  expect_identical(result@intervals, c(0, 2, 3))
+  expect_identical(result@increments, c(2, 1, 1.5))
+})
+
 ## IncrementsRelativeDLTCurrent-class ----
 
 test_that(".IncrementsRelativeDLTCurrent works as expected", {

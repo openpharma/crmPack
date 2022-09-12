@@ -418,6 +418,44 @@ test_that("v_next_best_max_gain_samples returns message for non-valid mg_derive"
 
 # Increments ----
 
+## v_increments_relative ----
+
+test_that("v_increments_relative passes for valid object", {
+  object <- IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+  expect_true(v_increments_relative(object))
+})
+
+test_that("v_increments_relative returns message for non-valid intervals", {
+  err_msg <- "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
+  object <- IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `intervals` so that it contains non-unique values.
+  object@intervals <- c(1, 2, 2)
+  expect_equal(v_increments_relative(object), err_msg)
+
+  # Changing `intervals` so that it contains non-sorted values.
+  object@intervals <- c(1, 3, 2)
+  expect_equal(v_increments_relative(object), err_msg)
+
+  # Changing `intervals` so that it contains missing, or infinite negative values.
+  object@intervals <- c(-1, NA, 2, Inf)
+  object@increments <- 1:4
+  expect_equal(v_increments_relative(object), err_msg)
+})
+
+test_that("v_increments_relative returns message for non-valid increments", {
+  err_msg <- "increments has to be a numerical vector of the same length as `intervals` with finite values"
+  object <- IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `increments` so that it is of a length different than the length of `intervals`.
+  object@increments <- c(1, 2, 3, 4)
+  expect_equal(v_increments_relative(object), err_msg)
+
+  # Changing `increments` so that it contains missing, or infinite values.
+  object@increments <- c(NA, 2, Inf)
+  expect_equal(v_increments_relative(object), err_msg)
+})
+
 ## v_increments_numdoselevels ----
 
 test_that("v_increments_numdoselevels passes for valid object", {

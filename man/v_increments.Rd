@@ -2,10 +2,13 @@
 % Please edit documentation in R/Rules-validity.R
 \name{v_increments}
 \alias{v_increments}
+\alias{v_increments_relative}
 \alias{v_increments_numdoselevels}
 \alias{v_increments_hsr_beta}
 \title{Internal Helper Functions for Validation of \code{\link{Increments}} Objects}
 \usage{
+v_increments_relative(object)
+
 v_increments_numdoselevels(object)
 
 v_increments_hsr_beta(object)
@@ -25,6 +28,9 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
+\item \code{v_increments_relative}: validates that the \code{\link{IncrementsRelative}} object
+contains valid \code{intervals} and \code{increments} parameters.
+
 \item \code{v_increments_numdoselevels}: validates that the \code{\link{IncrementsNumDoseLevels}} object
 contains valid \code{maxLevels} and \code{basisLevel} option.
 
