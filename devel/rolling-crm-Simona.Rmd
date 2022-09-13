@@ -16,6 +16,7 @@ Date `r params$d`
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,cache =FALSE)
+# nolint start
 ```
 
 ```{r multiplot, include=FALSE, echo=FALSE}
@@ -497,9 +498,6 @@ plot(Priorsamples2, mymda_model2,emptydata,hazard=TRUE)
 plotPrmda2 <- plot(Priorsamples2, mymda_model2,emptydata,hazard=TRUE)
 ```
 
-
-
-
 ```{r rules_esc}
 
 #6) Escalation rules
@@ -743,4 +741,5 @@ DLTDY=c(22,15,14)
 
 #############################!!!!!!
 
+# nolint end
 ```
