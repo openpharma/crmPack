@@ -15,7 +15,7 @@ Date `r params$d`
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,cache =FALSE)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE)
 # nolint start
 ```
 
