@@ -770,7 +770,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is define
 
 test_that("IncrementsRelativeDLTCurrent works correctly", {
   increments <- IncrementsRelativeDLTCurrent(
-    DLTintervals = c(0, 1, 3),
+    dlt_intervals = c(0, 1, 3),
     increments = c(1, 0.33, 0.2)
   )
   result <- maxDose(

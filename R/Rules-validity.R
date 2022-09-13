@@ -242,6 +242,21 @@ v_increments_relative <- function(object) {
   v$result()
 }
 
+#' @describeIn v_increments validates that the [`IncrementsRelativeDLT`] object
+#'   contains valid `dlt_intervals` and `increments` parameters.
+v_increments_relative_dlt <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@dlt_intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+  )
+  v$check(
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@dlt_intervals)),
+    "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
+  )
+  v$result()
+}
+
 #' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
 #'   contains valid `maxLevels` and `basisLevel` option.
 v_increments_numdoselevels <- function(object) {

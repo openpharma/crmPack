@@ -209,6 +209,22 @@ test_that("IncrementsRelative object can be created with user constructor", {
   expect_identical(result@increments, c(2, 1, 1.5))
 })
 
+## IncrementsRelativeDLT ----
+
+test_that(".IncrementsRelativeDLT works as expected", {
+  result <- expect_silent(.IncrementsRelativeDLT())
+  expect_valid(result, "IncrementsRelativeDLT")
+})
+
+test_that("IncrementsRelativeDLT object can be created with user constructor", {
+  result <- expect_silent(
+    IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+  )
+  expect_valid(result, "IncrementsRelativeDLT")
+  expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
+  expect_identical(result@increments, c(2, 1, 1.5))
+})
+
 ## IncrementsRelativeDLTCurrent-class ----
 
 test_that(".IncrementsRelativeDLTCurrent works as expected", {
@@ -223,33 +239,33 @@ test_that("IncrementsRelativeDLTCurrent object can be created with user construc
   expect_valid(result, "IncrementsRelativeDLTCurrent")
 })
 
-test_that("IncrementsRelativeDLTCurrent fails if DLTintervals is not integer", {
+test_that("IncrementsRelativeDLTCurrent fails if dlt_intervals is not integer", {
   expect_error(
     IncrementsRelativeDLTCurrent(
-      DLTintervals = c(0, 0.6, 1),
+      dlt_intervals = c(0, 0.6, 1),
       increments = c(1, 0.50)
     ),
     "elements 2 of vector are not integers!"
   )
 })
 
-test_that("IncrementsRelativeDLTCurrent fails if DLTintervals is not sorted and unique", {
+test_that("IncrementsRelativeDLTCurrent fails if dlt_intervals is not sorted and unique", {
   expect_error(
     IncrementsRelativeDLTCurrent(
-      DLTintervals = c(1, 0),
+      dlt_intervals = c(1, 0),
       increments = c(1, 3)
     ),
-    "DLTintervals has to be sorted and have unique values"
+    "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
   )
 })
 
 test_that("IncrementsRelativeDLTCurrent warns if increments does not have same length as intervals", {
   expect_error(
     IncrementsRelativeDLTCurrent(
-      DLTintervals = c(0, 1),
+      dlt_intervals = c(0, 1),
       increments = c(1, 3, 100)
     ),
-    "increments must have same length as DLTintervals"
+    "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
   )
 })
 
