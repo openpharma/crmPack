@@ -1260,7 +1260,7 @@ setMethod("maxDose",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = increments@DLTintervals
+          vec = increments@dlt_intervals
         )
 
       ## so the maximum next dose is
@@ -1301,7 +1301,7 @@ setMethod("maxDose",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = increments@DLTintervals
+          vec = increments@dlt_intervals
         )
 
       (1 + increments@increments[interval]) * lastDose

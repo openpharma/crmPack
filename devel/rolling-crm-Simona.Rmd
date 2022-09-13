@@ -505,7 +505,7 @@ plotPrmda2 <- plot(Priorsamples2, mymda_model2,emptydata,hazard=TRUE)
 #6) Escalation rules
 
 ##need to fill in (use the same rule in the section 8 of "using the package crmPack: introductory examples")
-myIncrements <- IncrementsRelativeDLT(DLTintervals=c(0, 1),
+myIncrements <- IncrementsRelativeDLT(dlt_intervals=c(0, 1),
                                    increments=c(1, 0.5))
 
 myNextBest <- NextBestNCRM(target=c(0.2,0.35),

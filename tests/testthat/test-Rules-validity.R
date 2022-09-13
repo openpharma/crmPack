@@ -456,6 +456,43 @@ test_that("v_increments_relative returns message for non-valid increments", {
   expect_equal(v_increments_relative(object), err_msg)
 })
 
+## v_increments_relative_dlt ----
+
+test_that("v_increments_relative_dlt passes for valid object", {
+  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(2, 1))
+  expect_true(v_increments_relative_dlt(object))
+})
+
+test_that("v_increments_relative_dlt returns message for non-valid intervals", {
+  err_msg <- "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `dlt_intervals` so that it contains non-unique values.
+  object@dlt_intervals <- c(1L, 2L, 2L)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+
+  # Changing `dlt_intervals` so that it contains non-sorted values.
+  object@dlt_intervals <- c(1L, 3L, 2L)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+
+  # Changing `dlt_intervals` so that it contains missing, or negative values.
+  object@dlt_intervals <- c(-1L, NA_integer_, 2L)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+})
+
+test_that("v_increments_relative_dlt returns message for non-valid increments", {
+  err_msg <- "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
+  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `increments` so that it is of a length different than the length of `dlt_intervals`.
+  object@increments <- c(1, 2, 3, 4)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+
+  # Changing `increments` so that it contains missing, or infinite values.
+  object@increments <- c(NA, 2, Inf)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+})
+
 ## v_increments_numdoselevels ----
 
 test_that("v_increments_numdoselevels passes for valid object", {

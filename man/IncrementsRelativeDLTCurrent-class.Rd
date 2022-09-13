@@ -7,10 +7,10 @@
 \alias{IncrementsRelativeDLTCurrent}
 \title{Increment Control based on Relative Differences and Current DLTs}
 \usage{
-IncrementsRelativeDLTCurrent(DLTintervals = c(0, 1), increments = c(2, 1))
+IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1), increments = c(2, 1))
 }
 \arguments{
-\item{DLTintervals}{see slot description.}
+\item{dlt_intervals}{see slot description.}
 
 \item{increments}{see slot description.}
 }
@@ -23,11 +23,11 @@ but not cumulatively over all cohorts so far.
 \section{Slots}{
 
 \describe{
-\item{\code{DLTintervals}}{(\code{integer})\cr left bounds of the relevant
+\item{\code{dlt_intervals}}{(\code{integer})\cr left bounds of the relevant
 DLT intervals.}
 
 \item{\code{increments}}{(\code{numeric})\cr corresponding maximum allowable
-relative increments in the \code{DLTintervals}.}
+relative increments in the \code{dlt_intervals}.}
 }}
 
 \examples{
@@ -38,7 +38,7 @@ relative increments in the \code{DLTintervals}.}
 #      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed
 
 my_increments <- IncrementsRelativeDLTCurrent(
-  DLTintervals = c(0, 1, 3),
+  dlt_intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 }
