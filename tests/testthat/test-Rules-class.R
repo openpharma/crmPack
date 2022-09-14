@@ -209,6 +209,22 @@ test_that("IncrementsRelative object can be created with user constructor", {
   expect_identical(result@increments, c(2, 1, 1.5))
 })
 
+## IncrementsRelativeParts ----
+
+test_that("IncrementsRelativeParts works as expected", {
+  result <- expect_silent(.IncrementsRelativeParts())
+  expect_valid(result, "IncrementsRelativeParts")
+})
+
+test_that("IncrementsRelativeParts object can be created with user constructor", {
+  result <- expect_silent(
+    IncrementsRelativeParts(dlt_start = -1, clean_start = 3)
+  )
+  expect_valid(result, "IncrementsRelativeParts")
+  expect_identical(result@dlt_start, -1L)
+  expect_identical(result@clean_start, 3L)
+})
+
 ## IncrementsRelativeDLT ----
 
 test_that(".IncrementsRelativeDLT works as expected", {

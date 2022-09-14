@@ -749,6 +749,70 @@ IncrementsRelative <- function(intervals, increments) {
   )
 }
 
+# IncrementsRelativeParts ----
+
+## class ----
+
+#' `IncrementsRelativeParts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsRelativeParts`] is the class for increments control based on
+#' relative differences in intervals, with special rules for part 1 and
+#' beginning of part 2.
+#'
+#' @details This class works only conjunction with [`DataParts`] objects. If the
+#' part 2 will just be started in the next cohort, then the next maximum dose
+#' will be either `dlt_start` (e.g. -1) shift of the last part 1 dose in case of
+#' a DLT in part 1, or `clean_start` shift (e.g. 0) in case of no DLTs in part 1.
+#' If part 1 will still be on in the next cohort, then the next dose level will
+#' be the next higher dose level in the `part1Ladder` slot of the data object.
+#' If part 2 has been started before, the usual relative increment rules apply,
+#' see [`IncrementsRelative`].
+#'
+#' @slot dlt_start (`integer`)\cr the dose level increment for starting part 2
+#'   in case of a DLT in part 1.
+#' @slot clean_start (`integer`)\cr the dose level increment for starting part 2
+#'   in case of a DLT in part 1. If this is less or equal to 0, then the part 1
+#'   ladder will be used to find the maximum next dose. Otherwise, the relative
+#'   increment rules will be applied to find the next maximum dose level.
+#'
+#' @aliases IncrementsRelativeParts
+#' @export
+#'
+.IncrementsRelativeParts <- setClass(
+  Class = "IncrementsRelativeParts",
+  slots = representation(
+    dlt_start = "integer",
+    clean_start = "integer"
+  ),
+  prototype = prototype(
+    dlt_start = -1L,
+    clean_start = 1L
+  ),
+  contains = "IncrementsRelative",
+  validity = v_increments_relative_parts
+)
+
+## constructor ----
+
+#' @rdname IncrementsRelativeParts-class
+#'
+#' @param dlt_start (`numeric`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @param clean_start (`numeric`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @inheritDotParams IncrementsRelative
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelative-DataParts.R
+#'
+IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
+  .IncrementsRelativeParts(
+    dlt_start = safeInteger(dlt_start),
+    clean_start = safeInteger(clean_start),
+    ...
+  )
+}
+
 # IncrementsRelativeDLT ----
 
 ## class ----
@@ -929,76 +993,6 @@ IncrementsHSRBeta <- function(target = 0.3,
 }
 
 # nolint start
-
-## --------------------------------------------------
-## Increments control based on relative differences in intervals,
-## with special rules for part 1 and beginning of part 2
-## --------------------------------------------------
-
-##' Increments control based on relative differences in intervals,
-##' with special rules for part 1 and beginning of part 2
-##'
-##' Note that this only works in conjunction with \code{\linkS4class{DataParts}}
-##' objects. If the part 2 will just be started in the next cohort, then the
-##' next maximum dose will be either \code{dltStart} (e.g. -1) shift of the last
-##' part 1 dose in case of a DLT in part 1, or \code{cleanStart} shift (e.g. 0)
-##' in case of no DLTs in part 1. If part 1 will still be on in the next cohort,
-##' then the next dose level will be the next higher dose level in the
-##' \code{part1Ladder} of the data object. If part 2 has been started before,
-##' the usual relative increment rules apply, see
-##' \code{\linkS4class{IncrementsRelative}}.
-##'
-##' @slot dltStart integer giving the dose level increment for starting part 2
-##' in case of a DLT in part 1
-##' @slot cleanStart integer giving the dose level increment for starting part 2
-##' in case of a DLT in part 1. If this is less or equal to 0, then the part 1
-##' ladder will be used to find the maximum next dose. If this is larger than 0,
-##' then the relative increment rules will be applied to find the next maximum
-##' dose level.
-##'
-##' @example examples/Rules-class-IncrementsRelative-DataParts.R
-##' @export
-##' @keywords classes
-.IncrementsRelativeParts <-
-    setClass(Class="IncrementsRelativeParts",
-             representation(dltStart="integer",
-                            cleanStart="integer"),
-             prototype(dltStart=-1L,
-                       cleanStart=1L),
-             contains="IncrementsRelative",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(is.scalar(object@dltStart),
-                             "dltStart must be scalar integer")
-                     o$check(is.scalar(object@cleanStart),
-                             "cleanStart must be scalar integer")
-                     o$check(object@cleanStart >= object@dltStart,
-                             "dltStart cannot be higher than cleanStart")
-
-                     o$result()
-                 })
-validObject(.IncrementsRelativeParts())
-
-
-##' Initialization function for "IncrementsRelativeParts"
-##'
-##' @param dltStart see \code{\linkS4class{IncrementsRelativeParts}}
-##' @param cleanStart see \code{\linkS4class{IncrementsRelativeParts}}
-##' @param \dots additional slots from \code{\linkS4class{IncrementsRelative}}
-##' @return the \code{\linkS4class{IncrementsRelativeParts}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsRelativeParts <- function(dltStart,
-                                    cleanStart,
-                                    ...)
-{
-    .IncrementsRelativeParts(dltStart=safeInteger(dltStart),
-                             cleanStart=safeInteger(cleanStart),
-                             ...)
-}
 
 #' Increment Control based on Relative Differences and Current DLTs
 #'

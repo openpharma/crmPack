@@ -74,6 +74,7 @@ reference:
       - NextBestMaxGainSamples
       - Increments
       - IncrementsRelative
+      - IncrementsRelativeParts
       - IncrementsRelativeDLT
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
@@ -153,6 +154,7 @@ reference:
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
       - v_increments_relative
+      - v_increments_relative_parts
       - v_increments_relative_dlt
       - v_increments_numdoselevels
       - v_increments_hsr_beta

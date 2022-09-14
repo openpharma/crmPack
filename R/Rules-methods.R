@@ -1214,16 +1214,16 @@ setMethod("maxDose",
 
             ## if there was a DLT so far:
             if (any(data@y == 1L)) {
-              data@part1Ladder[lastDoseLevel + increments@dltStart]
+              data@part1Ladder[lastDoseLevel + increments@dlt_start]
             } else {
               ## otherwise
-              if (increments@cleanStart > 0) {
+              if (increments@clean_start > 0) {
                 ## if we want to start part 2 higher than
                 ## the last part 1 dose, use usual increments
                 callNextMethod(increments, data, ...)
               } else {
                 ## otherwise
-                data@part1Ladder[lastDoseLevel + increments@cleanStart]
+                data@part1Ladder[lastDoseLevel + increments@clean_start]
               }
             }
           }
