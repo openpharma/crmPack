@@ -242,6 +242,21 @@ v_increments_relative <- function(object) {
   v$result()
 }
 
+#' @describeIn v_increments validates that the [`IncrementsRelativeParts`] object
+#'   contains valid `dlt_start` and `clean_start` parameters.
+v_increments_relative_parts <- function(object) {
+  v <- Validate()
+  is_dlt_start_ok <- test_int(object@dlt_start)
+  v$check(is_dlt_start_ok, "dlt_start must be an integer number")
+  if (is_dlt_start_ok) {
+    v$check(
+      test_int(object@clean_start, lower = object@dlt_start),
+      "clean_start must be an integer number and it must be >= dlt_start"
+    )
+  }
+  v$result()
+}
+
 #' @describeIn v_increments validates that the [`IncrementsRelativeDLT`] object
 #'   contains valid `dlt_intervals` and `increments` parameters.
 v_increments_relative_dlt <- function(object) {

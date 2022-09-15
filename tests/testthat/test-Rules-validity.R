@@ -456,6 +456,43 @@ test_that("v_increments_relative returns message for non-valid increments", {
   expect_equal(v_increments_relative(object), err_msg)
 })
 
+## v_increments_relative_parts ----
+
+test_that("v_increments_relative_parts passes for valid object", {
+  object <- IncrementsRelativeParts(dlt_start = -1L, clean_start = 3L)
+  expect_true(v_increments_relative_parts(object))
+})
+
+test_that("v_increments_relative_parts returns message for non-valid dlt_start", {
+  err_msg <- "dlt_start must be an integer number"
+  object <- IncrementsRelativeParts(dlt_start = -1L, clean_start = 3L)
+
+  # Changing `dlt_start` so that it not a scalar.
+  object@dlt_start <- c(1L, 2L)
+  expect_equal(v_increments_relative_parts(object), err_msg)
+
+  # Changing `dlt_start` so that it is a missing object.
+  object@dlt_start <- NA_integer_
+  expect_equal(v_increments_relative_parts(object), err_msg)
+})
+
+test_that("v_increments_relative_parts returns message for non-valid clean_start", {
+  err_msg <- "clean_start must be an integer number and it must be >= dlt_start"
+  object <- IncrementsRelativeParts(dlt_start = -1L, clean_start = 1L)
+
+  # Changing `clean_start` so that it not a scalar.
+  object@clean_start <- c(1L, 2L)
+  expect_equal(v_increments_relative_parts(object), err_msg)
+
+  # Changing `clean_start` so that it is a missing object.
+  object@clean_start <- NA_integer_
+  expect_equal(v_increments_relative_parts(object), err_msg)
+
+  # Changing `clean_start` so that it is less than `dlt_start`.
+  object@clean_start <- -2L
+  expect_equal(v_increments_relative_parts(object), err_msg)
+})
+
 ## v_increments_relative_dlt ----
 
 test_that("v_increments_relative_dlt passes for valid object", {

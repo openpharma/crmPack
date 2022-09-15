@@ -1,6 +1,6 @@
 # Version 1.0.9000.9069
-* Renamed slot `DLTintervals` to `dlt_intervals` in `IncrementsRelativeDLT` class
-  and other dependent classes.
+* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT` and other
+  dependent classes.
 * Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
   `NextBestMaxGainSamples` classes.
 * Removed `Model` class.

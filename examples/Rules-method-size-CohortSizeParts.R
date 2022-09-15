@@ -23,8 +23,8 @@ options <- McmcOptions(burnin=100,
 set.seed(94)
 samples <- mcmc(data, model, options)
 
-myIncrements <- IncrementsRelativeParts(dltStart=0,
-                                        cleanStart=1)
+myIncrements <- IncrementsRelativeParts(dlt_start=0,
+                                        clean_start=1)
 nextMaxDose <- maxDose(myIncrements,
                        data=data)
 
