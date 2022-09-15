@@ -831,12 +831,13 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #'   one, at least 3 DLTs. That means, the right bound of the intervals are
 #'   exclusive to the interval and the last interval goes from the last value to
 #'   infinity.
-#' @slot increments (`numeric`)\cr a vector of the same length with the maximum
-#'   allowable relative increments in the `dlt_intervals`.
+#' @slot increments (`numeric`)\cr a vector of maximum allowable relative
+#'   increments corresponding to `dlt_intervals`. IT must be of the same length
+#'   as the length of `dlt_intervals`.
 #'
 #' @note This considers all DLTs across all cohorts observed so far.
 #'
-#' @seealso [IncrementsRelativeDLTCurrent()] which only considers the DLTs
+#' @seealso [IncrementsRelativeDLTCurrent] which only considers the DLTs
 #'   in the current cohort.
 #'
 #' @aliases IncrementsRelativeDLT
@@ -870,6 +871,46 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
   assert_integerish(dlt_intervals)
 
   .IncrementsRelativeDLT(
+    dlt_intervals = safeInteger(dlt_intervals),
+    increments = increments
+  )
+}
+
+# IncrementsRelativeDLTCurrent ----
+
+## class ----
+
+#' `IncrementsRelativeDLTCurrent`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsRelativeDLTCurrent`] is the class for increments control based on
+#' relative differences and current DLTs. The class is based on the number of
+#' DLTs observed in the current cohort, but not cumulatively over all cohorts
+#' so far.
+#'
+#' @seealso [IncrementsRelativeDLT].
+#'
+#' @aliases IncrementsRelativeDLTCurrent
+#' @export
+#'
+.IncrementsRelativeDLTCurrent <- setClass(
+  Class = "IncrementsRelativeDLTCurrent",
+  contains = "IncrementsRelativeDLT"
+)
+
+## constructor ----
+
+#' @rdname IncrementsRelativeDLTCurrent-class
+#'
+#' @inheritParams IncrementsRelativeDLT
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
+#'
+IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
+                                         increments = c(2, 1)) {
+  .IncrementsRelativeDLTCurrent(
     dlt_intervals = safeInteger(dlt_intervals),
     increments = increments
   )
@@ -993,41 +1034,6 @@ IncrementsHSRBeta <- function(target = 0.3,
 }
 
 # nolint start
-
-#' Increment Control based on Relative Differences and Current DLTs
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' The class is based on the number of DLTs observed in the current cohort,
-#' but not cumulatively over all cohorts so far.
-#'
-#' @slot dlt_intervals (`integer`)\cr left bounds of the relevant
-#'   DLT intervals.
-#' @slot increments (`numeric`)\cr corresponding maximum allowable
-#' relative increments in the `dlt_intervals`.
-#'
-#' @seealso [IncrementsRelativeDLT()] which considers all DLTs cumulatively
-#' across cohorts and doses.
-#' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
-#' @export
-.IncrementsRelativeDLTCurrent <-
-  setClass(
-    Class = "IncrementsRelativeDLTCurrent",
-    contains = "IncrementsRelativeDLT"
-  )
-
-#' @rdname IncrementsRelativeDLTCurrent-class
-#'
-#' @param dlt_intervals see slot description.
-#' @param increments see slot description.
-#'
-#' @export
-IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
-                                         increments = c(2, 1))
-{
-  .IncrementsRelativeDLTCurrent(dlt_intervals=safeInteger(dlt_intervals),
-                                increments=increments)
-}
 
 ## -----------------------------------------------------------
 ## Max increment based on minimum of multiple increment rules

@@ -76,6 +76,7 @@ reference:
       - IncrementsRelative
       - IncrementsRelativeParts
       - IncrementsRelativeDLT
+      - IncrementsRelativeDLTCurrent
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
       - StoppingMTDCV

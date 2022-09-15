@@ -31,8 +31,9 @@ one, at least 3 DLTs. That means, the right bound of the intervals are
 exclusive to the interval and the last interval goes from the last value to
 infinity.}
 
-\item{\code{increments}}{(\code{numeric})\cr a vector of the same length with the maximum
-allowable relative increments in the \code{dlt_intervals}.}
+\item{\code{increments}}{(\code{numeric})\cr a vector of maximum allowable relative
+increments corresponding to \code{dlt_intervals}. IT must be of the same length
+as the length of \code{dlt_intervals}.}
 }}
 
 \note{
@@ -50,6 +51,6 @@ my_increments <- IncrementsRelativeDLT(
 )
 }
 \seealso{
-\code{\link[=IncrementsRelativeDLTCurrent]{IncrementsRelativeDLTCurrent()}} which only considers the DLTs
+\link{IncrementsRelativeDLTCurrent} which only considers the DLTs
 in the current cohort.
 }

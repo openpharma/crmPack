@@ -5,37 +5,29 @@
 \alias{IncrementsRelativeDLTCurrent-class}
 \alias{.IncrementsRelativeDLTCurrent}
 \alias{IncrementsRelativeDLTCurrent}
-\title{Increment Control based on Relative Differences and Current DLTs}
+\title{\code{IncrementsRelativeDLTCurrent}}
 \usage{
 IncrementsRelativeDLTCurrent(dlt_intervals = c(0, 1), increments = c(2, 1))
 }
 \arguments{
-\item{dlt_intervals}{see slot description.}
+\item{dlt_intervals}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeDLT}}.}
 
-\item{increments}{see slot description.}
+\item{increments}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeDLT}}.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-The class is based on the number of DLTs observed in the current cohort,
-but not cumulatively over all cohorts so far.
+\code{\link{IncrementsRelativeDLTCurrent}} is the class for increments control based on
+relative differences and current DLTs. The class is based on the number of
+DLTs observed in the current cohort, but not cumulatively over all cohorts
+so far.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{dlt_intervals}}{(\code{integer})\cr left bounds of the relevant
-DLT intervals.}
-
-\item{\code{increments}}{(\code{numeric})\cr corresponding maximum allowable
-relative increments in the \code{dlt_intervals}.}
-}}
-
 \examples{
 
 # As example, here is the rule for:
-#      maximum doubling the dose if no DLTs were observed at the current dose
-#      or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose
-#      or maximum increasing the dose by 1.22 if 3 or more DLTs were observed
+# maximum doubling the dose if no DLTs were observed at the current dose
+# or maximum increasing the dose by 1.33 if 1 or 2 DLTs were observed at the current dose
+# or maximum increasing the dose by 1.22 if 3 or more DLTs were observed.
 
 my_increments <- IncrementsRelativeDLTCurrent(
   dlt_intervals = c(0, 1, 3),
@@ -43,6 +35,5 @@ my_increments <- IncrementsRelativeDLTCurrent(
 )
 }
 \seealso{
-\code{\link[=IncrementsRelativeDLT]{IncrementsRelativeDLT()}} which considers all DLTs cumulatively
-across cohorts and doses.
+\link{IncrementsRelativeDLT}.
 }
