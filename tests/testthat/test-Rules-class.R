@@ -241,48 +241,30 @@ test_that("IncrementsRelativeDLT object can be created with user constructor", {
   expect_identical(result@increments, c(2, 1, 1.5))
 })
 
-## IncrementsRelativeDLTCurrent-class ----
+## IncrementsRelativeDLTCurrent ----
 
 test_that(".IncrementsRelativeDLTCurrent works as expected", {
   result <- expect_silent(.IncrementsRelativeDLTCurrent())
   expect_valid(result, "IncrementsRelativeDLTCurrent")
 })
 
-## IncrementsRelativeDLTCurrent-constructor ----
-
-test_that("IncrementsRelativeDLTCurrent object can be created with user constructor", {
+test_that("IncrementsRelativeDLTCurrent object can be created with user constructor (default)", {
   result <- expect_silent(IncrementsRelativeDLTCurrent())
   expect_valid(result, "IncrementsRelativeDLTCurrent")
+  expect_identical(result@dlt_intervals, c(0L, 1L))
+  expect_identical(result@increments, c(2, 1))
 })
 
-test_that("IncrementsRelativeDLTCurrent fails if dlt_intervals is not integer", {
-  expect_error(
+test_that("IncrementsRelativeDLTCurrent object can be created with user constructor (default)", {
+  result <- expect_silent(
     IncrementsRelativeDLTCurrent(
-      dlt_intervals = c(0, 0.6, 1),
-      increments = c(1, 0.50)
-    ),
-    "elements 2 of vector are not integers!"
+      dlt_intervals = c(3, 4),
+      increments = c(4.5, 6)
+    )
   )
-})
-
-test_that("IncrementsRelativeDLTCurrent fails if dlt_intervals is not sorted and unique", {
-  expect_error(
-    IncrementsRelativeDLTCurrent(
-      dlt_intervals = c(1, 0),
-      increments = c(1, 3)
-    ),
-    "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
-  )
-})
-
-test_that("IncrementsRelativeDLTCurrent warns if increments does not have same length as intervals", {
-  expect_error(
-    IncrementsRelativeDLTCurrent(
-      dlt_intervals = c(0, 1),
-      increments = c(1, 3, 100)
-    ),
-    "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
-  )
+  expect_valid(result, "IncrementsRelativeDLTCurrent")
+  expect_identical(result@dlt_intervals, c(3L, 4L))
+  expect_identical(result@increments, c(4.5, 6))
 })
 
 ## IncrementsNumDoseLevels-class ----
