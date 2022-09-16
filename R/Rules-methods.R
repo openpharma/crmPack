@@ -1034,6 +1034,44 @@ setGeneric("maxDose",
 
 
 ## --------------------------------------------------
+## The maximum allowable absolute increments in intervals method
+## --------------------------------------------------
+
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' absolute increments
+##'
+##' @example examples/Rules-method-maxDose-IncrementsAbsolute.R
+setMethod(
+  "maxDose",
+  signature(increments = "IncrementsAbsolute", data = "Data"),
+  function(increments, data) {
+    if (length(data@x) == 0) {
+      # print(paste0("Empty grid: returning dose index ", increments@increments[1], ": ", data@doseGrid[increments@increments[1]]))
+      return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
+    }
+    usedMax <- max(data@x)
+    usedMaxIndex <- which(data@doseGrid == usedMax)
+    if (length(usedMaxIndex) == 0) {
+      usedMaxIndex == length(increments@increments)
+    } else {
+      usedMaxIndex == usedMaxIndex[1]
+    }
+    tmp <- which(increments@intervals > usedMax)
+    if (length(tmp) == 0) {
+      #Max used dose above highest value in increments@intervals
+      currentInterval <- length(increments@intervals)
+    } else {
+      currentInterval <- min(tmp) - 1
+    }
+    # print(paste0("usedMax: ", usedMax))
+    # print(paste0("usedMaxIndex: ", usedMaxIndex))
+    # print(paste0("Current interval: ", currentInterval))
+    allowedIndex <- min(length(data@doseGrid), usedMaxIndex + increments@increments[currentInterval])
+    data@doseGrid[allowedIndex]
+  }
+)
+
+## --------------------------------------------------
 ## The maximum allowable relative increments in intervals method
 ## --------------------------------------------------
 

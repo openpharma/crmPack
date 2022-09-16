@@ -695,6 +695,58 @@ setClass(
   Class = "Increments"
 )
 
+# IncrementsAbsolute ----
+
+## class ----
+
+#' `IncrementsAbsolute`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Increments control based on absolute differences in intervals
+#'
+#' #' Note that \code{intervals} is to be read as follows. If for example,
+#' we want to specify three intervals: First 0 to less than 50, second at least
+#' 50 up to less than 100 mg, and third at least 100 mg, then we specify
+#' \code{intervals} to be \code{c(0, 50, 100)}. That means, the right
+#' bound of the intervals are exclusive to the interval, and the last interval
+#' goes from the last value to infinity.
+#'
+#' @slot intervals a vector with the left bounds of the relevant intervals
+#' @slot increments a vector of the same length with the maximum allowable
+#' absolute increments in the \code{intervals}
+#' @aliases IncrementsAbsolute
+#' @export
+.IncrementsAbsolute <- setClass(
+    Class="IncrementsAbsolute",
+    representation(
+      intervals="numeric",
+      increments="numeric"
+    ),
+    prototype(
+      intervals=c(0, 2),
+      increments=c(2, 1)
+    ),
+    contains="Increments"
+)
+
+## constructor ----
+
+#' @rdname IncrementsAbsolute-class
+#' @param intervals (`numeric`) \cr a vector of right hand boundaries of the intervals
+#' @param increments (`numeric`) \cr a vector of the maximum increment allowed in the corresponding interval
+#' @return the \code{\linkS4class{IncrementsAbsolute}} object
+#'
+#' @export
+#' @importClassesFrom crmPack Increments
+IncrementsAbsolute <- function(
+                        intervals=c(5, 10),
+                        increments=c(2, 1)
+                      ) {
+  .IncrementsAbsolute(intervals=intervals,
+                      increments=increments)
+}
+
 # IncrementsRelative ----
 
 ## class ----
