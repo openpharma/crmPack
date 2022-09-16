@@ -1,0 +1,11 @@
+	1	2.5 	5	10	15	20	25	30	40	50
+No. of patients	3	4	5	4	NA	NA	2	NA	NA	NA
+No. of DLTs	0	0	0	0	NA	NA	2	NA	NA	NA
+A) Posterior summaries (original skeleton)										
+Skeleton (CRM)	0.01	0.015	0.02	0.025	0.03	0.04	0.05	0.1	0.17	0.3
+Mean	0.069	0.085	0.099	0.111	0.123	0.144	0.163	0.242	0.33	0.465
+Std. dev.	0.055	0.062	0.068	0.072	0.076	0.082	0.087	0.101	0.109	0.108
+B) Posterior summaries (equidistant skeleton)										
+Skeleton (CRM)	0.063	0.125	0.188	0.25	0.313	0.375	0.438	0.5	0.563	0.625
+Mean	0.024	0.054	0.09	0.13	0.176	0.226	0.281	0.341	0.405	0.475
+Std. dev.	0.03	0.051	0.069	0.084	0.097	0.107	0.115	0.119	0.12	0.117
