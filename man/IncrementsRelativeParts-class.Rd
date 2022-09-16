@@ -10,9 +10,9 @@
 IncrementsRelativeParts(dlt_start, clean_start, ...)
 }
 \arguments{
-\item{dlt_start}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
+\item{dlt_start}{(\code{count})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
 
-\item{clean_start}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
+\item{clean_start}{(\code{count})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
 
 \item{...}{
   Arguments passed on to \code{\link[=IncrementsRelative]{IncrementsRelative}}
@@ -41,10 +41,10 @@ see \code{\link{IncrementsRelative}}.
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_start}}{(\code{integer})\cr the dose level increment for starting part 2
+\item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part 2
 in case of a DLT in part 1.}
 
-\item{\code{clean_start}}{(\code{integer})\cr the dose level increment for starting part 2
+\item{\code{clean_start}}{(\code{count})\cr the dose level increment for starting part 2
 in case of a DLT in part 1. If this is less or equal to 0, then the part 1
 ladder will be used to find the maximum next dose. Otherwise, the relative
 increment rules will be applied to find the next maximum dose level.}
