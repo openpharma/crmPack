@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 \
 
-The goal of crmPack is to implement a wide range of model-based dose
+The goal of crmPack is to implement a wide range of model-based dose 
 escalation designs, ranging from classical and modern continual
 reassessment methods (CRMs) based on dose-limiting toxicity endpoints to
 dual-endpoint designs taking into account a biomarker/efficacy outcome. The
