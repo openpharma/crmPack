@@ -530,35 +530,49 @@ test_that("v_increments_relative_dlt returns message for non-valid increments", 
   expect_equal(v_increments_relative_dlt(object), err_msg)
 })
 
-## v_increments_numdoselevels ----
+## v_increments_num_dose_levels ----
 
-test_that("v_increments_numdoselevels passes for valid object", {
-  object <- IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
-  expect_true(v_increments_numdoselevels(object))
-})
-
-test_that("v_increments_numdoselevels passes for valid object", {
-  object <- IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "max")
-  expect_true(v_increments_numdoselevels(object))
-})
-
-test_that("v_increments_numdoselevels passes for valid object", {
-  object <- IncrementsNumDoseLevels(maxLevels = 1)
-  expect_true(v_increments_numdoselevels(object))
-})
-
-test_that("v_increments_numdoselevels returns expected messages for non-valid object", {
+test_that("v_increments_num_dose_levels passes for valid object", {
   object <- IncrementsNumDoseLevels()
-  object@maxLevels <- c(-1L)
-  object@basisLevel <- c("minGiven")
+  expect_true(v_increments_num_dose_levels(object))
 
-  expect_equal(
-    v_increments_numdoselevels(object),
-    c(
-      "maxLevels must be scalar positive integer",
-      "basisLevel must be either 'last' or 'max'"
-    )
-  )
+  object <- IncrementsNumDoseLevels(max_levels = 1, basis_level = "last")
+  expect_true(v_increments_num_dose_levels(object))
+
+  object <- IncrementsNumDoseLevels(max_levels = 2, basis_level = "max")
+  expect_true(v_increments_num_dose_levels(object))
+})
+
+test_that("v_increments_num_dose_levels returns message for non-valid max_levels", {
+  err_msg <- "max_levels must be scalar positive integer"
+  object <- IncrementsNumDoseLevels()
+
+  # Changing `max_levels` so that it not a scalar.
+  object@max_levels <- c(1L, 2L)
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  # Changing `max_levels` so that it is a missing object.
+  object@max_levels <- NA_integer_
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  # Changing `max_levels` so that it is a negative value.
+  object@max_levels <- -2L
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+})
+
+test_that("v_increments_num_dose_levels returns message for non-valid basis_level", {
+  err_msg <- "basis_level must be either 'last' or 'max'"
+  object <- IncrementsNumDoseLevels()
+
+  # Changing `basis_level` so that it is neither equal to 'last' nor 'max'
+  object@basis_level <- "last "
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  object@basis_level <- " max "
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  object@basis_level <- c("last", "max")
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
 })
 
 ## v_increments_hsr_beta ----

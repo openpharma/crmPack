@@ -770,9 +770,9 @@ IncrementsRelative <- function(intervals, increments) {
 #' If part 2 has been started before, the usual relative increment rules apply,
 #' see [`IncrementsRelative`].
 #'
-#' @slot dlt_start (`integer`)\cr the dose level increment for starting part 2
+#' @slot dlt_start (`count`)\cr the dose level increment for starting part 2
 #'   in case of a DLT in part 1.
-#' @slot clean_start (`integer`)\cr the dose level increment for starting part 2
+#' @slot clean_start (`count`)\cr the dose level increment for starting part 2
 #'   in case of a DLT in part 1. If this is less or equal to 0, then the part 1
 #'   ladder will be used to find the maximum next dose. Otherwise, the relative
 #'   increment rules will be applied to find the next maximum dose level.
@@ -798,8 +798,8 @@ IncrementsRelative <- function(intervals, increments) {
 
 #' @rdname IncrementsRelativeParts-class
 #'
-#' @param dlt_start (`numeric`)\cr see slot definition in [`IncrementsRelativeParts`].
-#' @param clean_start (`numeric`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @param dlt_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @param clean_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
 #' @inheritDotParams IncrementsRelative
 #'
 #' @export
@@ -916,54 +916,62 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
   )
 }
 
-# nolint end
+# IncrementsNumDoseLevels ----
 
-# IncrementsNumDoseLevels-class ----
+## class ----
 
 #' `IncrementsNumDoseLevels`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
-#' @slot maxLevels (`count`)\cr corresponding to the number of maximum
-#'   dose levels to increment for the next dose. It defaults to 1,
-#' which means that no dose skipping is allowed - the next dose
-#' can be maximum one level higher than the current dose.
-#' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
-#' It can take two possible values `last` or `max`. If `last` (default)
-#' is specified the increments is applied to the last given dose and if
-#' `max` is specified the increment is applied from the max given dose
-#' level.
+#' [`IncrementsNumDoseLevels`] is the class for increments control based on the
+#' number of maximum dose levels to increment.
 #'
-#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#' @slot max_levels (`count`)\cr maximum dose levels to increment for the next
+#'   dose. It defaults to 1, which means that no dose skipping is allowed - the
+#'   next dose can be maximum one level higher than the current dose.
+#' @slot basis_level (`string`)\cr corresponding to the dose level used to
+#'   increment from. It can take one out of two possible values: `last` or `max`.
+#'   If `last` is specified (default), the increment is applied to the last
+#'   given dose and if `max` is specified the increment is applied from the
+#'   maximum given dose level.
+#'
+#' @aliases IncrementsNumDoseLevels
 #' @export
+#'
 .IncrementsNumDoseLevels <- setClass(
   Class = "IncrementsNumDoseLevels",
+  slots = representation(
+    max_levels = "integer",
+    basis_level = "character"
+  ),
+  prototype = prototype(
+    max_levels = 1L,
+    basis_level = "last"
+  ),
   contains = "Increments",
-  representation = representation(
-    maxLevels = "integer",
-    basisLevel = "character"
-  ),
-  prototype(
-    maxLevels = 1L,
-    basisLevel = "last"
-  ),
-  validity = v_increments_numdoselevels
+  validity = v_increments_num_dose_levels
 )
 
-# IncrementsNumDoseLevels-constructor ----
+## constructor ----
 
 #' @rdname IncrementsNumDoseLevels-class
-#' @param maxLevels see below.
-#' @param basisLevel see below.
+#'
+#' @param max_levels (`count`)\cr see slot definition in [`IncrementsNumDoseLevels`].
+#' @param basis_level (`string`)\cr see slot definition in [`IncrementsNumDoseLevels`].
+#'
 #' @export
-IncrementsNumDoseLevels <- function(maxLevels=1,
-                                    basisLevel="last"){
+#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#'
+IncrementsNumDoseLevels <- function(max_levels = 1L,
+                                    basis_level = "last") {
   .IncrementsNumDoseLevels(
-    maxLevels=safeInteger(maxLevels),
-    basisLevel=basisLevel
+    max_levels = safeInteger(max_levels),
+    basis_level = basis_level
   )
 }
 
+# nolint end
 
 # IncrementsHSRBeta-class ----
 

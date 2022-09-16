@@ -1,6 +1,6 @@
 # Version 1.0.9000.9071
-* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT` and other
-  dependent classes.
+* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
+  `IncrementsNumDoseLevels` and other dependent classes.
 * Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
   `NextBestMaxGainSamples` classes.
 * Removed `Model` class.
