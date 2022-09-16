@@ -210,7 +210,7 @@ setMethod("simulate",
 
               ## from this,
               ## generate the individual seeds for the simulation runs
-              simSeeds <- sample.int(x=2147483647, size=nsim)
+              simSeeds <- sample.int(n=2147483647, size=nsim)
 
               ## the function to produce the run a single simulation
               ## with index "iterSim"
