@@ -12,7 +12,6 @@ test_that(".PowerNormal works as expected", {
   )
 
   # create a convenient initialization function
-
   PowerNormal <- function(skel_probs, dose_grid, mean, variance) {
     skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
     inv_skel_fun <- approxfun(x = skel_probs, y = dose_grid, rule = 1)
