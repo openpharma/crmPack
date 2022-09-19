@@ -54,7 +54,7 @@ test_that(".PowerNormal works as expected", {
   )
 
 
-  ## One-paramter model
+  ## One-parameter model
   ## (A) Posterior summaries (original skeleton)
   empty_data <- crmPack::Data(dose_grid = c(
     1, 2.5, 5, 10, 15, 20, 25, 30,
@@ -192,14 +192,37 @@ test_that(".PowerNormal works as expected", {
     c(1, 2.5, 5, 10, 15, 20, 25, 30, 40, 50)
   )
 
-  tab1 <- read.table("NeuenschwanderTable1.txt",
-    sep = "\t",
-    header = TRUE
-  )
+  tab1 <- structure(list(X = c("No. of patients", "No. of DLTs", "A)
+                             Posterior summaries (original skeleton)",
+                               "Skeleton (CRM)", "Mean", "Std. dev.", "B)
+                             Posterior summaries (equidistant skeleton)",
+                               "Skeleton (CRM)", "Mean", "Std. dev."),
+                         X1 = c(3, 0, NA, 0.01, 0.069, 0.055, NA, 0.063,
+                                0.024, 0.03),
+                         X2.5 = c(4, 0, NA, 0.015, 0.085, 0.062, NA, 0.125,
+                                  0.054, 0.051),
+                         X5 = c(5, 0, NA, 0.02, 0.099, 0.068, NA, 0.188,
+                                0.09, 0.069),
+                         X10 = c(4, 0, NA, 0.025, 0.111, 0.072, NA, 0.25,
+                                 0.13, 0.084),
+                         X15 = c(NA, NA, NA, 0.03, 0.123, 0.076, NA, 0.313,
+                                 0.176, 0.097),
+                         X20 = c(NA, NA, NA, 0.04, 0.144, 0.082, NA, 0.375,
+                                 0.226, 0.107),
+                         X25 = c(2, 2, NA, 0.05, 0.163, 0.087, NA, 0.438,
+                                 0.281, 0.115),
+                         X30 = c(NA, NA, NA, 0.1, 0.242, 0.101, NA, 0.5,
+                                 0.341, 0.119),
+                         X40 = c(NA, NA, NA, 0.17, 0.33, 0.109, NA, 0.563,
+                                 0.405, 0.12),
+                         X50 = c(NA, NA, NA, 0.3, 0.465, 0.108, NA, 0.625,
+                                 0.475, 0.117)),
+                    class = "data.frame", row.names = c(NA, -10L))
+
   tab_1_exp$"Posterior summaries (original skeleton)" <- apply(as.matrix(tab1[4:6, -1]), 2, as.numeric)
   tab_1_exp$"Posterior summaries (equidistant skeleton)" <- apply(as.matrix(tab1[8:10, -1]), 2, as.numeric)
-  colnames(tab_1_exp[[1]]) <- colnames(tab1_exp[[2]]) <- tab1_names[[2]]
-  rownames(tab1_exp[[1]]) <- rownames(tab1_exp[[2]]) <- tab1_names[[1]]
+  colnames(tab_1_exp[[1]]) <- colnames(tab_1_exp[[2]]) <- tab1_names[[2]]
+  rownames(tab_1_exp[[1]]) <- rownames(tab_1_exp[[2]]) <- tab1_names[[1]]
 
   ## test Posterior summaries for probabilities of DLT (CRM)
   # check whether absolute differences between published results and computed
@@ -207,11 +230,11 @@ test_that(".PowerNormal works as expected", {
   tolerance <- 0.01
   # original skeleton
   diff_org_mean <- abs(tab1_act$"Posterior summaries (original skeleton)"[2, ] -
-    tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
+    tab_1_exp$"Posterior summaries (original skeleton)"[2, ]) <
     tolerance
 
   diff_org_sd <- abs(tab1_act$"Posterior summaries (original skeleton)"[3, ] -
-    tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
+    tab_1_exp$"Posterior summaries (original skeleton)"[3, ]) <
     tolerance
 
   # if at least one computed result (mean or sd) has deviation larger than
@@ -228,11 +251,11 @@ test_that(".PowerNormal works as expected", {
 
   # equidistant skeleton
   diff_equi_mean <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[2, ] -
-    tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
+    tab_1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
     tolerance
 
   diff_equi_sd <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[3, ] -
-    tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
+    tab_1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
     tolerance
 
   if ((FALSE %in% diff_equi_mean) == TRUE |
