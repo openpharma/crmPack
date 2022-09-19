@@ -971,9 +971,9 @@ IncrementsNumDoseLevels <- function(max_levels = 1L,
   )
 }
 
-# nolint end
+# IncrementsHSRBeta ----
 
-# IncrementsHSRBeta-class ----
+## class ----
 
 #' `IncrementsHSRBeta`
 #'
@@ -991,40 +991,40 @@ IncrementsNumDoseLevels <- function(max_levels = 1L,
 #'
 #' @slot target (`proportion`)\cr the target toxicity.
 #' @slot prob (`proportion`)\cr the threshold probability for a dose being toxic.
-#' @slot a (`number`)\cr shape parameter a>0 of probability
+#' @slot a (`number`)\cr shape parameter a > 0 of probability
 #'  distribution Beta (a,b).
-#' @slot b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b).
+#' @slot b (`number`)\cr shape parameter b > 0 of probability
+#'  distribution Beta (a, b).
 #'
 #' @aliases IncrementsHSRBeta
 #' @export
 #'
 .IncrementsHSRBeta <- setClass(
   Class = "IncrementsHSRBeta",
-  contains = "Increments",
-  representation(
+  slots = c(
     target = "numeric",
     prob = "numeric",
     a = "numeric",
     b = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     prob = 0.95,
     a = 1,
     b = 1
   ),
+  contains = "Increments",
   validity = v_increments_hsr_beta
 )
 
-# IncrementsHSRBeta-constructor ----
+## constructor ----
 
 #' @rdname IncrementsHSRBeta-class
 #'
-#' @param target (`proportion`)\cr see slot definition.
-#' @param prob (`proportion`)\cr see slot definition.
-#' @param a (`number`)\cr see slot definition.
-#' @param b (`number`)\cr see slot definition.
+#' @param target (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param prob (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param a (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param b (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
 #'
 #' @example examples/Rules-class-IncrementsHSRBeta.R
 #' @export

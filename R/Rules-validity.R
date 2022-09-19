@@ -300,14 +300,13 @@ v_increments_hsr_beta <- function(object) {
     "prob must be a probability"
   )
   v$check(
-    is.scalar(object@a) & is.numeric(object@a) && object@a > 0,
+    test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter a must be a positive scalar"
   )
   v$check(
-    is.scalar(object@b) & is.numeric(object@b) && object@b > 0,
+    test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter b must be a positive scalar"
   )
-
   v$result()
 }
 

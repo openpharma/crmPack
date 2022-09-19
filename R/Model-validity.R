@@ -49,19 +49,19 @@ v_model_logistic_kadane <- function(object) {
 v_model_logistic_kadane_beta_gamma <- function(object) {
   v <- Validate()
   v$check(
-    is.scalar(object@alpha) & is.numeric(object@alpha) && object@alpha > 0,
+    test_number(object@alpha, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter alpha must be a positive scalar"
   )
   v$check(
-    is.scalar(object@beta) & is.numeric(object@beta) && object@beta > 0,
+    test_number(object@beta, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter beta must be a positive scalar"
   )
   v$check(
-    is.scalar(object@shape) & is.numeric(object@shape) && object@shape > 0,
+    test_number(object@shape, lower = .Machine$double.xmin, finite = TRUE),
     "Gamma distribution shape parameter must be a positive scalar"
   )
   v$check(
-    is.scalar(object@rate) & is.numeric(object@rate) && object@rate > 0,
+    test_number(object@rate, lower = .Machine$double.xmin, finite = TRUE),
     "Gamma distribution rate parameter must be a positive scalar"
   )
   v$result()

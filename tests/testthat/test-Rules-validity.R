@@ -580,47 +580,41 @@ test_that("v_increments_num_dose_levels returns message for non-valid basis_leve
 test_that("v_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
   expect_true(v_increments_hsr_beta(object))
-})
 
-test_that("v_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
   expect_true(v_increments_hsr_beta(object))
 })
 
-test_that("v_increments_hsr_beta returns expected messages for non-valid object", {
+test_that("v_increments_hsr_beta returns expected messages for non-valid object probabilities", {
+  err_msg <- c("target must be a probability", "prob must be a probability")
   object <- IncrementsHSRBeta()
+
+  # Changing `target` and `prob` so that they are not a probability values.
   object@target <- -0.3
   object@prob <- 1.1
-  object@a <- -2
-  object@b <- 0
+  expect_equal(v_increments_hsr_beta(object), err_msg)
 
-  expect_equal(
-    v_increments_hsr_beta(object),
-    c(
-      "target must be a probability",
-      "prob must be a probability",
-      "Beta distribution shape parameter a must be a positive scalar",
-      "Beta distribution shape parameter b must be a positive scalar"
-    )
-  )
-})
-
-test_that("v_increments_hsr_beta returns expected messages for non-valid object", {
-  object <- IncrementsHSRBeta()
+  # Changing `target` and `prob` so that they are not scalars.
   object@target <- c(0.3, 0.4)
   object@prob <- c(0.9, 0.95)
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+})
+
+test_that("v_increments_hsr_beta returns expected messages for non-valid beta parameters", {
+  err_msg <- c(
+    "Beta distribution shape parameter a must be a positive scalar",
+    "Beta distribution shape parameter b must be a positive scalar"
+  )
+  object <- IncrementsHSRBeta()
+
+  # Changing `a` and `b` so that they are not a positive scalars.
+  object@a <- -2
+  object@b <- 0
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+
   object@a <- c(1, 2)
   object@b <- c(1, 2)
-
-  expect_equal(
-    v_increments_hsr_beta(object),
-    c(
-      "target must be a probability",
-      "prob must be a probability",
-      "Beta distribution shape parameter a must be a positive scalar",
-      "Beta distribution shape parameter b must be a positive scalar"
-    )
-  )
+  expect_equal(v_increments_hsr_beta(object), err_msg)
 })
 
 # Stopping ----
