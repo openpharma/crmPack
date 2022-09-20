@@ -10,7 +10,7 @@
 \alias{maxDose,IncrementsRelativeParts,DataParts-method}
 \alias{maxDose,IncrementsRelativeDLT,Data-method}
 \alias{maxDose,IncrementsRelativeDLTCurrent,Data-method}
-\alias{maxDose,IncrementMin,Data-method}
+\alias{maxDose,IncrementsMin,Data-method}
 \title{Determine the maximum possible next dose}
 \usage{
 maxDose(increments, data, ...)
@@ -27,7 +27,7 @@ maxDose(increments, data, ...)
 
 \S4method{maxDose}{IncrementsRelativeDLTCurrent,Data}(increments, data, ...)
 
-\S4method{maxDose}{IncrementMin,Data}(increments, data, ...)
+\S4method{maxDose}{IncrementsMin,Data}(increments, data, ...)
 }
 \arguments{
 \item{increments}{The rule, an object of class
@@ -68,7 +68,7 @@ relative increments determined by DLTs so far
 \item \code{maxDose,IncrementsRelativeDLTCurrent,Data-method}: Determine the maximum possible next dose based on
 relative increments determined by DLTs in the current cohort.
 
-\item \code{maxDose,IncrementMin,Data-method}: Determine the maximum possible next dose based on
+\item \code{maxDose,IncrementsMin,Data-method}: Determine the maximum possible next dose based on
 multiple increment rules (taking the minimum across individual increments).
 }}
 
@@ -229,7 +229,7 @@ myIncrements2 <- IncrementsRelative(intervals=c(0, 20),
                                     increments=c(1, 0.33))
 
 # Now we combine the 2 rules
-combIncrement <- IncrementMin(IncrementsList=
+combIncrement <- IncrementsMin(increments_list=
                                 list(myIncrements1,myIncrements2))
 
 # Finally we then calculate the maximum dose allowed by taking the minimum of the two rules

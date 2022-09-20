@@ -145,7 +145,7 @@ http
 https
 httr
 IG
-IncrementMin
+IncrementsMin
 IncrementsNumDoseLevels
 IncrementsRelative
 IncrementsRelativeDLT

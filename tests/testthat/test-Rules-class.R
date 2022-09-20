@@ -303,6 +303,24 @@ test_that("IncrementsHSRBeta object can be created with user constructor", {
   expect_identical(result@b, 4)
 })
 
+## IncrementsMin ----
+
+test_that(".IncrementsMin works as expected", {
+  result <- expect_silent(.IncrementsMin())
+  expect_valid(result, "IncrementsMin")
+})
+
+test_that("IncrementsMin object can be created with user constructor", {
+  increments_list <- list(
+    IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+    IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+  )
+  result <- expect_silent(IncrementsMin(increments_list))
+
+  expect_valid(result, "IncrementsMin")
+  expect_identical(result@increments_list, increments_list)
+})
+
 # Stopping ----
 
 ## StoppingMTDCV-class ----

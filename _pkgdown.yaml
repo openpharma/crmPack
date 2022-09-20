@@ -79,6 +79,7 @@ reference:
       - IncrementsRelativeDLTCurrent
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
+      - IncrementsMin
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
   - title: Internal Helper Functions
@@ -159,6 +160,7 @@ reference:
       - v_increments_relative_dlt
       - v_increments_num_dose_levels
       - v_increments_hsr_beta
+      - v_increments_min
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
   - title: Custom Checkmate Assertions

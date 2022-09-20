@@ -1,6 +1,7 @@
 # Version 1.0.9000.9074
+* Renamed class `IncrementMin` to `IncrementsMin`.
 * Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
-  `IncrementsNumDoseLevels` and other dependent classes.
+  `IncrementsNumDoseLevels`, `IncrementMin` and other dependent classes.
 * Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
   `NextBestMaxGainSamples` classes.
 * Removed `Model` class.
