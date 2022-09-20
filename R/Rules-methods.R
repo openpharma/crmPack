@@ -1072,6 +1072,43 @@ setMethod(
 )
 
 ## --------------------------------------------------
+## The maximum allowable absolute increments in DLT intervals method
+## --------------------------------------------------
+
+##' @describeIn maxDose Determine the maximum possible next dose based on
+##' absolute DLT count to date
+##'
+##' @example examples/Rules-method-maxDose-IncrementsAbsoluteDLT.R
+setMethod(
+  "maxDose",
+  signature(increments = "IncrementsAbsoluteDLT", data = "Data"),
+  function(increments, data) {
+    if (length(data@x) == 0) {
+      # print(paste0("Empty grid: returning dose index ", increments@increments[1], ": ", data@doseGrid[increments@increments[1]]))
+      return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
+    }
+    usedMax <- max(data@x)
+    usedMaxIndex <- which(data@doseGrid == usedMax)
+    dltCount <- sum(data@y)
+    # print(paste0("dltCount: ", dltCount))
+    tmp <- which(increments@intervals > dltCount)
+    # print(paste0("tmp: ", tmp))
+    if (length(tmp) == 0) {
+      #DLT count above highest value in increments@intervals
+      currentInterval <- length(increments@intervals)
+    } else {
+      currentInterval <- min(tmp)
+    }
+    allowedIndex <- min(length(data@doseGrid), usedMaxIndex + increments@increments[currentInterval])
+    # print(paste0("usedMax: ", usedMax))
+    # print(paste0("usedMaxIndex: ", usedMaxIndex))
+    # print(paste0("Current interval: ", currentInterval))
+    # print(paste0("Allowed index: ", allowedIndex))
+    data@doseGrid[allowedIndex]
+  }
+)
+
+## --------------------------------------------------
 ## The maximum allowable relative increments in intervals method
 ## --------------------------------------------------
 
