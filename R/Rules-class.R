@@ -1050,9 +1050,9 @@ IncrementsHSRBeta <- function(target = 0.3,
 #' @description `r lifecycle::badge("stable")`
 #'
 #' [`IncrementsMin`] is the class that combines multiple increment rules with
-#' the MIN operation. `increments_list` contains all increment rules, which are
-#' itself the objects of class [`Increments`]. The minimum of these individual
-#' increments is taken to give the final maximum increment.
+#' the `minimum` operation. Slot `increments_list` contains all increment rules,
+#' which are itself the objects of class [`Increments`]. The minimum of these
+#' individual increments is taken to give the final maximum increment.
 #'
 #' @slot increments_list (`list`)\cr list with increment rules.
 #'

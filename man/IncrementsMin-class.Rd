@@ -16,9 +16,9 @@ IncrementsMin(increments_list)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{IncrementsMin}} is the class that combines multiple increment rules with
-the MIN operation. \code{increments_list} contains all increment rules, which are
-itself the objects of class \code{\link{Increments}}. The minimum of these individual
-increments is taken to give the final maximum increment.
+the \code{minimum} operation. Slot \code{increments_list} contains all increment rules,
+which are itself the objects of class \code{\link{Increments}}. The minimum of these
+individual increments is taken to give the final maximum increment.
 }
 \section{Slots}{
 
