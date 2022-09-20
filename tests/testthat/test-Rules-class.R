@@ -202,7 +202,7 @@ test_that(".IncrementsRelative works as expected", {
 
 test_that("IncrementsRelative object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+    IncrementsRelative(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelative")
   expect_identical(result@intervals, c(0, 2, 3))
@@ -218,7 +218,7 @@ test_that("IncrementsRelativeParts works as expected", {
 
 test_that("IncrementsRelativeParts object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeParts(dlt_start = -1, clean_start = 3)
+    IncrementsRelativeParts(-1, 3)
   )
   expect_valid(result, "IncrementsRelativeParts")
   expect_identical(result@dlt_start, -1L)
@@ -234,7 +234,7 @@ test_that(".IncrementsRelativeDLT works as expected", {
 
 test_that("IncrementsRelativeDLT object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+    IncrementsRelativeDLT(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLT")
   expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
@@ -243,56 +243,64 @@ test_that("IncrementsRelativeDLT object can be created with user constructor", {
 
 ## IncrementsRelativeDLTCurrent ----
 
-test_that(".IncrementsRelativeDLTCurrent works as expected", {
+test_that("IncrementsRelativeDLTCurrent works as expected", {
   result <- expect_silent(.IncrementsRelativeDLTCurrent())
   expect_valid(result, "IncrementsRelativeDLTCurrent")
 })
 
-test_that("IncrementsRelativeDLTCurrent object can be created with user constructor (default)", {
-  result <- expect_silent(IncrementsRelativeDLTCurrent())
-  expect_valid(result, "IncrementsRelativeDLTCurrent")
-  expect_identical(result@dlt_intervals, c(0L, 1L))
-  expect_identical(result@increments, c(2, 1))
-})
-
-test_that("IncrementsRelativeDLTCurrent object can be created with user constructor (default)", {
+test_that("IncrementsRelativeDLTCurrent object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeDLTCurrent(
-      dlt_intervals = c(3, 4),
-      increments = c(4.5, 6)
-    )
+    IncrementsRelativeDLTCurrent(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLTCurrent")
-  expect_identical(result@dlt_intervals, c(3L, 4L))
-  expect_identical(result@increments, c(4.5, 6))
+  expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
+  expect_identical(result@increments, c(2, 1, 1.5))
 })
 
-## IncrementsNumDoseLevels-class ----
+## IncrementsNumDoseLevels ----
 
 test_that(".IncrementsNumDoseLevels works as expected", {
   result <- expect_silent(.IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
 })
 
-## IncrementsNumDoseLevels-constructor ----
-
-test_that("IncrementsNumDoseLevels object can be created with user constructor", {
+test_that("IncrementsNumDoseLevels object can be created with user constructor (default)", {
   result <- expect_silent(IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
+  expect_identical(result@max_levels, 1L)
+  expect_identical(result@basis_level, "last")
 })
 
-## IncrementsHSRBeta-class ----
+test_that("IncrementsNumDoseLevels object can be created with user constructor", {
+  result <- expect_silent(IncrementsNumDoseLevels(5L, "max"))
+  expect_valid(result, "IncrementsNumDoseLevels")
+  expect_identical(result@max_levels, 5L)
+  expect_identical(result@basis_level, "max")
+})
+
+## IncrementsHSRBeta ----
 
 test_that(".IncrementsHSRBeta works as expected", {
   result <- expect_silent(.IncrementsHSRBeta())
   expect_valid(result, "IncrementsHSRBeta")
 })
 
-## IncrementsHSRBeta-constructor ----
-
-test_that("IncrementsHSRBeta object can be created with user constructor", {
+test_that("IncrementsHSRBeta object can be created with user constructor (default)", {
   result <- expect_silent(IncrementsHSRBeta())
   expect_valid(result, "IncrementsHSRBeta")
+  expect_identical(result@target, 0.3)
+  expect_identical(result@prob, 0.95)
+  expect_identical(result@a, 1)
+  expect_identical(result@b, 1)
+})
+
+test_that("IncrementsHSRBeta object can be created with user constructor", {
+  result <- expect_silent(IncrementsHSRBeta(0.5, 0.6, 2, 4))
+  expect_valid(result, "IncrementsHSRBeta")
+  expect_identical(result@target, 0.5)
+  expect_identical(result@prob, 0.6)
+  expect_identical(result@a, 2)
+  expect_identical(result@b, 4)
 })
 
 # Stopping ----
