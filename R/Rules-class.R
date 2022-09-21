@@ -735,7 +735,7 @@ setClass(
 #' @rdname IncrementsAbsolute-class
 #' @param intervals (`numeric`) \cr a vector of right hand boundaries of the intervals
 #' @param increments (`numeric`) \cr a vector of the maximum increment allowed in the corresponding interval
-#' @return the [\linkS4class{IncrementsAbsolute}] object
+#' @return the [IncrementsAbsolute] object
 #'
 #' @export
 #' @importClassesFrom crmPack Increments
@@ -787,7 +787,7 @@ IncrementsAbsolute <- function(intervals = c(5, 10),
 #' @rdname IncrementsAbsoluteDLT-class
 #' @param intervals (`numeric`) \cr a vector of right hand boundaries of the DLT intervals
 #' @param increments (`numeric`) \cr a vector of the maximum increment allowed in the corresponding DLT interval
-#' @return the [\linkS4class{IncrementsAbsoluteDLT}] object
+#' @return the [IncrementsAbsoluteDLT] object
 #'
 #' @export
 #' @importClassesFrom crmPack Increments
