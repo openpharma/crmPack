@@ -336,6 +336,21 @@ v_increments_min <- function(object) {
 #'   or `TRUE` in case validation passes.
 NULL
 
+#' @describeIn v_stopping validates that the [`StoppingCohortsNearDose`]
+#'  object contains valid `nCohorts` and `percentage` parameters.
+v_stopping_cohort_near_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nCohorts, lower = .Machine$double.xmin),
+    "nCohorts must be positive integer scalar"
+  )
+  v$check(
+    test_probability(object@percentage / 100),
+    "percentage must be a number between 0 and 100"
+  )
+  v$result()
+}
+
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
