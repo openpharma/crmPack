@@ -1085,9 +1085,9 @@ IncrementsMin <- function(increments_list) {
   .IncrementsMin(increments_list = increments_list)
 }
 
-# nolint start
+# Stopping ----
 
-# Stopping-class ----
+## class ----
 
 #' `Stopping`
 #'
@@ -1104,57 +1104,61 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping",
-  contains = list("VIRTUAL")
+  Class = "Stopping"
 )
 
+# StoppingCohortsNearDose ----
 
-## --------------------------------------------------
-## Stopping based on number of cohorts near to next best dose
-## --------------------------------------------------
+## class ----
 
-##' Stop based on number of cohorts near to next best dose
-##'
-##' @slot nCohorts number of required cohorts
-##' @slot percentage percentage (between 0 and 100) within the next best dose
-##' the cohorts must lie
-##'
-##' @example examples/Rules-class-StoppingCohortsNearDose.R
-##' @keywords classes
-##' @export
-.StoppingCohortsNearDose <-
-    setClass(Class="StoppingCohortsNearDose",
-             representation(nCohorts="integer",
-                            percentage="numeric"),
-             prototype(nCohorts=2L,
-                       percentage=50),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+#' `StoppingCohortsNearDose`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingCohortsNearDose`] is the class for stopping based on number of
+#' cohorts near to next best dose.
+#'
+#' @slot nCohorts (`number`)\cr number of required cohorts.
+#' @slot percentage (`number`)\cr percentage (between 0 and 100) within the
+#'   next best dose the cohorts must lie.
+#'
+#' @aliases StoppingCohortsNearDose
+#' @export
+#'
+.StoppingCohortsNearDose <- setClass(
+  Class = "StoppingCohortsNearDose",
+  slots = c(
+    nCohorts = "integer",
+    percentage = "numeric"
+  ),
+  prototype = prototype(
+    nCohorts = 2L,
+    percentage = 50
+  ),
+  contains = "Stopping",
+  validity = v_stopping_cohorts_near_dose
+)
 
-                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
-                         "nCohorts must be positive scalar")
-                 o$check(is.probability(object@percentage / 100),
-                         "percentage must be between 0 and 100")
+## constructor ----
 
-                 o$result()
-             })
-validObject(.StoppingCohortsNearDose())
-
-##' Initialization function for "StoppingCohortsNearDose"
-##'
-##' @param nCohorts see \code{\linkS4class{StoppingCohortsNearDose}}
-##' @param percentage see \code{\linkS4class{StoppingCohortsNearDose}}
-##' @return the \code{\linkS4class{StoppingCohortsNearDose}} object
-##'
-##' @export
-##' @keywords methods
-StoppingCohortsNearDose <- function(nCohorts,
-                                    percentage)
-{
-    .StoppingCohortsNearDose(nCohorts=safeInteger(nCohorts),
-                             percentage=percentage)
+#' @rdname StoppingCohortsNearDose-class
+#'
+#' @param nCohorts (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
+#' @param percentage (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
+#'
+#' @example examples/Rules-class-StoppingCohortsNearDose.R
+#' @export
+#'
+StoppingCohortsNearDose <- function(nCohorts = 2L,
+                                    percentage = 50) {
+  .StoppingCohortsNearDose(
+    nCohorts = safeInteger(nCohorts),
+    percentage = percentage
+  )
 }
+
+# nolint start
+
 ## --------------------------------------------------
 ## Stopping based on number of patients near to next best dose
 ## --------------------------------------------------

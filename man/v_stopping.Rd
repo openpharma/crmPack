@@ -2,10 +2,13 @@
 % Please edit documentation in R/Rules-validity.R
 \name{v_stopping}
 \alias{v_stopping}
+\alias{v_stopping_cohorts_near_dose}
 \alias{v_stopping_lowest_dose_hsr_beta}
 \alias{v_stopping_mtd_cv}
 \title{Internal Helper Functions for Validation of \code{\link{Stopping}} Objects}
 \usage{
+v_stopping_cohorts_near_dose(object)
+
 v_stopping_lowest_dose_hsr_beta(object)
 
 v_stopping_mtd_cv(object)
@@ -25,6 +28,9 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
+\item \code{v_stopping_cohorts_near_dose}: validates that the \code{\link{StoppingCohortsNearDose}}
+object contains valid \code{nCohorts} and \code{percentage} parameters.
+
 \item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
 

@@ -323,6 +323,27 @@ test_that("IncrementsMin object can be created with user constructor", {
 
 # Stopping ----
 
+## StoppingCohortsNearDose ----
+
+test_that(".StoppingCohortsNearDose works as expected", {
+  result <- expect_silent(.StoppingCohortsNearDose())
+  expect_valid(result, "StoppingCohortsNearDose")
+})
+
+test_that("StoppingCohortsNearDose object can be created with user constructor (default)", {
+  result <- expect_silent(StoppingCohortsNearDose())
+  expect_valid(result, "StoppingCohortsNearDose")
+  expect_identical(result@nCohorts, 2L)
+  expect_identical(result@percentage, 50)
+})
+
+test_that("StoppingCohortsNearDose object can be created with user constructor", {
+  result <- expect_silent(StoppingCohortsNearDose(5L, 40))
+  expect_valid(result, "StoppingCohortsNearDose")
+  expect_identical(result@nCohorts, 5L)
+  expect_identical(result@percentage, 40)
+})
+
 ## StoppingMTDCV-class ----
 
 test_that(".StoppingMTDCV works as expected", {
