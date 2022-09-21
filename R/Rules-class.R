@@ -718,16 +718,16 @@ setClass(
 #' @aliases IncrementsAbsolute
 #' @export
 .IncrementsAbsolute <- setClass(
-    Class="IncrementsAbsolute",
-    representation(
-      intervals="numeric",
-      increments="numeric"
-    ),
-    prototype(
-      intervals=c(0, 2),
-      increments=c(2, 1)
-    ),
-    contains="Increments"
+  Class = "IncrementsAbsolute",
+  slots = c(
+    intervals = "numeric",
+    increments = "numeric"
+  ),
+  prototype = prototype(
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  ),
+  contains = "Increments"
 )
 
 ## constructor ----
@@ -735,17 +735,19 @@ setClass(
 #' @rdname IncrementsAbsolute-class
 #' @param intervals (`numeric`) \cr a vector of right hand boundaries of the intervals
 #' @param increments (`numeric`) \cr a vector of the maximum increment allowed in the corresponding interval
-#' @return the \code{\linkS4class{IncrementsAbsolute}} object
+#' @return the [\linkS4class{IncrementsAbsolute}] object
 #'
 #' @export
 #' @importClassesFrom crmPack Increments
-IncrementsAbsolute <- function(
-                        intervals=c(5, 10),
-                        increments=c(2, 1)
-                      ) {
-  .IncrementsAbsolute(intervals=intervals,
-                      increments=increments)
-}# IncrementsAbsoluteDLT ----
+IncrementsAbsolute <- function(intervals = c(5, 10),
+                               increments = c(2, 1)) {
+  .IncrementsAbsolute(
+    intervals = intervals,
+    increments = increments
+  )
+}
+
+# IncrementsAbsoluteDLT ----
 
 ## class ----
 
@@ -768,16 +770,16 @@ IncrementsAbsolute <- function(
 #' @aliases IncrementsAbsoluteDLT
 #' @export
 .IncrementsAbsoluteDLT <- setClass(
-    Class="IncrementsAbsoluteDLT",
-    representation(
-      intervals="numeric",
-      increments="numeric"
-    ),
-    prototype(
-      intervals=c(0, 2),
-      increments=c(2, 1)
-    ),
-    contains="Increments"
+  Class = "IncrementsAbsoluteDLT",
+  slots = c(
+    intervals = "numeric",
+    increments = "numeric"
+  ),
+  prototype = prototype(
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  ),
+  contains = "Increments"
 )
 
 ## constructor ----
@@ -785,16 +787,16 @@ IncrementsAbsolute <- function(
 #' @rdname IncrementsAbsoluteDLT-class
 #' @param intervals (`numeric`) \cr a vector of right hand boundaries of the DLT intervals
 #' @param increments (`numeric`) \cr a vector of the maximum increment allowed in the corresponding DLT interval
-#' @return the \code{\linkS4class{IncrementsAbsoluteDLT}} object
+#' @return the [\linkS4class{IncrementsAbsoluteDLT}] object
 #'
 #' @export
 #' @importClassesFrom crmPack Increments
-IncrementsAbsoluteDLT <- function(
-                           intervals=1:2,
-                           increments=2:1
-                         ) {
-  .IncrementsAbsoluteDLT(intervals=intervals,
-                         increments=increments)
+IncrementsAbsoluteDLT <- function(intervals = 1:2,
+                                  increments = 2:1) {
+  .IncrementsAbsoluteDLT(
+    intervals = intervals,
+    increments = increments
+  )
 }
 
 # IncrementsRelative ----
@@ -977,6 +979,8 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
     increments = increments
   )
 }
+
+# nolint start
 
 # IncrementsRelativeDLTCurrent ----
 

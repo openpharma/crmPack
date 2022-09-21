@@ -1046,28 +1046,24 @@ setMethod(
   signature(increments = "IncrementsAbsolute", data = "Data"),
   function(increments, data) {
     if (length(data@x) == 0) {
-      # print(paste0("Empty grid: returning dose index ", increments@increments[1], ": ", data@doseGrid[increments@increments[1]]))
       return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
     }
-    usedMax <- max(data@x)
-    usedMaxIndex <- which(data@doseGrid == usedMax)
-    if (length(usedMaxIndex) == 0) {
-      usedMaxIndex == length(increments@increments)
+    used_max <- max(data@x)
+    used_max_index <- which(data@doseGrid == used_max)
+    if (length(used_max_index) == 0) {
+      used_max_index == length(increments@increments)
     } else {
-      usedMaxIndex == usedMaxIndex[1]
+      used_max_index == used_max_index[1]
     }
-    tmp <- which(increments@intervals > usedMax)
+    tmp <- which(increments@intervals > used_max)
     if (length(tmp) == 0) {
       #Max used dose above highest value in increments@intervals
-      currentInterval <- length(increments@intervals)
+      current_interval <- length(increments@intervals)
     } else {
-      currentInterval <- min(tmp) - 1
+      current_interval <- min(tmp) - 1
     }
-    # print(paste0("usedMax: ", usedMax))
-    # print(paste0("usedMaxIndex: ", usedMaxIndex))
-    # print(paste0("Current interval: ", currentInterval))
-    allowedIndex <- min(length(data@doseGrid), usedMaxIndex + increments@increments[currentInterval])
-    data@doseGrid[allowedIndex]
+    allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
+    data@doseGrid[allowed_index]
   }
 )
 
@@ -1084,26 +1080,19 @@ setMethod(
   signature(increments = "IncrementsAbsoluteDLT", data = "Data"),
   function(increments, data) {
     if (length(data@x) == 0) {
-      # print(paste0("Empty grid: returning dose index ", increments@increments[1], ": ", data@doseGrid[increments@increments[1]]))
       return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
     }
-    usedMax <- max(data@x)
-    usedMaxIndex <- which(data@doseGrid == usedMax)
-    dltCount <- sum(data@y)
-    # print(paste0("dltCount: ", dltCount))
-    tmp <- which(increments@intervals > dltCount)
-    # print(paste0("tmp: ", tmp))
+    used_max <- max(data@x)
+    used_max_index <- which(data@doseGrid == used_max)
+    dlt_count <- sum(data@y)
+    tmp <- which(increments@intervals > dlt_count)
     if (length(tmp) == 0) {
       #DLT count above highest value in increments@intervals
-      currentInterval <- length(increments@intervals)
+      current_interval <- length(increments@intervals)
     } else {
-      currentInterval <- min(tmp)
+      current_nterval <- min(tmp)
     }
-    allowedIndex <- min(length(data@doseGrid), usedMaxIndex + increments@increments[currentInterval])
-    # print(paste0("usedMax: ", usedMax))
-    # print(paste0("usedMaxIndex: ", usedMaxIndex))
-    # print(paste0("Current interval: ", currentInterval))
-    # print(paste0("Allowed index: ", allowedIndex))
+    allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
     data@doseGrid[allowedIndex]
   }
 )

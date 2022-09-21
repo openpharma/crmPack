@@ -259,8 +259,7 @@ v_increments_absolute_dlt <- function(object) {
   )
   v$result()
 }
-#' Internal Helper Functions for Validation of [`Increments`] Objects
-#'
+
 #' @description `r lifecycle::badge("stable")`
 #'
 #' These functions are only used internally to validate the format of an input
