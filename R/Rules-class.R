@@ -1136,7 +1136,7 @@ setClass(
     percentage = 50
   ),
   contains = "Stopping",
-  validity = v_stopping_cohort_near_dose
+  validity = v_stopping_cohorts_near_dose
 )
 
 ## constructor ----

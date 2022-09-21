@@ -338,7 +338,7 @@ NULL
 
 #' @describeIn v_stopping validates that the [`StoppingCohortsNearDose`]
 #'  object contains valid `nCohorts` and `percentage` parameters.
-v_stopping_cohort_near_dose <- function(object) {
+v_stopping_cohorts_near_dose <- function(object) {
   v <- Validate()
   v$check(
     test_int(object@nCohorts, lower = .Machine$double.xmin),

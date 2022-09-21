@@ -649,52 +649,52 @@ test_that("v_increments_min returns expected messages for non-valid object", {
 
 # Stopping ----
 
-## v_stopping_cohort_near_dose ----
+## v_stopping_cohorts_near_dose ----
 
-test_that("v_stopping_cohort_near_dose passes for valid object", {
+test_that("v_stopping_cohorts_near_dose passes for valid object", {
   object <- StoppingCohortsNearDose()
-  expect_true(v_stopping_cohort_near_dose(object))
+  expect_true(v_stopping_cohorts_near_dose(object))
 
   object <- StoppingCohortsNearDose(nCohorts = 5L, percentage = 40)
-  expect_true(v_stopping_cohort_near_dose(object))
+  expect_true(v_stopping_cohorts_near_dose(object))
 })
 
-test_that("v_stopping_cohort_near_dose returns message for non-valid nCohorts", {
+test_that("v_stopping_cohorts_near_dose returns message for non-valid nCohorts", {
   err_msg <- "nCohorts must be positive integer scalar"
   object <- StoppingCohortsNearDose()
 
   # Changing `nCohorts` so that it not a scalar.
   object@nCohorts <- c(1L, 2L)
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 
   # Changing `nCohorts` so that it is NA value.
   object@nCohorts <- NA_integer_
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 
   # Changing `nCohorts` so that it is not a positive value.
   object@nCohorts <- -2L
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 })
 
-test_that("v_stopping_cohort_near_dose returns message for non-valid percentage", {
+test_that("v_stopping_cohorts_near_dose returns message for non-valid percentage", {
   err_msg <- "percentage must be a number between 0 and 100"
   object <- StoppingCohortsNearDose()
 
   # Changing `percentage` so that it not a scalar.
   object@percentage <- c(1L, 2L)
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 
   # Changing `percentage` so that it is NA value.
   object@percentage <- NA_integer_
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 
   # Changing `percentage` so that it is not a percentage.
   object@percentage <- -1
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 
   # Changing `percentage` so that it is not a percentage.
   object@percentage <- 101
-  expect_equal(v_stopping_cohort_near_dose(object), err_msg)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 })
 
 ## v_stopping_mtd_cv ----
