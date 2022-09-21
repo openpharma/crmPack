@@ -686,7 +686,7 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #' other specific increments classes inherit.
 #'
 #' @seealso [`IncrementsRelative`], [`IncrementsRelativeDLT`],
-#'   [`IncrementsNumDoseLevels`], [`IncrementsHSRBeta`], [`IncrementMin`].
+#'   [`IncrementsNumDoseLevels`], [`IncrementsHSRBeta`], [`IncrementsMin`].
 #'
 #' @aliases Increments
 #' @export
@@ -1041,59 +1041,51 @@ IncrementsHSRBeta <- function(target = 0.3,
   )
 }
 
-# nolint start
+# IncrementsMin ----
 
-## -----------------------------------------------------------
-## Max increment based on minimum of multiple increment rules
-## -----------------------------------------------------------
+## class ----
 
-##' Max increment based on minimum of multiple increment rules
-##'
-##' This class can be used to combine multiple increment rules with the MIN
-##' operation.
-##'
-##' \code{IncrementsList} contains all increment rules, which are again
-##' objects of class \code{\linkS4class{Increments}}. The minimum of these
-##' individual increments is taken to give the final maximum increment.
-##'
-##' @slot IncrementsList list of increment rules
-##'
-##' @example examples/Rules-class-IncrementMin.R
-##' @keywords classes
-##' @export
-.IncrementMin <-
-  setClass(Class="IncrementMin",
-           representation(IncrementsList="list"),
-           prototype(IncrementsList=
-                       list(IncrementsRelativeDLT(dlt_intervals=as.integer(c(0, 1)),
-                                                  increments=c(2, 1)),
-                            IncrementsRelative(intervals=c(0, 2),
-                                               increments=c(2, 1)))),
-           contains="Increments",
-           validity=
-             function(object){
-               o <- Validate()
+#' `IncrementsMin`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsMin`] is the class that combines multiple increment rules with
+#' the `minimum` operation. Slot `increments_list` contains all increment rules,
+#' which are itself the objects of class [`Increments`]. The minimum of these
+#' individual increments is taken to give the final maximum increment.
+#'
+#' @slot increments_list (`list`)\cr list with increment rules.
+#'
+#' @aliases IncrementsMin
+#' @export
+#'
+.IncrementsMin <- setClass(
+  Class = "IncrementsMin",
+  slots = c(increments_list = "list"),
+  prototype = prototype(
+    increments_list = list(
+      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+    )
+  ),
+  contains = "Increments",
+  validity = v_increments_min
+)
 
-               o$check(all(sapply(object@IncrementsList, is,
-                                  "Increments")),
-                       "all IncrementsList elements have to be Increments objects")
+## constructor ----
 
-               o$result()
-             })
-validObject(.IncrementMin())
-
-
-##' Initialization function for "IncrementMin"
-##'
-##' @param IncrementsList see \code{\linkS4class{IncrementMin}}
-##' @return the \code{\linkS4class{IncrementMin}} object
-##'
-##' @export
-##' @keywords methods
-IncrementMin <- function(IncrementsList)
-{
-  .IncrementMin(IncrementsList=IncrementsList)
+#' @rdname IncrementsMin-class
+#'
+#' @param increments_list (`list`)\cr see slot definition in [`IncrementsMin`].
+#'
+#' @example examples/Rules-class-IncrementsMin.R
+#' @export
+#'
+IncrementsMin <- function(increments_list) {
+  .IncrementsMin(increments_list = increments_list)
 }
+
+# nolint start
 
 # Stopping-class ----
 

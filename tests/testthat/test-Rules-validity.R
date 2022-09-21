@@ -617,6 +617,36 @@ test_that("v_increments_hsr_beta returns expected messages for non-valid beta pa
   expect_equal(v_increments_hsr_beta(object), err_msg)
 })
 
+## v_increments_min ----
+
+test_that("v_increments_min passes for valid object", {
+  object <- IncrementsMin(
+    increments_list = list(
+      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+    )
+  )
+  expect_true(v_increments_min(object))
+})
+
+test_that("v_increments_min returns expected messages for non-valid object", {
+  err_msg <- "all elements in increments_list must be of Increments class"
+  object <- IncrementsMin(
+    increments_list = list(
+      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+    )
+  )
+
+  # Changing `increments_list` so that is contains objects other than `Increments`.
+  object@increments_list <- list(
+    IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  )
+  expect_equal(v_increments_min(object), err_msg)
+})
+
 # Stopping ----
 
 ## v_stopping_mtd_cv ----

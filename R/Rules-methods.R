@@ -1316,11 +1316,11 @@ setMethod("maxDose",
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' multiple increment rules (taking the minimum across individual increments).
 ##'
-##' @example examples/Rules-method-maxDose-IncrementMin.R
+##' @example examples/Rules-method-maxDose-IncrementsMin.R
 setMethod("maxDose",
   signature =
     signature(
-      increments = "IncrementMin",
+      increments = "IncrementsMin",
       data = "Data"
     ),
   def =
@@ -1328,7 +1328,7 @@ setMethod("maxDose",
 
       ## apply the multiple increment rules
       individualResults <-
-        sapply(increments@IncrementsList,
+        sapply(increments@increments_list,
           maxDose,
           data = data,
           ...

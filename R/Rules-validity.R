@@ -310,6 +310,17 @@ v_increments_hsr_beta <- function(object) {
   v$result()
 }
 
+#' @describeIn v_increments validates that the [`IncrementsMin`]
+#'  object contains a list with `Increments` objects.
+v_increments_min <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@increments_list, test_class, "Increments")),
+    "all elements in increments_list must be of Increments class"
+  )
+  v$result()
+}
+
 # Stopping ----
 
 #' Internal Helper Functions for Validation of [`Stopping`] Objects
