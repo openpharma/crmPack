@@ -193,6 +193,38 @@ test_that("NextBestMaxGainSamples object can be created with user constructor", 
 
 # Increments ----
 
+## IncrementsAbsolute ----
+
+test_that(".IncrementsAbsolute works as expected", {
+  result <- expect_silent(.IncrementsAbsolute())
+  expect_valid(result, "IncrementsAbsolute")
+})
+
+test_that("IncrementsAbsolute object can be created with user constructor", {
+  result <- expect_silent(
+    IncrementsAbsolute(intervals = c(0, 2, 3), increments = 3:1)
+  )
+  expect_valid(result, "IncrementsAbsolute")
+  expect_identical(result@intervals, c(0, 2, 3))
+  expect_identical(result@increments, 3:1)
+})
+
+## IncrementsAbsoluteDLT ----
+
+test_that(".IncrementsAbsoluteDLT works as expected", {
+  result <- expect_silent(.IncrementsAbsoluteDLT())
+  expect_valid(result, "IncrementsAbsoluteDLT")
+})
+
+test_that("IncrementsAbsoluteDLT object can be created with user constructor", {
+  result <- expect_silent(
+    IncrementsAbsoluteDLT(intervals = 1:3, increments = 3:1)
+  )
+  expect_valid(result, "IncrementsAbsoluteDLT")
+  expect_identical(result@intervals, 1:3)
+  expect_identical(result@increments, 3:1)
+})
+
 ## IncrementsRelative ----
 
 test_that(".IncrementsRelative works as expected", {

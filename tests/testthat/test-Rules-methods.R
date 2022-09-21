@@ -744,6 +744,7 @@ test_that("IncrementsAbsolute works correctly", {
       doseGrid=grid
     )
   }
+
   result <- maxDose(inc, Data(doseGrid=grid))
   expect_equal(result, grid[3]) # Empty grid
 
