@@ -697,6 +697,54 @@ test_that("v_stopping_cohorts_near_dose returns message for non-valid percentage
   expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
 })
 
+## v_stopping_patients_near_dose ----
+
+test_that("v_stopping_patients_near_dose passes for valid object", {
+  object <- StoppingPatientsNearDose(nPatients = 10L)
+  expect_true(v_stopping_patients_near_dose(object))
+
+  object <- StoppingPatientsNearDose(nPatients = 5L, percentage = 40)
+  expect_true(v_stopping_patients_near_dose(object))
+})
+
+test_that("v_stopping_patients_near_dose returns message for non-valid nPatients", {
+  err_msg <- "nPatients must be positive integer scalar"
+  object <- StoppingPatientsNearDose(nPatients = 5L)
+
+  # Changing `nPatients` so that it not a scalar.
+  object@nPatients <- c(1L, 2L)
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `nPatients` so that it is NA value.
+  object@nPatients <- NA_integer_
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `nPatients` so that it is not a positive value.
+  object@nPatients <- -2L
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+})
+
+test_that("v_stopping_patients_near_dose returns message for non-valid percentage", {
+  err_msg <- "percentage must be a number between 0 and 100"
+  object <- StoppingPatientsNearDose(nPatients = 5L)
+
+  # Changing `percentage` so that it not a scalar.
+  object@percentage <- c(1L, 2L)
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is NA value.
+  object@percentage <- NA_integer_
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is not a percentage.
+  object@percentage <- -1
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is not a percentage.
+  object@percentage <- 101
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+})
+
 ## v_stopping_mtd_cv ----
 
 test_that("v_stopping_mtd_cv passes for valid object", {
