@@ -4,5 +4,5 @@
 
 my_stopping <- StoppingPatientsNearDose(
   nPatients = 9,
-  percentage = 0.2
+  percentage = 20
 )
