@@ -1176,19 +1176,18 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' @export
 #'
 .StoppingPatientsNearDose <- setClass(
-    Class = "StoppingPatientsNearDose",
-    slots = c(
-      nPatients = "integer",
-      percentage = "numeric"
-    ),
-    prototype = prototype(
-      nPatients = 10L,
-      percentage = 50
-    ),
-    contains = "Stopping",
-    validity = v_stopping_patients_near_dose
-  )
-
+  Class = "StoppingPatientsNearDose",
+  slots = c(
+    nPatients = "integer",
+    percentage = "numeric"
+  ),
+  prototype = prototype(
+    nPatients = 10L,
+    percentage = 50
+  ),
+  contains = "Stopping",
+  validity = v_stopping_patients_near_dose
+)
 
 ## constructor ----
 
@@ -1208,48 +1207,44 @@ StoppingPatientsNearDose <- function(nPatients,
   )
 }
 
-# nolint start
+# StoppingMinCohorts ----
 
-## --------------------------------------------------
-## Stopping based on minimum number of cohorts
-## --------------------------------------------------
+## class ----
 
-##' Stop based on minimum number of cohorts
-##'
-##' @slot nCohorts minimum required number of cohorts
-##'
-##' @example examples/Rules-class-StoppingMinCohorts.R
-##' @keywords classes
-##' @export
-.StoppingMinCohorts <-
-    setClass(Class="StoppingMinCohorts",
-             representation(nCohorts="integer"),
-             prototype(nCohorts=3L),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+#' `StoppingMinCohorts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMinCohorts`] is the class for stopping based on minimum number of
+#' cohorts.
+#'
+#' @slot nCohorts (`number`)\cr minimum required number of cohorts.
+#'
+#' @aliases StoppingMinCohorts
+#' @export
+#'
+.StoppingMinCohorts <- setClass(
+  Class = "StoppingMinCohorts",
+  slots = c(nCohorts = "integer"),
+  prototype = prototype(nCohorts = 2L),
+  contains = "Stopping",
+  validity = v_stopping_min_cohorts
+)
 
-                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
-                         "nCohorts must be positive scalar")
+## constructor ----
 
-                 o$result()
-             })
-validObject(.StoppingMinCohorts())
-
-
-
-##' Initialization function for "StoppingMinCohorts"
-##'
-##' @param nCohorts see \code{\linkS4class{StoppingMinCohorts}}
-##' @return the \code{\linkS4class{StoppingMinCohorts}} object
-##'
-##' @export
-##' @keywords methods
-StoppingMinCohorts <- function(nCohorts)
-{
-    .StoppingMinCohorts(nCohorts=safeInteger(nCohorts))
+#' @rdname StoppingMinCohorts-class
+#'
+#' @param nCohorts (`number`)\cr see slot definition in [`StoppingMinCohorts`].
+#'
+#' @example examples/Rules-class-StoppingMinCohorts.R
+#' @export
+#'
+StoppingMinCohorts <- function(nCohorts = 2L) {
+  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on minimum number of patients
