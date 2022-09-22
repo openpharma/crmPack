@@ -366,6 +366,17 @@ v_stopping_patients_near_dose <- function(object) {
   v$result()
 }
 
+#' @describeIn v_stopping validates that the [`StoppingMinCohorts`]
+#'  object contains valid `nCohorts` parameter.
+v_stopping_min_cohorts <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nCohorts, lower = .Machine$double.xmin),
+    "nCohorts must be positive integer scalar"
+  )
+  v$result()
+}
+
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta

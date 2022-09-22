@@ -82,6 +82,7 @@ reference:
       - IncrementsMin
       - StoppingCohortsNearDose
       - StoppingPatientsNearDose
+      - StoppingMinCohorts
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
   - title: Internal Helper Functions
@@ -165,6 +166,7 @@ reference:
       - v_increments_min
       - v_stopping_cohort_near_dose
       - v_stopping_patients_near_doses
+      - v_stopping_min_cohorts
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
   - title: Custom Checkmate Assertions
