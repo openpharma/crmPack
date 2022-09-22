@@ -351,6 +351,21 @@ v_stopping_cohorts_near_dose <- function(object) {
   v$result()
 }
 
+#' @describeIn v_stopping validates that the [`StoppingPatientsNearDose`]
+#'  object contains valid `nPatients` and `percentage` parameters.
+v_stopping_patients_near_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nPatients, lower = .Machine$double.xmin),
+    "nPatients must be positive integer scalar"
+  )
+  v$check(
+    test_probability(object@percentage / 100),
+    "percentage must be a number between 0 and 100"
+  )
+  v$result()
+}
+
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
