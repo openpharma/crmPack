@@ -225,7 +225,7 @@ v_next_best_max_gain_samples <- function(object) {
 NULL
 
 #' @describeIn v_increments validates that the [`IncrementsAbsolute`] object
-#'   contains valid `intervals` and `increments` parameters.
+#'   contains valid `intervals` and `increments` parameters
 v_increments_absolute <- function(object) {
   v <- Validate()
   v$check(

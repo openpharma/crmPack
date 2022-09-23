@@ -442,7 +442,7 @@ test_that("v_increments_absolute returns message for non-valid intervals", {
   expect_equal(v_increments_absolute(object), err_msg)
 })
 
-## v_increments_absolute_dlt ----
+## v_increments_absolute_dlt ------
 test_that("v_increments_absolute_dlt passes for valid object", {
   object <- IncrementsAbsoluteDLT(intervals = 1:4, increments = 4:1)
   expect_true(v_increments_absolute_dlt(object))
