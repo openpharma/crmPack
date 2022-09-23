@@ -1785,7 +1785,7 @@ StoppingAny <- function(stopList)
 
 #' `StopSpecificDose`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description `r lifecycle::badge("experimental")`
 #'
 #' [`StopSpecificDose`] is the class for stopping based on minimum number of
 #'   cohorts.
@@ -1815,14 +1815,13 @@ StoppingAny <- function(stopList)
 #'
 #' @export
 #' @example examples/Rules-class-StopSpecificDose.R
-
+#'
 StopSpecificDose <- function(rule, dose) {
   .StopSpecificDose(
     rule = rule,
     dose = dose
   )
 }
-
 # nolint start
 
 ##-------------------------------------------------------------------------------------------------------------------
