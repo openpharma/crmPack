@@ -49,13 +49,13 @@ setClass(
     target = "numeric",
     derive = "function"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = 0.3,
     derive = function(mtd_samples) {
       quantile(mtd_samples, probs = 0.3)
     }
   ),
+  contains = "NextBest",
   validity = v_next_best_mtd
 )
 
@@ -111,12 +111,12 @@ NextBestMTD <- function(target, derive) {
     overdose = "numeric",
     max_overdose_prob = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = c(0.2, 0.35),
     overdose = c(0.35, 1),
     max_overdose_prob = 0.25
   ),
+  contains = "NextBest",
   validity = v_next_best_ncrm
 )
 
@@ -305,7 +305,6 @@ NextBestThreePlusThree <- function() {
     target_relative = "logical",
     target_thresh = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = c(0.9, 1),
     overdose = c(0.35, 1),
@@ -313,6 +312,7 @@ NextBestThreePlusThree <- function() {
     target_relative = TRUE,
     target_thresh = 0.01
   ),
+  contains = "NextBest",
   validity = v_next_best_dual_endpoint
 )
 
@@ -364,10 +364,10 @@ NextBestDualEndpoint <- function(target,
   slots = c(
     target = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = 0.3
   ),
+  contains = "NextBest",
   validity = v_next_best_min_dist
 )
 
@@ -408,11 +408,11 @@ NextBestMinDist <- function(target) {
     target = "numeric",
     asymmetry = "numeric"
   ),
-  contains = "NextBest",
   prototype = prototype(
     target = 0.3,
     asymmetry = 1
   ),
+  contains = "NextBest",
   validity = v_next_best_inf_theory
 )
 
@@ -674,133 +674,306 @@ NextBestMaxGainSamples <- function(prob_target_drt,
   )
 }
 
-# nolint start
+# Increments ----
 
-## --------------------------------------------------
-## Virtual class for increments control
-## --------------------------------------------------
+## class ----
 
-##' The virtual class for controlling increments
-##'
-##' @seealso \code{\linkS4class{IncrementsRelative}},
-##' \code{\linkS4class{IncrementsRelativeDLT}},
-##' \code{\linkS4class{IncrementsRelativeParts}},
-##' [`IncrementsNumDoseLevels`]
-##' [`IncrementsHSRBeta`]
-##'
-##' @aliases Increments
-##' @export
-##' @keywords classes
-setClass(Class="Increments",
-         contains=list("VIRTUAL"))
-
-
-## --------------------------------------------------
-## Increments control based on relative differences in intervals
-## --------------------------------------------------
-
-##' Increments control based on relative differences in intervals
-##'
-##' Note that \code{intervals} is to be read as follows. If for example,
-##' we want to specify three intervals: First 0 to less than 50, second at least
-##' 50 up to less than 100 mg, and third at least 100 mg, then we specify
-##' \code{intervals} to be \code{c(0, 50, 100)}. That means, the right
-##' bound of the intervals are exclusive to the interval, and the last interval
-##' goes from the last value until infinity.
-##'
-##' @slot intervals a vector with the left bounds of the relevant intervals
-##' @slot increments a vector of the same length with the maximum allowable
-##' relative increments in the \code{intervals}
-##'
-##' @example examples/Rules-class-IncrementsRelative.R
-##' @export
-##' @keywords classes
-.IncrementsRelative <-
-    setClass(Class="IncrementsRelative",
-             representation(intervals="numeric",
-                            increments="numeric"),
-             prototype(intervals=c(0, 2),
-                       increments=c(2, 1)),
-             contains="Increments",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(identical(length(object@increments),
-                                       length(object@intervals)),
-                             "increments must have same length as intervals")
-                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
-                             "intervals has to be sorted and have unique values")
-
-                     o$result()
-                 })
-validObject(.IncrementsRelative())
-
-##' Initialization function for "IncrementsRelative"
-##'
-##' @param intervals see \code{\linkS4class{IncrementsRelative}}
-##' @param increments see \code{\linkS4class{IncrementsRelative}}
-##' @return the \code{\linkS4class{IncrementsRelative}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsRelative <- function(intervals,
-                               increments)
-{
-    .IncrementsRelative(intervals=intervals,
-                        increments=increments)
-}
-
-# nolint end
-
-# IncrementsNumDoseLevels-class ----
-
-#' `IncrementsNumDoseLevels`
+#' `Increments`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' @slot maxLevels (`count`)\cr corresponding to the number of maximum
-#'   dose levels to increment for the next dose. It defaults to 1,
-#' which means that no dose skipping is allowed - the next dose
-#' can be maximum one level higher than the current dose.
-#' @slot basisLevel (`string`)\cr corresponding to the dose level used to increment from.
-#' It can take two possible values `last` or `max`. If `last` (default)
-#' is specified the increments is applied to the last given dose and if
-#' `max` is specified the increment is applied from the max given dose
-#' level.
+#' [`Increments`] is a virtual class for controlling increments, from which all
+#' other specific increments classes inherit.
 #'
-#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#' @seealso [`IncrementsRelative`], [`IncrementsRelativeDLT`],
+#'   [`IncrementsNumDoseLevels`], [`IncrementsHSRBeta`], [`IncrementsMin`].
+#'
+#' @aliases Increments
 #' @export
-.IncrementsNumDoseLevels <- setClass(
-  Class = "IncrementsNumDoseLevels",
-  contains = "Increments",
-  representation = representation(
-    maxLevels = "integer",
-    basisLevel = "character"
-  ),
-  prototype(
-    maxLevels = 1L,
-    basisLevel = "last"
-  ),
-  validity = v_increments_numdoselevels
+#'
+setClass(
+  Class = "Increments"
 )
 
-# IncrementsNumDoseLevels-constructor ----
+# IncrementsRelative ----
 
-#' @rdname IncrementsNumDoseLevels-class
-#' @param maxLevels see below.
-#' @param basisLevel see below.
+## class ----
+
+#' `IncrementsRelative`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsRelative`] is the class for increments control based on relative
+#' differences in intervals.
+#'
+#' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
+#'   intervals. This parameters specifies the right bounds of the intervals.
+#'   For example, `intervals  = c(0, 50, 100)` specifies three intervals:
+#'   (0, 50), [50, 100) and [100, +Inf). That means, the right bound of the
+#'   intervals are exclusive to the interval and the last interval goes from the
+#'   last value to infinity.
+#' @slot increments (`numeric`)\cr a vector of the same length with the maximum
+#'   allowable relative increments in the `intervals`.
+#'
+#' @aliases IncrementsRelative
 #' @export
-IncrementsNumDoseLevels <- function(maxLevels=1,
-                                    basisLevel="last"){
-  .IncrementsNumDoseLevels(
-    maxLevels=safeInteger(maxLevels),
-    basisLevel=basisLevel
+#'
+.IncrementsRelative <- setClass(
+  Class = "IncrementsRelative",
+  slots = c(
+    intervals = "numeric",
+    increments = "numeric"
+  ),
+  prototype = prototype(
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  ),
+  contains = "Increments",
+  validity = v_increments_relative
+)
+
+## constructor ----
+
+#' @rdname IncrementsRelative-class
+#'
+#' @param intervals (`numeric`)\cr see slot definition in [`IncrementsRelative`].
+#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelative`].
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelative.R
+#'
+IncrementsRelative <- function(intervals, increments) {
+  .IncrementsRelative(
+    intervals = intervals,
+    increments = increments
   )
 }
 
+# IncrementsRelativeParts ----
 
-# IncrementsHSRBeta-class ----
+## class ----
+
+#' `IncrementsRelativeParts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsRelativeParts`] is the class for increments control based on
+#' relative differences in intervals, with special rules for part 1 and
+#' beginning of part 2.
+#'
+#' @details This class works only conjunction with [`DataParts`] objects. If the
+#' part 2 will just be started in the next cohort, then the next maximum dose
+#' will be either `dlt_start` (e.g. -1) shift of the last part 1 dose in case of
+#' a DLT in part 1, or `clean_start` shift (e.g. 0) in case of no DLTs in part 1.
+#' If part 1 will still be on in the next cohort, then the next dose level will
+#' be the next higher dose level in the `part1Ladder` slot of the data object.
+#' If part 2 has been started before, the usual relative increment rules apply,
+#' see [`IncrementsRelative`].
+#'
+#' @slot dlt_start (`count`)\cr the dose level increment for starting part 2
+#'   in case of a DLT in part 1.
+#' @slot clean_start (`count`)\cr the dose level increment for starting part 2
+#'   in case of a DLT in part 1. If this is less or equal to 0, then the part 1
+#'   ladder will be used to find the maximum next dose. Otherwise, the relative
+#'   increment rules will be applied to find the next maximum dose level.
+#'
+#' @aliases IncrementsRelativeParts
+#' @export
+#'
+.IncrementsRelativeParts <- setClass(
+  Class = "IncrementsRelativeParts",
+  slots = representation(
+    dlt_start = "integer",
+    clean_start = "integer"
+  ),
+  prototype = prototype(
+    dlt_start = -1L,
+    clean_start = 1L
+  ),
+  contains = "IncrementsRelative",
+  validity = v_increments_relative_parts
+)
+
+## constructor ----
+
+#' @rdname IncrementsRelativeParts-class
+#'
+#' @param dlt_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @param clean_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @inheritDotParams IncrementsRelative
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelative-DataParts.R
+#'
+IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
+  .IncrementsRelativeParts(
+    dlt_start = safeInteger(dlt_start),
+    clean_start = safeInteger(clean_start),
+    ...
+  )
+}
+
+# IncrementsRelativeDLT ----
+
+## class ----
+
+#' `IncrementsRelativeDLT`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`IncrementsRelativeDLT`] is the class for increments control based on
+#' relative differences in terms of DLTs.
+#'
+#' @slot dlt_intervals (`integer`)\cr an vector with the left bounds of the
+#'   relevant DLT intervals. This parameters specifies the right bounds of the
+#'   intervals. For example, `dlt_intervals  = c(0, 1, 3)` specifies three
+#'   intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
+#'   one, at least 3 DLTs. That means, the right bound of the intervals are
+#'   exclusive to the interval and the last interval goes from the last value to
+#'   infinity.
+#' @slot increments (`numeric`)\cr a vector of maximum allowable relative
+#'   increments corresponding to `dlt_intervals`. IT must be of the same length
+#'   as the length of `dlt_intervals`.
+#'
+#' @note This considers all DLTs across all cohorts observed so far.
+#'
+#' @seealso [IncrementsRelativeDLTCurrent] which only considers the DLTs
+#'   in the current cohort.
+#'
+#' @aliases IncrementsRelativeDLT
+#' @export
+#'
+.IncrementsRelativeDLT <- setClass(
+  Class = "IncrementsRelativeDLT",
+  slots = representation(
+    dlt_intervals = "integer",
+    increments = "numeric"
+  ),
+  prototype = prototype(
+    dlt_intervals = c(0L, 1L),
+    increments = c(2, 1)
+  ),
+  contains = "Increments",
+  validity = v_increments_relative_dlt
+)
+
+## constructor ----
+
+#' @rdname IncrementsRelativeDLT-class
+#'
+#' @param dlt_intervals (`numeric`)\cr see slot definition in [`IncrementsRelativeDLT`].
+#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelativeDLT`].
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelativeDLT.R
+#'
+IncrementsRelativeDLT <- function(dlt_intervals, increments) {
+  assert_integerish(dlt_intervals)
+
+  .IncrementsRelativeDLT(
+    dlt_intervals = safeInteger(dlt_intervals),
+    increments = increments
+  )
+}
+
+# IncrementsRelativeDLTCurrent ----
+
+## class ----
+
+#' `IncrementsRelativeDLTCurrent`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsRelativeDLTCurrent`] is the class for increments control based on
+#' relative differences and current DLTs. The class is based on the number of
+#' DLTs observed in the current cohort, but not cumulatively over all cohorts
+#' so far.
+#'
+#' @seealso [IncrementsRelativeDLT].
+#'
+#' @aliases IncrementsRelativeDLTCurrent
+#' @export
+#'
+.IncrementsRelativeDLTCurrent <- setClass(
+  Class = "IncrementsRelativeDLTCurrent",
+  contains = "IncrementsRelativeDLT"
+)
+
+## constructor ----
+
+#' @rdname IncrementsRelativeDLTCurrent-class
+#'
+#' @inheritParams IncrementsRelativeDLT
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
+#'
+IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
+                                         increments = c(2, 1)) {
+  .IncrementsRelativeDLTCurrent(
+    dlt_intervals = safeInteger(dlt_intervals),
+    increments = increments
+  )
+}
+
+# IncrementsNumDoseLevels ----
+
+## class ----
+
+#' `IncrementsNumDoseLevels`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`IncrementsNumDoseLevels`] is the class for increments control based on the
+#' number of maximum dose levels to increment.
+#'
+#' @slot max_levels (`count`)\cr maximum dose levels to increment for the next
+#'   dose. It defaults to 1, which means that no dose skipping is allowed - the
+#'   next dose can be maximum one level higher than the current dose.
+#' @slot basis_level (`string`)\cr corresponding to the dose level used to
+#'   increment from. It can take one out of two possible values: `last` or `max`.
+#'   If `last` is specified (default), the increment is applied to the last
+#'   given dose and if `max` is specified the increment is applied from the
+#'   maximum given dose level.
+#'
+#' @aliases IncrementsNumDoseLevels
+#' @export
+#'
+.IncrementsNumDoseLevels <- setClass(
+  Class = "IncrementsNumDoseLevels",
+  slots = representation(
+    max_levels = "integer",
+    basis_level = "character"
+  ),
+  prototype = prototype(
+    max_levels = 1L,
+    basis_level = "last"
+  ),
+  contains = "Increments",
+  validity = v_increments_num_dose_levels
+)
+
+## constructor ----
+
+#' @rdname IncrementsNumDoseLevels-class
+#'
+#' @param max_levels (`count`)\cr see slot definition in [`IncrementsNumDoseLevels`].
+#' @param basis_level (`string`)\cr see slot definition in [`IncrementsNumDoseLevels`].
+#'
+#' @export
+#' @example examples/Rules-class-IncrementsNumDoseLevels.R
+#'
+IncrementsNumDoseLevels <- function(max_levels = 1L,
+                                    basis_level = "last") {
+  .IncrementsNumDoseLevels(
+    max_levels = safeInteger(max_levels),
+    basis_level = basis_level
+  )
+}
+
+# IncrementsHSRBeta ----
+
+## class ----
 
 #' `IncrementsHSRBeta`
 #'
@@ -818,40 +991,40 @@ IncrementsNumDoseLevels <- function(maxLevels=1,
 #'
 #' @slot target (`proportion`)\cr the target toxicity.
 #' @slot prob (`proportion`)\cr the threshold probability for a dose being toxic.
-#' @slot a (`number`)\cr shape parameter a>0 of probability
+#' @slot a (`number`)\cr shape parameter a > 0 of probability
 #'  distribution Beta (a,b).
-#' @slot b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b).
+#' @slot b (`number`)\cr shape parameter b > 0 of probability
+#'  distribution Beta (a, b).
 #'
 #' @aliases IncrementsHSRBeta
 #' @export
 #'
 .IncrementsHSRBeta <- setClass(
   Class = "IncrementsHSRBeta",
-  contains = "Increments",
-  representation(
+  slots = c(
     target = "numeric",
     prob = "numeric",
     a = "numeric",
     b = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     prob = 0.95,
     a = 1,
     b = 1
   ),
+  contains = "Increments",
   validity = v_increments_hsr_beta
 )
 
-# IncrementsHSRBeta-constructor ----
+## constructor ----
 
 #' @rdname IncrementsHSRBeta-class
 #'
-#' @param target (`proportion`)\cr see slot definition.
-#' @param prob (`proportion`)\cr see slot definition.
-#' @param a (`number`)\cr see slot definition.
-#' @param b (`number`)\cr see slot definition.
+#' @param target (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param prob (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param a (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param b (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
 #'
 #' @example examples/Rules-class-IncrementsHSRBeta.R
 #' @export
@@ -868,233 +1041,53 @@ IncrementsHSRBeta <- function(target = 0.3,
   )
 }
 
-# nolint start
+# IncrementsMin ----
 
-## --------------------------------------------------
-## Increments control based on relative differences in intervals,
-## with special rules for part 1 and beginning of part 2
-## --------------------------------------------------
+## class ----
 
-##' Increments control based on relative differences in intervals,
-##' with special rules for part 1 and beginning of part 2
-##'
-##' Note that this only works in conjunction with \code{\linkS4class{DataParts}}
-##' objects. If the part 2 will just be started in the next cohort, then the
-##' next maximum dose will be either \code{dltStart} (e.g. -1) shift of the last
-##' part 1 dose in case of a DLT in part 1, or \code{cleanStart} shift (e.g. 0)
-##' in case of no DLTs in part 1. If part 1 will still be on in the next cohort,
-##' then the next dose level will be the next higher dose level in the
-##' \code{part1Ladder} of the data object. If part 2 has been started before,
-##' the usual relative increment rules apply, see
-##' \code{\linkS4class{IncrementsRelative}}.
-##'
-##' @slot dltStart integer giving the dose level increment for starting part 2
-##' in case of a DLT in part 1
-##' @slot cleanStart integer giving the dose level increment for starting part 2
-##' in case of a DLT in part 1. If this is less or equal to 0, then the part 1
-##' ladder will be used to find the maximum next dose. If this is larger than 0,
-##' then the relative increment rules will be applied to find the next maximum
-##' dose level.
-##'
-##' @example examples/Rules-class-IncrementsRelative-DataParts.R
-##' @export
-##' @keywords classes
-.IncrementsRelativeParts <-
-    setClass(Class="IncrementsRelativeParts",
-             representation(dltStart="integer",
-                            cleanStart="integer"),
-             prototype(dltStart=-1L,
-                       cleanStart=1L),
-             contains="IncrementsRelative",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(is.scalar(object@dltStart),
-                             "dltStart must be scalar integer")
-                     o$check(is.scalar(object@cleanStart),
-                             "cleanStart must be scalar integer")
-                     o$check(object@cleanStart >= object@dltStart,
-                             "dltStart cannot be higher than cleanStart")
-
-                     o$result()
-                 })
-validObject(.IncrementsRelativeParts())
-
-
-##' Initialization function for "IncrementsRelativeParts"
-##'
-##' @param dltStart see \code{\linkS4class{IncrementsRelativeParts}}
-##' @param cleanStart see \code{\linkS4class{IncrementsRelativeParts}}
-##' @param \dots additional slots from \code{\linkS4class{IncrementsRelative}}
-##' @return the \code{\linkS4class{IncrementsRelativeParts}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsRelativeParts <- function(dltStart,
-                                    cleanStart,
-                                    ...)
-{
-    .IncrementsRelativeParts(dltStart=safeInteger(dltStart),
-                             cleanStart=safeInteger(cleanStart),
-                             ...)
-}
-
-
-## --------------------------------------------------
-## Increments control based on relative differences in terms of DLTs
-## --------------------------------------------------
-
-##' Increments control based on relative differences in terms of DLTs
-##'
-##' Note that \code{DLTintervals} is to be read as follows. If for example,
-##' we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and
-##' third at least 3 DLTs, then we specify
-##' \code{DLTintervals} to be \code{c(0, 1, 3)}. That means, the right
-##' bound of the intervals are exclusive to the interval -- the vector only
-##' gives the left bounds of the intervals. The last interval goes from 3 to
-##' infinity.
-##'
-##' @note This considers all DLTs across all cohorts observed so far.
-##'
-##' @slot DLTintervals an integer vector with the left bounds of the relevant
-##' DLT intervals
-##' @slot increments a vector of the same length with the maximum allowable
-##' relative increments in the \code{DLTintervals}
-##'
-##' @seealso [IncrementsRelativeDLTCurrent()] which only considers the DLTs
-##' in the current cohort.
-##'
-##' @example examples/Rules-class-IncrementsRelativeDLT.R
-##' @export
-##' @keywords classes
-.IncrementsRelativeDLT <-
-    setClass(Class="IncrementsRelativeDLT",
-             representation(DLTintervals="integer",
-                            increments="numeric"),
-             prototype(DLTintervals=as.integer(c(0, 1)),
-                       increments=c(2, 1)),
-             contains="Increments",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(identical(length(object@increments),
-                                       length(object@DLTintervals)),
-                             "increments must have same length as DLTintervals")
-                     o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
-                             "DLTintervals has to be sorted and have unique values")
-                     o$check(all(object@DLTintervals >= 0),
-                             "DLTintervals must only contain non-negative integers")
-
-                     o$result()
-         })
-validObject(.IncrementsRelativeDLT())
-
-
-##' Initialization function for "IncrementsRelativeDLT"
-##'
-##' @param DLTintervals see \code{\linkS4class{IncrementsRelativeDLT}}
-##' @param increments see \code{\linkS4class{IncrementsRelativeDLT}}
-##' @return the \code{\linkS4class{IncrementsRelativeDLT}} object
-##'
-##' @export
-##' @keywords methods
-IncrementsRelativeDLT <- function(DLTintervals,
-                                  increments)
-{
-    .IncrementsRelativeDLT(DLTintervals=safeInteger(DLTintervals),
-                           increments=increments)
-}
-
-#' Increment Control based on Relative Differences and Current DLTs
+#' `IncrementsMin`
 #'
-#' @description `r lifecycle::badge("experimental")`
+#' @description `r lifecycle::badge("stable")`
 #'
-#' The class is based on the number of DLTs observed in the current cohort,
-#' but not cumulatively over all cohorts so far.
+#' [`IncrementsMin`] is the class that combines multiple increment rules with
+#' the `minimum` operation. Slot `increments_list` contains all increment rules,
+#' which are itself the objects of class [`Increments`]. The minimum of these
+#' individual increments is taken to give the final maximum increment.
 #'
-#' @slot DLTintervals (`integer`)\cr left bounds of the relevant
-#'   DLT intervals.
-#' @slot increments (`numeric`)\cr corresponding maximum allowable
-#' relative increments in the `DLTintervals`.
+#' @slot increments_list (`list`)\cr list with increment rules.
 #'
-#' @seealso [IncrementsRelativeDLT()] which considers all DLTs cumulatively
-#' across cohorts and doses.
-#' @example examples/Rules-class-IncrementsRelativeDLTCurrent.R
+#' @aliases IncrementsMin
 #' @export
-.IncrementsRelativeDLTCurrent <-
-  setClass(
-    Class = "IncrementsRelativeDLTCurrent",
-    contains = "IncrementsRelativeDLT"
-  )
+#'
+.IncrementsMin <- setClass(
+  Class = "IncrementsMin",
+  slots = c(increments_list = "list"),
+  prototype = prototype(
+    increments_list = list(
+      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+    )
+  ),
+  contains = "Increments",
+  validity = v_increments_min
+)
 
-#' @rdname IncrementsRelativeDLTCurrent-class
+## constructor ----
+
+#' @rdname IncrementsMin-class
 #'
-#' @param DLTintervals see slot description.
-#' @param increments see slot description.
+#' @param increments_list (`list`)\cr see slot definition in [`IncrementsMin`].
 #'
+#' @example examples/Rules-class-IncrementsMin.R
 #' @export
-IncrementsRelativeDLTCurrent <- function(DLTintervals = c(0, 1),
-                                         increments = c(2, 1))
-{
-  .IncrementsRelativeDLTCurrent(DLTintervals=safeInteger(DLTintervals),
-                                increments=increments)
+#'
+IncrementsMin <- function(increments_list) {
+  .IncrementsMin(increments_list = increments_list)
 }
 
-## -----------------------------------------------------------
-## Max increment based on minimum of multiple increment rules
-## -----------------------------------------------------------
+# Stopping ----
 
-##' Max increment based on minimum of multiple increment rules
-##'
-##' This class can be used to combine multiple increment rules with the MIN
-##' operation.
-##'
-##' \code{IncrementsList} contains all increment rules, which are again
-##' objects of class \code{\linkS4class{Increments}}. The minimum of these
-##' individual increments is taken to give the final maximum increment.
-##'
-##' @slot IncrementsList list of increment rules
-##'
-##' @example examples/Rules-class-IncrementMin.R
-##' @keywords classes
-##' @export
-.IncrementMin <-
-  setClass(Class="IncrementMin",
-           representation(IncrementsList="list"),
-           prototype(IncrementsList=
-                       list(IncrementsRelativeDLT(DLTintervals=as.integer(c(0, 1)),
-                                                  increments=c(2, 1)),
-                            IncrementsRelative(intervals=c(0, 2),
-                                               increments=c(2, 1)))),
-           contains="Increments",
-           validity=
-             function(object){
-               o <- Validate()
-
-               o$check(all(sapply(object@IncrementsList, is,
-                                  "Increments")),
-                       "all IncrementsList elements have to be Increments objects")
-
-               o$result()
-             })
-validObject(.IncrementMin())
-
-
-##' Initialization function for "IncrementMin"
-##'
-##' @param IncrementsList see \code{\linkS4class{IncrementMin}}
-##' @return the \code{\linkS4class{IncrementMin}} object
-##'
-##' @export
-##' @keywords methods
-IncrementMin <- function(IncrementsList)
-{
-  .IncrementMin(IncrementsList=IncrementsList)
-}
-
-# Stopping-class ----
+## class ----
 
 #' `Stopping`
 #'
@@ -1105,152 +1098,153 @@ IncrementMin <- function(IncrementsList)
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StopSpecificDose`].
+#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`].
 #'
 #' @aliases Stopping
 #' @export
 #'
 setClass(
-  Class = "Stopping",
-  contains = list("VIRTUAL")
+  Class = "Stopping"
 )
 
+# StoppingCohortsNearDose ----
 
-## --------------------------------------------------
-## Stopping based on number of cohorts near to next best dose
-## --------------------------------------------------
+## class ----
 
-##' Stop based on number of cohorts near to next best dose
-##'
-##' @slot nCohorts number of required cohorts
-##' @slot percentage percentage (between 0 and 100) within the next best dose
-##' the cohorts must lie
-##'
-##' @example examples/Rules-class-StoppingCohortsNearDose.R
-##' @keywords classes
-##' @export
-.StoppingCohortsNearDose <-
-    setClass(Class="StoppingCohortsNearDose",
-             representation(nCohorts="integer",
-                            percentage="numeric"),
-             prototype(nCohorts=2L,
-                       percentage=50),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+#' `StoppingCohortsNearDose`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingCohortsNearDose`] is the class for stopping based on number of
+#' cohorts near to next best dose.
+#'
+#' @slot nCohorts (`number`)\cr number of required cohorts.
+#' @slot percentage (`number`)\cr percentage (between 0 and 100) within the
+#'   next best dose the cohorts must lie.
+#'
+#' @aliases StoppingCohortsNearDose
+#' @export
+#'
+.StoppingCohortsNearDose <- setClass(
+  Class = "StoppingCohortsNearDose",
+  slots = c(
+    nCohorts = "integer",
+    percentage = "numeric"
+  ),
+  prototype = prototype(
+    nCohorts = 2L,
+    percentage = 50
+  ),
+  contains = "Stopping",
+  validity = v_stopping_cohorts_near_dose
+)
 
-                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
-                         "nCohorts must be positive scalar")
-                 o$check(is.probability(object@percentage / 100),
-                         "percentage must be between 0 and 100")
+## constructor ----
 
-                 o$result()
-             })
-validObject(.StoppingCohortsNearDose())
-
-##' Initialization function for "StoppingCohortsNearDose"
-##'
-##' @param nCohorts see \code{\linkS4class{StoppingCohortsNearDose}}
-##' @param percentage see \code{\linkS4class{StoppingCohortsNearDose}}
-##' @return the \code{\linkS4class{StoppingCohortsNearDose}} object
-##'
-##' @export
-##' @keywords methods
-StoppingCohortsNearDose <- function(nCohorts,
-                                    percentage)
-{
-    .StoppingCohortsNearDose(nCohorts=safeInteger(nCohorts),
-                             percentage=percentage)
+#' @rdname StoppingCohortsNearDose-class
+#'
+#' @param nCohorts (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
+#' @param percentage (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
+#'
+#' @example examples/Rules-class-StoppingCohortsNearDose.R
+#' @export
+#'
+StoppingCohortsNearDose <- function(nCohorts = 2L,
+                                    percentage = 50) {
+  .StoppingCohortsNearDose(
+    nCohorts = safeInteger(nCohorts),
+    percentage = percentage
+  )
 }
-## --------------------------------------------------
-## Stopping based on number of patients near to next best dose
-## --------------------------------------------------
 
-##' Stop based on number of patients near to next best dose
-##'
-##' @slot nPatients number of required patients
-##' @slot percentage percentage (between 0 and 100) within the next best dose
-##' the patients must lie
-##'
-##' @example examples/Rules-class-StoppingPatientsNearDose.R
-##' @keywords classes
-##' @export
-.StoppingPatientsNearDose <-
-    setClass(Class="StoppingPatientsNearDose",
-             representation(nPatients="integer",
-                            percentage="numeric"),
-             prototype(nPatients=10L,
-                       percentage=50),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+# StoppingPatientsNearDose ----
 
-                 o$check((object@nPatients > 0L) && is.scalar(object@nPatients),
-                         "nPatients must be positive scalar")
-                 o$check(is.probability(object@percentage / 100),
-                         "percentage must be between 0 and 100")
+## class ----
 
-                 o$result()
-             })
-validObject(.StoppingPatientsNearDose())
+#' `StoppingPatientsNearDose`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingPatientsNearDose`] is the class for stopping based on number of
+#' patients near to next best dose.
+#'
+#' @slot nPatients (`number`)\cr number of required patients.
+#' @slot percentage (`number`)\cr percentage (between 0 and 100) within the
+#'   next best dose the patients must lie.
+#'
+#' @aliases StoppingPatientsNearDose
+#' @export
+#'
+.StoppingPatientsNearDose <- setClass(
+  Class = "StoppingPatientsNearDose",
+  slots = c(
+    nPatients = "integer",
+    percentage = "numeric"
+  ),
+  prototype = prototype(
+    nPatients = 10L,
+    percentage = 50
+  ),
+  contains = "Stopping",
+  validity = v_stopping_patients_near_dose
+)
 
+## constructor ----
 
-##' Initialization function for "StoppingPatientsNearDose"
-##'
-##' @param nPatients see \code{\linkS4class{StoppingPatientsNearDose}}
-##' @param percentage see \code{\linkS4class{StoppingPatientsNearDose}}
-##' @return the \code{\linkS4class{StoppingPatientsNearDose}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname StoppingPatientsNearDose-class
+#'
+#' @param nPatients (`number`)\cr see slot definition in [`StoppingPatientsNearDose`].
+#' @param percentage (`number`)\cr see slot definition in [`StoppingPatientsNearDose`].
+#'
+#' @example examples/Rules-class-StoppingPatientsNearDose.R
+#' @export
+#'
 StoppingPatientsNearDose <- function(nPatients,
-                                     percentage)
-{
-    .StoppingPatientsNearDose(nPatients=safeInteger(nPatients),
-                              percentage=percentage)
+                                     percentage = 50) {
+  .StoppingPatientsNearDose(
+    nPatients = safeInteger(nPatients),
+    percentage = percentage
+  )
 }
 
+# StoppingMinCohorts ----
 
-## --------------------------------------------------
-## Stopping based on minimum number of cohorts
-## --------------------------------------------------
+## class ----
 
-##' Stop based on minimum number of cohorts
-##'
-##' @slot nCohorts minimum required number of cohorts
-##'
-##' @example examples/Rules-class-StoppingMinCohorts.R
-##' @keywords classes
-##' @export
-.StoppingMinCohorts <-
-    setClass(Class="StoppingMinCohorts",
-             representation(nCohorts="integer"),
-             prototype(nCohorts=3L),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+#' `StoppingMinCohorts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMinCohorts`] is the class for stopping based on minimum number of
+#' cohorts.
+#'
+#' @slot nCohorts (`number`)\cr minimum required number of cohorts.
+#'
+#' @aliases StoppingMinCohorts
+#' @export
+#'
+.StoppingMinCohorts <- setClass(
+  Class = "StoppingMinCohorts",
+  slots = c(nCohorts = "integer"),
+  prototype = prototype(nCohorts = 2L),
+  contains = "Stopping",
+  validity = v_stopping_min_cohorts
+)
 
-                 o$check((object@nCohorts > 0L) && is.scalar(object@nCohorts),
-                         "nCohorts must be positive scalar")
+## constructor ----
 
-                 o$result()
-             })
-validObject(.StoppingMinCohorts())
-
-
-
-##' Initialization function for "StoppingMinCohorts"
-##'
-##' @param nCohorts see \code{\linkS4class{StoppingMinCohorts}}
-##' @return the \code{\linkS4class{StoppingMinCohorts}} object
-##'
-##' @export
-##' @keywords methods
-StoppingMinCohorts <- function(nCohorts)
-{
-    .StoppingMinCohorts(nCohorts=safeInteger(nCohorts))
+#' @rdname StoppingMinCohorts-class
+#'
+#' @param nCohorts (`number`)\cr see slot definition in [`StoppingMinCohorts`].
+#'
+#' @example examples/Rules-class-StoppingMinCohorts.R
+#' @export
+#'
+StoppingMinCohorts <- function(nCohorts = 2L) {
+  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on minimum number of patients
@@ -1880,50 +1874,8 @@ StoppingGstarCIRatio <- function(targetRatio,
                         targetEndOfTrial=targetEndOfTrial)
 }
 
-# nolint end
 
-# StopSpecificDose -class ----
 
-#' `StopSpecificDose`
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' [`StopSpecificDose`] is a wrapper class which takes as slots any stopping
-#' rule as well as one specific dose, and then always evaluates this stopping
-#' rule at this specific dose (instead of the next best dose).
-#'
-#' @aliases StopSpecificDose
-#' @export
-#'
-.StopSpecificDose <- setClass(
-  Class = "StopSpecificDose",
-  slots = c(
-    rule = "Stopping",
-    dose = "numeric"
-  ),
-  contains = "Stopping",
-  validity = v_stop_specific_dose
-)
-
-# .StopSpecificDose-constructor ----
-
-#' @rdname .StopSpecificDose-class
-#'
-#' @param target (`proportion`)\cr see slot definition.
-#' @param prob (`proportion`)\cr see slot definition.
-#' @param a (`number`)\cr see slot definition.
-#' @param b (`number`)\cr see slot definition.
-#'
-#' @export
-#' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
-#'
-StopSpecificDose <- function(rule, dose) {
-  .StopSpecificDose(rule = rule,
-                    dose = dose
-                    )
-}
-
-# nolint start
 ## ============================================================
 
 

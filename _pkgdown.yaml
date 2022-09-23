@@ -72,8 +72,17 @@ reference:
       - NextBestTDsamples
       - NextBestMaxGain
       - NextBestMaxGainSamples
+      - Increments
+      - IncrementsRelative
+      - IncrementsRelativeParts
+      - IncrementsRelativeDLT
+      - IncrementsRelativeDLTCurrent
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
+      - IncrementsMin
+      - StoppingCohortsNearDose
+      - StoppingPatientsNearDose
+      - StoppingMinCohorts
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
   - title: Internal Helper Functions
@@ -149,8 +158,15 @@ reference:
       - v_next_best_td
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
-      - v_increments_numdoselevels
+      - v_increments_relative
+      - v_increments_relative_parts
+      - v_increments_relative_dlt
+      - v_increments_num_dose_levels
       - v_increments_hsr_beta
+      - v_increments_min
+      - v_stopping_cohort_near_dose
+      - v_stopping_patients_near_doses
+      - v_stopping_min_cohorts
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
   - title: Custom Checkmate Assertions

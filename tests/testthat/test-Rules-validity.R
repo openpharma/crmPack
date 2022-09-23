@@ -418,35 +418,161 @@ test_that("v_next_best_max_gain_samples returns message for non-valid mg_derive"
 
 # Increments ----
 
-## v_increments_numdoselevels ----
+## v_increments_relative ----
 
-test_that("v_increments_numdoselevels passes for valid object", {
-  object <- IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
-  expect_true(v_increments_numdoselevels(object))
+test_that("v_increments_relative passes for valid object", {
+  object <- IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+  expect_true(v_increments_relative(object))
 })
 
-test_that("v_increments_numdoselevels passes for valid object", {
-  object <- IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "max")
-  expect_true(v_increments_numdoselevels(object))
+test_that("v_increments_relative returns message for non-valid intervals", {
+  err_msg <- "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
+  object <- IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `intervals` so that it contains non-unique values.
+  object@intervals <- c(1, 2, 2)
+  expect_equal(v_increments_relative(object), err_msg)
+
+  # Changing `intervals` so that it contains non-sorted values.
+  object@intervals <- c(1, 3, 2)
+  expect_equal(v_increments_relative(object), err_msg)
+
+  # Changing `intervals` so that it contains missing, or infinite negative values.
+  object@intervals <- c(-1, NA, 2, Inf)
+  object@increments <- 1:4
+  expect_equal(v_increments_relative(object), err_msg)
 })
 
-test_that("v_increments_numdoselevels passes for valid object", {
-  object <- IncrementsNumDoseLevels(maxLevels = 1)
-  expect_true(v_increments_numdoselevels(object))
+test_that("v_increments_relative returns message for non-valid increments", {
+  err_msg <- "increments has to be a numerical vector of the same length as `intervals` with finite values"
+  object <- IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `increments` so that it is of a length different than the length of `intervals`.
+  object@increments <- c(1, 2, 3, 4)
+  expect_equal(v_increments_relative(object), err_msg)
+
+  # Changing `increments` so that it contains missing, or infinite values.
+  object@increments <- c(NA, 2, Inf)
+  expect_equal(v_increments_relative(object), err_msg)
 })
 
-test_that("v_increments_numdoselevels returns expected messages for non-valid object", {
+## v_increments_relative_parts ----
+
+test_that("v_increments_relative_parts passes for valid object", {
+  object <- IncrementsRelativeParts(dlt_start = -1L, clean_start = 3L)
+  expect_true(v_increments_relative_parts(object))
+})
+
+test_that("v_increments_relative_parts returns message for non-valid dlt_start", {
+  err_msg <- "dlt_start must be an integer number"
+  object <- IncrementsRelativeParts(dlt_start = -1L, clean_start = 3L)
+
+  # Changing `dlt_start` so that it not a scalar.
+  object@dlt_start <- c(1L, 2L)
+  expect_equal(v_increments_relative_parts(object), err_msg)
+
+  # Changing `dlt_start` so that it is a missing object.
+  object@dlt_start <- NA_integer_
+  expect_equal(v_increments_relative_parts(object), err_msg)
+})
+
+test_that("v_increments_relative_parts returns message for non-valid clean_start", {
+  err_msg <- "clean_start must be an integer number and it must be >= dlt_start"
+  object <- IncrementsRelativeParts(dlt_start = -1L, clean_start = 1L)
+
+  # Changing `clean_start` so that it not a scalar.
+  object@clean_start <- c(1L, 2L)
+  expect_equal(v_increments_relative_parts(object), err_msg)
+
+  # Changing `clean_start` so that it is a missing object.
+  object@clean_start <- NA_integer_
+  expect_equal(v_increments_relative_parts(object), err_msg)
+
+  # Changing `clean_start` so that it is less than `dlt_start`.
+  object@clean_start <- -2L
+  expect_equal(v_increments_relative_parts(object), err_msg)
+})
+
+## v_increments_relative_dlt ----
+
+test_that("v_increments_relative_dlt passes for valid object", {
+  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2), increments = c(2, 1))
+  expect_true(v_increments_relative_dlt(object))
+})
+
+test_that("v_increments_relative_dlt returns message for non-valid intervals", {
+  err_msg <- "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `dlt_intervals` so that it contains non-unique values.
+  object@dlt_intervals <- c(1L, 2L, 2L)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+
+  # Changing `dlt_intervals` so that it contains non-sorted values.
+  object@dlt_intervals <- c(1L, 3L, 2L)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+
+  # Changing `dlt_intervals` so that it contains missing, or negative values.
+  object@dlt_intervals <- c(-1L, NA_integer_, 2L)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+})
+
+test_that("v_increments_relative_dlt returns message for non-valid increments", {
+  err_msg <- "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
+  object <- IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+
+  # Changing `increments` so that it is of a length different than the length of `dlt_intervals`.
+  object@increments <- c(1, 2, 3, 4)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+
+  # Changing `increments` so that it contains missing, or infinite values.
+  object@increments <- c(NA, 2, Inf)
+  expect_equal(v_increments_relative_dlt(object), err_msg)
+})
+
+## v_increments_num_dose_levels ----
+
+test_that("v_increments_num_dose_levels passes for valid object", {
   object <- IncrementsNumDoseLevels()
-  object@maxLevels <- c(-1L)
-  object@basisLevel <- c("minGiven")
+  expect_true(v_increments_num_dose_levels(object))
 
-  expect_equal(
-    v_increments_numdoselevels(object),
-    c(
-      "maxLevels must be scalar positive integer",
-      "basisLevel must be either 'last' or 'max'"
-    )
-  )
+  object <- IncrementsNumDoseLevels(max_levels = 1, basis_level = "last")
+  expect_true(v_increments_num_dose_levels(object))
+
+  object <- IncrementsNumDoseLevels(max_levels = 2, basis_level = "max")
+  expect_true(v_increments_num_dose_levels(object))
+})
+
+test_that("v_increments_num_dose_levels returns message for non-valid max_levels", {
+  err_msg <- "max_levels must be scalar positive integer"
+  object <- IncrementsNumDoseLevels()
+
+  # Changing `max_levels` so that it not a scalar.
+  object@max_levels <- c(1L, 2L)
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  # Changing `max_levels` so that it is a missing object.
+  object@max_levels <- NA_integer_
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  # Changing `max_levels` so that it is a negative value.
+  object@max_levels <- -2L
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+})
+
+test_that("v_increments_num_dose_levels returns message for non-valid basis_level", {
+  err_msg <- "basis_level must be either 'last' or 'max'"
+  object <- IncrementsNumDoseLevels()
+
+  # Changing `basis_level` so that it is neither equal to 'last' nor 'max'
+  object@basis_level <- "last "
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  object@basis_level <- " max "
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
+
+  object@basis_level <- c("last", "max")
+  expect_equal(v_increments_num_dose_levels(object), err_msg)
 })
 
 ## v_increments_hsr_beta ----
@@ -454,50 +580,197 @@ test_that("v_increments_numdoselevels returns expected messages for non-valid ob
 test_that("v_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
   expect_true(v_increments_hsr_beta(object))
-})
 
-test_that("v_increments_hsr_beta passes for valid object", {
   object <- IncrementsHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
   expect_true(v_increments_hsr_beta(object))
 })
 
-test_that("v_increments_hsr_beta returns expected messages for non-valid object", {
+test_that("v_increments_hsr_beta returns expected messages for non-valid object probabilities", {
+  err_msg <- c("target must be a probability", "prob must be a probability")
   object <- IncrementsHSRBeta()
+
+  # Changing `target` and `prob` so that they are not a probability values.
   object@target <- -0.3
   object@prob <- 1.1
-  object@a <- -2
-  object@b <- 0
+  expect_equal(v_increments_hsr_beta(object), err_msg)
 
-  expect_equal(
-    v_increments_hsr_beta(object),
-    c(
-      "target must be a probability",
-      "prob must be a probability",
-      "Beta distribution shape parameter a must be a positive scalar",
-      "Beta distribution shape parameter b must be a positive scalar"
-    )
-  )
-})
-
-test_that("v_increments_hsr_beta returns expected messages for non-valid object", {
-  object <- IncrementsHSRBeta()
+  # Changing `target` and `prob` so that they are not scalars.
   object@target <- c(0.3, 0.4)
   object@prob <- c(0.9, 0.95)
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+})
+
+test_that("v_increments_hsr_beta returns expected messages for non-valid beta parameters", {
+  err_msg <- c(
+    "Beta distribution shape parameter a must be a positive scalar",
+    "Beta distribution shape parameter b must be a positive scalar"
+  )
+  object <- IncrementsHSRBeta()
+
+  # Changing `a` and `b` so that they are not a positive scalars.
+  object@a <- -2
+  object@b <- 0
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+
   object@a <- c(1, 2)
   object@b <- c(1, 2)
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+})
 
-  expect_equal(
-    v_increments_hsr_beta(object),
-    c(
-      "target must be a probability",
-      "prob must be a probability",
-      "Beta distribution shape parameter a must be a positive scalar",
-      "Beta distribution shape parameter b must be a positive scalar"
+## v_increments_min ----
+
+test_that("v_increments_min passes for valid object", {
+  object <- IncrementsMin(
+    increments_list = list(
+      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
     )
   )
+  expect_true(v_increments_min(object))
+})
+
+test_that("v_increments_min returns expected messages for non-valid object", {
+  err_msg <- "all elements in increments_list must be of Increments class"
+  object <- IncrementsMin(
+    increments_list = list(
+      IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+      IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+    )
+  )
+
+  # Changing `increments_list` so that is contains objects other than `Increments`.
+  object@increments_list <- list(
+    IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  )
+  expect_equal(v_increments_min(object), err_msg)
 })
 
 # Stopping ----
+
+## v_stopping_cohorts_near_dose ----
+
+test_that("v_stopping_cohorts_near_dose passes for valid object", {
+  object <- StoppingCohortsNearDose()
+  expect_true(v_stopping_cohorts_near_dose(object))
+
+  object <- StoppingCohortsNearDose(nCohorts = 5L, percentage = 40)
+  expect_true(v_stopping_cohorts_near_dose(object))
+})
+
+test_that("v_stopping_cohorts_near_dose returns message for non-valid nCohorts", {
+  err_msg <- "nCohorts must be positive integer scalar"
+  object <- StoppingCohortsNearDose()
+
+  # Changing `nCohorts` so that it not a scalar.
+  object@nCohorts <- c(1L, 2L)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+
+  # Changing `nCohorts` so that it is NA value.
+  object@nCohorts <- NA_integer_
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+
+  # Changing `nCohorts` so that it is not a positive value.
+  object@nCohorts <- -2L
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+})
+
+test_that("v_stopping_cohorts_near_dose returns message for non-valid percentage", {
+  err_msg <- "percentage must be a number between 0 and 100"
+  object <- StoppingCohortsNearDose()
+
+  # Changing `percentage` so that it not a scalar.
+  object@percentage <- c(1L, 2L)
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is NA value.
+  object@percentage <- NA_integer_
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is not a percentage.
+  object@percentage <- -1
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is not a percentage.
+  object@percentage <- 101
+  expect_equal(v_stopping_cohorts_near_dose(object), err_msg)
+})
+
+## v_stopping_patients_near_dose ----
+
+test_that("v_stopping_patients_near_dose passes for valid object", {
+  object <- StoppingPatientsNearDose(nPatients = 10L)
+  expect_true(v_stopping_patients_near_dose(object))
+
+  object <- StoppingPatientsNearDose(nPatients = 5L, percentage = 40)
+  expect_true(v_stopping_patients_near_dose(object))
+})
+
+test_that("v_stopping_patients_near_dose returns message for non-valid nPatients", {
+  err_msg <- "nPatients must be positive integer scalar"
+  object <- StoppingPatientsNearDose(nPatients = 5L)
+
+  # Changing `nPatients` so that it not a scalar.
+  object@nPatients <- c(1L, 2L)
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `nPatients` so that it is NA value.
+  object@nPatients <- NA_integer_
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `nPatients` so that it is not a positive value.
+  object@nPatients <- -2L
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+})
+
+test_that("v_stopping_patients_near_dose returns message for non-valid percentage", {
+  err_msg <- "percentage must be a number between 0 and 100"
+  object <- StoppingPatientsNearDose(nPatients = 5L)
+
+  # Changing `percentage` so that it not a scalar.
+  object@percentage <- c(1L, 2L)
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is NA value.
+  object@percentage <- NA_integer_
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is not a percentage.
+  object@percentage <- -1
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+
+  # Changing `percentage` so that it is not a percentage.
+  object@percentage <- 101
+  expect_equal(v_stopping_patients_near_dose(object), err_msg)
+})
+
+## v_stopping_min_cohorts ----
+
+test_that("v_stopping_min_cohorts passes for valid object", {
+  object <- StoppingMinCohorts()
+  expect_true(v_stopping_min_cohorts(object))
+
+  object <- StoppingMinCohorts(nCohorts = 5L)
+  expect_true(v_stopping_min_cohorts(object))
+})
+
+test_that("v_stopping_min_cohorts returns message for non-valid nCohorts", {
+  err_msg <- "nCohorts must be positive integer scalar"
+  object <- StoppingMinCohorts()
+
+  # Changing `nCohorts` so that it not a scalar.
+  object@nCohorts <- c(1L, 2L)
+  expect_equal(v_stopping_min_cohorts(object), err_msg)
+
+  # Changing `nCohorts` so that it is NA value.
+  object@nCohorts <- NA_integer_
+  expect_equal(v_stopping_min_cohorts(object), err_msg)
+
+  # Changing `nCohorts` so that it is not a positive value.
+  object@nCohorts <- -2L
+  expect_equal(v_stopping_min_cohorts(object), err_msg)
+})
 
 ## v_stopping_mtd_cv ----
 

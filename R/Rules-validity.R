@@ -224,20 +224,65 @@ v_next_best_max_gain_samples <- function(object) {
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
-#'   contains valid `maxLevels` and `basisLevel` option.
-v_increments_numdoselevels <- function(object) {
+#' @describeIn v_increments validates that the [`IncrementsRelative`] object
+#'   contains valid `intervals` and `increments` parameters.
+v_increments_relative <- function(object) {
   v <- Validate()
   v$check(
-    is.scalar(object@maxLevels) &&
-      is.integer(object@maxLevels) &&
-      object@maxLevels > 0,
-    "maxLevels must be scalar positive integer"
+    test_numeric(
+      object@intervals,
+      lower = 0, finite = TRUE, any.missing = FALSE, unique = TRUE, sorted = TRUE
+    ),
+    "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
   )
   v$check(
-    is.scalar(object@basisLevel) &&
-      object@basisLevel %in% c("last", "max"),
-    "basisLevel must be either 'last' or 'max'"
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    "increments has to be a numerical vector of the same length as `intervals` with finite values"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`IncrementsRelativeParts`] object
+#'   contains valid `dlt_start` and `clean_start` parameters.
+v_increments_relative_parts <- function(object) {
+  v <- Validate()
+  is_dlt_start_ok <- test_int(object@dlt_start)
+  v$check(is_dlt_start_ok, "dlt_start must be an integer number")
+  if (is_dlt_start_ok) {
+    v$check(
+      test_int(object@clean_start, lower = object@dlt_start),
+      "clean_start must be an integer number and it must be >= dlt_start"
+    )
+  }
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`IncrementsRelativeDLT`] object
+#'   contains valid `dlt_intervals` and `increments` parameters.
+v_increments_relative_dlt <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@dlt_intervals, lower = 0, any.missing = FALSE, unique = TRUE, sorted = TRUE),
+    "dlt_intervals has to be an integer vector with unique, finite, non-negative and sorted non-missing values"
+  )
+  v$check(
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@dlt_intervals)),
+    "increments has to be a numerical vector of the same length as `dlt_intervals` with finite values"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
+#'   contains valid `max_levels` and `basis_level` option.
+v_increments_num_dose_levels <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@max_levels, lower = .Machine$double.xmin),
+    "max_levels must be scalar positive integer"
+  )
+  v$check(
+    test_string(object@basis_level, pattern = "^last$|^max$"),
+    "basis_level must be either 'last' or 'max'"
   )
   v$result()
 }
@@ -255,14 +300,24 @@ v_increments_hsr_beta <- function(object) {
     "prob must be a probability"
   )
   v$check(
-    is.scalar(object@a) & is.numeric(object@a) && object@a > 0,
+    test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter a must be a positive scalar"
   )
   v$check(
-    is.scalar(object@b) & is.numeric(object@b) && object@b > 0,
+    test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter b must be a positive scalar"
   )
+  v$result()
+}
 
+#' @describeIn v_increments validates that the [`IncrementsMin`]
+#'  object contains a list with `Increments` objects.
+v_increments_min <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@increments_list, test_class, "Increments")),
+    "all elements in increments_list must be of Increments class"
+  )
   v$result()
 }
 
@@ -281,6 +336,47 @@ v_increments_hsr_beta <- function(object) {
 #'   or `TRUE` in case validation passes.
 NULL
 
+#' @describeIn v_stopping validates that the [`StoppingCohortsNearDose`]
+#'  object contains valid `nCohorts` and `percentage` parameters.
+v_stopping_cohorts_near_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nCohorts, lower = .Machine$double.xmin),
+    "nCohorts must be positive integer scalar"
+  )
+  v$check(
+    test_probability(object@percentage / 100),
+    "percentage must be a number between 0 and 100"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingPatientsNearDose`]
+#'  object contains valid `nPatients` and `percentage` parameters.
+v_stopping_patients_near_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nPatients, lower = .Machine$double.xmin),
+    "nPatients must be positive integer scalar"
+  )
+  v$check(
+    test_probability(object@percentage / 100),
+    "percentage must be a number between 0 and 100"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingMinCohorts`]
+#'  object contains valid `nCohorts` parameter.
+v_stopping_min_cohorts <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nCohorts, lower = .Machine$double.xmin),
+    "nCohorts must be positive integer scalar"
+  )
+  v$result()
+}
+
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
@@ -296,18 +392,6 @@ v_stopping_mtd_cv <- function(object) {
   v$check(
     test_probability(object@thresh_cv / 100, bounds_closed = FALSE),
     "thresh_cv must be percentage > 0"
-  )
-  v$result()
-}
-
-
-#' @describeIn v_stop_specific_dose validates that the [`StopSpecificDose`] object
-#'   contains valid dose assigned as input.
-v_stop_specific_dose <- function(object) {
-  v <- Validate()
-  v$check(
-    test_number(object@dose, finite = TRUE),
-    "dose needs to be a single finite number"
   )
   v$result()
 }
