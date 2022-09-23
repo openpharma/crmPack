@@ -1,0 +1,174 @@
+---
+title: "broom-for-crmPack"
+author: "John Kirkpatrick"
+date: "9/21/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(crmPack)
+```
+
+##  Motivation
+`crmPack` is good at designing and anaysing trials that use CRM models.  It is not so good at presenting the results of its analyses.
+
+Most `crmPack` objects are not amenable to presentation, regardless of the medium used.  Tabulation is difficult and the few graphical outputs that `crmPack` prooduces are clunky and somewhat naive by modern standards.  This is true whether the user is an inhabitant of the  of the `tidyverse` who is familiar with `knitr`, or an adherent of some other workflow, such as `rmarkdown` or `officer`.
+
+I believe the root cause of the problem is the fact that almost all aesthetically pleasing presentations in R, whether graphical or tabular, start with a `data.frame` (or one of its sub-classes such as a `tibble`).  Objects produced by `crmPack` tend to be S4 objects, and there is no obvious or easy generic transformation from S4 to `data.frame`.
+
+Such easy transformations do exist in other contexts.  The `broom` package is the obvious example.
+
+As the introductory vignette to `broom` says itself:
+
+> While model inputs usually require tidy inputs, <i>such attention to detail doesn’t carry over to model outputs</i>. Outputs such as predictions and estimated coefficients aren’t always tidy<sup>1</sup>. This makes it more difficult to combine results from multiple models. For example, in R, the default representation of model coefficients is not tidy because it does not have an explicit variable that records the variable name for each estimate, they are instead recorded as row names. In R, row names must be unique, so combining coefficients from many models (e.g., from bootstrap resamples, or subgroups) requires workarounds to avoid losing important information. This knocks you out of the flow of analysis and makes it harder to combine the results from multiple models. 
+
+1:  Whilst this claim is couched in the language of the tidyverse, the point is valid regardless of vocabulary.
+
+`broom` "provides three S3 methods that do three distinct kinds of tidying:"
+
+* `tidy`: constructs a tibble that summarizes the model’s ... findings...
+* `augment`: add columns to the original data that was modeled.
+* `glance`: construct a concise one-row summary of the model. 
+
+Though not all classes have all three methods defined.
+
+I believe all three methods would be helpful in `crmPack`. 
+
+As a simple example, consider the `results`, an object of class `Samples`, created by following crmPack model fit.
+```{r}
+observedData <- Data(
+                  ID=1:9,
+                  x=c(1, 1, 1, 3, 3, 3, 9, 9, 9),
+                  y=c(0, 0, 0, 0, 0, 0, 0, 1, 0),
+                  cohort=rep(1:3, each=3),
+                  doseGrid=c(0.5, 1, 3, 9, 15, 25, 40)
+                )
+model <- LogisticLogNormal(
+           mean=c(-3, 1),
+           cov=matrix(c(1, -0.5, -0.5, 1), nrow=2),
+           refDose=12
+         )
+results <- mcmc(observedData, model, McmcOptions())
+slotNames(results)
+class(results@data$alpha0)
+length(results@data$alpha0)
+```
+
+As it stands, `results` is unprintable.  It consists of two slots `data` and `options`.  The `data` slot is a `list` of two elements, `alpha0` and `alpha1`.  Each element is a vector of 10000 numeric values, each being a value sampled from the posterior distribution for the corresponding parameter.
+
+## Example
+
+`results` could easily be converted to a tibble.  This would make it easier to process for presentation or further analysis.  For example:
+
+```{r}
+# library(broom)
+setGeneric(
+  name = "tidy",
+  def = function(obj, ...) {
+    standardGeneric("tidy")
+  },
+  valueClass = "tbl"
+)
+
+setMethod(
+  f = "tidy",
+  signature = signature(
+    obj = "Samples"
+  ),
+  definition = function(obj, ...) {
+    # Need to handle multiple chains?
+    lapply(
+      names(obj@data),
+      function(col) tibble(!!{{ col }} := obj@data[[col]])
+    ) %>% 
+    bind_cols() %>% 
+    add_column(Sample=1:nrow(.), .before=1)
+  }
+)
+
+results %>% tidy()
+```
+
+A `Samples` object could also be `augment`ed to provide the estimated probabilities of toxicity at each dose for each sampled set of model coefficients.
+
+```{r}
+setGeneric(
+  name = "augment",
+  def = function(obj, ...) {
+    standardGeneric("augment")
+  },
+  valueClass = "tbl"
+)
+
+setMethod(
+  f = "augment",
+  signature = signature(
+    obj = "Samples"
+  ),
+  definition = function(obj, model, data, ...) {
+    # There must be a way to provide nesting with a dynamic list of column names.  This would avoid the need for
+    # pivot_longer + pivot_wider
+    obj %>%
+      tidy() %>%
+      pivot_longer(
+        -Sample,
+        names_to="Param",
+        values_to="Value"
+      ) %>%
+      expand(nesting(Sample, Param, Value), Dose=data@doseGrid) %>%
+      pivot_wider(
+        names_from=Param,
+        values_from=Value,
+        id_cols=c(Sample, Dose)
+      ) %>%
+      # Need to generalise this step to handle arbitrary parameters to prob
+      mutate(Prob=model@prob(Dose, alpha0, alpha1))
+  }
+)
+
+results %>% augment(model, observedData)
+```
+
+
+A `glimpse` of a `Samples` object might provide the mean probability of toxicity at each dose.
+
+```{r}
+setGeneric(
+  name = "glimpse",
+  def = function(obj, ...) {
+    standardGeneric("glimpse")
+  },
+  valueClass = "tbl"
+)
+
+setMethod(
+  f = "glimpse",
+  signature = signature(
+    obj = "Samples"
+  ),
+  definition = function(obj, model, data, ...) {
+    t <- obj %>%
+      augment(model, data) %>% 
+      group_by(Dose) %>% 
+      summarise(
+        Mean=mean(Prob),
+        .groups="drop"
+      ) 
+    # print(t)
+    
+    t %>% 
+      pivot_wider(
+        names_from=Dose,
+        values_from=Mean
+      ) %>% 
+      # When Models can be described, this could be replaced with Model=describe(model)
+      add_column(Model=class(model), .before=1)
+  }
+)
+
+results %>% glimpse(model, observedData)
+```
