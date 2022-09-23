@@ -1717,7 +1717,7 @@ setMethod("stopTrial",
       model = "ANY",
       data = "Data"
     ),
-    def =
+    definition =
       function(stopping, dose, samples, model, data, ...) {
         # Make sure that the specific dose is part of the dose grid.
         assert_subset(x = stopping@dose, choices = data@doseGrid)
