@@ -7,7 +7,7 @@
 \alias{StoppingMinCohorts}
 \title{\code{StoppingMinCohorts}}
 \usage{
-StoppingMinCohorts(nCohorts = 2L)
+StoppingMinCohorts(nCohorts)
 }
 \arguments{
 \item{nCohorts}{(\code{number})\cr see slot definition in \code{\link{StoppingMinCohorts}}.}

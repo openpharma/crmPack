@@ -372,16 +372,23 @@ test_that(".StoppingMinCohorts works as expected", {
   expect_valid(result, "StoppingMinCohorts")
 })
 
-test_that("StoppingMinCohorts object can be created with user constructor (default)", {
-  result <- expect_silent(StoppingMinCohorts())
-  expect_valid(result, "StoppingMinCohorts")
-  expect_identical(result@nCohorts, 2L)
-})
-
 test_that("StoppingMinCohorts object can be created with user constructor", {
   result <- expect_silent(StoppingMinCohorts(5L))
   expect_valid(result, "StoppingMinCohorts")
   expect_identical(result@nCohorts, 5L)
+})
+
+## StoppingMinPatients ----
+
+test_that(".StoppingMinPatients works as expected", {
+  result <- expect_silent(.StoppingMinPatients())
+  expect_valid(result, "StoppingMinPatients")
+})
+
+test_that("StoppingMinPatients object can be created with user constructor", {
+  result <- expect_silent(StoppingMinPatients(5L))
+  expect_valid(result, "StoppingMinPatients")
+  expect_identical(result@nPatients, 5L)
 })
 
 ## StoppingMTDCV-class ----
