@@ -4,25 +4,35 @@
 \name{StoppingTargetProb-class}
 \alias{StoppingTargetProb-class}
 \alias{.StoppingTargetProb}
-\title{Stop based on probability of target tox interval}
+\alias{StoppingTargetProb}
+\title{\code{StoppingTargetProb}}
+\usage{
+StoppingTargetProb(target, prob)
+}
+\arguments{
+\item{target}{(\code{number})\cr see slot definition in \code{\link{StoppingTargetProb}}.}
+
+\item{prob}{(\code{proportion})\cr see slot definition in \code{\link{StoppingTargetProb}}.}
+}
 \description{
-Stop based on probability of target tox interval
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingTargetProb}} is the class for stopping based on the probability of
+the DLT rate being in the target toxicity interval.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the target toxicity interval, e.g. \code{c(0.2, 0.35)}}
+\item{\code{target}}{(\code{number})\cr the target toxicity interval, e.g. \code{c(0.2, 0.35)}.}
 
-\item{\code{prob}}{required target toxicity probability (e.g. \code{0.4})
-for reaching sufficient precision}
+\item{\code{prob}}{(\code{proportion})\cr required target toxicity probability for reaching
+sufficient precision.}
 }}
 
 \examples{
-# As example, here is the rule for: 
-#   stopping the study if the posterior probability that [0.2 =< Prob(DLT | dose) <= 0.35] 
-#   for the next best dose is above 0.5
 
-myStopping <- StoppingTargetProb(target=c(0.2, 0.35),
-                                 prob=0.5)
+# As example, here is the rule for stopping the study if the posterior
+# probability that [0.2 =< Prob(DLT | dose) <= 0.35] for the next best dose
+# is above 0.5.
+my_stopping <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 }
-\keyword{classes}

@@ -793,6 +793,42 @@ test_that("v_stopping_min_patients returns message for non-valid nPatients", {
   expect_equal(v_stopping_min_patients(object), err_msg)
 })
 
+## v_stopping_target_prob ----
+
+test_that("v_stopping_target_prob passes for valid object", {
+  object <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.4)
+  expect_true(v_stopping_target_prob(object))
+})
+
+test_that("v_stopping_target_prob returns message for non-valid target", {
+  err_msg <- "target has to be a probability range"
+  object <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.4)
+
+  # Changing `target` so that it is not an interval.
+  object@target <- 0.6
+  expect_equal(v_stopping_target_prob(object), err_msg)
+
+  object@target <- c(0.5, 0.6, 0.8)
+  expect_equal(v_stopping_target_prob(object), err_msg)
+
+  # Changing `target` so that one bound is not a valid probability value.
+  object@target <- c(0.4, 1.2)
+  expect_equal(v_stopping_target_prob(object), err_msg)
+})
+
+test_that("v_stopping_target_prob returns message for non-valid prob", {
+  err_msg <- "prob must be a probability value from (0, 1) interval"
+  object <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.4)
+
+  # Changing `prob` so that it does not represent allowed probability value.
+  object@prob <- 1
+  expect_equal(v_stopping_target_prob(object), err_msg)
+
+  # Changing `prob` so that it is not a scalar.
+  object@prob <- c(0.5, 0.6)
+  expect_equal(v_stopping_target_prob(object), err_msg)
+})
+
 ## v_stopping_mtd_cv ----
 
 test_that("v_stopping_mtd_cv passes for valid object", {

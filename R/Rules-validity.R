@@ -388,6 +388,21 @@ v_stopping_min_patients <- function(object) {
   v$result()
 }
 
+#' @describeIn v_stopping validates that the [`StoppingTargetProb`]
+#'  object contains valid `target` and `prob` parameters.
+v_stopping_target_prob <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability_range(object@target),
+    "target has to be a probability range"
+  )
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta

@@ -1281,58 +1281,57 @@ StoppingMinPatients <- function(nPatients) {
   .StoppingMinPatients(nPatients = safeInteger(nPatients))
 }
 
-# nolint start
+# StoppingTargetProb ----
 
-## --------------------------------------------------
-## Stopping based on probability of target tox interval
-## --------------------------------------------------
+## class ----
 
-##' Stop based on probability of target tox interval
-##'
-##' @slot target the target toxicity interval, e.g. \code{c(0.2, 0.35)}
-##' @slot prob required target toxicity probability (e.g. \code{0.4})
-##' for reaching sufficient precision
-##'
-##' @example examples/Rules-class-StoppingTargetProb.R
-##' @keywords classes
-##' @export
-.StoppingTargetProb <-
-    setClass(Class="StoppingTargetProb",
-             representation(target="numeric",
-                            prob="numeric"),
-             prototype(target=c(0.2, 0.35),
-                       prob=0.4),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingTargetProb`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTargetProb`] is the class for stopping based on the probability of
+#' the DLT rate being in the target toxicity interval.
+#'
+#' @slot target (`number`)\cr the target toxicity interval, e.g. `c(0.2, 0.35)`.
+#' @slot prob (`proportion`)\cr required target toxicity probability for reaching
+#'   sufficient precision.
+#'
+#' @aliases StoppingTargetProb
+#' @export
+#'
+.StoppingTargetProb <- setClass(
+  Class = "StoppingTargetProb",
+  slots = c(
+    target = "numeric",
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    target = c(0.2, 0.35),
+    prob = 0.4
+  ),
+  contains = "Stopping",
+  validity = v_stopping_target_prob
+)
 
-                     o$check(is.probRange(object@target),
-                             "target must be probability range")
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingTargetProb())
-
-
-##' Initialization function for "StoppingTargetProb"
-##'
-##' @param target see \code{\linkS4class{StoppingTargetProb}}
-##' @param prob see \code{\linkS4class{StoppingTargetProb}}
-##' @return the \code{\linkS4class{StoppingTargetProb}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname StoppingTargetProb-class
+#'
+#' @param target (`number`)\cr see slot definition in [`StoppingTargetProb`].
+#' @param prob (`proportion`)\cr see slot definition in [`StoppingTargetProb`].
+#'
+#' @example examples/Rules-class-StoppingTargetProb.R
+#' @export
+#'
 StoppingTargetProb <- function(target,
-                               prob)
-{
-    .StoppingTargetProb(target=target,
-                        prob=prob)
+                               prob) {
+  .StoppingTargetProb(
+    target = target,
+    prob = prob
+  )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on MTD distribution
