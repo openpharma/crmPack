@@ -396,9 +396,9 @@ v_stopping_mtd_cv <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StopSpecificDose`] object
+#' @describeIn v_stopping validates that the [`StoppingSpecificDose`] object
 #'   contains valid `dose` number.
-v_stop_specific_dose <- function(object) {
+v_stopping_specific_dose <- function(object) {
   v <- Validate()
   v$check(
     test_number(object@dose, finite = TRUE),
