@@ -17,8 +17,8 @@ StoppingTargetProb(target, prob)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{StoppingTargetProb}} is the class for stopping based on probability of
-target toxicity interval.
+\code{\link{StoppingTargetProb}} is the class for stopping based on the probability of
+the DLT rate being in the target toxicity interval.
 }
 \section{Slots}{
 

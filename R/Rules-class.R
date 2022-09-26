@@ -1289,8 +1289,8 @@ StoppingMinPatients <- function(nPatients) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`StoppingTargetProb`] is the class for stopping based on probability of
-#' target toxicity interval.
+#' [`StoppingTargetProb`] is the class for stopping based on the probability of
+#' the DLT rate being in the target toxicity interval.
 #'
 #' @slot target (`number`)\cr the target toxicity interval, e.g. `c(0.2, 0.35)`.
 #' @slot prob (`proportion`)\cr required target toxicity probability for reaching
