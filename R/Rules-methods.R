@@ -1698,20 +1698,20 @@ setMethod("stopTrial",
 
 # nolint end
 
-## StopSpecificDose ----
+## StoppingSpecificDose ----
 
 #' @describeIn stopTrial if Stopping rule is met for specific dose of the planned
 #' dose grid and not just for the default next best dose.
 #'
-#' @aliases stopTrial-StopSpecificDose
+#' @aliases stopTrial-StoppingSpecificDose
 #'
 #' @export
-#' @example examples/Rules-method-stopTrial-StopSpecificDose.R
+#' @example examples/Rules-method-stopTrial-StoppingSpecificDose.R
 #'
 setMethod("stopTrial",
   signature =
     signature(
-      stopping = "StopSpecificDose",
+      stopping = "StoppingSpecificDose",
       dose = "numeric",
       samples = "ANY",
       model = "ANY",
