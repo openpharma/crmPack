@@ -1098,7 +1098,7 @@ IncrementsMin <- function(increments_list) {
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StopSpecificDose`].
+#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
 #'
 #' @aliases Stopping
 #' @export
@@ -1779,45 +1779,45 @@ StoppingAny <- function(stopList)
 
 # nolint end
 
-# StopSpecificDose ----
+# StoppingSpecificDose ----
 
 ## class ----
 
-#' `StopSpecificDose`
+#' `StoppingSpecificDose`
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`StopSpecificDose`] is the class for stopping based on minimum number of
-#'   cohorts.
+#' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific dose
+#'   of teh dose grid and not at the next best dose
 #'
 #' @slot rule (`rule`)\cr a stopping rule available in this package.
 #' @slot dose (`number`)\cr a dose that is defined as part of the dose grid of the data.
 #'
-#' @aliases StopSpecificDose
+#' @aliases StoppingSpecificDose
 #' @export
 #'
-.StopSpecificDose <- setClass(
-  Class = "StopSpecificDose",
+.StoppingSpecificDose <- setClass(
+  Class = "StoppingSpecificDose",
   slots = c(
     rule = "Stopping",
     dose = "numeric"
   ),
   contains = "Stopping",
-  validity = v_stop_specific_dose
+  validity = v_stopping_specific_dose
 )
 
 ## constructor ---
 
-#' @rdname StopSpecificDose-class
+#' @rdname StoppingSpecificDose-class
 #'
 #' @param rule (`stopping rule`)\cr see slot definition.
 #' @param dose (`number`)\cr see slot definition.
 #'
 #' @export
-#' @example examples/Rules-class-StopSpecificDose.R
+#' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StopSpecificDose <- function(rule, dose) {
-  .StopSpecificDose(
+StoppingSpecificDose <- function(rule, dose) {
+  .StoppingSpecificDose(
     rule = rule,
     dose = dose
   )
