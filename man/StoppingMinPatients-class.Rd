@@ -4,22 +4,29 @@
 \name{StoppingMinPatients-class}
 \alias{StoppingMinPatients-class}
 \alias{.StoppingMinPatients}
-\title{Stop based on minimum number of patients}
+\alias{StoppingMinPatients}
+\title{\code{StoppingMinPatients}}
+\usage{
+StoppingMinPatients(nPatients)
+}
+\arguments{
+\item{nPatients}{(\code{number})\cr see slot definition in \code{\link{StoppingMinPatients}}.}
+}
 \description{
-Stop based on minimum number of patients
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingMinPatients}} is the class for stopping based on minimum number of
+patients
 }
 \section{Slots}{
 
 \describe{
-\item{\code{nPatients}}{minimum allowed number of patients}
+\item{\code{nPatients}}{(\code{number})\cr minimum allowed number of patients.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-#   stopping the study if at least 20 patients were already dosed
-
-myStopping <- StoppingMinPatients(nPatients = 20)
-
+# As example, here is the rule for stopping the study if at least 20 patients
+# were already dosed
+my_stopping <- StoppingMinPatients(nPatients = 20)
 }
-\keyword{classes}

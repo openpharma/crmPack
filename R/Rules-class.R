@@ -1240,50 +1240,48 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts = 2L) {
+StoppingMinCohorts <- function(nCohorts) {
   .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
 }
 
-# nolint start
+# StoppingMinPatients ----
 
-## --------------------------------------------------
-## Stopping based on minimum number of patients
-## --------------------------------------------------
+## class ----
 
-##' Stop based on minimum number of patients
-##'
-##' @slot nPatients minimum allowed number of patients
-##'
-##' @example examples/Rules-class-StoppingMinPatients.R
-##' @keywords classes
-##' @export
-.StoppingMinPatients <-
-    setClass(Class="StoppingMinPatients",
-             representation(nPatients="integer"),
-             prototype(nPatients=20L),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+#' `StoppingMinPatients`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMinPatients`] is the class for stopping based on minimum number of
+#' patients
+#'
+#' @slot nPatients (`number`)\cr minimum allowed number of patients.
+#'
+#' @aliases StoppingMinPatients
+#' @export
+#'
+.StoppingMinPatients <- setClass(
+  Class = "StoppingMinPatients",
+  slots = c(nPatients = "integer"),
+  prototype = prototype(nPatients = 20L),
+  contains = "Stopping",
+  validity = v_stopping_min_patients
+)
 
-                 o$check((object@nPatients > 0L) && is.scalar(object@nPatients),
-                         "nPatients must be positive scalar")
+## constructor ----
 
-                 o$result()
-             })
-validObject(.StoppingMinPatients())
-
-##' Initialization function for "StoppingMinPatients"
-##'
-##' @param nPatients see \code{\linkS4class{StoppingMinPatients}}
-##' @return the \code{\linkS4class{StoppingMinPatients}} object
-##'
-##' @export
-##' @keywords methods
-StoppingMinPatients <- function(nPatients)
-{
-    .StoppingMinPatients(nPatients=safeInteger(nPatients))
+#' @rdname StoppingMinPatients-class
+#'
+#' @param nPatients (`number`)\cr see slot definition in [`StoppingMinPatients`].
+#'
+#' @example examples/Rules-class-StoppingMinPatients.R
+#' @export
+#'
+StoppingMinPatients <- function(nPatients) {
+  .StoppingMinPatients(nPatients = safeInteger(nPatients))
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target tox interval

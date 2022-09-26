@@ -748,16 +748,13 @@ test_that("v_stopping_patients_near_dose returns message for non-valid percentag
 ## v_stopping_min_cohorts ----
 
 test_that("v_stopping_min_cohorts passes for valid object", {
-  object <- StoppingMinCohorts()
-  expect_true(v_stopping_min_cohorts(object))
-
   object <- StoppingMinCohorts(nCohorts = 5L)
   expect_true(v_stopping_min_cohorts(object))
 })
 
 test_that("v_stopping_min_cohorts returns message for non-valid nCohorts", {
   err_msg <- "nCohorts must be positive integer scalar"
-  object <- StoppingMinCohorts()
+  object <- StoppingMinCohorts(nCohorts = 5L)
 
   # Changing `nCohorts` so that it not a scalar.
   object@nCohorts <- c(1L, 2L)
@@ -770,6 +767,30 @@ test_that("v_stopping_min_cohorts returns message for non-valid nCohorts", {
   # Changing `nCohorts` so that it is not a positive value.
   object@nCohorts <- -2L
   expect_equal(v_stopping_min_cohorts(object), err_msg)
+})
+
+## v_stopping_min_patients ----
+
+test_that("v_stopping_min_patients passes for valid object", {
+  object <- StoppingMinPatients(nPatients = 5L)
+  expect_true(v_stopping_min_patients(object))
+})
+
+test_that("v_stopping_min_patients returns message for non-valid nPatients", {
+  err_msg <- "nPatients must be positive integer scalar"
+  object <- StoppingMinPatients(nPatients = 5L)
+
+  # Changing `nPatients` so that it not a scalar.
+  object@nPatients <- c(1L, 2L)
+  expect_equal(v_stopping_min_patients(object), err_msg)
+
+  # Changing `nPatients` so that it is NA value.
+  object@nPatients <- NA_integer_
+  expect_equal(v_stopping_min_patients(object), err_msg)
+
+  # Changing `nPatients` so that it is not a positive value.
+  object@nPatients <- -2L
+  expect_equal(v_stopping_min_patients(object), err_msg)
 })
 
 ## v_stopping_mtd_cv ----
