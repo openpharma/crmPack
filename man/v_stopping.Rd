@@ -6,6 +6,7 @@
 \alias{v_stopping_patients_near_dose}
 \alias{v_stopping_min_cohorts}
 \alias{v_stopping_min_patients}
+\alias{v_stopping_target_prob}
 \alias{v_stopping_lowest_dose_hsr_beta}
 \alias{v_stopping_mtd_cv}
 \title{Internal Helper Functions for Validation of \code{\link{Stopping}} Objects}
@@ -17,6 +18,8 @@ v_stopping_patients_near_dose(object)
 v_stopping_min_cohorts(object)
 
 v_stopping_min_patients(object)
+
+v_stopping_target_prob(object)
 
 v_stopping_lowest_dose_hsr_beta(object)
 
@@ -48,6 +51,9 @@ object contains valid \code{nCohorts} parameter.
 
 \item \code{v_stopping_min_patients}: validates that the \code{\link{StoppingMinPatients}}
 object contains valid \code{nPatients} parameter.
+
+\item \code{v_stopping_target_prob}: validates that the \code{\link{StoppingTargetProb}}
+object contains valid \code{target} and \code{prob} parameters.
 
 \item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
