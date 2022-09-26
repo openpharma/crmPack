@@ -391,6 +391,20 @@ test_that("StoppingMinPatients object can be created with user constructor", {
   expect_identical(result@nPatients, 5L)
 })
 
+## StoppingTargetProb ----
+
+test_that(".StoppingTargetProb works as expected", {
+  result <- expect_silent(.StoppingTargetProb())
+  expect_valid(result, "StoppingTargetProb")
+})
+
+test_that("StoppingTargetProb object can be created with user constructor", {
+  result <- expect_silent(StoppingTargetProb(target = c(0.3, 0.45), prob = 0.5))
+  expect_valid(result, "StoppingTargetProb")
+  expect_identical(result@target, c(0.3, 0.45))
+  expect_identical(result@prob, 0.5)
+})
+
 ## StoppingMTDCV-class ----
 
 test_that(".StoppingMTDCV works as expected", {
