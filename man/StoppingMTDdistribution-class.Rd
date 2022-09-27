@@ -19,19 +19,22 @@ StoppingMTDdistribution(target, thresh, prob)
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{StoppingMTDdistribution}} is the class for stopping based on MTD distribution.
-It is used for the cases where the stopping occurs when there exists
-\code{prob} probability above a threshold of \code{tresh} of the current MTD been
-reached. Here, the MTD is defined as the dose for which \code{prob(DLT) = target}.
+\code{\link{StoppingMTDdistribution}} is the class for stopping based on the posterior
+distribution of the MTD. It is used for the cases where the stopping occurs
+when the probability of \code{MTD > thresh * next_dose} is greater than or equal
+to \code{prob}, where the \code{next_dose} is the recommended next best dose.
+Here, the MTD is defined as the dose that reaches a specific \code{target}
+probability of the occurrence of a DLT.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{target}}{(\code{proportion})\cr the target toxicity probability defining the MTD.}
 
-\item{\code{thresh}}{(\code{proportion})\cr the threshold relative to the MTD.}
+\item{\code{thresh}}{(\code{proportion})\cr the threshold relative to the recommended next
+best dose.}
 
-\item{\code{prob}}{(\code{proportion})\cr required probability.}
+\item{\code{prob}}{(\code{proportion})\cr required minimum probability.}
 }}
 
 \examples{

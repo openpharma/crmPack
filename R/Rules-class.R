@@ -1339,14 +1339,17 @@ StoppingTargetProb <- function(target,
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`StoppingMTDdistribution`] is the class for stopping based on MTD distribution.
-#' It is used for the cases where the stopping occurs when there exists
-#' `prob` probability above a threshold of `tresh` of the current MTD been
-#' reached. Here, the MTD is defined as the dose for which `prob(DLT) = target`.
+#' [`StoppingMTDdistribution`] is the class for stopping based on the posterior
+#' distribution of the MTD. It is used for the cases where the stopping occurs
+#' when the probability of `MTD > thresh * next_dose` is greater than or equal
+#' to `prob`, where the `next_dose` is the recommended next best dose.
+#' Here, the MTD is defined as the dose that reaches a specific `target`
+#' probability of the occurrence of a DLT.
 #'
 #' @slot target (`proportion`)\cr the target toxicity probability defining the MTD.
-#' @slot thresh (`proportion`)\cr the threshold relative to the MTD.
-#' @slot prob (`proportion`)\cr required probability.
+#' @slot thresh (`proportion`)\cr the threshold relative to the recommended next
+#'   best dose.
+#' @slot prob (`proportion`)\cr required minimum probability.
 #'
 #' @aliases StoppingMTDdistribution
 #' @export
