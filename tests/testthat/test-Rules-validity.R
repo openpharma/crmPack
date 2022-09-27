@@ -829,6 +829,52 @@ test_that("v_stopping_target_prob returns message for non-valid prob", {
   expect_equal(v_stopping_target_prob(object), err_msg)
 })
 
+## v_stopping_mtd_distribution ----
+
+test_that("v_stopping_mtd_distribution passes for valid object", {
+  object <- StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  expect_true(v_stopping_mtd_distribution(object))
+})
+
+test_that("v_stopping_mtd_distribution returns message for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
+  object <- StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+})
+
+test_that("v_stopping_mtd_distribution returns message for non-valid thresh", {
+  err_msg <- "thresh must be a probability value from (0, 1) interval"
+  object <- StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+
+  # Changing `thresh` so that it does not represent allowed probability value.
+  object@thresh <- 1
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+
+  # Changing `thresh` so that it is not a scalar.
+  object@thresh <- c(0.5, 0.6)
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+})
+
+test_that("v_stopping_mtd_distribution returns message for non-valid prob", {
+  err_msg <- "prob must be a probability value from (0, 1) interval"
+  object <- StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+
+  # Changing `prob` so that it does not represent allowed probability value.
+  object@prob <- 1
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+
+  # Changing `prob` so that it is not a scalar.
+  object@prob <- c(0.5, 0.6)
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+})
+
 ## v_stopping_mtd_cv ----
 
 test_that("v_stopping_mtd_cv passes for valid object", {

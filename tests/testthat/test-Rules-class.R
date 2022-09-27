@@ -405,6 +405,23 @@ test_that("StoppingTargetProb object can be created with user constructor", {
   expect_identical(result@prob, 0.5)
 })
 
+## StoppingMTDdistribution ----
+
+test_that(".StoppingMTDdistribution works as expected", {
+  result <- expect_silent(.StoppingMTDdistribution())
+  expect_valid(result, "StoppingMTDdistribution")
+})
+
+test_that("StoppingMTDdistribution object can be created with user constructor", {
+  result <- expect_silent(
+    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  )
+  expect_valid(result, "StoppingMTDdistribution")
+  expect_identical(result@target, 0.33)
+  expect_identical(result@thresh, 0.5)
+  expect_identical(result@prob, 0.9)
+})
+
 ## StoppingMTDCV-class ----
 
 test_that(".StoppingMTDCV works as expected", {
