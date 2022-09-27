@@ -403,6 +403,25 @@ v_stopping_target_prob <- function(object) {
   v$result()
 }
 
+#' @describeIn v_stopping validates that the [`StoppingMTDdistribution`]
+#'  object contains valid `target`, `thresh` and `prob` parameters.
+v_stopping_mtd_distribution <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@thresh, bounds_closed = FALSE),
+    "thresh must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta

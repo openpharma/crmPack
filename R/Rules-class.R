@@ -1331,71 +1331,67 @@ StoppingTargetProb <- function(target,
   )
 }
 
-# nolint start
+# StoppingMTDdistribution ----
 
-## --------------------------------------------------
-## Stopping based on MTD distribution
-## --------------------------------------------------
+## class ----
 
-##' Stop based on MTD distribution
-##'
-##' Has 90% probability above a threshold of 50% of the current
-##' MTD been reached? This class is used for this question.
-##'
-##' @slot target the target toxicity probability (e.g. 0.33) defining the MTD
-##' @slot thresh the threshold relative to the MTD (e.g. 0.5)
-##' @slot prob required probability (e.g. 0.9)
-##'
-##' @example examples/Rules-class-StoppingMTDdistribution.R
-##' @keywords classes
-##' @export
-.StoppingMTDdistribution <-
-    setClass(Class="StoppingMTDdistribution",
-             representation(target="numeric",
-                            thresh="numeric",
-                            prob="numeric"),
-             prototype(target=0.33,
-                       thresh=0.5,
-                       prob=0.9),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingMTDdistribution`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMTDdistribution`] is the class for stopping based on the posterior
+#' distribution of the MTD. It is used for the cases where the stopping occurs
+#' when the probability of `MTD > thresh * next_dose` is greater than or equal
+#' to `prob`, where the `next_dose` is the recommended next best dose.
+#' Here, the MTD is defined as the dose that reaches a specific `target`
+#' probability of the occurrence of a DLT.
+#'
+#' @slot target (`proportion`)\cr the target toxicity probability defining the MTD.
+#' @slot thresh (`proportion`)\cr the threshold relative to the recommended next
+#'   best dose.
+#' @slot prob (`proportion`)\cr required minimum probability.
+#'
+#' @aliases StoppingMTDdistribution
+#' @export
+#'
+.StoppingMTDdistribution <- setClass(
+  Class = "StoppingMTDdistribution",
+  slots = c(
+    target = "numeric",
+    thresh = "numeric",
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    target = 0.33,
+    thresh = 0.5,
+    prob = 0.9
+  ),
+  contains = "Stopping",
+  validity = v_stopping_mtd_distribution
+)
 
-                     o$check(is.probability(object@target,
-                                            bounds=FALSE),
-                             "target must be probability > 0 and < 1")
-                     o$check(is.probability(object@thresh,
-                                            bounds=FALSE),
-                             "thresh must be probability > 0 and < 1")
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingMTDdistribution())
-
-
-##' Initialization function for "StoppingMTDdistribution"
-##'
-##' @param target see \code{\linkS4class{StoppingMTDdistribution}}
-##' @param thresh see \code{\linkS4class{StoppingMTDdistribution}}
-##' @param prob see \code{\linkS4class{StoppingMTDdistribution}}
-##' @return the \code{\linkS4class{StoppingMTDdistribution}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname StoppingMTDdistribution-class
+#'
+#' @param target (`proportion`)\cr see slot definition in [`StoppingMTDdistribution`].
+#' @param thresh (`proportion`)\cr see slot definition in [`StoppingMTDdistribution`].
+#' @param prob (`proportion`)\cr see slot definition in [`StoppingMTDdistribution`].
+#'
+#' @example examples/Rules-class-StoppingMTDdistribution.R
+#' @export
+#'
 StoppingMTDdistribution <- function(target,
                                     thresh,
-                                    prob)
-{
-    .StoppingMTDdistribution(target=target,
-                             thresh=thresh,
-                             prob=prob)
+                                    prob) {
+  .StoppingMTDdistribution(
+    target = target,
+    thresh = thresh,
+    prob = prob
+  )
 }
 
-# nolint end
+# nolint start
 
 # StoppingMTDCV-class ----
 
@@ -1516,8 +1512,6 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     b = b
   )
 }
-
-# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker
