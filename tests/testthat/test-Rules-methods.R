@@ -729,7 +729,9 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
   expect_identical(result[names(expected)], expected, tolerance = 10e-7)
 })
 
-# maxDose-IncrementsNumDoseLevels ----
+# Increments ----
+
+## maxDose-IncrementsNumDoseLevels ----
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
   increments <- IncrementsNumDoseLevels(
@@ -766,7 +768,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is define
   expect_equal(result, 20) # maxDose is 20 if basislevel='max'.
 })
 
-# maxDose-IncrementsRelativeDLTCurrent ----
+## maxDose-IncrementsRelativeDLTCurrent ----
 
 test_that("IncrementsRelativeDLTCurrent works correctly", {
   increments <- IncrementsRelativeDLTCurrent(
@@ -780,7 +782,7 @@ test_that("IncrementsRelativeDLTCurrent works correctly", {
   expect_equal(result, 13.3) # maxDose is 13.3 because last dose was 10 with 1 DLT.
 })
 
-# maxDose-IncrementsHSRBeta ----
+## maxDose-IncrementsHSRBeta ----
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is below threshold probability", {
   my_data <- h_get_data()
@@ -869,8 +871,9 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
   expect_equal(result, 75) # maxDose is 75 as toxicity probability of dose 100 is above 0.90.
 })
 
+# Stopping ----
 
-# stopTrial-StoppingMTDCV ----
+## stopTrial-StoppingMTDCV ----
 
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
@@ -910,7 +913,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
   expect_identical(result, expected) # CV is 23% > 20%.
 })
 
-# stopTrial-StoppingLowestDoseHSRBeta ----
+## stopTrial-StoppingLowestDoseHSRBeta ----
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data()
@@ -1042,4 +1045,116 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
     message = "Lowest active dose not tested, stopping rule not applied."
   )
   expect_identical(result, expected) # First active dose not applied.
+})
+
+## stopTrial-StoppingSpecificDose ----
+
+test_that("StoppingSpecificDose works correctly if dose recommendation is not the same as the specific dose and stop is not met", {
+  my_data <- h_get_data_sr_1()
+  my_model <- h_get_logistic_log_normal()
+  my_samples <- mcmc(my_data, my_model,
+                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+                     )
+  stopping  <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+    dose = 80
+  )
+  next_best <- h_next_best_ncrm()
+  doseRecommendation <- nextBest(next_best,
+                                 doselimit = 100,
+                                 samples = my_samples,
+                                 model = my_model,
+                                 data = my_data
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = doseRecommendation$value,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 5 % for dose 80 and thus below the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose recommendation is not the same as the specific dose and stop is met", {
+  my_data <- h_get_data_sr_2()
+  my_model <- h_get_logistic_log_normal()
+  my_samples <- mcmc(my_data, my_model,
+                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
+  stopping  <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+    dose = 80
+  )
+  next_best <- h_next_best_ncrm()
+  doseRecommendation <- nextBest(next_best,
+                                 doselimit = 100,
+                                 samples = my_samples,
+                                 model = my_model,
+                                 data = my_data
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = doseRecommendation$value,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 93 % for dose 80 and thus above the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose recommendation is the same as the specific dose and stop is not met", {
+  my_data <- h_get_data_sr_1()
+  my_model <- h_get_logistic_log_normal()
+  my_samples <- mcmc(my_data, my_model,
+                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
+  stopping  <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+    dose = 80
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 80,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 5 % for dose 80 and thus below the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose recommendation is the same as the specific dose and stop is met", {
+  my_data <- h_get_data_sr_2()
+  my_model <- h_get_logistic_log_normal()
+  my_samples <- mcmc(my_data, my_model,
+                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
+  stopping  <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+    dose = 80
+  )
+  result <- stopTrial(
+    stopping = stopping,
+    dose = 80,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 93 % for dose 80 and thus above the required 80 %"
+  )
+  expect_identical(result, expected)
 })
