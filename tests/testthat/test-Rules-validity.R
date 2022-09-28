@@ -14,6 +14,10 @@ test_that("v_next_best_mtd returns message for non-valid target", {
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
   expect_equal(v_next_best_mtd(object), err_msg)
+  object@target <- 0
+  expect_equal(v_next_best_mtd(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_next_best_mtd(object), err_msg)
 
   # Changing `target` so that it is not a scalar.
   object@target <- c(0.5, 0.6)
@@ -52,7 +56,6 @@ test_that("v_next_best_ncrm returns message for non-valid target", {
   # Changing `target` so that it is not an interval.
   object@target <- 0.6
   expect_equal(v_next_best_ncrm(object), err_msg)
-
   object@target <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm(object), err_msg)
 
@@ -68,7 +71,6 @@ test_that("v_next_best_ncrm returns message for non-valid overdose", {
   # Changing `overdose` so that it is not an interval.
   object@overdose <- 0.6
   expect_equal(v_next_best_ncrm(object), err_msg)
-
   object@overdose <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm(object), err_msg)
 
@@ -104,14 +106,12 @@ test_that("v_next_best_ncrm_loss returns message for non-valid target", {
   # Changing `target` so that it is not an interval.
   object@target <- 0.6
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
-
   object@target <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
   # Changing `target` so that one bound is not a valid probability value.
   object@target <- c(0.4, 1)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
-
   object@target <- c(0, 0.9)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })
@@ -123,7 +123,6 @@ test_that("v_next_best_ncrm_loss returns message for non-valid overdose", {
   # Changing `overdose` so that it is not an interval.
   object@overdose <- 0.6
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
-
   object@overdose <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
@@ -139,7 +138,6 @@ test_that("v_next_best_ncrm_loss returns message for non-valid unacceptable", {
   # Changing `unacceptable` so that it is not an interval.
   object@unacceptable <- 0.6
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
-
   object@unacceptable <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
@@ -191,7 +189,6 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target (relat
   # Changing `target` so that it is not an interval.
   object@target <- 0.6
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
-
   object@target <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
@@ -207,7 +204,6 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target (absol
   # Changing `target` so that it is not a numeric range.
   object@target <- 0.6
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
-
   object@target <- c(1, 5, 7)
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 })
@@ -227,7 +223,6 @@ test_that("v_next_best_dual_endpoint returns message for non-valid overdose", {
   # Changing `overdose` so that it is not an interval.
   object@overdose <- 0.6
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
-
   object@overdose <- c(0.5, 0.6, 0.8)
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
@@ -567,10 +562,8 @@ test_that("v_increments_num_dose_levels returns message for non-valid basis_leve
   # Changing `basis_level` so that it is neither equal to 'last' nor 'max'
   object@basis_level <- "last "
   expect_equal(v_increments_num_dose_levels(object), err_msg)
-
   object@basis_level <- " max "
   expect_equal(v_increments_num_dose_levels(object), err_msg)
-
   object@basis_level <- c("last", "max")
   expect_equal(v_increments_num_dose_levels(object), err_msg)
 })
@@ -807,7 +800,6 @@ test_that("v_stopping_target_prob returns message for non-valid target", {
   # Changing `target` so that it is not an interval.
   object@target <- 0.6
   expect_equal(v_stopping_target_prob(object), err_msg)
-
   object@target <- c(0.5, 0.6, 0.8)
   expect_equal(v_stopping_target_prob(object), err_msg)
 
@@ -880,48 +872,47 @@ test_that("v_stopping_mtd_distribution returns message for non-valid prob", {
 test_that("v_stopping_mtd_cv passes for valid object", {
   object <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
   expect_true(v_stopping_mtd_cv(object))
+
+  object <- StoppingMTDCV(target = 0.3, thresh_cv = 100)
+  expect_true(v_stopping_mtd_cv(object))
 })
 
-test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
-  object <- StoppingMTDCV()
-  object@target <- c(-0.3)
-  object@thresh_cv <- c(-40)
+test_that("v_stopping_mtd_cv returns message for non-valid target", {
+  err_msg <- "target must be probability value from (0, 1) interval"
+  object <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
 
-  expect_equal(
-    v_stopping_mtd_cv(object),
-    c(
-      "target must be probability value from (0, 1) interval",
-      "thresh_cv must be percentage > 0"
-    )
-  )
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
+  object@target <- 0
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
 })
 
-test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
-  object <- StoppingMTDCV()
-  object@target <- c(3)
-  object@thresh_cv <- c(0)
+test_that("v_stopping_mtd_cv returns message for non-valid thresh_cv", {
+  err_msg <- "thresh_cv must be percentage > 0"
+  object <- StoppingMTDCV(target = 0.3, thresh_cv = 30)
 
-  expect_equal(
-    v_stopping_mtd_cv(object),
-    c(
-      "target must be probability value from (0, 1) interval",
-      "thresh_cv must be percentage > 0"
-    )
-  )
-})
+  # Changing `thresh_cv` so that it not a scalar.
+  object@thresh_cv <- c(1L, 2L)
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
 
-test_that("v_stopping_mtd_cv returns expected messages for non-valid object", {
-  object <- StoppingMTDCV()
-  object@target <- c(0.3, 0.35)
-  object@thresh_cv <- c(30, 40)
+  # Changing `thresh_cv` so that it is NA value.
+  object@thresh_cv <- NA_integer_
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
 
-  expect_equal(
-    v_stopping_mtd_cv(object),
-    c(
-      "target must be probability value from (0, 1) interval",
-      "thresh_cv must be percentage > 0"
-    )
-  )
+  # Changing `thresh_cv` so that it is not a thresh_cv.
+  object@thresh_cv <- -1
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
+  object@thresh_cv <- 0
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
+  object@thresh_cv <- 101
+  expect_equal(v_stopping_mtd_cv(object), err_msg)
 })
 
 ## v_stopping_lowest_dose_hsr_beta ----

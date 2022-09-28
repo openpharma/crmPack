@@ -10,9 +10,9 @@
 IncrementsRelative(intervals, increments)
 }
 \arguments{
-\item{intervals}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
+\item{intervals}{(\code{numeric})\cr see slot definition.}
 
-\item{increments}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
+\item{increments}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

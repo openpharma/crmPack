@@ -10,11 +10,11 @@
 StoppingMTDdistribution(target, thresh, prob)
 }
 \arguments{
-\item{target}{(\code{proportion})\cr see slot definition in \code{\link{StoppingMTDdistribution}}.}
+\item{target}{(\code{proportion})\cr see slot definition.}
 
-\item{thresh}{(\code{proportion})\cr see slot definition in \code{\link{StoppingMTDdistribution}}.}
+\item{thresh}{(\code{proportion})\cr see slot definition.}
 
-\item{prob}{(\code{proportion})\cr see slot definition in \code{\link{StoppingMTDdistribution}}.}
+\item{prob}{(\code{proportion})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

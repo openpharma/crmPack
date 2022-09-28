@@ -10,7 +10,7 @@
 StoppingMinPatients(nPatients)
 }
 \arguments{
-\item{nPatients}{(\code{number})\cr see slot definition in \code{\link{StoppingMinPatients}}.}
+\item{nPatients}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

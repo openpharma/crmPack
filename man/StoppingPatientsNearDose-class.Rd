@@ -10,9 +10,9 @@
 StoppingPatientsNearDose(nPatients, percentage = 50)
 }
 \arguments{
-\item{nPatients}{(\code{number})\cr see slot definition in \code{\link{StoppingPatientsNearDose}}.}
+\item{nPatients}{(\code{number})\cr see slot definition.}
 
-\item{percentage}{(\code{number})\cr see slot definition in \code{\link{StoppingPatientsNearDose}}.}
+\item{percentage}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

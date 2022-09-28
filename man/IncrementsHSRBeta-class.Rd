@@ -10,13 +10,13 @@
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 \arguments{
-\item{target}{(\code{proportion})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{target}{(\code{proportion})\cr see slot definition.}
 
-\item{prob}{(\code{proportion})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{prob}{(\code{proportion})\cr see slot definition.}
 
-\item{a}{(\code{number})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{a}{(\code{number})\cr see slot definition.}
 
-\item{b}{(\code{number})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{b}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
