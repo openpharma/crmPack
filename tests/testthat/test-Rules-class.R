@@ -436,7 +436,7 @@ test_that("StoppingMTDCV object can be created with user constructor (default)",
   expect_identical(result@thresh_cv, 40)
 })
 
-test_that("StoppingMTDCV object can be created with user constructor (de", {
+test_that("StoppingMTDCV object can be created with user constructor", {
   result <- expect_silent(StoppingMTDCV(target = 0.4, thresh_cv = 70))
   expect_valid(result, "StoppingMTDCV")
   expect_identical(result@target, 0.4)
