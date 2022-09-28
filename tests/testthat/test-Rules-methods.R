@@ -1064,7 +1064,7 @@ test_that(paste(
     dose = 80
   )
   next_best <- h_next_best_ncrm()
-  doseRecommendation <- nextBest(next_best,
+  doseRecommendation <- nextBest(next_best, # nolintr
     doselimit = 100,
     samples = my_samples,
     model = my_model,
@@ -1099,7 +1099,7 @@ test_that(paste(
     dose = 80
   )
   next_best <- h_next_best_ncrm()
-  doseRecommendation <- nextBest(next_best,
+  doseRecommendation <- nextBest(next_best, # nolintr
     doselimit = 100,
     samples = my_samples,
     model = my_model,
