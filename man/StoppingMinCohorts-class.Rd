@@ -7,10 +7,10 @@
 \alias{StoppingMinCohorts}
 \title{\code{StoppingMinCohorts}}
 \usage{
-StoppingMinCohorts(nCohorts = 2L)
+StoppingMinCohorts(nCohorts)
 }
 \arguments{
-\item{nCohorts}{(\code{number})\cr see slot definition in \code{\link{StoppingMinCohorts}}.}
+\item{nCohorts}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

@@ -4,7 +4,16 @@
 \name{IncrementsRelative-class}
 \alias{IncrementsRelative-class}
 \alias{.IncrementsRelative}
-\title{Increments control based on relative differences in intervals}
+\alias{IncrementsRelative}
+\title{\code{IncrementsRelative}}
+\usage{
+IncrementsRelative(intervals, increments)
+}
+\arguments{
+\item{intervals}{(\code{numeric})\cr see slot definition.}
+
+\item{increments}{(\code{numeric})\cr see slot definition.}
+}
 \description{
 Note that \code{intervals} is to be read as follows. If for example,
 we want to specify three intervals: First 0 to less than 50, second at least

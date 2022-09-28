@@ -4,30 +4,47 @@
 \name{StoppingMTDdistribution-class}
 \alias{StoppingMTDdistribution-class}
 \alias{.StoppingMTDdistribution}
-\title{Stop based on MTD distribution}
+\alias{StoppingMTDdistribution}
+\title{\code{StoppingMTDdistribution}}
+\usage{
+StoppingMTDdistribution(target, thresh, prob)
+}
+\arguments{
+\item{target}{(\code{proportion})\cr see slot definition.}
+
+\item{thresh}{(\code{proportion})\cr see slot definition.}
+
+\item{prob}{(\code{proportion})\cr see slot definition.}
+}
 \description{
-Has 90\% probability above a threshold of 50\% of the current
-MTD been reached? This class is used for this question.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingMTDdistribution}} is the class for stopping based on the posterior
+distribution of the MTD. It is used for the cases where the stopping occurs
+when the probability of \code{MTD > thresh * next_dose} is greater than or equal
+to \code{prob}, where the \code{next_dose} is the recommended next best dose.
+Here, the MTD is defined as the dose that reaches a specific \code{target}
+probability of the occurrence of a DLT.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{the target toxicity probability (e.g. 0.33) defining the MTD}
+\item{\code{target}}{(\code{proportion})\cr the target toxicity probability defining the MTD.}
 
-\item{\code{thresh}}{the threshold relative to the MTD (e.g. 0.5)}
+\item{\code{thresh}}{(\code{proportion})\cr the threshold relative to the recommended next
+best dose.}
 
-\item{\code{prob}}{required probability (e.g. 0.9)}
+\item{\code{prob}}{(\code{proportion})\cr required minimum probability.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-#   stopping the study if there is at least 0.9 probability that MTD > 0.5*next_dose.
-#   Here MTD is defined as the dose for which prob(DLE)=0.33
-
-myStopping <- StoppingMTDdistribution(target = 0.33,
-                                      thresh = 0.5,
-                                      prob = 0.9)
-
+# As example, here is the rule for stopping the study if there is at least 0.9
+# probability that MTD > 0.5 * next_dose. Here MTD is defined as the dose for
+# which prob(DLT) = 0.33
+my_stopping <- StoppingMTDdistribution(
+  target = 0.33,
+  thresh = 0.5,
+  prob = 0.9
+)
 }
-\keyword{classes}

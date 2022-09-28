@@ -4,7 +4,16 @@
 \name{StoppingPatientsNearDose-class}
 \alias{StoppingPatientsNearDose-class}
 \alias{.StoppingPatientsNearDose}
-\title{Stop based on number of patients near to next best dose}
+\alias{StoppingPatientsNearDose}
+\title{\code{StoppingPatientsNearDose}}
+\usage{
+StoppingPatientsNearDose(nPatients, percentage = 50)
+}
+\arguments{
+\item{nPatients}{(\code{number})\cr see slot definition.}
+
+\item{percentage}{(\code{number})\cr see slot definition.}
+}
 \description{
 Stop based on number of patients near to next best dose
 }

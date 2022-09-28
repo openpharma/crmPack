@@ -5,8 +5,11 @@
 \alias{v_stopping_cohorts_near_dose}
 \alias{v_stopping_patients_near_dose}
 \alias{v_stopping_min_cohorts}
-\alias{v_stopping_lowest_dose_hsr_beta}
+\alias{v_stopping_min_patients}
+\alias{v_stopping_target_prob}
+\alias{v_stopping_mtd_distribution}
 \alias{v_stopping_mtd_cv}
+\alias{v_stopping_lowest_dose_hsr_beta}
 \title{Internal Helper Functions for Validation of \code{\link{Stopping}} Objects}
 \usage{
 v_stopping_cohorts_near_dose(object)
@@ -15,9 +18,15 @@ v_stopping_patients_near_dose(object)
 
 v_stopping_min_cohorts(object)
 
-v_stopping_lowest_dose_hsr_beta(object)
+v_stopping_min_patients(object)
+
+v_stopping_target_prob(object)
+
+v_stopping_mtd_distribution(object)
 
 v_stopping_mtd_cv(object)
+
+v_stopping_lowest_dose_hsr_beta(object)
 }
 \arguments{
 \item{object}{(\code{Stopping})\cr object to validate.}
@@ -43,10 +52,19 @@ object contains valid \code{nPatients} and \code{percentage} parameters.
 \item \code{v_stopping_min_cohorts}: validates that the \code{\link{StoppingMinCohorts}}
 object contains valid \code{nCohorts} parameter.
 
-\item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
-object contains valid probability target, threshold and shape parameters.
+\item \code{v_stopping_min_patients}: validates that the \code{\link{StoppingMinPatients}}
+object contains valid \code{nPatients} parameter.
+
+\item \code{v_stopping_target_prob}: validates that the \code{\link{StoppingTargetProb}}
+object contains valid \code{target} and \code{prob} parameters.
+
+\item \code{v_stopping_mtd_distribution}: validates that the \code{\link{StoppingMTDdistribution}}
+object contains valid \code{target}, \code{thresh} and \code{prob} parameters.
 
 \item \code{v_stopping_mtd_cv}: validates that the \code{\link{StoppingMTDCV}} object
 contains valid probability target and percentage threshold.
+
+\item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
+object contains valid probability target, threshold and shape parameters.
 }}
 

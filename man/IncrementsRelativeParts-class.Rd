@@ -4,8 +4,23 @@
 \name{IncrementsRelativeParts-class}
 \alias{IncrementsRelativeParts-class}
 \alias{.IncrementsRelativeParts}
-\title{Increments control based on relative differences in intervals,
-with special rules for part 1 and beginning of part 2}
+\alias{IncrementsRelativeParts}
+\title{\code{IncrementsRelativeParts}}
+\usage{
+IncrementsRelativeParts(dlt_start, clean_start, ...)
+}
+\arguments{
+\item{dlt_start}{(\code{count})\cr see slot definition.}
+
+\item{clean_start}{(\code{count})\cr see slot definition.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=IncrementsRelative]{IncrementsRelative}}
+  \describe{
+    \item{\code{intervals}}{(\code{numeric})\cr see slot definition.}
+    \item{\code{increments}}{(\code{numeric})\cr see slot definition.}
+  }}
+}
 \description{
 Note that this only works in conjunction with \code{\linkS4class{DataParts}}
 objects. If the part 2 will just be started in the next cohort, then the

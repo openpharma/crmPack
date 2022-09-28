@@ -377,9 +377,50 @@ v_stopping_min_cohorts <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
+#' @describeIn v_stopping validates that the [`StoppingMinPatients`]
+#'  object contains valid `nPatients` parameter.
+v_stopping_min_patients <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nPatients, lower = .Machine$double.xmin),
+    "nPatients must be positive integer scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingTargetProb`]
+#'  object contains valid `target` and `prob` parameters.
+v_stopping_target_prob <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability_range(object@target),
+    "target has to be a probability range"
+  )
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingMTDdistribution`]
+#'  object contains valid `target`, `thresh` and `prob` parameters.
+v_stopping_mtd_distribution <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@thresh, bounds_closed = FALSE),
+    "thresh must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
 
 #' @describeIn v_stopping validates that the [`StoppingMTDCV`] object
 #'   contains valid probability target and percentage threshold.
@@ -390,7 +431,7 @@ v_stopping_mtd_cv <- function(object) {
     "target must be probability value from (0, 1) interval"
   )
   v$check(
-    test_probability(object@thresh_cv / 100, bounds_closed = FALSE),
+    test_probability(object@thresh_cv / 100, bounds_closed = c(FALSE, TRUE)),
     "thresh_cv must be percentage > 0"
   )
   v$result()

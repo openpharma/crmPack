@@ -372,16 +372,54 @@ test_that(".StoppingMinCohorts works as expected", {
   expect_valid(result, "StoppingMinCohorts")
 })
 
-test_that("StoppingMinCohorts object can be created with user constructor (default)", {
-  result <- expect_silent(StoppingMinCohorts())
-  expect_valid(result, "StoppingMinCohorts")
-  expect_identical(result@nCohorts, 2L)
-})
-
 test_that("StoppingMinCohorts object can be created with user constructor", {
   result <- expect_silent(StoppingMinCohorts(5L))
   expect_valid(result, "StoppingMinCohorts")
   expect_identical(result@nCohorts, 5L)
+})
+
+## StoppingMinPatients ----
+
+test_that(".StoppingMinPatients works as expected", {
+  result <- expect_silent(.StoppingMinPatients())
+  expect_valid(result, "StoppingMinPatients")
+})
+
+test_that("StoppingMinPatients object can be created with user constructor", {
+  result <- expect_silent(StoppingMinPatients(5L))
+  expect_valid(result, "StoppingMinPatients")
+  expect_identical(result@nPatients, 5L)
+})
+
+## StoppingTargetProb ----
+
+test_that(".StoppingTargetProb works as expected", {
+  result <- expect_silent(.StoppingTargetProb())
+  expect_valid(result, "StoppingTargetProb")
+})
+
+test_that("StoppingTargetProb object can be created with user constructor", {
+  result <- expect_silent(StoppingTargetProb(target = c(0.3, 0.45), prob = 0.5))
+  expect_valid(result, "StoppingTargetProb")
+  expect_identical(result@target, c(0.3, 0.45))
+  expect_identical(result@prob, 0.5)
+})
+
+## StoppingMTDdistribution ----
+
+test_that(".StoppingMTDdistribution works as expected", {
+  result <- expect_silent(.StoppingMTDdistribution())
+  expect_valid(result, "StoppingMTDdistribution")
+})
+
+test_that("StoppingMTDdistribution object can be created with user constructor", {
+  result <- expect_silent(
+    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  )
+  expect_valid(result, "StoppingMTDdistribution")
+  expect_identical(result@target, 0.33)
+  expect_identical(result@thresh, 0.5)
+  expect_identical(result@prob, 0.9)
 })
 
 ## StoppingMTDCV ----
@@ -392,23 +430,17 @@ test_that(".StoppingMTDCV works as expected", {
 })
 
 test_that("StoppingMTDCV object can be created with user constructor (default)", {
-  result <- expect_silent(
-    StoppingMTDCV(target = 0.3,
-                  thresh_cv = 40)
-    )
+  result <- expect_silent(StoppingMTDCV())
   expect_valid(result, "StoppingMTDCV")
   expect_identical(result@target, 0.3)
-  expect_identical(result@thresh_cv, 40) # nolintr
+  expect_identical(result@thresh_cv, 40)
 })
 
 test_that("StoppingMTDCV object can be created with user constructor", {
-  result <- expect_silent(
-    StoppingMTDCV(target = 0.35,
-                  thresh_cv = 30)
-  )
+  result <- expect_silent(StoppingMTDCV(target = 0.4, thresh_cv = 70))
   expect_valid(result, "StoppingMTDCV")
-  expect_identical(result@target, 0.35)
-  expect_identical(result@thresh_cv, 30) # nolintr
+  expect_identical(result@target, 0.4)
+  expect_identical(result@thresh_cv, 70)
 })
 
 ## StoppingLowestDoseHSRBeta ----

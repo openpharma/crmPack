@@ -736,8 +736,8 @@ setClass(
 
 #' @rdname IncrementsRelative-class
 #'
-#' @param intervals (`numeric`)\cr see slot definition in [`IncrementsRelative`].
-#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelative`].
+#' @param intervals (`numeric`)\cr see slot definition.
+#' @param increments (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsRelative.R
@@ -798,8 +798,8 @@ IncrementsRelative <- function(intervals, increments) {
 
 #' @rdname IncrementsRelativeParts-class
 #'
-#' @param dlt_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
-#' @param clean_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @param dlt_start (`count`)\cr see slot definition.
+#' @param clean_start (`count`)\cr see slot definition.
 #' @inheritDotParams IncrementsRelative
 #'
 #' @export
@@ -861,8 +861,8 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 
 #' @rdname IncrementsRelativeDLT-class
 #'
-#' @param dlt_intervals (`numeric`)\cr see slot definition in [`IncrementsRelativeDLT`].
-#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelativeDLT`].
+#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param increments (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLT.R
@@ -957,8 +957,8 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 
 #' @rdname IncrementsNumDoseLevels-class
 #'
-#' @param max_levels (`count`)\cr see slot definition in [`IncrementsNumDoseLevels`].
-#' @param basis_level (`string`)\cr see slot definition in [`IncrementsNumDoseLevels`].
+#' @param max_levels (`count`)\cr see slot definition.
+#' @param basis_level (`string`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsNumDoseLevels.R
@@ -1021,10 +1021,10 @@ IncrementsNumDoseLevels <- function(max_levels = 1L,
 
 #' @rdname IncrementsHSRBeta-class
 #'
-#' @param target (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
-#' @param prob (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
-#' @param a (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
-#' @param b (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param target (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#' @param a (`number`)\cr see slot definition.
+#' @param b (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-IncrementsHSRBeta.R
 #' @export
@@ -1076,7 +1076,7 @@ IncrementsHSRBeta <- function(target = 0.3,
 
 #' @rdname IncrementsMin-class
 #'
-#' @param increments_list (`list`)\cr see slot definition in [`IncrementsMin`].
+#' @param increments_list (`list`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-IncrementsMin.R
 #' @export
@@ -1143,8 +1143,8 @@ setClass(
 
 #' @rdname StoppingCohortsNearDose-class
 #'
-#' @param nCohorts (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
-#' @param percentage (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
+#' @param nCohorts (`number`)\cr see slot definition.
+#' @param percentage (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
@@ -1193,8 +1193,8 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 
 #' @rdname StoppingPatientsNearDose-class
 #'
-#' @param nPatients (`number`)\cr see slot definition in [`StoppingPatientsNearDose`].
-#' @param percentage (`number`)\cr see slot definition in [`StoppingPatientsNearDose`].
+#' @param nPatients (`number`)\cr see slot definition.
+#' @param percentage (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
@@ -1235,172 +1235,165 @@ StoppingPatientsNearDose <- function(nPatients,
 
 #' @rdname StoppingMinCohorts-class
 #'
-#' @param nCohorts (`number`)\cr see slot definition in [`StoppingMinCohorts`].
+#' @param nCohorts (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts = 2L) {
+StoppingMinCohorts <- function(nCohorts) {
   .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
 }
 
-# nolint start
+# StoppingMinPatients ----
 
-## --------------------------------------------------
-## Stopping based on minimum number of patients
-## --------------------------------------------------
+## class ----
 
-##' Stop based on minimum number of patients
-##'
-##' @slot nPatients minimum allowed number of patients
-##'
-##' @example examples/Rules-class-StoppingMinPatients.R
-##' @keywords classes
-##' @export
-.StoppingMinPatients <-
-    setClass(Class="StoppingMinPatients",
-             representation(nPatients="integer"),
-             prototype(nPatients=20L),
-             contains="Stopping",
-             validity=function(object){
-                 o <- Validate()
+#' `StoppingMinPatients`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMinPatients`] is the class for stopping based on minimum number of
+#' patients
+#'
+#' @slot nPatients (`number`)\cr minimum allowed number of patients.
+#'
+#' @aliases StoppingMinPatients
+#' @export
+#'
+.StoppingMinPatients <- setClass(
+  Class = "StoppingMinPatients",
+  slots = c(nPatients = "integer"),
+  prototype = prototype(nPatients = 20L),
+  contains = "Stopping",
+  validity = v_stopping_min_patients
+)
 
-                 o$check((object@nPatients > 0L) && is.scalar(object@nPatients),
-                         "nPatients must be positive scalar")
+## constructor ----
 
-                 o$result()
-             })
-validObject(.StoppingMinPatients())
-
-##' Initialization function for "StoppingMinPatients"
-##'
-##' @param nPatients see \code{\linkS4class{StoppingMinPatients}}
-##' @return the \code{\linkS4class{StoppingMinPatients}} object
-##'
-##' @export
-##' @keywords methods
-StoppingMinPatients <- function(nPatients)
-{
-    .StoppingMinPatients(nPatients=safeInteger(nPatients))
+#' @rdname StoppingMinPatients-class
+#'
+#' @param nPatients (`number`)\cr see slot definition.
+#'
+#' @example examples/Rules-class-StoppingMinPatients.R
+#' @export
+#'
+StoppingMinPatients <- function(nPatients) {
+  .StoppingMinPatients(nPatients = safeInteger(nPatients))
 }
 
+# StoppingTargetProb ----
 
-## --------------------------------------------------
-## Stopping based on probability of target tox interval
-## --------------------------------------------------
+## class ----
 
-##' Stop based on probability of target tox interval
-##'
-##' @slot target the target toxicity interval, e.g. \code{c(0.2, 0.35)}
-##' @slot prob required target toxicity probability (e.g. \code{0.4})
-##' for reaching sufficient precision
-##'
-##' @example examples/Rules-class-StoppingTargetProb.R
-##' @keywords classes
-##' @export
-.StoppingTargetProb <-
-    setClass(Class="StoppingTargetProb",
-             representation(target="numeric",
-                            prob="numeric"),
-             prototype(target=c(0.2, 0.35),
-                       prob=0.4),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingTargetProb`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTargetProb`] is the class for stopping based on the probability of
+#' the DLT rate being in the target toxicity interval.
+#'
+#' @slot target (`number`)\cr the target toxicity interval, e.g. `c(0.2, 0.35)`.
+#' @slot prob (`proportion`)\cr required target toxicity probability for reaching
+#'   sufficient precision.
+#'
+#' @aliases StoppingTargetProb
+#' @export
+#'
+.StoppingTargetProb <- setClass(
+  Class = "StoppingTargetProb",
+  slots = c(
+    target = "numeric",
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    target = c(0.2, 0.35),
+    prob = 0.4
+  ),
+  contains = "Stopping",
+  validity = v_stopping_target_prob
+)
 
-                     o$check(is.probRange(object@target),
-                             "target must be probability range")
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingTargetProb())
-
-
-##' Initialization function for "StoppingTargetProb"
-##'
-##' @param target see \code{\linkS4class{StoppingTargetProb}}
-##' @param prob see \code{\linkS4class{StoppingTargetProb}}
-##' @return the \code{\linkS4class{StoppingTargetProb}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname StoppingTargetProb-class
+#'
+#' @param target (`number`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#'
+#' @example examples/Rules-class-StoppingTargetProb.R
+#' @export
+#'
 StoppingTargetProb <- function(target,
-                               prob)
-{
-    .StoppingTargetProb(target=target,
-                        prob=prob)
+                               prob) {
+  .StoppingTargetProb(
+    target = target,
+    prob = prob
+  )
 }
 
+# StoppingMTDdistribution ----
 
-## --------------------------------------------------
-## Stopping based on MTD distribution
-## --------------------------------------------------
+## class ----
 
-##' Stop based on MTD distribution
-##'
-##' Has 90% probability above a threshold of 50% of the current
-##' MTD been reached? This class is used for this question.
-##'
-##' @slot target the target toxicity probability (e.g. 0.33) defining the MTD
-##' @slot thresh the threshold relative to the MTD (e.g. 0.5)
-##' @slot prob required probability (e.g. 0.9)
-##'
-##' @example examples/Rules-class-StoppingMTDdistribution.R
-##' @keywords classes
-##' @export
-.StoppingMTDdistribution <-
-    setClass(Class="StoppingMTDdistribution",
-             representation(target="numeric",
-                            thresh="numeric",
-                            prob="numeric"),
-             prototype(target=0.33,
-                       thresh=0.5,
-                       prob=0.9),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingMTDdistribution`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMTDdistribution`] is the class for stopping based on the posterior
+#' distribution of the MTD. It is used for the cases where the stopping occurs
+#' when the probability of `MTD > thresh * next_dose` is greater than or equal
+#' to `prob`, where the `next_dose` is the recommended next best dose.
+#' Here, the MTD is defined as the dose that reaches a specific `target`
+#' probability of the occurrence of a DLT.
+#'
+#' @slot target (`proportion`)\cr the target toxicity probability defining the MTD.
+#' @slot thresh (`proportion`)\cr the threshold relative to the recommended next
+#'   best dose.
+#' @slot prob (`proportion`)\cr required minimum probability.
+#'
+#' @aliases StoppingMTDdistribution
+#' @export
+#'
+.StoppingMTDdistribution <- setClass(
+  Class = "StoppingMTDdistribution",
+  slots = c(
+    target = "numeric",
+    thresh = "numeric",
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    target = 0.33,
+    thresh = 0.5,
+    prob = 0.9
+  ),
+  contains = "Stopping",
+  validity = v_stopping_mtd_distribution
+)
 
-                     o$check(is.probability(object@target,
-                                            bounds=FALSE),
-                             "target must be probability > 0 and < 1")
-                     o$check(is.probability(object@thresh,
-                                            bounds=FALSE),
-                             "thresh must be probability > 0 and < 1")
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingMTDdistribution())
-
-
-##' Initialization function for "StoppingMTDdistribution"
-##'
-##' @param target see \code{\linkS4class{StoppingMTDdistribution}}
-##' @param thresh see \code{\linkS4class{StoppingMTDdistribution}}
-##' @param prob see \code{\linkS4class{StoppingMTDdistribution}}
-##' @return the \code{\linkS4class{StoppingMTDdistribution}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname StoppingMTDdistribution-class
+#'
+#' @param target (`proportion`)\cr see slot definition.
+#' @param thresh (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#'
+#' @example examples/Rules-class-StoppingMTDdistribution.R
+#' @export
+#'
 StoppingMTDdistribution <- function(target,
                                     thresh,
-                                    prob)
-{
-    .StoppingMTDdistribution(target=target,
-                             thresh=thresh,
-                             prob=prob)
+                                    prob) {
+  .StoppingMTDdistribution(
+    target = target,
+    thresh = thresh,
+    prob = prob
+  )
 }
 
-# nolint end
+# StoppingMTDCV ----
 
-# StoppingMTDCV-class ----
+## class ----
 
 #' `StoppingMTDCV`
 #'
@@ -1408,29 +1401,32 @@ StoppingMTDdistribution <- function(target,
 #'
 #' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
 #' which is calculated as the coefficient of variation (CV) of the MTD.
+#' Here, the MTD is defined as the dose that reaches a specific `target`
+#' probability of the occurrence of a DLT.
 #'
 #' @slot target (`proportion`)\cr toxicity target of MTD.
-#' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
-#'   to stop the trial.
+#' @slot thresh_cv (`number`)\cr threshold (percentage) for CV to be considered
+#'   accurate enough to stop the trial. The stopping occurs when the CV is less
+#'   than or equal to `tresh_cv`.
 #'
 #' @aliases StoppingMTDCV
 #' @export
 #'
 .StoppingMTDCV <- setClass(
   Class = "StoppingMTDCV",
-  contains = "Stopping",
-  representation = representation(
+  slots = c(
     target = "numeric",
     thresh_cv = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     thresh_cv = 40
   ),
+  contains = "Stopping",
   validity = v_stopping_mtd_cv
 )
 
-# StoppingMTDCV-constructor ----
+## constructor ----
 
 #' @rdname StoppingMTDCV-class
 #'
@@ -1448,6 +1444,7 @@ StoppingMTDCV <- function(target = 0.3,
   )
 }
 
+# nolint start
 
 # StoppingLowestDoseHSRBeta-class ----
 
@@ -1519,8 +1516,6 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     b = b
   )
 }
-
-# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker

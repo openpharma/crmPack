@@ -4,7 +4,16 @@
 \name{IncrementsRelativeDLT-class}
 \alias{IncrementsRelativeDLT-class}
 \alias{.IncrementsRelativeDLT}
-\title{Increments control based on relative differences in terms of DLTs}
+\alias{IncrementsRelativeDLT}
+\title{\code{IncrementsRelativeDLT}}
+\usage{
+IncrementsRelativeDLT(dlt_intervals, increments)
+}
+\arguments{
+\item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
+
+\item{increments}{(\code{numeric})\cr see slot definition.}
+}
 \description{
 Note that \code{DLTintervals} is to be read as follows. If for example,
 we want to specify three intervals: First 0 DLTs, second 1 or 2 DLTs, and

@@ -4,7 +4,16 @@
 \name{StoppingCohortsNearDose-class}
 \alias{StoppingCohortsNearDose-class}
 \alias{.StoppingCohortsNearDose}
-\title{Stop based on number of cohorts near to next best dose}
+\alias{StoppingCohortsNearDose}
+\title{\code{StoppingCohortsNearDose}}
+\usage{
+StoppingCohortsNearDose(nCohorts = 2L, percentage = 50)
+}
+\arguments{
+\item{nCohorts}{(\code{number})\cr see slot definition.}
+
+\item{percentage}{(\code{number})\cr see slot definition.}
+}
 \description{
 Stop based on number of cohorts near to next best dose
 }

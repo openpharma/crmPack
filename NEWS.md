@@ -1,4 +1,4 @@
-# Version 1.0.9000.9078
+# Version 1.0.9000.9082
 * Renamed class `IncrementMin` to `IncrementsMin`.
 * Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
   `IncrementsNumDoseLevels`, `IncrementMin` and other dependent classes.
