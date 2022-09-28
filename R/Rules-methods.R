@@ -1717,28 +1717,28 @@ setMethod("stopTrial",
       model = "ANY",
       data = "Data"
     ),
-    definition =
-      function(stopping, dose, samples, model, data, ...) {
-        # Make sure that the specific dose is part of the dose grid.
-        assert_subset(x = stopping@dose, choices = data@doseGrid)
+  definition =
+    function(stopping, dose, samples, model, data, ...) {
+      # Make sure that the specific dose is part of the dose grid.
+      assert_subset(x = stopping@dose, choices = data@doseGrid)
 
-        # Now we evaluate the original (wrapped) stopping rule at the specific dose.
-        result <- stopTrial(
-          stopping = stopping@rule,
-          dose = stopping@dose,
-          samples = samples,
-          model = model,
-          data = data,
-          ...
-        )
+      # Now we evaluate the original (wrapped) stopping rule at the specific dose.
+      result <- stopTrial(
+        stopping = stopping@rule,
+        dose = stopping@dose,
+        samples = samples,
+        model = model,
+        data = data,
+        ...
+      )
 
-        # We can now try to correct the text from the original stopping rule.
-        original_text <- attr(result, "message")
-        new_text <- gsub(pattern = "next best", replacement = "specific", x = original_text)
-        attr(result, "message") <- new_text
+      # We can now try to correct the text from the original stopping rule.
+      original_text <- attr(result, "message")
+      new_text <- gsub(pattern = "next best", replacement = "specific", x = original_text)
+      attr(result, "message") <- new_text
 
-        result
-      }
+      result
+    }
 )
 
 # nolint start

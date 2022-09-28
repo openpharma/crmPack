@@ -451,15 +451,15 @@ test_that("StoppingLowestDoseHSRBeta object can be created with user constructor
 ## StoppingSpecificDose ----
 
 test_that(".StoppingSpecificDose works as expected", {
-  result <- expect_silent(.StoppingSpecificDose(dose=80))
+  result <- expect_silent(.StoppingSpecificDose(dose = 80))
   expect_valid(result, "StoppingSpecificDose")
 })
 
 test_that("StoppingSpecificDose object can be created with user constructor", {
   result <- expect_silent(
-    StoppingSpecificDose(rule = StoppingTargetProb(target=c(0, 0.3),prob=0.8),
+    StoppingSpecificDose(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
                          dose = 80
-                         )
+    )
   )
   expect_valid(result, "StoppingSpecificDose")
   expect_valid(result@rule, "StoppingTargetProb")

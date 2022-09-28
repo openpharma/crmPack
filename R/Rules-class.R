@@ -1779,49 +1779,49 @@ StoppingAny <- function(stopList)
 
 # nolint end
 
-# StoppingSpecificDose ----
+# StoppingSpecificDose - ---
 
-## class ----
+   ## class ----
 
-#' `StoppingSpecificDose`
-#'
-#' @description `r lifecycle::badge("experimental")`
-#'
-#' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific dose
-#'   of teh dose grid and not at the next best dose
-#'
-#' @slot rule (`rule`)\cr a stopping rule available in this package.
-#' @slot dose (`number`)\cr a dose that is defined as part of the dose grid of the data.
-#'
-#' @aliases StoppingSpecificDose
-#' @export
-#'
-.StoppingSpecificDose <- setClass(
-  Class = "StoppingSpecificDose",
-  slots = c(
-    rule = "Stopping",
-    dose = "numeric"
-  ),
-  contains = "Stopping",
-  validity = v_stopping_specific_dose
-)
+   #' `StoppingSpecificDose`
+   #'
+   #' @description `r lifecycle::badge("experimental")`
+   #'
+   #' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific dose
+   #'   of teh dose grid and not at the next best dose
+   #'
+   #' @slot rule (`rule`)\cr a stopping rule available in this package.
+   #' @slot dose (`number`)\cr a dose that is defined as part of the dose grid of the data.
+   #'
+   #' @aliases StoppingSpecificDose
+   #' @export
+   #'
+   .StoppingSpecificDose <- setClass(
+   Class = "StoppingSpecificDose",
+   slots = c(
+     rule = "Stopping",
+     dose = "numeric"
+   ),
+   contains = "Stopping",
+   validity = v_stopping_specific_dose
+ )
 
-## constructor ---
+ ## constructor ---
 
-#' @rdname StoppingSpecificDose-class
-#'
-#' @param rule (`stopping rule`)\cr see slot definition.
-#' @param dose (`number`)\cr see slot definition.
-#'
-#' @export
-#' @example examples/Rules-class-StoppingSpecificDose.R
-#'
-StoppingSpecificDose <- function(rule, dose) {
-  .StoppingSpecificDose(
-    rule = rule,
-    dose = dose
-  )
-}
+ #' @rdname StoppingSpecificDose-class
+ #'
+ #' @param rule (`stopping rule`)\cr see slot definition.
+ #' @param dose (`number`)\cr see slot definition.
+ #'
+ #' @export
+ #' @example examples/Rules-class-StoppingSpecificDose.R
+ #'
+ StoppingSpecificDose <- function(rule, dose) {
+   .StoppingSpecificDose(
+     rule = rule,
+     dose = dose
+   )
+ }
 # nolint start
 
 ##-------------------------------------------------------------------------------------------------------------------

@@ -131,7 +131,7 @@ h_get_data_da_2 <- function() {
 }
 
 # Sample data to test stopping rule of StoppingSpecificDose method.
-h_get_data_sr_1 <- function(){
+h_get_data_sr_1 <- function() {
   Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
     y = c(0, 0, 0, 0, 0, 0, 1, 0),
@@ -141,7 +141,7 @@ h_get_data_sr_1 <- function(){
 }
 
 # Sample data to test stopping rule of StoppingSpecificDose method.
-h_get_data_sr_2 <- function(){
+h_get_data_sr_2 <- function() {
   Data(
     x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 50, 50, 50, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80),
     y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -149,5 +149,3 @@ h_get_data_sr_2 <- function(){
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 }
-
-

@@ -397,12 +397,12 @@ v_stopping_mtd_cv <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingSpecificDose`] object
-#'   contains valid `dose` number.
+#'   contains a stopping `rule` and a valid `dose`.
 v_stopping_specific_dose <- function(object) {
   v <- Validate()
   v$check(
-    test_number(object@dose, finite = TRUE),
-    "dose needs to be a single finite number"
+    test_number(object@dose, lower = 0, finite = TRUE),
+    "dose needs to be a single non zero finite number"
   )
   v$result()
 }

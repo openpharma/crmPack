@@ -57,8 +57,8 @@ h_next_best_mgsamples <- function(td = 0.45, te = 0.4, p = 0.3, p_gstar = 0.5) {
   )
 }
 
-h_stopping_specific_dose <- function(  rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
-                                       dose = 80) {
+h_stopping_specific_dose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+                                     dose = 80) {
   StoppingSpecificDose(
     rule = rule,
     dose = dose

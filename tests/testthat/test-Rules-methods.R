@@ -1049,22 +1049,26 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 ## stopTrial-StoppingSpecificDose ----
 
-test_that("StoppingSpecificDose works correctly if dose recommendation is not the same as the specific dose and stop is not met", {
+test_that(paste(
+  "StoppingSpecificDose works correctly if dose recommendation",
+  "is not the same as the specific dose and stop is not met"
+), {
   my_data <- h_get_data_sr_1()
   my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(my_data, my_model,
-                     h_get_mcmc_options(samples = 1000, burnin = 1000)
-                     )
-  stopping  <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  my_samples <- mcmc(
+    my_data, my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
+  )
+  stopping <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = 80
   )
   next_best <- h_next_best_ncrm()
   doseRecommendation <- nextBest(next_best,
-                                 doselimit = 100,
-                                 samples = my_samples,
-                                 model = my_model,
-                                 data = my_data
+    doselimit = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
   )
   result <- stopTrial(
     stopping = stopping,
@@ -1080,22 +1084,26 @@ test_that("StoppingSpecificDose works correctly if dose recommendation is not th
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose works correctly if dose recommendation is not the same as the specific dose and stop is met", {
+test_that(paste(
+  "StoppingSpecificDose works correctly if dose recommendation",
+  "is not the same as the specific dose and stop is met",
+), {
   my_data <- h_get_data_sr_2()
   my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(my_data, my_model,
-                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+  my_samples <- mcmc(
+    my_data, my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
   )
-  stopping  <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  stopping <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = 80
   )
   next_best <- h_next_best_ncrm()
   doseRecommendation <- nextBest(next_best,
-                                 doselimit = 100,
-                                 samples = my_samples,
-                                 model = my_model,
-                                 data = my_data
+    doselimit = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
   )
   result <- stopTrial(
     stopping = stopping,
@@ -1111,14 +1119,18 @@ test_that("StoppingSpecificDose works correctly if dose recommendation is not th
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose works correctly if dose recommendation is the same as the specific dose and stop is not met", {
+test_that(paste(
+  "StoppingSpecificDose works correctly if dose recommendation",
+  "is the same as the specific dose and stop is not met"
+), {
   my_data <- h_get_data_sr_1()
   my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(my_data, my_model,
-                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+  my_samples <- mcmc(
+    my_data, my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
   )
-  stopping  <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  stopping <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = 80
   )
   result <- stopTrial(
@@ -1135,14 +1147,18 @@ test_that("StoppingSpecificDose works correctly if dose recommendation is the sa
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose works correctly if dose recommendation is the same as the specific dose and stop is met", {
+test_that(paste(
+  "StoppingSpecificDose works correctly if dose recommendation",
+  "is the same as the specific dose and stop is met"
+), {
   my_data <- h_get_data_sr_2()
   my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(my_data, my_model,
-                     h_get_mcmc_options(samples = 1000, burnin = 1000)
+  my_samples <- mcmc(
+    my_data, my_model,
+    h_get_mcmc_options(samples = 1000, burnin = 1000)
   )
-  stopping  <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  stopping <- StoppingSpecificDose(
+    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
     dose = 80
   )
   result <- stopTrial(
