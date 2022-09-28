@@ -10,9 +10,9 @@
 IncrementsNumDoseLevels(max_levels = 1L, basis_level = "last")
 }
 \arguments{
-\item{max_levels}{(\code{count})\cr see slot definition in \code{\link{IncrementsNumDoseLevels}}.}
+\item{max_levels}{(\code{count})\cr see slot definition.}
 
-\item{basis_level}{(\code{string})\cr see slot definition in \code{\link{IncrementsNumDoseLevels}}.}
+\item{basis_level}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

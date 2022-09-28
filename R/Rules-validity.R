@@ -422,10 +422,6 @@ v_stopping_mtd_distribution <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
-
 #' @describeIn v_stopping validates that the [`StoppingMTDCV`] object
 #'   contains valid probability target and percentage threshold.
 v_stopping_mtd_cv <- function(object) {
@@ -435,8 +431,12 @@ v_stopping_mtd_cv <- function(object) {
     "target must be probability value from (0, 1) interval"
   )
   v$check(
-    test_probability(object@thresh_cv / 100, bounds_closed = FALSE),
+    test_probability(object@thresh_cv / 100, bounds_closed = c(FALSE, TRUE)),
     "thresh_cv must be percentage > 0"
   )
   v$result()
 }
+
+#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
+#'  object contains valid probability target, threshold and shape parameters.
+v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta

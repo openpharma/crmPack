@@ -736,8 +736,8 @@ setClass(
 
 #' @rdname IncrementsRelative-class
 #'
-#' @param intervals (`numeric`)\cr see slot definition in [`IncrementsRelative`].
-#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelative`].
+#' @param intervals (`numeric`)\cr see slot definition.
+#' @param increments (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsRelative.R
@@ -798,8 +798,8 @@ IncrementsRelative <- function(intervals, increments) {
 
 #' @rdname IncrementsRelativeParts-class
 #'
-#' @param dlt_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
-#' @param clean_start (`count`)\cr see slot definition in [`IncrementsRelativeParts`].
+#' @param dlt_start (`count`)\cr see slot definition.
+#' @param clean_start (`count`)\cr see slot definition.
 #' @inheritDotParams IncrementsRelative
 #'
 #' @export
@@ -861,8 +861,8 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 
 #' @rdname IncrementsRelativeDLT-class
 #'
-#' @param dlt_intervals (`numeric`)\cr see slot definition in [`IncrementsRelativeDLT`].
-#' @param increments (`numeric`)\cr see slot definition in [`IncrementsRelativeDLT`].
+#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param increments (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsRelativeDLT.R
@@ -957,8 +957,8 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 
 #' @rdname IncrementsNumDoseLevels-class
 #'
-#' @param max_levels (`count`)\cr see slot definition in [`IncrementsNumDoseLevels`].
-#' @param basis_level (`string`)\cr see slot definition in [`IncrementsNumDoseLevels`].
+#' @param max_levels (`count`)\cr see slot definition.
+#' @param basis_level (`string`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-IncrementsNumDoseLevels.R
@@ -1021,10 +1021,10 @@ IncrementsNumDoseLevels <- function(max_levels = 1L,
 
 #' @rdname IncrementsHSRBeta-class
 #'
-#' @param target (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
-#' @param prob (`proportion`)\cr see slot definition in [`IncrementsHSRBeta`].
-#' @param a (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
-#' @param b (`number`)\cr see slot definition in [`IncrementsHSRBeta`].
+#' @param target (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#' @param a (`number`)\cr see slot definition.
+#' @param b (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-IncrementsHSRBeta.R
 #' @export
@@ -1076,7 +1076,7 @@ IncrementsHSRBeta <- function(target = 0.3,
 
 #' @rdname IncrementsMin-class
 #'
-#' @param increments_list (`list`)\cr see slot definition in [`IncrementsMin`].
+#' @param increments_list (`list`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-IncrementsMin.R
 #' @export
@@ -1143,8 +1143,8 @@ setClass(
 
 #' @rdname StoppingCohortsNearDose-class
 #'
-#' @param nCohorts (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
-#' @param percentage (`number`)\cr see slot definition in [`StoppingCohortsNearDose`].
+#' @param nCohorts (`number`)\cr see slot definition.
+#' @param percentage (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
@@ -1193,8 +1193,8 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 
 #' @rdname StoppingPatientsNearDose-class
 #'
-#' @param nPatients (`number`)\cr see slot definition in [`StoppingPatientsNearDose`].
-#' @param percentage (`number`)\cr see slot definition in [`StoppingPatientsNearDose`].
+#' @param nPatients (`number`)\cr see slot definition.
+#' @param percentage (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
@@ -1235,7 +1235,7 @@ StoppingPatientsNearDose <- function(nPatients,
 
 #' @rdname StoppingMinCohorts-class
 #'
-#' @param nCohorts (`number`)\cr see slot definition in [`StoppingMinCohorts`].
+#' @param nCohorts (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
@@ -1272,7 +1272,7 @@ StoppingMinCohorts <- function(nCohorts) {
 
 #' @rdname StoppingMinPatients-class
 #'
-#' @param nPatients (`number`)\cr see slot definition in [`StoppingMinPatients`].
+#' @param nPatients (`number`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
@@ -1317,8 +1317,8 @@ StoppingMinPatients <- function(nPatients) {
 
 #' @rdname StoppingTargetProb-class
 #'
-#' @param target (`number`)\cr see slot definition in [`StoppingTargetProb`].
-#' @param prob (`proportion`)\cr see slot definition in [`StoppingTargetProb`].
+#' @param target (`number`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
@@ -1374,9 +1374,9 @@ StoppingTargetProb <- function(target,
 
 #' @rdname StoppingMTDdistribution-class
 #'
-#' @param target (`proportion`)\cr see slot definition in [`StoppingMTDdistribution`].
-#' @param thresh (`proportion`)\cr see slot definition in [`StoppingMTDdistribution`].
-#' @param prob (`proportion`)\cr see slot definition in [`StoppingMTDdistribution`].
+#' @param target (`proportion`)\cr see slot definition.
+#' @param thresh (`proportion`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
@@ -1391,9 +1391,9 @@ StoppingMTDdistribution <- function(target,
   )
 }
 
-# nolint start
+# StoppingMTDCV ----
 
-# StoppingMTDCV-class ----
+## class ----
 
 #' `StoppingMTDCV`
 #'
@@ -1401,29 +1401,32 @@ StoppingMTDdistribution <- function(target,
 #'
 #' [`StoppingMTDCV`] is a class for stopping rule based on precision of MTD
 #' which is calculated as the coefficient of variation (CV) of the MTD.
+#' Here, the MTD is defined as the dose that reaches a specific `target`
+#' probability of the occurrence of a DLT.
 #'
 #' @slot target (`proportion`)\cr toxicity target of MTD.
-#' @slot thresh_cv (`number`)\cr threshold for CV to be considered accurate enough
-#'   to stop the trial.
+#' @slot thresh_cv (`number`)\cr threshold (percentage) for CV to be considered
+#'   accurate enough to stop the trial. The stopping occurs when the CV is less
+#'   than or equal to `tresh_cv`.
 #'
 #' @aliases StoppingMTDCV
 #' @export
 #'
 .StoppingMTDCV <- setClass(
   Class = "StoppingMTDCV",
-  contains = "Stopping",
-  representation = representation(
+  slots = c(
     target = "numeric",
     thresh_cv = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     thresh_cv = 40
   ),
+  contains = "Stopping",
   validity = v_stopping_mtd_cv
 )
 
-# StoppingMTDCV-constructor ----
+## constructor ----
 
 #' @rdname StoppingMTDCV-class
 #'
@@ -1441,6 +1444,7 @@ StoppingMTDCV <- function(target = 0.3,
   )
 }
 
+# nolint start
 
 # StoppingLowestDoseHSRBeta-class ----
 

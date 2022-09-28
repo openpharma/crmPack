@@ -10,15 +10,15 @@
 IncrementsRelativeParts(dlt_start, clean_start, ...)
 }
 \arguments{
-\item{dlt_start}{(\code{count})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
+\item{dlt_start}{(\code{count})\cr see slot definition.}
 
-\item{clean_start}{(\code{count})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
+\item{clean_start}{(\code{count})\cr see slot definition.}
 
 \item{...}{
   Arguments passed on to \code{\link[=IncrementsRelative]{IncrementsRelative}}
   \describe{
-    \item{\code{intervals}}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
-    \item{\code{increments}}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
+    \item{\code{intervals}}{(\code{numeric})\cr see slot definition.}
+    \item{\code{increments}}{(\code{numeric})\cr see slot definition.}
   }}
 }
 \description{
