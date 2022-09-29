@@ -47,6 +47,9 @@ test_that("v_next_best_mtd returns message for non-valid derive", {
 test_that("v_next_best_ncrm passes for valid object", {
   object <- h_next_best_ncrm()
   expect_true(v_next_best_ncrm(object))
+
+  object <- h_next_best_ncrm(edge_case = TRUE)
+  expect_true(v_next_best_ncrm(object))
 })
 
 test_that("v_next_best_ncrm returns message for non-valid target", {
@@ -86,6 +89,10 @@ test_that("v_next_best_ncrm returns message for non-valid max_overdose_prob", {
   # Changing `max_overdose_prob` so that it does not represent allowed probability value.
   object@max_overdose_prob <- 1
   expect_equal(v_next_best_ncrm(object), err_msg)
+  object@max_overdose_prob <- 0
+  expect_equal(v_next_best_ncrm(object), err_msg)
+  object@max_overdose_prob <- -0.5
+  expect_equal(v_next_best_ncrm(object), err_msg)
 
   # Changing `max_overdose_prob` so that it is not a scalar.
   object@max_overdose_prob <- c(0.5, 0.6)
@@ -96,6 +103,9 @@ test_that("v_next_best_ncrm returns message for non-valid max_overdose_prob", {
 
 test_that("v_next_best_ncrm_loss passes for valid object", {
   object <- h_next_best_ncrm_loss()
+  expect_true(v_next_best_ncrm_loss(object))
+
+  object <- h_next_best_ncrm_loss(edge_case = TRUE)
   expect_true(v_next_best_ncrm_loss(object))
 })
 
@@ -180,6 +190,12 @@ test_that("v_next_best_ncrm_loss returns message for wrong losses", {
 test_that("v_next_best_dual_endpoint passes for valid object", {
   object <- h_next_best_dual_endpoint()
   expect_true(v_next_best_dual_endpoint(object))
+
+  object <- h_next_best_dual_endpoint(target_relative = FALSE)
+  expect_true(v_next_best_dual_endpoint(object))
+
+  object <- h_next_best_dual_endpoint(edge_case = TRUE)
+  expect_true(v_next_best_dual_endpoint(object))
 })
 
 test_that("v_next_best_dual_endpoint returns message for non-valid target (relative)", {
@@ -238,6 +254,10 @@ test_that("v_next_best_dual_endpoint returns message for non-valid max_overdose_
   # Changing `max_overdose_prob` so that it does not represent allowed probability value.
   object@max_overdose_prob <- 1
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
+  object@max_overdose_prob <- 0
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+  object@max_overdose_prob <- -0.5
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
   # Changing `max_overdose_prob` so that it is not a scalar.
   object@max_overdose_prob <- c(0.5, 0.6)
@@ -250,6 +270,8 @@ test_that("v_next_best_dual_endpoint returns message for non-valid target_thresh
 
   # Changing `target_thresh` so that it does not represent allowed probability value.
   object@target_thresh <- 2
+  expect_equal(v_next_best_dual_endpoint(object), err_msg)
+  object@target_thresh <- -0.5
   expect_equal(v_next_best_dual_endpoint(object), err_msg)
 
   # Changing `target_thresh` so that it is not a scalar.
@@ -271,6 +293,10 @@ test_that("v_next_best_min_dist returns message for non-valid target", {
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
   expect_equal(v_next_best_min_dist(object), err_msg)
+  object@target <- 0
+  expect_equal(v_next_best_min_dist(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_next_best_min_dist(object), err_msg)
 
   # Changing `target` so that it is not a scalar.
   object@target <- c(0.5, 0.6)
@@ -291,6 +317,10 @@ test_that("v_next_best_inf_theory returns message for non-valid target", {
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
   expect_equal(v_next_best_inf_theory(object), err_msg)
+  object@target <- 0
+  expect_equal(v_next_best_inf_theory(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_next_best_inf_theory(object), err_msg)
 
   # Changing `target` so that it is not a scalar.
   object@target <- c(0.5, 0.6)
@@ -303,6 +333,10 @@ test_that("v_next_best_inf_theory returns message for non-valid asymmetry", {
 
   # Changing `asymmetry` so that it is outside of (0, 2).
   object@asymmetry <- 5
+  expect_equal(v_next_best_inf_theory(object), err_msg)
+  object@asymmetry <- 0
+  expect_equal(v_next_best_inf_theory(object), err_msg)
+  object@asymmetry <- 2
   expect_equal(v_next_best_inf_theory(object), err_msg)
 
   # Changing `asymmetry` so that it is not a scalar.
@@ -324,6 +358,10 @@ test_that("v_next_best_td returns message for non-valid prob_target_drt", {
   # Changing `prob_target_drt` so that it does not represent allowed probability value.
   object@prob_target_drt <- 1
   expect_equal(v_next_best_td(object), err_msg)
+  object@prob_target_drt <- 0
+  expect_equal(v_next_best_td(object), err_msg)
+  object@prob_target_drt <- -0.5
+  expect_equal(v_next_best_td(object), err_msg)
 
   # Changing `prob_target_drt` so that it is not a scalar.
   object@prob_target_drt <- c(0.5, 0.6)
@@ -336,6 +374,10 @@ test_that("v_next_best_td returns message for non-valid prob_target_eot", {
 
   # Changing `prob_target_eot` so that it does not represent allowed probability value.
   object@prob_target_eot <- 1
+  expect_equal(v_next_best_td(object), err_msg)
+  object@prob_target_eot <- 0
+  expect_equal(v_next_best_td(object), err_msg)
+  object@prob_target_eot <- -0.5
   expect_equal(v_next_best_td(object), err_msg)
 
   # Changing `prob_target_eot` so that it is not a scalar.
@@ -578,18 +620,37 @@ test_that("v_increments_hsr_beta passes for valid object", {
   expect_true(v_increments_hsr_beta(object))
 })
 
-test_that("v_increments_hsr_beta returns expected messages for non-valid object probabilities", {
-  err_msg <- c("target must be a probability", "prob must be a probability")
+test_that("v_increments_hsr_beta returns expected messages for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
   object <- IncrementsHSRBeta()
 
-  # Changing `target` and `prob` so that they are not a probability values.
-  object@target <- -0.3
-  object@prob <- 1.1
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+  object@target <- 0
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+  object@target <- -0.5
   expect_equal(v_increments_hsr_beta(object), err_msg)
 
-  # Changing `target` and `prob` so that they are not scalars.
-  object@target <- c(0.3, 0.4)
-  object@prob <- c(0.9, 0.95)
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+})
+
+test_that("v_increments_hsr_beta returns expected messages for non-valid prob", {
+  err_msg <- "prob must be a probability value from (0, 1) interval"
+  object <- IncrementsHSRBeta()
+
+  # Changing `prob` so that it does not represent allowed probability value.
+  object@prob <- 1
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+  object@prob <- 0
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+  object@prob <- -0.5
+  expect_equal(v_increments_hsr_beta(object), err_msg)
+
+  # Changing `prob` so that it is not a scalar.
+  object@prob <- c(0.5, 0.6)
   expect_equal(v_increments_hsr_beta(object), err_msg)
 })
 
@@ -650,6 +711,12 @@ test_that("v_stopping_cohorts_near_dose passes for valid object", {
 
   object <- StoppingCohortsNearDose(nCohorts = 5L, percentage = 40)
   expect_true(v_stopping_cohorts_near_dose(object))
+
+  object <- StoppingCohortsNearDose(nCohorts = 5L, percentage = 0)
+  expect_true(v_stopping_cohorts_near_dose(object))
+
+  object <- StoppingCohortsNearDose(nCohorts = 5L, percentage = 100)
+  expect_true(v_stopping_cohorts_near_dose(object))
 })
 
 test_that("v_stopping_cohorts_near_dose returns message for non-valid nCohorts", {
@@ -697,6 +764,12 @@ test_that("v_stopping_patients_near_dose passes for valid object", {
   expect_true(v_stopping_patients_near_dose(object))
 
   object <- StoppingPatientsNearDose(nPatients = 5L, percentage = 40)
+  expect_true(v_stopping_patients_near_dose(object))
+
+  object <- StoppingPatientsNearDose(nPatients = 5L, percentage = 0)
+  expect_true(v_stopping_patients_near_dose(object))
+
+  object <- StoppingPatientsNearDose(nPatients = 5L, percentage = 100)
   expect_true(v_stopping_patients_near_dose(object))
 })
 
@@ -791,6 +864,9 @@ test_that("v_stopping_min_patients returns message for non-valid nPatients", {
 test_that("v_stopping_target_prob passes for valid object", {
   object <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.4)
   expect_true(v_stopping_target_prob(object))
+
+  object <- StoppingTargetProb(target = c(0, 1), prob = 0.4)
+  expect_true(v_stopping_target_prob(object))
 })
 
 test_that("v_stopping_target_prob returns message for non-valid target", {
@@ -815,6 +891,10 @@ test_that("v_stopping_target_prob returns message for non-valid prob", {
   # Changing `prob` so that it does not represent allowed probability value.
   object@prob <- 1
   expect_equal(v_stopping_target_prob(object), err_msg)
+  object@prob <- 0
+  expect_equal(v_stopping_target_prob(object), err_msg)
+  object@prob <- -0.5
+  expect_equal(v_stopping_target_prob(object), err_msg)
 
   # Changing `prob` so that it is not a scalar.
   object@prob <- c(0.5, 0.6)
@@ -835,6 +915,10 @@ test_that("v_stopping_mtd_distribution returns message for non-valid target", {
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
   expect_equal(v_stopping_mtd_distribution(object), err_msg)
+  object@target <- 0
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
 
   # Changing `target` so that it is not a scalar.
   object@target <- c(0.5, 0.6)
@@ -848,6 +932,10 @@ test_that("v_stopping_mtd_distribution returns message for non-valid thresh", {
   # Changing `thresh` so that it does not represent allowed probability value.
   object@thresh <- 1
   expect_equal(v_stopping_mtd_distribution(object), err_msg)
+  object@thresh <- 0
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+  object@thresh <- -0.5
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
 
   # Changing `thresh` so that it is not a scalar.
   object@thresh <- c(0.5, 0.6)
@@ -860,6 +948,10 @@ test_that("v_stopping_mtd_distribution returns message for non-valid prob", {
 
   # Changing `prob` so that it does not represent allowed probability value.
   object@prob <- 1
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+  object@prob <- 0
+  expect_equal(v_stopping_mtd_distribution(object), err_msg)
+  object@prob <- -0.5
   expect_equal(v_stopping_mtd_distribution(object), err_msg)
 
   # Changing `prob` so that it is not a scalar.
@@ -937,8 +1029,8 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   expect_equal(
     v_stopping_lowest_dose_hsr_beta(object),
     c(
-      "target must be a probability",
-      "prob must be a probability",
+      "target must be a probability value from (0, 1) interval",
+      "prob must be a probability value from (0, 1) interval",
       "Beta distribution shape parameter a must be a positive scalar",
       "Beta distribution shape parameter b must be a positive scalar"
     )
@@ -955,8 +1047,8 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   expect_equal(
     v_stopping_lowest_dose_hsr_beta(object),
     c(
-      "target must be a probability",
-      "prob must be a probability",
+      "target must be a probability value from (0, 1) interval",
+      "prob must be a probability value from (0, 1) interval",
       "Beta distribution shape parameter a must be a positive scalar",
       "Beta distribution shape parameter b must be a positive scalar"
     )
