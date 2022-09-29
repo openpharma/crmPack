@@ -1093,7 +1093,7 @@ setMethod(
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
     basis_dose_level <- ifelse(
-      increments@basisLevel == "last",
+      increments@basis_level == "last",
       tail(
         data@xLevel,
         1
@@ -1103,7 +1103,7 @@ setMethod(
 
     max_next_dose_level <- min(
       length(data@doseGrid),
-      basis_dose_level + increments@maxLevels
+      basis_dose_level + increments@max_levels
     )
 
     data@doseGrid[max_next_dose_level]
@@ -1260,7 +1260,7 @@ setMethod("maxDose",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = increments@DLTintervals
+          vec = increments@dlt_intervals
         )
 
       ## so the maximum next dose is
@@ -1301,7 +1301,7 @@ setMethod("maxDose",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = increments@DLTintervals
+          vec = increments@dlt_intervals
         )
 
       (1 + increments@increments[interval]) * lastDose
@@ -2457,7 +2457,7 @@ setMethod("size",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = cohortSize@DLTintervals
+          vec = cohortSize@dlt_intervals
         )
 
       ## so the cohort size is
