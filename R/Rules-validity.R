@@ -443,19 +443,19 @@ v_stopping_lowest_dose_hsr_beta <- function(object) {
   v <- Validate()
   v$check(
     test_probability(object@target, bounds_closed = FALSE),
-    "target must be probability value from (0, 1) interval"
+    "target must be a probability"
   )
   v$check(
     test_probability(object@prob, bounds_closed = FALSE),
-    "target must be probability value from (0, 1) interval"
+    "prob must be a probability"
   )
   v$check(
-    test_numeric(object@a, upper = 0),
-    "Beta distribution shape parameter a must me a real number > 0"
+    test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
+    "Beta distribution shape parameter a must be a positive scalar"
   )
   v$check(
-    test_numeric(object@b, upper = 0),
-    "Beta distribution shape parameter b must me a real number > 0"
+    test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
+    "Beta distribution shape parameter b must be a positive scalar"
   )
   v$result()
 }
