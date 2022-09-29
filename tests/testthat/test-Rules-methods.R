@@ -735,8 +735,8 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2,
-    basisLevel = "last"
+    max_levels = 2,
+    basis_level = "last"
   )
   result <- maxDose(
     increments,
@@ -747,7 +747,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defin
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined and default is used", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2
+    max_levels = 2
   )
   result <- maxDose(
     increments,
@@ -758,8 +758,8 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined 
 
 test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is defined", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2,
-    basisLevel = "max"
+    max_levels = 2,
+    basis_level = "max"
   )
   result <- maxDose(
     increments,
@@ -772,7 +772,7 @@ test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is define
 
 test_that("IncrementsRelativeDLTCurrent works correctly", {
   increments <- IncrementsRelativeDLTCurrent(
-    DLTintervals = c(0, 1, 3),
+    dlt_intervals = c(0, 1, 3),
     increments = c(1, 0.33, 0.2)
   )
   result <- maxDose(
@@ -1086,7 +1086,7 @@ test_that(paste(
 
 test_that(paste(
   "StoppingSpecificDose works correctly if dose recommendation",
-  "is not the same as the specific dose and stop is met",
+  "is not the same as the specific dose and stop is met"
 ), {
   my_data <- h_get_data_sr_2()
   my_model <- h_get_logistic_log_normal()
@@ -1174,3 +1174,4 @@ test_that(paste(
   )
   expect_identical(result, expected)
 })
+
