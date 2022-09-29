@@ -10,18 +10,18 @@
 #   maximum doubling the dose if the current dose is <20
 #   OR only maximum increasing the dose by 1.33 if the current dose is >=20
 
-my_Increments_1 <- IncrementsRelativeDLT(
+my_increments_1 <- IncrementsRelativeDLT(
   DLTintervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 
-my_Increments_2 <- IncrementsRelative(
+my_increments_2 <- IncrementsRelative(
   intervals = c(0, 20),
   increments = c(1, 0.33)
 )
 
 # Now we combine the 2 rules
-comb_Increment <- IncrementMin(
-  Increments_List =
-    list(my_Increments_1, my_Increments_2)
+comb_increment <- IncrementMin(
+  increments_List =
+    list(my_increments_1, my_increments_2)
 )

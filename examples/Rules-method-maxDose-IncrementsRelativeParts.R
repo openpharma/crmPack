@@ -1,6 +1,6 @@
 
 # create an object of class 'DataParts'
-my_Data <- DataParts(
+my_data <- DataParts(
   x = c(0.1, 0.5, 1.5),
   y = c(0, 0, 0),
   doseGrid = c(
@@ -13,11 +13,11 @@ my_Data <- DataParts(
 )
 
 
-my_Increments <- IncrementsRelativeParts(
+my_increments <- IncrementsRelativeParts(
   dltStart = 0,
   cleanStart = 1
 )
 
-nex_tMaxDose <- maxDose(my_Increments,
-  data = my_Data
+nexy_max_dose <- maxDose(my_increments,
+  data = my_data
 )
