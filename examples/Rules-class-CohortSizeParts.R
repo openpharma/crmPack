@@ -1,3 +1,2 @@
 
-mySize <- CohortSizeParts(sizes=c(1,3))
-
+mySize <- CohortSizeParts(sizes = c(1, 3))

@@ -1,4 +1,5 @@
 
-myIncrements <- IncrementsRelativeParts(dltStart=0,
-                                        cleanStart=1)
-
+my_Increments <- IncrementsRelativeParts(
+  dltStart = 0,
+  cleanStart = 1
+)
