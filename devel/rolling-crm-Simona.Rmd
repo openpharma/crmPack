@@ -1,3 +1,4 @@
+# nolint start
 ---
 title: "Appendix to Protocol CEACAM5TCB"
 author: "Simona Rossomanno"
@@ -783,3 +784,4 @@ myOut <- function(model = mymda_model, Tmax = myTmax, npiece = mynpiece, doseGri
 
 ############################# !!!!!!
 ```
+# nolint end
