@@ -1444,9 +1444,9 @@ StoppingMTDCV <- function(target = 0.3,
   )
 }
 
-# nolint start
+# StoppingLowestDoseHSRBeta ----
 
-# StoppingLowestDoseHSRBeta-class ----
+## class ----
 
 #' `StoppingLowestDoseHSRBeta`
 #'
@@ -1492,8 +1492,7 @@ StoppingMTDCV <- function(target = 0.3,
   validity = v_stopping_lowest_dose_hsr_beta
 )
 
-
-# StoppingLowestDoseHSRBeta-constructor ----
+## constructor ----
 
 #' @rdname StoppingLowestDoseHSRBeta-class
 #'
@@ -1516,6 +1515,8 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     b = b
   )
 }
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker
