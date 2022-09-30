@@ -25,10 +25,9 @@ probability of the occurrence of a DLT.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr toxicity target of MTD (except \eqn{0} or
-\eqn{1}).}
+\item{\code{target}}{(\code{proportion})\cr toxicity target of MTD (except 0 or 1).}
 
-\item{\code{thresh_cv}}{(\code{number})\cr threshold (percentage > \eqn{0}) for CV to be
+\item{\code{thresh_cv}}{(\code{number})\cr threshold (percentage > 0) for CV to be
 considered accurate enough to stop the trial. The stopping occurs when the
 CV is less than or equal to \code{tresh_cv}.}
 }}

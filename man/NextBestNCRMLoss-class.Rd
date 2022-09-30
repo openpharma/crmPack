@@ -41,23 +41,22 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose.
 
 \describe{
 \item{\code{target}}{(\code{numeric})\cr the target toxicity interval (limits included).
-It has to be a probability range excluding \eqn{0} and \eqn{1}.}
+It has to be a probability range excluding 0 and 1.}
 
 \item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
 excluded, upper limit included) or the excessive toxicity interval (lower
 limit excluded, upper limit included) if unacceptable is not provided.
-It has to be a probability range excluding \eqn{0}. It is used to filter
+It has to be a probability range excluding 0. It is used to filter
 probability samples.}
 
 \item{\code{unacceptable}}{(\code{numeric})\cr an unacceptable toxicity
 interval (lower limit excluded, upper limit included). This must be
-specified if the \code{overdose} does not include \eqn{1}. Otherwise, it is
-c(1, 1) (default), which is essentially a scalar equals \eqn{1}.
-It has to be a probability range excluding \eqn{0}.}
+specified if the \code{overdose} does not include 1. Otherwise, it is \code{c(1, 1)}
+(default), which is essentially a scalar equals 1. It has to be a
+probability range excluding 0.}
 
 \item{\code{losses}}{(\code{numeric})\cr a vector specifying the loss function. If the
-\code{unacceptable} is provided, the vector length must be \eqn{4}, otherwise
-\eqn{3}.}
+\code{unacceptable} is provided, the vector length must be 4, otherwise 3.}
 }}
 
 \note{

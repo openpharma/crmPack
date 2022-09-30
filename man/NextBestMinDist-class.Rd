@@ -22,6 +22,6 @@ distance to target probability.
 
 \describe{
 \item{\code{target}}{(\code{proportion})\cr single target toxicity probability, except
-\eqn{0} or \eqn{1}.}
+0 or 1.}
 }}
 

@@ -24,7 +24,7 @@ number of maximum dose levels to increment.
 
 \describe{
 \item{\code{max_levels}}{(\code{count})\cr maximum dose levels to increment for the next
-dose. It defaults to \eqn{1}, which means that no dose skipping is
+dose. It defaults to 1, which means that no dose skipping is
 allowed - the next dose can be maximum one level higher than the current
 dose.}
 

@@ -22,8 +22,7 @@ NextBestMTD(target, derive)
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr target toxicity probability, except \eqn{0} or
-\eqn{1}.}
+\item{\code{target}}{(\code{proportion})\cr target toxicity probability, except 0 or 1.}
 
 \item{\code{derive}}{(\code{function})\cr a function which derives the final next best MTD
 estimate, based on vector of posterior MTD samples. It must therefore accept

@@ -37,14 +37,14 @@ Note: this stopping rule is independent from the underlying model.
 \describe{
 \item{\code{target}}{(\code{proportion})\cr the target toxicity.}
 
-\item{\code{prob}}{(\code{proportion})\cr the threshold probability for the lowest
-dose being toxic.}
+\item{\code{prob}}{(\code{proportion})\cr the threshold probability for the lowest dose
+being toxic.}
 
-\item{\code{a}}{(\code{number})\cr shape parameter \eqn{a > 0} of probability
-distribution Beta (a,b).}
+\item{\code{a}}{(\code{number})\cr shape parameter \eqn{a > 0} of probability distribution
+Beta (a,b).}
 
-\item{\code{b}}{(\code{number})\cr shape parameter \eqn{b > 0} of probability
-distribution Beta (a,b).}
+\item{\code{b}}{(\code{number})\cr shape parameter \eqn{b > 0} of probability distribution
+Beta (a,b).}
 }}
 
 \examples{

@@ -13,7 +13,7 @@ NextBestThreePlusThree()
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{NextBestThreePlusThree}} is the class for next best dose that
-implements the classical \eqn{3+3} dose recommendation. No input is required,
+implements the classical 3+3 dose recommendation. No input is required,
 hence this class has no slots.
 }
 \examples{

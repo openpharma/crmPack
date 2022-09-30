@@ -30,27 +30,24 @@ beginning of part 2.
 }
 \details{
 This class works only conjunction with \code{\link{DataParts}} objects. If
-part \eqn{2} will just be started in the next cohort, then the next maximum
-dose will be either \code{dlt_start} (e.g. \eqn{-1}) shift of the last part \eqn{1}
-dose in case of a DLT in part \eqn{1}, or \code{clean_start} shift (e.g. \eqn{0})
-in case of no DLTs in part \eqn{1}.
-If part \eqn{1} will still be on in the
-next cohort, then the next dose level will be the next higher dose level in
-the \code{part1Ladder} slot of the data object.
-If part \eqn{2} has been started before, the usual relative increment rules
-apply, see \code{\link{IncrementsRelative}}.
+part 2 will just be started in the next cohort, then the next maximum dose
+will be either \code{dlt_start} (e.g. \-1) shift of the last part 1 dose in case
+of a DLT in part 1, or \code{clean_start} shift (e.g. 0) in case of no DLTs in
+part 1. If part 1 will still be on in the next cohort, then the next dose
+level will be the next higher dose level in the \code{part1Ladder} slot of the
+data object. If part 2 has been started before, the usual relative increment
+rules apply, see \code{\link{IncrementsRelative}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part
-\eqn{2} in case of a DLT in part \eqn{1}.}
+\item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part 2 in
+case of a DLT in part 1.}
 
-\item{\code{clean_start}}{(\code{count})\cr the dose level increment for starting part
-\eqn{2} in case of a DLT in part \eqn{1}. If this is less or equal to
-\eqn{0}, then the part \eqn{1} ladder will be used to find the maximum next
-dose. Otherwise, the relative increment rules will be applied to find the
-next maximum dose level.}
+\item{\code{clean_start}}{(\code{count})\cr the dose level increment for starting part 2
+in case of a DLT in part 1. If this is less or equal to 0, then the part 1
+ladder will be used to find the maximum next dose. Otherwise, the relative
+increment rules will be applied to find the next maximum dose level.}
 }}
 
 \examples{

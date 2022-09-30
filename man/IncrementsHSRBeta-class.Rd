@@ -35,16 +35,16 @@ observed data per dose level, independent from the underlying model.
 
 \describe{
 \item{\code{target}}{(\code{proportion})\cr the target toxicity, except
-\eqn{0} or \eqn{1}.}
+0 or 1.}
 
-\item{\code{prob}}{(\code{proportion})\cr the threshold probability (except \eqn{0} or
-\eqn{1}) for a dose being toxic.}
+\item{\code{prob}}{(\code{proportion})\cr the threshold probability (except 0 or 1) for
+a dose being toxic.}
 
-\item{\code{a}}{(\code{number})\cr shape parameter \eqn{a > 0} of probability
-distribution Beta (a,b).}
+\item{\code{a}}{(\code{number})\cr shape parameter \eqn{a > 0} of probability distribution
+Beta (a,b).}
 
-\item{\code{b}}{(\code{number})\cr shape parameter \eqn{b > 0} of probability
-distribution Beta (a,b).}
+\item{\code{b}}{(\code{number})\cr shape parameter \eqn{b > 0} of probability distribution
+Beta (a,b).}
 }}
 
 \examples{

@@ -31,11 +31,11 @@ It is suitable to use it only with the \code{\link{ModelTox}} model class.
 \section{Slots}{
 
 \describe{
-\item{\code{prob_target_drt}}{(\code{proportion})\cr the target probability (except \eqn{0}
-or \eqn{1}) of the occurrence of a DLT to be used during the trial.}
+\item{\code{prob_target_drt}}{(\code{proportion})\cr the target probability (except 0 or 1)
+of the occurrence of a DLT to be used during the trial.}
 
-\item{\code{prob_target_eot}}{(\code{proportion})\cr the target probability (except \eqn{0}
-or \eqn{1}) of the occurrence of a DLT to be used at the end of the trial.}
+\item{\code{prob_target_eot}}{(\code{proportion})\cr the target probability (except 0 or 1)
+of the occurrence of a DLT to be used at the end of the trial.}
 }}
 
 \examples{

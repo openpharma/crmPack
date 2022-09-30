@@ -40,7 +40,7 @@ Otherwise, the highest admissible dose is the next recommended dose.
 excluded, upper limit included). It is used to filter probability samples.}
 
 \item{\code{max_overdose_prob}}{(\code{proportion})\cr maximum overdose posterior
-probability that is allowed, except \eqn{0} or \eqn{1}.}
+probability that is allowed, except 0 or 1.}
 }}
 
 \examples{
