@@ -882,7 +882,7 @@ mySize1 <- CohortSizeRange(intervals=c(0, 30),
 Then for the DLT range:
 
 <<size-dlt>>=
-mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
+mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
                          cohortSize=c(1, 3))
 @
 
