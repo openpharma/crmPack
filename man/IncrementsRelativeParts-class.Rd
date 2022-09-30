@@ -22,21 +22,28 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
   }}
 }
 \description{
-Note that this only works in conjunction with \code{\linkS4class{DataParts}}
-objects. If the part 2 will just be started in the next cohort, then the
-next maximum dose will be either \code{dltStart} (e.g. -1) shift of the last
-part 1 dose in case of a DLT in part 1, or \code{cleanStart} shift (e.g. 0)
-in case of no DLTs in part 1. If part 1 will still be on in the next cohort,
-then the next dose level will be the next higher dose level in the
-\code{part1Ladder} of the data object. If part 2 has been started before,
-the usual relative increment rules apply, see
-\code{\linkS4class{IncrementsRelative}}.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{IncrementsRelativeParts}} is the class for increments control based on
+relative differences in intervals, with special rules for part 1 and
+beginning of part 2.
+}
+\details{
+This class works only conjunction with \code{\link{DataParts}} objects. If
+part 2 will just be started in the next cohort, then the next maximum dose
+will be either \code{dlt_start} (e.g. \-1) shift of the last part 1 dose in case
+of a DLT in part 1, or \code{clean_start} shift (e.g. 0) in case of no DLTs in
+part 1. If part 1 will still be on in the next cohort, then the next dose
+level will be the next higher dose level in the \code{part1Ladder} slot of the
+data object. If part 2 has been started before, the usual relative increment
+rules apply, see \code{\link{IncrementsRelative}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dltStart}}{integer giving the dose level increment for starting part 2
-in case of a DLT in part 1}
+\item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part 2 in
+case of a DLT in part 1.}
 
 \item{\code{cleanStart}}{integer giving the dose level increment for starting part 2
 in case of a DLT in part 1. If this is less or equal to 0, then the part 1

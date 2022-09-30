@@ -25,7 +25,13 @@ goes from the last value until infinity.
 \section{Slots}{
 
 \describe{
-\item{\code{intervals}}{a vector with the left bounds of the relevant intervals}
+
+\item{\code{intervals}}{(\code{numeric})\cr a vector with the left bounds of the relevant
+intervals. This parameters specifies the right bounds of the intervals.
+For example, \code{intervals  = c(0, 50, 100)} specifies three intervals:
+\eqn{(0, 50)}, \eqn{[50, 100)} and \eqn{[100, +Inf)}. That means, the right
+bound of the intervals are exclusive to the interval and the last interval
+goes from the last value to infinity.}
 
 \item{\code{increments}}{a vector of the same length with the maximum allowable
 relative increments in the \code{intervals}}

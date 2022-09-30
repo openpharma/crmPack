@@ -22,8 +22,9 @@ Stop based on number of patients near to next best dose
 \describe{
 \item{\code{nPatients}}{number of required patients}
 
-\item{\code{percentage}}{percentage (between 0 and 100) within the next best dose
-the patients must lie}
+\item{\code{percentage}}{(\code{number})\cr percentage (between and including 0 and 100)
+within the next best dose the patients must lie.}
+
 }}
 
 \examples{

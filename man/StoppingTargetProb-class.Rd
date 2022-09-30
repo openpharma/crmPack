@@ -25,8 +25,8 @@ the DLT rate being in the target toxicity interval.
 \describe{
 \item{\code{target}}{(\code{number})\cr the target toxicity interval, e.g. \code{c(0.2, 0.35)}.}
 
-\item{\code{prob}}{(\code{proportion})\cr required target toxicity probability for reaching
-sufficient precision.}
+\item{\code{prob}}{(\code{proportion})\cr required target toxicity probability (except 0 or 1)
+for reaching sufficient precision.}
 }}
 
 \examples{

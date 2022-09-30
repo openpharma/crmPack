@@ -22,8 +22,8 @@ Stop based on number of cohorts near to next best dose
 \describe{
 \item{\code{nCohorts}}{number of required cohorts}
 
-\item{\code{percentage}}{percentage (between 0 and 100) within the next best dose
-the cohorts must lie}
+\item{\code{percentage}}{(\code{number})\cr percentage (between and including 0 and 100)
+within the next best dose the cohorts must lie.}
 }}
 
 \examples{

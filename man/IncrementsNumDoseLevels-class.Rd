@@ -20,10 +20,11 @@ IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
 \section{Slots}{
 
 \describe{
-\item{\code{maxLevels}}{(\code{count})\cr corresponding to the number of maximum
-dose levels to increment for the next dose. It defaults to 1,
-which means that no dose skipping is allowed - the next dose
-can be maximum one level higher than the current dose.}
+
+\item{\code{max_levels}}{(\code{count})\cr maximum dose levels to increment for the next
+dose. It defaults to 1, which means that no dose skipping is
+allowed - the next dose can be maximum one level higher than the current
+dose.}
 
 \item{\code{basisLevel}}{(\code{string})\cr corresponding to the dose level used to increment from.
 It can take two possible values \code{last} or \code{max}. If \code{last} (default)

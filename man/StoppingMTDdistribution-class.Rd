@@ -29,12 +29,13 @@ probability of the occurrence of a DLT.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr the target toxicity probability defining the MTD.}
+\item{\code{target}}{(\code{proportion})\cr the target toxicity probability (except 0 or 1)
+defining the MTD.}
 
-\item{\code{thresh}}{(\code{proportion})\cr the threshold relative to the recommended next
-best dose.}
+\item{\code{thresh}}{(\code{proportion})\cr the threshold (except 0 or 1) relative to the
+recommended next best dose.}
 
-\item{\code{prob}}{(\code{proportion})\cr required minimum probability.}
+\item{\code{prob}}{(\code{proportion})\cr required minimum probability, except 0 or 1.}
 }}
 
 \examples{
