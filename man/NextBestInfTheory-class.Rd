@@ -23,10 +23,10 @@ information theory as proposed in https://doi.org/10.1002/sim.8450.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr target toxicity probability.}
+\item{\code{target}}{(\code{proportion})\cr target toxicity probability, except 0 or 1.}
 
 \item{\code{asymmetry}}{(\code{number})\cr value of the asymmetry exponent in the
 divergence function that describes the rate of penalization for overly
-toxic does. It must be a value from (0, 2) interval.}
+toxic does. It must be a value from \eqn{(0, 2)} interval.}
 }}
 

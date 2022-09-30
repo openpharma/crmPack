@@ -7,36 +7,67 @@ h_next_best_mtd <- function(target = 0.33) {
   )
 }
 
-h_next_best_ncrm <- function() {
-  NextBestNCRM(
-    target = c(0.2, 0.35),
-    overdose = c(0.35, 1),
-    max_overdose_prob = 0.25
-  )
+h_next_best_ncrm <- function(edge_case = FALSE) {
+  if (edge_case) {
+    NextBestNCRM(
+      target = c(0, 1),
+      overdose = c(0, 1),
+      max_overdose_prob = 0.25
+    )
+  } else {
+    NextBestNCRM(
+      target = c(0.2, 0.35),
+      overdose = c(0.35, 0.9),
+      max_overdose_prob = 0.25
+    )
+  }
 }
 
-h_next_best_ncrm_loss <- function() {
+h_next_best_ncrm_loss <- function(edge_case = FALSE) {
+  if (edge_case) {
+    overdose <- c(0.35, 1)
+    unacceptable <- c(1, 1)
+    losses <- c(1, 0, 1)
+  } else {
+    overdose <- c(0.35, 0.6)
+    unacceptable <- c(0.6, 0.9)
+    losses <- c(1, 0, 1, 2)
+  }
+
   NextBestNCRMLoss(
     target = c(0.2, 0.35),
-    overdose = c(0.35, 0.6),
-    unacceptable = c(0.6, 1),
+    overdose = overdose,
+    unacceptable = unacceptable,
     max_overdose_prob = 0.25,
-    losses = c(1, 0, 1, 2)
+    losses = losses
   )
 }
 
-h_next_best_dual_endpoint <- function(target_relative = TRUE) {
+h_next_best_dual_endpoint <- function(target_relative = TRUE, edge_case = FALSE) {
   target <- if (target_relative) {
-    c(0.9, 1)
+    if (edge_case) {
+      c(0, 1)
+    } else {
+      c(0.9, 1)
+    }
   } else {
     c(200, 300)
   }
 
+  if (edge_case) {
+    overdose <- c(0, 1)
+    target_thresh <- 0
+  } else {
+    overdose <- c(0.35, 0.9)
+    target_thresh <- 0.01
+  }
+
   NextBestDualEndpoint(
     target = target,
-    overdose = c(0.35, 1),
+    overdose = overdose,
     max_overdose_prob = 0.25,
     target_relative = target_relative,
+    target_thresh = target_thresh
   )
 }
 

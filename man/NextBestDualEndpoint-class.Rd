@@ -66,7 +66,7 @@ absolute biomarker range.}
 
 \item{\code{target_thresh}}{(\code{proportion})\cr a target probability threshold that
 needs to be fulfilled before the target probability will be used for
-deriving the next best dose (default to \eqn{0.01}).}
+deriving the next best dose (default to 0.01).}
 }}
 
 \examples{

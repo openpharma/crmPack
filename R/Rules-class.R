@@ -35,7 +35,7 @@ setClass(
 #'
 #' [`NextBestMTD`] is the class for next best dose based on MTD estimate.
 #'
-#' @slot target (`proportion`)\cr target toxicity probability.
+#' @slot target (`proportion`)\cr target toxicity probability, except 0 or 1.
 #' @slot derive (`function`)\cr a function which derives the final next best MTD
 #'   estimate, based on vector of posterior MTD samples. It must therefore accept
 #'   one and only one argument, which is a numeric vector, and return a number.
@@ -99,7 +99,7 @@ NextBestMTD <- function(target, derive) {
 #' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
 #'   excluded, upper limit included). It is used to filter probability samples.
 #' @slot max_overdose_prob (`proportion`)\cr maximum overdose posterior
-#'   probability that is allowed.
+#'   probability that is allowed, except 0 or 1.
 #'
 #' @aliases NextBestNCRM
 #' @export
@@ -156,17 +156,20 @@ NextBestNCRM <- function(target,
 #' calculated, i.e. `losses` %*% `target`. Finally, the corresponding
 #' dose with lowest loss function (Bayes risk) is recommended for the next dose.
 #'
+#' @slot target (`numeric`)\cr the target toxicity interval (limits included).
+#'   It has to be a probability range excluding 0 and 1.
 #' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
 #'   excluded, upper limit included) or the excessive toxicity interval (lower
-#'   limit excluded, upper limit included) if
-#'   unacceptable is not provided. It is used to filter probability samples.
+#'   limit excluded, upper limit included) if unacceptable is not provided.
+#'   It has to be a probability range excluding 0. It is used to filter
+#'   probability samples.
 #' @slot unacceptable (`numeric`)\cr an unacceptable toxicity
 #'   interval (lower limit excluded, upper limit included). This must be
-#'   specified if the `overdose` does not include 1. Otherwise, it is
-#'   c(1, 1) (default), which is essentially a scalar equals 1.
+#'   specified if the `overdose` does not include 1. Otherwise, it is `c(1, 1)`
+#'   (default), which is essentially a scalar equals 1. It has to be a
+#'   probability range excluding 0.
 #' @slot losses (`numeric`)\cr a vector specifying the loss function. If the
-#'   `unacceptable` is provided, the vector length must be \eqn{4}, otherwise
-#'   \eqn{3}.
+#'   `unacceptable` is provided, the vector length must be 4, otherwise 3.
 #'
 #' @note The loss function should be a vector of either 3 or 4 values.
 #'   This is because the loss function values must be specified for each
@@ -195,14 +198,10 @@ NextBestNCRM <- function(target,
 
 #' @rdname NextBestNCRMLoss-class
 #'
-#' @param target (`numeric`)\cr target toxicity interval (limits included).
-#' @param overdose (`numeric`)\cr the overdose toxicity interval (lower limit
-#'   excluded, upper limit included) or the excessive toxicity interval (lower
-#'   limit excluded, upper limit included) if
-#'   unacceptable is not provided.
+#' @param target (`numeric`)\cr see slot definition.
+#' @param overdose (`numeric`)\cr see slot definition.
 #' @param unacceptable (`numeric`)\cr see slot definition.
-#' @param max_overdose_prob (`proportion`)\cr the maximum overdose
-#'   (overdose or excessive + unacceptable) probability that is allowed.
+#' @param max_overdose_prob (`proportion`)\cr see slot definition in [`NextBestNCRM`].
 #' @param losses (`numeric`)\cr see slot definition.
 #'
 #' @export
@@ -291,7 +290,7 @@ NextBestThreePlusThree <- function() {
 #'   absolute biomarker range.
 #' @slot target_thresh (`proportion`)\cr a target probability threshold that
 #'   needs to be fulfilled before the target probability will be used for
-#'   deriving the next best dose (default to \eqn{0.01}).
+#'   deriving the next best dose (default to 0.01).
 #'
 #' @aliases NextBestDualEndpoint
 #' @export
@@ -354,7 +353,8 @@ NextBestDualEndpoint <- function(target,
 #' [`NextBestMinDist`] is the class for next best dose that is based on minimum
 #' distance to target probability.
 #'
-#' @slot target (`proportion`)\cr single target toxicity probability.
+#' @slot target (`proportion`)\cr single target toxicity probability, except
+#'   0 or 1.
 #'
 #' @aliases NextBestMinDist
 #' @export
@@ -394,10 +394,10 @@ NextBestMinDist <- function(target) {
 #' [`NextBestInfTheory`] is the class for next best dose that is based on
 #' information theory as proposed in https://doi.org/10.1002/sim.8450.
 #'
-#' @slot target (`proportion`)\cr target toxicity probability.
+#' @slot target (`proportion`)\cr target toxicity probability, except 0 or 1.
 #' @slot asymmetry (`number`)\cr value of the asymmetry exponent in the
 #'   divergence function that describes the rate of penalization for overly
-#'   toxic does. It must be a value from (0, 2) interval.
+#'   toxic does. It must be a value from \eqn{(0, 2)} interval.
 #'
 #' @aliases NextBestInfTheory
 #' @export
@@ -448,10 +448,10 @@ NextBestInfTheory <- function(target, asymmetry) {
 #' during the trial and target probability to be used at the end of the trial.
 #' It is suitable to use it only with the [`ModelTox`] model class.
 #'
-#' @slot prob_target_drt (`proportion`)\cr the target probability of the
-#'   occurrence of a DLT to be used during the trial.
-#' @slot prob_target_eot (`proportion`)\cr the target probability of the
-#'   occurrence of a DLT to be used at the end of the trial.
+#' @slot prob_target_drt (`proportion`)\cr the target probability (except 0 or 1)
+#'   of the occurrence of a DLT to be used during the trial.
+#' @slot prob_target_eot (`proportion`)\cr the target probability (except 0 or 1)
+#'   of the occurrence of a DLT to be used at the end of the trial.
 #'
 #' @aliases NextBestTD
 #' @export
@@ -709,9 +709,9 @@ setClass(
 #' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
 #'   intervals. This parameters specifies the right bounds of the intervals.
 #'   For example, `intervals  = c(0, 50, 100)` specifies three intervals:
-#'   (0, 50), [50, 100) and [100, +Inf). That means, the right bound of the
-#'   intervals are exclusive to the interval and the last interval goes from the
-#'   last value to infinity.
+#'   \eqn{(0, 50)}, \eqn{[50, 100)} and \eqn{[100, +Inf)}. That means, the right
+#'   bound of the intervals are exclusive to the interval and the last interval
+#'   goes from the last value to infinity.
 #' @slot increments (`numeric`)\cr a vector of the same length with the maximum
 #'   allowable relative increments in the `intervals`.
 #'
@@ -761,17 +761,17 @@ IncrementsRelative <- function(intervals, increments) {
 #' relative differences in intervals, with special rules for part 1 and
 #' beginning of part 2.
 #'
-#' @details This class works only conjunction with [`DataParts`] objects. If the
+#' @details This class works only conjunction with [`DataParts`] objects. If
 #' part 2 will just be started in the next cohort, then the next maximum dose
-#' will be either `dlt_start` (e.g. -1) shift of the last part 1 dose in case of
-#' a DLT in part 1, or `clean_start` shift (e.g. 0) in case of no DLTs in part 1.
-#' If part 1 will still be on in the next cohort, then the next dose level will
-#' be the next higher dose level in the `part1Ladder` slot of the data object.
-#' If part 2 has been started before, the usual relative increment rules apply,
-#' see [`IncrementsRelative`].
+#' will be either `dlt_start` (e.g. \-1) shift of the last part 1 dose in case
+#' of a DLT in part 1, or `clean_start` shift (e.g. 0) in case of no DLTs in
+#' part 1. If part 1 will still be on in the next cohort, then the next dose
+#' level will be the next higher dose level in the `part1Ladder` slot of the
+#' data object. If part 2 has been started before, the usual relative increment
+#' rules apply, see [`IncrementsRelative`].
 #'
-#' @slot dlt_start (`count`)\cr the dose level increment for starting part 2
-#'   in case of a DLT in part 1.
+#' @slot dlt_start (`count`)\cr the dose level increment for starting part 2 in
+#'   case of a DLT in part 1.
 #' @slot clean_start (`count`)\cr the dose level increment for starting part 2
 #'   in case of a DLT in part 1. If this is less or equal to 0, then the part 1
 #'   ladder will be used to find the maximum next dose. Otherwise, the relative
@@ -928,8 +928,9 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' number of maximum dose levels to increment.
 #'
 #' @slot max_levels (`count`)\cr maximum dose levels to increment for the next
-#'   dose. It defaults to 1, which means that no dose skipping is allowed - the
-#'   next dose can be maximum one level higher than the current dose.
+#'   dose. It defaults to 1, which means that no dose skipping is
+#'   allowed - the next dose can be maximum one level higher than the current
+#'   dose.
 #' @slot basis_level (`string`)\cr corresponding to the dose level used to
 #'   increment from. It can take one out of two possible values: `last` or `max`.
 #'   If `last` is specified (default), the increment is applied to the last
@@ -989,12 +990,14 @@ IncrementsNumDoseLevels <- function(max_levels = 1L,
 #' This is a hard safety rule that limits further escalation based on the
 #' observed data per dose level, independent from the underlying model.
 #'
-#' @slot target (`proportion`)\cr the target toxicity.
-#' @slot prob (`proportion`)\cr the threshold probability for a dose being toxic.
-#' @slot a (`number`)\cr shape parameter a > 0 of probability
-#'  distribution Beta (a,b).
-#' @slot b (`number`)\cr shape parameter b > 0 of probability
-#'  distribution Beta (a, b).
+#' @slot target (`proportion`)\cr the target toxicity, except
+#'   0 or 1.
+#' @slot prob (`proportion`)\cr the threshold probability (except 0 or 1) for
+#'   a dose being toxic.
+#' @slot a (`number`)\cr shape parameter \eqn{a > 0} of probability distribution
+#'   Beta (a,b).
+#' @slot b (`number`)\cr shape parameter \eqn{b > 0} of probability distribution
+#'   Beta (a,b).
 #'
 #' @aliases IncrementsHSRBeta
 #' @export
@@ -1119,8 +1122,8 @@ setClass(
 #' cohorts near to next best dose.
 #'
 #' @slot nCohorts (`number`)\cr number of required cohorts.
-#' @slot percentage (`number`)\cr percentage (between 0 and 100) within the
-#'   next best dose the cohorts must lie.
+#' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
+#'   within the next best dose the cohorts must lie.
 #'
 #' @aliases StoppingCohortsNearDose
 #' @export
@@ -1169,8 +1172,8 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #' patients near to next best dose.
 #'
 #' @slot nPatients (`number`)\cr number of required patients.
-#' @slot percentage (`number`)\cr percentage (between 0 and 100) within the
-#'   next best dose the patients must lie.
+#' @slot percentage (`number`)\cr percentage (between and including 0 and 100)
+#'   within the next best dose the patients must lie.
 #'
 #' @aliases StoppingPatientsNearDose
 #' @export
@@ -1293,8 +1296,8 @@ StoppingMinPatients <- function(nPatients) {
 #' the DLT rate being in the target toxicity interval.
 #'
 #' @slot target (`number`)\cr the target toxicity interval, e.g. `c(0.2, 0.35)`.
-#' @slot prob (`proportion`)\cr required target toxicity probability for reaching
-#'   sufficient precision.
+#' @slot prob (`proportion`)\cr required target toxicity probability (except 0 or 1)
+#'   for reaching sufficient precision.
 #'
 #' @aliases StoppingTargetProb
 #' @export
@@ -1346,10 +1349,11 @@ StoppingTargetProb <- function(target,
 #' Here, the MTD is defined as the dose that reaches a specific `target`
 #' probability of the occurrence of a DLT.
 #'
-#' @slot target (`proportion`)\cr the target toxicity probability defining the MTD.
-#' @slot thresh (`proportion`)\cr the threshold relative to the recommended next
-#'   best dose.
-#' @slot prob (`proportion`)\cr required minimum probability.
+#' @slot target (`proportion`)\cr the target toxicity probability (except 0 or 1)
+#'   defining the MTD.
+#' @slot thresh (`proportion`)\cr the threshold (except 0 or 1) relative to the
+#'   recommended next best dose.
+#' @slot prob (`proportion`)\cr required minimum probability, except 0 or 1.
 #'
 #' @aliases StoppingMTDdistribution
 #' @export
@@ -1404,10 +1408,10 @@ StoppingMTDdistribution <- function(target,
 #' Here, the MTD is defined as the dose that reaches a specific `target`
 #' probability of the occurrence of a DLT.
 #'
-#' @slot target (`proportion`)\cr toxicity target of MTD.
-#' @slot thresh_cv (`number`)\cr threshold (percentage) for CV to be considered
-#'   accurate enough to stop the trial. The stopping occurs when the CV is less
-#'   than or equal to `tresh_cv`.
+#' @slot target (`proportion`)\cr toxicity target of MTD (except 0 or 1).
+#' @slot thresh_cv (`number`)\cr threshold (percentage > 0) for CV to be
+#'   considered accurate enough to stop the trial. The stopping occurs when the
+#'   CV is less than or equal to `tresh_cv`.
 #'
 #' @aliases StoppingMTDCV
 #' @export
@@ -1464,12 +1468,12 @@ StoppingMTDCV <- function(target = 0.3,
 #' Note: this stopping rule is independent from the underlying model.
 #'
 #' @slot target (`proportion`)\cr the target toxicity.
-#' @slot prob (`proportion`)\cr the threshold probability for the lowest
-#'  dose being toxic.
-#' @slot a (`number`)\cr shape parameter a>0 of probability
-#'  distribution Beta (a,b).
-#' @slot b (`number`)\cr shape parameter b>0 of probability
-#'  distribution Beta (a,b).
+#' @slot prob (`proportion`)\cr the threshold probability for the lowest dose
+#'   being toxic.
+#' @slot a (`number`)\cr shape parameter \eqn{a > 0} of probability distribution
+#'   Beta (a,b).
+#' @slot b (`number`)\cr shape parameter \eqn{b > 0} of probability distribution
+#'   Beta (a,b).
 #'
 #' @aliases StoppingLowestDoseHSRBeta
 #' @export

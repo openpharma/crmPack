@@ -82,10 +82,6 @@ v_next_best_ncrm_loss <- function(object) {
       "lower bound of unacceptable has to be >= than upper bound of overdose"
     )
   }
-  v$check(
-    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
-    "max_overdose_prob must be a probability value from (0, 1) interval"
-  )
   if (is_unacceptable_valid) {
     losses_len <- ifelse(all(object@unacceptable == c(1, 1)), 3L, 4L)
     v$check(
@@ -293,11 +289,11 @@ v_increments_hsr_beta <- function(object) {
   v <- Validate()
   v$check(
     test_probability(object@target, bounds_closed = FALSE),
-    "target must be a probability"
+    "target must be a probability value from (0, 1) interval"
   )
   v$check(
     test_probability(object@prob, bounds_closed = FALSE),
-    "prob must be a probability"
+    "prob must be a probability value from (0, 1) interval"
   )
   v$check(
     test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
