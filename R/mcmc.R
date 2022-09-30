@@ -235,8 +235,8 @@ setMethod(
 
 #' @describeIn mcmc Standard method which uses JAGS. For the
 #'   [`OneParExpNormalPrior`] model, it is required that the length of
-#'   skeleton prior probabilities vector should be equal to the maximum dose
-#'   level observed in data.
+#'   skeleton prior probabilities vector should be equal to the length of the
+#'   number of doses.
 #'
 #' @param from_prior (`flag`)\cr sample from the prior only? Default to `TRUE`
 #'   when number of observations in `data` is `0`. For some models it might be
@@ -257,7 +257,7 @@ setMethod(
                  from_prior = data@nObs == 0L,
                  ...) {
     if (!from_prior) {
-      assert_true(length(model@skel_probs) == max(data@xLevel))
+      assert_true(length(model@skel_probs) == max(data@nGrid))
     }
 
     callNextMethod(
