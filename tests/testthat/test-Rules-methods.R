@@ -1174,4 +1174,3 @@ test_that(paste(
   )
   expect_identical(result, expected)
 })
-
