@@ -2619,7 +2619,7 @@ OneParExpNormalPrior <- function(skel_probs,
   assert_number(sigma2, lower = .Machine$double.xmin, finite = TRUE)
 
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
-  skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 1)
+  skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
 
   .OneParExpNormalPrior(
     skel_fun = skel_fun,
