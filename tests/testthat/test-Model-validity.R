@@ -1048,6 +1048,15 @@ test_that("v_model_one_par_exp_normal_prior passes for valid object", {
   expect_true(v_model_one_par_exp_normal_prior(object))
 })
 
+test_that("v_model_one_par_exp_normal_prior passes for valid object (finit art. prec. interpolation)", {
+  object <- OneParExpNormalPrior(
+    skel_probs = seq(from = 0.1, to = 0.7, length = 5),
+    dose_grid = 1:5,
+    sigma2 = 2
+  )
+  expect_true(v_model_one_par_exp_normal_prior(object))
+})
+
 test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_fun - skel_fun_inv", {
   object <- h_get_one_par_exp_normal_prior()
 
