@@ -435,7 +435,7 @@ v_stopping_mtd_cv <- function(object) {
 
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`] object
 #'   contains valid target and probability and Beta distribtuion parameters.
-v_stopping_lowest_dose_hsr_beta <- function(object) {
+v_stopping_lowest_dose_hsrbeta <- function(object) {
   v <- Validate()
   v$check(
     test_probability(object@target, bounds_closed = FALSE),
