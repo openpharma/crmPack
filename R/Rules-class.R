@@ -1493,7 +1493,7 @@ StoppingMTDCV <- function(target = 0.3,
     a = 1,
     b = 1
   ),
-  validity = v_stopping_lowest_dose_hsrbeta
+  validity = v_stopping_lowest_dose_hsr_beta
 )
 
 ## constructor ----
