@@ -2,6 +2,8 @@
 % Please edit documentation in R/Rules-validity.R
 \name{v_increments}
 \alias{v_increments}
+\alias{v_increments_absolute}
+\alias{v_increments_absolute_dlt}
 \alias{v_increments_relative}
 \alias{v_increments_relative_parts}
 \alias{v_increments_relative_dlt}
@@ -10,6 +12,10 @@
 \alias{v_increments_min}
 \title{Internal Helper Functions for Validation of \code{\link{Increments}} Objects}
 \usage{
+v_increments_absolute(object)
+
+v_increments_absolute_dlt(object)
+
 v_increments_relative(object)
 
 v_increments_relative_parts(object)
@@ -28,8 +34,16 @@ v_increments_min(object)
 \value{
 A \code{character} vector with the validation failure messages,
 or \code{TRUE} in case validation passes.
+
+A \code{character} vector with the validation failure messages,
+or \code{TRUE} in case validation passes.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+These functions are only used internally to validate the format of an input
+\code{\link{Increments}} or inherited classes and therefore not exported.
+
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 These functions are only used internally to validate the format of an input
@@ -37,6 +51,12 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
+\item \code{v_increments_absolute()}: validates that the \code{\link{IncrementsAbsolute}} object
+contains valid \code{intervals} and \code{increments} parameters
+
+\item \code{v_increments_absolute_dlt()}: validates that the \code{\link{IncrementsAbsoluteDLT}} object
+contains valid \code{intervals} and \code{increments} parameters.
+
 \item \code{v_increments_relative()}: validates that the \code{\link{IncrementsRelative}} object
 contains valid \code{intervals} and \code{increments} parameters.
 
