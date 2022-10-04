@@ -1032,15 +1032,19 @@ setGeneric("maxDose",
   valueClass = "numeric"
 )
 
+# nolint end
 
-## --------------------------------------------------
-## The maximum allowable relative increments in intervals method
-## --------------------------------------------------
+# maxDose-IncrementsRelative ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelative.R
+#' @rdname maxDose
+#'
+#' @description Increment rule to determine the maximum possible next dose based on
+#'   relative increments.
+#'
+#' @aliases maxDose-IncrementsRelative
+#' @example examples/Rules-method-maxDose-IncrementsRelative.R
+#' @export
+#'
 setMethod("maxDose",
   signature =
     signature(
@@ -1067,8 +1071,6 @@ setMethod("maxDose",
       return(ret)
     }
 )
-
-# nolint end
 
 # maxDose-IncrementsNumDoseLevels ----
 
@@ -1167,16 +1169,18 @@ setMethod(
   }
 )
 
-# nolint start
 
-## --------------------------------------------------
-## The maximum allowable relative increments, with special rules for
-## part 1 and beginning of part 2, method method
-## --------------------------------------------------
+# maxDose-IncrementsRelativeParts ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments and part 1 and 2
-##' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
+#' @rdname maxDose
+#'
+#' @description Increment rule to determine the maximum possible next dose based on
+#'   relative increments and part 1 and 2.
+#'
+#' @aliases maxDose-IncrementsRelativeParts
+#' @example examples/Rules-method-maxDose-IncrementsRelativeParts.R
+#' @export
+#'
 setMethod("maxDose",
   signature =
     signature(
@@ -1233,15 +1237,17 @@ setMethod("maxDose",
     }
 )
 
+# maxDose-IncrementsRelativeDLT ----
 
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs so far
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLT.R
+#' @rdname maxDose
+#'
+#' @description Increment rule to determine the maximum possible next dose
+#'   based on relative increments determined by DLTs so far.
+#'
+#' @aliases maxDose-IncrementsRelativeDLT
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLT.R
+#' @export
+#'
 setMethod("maxDose",
   signature =
     signature(
@@ -1272,14 +1278,17 @@ setMethod("maxDose",
     }
 )
 
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
+# maxDose-IncrementsRelativeDLTCurrent ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs in the current cohort.
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+#' @rdname maxDose
+#'
+#' @description Increment rule to determine the maximum possible next dose
+#'   based on relative increments determined by DLTs in the current cohort.
+#'
+#' @aliases maxDose-IncrementsRelativeDLTCurrent
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLTCurrent.R
+#' @export
+#'
 setMethod("maxDose",
   signature =
     signature(
@@ -1308,6 +1317,7 @@ setMethod("maxDose",
     }
 )
 
+# nolint start
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments in terms of DLTs
@@ -1741,14 +1751,15 @@ setMethod("stopTrial",
     }
 )
 
-# nolint start
-## --------------------------------------------------
-## Stopping based on number of cohorts near to next best dose
-## --------------------------------------------------
+## StoppingCohortsNearDose ----
 
-##' @describeIn stopTrial Stop based on number of cohorts near to next best dose
-##'
-##' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
+#' @describeIn stopTrial based on number of cohorts near to next best dose.
+#'
+#' @aliases stopTrial-StoppingCohortsNearDose
+#'
+#' @export
+#' @example examples/Rules-method-stopTrial-StoppingCohortsNearDose.R
+#'
 setMethod("stopTrial",
   signature =
     signature(
@@ -1794,15 +1805,15 @@ setMethod("stopTrial",
     }
 )
 
+## StoppingPatientsNearDose ----
 
-## -------------------------------------------------------------
-## Stopping based on number of patients near to next best dose
-## -------------------------------------------------------------
-
-##' @describeIn stopTrial Stop based on number of patients near to next best
-##' dose
-##'
-##' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
+#' @describeIn stopTrial based on number of patients near to next best dose.
+#'
+#' @aliases stopTrial-StoppingPatientsNearDose
+#'
+#' @export
+#' @example examples/Rules-method-stopTrial-StoppingPatientsNearDose.R
+#'
 setMethod("stopTrial",
   signature =
     signature(
@@ -1844,6 +1855,8 @@ setMethod("stopTrial",
       ))
     }
 )
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on minimum number of cohorts
