@@ -383,8 +383,8 @@ setMethod(
 
     # Get number of patients per grid's dose and DLT rate at the last level.
     nPatients <- table(factor(data@x, levels = data@doseGrid))
-    nDLTs_last_level <- sum(data@y[data@xLevel == last_level])
-    DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level]
+    nDLTs_last_level <- sum(data@y[data@xLevel == last_level]) # nolintr
+    DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level] # nolintr
 
     level_change <- if (DLT_rate_last_level < 1 / 3) {
       # Escalate it, unless this is the highest level or the higher dose was already tried.
@@ -817,7 +817,7 @@ setMethod(
       lower = dose_grid_range[1],
       upper = dose_grid_range[2]
     )
-    dose_mg <- opt$par # G*.
+    dose_mg <- opt$par # this is G*. # no lintr
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.

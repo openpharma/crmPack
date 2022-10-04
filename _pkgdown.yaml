@@ -131,7 +131,7 @@ reference:
       - v_data_dual
       - v_data_parts
       - v_data_mixture
-      - v_data_DA
+      - v_data_da
       - v_mcmc_options
       - v_model_params_normal
       - v_general_model

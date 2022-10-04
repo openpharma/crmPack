@@ -81,25 +81,25 @@ signature. But we need also other arguments in the signature.
 }
 \section{Functions}{
 \itemize{
-\item \code{fit,Samples,GeneralModel,Data-method}: This method returns a data frame with dose, middle, lower
+\item \code{fit(object = Samples, model = GeneralModel, data = Data)}: This method returns a data frame with dose, middle, lower
 and upper quantiles for the dose-toxicity curve
 
-\item \code{fit,Samples,DualEndpoint,DataDual-method}: This method returns a data frame with dose, and middle,
+\item \code{fit(object = Samples, model = DualEndpoint, data = DataDual)}: This method returns a data frame with dose, and middle,
 lower and upper quantiles, for both the dose-tox and dose-biomarker (suffix
 "Biomarker") curves, for all grid points (Note that currently only the grid
 points can be used, because the DualEndpointRW models only allow that)
 
-\item \code{fit,Samples,LogisticIndepBeta,Data-method}: This method return a data frame with dose, middle lower and upper quantiles
+\item \code{fit(object = Samples, model = LogisticIndepBeta, data = Data)}: This method return a data frame with dose, middle lower and upper quantiles
 for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
 
-\item \code{fit,Samples,Effloglog,DataDual-method}: This method returns a data frame with dose, middle, lower, upper quantiles for
+\item \code{fit(object = Samples, model = Effloglog, data = DataDual)}: This method returns a data frame with dose, middle, lower, upper quantiles for
 the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
 
-\item \code{fit,Samples,EffFlexi,DataDual-method}: This method returns a data frame with dose, middle, lower and upper
+\item \code{fit(object = Samples, model = EffFlexi, data = DataDual)}: This method returns a data frame with dose, middle, lower and upper
 quantiles for the dose-efficacy curve using efficacy samples for \dQuote{EffFlexi}
 model class
-}}
 
+}}
 \examples{
 # nolint start
 
