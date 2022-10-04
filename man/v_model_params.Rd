@@ -23,7 +23,7 @@ with model parameters or inherited classes and therefore not exported.
 }
 \section{Functions}{
 \itemize{
-\item \code{v_model_params_normal}: a helper function that validates bivariate normal
+\item \code{v_model_params_normal()}: a helper function that validates bivariate normal
 parameters.
-}}
 
+}}

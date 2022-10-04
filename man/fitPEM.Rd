@@ -52,10 +52,10 @@ quantiles for the \code{PEM} curve. If hazard=TRUE,
 }
 \section{Functions}{
 \itemize{
-\item \code{fitPEM,Samples,DALogisticLogNormal,DataDA-method}: This method works for the \code{\linkS4class{DALogisticLogNormal}}
+\item \code{fitPEM(object = Samples, model = DALogisticLogNormal, data = DataDA)}: This method works for the \code{\linkS4class{DALogisticLogNormal}}
 model class.
-}}
 
+}}
 \examples{
 # nolint start
 

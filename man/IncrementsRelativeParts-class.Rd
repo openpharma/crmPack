@@ -10,15 +10,15 @@
 IncrementsRelativeParts(dlt_start, clean_start, ...)
 }
 \arguments{
-\item{dlt_start}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
+\item{dlt_start}{(\code{count})\cr see slot definition.}
 
-\item{clean_start}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeParts}}.}
+\item{clean_start}{(\code{count})\cr see slot definition.}
 
 \item{...}{
   Arguments passed on to \code{\link[=IncrementsRelative]{IncrementsRelative}}
   \describe{
-    \item{\code{intervals}}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
-    \item{\code{increments}}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelative}}.}
+    \item{\code{intervals}}{(\code{numeric})\cr see slot definition.}
+    \item{\code{increments}}{(\code{numeric})\cr see slot definition.}
   }}
 }
 \description{
@@ -29,22 +29,22 @@ relative differences in intervals, with special rules for part 1 and
 beginning of part 2.
 }
 \details{
-This class works only conjunction with \code{\link{DataParts}} objects. If the
+This class works only conjunction with \code{\link{DataParts}} objects. If
 part 2 will just be started in the next cohort, then the next maximum dose
-will be either \code{dlt_start} (e.g. -1) shift of the last part 1 dose in case of
-a DLT in part 1, or \code{clean_start} shift (e.g. 0) in case of no DLTs in part 1.
-If part 1 will still be on in the next cohort, then the next dose level will
-be the next higher dose level in the \code{part1Ladder} slot of the data object.
-If part 2 has been started before, the usual relative increment rules apply,
-see \code{\link{IncrementsRelative}}.
+will be either \code{dlt_start} (e.g. \-1) shift of the last part 1 dose in case
+of a DLT in part 1, or \code{clean_start} shift (e.g. 0) in case of no DLTs in
+part 1. If part 1 will still be on in the next cohort, then the next dose
+level will be the next higher dose level in the \code{part1Ladder} slot of the
+data object. If part 2 has been started before, the usual relative increment
+rules apply, see \code{\link{IncrementsRelative}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{dlt_start}}{(\code{integer})\cr the dose level increment for starting part 2
-in case of a DLT in part 1.}
+\item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part 2 in
+case of a DLT in part 1.}
 
-\item{\code{clean_start}}{(\code{integer})\cr the dose level increment for starting part 2
+\item{\code{clean_start}}{(\code{count})\cr the dose level increment for starting part 2
 in case of a DLT in part 1. If this is less or equal to 0, then the part 1
 ladder will be used to find the maximum next dose. Otherwise, the relative
 increment rules will be applied to find the next maximum dose level.}

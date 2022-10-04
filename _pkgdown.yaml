@@ -79,6 +79,13 @@ reference:
       - IncrementsRelativeDLTCurrent
       - IncrementsNumDoseLevels
       - IncrementsHSRBeta
+      - IncrementsMin
+      - StoppingCohortsNearDose
+      - StoppingPatientsNearDose
+      - StoppingMinCohorts
+      - StoppingMinPatients
+      - StoppingTargetProb
+      - StoppingMTDdistribution
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
   - title: Internal Helper Functions
@@ -124,7 +131,7 @@ reference:
       - v_data_dual
       - v_data_parts
       - v_data_mixture
-      - v_data_DA
+      - v_data_da
       - v_mcmc_options
       - v_model_params_normal
       - v_general_model
@@ -157,8 +164,15 @@ reference:
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
-      - v_increments_numdoselevels
+      - v_increments_num_dose_levels
       - v_increments_hsr_beta
+      - v_increments_min
+      - v_stopping_cohort_near_dose
+      - v_stopping_patients_near_doses
+      - v_stopping_min_cohorts
+      - v_stopping_min_patients
+      - v_stopping_target_prob
+      - v_stopping_mtd_distribution
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
   - title: Custom Checkmate Assertions

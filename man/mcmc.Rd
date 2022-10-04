@@ -71,32 +71,32 @@ defined for specific subclasses of \code{\link{GeneralData}}, \code{\link{Genera
 }
 \section{Functions}{
 \itemize{
-\item \code{mcmc,GeneralData,GeneralModel,McmcOptions-method}: Standard method which uses JAGS.
+\item \code{mcmc(data = GeneralData, model = GeneralModel, options = McmcOptions)}: Standard method which uses JAGS.
 
-\item \code{mcmc,GeneralData,DualEndpointRW,McmcOptions-method}: Standard method which uses JAGS. For the
+\item \code{mcmc(data = GeneralData, model = DualEndpointRW, options = McmcOptions)}: Standard method which uses JAGS. For the
 \code{\link{DualEndpointRW}} model, it is required that there are at least two (in
 case of random walk prior of the first order on the biomarker level) or
 three doses in the grid.
 
-\item \code{mcmc,GeneralData,DualEndpointBeta,McmcOptions-method}: Standard method which uses JAGS. For the
+\item \code{mcmc(data = GeneralData, model = DualEndpointBeta, options = McmcOptions)}: Standard method which uses JAGS. For the
 \code{\link{DualEndpointBeta}} model, it is required that the value of \code{ref_dose_beta}
 slot is greater than the maximum dose in a grid. This requirement comes from
 definition of the beta function that is used to model dose-biomarker
 relationship in \code{\link{DualEndpointBeta}} model. The other requirement is that
 there must be at least one dose in the grid.
 
-\item \code{mcmc,GeneralData,DualEndpointEmax,McmcOptions-method}: Standard method which uses JAGS. For the
+\item \code{mcmc(data = GeneralData, model = DualEndpointEmax, options = McmcOptions)}: Standard method which uses JAGS. For the
 \code{\link{DualEndpointEmax}} model, it is required that there is at least one dose
 in the grid.
 
-\item \code{mcmc,GeneralData,OneParExpNormalPrior,McmcOptions-method}: Standard method which uses JAGS. For the
+\item \code{mcmc(data = GeneralData, model = OneParExpNormalPrior, options = McmcOptions)}: Standard method which uses JAGS. For the
 \code{\link{OneParExpNormalPrior}} model, it is required that the length of
 skeleton prior probabilities vector should be equal to the maximum dose
 level observed in data.
 
-\item \code{mcmc,DataMixture,GeneralModel,McmcOptions-method}: Method for DataMixture with different from_prior default
+\item \code{mcmc(data = DataMixture, model = GeneralModel, options = McmcOptions)}: Method for DataMixture with different from_prior default
 
-\item \code{mcmc,Data,LogisticIndepBeta,McmcOptions-method}: Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
+\item \code{mcmc(data = Data, model = LogisticIndepBeta, options = McmcOptions)}: Obtain posterior samples for the model parameters based on the pseudo 'LogisticsIndepBeta'
 DLE model. The joint prior and posterior probability density function of
 the intercept \eqn{\phi_1} (phi1) and the slope \eqn{\phi_2} (phi2) are given in Whitehead and
 Williamson (1998) and TsuTakawa (1975). However, since asymptotically, the joint posterior probability density
@@ -105,7 +105,7 @@ generate posterior samples of the intercept and the slope parameters. For the pr
 of the intercept and the slope a bivariate normal distribution with mean and the covariance matrix given in Whitehead and
 Williamson (1998) is used.
 
-\item \code{mcmc,DataDual,Effloglog,McmcOptions-method}: Obtain the posterior samples for the model parameters in the
+\item \code{mcmc(data = DataDual, model = Effloglog, options = McmcOptions)}: Obtain the posterior samples for the model parameters in the
 Efficacy log log model. Given the value of \eqn{\nu}, the precision of the efficacy responses,
 the joint prior or the posterior probability of the intercept \eqn{\theta_1} (theta1) and
 the slope \eqn{\theta_2} (theta2) is a bivariate normal distribution. The  \eqn{\nu} (nu),
@@ -114,7 +114,7 @@ If a gamma distribution is used, the samples of nu will be first generated.
 Then the mean of the of the nu samples
 will be used the generate samples of the intercept and slope parameters of the model
 
-\item \code{mcmc,DataDual,EffFlexi,McmcOptions-method}: Obtain the posterior samples for the estimates in the Efficacy Flexible form.
+\item \code{mcmc(data = DataDual, model = EffFlexi, options = McmcOptions)}: Obtain the posterior samples for the estimates in the Efficacy Flexible form.
 This is the mcmc procedure based on what is described in Lang and Brezger (2004) such that
 samples of the mean efficacy responses at all dose levels, samples of sigma2 \eqn{sigma^2},
 the variance of the efficacy response and samples of sigma2betaW \eqn{sigma^2_{beta_W}}, the variance of
@@ -124,8 +124,8 @@ the joint prior and posterior probability density for the mean efficacy response
 both sigma2 and sigma2betaW can be fixed or having an inverse-gamma prior and posterior distribution.
 Therefore, if the inverse gamma distribution(s) are used, the parameters in the distribution will be
 first updated and then samples of sigma2 and sigma2betaW will be generated using the updated parameters.
-}}
 
+}}
 \note{
 The type of Random Number Generator (RNG) and its initial seed used by
 \code{JAGS} are taken from the \code{options} argument. If no initial values are

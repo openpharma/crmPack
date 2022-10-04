@@ -383,16 +383,16 @@ setMethod(
 
     # Get number of patients per grid's dose and DLT rate at the last level.
     nPatients <- table(factor(data@x, levels = data@doseGrid))
-    nDLTs_last_level <- sum(data@y[data@xLevel == last_level])
-    DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level]
+    n_dlts_last_level <- sum(data@y[data@xLevel == last_level])
+    dlt_rate_last_level <- n_dlts_last_level / nPatients[last_level]
 
-    level_change <- if (DLT_rate_last_level < 1 / 3) {
+    level_change <- if (dlt_rate_last_level < 1 / 3) {
       # Escalate it, unless this is the highest level or the higher dose was already tried.
       ifelse((last_level == data@nGrid) || (nPatients[last_level + 1L] > 0), 0L, 1L)
     } else {
       # Rate is too high, deescalate it, unless an edge case of 1/3, where the decision
       # depends on the num. of patients: if >3, then deescalate it, otherwise stay.
-      ifelse((DLT_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
+      ifelse((dlt_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
     }
     next_dose_level <- last_level + level_change
 
@@ -817,7 +817,7 @@ setMethod(
       lower = dose_grid_range[1],
       upper = dose_grid_range[2]
     )
-    dose_mg <- opt$par # G*.
+    dose_mg <- opt$par # this is G*. # no lintr
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.
@@ -1157,7 +1157,7 @@ setMethod(
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
     basis_dose_level <- ifelse(
-      increments@basisLevel == "last",
+      increments@basis_level == "last",
       tail(
         data@xLevel,
         1
@@ -1167,7 +1167,7 @@ setMethod(
 
     max_next_dose_level <- min(
       length(data@doseGrid),
-      basis_dose_level + increments@maxLevels
+      basis_dose_level + increments@max_levels
     )
 
     data@doseGrid[max_next_dose_level]
@@ -1380,11 +1380,11 @@ setMethod("maxDose",
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' multiple increment rules (taking the minimum across individual increments).
 ##'
-##' @example examples/Rules-method-maxDose-IncrementMin.R
+##' @example examples/Rules-method-maxDose-IncrementsMin.R
 setMethod("maxDose",
   signature =
     signature(
-      increments = "IncrementMin",
+      increments = "IncrementsMin",
       data = "Data"
     ),
   def =
@@ -1392,7 +1392,7 @@ setMethod("maxDose",
 
       ## apply the multiple increment rules
       individualResults <-
-        sapply(increments@IncrementsList,
+        sapply(increments@increments_list,
           maxDose,
           data = data,
           ...

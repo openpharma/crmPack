@@ -46,22 +46,22 @@ v_model_logistic_kadane <- function(object) {
 
 #' @describeIn v_model_objects validates that the logistic Kadane model
 #'   parameters with a beta and gamma prior are valid.
-v_model_logistic_kadane_beta_gamma <- function(object) {
+v_model_logistic_kadane_beta_gamma <- function(object) { # nolintr
   v <- Validate()
   v$check(
-    is.scalar(object@alpha) & is.numeric(object@alpha) && object@alpha > 0,
+    test_number(object@alpha, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter alpha must be a positive scalar"
   )
   v$check(
-    is.scalar(object@beta) & is.numeric(object@beta) && object@beta > 0,
+    test_number(object@beta, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter beta must be a positive scalar"
   )
   v$check(
-    is.scalar(object@shape) & is.numeric(object@shape) && object@shape > 0,
+    test_number(object@shape, lower = .Machine$double.xmin, finite = TRUE),
     "Gamma distribution shape parameter must be a positive scalar"
   )
   v$check(
-    is.scalar(object@rate) & is.numeric(object@rate) && object@rate > 0,
+    test_number(object@rate, lower = .Machine$double.xmin, finite = TRUE),
     "Gamma distribution rate parameter must be a positive scalar"
   )
   v$result()
@@ -79,7 +79,7 @@ v_model_logistic_normal_mix <- function(object) {
 
 #' @describeIn v_model_objects validates that `component` is a list with
 #'   valid `ModelParamsNormal` objects as well as `weights` are correct.
-v_model_logistic_normal_fixed_mix <- function(object) {
+v_model_logistic_normal_fixed_mix <- function(object) { # nolintr
   v <- Validate()
   v$check(
     all(sapply(object@components, test_class, "ModelParamsNormal")),
@@ -116,7 +116,7 @@ v_model_logistic_normal_fixed_mix <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that `share_weight` represents probability.
-v_model_logistic_log_normal_mix <- function(object) {
+v_model_logistic_log_normal_mix <- function(object) { # nolintr
   v <- Validate()
   v$check(
     test_probability(object@share_weight),
@@ -134,7 +134,7 @@ v_model_dual_endpoint <- function(object) {
     test_flag(object@use_log_dose),
     "use_log_dose must be TRUE or FALSE"
   )
-  uf_sigma2W <- object@use_fixed["sigma2W"]
+  uf_sigma2W <- object@use_fixed["sigma2W"] # nolintr
   v$check(
     test_flag(uf_sigma2W),
     "use_fixed must be a named logical vector that contains name 'sigma2W'"
@@ -177,7 +177,7 @@ v_model_dual_endpoint <- function(object) {
 #' @describeIn v_model_objects validates that [`DualEndpointRW`] class slots are valid.
 v_model_dual_endpoint_rw <- function(object) {
   v <- Validate()
-  uf_sigma2W <- object@use_fixed["sigma2betaW"]
+  uf_sigma2W <- object@use_fixed["sigma2betaW"] # nolintr
   v$check(
     test_flag(uf_sigma2W),
     "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
@@ -370,12 +370,12 @@ v_model_eff_log_log <- function(object) {
     test_numeric(object@mu, finite = TRUE, len = 2),
     "mu must be a finite numerical vector of length 2"
   )
-  nrow_X <- ifelse(nobs_no_dlt > 0, nobs_no_dlt, length(object@eff_dose))
+  Xnrow <- ifelse(nobs_no_dlt > 0, nobs_no_dlt, length(object@eff_dose))
   v$check(
-    test_matrix(object@X, mode = "numeric", nrows = nrow_X, ncols = 2, any.missing = FALSE),
+    test_matrix(object@X, mode = "numeric", nrows = Xnrow, ncols = 2, any.missing = FALSE),
     paste(
       "X must be a finite numerical matrix of size",
-      nrow_X,
+      Xnrow,
       "x 2, without any missing values"
     )
   )
@@ -388,10 +388,10 @@ v_model_eff_log_log <- function(object) {
     "Q must be 2x2 positive-definite matrix without any missing values"
   )
   v$check(
-    test_numeric(object@Y, finite = TRUE, any.missing = FALSE, len = nrow_X),
+    test_numeric(object@Y, finite = TRUE, any.missing = FALSE, len = Xnrow),
     paste(
       "Y must be a finite numerical vector of length",
-      nrow_X,
+      Xnrow,
       "and without any missing values"
     )
   )
@@ -415,12 +415,12 @@ v_model_eff_flexi <- function(object) {
     "eff_dose must be a finite numerical vector of the same length as 'eff', without missing values"
   )
 
-  uf_sigma2W <- object@use_fixed["sigma2W"]
+  uf_sigma2W <- object@use_fixed["sigma2W"] # nolintr
   v$check(
     test_flag(uf_sigma2W),
     "use_fixed must be a named logical vector that contains name 'sigma2W'"
   )
-  uf_sigma2betaW <- object@use_fixed["sigma2betaW"]
+  uf_sigma2betaW <- object@use_fixed["sigma2betaW"] # nolintr
   v$check(
     test_flag(uf_sigma2betaW),
     "use_fixed must be a named logical vector that contains name 'sigma2betaW'"
@@ -498,7 +498,7 @@ v_model_da_logistic_log_normal <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that [`TITELogisticLogNormal`] class slots are valid.
-v_model_tite_logistic_log_normal <- function(object) {
+v_model_tite_logistic_log_normal <- function(object) { # nolintr
   v <- Validate()
   v$check(
     test_string(object@weight_method, pattern = "^linear$|^adaptive$"),
@@ -508,13 +508,13 @@ v_model_tite_logistic_log_normal <- function(object) {
 }
 
 #' @describeIn v_model_objects validates that [`OneParExpNormalPrior`] class slots are valid.
-v_model_one_par_exp_normal_prior <- function(object) {
+v_model_one_par_exp_normal_prior <- function(object) { # nolintr
   v <- Validate()
-  y <- seq(from = 0, to = 1, by = 0.1) # Skeleton prior probabilities.
+  y <- seq(from = 0, to = 1, by = 0.1) # Probabilities.
   x <- object@skel_fun_inv(y) # Dose grid.
-  not_NA <- !is.na(x)
+  not_na <- !is.na(x)
   v$check(
-    all(object@skel_fun(x[not_NA]) == y[not_NA]),
+    isTRUE(all.equal(object@skel_fun(x[not_na]), y[not_na])),
     "skel_fun_inv must be an inverse funtion of skel_fun function"
   )
   v$check(

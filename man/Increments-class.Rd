@@ -13,5 +13,5 @@ other specific increments classes inherit.
 }
 \seealso{
 \code{\link{IncrementsRelative}}, \code{\link{IncrementsRelativeDLT}},
-\code{\link{IncrementsNumDoseLevels}}, \code{\link{IncrementsHSRBeta}}, \code{\link{IncrementMin}}.
+\code{\link{IncrementsNumDoseLevels}}, \code{\link{IncrementsHSRBeta}}, \code{\link{IncrementsMin}}.
 }

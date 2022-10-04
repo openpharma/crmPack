@@ -234,7 +234,7 @@ test_that(".IncrementsRelative works as expected", {
 
 test_that("IncrementsRelative object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelative(intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+    IncrementsRelative(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelative")
   expect_identical(result@intervals, c(0, 2, 3))
@@ -250,7 +250,7 @@ test_that("IncrementsRelativeParts works as expected", {
 
 test_that("IncrementsRelativeParts object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeParts(dlt_start = -1, clean_start = 3)
+    IncrementsRelativeParts(-1, 3)
   )
   expect_valid(result, "IncrementsRelativeParts")
   expect_identical(result@dlt_start, -1L)
@@ -266,7 +266,7 @@ test_that(".IncrementsRelativeDLT works as expected", {
 
 test_that("IncrementsRelativeDLT object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeDLT(dlt_intervals = c(0, 2, 3), increments = c(2, 1, 1.5))
+    IncrementsRelativeDLT(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLT")
   expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
@@ -275,72 +275,204 @@ test_that("IncrementsRelativeDLT object can be created with user constructor", {
 
 ## IncrementsRelativeDLTCurrent ----
 
-test_that(".IncrementsRelativeDLTCurrent works as expected", {
+test_that("IncrementsRelativeDLTCurrent works as expected", {
   result <- expect_silent(.IncrementsRelativeDLTCurrent())
   expect_valid(result, "IncrementsRelativeDLTCurrent")
 })
 
-test_that("IncrementsRelativeDLTCurrent object can be created with user constructor (default)", {
-  result <- expect_silent(IncrementsRelativeDLTCurrent())
-  expect_valid(result, "IncrementsRelativeDLTCurrent")
-  expect_identical(result@dlt_intervals, c(0L, 1L))
-  expect_identical(result@increments, c(2, 1))
-})
-
-test_that("IncrementsRelativeDLTCurrent object can be created with user constructor (default)", {
+test_that("IncrementsRelativeDLTCurrent object can be created with user constructor", {
   result <- expect_silent(
-    IncrementsRelativeDLTCurrent(
-      dlt_intervals = c(3, 4),
-      increments = c(4.5, 6)
-    )
+    IncrementsRelativeDLTCurrent(c(0, 2, 3), c(2, 1, 1.5))
   )
   expect_valid(result, "IncrementsRelativeDLTCurrent")
-  expect_identical(result@dlt_intervals, c(3L, 4L))
-  expect_identical(result@increments, c(4.5, 6))
+  expect_identical(result@dlt_intervals, c(0L, 2L, 3L))
+  expect_identical(result@increments, c(2, 1, 1.5))
 })
 
-## IncrementsNumDoseLevels-class ----
+## IncrementsNumDoseLevels ----
 
 test_that(".IncrementsNumDoseLevels works as expected", {
   result <- expect_silent(.IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
 })
 
-## IncrementsNumDoseLevels-constructor ----
-
-test_that("IncrementsNumDoseLevels object can be created with user constructor", {
+test_that("IncrementsNumDoseLevels object can be created with user constructor (default)", {
   result <- expect_silent(IncrementsNumDoseLevels())
   expect_valid(result, "IncrementsNumDoseLevels")
+  expect_identical(result@max_levels, 1L)
+  expect_identical(result@basis_level, "last")
 })
 
-## IncrementsHSRBeta-class ----
+test_that("IncrementsNumDoseLevels object can be created with user constructor", {
+  result <- expect_silent(IncrementsNumDoseLevels(5L, "max"))
+  expect_valid(result, "IncrementsNumDoseLevels")
+  expect_identical(result@max_levels, 5L)
+  expect_identical(result@basis_level, "max")
+})
+
+## IncrementsHSRBeta ----
 
 test_that(".IncrementsHSRBeta works as expected", {
   result <- expect_silent(.IncrementsHSRBeta())
   expect_valid(result, "IncrementsHSRBeta")
 })
 
-## IncrementsHSRBeta-constructor ----
-
-test_that("IncrementsHSRBeta object can be created with user constructor", {
+test_that("IncrementsHSRBeta object can be created with user constructor (default)", {
   result <- expect_silent(IncrementsHSRBeta())
   expect_valid(result, "IncrementsHSRBeta")
+  expect_identical(result@target, 0.3)
+  expect_identical(result@prob, 0.95)
+  expect_identical(result@a, 1)
+  expect_identical(result@b, 1)
+})
+
+test_that("IncrementsHSRBeta object can be created with user constructor", {
+  result <- expect_silent(IncrementsHSRBeta(0.5, 0.6, 2, 4))
+  expect_valid(result, "IncrementsHSRBeta")
+  expect_identical(result@target, 0.5)
+  expect_identical(result@prob, 0.6)
+  expect_identical(result@a, 2)
+  expect_identical(result@b, 4)
+})
+
+## IncrementsMin ----
+
+test_that(".IncrementsMin works as expected", {
+  result <- expect_silent(.IncrementsMin())
+  expect_valid(result, "IncrementsMin")
+})
+
+test_that("IncrementsMin object can be created with user constructor", {
+  increments_list <- list(
+    IncrementsRelativeDLT(dlt_intervals = c(0L, 1L), increments = c(2, 1)),
+    IncrementsRelative(intervals = c(0, 2), increments = c(2, 1))
+  )
+  result <- expect_silent(IncrementsMin(increments_list))
+
+  expect_valid(result, "IncrementsMin")
+  expect_identical(result@increments_list, increments_list)
 })
 
 # Stopping ----
 
-## StoppingMTDCV-class ----
+## StoppingCohortsNearDose ----
+
+test_that(".StoppingCohortsNearDose works as expected", {
+  result <- expect_silent(.StoppingCohortsNearDose())
+  expect_valid(result, "StoppingCohortsNearDose")
+})
+
+test_that("StoppingCohortsNearDose object can be created with user constructor (default)", {
+  result <- expect_silent(StoppingCohortsNearDose())
+  expect_valid(result, "StoppingCohortsNearDose")
+  expect_identical(result@nCohorts, 2L)
+  expect_identical(result@percentage, 50)
+})
+
+test_that("StoppingCohortsNearDose object can be created with user constructor", {
+  result <- expect_silent(StoppingCohortsNearDose(5L, 40))
+  expect_valid(result, "StoppingCohortsNearDose")
+  expect_identical(result@nCohorts, 5L)
+  expect_identical(result@percentage, 40)
+})
+
+## StoppingPatientsNearDose ----
+
+test_that(".StoppingPatientsNearDose works as expected", {
+  result <- expect_silent(.StoppingPatientsNearDose())
+  expect_valid(result, "StoppingPatientsNearDose")
+})
+
+test_that("StoppingPatientsNearDose object can be created with user constructor (default)", {
+  result <- expect_silent(StoppingPatientsNearDose(20L))
+  expect_valid(result, "StoppingPatientsNearDose")
+  expect_identical(result@nPatients, 20L)
+  expect_identical(result@percentage, 50)
+})
+
+test_that("StoppingPatientsNearDose object can be created with user constructor", {
+  result <- expect_silent(StoppingPatientsNearDose(5L, 40))
+  expect_valid(result, "StoppingPatientsNearDose")
+  expect_identical(result@nPatients, 5L)
+  expect_identical(result@percentage, 40)
+})
+
+## StoppingMinCohorts ----
+
+test_that(".StoppingMinCohorts works as expected", {
+  result <- expect_silent(.StoppingMinCohorts())
+  expect_valid(result, "StoppingMinCohorts")
+})
+
+test_that("StoppingMinCohorts object can be created with user constructor", {
+  result <- expect_silent(StoppingMinCohorts(5L))
+  expect_valid(result, "StoppingMinCohorts")
+  expect_identical(result@nCohorts, 5L)
+})
+
+## StoppingMinPatients ----
+
+test_that(".StoppingMinPatients works as expected", {
+  result <- expect_silent(.StoppingMinPatients())
+  expect_valid(result, "StoppingMinPatients")
+})
+
+test_that("StoppingMinPatients object can be created with user constructor", {
+  result <- expect_silent(StoppingMinPatients(5L))
+  expect_valid(result, "StoppingMinPatients")
+  expect_identical(result@nPatients, 5L)
+})
+
+## StoppingTargetProb ----
+
+test_that(".StoppingTargetProb works as expected", {
+  result <- expect_silent(.StoppingTargetProb())
+  expect_valid(result, "StoppingTargetProb")
+})
+
+test_that("StoppingTargetProb object can be created with user constructor", {
+  result <- expect_silent(StoppingTargetProb(target = c(0.3, 0.45), prob = 0.5))
+  expect_valid(result, "StoppingTargetProb")
+  expect_identical(result@target, c(0.3, 0.45))
+  expect_identical(result@prob, 0.5)
+})
+
+## StoppingMTDdistribution ----
+
+test_that(".StoppingMTDdistribution works as expected", {
+  result <- expect_silent(.StoppingMTDdistribution())
+  expect_valid(result, "StoppingMTDdistribution")
+})
+
+test_that("StoppingMTDdistribution object can be created with user constructor", {
+  result <- expect_silent(
+    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+  )
+  expect_valid(result, "StoppingMTDdistribution")
+  expect_identical(result@target, 0.33)
+  expect_identical(result@thresh, 0.5)
+  expect_identical(result@prob, 0.9)
+})
+
+## StoppingMTDCV ----
 
 test_that(".StoppingMTDCV works as expected", {
   result <- expect_silent(.StoppingMTDCV())
   expect_valid(result, "StoppingMTDCV")
 })
 
-## StoppingMTDCV-constructor ----
-
-test_that("StoppingMTDCV object can be created with user constructor", {
+test_that("StoppingMTDCV object can be created with user constructor (default)", {
   result <- expect_silent(StoppingMTDCV())
   expect_valid(result, "StoppingMTDCV")
+  expect_identical(result@target, 0.3)
+  expect_identical(result@thresh_cv, 40)
+})
+
+test_that("StoppingMTDCV object can be created with user constructor", {
+  result <- expect_silent(StoppingMTDCV(target = 0.4, thresh_cv = 70))
+  expect_valid(result, "StoppingMTDCV")
+  expect_identical(result@target, 0.4)
+  expect_identical(result@thresh_cv, 70)
 })
 
 ## StoppingLowestDoseHSRBeta-class ----

@@ -115,45 +115,117 @@ the underlying \code{data}.
 }
 \section{Functions}{
 \itemize{
-\item \code{nextBest,NextBestMTD,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the MTD rule.
+\item \code{nextBest(
+  nextBest = NextBestMTD,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: find the next best dose based on the MTD rule.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the NCRM method. The
+\item \code{nextBest(
+  nextBest = NextBestNCRM,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: find the next best dose based on the NCRM method. The
 additional element \code{probs} in the output's list contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestNCRM,numeric,Samples,GeneralModel,DataParts-method}: find the next best dose based on the NCRM method when
+\item \code{nextBest(
+  nextBest = NextBestNCRM,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = DataParts
+)}: find the next best dose based on the NCRM method when
 two parts trial is used.
 
-\item \code{nextBest,NextBestNCRMLoss,numeric,Samples,GeneralModel,Data-method}: find the next best dose based on the NCRM method and
+\item \code{nextBest(
+  nextBest = NextBestNCRMLoss,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: find the next best dose based on the NCRM method and
 loss function.
 
-\item \code{nextBest,NextBestThreePlusThree,missing,missing,missing,Data-method}: find the next best dose based on the 3+3 method.
+\item \code{nextBest(
+  nextBest = NextBestThreePlusThree,
+  doselimit = missing,
+  samples = missing,
+  model = missing,
+  data = Data
+)}: find the next best dose based on the 3+3 method.
 
-\item \code{nextBest,NextBestDualEndpoint,numeric,Samples,DualEndpoint,Data-method}: find the next best dose based on the dual endpoint
+\item \code{nextBest(
+  nextBest = NextBestDualEndpoint,
+  doselimit = numeric,
+  samples = Samples,
+  model = DualEndpoint,
+  data = Data
+)}: find the next best dose based on the dual endpoint
 model. The additional list element \code{probs} contains the target and
 overdosing probabilities (across all doses in the dose grid) used in the
 derivation of the next best dose.
 
-\item \code{nextBest,NextBestMinDist,numeric,Samples,GeneralModel,Data-method}: gives the dose which is below the dose limit and has an
+\item \code{nextBest(
+  nextBest = NextBestMinDist,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: gives the dose which is below the dose limit and has an
 estimated DLT probability which is closest to the target dose.
 
-\item \code{nextBest,NextBestInfTheory,numeric,Samples,GeneralModel,Data-method}: gives the appropriate dose within an information
+\item \code{nextBest(
+  nextBest = NextBestInfTheory,
+  doselimit = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = Data
+)}: gives the appropriate dose within an information
 theoretic framework.
 
-\item \code{nextBest,NextBestTD,numeric,missing,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+\item \code{nextBest(
+  nextBest = NextBestTD,
+  doselimit = numeric,
+  samples = missing,
+  model = LogisticIndepBeta,
+  data = Data
+)}: find the next best dose based only on the DLT responses
 and for \code{\link{LogisticIndepBeta}} model class object without DLT samples.
 
-\item \code{nextBest,NextBestTDsamples,numeric,Samples,LogisticIndepBeta,Data-method}: find the next best dose based only on the DLT responses
+\item \code{nextBest(
+  nextBest = NextBestTDsamples,
+  doselimit = numeric,
+  samples = Samples,
+  model = LogisticIndepBeta,
+  data = Data
+)}: find the next best dose based only on the DLT responses
 and for \code{\link{LogisticIndepBeta}} model class object involving DLT samples.
 
-\item \code{nextBest,NextBestMaxGain,numeric,missing,ModelTox,DataDual-method}: find the next best dose based only on pseudo DLT model
+\item \code{nextBest(
+  nextBest = NextBestMaxGain,
+  doselimit = numeric,
+  samples = missing,
+  model = ModelTox,
+  data = DataDual
+)}: find the next best dose based only on pseudo DLT model
 \code{\link{ModelTox}} and \code{\link{Effloglog}} efficacy model without samples.
 
-\item \code{nextBest,NextBestMaxGainSamples,numeric,Samples,ModelTox,DataDual-method}: find the next best dose based on DLT and efficacy
+\item \code{nextBest(
+  nextBest = NextBestMaxGainSamples,
+  doselimit = numeric,
+  samples = Samples,
+  model = ModelTox,
+  data = DataDual
+)}: find the next best dose based on DLT and efficacy
 responses with DLT and efficacy samples.
-}}
 
+}}
 \examples{
 # Example of usage for `NextBestMTD` NextBest class.
 

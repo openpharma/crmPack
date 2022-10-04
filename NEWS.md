@@ -1,6 +1,9 @@
-# Version 1.0.9000.9071
-* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT` and other
-  dependent classes.
+# Version 1.0.9000.9086
+* Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
+  it was used only in the some old development version.
+* Renamed class `IncrementMin` to `IncrementsMin`.
+* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
+  `IncrementsNumDoseLevels`, `IncrementMin` and other dependent classes.
 * Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
   `NextBestMaxGainSamples` classes.
 * Removed `Model` class.

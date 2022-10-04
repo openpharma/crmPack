@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9071
+Version: 1.0.9000.9086
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -35,7 +35,6 @@ Imports:
     grid,
     gridExtra,
     lifecycle,
-    MASS,
     methods,
     mvtnorm,
     parallel,
@@ -46,8 +45,6 @@ Imports:
 Suggests:
     ggmcmc,
     knitr,
-    Rcpp,
-    RcppArmadillo,
     testthat (>= 3.0.0),
     vdiffr
 VignetteBuilder: 
@@ -59,7 +56,7 @@ Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Collate:
     'Data-validity.R'
     'helpers.R'

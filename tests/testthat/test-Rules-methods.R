@@ -825,39 +825,39 @@ test_that("IncrementsAbsoluteDLT works correctly", {
 })
 # maxDose-IncrementsNumDoseLevels ----
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
+test_that("IncrementsNumDoseLevels works correctly if basis_level 'last' is defined", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2,
-    basisLevel = "last"
+    max_levels = 2,
+    basis_level = "last"
   )
   result <- maxDose(
     increments,
     data = h_get_data_1()
   )
-  expect_equal(result, 14) # maxDose is 14 if basislevel='last'.
+  expect_equal(result, 14) # maxDose is 14 if basis_level='last'.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined and default is used", {
+test_that("IncrementsNumDoseLevels works correctly if basis_level is not defined and default is used", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2
+    max_levels = 2
   )
   result <- maxDose(
     increments,
     data = h_get_data_1()
   )
-  expect_equal(result, 14) # maxDose is 14 if basislevel not defined, then reference value is used.
+  expect_equal(result, 14) # maxDose is 14 if basis_level not defined, then reference value is used.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is defined", {
+test_that("IncrementsNumDoseLevels works correctly if basis_level 'max' is defined", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2,
-    basisLevel = "max"
+    max_levels = 2,
+    basis_level = "max"
   )
   result <- maxDose(
     increments,
     data = h_get_data_1()
   )
-  expect_equal(result, 20) # maxDose is 20 if basislevel='max'.
+  expect_equal(result, 20) # maxDose is 20 if basis_level='max'.
 })
 
 # maxDose-IncrementsRelativeDLTCurrent ----

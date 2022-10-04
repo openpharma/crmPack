@@ -29,6 +29,7 @@
 
 %% to get the default layout:
 <<echo=FALSE>>=
+# nolint start
 knitr::render_sweave()
 options(prompt = "R> ", continue = "+  ", width = 76, useFancyQuotes = FALSE)
 knitr::opts_chunk$set(abbreviate=0, wrap=FALSE)
@@ -862,6 +863,8 @@ recommendation, e.g., after specifying a target dose of 30\%:
 newMyNextBest <- NextBestMinDist(target = 0.3)
 (newNextDoseVal <- nextBest(newMyNextBest, nextMaxDose,
                             newSamples, newModel, data)$value)
+
+# nolint end
 @
 So using this CRM, we could escalate to \Sexpr{newNextDoseVal}~mg, instead
 of just 100~mg above.
