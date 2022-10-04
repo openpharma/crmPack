@@ -1,4 +1,4 @@
-# Version 1.0.9000.9085
+# Version 1.0.9000.9086
 * Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
   it was used only in the some old development version.
 * Renamed class `IncrementMin` to `IncrementsMin`.
