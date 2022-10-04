@@ -436,3 +436,15 @@ v_stopping_mtd_cv <- function(object) {
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'  object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr
+
+#' @describeIn v_stopping validates that the [`StoppingSpecificDose`] object
+#'   contains a stopping `rule` and a valid `dose`.
+v_stopping_specific_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@dose, lower = 0, finite = TRUE),
+    "dose needs to be a single non zero finite number"
+  )
+  v$result()
+}
+
