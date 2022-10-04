@@ -160,7 +160,7 @@ setMethod(
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
-      (prob_overdose < nextBest@max_overdose_prob)
+      (prob_overdose <= nextBest@max_overdose_prob)
 
     next_dose <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
