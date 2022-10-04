@@ -43,28 +43,28 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
-\item \code{v_stopping_cohorts_near_dose}: validates that the \code{\link{StoppingCohortsNearDose}}
+\item \code{v_stopping_cohorts_near_dose()}: validates that the \code{\link{StoppingCohortsNearDose}}
 object contains valid \code{nCohorts} and \code{percentage} parameters.
 
-\item \code{v_stopping_patients_near_dose}: validates that the \code{\link{StoppingPatientsNearDose}}
+\item \code{v_stopping_patients_near_dose()}: validates that the \code{\link{StoppingPatientsNearDose}}
 object contains valid \code{nPatients} and \code{percentage} parameters.
 
-\item \code{v_stopping_min_cohorts}: validates that the \code{\link{StoppingMinCohorts}}
+\item \code{v_stopping_min_cohorts()}: validates that the \code{\link{StoppingMinCohorts}}
 object contains valid \code{nCohorts} parameter.
 
-\item \code{v_stopping_min_patients}: validates that the \code{\link{StoppingMinPatients}}
+\item \code{v_stopping_min_patients()}: validates that the \code{\link{StoppingMinPatients}}
 object contains valid \code{nPatients} parameter.
 
-\item \code{v_stopping_target_prob}: validates that the \code{\link{StoppingTargetProb}}
+\item \code{v_stopping_target_prob()}: validates that the \code{\link{StoppingTargetProb}}
 object contains valid \code{target} and \code{prob} parameters.
 
-\item \code{v_stopping_mtd_distribution}: validates that the \code{\link{StoppingMTDdistribution}}
+\item \code{v_stopping_mtd_distribution()}: validates that the \code{\link{StoppingMTDdistribution}}
 object contains valid \code{target}, \code{thresh} and \code{prob} parameters.
 
-\item \code{v_stopping_mtd_cv}: validates that the \code{\link{StoppingMTDCV}} object
+\item \code{v_stopping_mtd_cv()}: validates that the \code{\link{StoppingMTDCV}} object
 contains valid probability target and percentage threshold.
 
-\item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
+\item \code{v_stopping_lowest_dose_hsr_beta()}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
-}}
 
+}}

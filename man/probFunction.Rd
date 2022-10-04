@@ -30,11 +30,11 @@ probabilities for a given dose level, based on the model specific parameters.
 }
 \section{Functions}{
 \itemize{
-\item \code{probFunction,GeneralModel-method}: 
+\item \code{probFunction(GeneralModel)}: 
 
-\item \code{probFunction,ModelTox-method}: 
+\item \code{probFunction(ModelTox)}: 
+
 }}
-
 \examples{
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),

@@ -115,57 +115,57 @@ correspond to the sampling index, i.e. the layout is then
 }
 \section{Functions}{
 \itemize{
-\item \code{dose,numeric,LogisticNormal,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticNormal, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticLogNormal,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticLogNormal, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticLogNormalSub,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticLogNormalSub, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,ProbitLogNormal,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = ProbitLogNormal, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,ProbitLogNormalRel,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = ProbitLogNormalRel, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticKadane,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticKadane, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticKadaneBetaGamma,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticKadaneBetaGamma, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticNormalMixture,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticNormalMixture, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticNormalFixedMixture,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticNormalFixedMixture, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticLogNormalMixture,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticLogNormalMixture, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,DualEndpoint,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = DualEndpoint, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticIndepBeta,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticIndepBeta, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,LogisticIndepBeta,missing-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = LogisticIndepBeta, samples = missing)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 All model parameters (except \code{x}) should be present in the \code{model} object.
 
-\item \code{dose,numeric,Effloglog,missing-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = Effloglog, samples = missing)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 All model parameters (except \code{x}) should be present in the \code{model} object.
 
-\item \code{dose,numeric,EffFlexi,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = EffFlexi, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
 
-\item \code{dose,numeric,OneParExpNormalPrior,Samples-method}: compute the dose level reaching a specific target
+\item \code{dose(x = numeric, model = OneParExpNormalPrior, samples = Samples)}: compute the dose level reaching a specific target
 probability of the occurrence of a DLE (\code{x}).
+
 }}
-
 \note{
 The \code{\link[=dose]{dose()}} and \code{\link[=prob]{prob()}} methods are the inverse of each other, for
 all \code{\link[=dose]{dose()}} methods for which its first argument, i.e. a given independent

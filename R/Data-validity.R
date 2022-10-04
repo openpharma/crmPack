@@ -163,7 +163,7 @@ v_data_mixture <- function(object) {
 
 #' @describeIn v_data_objects validates that the [`DataDA`] object
 #' contains valid elements with respect to their types, dependency and length.
-v_data_DA <- function(object) {
+v_data_da <- function(object) {
   v <- Validate()
   # In if clause so that below test_* won't fail.
   if (!(test_number(object@Tmax) && object@Tmax > 0)) {

@@ -39,11 +39,21 @@ and a given efficacy pseudo model
 }
 \section{Functions}{
 \itemize{
-\item \code{plotGain,ModelTox,Samples,ModelEff,Samples-method}: Standard method
+\item \code{plotGain(
+  DLEmodel = ModelTox,
+  DLEsamples = Samples,
+  Effmodel = ModelEff,
+  Effsamples = Samples
+)}: Standard method
 
-\item \code{plotGain,ModelTox,missing,ModelEff,missing-method}: Standard method
+\item \code{plotGain(
+  DLEmodel = ModelTox,
+  DLEsamples = missing,
+  Effmodel = ModelEff,
+  Effsamples = missing
+)}: Standard method
+
 }}
-
 \examples{
 # nolint start
 

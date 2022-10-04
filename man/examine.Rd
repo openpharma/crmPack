@@ -52,13 +52,13 @@ listed.
 }
 \section{Functions}{
 \itemize{
-\item \code{examine,Design-method}: Examine a model-based CRM
+\item \code{examine(Design)}: Examine a model-based CRM
 
-\item \code{examine,RuleDesign-method}: Examine a rule-based design
+\item \code{examine(RuleDesign)}: Examine a rule-based design
 
-\item \code{examine,DADesign-method}: Examine a model-based CRM
+\item \code{examine(DADesign)}: Examine a model-based CRM
+
 }}
-
 \examples{
 # nolint start
 
