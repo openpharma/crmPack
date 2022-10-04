@@ -447,4 +447,3 @@ v_stopping_specific_dose <- function(object) {
   )
   v$result()
 }
-
