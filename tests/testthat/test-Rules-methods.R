@@ -69,7 +69,7 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   )
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 75)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
@@ -103,7 +103,7 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
   )
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 75)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
 })
