@@ -512,9 +512,9 @@ v_model_one_par_exp_normal_prior <- function(object) { # nolintr
   v <- Validate()
   y <- seq(from = 0, to = 1, by = 0.1) # Probabilities.
   x <- object@skel_fun_inv(y) # Dose grid.
-  notNA <- !is.na(x)
+  not_na <- !is.na(x)
   v$check(
-    isTRUE(all.equal(object@skel_fun(x[notNA]), y[notNA])),
+    isTRUE(all.equal(object@skel_fun(x[not_na]), y[not_na])),
     "skel_fun_inv must be an inverse funtion of skel_fun function"
   )
   v$check(
