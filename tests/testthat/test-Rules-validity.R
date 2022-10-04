@@ -1029,8 +1029,8 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   expect_equal(
     v_stopping_lowest_dose_hsr_beta(object),
     c(
-      "target must be a probability",
-      "prob must be a probability",
+      "target must be a probability value from (0, 1) interval",
+      "prob must be a probability value from (0, 1) interval",
       "Beta distribution shape parameter a must be a positive scalar",
       "Beta distribution shape parameter b must be a positive scalar"
     )
@@ -1047,8 +1047,8 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   expect_equal(
     v_stopping_lowest_dose_hsr_beta(object),
     c(
-      "target must be a probability",
-      "prob must be a probability",
+      "target must be a probability value from (0, 1) interval",
+      "prob must be a probability value from (0, 1) interval",
       "Beta distribution shape parameter a must be a positive scalar",
       "Beta distribution shape parameter b must be a positive scalar"
     )
