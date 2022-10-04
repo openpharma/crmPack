@@ -433,36 +433,6 @@ v_stopping_mtd_cv <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`] object
-#'   contains valid target and probability and Beta distribtuion parameters.
-v_stopping_lowest_dose_hsrbeta <- function(object) {
-  v <- Validate()
-  v$check(
-    test_probability(object@target, bounds_closed = FALSE),
-    "target must be a probability"
-  )
-  v$check(
-    test_probability(object@prob, bounds_closed = FALSE),
-    "prob must be a probability"
-  )
-  v$check(
-    test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
-    "Beta distribution shape parameter a must be a positive scalar"
-  )
-  v$check(
-    test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
-    "Beta distribution shape parameter b must be a positive scalar"
-  )
-  v$result()
-}
-
-#' @describeIn v_stopping validates that the [`StoppingSpecificDose`] object
-#'   contains a stopping `rule` and a valid `dose`.
-v_stopping_specific_dose <- function(object) {
-  v <- Validate()
-  v$check(
-    test_number(object@dose, lower = 0, finite = TRUE),
-    "dose needs to be a single non zero finite number"
-  )
-  v$result()
-}
+#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
+#'  object contains valid probability target, threshold and shape parameters.
+v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr

@@ -1145,7 +1145,7 @@ DualEndpoint <- function(mean,
   assert_numeric(rho, min.len = 1, max.len = 2)
 
   use_fixed <- c(sigma2W = is.scalar(sigma2W), rho = is.scalar(rho))
-  betaZ_params <- ModelParamsNormal(mean, cov)
+  betaZ_params <- ModelParamsNormal(mean, cov) # nolintr
 
   datamodel <- function() {
     for (i in 1:nObs) {
@@ -2284,11 +2284,11 @@ EffFlexi <- function(eff,
   D1 <- cbind(0, diag(data@nGrid - 1)) - cbind(diag(data@nGrid - 1), 0)
   if (rw1) { # the rank-deficient prior precision for the RW1 prior.
     RW <- crossprod(D1)
-    RW_rank <- data@nGrid - 1L # rank = dimension - 1.
+    RW_rank <- data@nGrid - 1L # rank = dimension - 1. # nolintr
   } else { # Second-order difference.
     D2 <- D1[-1, -1] %*% D1
     RW <- crossprod(D2)
-    RW_rank <- data@nGrid - 2L
+    RW_rank <- data@nGrid - 2L # nolintr
   }
 
   .EffFlexi(
@@ -2405,8 +2405,8 @@ DALogisticLogNormal <- function(npiece = 3,
       }
 
       # The likelihood function.
-      L_obs[i] <- exp(sum(mu[i, ])) * pow(p[i] / A, y[i]) * pow(1 - p[i], 1 - y[i]) # Not censored.
-      L_cnsr[i] <- 1 - p[i] * (1 - exp(-sum(mu_u[i, ]))) / A # Censored.
+      L_obs[i] <- exp(sum(mu[i, ])) * pow(p[i] / A, y[i]) * pow(1 - p[i], 1 - y[i]) # Not censored. # nolintr
+      L_cnsr[i] <- 1 - p[i] * (1 - exp(-sum(mu_u[i, ]))) / A # Censored. # nolintr
       L[i] <- pow(L_obs[i], indx[i]) * pow(L_cnsr[i], 1 - indx[i])
 
       # Apply zero trick in JAGS.
@@ -2422,7 +2422,7 @@ DALogisticLogNormal <- function(npiece = 3,
       for  (j in 1:npiece) {
         g_alpha[j] <- l[j] / c_par
         lambda[j] ~ dgamma(g_alpha[j], g_beta)
-        mu_T[j] <- lambda[j] * (h[j + 1] - h[j])
+        mu_T[j] <- lambda[j] * (h[j + 1] - h[j]) # nolintr
       }
       # If cond = 1, then conditional PEM is used and A is defined as
       # the probability to have DLT, i.e. t<T, otherwise
@@ -2541,7 +2541,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
               u_i / u_dlt[1]
             } else if (m < nDLT) {
               m + (u_i - u_dlt[m]) / (u_dlt[m + 1] - u_dlt[m])
-            } else { # m == nDLT
+            } else { # m == nDLT. nolintr
               m + (u_i - u_dlt[m]) / (Tmax + 0.00000001 - u_dlt[m])
             }
             w_i / (nDLT + 1)

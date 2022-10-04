@@ -121,49 +121,139 @@ based on DLT probability.
 }
 \section{Functions}{
 \itemize{
-\item \code{stopTrial,StoppingList,ANY,ANY,ANY,ANY-method}: Stop based on multiple stopping rules
+\item \code{stopTrial(
+  stopping = StoppingList,
+  dose = ANY,
+  samples = ANY,
+  model = ANY,
+  data = ANY
+)}: Stop based on multiple stopping rules
 
-\item \code{stopTrial,StoppingAll,ANY,ANY,ANY,ANY-method}: Stop based on fulfillment of all multiple stopping
+\item \code{stopTrial(
+  stopping = StoppingAll,
+  dose = ANY,
+  samples = ANY,
+  model = ANY,
+  data = ANY
+)}: Stop based on fulfillment of all multiple stopping
 rules
 
-\item \code{stopTrial,StoppingAny,ANY,ANY,ANY,ANY-method}: Stop based on fulfillment of any stopping rule
+\item \code{stopTrial(
+  stopping = StoppingAny,
+  dose = ANY,
+  samples = ANY,
+  model = ANY,
+  data = ANY
+)}: Stop based on fulfillment of any stopping rule
 
-\item \code{stopTrial,StoppingCohortsNearDose,numeric,ANY,ANY,Data-method}: Stop based on number of cohorts near to next best dose
+\item \code{stopTrial(
+  stopping = StoppingCohortsNearDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: Stop based on number of cohorts near to next best dose
 
-\item \code{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,Data-method}: Stop based on number of patients near to next best
+\item \code{stopTrial(
+  stopping = StoppingPatientsNearDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: Stop based on number of patients near to next best
 dose
 
-\item \code{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}: Stop based on minimum number of cohorts
+\item \code{stopTrial(
+  stopping = StoppingMinCohorts,
+  dose = ANY,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: Stop based on minimum number of cohorts
 
-\item \code{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}: Stop based on minimum number of patients
+\item \code{stopTrial(
+  stopping = StoppingMinPatients,
+  dose = ANY,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: Stop based on minimum number of patients
 
-\item \code{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}: Stop based on probability of target tox interval
+\item \code{stopTrial(
+  stopping = StoppingTargetProb,
+  dose = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = ANY
+)}: Stop based on probability of target tox interval
 
-\item \code{stopTrial,StoppingMTDdistribution,numeric,Samples,GeneralModel,ANY-method}: Stop based on MTD distribution
+\item \code{stopTrial(
+  stopping = StoppingMTDdistribution,
+  dose = numeric,
+  samples = Samples,
+  model = GeneralModel,
+  data = ANY
+)}: Stop based on MTD distribution
 
-\item \code{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}: Stop based on probability of targeting biomarker
+\item \code{stopTrial(
+  stopping = StoppingTargetBiomarker,
+  dose = numeric,
+  samples = Samples,
+  model = DualEndpoint,
+  data = ANY
+)}: Stop based on probability of targeting biomarker
 
-\item \code{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}: Stop when the highest dose is reached
+\item \code{stopTrial(
+  stopping = StoppingHighestDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: Stop when the highest dose is reached
 
-\item \code{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}: Stop based on 'StoppingTDCIRatio' class when
+\item \code{stopTrial(
+  stopping = StoppingTDCIRatio,
+  dose = ANY,
+  samples = Samples,
+  model = ModelTox,
+  data = ANY
+)}: Stop based on 'StoppingTDCIRatio' class when
 reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
 DLE responses and DLE samples are given
 
-\item \code{stopTrial,StoppingTDCIRatio,ANY,missing,ModelTox,ANY-method}: Stop based on 'StoppingTDCIRatio' class
+\item \code{stopTrial(
+  stopping = StoppingTDCIRatio,
+  dose = ANY,
+  samples = missing,
+  model = ModelTox,
+  data = ANY
+)}: Stop based on 'StoppingTDCIRatio' class
 when reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (TDtargetEndOfTrial). This is a stopping rule which incorporate only
 DLE responses and no DLE samples are involved
 
-\item \code{stopTrial,StoppingGstarCIRatio,ANY,Samples,ModelTox,DataDual-method}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
+\item \code{stopTrial(
+  stopping = StoppingGstarCIRatio,
+  dose = ANY,
+  samples = Samples,
+  model = ModelTox,
+  data = DataDual
+)}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
 incorporate DLE and efficacy responses and DLE and efficacy samples are also used.
 
-\item \code{stopTrial,StoppingGstarCIRatio,ANY,missing,ModelTox,DataDual-method}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
+\item \code{stopTrial(
+  stopping = StoppingGstarCIRatio,
+  dose = ANY,
+  samples = missing,
+  model = ModelTox,
+  data = DataDual
+)}: Stop based on reaching the target ratio of the upper to the lower 95\% credibility
 interval of the estimate (the minimum of Gstar and TDtargetEndOfTrial). This is a stopping rule which
 incorporate DLE and efficacy responses without DLE and efficacy samples involved.
-}}
 
+}}
 \examples{
 
 ## Example of combining stopping rules with '&' and/or '|' operators
