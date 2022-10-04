@@ -1007,16 +1007,16 @@ test_that("v_stopping_mtd_cv returns message for non-valid thresh_cv", {
   expect_equal(v_stopping_mtd_cv(object), err_msg)
 })
 
-## v_stopping_lowest_dose_hsrbeta ----
+## v_stopping_lowest_dose_hsr_beta ----
 
-test_that("v_stopping_lowest_dose_hsrbeta passes for valid object", {
+test_that("v_stopping_lowest_dose_hsr_beta passes for valid object", {
   object <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95)
-  expect_true(v_stopping_lowest_dose_hsrbeta(object))
+  expect_true(v_stopping_lowest_dose_hsr_beta(object))
 })
 
-test_that("v_stopping_lowest_dose_hsrbeta passes for valid object", {
+test_that("v_stopping_lowest_dose_hsr_beta passes for valid object", {
   object <- StoppingLowestDoseHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
-  expect_true(v_stopping_lowest_dose_hsrbeta(object))
+  expect_true(v_stopping_lowest_dose_hsr_beta(object))
 })
 
 test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid object", {
@@ -1027,7 +1027,7 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   object@b <- 0
 
   expect_equal(
-    v_stopping_lowest_dose_hsrbeta(object),
+    v_stopping_lowest_dose_hsr_beta(object),
     c(
       "target must be a probability",
       "prob must be a probability",
@@ -1045,7 +1045,7 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
   object@b <- c(1, 2)
 
   expect_equal(
-    v_stopping_lowest_dose_hsrbeta(object),
+    v_stopping_lowest_dose_hsr_beta(object),
     c(
       "target must be a probability",
       "prob must be a probability",
