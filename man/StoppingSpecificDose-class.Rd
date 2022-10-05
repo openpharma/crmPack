@@ -18,7 +18,7 @@ StoppingSpecificDose(rule, dose)
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{StoppingSpecificDose}} is the class for testing a stopping rule at specific dose
-of teh dose grid and not at the next best dose
+of the dose grid and not at the next best dose
 }
 \section{Slots}{
 
