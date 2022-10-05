@@ -1338,7 +1338,7 @@ setMethod("maxDose",
 
       ## apply the multiple increment rules
       individualResults <-
-        sapply(increments@IncrementsList,
+        sapply(increments@increments_list,
           maxDose,
           data = data,
           ...
