@@ -350,8 +350,8 @@ my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
 my_increments <- IncrementsRelativeParts(
-  dltStart = 0,
-  cleanStart = 1
+  dlt_start = 0,
+  clean_start = 1
 )
 next_max_dose <- maxDose(my_increments, data = my_data)
 
