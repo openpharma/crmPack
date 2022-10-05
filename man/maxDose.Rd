@@ -162,8 +162,8 @@ my_data <- DataParts(
 
 
 my_increments <- IncrementsRelativeParts(
-  dltStart = 0,
-  cleanStart = 1
+  dlt_start = 0,
+  clean_start = 1
 )
 
 nexy_max_dose <- maxDose(my_increments,
@@ -188,7 +188,7 @@ data <- Data(
 #   - only increasing the dose by 1.33 if 1 or 2 DLTs were already observed
 #   - only increasing the dose by 1.2 if at least 3 DLTs were already observed
 my_increments <- IncrementsRelativeDLT(
-  DLTintervals = c(0, 1, 3),
+  dlt_intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 
@@ -210,7 +210,7 @@ data <- Data(
 #   - only increasing the dose by 1.33 if 1 or 2 DLTs were observed in current cohort
 #   - only increasing the dose by 1.2 if at least 3 DLTs were observed in current cohort
 my_increments <- IncrementsRelativeDLTCurrent(
-  DLTintervals = c(0, 1, 3),
+  dlt_intervals = c(0, 1, 3),
   increments = c(1, 0.33, 0.2)
 )
 
