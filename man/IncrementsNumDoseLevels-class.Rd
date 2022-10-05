@@ -7,7 +7,7 @@
 \alias{IncrementsNumDoseLevels}
 \title{\code{IncrementsNumDoseLevels}}
 \usage{
-IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
+IncrementsNumDoseLevels(max_levels = 1L, basis_level = "last")
 }
 \arguments{
 \item{max_levels}{(\code{count})\cr see slot definition.}
@@ -15,22 +15,24 @@ IncrementsNumDoseLevels(maxLevels = 1, basisLevel = "last")
 \item{basis_level}{(\code{string})\cr see slot definition.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+\code{\link{IncrementsNumDoseLevels}} is the class for increments control based on the
+number of maximum dose levels to increment.
 }
 \section{Slots}{
 
 \describe{
-
 \item{\code{max_levels}}{(\code{count})\cr maximum dose levels to increment for the next
 dose. It defaults to 1, which means that no dose skipping is
 allowed - the next dose can be maximum one level higher than the current
 dose.}
 
-\item{\code{basisLevel}}{(\code{string})\cr corresponding to the dose level used to increment from.
-It can take two possible values \code{last} or \code{max}. If \code{last} (default)
-is specified the increments is applied to the last given dose and if
-\code{max} is specified the increment is applied from the max given dose
-level.}
+\item{\code{basis_level}}{(\code{string})\cr corresponding to the dose level used to
+increment from. It can take one out of two possible values: \code{last} or \code{max}.
+If \code{last} is specified (default), the increment is applied to the last
+given dose and if \code{max} is specified the increment is applied from the
+maximum given dose level.}
 }}
 
 \examples{

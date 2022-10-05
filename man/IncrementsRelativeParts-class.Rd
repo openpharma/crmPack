@@ -22,7 +22,6 @@ IncrementsRelativeParts(dlt_start, clean_start, ...)
   }}
 }
 \description{
-
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{IncrementsRelativeParts}} is the class for increments control based on
@@ -45,17 +44,16 @@ rules apply, see \code{\link{IncrementsRelative}}.
 \item{\code{dlt_start}}{(\code{count})\cr the dose level increment for starting part 2 in
 case of a DLT in part 1.}
 
-\item{\code{cleanStart}}{integer giving the dose level increment for starting part 2
+\item{\code{clean_start}}{(\code{count})\cr the dose level increment for starting part 2
 in case of a DLT in part 1. If this is less or equal to 0, then the part 1
-ladder will be used to find the maximum next dose. If this is larger than 0,
-then the relative increment rules will be applied to find the next maximum
-dose level.}
+ladder will be used to find the maximum next dose. Otherwise, the relative
+increment rules will be applied to find the next maximum dose level.}
 }}
 
 \examples{
 
-myIncrements <- IncrementsRelativeParts(dltStart=0,
-                                        cleanStart=1)
-
+my_increments <- IncrementsRelativeParts(
+  dltStart = 0,
+  cleanStart = 1
+)
 }
-\keyword{classes}

@@ -15,25 +15,26 @@ StoppingCohortsNearDose(nCohorts = 2L, percentage = 50)
 \item{percentage}{(\code{number})\cr see slot definition.}
 }
 \description{
-Stop based on number of cohorts near to next best dose
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingCohortsNearDose}} is the class for stopping based on number of
+cohorts near to next best dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{nCohorts}}{number of required cohorts}
+\item{\code{nCohorts}}{(\code{number})\cr number of required cohorts.}
 
 \item{\code{percentage}}{(\code{number})\cr percentage (between and including 0 and 100)
 within the next best dose the cohorts must lie.}
 }}
 
 \examples{
-
-# As example, here is the rule for: 
-#   stopping the study if at least 3 cohorts were dosed at a dose within (1 +/- 0.2) 
+# As example, here is the rule for:
+#   stopping the study if at least 3 cohorts were dosed at a dose within (1 +/- 0.2)
 #   of the next best dose
-
-myStopping <- StoppingCohortsNearDose(nCohorts = 3,
-                                      percentage = 0.2)
-
+my_stopping <- StoppingCohortsNearDose(
+  nCohorts = 3,
+  percentage = 0.2
+)
 }
-\keyword{classes}

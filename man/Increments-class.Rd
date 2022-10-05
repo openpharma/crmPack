@@ -4,15 +4,14 @@
 \name{Increments-class}
 \alias{Increments-class}
 \alias{Increments}
-\title{The virtual class for controlling increments}
+\title{\code{Increments}}
 \description{
-The virtual class for controlling increments
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{Increments}} is a virtual class for controlling increments, from which all
+other specific increments classes inherit.
 }
 \seealso{
-\code{\linkS4class{IncrementsRelative}},
-\code{\linkS4class{IncrementsRelativeDLT}},
-\code{\linkS4class{IncrementsRelativeParts}},
-\code{\link{IncrementsNumDoseLevels}}
-\code{\link{IncrementsHSRBeta}}
+\code{\link{IncrementsRelative}}, \code{\link{IncrementsRelativeDLT}},
+\code{\link{IncrementsNumDoseLevels}}, \code{\link{IncrementsHSRBeta}}, \code{\link{IncrementsMin}}.
 }
-\keyword{classes}

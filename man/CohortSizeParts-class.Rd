@@ -18,7 +18,6 @@ the dose escalation. Only works in conjunction with
 
 \examples{
 
-mySize <- CohortSizeParts(sizes=c(1,3))
-
+my_size <- CohortSizeParts(sizes = c(1, 3))
 }
 \keyword{classes}

@@ -5,8 +5,12 @@
 \alias{stopTrial,StoppingList,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingAll,ANY,ANY,ANY,ANY-method}
 \alias{stopTrial,StoppingAny,ANY,ANY,ANY,ANY-method}
+\alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingSpecificDose}
 \alias{stopTrial,StoppingCohortsNearDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingCohortsNearDose}
 \alias{stopTrial,StoppingPatientsNearDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingPatientsNearDose}
 \alias{stopTrial,StoppingMinCohorts,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingMinPatients,ANY,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingTargetProb,numeric,Samples,GeneralModel,ANY-method}
@@ -30,6 +34,8 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingAll,ANY,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingAny,ANY,ANY,ANY,ANY}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingSpecificDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingCohortsNearDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
@@ -147,12 +153,21 @@ rules
 )}: Stop based on fulfillment of any stopping rule
 
 \item \code{stopTrial(
+  stopping = StoppingSpecificDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: if Stopping rule is met for specific dose of the planned
+dose grid and not just for the default next best dose.
+
+\item \code{stopTrial(
   stopping = StoppingCohortsNearDose,
   dose = numeric,
   samples = ANY,
   model = ANY,
   data = Data
-)}: Stop based on number of cohorts near to next best dose
+)}: based on number of cohorts near to next best dose.
 
 \item \code{stopTrial(
   stopping = StoppingPatientsNearDose,
@@ -160,8 +175,7 @@ rules
   samples = ANY,
   model = ANY,
   data = Data
-)}: Stop based on number of patients near to next best
-dose
+)}: based on number of patients near to next best dose.
 
 \item \code{stopTrial(
   stopping = StoppingMinCohorts,
