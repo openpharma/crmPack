@@ -1,5 +1,5 @@
 
 my_increments <- IncrementsRelativeParts(
-  dltStart = 0,
-  cleanStart = 1
+  dlt_start = 0,
+  clean_start = 1
 )
