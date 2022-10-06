@@ -20,7 +20,7 @@ A CRM study consists of six basic elements:
 * The dose grid
 * The dose-toxicity model
 * The increment rule<sup>1</sup>
-* The dose selection rule<sup>1</sup>
+* The dose recommendation rule<sup>1</sup>
 * The cohort size<sup>1</sup>
 * The stopping rule
 
