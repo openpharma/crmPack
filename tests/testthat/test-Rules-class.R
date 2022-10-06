@@ -474,5 +474,5 @@ test_that("StoppingSpecificDose object can be created with user constructor", {
   expect_valid(result@rule, "StoppingTargetProb")
   expect_identical(result@rule@target, c(0, 0.3))
   expect_identical(result@rule@prob, 0.8)
-  expect_identical(result@dose, 80) # nolintr
+  expect_identical(result@dose, 80)
 })
