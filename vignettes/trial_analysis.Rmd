@@ -143,7 +143,7 @@ and, since the `plot` method returns a `ggplot` object, it is easily customised.
 plot(firstFour) + theme_light()
 ```
 
-Now, update the model to obtain the posterior estimate of the dose-toxicty curve:
+Now, update the model to obtain the posterior estimate of the dose-toxicity curve:
 
 ```{r}
 vignetteMcmcOptions <- McmcOptions(burnin=100, step=2, samples=1000)
