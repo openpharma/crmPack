@@ -1,6 +1,7 @@
 # Version 1.0.9000.9087
-* Created a new vignette which describes how to use `dose` and `prob` functions
-  in different context.
+* Created a new vignette which describes how to use certain functions and features
+  of the `crmPack`, which changed after package's general cleanup. Added chapter
+  about `dose` and `prob` functions.
 * Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
   it was used only in the some old development version.
 * Renamed class `IncrementMin` to `IncrementsMin`.
