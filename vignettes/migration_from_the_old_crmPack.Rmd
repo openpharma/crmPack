@@ -1,10 +1,10 @@
 ---
-title: "Example of usage of dose and prob functions"
+title: "Migrating from crmPack version 1.0.3"
 author: "Wojciech Wójciak"
 date: "05 October 2022"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Example of usage of dose and prob functions}
+  %\VignetteIndexEntry{Migrating from crmPack version 1.0.3}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{crmPack}
   \usepackage[utf8]{inputenc}
