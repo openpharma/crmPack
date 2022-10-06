@@ -1790,7 +1790,7 @@ StoppingAny <- function(stopList)
 #' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific dose
 #'   of the dose grid and not at the next best dose
 #'
-#' @slot rule (`rule`)\cr a stopping rule available in this package.
+#' @slot rule (`Stopping`)\cr a stopping rule available in this package.
 #' @slot dose (`number`)\cr a dose that is defined as part of the dose grid of the data.
 #'
 #' @aliases StoppingSpecificDose
