@@ -2143,10 +2143,9 @@ setMethod("stopTrial",
         data = data,
         ...
       )
-
       # We can now try to correct the text from the original stopping rule.
       original_text <- attr(result, "message")
-      new_text <- gsub(pattern = "next best", replacement = "specific", x = original_text)
+      new_text <- gsub(pattern = "next best", replacement = "specific", x = original_text, ignore.case = TRUE)
       attr(result, "message") <- new_text
 
       result
