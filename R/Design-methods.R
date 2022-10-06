@@ -373,7 +373,6 @@ setMethod("simulate",
 
                       ind_results <- unlist(ind_only_tree)
 
-                      browser()
                   }
 
                   ## get the fit
@@ -390,7 +389,10 @@ setMethod("simulate",
                                   select=c(middle, lower, upper)),
                            stop=
                            attr(stopit,
-                                "message"))
+                                "message"),
+
+                           individual_stop_results =
+                               ind_results)
                   return(thisResult)
               }
 
@@ -420,11 +422,14 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+              stopResults <- lapply(resultList, "[[", "individual_stop_results")
+
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,
                                  doses=recommendedDoses,
                                  fit=fitList,
                                  stopReasons=stopReasons,
+                                 stopResults=stopResults,
                                  seed=RNGstate)
 
               return(ret)
