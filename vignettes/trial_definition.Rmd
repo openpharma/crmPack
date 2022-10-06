@@ -24,7 +24,7 @@ A CRM study consists of six basic elements:
 * The cohort size<sup>1</sup>
 * The stopping rule
 
-1: In crmPack, the increment, dose selection and cohort size rules are collectively known as the <i>escalation rule</i>.
+1: Note that in `crmPack`, the increment, dose selection and cohort size rules are collectively known as the <i>escalation rules</i>.
 
 There are many, many possible choices for each element.  In this introduction, we make simple choices for the value of each element.
 
