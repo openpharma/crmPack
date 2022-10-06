@@ -71,6 +71,6 @@ contains valid probability target and percentage threshold.
 object contains valid probability target, threshold and shape parameters.
 
 \item \code{v_stopping_specific_dose()}: validates that the \code{\link{StoppingSpecificDose}} object
-contains a stopping \code{rule} and a valid \code{dose}.
+contains valid \code{dose}.
 
 }}

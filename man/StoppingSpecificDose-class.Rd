@@ -10,32 +10,33 @@
 StoppingSpecificDose(rule, dose)
 }
 \arguments{
-\item{rule}{(\verb{stopping rule})\cr see slot definition.}
+\item{rule}{(\code{Stopping})\cr see slot definition.}
 
 \item{dose}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{\link{StoppingSpecificDose}} is the class for testing a stopping rule at specific dose
-of teh dose grid and not at the next best dose
+\code{\link{StoppingSpecificDose}} is the class for testing a stopping rule at specific
+dose of the dose grid and not at the next best dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{rule}}{(\code{rule})\cr a stopping rule available in this package.}
+\item{\code{rule}}{(\code{Stopping})\cr a stopping rule available in this package.}
 
 \item{\code{dose}}{(\code{number})\cr a dose that is defined as part of the dose grid of the data.}
 }}
 
 \examples{
-# Stop if highest dose 80 is safe
+
+# Stop if highest dose 80 is safe.
 highest_dose_safe <- StopSpecificDose(
   rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
   dose = 80
 )
 
-# Stop if lowest dose 10 is toxic
+# Stop if lowest dose 10 is toxic.
 lowest_dose_toxic <- StopSpecificDose(
   rule = StoppingTargetProb(target = c(0.3, 1), prob = 0.8),
   dose = 10

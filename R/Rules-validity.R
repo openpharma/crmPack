@@ -438,7 +438,7 @@ v_stopping_mtd_cv <- function(object) {
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr
 
 #' @describeIn v_stopping validates that the [`StoppingSpecificDose`] object
-#'   contains a stopping `rule` and a valid `dose`.
+#'   contains valid `dose`.
 v_stopping_specific_dose <- function(object) {
   v <- Validate()
   v$check(
