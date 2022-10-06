@@ -1520,7 +1520,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
   )
 }
 
-# StoppingSpecificDose - ---
+# StoppingSpecificDose ----
 
 ## class ----
 
@@ -1547,7 +1547,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
   validity = v_stopping_specific_dose
 )
 
-## constructor ---
+## constructor ----
 
 #' @rdname StoppingSpecificDose-class
 #'
