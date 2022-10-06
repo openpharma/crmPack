@@ -15,6 +15,8 @@
 \alias{stopTrial-StoppingMTDCV}
 \alias{stopTrial,StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY-method}
 \alias{stopTrial-StoppingLowestDoseHSRBeta}
+\alias{stopTrial,StoppingSpecificDose,numeric,ANY,ANY,Data-method}
+\alias{stopTrial-StoppingSpecificDose}
 \alias{stopTrial,StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY-method}
 \alias{stopTrial,StoppingHighestDose,numeric,ANY,ANY,Data-method}
 \alias{stopTrial,StoppingTDCIRatio,ANY,Samples,ModelTox,ANY-method}
@@ -46,6 +48,8 @@ stopTrial(stopping, dose, samples, model, data, ...)
 \S4method{stopTrial}{StoppingMTDCV,numeric,Samples,GeneralModel,ANY}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingLowestDoseHSRBeta,numeric,Samples,ANY,ANY}(stopping, dose, samples, model, data, ...)
+
+\S4method{stopTrial}{StoppingSpecificDose,numeric,ANY,ANY,Data}(stopping, dose, samples, model, data, ...)
 
 \S4method{stopTrial}{StoppingTargetBiomarker,numeric,Samples,DualEndpoint,ANY}(stopping, dose, samples, model, data, ...)
 
@@ -194,6 +198,15 @@ dose
   model = GeneralModel,
   data = ANY
 )}: Stop based on MTD distribution
+
+\item \code{stopTrial(
+  stopping = StoppingSpecificDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: if Stopping rule is met for specific dose of the planned
+dose grid and not just for the default next best dose.
 
 \item \code{stopTrial(
   stopping = StoppingTargetBiomarker,
