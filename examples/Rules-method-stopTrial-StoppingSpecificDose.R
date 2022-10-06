@@ -23,13 +23,13 @@ model <- LogisticLogNormal(
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(
+my_options <- McmcOptions(
   burnin = 100,
   step = 2,
   samples = 2000
 )
 set.seed(94)
-samples <- mcmc(data, model, options)
+samples <- mcmc(data, model, my_options)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
