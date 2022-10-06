@@ -351,6 +351,29 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
+
+
+
+                      individual_results_tree <- attr(stopit, "individual")
+
+                      flatten_tree <- function(tree) {
+                          if (is.list(tree)) {
+                              lapply(tree, flatten_tree)
+                          } else {
+                              ind_attr <- attr(tree, "individual")
+                              if (is.null(ind_attr)) {
+                                  tree
+                              } else {
+                                  lapply(ind_attr, flatten_tree)
+                              }
+                          }
+                      }
+
+                      ind_only_tree <- flatten_tree(individual_results_tree)
+
+                      ind_results <- unlist(ind_only_tree)
+
+                      browser()
                   }
 
                   ## get the fit

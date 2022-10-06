@@ -1582,8 +1582,10 @@ setMethod("stopTrial",
       ## but let them in the list structure
       overallText <- lapply(individualResults, attr, "message")
 
+
       return(structure(overallResult,
-        message = overallText
+        message = overallText,
+        individual = individualResults
       ))
     }
 )
@@ -1636,8 +1638,10 @@ setMethod("stopTrial",
       ## but let them in the list structure
       overallText <- lapply(individualResults, attr, "message")
 
+
       return(structure(overallResult,
-        message = overallText
+        message = overallText,
+        individual = individualResults
       ))
     }
 )
@@ -1690,8 +1694,11 @@ setMethod("stopTrial",
       ## but let them in the list structure
       overallText <- lapply(individualResults, attr, "message")
 
+
+
       return(structure(overallResult,
-        message = overallText
+        message = overallText,
+        individual = individualResults
       ))
     }
 )
