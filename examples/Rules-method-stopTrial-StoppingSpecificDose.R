@@ -17,7 +17,7 @@ model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov =
     matrix(c(1, -0.5, -0.5, 1),
-           nrow = 2
+      nrow = 2
     ),
   ref_dose = 50
 )
@@ -40,14 +40,17 @@ next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(next_best,
-                               doselimit = 100,
-                               samples = samples, model = model, data = data
+doseRecommendation <- nextBest(
+  next_best,
+  doselimit = 100,
+  samples = samples,
+  model = model,
+  data = data
 )
 
 # Define the stopping rules
 highest_dose_safe <- StoppingSpecificDose(
-  rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
   dose = 80
 )
 max_patients <- StoppingMinPatients(nPatients = 20)
