@@ -1054,3 +1054,23 @@ test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid obj
     )
   )
 })
+
+## v_stopping_specific_dose ----
+
+test_that("v_stopping_specific_dose passes for valid object", {
+  object <- h_stopping_specific_dose()
+  expect_true(v_stopping_specific_dose(object))
+})
+
+test_that("v_stopping_specific_dose returns message for non-valid dose", {
+  err_msg <- "dose needs to be a single non zero finite number"
+  object <- h_stopping_specific_dose()
+
+  # Changing `dose` so that its not single number.
+  object@dose <- 1:10
+  expect_equal(v_stopping_specific_dose(object), err_msg)
+
+  # Changing `dose` so that its not a non zero number.
+  object@dose <- -10
+  expect_equal(v_stopping_specific_dose(object), err_msg)
+})
