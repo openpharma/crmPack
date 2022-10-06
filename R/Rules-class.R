@@ -1810,7 +1810,7 @@ StoppingAny <- function(stopList)
 
 #' @rdname StoppingSpecificDose-class
 #'
-#' @param rule (`stopping rule`)\cr see slot definition.
+#' @param rule (`Stopping`)\cr see slot definition.
 #' @param dose (`number`)\cr see slot definition.
 #'
 #' @export
