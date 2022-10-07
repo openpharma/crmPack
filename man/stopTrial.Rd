@@ -907,19 +907,19 @@ model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov =
     matrix(c(1, -0.5, -0.5, 1),
-           nrow = 2
+      nrow = 2
     ),
   ref_dose = 50
 )
 
 # Set-up some MCMC parameters and generate samples from the posterior
-options <- McmcOptions(
+my_options <- McmcOptions(
   burnin = 100,
   step = 2,
   samples = 2000
 )
 set.seed(94)
-samples <- mcmc(data, model, options)
+samples <- mcmc(data, model, my_options)
 
 # Define the rule which will be used to select the next best dose
 # based on the class 'NextBestNCRM'
@@ -930,14 +930,17 @@ next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(next_best,
-                               doselimit = 100,
-                               samples = samples, model = model, data = data
+dose_recommendation <- nextBest(
+  next_best,
+  doselimit = 100,
+  samples = samples,
+  model = model,
+  data = data
 )
 
 # Define the stopping rules
 highest_dose_safe <- StoppingSpecificDose(
-  rule = StoppingTargetProb(target=c(0, 0.3), prob=0.8),
+  rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
   dose = 80
 )
 max_patients <- StoppingMinPatients(nPatients = 20)

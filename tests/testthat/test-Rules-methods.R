@@ -1044,39 +1044,24 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   expect_identical(result, expected) # First active dose not applied.
 })
 
-## stopTrial-StoppingSpecificDose ----
+# stopTrial-StoppingSpecificDose ----
 
-test_that(paste(
-  "StoppingSpecificDose works correctly if dose recommendation",
-  "is not the same as the specific dose and stop is not met"
-), {
-  my_data <- h_get_data_sr_1()
-  my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(
-    my_data, my_model,
-    h_get_mcmc_options(samples = 1000, burnin = 1000)
-  )
-  stopping <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = 80
-  )
-  next_best <- h_next_best_ncrm()
-  doseRecommendation <- nextBest(next_best, # nolintr
-                                 doselimit = 100,
-                                 samples = my_samples,
-                                 model = my_model,
-                                 data = my_data
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is not met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
   )
   result <- stopTrial(
-    stopping = stopping,
-    dose = doseRecommendation$value,
+    stopping = h_stopping_specific_dose(),
+    dose = 20,
     samples = my_samples,
-    model = my_model,
-    data = my_data
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
   )
   expected <- structure(
     FALSE,
-    message = "Probability for target toxicity is 5 % for dose 80 and thus below the required 80 %"
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
   )
   expect_identical(result, expected)
 })
@@ -1097,10 +1082,10 @@ test_that(paste(
   )
   next_best <- h_next_best_ncrm()
   doseRecommendation <- nextBest(next_best, # nolintr
-                                 doselimit = 100,
-                                 samples = my_samples,
-                                 model = my_model,
-                                 data = my_data
+    doselimit = 100,
+    samples = my_samples,
+    model = my_model,
+    data = my_data
   )
   result <- stopTrial(
     stopping = stopping,

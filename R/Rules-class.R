@@ -1532,7 +1532,8 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' dose of the dose grid and not at the next best dose.
 #'
 #' @slot rule (`Stopping`)\cr a stopping rule available in this package.
-#' @slot dose (`number`)\cr a dose that is defined as part of the dose grid of the data.
+#' @slot dose (`positive_number`)\cr a dose that is defined as part of the dose
+#'   grid of the data.
 #'
 #' @aliases StoppingSpecificDose
 #' @export
@@ -1541,10 +1542,9 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
   Class = "StoppingSpecificDose",
   slots = c(
     rule = "Stopping",
-    dose = "numeric"
+    dose = "positive_number"
   ),
-  contains = "Stopping",
-  validity = v_stopping_specific_dose
+  contains = "Stopping"
 )
 
 ## constructor ----
@@ -1560,7 +1560,7 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 StoppingSpecificDose <- function(rule, dose) {
   .StoppingSpecificDose(
     rule = rule,
-    dose = dose
+    dose = positive_number(dose)
   )
 }
 

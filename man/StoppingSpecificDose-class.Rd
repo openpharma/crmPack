@@ -25,7 +25,8 @@ dose of the dose grid and not at the next best dose.
 \describe{
 \item{\code{rule}}{(\code{Stopping})\cr a stopping rule available in this package.}
 
-\item{\code{dose}}{(\code{number})\cr a dose that is defined as part of the dose grid of the data.}
+\item{\code{dose}}{(\code{positive_number})\cr a dose that is defined as part of the dose
+grid of the data.}
 }}
 
 \examples{
