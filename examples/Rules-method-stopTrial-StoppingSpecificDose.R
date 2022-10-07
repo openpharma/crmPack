@@ -40,7 +40,7 @@ next_best <- NextBestNCRM(
 )
 
 # Calculate the next best dose
-doseRecommendation <- nextBest(
+dose_recommendation <- nextBest(
   next_best,
   doselimit = 100,
   samples = samples,
