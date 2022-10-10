@@ -1,0 +1,204 @@
+---
+title: "Design of ordinal CRM"
+author: "Wojciech Wójciak based on John Kirkpatrick work"
+date: "Last run on `r Sys.Date()` by `r Sys.info()[['user']]` on `r Sys.info()['nodename']`"
+output: 
+  html_document:
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The statistical model and theory about it.
+The patient’s toxicity response is not binary (no DLT, DLT) but categorical (for
+example: no DLT, sub-DLT, DLT). Furthermore, multicategory toxicity responses are
+treated as ordinal due to their ordinal characteristics such as a monotone trend. 
+
+These type of responses can be modeled using GLM models, where the model is
+expressed in terms of the cumulative response probabilities, hence the name:
+Cumulative Link Models. To be more specific, let $c \in \{2, 3, \ldots \}$
+denote a number of toxicity categories on ordinal scale and $Y_i$ be a random
+variable that represents the response outcome category for subject $i \geq 1$,
+i.e. $supp(Y_i) = \{1, 2, \ldots, c\},\, i \geq 1$. The probability mass
+functions $P(Y_i = j),\, j = 1, \ldots, c$, for $i \geq 1$, will be called
+category probabilities, and the cumulative response probabilities are defined
+as
+$$p_{ij} = P(Y_i \leq j) = P(Y_i = 1) + \cdots + P(Y_i = j), \qquad j = 1, \ldots, c.$$  
+
+As explained by McCullagh and Nelder (1989), the choice and definition of
+response categories is often arbitrary. It is essential, therefore, if we are to
+arrive at valid conclusions, that the nature of those conclusions should not be
+affected by the number of choice of response categories. Such considerations
+lead to models that based on the cumulative probabilities rather than category probabilities. These two sets of probabilities are equivalent, but simple models
+for the cumulative probabilities are likely to have better properties for
+ordinal response scales than equally simple models based on the category
+probabilities.  
+
+The most common link functions are "logit" and "probit", which give a Cumulative
+Logit Model and Cumulative Probit Model respectively. Here, I will briefly discuss
+the Cumulative Logit Model only.
+
+## Cumulative Logit Model
+
+The cumulative logit model assumes the following form:
+
+$$logit[p_{ij}] = \alpha_j + \mathbf x_i^T \mathbf \beta, \qquad j = 1, \ldots, c - 1.$$
+Note that a model for $logit[p_{ij}]$ alone is an ordinary logistic model
+for a binary response in which categories $1$ to $j$ represent "success" and
+categories $j+1$ to $c$ represent "failure".  
+
+Each cumulative logs has its own intercept. Note that $(\alpha_j)_{j = 1, \ldots, c-1}$
+is an increasing sequence, because $P(Y_i \leq j)$ increases in $j$ at any fixed
+$\mathbf x_i$, and the logit is an increasing function of $P(Y_i \leq j)$.  
+
+### LogisticLogNormalOrd
+To simplify notation, I will ignore subject index $i$. The following basic
+Cumulative Logit Model can be considered as a single-agent toxicity model, in
+which the covariate is the natural logarithm of the dose $x$ divided by the
+reference dose $x*$, i.e.:
+$$logit[p_j] = \alpha_j + \beta \, log(\tfrac{x}{x*}).$$
+The prior is
+$$
+(\alpha_1, \ldots, \alpha_{c-1}, log(\beta)) \sim N(\mu, \Sigma)
+$$
+The parameter $\beta$ has a log-normal distribution to ensure its positivity.
+
+## References
+[1] Agresti, A. (2015). Foundations of Linear and Generalized Linear Models. Hoboken, NJ: John Wiley & Sons.  
+
+[2] McCullagh, P., and Nelder, J. A. (1989). Generalized Linear Models. 2nd ed. London: Chapman & Hall  
+https://www.utstat.toronto.edu/~brunner/oldclass/2201s11/readings/glmbook.pdf  
+
+[3] Van Meter EM, Garrett-Mayer E, Bandyopadhyay D. Dose-finding clinical trial design for ordinal toxicity grades using the continuation ratio model: an extension of the continual reassessment method. Clin Trials. 2012 Jun;9(3):303-13. doi: 10.1177/1740774512443593. Epub 2012 Apr 30.  
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5531273/
+
+# Prototype code
+
+## Fictitious observed data
+```{r data}
+
+dose_grid <- c(5, 15, 45, 70, 100, 220, 300, 600, 1000, 1800, 4000, 10000, 16000)
+
+x <- c(
+  rep(5, 1),
+  rep(15,  4),
+  rep(45,  5),
+  rep(70,  5),
+  rep(100,  5),
+  rep(220,  8),
+  rep(300,  6),
+  rep(600, 15),
+  rep(1000,  8),
+  rep(1800,  9),
+  rep(4000, 10),
+  rep(10000, 14),
+  rep(16000,  2)
+)
+
+y <- c(
+  rep(0, 1),
+  rep(0, 4),
+  rep(0, 5),
+  rep(0, 5),
+  rep(0, 5),
+  rep(0, 7), 1,
+  rep(0, 5), 1,
+  rep(0, 10), 1, 1, 1, 1, 1,
+  rep(0, 5), 1, 1, 1,
+  rep(0, 8), 1,
+  rep(0, 8), 1, 1,
+  rep(0, 10), 1, 1, 1, 1,
+  rep(1, 1),
+  rep(2, 1)
+)
+```
+
+## Data-class
+
+After many considerations, I think the best would be to slightly modify existing
+Data class by:
+ - allowing y to take on values from 0, 1, 2, 3, ....
+ - adding new slot y_categories, which keeps all the possible values for y,
+ with default to y_categories = c(0L, 1L). This is mostly for validation purposes,
+ but maybe it would also be useful for some other purposes, which I am not aware
+ of at the moment.
+ This proposed approach has a lot of advantages, e.g. it allows child classes of
+ Data to benefit from having toxicities on an ordinal scale.
+
+Lets call it Data0 for a moment
+
+```{r prototype_data, eval=FALSE}
+
+data <- Data(
+  x = x,
+  y = y, # here is a problem because y slot accepts only 0 and 1 values here
+  doseGrid = dose_grid,
+)
+
+.Data0 <- setClass(
+  Class = "Data0",
+  contains = "GeneralData",
+  slots = c(
+    x = "numeric",
+    y = "integer",
+    doseGrid = "numeric",
+    nGrid = "integer",
+    y_categories = "integer",
+    xLevel = "integer",
+
+    placebo = "logical"
+  ),
+  prototype = prototype(
+    x = numeric(),
+    y = integer(),
+    doseGrid = numeric(),
+    nGrid = 0L,
+    xLevel = integer(),
+    y_categories = c(0L, 1L),
+    placebo = FALSE
+  ),
+  # validity = v_data # same as Data but more validation for yGrid.
+)
+```
+
+## Model-class
+
+```{r prototype_model, eval=FALSE}
+
+LogisticLogNormalOrd <- function(mean, cov, ref_dose = 0) {
+  params <- ModelParamsNormal(mean, cov)
+  .LogisticLogNormalOrd(
+    params = params,
+    ref_dose = ref_dose,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        x_rel[i] <- log(x[i] / ref_dose)
+        for (j in 1:(y_categories-1)) {
+          logit(p[i, j]) <- alpha[j] + beta * x_rel[i]
+          y[i, j] ~ dbern(p[i, j])
+        }
+      }
+    },
+    priormodel = function() {
+      theta ~ dmnorm(mean, prec)
+      alpha <- theta[1:(y_categories-1)]
+      beta <- exp(theta[y_categories])
+    },
+    modelspecs = function(from_prior) {
+      ms <- list(mean = params@mean, prec = params@prec)
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function() {
+      list(theta = c(0, -20)) # TODO
+    },
+    datanames = c("nObs", "y_categories", "y", "x"),
+    sample = c("alpha", "beta")
+  )
+}
+
+```
