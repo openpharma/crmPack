@@ -1,4 +1,4 @@
-# Version 1.0.9000.9088
+# Version 1.0.9000.9089
 * Created a new vignette which describes how to use certain functions and features
   of `crmPack` after the major refactoring.
 * Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
