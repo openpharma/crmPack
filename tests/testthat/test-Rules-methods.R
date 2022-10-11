@@ -1090,7 +1090,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
 })
 
 test_that("StoppingSpecificDose works correctly if dose rec. is the same as specific", {
-  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # StoppingSpecificDose works correctly if dose recommendation is the same
   # as the specific dose and stop is not met.
   my_samples <- h_as_samples(
     list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
@@ -1110,7 +1110,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. is the same as spec
 })
 
 test_that("StoppingSpecificDose works correctly if dose rec. is the same as specific", {
-  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # StoppingSpecificDose works correctly if dose recommendation is the same
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
     list(
