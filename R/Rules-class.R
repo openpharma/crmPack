@@ -1448,9 +1448,9 @@ StoppingMTDCV <- function(target = 0.3,
   )
 }
 
-# nolint start
+# StoppingLowestDoseHSRBeta ----
 
-# StoppingLowestDoseHSRBeta-class ----
+## class ----
 
 #' `StoppingLowestDoseHSRBeta`
 #'
@@ -1465,7 +1465,8 @@ StoppingMTDCV <- function(target = 0.3,
 #' The default prior is Beta(1,1).
 #' In case that placebo is used, the rule is evaluated at the second dose of the
 #' dose grid, i.e. at the lowest non-placebo dose.
-#' Note: this stopping rule is independent from the underlying model.
+#'
+#' @note This stopping rule is independent from the underlying model.
 #'
 #' @slot target (`proportion`)\cr the target toxicity.
 #' @slot prob (`proportion`)\cr the threshold probability for the lowest dose
@@ -1480,24 +1481,23 @@ StoppingMTDCV <- function(target = 0.3,
 #'
 .StoppingLowestDoseHSRBeta <- setClass(
   Class = "StoppingLowestDoseHSRBeta",
-  contains = "Stopping",
-  representation = representation(
+  slots = c(
     target = "numeric",
     prob = "numeric",
     a = "numeric",
     b = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     prob = 0.95,
     a = 1,
     b = 1
   ),
+  contains = "Stopping",
   validity = v_stopping_lowest_dose_hsr_beta
 )
 
-
-# StoppingLowestDoseHSRBeta-constructor ----
+## constructor ----
 
 #' @rdname StoppingLowestDoseHSRBeta-class
 #'
@@ -1520,6 +1520,8 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     b = b
   )
 }
+
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of target biomarker

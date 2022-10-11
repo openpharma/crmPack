@@ -284,7 +284,7 @@ v_increments_num_dose_levels <- function(object) {
 }
 
 #' @describeIn v_increments validates that the [`IncrementsHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
+#'   object contains valid probability target, threshold and shape parameters.
 v_increments_hsr_beta <- function(object) {
   v <- Validate()
   v$check(
@@ -307,7 +307,7 @@ v_increments_hsr_beta <- function(object) {
 }
 
 #' @describeIn v_increments validates that the [`IncrementsMin`]
-#'  object contains a list with `Increments` objects.
+#'   object contains a list with `Increments` objects.
 v_increments_min <- function(object) {
   v <- Validate()
   v$check(
@@ -333,7 +333,7 @@ v_increments_min <- function(object) {
 NULL
 
 #' @describeIn v_stopping validates that the [`StoppingCohortsNearDose`]
-#'  object contains valid `nCohorts` and `percentage` parameters.
+#'   object contains valid `nCohorts` and `percentage` parameters.
 v_stopping_cohorts_near_dose <- function(object) {
   v <- Validate()
   v$check(
@@ -348,7 +348,7 @@ v_stopping_cohorts_near_dose <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingPatientsNearDose`]
-#'  object contains valid `nPatients` and `percentage` parameters.
+#'   object contains valid `nPatients` and `percentage` parameters.
 v_stopping_patients_near_dose <- function(object) {
   v <- Validate()
   v$check(
@@ -363,7 +363,7 @@ v_stopping_patients_near_dose <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingMinCohorts`]
-#'  object contains valid `nCohorts` parameter.
+#'   object contains valid `nCohorts` parameter.
 v_stopping_min_cohorts <- function(object) {
   v <- Validate()
   v$check(
@@ -374,7 +374,7 @@ v_stopping_min_cohorts <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingMinPatients`]
-#'  object contains valid `nPatients` parameter.
+#'   object contains valid `nPatients` parameter.
 v_stopping_min_patients <- function(object) {
   v <- Validate()
   v$check(
@@ -385,7 +385,7 @@ v_stopping_min_patients <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingTargetProb`]
-#'  object contains valid `target` and `prob` parameters.
+#'   object contains valid `target` and `prob` parameters.
 v_stopping_target_prob <- function(object) {
   v <- Validate()
   v$check(
@@ -400,7 +400,7 @@ v_stopping_target_prob <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingMTDdistribution`]
-#'  object contains valid `target`, `thresh` and `prob` parameters.
+#'   object contains valid `target`, `thresh` and `prob` parameters.
 v_stopping_mtd_distribution <- function(object) {
   v <- Validate()
   v$check(
@@ -434,5 +434,5 @@ v_stopping_mtd_cv <- function(object) {
 }
 
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
+#'   object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr

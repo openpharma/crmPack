@@ -1012,45 +1012,58 @@ test_that("v_stopping_mtd_cv returns message for non-valid thresh_cv", {
 test_that("v_stopping_lowest_dose_hsr_beta passes for valid object", {
   object <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95)
   expect_true(v_stopping_lowest_dose_hsr_beta(object))
-})
 
-test_that("v_stopping_lowest_dose_hsr_beta passes for valid object", {
   object <- StoppingLowestDoseHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
   expect_true(v_stopping_lowest_dose_hsr_beta(object))
 })
 
-test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid object", {
+test_that("v_stopping_lowest_dose_hsr_beta returns expected messages for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
   object <- StoppingLowestDoseHSRBeta()
-  object@target <- -0.3
-  object@prob <- 1.1
-  object@a <- -2
-  object@b <- 0
 
-  expect_equal(
-    v_stopping_lowest_dose_hsr_beta(object),
-    c(
-      "target must be a probability value from (0, 1) interval",
-      "prob must be a probability value from (0, 1) interval",
-      "Beta distribution shape parameter a must be a positive scalar",
-      "Beta distribution shape parameter b must be a positive scalar"
-    )
-  )
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+  object@target <- 0
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
 })
 
-test_that("StoppingLowestDoseHSRBeta returns expected messages for non-valid object", {
+test_that("v_stopping_lowest_dose_hsr_beta returns expected messages for non-valid prob", {
+  err_msg <- "prob must be a probability value from (0, 1) interval"
   object <- StoppingLowestDoseHSRBeta()
-  object@target <- c(0.3, 0.4)
-  object@prob <- c(0.9, 0.95)
+
+  # Changing `prob` so that it does not represent allowed probability value.
+  object@prob <- 1
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+  object@prob <- 0
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+  object@prob <- -0.5
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+
+  # Changing `prob` so that it is not a scalar.
+  object@prob <- c(0.5, 0.6)
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+})
+
+test_that("v_stopping_lowest_dose_hsr_beta returns expected messages for non-valid beta parameters", {
+  err_msg <- c(
+    "Beta distribution shape parameter a must be a positive scalar",
+    "Beta distribution shape parameter b must be a positive scalar"
+  )
+  object <- StoppingLowestDoseHSRBeta()
+
+  # Changing `a` and `b` so that they are not a positive scalars.
+  object@a <- -2
+  object@b <- 0
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
+
   object@a <- c(1, 2)
   object@b <- c(1, 2)
-
-  expect_equal(
-    v_stopping_lowest_dose_hsr_beta(object),
-    c(
-      "target must be a probability value from (0, 1) interval",
-      "prob must be a probability value from (0, 1) interval",
-      "Beta distribution shape parameter a must be a positive scalar",
-      "Beta distribution shape parameter b must be a positive scalar"
-    )
-  )
+  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
 })
