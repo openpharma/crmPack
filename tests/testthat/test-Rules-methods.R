@@ -1070,9 +1070,10 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   # StoppingSpecificDose works correctly if dose recommendation is not the same
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
-    list(alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
-         alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
-         )
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
   )
   result <- stopTrial(
     stopping = h_stopping_specific_dose(),
@@ -1112,8 +1113,9 @@ test_that("StoppingSpecificDose works correctly if dose rec. is the same as spec
   # StoppingSpecificDose works correctly if dose recommendation is not the same
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
-    list(alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
-         alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
     )
   )
   result <- stopTrial(
