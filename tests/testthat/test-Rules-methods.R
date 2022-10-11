@@ -1066,93 +1066,66 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   expect_identical(result, expected)
 })
 
-test_that(paste(
-  "StoppingSpecificDose works correctly if dose recommendation",
-  "is not the same as the specific dose and stop is met"
-), {
-  my_data <- h_get_data_sr_2()
-  my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(
-    my_data, my_model,
-    h_get_mcmc_options(samples = 1000, burnin = 1000)
-  )
-  stopping <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = 80
-  )
-  next_best <- h_next_best_ncrm()
-  doseRecommendation <- nextBest(next_best, # nolintr
-    doselimit = 100,
-    samples = my_samples,
-    model = my_model,
-    data = my_data
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+         alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+         )
   )
   result <- stopTrial(
-    stopping = stopping,
-    dose = doseRecommendation$value,
+    stopping = h_stopping_specific_dose(),
+    dose = 20,
     samples = my_samples,
-    model = my_model,
-    data = my_data
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
   )
   expected <- structure(
     TRUE,
-    message = "Probability for target toxicity is 93 % for dose 80 and thus above the required 80 %"
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
   )
   expect_identical(result, expected)
 })
 
-test_that(paste(
-  "StoppingSpecificDose works correctly if dose recommendation",
-  "is the same as the specific dose and stop is not met"
-), {
-  my_data <- h_get_data_sr_1()
-  my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(
-    my_data, my_model,
-    h_get_mcmc_options(samples = 1000, burnin = 1000)
-  )
-  stopping <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = 80
+test_that("StoppingSpecificDose works correctly if dose rec. is the same as specific", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is not met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
   )
   result <- stopTrial(
-    stopping = stopping,
+    stopping = h_stopping_specific_dose(),
     dose = 80,
     samples = my_samples,
-    model = my_model,
-    data = my_data
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
   )
   expected <- structure(
     FALSE,
-    message = "Probability for target toxicity is 5 % for dose 80 and thus below the required 80 %"
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
   )
   expect_identical(result, expected)
 })
 
-test_that(paste(
-  "StoppingSpecificDose works correctly if dose recommendation",
-  "is the same as the specific dose and stop is met"
-), {
-  my_data <- h_get_data_sr_2()
-  my_model <- h_get_logistic_log_normal()
-  my_samples <- mcmc(
-    my_data, my_model,
-    h_get_mcmc_options(samples = 1000, burnin = 1000)
-  )
-  stopping <- StoppingSpecificDose(
-    rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
-    dose = 80
+test_that("StoppingSpecificDose works correctly if dose rec. is the same as specific", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+         alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
   )
   result <- stopTrial(
-    stopping = stopping,
+    stopping = h_stopping_specific_dose(),
     dose = 80,
     samples = my_samples,
-    model = my_model,
-    data = my_data
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
   )
   expected <- structure(
     TRUE,
-    message = "Probability for target toxicity is 93 % for dose 80 and thus above the required 80 %"
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
   )
   expect_identical(result, expected)
 })
