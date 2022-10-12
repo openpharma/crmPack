@@ -1131,3 +1131,31 @@ test_that("StoppingSpecificDose works correctly if dose rec. is the same as spec
   )
   expect_identical(result, expected)
 })
+
+test_that("StoppingSpecificDose correclty replaces next best string with specific string", {
+  my_stopping <- StoppingSpecificDose(
+    rule = StoppingPatientsNearDose(
+      nPatients = 9,
+      percentage = 0
+    ),
+    dose = 80
+  )
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_2()
+  )
+  expected <- structure(
+    TRUE,
+    message = "12 patients lie within 0% of the specific dose 80. This reached the required 9 patients"
+  )
+  expect_identical(result, expected)
+})
