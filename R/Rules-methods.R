@@ -1068,8 +1068,6 @@ setMethod("maxDose",
     }
 )
 
-# nolint end
-
 # maxDose-IncrementsNumDoseLevels ----
 
 #' @rdname maxDose
@@ -1166,8 +1164,6 @@ setMethod(
     max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
   }
 )
-
-# nolint start
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments, with special rules for
@@ -2001,9 +1997,7 @@ setMethod("stopTrial",
     }
 )
 
-# nolint end
-
-# stopTrial-StoppingMTDCV ----
+## StoppingMTDCV ----
 
 #' @rdname stopTrial
 #'
@@ -2052,7 +2046,7 @@ setMethod(
 )
 
 
-# stopTrial-StoppingLowestDoseHSRBeta ----
+## StoppingLowestDoseHSRBeta ----
 
 #' @rdname stopTrial
 #'
@@ -2109,8 +2103,6 @@ setMethod(
     structure(do_stop, message = msg)
   }
 )
-
-# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on probability of targeting biomarker
@@ -2215,6 +2207,51 @@ setMethod("stopTrial",
       ))
     }
 )
+
+## StoppingSpecificDose ----
+
+#' @describeIn stopTrial if Stopping rule is met for specific dose of the planned
+#' dose grid and not just for the default next best dose.
+#'
+#' @aliases stopTrial-StoppingSpecificDose
+#'
+#' @export
+#' @example examples/Rules-method-stopTrial-StoppingSpecificDose.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingSpecificDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Specific dose must be a part of the dose grid.
+    assert_subset(x = stopping@dose@.Data, choices = data@doseGrid)
+
+    # Evaluate the original (wrapped) stopping rule at the specific dose.
+    result <- stopTrial(
+      stopping = stopping@rule,
+      dose = stopping@dose@.Data,
+      samples = samples,
+      model = model,
+      data = data,
+      ...
+    )
+    # Correct the text message from the original stopping rule.
+    attr(result, "message") <- gsub(
+      pattern = "next best",
+      replacement = "specific",
+      x = attr(result, "message"),
+      ignore.case = TRUE
+    )
+    result
+  }
+)
+
+
 
 ## --------------------------------------------------
 ## Stopping when the highest dose is reached

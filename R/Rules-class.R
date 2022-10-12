@@ -1101,7 +1101,7 @@ IncrementsMin <- function(increments_list) {
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`].
+#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
 #'
 #' @aliases Stopping
 #' @export
@@ -1579,6 +1579,50 @@ StoppingTargetBiomarker <- function(target,
     target = target,
     is_relative = is_relative,
     prob = prob
+  )
+}
+
+# StoppingSpecificDose ----
+
+## class ----
+
+#' `StoppingSpecificDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific
+#' dose of the dose grid and not at the next best dose.
+#'
+#' @slot rule (`Stopping`)\cr a stopping rule available in this package.
+#' @slot dose (`positive_number`)\cr a dose that is defined as part of the dose
+#'   grid of the data.
+#'
+#' @aliases StoppingSpecificDose
+#' @export
+#'
+.StoppingSpecificDose <- setClass(
+  Class = "StoppingSpecificDose",
+  slots = c(
+    rule = "Stopping",
+    dose = "positive_number"
+  ),
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingSpecificDose-class
+#'
+#' @param rule (`Stopping`)\cr see slot definition.
+#' @param dose (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingSpecificDose.R
+#'
+StoppingSpecificDose <- function(rule, dose) {
+  .StoppingSpecificDose(
+    rule = rule,
+    dose = positive_number(dose)
   )
 }
 

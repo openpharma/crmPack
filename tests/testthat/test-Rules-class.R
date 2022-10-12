@@ -490,3 +490,24 @@ test_that("StoppingTargetBiomarker object can be created with user constructor",
   expect_identical(result@is_relative, FALSE)
   expect_identical(result@prob, 0.4)
 })
+
+## StoppingSpecificDose ----
+
+test_that(".StoppingSpecificDose works as expected", {
+  result <- expect_silent(.StoppingSpecificDose(dose = positive_number(80)))
+  expect_valid(result, "StoppingSpecificDose")
+})
+
+test_that("StoppingSpecificDose object can be created with user constructor", {
+  result <- expect_silent(
+    StoppingSpecificDose(
+      rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+      dose = 80
+    )
+  )
+  expect_valid(result, "StoppingSpecificDose")
+  expect_valid(result@rule, "StoppingTargetProb")
+  expect_identical(result@rule@target, c(0, 0.3))
+  expect_identical(result@rule@prob, 0.8)
+  expect_identical(result@dose@.Data, 80)
+})
