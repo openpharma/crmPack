@@ -1,4 +1,6 @@
 # Version 1.0.9000.9089
+* In `StoppingTargetBiomarker` class, changed `scale` character slot to
+  `is_relative` flag.
 * Created a new vignette which describes how to use certain functions and features
   of `crmPack` after the major refactoring.
 * Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as

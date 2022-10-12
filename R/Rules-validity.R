@@ -436,3 +436,29 @@ v_stopping_mtd_cv <- function(object) {
 #' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
 #'   object contains valid probability target, threshold and shape parameters.
 v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr
+
+#' @describeIn v_stopping validates that the [`StoppingTargetBiomarker`] object
+#'   contains valid `target`, `is_relative` and `prob`slots.
+v_stopping_target_biomarker <- function(object) {
+  v <- Validate()
+  v$check(
+    test_flag(object@is_relative),
+    "is_relative must be a flag"
+  )
+  if (isTRUE(object@is_relative)) {
+    v$check(
+      test_probability_range(object@target),
+      "target has to be a probability range when is_relative flag is 'TRUE'"
+    )
+  } else {
+    v$check(
+      test_numeric(object@target, finite = TRUE, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      "target must be a numeric range"
+    )
+  }
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}

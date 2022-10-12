@@ -2136,7 +2136,7 @@ setMethod("stopTrial",
       biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
 
       ## if target is relative to maximum
-      if (stopping@scale == "relative") {
+      if (stopping@is_relative) {
 
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
