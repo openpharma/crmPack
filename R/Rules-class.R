@@ -1448,7 +1448,7 @@ StoppingMTDCV <- function(target = 0.3,
   )
 }
 
-# StoppingLowestDoseHSRBeta-class ----
+# StoppingLowestDoseHSRBeta ----
 
 ## class ----
 
@@ -1465,7 +1465,8 @@ StoppingMTDCV <- function(target = 0.3,
 #' The default prior is Beta(1,1).
 #' In case that placebo is used, the rule is evaluated at the second dose of the
 #' dose grid, i.e. at the lowest non-placebo dose.
-#' Note: this stopping rule is independent from the underlying model.
+#'
+#' @note This stopping rule is independent from the underlying model.
 #'
 #' @slot target (`proportion`)\cr the target toxicity.
 #' @slot prob (`proportion`)\cr the threshold probability for the lowest dose
@@ -1480,19 +1481,19 @@ StoppingMTDCV <- function(target = 0.3,
 #'
 .StoppingLowestDoseHSRBeta <- setClass(
   Class = "StoppingLowestDoseHSRBeta",
-  contains = "Stopping",
-  representation = representation(
+  slots = c(
     target = "numeric",
     prob = "numeric",
     a = "numeric",
     b = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     prob = 0.95,
     a = 1,
     b = 1
   ),
+  contains = "Stopping",
   validity = v_stopping_lowest_dose_hsr_beta
 )
 
@@ -1517,6 +1518,67 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
     prob = prob,
     a = a,
     b = b
+  )
+}
+
+# StoppingTargetBiomarker ----
+
+## class ----
+
+#' `StoppingTargetBiomarker`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTargetBiomarker`] is a class for stopping based on probability of
+#' target biomarker.
+#'
+#' @slot target (`numeric`)\cr the biomarker target range that needs to be
+#'   reached. For example, `target = c(0.8, 1.0)` with `is_relative = TRUE`
+#'   means that we target a dose with at least 80% of maximum biomarker level.
+#' @slot is_relative (`flag`)\cr is target relative? If it so (default), then
+#'   the `target` is interpreted relative to the maximum, so it must be a
+#'   probability range. Otherwise, the `target` is interpreted as absolute
+#'   biomarker range.
+#' @slot prob (`proportion`)\cr required target probability (except 0 or 1) for
+#'   reaching sufficient precision.
+#'
+#' @aliases StoppingTargetBiomarker
+#' @export
+#'
+.StoppingTargetBiomarker <- setClass(
+  Class = "StoppingTargetBiomarker",
+  slots = c(
+    target = "numeric",
+    is_relative = "logical",
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    target = c(0.9, 1),
+    is_relative = TRUE,
+    prob = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_target_biomarker
+)
+
+## constructor ----
+
+#' @rdname StoppingTargetBiomarker-class
+#'
+#' @param target (`numeric`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#' @param is_relative (`flag`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTargetBiomarker.R
+#'
+StoppingTargetBiomarker <- function(target,
+                                    prob,
+                                    is_relative = TRUE) {
+  .StoppingTargetBiomarker(
+    target = target,
+    is_relative = is_relative,
+    prob = prob
   )
 }
 
@@ -1565,73 +1627,6 @@ StoppingSpecificDose <- function(rule, dose) {
 }
 
 # nolint start
-
-## --------------------------------------------------
-## Stopping based on probability of target biomarker
-## --------------------------------------------------
-
-##' Stop based on probability of target biomarker
-##'
-##' @slot target the biomarker target range, that
-##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
-##' means we target a dose with at least 80% of maximum biomarker level.
-##' @slot scale either \code{relative} (default, then the \code{target} is interpreted
-##' relative to the maximum, so must be a probability range) or \code{absolute}
-##' (then the \code{target} is interpreted as absolute biomarker range)
-##' @slot prob required target probability for reaching sufficient precision
-##'
-##' @example examples/Rules-class-StoppingTargetBiomarker.R
-##'
-##' @export
-.StoppingTargetBiomarker <-
-    setClass(Class="StoppingTargetBiomarker",
-             representation(target="numeric",
-                            scale="character",
-                            prob="numeric"),
-             prototype(target=c(0.9, 1),
-                       scale="relative",
-                       prob=0.3),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
-                             "scale must be either 'relative' or 'absolute'")
-                     if(object@scale == "relative")
-                     {
-                       o$check(is.probRange(object@target),
-                               "target has to be a probability range when scale='relative'")
-                     } else {
-                       o$check(is.range(object@target),
-                               "target must be a numeric range")
-                     }
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
-
-                     o$result()
-                 })
-validObject(.StoppingTargetBiomarker())
-
-
-##' Initialization function for `StoppingTargetBiomarker`
-##'
-##' @param target see \code{\linkS4class{StoppingTargetBiomarker}}
-##' @param scale see \code{\linkS4class{StoppingTargetBiomarker}}
-##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
-##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
-##'
-##' @export
-StoppingTargetBiomarker <- function(target,
-                                    scale=c("relative", "absolute"),
-                                    prob)
-{
-  scale <- match.arg(scale)
-    .StoppingTargetBiomarker(target=target,
-                             scale=scale,
-                             prob=prob)
-}
 
 ## --------------------------------------------------
 ## Stopping when the highest dose is reached

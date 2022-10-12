@@ -30,7 +30,6 @@ lowest dose level and a Beta(a,b) prior distribution.
 The default prior is Beta(1,1).
 In case that placebo is used, the rule is evaluated at the second dose of the
 dose grid, i.e. at the lowest non-placebo dose.
-Note: this stopping rule is independent from the underlying model.
 }
 \section{Slots}{
 
@@ -47,6 +46,9 @@ Beta (a,b).}
 Beta (a,b).}
 }}
 
+\note{
+This stopping rule is independent from the underlying model.
+}
 \examples{
 
 # Stopping the study if the first dose is toxic with more than 90\%

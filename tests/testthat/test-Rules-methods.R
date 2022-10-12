@@ -1046,7 +1046,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
 
 # stopTrial-StoppingSpecificDose ----
 
-test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop.criter. is not met", {
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. not met", {
   # StoppingSpecificDose works correctly if dose recommendation is not the same
   # as the specific dose and stop is not met.
   my_samples <- h_as_samples(
@@ -1066,7 +1066,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop.criter. is met", {
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. is met", {
   # StoppingSpecificDose works correctly if dose recommendation is not the same
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
@@ -1089,7 +1089,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose works correctly if dose rec. is the same as specific and stop.criter. is not met", {
+test_that("StoppingSpecificDose works correctly if dose rec = specific and stop crit. not met", {
   # StoppingSpecificDose works correctly if dose recommendation is the same
   # as the specific dose and stop is not met.
   my_samples <- h_as_samples(
@@ -1109,7 +1109,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. is the same as spec
   expect_identical(result, expected)
 })
 
-test_that("StoppingSpecificDose works correctly if dose rec. is the same as specific and stop.criter. is met", {
+test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop crit. is met", {
   # StoppingSpecificDose works correctly if dose recommendation is the same
   # as the specific dose and stop is met.
   my_samples <- h_as_samples(
@@ -1134,10 +1134,7 @@ test_that("StoppingSpecificDose works correctly if dose rec. is the same as spec
 
 test_that("StoppingSpecificDose correclty replaces next best string with specific string", {
   my_stopping <- StoppingSpecificDose(
-    rule = StoppingPatientsNearDose(
-      nPatients = 9,
-      percentage = 0
-    ),
+    rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
     dose = 80
   )
   my_samples <- h_as_samples(
@@ -1155,7 +1152,7 @@ test_that("StoppingSpecificDose correclty replaces next best string with specifi
   )
   expected <- structure(
     TRUE,
-    message = "12 patients lie within 0% of the specific dose 80. This reached the required 9 patients"
+    message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients"
   )
   expect_identical(result, expected)
 })

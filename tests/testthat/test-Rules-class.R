@@ -399,7 +399,7 @@ test_that(".StoppingTargetProb works as expected", {
 })
 
 test_that("StoppingTargetProb object can be created with user constructor", {
-  result <- expect_silent(StoppingTargetProb(target = c(0.3, 0.45), prob = 0.5))
+  result <- expect_silent(StoppingTargetProb(c(0.3, 0.45), 0.5))
   expect_valid(result, "StoppingTargetProb")
   expect_identical(result@target, c(0.3, 0.45))
   expect_identical(result@prob, 0.5)
@@ -414,7 +414,7 @@ test_that(".StoppingMTDdistribution works as expected", {
 
 test_that("StoppingMTDdistribution object can be created with user constructor", {
   result <- expect_silent(
-    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+    StoppingMTDdistribution(0.33, 0.5, 0.9)
   )
   expect_valid(result, "StoppingMTDdistribution")
   expect_identical(result@target, 0.33)
@@ -437,24 +437,58 @@ test_that("StoppingMTDCV object can be created with user constructor (default)",
 })
 
 test_that("StoppingMTDCV object can be created with user constructor", {
-  result <- expect_silent(StoppingMTDCV(target = 0.4, thresh_cv = 70))
+  result <- expect_silent(StoppingMTDCV(0.4, 70))
   expect_valid(result, "StoppingMTDCV")
   expect_identical(result@target, 0.4)
   expect_identical(result@thresh_cv, 70)
 })
 
-## StoppingLowestDoseHSRBeta-class ----
+## StoppingLowestDoseHSRBeta
 
 test_that(".StoppingLowestDoseHSRBeta works as expected", {
   result <- expect_silent(.StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
 })
 
-## StoppingLowestDoseHSRBeta-constructor ----
-
-test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
+test_that("StoppingLowestDoseHSRBeta object can be created with user constructor (default)", {
   result <- expect_silent(StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
+  expect_identical(result@target, 0.3)
+  expect_identical(result@prob, 0.95)
+  expect_identical(result@a, 1)
+  expect_identical(result@b, 1)
+})
+
+test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
+  result <- expect_silent(StoppingLowestDoseHSRBeta(0.25, 0.82, 5, 2))
+  expect_valid(result, "StoppingLowestDoseHSRBeta")
+  expect_identical(result@target, 0.25)
+  expect_identical(result@prob, 0.82)
+  expect_identical(result@a, 5)
+  expect_identical(result@b, 2)
+})
+
+## StoppingTargetBiomarker
+
+test_that(".StoppingTargetBiomarker works as expected", {
+  result <- expect_silent(.StoppingTargetBiomarker())
+  expect_valid(result, "StoppingTargetBiomarker")
+})
+
+test_that("StoppingTargetBiomarker object can be created with user constructor (default)", {
+  result <- expect_silent(StoppingTargetBiomarker(c(0.85, 1), 0.4))
+  expect_valid(result, "StoppingTargetBiomarker")
+  expect_identical(result@target, c(0.85, 1))
+  expect_identical(result@is_relative, TRUE)
+  expect_identical(result@prob, 0.4)
+})
+
+test_that("StoppingTargetBiomarker object can be created with user constructor", {
+  result <- expect_silent(StoppingTargetBiomarker(c(0.85, 1), 0.4, FALSE))
+  expect_valid(result, "StoppingTargetBiomarker")
+  expect_identical(result@target, c(0.85, 1))
+  expect_identical(result@is_relative, FALSE)
+  expect_identical(result@prob, 0.4)
 })
 
 ## StoppingSpecificDose ----
