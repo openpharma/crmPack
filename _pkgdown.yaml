@@ -88,6 +88,7 @@ reference:
       - StoppingMTDdistribution
       - StoppingMTDCV
       - StoppingLowestDoseHSRBeta
+      - StoppingTargetBiomarker
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -175,6 +176,7 @@ reference:
       - v_stopping_mtd_distribution
       - v_stopping_mtd_cv
       - v_stopping_lowest_dose_hsr_beta
+      - v_stopping_target_biomarker
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
