@@ -1028,6 +1028,13 @@ test_that("MCMC throws the error for OneParExpNormalPrior model when 'xLevel' do
   )
 })
 
+test_that("No NA is returned in dose calculations for OneParExpNormalPrior model", {
+  model <- h_get_one_par_exp_normal_prior()
+  calc_dose <- doseFunction(model, alpha = 1)
+
+  expect_false(is.na(calc_dose(0.95)))
+})
+
 # FractionalCRM ----
 
 ## constructor ----
