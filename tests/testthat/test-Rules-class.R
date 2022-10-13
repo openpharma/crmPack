@@ -511,3 +511,15 @@ test_that("StoppingSpecificDose object can be created with user constructor", {
   expect_identical(result@rule@prob, 0.8)
   expect_identical(result@dose@.Data, 80)
 })
+
+## StoppingHighestDose ----
+
+test_that(".StoppingHighestDose works as expected", {
+  result <- expect_silent(.StoppingHighestDose())
+  expect_valid(result, "StoppingHighestDose")
+})
+
+test_that("StoppingHighestDose object can be created with user constructor", {
+  result <- expect_silent(StoppingHighestDose())
+  expect_valid(result, "StoppingHighestDose")
+})

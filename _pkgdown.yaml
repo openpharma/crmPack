@@ -90,6 +90,7 @@ reference:
       - StoppingLowestDoseHSRBeta
       - StoppingTargetBiomarker
       - StoppingSpecificDose
+      - StoppingHighestDose
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
