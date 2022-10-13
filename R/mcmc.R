@@ -257,7 +257,7 @@ setMethod(
                  from_prior = data@nObs == 0L,
                  ...) {
     if (!from_prior) {
-      assert_true(length(model@skel_probs) == max(data@nGrid))
+      assert_true(length(model@skel_probs) == data@nGrid)
     }
 
     callNextMethod(
