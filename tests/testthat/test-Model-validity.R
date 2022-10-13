@@ -1060,12 +1060,15 @@ test_that("v_model_one_par_exp_normal_prior passes for valid object (finit art. 
 test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_fun - skel_fun_inv", {
   object <- h_get_one_par_exp_normal_prior()
 
-  # Assigning wrong skel_probs.
+  # Assigning wrong skel_fun/skel_fun_inv
   object@skel_fun <- function(x) 2 * x
   object@skel_fun_inv <- function(x) x^2
   expect_equal(
     v_model_one_par_exp_normal_prior(object),
-    "skel_fun_inv must be an inverse funtion of skel_fun function"
+    c(
+      "skel_fun_inv must be an inverse funtion of skel_fun function on within the range of sekeleton probs",
+      "skel_fun_inv must be an inverse funtion of skel_fun function on outside the range of sekeleton probs"
+    )
   )
 })
 
@@ -1076,7 +1079,14 @@ test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_probs
   object@skel_probs <- c(-1, 0.5, Inf)
   expect_equal(
     v_model_one_par_exp_normal_prior(object),
-    "skel_probs must be probabilities between 0 and 1"
+    "skel_probs must be sorted probability values between 0 and 1"
+  )
+
+  # Assigning not sorted skel_probs.
+  object@skel_probs <- c(0.2, 0.1)
+  expect_equal(
+    v_model_one_par_exp_normal_prior(object),
+    "skel_probs must be sorted probability values between 0 and 1"
   )
 })
 
