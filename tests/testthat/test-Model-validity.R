@@ -1026,19 +1026,14 @@ test_that("v_model_tite_logistic_log_normal passes for valid object", {
 
 test_that("v_model_tite_logistic_log_normal returns message for wrong weight_method", {
   object <- h_get_tite_logistic_log_normal()
+  err_msg <- "weight_method must be a string equal either to linear or adaptive"
 
   # Assigning wrong weight_method.
   object@weight_method <- "linearadaptive"
-  expect_equal(
-    v_model_tite_logistic_log_normal(object),
-    "weight_method must be a string equal either to linear or adaptive"
-  )
+  expect_equal(v_model_tite_logistic_log_normal(object), err_msg)
 
   object@weight_method <- c("linear", "adaptive")
-  expect_equal(
-    v_model_tite_logistic_log_normal(object),
-    "weight_method must be a string equal either to linear or adaptive"
-  )
+  expect_equal(v_model_tite_logistic_log_normal(object), err_msg)
 })
 
 # v_model_one_par_exp_normal_prior ----
@@ -1074,35 +1069,30 @@ test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_fun -
 
 test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_probs", {
   object <- h_get_one_par_exp_normal_prior()
+  err_msg <- "skel_probs must be a unique sorted probability values between 0 and 1"
 
   # Assigning wrong skel_probs.
   object@skel_probs <- c(-1, 0.5, Inf)
-  expect_equal(
-    v_model_one_par_exp_normal_prior(object),
-    "skel_probs must be a unique sorted probability values between 0 and 1"
-  )
+  expect_equal(v_model_one_par_exp_normal_prior(object), err_msg)
+
+  # Assigning non-unique skel_probs.
+  object@skel_probs <- c(0.2, 0.2)
+  expect_equal(v_model_one_par_exp_normal_prior(object), err_msg)
 
   # Assigning not sorted skel_probs.
   object@skel_probs <- c(0.2, 0.1)
-  expect_equal(
-    v_model_one_par_exp_normal_prior(object),
-    "skel_probs must be a unique sorted probability values between 0 and 1"
-  )
+  expect_equal(v_model_one_par_exp_normal_prior(object), err_msg)
 })
 
 test_that("v_model_one_par_exp_normal_prior returns message for wrong sigma2", {
   object <- h_get_one_par_exp_normal_prior()
+  err_msg <- "sigma2 must be a positive finite number"
 
   # Assigning wrong sigma2.
   object@sigma2 <- -1
-  expect_equal(
-    v_model_one_par_exp_normal_prior(object),
-    "sigma2 must be a positive finite number"
-  )
+  expect_equal(v_model_one_par_exp_normal_prior(object), err_msg)
 
+  # Assigning sigma2 which is not a scalar.
   object@sigma2 <- 1:2
-  expect_equal(
-    v_model_one_par_exp_normal_prior(object),
-    "sigma2 must be a positive finite number"
-  )
+  expect_equal(v_model_one_par_exp_normal_prior(object), err_msg)
 })
