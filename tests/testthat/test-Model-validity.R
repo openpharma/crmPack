@@ -1079,14 +1079,14 @@ test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_probs
   object@skel_probs <- c(-1, 0.5, Inf)
   expect_equal(
     v_model_one_par_exp_normal_prior(object),
-    "skel_probs must be sorted probability values between 0 and 1"
+    "skel_probs must be a unique sorted probability values between 0 and 1"
   )
 
   # Assigning not sorted skel_probs.
   object@skel_probs <- c(0.2, 0.1)
   expect_equal(
     v_model_one_par_exp_normal_prior(object),
-    "skel_probs must be sorted probability values between 0 and 1"
+    "skel_probs must be a unique sorted probability values between 0 and 1"
   )
 })
 

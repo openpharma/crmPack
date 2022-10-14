@@ -514,7 +514,7 @@ v_model_one_par_exp_normal_prior <- function(object) { # nolintr
   is_skel_prob_ok <- test_probabilities(object@skel_probs, sorted = TRUE)
   v$check(
     is_skel_prob_ok,
-    "skel_probs must be sorted probability values between 0 and 1"
+    "skel_probs must be a unique sorted probability values between 0 and 1"
   )
 
   if (is_skel_prob_ok) {

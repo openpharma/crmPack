@@ -2580,7 +2580,8 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
 #' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
-#' @slot skel_probs (`numeric`)\cr skeleton prior probabilities.
+#' @slot skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
+#'   of unique and sorted probability values between 0 and 1.
 #' @slot sigma2 (`number`)\cr prior variance of log power parameter alpha.
 #'
 #' @seealso [`ModelLogNormal`].
@@ -2604,8 +2605,10 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 
 #' @rdname OneParExpNormalPrior-class
 #'
-#' @param skel_probs (`numeric`)\cr skeleton prior probabilities.
-#' @param dose_grid (`numeric`)\cr dose grid.
+#' @param skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
+#'   of unique and sorted probability values between 0 and 1.
+#' @param dose_grid (`numeric`)\cr dose grid. It must be must be a sorted vector
+#'   of the same length as `skel_probs`.
 #' @param sigma2 (`number`)\cr prior variance of log power parameter alpha.
 #'
 #' @export
