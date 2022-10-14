@@ -511,7 +511,7 @@ v_model_tite_logistic_log_normal <- function(object) { # nolintr
 v_model_one_par_exp_normal_prior <- function(object) { # nolintr
   v <- Validate()
 
-  is_skel_prob_ok <- test_probabilities(object@skel_probs, sorted = TRUE)
+  is_skel_prob_ok <- test_probabilities(object@skel_probs, unique = TRUE, sorted = TRUE)
   v$check(
     is_skel_prob_ok,
     "skel_probs must be a unique sorted probability values between 0 and 1"

@@ -1006,15 +1006,7 @@ test_that("OneParExpNormalPrior throws the error when dose_grid and skel_probs h
   )
 })
 
-test_that("OneParExpNormalPrior throws the error for not sorted or not unique dose_grid", {
-  result <- expect_error(
-    OneParExpNormalPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
-      dose_grid = c(2, 1, 3, 4, 5),
-      sigma2 = 2
-    ),
-    "Assertion on 'dose_grid' failed: Must be sorted"
-  )
+test_that("OneParExpNormalPrior throws the error for not unique or not sorted dose_grid", {
   result <- expect_error(
     OneParExpNormalPrior(
       skel_probs = seq(from = 0.1, to = 0.9, length = 5),
@@ -1022,6 +1014,14 @@ test_that("OneParExpNormalPrior throws the error for not sorted or not unique do
       sigma2 = 2
     ),
     "Assertion on 'dose_grid' failed: Contains duplicated values, position 5."
+  )
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = c(2, 1, 3, 4, 5),
+      sigma2 = 2
+    ),
+    "Assertion on 'dose_grid' failed: Must be sorted"
   )
 })
 
@@ -1036,7 +1036,15 @@ test_that("OneParExpNormalPrior throws the error for not a probability values in
   )
 })
 
-test_that("OneParExpNormalPrior throws the error for not sorted skel_probs", {
+test_that("OneParExpNormalPrior throws the error for not unique or not sorted skel_probs", {
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = c(0.1, 0.2, 0.2, 0.3, 0.4),
+      dose_grid = 1:5,
+      sigma2 = 2
+    ),
+    "Assertion on 'skel_probs' failed: Contains duplicated values, position 3."
+  )
   result <- expect_error(
     OneParExpNormalPrior(
       skel_probs = c(0.3, 0.1, 0.5, 0.7, 0.9),
