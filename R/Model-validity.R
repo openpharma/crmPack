@@ -510,20 +510,41 @@ v_model_tite_logistic_log_normal <- function(object) { # nolintr
 #' @describeIn v_model_objects validates that [`OneParExpNormalPrior`] class slots are valid.
 v_model_one_par_exp_normal_prior <- function(object) { # nolintr
   v <- Validate()
-  y <- seq(from = 0, to = 1, by = 0.1) # Probabilities.
-  x <- object@skel_fun_inv(y) # Dose grid.
-  not_na <- !is.na(x)
+
+  is_skel_prob_ok <- test_probabilities(object@skel_probs, sorted = TRUE)
   v$check(
-    isTRUE(all.equal(object@skel_fun(x[not_na]), y[not_na])),
-    "skel_fun_inv must be an inverse funtion of skel_fun function"
+    is_skel_prob_ok,
+    "skel_probs must be a unique sorted probability values between 0 and 1"
   )
-  v$check(
-    test_probabilities(object@skel_probs),
-    "skel_probs must be probabilities between 0 and 1"
-  )
+
+  if (is_skel_prob_ok) {
+    # Validating skel_fun/skel_fun_inv on within the range of skeleton probs.
+    skel_probs_range <- range(object@skel_probs)
+    # Probabilities within the range of skel_probs.
+    probs_in_range <- seq(from = skel_probs_range[1], to = skel_probs_range[2], by = 0.01)
+    # Interpolated dose grid.
+    doses_in_range <- object@skel_fun_inv(probs_in_range)
+    v$check(
+      isTRUE(all.equal(object@skel_fun(doses_in_range), probs_in_range)),
+      "skel_fun_inv must be an inverse funtion of skel_fun function on within the range of sekeleton probs"
+    )
+
+    # Validating skel_fun/skel_fun_inv on outside the range of skeleton probs.
+    probs_out_range <- c(
+      seq(from = 0, to = skel_probs_range[1], length.out = 3),
+      seq(from = skel_probs_range[2], to = 1, length.out = 3)
+    )
+    doses_out_range <- object@skel_fun_inv(probs_out_range)
+    v$check(
+      isTRUE(all.equal(object@skel_fun(doses_out_range), rep(skel_probs_range, each = 3))),
+      "skel_fun_inv must be an inverse funtion of skel_fun function on outside the range of sekeleton probs"
+    )
+  }
+
   v$check(
     test_number(object@sigma2, lower = .Machine$double.xmin, finite = TRUE),
     "sigma2 must be a positive finite number"
   )
+
   v$result()
 }
