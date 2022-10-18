@@ -1,4 +1,4 @@
-# Version 1.0.9000.9096
+# Version 1.0.9000.9097
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
 * In `StoppingTargetBiomarker` class, changed `scale` character slot to
   `is_relative` flag.
