@@ -1626,33 +1626,37 @@ StoppingSpecificDose <- function(rule, dose) {
   )
 }
 
-# nolint start
+# StoppingHighestDose ----
 
-## --------------------------------------------------
-## Stopping when the highest dose is reached
-## --------------------------------------------------
+## class ----
 
-##' Stop when the highest dose is reached
-##'
-##' @example examples/Rules-class-StoppingHighestDose.R
-##' @keywords classes
-##' @export
-.StoppingHighestDose <-
-  setClass(Class="StoppingHighestDose",
-           contains="Stopping")
-validObject(.StoppingHighestDose())
+#' `StoppingHighestDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingHighestDose`] is the class for stopping based on the highest dose.
+#' That is, the stopping occurs when the highest dose is reached.
+#'
+#' @aliases StoppingHighestDose
+#' @export
+#'
+.StoppingHighestDose <- setClass(
+  Class = "StoppingHighestDose",
+  contains = "Stopping"
+)
 
-##' Initialization function for "StoppingHighestDose"
-##'
-##' @return the \code{\linkS4class{StoppingHighestDose}} object
-##'
-##' @export
-##' @keywords methods
-StoppingHighestDose <- function()
-{
+## constructor ----
+
+#' @rdname StoppingHighestDose-class
+#'
+#' @export
+#' @example examples/Rules-class-StoppingHighestDose.R
+#'
+StoppingHighestDose <- function() {
   .StoppingHighestDose()
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on multiple stopping rules
