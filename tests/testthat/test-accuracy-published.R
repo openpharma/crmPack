@@ -1,5 +1,4 @@
 
-
 test_that(".PowerNormal works as expected", {
   .PowerNormal <- setClass(
     Class = "PowerNormal", contains = "Model",
@@ -17,7 +16,8 @@ test_that(".PowerNormal works as expected", {
     inv_skel_fun <- approxfun(x = skel_probs, y = dose_grid, rule = 1)
 
     .PowerNormal(
-      skel_fun = skel_fun, skel_probs = skel_probs,
+      skel_fun = skel_fun,
+      skel_probs = skel_probs,
       mean = mean,
       variance = variance,
       datamodel = function() {
@@ -118,13 +118,13 @@ test_that(".PowerNormal works as expected", {
   post_samples_a <- crmPack::mcmc(data_obs, model_power_a, mcmc_options)
 
   dose_rec_loss_a <- crmPack::nextBest(ncrm_loss,
-    doselimit = crmPack::maxDose(
-      increments_no,
-      data_obs
-    ),
-    samples = post_samples_a,
-    model = model_power_a,
-    data = data_obs
+                                       doselimit = crmPack::maxDose(
+                                         increments_no,
+                                         data_obs
+                                       ),
+                                       samples = post_samples_a,
+                                       model = model_power_a,
+                                       data = data_obs
   )
 
   ## (A) Actual table I
@@ -161,11 +161,11 @@ test_that(".PowerNormal works as expected", {
   post_samples_b <- crmPack::mcmc(data_obs, model_power_b, mcmc_options)
 
   dose_rec_loss_b <- crmPack::nextBest(ncrm_loss,
-    doselimit = crmPack::maxDose(
-      increments_no,
-      data_obs
-    ),
-    post_samples_b, model_power_b, data_obs
+                                       doselimit = crmPack::maxDose(
+                                         increments_no,
+                                         data_obs
+                                       ),
+                                       post_samples_b, model_power_b, data_obs
   )
 
   tab1_b_act <- rbind(
@@ -240,7 +240,7 @@ test_that(".PowerNormal works as expected", {
   # if at least one computed result (mean or sd) has deviation larger than
   # tolerance from corresponding published result, set result as FALSE
   if ((FALSE %in% diff_org_mean) == TRUE |
-    (FALSE %in% diff_org_sd) == TRUE) {
+      (FALSE %in% diff_org_sd) == TRUE) {
     result_org <- FALSE
   } else {
     result_org <- TRUE
@@ -259,7 +259,7 @@ test_that(".PowerNormal works as expected", {
     tolerance
 
   if ((FALSE %in% diff_equi_mean) == TRUE |
-    (FALSE %in% diff_equi_sd) == TRUE) {
+      (FALSE %in% diff_equi_sd) == TRUE) {
     result_equi <- FALSE
   } else {
     result_equi <- TRUE
