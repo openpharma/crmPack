@@ -16,7 +16,7 @@ setGeneric(
   def = function(object, ...) {
     standardGeneric("tidy")
   },
-  valueClass = c("tbl_df", "tbl", "data.frame")
+  valueClass = c("tbl_df", "tbl", "data.frame", "list")
 )
 # }
 
@@ -219,6 +219,49 @@ setMethod(
     return(rv)
   }
 )
+# tidy Design ----
+
+#' @rdname tidy
+#' @aliases tidy-Design
+#' @example examples/Design-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "Design"),
+  definition = function(object, ...) {
+    rv <- callNextMethod()
+    rv$model <- object@model %>% tidy()
+    rv$stopping <- object@stopping %>% tidy()
+    rv$increments <- object@increments %>% tidy()
+    if (!is.null(object@PLcohortSize)) {
+      if (is.integer(object@PLcohortSize)) {
+        rv$PLcohortSize <- CohortSizeConst(cohortSizeobject@PLcohortSize) %>% tidy()
+      } else {
+        rv$PLcohortSize <- object@PLcohortSize %>%  tidy()
+      }
+    }
+    return(rv)
+  }
+)
+# tidy RuleDesign ----
+
+#' @rdname tidy
+#' @aliases tidy-RuleDesign
+#' @example examples/RuleDesign-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "RuleDesign"),
+  definition = function(object, ...) {
+    rv <- list(
+      "nextBest"=object@nextBest %>%  tidy(),
+      "cohortSize"=object@nextBest %>%  tidy(),
+      "data"=object@nextBest %>%  tidy(),
+      "startingDose"=tibble::tibble(startingDose=object@startingDose)
+    )
+    return(rv)
+  }
+)
 
 # tidy-Increments ----
 
@@ -257,6 +300,178 @@ setMethod(
   return(rv)
   }
 )
+
+# tidy ModelParamsNormal
+#' @rdname tidy
+#' @aliases tidy ModelParamsNormal
+#' @example examples/ModelParamsNormal-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "ModelParamsNormal"),
+  definition = function(object, paramNames=c("alpha0", "alpha1"), ...) {
+    rv <- list(
+            "mean"=tibble::tibble(Mean=object@mean),
+            "cov"=tibble::as_tibble(object@cov, .name_repair=function(x) paramNames),
+            "prec"=tibble::as_tibble(object@prec, .name_repair=function(x) paramNames)
+          )
+    if(length(paramNames) > 0) {
+      rv$mean <- rv$mean %>%
+                   tibble::add_column(Parameter=paramNames, .before=1)
+      rv$cov <- rv$cov %>%
+                  tibble::add_column(Parameter=paramNames, .before=1)
+      rv$prec <- rv$prec %>%
+                   tibble::add_column(Parameter=paramNames, .before=1)
+    }
+    return(rv)
+  }
+)
+
+# tidy Model ----
+
+#' @rdname tidy
+#' @aliases tidy-GeneralModel
+#' @example examples/GeneralModel-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "GeneralModel"),
+  definition = function(object, paramNames=NA, ...) {
+    rv <- list(
+             "params"=object@params %>% tidy(),
+             "ref_dose"=tibble::tibble(ref_dose=object@ref_dose),
+             "datanames"=tibble::tibble(Parameter=object@datanames),
+             "datanames_prior"=tibble::tibble(Parameter=object@datanames_prior),
+             "sample"=tibble::tibble(Parameter=object@sample)
+    )
+    return(rv)
+  }
+)
+
+# tidy Model ----
+
+#' @rdname tidy
+#' @aliases tidy-LogisticNormalMixture
+#' @example examples/LogisticNormalMixture-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "LogisticNormalMixture"),
+  definition = function(object, paramNames=NA, ...) {
+    rv <- list(
+             "comp1"=object@comp1 %>% tidy(),
+             "comp2"=object@comp2 %>% tidy(),
+             "ref_dose"=tibble::tibble(ref_dose=object@ref_dose),
+             "datanames"=tibble::tibble(Parameter=object@datanames),
+             "datanames_prior"=tibble::tibble(Parameter=object@datanames_prior),
+             "sample"=tibble::tibble(Parameter=object@sample),
+             "weightpar"=tibble::tibble(Parameter=names(object@weightpar), weightpar=object@weightpar)
+    )
+    return(rv)
+  }
+)
+
+# tidy Model ----
+
+#' @rdname tidy
+#' @aliases tidy-LogisticNormalFixedMixture
+#' @example examples/LogisticNormalFixedMixture-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "LogisticNormalFixedMixture"),
+  definition = function(object, ...) {
+    rv <- list(
+             "components"=list(
+               "comp1"=object@components$comp1 %>% tidy(),
+               "comp2"=object@components$comp2 %>% tidy()
+             ),
+             "ref_dose"=tibble::tibble(ref_dose=object@ref_dose),
+             "datanames"=tibble::tibble(Parameter=object@datanames),
+             "datanames_prior"=tibble::tibble(Parameter=object@datanames_prior),
+             "sample"=tibble::tibble(Parameter=object@sample),
+             "weights"=tibble::tibble(Parameter=names(object@weights), weightpar=object@weights)
+    )
+    return(rv)
+  }
+)# tidy Model ----
+
+#' @rdname tidy
+#' @aliases tidy-LogisticKadaneBetaGamma
+#' @example examples/LogisticKadaneBetaGamma-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "LogisticKadaneBetaGamma"),
+  definition = function(object, ...) {
+    rv <- callNextMethod() %>%
+            tibble::add_column(
+              beta=object@beta,
+              shape=object@shape,
+              rate=object@rate
+            )
+    return(rv)
+  }
+)
+
+# tidy DualEndpoint ----
+
+#' @rdname tidy
+#' @aliases tidy-DualEndpoint
+#' @example examples/DualEndpoint-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "DualEndpoint"),
+  definition = function(object, ...) {
+    rv <- list(
+             "betaZ_params"=object@betaZ_params %>% tidy(),
+             "ref_dose"=tibble::tibble(ref_dose=object@ref_dose),
+             "use_log_dose"=tibble::tibble(use_log_dose=object@use_log_dose),
+             "rho"=tibble::tibble(Parameter=names(object@rho), rho=object@rho),
+             "sigma2W"=tibble::tibble(Parameter=names(object@sigma2W), sigma2W=object@sigma2W),
+             "use_fixed"=tibble::tibble(Parameter=names(object@use_fixed), rho=object@use_fixed)
+          )
+    return(rv)
+  }
+)
+
+# tidy LogisticKadane ----
+
+#' @rdname tidy
+#' @aliases tidy-LogisticKadane
+#' @example examples/LogisticKadane-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "LogisticKadane"),
+  definition = function(object, paramNames=NA, ...) {
+    tibble::tibble(
+      theta=object@theta,
+      xmin=object@xmin,
+      xmax=object@xmax
+    )
+  }
+)
+# tidy DALogisticLogNormal ----
+
+#' @rdname tidy
+#' @aliases tidy-DALogisticLogNormal
+#' @example examples/DALogisticLogNormal-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "DALogisticLogNormal"),
+  definition = function(object, paramNames=NA, ...) {
+    rv <- callNextMethod()
+    rv$npiece <- tibble::tibble(npiece=object@npiece)
+    rv$l <- tibble::tibble(l=object@l)
+    rv$c_par <- tibble::tibble(c_par=object@c_par)
+    rv$cond_pem <- tibble::tibble(cond_pem=object@cond_pem)
+    return(rv)
+  }
+)
+
 
 # tidy Stopping ----
 

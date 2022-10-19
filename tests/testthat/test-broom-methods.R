@@ -18,11 +18,11 @@ test_all_methods_exist_for_known_subclasses <- function(cls) {
 test_that("broom methods exist", {
   test_all_methods_exist_for_known_subclasses("CohortSize")
   test_all_methods_exist_for_known_subclasses("Data")
-  # test_all_methods_exist_for_known_subclasses("Design")
+  test_all_methods_exist_for_known_subclasses("Design")
   test_all_methods_exist_for_known_subclasses("Increments")
   # test_all_methods_exist_for_known_subclasses("Model")
   # test_all_methods_exist_for_known_subclasses("NextBest")
-  # test_all_methods_exist_for_known_subclasses("Stopping")
+  test_all_methods_exist_for_known_subclasses("Stopping")
 })
 
 test_that("Data::tidy() works with no observed data", {
