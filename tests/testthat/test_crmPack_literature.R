@@ -1,5 +1,5 @@
 library(testthat)
-library(crmPack)
+#library(crmPack)
 
 test_that(".PowerNormal works as expected", {
 
@@ -69,8 +69,6 @@ model_power_A <- PowerNormal(skel_probs = c(0.01, 0.015, 0.020, 0.025, 0.03,
                                            40, 50, 75, 100, 150, 200, 250),
                              mean = 0,
                              variance = 1.34^2)
-
-###############################################################
 
 expect_warning(prior_samples <- crmPack::mcmc(data = empty_data,
                                               model = model_power_A,
