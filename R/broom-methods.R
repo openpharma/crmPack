@@ -20,6 +20,197 @@ setGeneric(
 )
 # }
 
+# tidy-NextBestMTD ----
+# tidy-NextBestMinDist ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBest
+#' @example examples/NextBest-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBest"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble(target=object@target)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestInfTheory ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestInfTheory
+#' @example examples/NextBestInfTheory-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestInfTheory"),
+  definition = function(object, ...) {
+    rv <- callNextMethod()
+    rv <- rv %>% tibble::add_column(asymmetry=object@asymmetry)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestNCRM ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestNCRM
+#' @example examples/NextBestNCRM-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestNCRM"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble(
+            Range=c("Underdose", "Target", "Overdose"),
+            min=c(0, object@target[1], object@target[2]),
+            max=c(object@target[1], object@overdose[1], 1),
+            max_prob=c(NA, NA, object@max_overdose_prob)
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestNCRMLoss ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestNCRMLoss
+#' @example examples/NextBestNCRMLoss-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestNCRMLoss"),
+  definition = function(object, ...) {
+    rv <- callNextMethod()
+    if (rv %>% nrow() == 3 && length(object@losses) == 4) {
+      rv <- rv %>%
+        tibble::add_row(Range="Unacceptable", min=object@unacceptable[1], max=1) %>%
+        dplyr::mutate(max=ifelse(Range == "Overdose", object@unacceptable[1], max))
+    }
+    rv <- rv %>% tibble::add_column(losses=object@losses)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestTDsamples ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestTDsamples
+#' @example examples/NextBestTDsamples-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestTD"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble(
+            prob_target_drt=object@prob_target_drt,
+            prob_target_eot=object@prob_target_eot
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestTDsamples ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestTDsamples
+#' @example examples/NextBestTDsamples-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestTDsamples"),
+  definition = function(object, ...) {
+      rv <- tibble::tibble(
+              prob_target_drt=object@prob_target_drt,
+               prob_target_eot=object@prob_target_eot
+            )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestMaxGain ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestMaxGain
+#' @example examples/NextBestMaxGain-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestMaxGain"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble(
+            prob_target_drt=object@prob_target_drt,
+            prob_target_eot=object@prob_target_eot
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+# tidy-NextBestMaxGainSamples ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestMaxGainSamples
+#' @example examples/NextBestMaxGainSamples-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestMaxGainSamples"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble(
+            prob_target_drt=object@prob_target_drt,
+            prob_target_eot=object@prob_target_eot
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestDualEndpoint ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestDualEndpoint
+#' @example examples/NextBestDualEndpoint-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestDualEndpoint"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble(
+            Parameter=c("Biomarker", "Overdose"),
+            min=c(object@target[1], object@overdose[1]),
+            max=c(object@target[2], object@overdose[2]),
+            max_prob=c(NA, object@max_overdose_prob),
+            target_thresh=c(object@target_thresh, NA),
+            target_relative=c(object@target_relative, NA)
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy-NextBestThreePlusThree ----
+
+#' @rdname tidy
+#' @aliases tidy-NextBestThreePlusThree
+#' @example examples/NextBestThreePlusThree-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "NextBestThreePlusThree"),
+  definition = function(object, ...) {
+    rv <- tibble::tibble()
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
 # tidy-CohortSize ----
 
 #' @rdname tidy
@@ -35,7 +226,7 @@ setMethod(
     for(slot in slotNames(object)) {
       rv <- rv %>% tibble::add_column(!! slot := slot(object, slot))
     }
-    rv <- rv %>% tibble::add_column(Class=class(object), .before=1)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -51,12 +242,10 @@ setMethod(
   f = "tidy",
   signature = signature(object = "CohortSizeMax"),
   definition = function(object, ...) {
-    return(
-      lapply(object@cohortSizeList, tidy) %>%
-        dplyr::bind_rows(.id="Index") %>%
-        dplyr::rename(ElementClass=Class) %>%
-        tibble::add_column(Class="CohortSizeMax", .before=1)
-    )
+    rv <- lapply(object@cohortSizeList, tidy) %>%
+            dplyr::bind_rows(.id="Index")
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
   }
 )
 
@@ -70,12 +259,10 @@ setMethod(
   f = "tidy",
   signature = signature(object = "CohortSizeMin"),
   definition = function(object, ...) {
-    return(
-      lapply(object@cohortSizeList, tidy) %>%
-        dplyr::bind_rows(.id="Index") %>%
-        dplyr::rename(ElementClass=Class) %>%
-        tibble::add_column(Class="CohortSizeMin", .before=1)
-    )
+    rv <- lapply(object@cohortSizeList, tidy) %>%
+            dplyr::bind_rows(.id="Index")
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
   }
 )
 
@@ -89,13 +276,12 @@ setMethod(
   f = "tidy",
   signature = signature(object = "CohortSizeParts"),
   definition = function(object, ...) {
-    return(
-      tibble::tibble(
-        Class="CohortSizeParts",
-        part=1:length(object@sizes),
-        sizes=object@sizes
-      )
-    )
+    rv <- tibble::tibble(
+            part=1:length(object@sizes),
+            sizes=object@sizes
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
   }
 )
 
@@ -110,7 +296,6 @@ setMethod(
   signature = signature(object = "Data"),
   definition = function(object, ...) {
     rv <- tibble::tibble(
-            Class="Data",
             ID=object@ID,
             cohort=object@cohort,
             x=object@x,
@@ -129,6 +314,7 @@ setMethod(
     } else {
       rv <- rv %>% tibble::add_column(doseGrid=list(gridTibble))
     }
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -147,8 +333,8 @@ setMethod(
     rv <- rv %>%
             tibble::add_column(t0=object@t0, .after=5) %>%
             tibble::add_column(Tmax=object@Tmax, .after=5) %>%
-            tibble::add_column(u=object@u, .after=5) %>%
-            dplyr::mutate(Class="DataDA", .before=1)
+            tibble::add_column(u=object@u, .after=5)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -165,8 +351,8 @@ setMethod(
   definition = function(object, ...) {
     rv <- callNextMethod()
     rv <- rv %>%
-            tibble::add_column(w=object@w, .after=5) %>%
-            dplyr::mutate(Class="DataDual", .before=1)
+            tibble::add_column(w=object@w, .after=5)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -190,8 +376,8 @@ setMethod(
                   yshare=object@yshare
                 )
                 )
-              ) %>%
-              dplyr::mutate(Class="DataMixture", .before=1)
+              )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -208,14 +394,14 @@ setMethod(
   definition = function(object, ...) {
     rv <- callNextMethod() %>%
             add_column(part=object@part) %>%
-            add_column(nextpart=object@nextPart)
+            add_column(nextPart=object@nextPart)
     rv <- rv %>%
             tibble::add_column(
               part1Ladder=list(
                 rv$doseGrid[[1]] %>% filter(x %in% object@part1Ladder)
               )
-            ) %>%
-            dplyr::mutate(Class="DataParts", .before=1)
+            )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -240,6 +426,7 @@ setMethod(
         rv$PLcohortSize <- object@PLcohortSize %>%  tidy()
       }
     }
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -259,6 +446,7 @@ setMethod(
       "data"=object@nextBest %>%  tidy(),
       "startingDose"=tibble::tibble(startingDose=object@startingDose)
     )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -278,7 +466,7 @@ setMethod(
     for(slot in slotNames(object)) {
       rv <- rv %>% tibble::add_column(!! slot := slot(object, slot))
     }
-    rv <- rv %>% tibble::add_column(Class=class(object), .before=1)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -294,9 +482,8 @@ setMethod(
   signature = signature(object = "IncrementsMin"),
   definition = function(object, ...) {
   rv <- lapply(object@increments_list,  tidy) %>%
-          dplyr::bind_rows(.id="Index") %>%
-          dplyr::rename(ElementClass=Class) %>%
-          tibble::add_column(Class="CohortSizeMax", .before=1)
+          dplyr::bind_rows(.id="Index")
+  class(rv) <- c(paste0("tbl_", class(object)), class(rv))
   return(rv)
   }
 )
@@ -323,6 +510,7 @@ setMethod(
       rv$prec <- rv$prec %>%
                    tibble::add_column(Parameter=paramNames, .before=1)
     }
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -344,6 +532,7 @@ setMethod(
              "datanames_prior"=tibble::tibble(Parameter=object@datanames_prior),
              "sample"=tibble::tibble(Parameter=object@sample)
     )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -367,6 +556,7 @@ setMethod(
              "sample"=tibble::tibble(Parameter=object@sample),
              "weightpar"=tibble::tibble(Parameter=names(object@weightpar), weightpar=object@weightpar)
     )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -392,6 +582,7 @@ setMethod(
              "sample"=tibble::tibble(Parameter=object@sample),
              "weights"=tibble::tibble(Parameter=names(object@weights), weightpar=object@weights)
     )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )# tidy Model ----
@@ -410,6 +601,7 @@ setMethod(
               shape=object@shape,
               rate=object@rate
             )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -432,6 +624,7 @@ setMethod(
              "sigma2W"=tibble::tibble(Parameter=names(object@sigma2W), sigma2W=object@sigma2W),
              "use_fixed"=tibble::tibble(Parameter=names(object@use_fixed), rho=object@use_fixed)
           )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -446,13 +639,16 @@ setMethod(
   f = "tidy",
   signature = signature(object = "LogisticKadane"),
   definition = function(object, paramNames=NA, ...) {
-    tibble::tibble(
-      theta=object@theta,
-      xmin=object@xmin,
-      xmax=object@xmax
-    )
+    rv <- tibble::tibble(
+            theta=object@theta,
+            xmin=object@xmin,
+            xmax=object@xmax
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
   }
 )
+
 # tidy DALogisticLogNormal ----
 
 #' @rdname tidy
@@ -468,10 +664,70 @@ setMethod(
     rv$l <- tibble::tibble(l=object@l)
     rv$c_par <- tibble::tibble(c_par=object@c_par)
     rv$cond_pem <- tibble::tibble(cond_pem=object@cond_pem)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+# tidy TITELogisticLogNormal ----
+
+#' @rdname tidy
+#' @aliases tidy-TITELogisticLogNormal
+#' @example examples/TITELogisticLogNormal-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "TITELogisticLogNormal"),
+  definition = function(object, paramNames=NA, ...) {
+    rv <- callNextMethod()
+    rv$weight_method <- tibble::tibble(weight_method=object@weight_method)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
 
+# tidy FractionalCRM ----
+
+#' @rdname tidy
+#' @aliases tidy-FractionalCRM
+#' @example examples/FractionalCRM-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "FractionalCRM"),
+  definition = function(object, paramNames=NA, ...) {
+    rv <- list(
+            "skel_probs"=tibble::tibble(skel_probs=object@skel_probs),
+            "sigma2"=tibble::tibble(sigma2=object@sigma2),
+            "datanames"=tibble::tibble(Parameter=object@datanames),
+            "datanames_prior"=tibble::tibble(Parameter=object@datanames_prior),
+            "sample"=tibble::tibble(Parameter=object@sample)
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
+
+# tidy OneParExpNormalPrior ----
+
+#' @rdname tidy
+#' @aliases tidy-OneParExpNormalPrior
+#' @example examples/OneParExpNormalPrior-method-tidy.R
+#' @export
+setMethod(
+  f = "tidy",
+  signature = signature(object = "OneParExpNormalPrior"),
+  definition = function(object, paramNames=NA, ...) {
+    rv <- list(
+            "skel_probs"=tibble::tibble(skel_probs=object@skel_probs),
+            "sigma2"=tibble::tibble(sigma2=object@sigma2),
+            "datanames"=tibble::tibble(Parameter=object@datanames),
+            "datanames_prior"=tibble::tibble(Parameter=object@datanames_prior),
+            "sample"=tibble::tibble(Parameter=object@sample)
+          )
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
+  }
+)
 
 # tidy Stopping ----
 
@@ -490,7 +746,7 @@ setMethod(
         rv <- rv %>% tibble::add_column(!! slot := slot(object, slot))
       }
     }
-    rv <- rv %>% tibble::add_column(Class=class(object), .before=1)
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -506,9 +762,8 @@ setMethod(
   signature = signature(object = "StoppingAll"),
   definition = function(object, ...) {
   rv <- lapply(object@stopList,  tidy) %>%
-          dplyr::bind_rows(.id="Index") %>%
-          dplyr::rename(ElementClass=Class) %>%
-          tibble::add_column(Class="StoppingAll", .before=1)
+          dplyr::bind_rows(.id="Index")
+  class(rv) <- c(paste0("tbl_", class(object)), class(rv))
   return(rv)
   }
 )
@@ -524,9 +779,8 @@ setMethod(
   signature = signature(object = "StoppingAny"),
   definition = function(object, ...) {
     rv <- lapply(object@stopList,  tidy) %>%
-            dplyr::bind_rows(.id="Index") %>%
-            dplyr::rename(ElementClass=Class) %>%
-            tibble::add_column(Class="StoppingAny", .before=1)
+            dplyr::bind_rows(.id="Index")
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
   }
 )
@@ -542,7 +796,9 @@ setMethod(
   signature = signature(object = "StoppingHighestDose"),
   definition = function(object, ...) {
     # StoppingHighestDose has no slots
-    return(tibble::tibble())
+    rv <- tibble::tibble()
+    class(rv) <- c(paste0("tbl_", class(object)), class(rv))
+    return(rv)
   }
 )
 
@@ -557,12 +813,8 @@ setMethod(
   signature = signature(object = "StoppingList"),
   definition = function(object, ...) {
     rv <- lapply(object@stopList,  tidy) %>%
-            dplyr::bind_rows(.id="Index") %>%
-            dplyr::rename(ElementClass=Class) %>%
-            tibble::add_column(Class="StoppingList", .before=1)
+            dplyr::bind_rows(.id="Index")
+    tibble::tibble()
     return(rv)
   }
 )
-
-
-
