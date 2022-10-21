@@ -460,11 +460,20 @@ setMethod(
 setMethod(
   f = "tidy",
   signature = signature(object = "Increments"),
-  definition = function(object, ...) {
+  definition = function(object, interval_name=NA, ...) {
     rowCount <- max(sapply(slotNames(object), function(name) length(slot(object, name))))
     rv <- tibble::tibble(.rows=rowCount)
     for(slot in slotNames(object)) {
       rv <- rv %>% tibble::add_column(!! slot := slot(object, slot))
+    }
+    if (!is.na(interval_name)) {
+      rv <- rv %>%
+              dplyr::rename(min={{interval_name}}) %>%
+              dplyr::mutate(
+                max=dplyr::lead(min),
+                max=ifelse(is.infinite(max), Inf, max)
+              ) %>%
+              dplyr::select(min, max, increments)
     }
     class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
