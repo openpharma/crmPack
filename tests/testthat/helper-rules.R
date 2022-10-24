@@ -95,3 +95,14 @@ h_stopping_specific_dose <- function(rule = StoppingTargetProb(target = c(0, 0.3
     dose = dose
   )
 }
+
+h_stopping_list <- function() {
+  StoppingList(
+    stop_list = list(
+      StoppingMinCohorts(nCohorts = 3),
+      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
+      StoppingMinPatients(nPatients = 20)
+    ),
+    summary = any
+  )
+}

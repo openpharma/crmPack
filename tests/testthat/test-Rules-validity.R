@@ -1156,3 +1156,55 @@ test_that("v_stopping_target_biomarker returns expected messages for non-valid p
   object@prob <- c(0.5, 0.6)
   expect_equal(v_stopping_target_biomarker(object), err_msg)
 })
+
+## v_stopping_list ----
+
+test_that("v_stopping_list passes for valid object", {
+  object <- h_stopping_list()
+  expect_true(v_stopping_list(object))
+})
+
+test_that("v_stopping_list returns expected messages for non-valid stop_list", {
+  err_msg <- "every stop_list element must be of class 'Stopping'"
+  object <- h_stopping_list()
+
+  # Changing `stop_list` so that not all of its elements are of class `Stopping`.
+  object@stop_list <- list(object@stop_list[[1]], TRUE)
+  expect_equal(v_stopping_list(object), err_msg)
+  object@stop_list <- list(FALSE, TRUE)
+  expect_equal(v_stopping_list(object), err_msg)
+})
+
+test_that("v_stopping_list returns expected messages for non-valid summary (args)", {
+  err_msg <- "summary must be a function that accepts a single argument, without ..."
+  object <- h_stopping_list()
+
+  # Changing `summary` so that it has more than 1 or no arguments.
+  object@summary <- function(x, y) {
+    TRUE
+  }
+  expect_equal(v_stopping_list(object), err_msg)
+  object@summary <- function() {
+    TRUE
+  }
+  expect_equal(v_stopping_list(object), err_msg)
+  object@summary <- function(...) {
+    TRUE
+  }
+  expect_equal(v_stopping_list(object), err_msg)
+})
+
+test_that("v_stopping_list returns expected messages for non-valid summary (output)", {
+  err_msg <- "summary must accept a logical vector of the same length as 'stop_list' and return a boolean value"
+  object <- h_stopping_list()
+
+  # Changing `summary` so that it does not return a flag.
+  object@summary <- function(x) {
+    c(TRUE, FALSE)
+  }
+  expect_equal(v_stopping_list(object), err_msg)
+  object@summary <- function(x) {
+    c(TRUE, FALSE, TRUE)
+  }
+  expect_equal(v_stopping_list(object), err_msg)
+})

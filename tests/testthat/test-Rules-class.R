@@ -523,3 +523,24 @@ test_that("StoppingHighestDose object can be created with user constructor", {
   result <- expect_silent(StoppingHighestDose())
   expect_valid(result, "StoppingHighestDose")
 })
+
+## StoppingList ----
+
+test_that(".StoppingList works as expected", {
+  result <- expect_silent(.StoppingList())
+  expect_valid(result, "StoppingList")
+})
+
+test_that("StoppingList object can be created with user constructor", {
+  stop_list <- list(
+    StoppingMinCohorts(nCohorts = 5),
+    StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
+    StoppingMinPatients(nPatients = 30)
+  )
+  result <- expect_silent(
+    StoppingList(stop_list = stop_list, summary = all)
+  )
+  expect_valid(result, "StoppingList")
+  expect_identical(result@stop_list, stop_list)
+  expect_identical(result@summary, all)
+})

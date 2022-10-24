@@ -11,6 +11,7 @@
 \alias{v_stopping_mtd_cv}
 \alias{v_stopping_lowest_dose_hsr_beta}
 \alias{v_stopping_target_biomarker}
+\alias{v_stopping_list}
 \title{Internal Helper Functions for Validation of \code{\link{Stopping}} Objects}
 \usage{
 v_stopping_cohorts_near_dose(object)
@@ -30,6 +31,8 @@ v_stopping_mtd_cv(object)
 v_stopping_lowest_dose_hsr_beta(object)
 
 v_stopping_target_biomarker(object)
+
+v_stopping_list(object)
 }
 \arguments{
 \item{object}{(\code{Stopping})\cr object to validate.}
@@ -72,5 +75,8 @@ object contains valid probability target, threshold and shape parameters.
 
 \item \code{v_stopping_target_biomarker()}: validates that the \code{\link{StoppingTargetBiomarker}} object
 contains valid \code{target}, \code{is_relative} and \code{prob}slots.
+
+\item \code{v_stopping_list()}: validates that the \code{\link{StoppingList}} object
+contains valid \code{stop_list}, \code{summary} slots.
 
 }}

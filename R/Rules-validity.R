@@ -462,3 +462,28 @@ v_stopping_target_biomarker <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_stopping validates that the [`StoppingList`] object
+#'   contains valid `stop_list`, `summary` slots.
+v_stopping_list <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@stop_list, test_class, "Stopping")),
+    "every stop_list element must be of class 'Stopping'"
+  )
+  is_summary_ok <- test_function(object@summary, nargs = 1)
+  v$check(
+    is_summary_ok,
+    "summary must be a function that accepts a single argument, without ..."
+  )
+  if (is_summary_ok) {
+    summary_res <- object@summary(
+      rep(c(TRUE, FALSE), length.out = length(object@stop_list))
+    )
+    v$check(
+      test_flag(summary_res),
+      "summary must accept a logical vector of the same length as 'stop_list' and return a boolean value"
+    )
+  }
+  v$result()
+}
