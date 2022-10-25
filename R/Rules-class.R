@@ -1656,70 +1656,61 @@ StoppingHighestDose <- function() {
   .StoppingHighestDose()
 }
 
-# nolint start
+# StoppingList ----
 
-## --------------------------------------------------
-## Stopping based on multiple stopping rules
-## --------------------------------------------------
+## class ----
 
-##' Stop based on multiple stopping rules
-##'
-##' This class can be used to combine multiple stopping rules.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}, and the \code{summary} is a function
-##' taking a logical vector of the size of \code{stopList} and returning a
-##' single logical value. For example, if the function \code{all} is given as
-##' \code{summary} function, then this means that all stopping rules must be
-##' fulfilled in order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##' @slot summary the summary function to combine the results of the stopping
-##' rules into a single result
-##'
-##' @example examples/Rules-class-StoppingList.R
-##' @keywords classes
-##' @export
-.StoppingList <-
-    setClass(Class="StoppingList",
-             representation(stopList="list",
-                            summary="function"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5)),
-                       summary=all),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingList`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingList`] is the class for testing a stopping rule that consists of
+#' many single stopping rules that are in turn the objects of class `Stopping`.
+#' The `summary` slot stores a function that takes a logical vector of the size
+#' of `stop_list` and returns a single logical value. For example, if the function
+#' `all` is specified as a `summary` function, then that all stopping rules
+#' defined in `stop_list` must be satisfied in order the result of this rule to
+#' be `TRUE`.
+#'
+#' @slot stop_list (`list`)\cr list of stopping rules.
+#' @slot summary (`function`)\cr a summary function to combine the results of
+#'   the stopping rules into a single result.
+#'
+#' @aliases StoppingList
+#' @export
+#'
+.StoppingList <- setClass(
+  Class = "StoppingList",
+  slots = c(
+    stop_list = "list",
+    summary = "function"
+  ),
+  prototype = prototype(
+    stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5)),
+    summary = all
+  ),
+  contains = "Stopping",
+  validity = v_stopping_list
+)
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
-                     testRes <- object@summary(rep(c(TRUE, FALSE),
-                                                   length.out=length(object@stopList)))
-                     o$check(is.bool(testRes),
-                             "summary function must return a boolean value")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingList())
-
-
-##' Initialization function for "StoppingList"
-##'
-##' @param stopList see \code{\linkS4class{StoppingList}}
-##' @param summary see \code{\linkS4class{StoppingList}}
-##' @return the \code{\linkS4class{StoppingList}} object
-##'
-##' @export
-##' @keywords methods
-StoppingList <- function(stopList,
-                         summary)
-{
-    .StoppingList(stopList=stopList,
-                  summary=summary)
+#' @rdname StoppingList-class
+#'
+#' @param stop_list (`list`)\cr see slot definition.
+#' @param summary (`function`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingList.R
+#'
+StoppingList <- function(stop_list, summary) {
+  .StoppingList(
+    stop_list = stop_list,
+    summary = summary
+  )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Stopping based on fulfillment of all multiple stopping rules

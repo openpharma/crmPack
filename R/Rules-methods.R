@@ -1553,7 +1553,7 @@ setMethod("stopTrial",
       ## in the list
       individualResults <-
         if (missing(samples)) {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             model = model,
@@ -1561,7 +1561,7 @@ setMethod("stopTrial",
             ...
           )
         } else {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             samples = samples,
