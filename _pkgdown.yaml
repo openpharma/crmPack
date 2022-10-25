@@ -92,6 +92,7 @@ reference:
       - StoppingSpecificDose
       - StoppingHighestDose
       - StoppingList
+      - StoppingAll
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -181,6 +182,7 @@ reference:
       - v_stopping_lowest_dose_hsr_beta
       - v_stopping_target_biomarker
       - v_stopping_list
+      - v_stopping_all
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities

@@ -1208,3 +1208,33 @@ test_that("v_stopping_list returns expected messages for non-valid summary (outp
   }
   expect_equal(v_stopping_list(object), err_msg)
 })
+
+## v_stopping_all ----
+
+test_that("v_stopping_all passes for valid object", {
+  object <- StoppingAll(
+    stop_list = list(
+      StoppingMinCohorts(nCohorts = 3),
+      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
+      StoppingMinPatients(nPatients = 20)
+    )
+  )
+  expect_true(v_stopping_all(object))
+})
+
+test_that("v_stopping_all returns expected messages for non-valid stop_list", {
+  err_msg <- "every stop_list element must be of class 'Stopping'"
+  object <- StoppingAll(
+    stop_list = list(
+      StoppingMinCohorts(nCohorts = 3),
+      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
+      StoppingMinPatients(nPatients = 20)
+    )
+  )
+
+  # Changing `stop_list` so that not all of its elements are of class `Stopping`.
+  object@stop_list <- list(object@stop_list[[1]], TRUE)
+  expect_equal(v_stopping_all(object), err_msg)
+  object@stop_list <- list(FALSE, TRUE)
+  expect_equal(v_stopping_all(object), err_msg)
+})

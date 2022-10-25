@@ -15,7 +15,7 @@ StoppingList(stop_list, summary)
 \item{summary}{(\code{function})\cr see slot definition.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{StoppingList}} is the class for testing a stopping rule that consists of
 many single stopping rules that are in turn the objects of class \code{Stopping}.
@@ -42,9 +42,9 @@ my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
 my_stopping3 <- StoppingMinPatients(nPatients = 20)
 
 # Create a list of stopping rules (of class `StoppingList`) which will then be
-# summarized (in this specific example) with the 'any' function, meaning that
-# the study would be stopped if `any` of the single stopping rules is `TRUE`.
-mystopping <- StoppingList(
+# summarized (in this specific example) with the `any` function, meaning that
+# the study would be stopped if any of the single stopping rules is `TRUE`.
+my_stopping <- StoppingList(
   stop_list = c(my_stopping1, my_stopping2, my_stopping3),
   summary = any
 )
