@@ -487,3 +487,14 @@ v_stopping_list <- function(object) {
   }
   v$result()
 }
+
+#' @describeIn v_stopping validates that the [`StoppingAll`] object
+#'   contains valid `stop_list` slot.
+v_stopping_all <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@stop_list, test_class, "Stopping")),
+    "every stop_list element must be of class 'Stopping'"
+  )
+  v$result()
+}

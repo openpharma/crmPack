@@ -1378,8 +1378,8 @@ setMethod("&",
   ),
   def =
     function(e1, e2) {
-      e1@stopList <- c(
-        e1@stopList,
+      e1@stop_list <- c(
+        e1@stop_list,
         e2
       )
       return(e1)
@@ -1401,9 +1401,9 @@ setMethod("&",
   ),
   def =
     function(e1, e2) {
-      e2@stopList <- c(
+      e2@stop_list <- c(
         e1,
-        e2@stopList
+        e2@stop_list
       )
       return(e2)
     }
@@ -1607,7 +1607,7 @@ setMethod("stopTrial",
       ## in the list
       individualResults <-
         if (missing(samples)) {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             model = model,
@@ -1615,7 +1615,7 @@ setMethod("stopTrial",
             ...
           )
         } else {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             samples = samples,
