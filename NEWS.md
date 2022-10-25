@@ -1,4 +1,4 @@
-# Version 1.0.9000.9098
+# Version 1.0.9000.9099
 * Renamed `stopList` slot in `StoppingList` and `StoppingAll` classes.
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
 * In `StoppingTargetBiomarker` class, changed `scale` character slot to
