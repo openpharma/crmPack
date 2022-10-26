@@ -54,12 +54,22 @@ and a given pseudo efficacy model without DLE and efficacy samples
 }
 \section{Functions}{
 \itemize{
-\item \code{plotDualResponses,ModelTox,Samples,ModelEff,Samples-method}: function still to be documented
+\item \code{plotDualResponses(
+  DLEmodel = ModelTox,
+  DLEsamples = Samples,
+  Effmodel = ModelEff,
+  Effsamples = Samples
+)}: function still to be documented
 
-\item \code{plotDualResponses,ModelTox,missing,ModelEff,missing-method}: Plot the DLE and efficacy curve side by side given a DLE model
+\item \code{plotDualResponses(
+  DLEmodel = ModelTox,
+  DLEsamples = missing,
+  Effmodel = ModelEff,
+  Effsamples = missing
+)}: Plot the DLE and efficacy curve side by side given a DLE model
 and an efficacy model without any samples
-}}
 
+}}
 \examples{
 # nolint start
 

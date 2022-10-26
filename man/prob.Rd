@@ -102,39 +102,39 @@ correspond to the sampling index, i.e. the layout is then
 }
 \section{Functions}{
 \itemize{
-\item \code{prob,numeric,LogisticNormal,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticNormal, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticLogNormal,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticLogNormal, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticLogNormalSub,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticLogNormalSub, samples = Samples)}: 
 
-\item \code{prob,numeric,ProbitLogNormal,Samples-method}: 
+\item \code{prob(dose = numeric, model = ProbitLogNormal, samples = Samples)}: 
 
-\item \code{prob,numeric,ProbitLogNormalRel,Samples-method}: 
+\item \code{prob(dose = numeric, model = ProbitLogNormalRel, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticKadane,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticKadane, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticKadaneBetaGamma,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticKadaneBetaGamma, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticNormalMixture,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticNormalMixture, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticNormalFixedMixture,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticNormalFixedMixture, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticLogNormalMixture,Samples-method}: 
+\item \code{prob(dose = numeric, model = LogisticLogNormalMixture, samples = Samples)}: 
 
-\item \code{prob,numeric,DualEndpoint,Samples-method}: 
+\item \code{prob(dose = numeric, model = DualEndpoint, samples = Samples)}: 
 
-\item \code{prob,numeric,LogisticIndepBeta,Samples-method}: compute toxicity probabilities of the occurrence of a DLE at
+\item \code{prob(dose = numeric, model = LogisticIndepBeta, samples = Samples)}: compute toxicity probabilities of the occurrence of a DLE at
 a specified dose level, based on the samples of \code{\link{LogisticIndepBeta}} model
 parameters.
 
-\item \code{prob,numeric,LogisticIndepBeta,missing-method}: compute toxicity probabilities of the occurrence of a DLE at
+\item \code{prob(dose = numeric, model = LogisticIndepBeta, samples = missing)}: compute toxicity probabilities of the occurrence of a DLE at
 a specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
-\item \code{prob,numeric,OneParExpNormalPrior,Samples-method}: 
-}}
+\item \code{prob(dose = numeric, model = OneParExpNormalPrior, samples = Samples)}: 
 
+}}
 \note{
 The \code{\link[=prob]{prob()}} and \code{\link[=dose]{dose()}} functions are the inverse of
 each other, for all \code{\link[=dose]{dose()}} methods for which its first argument, i.e. a

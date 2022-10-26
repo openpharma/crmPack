@@ -42,21 +42,21 @@ This function determines the size of the next cohort.
 }
 \section{Functions}{
 \itemize{
-\item \code{size,CohortSizeRange,ANY,Data-method}: Determine the cohort size based on the range into which the
+\item \code{size(cohortSize = CohortSizeRange, dose = ANY, data = Data)}: Determine the cohort size based on the range into which the
 next dose falls into
 
-\item \code{size,CohortSizeDLT,ANY,Data-method}: Determine the cohort size based on the number of DLTs so
+\item \code{size(cohortSize = CohortSizeDLT, dose = ANY, data = Data)}: Determine the cohort size based on the number of DLTs so
 far
 
-\item \code{size,CohortSizeMax,ANY,Data-method}: Size based on maximum of multiple cohort size rules
+\item \code{size(cohortSize = CohortSizeMax, dose = ANY, data = Data)}: Size based on maximum of multiple cohort size rules
 
-\item \code{size,CohortSizeMin,ANY,Data-method}: Size based on minimum of multiple cohort size rules
+\item \code{size(cohortSize = CohortSizeMin, dose = ANY, data = Data)}: Size based on minimum of multiple cohort size rules
 
-\item \code{size,CohortSizeConst,ANY,Data-method}: Constant cohort size
+\item \code{size(cohortSize = CohortSizeConst, dose = ANY, data = Data)}: Constant cohort size
 
-\item \code{size,CohortSizeParts,ANY,DataParts-method}: Cohort size based on the parts
+\item \code{size(cohortSize = CohortSizeParts, dose = ANY, data = DataParts)}: Cohort size based on the parts
+
 }}
-
 \examples{
 # nolint start
 

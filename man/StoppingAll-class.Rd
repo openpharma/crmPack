@@ -4,35 +4,39 @@
 \name{StoppingAll-class}
 \alias{StoppingAll-class}
 \alias{.StoppingAll}
-\title{Stop based on fulfillment of all multiple stopping rules}
-\description{
-This class can be used to combine multiple stopping rules with an AND
-operator.
+\alias{StoppingAll}
+\title{\code{StoppingAll}}
+\usage{
+StoppingAll(stop_list)
 }
-\details{
-\code{stopList} contains all stopping rules, which are again objects of
-class \code{\linkS4class{Stopping}}. All stopping rules must be fulfilled in
-order that the result of this rule is to stop.
+\arguments{
+\item{stop_list}{(\code{list})\cr see slot definition.}
+}
+\description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingAll}} is the class for testing a stopping rule that consists of
+many single stopping rules that are in turn the objects of class \code{Stopping}.
+All single stopping rules must be satisfied in order the result of this rule
+to be \code{TRUE}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{stopList}}{list of stopping rules}
+\item{\code{stop_list}}{(\code{list})\cr list of stopping rules.}
 }}
 
 \examples{
 
-# Define some stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+# Define some stopping rules.
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+my_stopping3 <- StoppingMinPatients(nPatients = 20)
 
-# Create a list of stopping rules (of class 'StoppingAll') which would then be
-# summarized by the 'all' function, meaning that the study would be stopped only if
-# 'all' the single stopping rules are TRUE
-mystopping <- StoppingAll(stopList=c(myStopping1,myStopping2,myStopping3))
-
-
+# Create a list of stopping rules (of class `StoppingAll`) which would then be
+# summarized by the `all` function, meaning that the study would be stopped only
+# if all of the single stopping rules are `TRUE`.
+my_stopping <- StoppingAll(
+  stop_list = c(my_stopping1, my_stopping2, my_stopping3)
+)
 }
-\keyword{classes}
