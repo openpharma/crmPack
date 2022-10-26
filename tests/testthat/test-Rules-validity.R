@@ -109,7 +109,10 @@ test_that("v_next_best_ncrm_loss passes for valid object", {
   object <- h_next_best_ncrm_loss()
   expect_true(v_next_best_ncrm_loss(object))
 
-  object <- h_next_best_ncrm_loss(edge_case = TRUE)
+  object <- h_next_best_ncrm_loss(edge_case = 1L)
+  expect_true(v_next_best_ncrm_loss(object))
+
+  object <- h_next_best_ncrm_loss(edge_case = 2L)
   expect_true(v_next_best_ncrm_loss(object))
 })
 
@@ -133,7 +136,7 @@ test_that("v_next_best_ncrm_loss returns message for non-valid target", {
 })
 
 test_that("v_next_best_ncrm_loss returns message for non-valid overdose", {
-  err_msg <- "overdose has to be a probability range excluding 0"
+  err_msg <- "overdose has to be a probability range"
   object <- h_next_best_ncrm_loss()
 
   # Changing `overdose` so that it is not an interval.
@@ -145,12 +148,12 @@ test_that("v_next_best_ncrm_loss returns message for non-valid overdose", {
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
   # Changing `overdose` so that one bound is not a valid probability value.
-  object@overdose <- c(0, 0.3)
+  object@overdose <- c(-0.5, 0.3)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })
 
 test_that("v_next_best_ncrm_loss returns message for non-valid unacceptable", {
-  err_msg <- "unacceptable has to be a probability range excluding 0"
+  err_msg <- "unacceptable has to be a probability range"
   object <- h_next_best_ncrm_loss()
 
   # Changing `unacceptable` so that it is not an interval.
@@ -162,7 +165,7 @@ test_that("v_next_best_ncrm_loss returns message for non-valid unacceptable", {
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 
   # Changing `unacceptable` so that one bound is not a valid probability value.
-  object@unacceptable <- c(0, 0.3)
+  object@unacceptable <- c(-0.5, 0.3)
   expect_equal(v_next_best_ncrm_loss(object), err_msg)
 })
 
