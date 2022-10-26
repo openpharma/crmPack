@@ -1,4 +1,12 @@
-# Version 1.0.9000.9075
+# Version 1.0.9000.9099
+* Renamed `stopList` slot in `StoppingList` and `StoppingAll` classes.
+* Added `unique` flag to `assert_probabilities` checkmate custom functions.
+* In `StoppingTargetBiomarker` class, changed `scale` character slot to
+  `is_relative` flag.
+* Created a new vignette which describes how to use certain functions and features
+  of `crmPack` after the major refactoring.
+* Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
+  it was used only in the some old development version.
 * Renamed class `IncrementMin` to `IncrementsMin`.
 * Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
   `IncrementsNumDoseLevels`, `IncrementMin` and other dependent classes.

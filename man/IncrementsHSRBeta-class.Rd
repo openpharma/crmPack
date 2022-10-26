@@ -10,13 +10,13 @@
 IncrementsHSRBeta(target = 0.3, prob = 0.95, a = 1, b = 1)
 }
 \arguments{
-\item{target}{(\code{proportion})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{target}{(\code{proportion})\cr see slot definition.}
 
-\item{prob}{(\code{proportion})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{prob}{(\code{proportion})\cr see slot definition.}
 
-\item{a}{(\code{number})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{a}{(\code{number})\cr see slot definition.}
 
-\item{b}{(\code{number})\cr see slot definition in \code{\link{IncrementsHSRBeta}}.}
+\item{b}{(\code{number})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -34,15 +34,17 @@ observed data per dose level, independent from the underlying model.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr the target toxicity.}
+\item{\code{target}}{(\code{proportion})\cr the target toxicity, except
+0 or 1.}
 
-\item{\code{prob}}{(\code{proportion})\cr the threshold probability for a dose being toxic.}
+\item{\code{prob}}{(\code{proportion})\cr the threshold probability (except 0 or 1) for
+a dose being toxic.}
 
-\item{\code{a}}{(\code{number})\cr shape parameter a > 0 of probability
-distribution Beta (a,b).}
+\item{\code{a}}{(\code{number})\cr shape parameter \eqn{a > 0} of probability distribution
+Beta (a,b).}
 
-\item{\code{b}}{(\code{number})\cr shape parameter b > 0 of probability
-distribution Beta (a, b).}
+\item{\code{b}}{(\code{number})\cr shape parameter \eqn{b > 0} of probability distribution
+Beta (a,b).}
 }}
 
 \examples{

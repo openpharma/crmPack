@@ -7,23 +7,37 @@
 \alias{expect_probabilities}
 \title{Check if an Argument is a Probability Vector}
 \usage{
-check_probabilities(x, bounds_closed = TRUE, len = NULL, sorted = FALSE)
+check_probabilities(
+  x,
+  bounds_closed = TRUE,
+  len = NULL,
+  unique = FALSE,
+  sorted = FALSE
+)
 
 assert_probabilities(
   x,
   bounds_closed = TRUE,
   len = NULL,
+  unique = FALSE,
   sorted = FALSE,
   .var.name = checkmate::vname(x),
   add = NULL
 )
 
-test_probabilities(x, bounds_closed = TRUE, len = NULL, sorted = FALSE)
+test_probabilities(
+  x,
+  bounds_closed = TRUE,
+  len = NULL,
+  unique = FALSE,
+  sorted = FALSE
+)
 
 expect_probabilities(
   x,
   bounds_closed = TRUE,
   len = NULL,
+  unique = FALSE,
   sorted = FALSE,
   info = NULL,
   label = vname(x)
@@ -40,6 +54,9 @@ only, and the second to the upper bound \eqn{1} only.}
 
 \item{len}{[\code{integer(1)}]\cr
 Exact expected length of \code{x}.}
+
+\item{unique}{[\code{logical(1)}]\cr
+Must all values be unique? Default is \code{FALSE}.}
 
 \item{sorted}{[\code{logical(1)}]\cr
 Elements must be sorted in ascending order. Missing values are ignored.}

@@ -22,9 +22,9 @@ the minimum of all sizes.
 }
 \section{Functions}{
 \itemize{
-\item \code{minSize,CohortSize-method}: The method combining cohort size rules by taking minimum
-}}
+\item \code{minSize(CohortSize)}: The method combining cohort size rules by taking minimum
 
+}}
 \examples{
 
 # Here is the rule for: 

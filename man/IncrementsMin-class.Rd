@@ -10,7 +10,7 @@
 IncrementsMin(increments_list)
 }
 \arguments{
-\item{increments_list}{(\code{list})\cr see slot definition in \code{\link{IncrementsMin}}.}
+\item{increments_list}{(\code{list})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

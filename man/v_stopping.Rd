@@ -2,13 +2,40 @@
 % Please edit documentation in R/Rules-validity.R
 \name{v_stopping}
 \alias{v_stopping}
-\alias{v_stopping_lowest_dose_hsr_beta}
+\alias{v_stopping_cohorts_near_dose}
+\alias{v_stopping_patients_near_dose}
+\alias{v_stopping_min_cohorts}
+\alias{v_stopping_min_patients}
+\alias{v_stopping_target_prob}
+\alias{v_stopping_mtd_distribution}
 \alias{v_stopping_mtd_cv}
+\alias{v_stopping_lowest_dose_hsr_beta}
+\alias{v_stopping_target_biomarker}
+\alias{v_stopping_list}
+\alias{v_stopping_all}
 \title{Internal Helper Functions for Validation of \code{\link{Stopping}} Objects}
 \usage{
-v_stopping_lowest_dose_hsr_beta(object)
+v_stopping_cohorts_near_dose(object)
+
+v_stopping_patients_near_dose(object)
+
+v_stopping_min_cohorts(object)
+
+v_stopping_min_patients(object)
+
+v_stopping_target_prob(object)
+
+v_stopping_mtd_distribution(object)
 
 v_stopping_mtd_cv(object)
+
+v_stopping_lowest_dose_hsr_beta(object)
+
+v_stopping_target_biomarker(object)
+
+v_stopping_list(object)
+
+v_stopping_all(object)
 }
 \arguments{
 \item{object}{(\code{Stopping})\cr object to validate.}
@@ -25,10 +52,37 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
-\item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
+\item \code{v_stopping_cohorts_near_dose()}: validates that the \code{\link{StoppingCohortsNearDose}}
+object contains valid \code{nCohorts} and \code{percentage} parameters.
+
+\item \code{v_stopping_patients_near_dose()}: validates that the \code{\link{StoppingPatientsNearDose}}
+object contains valid \code{nPatients} and \code{percentage} parameters.
+
+\item \code{v_stopping_min_cohorts()}: validates that the \code{\link{StoppingMinCohorts}}
+object contains valid \code{nCohorts} parameter.
+
+\item \code{v_stopping_min_patients()}: validates that the \code{\link{StoppingMinPatients}}
+object contains valid \code{nPatients} parameter.
+
+\item \code{v_stopping_target_prob()}: validates that the \code{\link{StoppingTargetProb}}
+object contains valid \code{target} and \code{prob} parameters.
+
+\item \code{v_stopping_mtd_distribution()}: validates that the \code{\link{StoppingMTDdistribution}}
+object contains valid \code{target}, \code{thresh} and \code{prob} parameters.
+
+\item \code{v_stopping_mtd_cv()}: validates that the \code{\link{StoppingMTDCV}} object
+contains valid probability target and percentage threshold.
+
+\item \code{v_stopping_lowest_dose_hsr_beta()}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
 
-\item \code{v_stopping_mtd_cv}: validates that the \code{\link{StoppingMTDCV}} object
-contains valid probability target and percentage threshold.
-}}
+\item \code{v_stopping_target_biomarker()}: validates that the \code{\link{StoppingTargetBiomarker}} object
+contains valid \code{target}, \code{is_relative} and \code{prob}slots.
 
+\item \code{v_stopping_list()}: validates that the \code{\link{StoppingList}} object
+contains valid \code{stop_list}, \code{summary} slots.
+
+\item \code{v_stopping_all()}: validates that the \code{\link{StoppingAll}} object
+contains valid \code{stop_list} slot.
+
+}}
