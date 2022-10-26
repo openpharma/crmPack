@@ -86,6 +86,7 @@ reference:
       - StoppingHighestDose
       - StoppingList
       - StoppingAll
+      - StoppingAny
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
