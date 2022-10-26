@@ -1,3 +1,5 @@
+# nolint start
+
 #####################################################################################
 ## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com]
 ## Project: Object-oriented implementation of CRM designs
@@ -156,9 +158,9 @@ myStopping3 <- new("StoppingTargetBiomarker",
 
 ## you can either write this:
 myStopping <- new("StoppingAny",
-                  stopList=
+                  stop_list=
                   list(new("StoppingAll",
-                           stopList=
+                           stop_list=
                            list(myStopping1,
                                 myStopping3)),
                        myStopping2))
@@ -281,4 +283,4 @@ str(mySims@data)
 
 plot(mySims)
 
-
+# nolint end

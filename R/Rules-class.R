@@ -1754,57 +1754,48 @@ StoppingAll <- function(stop_list) {
   .StoppingAll(stop_list = stop_list)
 }
 
-# nolint start
+# StoppingAny ----
 
-## --------------------------------------------------
-## Stopping based on fulfillment of any stopping rule
-## --------------------------------------------------
+## class ----
 
-##' Stop based on fulfillment of any stopping rule
-##'
-##' This class can be used to combine multiple stopping rules with an OR
-##' operator.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}. Any of these rules must be fulfilled in
-##' order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##'
-##' @example examples/Rules-class-StoppingAny.R
-##' @keywords classes
-##' @export
-.StoppingAny <-
-    setClass(Class="StoppingAny",
-             representation(stopList="list"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5))),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingAny`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingAny`] is the class for testing a stopping rule that consists of
+#' many single stopping rules that are in turn the objects of class `Stopping`.
+#' At least one single stopping rule must be satisfied in order the result of
+#' this rule to be `TRUE`.
+#'
+#' @slot stop_list (`list`)\cr list of stopping rules.
+#'
+#' @aliases StoppingAny
+#' @export
+#'
+.StoppingAny <- setClass(
+  Class = "StoppingAny",
+  slots = c(stop_list = "list"),
+  prototype = prototype(
+    stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
+  ),
+  contains = "Stopping",
+  validity = v_stopping_all
+)
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingAny())
-
-
-##' Initialization function for "StoppingAny"
-##'
-##' @param stopList see \code{\linkS4class{StoppingAny}}
-##' @return the \code{\linkS4class{StoppingAny}} object
-##'
-##' @export
-##' @keywords methods
-StoppingAny <- function(stopList)
-{
-    .StoppingAny(stopList=stopList)
+#' @rdname StoppingAny-class
+#'
+#' @param stop_list (`list`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingAny.R
+#'
+StoppingAny <- function(stop_list) {
+  .StoppingAny(stop_list = stop_list)
 }
 
+# nolint start
 
 ##-------------------------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the 95% credibility interval
