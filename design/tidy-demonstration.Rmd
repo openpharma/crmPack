@@ -29,6 +29,9 @@ The principles I have used in tidying `crmPack` objects are as follows:
 ### Exceptions
 *  Where a vector slot (or series of vector slots) define a range, then the naming convention described above is not followed.  Instead, columns named `min` and `max` define the extent of the range and a column named `Range` labels the range.  Not all instances of this paradigm have been implemented.
 
+### Please also read
+Please also read [Issue 407](https://github.com/Roche/crmPack/issues/407) regarding inconsistent slot names.
+
 ### Simple examples
 
 `CohortSizeConst` is a trivial example.
@@ -68,3 +71,268 @@ LogisticLogNormal(
 * Update README once these changes are merged with main.
 
 ## Comprehensive listing of all tidy methods
+### CohortSize
+```{r, error=TRUE}
+names(getClass("CohortSize")@subclasses)
+
+CohortSizeConst(3) %>% tidy()
+CohortSizeDLT(DLTintervals=0:2, cohortSize=2:0) %>% tidy()
+CohortSizeParts(sizes=c(1,3)) %>%  tidy()
+
+mySize1 <- CohortSizeRange(intervals = c(0, 10), cohortSize = c(1, 3))
+mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1), cohortSize=c(1, 3))
+mySize <- CohortSizeMax(cohortSizeList=list(mySize1, mySize2))
+mySize %>% tidy()
+
+
+mySize <- CohortSizeMin(cohortSizeList=list(mySize1, mySize2))
+mySize %>% tidy()
+CohortSizeParts(sizes=c(1,3)) %>% tidy()
+
+```
+
+### Data
+```{r}
+names(getClass("Data")@subclasses)
+
+Data(
+  doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+  x=c(1, 3, 5, 10, 15),
+  y=c(0, 0, 0, 0, 1)
+) %>% 
+tidy()
+
+tidyDataDA <- DataDA(
+                u = c(42, 30, 15, 5, 20, 25, 30, 60),
+                t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+                Tmax = 60,
+                x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+                y = c(0, 0, 1, 1, 0, 0, 1, 0),
+                doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+              ) %>%
+              tidy()
+
+tidyDataDA
+tidyDataDA$doseGrid[1]
+
+tidyDataDual <- DataDual(
+                  x=c(0.1,0.5,1.5,3,6,10,10,10),
+                  y=c(0,0,0,0,0,0,1,0),
+                  w=rnorm(8),
+                  doseGrid=c(0.1,0.5,1.5,3,6, seq(from=10,to=80,by=2))
+                ) %>% 
+                tidy()
+
+tidyDataDual
+tidyDataDual$doseGrid[1]
+
+
+tidyDataMixture <- DataMixture(
+                     xshare= c(rep(10, 4), rep(20, 4), rep(40, 4)),
+                     yshare= c(rep(0L, 4), rep(0L, 4), rep(0L, 4)),
+                     ID=1:3,
+                     cohort=c(1, 1, 2),
+                     x=c(5, 5, 10),
+                     y=c(0, 0, 0),
+                     doseGrid=c(5, 10, 20, 40, 80)
+                   ) %>% 
+                   tidy()
+
+tidyDataMixture
+tidyDataMixture$doseGrid[1]
+tidyDataMixture$share[1]
+
+tidyDataParts <- DataParts(
+                   x=c(0.1,0.5,1.5),
+                   y=c(0,0,0),
+                   doseGrid=c(0.1,0.5,1.5,3,6,
+                   seq(from=10,to=80,by=2)),
+                   part=c(1L,1L,1L),
+                   nextPart=1L,
+                   part1Ladder=c(0.1,0.5,1.5,3,6,10)
+                 ) %>% 
+                 tidy()
+
+tidyDataParts
+tidyDataParts$doseGrid[1]
+```
+
+### Design
+```{r, error=TRUE}
+names(getClass("Design")@subclasses)
+
+emptydata <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+model <- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov=
+                             matrix(c(1, -0.5, -0.5, 1),
+                                    nrow=2),
+                           ref_dose=56)
+
+myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
+                           overdose=c(0.35, 1),
+                           max_overdose_prob=0.25)
+
+mySize1 <- CohortSizeRange(intervals=c(0, 30),
+                           cohortSize=c(1, 3))
+mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
+                         cohortSize=c(1, 3))
+mySize <- maxSize(mySize1, mySize2)
+
+myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
+myStopping3 <- StoppingMinPatients(nPatients=20)
+myStopping <- (myStopping1 & myStopping2) | myStopping3
+
+myIncrements <- IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33))
+
+# Initialize the design
+Design(
+  model=model,
+  nextBest=myNextBest,
+  stopping=myStopping,
+  increments=myIncrements,
+  cohortSize=mySize,
+  data=emptydata,
+  startingDose=3
+) %>% tidy()
+
+DADesign(
+  model=model,
+  nextBest=myNextBest,
+  stopping=myStopping,
+  increments=myIncrements,
+  cohortSize=mySize,
+  data=DataDA(
+                u = c(42, 30, 15, 5, 20, 25, 30, 60),
+                t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+                Tmax = 60,
+                x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+                y = c(0, 0, 1, 1, 0, 0, 1, 0),
+                doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+              ),
+  startingDose=3,
+  safetyWindow=SafetyWindowConst(patientGap=5, patientFollow=10, patientFollowMin=20)
+) %>% tidy()
+```
+
+> This is incorrect: safetyWindow is missing.  Need a subclass method
+
+```{r}
+DualDesign(
+  model=DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  sigma2betaW = 0.01,
+  rw1 = TRUE
+),
+  nextBest=myNextBest,
+  stopping=myStopping,
+  increments=myIncrements,
+  cohortSize=mySize,
+  data=DataDual(
+                  x=c(0.1,0.5,1.5,3,6,10,10,10),
+                  y=c(0,0,0,0,0,0,1,0),
+                  w=rnorm(8),
+                  doseGrid=c(0.1,0.5,1.5,3,6, seq(from=10,to=80,by=2))
+                ),
+  startingDose=3
+) %>% tidy()
+```
+
+## Increments
+```{r, error=TRUE}
+names(getClass("Increments")@subclasses)
+
+IncrementsNumDoseLevels(max_levels=2) %>% tidy()
+IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33)) %>% tidy()
+IncrementsRelativeDLT(dlt_intervals=c(0, 20), increments=c(1, 0.33)) %>% tidy()
+IncrementsRelativeParts(dlt_start=0, clean_start=1) %>% tidy()
+
+myIncrements1 <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+myIncrements2 <- IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33))
+IncrementsMin(increments_list=list(myIncrements1,myIncrements2)) %>%  tidy()
+
+IncrementsNumDoseLevels(max_levels = 1) %>% tidy()
+IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33)) %>% tidy()
+```
+
+## Models
+```{r, error=TRUE}
+names(getClass("GeneralModel")@subclasses)
+
+##  [1] "ModelLogNormal"             "LogisticLogNormalSub"      
+##  [5]  "DualEndpoint"              
+## [13] "DualEndpointRW"             "DualEndpointBeta"          
+## [15] "DualEndpointEmax"           
+## [17] "DALogisticLogNormal"        "TITELogisticLogNormal"     
+## [19] "FractionalCRM"
+
+LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) %>%  tidy()
+
+LogisticKadaneBetaGamma(
+  theta = 0.3,
+  xmin = 0,
+  xmax = 7,
+  alpha = 1,
+  beta = 19,
+  shape = 0.5625,
+  rate = 0.125
+) %>%
+tidy()
+
+LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+) %>%  tidy()
+
+LogisticNormalFixedMixture(
+  components = list(
+    comp1 = ModelParamsNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    ),
+    comp2 = ModelParamsNormal(
+      mean = c(1, 1.5),
+      cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+    )
+  ),
+  weights = c(0.3, 0.7),
+  ref_dose = 50
+) %>%
+tidy()
+
+LogisticNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+) %>% tidy()
+
+LogisticNormalMixture(
+  comp1 = ModelParamsNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  ),
+  comp2 = ModelParamsNormal(
+    mean = c(1, 1.5),
+    cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+  ),
+  weightpar = c(a = 1, b = 1),
+  ref_dose = 50
+) %>%
+tidy()
+
+OneParExpNormalPrior(
+  skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+  dose_grid = 1:5,
+  sigma2 = 2
+) %>%  tidy()
+
+ProbitLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+) %>% tidy()
+```

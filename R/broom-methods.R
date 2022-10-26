@@ -770,7 +770,7 @@ setMethod(
   f = "tidy",
   signature = signature(object = "StoppingAll"),
   definition = function(object, ...) {
-    rv <- lapply(object@stopList, tidy) %>%
+    rv <- lapply(object@stop_list, tidy) %>%
       dplyr::bind_rows(.id = "Index")
     class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)

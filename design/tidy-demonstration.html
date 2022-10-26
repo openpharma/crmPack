@@ -194,6 +194,10 @@ pre code {
 <li>Where a vector slot (or series of vector slots) define a range, then the naming convention described above is not followed. Instead, columns named <code>min</code> and <code>max</code> define the extent of the range and a column named <code>Range</code> labels the range. Not all instances of this paradigm have been implemented.</li>
 </ul>
 </div>
+<div id="please-also-read" class="section level3">
+<h3>Please also read</h3>
+<p>Please also read <a href="https://github.com/Roche/crmPack/issues/407">Issue 407</a> regarding inconsistent slot names.</p>
+</div>
 <div id="simple-examples" class="section level3">
 <h3>Simple examples</h3>
 <p><code>CohortSizeConst</code> is a trivial example.</p>
@@ -292,6 +296,1155 @@ x</code></pre>
 </div>
 <div id="comprehensive-listing-of-all-tidy-methods" class="section level2">
 <h2>Comprehensive listing of all tidy methods</h2>
+<div id="cohortsize" class="section level3">
+<h3>CohortSize</h3>
+<pre class="r"><code>names(getClass(&quot;CohortSize&quot;)@subclasses)</code></pre>
+<pre><code>## [1] &quot;CohortSizeRange&quot; &quot;CohortSizeDLT&quot;   &quot;CohortSizeConst&quot; &quot;CohortSizeParts&quot;
+## [5] &quot;CohortSizeMax&quot;   &quot;CohortSizeMin&quot;</code></pre>
+<pre class="r"><code>CohortSizeConst(3) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##    size
+##   &lt;int&gt;
+## 1     3</code></pre>
+<pre class="r"><code>CohortSizeDLT(DLTintervals=0:2, cohortSize=2:0) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   DLTintervals cohortSize
+##          &lt;int&gt;      &lt;int&gt;
+## 1            0          2
+## 2            1          1
+## 3            2          0</code></pre>
+<pre class="r"><code>CohortSizeParts(sizes=c(1,3)) %&gt;%  tidy()</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##    part sizes
+##   &lt;int&gt; &lt;int&gt;
+## 1     1     1
+## 2     2     3</code></pre>
+<pre class="r"><code>mySize1 &lt;- CohortSizeRange(intervals = c(0, 10), cohortSize = c(1, 3))
+mySize2 &lt;- CohortSizeDLT(DLTintervals=c(0, 1), cohortSize=c(1, 3))
+mySize &lt;- CohortSizeMax(cohortSizeList=list(mySize1, mySize2))
+mySize %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 4 × 4
+##   Index intervals cohortSize DLTintervals
+##   &lt;chr&gt;     &lt;dbl&gt;      &lt;int&gt;        &lt;int&gt;
+## 1 1             0          1           NA
+## 2 1            10          3           NA
+## 3 2            NA          1            0
+## 4 2            NA          3            1</code></pre>
+<pre class="r"><code>mySize &lt;- CohortSizeMin(cohortSizeList=list(mySize1, mySize2))
+mySize %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 4 × 4
+##   Index intervals cohortSize DLTintervals
+##   &lt;chr&gt;     &lt;dbl&gt;      &lt;int&gt;        &lt;int&gt;
+## 1 1             0          1           NA
+## 2 1            10          3           NA
+## 3 2            NA          1            0
+## 4 2            NA          3            1</code></pre>
+<pre class="r"><code>CohortSizeParts(sizes=c(1,3)) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##    part sizes
+##   &lt;int&gt; &lt;int&gt;
+## 1     1     1
+## 2     2     3</code></pre>
+</div>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<pre class="r"><code>names(getClass(&quot;Data&quot;)@subclasses)</code></pre>
+<pre><code>## [1] &quot;DataDual&quot;    &quot;DataParts&quot;   &quot;DataMixture&quot; &quot;DataDA&quot;</code></pre>
+<pre class="r"><code>Data(
+  doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
+  x=c(1, 3, 5, 10, 15),
+  y=c(0, 0, 0, 0, 1)
+) %&gt;% 
+tidy()</code></pre>
+<pre><code>## Used default patient IDs!</code></pre>
+<pre><code>## Used best guess cohort indices!</code></pre>
+<pre><code>## # A tibble: 5 × 9
+##      ID cohort     x     y nGrid xLevel  nObs placebo doseGrid         
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           
+## 1     1      1     1     0    11      1     5 FALSE   &lt;tibble [11 × 2]&gt;
+## 2     2      2     3     0    11      2     5 FALSE   &lt;tibble [11 × 2]&gt;
+## 3     3      3     5     0    11      3     5 FALSE   &lt;tibble [11 × 2]&gt;
+## 4     4      4    10     0    11      4     5 FALSE   &lt;tibble [11 × 2]&gt;
+## 5     5      5    15     1    11      5     5 FALSE   &lt;tibble [11 × 2]&gt;</code></pre>
+<pre class="r"><code>tidyDataDA &lt;- DataDA(
+                u = c(42, 30, 15, 5, 20, 25, 30, 60),
+                t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+                Tmax = 60,
+                x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+                y = c(0, 0, 1, 1, 0, 0, 1, 0),
+                doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+              ) %&gt;%
+              tidy()</code></pre>
+<pre><code>## Used default patient IDs!
+## Used best guess cohort indices!</code></pre>
+<pre class="r"><code>tidyDataDA</code></pre>
+<pre><code>## # A tibble: 8 × 12
+##      ID cohort     x     y nGrid     u  Tmax    t0 xLevel  nObs placebo doseGrid
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;  
+## 1     1      1   0.1     0    41    42    60     0      1     8 FALSE   &lt;tibble…
+## 2     2      2   0.5     0    41    30    60    15      2     8 FALSE   &lt;tibble…
+## 3     3      3   1.5     1    41    15    60    30      3     8 FALSE   &lt;tibble…
+## 4     4      4   3       1    41     5    60    40      4     8 FALSE   &lt;tibble…
+## 5     5      5   6       0    41    20    60    55      5     8 FALSE   &lt;tibble…
+## 6     6      6  10       0    41    25    60    70      6     8 FALSE   &lt;tibble…
+## 7     7      6  10       1    41    30    60    75      6     8 FALSE   &lt;tibble…
+## 8     8      6  10       0    41    60    60    85      6     8 FALSE   &lt;tibble…</code></pre>
+<pre class="r"><code>tidyDataDA$doseGrid[1]</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 41 × 2
+##        x xLevel
+##    &lt;dbl&gt;  &lt;int&gt;
+##  1   0.1      1
+##  2   0.5      1
+##  3   1.5      1
+##  4   3        1
+##  5   6        1
+##  6  10        1
+##  7  12        1
+##  8  14        1
+##  9  16        1
+## 10  18        1
+## # … with 31 more rows</code></pre>
+<pre class="r"><code>tidyDataDual &lt;- DataDual(
+                  x=c(0.1,0.5,1.5,3,6,10,10,10),
+                  y=c(0,0,0,0,0,0,1,0),
+                  w=rnorm(8),
+                  doseGrid=c(0.1,0.5,1.5,3,6, seq(from=10,to=80,by=2))
+                ) %&gt;% 
+                tidy()</code></pre>
+<pre><code>## Used default patient IDs!
+## Used best guess cohort indices!</code></pre>
+<pre class="r"><code>tidyDataDual</code></pre>
+<pre><code>## # A tibble: 8 × 10
+##      ID cohort     x     y nGrid      w xLevel  nObs placebo doseGrid         
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           
+## 1     1      1   0.1     0    41 -0.666      1     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 2     2      2   0.5     0    41  0.248      2     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 3     3      3   1.5     0    41 -1.24       3     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 4     4      4   3       0    41  0.357      4     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 5     5      5   6       0    41  0.540      5     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 6     6      6  10       0    41  1.14       6     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 7     7      6  10       1    41 -0.410      6     8 FALSE   &lt;tibble [41 × 2]&gt;
+## 8     8      6  10       0    41 -0.523      6     8 FALSE   &lt;tibble [41 × 2]&gt;</code></pre>
+<pre class="r"><code>tidyDataDual$doseGrid[1]</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 41 × 2
+##        x xLevel
+##    &lt;dbl&gt;  &lt;int&gt;
+##  1   0.1      1
+##  2   0.5      1
+##  3   1.5      1
+##  4   3        1
+##  5   6        1
+##  6  10        1
+##  7  12        1
+##  8  14        1
+##  9  16        1
+## 10  18        1
+## # … with 31 more rows</code></pre>
+<pre class="r"><code>tidyDataMixture &lt;- DataMixture(
+                     xshare= c(rep(10, 4), rep(20, 4), rep(40, 4)),
+                     yshare= c(rep(0L, 4), rep(0L, 4), rep(0L, 4)),
+                     ID=1:3,
+                     cohort=c(1, 1, 2),
+                     x=c(5, 5, 10),
+                     y=c(0, 0, 0),
+                     doseGrid=c(5, 10, 20, 40, 80)
+                   ) %&gt;% 
+                   tidy()
+
+tidyDataMixture</code></pre>
+<pre><code>## # A tibble: 3 × 10
+##      ID cohort     x     y nGrid xLevel  nObs placebo doseGrid         share    
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;           &lt;list&gt;   
+## 1     1      1     5     0     5      1     3 FALSE   &lt;tibble [5 × 2]&gt; &lt;tibble …
+## 2     2      1     5     0     5      1     3 FALSE   &lt;tibble [5 × 2]&gt; &lt;tibble …
+## 3     3      2    10     0     5      2     3 FALSE   &lt;tibble [5 × 2]&gt; &lt;tibble …</code></pre>
+<pre class="r"><code>tidyDataMixture$doseGrid[1]</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 5 × 2
+##       x xLevel
+##   &lt;dbl&gt;  &lt;int&gt;
+## 1     5      1
+## 2    10      1
+## 3    20      1
+## 4    40      1
+## 5    80      1</code></pre>
+<pre class="r"><code>tidyDataMixture$share[1]</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 12 × 2
+##    xshare yshare
+##     &lt;dbl&gt;  &lt;int&gt;
+##  1     10      0
+##  2     10      0
+##  3     10      0
+##  4     10      0
+##  5     20      0
+##  6     20      0
+##  7     20      0
+##  8     20      0
+##  9     40      0
+## 10     40      0
+## 11     40      0
+## 12     40      0</code></pre>
+<pre class="r"><code>tidyDataParts &lt;- DataParts(
+                   x=c(0.1,0.5,1.5),
+                   y=c(0,0,0),
+                   doseGrid=c(0.1,0.5,1.5,3,6,
+                   seq(from=10,to=80,by=2)),
+                   part=c(1L,1L,1L),
+                   nextPart=1L,
+                   part1Ladder=c(0.1,0.5,1.5,3,6,10)
+                 ) %&gt;% 
+                 tidy()</code></pre>
+<pre><code>## Used default patient IDs!
+## Used best guess cohort indices!</code></pre>
+<pre class="r"><code>tidyDataParts</code></pre>
+<pre><code>## # A tibble: 3 × 12
+##      ID cohort     x     y nGrid xLevel  nObs placebo doseGrid     part nextPart
+##   &lt;int&gt;  &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;lgl&gt;   &lt;list&gt;      &lt;int&gt;    &lt;int&gt;
+## 1     1      1   0.1     0    41      1     3 FALSE   &lt;tibble [4…     1        1
+## 2     2      2   0.5     0    41      2     3 FALSE   &lt;tibble [4…     1        1
+## 3     3      3   1.5     0    41      3     3 FALSE   &lt;tibble [4…     1        1
+## # … with 1 more variable: part1Ladder &lt;list&gt;</code></pre>
+<pre class="r"><code>tidyDataParts$doseGrid[1]</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 41 × 2
+##        x xLevel
+##    &lt;dbl&gt;  &lt;int&gt;
+##  1   0.1      1
+##  2   0.5      1
+##  3   1.5      1
+##  4   3        1
+##  5   6        1
+##  6  10        1
+##  7  12        1
+##  8  14        1
+##  9  16        1
+## 10  18        1
+## # … with 31 more rows</code></pre>
+</div>
+<div id="design" class="section level3">
+<h3>Design</h3>
+<pre class="r"><code>names(getClass(&quot;Design&quot;)@subclasses)</code></pre>
+<pre><code>## [1] &quot;DualDesign&quot; &quot;DADesign&quot;</code></pre>
+<pre class="r"><code>emptydata &lt;- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
+
+model &lt;- LogisticLogNormal(mean=c(-0.85, 1),
+                           cov=
+                             matrix(c(1, -0.5, -0.5, 1),
+                                    nrow=2),
+                           ref_dose=56)
+
+myNextBest &lt;- NextBestNCRM(target=c(0.2, 0.35),
+                           overdose=c(0.35, 1),
+                           max_overdose_prob=0.25)
+
+mySize1 &lt;- CohortSizeRange(intervals=c(0, 30),
+                           cohortSize=c(1, 3))
+mySize2 &lt;- CohortSizeDLT(DLTintervals=c(0, 1),
+                         cohortSize=c(1, 3))
+mySize &lt;- maxSize(mySize1, mySize2)
+
+myStopping1 &lt;- StoppingMinCohorts(nCohorts=3)
+myStopping2 &lt;- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5)
+myStopping3 &lt;- StoppingMinPatients(nPatients=20)
+myStopping &lt;- (myStopping1 &amp; myStopping2) | myStopping3
+
+myIncrements &lt;- IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33))
+
+# Initialize the design
+Design(
+  model=model,
+  nextBest=myNextBest,
+  stopping=myStopping,
+  increments=myIncrements,
+  cohortSize=mySize,
+  data=emptydata,
+  startingDose=3
+) %&gt;% tidy()</code></pre>
+<pre><code>## $nextBest
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $cohortSize
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $data
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $startingDose
+## # A tibble: 1 × 1
+##   startingDose
+##          &lt;dbl&gt;
+## 1            3
+## 
+## $model
+## $params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 56        
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_LogisticLogNormal&quot; &quot;list&quot;                 
+## 
+## $stopping
+## # A tibble: 4 × 5
+##   Index nCohorts target  prob nPatients
+##   &lt;chr&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;int&gt;
+## 1 1            3  NA     NA          NA
+## 2 1           NA   0.2    0.5        NA
+## 3 1           NA   0.35   0.5        NA
+## 4 2           NA  NA     NA          20
+## 
+## $increments
+## # A tibble: 2 × 2
+##   intervals increments
+##       &lt;dbl&gt;      &lt;dbl&gt;
+## 1         0       1   
+## 2        20       0.33
+## 
+## $PLcohortSize
+## # A tibble: 1 × 1
+##    size
+##   &lt;int&gt;
+## 1     0
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_Design&quot; &quot;tbl_Design&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>DADesign(
+  model=model,
+  nextBest=myNextBest,
+  stopping=myStopping,
+  increments=myIncrements,
+  cohortSize=mySize,
+  data=DataDA(
+                u = c(42, 30, 15, 5, 20, 25, 30, 60),
+                t0 = c(0, 15, 30, 40, 55, 70, 75, 85),
+                Tmax = 60,
+                x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+                y = c(0, 0, 1, 1, 0, 0, 1, 0),
+                doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+              ),
+  startingDose=3,
+  safetyWindow=SafetyWindowConst(patientGap=5, patientFollow=10, patientFollowMin=20)
+) %&gt;% tidy()</code></pre>
+<pre><code>## Used default patient IDs!</code></pre>
+<pre><code>## Used best guess cohort indices!</code></pre>
+<pre><code>## $nextBest
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $cohortSize
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $data
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $startingDose
+## # A tibble: 1 × 1
+##   startingDose
+##          &lt;dbl&gt;
+## 1            3
+## 
+## $model
+## $params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 56        
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_LogisticLogNormal&quot; &quot;list&quot;                 
+## 
+## $stopping
+## # A tibble: 4 × 5
+##   Index nCohorts target  prob nPatients
+##   &lt;chr&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;int&gt;
+## 1 1            3  NA     NA          NA
+## 2 1           NA   0.2    0.5        NA
+## 3 1           NA   0.35   0.5        NA
+## 4 2           NA  NA     NA          20
+## 
+## $increments
+## # A tibble: 2 × 2
+##   intervals increments
+##       &lt;dbl&gt;      &lt;dbl&gt;
+## 1         0       1   
+## 2        20       0.33
+## 
+## $PLcohortSize
+## # A tibble: 1 × 1
+##    size
+##   &lt;int&gt;
+## 1     0
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_DADesign&quot; &quot;tbl_DADesign&quot; &quot;list&quot;</code></pre>
+<blockquote>
+<p>This is incorrect: safetyWindow is missing. Need a subclass method</p>
+</blockquote>
+<pre class="r"><code>DualDesign(
+  model=DualEndpointRW(
+  mean = c(0, 1),
+  cov = matrix(c(1, 0, 0, 1), nrow = 2),
+  sigma2W = c(a = 0.1, b = 0.1),
+  rho = c(a = 1, b = 1),
+  sigma2betaW = 0.01,
+  rw1 = TRUE
+),
+  nextBest=myNextBest,
+  stopping=myStopping,
+  increments=myIncrements,
+  cohortSize=mySize,
+  data=DataDual(
+                  x=c(0.1,0.5,1.5,3,6,10,10,10),
+                  y=c(0,0,0,0,0,0,1,0),
+                  w=rnorm(8),
+                  doseGrid=c(0.1,0.5,1.5,3,6, seq(from=10,to=80,by=2))
+                ),
+  startingDose=3
+) %&gt;% tidy()</code></pre>
+<pre><code>## Used default patient IDs!</code></pre>
+<pre><code>## Used best guess cohort indices!</code></pre>
+<pre><code>## $nextBest
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $cohortSize
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $data
+## # A tibble: 3 × 4
+##   Range       min   max max_prob
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+## 1 Underdose  0     0.2     NA   
+## 2 Target     0.2   0.35    NA   
+## 3 Overdose   0.35  1        0.25
+## 
+## $startingDose
+## # A tibble: 1 × 1
+##   startingDose
+##          &lt;dbl&gt;
+## 1            3
+## 
+## $model
+## $betaZ_params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0        0
+## 2 alpha1        1
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0         1      0
+## 2 alpha1         0      1
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0         1      0
+## 2 alpha1         0      1
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 1         
+## 
+## $use_log_dose
+## # A tibble: 1 × 1
+##   use_log_dose
+##   &lt;lgl&gt;       
+## 1 FALSE       
+## 
+## $rho
+## # A tibble: 2 × 2
+##   Parameter   rho
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 a             1
+## 2 b             1
+## 
+## $sigma2W
+## # A tibble: 2 × 2
+##   Parameter sigma2W
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 a             0.1
+## 2 b             0.1
+## 
+## $use_fixed
+## # A tibble: 3 × 2
+##   Parameter   rho  
+##   &lt;chr&gt;       &lt;lgl&gt;
+## 1 sigma2W     FALSE
+## 2 rho         FALSE
+## 3 sigma2betaW TRUE 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_DualEndpointRW&quot; &quot;list&quot;              
+## 
+## $stopping
+## # A tibble: 4 × 5
+##   Index nCohorts target  prob nPatients
+##   &lt;chr&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;int&gt;
+## 1 1            3  NA     NA          NA
+## 2 1           NA   0.2    0.5        NA
+## 3 1           NA   0.35   0.5        NA
+## 4 2           NA  NA     NA          20
+## 
+## $increments
+## # A tibble: 2 × 2
+##   intervals increments
+##       &lt;dbl&gt;      &lt;dbl&gt;
+## 1         0       1   
+## 2        20       0.33
+## 
+## $PLcohortSize
+## # A tibble: 1 × 1
+##    size
+##   &lt;int&gt;
+## 1     0
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_DualDesign&quot; &quot;tbl_DualDesign&quot; &quot;list&quot;</code></pre>
+</div>
+</div>
+<div id="increments" class="section level2">
+<h2>Increments</h2>
+<pre class="r"><code>names(getClass(&quot;Increments&quot;)@subclasses)</code></pre>
+<pre><code>## [1] &quot;IncrementsRelative&quot;           &quot;IncrementsRelativeDLT&quot;       
+## [3] &quot;IncrementsNumDoseLevels&quot;      &quot;IncrementsHSRBeta&quot;           
+## [5] &quot;IncrementsMin&quot;                &quot;IncrementsRelativeParts&quot;     
+## [7] &quot;IncrementsRelativeDLTCurrent&quot;</code></pre>
+<pre class="r"><code>IncrementsNumDoseLevels(max_levels=2) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   max_levels basis_level
+##        &lt;int&gt; &lt;chr&gt;      
+## 1          2 last</code></pre>
+<pre class="r"><code>IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33)) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   intervals increments
+##       &lt;dbl&gt;      &lt;dbl&gt;
+## 1         0       1   
+## 2        20       0.33</code></pre>
+<pre class="r"><code>IncrementsRelativeDLT(dlt_intervals=c(0, 20), increments=c(1, 0.33)) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   dlt_intervals increments
+##           &lt;int&gt;      &lt;dbl&gt;
+## 1             0       1   
+## 2            20       0.33</code></pre>
+<pre class="r"><code>IncrementsRelativeParts(dlt_start=0, clean_start=1) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 2 × 4
+##   dlt_start clean_start intervals increments
+##       &lt;int&gt;       &lt;int&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1         0           1         0          2
+## 2         0           1         2          1</code></pre>
+<pre class="r"><code>myIncrements1 &lt;- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3), increments = c(1, 0.33, 0.2))
+myIncrements2 &lt;- IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33))
+IncrementsMin(increments_list=list(myIncrements1,myIncrements2)) %&gt;%  tidy()</code></pre>
+<pre><code>## # A tibble: 5 × 4
+##   Index dlt_intervals increments intervals
+##   &lt;chr&gt;         &lt;int&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 1                 0       1           NA
+## 2 1                 1       0.33        NA
+## 3 1                 3       0.2         NA
+## 4 2                NA       1            0
+## 5 2                NA       0.33        20</code></pre>
+<pre class="r"><code>IncrementsNumDoseLevels(max_levels = 1) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 1 × 2
+##   max_levels basis_level
+##        &lt;int&gt; &lt;chr&gt;      
+## 1          1 last</code></pre>
+<pre class="r"><code>IncrementsRelative(intervals=c(0, 20), increments=c(1, 0.33)) %&gt;% tidy()</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   intervals increments
+##       &lt;dbl&gt;      &lt;dbl&gt;
+## 1         0       1   
+## 2        20       0.33</code></pre>
+</div>
+<div id="models" class="section level2">
+<h2>Models</h2>
+<pre class="r"><code>names(getClass(&quot;GeneralModel&quot;)@subclasses)</code></pre>
+<pre><code>##  [1] &quot;ModelLogNormal&quot;             &quot;LogisticLogNormalSub&quot;      
+##  [3] &quot;LogisticKadane&quot;             &quot;LogisticNormalMixture&quot;     
+##  [5] &quot;LogisticNormalFixedMixture&quot; &quot;DualEndpoint&quot;              
+##  [7] &quot;OneParExpNormalPrior&quot;       &quot;LogisticNormal&quot;            
+##  [9] &quot;LogisticLogNormal&quot;          &quot;ProbitLogNormal&quot;           
+## [11] &quot;ProbitLogNormalRel&quot;         &quot;LogisticKadaneBetaGamma&quot;   
+## [13] &quot;DualEndpointRW&quot;             &quot;DualEndpointBeta&quot;          
+## [15] &quot;DualEndpointEmax&quot;           &quot;LogisticLogNormalMixture&quot;  
+## [17] &quot;DALogisticLogNormal&quot;        &quot;TITELogisticLogNormal&quot;     
+## [19] &quot;FractionalCRM&quot;</code></pre>
+<pre class="r"><code>##  [1] &quot;ModelLogNormal&quot;             &quot;LogisticLogNormalSub&quot;      
+##  [5]  &quot;DualEndpoint&quot;              
+## [13] &quot;DualEndpointRW&quot;             &quot;DualEndpointBeta&quot;          
+## [15] &quot;DualEndpointEmax&quot;           
+## [17] &quot;DALogisticLogNormal&quot;        &quot;TITELogisticLogNormal&quot;     
+## [19] &quot;FractionalCRM&quot;
+
+LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) %&gt;%  tidy()</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##   theta  xmin  xmax
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  0.33     1   200</code></pre>
+<pre class="r"><code>LogisticKadaneBetaGamma(
+  theta = 0.3,
+  xmin = 0,
+  xmax = 7,
+  alpha = 1,
+  beta = 19,
+  shape = 0.5625,
+  rate = 0.125
+) %&gt;%
+tidy()</code></pre>
+<pre><code>## # A tibble: 1 × 6
+##   theta  xmin  xmax  beta shape  rate
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1   0.3     0     7    19 0.562 0.125</code></pre>
+<pre class="r"><code>LogisticLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+) %&gt;%  tidy()</code></pre>
+<pre><code>## $params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 50        
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_LogisticLogNormal&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>LogisticNormalFixedMixture(
+  components = list(
+    comp1 = ModelParamsNormal(
+      mean = c(-0.85, 1),
+      cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+    ),
+    comp2 = ModelParamsNormal(
+      mean = c(1, 1.5),
+      cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+    )
+  ),
+  weights = c(0.3, 0.7),
+  ref_dose = 50
+) %&gt;%
+tidy()</code></pre>
+<pre><code>## $components
+## $components$comp1
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $components$comp2
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0      1  
+## 2 alpha1      1.5
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0      1.2   -0.45
+## 2 alpha1     -0.45   0.6 
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.16   0.870
+## 2 alpha1     0.870  2.32 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 50        
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## $weights
+## # A tibble: 2 × 1
+##   weightpar
+##       &lt;dbl&gt;
+## 1       0.3
+## 2       0.7
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_LogisticNormalFixedMixture&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>LogisticNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  ref_dose = 50
+) %&gt;% tidy()</code></pre>
+<pre><code>## $params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 50        
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_LogisticNormal&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>LogisticNormalMixture(
+  comp1 = ModelParamsNormal(
+    mean = c(-0.85, 1),
+    cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+  ),
+  comp2 = ModelParamsNormal(
+    mean = c(1, 1.5),
+    cov = matrix(c(1.2, -0.45, -0.45, 0.6), nrow = 2)
+  ),
+  weightpar = c(a = 1, b = 1),
+  ref_dose = 50
+) %&gt;%
+tidy()</code></pre>
+<pre><code>## $comp1
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $comp2
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0      1  
+## 2 alpha1      1.5
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0      1.2   -0.45
+## 2 alpha1     -0.45   0.6 
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.16   0.870
+## 2 alpha1     0.870  2.32 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 50        
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 3 w        
+## 
+## $weightpar
+## # A tibble: 2 × 2
+##   Parameter weightpar
+##   &lt;chr&gt;         &lt;dbl&gt;
+## 1 a                 1
+## 2 b                 1
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_LogisticNormalMixture&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>OneParExpNormalPrior(
+  skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+  dose_grid = 1:5,
+  sigma2 = 2
+) %&gt;%  tidy()</code></pre>
+<pre><code>## $skel_probs
+## # A tibble: 5 × 1
+##   skel_probs
+##        &lt;dbl&gt;
+## 1        0.1
+## 2        0.3
+## 3        0.5
+## 4        0.7
+## 5        0.9
+## 
+## $sigma2
+## # A tibble: 1 × 1
+##   sigma2
+##    &lt;dbl&gt;
+## 1      2
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 xLevel   
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 1 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha    
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_OneParExpNormalPrior&quot; &quot;list&quot;</code></pre>
+<pre class="r"><code>ProbitLogNormal(
+  mean = c(-0.85, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2)
+) %&gt;% tidy()</code></pre>
+<pre><code>## $params
+## $mean
+## # A tibble: 2 × 2
+##   Parameter  Mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 alpha0    -0.85
+## 2 alpha1     1   
+## 
+## $cov
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0       1     -0.5
+## 2 alpha1      -0.5    1  
+## 
+## $prec
+## # A tibble: 2 × 3
+##   Parameter alpha0 alpha1
+##   &lt;chr&gt;      &lt;dbl&gt;  &lt;dbl&gt;
+## 1 alpha0     1.33   0.667
+## 2 alpha1     0.667  1.33 
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ModelParamsNormal&quot; &quot;list&quot;                 
+## 
+## $ref_dose
+## # A tibble: 1 × 1
+##   ref_dose  
+##   &lt;pstv_nmb&gt;
+## 1 1         
+## 
+## $datanames
+## # A tibble: 3 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 nObs     
+## 2 y        
+## 3 x        
+## 
+## $datanames_prior
+## # A tibble: 0 × 1
+## # … with 1 variable: Parameter &lt;chr&gt;
+## 
+## $sample
+## # A tibble: 2 × 1
+##   Parameter
+##   &lt;chr&gt;    
+## 1 alpha0   
+## 2 alpha1   
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;tbl_ProbitLogNormal&quot; &quot;list&quot;</code></pre>
 </div>
 
 
