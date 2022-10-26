@@ -16,3 +16,4 @@ TODO
 ^README-.*\.png$
 ^\.travis\.yml$
 ^\.lintr$
+^vignettes\*.bib$

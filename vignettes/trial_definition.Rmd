@@ -1,5 +1,6 @@
 ---
 title: "Trial Definition"
+bibliography: trial_definition.bib
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Trial Definition}
@@ -77,7 +78,7 @@ N\begin{pmatrix}
 \end{bmatrix}	
 \end{pmatrix}.
 $$
-The mean and covariance matrices are defined by the `mean` and `cov` parameters to the `LogisticLogNormal` call.  So the code above defines the prior joint distribution of &alpha; and &beta; to be
+The mean and covariance matrices are defined by the `mean` and `cov` parameters to the `LogisticLogNormal` call.  So the code above defines the prior joint distribution of &alpha; and log(&beta;) to be
 
 $$ 
 N\begin{pmatrix}
@@ -93,17 +94,17 @@ $$
 
 It is easy to obtain a visual representation of the prior:
 
-```{r}
-vignetteMcmcOptions <- McmcOptions(burnin=100, step=2, samples=1000)
+```{r, fig.width=5}
+vignetteMcmcOptions <- McmcOptions(burnin = 100, step = 2, samples = 1000)
 prior_samples <- mcmc(
-                   data=empty_data, 
-                   model=model, 
-                   options=vignetteMcmcOptions
-                 )
+  data = empty_data,
+  model = model,
+  options = vignetteMcmcOptions
+)
 plot(prior_samples, model, empty_data)
 ```
 
-### The escalation rule
+### The escalation rules
 #### The maximum increment
 Now, we define the maximum possible increment between the dose used in current cohort and the dose used in the next, regardless of likely toxicity.
 ```{r}
@@ -115,11 +116,11 @@ my_increments <- IncrementsRelative(
 ```
 The rule we have chosen here defines the maximum possible increment in terms of multiples of the highest dose so far administered: for doses greater than `0` and less than `20`, the maximum increment is 100 x (1 + 1)%, or 200% of the highest dose used so far.  For doses of `20` or more, the maximum increment is 100 x (1 + 0.5)%, or 150% of the highest dose used so far.  
 
-Note that a 2-fold increment corresponds to a *3-fold* escalation.
+Note that a 2-fold *increment* corresponds to a 3-fold *escalation*.
 
 In tabular form, based on the dose grid defined above, the maximum permitted escalation is
 
-|Highest dose administered so far|Maximum permitted increment|Maximum permitted dose
+|Highest dose<br>administered so far|Maximum permitted increment|Maximum permitted dose
 |---:|---:|---:|
 |  1|  2.0|   3.0|
 |  3|  6.0|   9.0|
@@ -145,12 +146,12 @@ my_next_best <- NextBestNCRM(
 )
 ```
 
-Here, we choose to use Neuenschwander's rule [Neuenschwander B, Branson M and Gsponer T (2008) <i>Critical aspects of the Bayesian approach to phase I cancer trials</i>. Statistics in Medicine 27:2420–39 [https://doi.org/10.1002/sim.3230], in which the dose for the next cohort to be the dose (amongst those doses that are eligible for selection according to the escalation rule) that has the highest posterior chance of having a probability of toxicity in the target range (here [0.2, 0.35)), provided that the dose's chance of having a probability in the overdose range (here [0.35, 1.0]) is less than 0.25.
+Here, we choose to use Neuenschwander's rule [@NEUENSCHWANDER], in which the dose for the next cohort to be the dose (amongst those doses that are eligible for selection according to the escalation rule) that has the highest posterior chance of having a probability of toxicity in the target range - here [0.2, 0.35) - provided that the dose's chance of having a probability of toxicity in the overdose range - here [0.35, 1.0] - is less than 0.25.
 
 #### The cohort size
 Now, we define the rule for choosing the size of the next cohort.
 
-> Note, the term "cohort size" is somewhat anachronistic.  It is a hangover from the days of the 3+3 design.  In the context of CRM trials, it is best interpreted as "the largest interval between CRM model updates".  In a CRM trial, the model can be updated *at any time* and there is no mathematical need to halt recruitment to allow the model to be updated.
+> Note, the term "cohort size" is somewhat anachronistic.  It is a hangover from the days of the 3+3 design.  In the context of CRM trials, it is best interpreted as "the largest permitted interval between CRM model updates".  In a CRM trial, the model can be updated *at any time* and there is no mathematical need to halt recruitment to allow the model to be updated.
 
 We elect to define the cohort size using a compound rule.  Both the dose to be used and the number of DLTs so far observed contribute to the decision.  The first part of the compound rule (`my_size_1`), based on the dose to be used, permits the use a single patient run-in up to and including a dose of `20`.  For doses above `20`, the minimum cohort size is `3`. The second part of the compound rule (`my_size_2`) also permits a single patient run-in, so long as no DLTs have so far been observed.  As soon as the first DLT is reported, the minimum cohort size is `3`.  To determine the *actual* size of the next cohort, the larger number required by the two parts of the compound rule is used.
 
@@ -171,7 +172,6 @@ In other words, provided the dose is `20` or below and no DLTs have been observe
 
 ### The stopping rules
 Now we create the rules that define when the trial's objectives have been met (or when it should be stopped for futility).  
-
 The futility rule is the easiest to explain: if twenty patients have been recruited, the study should stop (`my_stopping_3`).
 The success rule requires both of the following conditions to have been met:
 
@@ -208,3 +208,5 @@ design <- Design(
 ```
 
 We are now ready to use our trial definition, either to analyse a real trial or to simulate the long term operating characteristics of the design.  These processes are described in their own vignettes [here](trial_analysis.html) and [here](trial_simulation.html). 
+
+## References
