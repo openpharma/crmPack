@@ -23,11 +23,15 @@ h_next_best_ncrm <- function(edge_case = FALSE) {
   }
 }
 
-h_next_best_ncrm_loss <- function(edge_case = FALSE) {
-  if (edge_case) {
+h_next_best_ncrm_loss <- function(edge_case = 0L) {
+  if (edge_case == 1L) {
     overdose <- c(0.35, 1)
     unacceptable <- c(1, 1)
     losses <- c(1, 0, 1)
+  } else if (edge_case == 2L) {
+    overdose <- c(0, 0)
+    unacceptable <- c(0, 1)
+    losses <- c(1, 0, 1, 2)
   } else {
     overdose <- c(0.35, 0.6)
     unacceptable <- c(0.6, 0.9)
