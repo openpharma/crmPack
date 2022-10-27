@@ -22,9 +22,9 @@ the maximum of all sizes.
 }
 \section{Functions}{
 \itemize{
-\item \code{maxSize,CohortSize-method}: The method combining cohort size rules by taking maximum
-}}
+\item \code{maxSize(CohortSize)}: The method combining cohort size rules by taking maximum
 
+}}
 \examples{
 
 # Here is the rule for: 

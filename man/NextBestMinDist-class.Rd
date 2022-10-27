@@ -21,6 +21,7 @@ distance to target probability.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{proportion})\cr single target toxicity probability.}
+\item{\code{target}}{(\code{proportion})\cr single target toxicity probability, except
+0 or 1.}
 }}
 

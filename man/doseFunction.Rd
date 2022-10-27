@@ -31,11 +31,11 @@ specific parameters.
 }
 \section{Functions}{
 \itemize{
-\item \code{doseFunction,GeneralModel-method}: 
+\item \code{doseFunction(GeneralModel)}: 
 
-\item \code{doseFunction,ModelPseudo-method}: 
+\item \code{doseFunction(ModelPseudo)}: 
+
 }}
-
 \examples{
 my_model <- LogisticLogNormal(
   mean = c(-0.85, 1),

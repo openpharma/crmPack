@@ -32,12 +32,12 @@ the next cohort.
 }
 \section{Functions}{
 \itemize{
-\item \code{windowLength,SafetyWindowSize-method}: Determine safety window length based
+\item \code{windowLength(SafetyWindowSize)}: Determine safety window length based
 on the cohort size
 
-\item \code{windowLength,SafetyWindowConst-method}: Constant safety window length
-}}
+\item \code{windowLength(SafetyWindowConst)}: Constant safety window length
 
+}}
 \examples{
 # nolint start
 

@@ -16,17 +16,13 @@ NextBestNCRMLoss(
 )
 }
 \arguments{
-\item{target}{(\code{numeric})\cr target toxicity interval (limits included).}
+\item{target}{(\code{numeric})\cr see slot definition.}
 
-\item{overdose}{(\code{numeric})\cr the overdose toxicity interval (lower limit
-excluded, upper limit included) or the excessive toxicity interval (lower
-limit excluded, upper limit included) if
-unacceptable is not provided.}
+\item{overdose}{(\code{numeric})\cr see slot definition.}
 
 \item{unacceptable}{(\code{numeric})\cr see slot definition.}
 
-\item{max_overdose_prob}{(\code{proportion})\cr the maximum overdose
-(overdose or excessive + unacceptable) probability that is allowed.}
+\item{max_overdose_prob}{(\code{proportion})\cr see slot definition in \code{\link{NextBestNCRM}}.}
 
 \item{losses}{(\code{numeric})\cr see slot definition.}
 }
@@ -44,19 +40,22 @@ dose with lowest loss function (Bayes risk) is recommended for the next dose.
 \section{Slots}{
 
 \describe{
+\item{\code{target}}{(\code{numeric})\cr the target toxicity interval (limits included).
+It has to be a probability range excluding 0 and 1.}
+
 \item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
 excluded, upper limit included) or the excessive toxicity interval (lower
-limit excluded, upper limit included) if
-unacceptable is not provided. It is used to filter probability samples.}
+limit excluded, upper limit included) if unacceptable is not provided.
+It has to be a probability range. It is used to filter probability samples.}
 
 \item{\code{unacceptable}}{(\code{numeric})\cr an unacceptable toxicity
 interval (lower limit excluded, upper limit included). This must be
-specified if the \code{overdose} does not include 1. Otherwise, it is
-c(1, 1) (default), which is essentially a scalar equals 1.}
+specified if the \code{overdose} does not include 1. Otherwise, it is \code{c(1, 1)}
+(default), which is essentially a scalar equals 1. It has to be a
+probability range.}
 
 \item{\code{losses}}{(\code{numeric})\cr a vector specifying the loss function. If the
-\code{unacceptable} is provided, the vector length must be \eqn{4}, otherwise
-\eqn{3}.}
+\code{unacceptable} is provided, the vector length must be 4, otherwise 3.}
 }}
 
 \note{

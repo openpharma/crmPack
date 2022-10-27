@@ -10,9 +10,9 @@
 IncrementsNumDoseLevels(max_levels = 1L, basis_level = "last")
 }
 \arguments{
-\item{max_levels}{(\code{count})\cr see slot definition in \code{\link{IncrementsNumDoseLevels}}.}
+\item{max_levels}{(\code{count})\cr see slot definition.}
 
-\item{basis_level}{(\code{string})\cr see slot definition in \code{\link{IncrementsNumDoseLevels}}.}
+\item{basis_level}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -24,8 +24,9 @@ number of maximum dose levels to increment.
 
 \describe{
 \item{\code{max_levels}}{(\code{count})\cr maximum dose levels to increment for the next
-dose. It defaults to 1, which means that no dose skipping is allowed - the
-next dose can be maximum one level higher than the current dose.}
+dose. It defaults to 1, which means that no dose skipping is
+allowed - the next dose can be maximum one level higher than the current
+dose.}
 
 \item{\code{basis_level}}{(\code{string})\cr corresponding to the dose level used to
 increment from. It can take one out of two possible values: \code{last} or \code{max}.

@@ -63,8 +63,8 @@
 <rect x='550.03' y='245.40' width='26.75' height='0.00' style='stroke-width: 1.07; stroke: #006400; stroke-linecap: square; stroke-linejoin: miter; fill: #006400;' />
 <rect x='603.52' y='245.40' width='26.75' height='0.00' style='stroke-width: 1.07; stroke: #006400; stroke-linecap: square; stroke-linejoin: miter; fill: #006400;' />
 <rect x='657.01' y='245.40' width='26.75' height='0.00' style='stroke-width: 1.07; stroke: #006400; stroke-linecap: square; stroke-linejoin: miter; fill: #006400;' />
-<line x1='135.45' y1='256.82' x2='135.45' y2='5.48' style='stroke-width: 2.35; stroke: #FF0000; stroke-dasharray: 12.52,12.52; stroke-linecap: butt;' />
-<polygon points='135.45,250.86 140.24,242.57 130.66,242.57 ' style='stroke-width: 0.71; stroke: #FF0000; fill: #FF0000;' />
+<line x1='188.94' y1='256.82' x2='188.94' y2='5.48' style='stroke-width: 2.35; stroke: #FF0000; stroke-dasharray: 12.52,12.52; stroke-linecap: butt;' />
+<polygon points='188.94,136.61 193.73,128.32 184.16,128.32 ' style='stroke-width: 0.71; stroke: #FF0000; fill: #FF0000;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <text x='32.89' y='248.43' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>

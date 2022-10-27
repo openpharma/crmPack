@@ -38,6 +38,7 @@
 \noindent
 
 <<load, echo=FALSE, results=hide>>=
+# nolint start
 ## load package already here to be able to reference the package version!!
 library(crmPack)
 crmPackVersion <- as.character(packageVersion("crmPack"))
@@ -2246,6 +2247,8 @@ Sum3 <- summary(Sim3,
                 trueEff=myTruthEff1)
 Sum3
 print(plot(Sum3))
+
+# nolint end
 @
 
 

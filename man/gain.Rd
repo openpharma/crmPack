@@ -50,12 +50,24 @@ pseudo DLE and Efficacy models as well as a given DLE and Efficacy samples.
 }
 \section{Functions}{
 \itemize{
-\item \code{gain,numeric,ModelTox,Samples,ModelEff,Samples-method}: 
+\item \code{gain(
+  dose = numeric,
+  model_dle = ModelTox,
+  samples_dle = Samples,
+  model_eff = ModelEff,
+  samples_eff = Samples
+)}: 
 
-\item \code{gain,numeric,ModelTox,missing,Effloglog,missing-method}: Compute the gain value for a given dose level, pseudo DLE
+\item \code{gain(
+  dose = numeric,
+  model_dle = ModelTox,
+  samples_dle = missing,
+  model_eff = Effloglog,
+  samples_eff = missing
+)}: Compute the gain value for a given dose level, pseudo DLE
 and Efficacy models without DLE and the Efficacy samples.
-}}
 
+}}
 \examples{
 # Obtain the gain value for a given dose, a pseudo DLE and efficacy models
 # as well as DLE and efficacy samples.

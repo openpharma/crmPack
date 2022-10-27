@@ -34,9 +34,9 @@ to \code{xLevel}) of the biomarker samples matrix, which is included in the the
 }
 \section{Functions}{
 \itemize{
-\item \code{biomarker,integer,DualEndpoint,Samples-method}: 
-}}
+\item \code{biomarker(xLevel = integer, model = DualEndpoint, samples = Samples)}: 
 
+}}
 \examples{
 # Create the data.
 my_data <- DataDual(

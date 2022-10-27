@@ -30,23 +30,25 @@ lowest dose level and a Beta(a,b) prior distribution.
 The default prior is Beta(1,1).
 In case that placebo is used, the rule is evaluated at the second dose of the
 dose grid, i.e. at the lowest non-placebo dose.
-Note: this stopping rule is independent from the underlying model.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{target}}{(\code{proportion})\cr the target toxicity.}
 
-\item{\code{prob}}{(\code{proportion})\cr the threshold probability for the lowest
-dose being toxic.}
+\item{\code{prob}}{(\code{proportion})\cr the threshold probability for the lowest dose
+being toxic.}
 
-\item{\code{a}}{(\code{number})\cr shape parameter a>0 of probability
-distribution Beta (a,b).}
+\item{\code{a}}{(\code{number})\cr shape parameter \eqn{a > 0} of probability distribution
+Beta (a,b).}
 
-\item{\code{b}}{(\code{number})\cr shape parameter b>0 of probability
-distribution Beta (a,b).}
+\item{\code{b}}{(\code{number})\cr shape parameter \eqn{b > 0} of probability distribution
+Beta (a,b).}
 }}
 
+\note{
+This stopping rule is independent from the underlying model.
+}
 \examples{
 
 # Stopping the study if the first dose is toxic with more than 90\%

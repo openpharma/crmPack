@@ -52,10 +52,16 @@ of the gain value samples
 }
 \section{Functions}{
 \itemize{
-\item \code{fitGain,ModelTox,Samples,ModelEff,Samples,DataDual-method}: This method returns a data frame with dose, middle, lower, upper quantiles for
+\item \code{fitGain(
+  DLEmodel = ModelTox,
+  DLEsamples = Samples,
+  Effmodel = ModelEff,
+  Effsamples = Samples,
+  data = DataDual
+)}: This method returns a data frame with dose, middle, lower, upper quantiles for
 the gain values obtained given the DLE and the efficacy samples
-}}
 
+}}
 \examples{
 ##Obtain the 'fitGain' the middle, uppper and lower quantiles for the samples of gain values
 ## at all dose levels using a pseudo DLE model, a DLE sample, a pseudo Efficacy model and
