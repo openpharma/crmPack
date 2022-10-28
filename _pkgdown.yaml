@@ -134,7 +134,6 @@ reference:
       - v_mcmc_options
       - v_model_params_normal
       - v_general_model
-      - v_model_log_normal
       - v_model_logistic_kadane
       - v_model_logistic_kadane_beta_gamma
       - v_model_logistic_normal_mixture
