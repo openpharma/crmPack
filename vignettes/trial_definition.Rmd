@@ -1,6 +1,6 @@
 ---
 title: "Trial Definition"
-bibliography: trial_definition.bib
+bibliography: vignettes.bib
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Trial Definition}
@@ -146,7 +146,7 @@ my_next_best <- NextBestNCRM(
 )
 ```
 
-Here, we choose to use Neuenschwander's rule [@NEUENSCHWANDER], in which the dose for the next cohort to be the dose (amongst those doses that are eligible for selection according to the escalation rule) that has the highest posterior chance of having a probability of toxicity in the target range - here [0.2, 0.35) - provided that the dose's chance of having a probability of toxicity in the overdose range - here [0.35, 1.0] - is less than 0.25.
+Here, we choose to use Neuenschwander's rule [@Neuenschwander2008], in which the dose for the next cohort to be the dose (amongst those doses that are eligible for selection according to the escalation rule) that has the highest posterior chance of having a probability of toxicity in the target range - here [0.2, 0.35) - provided that the dose's chance of having a probability of toxicity in the overdose range - here [0.35, 1.0] - is less than 0.25.
 
 #### The cohort size
 Now, we define the rule for choosing the size of the next cohort.

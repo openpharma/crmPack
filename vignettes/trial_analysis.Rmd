@@ -1,6 +1,6 @@
 ---
 title: "Trial Analysis"
-bibliography: trial_analysis.bib
+bibliography: vignettes.bib
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Trial Analysis}
@@ -57,7 +57,7 @@ The maximum increment for doses greater than `0` and less than `20` is 100 x (1 
 Note that a 2-fold *increment* corresponds to a 3-fold *escalation*.
 
 #### The dose selection rule
-Here, we choose to use Neuenschwander's rule [@NEUENSCHWANDER], in which the dose for the next cohort to be the dose (amongst those doses that are eligible for selection according to the escalation rule) that has the highest posterior chance of having a probability of toxicity in the target range - here [0.2, 0.35) - provided that the dose's chance of having a probability in the overdose range - here [0.35, 1.0] - is less than 0.25.
+Here, we choose to use Neuenschwander's rule [@Neuenschwander2008], in which the dose for the next cohort to be the dose (amongst those doses that are eligible for selection according to the escalation rule) that has the highest posterior chance of having a probability of toxicity in the target range - here [0.2, 0.35) - provided that the dose's chance of having a probability in the overdose range - here [0.35, 1.0] - is less than 0.25.
 
 #### The cohort size
 Whilst the dose for the next cohort is 20 or less *and* no DLTs have been observed, the minimum cohort size is 1.  Otherwise, it is 3.
