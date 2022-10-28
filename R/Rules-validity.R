@@ -60,29 +60,20 @@ v_next_best_ncrm_loss <- function(object) {
     test_probability_range(object@target, bounds_closed = FALSE),
     "target has to be a probability range excluding 0 and 1"
   )
-  is_overdose_valid <- test_probability_range(
-    object@overdose,
-    bounds_closed = c(FALSE, TRUE)
-  )
-  v$check(
-    is_overdose_valid,
-    "overdose has to be a probability range excluding 0"
-  )
-  is_unacceptable_valid <- test_probability_range(
-    object@unacceptable,
-    bounds_closed = c(FALSE, TRUE)
-  )
-  v$check(
-    is_unacceptable_valid,
-    "unacceptable has to be a probability range excluding 0"
-  )
-  if (is_overdose_valid && is_unacceptable_valid) {
+
+  is_overdose_ok <- test_probability_range(object@overdose, bounds_closed = TRUE)
+  v$check(is_overdose_ok, "overdose has to be a probability range")
+
+  is_unacceptable_ok <- test_probability_range(object@unacceptable, bounds_closed = TRUE)
+  v$check(is_unacceptable_ok, "unacceptable has to be a probability range")
+
+  if (is_overdose_ok && is_unacceptable_ok) {
     v$check(
       object@overdose[2] <= object@unacceptable[1],
       "lower bound of unacceptable has to be >= than upper bound of overdose"
     )
   }
-  if (is_unacceptable_valid) {
+  if (is_unacceptable_ok) {
     losses_len <- ifelse(all(object@unacceptable == c(1, 1)), 3L, 4L)
     v$check(
       test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
