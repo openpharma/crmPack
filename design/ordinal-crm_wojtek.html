@@ -298,23 +298,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -357,7 +351,7 @@ display: none;
 
 <h1 class="title toc-ignore">Design of ordinal CRM</h1>
 <h4 class="author">Wojciech Wójciak based on John Kirkpatrick work</h4>
-<h4 class="date">Last run on 2022-10-09 by wojtek on
+<h4 class="date">Last run on 2022-10-31 by wojtek on
 wanderer-2.local</h4>
 
 </div>
@@ -370,16 +364,52 @@ and theory about it.</h1>
 categorical (for example: no DLT, sub-DLT, DLT). Furthermore,
 multicategory toxicity responses are treated as ordinal due to their
 ordinal characteristics such as a monotone trend.</p>
-<p>These type of responses can be modeled using GLM models, where the
-model is expressed in terms of the cumulative response probabilities,
-hence the name: Cumulative Link Models. To be more specific, let <span class="math inline">\(c \in \{2, 3, \ldots \}\)</span> denote a number
-of toxicity categories on ordinal scale and <span class="math inline">\(Y_i\)</span> be a random variable that represents
-the response outcome category for subject <span class="math inline">\(i
-\geq 1\)</span>, i.e. <span class="math inline">\(supp(Y_i) = \{1, 2,
-\ldots, c\},\, i \geq 1\)</span>. The probability mass functions <span class="math inline">\(P(Y_i = j),\, j = 1, \ldots, c\)</span>, for <span class="math inline">\(i \geq 1\)</span>, will be called category
-probabilities, and the cumulative response probabilities are defined as
-<span class="math display">\[p_{ij} = P(Y_i \leq j) = P(Y_i = 1) +
-\cdots + P(Y_i = j), \qquad j = 1, \ldots, c.\]</span></p>
+<div id="the-model-cumulative-link-models" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> The model: Cumulative
+Link Models</h2>
+<p>These type of responses can be modeled using Generalized Linear Model
+(GLM), where the model is expressed in terms of the cumulative response
+probabilities. Hence, the name: Cumulative Link Model, or CLM. The CLM
+assumes the form:</p>
+<p><span class="math display">\[
+h[p_{ij}] = h[P(Y_i \leq j)] = \alpha_j + \mathbf x_i^T
+\boldsymbol\beta, \qquad j = 1, \ldots, c - 1,
+\]</span> where <span class="math inline">\(c \in \{2, 3, \ldots
+\}\)</span> denotes a number of toxicity categories on ordinal scale,
+and the components of the model are as follows:</p>
+<ol style="list-style-type: decimal">
+<li>h - link function. The most common link functions are “logit” and
+“probit”, which result in Cumulative Logit Model and Cumulative Probit
+Model respectively.</li>
+<li><span class="math inline">\(Y_i\)</span> - random variable that
+represents the response outcome category for subject <span class="math inline">\(i \geq 1\)</span>, i.e. <span class="math inline">\(supp(Y_i) = \{1, 2, \ldots, c\},\, i \geq
+1\)</span>. Probabilities <span class="math inline">\(P(Y_i = j),\, j =
+1, \ldots, c\)</span>, for <span class="math inline">\(i \geq
+1\)</span>, are called category probabilities, and the cumulative
+response probabilities for subject <span class="math inline">\(i \geq
+1\)</span> are defined as <span class="math display">\[p_{ij} = P(Y_i
+\leq j) = P(Y_i = 1) + \cdots + P(Y_i = j), \qquad j = 1, \ldots, c; ~ i
+\geq 1,\]</span></li>
+<li><span class="math inline">\(\mathbf x_i\)</span> - a vector of
+covariates corresponding to main effects and interactions for subject
+<span class="math inline">\(i \geq 1\)</span>.</li>
+<li><span class="math inline">\(\alpha_j\)</span>, <span class="math inline">\(j = 1, \ldots, c - 1\)</span> are “cutpoints” and
+<span class="math inline">\(\boldsymbol\beta\)</span> is a vector of
+effects (without intercept term). Although each response category has a
+corresponding cutpoint, the regression coefficients <span class="math inline">\(\boldsymbol\beta\)</span> are constant across
+categories. Each cumulative logs has its own intercept (“cutpoint”) and
+<span class="math display">\[
+-\infty &lt; \alpha_1 &lt; \alpha_2 &lt; \cdots &lt; \alpha_{c-1} &lt;
+\infty,
+\]</span> because <span class="math inline">\(P(Y_i \leq j)\)</span>
+increases in <span class="math inline">\(j\)</span> at any fixed <span class="math inline">\(\mathbf x_i\)</span>, and the logit is an
+increasing function of <span class="math inline">\(P(Y_i \leq
+j)\)</span>, <span class="math inline">\(i \geq 1\)</span>.</li>
+</ol>
+<p>Note that a model for <span class="math inline">\(logit[p_{ij}]\)</span> alone is an ordinary
+logistic model for a binary response in which categories <span class="math inline">\(1\)</span> to <span class="math inline">\(j\)</span> represent “success” and categories
+<span class="math inline">\(j+1\)</span> to <span class="math inline">\(c\)</span> represent “failure”.</p>
+<p>Why cumulative probabilities rather than category probabilities?</p>
 <p>As explained by McCullagh and Nelder (1989), the choice and
 definition of response categories is often arbitrary. It is essential,
 therefore, if we are to arrive at valid conclusions, that the nature of
@@ -390,44 +420,138 @@ two sets of probabilities are equivalent, but simple models for the
 cumulative probabilities are likely to have better properties for
 ordinal response scales than equally simple models based on the category
 probabilities.</p>
-<p>The most common link functions are “logit” and “probit”, which give a
-Cumulative Logit Model and Cumulative Probit Model respectively. Here, I
-will briefly discuss the Cumulative Logit Model only.</p>
-<div id="cumulative-logit-model" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Cumulative Logit
-Model</h2>
-<p>The cumulative logit model assumes the following form:</p>
-<p><span class="math display">\[logit[p_{ij}] = \alpha_j + \mathbf x_i^T
-\mathbf \beta, \qquad j = 1, \ldots, c - 1.\]</span> Note that a model
-for <span class="math inline">\(logit[p_{ij}]\)</span> alone is an
-ordinary logistic model for a binary response in which categories <span class="math inline">\(1\)</span> to <span class="math inline">\(j\)</span> represent “success” and categories
-<span class="math inline">\(j+1\)</span> to <span class="math inline">\(c\)</span> represent “failure”.</p>
-<p>Each cumulative logs has its own intercept. Note that <span class="math inline">\((\alpha_j)_{j = 1, \ldots, c-1}\)</span> is an
-increasing sequence, because <span class="math inline">\(P(Y_i \leq
-j)\)</span> increases in <span class="math inline">\(j\)</span> at any
-fixed <span class="math inline">\(\mathbf x_i\)</span>, and the logit is
-an increasing function of <span class="math inline">\(P(Y_i \leq
-j)\)</span>.</p>
-<div id="logisticlognormalord" class="section level3" number="1.1.1">
-<h3><span class="header-section-number">1.1.1</span>
-LogisticLogNormalOrd</h3>
-<p>To simplify notation, I will ignore subject index <span class="math inline">\(i\)</span>. The following basic Cumulative Logit
-Model can be considered as a single-agent toxicity model, in which the
-covariate is the natural logarithm of the dose <span class="math inline">\(x\)</span> divided by the reference dose <span class="math inline">\(x*\)</span>, i.e.: <span class="math display">\[logit[p_j] = \alpha_j + \beta \,
+</div>
+<div id="the-prior" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> The prior</h2>
+<p>Let <span class="math inline">\(\boldsymbol \alpha = (\alpha_1,
+\alpha_2, \ldots, \alpha_{c-1})\)</span> be a random vector, where <span class="math inline">\(c \in \{2, 3, \ldots \}\)</span> denotes a number
+of toxicity categories. Specifying priors for <span class="math inline">\(\boldsymbol \alpha\)</span> is challenging because
+of the ordering restriction. The following approaches have been
+suggested.</p>
+<div id="truncated-prior-distribution" class="section level3" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> Truncated prior
+distribution</h3>
+<p><span class="math inline">\(P(\boldsymbol \alpha) = P(\alpha_1)
+P(\alpha_2 | \alpha_1) \cdots P(\alpha_j | \alpha_{j-1})\)</span>, where
+<span class="math inline">\(\alpha_1 \in \mathbb R\)</span> and <span class="math inline">\(supp(\alpha_j) = (\alpha_{j−1}, \infty)\)</span>,
+<span class="math inline">\(j = 2, \ldots, c - 1 \geq 2\)</span>. For
+example:</p>
+<p><span class="math display">\[
+\alpha_1 \sim \mathcal{N}(0, \sigma^2_{\alpha}), \\
+\alpha_j | \alpha_{j-1} \sim \mathcal{N}(0, \sigma^2_{\alpha})\,
+T(\alpha_{j-1}, \infty), ~ j = 2, \ldots, c - 1 \geq 2 \\
+\]</span></p>
+<p>See McKinley et al. (2013) (equation (11)) and the references given
+therein, i.e. Albert and Chib (1993), Johnson and Albert (1999), Congdon
+(2005). Eventually see James et al. (2022)</p>
+<p>I see however the problem with this approach. Namely, if <span class="math inline">\(\alpha_k\)</span> for some <span class="math inline">\(k \in \{1, \ldots c - 2\}\)</span> is large by a
+chance, then it forces that <span class="math inline">\(\alpha_{k+1}\)</span> will be even higher,
+regardless of whether it is practically justified. This maybe become an
+issue, if the number of categories <span class="math inline">\(c\)</span> is high. So the alternative could be
+doubly-truncated distributions, which is somehow given in Congdon
+(2005), but it is unclear to me how this should be used exactly.</p>
+</div>
+<div id="transformation-of-the-intercepts-to-an-unconstrained-space" class="section level3" number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> Transformation of
+the intercepts to an unconstrained space</h3>
+<p><span class="math inline">\(\delta_1\)</span> := <span class="math inline">\(log(\alpha_1)\)</span>, <span class="math inline">\(\delta_j\)</span> := <span class="math inline">\(log(\alpha_j - \alpha_{j-1})\)</span>, <span class="math inline">\(j = 2, \ldots, c - 1 \geq 2\)</span>. Then,
+e.g. <span class="math inline">\(\boldsymbol \delta \sim
+\mathcal{N}_{c−1}(\mu_{\delta}, \Sigma_{\delta})\)</span>.</p>
+<p>Note that it is required that <span class="math inline">\(\alpha_1\)</span> &gt; <span class="math inline">\(0\)</span>.</p>
+<p>See Albert and Chib (1997) for more details.</p>
+</div>
+<div id="an-ordered-uniform-distribution-ishwaran-2000" class="section level3" number="1.2.3">
+<h3><span class="header-section-number">1.2.3</span> An ordered uniform
+distribution (Ishwaran, 2000)</h3>
+<p>This approach was mentioned in few sources, but it is still a bit
+unclear to me. For instance, in Congdon (2005), on page 239, the author
+writes: “An alternative suggested by Ishwaran (2000) is a uniform
+density <span class="math display">\[
+0 = \alpha_1 &lt; \alpha_2 &lt; \cdots &lt; \alpha_{c-1} = U,
+\]</span> where <span class="math inline">\(U\)</span> is equal to or
+less than <span class="math inline">\(c\)</span>.”</p>
+</div>
+<div id="latent-response-model" class="section level3" number="1.2.4">
+<h3><span class="header-section-number">1.2.4</span> Latent response
+model</h3>
+<p>With this approach, the observed response <span class="math inline">\(Y\)</span> is often taken to reflect an underlying
+continuous random variable <span class="math inline">\(Y^*\)</span> with
+<span class="math inline">\(c-1\)</span> thresholds or cut points.
+Albert and Chib (1993) presented a Bayesian analysis that utilizes the
+latent (response) variable model: <span class="math display">\[
+Y^*_i = \mathbf x_i^T \boldsymbol\beta + \epsilon_i, \qquad i \geq 1,
+\]</span> where <span class="math inline">\(\epsilon_i\)</span> are iid
+and <span class="math inline">\(\epsilon_i \sim \mathcal{N}(0, 1), i
+\geq 1\)</span>. Here we have that <span class="math display">\[
+Y_i = j \quad \text{iff} \quad \alpha_{j-1} &lt; Y^*_i \leq \alpha_j,
+\quad j = 2, \ldots, c - 1,
+\]</span> where <span class="math inline">\(\alpha_0 := -\infty\)</span>
+and <span class="math inline">\(\alpha_c := \infty\)</span>.</p>
+<p>Following Congdon (2005) (see Chapter 7.2) that is based on Johnson
+and Albert (1999) (Chapter 4.3), the cut points are sampled in a way
+that takes account of the sampled <span class="math inline">\(Y^*\)</span>. Thus, at iteration <span class="math inline">\(t\)</span>:</p>
+<p><span class="math display">\[
+\alpha^{(t)}_j \sim \mathcal{N}(0, V_{\alpha})\, T(L_j, U_j), \quad j =
+1, \ldots, c-1,\\
+\]</span> where <span class="math inline">\(V_{\alpha}\)</span> is
+preset and <span class="math display">\[
+L_j = max(Y^{*(t)},\, Y_i = j) \\
+U_j = min(Y^{*(t)},\, Y_i = j+1)
+\]</span> and</p>
+<p><span class="math display">\[
+Y_i^* \sim \mathcal{N}(\mathbf x_i^T \boldsymbol\beta, \gamma_i)\,
+T(\alpha_{y_{i-1}}, \alpha_{y_i}),
+\]</span> where <span class="math inline">\(\gamma_i \sim Ga(0.5v,
+0.5v)\)</span>, with <span class="math inline">\(v\)</span> preset.</p>
+</div>
+</div>
+<div id="logisticlognormord" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span>
+LogisticLogNormOrd</h2>
+<p>For simplicity of notation, unless I need to refer to particular
+subjects or to particular values of the explanatory variables, we
+replace <span class="math inline">\(p_{ij}\)</span> (i.e. <span class="math inline">\(P(X_i &lt; j)\)</span>) in such equations by <span class="math inline">\(p_j\)</span> (i.e. <span class="math inline">\(P(Y
+&lt; j)\)</span>), keeping in mind that in the model this is actually a
+conditional probability at each fixed value for the explanatory
+variables.</p>
+<p>The following basic CLM can be considered as a single-agent toxicity
+model, in which the covariate is the natural logarithm of the dose <span class="math inline">\(x\)</span> divided by the reference dose <span class="math inline">\(x*\)</span>, i.e.: <span class="math display">\[logit[p_j] = \alpha_j + \beta \,
 log(\tfrac{x}{x*}).\]</span> The prior is <span class="math display">\[
 (\alpha_1, \ldots, \alpha_{c-1}, log(\beta)) \sim N(\mu, \Sigma)
 \]</span> The parameter <span class="math inline">\(\beta\)</span> has a
 log-normal distribution to ensure its positivity.</p>
 </div>
-</div>
-<div id="references" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> References</h2>
-<p>[1] Agresti, A. (2015). Foundations of Linear and Generalized Linear
+<div id="references" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> References</h2>
+<p>[1] Agresti, A. (2010). Analysis of Ordinal Categorical Data.
+Hoboken, NJ: John Wiley &amp; Sons.</p>
+<p>[2] Agresti, A. (2013). Categorical Data Analysis. Hoboken, NJ: John
+Wiley &amp; Sons.</p>
+<p>[3] Agresti, A. (2015). Foundations of Linear and Generalized Linear
 Models. Hoboken, NJ: John Wiley &amp; Sons.</p>
-<p>[2] McCullagh, P., and Nelder, J. A. (1989). Generalized Linear
+<p>[4] Albert, J. H. and Chib, S. (1993). Bayesian analysis of binary
+and polychotomous response data. Journal of the American Statistical
+Association, 88(422): 669–679.</p>
+<p>[5] Albert, J. and Chib, S. (1997). Bayesian methods for cumulative,
+sequential and twostep ordinal data regression models. Technical
+report.</p>
+<p>[6] Congdon, P. (2005). Bayesian Model for Categorical Data,
+Willey.</p>
+<p>[7] Ishwaran, H. (2000). Univariate and Multirater Ordinal Cumulative
+Link Regression with Covariate SpecificCutpoints. The Canadian Journal
+of Statistics / La Revue Canadienne de Statistique, Vol. 28, No. 4
+(Dec., 2000), pp. 715-730</p>
+<p>[8] James, N. T., Harrell Jr, F. E., Shepherd, B. E. (2022) Bayesian
+Cumulative Probability Models for Continuous and Mixed Outcomes.
+arXiv:2102.00330v2 [stat.ME]</p>
+<p>[9] Johnson, V. E. and Albert, J. H. (1999). Ordinal Data Modeling.
+Springer-Verlag, New York.</p>
+<p>[10] McKinley, T. J., Morters, M., Wood, J. L. N. (2015) Bayesian
+Model Choice in Cumulative Link Ordinal Regression Models.</p>
+<p>[11] McCullagh, P., and Nelder, J. A. (1989). Generalized Linear
 Models. 2nd ed. London: Chapman &amp; Hall<br />
 <a href="https://www.utstat.toronto.edu/~brunner/oldclass/2201s11/readings/glmbook.pdf" class="uri">https://www.utstat.toronto.edu/~brunner/oldclass/2201s11/readings/glmbook.pdf</a></p>
-<p>[3] Van Meter EM, Garrett-Mayer E, Bandyopadhyay D. Dose-finding
+<p>[12] Van Meter EM, Garrett-Mayer E, Bandyopadhyay D. Dose-finding
 clinical trial design for ordinal toxicity grades using the continuation
 ratio model: an extension of the continual reassessment method. Clin
 Trials. 2012 Jun;9(3):303-13. doi: 10.1177/1740774512443593. Epub 2012
@@ -519,9 +643,9 @@ to benefit from having toxicities on an ordinal scale.</p>
 </div>
 <div id="model-class" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Model-class</h2>
-<pre class="r"><code>LogisticLogNormalOrd &lt;- function(mean, cov, ref_dose = 0) {
+<pre class="r"><code>LogisticLogNormOrd &lt;- function(mean, cov, ref_dose = 0) {
   params &lt;- ModelParamsNormal(mean, cov)
-  .LogisticLogNormalOrd(
+  .LogisticLogNormOrd(
     params = params,
     ref_dose = ref_dose,
     datamodel = function() {
