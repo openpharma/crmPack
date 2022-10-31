@@ -1,22 +1,15 @@
 ---
-
-url: https://github.com/roche/crmPack
+url: https://roche.github.io/crmPack
 
 template:
-  params:
-    bootswatch: cerulean
-
-home:
-  strip_header: true
+  bootstrap: 5
+  bootswatch: flatly
 
 navbar:
   type: default
   right:
     - icon: fa-github fa-lg
       href: https://github.com/roche/crmPack
-
-development:
-  mode: devel
 
 reference:
   - title: Package
@@ -141,13 +134,11 @@ reference:
       - v_mcmc_options
       - v_model_params_normal
       - v_general_model
-      - v_model
-      - v_model_log_normal
       - v_model_logistic_kadane
       - v_model_logistic_kadane_beta_gamma
-      - v_model_logistic_normal_mixture
+      - v_model_logistic_normal_mix
       - v_model_logistic_normal_fixed_mix
-      - v_model_logistic_log_normal_mixture
+      - v_model_logistic_log_normal_mix
       - v_model_dual_endpoint
       - v_model_dual_endpoint_rw
       - v_model_dual_endpoint_beta
@@ -173,8 +164,7 @@ reference:
       - v_increments_num_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
-      - v_stopping_cohort_near_dose
-      - v_stopping_patients_near_doses
+      - v_stopping_cohorts_near_dose
       - v_stopping_min_cohorts
       - v_stopping_min_patients
       - v_stopping_target_prob
@@ -217,7 +207,6 @@ reference:
       - doseFunction-GeneralModel
       - doseFunction-ModelPseudo
       - dose
-      - dose-Model
       - dose-LogisticNormal
       - dose-LogisticLogNormal
       - dose-LogisticLogNormalSub
@@ -238,7 +227,6 @@ reference:
       - probFunction-GeneralModel
       - probFunction-ModelTox
       - prob
-      - prob-Model
       - prob-LogisticNormal
       - prob-LogisticLogNormal
       - prob-LogisticLogNormalSub
@@ -291,3 +279,133 @@ reference:
       - is_logging_enabled
       - log_trace
       - dapply
+  - title: Classes
+    contents:
+      - CohortSize-class
+      - CohortSizeConst-class
+      - CohortSizeConst
+      - CohortSizeDLT-class
+      - CohortSizeDLT
+      - CohortSizeMax-class
+      - CohortSizeMax
+      - CohortSizeMin-class
+      - CohortSizeMin
+      - CohortSizeParts-class
+      - CohortSizeParts
+      - CohortSizeRange-class
+      - CohortSizeRange
+      - DADesign-class
+      - DADesign
+      - DASimulations-class
+      - DASimulations
+      - Design-class
+      - Design
+      - DualDesign-class
+      - DualDesign
+      - DualResponsesDesign-class
+      - DualResponsesDesign
+      - DualResponsesSamplesDesign-class
+      - DualResponsesSamplesDesign
+      - DualSimulations-class
+      - DualSimulations
+      - DualSimulationsSummary-class
+      - GeneralSimulations-class
+      - GeneralSimulations
+      - GeneralSimulationsSummary-class
+      - MinimalInformative
+      - PseudoDualFlexiSimulations-class
+      - PseudoDualFlexiSimulations
+      - PseudoDualSimulations-class
+      - PseudoDualSimulations
+      - PseudoDualSimulationsSummary-class
+      - PseudoSimulations-class
+      - PseudoSimulations
+      - PseudoSimulationsSummary-class
+      - Quantiles2LogisticNormal
+      - Report
+      - RuleDesign-class
+      - RuleDesign
+      - SafetyWindow-class
+      - SafetyWindowConst-class
+      - SafetyWindowConst
+      - SafetyWindowSize-class
+      - SafetyWindowSize
+      - Samples-class
+      - Samples
+      - Simulations-class
+      - Simulations
+      - SimulationsSummary-class
+      - Stopping-class
+      - StoppingGstarCIRatio-class
+      - StoppingGstarCIRatio
+      - StoppingTDCIRatio-class
+      - StoppingTDCIRatio
+      - TDDesign-class
+      - TDDesign
+      - TDsamplesDesign-class
+      - TDsamplesDesign
+      - ThreePlusThreeDesign
+      - approximate
+      - assertions
+      - crmPackExample
+      - crmPackHelp
+      - examine
+      - fit
+      - fitGain
+      - fitPEM
+      - get,Samples,character-method
+      - getMinInfBeta
+      - h_validate_combine_results
+      - logit
+      - matchTolerance
+      - maxSize
+      - minSize
+      - multiplot
+      - or-Stopping-Stopping
+      - or-Stopping-StoppingAny
+      - or-StoppingAny-Stopping
+      - plot,Data,ModelTox-method
+      - plot,DataDual,ModelEff-method
+      - plot,DualSimulations,missing-method
+      - plot,DualSimulationsSummary,missing-method
+      - plot,GeneralSimulations,missing-method
+      - plot,GeneralSimulationsSummary,missing-method
+      - plot,PseudoDualFlexiSimulations,missing-method
+      - plot,PseudoDualSimulations,missing-method
+      - plot,PseudoDualSimulationsSummary,missing-method
+      - plot,PseudoSimulationsSummary,missing-method
+      - plot,Samples,DALogisticLogNormal-method
+      - plot,Samples,DualEndpoint-method
+      - plot,Samples,GeneralModel-method
+      - plot,Samples,ModelEff-method
+      - plot,Samples,ModelTox-method
+      - plot,SimulationsSummary,missing-method
+      - plot.gtable
+      - plotDualResponses
+      - plotGain
+      - probit
+      - setSeed
+      - show,DualSimulationsSummary-method
+      - show,GeneralSimulationsSummary-method
+      - show,PseudoDualSimulationsSummary-method
+      - show,PseudoSimulationsSummary-method
+      - show,SimulationsSummary-method
+      - simulate,DADesign-method
+      - simulate,Design-method
+      - simulate,DualDesign-method
+      - simulate,DualResponsesDesign-method
+      - simulate,DualResponsesSamplesDesign-method
+      - simulate,RuleDesign-method
+      - simulate,TDDesign-method
+      - simulate,TDsamplesDesign-method
+      - size
+      - summary,DualSimulations-method
+      - summary,GeneralSimulations-method
+      - summary,PseudoDualFlexiSimulations-method
+      - summary,PseudoDualSimulations-method
+      - summary,PseudoSimulations-method
+      - summary,Simulations-method
+      - windowLength
+      - "&,Stopping,Stopping-method"
+      - "&,Stopping,StoppingAll-method"
+      - "&,StoppingAll,Stopping-method"
