@@ -2,9 +2,10 @@
 title: "Design of ordinal CRM"
 author: "Wojciech Wójciak based on John Kirkpatrick work"
 date: "Last run on `r Sys.Date()` by `r Sys.info()[['user']]` on `r Sys.info()['nodename']`"
-output: 
+output:
+  pdf_document: default
   html_document:
-    number_sections: true
+    number_sections: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -75,7 +76,7 @@ restriction. The following approaches have been suggested.
 ### Truncated prior distribution
 
 $P(\boldsymbol \alpha) = P(\alpha_1) P(\alpha_2 | \alpha_1) \cdots P(\alpha_j | \alpha_{j-1})$,
-where $\alpha_1 \in \mathbb R$ and $supp(\alpha_j) = (\alpha_{j−1}, \infty)$, $j = 2, \ldots, c - 1 \geq 2$.
+where $\alpha_1 \in \mathbb R$ and $supp(\alpha_j) = (\alpha_{j-1}, \infty)$, $j = 2, \ldots, c - 1 \geq 2$.
 For example:
 
 $$
@@ -94,12 +95,11 @@ This maybe become an issue, if the number of categories $c$ is high.
 So the alternative could be doubly-truncated distributions, which is somehow
 given in Congdon (2005), but it is unclear to me how this should be used exactly.
 
-
 ### Transformation of the intercepts to an unconstrained space
 
 $\delta_1$ := $log(\alpha_1)$, $\delta_j$ := $log(\alpha_j - \alpha_{j-1})$,
 $j = 2, \ldots, c - 1 \geq 2$.
-Then, e.g. $\boldsymbol \delta \sim \mathcal{N}_{c−1}(\mu_{\delta}, \Sigma_{\delta})$.
+Then, e.g. $\boldsymbol \delta \sim \mathcal{N}_{c-1}(\mu_{\delta}, \Sigma_{\delta})$.
 
 Note that it is required that $\alpha_1$ > $0$.
 

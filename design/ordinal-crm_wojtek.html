@@ -516,10 +516,11 @@ conditional probability at each fixed value for the explanatory
 variables.</p>
 <p>The following basic CLM can be considered as a single-agent toxicity
 model, in which the covariate is the natural logarithm of the dose <span class="math inline">\(x\)</span> divided by the reference dose <span class="math inline">\(x*\)</span>, i.e.: <span class="math display">\[logit[p_j] = \alpha_j + \beta \,
-log(\tfrac{x}{x*}).\]</span> The prior is <span class="math display">\[
-(\alpha_1, \ldots, \alpha_{c-1}, log(\beta)) \sim N(\mu, \Sigma)
-\]</span> The parameter <span class="math inline">\(\beta\)</span> has a
-log-normal distribution to ensure its positivity.</p>
+log(\tfrac{x}{x*}).\]</span> The prior is: <span class="math display">\[
+log(\beta) \sim N(\mu_{\beta}, \sigma_{\beta}^2)
+\]</span> and for <span class="math inline">\(\{\alpha_j\}_{j \in \{1,
+\ldots, c-2\}}\)</span> I would propose: “truncated prior distribution”
+or “transformation of the intercepts to an unconstrained space”.</p>
 </div>
 <div id="references" class="section level2" number="1.4">
 <h2><span class="header-section-number">1.4</span> References</h2>
@@ -643,6 +644,8 @@ to benefit from having toxicities on an ordinal scale.</p>
 </div>
 <div id="model-class" class="section level2" number="2.3">
 <h2><span class="header-section-number">2.3</span> Model-class</h2>
+<p>IT IS NOT READY YET. WILL BE PROPOSED AFTER THE THEORY IS
+ACCEPTED.</p>
 <pre class="r"><code>LogisticLogNormOrd &lt;- function(mean, cov, ref_dose = 0) {
   params &lt;- ModelParamsNormal(mean, cov)
   .LogisticLogNormOrd(
