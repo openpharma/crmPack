@@ -369,8 +369,10 @@ setMethod("simulate",
                           }
                       }
 
+                      #binary results (stopping TRUE or FALSE) and character string for stopping rule
                       ind_only_tree <- flatten_tree(individual_results_tree)
 
+                      #vector of binary results (stopping TRUE or FALSE)
                       ind_results <- unlist(ind_only_tree)
 
                   }
@@ -379,6 +381,7 @@ setMethod("simulate",
                   thisFit <- fit(object=thisSamples,
                                     model=object@model,
                                     data=thisData)
+
 
                   ## return the results
                   thisResult <-
@@ -390,9 +393,8 @@ setMethod("simulate",
                            stop=
                            attr(stopit,
                                 "message"),
-
-                           individual_stop_results =
-                               ind_results)
+                           highestStop = attr(stopit,"highest"),
+                           individual_stop_results = ind_results)
                   return(thisResult)
               }
 
@@ -424,13 +426,22 @@ setMethod("simulate",
 
               stopResults <- lapply(resultList, "[[", "individual_stop_results")
 
+              ## highest level stopping reasons
+
+              highestStoppingParts <- lapply(resultList, "[[", "highestStop")
+
+              #print(paste("Rule 1 and 2",highestStoppingParts))
+              highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
+              #print(highestStoppingMatrix)
+
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,
                                  doses=recommendedDoses,
                                  fit=fitList,
                                  stopReasons=stopReasons,
                                  stopResults=stopResults,
-                                 seed=RNGstate)
+                                 seed=RNGstate,
+                                 highestStoppingMatrix = highestStoppingMatrix)
 
               return(ret)
           })

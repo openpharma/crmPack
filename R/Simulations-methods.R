@@ -447,10 +447,13 @@ setMethod("summary",
               propAtTarget <- mean((toxAtDoses > target[1]) &
                                    (toxAtDoses < target[2]))
 
+              highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
+
               ## give back an object of class GeneralSimulationsSummary,
               ## for which we then define a print / plot method
                 ret <-
                   .GeneralSimulationsSummary(
+                    highestStoppingReport=highestStoppingReport,
                     target=target,
                     targetDoseInterval=targetDoseInterval,
                     nsim=length(object@data),
@@ -709,6 +712,15 @@ setMethod("show",
               cat("Summary of",
                   r$dfSave(object@nsim, "nsim"),
                   "simulations\n\n")
+
+              cat("Stopping rules:\n")
+              for(i in 1:length(object@highestStoppingReport)){
+                cat(paste(names(object@highestStoppingReport[i]),":"),
+                    r$dfSave(object@highestStoppingReport[i],
+                             "highestStoppingReport"),
+                    "%\n")
+
+              }
 
               cat("Target toxicity interval was",
                   r$dfSave(paste(round(object@target * 100),
