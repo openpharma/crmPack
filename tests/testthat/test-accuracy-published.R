@@ -1,52 +1,7 @@
 
-test_that(".PowerNormal works as expected", {
-  .PowerNormal <- setClass(
-    Class = "PowerNormal", contains = "Model",
-    slots = c(
-      skel_fun = "function",
-      skel_probs = "numeric",
-      mean = "numeric",
-      variance = "numeric"
-    )
-  )
 
-  # create a convenient initialization function
-  PowerNormal <- function(skel_probs, dose_grid, mean, variance) {
-    skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
-    inv_skel_fun <- approxfun(x = skel_probs, y = dose_grid, rule = 1)
+test_that(".OneParExpNormalPrior works as expected", {
 
-    .PowerNormal(
-      skel_fun = skel_fun,
-      skel_probs = skel_probs,
-      mean = mean,
-      variance = variance,
-      datamodel = function() {
-        for (i in 1:nObs) {
-          y[i] ~ dbern(p[i])
-          p[i] <- skel_probs[xLevel[i]]^exp(param1)
-        }
-      },
-      datanames = c("nObs", "y", "xLevel"),
-      prob = function(dose, param1) {
-        skel_fun(dose)^exp(param1)
-      },
-      dose = function(x, param1) {
-        inv_skel_fun(x^ (1 / exp(param1)))
-      },
-      priormodel = function() {
-        param1 ~ dnorm(mean, 1 / variance)
-      },
-      modelspecs = function() {
-        list(
-          skel_probs = skel_probs,
-          mean = mean, variance = variance
-        )
-      },
-      init = function() {
-        list(param1 = 1)
-      }, sample = "param1"
-    )
-  }
 
   mcmc_options <- crmPack::McmcOptions(
     burnin = 50000, step = 2,
@@ -61,7 +16,7 @@ test_that(".PowerNormal works as expected", {
     40, 50, 75, 100, 150, 200, 250
   ))
 
-  data_obs <- crmPack::Data(
+  data_obs_a <- crmPack::Data(
     x = c(
       rep(1, 3), rep(2.5, 4), rep(5, 5),
       rep(10, 4), rep(25, 2)
@@ -81,7 +36,7 @@ test_that(".PowerNormal works as expected", {
     ID = 1:18
   )
 
-  model_power_a <- PowerNormal(
+  model_power_a <- crmPack::OneParExpNormalPrior(
     skel_probs = c(
       0.01, 0.015, 0.020, 0.025, 0.03,
       0.04, 0.05, 0.10, 0.17, 0.30,
@@ -91,15 +46,14 @@ test_that(".PowerNormal works as expected", {
       1, 2.5, 5, 10, 15, 20, 25, 30,
       40, 50, 75, 100, 150, 200, 250
     ),
-    mean = 0,
-    variance = 1.34^2
+    sigma2 = 1.34^2
   )
 
-  expect_warning(prior_samples <- crmPack::mcmc(
+  prior_samples <- crmPack::mcmc(
     data = empty_data,
     model = model_power_a,
     options = mcmc_options
-  ))
+  )
 
   ## NCRM rule with loss function
   ncrm_loss <- crmPack::NextBestNCRMLoss(
@@ -111,20 +65,20 @@ test_that(".PowerNormal works as expected", {
   )
 
   increments_no <- crmPack::IncrementsRelative(
-    intervals = 250,
-    increments = 2
+    intervals = c(0, 250),
+    increments = c(2, 2)
   )
 
-  post_samples_a <- crmPack::mcmc(data_obs, model_power_a, mcmc_options)
+  post_samples_a <- crmPack::mcmc(data_obs_a, model_power_a, mcmc_options)
 
   dose_rec_loss_a <- crmPack::nextBest(ncrm_loss,
                                        doselimit = crmPack::maxDose(
                                          increments_no,
-                                         data_obs
+                                         data_obs_a
                                        ),
                                        samples = post_samples_a,
                                        model = model_power_a,
-                                       data = data_obs
+                                       data = data_obs_a
   )
 
   ## (A) Actual table I
@@ -145,7 +99,28 @@ test_that(".PowerNormal works as expected", {
 
 
   ## (B) Actual table I
-  model_power_b <- PowerNormal(
+
+  data_obs_b <- crmPack::Data(
+    x = c(
+      rep(1, 3), rep(2.5, 4), rep(5, 5),
+      rep(10, 4), rep(25, 2)
+    ),
+    y = c(
+      rep(0, 3), rep(0, 4), rep(0, 5),
+      rep(0, 4), rep(1, 2)
+    ),
+    cohort = c(
+      rep(1, 3), rep(2, 4), rep(3, 5),
+      rep(4, 4), rep(7, 2)
+    ),
+    doseGrid = c(
+      1, 2.5, 5, 10, 15, 20, 25, 30,
+      40, 50
+    ),
+    ID = 1:18
+  )
+
+  model_power_b <- crmPack::OneParExpNormalPrior(
     skel_probs = c(
       0.063, 0.125, 0.188, 0.250, 0.313,
       0.375, 0.438, 0.500, 0.563, 0.625
@@ -154,18 +129,19 @@ test_that(".PowerNormal works as expected", {
       1, 2.5, 5, 10, 15, 20, 25, 30,
       40, 50
     ),
-    mean = 0,
-    variance = 1.34^2
+    sigma2 = 1.34^2
   )
 
-  post_samples_b <- crmPack::mcmc(data_obs, model_power_b, mcmc_options)
+  post_samples_b <- crmPack::mcmc(data_obs_b, model_power_b, mcmc_options)
 
   dose_rec_loss_b <- crmPack::nextBest(ncrm_loss,
                                        doselimit = crmPack::maxDose(
                                          increments_no,
-                                         data_obs
+                                         data_obs_b
                                        ),
-                                       post_samples_b, model_power_b, data_obs
+                                       samples = post_samples_b,
+                                       model = model_power_b,
+                                       data = data_obs_b
   )
 
   tab1_b_act <- rbind(
@@ -230,11 +206,11 @@ test_that(".PowerNormal works as expected", {
   tolerance <- 0.01
   # original skeleton
   diff_org_mean <- abs(tab1_act$"Posterior summaries (original skeleton)"[2, ] -
-    tab_1_exp$"Posterior summaries (original skeleton)"[2, ]) <
+                         tab_1_exp$"Posterior summaries (original skeleton)"[2, ]) <
     tolerance
 
   diff_org_sd <- abs(tab1_act$"Posterior summaries (original skeleton)"[3, ] -
-    tab_1_exp$"Posterior summaries (original skeleton)"[3, ]) <
+                       tab_1_exp$"Posterior summaries (original skeleton)"[3, ]) <
     tolerance
 
   # if at least one computed result (mean or sd) has deviation larger than
@@ -251,11 +227,11 @@ test_that(".PowerNormal works as expected", {
 
   # equidistant skeleton
   diff_equi_mean <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[2, ] -
-    tab_1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
+                          tab_1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
     tolerance
 
   diff_equi_sd <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[3, ] -
-    tab_1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
+                        tab_1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
     tolerance
 
   if ((FALSE %in% diff_equi_mean) == TRUE |
