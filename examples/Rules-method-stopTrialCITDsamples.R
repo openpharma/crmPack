@@ -16,8 +16,7 @@ options<-McmcOptions(burnin=10,step=2,samples=50)
 ##samples of 'Samples' class
 samples<-mcmc(data,model,options)
 ##define the 'StoppingTDCIRatio' class
-myStopping <- StoppingTDCIRatio(targetRatio=5,
-                                       targetEndOfTrial=0.3)
+myStopping <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
 tdNextBest <- NextBestTDsamples(
   prob_target_drt = 0.35, prob_target_eot = 0.3,

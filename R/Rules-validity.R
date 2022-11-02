@@ -489,3 +489,18 @@ v_stopping_all <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_stopping validates that the [`StoppingTDCIRatio`] object
+#'   contains valid `target_ratio` and  `prob_target` slots.
+v_stopping_tdci_ratio <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@target_ratio, lower = .Machine$double.xmin, finite = TRUE),
+    "target_ratio must be a positive number"
+  )
+  v$check(
+    test_probability(object@prob_target),
+    "prob_target must be a probability value from [0, 1] interval"
+  )
+  v$result()
+}
