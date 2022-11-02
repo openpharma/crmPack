@@ -87,6 +87,7 @@ reference:
       - StoppingList
       - StoppingAll
       - StoppingAny
+      - StoppingTDCIRatio
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -174,6 +175,7 @@ reference:
       - v_stopping_target_biomarker
       - v_stopping_list
       - v_stopping_all
+      - v_stopping_tdci_ratio
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities

@@ -4,28 +4,41 @@
 \name{StoppingTDCIRatio-class}
 \alias{StoppingTDCIRatio-class}
 \alias{.StoppingTDCIRatio}
-\title{Stop based on a target ratio, the ratio of the upper to the lower
-95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
-probability of DLE used at the end of a trial}
+\alias{StoppingTDCIRatio}
+\title{\code{StoppingTDCIRatio}}
+\usage{
+StoppingTDCIRatio(target_ratio, prob_target)
+}
+\arguments{
+\item{target_ratio}{(\code{numeric})\cr see slot definition.}
+
+\item{prob_target}{(\code{proportion})\cr see slot definition.}
+}
 \description{
-Stop based on a target ratio, the ratio of the upper to the lower
-95\% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
-probability of DLE used at the end of a trial
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingTDCIRatio}} is the class for testing a stopping rule that is based
+on a target ratio of the 95\% credibility interval. Specifically, this is the
+ratio of the upper to the lower bound of the 95\% credibility interval's
+estimate of the target dose (i.e. a dose that corresponds to a given target
+probability of the occurrence of a DLT \code{prob_target}).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{targetRatio}}{the target ratio of the upper to the lower of the 95\% credibility interval of the
-estimate that required to stop a trial}
+\item{\code{target_ratio}}{(\code{numeric})\cr target for the ratio of the 95\% credibility
+interval's estimate, that is required to stop a trial.}
 
-\item{\code{targetEndOfTrial}}{the target probability of DLE to be used at the end of a trial}
+\item{\code{prob_target}}{(\code{proportion})\cr the target probability of the occurrence
+of a DLT.}
 }}
 
 \examples{
-##Define the target stopping ratio of 5 and 
-##the target probability of DLE to be used at the end of a trial
-##This is a ratio of the upper to the lower 95\% credibility interval of the estimates
-myStopping <- StoppingTDCIRatio(targetRatio=5,
-                                targetEndOfTrial=0.3)
+
+# Define the target stopping ratio (5) and the target probability of a DLT to
+# be used (0.3).
+my_stopping <- StoppingTDCIRatio(
+  target_ratio = 5,
+  prob_target = 0.3
+)
 }
-\keyword{classes}

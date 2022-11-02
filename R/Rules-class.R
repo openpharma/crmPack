@@ -1794,56 +1794,60 @@ StoppingAny <- function(stop_list) {
   .StoppingAny(stop_list = stop_list)
 }
 
-# nolint start
+# StoppingTDCIRatio ----
 
-##-------------------------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the 95% credibility interval
-## ---------------------------------------------------------------------------------------------------------------
+## class ----
 
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
-##' probability of DLE used at the end of a trial
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##'
-##' @example examples/Rules-class-StoppingTDCIRatio.R
-##' @export
-##' @keywords classes
-.StoppingTDCIRatio <-
-  setClass(Class="StoppingTDCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
+#' `StoppingTDCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`).
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingTDCIRatio
+#' @export
+#'
+.StoppingTDCIRatio <- setClass(
+  Class = "StoppingTDCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
 
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
+## constructor ----
 
-validObject(.StoppingTDCIRatio())
-
-##' Initialization function for "StoppingTDCIRatio"
-##'
-##' @param targetRatio please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingTDCIRatio}} class object
-##'
-##' @export
-##' @keywords methods
-StoppingTDCIRatio <- function(targetRatio,
-                              targetEndOfTrial)
-{
-  .StoppingTDCIRatio(targetRatio=targetRatio,
-                     targetEndOfTrial=targetEndOfTrial)
+#' @rdname StoppingTDCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTDCIRatio.R
+#'
+StoppingTDCIRatio <- function(target_ratio, prob_target) {
+  .StoppingTDCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target
+  )
 }
+
+# nolint start
 
 ## ----------------------------------------------------------------------------------------------------------------
 ##' Stop based on a target ratio, the ratio of the upper to the lower

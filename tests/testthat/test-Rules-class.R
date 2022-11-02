@@ -584,3 +584,17 @@ test_that("StoppingAny object can be created with user constructor", {
   expect_valid(result, "StoppingAny")
   expect_identical(result@stop_list, stop_list)
 })
+
+## StoppingTDCIRatio ----
+
+test_that(".StoppingTDCIRatio works as expected", {
+  result <- expect_silent(.StoppingTDCIRatio())
+  expect_valid(result, "StoppingTDCIRatio")
+})
+
+test_that("StoppingTDCIRatio object can be created with user constructor", {
+  result <- expect_silent(StoppingTDCIRatio(6, 0.5))
+  expect_valid(result, "StoppingTDCIRatio")
+  expect_identical(result@target_ratio, 6)
+  expect_identical(result@prob_target, 0.5)
+})
