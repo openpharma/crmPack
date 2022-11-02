@@ -54,7 +54,7 @@ Note that a model for $logit[p_{ij}]$ alone is an ordinary logistic model for a 
 response in which categories $1$ to $j$ represent "success" and categories
 $j+1$ to $c$ represent "failure".
 
-Why cumulative probabilities rather than category probabilities?
+### Why cumulative probabilities rather than category probabilities?
 
 As explained by McCullagh and Nelder (1989), the choice and definition of
 response categories is often arbitrary. It is essential, therefore, if we are to
@@ -94,6 +94,12 @@ $\alpha_{k+1}$ will be even higher, regardless of whether it is practically just
 This maybe become an issue, if the number of categories $c$ is high. 
 So the alternative could be doubly-truncated distributions, which is somehow
 given in Congdon (2005), but it is unclear to me how this should be used exactly.
+
+[JK]  I agree this is a potential concern.  However, my experience is that it has not ben an issue in the models I have fitted to date.
+
+[JK]  Codifying the potential priors like this is excellent.  Thank you.  Can you add an explicit discussion on the effect on the covariance structure specified by the user that each might induce?
+
+[JK]  As a minimal viable product, is it worth considering the requirement that the user-defined covariance matrix for the model parameters is diagonal?  This has worked for me in the past, and avoids all issues of correlation!
 
 ### Transformation of the intercepts to an unconstrained space
 
@@ -254,6 +260,12 @@ Data class by:
  of at the moment.
  This proposed approach has a lot of advantages, e.g. it allows child classes of
  Data to benefit from having toxicities on an ordinal scale.
+ 
+[JK]  If we extend the existing `Data` class rather than subclassing it, how will the behaviours of models (such as `LogisiticLogNormal` etc) be defined when they are passed a `Data` object with `length(y_categories) > 2`?
+
+[JK]  It would be helpful to allow users to label the toxicity categories as they wish.  This could be achieved either by allowing the `y_categories` slot to be a named vector or by providing  sister slot, `y_labels`, say.  In either case the default labels could be `c("No DLT", "DLT")` for the current (default) case and `paste0("Cat ", y_categories)` when the model is ordinal rather than binary.
+
+[JK]  There is an inconsistency in the naming of the new slot: it uses snake_case, whereas existing slots use camelCase.  Is this pre-empting a planned refactoring?
 
 Lets call it Data0 for a moment
 
