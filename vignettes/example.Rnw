@@ -974,9 +974,7 @@ The accuracy of the current estimate of TD30 is quantified by the width of the a
 For example, we will stop our trial if we obtain a ratio of less than 5 for the 95\% credibility interval of the TD30 estimate in this case, deciding that we have obtained an estimate which is 'accurate' enough.
 The \texttt{StoppingTDCIRatio} function can be  used in both cases when no DLT samples or DLT samples are involved:
 <<rules2-bits>>=
-myStopping4 <- StoppingTDCIRatio(targetRatio=5,
-                                        targetEndOfTrial=0.3)
-
+myStopping4 <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 @
 
 % In the above two examples, the \texttt{targetRatio} and \texttt{targetEndOfTrial} has to be specified.

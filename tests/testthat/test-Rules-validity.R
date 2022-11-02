@@ -1241,3 +1241,46 @@ test_that("v_stopping_all returns expected messages for non-valid stop_list", {
   object@stop_list <- list(FALSE, TRUE)
   expect_equal(v_stopping_all(object), err_msg)
 })
+
+## v_stopping_tdci_ratio ----
+
+test_that("v_stopping_tdci_ratio passes for valid object", {
+  object <- StoppingTDCIRatio(target_ratio = 7, prob_target = 0.2)
+  expect_true(v_stopping_tdci_ratio(object))
+
+  object <- StoppingTDCIRatio(target_ratio = 0.2, prob_target = 0)
+  expect_true(v_stopping_tdci_ratio(object))
+
+  object <- StoppingTDCIRatio(target_ratio = 6, prob_target = 1)
+  expect_true(v_stopping_tdci_ratio(object))
+})
+
+test_that("v_stopping_tdci_ratio returns message for non-valid target_ratio", {
+  err_msg <- "target_ratio must be a positive number"
+  object <- StoppingTDCIRatio(target_ratio = 7, prob_target = 0.2)
+
+  # Changing `target_ratio` so that it does not a positive number.
+  object@target_ratio <- -0.5
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+  object@target_ratio <- 0
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+
+  # Changing `target_ratio` so that it is not a scalar.
+  object@target_ratio <- c(0.5, 0.6)
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+})
+
+test_that("v_stopping_tdci_ratio returns message for non-valid prob_target", {
+  err_msg <- "prob_target must be a probability value from [0, 1] interval"
+  object <- StoppingTDCIRatio(target_ratio = 7, prob_target = 0.2)
+
+  # Changing `prob_target` so that it does not represent allowed probability value.
+  object@prob_target <- 2
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+  object@prob_target <- -0.5
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+
+  # Changing `prob_target` so that it is not a scalar.
+  object@prob_target <- c(0.5, 0.6)
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+})
