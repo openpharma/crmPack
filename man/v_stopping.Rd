@@ -9,7 +9,6 @@
 \alias{v_stopping_target_prob}
 \alias{v_stopping_mtd_distribution}
 \alias{v_stopping_mtd_cv}
-\alias{v_stopping_lowest_dose_hsr_beta}
 \alias{v_stopping_target_biomarker}
 \alias{v_stopping_list}
 \alias{v_stopping_all}
@@ -29,8 +28,6 @@ v_stopping_target_prob(object)
 v_stopping_mtd_distribution(object)
 
 v_stopping_mtd_cv(object)
-
-v_stopping_lowest_dose_hsr_beta(object)
 
 v_stopping_target_biomarker(object)
 
@@ -75,9 +72,6 @@ object contains valid \code{target}, \code{thresh} and \code{prob} parameters.
 
 \item \code{v_stopping_mtd_cv()}: validates that the \code{\link{StoppingMTDCV}} object
 contains valid probability target and percentage threshold.
-
-\item \code{v_stopping_lowest_dose_hsr_beta()}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
-object contains valid probability target, threshold and shape parameters.
 
 \item \code{v_stopping_target_biomarker()}: validates that the \code{\link{StoppingTargetBiomarker}} object
 contains valid \code{target}, \code{is_relative} and \code{prob}slots.

@@ -2679,7 +2679,7 @@ setMethod("stopTrial",
 setMethod("stopTrial",
   signature =
     signature(
-      stopping = "StoppingGstarCIRatio",
+      stopping = "StoppingMaxGainCIRatio",
       dose = "ANY",
       samples = "Samples",
       model = "ModelTox",
@@ -2687,10 +2687,10 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, samples, model, data, TDderive, Effmodel, Effsamples, Gstarderive, ...) {
-      targetEndOfTrial <- stopping@targetEndOfTrial
+      prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(targetEndOfTrial))
+      stopifnot(is.probability(prob_target))
       stopifnot(is(Effmodel, "ModelEff"))
       stopifnot(is(Effsamples, "Samples"))
       stopifnot(is.function(TDderive))
@@ -2698,7 +2698,7 @@ setMethod("stopTrial",
 
       ## find the TDtarget End of Trial samples
       TDtargetEndOfTrialSamples <- dose(
-        x = targetEndOfTrial,
+        x = prob_target,
         model = model,
         samples = samples
       )
@@ -2760,7 +2760,7 @@ setMethod("stopTrial",
       }
 
       ## so can we stop?
-      doStop <- ratio <= stopping@targetRatio
+      doStop <- ratio <= stopping@target_ratio
       ## generate messgae
       text1 <- paste(
         "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
@@ -2775,7 +2775,7 @@ setMethod("stopTrial",
       text3 <- paste(
         ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
         round(ratio, 4), " which is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "targetRatio =", stopping@targetRatio
+        "target_ratio =", stopping@target_ratio
       )
       text <- c(text1, text2, text3)
       ## return both
@@ -2795,7 +2795,7 @@ setMethod("stopTrial",
 setMethod("stopTrial",
   signature =
     signature(
-      stopping = "StoppingGstarCIRatio",
+      stopping = "StoppingMaxGainCIRatio",
       dose = "ANY",
       samples = "missing",
       model = "ModelTox",
@@ -2803,16 +2803,16 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, model, data, Effmodel, ...) {
-      targetEndOfTrial <- stopping@targetEndOfTrial
+      prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(targetEndOfTrial))
+      stopifnot(is.probability(prob_target))
       stopifnot(is(Effmodel, "ModelEff"))
 
 
       ## find the TDtarget End of Trial
       TDtargetEndOfTrial <- dose(
-        x = targetEndOfTrial,
+        x = prob_target,
         model = model
       )
 
@@ -2882,7 +2882,7 @@ setMethod("stopTrial",
       ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
 
       ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-      M1 <- matrix(c(-1 / (model@phi2), -(log(targetEndOfTrial / (1 - targetEndOfTrial)) - model@phi1) / (model@phi2)^2), 1, 2)
+      M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
 
       varEta <- M1 %*% M2 %*% t(M1)
@@ -2909,7 +2909,7 @@ setMethod("stopTrial",
         ratio <- ratioTDEOT
       }
       ## so can we stop?
-      doStop <- ratio <= stopping@targetRatio
+      doStop <- ratio <= stopping@target_ratio
       ## generate message
 
       text1 <- paste(
@@ -2925,7 +2925,7 @@ setMethod("stopTrial",
       text3 <- paste(
         ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
         round(ratio, 4), "which is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "targetRatio =", stopping@targetRatio
+        "target_ratio =", stopping@target_ratio
       )
       text <- c(text1, text2, text3)
       ## return both

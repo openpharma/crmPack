@@ -44,8 +44,7 @@ doseRecGain
 
 
 #stopping
-myStopping7 <- StoppingGstarCIRatio(targetRatio=5, 
-                                    targetEndOfTrial=0.3)
+myStopping7 <- StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
 
 myStopping8 <- myStopping7 | StoppingMinPatients(72)
 stopTrial(stopping=myStopping7,dose=doseRecGain$nextdose,model=newDLTmodel,
@@ -68,7 +67,7 @@ myfun <- function(x, a, b)
 }
 test <- function(x, a, b)
 {
-lapply(x, 
+lapply(x,
        myfun,
        a,
        b)

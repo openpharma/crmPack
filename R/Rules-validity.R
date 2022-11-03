@@ -424,10 +424,6 @@ v_stopping_mtd_cv <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'   object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr
-
 #' @describeIn v_stopping validates that the [`StoppingTargetBiomarker`] object
 #'   contains valid `target`, `is_relative` and `prob`slots.
 v_stopping_target_biomarker <- function(object) {
