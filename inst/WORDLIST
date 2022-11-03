@@ -305,7 +305,7 @@ StoppingAll
 StoppingAny
 StoppingCohortNearDose
 StoppingCohortsNearDose
-StoppingGstarCIRatio
+StoppingMaxGainCIRatio
 StoppingHighestDose
 StoppingList
 StoppingMaxPatients

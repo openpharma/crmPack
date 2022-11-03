@@ -1,4 +1,5 @@
 # Version 1.0.9000.9102
+* Renamed class `StoppingGstarCIRatio` (and its slots) to `StoppingMaxGainCIRatio`.
 * Renamed slots in `StoppingTDCIRatio` class.
 * Renamed `stopList` slot in `StoppingList`, `StoppingAll` and `StoppingAny` classes.
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.

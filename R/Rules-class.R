@@ -1493,7 +1493,7 @@ StoppingMTDCV <- function(target = 0.3,
     b = 1
   ),
   contains = "Stopping",
-  validity = v_stopping_lowest_dose_hsr_beta
+  validity = v_increments_hsr_beta
 )
 
 ## constructor ----
@@ -1847,60 +1847,63 @@ StoppingTDCIRatio <- function(target_ratio, prob_target) {
   )
 }
 
-# nolint start
+# StoppingMaxGainCIRatio ----
 
-## ----------------------------------------------------------------------------------------------------------------
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
-##' the TD end of trial, the dose with probability of DLE equals to the target
-##' probability of DLE used at the end of a trial.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##'
-##' @example examples/Rules-class-StoppingGstarCIRatio.R
-##' @export
-##' @keywords classes
-.StoppingGstarCIRatio <-
-  setClass(Class="StoppingGstarCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
+## class ----
 
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
+#' `StoppingMaxGainCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the:
+#' (1) target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`), or
+#' (2) max gain dose (i.e. a dose which gives the maximum gain),
+#' depending on which one out of these two is smaller.
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingMaxGainCIRatio
+#' @export
+#'
+.StoppingMaxGainCIRatio <- setClass(
+  Class = "StoppingMaxGainCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
 
-validObject(.StoppingGstarCIRatio())
+## constructor ----
 
-##' Initialization function for "StoppingGstarCIRatio"
-##'
-##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingGstarCIRatio}} class object
-##'
-##' @export
-##' @keywords methods
-StoppingGstarCIRatio <- function(targetRatio,
-                                 targetEndOfTrial)
-{
-  .StoppingGstarCIRatio(targetRatio=targetRatio,
-                        targetEndOfTrial=targetEndOfTrial)
+#' @rdname StoppingMaxGainCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
+#'
+StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
+  .StoppingMaxGainCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target
+  )
 }
 
-
-
-## ============================================================
-
-
+# nolint start
 
 ## --------------------------------------------------
 ## Virtual class for cohort sizes

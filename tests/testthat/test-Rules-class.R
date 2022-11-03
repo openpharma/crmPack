@@ -598,3 +598,17 @@ test_that("StoppingTDCIRatio object can be created with user constructor", {
   expect_identical(result@target_ratio, 6)
   expect_identical(result@prob_target, 0.5)
 })
+
+## StoppingMaxGainCIRatio ----
+
+test_that(".StoppingMaxGainCIRatio works as expected", {
+  result <- expect_silent(.StoppingMaxGainCIRatio())
+  expect_valid(result, "StoppingMaxGainCIRatio")
+})
+
+test_that("StoppingMaxGainCIRatio object can be created with user constructor", {
+  result <- expect_silent(StoppingMaxGainCIRatio(6, 0.5))
+  expect_valid(result, "StoppingMaxGainCIRatio")
+  expect_identical(result@target_ratio, 6)
+  expect_identical(result@prob_target, 0.5)
+})
