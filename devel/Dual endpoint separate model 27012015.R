@@ -1,3 +1,5 @@
+# nolint start
+
 library(crmPack)
 mySize<-CohortSizeConst(size=3)
 myIncrements1 <-IncrementsRelative(intervals=c(2),increments=c(2))
@@ -73,3 +75,5 @@ lapply(x,
        b)
 }
 test(1:5, a=3, b=2)
+
+# nolint end
