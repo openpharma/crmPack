@@ -1,4 +1,4 @@
-# Version 1.0.9000.9102
+# Version 1.0.9000.9103
 * Renamed `cohortSize` slot to `cohort_size` in `CohortSizeRange` class.
 * Renamed class `StoppingGstarCIRatio` (and its slots) to `StoppingMaxGainCIRatio`.
 * Renamed slots in `StoppingTDCIRatio` class.
