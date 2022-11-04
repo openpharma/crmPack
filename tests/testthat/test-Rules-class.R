@@ -612,3 +612,19 @@ test_that("StoppingMaxGainCIRatio object can be created with user constructor", 
   expect_identical(result@target_ratio, 6)
   expect_identical(result@prob_target, 0.5)
 })
+
+# CohortSize ----
+
+## CohortSizeRange ----
+
+test_that(".CohortSizeRange works as expected", {
+  result <- expect_silent(.CohortSizeRange())
+  expect_valid(result, "CohortSizeRange")
+})
+
+test_that("CohortSizeRange object can be created with user constructor", {
+  result <- expect_silent(CohortSizeRange(c(0, 30, 50), c(20, 60, 90)))
+  expect_valid(result, "CohortSizeRange")
+  expect_identical(result@intervals, c(0, 30, 50))
+  expect_identical(result@cohort_size, c(20L, 60L, 90L))
+})

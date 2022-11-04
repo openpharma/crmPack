@@ -327,7 +327,7 @@ mySize <- CohortSizeDLT(DLTintervals=c(0, 1),
 
 ## Range rule says to have size 1 until 30 mg, then size 3.
 mySize2 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
+                           cohort_size=c(1, 3))
 
 ## these two rules are now combined by taking the maximum
 mySizeCombined <- maxSize(mySize, mySize2)

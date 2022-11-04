@@ -1903,81 +1903,76 @@ StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
   )
 }
 
-# nolint start
+# CohortSize ----
 
-## --------------------------------------------------
-## Virtual class for cohort sizes
-## --------------------------------------------------
+## class ----
 
-##' The virtual class for cohort sizes
-##'
-##' @seealso \code{\linkS4class{CohortSizeMax}},
-##' \code{\linkS4class{CohortSizeMin}},
-##' \code{\linkS4class{CohortSizeRange}},
-##' \code{\linkS4class{CohortSizeDLT}},
-##' \code{\linkS4class{CohortSizeConst}},
-##' \code{\linkS4class{CohortSizeParts}}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="CohortSize",
-         contains=list("VIRTUAL"))
+#' `CohortSize`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSize`] is a class for for cohort sizes.
+#'
+#' @seealso [`CohortSizeRange`], [`CohortSizeDLT`], [`CohortSizeConst`],
+#'   [`CohortSizeParts`], [`CohortSizeMin`], [`CohortSizeMin`].
+#'
+#' @aliases CohortSize
+#' @export
+#'
+setClass(
+  Class = "CohortSize"
+)
 
+# CohortSizeRange ----
 
-## --------------------------------------------------
-## Cohort size based on dose range
-## --------------------------------------------------
+## class ----
 
-##' Cohort size based on dose range
-##'
-##' @slot intervals a vector with the left bounds of the relevant dose intervals
-##' @slot cohortSize an integer vector of the same length with the cohort
-##' sizes in the \code{intervals}
-##'
-##' @example examples/Rules-class-CohortSizeRange.R
-##' @export
-##' @keywords classes
-.CohortSizeRange <-
-    setClass(Class="CohortSizeRange",
-             representation(intervals="numeric",
-                            cohortSize="integer"),
-             prototype(intervals=c(0, 20),
-                       cohortSize=as.integer(c(1L, 3L))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `CohortSizeRange`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeRange`] is the class for cohort size based on dose range.
+#'
+#' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
+#'   dose intervals.
+#' @slot cohort_size (`integer`)\cr an integer vector with the cohort sizes
+#'   corresponding to the elements of `intervals`.
+#'
+#' @aliases CohortSizeRange
+#' @export
+#'
+.CohortSizeRange <- setClass(
+  Class = "CohortSizeRange",
+  slots = c(
+    intervals = "numeric",
+    cohort_size = "integer"
+  ),
+  prototype = prototype(
+    intervals = c(0, 20),
+    cohort_size = c(1L, 3L)
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_range
+)
 
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@intervals)),
-                             "cohortSize must have same length as intervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
-                             "intervals has to be sorted and have unique values")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.CohortSizeRange())
-
-##' Initialization function for "CohortSizeRange"
-##'
-##' @param intervals see \code{\linkS4class{CohortSizeRange}}
-##' @param cohortSize see \code{\linkS4class{CohortSizeRange}}
-##' @return the \code{\linkS4class{CohortSizeRange}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeRange <- function(intervals,
-                            cohortSize)
-{
-    .CohortSizeRange(intervals=intervals,
-                     cohortSize=safeInteger(cohortSize))
+#' @rdname CohortSizeRange-class
+#'
+#' @param intervals (`numeric`)\cr see slot definition.
+#' @param cohort_size (`integer`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeRange.R
+#'
+CohortSizeRange <- function(intervals, cohort_size) {
+  .CohortSizeRange(
+    intervals = intervals,
+    cohort_size = safeInteger(cohort_size)
+  )
 }
 
-## --------------------------------------------------
-## Cohort size based on number of DLTs
-## --------------------------------------------------
+# nolint start
 
 ##' Cohort size based on number of DLTs
 ##'
@@ -2142,7 +2137,7 @@ CohortSizeParts <- function(sizes)
              representation(cohortSizeList="list"),
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
+                                                cohort_size=c(1, 3)),
                                 CohortSizeDLT(DLTintervals=c(0, 1),
                                               cohortSize=c(1, 3)))),
              contains="CohortSize",
@@ -2195,7 +2190,7 @@ CohortSizeMax <- function(cohortSizeList)
              representation(cohortSizeList="list"),
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
+                                                cohort_size=c(1, 3)),
                                 CohortSizeDLT(DLTintervals=c(0, 1),
                                               cohortSize=c(1, 3)))),
              contains="CohortSize",

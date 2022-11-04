@@ -83,9 +83,9 @@ myNextBest <- NextBestNCRM(target=c(0.2,0.35),
                            maxOverdoseProb=0.25)
 
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
+                           cohort_size=c(1, 3))
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
-                         cohortSize=c(1, 3))
+                         cohort_size=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 
 myStopping1 <- StoppingTargetProb(target=c(0.2, 0.35),
