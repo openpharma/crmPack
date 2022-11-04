@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9101</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9102</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,12 +32,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -434,6 +428,26 @@
           <code><a href="StoppingAny-class.html">StoppingAny()</a></code> 
         </dt>
         <dd><code>StoppingAny</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="StoppingTDCIRatio-class.html">StoppingTDCIRatio()</a></code> 
+        </dt>
+        <dd><code>StoppingTDCIRatio</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="StoppingMaxGainCIRatio-class.html">StoppingMaxGainCIRatio()</a></code> 
+        </dt>
+        <dd><code>StoppingMaxGainCIRatio</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="CohortSize-class.html">CohortSize-class</a></code> <code><a href="CohortSize-class.html">CohortSize</a></code> 
+        </dt>
+        <dd><code>CohortSize</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="CohortSizeRange-class.html">CohortSizeRange()</a></code> 
+        </dt>
+        <dd><code>CohortSizeRange</code></dd>
       </dl></div><div class="section level2">
       <h2 id="internal-helper-functions">Internal Helper Functions<a class="anchor" aria-label="anchor" href="#internal-helper-functions"></a></h2>
       
@@ -663,9 +677,14 @@ of the function that models dose-biomarker relationship defined in the
         <dd>Internal Helper Functions for Validation of <code>Increments</code> Objects</dd>
       </dl><dl><dt>
           
-          <code><a href="v_stopping.html">v_stopping_cohorts_near_dose()</a></code> <code><a href="v_stopping.html">v_stopping_patients_near_dose()</a></code> <code><a href="v_stopping.html">v_stopping_min_cohorts()</a></code> <code><a href="v_stopping.html">v_stopping_min_patients()</a></code> <code><a href="v_stopping.html">v_stopping_target_prob()</a></code> <code><a href="v_stopping.html">v_stopping_mtd_distribution()</a></code> <code><a href="v_stopping.html">v_stopping_mtd_cv()</a></code> <code><a href="v_stopping.html">v_stopping_lowest_dose_hsr_beta()</a></code> <code><a href="v_stopping.html">v_stopping_target_biomarker()</a></code> <code><a href="v_stopping.html">v_stopping_list()</a></code> <code><a href="v_stopping.html">v_stopping_all()</a></code> 
+          <code><a href="v_stopping.html">v_stopping_cohorts_near_dose()</a></code> <code><a href="v_stopping.html">v_stopping_patients_near_dose()</a></code> <code><a href="v_stopping.html">v_stopping_min_cohorts()</a></code> <code><a href="v_stopping.html">v_stopping_min_patients()</a></code> <code><a href="v_stopping.html">v_stopping_target_prob()</a></code> <code><a href="v_stopping.html">v_stopping_mtd_distribution()</a></code> <code><a href="v_stopping.html">v_stopping_mtd_cv()</a></code> <code><a href="v_stopping.html">v_stopping_target_biomarker()</a></code> <code><a href="v_stopping.html">v_stopping_list()</a></code> <code><a href="v_stopping.html">v_stopping_all()</a></code> <code><a href="v_stopping.html">v_stopping_tdci_ratio()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>Stopping</code> Objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="v_cohort_size.html">v_cohort_size_range()</a></code> 
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>CohortSize</code> Objects</dd>
       </dl></div><div class="section level2">
       <h2 id="custom-checkmate-assertions">Custom Checkmate Assertions<a class="anchor" aria-label="anchor" href="#custom-checkmate-assertions"></a></h2>
       
@@ -856,11 +875,6 @@ mostly used to obtain new modal estimates for pseudo model parameters.</dd>
 
       <dl><dt>
           
-          <code><a href="CohortSize-class.html">CohortSize-class</a></code> 
-        </dt>
-        <dd>The virtual class for cohort sizes</dd>
-      </dl><dl><dt>
-          
           <code><a href="CohortSizeConst-class.html">CohortSizeConst-class</a></code> <code><a href="CohortSizeConst-class.html">.CohortSizeConst</a></code> 
         </dt>
         <dd>Constant cohort size</dd>
@@ -909,16 +923,6 @@ mostly used to obtain new modal estimates for pseudo model parameters.</dd>
           <code><a href="CohortSizeParts.html">CohortSizeParts()</a></code> 
         </dt>
         <dd>Initialization function for "CohortSizeParts"</dd>
-      </dl><dl><dt>
-          
-          <code><a href="CohortSizeRange-class.html">CohortSizeRange-class</a></code> <code><a href="CohortSizeRange-class.html">.CohortSizeRange</a></code> 
-        </dt>
-        <dd>Cohort size based on dose range</dd>
-      </dl><dl><dt>
-          
-          <code><a href="CohortSizeRange.html">CohortSizeRange()</a></code> 
-        </dt>
-        <dd>Initialization function for "CohortSizeRange"</dd>
       </dl><dl><dt>
           
           <code><a href="DADesign-class.html">DADesign-class</a></code> <code><a href="DADesign-class.html">.DADesign</a></code> 
@@ -1145,31 +1149,6 @@ This class is used to decide the rolling rule from the clinical perspective.</dd
           <code><a href="Stopping-class.html">Stopping-class</a></code> <code><a href="Stopping-class.html">Stopping</a></code> 
         </dt>
         <dd><code>Stopping</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="StoppingGstarCIRatio-class.html">StoppingGstarCIRatio-class</a></code> <code><a href="StoppingGstarCIRatio-class.html">.StoppingGstarCIRatio</a></code> 
-        </dt>
-        <dd>Stop based on a target ratio, the ratio of the upper to the lower
-95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
-the TD end of trial, the dose with probability of DLE equals to the target
-probability of DLE used at the end of a trial.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="StoppingGstarCIRatio.html">StoppingGstarCIRatio()</a></code> 
-        </dt>
-        <dd>Initialization function for "StoppingGstarCIRatio"</dd>
-      </dl><dl><dt>
-          
-          <code><a href="StoppingTDCIRatio-class.html">StoppingTDCIRatio-class</a></code> <code><a href="StoppingTDCIRatio-class.html">.StoppingTDCIRatio</a></code> 
-        </dt>
-        <dd>Stop based on a target ratio, the ratio of the upper to the lower
-95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
-probability of DLE used at the end of a trial</dd>
-      </dl><dl><dt>
-          
-          <code><a href="StoppingTDCIRatio.html">StoppingTDCIRatio()</a></code> 
-        </dt>
-        <dd>Initialization function for "StoppingTDCIRatio"</dd>
       </dl><dl><dt>
           
           <code><a href="TDDesign-class.html">TDDesign-class</a></code> <code><a href="TDDesign-class.html">.TDDesign</a></code> 

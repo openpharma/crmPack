@@ -14,7 +14,7 @@ Stopping or inherited classes and therefore not exported."><meta property="og:im
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9101</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9102</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,12 +36,6 @@ Stopping or inherited classes and therefore not exported."><meta property="og:im
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -85,13 +79,13 @@ Stopping or inherited classes and therefore not exported."><meta property="og:im
 <span></span>
 <span><span class="fu">v_stopping_mtd_cv</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">v_stopping_lowest_dose_hsr_beta</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
-<span></span>
 <span><span class="fu">v_stopping_target_biomarker</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">v_stopping_list</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">v_stopping_all</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">v_stopping_all</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">v_stopping_tdci_ratio</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -124,14 +118,14 @@ object contains valid <code>target</code> and <code>prob</code> parameters.</p><
 object contains valid <code>target</code>, <code>thresh</code> and <code>prob</code> parameters.</p></li>
 <li><p><code>v_stopping_mtd_cv()</code>: validates that the <code><a href="StoppingMTDCV-class.html">StoppingMTDCV</a></code> object
 contains valid probability target and percentage threshold.</p></li>
-<li><p><code>v_stopping_lowest_dose_hsr_beta()</code>: validates that the <code><a href="StoppingLowestDoseHSRBeta-class.html">StoppingLowestDoseHSRBeta</a></code>
-object contains valid probability target, threshold and shape parameters.</p></li>
 <li><p><code>v_stopping_target_biomarker()</code>: validates that the <code><a href="StoppingTargetBiomarker-class.html">StoppingTargetBiomarker</a></code> object
 contains valid <code>target</code>, <code>is_relative</code> and <code>prob</code>slots.</p></li>
 <li><p><code>v_stopping_list()</code>: validates that the <code><a href="StoppingList-class.html">StoppingList</a></code> object
 contains valid <code>stop_list</code>, <code>summary</code> slots.</p></li>
 <li><p><code>v_stopping_all()</code>: validates that the <code><a href="StoppingAll-class.html">StoppingAll</a></code> object
 contains valid <code>stop_list</code> slot.</p></li>
+<li><p><code>v_stopping_tdci_ratio()</code>: validates that the <code><a href="StoppingTDCIRatio-class.html">StoppingTDCIRatio</a></code> object
+contains valid <code>target_ratio</code> and  <code>prob_target</code> slots.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
