@@ -1223,3 +1223,61 @@ test_that("v_stopping_tdci_ratio returns message for non-valid prob_target", {
   object@prob_target <- c(0.5, 0.6)
   expect_equal(v_stopping_tdci_ratio(object), err_msg)
 })
+
+# CohortSize ----
+
+## v_cohort_size_range ----
+
+test_that("v_cohort_size_range passes for valid object", {
+  object <- CohortSizeRange(0, 20)
+  expect_true(v_cohort_size_range(object))
+
+  object <- CohortSizeRange(c(0, 30), c(20, 60))
+  expect_true(v_cohort_size_range(object))
+
+  object <- CohortSizeRange(c(20, 40, 90), c(50, 160, 400))
+  expect_true(v_cohort_size_range(object))
+})
+
+test_that("v_cohort_size_range returns message for non-valid intervals", {
+  err_msg <- "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
+  object <- CohortSizeRange(c(0, 30), c(20, 60))
+
+  # Changing `intervals` so that it contains a non-unique values
+  object@intervals <- c(10, 10)
+  expect_equal(v_cohort_size_range(object), err_msg)
+
+  # Changing `intervals` so that it contains not allowed elements or it is not sorted.
+  object@intervals <- c(0, -30)
+  expect_equal(v_cohort_size_range(object), err_msg)
+  object@intervals <- c(20, Inf)
+  expect_equal(v_cohort_size_range(object), err_msg)
+  object@intervals <- c(NA, 30)
+  expect_equal(v_cohort_size_range(object), err_msg)
+  object@intervals <- -0.5
+  object@cohort_size <- 20L
+  expect_equal(v_cohort_size_range(object), err_msg)
+
+  # Changing `intervals` so that its length is not >= 1.
+  object@intervals <- numeric(0)
+  object@cohort_size <- integer(0)
+  expect_equal(v_cohort_size_range(object), err_msg)
+})
+
+test_that("v_cohort_size_range returns message for non-valid cohort_size", {
+  errmsg <- "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
+  object <- CohortSizeRange(c(0, 30), c(20, 60))
+
+  # Changing `cohort_size` so that its length is not equal to the length of `intervals`.
+  object@cohort_size <- c(20L, 60L, 90L)
+  expect_equal(v_cohort_size_range(object), errmsg)
+
+  # Changing `cohort_size` so that it contains not allowed elements.
+  object@cohort_size <- c(0L, -30L)
+  expect_equal(v_cohort_size_range(object), errmsg)
+  object@cohort_size <- c(NA, 30L)
+  expect_equal(v_cohort_size_range(object), errmsg)
+  object@cohort_size <- -20L
+  object@intervals <- 0
+  expect_equal(v_cohort_size_range(object), errmsg)
+})

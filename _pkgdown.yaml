@@ -89,6 +89,8 @@ reference:
       - StoppingAny
       - StoppingTDCIRatio
       - StoppingMaxGainCIRatio
+      - CohortSize
+      - CohortSizeRange
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -176,6 +178,7 @@ reference:
       - v_stopping_list
       - v_stopping_all
       - v_stopping_tdci_ratio
+      - v_cohort_size_range
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -283,7 +286,6 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - CohortSize-class
       - CohortSizeConst-class
       - CohortSizeConst
       - CohortSizeDLT-class
@@ -294,8 +296,6 @@ reference:
       - CohortSizeMin
       - CohortSizeParts-class
       - CohortSizeParts
-      - CohortSizeRange-class
-      - CohortSizeRange
       - DADesign-class
       - DADesign
       - DASimulations-class

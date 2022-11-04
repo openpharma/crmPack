@@ -2420,7 +2420,7 @@ setMethod("size",
         )
 
       ## so the cohort size is
-      ret <- cohortSize@cohortSize[interval]
+      ret <- cohortSize@cohort_size[interval]
 
       return(ret)
     }

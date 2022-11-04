@@ -3,16 +3,14 @@
 \docType{class}
 \name{CohortSize-class}
 \alias{CohortSize-class}
-\title{The virtual class for cohort sizes}
+\alias{CohortSize}
+\title{\code{CohortSize}}
 \description{
-The virtual class for cohort sizes
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{CohortSize}} is a class for for cohort sizes.
 }
 \seealso{
-\code{\linkS4class{CohortSizeMax}},
-\code{\linkS4class{CohortSizeMin}},
-\code{\linkS4class{CohortSizeRange}},
-\code{\linkS4class{CohortSizeDLT}},
-\code{\linkS4class{CohortSizeConst}},
-\code{\linkS4class{CohortSizeParts}}
+\code{\link{CohortSizeRange}}, \code{\link{CohortSizeDLT}}, \code{\link{CohortSizeConst}},
+\code{\link{CohortSizeParts}}, \code{\link{CohortSizeMin}}, \code{\link{CohortSizeMin}}.
 }
-\keyword{classes}
