@@ -192,14 +192,14 @@
     Code
       result
     Output
-      [1] 2.500000 3.368185 4.069243 4.916871
+      [1]  5.125000  7.512509  9.440417 11.771394
 
 # dose-OneParExpNormalPrior works as expected for scalar samples
 
     Code
       result
     Output
-      [1] 3.710803 4.885153
+      [1]  8.454708 11.684171
 
 # prob-LogisticNormal works as expected
 

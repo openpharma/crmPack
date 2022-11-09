@@ -348,7 +348,7 @@ DataMixture <- function(xshare = numeric(),
     Tmax = 0 + .Machine$double.xmin
   ),
   contains = "Data",
-  validity = v_data_DA
+  validity = v_data_da
 )
 
 ## constructor ----

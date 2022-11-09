@@ -995,10 +995,70 @@ test_that("OneParExpNormalPrior object can be created with user constructor", {
   expect_valid(result, "OneParExpNormalPrior")
 })
 
+test_that("OneParExpNormalPrior throws the error when dose_grid and skel_probs have diff. lengths", {
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
+      dose_grid = 1:6,
+      sigma2 = 2
+    ),
+    "Assertion on 'dose_grid' failed: Must have length 5, but has length 6."
+  )
+})
+
+test_that("OneParExpNormalPrior throws the error for not unique or not sorted dose_grid", {
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = c(1, 3, 4, 5, 5),
+      sigma2 = 2
+    ),
+    "Assertion on 'dose_grid' failed: Contains duplicated values, position 5."
+  )
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = c(2, 1, 3, 4, 5),
+      sigma2 = 2
+    ),
+    "Assertion on 'dose_grid' failed: Must be sorted"
+  )
+})
+
+test_that("OneParExpNormalPrior throws the error for not a probability values in skel_probs", {
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 1.1),
+      dose_grid = 1:5,
+      sigma2 = 2
+    ),
+    "Assertion on 'skel_probs' failed: Probability must be within \\[0, 1\\] bounds but it is not"
+  )
+})
+
+test_that("OneParExpNormalPrior throws the error for not unique or not sorted skel_probs", {
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = c(0.1, 0.2, 0.2, 0.3, 0.4),
+      dose_grid = 1:5,
+      sigma2 = 2
+    ),
+    "Assertion on 'skel_probs' failed: Contains duplicated values, position 3."
+  )
+  result <- expect_error(
+    OneParExpNormalPrior(
+      skel_probs = c(0.3, 0.1, 0.5, 0.7, 0.9),
+      dose_grid = 1:5,
+      sigma2 = 2
+    ),
+    "Assertion on 'skel_probs' failed: Must be sorted"
+  )
+})
+
 ## mcmc ----
 
 test_that("MCMC computes correct values for OneParExpNormalPrior model", {
-  data <- h_get_data()
+  data <- h_get_data(placebo = FALSE)
   model <- h_get_one_par_exp_normal_prior()
   options <- h_get_mcmc_options()
 
@@ -1007,7 +1067,7 @@ test_that("MCMC computes correct values for OneParExpNormalPrior model", {
 })
 
 test_that("MCMC computes correct values for OneParExpNormalPrior model and empty data", {
-  data <- h_get_data(empty = TRUE)
+  data <- h_get_data(empty = TRUE, placebo = FALSE)
   model <- h_get_one_par_exp_normal_prior()
   options <- h_get_mcmc_options()
 
@@ -1016,16 +1076,22 @@ test_that("MCMC computes correct values for OneParExpNormalPrior model and empty
 })
 
 test_that("MCMC throws the error for OneParExpNormalPrior model when 'xLevel' does not match 'skel_probs'", {
-  data <- h_get_data()
+  data <- h_get_data(placebo = FALSE)
   model <- h_get_one_par_exp_normal_prior()
-  options <- h_get_mcmc_options()
-
   model@skel_probs <- model@skel_probs[-1]
+  options <- h_get_mcmc_options()
 
   expect_error(
     mcmc(data = data, model = model, options = options, from_prior = FALSE),
-    "Assertion on 'length\\(model@skel_probs\\) == max\\(data@xLevel\\)' failed: Must be TRUE"
+    "Assertion on 'length\\(model@skel_probs\\) == data@nGrid' failed: Must be TRUE."
   )
+})
+
+test_that("No NA is returned in dose calculations for OneParExpNormalPrior model", {
+  model <- h_get_one_par_exp_normal_prior()
+  calc_dose <- doseFunction(model, alpha = 1)
+
+  expect_false(is.na(calc_dose(0.95)))
 })
 
 # FractionalCRM ----
@@ -1046,7 +1112,7 @@ test_that("FractionalCRM object can be created with user constructor", {
 ## mcmc ----
 
 test_that("MCMC computes correct values for FractionalCRM model", {
-  data <- h_get_data_da()
+  data <- h_get_data_da(placebo = FALSE)
   model <- h_get_fractional_crm()
   options <- h_get_mcmc_options()
 
@@ -1055,7 +1121,7 @@ test_that("MCMC computes correct values for FractionalCRM model", {
 })
 
 test_that("MCMC computes correct values for FractionalCRM model and empty data", {
-  data <- h_get_data_da(empty = TRUE)
+  data <- h_get_data_da(empty = TRUE, placebo = FALSE)
   model <- h_get_fractional_crm()
   options <- h_get_mcmc_options()
 
@@ -1064,14 +1130,13 @@ test_that("MCMC computes correct values for FractionalCRM model and empty data",
 })
 
 test_that("MCMC throws the error for FractionalCRM model when 'xLevel' does not match 'skel_probs'", {
-  data <- h_get_data()
+  data <- h_get_data(placebo = FALSE)
   model <- h_get_fractional_crm()
-  options <- h_get_mcmc_options()
-
   model@skel_probs <- model@skel_probs[-1]
+  options <- h_get_mcmc_options()
 
   expect_error(
     mcmc(data = data, model = model, options = options, from_prior = FALSE),
-    "Assertion on 'length\\(model@skel_probs\\) == max\\(data@xLevel\\)' failed: Must be TRUE"
+    "Assertion on 'length\\(model@skel_probs\\) == data@nGrid' failed: Must be TRUE."
   )
 })

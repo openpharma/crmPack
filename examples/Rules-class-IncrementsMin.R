@@ -19,6 +19,6 @@ my_increments_2 <- IncrementsRelative(
 )
 
 # Now we combine the 2 rules.
-comb_increments <- IncrementMin(
-  IncrementsList = list(my_increments_1, my_increments_2)
+comb_increments <- IncrementsMin(
+  increments_list = list(my_increments_1, my_increments_2)
 )

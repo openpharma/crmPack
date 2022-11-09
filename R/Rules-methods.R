@@ -160,7 +160,7 @@ setMethod(
 
     # Eligible grid doses after accounting for maximum possible dose and discarding overdoses.
     is_dose_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE) &
-      (prob_overdose < nextBest@max_overdose_prob)
+      (prob_overdose <= nextBest@max_overdose_prob)
 
     next_dose <- if (any(is_dose_eligible)) {
       # If maximum target probability is higher than some numerical threshold,
@@ -383,16 +383,16 @@ setMethod(
 
     # Get number of patients per grid's dose and DLT rate at the last level.
     nPatients <- table(factor(data@x, levels = data@doseGrid))
-    nDLTs_last_level <- sum(data@y[data@xLevel == last_level])
-    DLT_rate_last_level <- nDLTs_last_level / nPatients[last_level]
+    n_dlts_last_level <- sum(data@y[data@xLevel == last_level])
+    dlt_rate_last_level <- n_dlts_last_level / nPatients[last_level]
 
-    level_change <- if (DLT_rate_last_level < 1 / 3) {
+    level_change <- if (dlt_rate_last_level < 1 / 3) {
       # Escalate it, unless this is the highest level or the higher dose was already tried.
       ifelse((last_level == data@nGrid) || (nPatients[last_level + 1L] > 0), 0L, 1L)
     } else {
       # Rate is too high, deescalate it, unless an edge case of 1/3, where the decision
       # depends on the num. of patients: if >3, then deescalate it, otherwise stay.
-      ifelse((DLT_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
+      ifelse((dlt_rate_last_level == 1 / 3) && (nPatients[last_level] <= 3L), 0L, -1L)
     }
     next_dose_level <- last_level + level_change
 
@@ -817,7 +817,7 @@ setMethod(
       lower = dose_grid_range[1],
       upper = dose_grid_range[2]
     )
-    dose_mg <- opt$par # G*.
+    dose_mg <- opt$par # this is G*. # no lintr
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.
@@ -1068,8 +1068,6 @@ setMethod("maxDose",
     }
 )
 
-# nolint end
-
 # maxDose-IncrementsNumDoseLevels ----
 
 #' @rdname maxDose
@@ -1093,7 +1091,7 @@ setMethod(
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
     basis_dose_level <- ifelse(
-      increments@basisLevel == "last",
+      increments@basis_level == "last",
       tail(
         data@xLevel,
         1
@@ -1103,7 +1101,7 @@ setMethod(
 
     max_next_dose_level <- min(
       length(data@doseGrid),
-      basis_dose_level + increments@maxLevels
+      basis_dose_level + increments@max_levels
     )
 
     data@doseGrid[max_next_dose_level]
@@ -1166,8 +1164,6 @@ setMethod(
     max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
   }
 )
-
-# nolint start
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments, with special rules for
@@ -1316,11 +1312,11 @@ setMethod("maxDose",
 ##' @describeIn maxDose Determine the maximum possible next dose based on
 ##' multiple increment rules (taking the minimum across individual increments).
 ##'
-##' @example examples/Rules-method-maxDose-IncrementMin.R
+##' @example examples/Rules-method-maxDose-IncrementsMin.R
 setMethod("maxDose",
   signature =
     signature(
-      increments = "IncrementMin",
+      increments = "IncrementsMin",
       data = "Data"
     ),
   def =
@@ -1328,7 +1324,7 @@ setMethod("maxDose",
 
       ## apply the multiple increment rules
       individualResults <-
-        sapply(increments@IncrementsList,
+        sapply(increments@increments_list,
           maxDose,
           data = data,
           ...
@@ -1382,8 +1378,8 @@ setMethod("&",
   ),
   def =
     function(e1, e2) {
-      e1@stopList <- c(
-        e1@stopList,
+      e1@stop_list <- c(
+        e1@stop_list,
         e2
       )
       return(e1)
@@ -1405,9 +1401,9 @@ setMethod("&",
   ),
   def =
     function(e1, e2) {
-      e2@stopList <- c(
+      e2@stop_list <- c(
         e1,
-        e2@stopList
+        e2@stop_list
       )
       return(e2)
     }
@@ -1455,8 +1451,8 @@ setMethod("|",
   ),
   def =
     function(e1, e2) {
-      e1@stopList <- c(
-        e1@stopList,
+      e1@stop_list <- c(
+        e1@stop_list,
         e2
       )
       return(e1)
@@ -1480,9 +1476,9 @@ setMethod("|",
   ),
   def =
     function(e1, e2) {
-      e2@stopList <- c(
+      e2@stop_list <- c(
         e1,
-        e2@stopList
+        e2@stop_list
       )
       return(e2)
     }
@@ -1557,7 +1553,7 @@ setMethod("stopTrial",
       ## in the list
       individualResults <-
         if (missing(samples)) {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             model = model,
@@ -1565,7 +1561,7 @@ setMethod("stopTrial",
             ...
           )
         } else {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             samples = samples,
@@ -1611,7 +1607,7 @@ setMethod("stopTrial",
       ## in the list
       individualResults <-
         if (missing(samples)) {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             model = model,
@@ -1619,7 +1615,7 @@ setMethod("stopTrial",
             ...
           )
         } else {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             samples = samples,
@@ -1665,7 +1661,7 @@ setMethod("stopTrial",
       ## in the list
       individualResults <-
         if (missing(samples)) {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             model = model,
@@ -1673,7 +1669,7 @@ setMethod("stopTrial",
             ...
           )
         } else {
-          lapply(stopping@stopList,
+          lapply(stopping@stop_list,
             stopTrial,
             dose = dose,
             samples = samples,
@@ -2001,9 +1997,7 @@ setMethod("stopTrial",
     }
 )
 
-# nolint end
-
-# stopTrial-StoppingMTDCV ----
+## StoppingMTDCV ----
 
 #' @rdname stopTrial
 #'
@@ -2052,7 +2046,7 @@ setMethod(
 )
 
 
-# stopTrial-StoppingLowestDoseHSRBeta ----
+## StoppingLowestDoseHSRBeta ----
 
 #' @rdname stopTrial
 #'
@@ -2110,8 +2104,6 @@ setMethod(
   }
 )
 
-# nolint start
-
 ## --------------------------------------------------
 ## Stopping based on probability of targeting biomarker
 ## --------------------------------------------------
@@ -2136,7 +2128,7 @@ setMethod("stopTrial",
       biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples)
 
       ## if target is relative to maximum
-      if (stopping@scale == "relative") {
+      if (stopping@is_relative) {
 
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
@@ -2215,6 +2207,51 @@ setMethod("stopTrial",
       ))
     }
 )
+
+## StoppingSpecificDose ----
+
+#' @describeIn stopTrial if Stopping rule is met for specific dose of the planned
+#' dose grid and not just for the default next best dose.
+#'
+#' @aliases stopTrial-StoppingSpecificDose
+#'
+#' @export
+#' @example examples/Rules-method-stopTrial-StoppingSpecificDose.R
+#'
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingSpecificDose",
+    dose = "numeric",
+    samples = "ANY",
+    model = "ANY",
+    data = "Data"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    # Specific dose must be a part of the dose grid.
+    assert_subset(x = stopping@dose@.Data, choices = data@doseGrid)
+
+    # Evaluate the original (wrapped) stopping rule at the specific dose.
+    result <- stopTrial(
+      stopping = stopping@rule,
+      dose = stopping@dose@.Data,
+      samples = samples,
+      model = model,
+      data = data,
+      ...
+    )
+    # Correct the text message from the original stopping rule.
+    attr(result, "message") <- gsub(
+      pattern = "next best",
+      replacement = "specific",
+      x = attr(result, "message"),
+      ignore.case = TRUE
+    )
+    result
+  }
+)
+
+
 
 ## --------------------------------------------------
 ## Stopping when the highest dose is reached
@@ -2383,7 +2420,7 @@ setMethod("size",
         )
 
       ## so the cohort size is
-      ret <- cohortSize@cohortSize[interval]
+      ret <- cohortSize@cohort_size[interval]
 
       return(ret)
     }
@@ -2539,47 +2576,39 @@ setMethod("size",
 ##'
 ##' @export
 ##' @keywords methods
-setMethod("stopTrial",
-  signature =
-    signature(
-      stopping = "StoppingTDCIRatio",
-      dose = "ANY",
-      samples = "Samples",
-      model = "ModelTox",
-      data = "ANY"
-    ),
-  def =
-    function(stopping, dose, samples, model, data, ...) {
-      targetEndOfTrial <- stopping@targetEndOfTrial
-      ## check id targetEndOfTrial is a probability
-      stopifnot(is.probability(targetEndOfTrial))
+setMethod(
+  f = "stopTrial",
+  signature = signature(
+    stopping = "StoppingTDCIRatio",
+    dose = "ANY",
+    samples = "Samples",
+    model = "ModelTox",
+    data = "ANY"
+  ),
+  definition = function(stopping, dose, samples, model, data, ...) {
+    assert_probability(stopping@prob_target)
 
-      ## find the TDtarget End of Trial samples
-      TDtargetEndOfTrialSamples <- dose(
-        x = targetEndOfTrial,
-        model = model,
-        samples = samples
-      )
+    dose_target_samples <- dose(
+      x = stopping@prob_target,
+      model = model,
+      samples = samples
+    )
+    # 95% credibility interval.
+    dose_target_ci <- quantile(dose_target_samples, probs = c(0.025, 0.975))
+    dose_target_ci_ratio <- dose_target_ci[[2]] / dose_target_ci[[1]]
 
-      ## Find the upper and lower limit of the 95% credibility interval
-      CI <- quantile(TDtargetEndOfTrialSamples, probs = c(0.025, 0.975))
-
-      ## The ratio of the upper to the lower 95% credibility interval
-      ratio <- as.numeric(CI[2] / CI[1])
-
-
-      ## so can we stop?
-      doStop <- ratio <= stopping@targetRatio
-      ## generate messgae
-      text <- paste(
-        "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "targetRatio =", stopping@targetRatio
-      )
-      ## return both
-      return(structure(doStop,
-        messgae = text
-      ))
-    }
+    do_stop <- dose_target_ci_ratio <= stopping@target_ratio
+    text <- paste0(
+      "95% CI is (",
+      paste(dose_target_ci, collapse = ", "),
+      "), Ratio = ",
+      round(dose_target_ci_ratio, 4),
+      " is ",
+      ifelse(do_stop, "less than or equal to ", "greater than "),
+      "target_ratio = ", stopping@target_ratio
+    )
+    structure(do_stop, messgae = text)
+  }
 )
 
 ## ----------------------------------------------------------------------------------------------
@@ -2601,38 +2630,25 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, model, data, ...) {
-      targetEndOfTrial <- stopping@targetEndOfTrial
+      assert_probability(stopping@prob_target)
 
-      ## check if targetEndOfTrial is a probability
-      stopifnot(is.probability(targetEndOfTrial))
-
-      ## find the TDtarget End of Trial
-      TDtargetEndOfTrial <- dose(
-        x = targetEndOfTrial,
-        model = model
-      )
-
-      ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-      M1 <- matrix(c(-1 / (model@phi2), -(log(targetEndOfTrial / (1 - targetEndOfTrial)) - model@phi1) / (model@phi2)^2), 1, 2)
+      prob_target <- stopping@prob_target
+      dose_target_samples <- dose(x = prob_target, model = model)
+      ## Find the variance of the log of the dose_target_samples(eta)
+      M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
-
       varEta <- M1 %*% M2 %*% t(M1)
 
       ## Find the upper and lower limit of the 95% credibility interval
-      CI <- c()
-      CI[2] <- exp(log(TDtargetEndOfTrial) + 1.96 * sqrt(varEta))
-      CI[1] <- exp(log(TDtargetEndOfTrial) - 1.96 * sqrt(varEta))
-
-      ## The ratio of the upper to the lower 95% credibility interval
-      ratio <- as.numeric(CI[2] / CI[1])
-
+      CI <- exp(log(dose_target_samples) + c(-1.96, 1.96) * sqrt(varEta))
+      ratio <- CI[2] / CI[1]
 
       ## so can we stop?
-      doStop <- ratio <= stopping@targetRatio
+      doStop <- ratio <= stopping@target_ratio
       ## generate messgae
       text <- paste(
         "95% CI is (", round(CI[1], 4), ",", round(CI[2], 4), "), Ratio =", round(ratio, 4), "is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "targetRatio =", stopping@targetRatio
+        "target_ratio =", stopping@target_ratio
       )
       ## return both
       return(structure(doStop,
@@ -2663,7 +2679,7 @@ setMethod("stopTrial",
 setMethod("stopTrial",
   signature =
     signature(
-      stopping = "StoppingGstarCIRatio",
+      stopping = "StoppingMaxGainCIRatio",
       dose = "ANY",
       samples = "Samples",
       model = "ModelTox",
@@ -2671,10 +2687,10 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, samples, model, data, TDderive, Effmodel, Effsamples, Gstarderive, ...) {
-      targetEndOfTrial <- stopping@targetEndOfTrial
+      prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(targetEndOfTrial))
+      stopifnot(is.probability(prob_target))
       stopifnot(is(Effmodel, "ModelEff"))
       stopifnot(is(Effsamples, "Samples"))
       stopifnot(is.function(TDderive))
@@ -2682,7 +2698,7 @@ setMethod("stopTrial",
 
       ## find the TDtarget End of Trial samples
       TDtargetEndOfTrialSamples <- dose(
-        x = targetEndOfTrial,
+        x = prob_target,
         model = model,
         samples = samples
       )
@@ -2744,7 +2760,7 @@ setMethod("stopTrial",
       }
 
       ## so can we stop?
-      doStop <- ratio <= stopping@targetRatio
+      doStop <- ratio <= stopping@target_ratio
       ## generate messgae
       text1 <- paste(
         "Gstar estimate is", round(Gstar, 4), "with 95% CI (", round(CIGstar[1], 4), ",", round(CIGstar[2], 4),
@@ -2759,7 +2775,7 @@ setMethod("stopTrial",
       text3 <- paste(
         ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
         round(ratio, 4), " which is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "targetRatio =", stopping@targetRatio
+        "target_ratio =", stopping@target_ratio
       )
       text <- c(text1, text2, text3)
       ## return both
@@ -2779,7 +2795,7 @@ setMethod("stopTrial",
 setMethod("stopTrial",
   signature =
     signature(
-      stopping = "StoppingGstarCIRatio",
+      stopping = "StoppingMaxGainCIRatio",
       dose = "ANY",
       samples = "missing",
       model = "ModelTox",
@@ -2787,16 +2803,16 @@ setMethod("stopTrial",
     ),
   def =
     function(stopping, dose, model, data, Effmodel, ...) {
-      targetEndOfTrial <- stopping@targetEndOfTrial
+      prob_target <- stopping@prob_target
 
       ## checks
-      stopifnot(is.probability(targetEndOfTrial))
+      stopifnot(is.probability(prob_target))
       stopifnot(is(Effmodel, "ModelEff"))
 
 
       ## find the TDtarget End of Trial
       TDtargetEndOfTrial <- dose(
-        x = targetEndOfTrial,
+        x = prob_target,
         model = model
       )
 
@@ -2866,7 +2882,7 @@ setMethod("stopTrial",
       ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
 
       ## Find the variance of the log of the TDtargetEndOfTrial(eta)
-      M1 <- matrix(c(-1 / (model@phi2), -(log(targetEndOfTrial / (1 - targetEndOfTrial)) - model@phi1) / (model@phi2)^2), 1, 2)
+      M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
 
       varEta <- M1 %*% M2 %*% t(M1)
@@ -2893,7 +2909,7 @@ setMethod("stopTrial",
         ratio <- ratioTDEOT
       }
       ## so can we stop?
-      doStop <- ratio <= stopping@targetRatio
+      doStop <- ratio <= stopping@target_ratio
       ## generate message
 
       text1 <- paste(
@@ -2909,7 +2925,7 @@ setMethod("stopTrial",
       text3 <- paste(
         ifelse(chooseTD, "TDatrgetEndOfTrial estimate", "Gstar estimate"), "is smaller with ratio =",
         round(ratio, 4), "which is ", ifelse(doStop, "is less than or equal to", "greater than"),
-        "targetRatio =", stopping@targetRatio
+        "target_ratio =", stopping@target_ratio
       )
       text <- c(text1, text2, text3)
       ## return both

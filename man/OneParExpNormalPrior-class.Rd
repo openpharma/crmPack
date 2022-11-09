@@ -10,9 +10,11 @@
 OneParExpNormalPrior(skel_probs, dose_grid, sigma2)
 }
 \arguments{
-\item{skel_probs}{(\code{numeric})\cr skeleton prior probabilities.}
+\item{skel_probs}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
+of unique and sorted probability values between 0 and 1.}
 
-\item{dose_grid}{(\code{numeric})\cr dose grid.}
+\item{dose_grid}{(\code{numeric})\cr dose grid. It must be must be a sorted vector
+of the same length as \code{skel_probs}.}
 
 \item{sigma2}{(\code{number})\cr prior variance of log power parameter alpha.}
 }
@@ -29,7 +31,8 @@ the log power parameter for the skeleton prior probabilities.
 
 \item{\code{skel_fun_inv}}{(\code{function})\cr inverse function of \code{skel_fun}.}
 
-\item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities.}
+\item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
+of unique and sorted probability values between 0 and 1.}
 
 \item{\code{sigma2}}{(\code{number})\cr prior variance of log power parameter alpha.}
 }}

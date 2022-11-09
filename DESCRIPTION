@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9071
+Version: 1.0.9000.9103
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -35,7 +35,6 @@ Imports:
     grid,
     gridExtra,
     lifecycle,
-    MASS,
     methods,
     mvtnorm,
     parallel,
@@ -46,8 +45,6 @@ Imports:
 Suggests:
     ggmcmc,
     knitr,
-    Rcpp,
-    RcppArmadillo,
     testthat (>= 3.0.0),
     vdiffr
 VignetteBuilder: 

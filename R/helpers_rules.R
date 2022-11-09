@@ -91,7 +91,8 @@ h_next_best_mg_ci <- function(dose_target,
   dgphi1 <- -(mean_eff_mg * log_dose_mg * model@phi2 - model_eff@theta2) / denom
   dgphi2 <- -(log_dose_mg * (mean_eff_mg * (1 + log_dose_mg * model@phi2) - model_eff@theta2)) / denom
   dgtheta1 <- -(log_dose_mg * model@phi2) / denom
-  dgtheta2 <- -(exp(model@phi1 + model@phi2 * log_dose_mg) * (model@phi2 * log_dose_mg * log(log_dose_mg) - 1) - 1) / denom
+  dgtheta2_num <- -(exp(model@phi1 + model@phi2 * log_dose_mg) * (model@phi2 * log_dose_mg * log(log_dose_mg) - 1) - 1)
+  dgtheta2 <- dgtheta2_num / denom
   delta_g <- matrix(c(dgphi1, dgphi2, dgtheta1, dgtheta2), 4, 1)
 
   zero_matrix <- matrix(0, 2, 2)
@@ -648,7 +649,11 @@ h_next_best_mg_plot <- function(prob_target_drt,
   if (h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE)) {
     p <- p +
       geom_point(
-        data = data.frame(x = dose_mg, y = max_gain), aes(x = .data$x, y = .data$y), colour = "green3", shape = 17, size = 8
+        data = data.frame(x = dose_mg, y = max_gain),
+        aes(x = .data$x, y = .data$y),
+        colour = "green3",
+        shape = 17,
+        size = 8
       ) +
       annotate(
         "text",
@@ -676,11 +681,27 @@ h_next_best_mg_plot <- function(prob_target_drt,
   p +
     geom_vline(xintercept = maxdoselimit, colour = "brown", lwd = 1.1) +
     annotate(
-      geom = "text", label = "Max", x = maxdoselimit - 2, y = max(data_plot$y), size = 5, angle = 90, vjust = -0.5, hjust = 0.5, colour = "brown"
+      geom = "text",
+      label = "Max",
+      x = maxdoselimit - 2,
+      y = max(data_plot$y),
+      size = 5,
+      angle = 90,
+      vjust = -0.5,
+      hjust = 0.5,
+      colour = "brown"
     ) +
     geom_vline(xintercept = next_dose, colour = "purple", lwd = 1.1) +
     annotate(
-      geom = "text", label = "Next", x = next_dose + 1, y = max(data_plot$y) - 0.05, size = 5, angle = 90, vjust = 1.5, hjust = 0.5, color = "purple"
+      geom = "text",
+      label = "Next",
+      x = next_dose + 1,
+      y = max(data_plot$y) - 0.05,
+      size = 5,
+      angle = 90,
+      vjust = 1.5,
+      hjust = 0.5,
+      color = "purple"
     )
 }
 
@@ -718,7 +739,9 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
   assert_probability(prob_target_eot)
   assert_number(dose_target_eot)
   assert_number(dose_mg, na.ok = TRUE)
-  assert_numeric(dose_mg_samples, lower = dose_grid_range[1], upper = dose_grid_range[2], finite = TRUE, any.missing = FALSE)
+  assert_numeric(
+    dose_mg_samples, lower = dose_grid_range[1], upper = dose_grid_range[2], finite = TRUE, any.missing = FALSE
+  )
   assert_number(next_dose, na.ok = TRUE)
   assert_number(doselimit)
 
