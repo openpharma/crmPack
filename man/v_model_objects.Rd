@@ -68,41 +68,41 @@ not exported.
 }
 \section{Functions}{
 \itemize{
-\item \code{v_general_model}: validates that the names of the
+\item \code{v_general_model()}: validates that the names of the
 arguments in \code{init} function are included in \code{datanames} or \code{datanames_prior}
 slots.
 
-\item \code{v_model_logistic_kadane}: validates that the logistic Kadane model
+\item \code{v_model_logistic_kadane()}: validates that the logistic Kadane model
 parameters are valid.
 
-\item \code{v_model_logistic_kadane_beta_gamma}: validates that the logistic Kadane model
+\item \code{v_model_logistic_kadane_beta_gamma()}: validates that the logistic Kadane model
 parameters with a beta and gamma prior are valid.
 
-\item \code{v_model_logistic_normal_mix}: validates that \code{weightpar} is valid.
+\item \code{v_model_logistic_normal_mix()}: validates that \code{weightpar} is valid.
 
-\item \code{v_model_logistic_normal_fixed_mix}: validates that \code{component} is a list with
+\item \code{v_model_logistic_normal_fixed_mix()}: validates that \code{component} is a list with
 valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
-\item \code{v_model_logistic_log_normal_mix}: validates that \code{share_weight} represents probability.
+\item \code{v_model_logistic_log_normal_mix()}: validates that \code{share_weight} represents probability.
 
-\item \code{v_model_dual_endpoint}: validates that \code{\link{DualEndpoint}} class slots are valid.
+\item \code{v_model_dual_endpoint()}: validates that \code{\link{DualEndpoint}} class slots are valid.
 
-\item \code{v_model_dual_endpoint_rw}: validates that \code{\link{DualEndpointRW}} class slots are valid.
+\item \code{v_model_dual_endpoint_rw()}: validates that \code{\link{DualEndpointRW}} class slots are valid.
 
-\item \code{v_model_dual_endpoint_beta}: validates that \code{\link{DualEndpointBeta}} class slots are valid.
+\item \code{v_model_dual_endpoint_beta()}: validates that \code{\link{DualEndpointBeta}} class slots are valid.
 
-\item \code{v_model_dual_endpoint_emax}: validates that \code{\link{DualEndpointEmax}} class slots are valid.
+\item \code{v_model_dual_endpoint_emax()}: validates that \code{\link{DualEndpointEmax}} class slots are valid.
 
-\item \code{v_model_logistic_indep_beta}: validates that \code{\link{LogisticIndepBeta}} class slots are valid.
+\item \code{v_model_logistic_indep_beta()}: validates that \code{\link{LogisticIndepBeta}} class slots are valid.
 
-\item \code{v_model_eff_log_log}: validates that \code{\link{Effloglog}} class slots are valid.
+\item \code{v_model_eff_log_log()}: validates that \code{\link{Effloglog}} class slots are valid.
 
-\item \code{v_model_eff_flexi}: validates that \code{\link{EffFlexi}} class slots are valid.
+\item \code{v_model_eff_flexi()}: validates that \code{\link{EffFlexi}} class slots are valid.
 
-\item \code{v_model_da_logistic_log_normal}: validates that \code{\link{DALogisticLogNormal}} class slots are valid.
+\item \code{v_model_da_logistic_log_normal()}: validates that \code{\link{DALogisticLogNormal}} class slots are valid.
 
-\item \code{v_model_tite_logistic_log_normal}: validates that \code{\link{TITELogisticLogNormal}} class slots are valid.
+\item \code{v_model_tite_logistic_log_normal()}: validates that \code{\link{TITELogisticLogNormal}} class slots are valid.
 
-\item \code{v_model_one_par_exp_normal_prior}: validates that \code{\link{OneParExpNormalPrior}} class slots are valid.
+\item \code{v_model_one_par_exp_normal_prior()}: validates that \code{\link{OneParExpNormalPrior}} class slots are valid.
+
 }}
-

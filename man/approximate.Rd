@@ -48,11 +48,11 @@ to be able to reproduce the resulting approximating model exactly.
 }
 \section{Functions}{
 \itemize{
-\item \code{approximate,Samples-method}: Here the \dots argument can transport additional arguments for
+\item \code{approximate(Samples)}: Here the \dots argument can transport additional arguments for
 \code{\link{Quantiles2LogisticNormal}}, e.g. in order to control the
 approximation quality, etc.
-}}
 
+}}
 \examples{
 # nolint start
 

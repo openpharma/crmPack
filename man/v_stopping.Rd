@@ -25,10 +25,10 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
-\item \code{v_stopping_lowest_dose_hsr_beta}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
+\item \code{v_stopping_lowest_dose_hsr_beta()}: validates that the \code{\link{StoppingLowestDoseHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
 
-\item \code{v_stopping_mtd_cv}: validates that the \code{\link{StoppingMTDCV}} object
+\item \code{v_stopping_mtd_cv()}: validates that the \code{\link{StoppingMTDCV}} object
 contains valid probability target and percentage threshold.
-}}
 
+}}

@@ -35,23 +35,23 @@ logging means that it will be set to \code{\link[futile.logger:logger.options]{f
 }
 \section{Functions}{
 \itemize{
-\item \code{enable_logging}: A simple wrapper of
+\item \code{enable_logging()}: A simple wrapper of
 \code{\link[futile.logger:flog.threshold]{futile.logger::flog.threshold()}} that enables \code{crmPack} verbose logging by
 setting logging threshold to \code{\link[futile.logger:logger.options]{futile.logger::TRACE}} for \code{crmPack} logger.
 
-\item \code{disable_logging}: A simple wrapper of
+\item \code{disable_logging()}: A simple wrapper of
 \code{\link[futile.logger:flog.threshold]{futile.logger::flog.threshold()}} that disables \code{crmPack} verbose logging
 by setting logging threshold to \code{\link[futile.logger:logger.options]{futile.logger::FATAL}} for \code{crmPack}
 logger.
 
-\item \code{is_logging_enabled}: A simple wrapper of
+\item \code{is_logging_enabled()}: A simple wrapper of
 \code{\link[futile.logger:flog.logger]{futile.logger::flog.logger()}} that checks whether current threshold level
 for \code{crmPack} logger is verbose, which is \code{\link[futile.logger:logger.options]{futile.logger::TRACE}}.
 It returns \code{TRUE} if the current logging level is verbose, \code{FALSE}
 otherwise.
 
-\item \code{log_trace}: A simple wrapper of
+\item \code{log_trace()}: A simple wrapper of
 \code{\link[futile.logger:flog.logger]{futile.logger::flog.trace()}} that prints a log message in the \code{crmPack}
 logger.
-}}
 
+}}

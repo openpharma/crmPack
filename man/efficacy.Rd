@@ -60,17 +60,17 @@ correspond to the sampling index, i.e. the layout is then
 }
 \section{Functions}{
 \itemize{
-\item \code{efficacy,numeric,Effloglog,Samples-method}: compute the expected efficacy at a specified dose level,
+\item \code{efficacy(dose = numeric, model = Effloglog, samples = Samples)}: compute the expected efficacy at a specified dose level,
 based on the samples of \code{\link{Effloglog}} model parameters.
 
-\item \code{efficacy,numeric,Effloglog,missing-method}: compute the expected efficacy at a specified dose level,
+\item \code{efficacy(dose = numeric, model = Effloglog, samples = missing)}: compute the expected efficacy at a specified dose level,
 based on the \code{\link{Effloglog}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
-\item \code{efficacy,numeric,EffFlexi,Samples-method}: compute the expected efficacy at a specified dose level,
+\item \code{efficacy(dose = numeric, model = EffFlexi, samples = Samples)}: compute the expected efficacy at a specified dose level,
 based on the samples of \code{\link{EffFlexi}} model parameters.
-}}
 
+}}
 \examples{
 # Obtain the expected efficacy value for a given dose, a given pseudo efficacy
 # model (in flexible form for prior) and efficacy samples.

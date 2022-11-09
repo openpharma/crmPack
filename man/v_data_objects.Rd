@@ -46,26 +46,26 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
-\item \code{v_general_data}: validates that the \code{\link{GeneralData}}
+\item \code{v_general_data()}: validates that the \code{\link{GeneralData}}
 object contains unique \code{ID}, non-negative \code{cohort} indices and
 \code{ID} and \code{cohort} vectors are of the same length \code{nObs}.
 
-\item \code{h_doses_unique_per_cohort}: helper function which verifies whether
+\item \code{h_doses_unique_per_cohort()}: helper function which verifies whether
 the \code{dose} values are unique in each and every different \code{cohort}.
 
-\item \code{v_data}: validates that the \code{\link{Data}} object contains
+\item \code{v_data()}: validates that the \code{\link{Data}} object contains
 valid elements with respect to their types, dependency and length.
 
-\item \code{v_data_dual}: validates that the \code{\link{DataDual}} object
+\item \code{v_data_dual()}: validates that the \code{\link{DataDual}} object
 contains valid biomarker vector with respect to its type and the length.
 
-\item \code{v_data_parts}: validates that the \code{\link{DataParts}} object
+\item \code{v_data_parts()}: validates that the \code{\link{DataParts}} object
 contains valid elements with respect to their types, dependency and length.
 
-\item \code{v_data_mixture}: validates that the \code{\link{DataMixture}} object
+\item \code{v_data_mixture()}: validates that the \code{\link{DataMixture}} object
 contains valid elements with respect to their types, dependency and length.
 
-\item \code{v_data_DA}: validates that the \code{\link{DataDA}} object
+\item \code{v_data_DA()}: validates that the \code{\link{DataDA}} object
 contains valid elements with respect to their types, dependency and length.
+
 }}
-

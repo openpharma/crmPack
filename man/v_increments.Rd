@@ -34,19 +34,19 @@ These functions are only used internally to validate the format of an input
 }
 \section{Functions}{
 \itemize{
-\item \code{v_increments_relative}: validates that the \code{\link{IncrementsRelative}} object
+\item \code{v_increments_relative()}: validates that the \code{\link{IncrementsRelative}} object
 contains valid \code{intervals} and \code{increments} parameters.
 
-\item \code{v_increments_relative_parts}: validates that the \code{\link{IncrementsRelativeParts}} object
+\item \code{v_increments_relative_parts()}: validates that the \code{\link{IncrementsRelativeParts}} object
 contains valid \code{dlt_start} and \code{clean_start} parameters.
 
-\item \code{v_increments_relative_dlt}: validates that the \code{\link{IncrementsRelativeDLT}} object
+\item \code{v_increments_relative_dlt()}: validates that the \code{\link{IncrementsRelativeDLT}} object
 contains valid \code{dlt_intervals} and \code{increments} parameters.
 
-\item \code{v_increments_numdoselevels}: validates that the \code{\link{IncrementsNumDoseLevels}} object
+\item \code{v_increments_numdoselevels()}: validates that the \code{\link{IncrementsNumDoseLevels}} object
 contains valid \code{maxLevels} and \code{basisLevel} option.
 
-\item \code{v_increments_hsr_beta}: validates that the \code{\link{IncrementsHSRBeta}}
+\item \code{v_increments_hsr_beta()}: validates that the \code{\link{IncrementsHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
-}}
 
+}}

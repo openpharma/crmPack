@@ -56,22 +56,22 @@ corresponding rule \code{increments} and the \code{data}.
 }
 \section{Functions}{
 \itemize{
-\item \code{maxDose,IncrementsRelative,Data-method}: Determine the maximum possible next dose based on
+\item \code{maxDose(increments = IncrementsRelative, data = Data)}: Determine the maximum possible next dose based on
 relative increments
 
-\item \code{maxDose,IncrementsRelativeParts,DataParts-method}: Determine the maximum possible next dose based on
+\item \code{maxDose(increments = IncrementsRelativeParts, data = DataParts)}: Determine the maximum possible next dose based on
 relative increments and part 1 and 2
 
-\item \code{maxDose,IncrementsRelativeDLT,Data-method}: Determine the maximum possible next dose based on
+\item \code{maxDose(increments = IncrementsRelativeDLT, data = Data)}: Determine the maximum possible next dose based on
 relative increments determined by DLTs so far
 
-\item \code{maxDose,IncrementsRelativeDLTCurrent,Data-method}: Determine the maximum possible next dose based on
+\item \code{maxDose(increments = IncrementsRelativeDLTCurrent, data = Data)}: Determine the maximum possible next dose based on
 relative increments determined by DLTs in the current cohort.
 
-\item \code{maxDose,IncrementMin,Data-method}: Determine the maximum possible next dose based on
+\item \code{maxDose(increments = IncrementMin, data = Data)}: Determine the maximum possible next dose based on
 multiple increment rules (taking the minimum across individual increments).
-}}
 
+}}
 \examples{
 
 # Create the data
