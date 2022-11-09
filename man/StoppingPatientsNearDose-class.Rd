@@ -4,27 +4,38 @@
 \name{StoppingPatientsNearDose-class}
 \alias{StoppingPatientsNearDose-class}
 \alias{.StoppingPatientsNearDose}
-\title{Stop based on number of patients near to next best dose}
+\alias{StoppingPatientsNearDose}
+\title{\code{StoppingPatientsNearDose}}
+\usage{
+StoppingPatientsNearDose(nPatients, percentage = 50)
+}
+\arguments{
+\item{nPatients}{(\code{number})\cr see slot definition.}
+
+\item{percentage}{(\code{number})\cr see slot definition.}
+}
 \description{
-Stop based on number of patients near to next best dose
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingPatientsNearDose}} is the class for stopping based on number of
+patients near to next best dose.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{nPatients}}{number of required patients}
+\item{\code{nPatients}}{(\code{number})\cr number of required patients.}
 
-\item{\code{percentage}}{percentage (between 0 and 100) within the next best dose
-the patients must lie}
+\item{\code{percentage}}{(\code{number})\cr percentage (between and including 0 and 100)
+within the next best dose the patients must lie.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-#   stopping the study if at least 9 patients were dosed at a dose within (1 +/- 0.2) 
-#   of the next best dose
+# As example, here is the rule for stopping the study if at least 9 patients
+# were dosed at a dose within (1 +/- 0.2) of the next best dose.
 
-myStopping <- StoppingPatientsNearDose(nPatients = 9,
-                                       percentage = 0.2)
-
+my_stopping <- StoppingPatientsNearDose(
+  nPatients = 9,
+  percentage = 20
+)
 }
-\keyword{classes}

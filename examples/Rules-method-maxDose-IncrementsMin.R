@@ -27,7 +27,7 @@ myIncrements2 <- IncrementsRelative(intervals=c(0, 20),
                                     increments=c(1, 0.33))
 
 # Now we combine the 2 rules
-combIncrement <- IncrementMin(IncrementsList=
+combIncrement <- IncrementsMin(increments_list=
                                 list(myIncrements1,myIncrements2))
 
 # Finally we then calculate the maximum dose allowed by taking the minimum of the two rules

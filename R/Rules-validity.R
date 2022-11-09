@@ -60,33 +60,20 @@ v_next_best_ncrm_loss <- function(object) {
     test_probability_range(object@target, bounds_closed = FALSE),
     "target has to be a probability range excluding 0 and 1"
   )
-  is_overdose_valid <- test_probability_range(
-    object@overdose,
-    bounds_closed = c(FALSE, TRUE)
-  )
-  v$check(
-    is_overdose_valid,
-    "overdose has to be a probability range excluding 0"
-  )
-  is_unacceptable_valid <- test_probability_range(
-    object@unacceptable,
-    bounds_closed = c(FALSE, TRUE)
-  )
-  v$check(
-    is_unacceptable_valid,
-    "unacceptable has to be a probability range excluding 0"
-  )
-  if (is_overdose_valid && is_unacceptable_valid) {
+
+  is_overdose_ok <- test_probability_range(object@overdose, bounds_closed = TRUE)
+  v$check(is_overdose_ok, "overdose has to be a probability range")
+
+  is_unacceptable_ok <- test_probability_range(object@unacceptable, bounds_closed = TRUE)
+  v$check(is_unacceptable_ok, "unacceptable has to be a probability range")
+
+  if (is_overdose_ok && is_unacceptable_ok) {
     v$check(
       object@overdose[2] <= object@unacceptable[1],
       "lower bound of unacceptable has to be >= than upper bound of overdose"
     )
   }
-  v$check(
-    test_probability(object@max_overdose_prob, bounds_closed = FALSE),
-    "max_overdose_prob must be a probability value from (0, 1) interval"
-  )
-  if (is_unacceptable_valid) {
+  if (is_unacceptable_ok) {
     losses_len <- ifelse(all(object@unacceptable == c(1, 1)), 3L, 4L)
     v$check(
       test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
@@ -273,44 +260,51 @@ v_increments_relative_dlt <- function(object) {
 }
 
 #' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
-#'   contains valid `maxLevels` and `basisLevel` option.
-v_increments_numdoselevels <- function(object) {
+#'   contains valid `max_levels` and `basis_level` option.
+v_increments_num_dose_levels <- function(object) {
   v <- Validate()
   v$check(
-    is.scalar(object@maxLevels) &&
-      is.integer(object@maxLevels) &&
-      object@maxLevels > 0,
-    "maxLevels must be scalar positive integer"
+    test_int(object@max_levels, lower = .Machine$double.xmin),
+    "max_levels must be scalar positive integer"
   )
   v$check(
-    is.scalar(object@basisLevel) &&
-      object@basisLevel %in% c("last", "max"),
-    "basisLevel must be either 'last' or 'max'"
+    test_string(object@basis_level, pattern = "^last$|^max$"),
+    "basis_level must be either 'last' or 'max'"
   )
   v$result()
 }
 
 #' @describeIn v_increments validates that the [`IncrementsHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
+#'   object contains valid probability target, threshold and shape parameters.
 v_increments_hsr_beta <- function(object) {
   v <- Validate()
   v$check(
     test_probability(object@target, bounds_closed = FALSE),
-    "target must be a probability"
+    "target must be a probability value from (0, 1) interval"
   )
   v$check(
     test_probability(object@prob, bounds_closed = FALSE),
-    "prob must be a probability"
+    "prob must be a probability value from (0, 1) interval"
   )
   v$check(
-    is.scalar(object@a) & is.numeric(object@a) && object@a > 0,
+    test_number(object@a, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter a must be a positive scalar"
   )
   v$check(
-    is.scalar(object@b) & is.numeric(object@b) && object@b > 0,
+    test_number(object@b, lower = .Machine$double.xmin, finite = TRUE),
     "Beta distribution shape parameter b must be a positive scalar"
   )
+  v$result()
+}
 
+#' @describeIn v_increments validates that the [`IncrementsMin`]
+#'   object contains a list with `Increments` objects.
+v_increments_min <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@increments_list, test_class, "Increments")),
+    "all elements in increments_list must be of Increments class"
+  )
   v$result()
 }
 
@@ -329,9 +323,91 @@ v_increments_hsr_beta <- function(object) {
 #'   or `TRUE` in case validation passes.
 NULL
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'  object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta
+#' @describeIn v_stopping validates that the [`StoppingCohortsNearDose`]
+#'   object contains valid `nCohorts` and `percentage` parameters.
+v_stopping_cohorts_near_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nCohorts, lower = .Machine$double.xmin),
+    "nCohorts must be positive integer scalar"
+  )
+  v$check(
+    test_probability(object@percentage / 100),
+    "percentage must be a number between 0 and 100"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingPatientsNearDose`]
+#'   object contains valid `nPatients` and `percentage` parameters.
+v_stopping_patients_near_dose <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nPatients, lower = .Machine$double.xmin),
+    "nPatients must be positive integer scalar"
+  )
+  v$check(
+    test_probability(object@percentage / 100),
+    "percentage must be a number between 0 and 100"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingMinCohorts`]
+#'   object contains valid `nCohorts` parameter.
+v_stopping_min_cohorts <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nCohorts, lower = .Machine$double.xmin),
+    "nCohorts must be positive integer scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingMinPatients`]
+#'   object contains valid `nPatients` parameter.
+v_stopping_min_patients <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@nPatients, lower = .Machine$double.xmin),
+    "nPatients must be positive integer scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingTargetProb`]
+#'   object contains valid `target` and `prob` parameters.
+v_stopping_target_prob <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability_range(object@target),
+    "target has to be a probability range"
+  )
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingMTDdistribution`]
+#'   object contains valid `target`, `thresh` and `prob` parameters.
+v_stopping_mtd_distribution <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@thresh, bounds_closed = FALSE),
+    "thresh must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
 
 #' @describeIn v_stopping validates that the [`StoppingMTDCV`] object
 #'   contains valid probability target and percentage threshold.
@@ -342,8 +418,121 @@ v_stopping_mtd_cv <- function(object) {
     "target must be probability value from (0, 1) interval"
   )
   v$check(
-    test_probability(object@thresh_cv / 100, bounds_closed = FALSE),
+    test_probability(object@thresh_cv / 100, bounds_closed = c(FALSE, TRUE)),
     "thresh_cv must be percentage > 0"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingTargetBiomarker`] object
+#'   contains valid `target`, `is_relative` and `prob`slots.
+v_stopping_target_biomarker <- function(object) {
+  v <- Validate()
+  v$check(
+    test_flag(object@is_relative),
+    "is_relative must be a flag"
+  )
+  if (isTRUE(object@is_relative)) {
+    v$check(
+      test_probability_range(object@target),
+      "target has to be a probability range when is_relative flag is 'TRUE'"
+    )
+  } else {
+    v$check(
+      test_numeric(object@target, finite = TRUE, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      "target must be a numeric range"
+    )
+  }
+  v$check(
+    test_probability(object@prob, bounds_closed = FALSE),
+    "prob must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingList`] object
+#'   contains valid `stop_list`, `summary` slots.
+v_stopping_list <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@stop_list, test_class, "Stopping")),
+    "every stop_list element must be of class 'Stopping'"
+  )
+  is_summary_ok <- test_function(object@summary, nargs = 1)
+  v$check(
+    is_summary_ok,
+    "summary must be a function that accepts a single argument, without ..."
+  )
+  if (is_summary_ok) {
+    summary_res <- object@summary(
+      rep(c(TRUE, FALSE), length.out = length(object@stop_list))
+    )
+    v$check(
+      test_flag(summary_res),
+      "summary must accept a logical vector of the same length as 'stop_list' and return a boolean value"
+    )
+  }
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingAll`] object
+#'   contains valid `stop_list` slot.
+v_stopping_all <- function(object) {
+  v <- Validate()
+  v$check(
+    all(sapply(object@stop_list, test_class, "Stopping")),
+    "every stop_list element must be of class 'Stopping'"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingTDCIRatio`] object
+#'   contains valid `target_ratio` and  `prob_target` slots.
+v_stopping_tdci_ratio <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@target_ratio, lower = .Machine$double.xmin, finite = TRUE),
+    "target_ratio must be a positive number"
+  )
+  v$check(
+    test_probability(object@prob_target),
+    "prob_target must be a probability value from [0, 1] interval"
+  )
+  v$result()
+}
+
+# CohortSize ----
+
+#' Internal Helper Functions for Validation of [`CohortSize`] Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`CohortSize`] or inherited classes and therefore not exported.
+#'
+#' @name v_cohort_size
+#' @param object (`CohortSize`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeRange`] object
+#'   contains valid `intervals` and  `cohort_size` slots.
+v_cohort_size_range <- function(object) {
+  v <- Validate()
+  v$check(
+    test_numeric(
+      object@intervals,
+      lower = 0, finite = TRUE, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+    ),
+    "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
+  )
+  v$check(
+    test_integer(
+      object@cohort_size,
+      lower = 0, any.missing = FALSE, len = length(object@intervals)
+    ),
+    "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   )
   v$result()
 }

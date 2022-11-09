@@ -91,8 +91,8 @@ in the grid.
 
 \item \code{mcmc(data = GeneralData, model = OneParExpNormalPrior, options = McmcOptions)}: Standard method which uses JAGS. For the
 \code{\link{OneParExpNormalPrior}} model, it is required that the length of
-skeleton prior probabilities vector should be equal to the maximum dose
-level observed in data.
+skeleton prior probabilities vector should be equal to the length of the
+number of doses.
 
 \item \code{mcmc(data = DataMixture, model = GeneralModel, options = McmcOptions)}: Method for DataMixture with different from_prior default
 

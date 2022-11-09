@@ -4,22 +4,29 @@
 \name{StoppingMinCohorts-class}
 \alias{StoppingMinCohorts-class}
 \alias{.StoppingMinCohorts}
-\title{Stop based on minimum number of cohorts}
+\alias{StoppingMinCohorts}
+\title{\code{StoppingMinCohorts}}
+\usage{
+StoppingMinCohorts(nCohorts)
+}
+\arguments{
+\item{nCohorts}{(\code{number})\cr see slot definition.}
+}
 \description{
-Stop based on minimum number of cohorts
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingMinCohorts}} is the class for stopping based on minimum number of
+cohorts.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{nCohorts}}{minimum required number of cohorts}
+\item{\code{nCohorts}}{(\code{number})\cr minimum required number of cohorts.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-#   stopping the study if at least 6 cohorts were already dosed
-
-myStopping <- StoppingMinCohorts(nCohorts = 6)
-
+# As example, here is the rule for stopping the study if at least 6 cohorts
+# were already dosed.
+my_stopping <- StoppingMinCohorts(nCohorts = 6)
 }
-\keyword{classes}

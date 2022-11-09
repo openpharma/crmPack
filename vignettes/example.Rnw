@@ -38,6 +38,7 @@
 \noindent
 
 <<load, echo=FALSE, results=hide>>=
+# nolint start
 ## load package already here to be able to reference the package version!!
 library(crmPack)
 crmPackVersion <- as.character(packageVersion("crmPack"))
@@ -875,8 +876,7 @@ the first DLT is encountered, and then proceed with three patients per cohort.
 We start by creating the two separate rules, first for the dose range:
 
 <<size-range>>=
-mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
+mySize1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
 @
 
 Then for the DLT range:
@@ -935,7 +935,7 @@ All of the stopping rules classes inherit directly from the \texttt{Stopping} cl
 \item \texttt{StoppingTargetBiomarker}
 \item \texttt{StoppingTDCIRatio}
 
-\item \texttt{StoppingGstarCIRatio}
+\item \texttt{StoppingMaxGainCIRatio}
 
 \end{itemize}
 % \end{minipage}
@@ -943,7 +943,7 @@ All of the stopping rules classes inherit directly from the \texttt{Stopping} cl
 From the names of these stopping rules, we can have an idea of what criteria have been used for stopping decisions and we will explain briefly here what are these criteria. For further details please refer to examples presented later in this vignette or examples given in the help pages. You can find a link to all implemented stopping rule parts in the help page \texttt{Stopping-class}.
 
 
-For example, \texttt{StoppingCohortNearDose} class objects can be used to stop the dose escalation based on the numbers of cohorts treated near to the next best dose (where the required proximity is given as the percentage of relative deviation from the next best dose). Similarly, for \texttt{StoppingPatientsNearDose}, stopping is based on the number of patients treated near the next best dose. \texttt{StoppingMinCohorts} and \texttt{StoppingMinPatients} rules can be used to stop the dose escalation if a minimum overall number of patients or cohorts have been enrolled. We have also other stopping rules such that a trial will be stopped either based on the MTD distribution (\texttt{StoppingMTDdistribution}), or reached a pre-specified probability of the next dose being in the target toxicity interval (\texttt{StoppingTargetProb}) or or target biomarker interval (\texttt{StoppingTargetBiomarker}) or when the current estimate of the quantity of interest is 'accurate' enough (\texttt{StoppingTDCIRatio} and  \texttt{StoppingGstarCIRatio})
+For example, \texttt{StoppingCohortNearDose} class objects can be used to stop the dose escalation based on the numbers of cohorts treated near to the next best dose (where the required proximity is given as the percentage of relative deviation from the next best dose). Similarly, for \texttt{StoppingPatientsNearDose}, stopping is based on the number of patients treated near the next best dose. \texttt{StoppingMinCohorts} and \texttt{StoppingMinPatients} rules can be used to stop the dose escalation if a minimum overall number of patients or cohorts have been enrolled. We have also other stopping rules such that a trial will be stopped either based on the MTD distribution (\texttt{StoppingMTDdistribution}), or reached a pre-specified probability of the next dose being in the target toxicity interval (\texttt{StoppingTargetProb}) or or target biomarker interval (\texttt{StoppingTargetBiomarker}) or when the current estimate of the quantity of interest is 'accurate' enough (\texttt{StoppingTDCIRatio} and  \texttt{StoppingMaxGainCIRatio})
 
 Stopping rules are often quite complex, because they are built from "and/or" combinations of multiple parts. Therefore the \texttt{crmPack} implementation mirrors this, and
 multiple atomic stopping rules can be combined easily. For example, let's assume
@@ -973,9 +973,7 @@ The accuracy of the current estimate of TD30 is quantified by the width of the a
 For example, we will stop our trial if we obtain a ratio of less than 5 for the 95\% credibility interval of the TD30 estimate in this case, deciding that we have obtained an estimate which is 'accurate' enough.
 The \texttt{StoppingTDCIRatio} function can be  used in both cases when no DLT samples or DLT samples are involved:
 <<rules2-bits>>=
-myStopping4 <- StoppingTDCIRatio(targetRatio=5,
-                                        targetEndOfTrial=0.3)
-
+myStopping4 <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 @
 
 % In the above two examples, the \texttt{targetRatio} and \texttt{targetEndOfTrial} has to be specified.
@@ -2016,17 +2014,14 @@ In this plot, the posterior distribution of Gstar is shown as a histogram. The v
 Next, we will introduce some further \texttt{Stopping} rules that can be applied to the above two classes of escalation rules.
 After the escalation based on two responses and two separate pseudo DLT and efficacy models, we will select one dose, which is the minimum of the estimate of TD30 (TDtargetEndOfTrial) and the optimal gain dose (Gstar)  as the recommended dose for potential further clinical trials. The main feature of these stopping rules is that the trial could be stopped if the current estimates of this selected quantity is 'accurate' enough. In particular, we will also consider the ratio of the 95\% credibility interval bounds of its current estimate. The smaller this ratio, the more accurate is the estimate.
 
-For example, we would like to stop our trial if the ratio is less than or equal to 5. The functions \texttt{StoppingGstarCIRatio} is  used for this purpose:
+For example, we would like to stop our trial if the ratio is less than or equal to 5. The functions \texttt{StoppingMaxGainCIRatio} is  used for this purpose:
 
 <<StoppingGstarCIratio>>=
-myStopping7 <- StoppingGstarCIRatio(targetRatio = 5,
-                                    targetEndOfTrial=0.3)
-
+myStopping7 <- StoppingMaxGainCIRatio(target_ratio = 5, prob_target = 0.3)
 myStopping8 <- myStopping7 | StoppingMinPatients(72)
-
 @
 
-To note here, at the moment the class \texttt{StoppingGstarCIRatio} cannot be used together with other \texttt{Stopping} class rules with the "and" operator \texttt{\&} and the ``or'' operator \verb-|- (this is still under development).
+To note here, at the moment the class \texttt{StoppingMaxGainCIRatio} cannot be used together with other \texttt{Stopping} class rules with the "and" operator \texttt{\&} and the ``or'' operator \verb-|- (this is still under development).
 
 Similarly, the \texttt{stopTrial} function can then be used in order to determine if the rule has been fulfilled:
 <<StopTrial-stoppingGstar>>=
@@ -2246,6 +2241,8 @@ Sum3 <- summary(Sim3,
                 trueEff=myTruthEff1)
 Sum3
 print(plot(Sum3))
+
+# nolint end
 @
 
 

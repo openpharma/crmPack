@@ -1,6 +1,18 @@
-# Version 1.0.9000.9071
-* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT` and other
-  dependent classes.
+# Version 1.0.9000.9103
+* Renamed `cohortSize` slot to `cohort_size` in `CohortSizeRange` class.
+* Renamed class `StoppingGstarCIRatio` (and its slots) to `StoppingMaxGainCIRatio`.
+* Renamed slots in `StoppingTDCIRatio` class.
+* Renamed `stopList` slot in `StoppingList`, `StoppingAll` and `StoppingAny` classes.
+* Added `unique` flag to `assert_probabilities` checkmate custom functions.
+* In `StoppingTargetBiomarker` class, changed `scale` character slot to
+  `is_relative` flag.
+* Created a new vignette which describes how to use certain functions and features
+  of `crmPack` after the major refactoring.
+* Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
+  it was used only in the some old development version.
+* Renamed class `IncrementMin` to `IncrementsMin`.
+* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
+  `IncrementsNumDoseLevels`, `IncrementMin` and other dependent classes.
 * Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
   `NextBestMaxGainSamples` classes.
 * Removed `Model` class.

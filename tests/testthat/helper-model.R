@@ -365,16 +365,16 @@ h_get_tite_logistic_log_normal <- function(weight_method = "linear") {
 
 h_get_one_par_exp_normal_prior <- function() {
   OneParExpNormalPrior(
-    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
-    dose_grid = 1:5,
+    skel_probs = seq(from = 0.1, to = 0.9, length = 12),
+    dose_grid = 1:12,
     sigma2 = 2
   )
 }
 
 h_get_fractional_crm <- function() {
   FractionalCRM(
-    skel_probs = seq(from = 0.1, to = 0.9, length = 5),
-    dose_grid = c(10, 30, 50, 70, 100),
+    skel_probs = seq(from = 0.1, to = 0.9, length = 12),
+    dose_grid = c(10, 30, 50, 70, 100, 110, 130, 200, 250, 255, 270, 300),
     sigma2 = 2
   )
 }

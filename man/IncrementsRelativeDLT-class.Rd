@@ -10,9 +10,9 @@
 IncrementsRelativeDLT(dlt_intervals, increments)
 }
 \arguments{
-\item{dlt_intervals}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeDLT}}.}
+\item{dlt_intervals}{(\code{numeric})\cr see slot definition.}
 
-\item{increments}{(\code{numeric})\cr see slot definition in \code{\link{IncrementsRelativeDLT}}.}
+\item{increments}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

@@ -13,8 +13,10 @@ FractionalCRM(...)
 \item{...}{
   Arguments passed on to \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior}}
   \describe{
-    \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities.}
-    \item{\code{dose_grid}}{(\code{numeric})\cr dose grid.}
+    \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
+of unique and sorted probability values between 0 and 1.}
+    \item{\code{dose_grid}}{(\code{numeric})\cr dose grid. It must be must be a sorted vector
+of the same length as \code{skel_probs}.}
     \item{\code{sigma2}}{(\code{number})\cr prior variance of log power parameter alpha.}
   }}
 }
