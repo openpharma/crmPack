@@ -12,7 +12,280 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tibble)
+library(kableExtra)
+library(checkmate)
 ```
+
+The following Vignette describes the changes that were introduced to the `crmPack`
+package as a result of the package's refactoring. One row in below tables
+represents a single-type, consistent change.
+
+# Class and Methods Name Changes
+
+## Classes
+
+```{r class_change_helpers, echo=FALSE}
+
+# A simple helper function that generates change class record.
+ch_class <- function(name = "", new_name = "", comment = "", add_constructor_info = TRUE) {
+  assert_string(name)
+  assert_string(new_name)
+  assert_string(comment)
+  assert_flag(add_constructor_info)
+
+  was_removed <- ifelse(nchar(new_name) == 0, TRUE, FALSE)
+  if (add_constructor_info && !was_removed) {
+    constructor_info <- "\\+ constructor corresponding update"
+    comment <- ifelse(
+      nchar(comment) == 0,
+      constructor_info,
+      paste0(constructor_info, "; ", comment)
+    )
+  }
+  list(name, new_name, "", "", was_removed, comment)
+}
+
+# A simple helper function that generates change slot record.
+ch_slot <- function(class_name,
+                    name = "",
+                    new_name = "",
+                    comment = "",
+                    add_constructor_info = TRUE) {
+  assert_string(class_name)
+  assert_string(name)
+  assert_string(new_name)
+  assert_string(comment)
+  assert_flag(add_constructor_info)
+
+  was_removed <- ifelse(nchar(new_name) == 0, TRUE, FALSE)
+  if (add_constructor_info) {
+    constructor_info <- "\\+ constructor corresponding update"
+    comment <- ifelse(
+      nchar(comment) == 0,
+      constructor_info,
+      paste0(constructor_info, "; ", comment)
+    )
+  }
+  list(class_name, "", name, new_name, was_removed, comment)
+}
+```
+
+
+```{r class_changes, echo=FALSE}
+
+class_changes <- tribble(
+  ~class_name, ~class_new_name, ~slot_name, ~slot_new_name, ~was_removed, ~comment,
+  !!!ch_class("", "positive_number", "to handle strictly positive valued slots
+  (e.g. `ref_dose` in many model classes)", FALSE),
+  !!!ch_class("", "ModelLogNormal", "new parent class for all the models with
+  reference dose and bivariate (log) normal prior on the model parameters", FALSE),
+  !!!ch_class("", "ModelParamsNormal", "represents parameters of bivariate normal distribution", FALSE),
+  !!!ch_class("AllModels"),
+  !!!ch_class("Model"),
+  !!!ch_slot("GeneralModel", "", "datanames", "moved from `AllModels`", FALSE),
+  !!!ch_slot("GeneralModel", "", "datanames_prior", add_constructor_info = FALSE),
+  !!!ch_slot("ModelEff", "dose", "", "moved to model class method", FALSE),
+  !!!ch_slot("ModelEff", "ExpEff", "", "moved to model class method and renamed to `efficacy`", FALSE),
+  !!!ch_slot("Effloglog", "several slots", "several slots", "several slot changed, see man page"),
+  !!!ch_slot("EffFlexi", "several slots", "several slots", "several slot changed, see man page"),
+  !!!ch_slot("EffFlexi()", "smooth", "", "replaced by `rw1` flag", FALSE),
+  !!!ch_slot("EffFlexi()", "", "rw1", "replaces `smooth` string", FALSE),
+  !!!ch_slot("DALogisticLogNormal", "C_par", "c_par"),
+  !!!ch_slot("DALogisticLogNormal", "conditionalPEM", "cond_pem"),
+  !!!ch_slot("TITELogisticLogNormal", "weightMethod", "weight_method"),
+  !!!ch_slot("OneParExpNormalPrior", "skeletonFun", "skel_fun", add_constructor_info = FALSE),
+  !!!ch_slot("OneParExpNormalPrior", "", "skel_fun_inv", add_constructor_info = FALSE),
+  !!!ch_slot("OneParExpNormalPrior", "skeletonProbs", "skel_probs"),
+  !!!ch_slot("OneParExpNormalPrior()", "doseGrid", "dose_grid", add_constructor_info = FALSE),
+  !!!ch_slot("DualEndpointBeta", "refDoseBeta", "ref_dose_beta"),
+  !!!ch_slot("DualEndpointEmax", "refDoseEmax", "ref_dose_emax"),
+  !!!ch_slot("DualEndpointRW", "useRW1", "rw1", add_constructor_info = FALSE),
+  !!!ch_slot("DualEndpointRW()", "smooth", "", "replaced by `rw1` flag", FALSE),
+  !!!ch_slot("DualEndpointRW()", "", "rw1", "replaces `smooth` string", FALSE),
+  !!!ch_slot("McmcOptions", "", "rng_kind", "to be used by Random Number Generator in rJAGS"),
+  !!!ch_slot("McmcOptions", "", "rng_seed", "to be used by Random Number Generator in rJAGS"),
+  !!!ch_slot("NextBestTD", "targetDuringTrial", "prob_target_drt"),
+  !!!ch_slot("NextBestTD", "targetEndOfTrial", "prob_target_eot"),
+  !!!ch_slot("NextBestTDsamples", "targetDuringTrial", "prob_target_drt"),
+  !!!ch_slot("NextBestTDsamples", "targetEndOfTrial", "prob_target_eot"),
+  !!!ch_slot("NextBestNCRM", "maxOverdoseProb", "max_overdose_prob"),
+  !!!ch_slot("NextBestDualEndpoint", "scale", "", "replaced by `target_relative` flag"),
+  !!!ch_slot("NextBestDualEndpoint", "", "target_relative", "replaces `scale` string"),
+  !!!ch_slot("NextBestDualEndpoint", "maxOverdoseProb", "max_overdose_prob"),
+  !!!ch_slot("NextBestDualEndpoint", "targetThresh", "target_thresh"),
+  !!!ch_slot("NextBestMaxGain", "DLEDuringTrialtarget", "prob_target_drt"),
+  !!!ch_slot("NextBestMaxGain", "DLEEndOfTrialtarget", "prob_target_eot"),
+  !!!ch_slot("NextBestMaxGainSamples", "DLEDuringTrialtarget", "prob_target_drt"),
+  !!!ch_slot("NextBestMaxGainSamples", "DLEEndOfTrialtarget", "prob_target_eot"),
+  !!!ch_slot("NextBestMaxGainSamples", "TDderive", "derive"),
+  !!!ch_slot("NextBestMaxGainSamples", "Gstarderive", "mg_derive"),
+  !!!ch_slot("IncrementsRelativeParts", "dltStart", "dlt_start", ""),
+  !!!ch_slot("IncrementsRelativeParts", "cleanStart", "clean_start", "change applied also to other dependent classes"),
+  !!!ch_slot(
+    "IncrementsRelativeDLT", "DLTintervals", "dlt_intervals", "change applied also to other dependent classes"
+  ),
+  !!!ch_slot("IncrementsNumDoseLevels", "maxLevels", "max_levels", "change applied also to other dependent classes"),
+  !!!ch_slot("IncrementsNumDoseLevels", "", "basis_level"),
+  !!!ch_class("IncrementMin", "IncrementsMin"),
+  !!!ch_slot("IncrementsMin", "IncrementsList", "increments_list", "change applied also to other dependent classes"),
+  !!!ch_slot("StoppingTargetBiomarker", "scale", "", "replaced by `is_relative` flag"),
+  !!!ch_slot("StoppingTargetBiomarker", "", "is_relative", "replaces `scale` string"),
+  !!!ch_slot("StoppingList", "stopList", "stop_list"),
+  !!!ch_slot("StoppingAll", "stopList", "stop_list"),
+  !!!ch_slot("StoppingAny", "stopList", "stop_list"),
+  !!!ch_slot("StoppingTDCIRatio", "targetRatio", "target_ratio"),
+  !!!ch_slot("StoppingTDCIRatio", "targetEndOfTrial", "prob_target"),
+  !!!ch_slot("StoppingGstarCIRatio", "targetRatio", "target_ratio"),
+  !!!ch_slot("StoppingGstarCIRatio", "targetEndOfTrial", "prob_target"),
+  !!!ch_class("StoppingGstarCIRatio", "StoppingMaxGainCIRatio"),
+  !!!ch_slot("CohortSizeRange", "cohortSize", "cohort_size"),
+)
+```
+
+```{r class_changes_kbl, echo=FALSE, results='markup'}
+
+cc <- class_changes
+cc <- cc[order(cc$class_name, cc$class_new_name, cc$slot_name, cc$slot_new_name), ]
+
+no_slot_change <- nchar(trimws(cc$slot_name)) == 0
+cc$class_name <- cell_spec(
+  cc$class_name,
+  strikeout = ifelse(cc$was_removed & no_slot_change, TRUE, FALSE)
+)
+cc$slot_name <- cell_spec(
+  cc$slot_name,
+  strikeout = ifelse(cc$was_removed & !no_slot_change, TRUE, FALSE)
+)
+
+cc <- cc[, -5]
+
+kbl(cc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
+  add_header_above(c("Name", "New Name", "Name", "New Name", "")) %>%
+  add_header_above(c("Class/Constructor[note]" = 2, "Slot/Arg[note]" = 2, "Comment")) %>%
+  column_spec(1:5, width = "6cm", border_left = TRUE, border_right = TRUE) %>%
+  collapse_rows(columns = 1, valign = "top") %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 11) %>%
+  add_footnote(
+    c(
+      "Class or class' user constructor. In the later case the Name/New Name is followed by ().",
+      "Slot in case of the class or argument in case of the class' user constructor"
+    ),
+    notation = "symbol"
+  )
+```
+
+Strikeout indicates that the class/slot was removed.
+
+## Methods
+
+```{r method_change_helpers, echo=FALSE}
+
+# A simple helper function that generates change method record.
+ch_method <- function(name = "", new_name = "", comment = "") {
+  assert_string(name)
+  assert_string(new_name)
+  assert_string(comment)
+
+  was_removed <- ifelse(nchar(new_name) == 0, TRUE, FALSE)
+  list(name, new_name, "", "", was_removed, "", comment)
+}
+
+# A simple helper function that generates change argument record.
+ch_arg <- function(method_name, name = "", new_name = "", comment = "") {
+  assert_string(method_name)
+  assert_string(name)
+  assert_string(new_name)
+  assert_string(comment)
+
+  was_removed <- ifelse(nchar(new_name) == 0, TRUE, FALSE)
+  list(method_name, "", name, new_name, was_removed, "", comment)
+}
+
+# A simple helper function that generates change output record.
+ch_out <- function(method_name, output = "", comment = "") {
+  checkmate::assert_string(method_name)
+  checkmate::assert_string(output)
+  checkmate::assert_string(comment)
+
+  list(method_name, "", "", "", FALSE, output, comment)
+}
+```
+
+```{r method_changes, echo=FALSE}
+
+method_changes <- tribble(
+  ~method_name, ~method_new_name, ~arg_name, ~arg_new_name, ~was_removed, ~output_changes, ~comment,
+  !!!ch_arg("update-Data", "newCohort", "new_cohort"),
+  !!!ch_arg("update-Data", "", "check"),
+  !!!ch_arg("update-DataParts", "", "check"),
+  !!!ch_arg("update-DataDual", "", "check"),
+  !!!ch_arg("update-DataDA", "", "check"),
+  !!!ch_out("getEff", "renamed elements in the list returned"),
+  !!!ch_arg("mcmc", "fromPrior", "from_prior"),
+  !!!ch_arg("mcmc", "program"),
+  !!!ch_arg("mcmc", "verbose"),
+  !!!ch_method("", "doseFunction", "returns dose computing function for a given model"),
+  !!!ch_method("", "probFunction", "returns probability computing function for a given model"),
+  !!!ch_arg("dose", "prob", "x"),
+  !!!ch_method("", "efficacy", "new generic function"),
+  !!!ch_method("biomLevel", "biomarker", "changed generic and methods"),
+  !!!ch_arg("biomLevel", "dose", "", "changed generic and methods"),
+  !!!ch_arg("biomLevel-DualEndpoint", "dose"),
+  !!!ch_arg("biomLevel", "", "xLevel", "added only for generic, reordered arguments for generic and methods"),
+  !!!ch_arg(
+    "gain", "several arguments", "several arguments", "several arguments (generic and methods) changed, see man page"
+  ),
+  !!!ch_method("", "update-ModelPseudo"),
+  !!!ch_method("update-LogisticIndepBeta", "", "replaced by `update-ModelPseudo`"),
+  !!!ch_method("update-Effloglog", "", "replaced by `update-ModelPseudo`"),
+  !!!ch_method("update-EffFlexi", "", "replaced by `update-ModelPseudo`"),
+  !!!ch_arg("nextBest-NextBestTD", "Effmodel", "model_eff"),
+  !!!ch_arg("nextBest-NextBestTD", "Effsamples", "samples_eff"),
+  !!!ch_arg("nextBest-NextBestTD", "SIM", "in_sim"),
+  !!!ch_arg("nextBest-NextBestTDsamples", "Effmodel", "model_eff"),
+  !!!ch_arg("nextBest-NextBestTDsamples", "Effsamples", "samples_eff"),
+  !!!ch_arg("nextBest-NextBestMaxGain", "Effmodel", "model_eff"),
+  !!!ch_arg("nextBest-NextBestMaxGain", "Effsamples", "samples_eff"),
+  !!!ch_arg("nextBest-NextBestMaxGain", "SIM", "in_sim"),
+  !!!ch_out("nextBest-NextBestMaxGain", "renamed elements in the list returned"),
+  !!!ch_arg("nextBest-NextBestMaxGainSamples", "Effmodel", "model_eff"),
+  !!!ch_arg("nextBest-NextBestMaxGainSamples", "Effsamples", "samples_eff"),
+  !!!ch_arg("nextBest-NextBestMaxGainSamples", "SIM", "in_sim"),
+  !!!ch_out("nextBest-NextBestMaxGainSamples", "renamed elements in the list returned")
+)
+```
+
+```{r method_changes_kbl, echo=FALSE, results='markup'}
+
+mc <- method_changes
+mc <- mc[order(mc$method_name, mc$method_new_name, mc$arg_name, mc$arg_new_name), ]
+
+no_arg_change <- nchar(trimws(mc$arg_name)) == 0
+mc$method_name <- cell_spec(
+  mc$method_name,
+  strikeout = ifelse(mc$was_removed & no_arg_change, TRUE, FALSE)
+)
+mc$arg_name <- cell_spec(
+  mc$arg_name,
+  strikeout = ifelse(mc$was_removed & !no_arg_change, TRUE, FALSE)
+)
+mc <- mc[, -5]
+
+kbl(mc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
+  add_header_above(c("Name", "New Name", "Name", "New Name", "", "")) %>%
+  add_header_above(c("Method" = 2, "Argument" = 2, "Output Changes", "Comment")) %>%
+  column_spec(1:6, width = "6cm", border_left = TRUE, border_right = TRUE) %>%
+  collapse_rows(columns = 1, valign = "top") %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 11)
+```
+
+Strikeout indicates that the method/argument was removed.
+
+# Moved `dose` and `prob` Functions from Slots to Methods
+
+Moved `dose` and `prob` functions from model class slots to model class methods.
+Example of usage: `dose`/`prob` function as a true dose-DLT/DLT-dose relationship.
 
 ## Generate data, define a model and get samples
 ```{r data_model_samples}

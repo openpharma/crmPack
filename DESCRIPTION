@@ -41,7 +41,9 @@ Imports:
     rjags,
     survival,
     tools,
-    utils
+    utils,
+    kableExtra,
+    tibble
 Suggests:
     ggmcmc,
     knitr,
