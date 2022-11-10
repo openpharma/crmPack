@@ -208,6 +208,15 @@ dose
 )}: Stop based on probability of targeting biomarker
 
 \item \code{stopTrial(
+  stopping = StoppingSpecificDose,
+  dose = numeric,
+  samples = ANY,
+  model = ANY,
+  data = Data
+)}: if Stopping rule is met for specific dose of the planned
+dose grid and not just for the default next best dose.
+
+\item \code{stopTrial(
   stopping = StoppingHighestDose,
   dose = numeric,
   samples = ANY,
