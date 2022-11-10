@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9102</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9103</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,12 +32,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -59,22 +53,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.0.9000.9102" id="version-1090009102">Version 1.0.9000.9102<a class="anchor" aria-label="anchor" href="#version-1090009102"></a></h2>
-<ul><li>Renamed <code>cohortSize</code> slot to <code>cohort_size</code> in <code>CohortSizeRange</code> class.</li>
-<li>Renamed class <code>StoppingGstarCIRatio</code> (and its slots) to <code>StoppingMaxGainCIRatio</code>.</li>
-<li>Renamed slots in <code>StoppingTDCIRatio</code> class.</li>
-<li>Renamed <code>stopList</code> slot in <code>StoppingList</code>, <code>StoppingAll</code> and <code>StoppingAny</code> classes.</li>
-<li>Added <code>unique</code> flag to <code>assert_probabilities</code> checkmate custom functions.</li>
-<li>In <code>StoppingTargetBiomarker</code> class, changed <code>scale</code> character slot to <code>is_relative</code> flag.</li>
+<h2 class="pkg-version" data-toc-text="1.0.9000.9103" id="version-1090009103">Version 1.0.9000.9103<a class="anchor" aria-label="anchor" href="#version-1090009103"></a></h2>
+<ul><li>Added <code>unique</code> flag to <code>assert_probabilities</code> checkmate custom functions.</li>
 <li>Created a new vignette which describes how to use certain functions and features of <code>crmPack</code> after the major refactoring.</li>
 <li>Removed <code>MASS</code> from <code>Imports</code> and <code>Rcpp</code>, <code>RcppArmadillo</code> from <code>Suggests</code> as it was used only in the some old development version.</li>
-<li>Renamed class <code>IncrementMin</code> to <code>IncrementsMin</code>.</li>
-<li>Renamed slots in <code>IncrementsRelativeParts</code>, <code>IncrementsRelativeDLT</code>, <code>IncrementsNumDoseLevels</code>, <code>IncrementMin</code> and other dependent classes.</li>
-<li>Renamed slots in <code>NextBestTD</code>, <code>NextBestTDsamples</code>, <code>NextBestMaxGain</code> and <code>NextBestMaxGainSamples</code> classes.</li>
-<li>Removed <code>Model</code> class.</li>
-<li>Renamed <code>SIM</code> argument of <code>nextBest</code> methods to <code>in_sim</code>.</li>
-<li>Renamed the elements of the list returned by <code>nextBest</code> methods for <code>NextBestMaxGain</code> and <code>NextBestMaxGainSamples</code>.</li>
-<li>Renamed two arguments of <code>nextBest</code> methods for <code>NextBestTDsamples</code>, <code>NextBestTD</code>, <code>NextBestMaxGain</code> and <code>NextBestMaxGainSamples</code>: <code>Effmodel</code> to <code>model_eff</code> and <code>Effsamples</code> to <code>samples_eff</code>.</li>
 <li>
 <code>doselimit</code> argument in <code>nextBest</code> method is now specified as <code>Inf</code> instead of <code>numeric(0)</code>.</li>
 <li>Added new helper functions for <code>nextBest</code> methods, particularly for plotting and finding the dose closest to the grid.</li>
@@ -83,43 +65,15 @@
 <li>Warning message not printed anymore by <code>nextBest</code> methods when <code>doselimit</code> not specified.</li>
 <li>Set prototype for <code>target = 0.3</code> for <code>NextBestMinDist</code> class.</li>
 <li>Added new customized <code>checkmate</code> functions for probability values checking.</li>
-<li>Created one <code>update</code> method for <code>ModelPseudo</code> and removed specific methods for <code>LogisticIndepBeta</code>, <code>Effloglog</code>, <code>EffFlexi</code>.</li>
-<li>Renamed arguments of <code>gain</code> function.</li>
-<li>Renamed generic function and method <code>biomLevel</code> to <code>biomarker</code>. Changed its arguments.</li>
-<li>Renamed several slots in <code>NextBestNCRM</code> and <code>NextBestDualEndpoint</code> classes.</li>
-<li>Changed the <code>scale</code> character slot into <code>target_relative</code> flag slot in <code>NextBestDualEndpoint</code> class.</li>
 <li>Renamed the argument of <code>derive</code> function from <code>mtdSamples</code> to <code>mtd_samples</code> in <code>NextBestMTD</code> class.</li>
 <li>Allowed for <code>from_prior</code> flag - argument to <code>modelspecs</code> function at <code>GeneralModel</code> class.</li>
-<li>Added new slot <code>skel_fun_inv</code> into <code>OneParExpNormalPrior</code> class.</li>
-<li>Removed <code>AllModels</code> class.</li>
-<li>Added new slot <code>datanames_prior</code> for <code>GeneralModel</code> class.</li>
-<li>Moved <code>datanames</code> slot from <code>AllModels</code> class to its child class <code>GeneralModel</code>.</li>
-<li>Renamed several slots in <code>EffFlexi</code>, <code>DALogisticLogNormal</code>, <code>TITELogisticLogNormal</code> and <code>OneParExpNormalPrior</code> classes and adjusted corresponding constructor functions.</li>
-<li>Renamed <code>Eff</code> argument to <code>eff</code> and <code>Effdose</code> to <code>eff_dose</code> in <code>Effloglog</code> class constructor.</li>
-<li>Renamed <code>ExpEff</code> methods for pseudo-data efficacy models to <code>efficacy</code>.</li>
-<li>Moved <code>dose</code> and <code>ExpEff</code> functions from model class slots to model class methods for pseudo-data efficacy models.</li>
-<li>Created new generic function - <code>efficacy</code>.</li>
-<li>Renamed <code>prob</code> argument to <code>x</code> for <code>dose</code> methods.</li>
-<li>Added <code>positive_number</code> class to handle strictly positive valued slots (e.g. <code>ref_dose</code> in many model classes).</li>
-<li>Renamed <code>refDoseBeta</code> slot to <code>ref_dose_beta</code> in <code>DualEndpointEmax</code> class.</li>
-<li>Renamed <code>refDoseEmax</code> slot to <code>ref_dose_emax</code> in <code>DualEndpointBeta</code> class.</li>
-<li>Replaced <code>smooth</code> character vector argument of <code><a href="../reference/DualEndpointRW-class.html">DualEndpointRW()</a></code> to <code>rw1</code> flag.</li>
-<li>Added new <code>ModelParamsNormal</code> class to represent parameters of bivariate normal distribution.</li>
-<li>Added new <code>doseFunction</code> and <code>probFunction</code> functions which return dose and probability computing functions using model specific parameters.</li>
-<li>Moved <code>dose</code> and <code>prob</code> functions from model class slots to model class methods for several models.</li>
-<li>Renamed <code>refDose</code> slot to <code>ref_dose</code> in <code>ModelLogNormal</code> class.</li>
-<li>Created new <code>ModelLogNormal</code> class as a parent class for all the models with reference dose and bivariate (log) normal prior on the model parameters.</li>
 <li>Created new <code>ProbitLogNormalRel</code> model class to support the (standardized) dose.</li>
 <li>Changed <code>ProbitLogNormal</code> so that it supports the log of (standardized) dose only.</li>
 <li>Added logger feature. Its user interface consists of four functions: <code>enable_logging</code>, <code>disable_logging</code>, <code>is_logging_enabled</code>, <code>log_trace</code>.</li>
-<li>Modified <code>mcmc</code> method arguments: renamed <code>fromPrior</code> to <code>from_prior</code>, removed <code>program</code> and <code>verbose</code>.</li>
-<li>Added new slot <code>RNG</code> to <code>McmcOptions</code> class which will be used by Random Number Generator in <code>rJAGS</code>.</li>
 <li>Re-factored <code>sampleSize</code> function so that it returns <code>0</code> if <code>burnin &gt; iterations</code>.</li>
-<li>Renamed elements in the list object returned by <code>getEff</code> function.</li>
 <li>A vector under <code>t0</code> slot in <code>DataDA</code> class must be sorted in ascending order.</li>
 <li>Replaced warning with message when no <code>cohort</code> or <code>ID</code> is provided to the user constructor <code>Data</code>.</li>
-<li>Renamed arguments in <code>update-DataDA-method</code> method.</li>
-<li>Updated the <code>update</code> method for Data-like classes: renamed <code>newCohort</code> argument to <code>new_cohort</code>, introduced validation of the updated object, added <code>check</code> flag to possibly omit the validation of the updated object.</li>
+<li>Introduced validation of the updated object for <code>update</code> methods for Data-like classes. Added <code>check</code> flag to possibly omit the validation of the updated object.</li>
 <li>Set up the package to use testthat.</li>
 <li>Added lifecycle package.</li>
 <li>Include rolling CRM design, which was previously only available in a separate GitHub branch.</li>
