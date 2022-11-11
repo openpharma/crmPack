@@ -129,3 +129,25 @@ h_get_data_da_2 <- function() {
     doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
   )
 }
+
+# Sample data to test stopping rule of StoppingSpecificDose method.
+h_get_data_sr_1 <- function() {
+  Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+    y = c(0, 0, 0, 0, 0, 0, 1, 0),
+    ID = 1:8,
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+}
+
+# Sample data to test stopping rule of StoppingSpecificDose method.
+h_get_data_sr_2 <- function() {
+  Data(
+    x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10, 50, 50, 50, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80),
+    y = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+    ID = 1:23,
+    cohort = c(0, 1, 2, 3, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 10),
+    doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+  )
+}

@@ -23,11 +23,15 @@ h_next_best_ncrm <- function(edge_case = FALSE) {
   }
 }
 
-h_next_best_ncrm_loss <- function(edge_case = FALSE) {
-  if (edge_case) {
+h_next_best_ncrm_loss <- function(edge_case = 0L) {
+  if (edge_case == 1L) {
     overdose <- c(0.35, 1)
     unacceptable <- c(1, 1)
     losses <- c(1, 0, 1)
+  } else if (edge_case == 2L) {
+    overdose <- c(0, 0)
+    unacceptable <- c(0, 1)
+    losses <- c(1, 0, 1, 2)
   } else {
     overdose <- c(0.35, 0.6)
     unacceptable <- c(0.6, 0.9)
@@ -85,5 +89,24 @@ h_next_best_mgsamples <- function(td = 0.45, te = 0.4, p = 0.3, p_gstar = 0.5) {
     prob_target_eot = te,
     derive = function(s) as.numeric(quantile(s, prob = p)),
     mg_derive = function(s) as.numeric(quantile(s, prob = p_gstar))
+  )
+}
+
+h_stopping_specific_dose <- function(rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+                                     dose = 80) {
+  StoppingSpecificDose(
+    rule = rule,
+    dose = dose
+  )
+}
+
+h_stopping_list <- function() {
+  StoppingList(
+    stop_list = list(
+      StoppingMinCohorts(nCohorts = 3),
+      StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5),
+      StoppingMinPatients(nPatients = 20)
+    ),
+    summary = any
   )
 }

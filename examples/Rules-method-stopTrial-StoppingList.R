@@ -48,7 +48,7 @@ myStopping3 <- StoppingMinPatients(nPatients=20)
 # Create a list of stopping rules (of class 'StoppingList') which will then be
 # summarized (in this specific example) with the 'any' function, meaning that the study
 # would be stopped if 'any' of the single stopping rules is TRUE.
-mystopping <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
+mystopping <- StoppingList(stop_list=c(myStopping1,myStopping2,myStopping3),
                            summary=any)
 
 # Evaluate if to stop the Trial

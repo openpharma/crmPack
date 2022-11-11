@@ -11,8 +11,7 @@ data<-Data(x=c(25,50,50,75,150,200,225,300),
 ##For example, the 'logisticIndepBeta' class model
 model<-LogisticIndepBeta(binDLE=c(1.05,1.8),DLEweights=c(3,3),DLEdose=c(25,300),data=data)
 ##define the 'StoppingTDCIRatio' class
-myStopping <- StoppingTDCIRatio(targetRatio=5,
-                                targetEndOfTrial=0.3)
+myStopping <- StoppingTDCIRatio(target_ratio = 5, prob_target = 0.3)
 ##Find the next Recommend dose using the nextBest method (plesae refer to nextbest examples)
 tdNextBest<-NextBestTD(prob_target_drt=0.35,prob_target_eot=0.3)
 

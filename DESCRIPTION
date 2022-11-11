@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9086
+Version: 1.0.9000.9104
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -34,12 +34,14 @@ Imports:
     GenSA,
     grid,
     gridExtra,
+    kableExtra,
     lifecycle,
     methods,
     mvtnorm,
     parallel,
     rjags,
     survival,
+    tibble,
     tools,
     utils
 Suggests:

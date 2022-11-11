@@ -3,13 +3,17 @@ name: Check 🛠
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     branches:
       - main
-      - pre-release
   push:
     branches:
       - main
-      - pre-release
+  workflow_dispatch:
 
 jobs:
   audit:
@@ -20,23 +24,15 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-    with:
-      install-system-dependencies: true
   coverage:
-    if: github.event_name == 'pull_request'
     name: Coverage 📔 
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-    with:
-      install-system-dependencies: true
   linter:
     if: github.event_name == 'pull_request'
     name: SuperLinter 🦸‍♀️
     uses: insightsengineering/r.pkg.template/.github/workflows/linter.yaml@main
-  gitleaks:
-    name: gitleaks 💧
-    uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
   spelling:
     if: github.event_name == 'pull_request'
     name: Spell Check 🆎
@@ -47,10 +43,23 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/links.yaml@main
   vbump:
     name: Version Bump 🤜🤛
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     uses: insightsengineering/r.pkg.template/.github/workflows/version-bump.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
   version:
     name: Version Check 🏁
     uses: insightsengineering/r.pkg.template/.github/workflows/version.yaml@main
+  licenses:
+    name: License Check 🃏
+    uses: insightsengineering/r.pkg.template/.github/workflows/licenses.yaml@main
+  style:
+    if: github.event_name == 'pull_request'
+    name: Style Check 👗
+    uses: insightsengineering/r.pkg.template/.github/workflows/style.yaml@main
+    with:
+      auto-update: true
+  grammar:
+    if: github.event_name == 'pull_request'
+    name: Grammar Check 🔤
+    uses: insightsengineering/r.pkg.template/.github/workflows/grammar.yaml@main

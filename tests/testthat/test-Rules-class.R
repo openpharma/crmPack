@@ -431,7 +431,7 @@ test_that(".StoppingTargetProb works as expected", {
 })
 
 test_that("StoppingTargetProb object can be created with user constructor", {
-  result <- expect_silent(StoppingTargetProb(target = c(0.3, 0.45), prob = 0.5))
+  result <- expect_silent(StoppingTargetProb(c(0.3, 0.45), 0.5))
   expect_valid(result, "StoppingTargetProb")
   expect_identical(result@target, c(0.3, 0.45))
   expect_identical(result@prob, 0.5)
@@ -446,7 +446,7 @@ test_that(".StoppingMTDdistribution works as expected", {
 
 test_that("StoppingMTDdistribution object can be created with user constructor", {
   result <- expect_silent(
-    StoppingMTDdistribution(target = 0.33, thresh = 0.5, prob = 0.9)
+    StoppingMTDdistribution(0.33, 0.5, 0.9)
   )
   expect_valid(result, "StoppingMTDdistribution")
   expect_identical(result@target, 0.33)
@@ -469,22 +469,194 @@ test_that("StoppingMTDCV object can be created with user constructor (default)",
 })
 
 test_that("StoppingMTDCV object can be created with user constructor", {
-  result <- expect_silent(StoppingMTDCV(target = 0.4, thresh_cv = 70))
+  result <- expect_silent(StoppingMTDCV(0.4, 70))
   expect_valid(result, "StoppingMTDCV")
   expect_identical(result@target, 0.4)
   expect_identical(result@thresh_cv, 70)
 })
 
-## StoppingLowestDoseHSRBeta-class ----
+## StoppingLowestDoseHSRBeta
 
 test_that(".StoppingLowestDoseHSRBeta works as expected", {
   result <- expect_silent(.StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
 })
 
-## StoppingLowestDoseHSRBeta-constructor ----
-
-test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
+test_that("StoppingLowestDoseHSRBeta object can be created with user constructor (default)", {
   result <- expect_silent(StoppingLowestDoseHSRBeta())
   expect_valid(result, "StoppingLowestDoseHSRBeta")
+  expect_identical(result@target, 0.3)
+  expect_identical(result@prob, 0.95)
+  expect_identical(result@a, 1)
+  expect_identical(result@b, 1)
+})
+
+test_that("StoppingLowestDoseHSRBeta object can be created with user constructor", {
+  result <- expect_silent(StoppingLowestDoseHSRBeta(0.25, 0.82, 5, 2))
+  expect_valid(result, "StoppingLowestDoseHSRBeta")
+  expect_identical(result@target, 0.25)
+  expect_identical(result@prob, 0.82)
+  expect_identical(result@a, 5)
+  expect_identical(result@b, 2)
+})
+
+## StoppingTargetBiomarker
+
+test_that(".StoppingTargetBiomarker works as expected", {
+  result <- expect_silent(.StoppingTargetBiomarker())
+  expect_valid(result, "StoppingTargetBiomarker")
+})
+
+test_that("StoppingTargetBiomarker object can be created with user constructor (default)", {
+  result <- expect_silent(StoppingTargetBiomarker(c(0.85, 1), 0.4))
+  expect_valid(result, "StoppingTargetBiomarker")
+  expect_identical(result@target, c(0.85, 1))
+  expect_identical(result@is_relative, TRUE)
+  expect_identical(result@prob, 0.4)
+})
+
+test_that("StoppingTargetBiomarker object can be created with user constructor", {
+  result <- expect_silent(StoppingTargetBiomarker(c(0.85, 1), 0.4, FALSE))
+  expect_valid(result, "StoppingTargetBiomarker")
+  expect_identical(result@target, c(0.85, 1))
+  expect_identical(result@is_relative, FALSE)
+  expect_identical(result@prob, 0.4)
+})
+
+## StoppingSpecificDose ----
+
+test_that(".StoppingSpecificDose works as expected", {
+  result <- expect_silent(.StoppingSpecificDose(dose = positive_number(80)))
+  expect_valid(result, "StoppingSpecificDose")
+})
+
+test_that("StoppingSpecificDose object can be created with user constructor", {
+  result <- expect_silent(
+    StoppingSpecificDose(
+      rule = StoppingTargetProb(target = c(0, 0.3), prob = 0.8),
+      dose = 80
+    )
+  )
+  expect_valid(result, "StoppingSpecificDose")
+  expect_valid(result@rule, "StoppingTargetProb")
+  expect_identical(result@rule@target, c(0, 0.3))
+  expect_identical(result@rule@prob, 0.8)
+  expect_identical(result@dose@.Data, 80)
+})
+
+## StoppingHighestDose ----
+
+test_that(".StoppingHighestDose works as expected", {
+  result <- expect_silent(.StoppingHighestDose())
+  expect_valid(result, "StoppingHighestDose")
+})
+
+test_that("StoppingHighestDose object can be created with user constructor", {
+  result <- expect_silent(StoppingHighestDose())
+  expect_valid(result, "StoppingHighestDose")
+})
+
+## StoppingList ----
+
+test_that(".StoppingList works as expected", {
+  result <- expect_silent(.StoppingList())
+  expect_valid(result, "StoppingList")
+})
+
+test_that("StoppingList object can be created with user constructor", {
+  stop_list <- list(
+    StoppingMinCohorts(nCohorts = 5),
+    StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
+    StoppingMinPatients(nPatients = 30)
+  )
+  result <- expect_silent(
+    StoppingList(stop_list = stop_list, summary = all)
+  )
+  expect_valid(result, "StoppingList")
+  expect_identical(result@stop_list, stop_list)
+  expect_identical(result@summary, all)
+})
+
+## StoppingAll ----
+
+test_that(".StoppingAll works as expected", {
+  result <- expect_silent(.StoppingAll())
+  expect_valid(result, "StoppingAll")
+})
+
+test_that("StoppingAll object can be created with user constructor", {
+  stop_list <- list(
+    StoppingMinCohorts(nCohorts = 5),
+    StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
+    StoppingMinPatients(nPatients = 30)
+  )
+  result <- expect_silent(
+    StoppingAll(stop_list = stop_list)
+  )
+  expect_valid(result, "StoppingAll")
+  expect_identical(result@stop_list, stop_list)
+})
+
+## StoppingAny ----
+
+test_that(".StoppingAny works as expected", {
+  result <- expect_silent(.StoppingAny())
+  expect_valid(result, "StoppingAny")
+})
+
+test_that("StoppingAny object can be created with user constructor", {
+  stop_list <- list(
+    StoppingMinCohorts(nCohorts = 5),
+    StoppingTargetProb(target = c(0.2, 0.45), prob = 0.6),
+    StoppingMinPatients(nPatients = 30)
+  )
+  result <- expect_silent(
+    StoppingAny(stop_list = stop_list)
+  )
+  expect_valid(result, "StoppingAny")
+  expect_identical(result@stop_list, stop_list)
+})
+
+## StoppingTDCIRatio ----
+
+test_that(".StoppingTDCIRatio works as expected", {
+  result <- expect_silent(.StoppingTDCIRatio())
+  expect_valid(result, "StoppingTDCIRatio")
+})
+
+test_that("StoppingTDCIRatio object can be created with user constructor", {
+  result <- expect_silent(StoppingTDCIRatio(6, 0.5))
+  expect_valid(result, "StoppingTDCIRatio")
+  expect_identical(result@target_ratio, 6)
+  expect_identical(result@prob_target, 0.5)
+})
+
+## StoppingMaxGainCIRatio ----
+
+test_that(".StoppingMaxGainCIRatio works as expected", {
+  result <- expect_silent(.StoppingMaxGainCIRatio())
+  expect_valid(result, "StoppingMaxGainCIRatio")
+})
+
+test_that("StoppingMaxGainCIRatio object can be created with user constructor", {
+  result <- expect_silent(StoppingMaxGainCIRatio(6, 0.5))
+  expect_valid(result, "StoppingMaxGainCIRatio")
+  expect_identical(result@target_ratio, 6)
+  expect_identical(result@prob_target, 0.5)
+})
+
+# CohortSize ----
+
+## CohortSizeRange ----
+
+test_that(".CohortSizeRange works as expected", {
+  result <- expect_silent(.CohortSizeRange())
+  expect_valid(result, "CohortSizeRange")
+})
+
+test_that("CohortSizeRange object can be created with user constructor", {
+  result <- expect_silent(CohortSizeRange(c(0, 30, 50), c(20, 60, 90)))
+  expect_valid(result, "CohortSizeRange")
+  expect_identical(result@intervals, c(0, 30, 50))
+  expect_identical(result@cohort_size, c(20L, 60L, 90L))
 })

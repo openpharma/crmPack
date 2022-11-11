@@ -161,13 +161,12 @@ NextBestNCRM <- function(target,
 #' @slot overdose (`numeric`)\cr the overdose toxicity interval (lower limit
 #'   excluded, upper limit included) or the excessive toxicity interval (lower
 #'   limit excluded, upper limit included) if unacceptable is not provided.
-#'   It has to be a probability range excluding 0. It is used to filter
-#'   probability samples.
+#'   It has to be a probability range. It is used to filter probability samples.
 #' @slot unacceptable (`numeric`)\cr an unacceptable toxicity
 #'   interval (lower limit excluded, upper limit included). This must be
 #'   specified if the `overdose` does not include 1. Otherwise, it is `c(1, 1)`
 #'   (default), which is essentially a scalar equals 1. It has to be a
-#'   probability range excluding 0.
+#'   probability range.
 #' @slot losses (`numeric`)\cr a vector specifying the loss function. If the
 #'   `unacceptable` is provided, the vector length must be 4, otherwise 3.
 #'
@@ -1207,7 +1206,7 @@ IncrementsMin <- function(increments_list) {
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
-#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`].
+#'   [`StoppingMTDCV`], [`StoppingLowestDoseHSRBeta`], [`StoppingSpecificDose`].
 #'
 #' @aliases Stopping
 #' @export
@@ -1554,9 +1553,9 @@ StoppingMTDCV <- function(target = 0.3,
   )
 }
 
-# nolint start
+# StoppingLowestDoseHSRBeta ----
 
-# StoppingLowestDoseHSRBeta-class ----
+## class ----
 
 #' `StoppingLowestDoseHSRBeta`
 #'
@@ -1571,7 +1570,8 @@ StoppingMTDCV <- function(target = 0.3,
 #' The default prior is Beta(1,1).
 #' In case that placebo is used, the rule is evaluated at the second dose of the
 #' dose grid, i.e. at the lowest non-placebo dose.
-#' Note: this stopping rule is independent from the underlying model.
+#'
+#' @note This stopping rule is independent from the underlying model.
 #'
 #' @slot target (`proportion`)\cr the target toxicity.
 #' @slot prob (`proportion`)\cr the threshold probability for the lowest dose
@@ -1586,24 +1586,23 @@ StoppingMTDCV <- function(target = 0.3,
 #'
 .StoppingLowestDoseHSRBeta <- setClass(
   Class = "StoppingLowestDoseHSRBeta",
-  contains = "Stopping",
-  representation = representation(
+  slots = c(
     target = "numeric",
     prob = "numeric",
     a = "numeric",
     b = "numeric"
   ),
-  prototype(
+  prototype = prototype(
     target = 0.3,
     prob = 0.95,
     a = 1,
     b = 1
   ),
-  validity = v_stopping_lowest_dose_hsr_beta
+  contains = "Stopping",
+  validity = v_increments_hsr_beta
 )
 
-
-# StoppingLowestDoseHSRBeta-constructor ----
+## constructor ----
 
 #' @rdname StoppingLowestDoseHSRBeta-class
 #'
@@ -1627,437 +1626,459 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
   )
 }
 
-## --------------------------------------------------
-## Stopping based on probability of target biomarker
-## --------------------------------------------------
+# StoppingTargetBiomarker ----
 
-##' Stop based on probability of target biomarker
-##'
-##' @slot target the biomarker target range, that
-##' needs to be reached. For example, (0.8, 1.0) and \code{scale="relative"}
-##' means we target a dose with at least 80% of maximum biomarker level.
-##' @slot scale either \code{relative} (default, then the \code{target} is interpreted
-##' relative to the maximum, so must be a probability range) or \code{absolute}
-##' (then the \code{target} is interpreted as absolute biomarker range)
-##' @slot prob required target probability for reaching sufficient precision
-##'
-##' @example examples/Rules-class-StoppingTargetBiomarker.R
-##'
-##' @export
-.StoppingTargetBiomarker <-
-    setClass(Class="StoppingTargetBiomarker",
-             representation(target="numeric",
-                            scale="character",
-                            prob="numeric"),
-             prototype(target=c(0.9, 1),
-                       scale="relative",
-                       prob=0.3),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+## class ----
 
-                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
-                             "scale must be either 'relative' or 'absolute'")
-                     if(object@scale == "relative")
-                     {
-                       o$check(is.probRange(object@target),
-                               "target has to be a probability range when scale='relative'")
-                     } else {
-                       o$check(is.range(object@target),
-                               "target must be a numeric range")
-                     }
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
+#' `StoppingTargetBiomarker`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTargetBiomarker`] is a class for stopping based on probability of
+#' target biomarker.
+#'
+#' @slot target (`numeric`)\cr the biomarker target range that needs to be
+#'   reached. For example, `target = c(0.8, 1.0)` with `is_relative = TRUE`
+#'   means that we target a dose with at least 80% of maximum biomarker level.
+#' @slot is_relative (`flag`)\cr is target relative? If it so (default), then
+#'   the `target` is interpreted relative to the maximum, so it must be a
+#'   probability range. Otherwise, the `target` is interpreted as absolute
+#'   biomarker range.
+#' @slot prob (`proportion`)\cr required target probability (except 0 or 1) for
+#'   reaching sufficient precision.
+#'
+#' @aliases StoppingTargetBiomarker
+#' @export
+#'
+.StoppingTargetBiomarker <- setClass(
+  Class = "StoppingTargetBiomarker",
+  slots = c(
+    target = "numeric",
+    is_relative = "logical",
+    prob = "numeric"
+  ),
+  prototype = prototype(
+    target = c(0.9, 1),
+    is_relative = TRUE,
+    prob = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_target_biomarker
+)
 
-                     o$result()
-                 })
-validObject(.StoppingTargetBiomarker())
+## constructor ----
 
-
-##' Initialization function for `StoppingTargetBiomarker`
-##'
-##' @param target see \code{\linkS4class{StoppingTargetBiomarker}}
-##' @param scale see \code{\linkS4class{StoppingTargetBiomarker}}
-##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
-##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
-##'
-##' @export
+#' @rdname StoppingTargetBiomarker-class
+#'
+#' @param target (`numeric`)\cr see slot definition.
+#' @param prob (`proportion`)\cr see slot definition.
+#' @param is_relative (`flag`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTargetBiomarker.R
+#'
 StoppingTargetBiomarker <- function(target,
-                                    scale=c("relative", "absolute"),
-                                    prob)
-{
-  scale <- match.arg(scale)
-    .StoppingTargetBiomarker(target=target,
-                             scale=scale,
-                             prob=prob)
+                                    prob,
+                                    is_relative = TRUE) {
+  .StoppingTargetBiomarker(
+    target = target,
+    is_relative = is_relative,
+    prob = prob
+  )
 }
 
-## --------------------------------------------------
-## Stopping when the highest dose is reached
-## --------------------------------------------------
+# StoppingSpecificDose ----
 
-##' Stop when the highest dose is reached
-##'
-##' @example examples/Rules-class-StoppingHighestDose.R
-##' @keywords classes
-##' @export
-.StoppingHighestDose <-
-  setClass(Class="StoppingHighestDose",
-           contains="Stopping")
-validObject(.StoppingHighestDose())
+## class ----
 
-##' Initialization function for "StoppingHighestDose"
-##'
-##' @return the \code{\linkS4class{StoppingHighestDose}} object
-##'
-##' @export
-##' @keywords methods
-StoppingHighestDose <- function()
-{
+#' `StoppingSpecificDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingSpecificDose`] is the class for testing a stopping rule at specific
+#' dose of the dose grid and not at the next best dose.
+#'
+#' @slot rule (`Stopping`)\cr a stopping rule available in this package.
+#' @slot dose (`positive_number`)\cr a dose that is defined as part of the dose
+#'   grid of the data.
+#'
+#' @aliases StoppingSpecificDose
+#' @export
+#'
+.StoppingSpecificDose <- setClass(
+  Class = "StoppingSpecificDose",
+  slots = c(
+    rule = "Stopping",
+    dose = "positive_number"
+  ),
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingSpecificDose-class
+#'
+#' @param rule (`Stopping`)\cr see slot definition.
+#' @param dose (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingSpecificDose.R
+#'
+StoppingSpecificDose <- function(rule, dose) {
+  .StoppingSpecificDose(
+    rule = rule,
+    dose = positive_number(dose)
+  )
+}
+
+# StoppingHighestDose ----
+
+## class ----
+
+#' `StoppingHighestDose`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`StoppingHighestDose`] is the class for stopping based on the highest dose.
+#' That is, the stopping occurs when the highest dose is reached.
+#'
+#' @aliases StoppingHighestDose
+#' @export
+#'
+.StoppingHighestDose <- setClass(
+  Class = "StoppingHighestDose",
+  contains = "Stopping"
+)
+
+## constructor ----
+
+#' @rdname StoppingHighestDose-class
+#'
+#' @export
+#' @example examples/Rules-class-StoppingHighestDose.R
+#'
+StoppingHighestDose <- function() {
   .StoppingHighestDose()
 }
 
+# StoppingList ----
 
-## --------------------------------------------------
-## Stopping based on multiple stopping rules
-## --------------------------------------------------
+## class ----
 
-##' Stop based on multiple stopping rules
-##'
-##' This class can be used to combine multiple stopping rules.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}, and the \code{summary} is a function
-##' taking a logical vector of the size of \code{stopList} and returning a
-##' single logical value. For example, if the function \code{all} is given as
-##' \code{summary} function, then this means that all stopping rules must be
-##' fulfilled in order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##' @slot summary the summary function to combine the results of the stopping
-##' rules into a single result
-##'
-##' @example examples/Rules-class-StoppingList.R
-##' @keywords classes
-##' @export
-.StoppingList <-
-    setClass(Class="StoppingList",
-             representation(stopList="list",
-                            summary="function"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5)),
-                       summary=all),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingList`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingList`] is the class for testing a stopping rule that consists of
+#' many single stopping rules that are in turn the objects of class `Stopping`.
+#' The `summary` slot stores a function that takes a logical vector of the size
+#' of `stop_list` and returns a single logical value. For example, if the function
+#' `all` is specified as a `summary` function, then that all stopping rules
+#' defined in `stop_list` must be satisfied in order the result of this rule to
+#' be `TRUE`.
+#'
+#' @slot stop_list (`list`)\cr list of stopping rules.
+#' @slot summary (`function`)\cr a summary function to combine the results of
+#'   the stopping rules into a single result.
+#'
+#' @aliases StoppingList
+#' @export
+#'
+.StoppingList <- setClass(
+  Class = "StoppingList",
+  slots = c(
+    stop_list = "list",
+    summary = "function"
+  ),
+  prototype = prototype(
+    stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5)),
+    summary = all
+  ),
+  contains = "Stopping",
+  validity = v_stopping_list
+)
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
-                     testRes <- object@summary(rep(c(TRUE, FALSE),
-                                                   length.out=length(object@stopList)))
-                     o$check(is.bool(testRes),
-                             "summary function must return a boolean value")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingList())
-
-
-##' Initialization function for "StoppingList"
-##'
-##' @param stopList see \code{\linkS4class{StoppingList}}
-##' @param summary see \code{\linkS4class{StoppingList}}
-##' @return the \code{\linkS4class{StoppingList}} object
-##'
-##' @export
-##' @keywords methods
-StoppingList <- function(stopList,
-                         summary)
-{
-    .StoppingList(stopList=stopList,
-                  summary=summary)
+#' @rdname StoppingList-class
+#'
+#' @param stop_list (`list`)\cr see slot definition.
+#' @param summary (`function`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingList.R
+#'
+StoppingList <- function(stop_list, summary) {
+  .StoppingList(
+    stop_list = stop_list,
+    summary = summary
+  )
 }
 
+# StoppingAll ----
 
-## --------------------------------------------------
-## Stopping based on fulfillment of all multiple stopping rules
-## --------------------------------------------------
+## class ----
 
-##' Stop based on fulfillment of all multiple stopping rules
-##'
-##' This class can be used to combine multiple stopping rules with an AND
-##' operator.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}. All stopping rules must be fulfilled in
-##' order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##'
-##' @example examples/Rules-class-StoppingAll.R
-##' @keywords classes
-##' @export
-.StoppingAll <-
-    setClass(Class="StoppingAll",
-             representation(stopList="list"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5))),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingAll`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingAll`] is the class for testing a stopping rule that consists of
+#' many single stopping rules that are in turn the objects of class `Stopping`.
+#' All single stopping rules must be satisfied in order the result of this rule
+#' to be `TRUE`.
+#'
+#' @slot stop_list (`list`)\cr list of stopping rules.
+#'
+#' @aliases StoppingAll
+#' @export
+#'
+.StoppingAll <- setClass(
+  Class = "StoppingAll",
+  slots = c(stop_list = "list"),
+  prototype = prototype(
+    stop_list = list(
+      StoppingMinPatients(50),
+      StoppingMinCohorts(5)
+    )
+  ),
+  contains = "Stopping",
+  validity = v_stopping_all
+)
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingAll())
-
-
-##' Initialization function for "StoppingAll"
-##'
-##' @param stopList see \code{\linkS4class{StoppingAll}}
-##' @return the \code{\linkS4class{StoppingAll}} object
-##'
-##' @export
-##' @keywords methods
-StoppingAll <- function(stopList)
-{
-    .StoppingAll(stopList=stopList)
+#' @rdname StoppingAll-class
+#'
+#' @param stop_list (`list`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingAll.R
+#'
+StoppingAll <- function(stop_list) {
+  .StoppingAll(stop_list = stop_list)
 }
 
+# StoppingAny ----
 
-## --------------------------------------------------
-## Stopping based on fulfillment of any stopping rule
-## --------------------------------------------------
+## class ----
 
-##' Stop based on fulfillment of any stopping rule
-##'
-##' This class can be used to combine multiple stopping rules with an OR
-##' operator.
-##'
-##' \code{stopList} contains all stopping rules, which are again objects of
-##' class \code{\linkS4class{Stopping}}. Any of these rules must be fulfilled in
-##' order that the result of this rule is to stop.
-##'
-##' @slot stopList list of stopping rules
-##'
-##' @example examples/Rules-class-StoppingAny.R
-##' @keywords classes
-##' @export
-.StoppingAny <-
-    setClass(Class="StoppingAny",
-             representation(stopList="list"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5))),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `StoppingAny`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingAny`] is the class for testing a stopping rule that consists of
+#' many single stopping rules that are in turn the objects of class `Stopping`.
+#' At least one single stopping rule must be satisfied in order the result of
+#' this rule to be `TRUE`.
+#'
+#' @slot stop_list (`list`)\cr list of stopping rules.
+#'
+#' @aliases StoppingAny
+#' @export
+#'
+.StoppingAny <- setClass(
+  Class = "StoppingAny",
+  slots = c(stop_list = "list"),
+  prototype = prototype(
+    stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
+  ),
+  contains = "Stopping",
+  validity = v_stopping_all
+)
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.StoppingAny())
-
-
-##' Initialization function for "StoppingAny"
-##'
-##' @param stopList see \code{\linkS4class{StoppingAny}}
-##' @return the \code{\linkS4class{StoppingAny}} object
-##'
-##' @export
-##' @keywords methods
-StoppingAny <- function(stopList)
-{
-    .StoppingAny(stopList=stopList)
+#' @rdname StoppingAny-class
+#'
+#' @param stop_list (`list`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingAny.R
+#'
+StoppingAny <- function(stop_list) {
+  .StoppingAny(stop_list = stop_list)
 }
 
+# StoppingTDCIRatio ----
 
-##-------------------------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the 95% credibility interval
-## ---------------------------------------------------------------------------------------------------------------
+## class ----
 
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
-##' probability of DLE used at the end of a trial
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##'
-##' @example examples/Rules-class-StoppingTDCIRatio.R
-##' @export
-##' @keywords classes
-.StoppingTDCIRatio <-
-  setClass(Class="StoppingTDCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
+#' `StoppingTDCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`).
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingTDCIRatio
+#' @export
+#'
+.StoppingTDCIRatio <- setClass(
+  Class = "StoppingTDCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
 
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
+## constructor ----
 
-validObject(.StoppingTDCIRatio())
-
-##' Initialization function for "StoppingTDCIRatio"
-##'
-##' @param targetRatio please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingTDCIRatio}} class object
-##'
-##' @export
-##' @keywords methods
-StoppingTDCIRatio <- function(targetRatio,
-                              targetEndOfTrial)
-{
-  .StoppingTDCIRatio(targetRatio=targetRatio,
-                     targetEndOfTrial=targetEndOfTrial)
+#' @rdname StoppingTDCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTDCIRatio.R
+#'
+StoppingTDCIRatio <- function(target_ratio, prob_target) {
+  .StoppingTDCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target
+  )
 }
 
-## ----------------------------------------------------------------------------------------------------------------
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
-##' the TD end of trial, the dose with probability of DLE equals to the target
-##' probability of DLE used at the end of a trial.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##'
-##' @example examples/Rules-class-StoppingGstarCIRatio.R
-##' @export
-##' @keywords classes
-.StoppingGstarCIRatio <-
-  setClass(Class="StoppingGstarCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
+# StoppingMaxGainCIRatio ----
 
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
+## class ----
 
-validObject(.StoppingGstarCIRatio())
+#' `StoppingMaxGainCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the:
+#' (1) target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`), or
+#' (2) max gain dose (i.e. a dose which gives the maximum gain),
+#' depending on which one out of these two is smaller.
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingMaxGainCIRatio
+#' @export
+#'
+.StoppingMaxGainCIRatio <- setClass(
+  Class = "StoppingMaxGainCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
 
-##' Initialization function for "StoppingGstarCIRatio"
-##'
-##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingGstarCIRatio}} class object
-##'
-##' @export
-##' @keywords methods
-StoppingGstarCIRatio <- function(targetRatio,
-                                 targetEndOfTrial)
-{
-  .StoppingGstarCIRatio(targetRatio=targetRatio,
-                        targetEndOfTrial=targetEndOfTrial)
+## constructor ----
+
+#' @rdname StoppingMaxGainCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
+#'
+StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
+  .StoppingMaxGainCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target
+  )
 }
 
+# CohortSize ----
 
+## class ----
 
-## ============================================================
+#' `CohortSize`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSize`] is a class for for cohort sizes.
+#'
+#' @seealso [`CohortSizeRange`], [`CohortSizeDLT`], [`CohortSizeConst`],
+#'   [`CohortSizeParts`], [`CohortSizeMin`], [`CohortSizeMin`].
+#'
+#' @aliases CohortSize
+#' @export
+#'
+setClass(
+  Class = "CohortSize"
+)
 
+# CohortSizeRange ----
 
+## class ----
 
-## --------------------------------------------------
-## Virtual class for cohort sizes
-## --------------------------------------------------
+#' `CohortSizeRange`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeRange`] is the class for cohort size based on dose range.
+#'
+#' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
+#'   dose intervals.
+#' @slot cohort_size (`integer`)\cr an integer vector with the cohort sizes
+#'   corresponding to the elements of `intervals`.
+#'
+#' @aliases CohortSizeRange
+#' @export
+#'
+.CohortSizeRange <- setClass(
+  Class = "CohortSizeRange",
+  slots = c(
+    intervals = "numeric",
+    cohort_size = "integer"
+  ),
+  prototype = prototype(
+    intervals = c(0, 20),
+    cohort_size = c(1L, 3L)
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_range
+)
 
-##' The virtual class for cohort sizes
-##'
-##' @seealso \code{\linkS4class{CohortSizeMax}},
-##' \code{\linkS4class{CohortSizeMin}},
-##' \code{\linkS4class{CohortSizeRange}},
-##' \code{\linkS4class{CohortSizeDLT}},
-##' \code{\linkS4class{CohortSizeConst}},
-##' \code{\linkS4class{CohortSizeParts}}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="CohortSize",
-         contains=list("VIRTUAL"))
+## constructor ----
 
-
-## --------------------------------------------------
-## Cohort size based on dose range
-## --------------------------------------------------
-
-##' Cohort size based on dose range
-##'
-##' @slot intervals a vector with the left bounds of the relevant dose intervals
-##' @slot cohortSize an integer vector of the same length with the cohort
-##' sizes in the \code{intervals}
-##'
-##' @example examples/Rules-class-CohortSizeRange.R
-##' @export
-##' @keywords classes
-.CohortSizeRange <-
-    setClass(Class="CohortSizeRange",
-             representation(intervals="numeric",
-                            cohortSize="integer"),
-             prototype(intervals=c(0, 20),
-                       cohortSize=as.integer(c(1L, 3L))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@intervals)),
-                             "cohortSize must have same length as intervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
-                             "intervals has to be sorted and have unique values")
-
-                     o$result()
-                 })
-validObject(.CohortSizeRange())
-
-##' Initialization function for "CohortSizeRange"
-##'
-##' @param intervals see \code{\linkS4class{CohortSizeRange}}
-##' @param cohortSize see \code{\linkS4class{CohortSizeRange}}
-##' @return the \code{\linkS4class{CohortSizeRange}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeRange <- function(intervals,
-                            cohortSize)
-{
-    .CohortSizeRange(intervals=intervals,
-                     cohortSize=safeInteger(cohortSize))
+#' @rdname CohortSizeRange-class
+#'
+#' @param intervals (`numeric`)\cr see slot definition.
+#' @param cohort_size (`integer`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeRange.R
+#'
+CohortSizeRange <- function(intervals, cohort_size) {
+  .CohortSizeRange(
+    intervals = intervals,
+    cohort_size = safeInteger(cohort_size)
+  )
 }
 
-## --------------------------------------------------
-## Cohort size based on number of DLTs
-## --------------------------------------------------
+# nolint start
 
 ##' Cohort size based on number of DLTs
 ##'
@@ -2222,7 +2243,7 @@ CohortSizeParts <- function(sizes)
              representation(cohortSizeList="list"),
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
+                                                cohort_size=c(1, 3)),
                                 CohortSizeDLT(DLTintervals=c(0, 1),
                                               cohortSize=c(1, 3)))),
              contains="CohortSize",
@@ -2275,7 +2296,7 @@ CohortSizeMax <- function(cohortSizeList)
              representation(cohortSizeList="list"),
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
+                                                cohort_size=c(1, 3)),
                                 CohortSizeDLT(DLTintervals=c(0, 1),
                                               cohortSize=c(1, 3)))),
              contains="CohortSize",
