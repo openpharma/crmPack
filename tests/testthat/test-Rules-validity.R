@@ -1028,67 +1028,6 @@ test_that("v_stopping_mtd_cv returns message for non-valid thresh_cv", {
   expect_equal(v_stopping_mtd_cv(object), err_msg)
 })
 
-## v_stopping_lowest_dose_hsr_beta ----
-
-test_that("v_stopping_lowest_dose_hsr_beta passes for valid object", {
-  object <- StoppingLowestDoseHSRBeta(target = 0.3, prob = 0.95)
-  expect_true(v_stopping_lowest_dose_hsr_beta(object))
-
-  object <- StoppingLowestDoseHSRBeta(target = 0.2, prob = 0.9, a = 7, b = 3)
-  expect_true(v_stopping_lowest_dose_hsr_beta(object))
-})
-
-test_that("v_stopping_lowest_dose_hsr_beta returns expected messages for non-valid target", {
-  err_msg <- "target must be a probability value from (0, 1) interval"
-  object <- StoppingLowestDoseHSRBeta()
-
-  # Changing `target` so that it does not represent allowed probability value.
-  object@target <- 1
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-  object@target <- 0
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-  object@target <- -0.5
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-
-  # Changing `target` so that it is not a scalar.
-  object@target <- c(0.5, 0.6)
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-})
-
-test_that("v_stopping_lowest_dose_hsr_beta returns expected messages for non-valid prob", {
-  err_msg <- "prob must be a probability value from (0, 1) interval"
-  object <- StoppingLowestDoseHSRBeta()
-
-  # Changing `prob` so that it does not represent allowed probability value.
-  object@prob <- 1
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-  object@prob <- 0
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-  object@prob <- -0.5
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-
-  # Changing `prob` so that it is not a scalar.
-  object@prob <- c(0.5, 0.6)
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-})
-
-test_that("v_stopping_lowest_dose_hsr_beta returns expected messages for non-valid beta parameters", {
-  err_msg <- c(
-    "Beta distribution shape parameter a must be a positive scalar",
-    "Beta distribution shape parameter b must be a positive scalar"
-  )
-  object <- StoppingLowestDoseHSRBeta()
-
-  # Changing `a` and `b` so that they are not a positive scalars.
-  object@a <- -2
-  object@b <- 0
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-
-  object@a <- c(1, 2)
-  object@b <- c(1, 2)
-  expect_equal(v_stopping_lowest_dose_hsr_beta(object), err_msg)
-})
-
 ## v_stopping_target_biomarker ----
 
 test_that("v_stopping_target_biomarker passes for valid object", {
@@ -1240,4 +1179,105 @@ test_that("v_stopping_all returns expected messages for non-valid stop_list", {
   expect_equal(v_stopping_all(object), err_msg)
   object@stop_list <- list(FALSE, TRUE)
   expect_equal(v_stopping_all(object), err_msg)
+})
+
+## v_stopping_tdci_ratio ----
+
+test_that("v_stopping_tdci_ratio passes for valid object", {
+  object <- StoppingTDCIRatio(target_ratio = 7, prob_target = 0.2)
+  expect_true(v_stopping_tdci_ratio(object))
+
+  object <- StoppingTDCIRatio(target_ratio = 0.2, prob_target = 0)
+  expect_true(v_stopping_tdci_ratio(object))
+
+  object <- StoppingTDCIRatio(target_ratio = 6, prob_target = 1)
+  expect_true(v_stopping_tdci_ratio(object))
+})
+
+test_that("v_stopping_tdci_ratio returns message for non-valid target_ratio", {
+  err_msg <- "target_ratio must be a positive number"
+  object <- StoppingTDCIRatio(target_ratio = 7, prob_target = 0.2)
+
+  # Changing `target_ratio` so that it does not a positive number.
+  object@target_ratio <- -0.5
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+  object@target_ratio <- 0
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+
+  # Changing `target_ratio` so that it is not a scalar.
+  object@target_ratio <- c(0.5, 0.6)
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+})
+
+test_that("v_stopping_tdci_ratio returns message for non-valid prob_target", {
+  err_msg <- "prob_target must be a probability value from [0, 1] interval"
+  object <- StoppingTDCIRatio(target_ratio = 7, prob_target = 0.2)
+
+  # Changing `prob_target` so that it does not represent allowed probability value.
+  object@prob_target <- 2
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+  object@prob_target <- -0.5
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+
+  # Changing `prob_target` so that it is not a scalar.
+  object@prob_target <- c(0.5, 0.6)
+  expect_equal(v_stopping_tdci_ratio(object), err_msg)
+})
+
+# CohortSize ----
+
+## v_cohort_size_range ----
+
+test_that("v_cohort_size_range passes for valid object", {
+  object <- CohortSizeRange(0, 20)
+  expect_true(v_cohort_size_range(object))
+
+  object <- CohortSizeRange(c(0, 30), c(20, 60))
+  expect_true(v_cohort_size_range(object))
+
+  object <- CohortSizeRange(c(20, 40, 90), c(50, 160, 400))
+  expect_true(v_cohort_size_range(object))
+})
+
+test_that("v_cohort_size_range returns message for non-valid intervals", {
+  err_msg <- "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
+  object <- CohortSizeRange(c(0, 30), c(20, 60))
+
+  # Changing `intervals` so that it contains a non-unique values
+  object@intervals <- c(10, 10)
+  expect_equal(v_cohort_size_range(object), err_msg)
+
+  # Changing `intervals` so that it contains not allowed elements or it is not sorted.
+  object@intervals <- c(0, -30)
+  expect_equal(v_cohort_size_range(object), err_msg)
+  object@intervals <- c(20, Inf)
+  expect_equal(v_cohort_size_range(object), err_msg)
+  object@intervals <- c(NA, 30)
+  expect_equal(v_cohort_size_range(object), err_msg)
+  object@intervals <- -0.5
+  object@cohort_size <- 20L
+  expect_equal(v_cohort_size_range(object), err_msg)
+
+  # Changing `intervals` so that its length is not >= 1.
+  object@intervals <- numeric(0)
+  object@cohort_size <- integer(0)
+  expect_equal(v_cohort_size_range(object), err_msg)
+})
+
+test_that("v_cohort_size_range returns message for non-valid cohort_size", {
+  errmsg <- "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
+  object <- CohortSizeRange(c(0, 30), c(20, 60))
+
+  # Changing `cohort_size` so that its length is not equal to the length of `intervals`.
+  object@cohort_size <- c(20L, 60L, 90L)
+  expect_equal(v_cohort_size_range(object), errmsg)
+
+  # Changing `cohort_size` so that it contains not allowed elements.
+  object@cohort_size <- c(0L, -30L)
+  expect_equal(v_cohort_size_range(object), errmsg)
+  object@cohort_size <- c(NA, 30L)
+  expect_equal(v_cohort_size_range(object), errmsg)
+  object@cohort_size <- -20L
+  object@intervals <- 0
+  expect_equal(v_cohort_size_range(object), errmsg)
 })

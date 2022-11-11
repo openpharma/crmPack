@@ -1493,7 +1493,7 @@ StoppingMTDCV <- function(target = 0.3,
     b = 1
   ),
   contains = "Stopping",
-  validity = v_stopping_lowest_dose_hsr_beta
+  validity = v_increments_hsr_beta
 )
 
 ## constructor ----
@@ -1794,183 +1794,185 @@ StoppingAny <- function(stop_list) {
   .StoppingAny(stop_list = stop_list)
 }
 
+# StoppingTDCIRatio ----
+
+## class ----
+
+#' `StoppingTDCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingTDCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`).
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingTDCIRatio
+#' @export
+#'
+.StoppingTDCIRatio <- setClass(
+  Class = "StoppingTDCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
+
+## constructor ----
+
+#' @rdname StoppingTDCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingTDCIRatio.R
+#'
+StoppingTDCIRatio <- function(target_ratio, prob_target) {
+  .StoppingTDCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target
+  )
+}
+
+# StoppingMaxGainCIRatio ----
+
+## class ----
+
+#' `StoppingMaxGainCIRatio`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`StoppingMaxGainCIRatio`] is the class for testing a stopping rule that is based
+#' on a target ratio of the 95% credibility interval. Specifically, this is the
+#' ratio of the upper to the lower bound of the 95% credibility interval's
+#' estimate of the:
+#' (1) target dose (i.e. a dose that corresponds to a given target
+#' probability of the occurrence of a DLT `prob_target`), or
+#' (2) max gain dose (i.e. a dose which gives the maximum gain),
+#' depending on which one out of these two is smaller.
+#'
+#' @slot target_ratio (`numeric`)\cr target for the ratio of the 95% credibility
+#'   interval's estimate, that is required to stop a trial.
+#' @slot prob_target (`proportion`)\cr the target probability of the occurrence
+#'   of a DLT.
+#'
+#' @aliases StoppingMaxGainCIRatio
+#' @export
+#'
+.StoppingMaxGainCIRatio <- setClass(
+  Class = "StoppingMaxGainCIRatio",
+  slots = c(
+    target_ratio = "numeric",
+    prob_target = "numeric"
+  ),
+  prototype = prototype(
+    target_ratio = 5,
+    prob_target = 0.3
+  ),
+  contains = "Stopping",
+  validity = v_stopping_tdci_ratio
+)
+
+## constructor ----
+
+#' @rdname StoppingMaxGainCIRatio-class
+#'
+#' @param target_ratio (`numeric`)\cr see slot definition.
+#' @param prob_target (`proportion`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-StoppingMaxGainCIRatio.R
+#'
+StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
+  .StoppingMaxGainCIRatio(
+    target_ratio = target_ratio,
+    prob_target = prob_target
+  )
+}
+
+# CohortSize ----
+
+## class ----
+
+#' `CohortSize`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSize`] is a class for for cohort sizes.
+#'
+#' @seealso [`CohortSizeRange`], [`CohortSizeDLT`], [`CohortSizeConst`],
+#'   [`CohortSizeParts`], [`CohortSizeMin`], [`CohortSizeMin`].
+#'
+#' @aliases CohortSize
+#' @export
+#'
+setClass(
+  Class = "CohortSize"
+)
+
+# CohortSizeRange ----
+
+## class ----
+
+#' `CohortSizeRange`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeRange`] is the class for cohort size based on dose range.
+#'
+#' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
+#'   dose intervals.
+#' @slot cohort_size (`integer`)\cr an integer vector with the cohort sizes
+#'   corresponding to the elements of `intervals`.
+#'
+#' @aliases CohortSizeRange
+#' @export
+#'
+.CohortSizeRange <- setClass(
+  Class = "CohortSizeRange",
+  slots = c(
+    intervals = "numeric",
+    cohort_size = "integer"
+  ),
+  prototype = prototype(
+    intervals = c(0, 20),
+    cohort_size = c(1L, 3L)
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_range
+)
+
+## constructor ----
+
+#' @rdname CohortSizeRange-class
+#'
+#' @param intervals (`numeric`)\cr see slot definition.
+#' @param cohort_size (`integer`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeRange.R
+#'
+CohortSizeRange <- function(intervals, cohort_size) {
+  .CohortSizeRange(
+    intervals = intervals,
+    cohort_size = safeInteger(cohort_size)
+  )
+}
+
 # nolint start
-
-##-------------------------------------------------------------------------------------------------------------------
-## Stopping based on a target ratio of the 95% credibility interval
-## ---------------------------------------------------------------------------------------------------------------
-
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate of TD end of trial, the dose with probability of DLE equals to the target
-##' probability of DLE used at the end of a trial
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##'
-##' @example examples/Rules-class-StoppingTDCIRatio.R
-##' @export
-##' @keywords classes
-.StoppingTDCIRatio <-
-  setClass(Class="StoppingTDCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
-
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
-
-validObject(.StoppingTDCIRatio())
-
-##' Initialization function for "StoppingTDCIRatio"
-##'
-##' @param targetRatio please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingTDCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingTDCIRatio}} class object
-##'
-##' @export
-##' @keywords methods
-StoppingTDCIRatio <- function(targetRatio,
-                              targetEndOfTrial)
-{
-  .StoppingTDCIRatio(targetRatio=targetRatio,
-                     targetEndOfTrial=targetEndOfTrial)
-}
-
-## ----------------------------------------------------------------------------------------------------------------
-##' Stop based on a target ratio, the ratio of the upper to the lower
-##' 95% credibility interval of the estimate of the minimum of the dose which gives the maximum gain (Gstar) and
-##' the TD end of trial, the dose with probability of DLE equals to the target
-##' probability of DLE used at the end of a trial.
-##' @slot targetRatio the target ratio of the upper to the lower of the 95% credibility interval of the
-##' estimate that required to stop a trial
-##' @slot targetEndOfTrial the target probability of DLE to be used at the end of a trial
-##'
-##' @example examples/Rules-class-StoppingGstarCIRatio.R
-##' @export
-##' @keywords classes
-.StoppingGstarCIRatio <-
-  setClass(Class="StoppingGstarCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
-
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
-
-validObject(.StoppingGstarCIRatio())
-
-##' Initialization function for "StoppingGstarCIRatio"
-##'
-##' @param targetRatio please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @param targetEndOfTrial please refer to \code{\linkS4class{StoppingGstarCIRatio}} class object
-##' @return the \code{\linkS4class{StoppingGstarCIRatio}} class object
-##'
-##' @export
-##' @keywords methods
-StoppingGstarCIRatio <- function(targetRatio,
-                                 targetEndOfTrial)
-{
-  .StoppingGstarCIRatio(targetRatio=targetRatio,
-                        targetEndOfTrial=targetEndOfTrial)
-}
-
-
-
-## ============================================================
-
-
-
-## --------------------------------------------------
-## Virtual class for cohort sizes
-## --------------------------------------------------
-
-##' The virtual class for cohort sizes
-##'
-##' @seealso \code{\linkS4class{CohortSizeMax}},
-##' \code{\linkS4class{CohortSizeMin}},
-##' \code{\linkS4class{CohortSizeRange}},
-##' \code{\linkS4class{CohortSizeDLT}},
-##' \code{\linkS4class{CohortSizeConst}},
-##' \code{\linkS4class{CohortSizeParts}}
-##'
-##' @export
-##' @keywords classes
-setClass(Class="CohortSize",
-         contains=list("VIRTUAL"))
-
-
-## --------------------------------------------------
-## Cohort size based on dose range
-## --------------------------------------------------
-
-##' Cohort size based on dose range
-##'
-##' @slot intervals a vector with the left bounds of the relevant dose intervals
-##' @slot cohortSize an integer vector of the same length with the cohort
-##' sizes in the \code{intervals}
-##'
-##' @example examples/Rules-class-CohortSizeRange.R
-##' @export
-##' @keywords classes
-.CohortSizeRange <-
-    setClass(Class="CohortSizeRange",
-             representation(intervals="numeric",
-                            cohortSize="integer"),
-             prototype(intervals=c(0, 20),
-                       cohortSize=as.integer(c(1L, 3L))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@intervals)),
-                             "cohortSize must have same length as intervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
-                             "intervals has to be sorted and have unique values")
-
-                     o$result()
-                 })
-validObject(.CohortSizeRange())
-
-##' Initialization function for "CohortSizeRange"
-##'
-##' @param intervals see \code{\linkS4class{CohortSizeRange}}
-##' @param cohortSize see \code{\linkS4class{CohortSizeRange}}
-##' @return the \code{\linkS4class{CohortSizeRange}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeRange <- function(intervals,
-                            cohortSize)
-{
-    .CohortSizeRange(intervals=intervals,
-                     cohortSize=safeInteger(cohortSize))
-}
-
-## --------------------------------------------------
-## Cohort size based on number of DLTs
-## --------------------------------------------------
 
 ##' Cohort size based on number of DLTs
 ##'
@@ -2135,7 +2137,7 @@ CohortSizeParts <- function(sizes)
              representation(cohortSizeList="list"),
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
+                                                cohort_size=c(1, 3)),
                                 CohortSizeDLT(DLTintervals=c(0, 1),
                                               cohortSize=c(1, 3)))),
              contains="CohortSize",
@@ -2188,7 +2190,7 @@ CohortSizeMax <- function(cohortSizeList)
              representation(cohortSizeList="list"),
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
+                                                cohort_size=c(1, 3)),
                                 CohortSizeDLT(DLTintervals=c(0, 1),
                                               cohortSize=c(1, 3)))),
              contains="CohortSize",

@@ -424,10 +424,6 @@ v_stopping_mtd_cv <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'   object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr
-
 #' @describeIn v_stopping validates that the [`StoppingTargetBiomarker`] object
 #'   contains valid `target`, `is_relative` and `prob`slots.
 v_stopping_target_biomarker <- function(object) {
@@ -486,6 +482,57 @@ v_stopping_all <- function(object) {
   v$check(
     all(sapply(object@stop_list, test_class, "Stopping")),
     "every stop_list element must be of class 'Stopping'"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingTDCIRatio`] object
+#'   contains valid `target_ratio` and  `prob_target` slots.
+v_stopping_tdci_ratio <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@target_ratio, lower = .Machine$double.xmin, finite = TRUE),
+    "target_ratio must be a positive number"
+  )
+  v$check(
+    test_probability(object@prob_target),
+    "prob_target must be a probability value from [0, 1] interval"
+  )
+  v$result()
+}
+
+# CohortSize ----
+
+#' Internal Helper Functions for Validation of [`CohortSize`] Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`CohortSize`] or inherited classes and therefore not exported.
+#'
+#' @name v_cohort_size
+#' @param object (`CohortSize`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeRange`] object
+#'   contains valid `intervals` and  `cohort_size` slots.
+v_cohort_size_range <- function(object) {
+  v <- Validate()
+  v$check(
+    test_numeric(
+      object@intervals,
+      lower = 0, finite = TRUE, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+    ),
+    "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
+  )
+  v$check(
+    test_integer(
+      object@cohort_size,
+      lower = 0, any.missing = FALSE, len = length(object@intervals)
+    ),
+    "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
   )
   v$result()
 }
