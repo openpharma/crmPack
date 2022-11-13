@@ -654,6 +654,42 @@ test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scal
   )
 })
 
+## OneParExpExpPrior ----
+
+test_that("dose-OneParExpExpPrior works as expected", {
+  model <- h_get_one_par_exp_exp_prior()
+  samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
+
+  result <- dose(0.4, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpExpPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_exp_prior()
+  samples <- h_as_samples(list(alpha = 1))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpExpPrior throws the error when x is not a valid scalar", {
+  model <- h_get_one_par_exp_exp_prior()
+  samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
+  )
+  expect_error(
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+})
+
 # prob ----
 
 ## LogisticNormal ----
@@ -1114,6 +1150,37 @@ test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid s
   )
 })
 
+## OneParExpExpPrior ----
+
+test_that("prob-OneParExpExpPrior works as expected", {
+  model <- h_get_one_par_exp_exp_prior()
+  samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
+
+  result <- prob(60, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpExpPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_exp_prior()
+  samples <- h_as_samples(list(alpha = 1))
+
+  result <- prob(c(20, 60), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpExpPrior throws the error when dose is not a valid scalar", {
+  model <- h_get_one_par_exp_exp_prior()
+  samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    prob(c(40, 50), model, samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(-3, model, samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
 # biomarker ----
 
 ## DualEndpoint ----

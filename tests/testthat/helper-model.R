@@ -371,6 +371,14 @@ h_get_one_par_exp_normal_prior <- function() {
   )
 }
 
+h_get_one_par_exp_exp_prior <- function() {
+  OneParExpExpPrior(
+    skel_probs = seq(from = 0.1, to = 0.9, length = 12),
+    dose_grid = 1:12,
+    lambda = 2
+  )
+}
+
 h_get_fractional_crm <- function() {
   FractionalCRM(
     skel_probs = seq(from = 0.1, to = 0.9, length = 12),

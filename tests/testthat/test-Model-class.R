@@ -1094,6 +1094,120 @@ test_that("No NA is returned in dose calculations for OneParExpNormalPrior model
   expect_false(is.na(calc_dose(0.95)))
 })
 
+# OneParExpExpPrior ----
+
+## constructor ----
+
+test_that("OneParExpExpPrior object can be created with user constructor", {
+  result <- expect_silent(
+    OneParExpExpPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = 1:5,
+      lambda = 2
+    )
+  )
+  expect_valid(result, "OneParExpExpPrior")
+})
+
+test_that("OneParExpExpPrior throws the error when dose_grid and skel_probs have diff. lengths", {
+  result <- expect_error(
+    OneParExpExpPrior(
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
+      dose_grid = 1:6,
+      lambda = 2
+    ),
+    "Assertion on 'dose_grid' failed: Must have length 5, but has length 6."
+  )
+})
+
+test_that("OneParExpExpPrior throws the error for not unique or not sorted dose_grid", {
+  result <- expect_error(
+    OneParExpExpPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = c(1, 3, 4, 5, 5),
+      lambda = 2
+    ),
+    "Assertion on 'dose_grid' failed: Contains duplicated values, position 5."
+  )
+  result <- expect_error(
+    OneParExpExpPrior(
+      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      dose_grid = c(2, 1, 3, 4, 5),
+      lambda = 2
+    ),
+    "Assertion on 'dose_grid' failed: Must be sorted"
+  )
+})
+
+test_that("OneParExpExpPrior throws the error for not a probability values in skel_probs", {
+  result <- expect_error(
+    OneParExpExpPrior(
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 1.1),
+      dose_grid = 1:5,
+      lambda = 2
+    ),
+    "Assertion on 'skel_probs' failed: Probability must be within \\[0, 1\\] bounds but it is not"
+  )
+})
+
+test_that("OneParExpExpPrior throws the error for not unique or not sorted skel_probs", {
+  result <- expect_error(
+    OneParExpExpPrior(
+      skel_probs = c(0.1, 0.2, 0.2, 0.3, 0.4),
+      dose_grid = 1:5,
+      lambda = 2
+    ),
+    "Assertion on 'skel_probs' failed: Contains duplicated values, position 3."
+  )
+  result <- expect_error(
+    OneParExpExpPrior(
+      skel_probs = c(0.3, 0.1, 0.5, 0.7, 0.9),
+      dose_grid = 1:5,
+      lambda = 2
+    ),
+    "Assertion on 'skel_probs' failed: Must be sorted"
+  )
+})
+
+## mcmc ----
+
+test_that("MCMC computes correct values for OneParExpExpPrior model", {
+   data <- h_get_data(placebo = FALSE)
+   model <- h_get_one_par_exp_exp_prior()
+   options <- h_get_mcmc_options()
+
+   result <- mcmc(data = data, model = model, options = options)
+   expect_snapshot(result@data)
+})
+
+test_that("MCMC computes correct values for OneParExpExpPrior model and empty data", {
+  data <- h_get_data(empty = TRUE, placebo = FALSE)
+  model <- h_get_one_par_exp_exp_prior()
+  options <- h_get_mcmc_options()
+
+  result <- mcmc(data = data, model = model, options = options)
+  expect_snapshot(result@data)
+})
+
+test_that("MCMC throws the error for OneParExpExpPrior model when 'xLevel' does not match 'skel_probs'", {
+  data <- h_get_data(placebo = FALSE)
+  model <- h_get_one_par_exp_exp_prior()
+  model@skel_probs <- model@skel_probs[-1]
+  options <- h_get_mcmc_options()
+
+  expect_error(
+    mcmc(data = data, model = model, options = options, from_prior = FALSE),
+    "Assertion on 'length\\(model@skel_probs\\) == data@nGrid' failed: Must be TRUE."
+  )
+})
+
+test_that("No NA is returned in dose calculations for OneParExpExpPrior model", {
+  model <- h_get_one_par_exp_exp_prior()
+  calc_dose <- doseFunction(model, alpha = 1)
+
+  expect_false(is.na(calc_dose(0.95)))
+})
+
 # FractionalCRM ----
 
 ## constructor ----

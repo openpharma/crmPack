@@ -698,6 +698,31 @@ setMethod(
   }
 )
 
+## OneParExpExpPrior ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLE (`x`).
+#'
+#' @aliases dose-OneParExpExpPrior
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "OneParExpExpPrior",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples) {
+    assert_subset("alpha", names(samples@data))
+    alpha <- samples@data$alpha
+    skel_fun_inv <- model@skel_fun_inv
+    assert_probabilities(x, len = h_null_if_scalar(alpha))
+
+    skel_fun_inv(x^(1 / exp(alpha)))
+  }
+)
+
 # prob ----
 
 ## generic ----
