@@ -536,3 +536,24 @@ v_cohort_size_range <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeDLT`] object
+#'   contains valid `dlt_intervals` and  `cohort_size` slots.
+v_cohort_size_dlt <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(
+      object@dlt_intervals,
+      lower = 0, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+    ),
+    "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+  )
+  v$check(
+    test_integer(
+      object@cohort_size,
+      lower = 0, any.missing = FALSE, len = length(object@dlt_intervals)
+    ),
+    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+  )
+  v$result()
+}

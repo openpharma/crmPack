@@ -1972,58 +1972,56 @@ CohortSizeRange <- function(intervals, cohort_size) {
   )
 }
 
-# nolint start
+# CohortSizeDLT ----
 
-##' Cohort size based on number of DLTs
-##'
-##' @slot DLTintervals an integer vector with the left bounds of the relevant
-##' DLT intervals
-##' @slot cohortSize an integer vector of the same length with the cohort
-##' sizes in the \code{DLTintervals}
-##'
-##' @example examples/Rules-class-CohortSizeDLT.R
-##' @export
-##' @keywords classes
-.CohortSizeDLT <-
-    setClass(Class="CohortSizeDLT",
-             representation(DLTintervals="integer",
-                            cohortSize="integer"),
-             prototype(DLTintervals=as.integer(c(0, 1)),
-                       cohortSize=as.integer(c(1, 3))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+## class ----
 
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@DLTintervals)),
-                             "cohortSize must have same length as DLTintervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
-                             "DLTintervals has to be sorted and have unique values")
-                     o$check(all(object@DLTintervals >= 0),
-                             "DLTintervals must only contain non-negative integers")
+#' `CohortSizeDLT`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeDLT`] is the class for cohort size based on number of DLTs.
+#'
+#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
+#'   relevant DLT intervals.
+#' @slot cohort_size (`integer`)\cr a vector with the cohort sizes corresponding
+#'   to the elements of `dlt_intervals`.
+#'
+#' @aliases CohortSizeDLT
+#' @export
+#'
+.CohortSizeDLT <- setClass(
+  Class = "CohortSizeDLT",
+  slots = c(
+    dlt_intervals = "integer",
+    cohort_size = "integer"
+  ),
+  prototype = prototype(
+    dlt_intervals = c(0L, 1L),
+    cohort_size = c(1L, 3L)
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_dlt
+)
 
-                     o$result()
-                 })
-validObject(.CohortSizeDLT())
+## constructor ----
 
-##' Initialization function for "CohortSizeDLT"
-##'
-##' @param DLTintervals see \code{\linkS4class{CohortSizeDLT}}
-##' @param cohortSize see \code{\linkS4class{CohortSizeDLT}}
-##' @return the \code{\linkS4class{CohortSizeDLT}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeDLT <- function(DLTintervals,
-                          cohortSize)
-{
-    .CohortSizeDLT(DLTintervals=safeInteger(DLTintervals),
-                   cohortSize=safeInteger(cohortSize))
+#' @rdname CohortSizeDLT-class
+#'
+#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param cohort_size (`integer`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeDLT.R
+#'
+CohortSizeDLT <- function(dlt_intervals, cohort_size) {
+  .CohortSizeDLT(
+    dlt_intervals = safeInteger(dlt_intervals),
+    cohort_size = safeInteger(cohort_size)
+  )
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Constant cohort size
@@ -2138,8 +2136,8 @@ CohortSizeParts <- function(sizes)
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
                                                 cohort_size=c(1, 3)),
-                                CohortSizeDLT(DLTintervals=c(0, 1),
-                                              cohortSize=c(1, 3)))),
+                                CohortSizeDLT(dlt_intervals=c(0, 1),
+                                              cohort_size=c(1, 3)))),
              contains="CohortSize",
              validity=
                  function(object){
@@ -2191,8 +2189,8 @@ CohortSizeMax <- function(cohortSizeList)
              prototype(cohortSizeList=
                            list(CohortSizeRange(intervals=c(0, 30),
                                                 cohort_size=c(1, 3)),
-                                CohortSizeDLT(DLTintervals=c(0, 1),
-                                              cohortSize=c(1, 3)))),
+                                CohortSizeDLT(dlt_intervals=c(0, 1),
+                                              cohort_size=c(1, 3)))),
              contains="CohortSize",
              validity=
                  function(object){

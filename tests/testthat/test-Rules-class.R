@@ -628,3 +628,17 @@ test_that("CohortSizeRange object can be created with user constructor", {
   expect_identical(result@intervals, c(0, 30, 50))
   expect_identical(result@cohort_size, c(20L, 60L, 90L))
 })
+
+## CohortSizeDLT ----
+
+test_that(".CohortSizeDLT works as expected", {
+  result <- expect_silent(.CohortSizeDLT())
+  expect_valid(result, "CohortSizeDLT")
+})
+
+test_that("CohortSizeDLT object can be created with user constructor", {
+  result <- expect_silent(CohortSizeDLT(c(0, 1, 2), c(20, 60, 90)))
+  expect_valid(result, "CohortSizeDLT")
+  expect_identical(result@dlt_intervals, c(0L, 1L, 2L))
+  expect_identical(result@cohort_size, c(20L, 60L, 90L))
+})
