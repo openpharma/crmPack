@@ -2451,11 +2451,11 @@ setMethod("size",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = cohortSize@DLTintervals
+          vec = cohortSize@dlt_intervals
         )
 
       ## so the cohort size is
-      ret <- cohortSize@cohortSize[interval]
+      ret <- cohortSize@cohort_size[interval]
 
       return(ret)
     }

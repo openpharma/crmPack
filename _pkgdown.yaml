@@ -91,6 +91,7 @@ reference:
       - StoppingMaxGainCIRatio
       - CohortSize
       - CohortSizeRange
+      - CohortSizeDLT
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -179,6 +180,7 @@ reference:
       - v_stopping_all
       - v_stopping_tdci_ratio
       - v_cohort_size_range
+      - v_cohort_size_dlt
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
