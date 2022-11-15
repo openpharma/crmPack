@@ -1281,3 +1281,58 @@ test_that("v_cohort_size_range returns message for non-valid cohort_size", {
   object@intervals <- 0
   expect_equal(v_cohort_size_range(object), errmsg)
 })
+
+## v_cohort_size_dlt ----
+
+test_that("v_cohort_size_dlt passes for valid object", {
+  object <- CohortSizeDLT(0, 20)
+  expect_true(v_cohort_size_dlt(object))
+
+  object <- CohortSizeDLT(c(0, 1), c(20, 60))
+  expect_true(v_cohort_size_dlt(object))
+
+  object <- CohortSizeDLT(c(0, 1, 3), c(50, 160, 400))
+  expect_true(v_cohort_size_dlt(object))
+})
+
+test_that("v_cohort_size_dlt returns message for non-valid intervals", {
+  err_msg <- "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+  object <- CohortSizeDLT(c(0, 1), c(20, 60))
+
+  # Changing `dlt_intervals` so that it contains a non-unique values
+  object@dlt_intervals <- c(10L, 10L)
+  expect_equal(v_cohort_size_dlt(object), err_msg)
+
+  # Changing `dlt_intervals` so that it contains not allowed elements or it is not sorted.
+  object@dlt_intervals <- c(0L, -30L)
+  expect_equal(v_cohort_size_dlt(object), err_msg)
+  object@dlt_intervals <- c(NA, 30L)
+  expect_equal(v_cohort_size_dlt(object), err_msg)
+  object@dlt_intervals <- -5L
+  object@cohort_size <- 20L
+  expect_equal(v_cohort_size_dlt(object), err_msg)
+
+  # Changing `dlt_intervals` so that its length is not >= 1.
+  object@dlt_intervals <- integer(0)
+  object@cohort_size <- integer(0)
+  expect_equal(v_cohort_size_dlt(object), err_msg)
+})
+
+test_that("v_cohort_size_dlt returns message for non-valid cohort_size", {
+  errmsg <-
+    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+  object <- CohortSizeDLT(c(0, 1), c(20, 60))
+
+  # Changing `cohort_size` so that its length is not equal to the length of `dlt_intervals`.
+  object@cohort_size <- c(20L, 60L, 90L)
+  expect_equal(v_cohort_size_dlt(object), errmsg)
+
+  # Changing `cohort_size` so that it contains not allowed elements.
+  object@cohort_size <- c(0L, -30L)
+  expect_equal(v_cohort_size_dlt(object), errmsg)
+  object@cohort_size <- c(NA, 30L)
+  expect_equal(v_cohort_size_dlt(object), errmsg)
+  object@cohort_size <- -20L
+  object@dlt_intervals <- 0L
+  expect_equal(v_cohort_size_dlt(object), errmsg)
+})

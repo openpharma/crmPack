@@ -3,9 +3,12 @@
 \name{v_cohort_size}
 \alias{v_cohort_size}
 \alias{v_cohort_size_range}
+\alias{v_cohort_size_dlt}
 \title{Internal Helper Functions for Validation of \code{\link{CohortSize}} Objects}
 \usage{
 v_cohort_size_range(object)
+
+v_cohort_size_dlt(object)
 }
 \arguments{
 \item{object}{(\code{CohortSize})\cr object to validate.}
@@ -24,5 +27,8 @@ These functions are only used internally to validate the format of an input
 \itemize{
 \item \code{v_cohort_size_range()}: validates that the \code{\link{CohortSizeRange}} object
 contains valid \code{intervals} and  \code{cohort_size} slots.
+
+\item \code{v_cohort_size_dlt()}: validates that the \code{\link{CohortSizeDLT}} object
+contains valid \code{dlt_intervals} and  \code{cohort_size} slots.
 
 }}
