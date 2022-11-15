@@ -367,18 +367,20 @@ relationship, and hence would like to use a minimally informative prior
 internally, setting of a seed is required for reproducibility.
 Furthermore, it is recommended to specify a coarse dose grid across the original dose range (excluding the placebo dose) to avoid long computation time:
 
-<<min-inf, warning=FALSE, message=FALSE, results="hide">>=
+% <<min-inf, warning=FALSE, message=FALSE, results="hide">>=
+<<min-inf>>=
 coarseGrid <- c(25, 50, 100, 200, 300)
 model <- MinimalInformative(dosegrid = coarseGrid, refDose = 100,
                             logNormal = TRUE, threshmin = 0.1,
                             threshmax = 0.2, seed = 432,
                             control = list(max.time = 30))$model
+packageVersion("crmPack")
+print(model)
 @
 
 The resulting \code{model} (which is an object of class \code{LogisticLogNormal})
 has prior parameters
 
-$\mu = (\Sexpr{runif(1)}, \Sexpr{2})$
 % $\mu = (\Sexpr{round(model@params@mean[1], 2)}, \Sexpr{round(model@params@mean[2], 2)})$ and
 % $\Sigma=
 % \left(\begin{smallmatrix}
@@ -536,9 +538,9 @@ mySimsTime <-
                                  seed = 819, mcmcOptions = options,
                                  parallel = FALSE))[3]
 @
-The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we
-needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials
-on an Intel Core i5-6300U CPU with 2.4 GHz.
+% The number of simulated trials depends on the required accuracy of the results. The argument \code{parallel} can be set to \code{TRUE} if one wishes to run the iterations in parallel on all processors of the computer, which can yield a meaningful speedup. Here we
+% needed \Sexpr{round(mySimsTime)}~seconds for \Sexpr{length(mySims@data)}~simulated trials
+% on an Intel Core i5-6300U CPU with 2.4 GHz.
 
 The result is an object of class \code{Simulations} containing multiple slots, with e.g., the \code{data} slot containing the list of simulated trials. The slots \code{doses} and \code{stopReasons} contain information about the final MTD and the stopping reason for each trial. We can  e.g., investigate the number of patients and the MTD at the end of the third simulated trial:
 <<third-trial, fig.width=4,fig.height=4,out.width='.3\\linewidth',fig.align='center'>>=
@@ -636,13 +638,13 @@ doseRecGain <- nextBest(GainNextBest, doselimit = nextMaxDose,
 (nextDoseVal <- doseRecGain$next_dose)
 @
 The plot for the next dose allocation is contained in \code{doseRecGain$plot} and shown in Figure~\ref{fig:doseRecommendation}.
-\begin{figure}
+% \begin{figure}
 <<doseRecommendation, echo=FALSE, fig.width=7,fig.height=5,out.width='.6\\linewidth',fig.align='center'>>=
 print(doseRecGain$plot)
 @
-\caption{Dose recommendation plot from dual endpoint design. The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = \Sexpr{nextMaxDose}$~mg and the vertical violet line shows the next dose $x_{N+1} = \Sexpr{nextDoseVal}$~mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (\Sexpr{doseRecGain$next_dose_drt}~mg for 35\% DLT probability during the trial and \Sexpr{doseRecGain$next_dose_eot}~mg for 30\% DLT probability at the end of trial) and the estimated dose with maximum gain, \Sexpr{doseRecGain$next_dose_max_gain}~mg. The numbers can be obtained from the \code{doseRecGain} list.}
-\label{fig:doseRecommendation}
-\end{figure}
+% \caption{Dose recommendation plot from dual endpoint design. The red, blue and green curves correspond to the (posterior modal) estimated curves for safety, efficacy and gain, respectively. The vertical red line in the plot shows the maximum possible dose $t_{N+1} = \Sexpr{nextMaxDose}$~mg and the vertical violet line shows the next dose $x_{N+1} = \Sexpr{nextDoseVal}$~mg. The circle, square and triangle symbols mark the estimated doses with target toxicity (\Sexpr{doseRecGain$next_dose_drt}~mg for 35\% DLT probability during the trial and \Sexpr{doseRecGain$next_dose_eot}~mg for 30\% DLT probability at the end of trial) and the estimated dose with maximum gain, \Sexpr{doseRecGain$next_dose_max_gain}~mg. The numbers can be obtained from the \code{doseRecGain} list.}
+% \label{fig:doseRecommendation}
+% \end{figure}
 
 \paragraph{Stopping rules} In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum gain:
 <<newdualstopping-rule>>=
@@ -652,8 +654,8 @@ myStopping4 <- StoppingMaxGainCIRatio(
 )
 myStoppingDual <- myStopping1 | myStopping4
 @
-This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
-than~\Sexpr{myStopping4@target_ratio}.
+% This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
+% than~\Sexpr{myStopping4@target_ratio}.
 
 \paragraph{Simulations} To simulate the operating characteristics, first a design has to be built:
 <<design>>=
@@ -868,8 +870,8 @@ newMyNextBest <- NextBestMinDist(target = 0.3)
 
 # nolint end
 @
-So using this CRM, we could escalate to \Sexpr{newNextDoseVal}~mg, instead
-of just 100~mg above.
+% So using this CRM, we could escalate to \Sexpr{newNextDoseVal}~mg, instead
+% of just 100~mg above.
 
 \paragraph{Using the new functionality} These were the only necessary additions
 of code that we needed to implement the one-parameter CRM with a greedy next
