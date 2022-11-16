@@ -92,6 +92,7 @@ reference:
       - CohortSize
       - CohortSizeRange
       - CohortSizeDLT
+      - CohortSizeConst
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -181,6 +182,7 @@ reference:
       - v_stopping_tdci_ratio
       - v_cohort_size_range
       - v_cohort_size_dlt
+      - v_cohort_size_const
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -288,10 +290,6 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - CohortSizeConst-class
-      - CohortSizeConst
-      - CohortSizeDLT-class
-      - CohortSizeDLT
       - CohortSizeMax-class
       - CohortSizeMax
       - CohortSizeMin-class

@@ -1295,7 +1295,7 @@ test_that("v_cohort_size_dlt passes for valid object", {
   expect_true(v_cohort_size_dlt(object))
 })
 
-test_that("v_cohort_size_dlt returns message for non-valid intervals", {
+test_that("v_cohort_size_dlt returns message for non-valid dlt_intervals", {
   err_msg <- "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
   object <- CohortSizeDLT(c(0, 1), c(20, 60))
 
@@ -1335,4 +1335,29 @@ test_that("v_cohort_size_dlt returns message for non-valid cohort_size", {
   object@cohort_size <- -20L
   object@dlt_intervals <- 0L
   expect_equal(v_cohort_size_dlt(object), errmsg)
+})
+
+## v_cohort_size_const ----
+
+test_that("v_cohort_size_const passes for valid object", {
+  object <- CohortSizeConst(0)
+  expect_true(v_cohort_size_const(object))
+
+  object <- CohortSizeConst(5)
+  expect_true(v_cohort_size_const(object))
+})
+
+test_that("v_cohort_size_const returns message for non-valid size", {
+  err_msg <- "size needs to be a non-negative scalar"
+  object <- CohortSizeConst(5)
+
+  # Changing `size` so that it is not allowed value.
+  object@size <- -(5L)
+  expect_equal(v_cohort_size_const(object), err_msg)
+  object@size <- NA_integer_
+  expect_equal(v_cohort_size_const(object), err_msg)
+
+  # Changing `size` so that it is not a scalar.
+  object@size <- c(2L, 4L)
+  expect_equal(v_cohort_size_const(object), err_msg)
 })
