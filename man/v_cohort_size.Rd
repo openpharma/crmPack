@@ -4,11 +4,14 @@
 \alias{v_cohort_size}
 \alias{v_cohort_size_range}
 \alias{v_cohort_size_dlt}
+\alias{v_cohort_size_const}
 \title{Internal Helper Functions for Validation of \code{\link{CohortSize}} Objects}
 \usage{
 v_cohort_size_range(object)
 
 v_cohort_size_dlt(object)
+
+v_cohort_size_const(object)
 }
 \arguments{
 \item{object}{(\code{CohortSize})\cr object to validate.}
@@ -30,5 +33,8 @@ contains valid \code{intervals} and  \code{cohort_size} slots.
 
 \item \code{v_cohort_size_dlt()}: validates that the \code{\link{CohortSizeDLT}} object
 contains valid \code{dlt_intervals} and  \code{cohort_size} slots.
+
+\item \code{v_cohort_size_const()}: validates that the \code{\link{CohortSizeConst}} object
+contains valid \code{size} slot.
 
 }}

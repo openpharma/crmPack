@@ -557,3 +557,14 @@ v_cohort_size_dlt <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeConst`] object
+#'   contains valid `size` slot.
+v_cohort_size_const <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@size, lower = 0),
+    "size needs to be a non-negative scalar"
+  )
+  v$result()
+}

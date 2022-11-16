@@ -1960,7 +1960,7 @@ setClass(
 #' @rdname CohortSizeRange-class
 #'
 #' @param intervals (`numeric`)\cr see slot definition.
-#' @param cohort_size (`integer`)\cr see slot definition.
+#' @param cohort_size (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeRange.R
@@ -2009,7 +2009,7 @@ CohortSizeRange <- function(intervals, cohort_size) {
 #' @rdname CohortSizeDLT-class
 #'
 #' @param dlt_intervals (`numeric`)\cr see slot definition.
-#' @param cohort_size (`integer`)\cr see slot definition.
+#' @param cohort_size (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeDLT.R
@@ -2021,50 +2021,43 @@ CohortSizeDLT <- function(dlt_intervals, cohort_size) {
   )
 }
 
-# nolint start
+# CohortSizeConst ----
 
-## --------------------------------------------------
-## Constant cohort size
-## --------------------------------------------------
+## class ----
 
-##' Constant cohort size
-##'
-##' This class is used when the cohort size should be kept constant.
-##'
-##' @slot size the constant integer size
-##'
-##' @example examples/Rules-class-CohortSizeConst.R
-##' @keywords classes
-##' @export
-.CohortSizeConst <-
-    setClass(Class="CohortSizeConst",
-             representation(size="integer"),
-             prototype(size=3L),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `CohortSizeConst`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeConst`] is the class for fixed and constant size of cohort.
+#'
+#' @slot size (`integer`)\cr cohort size.
+#'
+#' @aliases CohortSizeConst
+#' @export
+#'
+.CohortSizeConst <- setClass(
+  Class = "CohortSizeConst",
+  slots = c(size = "integer"),
+  prototype = prototype(size = 3L),
+  contains = "CohortSize",
+  validity = v_cohort_size_const
+)
 
-                     o$check(is.scalar(object@size) && (object@size >= 0),
-                             "size needs to be positive scalar")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.CohortSizeConst())
-
-##' Initialization function for "CohortSizeConst"
-##'
-##' @param size see \code{\linkS4class{CohortSizeConst}}
-##' @return the \code{\linkS4class{CohortSizeConst}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeConst <- function(size)
-{
-    .CohortSizeConst(size=safeInteger(size))
+#' @rdname CohortSizeConst-class
+#'
+#' @param size (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeConst.R
+#'
+CohortSizeConst <- function(size) {
+  .CohortSizeConst(size = safeInteger(size))
 }
 
-
+# nolint start
 
 ## --------------------------------------------------
 ## Cohort size based on the parts
