@@ -1,7 +1,7 @@
 
 
 
-test_that(".OneParExpNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
+test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
   mcmc_options <- McmcOptions(
     burnin = 50000, step = 2,
     samples = 1000000
@@ -162,7 +162,6 @@ test_that(".OneParExpNormalPrior reproduces same numbers as in paper by Neuensch
 
 
   ## Expected table I (Neuenschwander et al.)
-  #tab1_exp <- list()
 
   tab1 <- structure(list(
     dose1 = c(
