@@ -655,3 +655,16 @@ test_that("CohortSizeConst object can be created with user constructor", {
   expect_valid(result, "CohortSizeConst")
   expect_identical(result@size, 5L)
 })
+
+## CohortSizeParts ----
+
+test_that(".CohortSizeParts works as expected", {
+  result <- expect_silent(.CohortSizeParts())
+  expect_valid(result, "CohortSizeParts")
+})
+
+test_that("CohortSizeParts object can be created with user constructor", {
+  result <- expect_silent(CohortSizeParts(c(1, 4)))
+  expect_valid(result, "CohortSizeParts")
+  expect_identical(result@sizes, c(1L, 4L))
+})

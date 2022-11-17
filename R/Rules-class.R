@@ -2057,53 +2057,46 @@ CohortSizeConst <- function(size) {
   .CohortSizeConst(size = safeInteger(size))
 }
 
-# nolint start
+# CohortSizeParts ----
 
-## --------------------------------------------------
-## Cohort size based on the parts
-## --------------------------------------------------
+## class ----
 
-##' Cohort size based on the parts
-##'
-##' This class is used when the cohort size should change for the second part of
-##' the dose escalation. Only works in conjunction with
-##' \code{\linkS4class{DataParts}} objects.
-##'
-##' @slot sizes the two sizes for part 1 and part 2
-##'
-##' @keywords classes
-##' @example examples/Rules-class-CohortSizeParts.R
-##' @export
-.CohortSizeParts <-
-    setClass(Class="CohortSizeParts",
-             representation(sizes="integer"),
-             prototype(sizes=as.integer(c(1, 3))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `CohortSizeParts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeParts`] is the class for cohort size that changes for the second
+#' part of the dose escalation. It works only in conjunction with [`DataParts`]
+#' objects.
+#'
+#' @slot sizes (`integer`)\cr a vector of length two with two sizes, one for
+#'   part 1, and one for part 2 respectively.
+#'
+#' @aliases CohortSizeParts
+#' @export
+#'
+.CohortSizeParts <- setClass(
+  Class = "CohortSizeParts",
+  slots = c(sizes = "integer"),
+  prototype = prototype(sizes = c(1L, 3L)),
+  contains = "CohortSize",
+  validity = v_cohort_size_parts
+)
 
-                     o$check(all(object@sizes > 0),
-                             "the cohort sizes need to be positive")
-                     o$check(identical(length(object@sizes), 2L),
-                             "2 elements required in sizes")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.CohortSizeParts())
-
-##' Initialization function for "CohortSizeParts"
-##'
-##' @param sizes see \code{\linkS4class{CohortSizeParts}}
-##' @return the \code{\linkS4class{CohortSizeParts}} object
-##' @export
-##'
-##' @keywords methods
-CohortSizeParts <- function(sizes)
-{
-    .CohortSizeParts(sizes=safeInteger(sizes))
+#' @rdname CohortSizeParts-class
+#'
+#' @param sizes (`numeric`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeParts.R
+#'
+CohortSizeParts <- function(sizes) {
+  .CohortSizeParts(sizes = safeInteger(sizes))
 }
 
+# nolint start
 
 ## --------------------------------------------------
 ## Size based on maximum of multiple cohort size rules

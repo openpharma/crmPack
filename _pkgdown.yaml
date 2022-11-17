@@ -93,6 +93,7 @@ reference:
       - CohortSizeRange
       - CohortSizeDLT
       - CohortSizeConst
+      - CohortSizeParts
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -183,6 +184,7 @@ reference:
       - v_cohort_size_range
       - v_cohort_size_dlt
       - v_cohort_size_const
+      - v_cohort_size_parts
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -294,8 +296,6 @@ reference:
       - CohortSizeMax
       - CohortSizeMin-class
       - CohortSizeMin
-      - CohortSizeParts-class
-      - CohortSizeParts
       - DADesign-class
       - DADesign
       - DASimulations-class
