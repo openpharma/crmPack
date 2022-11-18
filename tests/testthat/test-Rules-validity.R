@@ -1394,3 +1394,37 @@ test_that("v_cohort_size_parts returns message for non-valid sizes", {
   object@sizes <- -20L
   expect_equal(v_cohort_size_parts(object), err_msg)
 })
+
+## v_cohort_size_max ----
+
+test_that("v_cohort_size_max passes for valid object", {
+  object <- CohortSizeMax(h_cohort_size_list())
+  expect_true(v_cohort_size_max(object))
+
+  object <- CohortSizeMax(h_cohort_size_list(three_rules = TRUE))
+  expect_true(v_cohort_size_max(object))
+})
+
+test_that("v_cohort_size_parts returns message for non-valid sizes", {
+  err_msg <- "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
+  cohort_size_list <- h_cohort_size_list()
+  object <- CohortSizeMax(cohort_size_list)
+
+  # Changing `cohort_size_list` so that it does not contain `CohortSize` objects only.
+  object@cohort_size_list <- list(3, 5)
+  expect_equal(v_cohort_size_max(object), err_msg)
+  object@cohort_size_list <- list(cohort_size_list[[1]], 5L)
+  expect_equal(v_cohort_size_max(object), err_msg)
+  object@cohort_size_list <- list(cohort_size_list[[1]], NA)
+  expect_equal(v_cohort_size_max(object), err_msg)
+  object@cohort_size_list <- list()
+  expect_equal(v_cohort_size_max(object), err_msg)
+
+  # Changing `cohort_size_list` so that it contains non-unique `CohortSize` objects.
+  object@cohort_size_list <- list(cohort_size_list[[1]], cohort_size_list[[1]])
+  expect_equal(v_cohort_size_max(object), err_msg)
+
+  # Changing `cohort_size_list` so that it is not of length >=2.
+  object@cohort_size_list <- list(cohort_size_list[[1]])
+  expect_equal(v_cohort_size_max(object), err_msg)
+})

@@ -579,3 +579,14 @@ v_cohort_size_parts <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeMax`] object
+#'   contains valid `cohort_size_list` slot.
+v_cohort_size_max <- function(object) {
+  v <- Validate()
+  v$check(
+    test_list(object@cohort_size_list, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
+    "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
+  )
+  v$result()
+}
