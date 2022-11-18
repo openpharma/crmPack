@@ -92,7 +92,8 @@ class_changes <- tribble(
   "StoppingGstarCIRatio", "StoppingMaxGainCIRatio", "", "", FALSE, "",
   "CohortSizeRange", "", "cohortSize", "cohort_size", FALSE, "",
   "CohortSizeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "",
-  "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, ""
+  "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, "",
+  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, ""
 )
 ```
 
