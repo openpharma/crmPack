@@ -94,6 +94,7 @@ reference:
       - CohortSizeDLT
       - CohortSizeConst
       - CohortSizeParts
+      - CohortSizeMax
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -185,6 +186,7 @@ reference:
       - v_cohort_size_dlt
       - v_cohort_size_const
       - v_cohort_size_parts
+      - v_cohort_size_max
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -292,8 +294,6 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - CohortSizeMax-class
-      - CohortSizeMax
       - CohortSizeMin-class
       - CohortSizeMin
       - DADesign-class
