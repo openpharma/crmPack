@@ -93,7 +93,8 @@ class_changes <- tribble(
   "CohortSizeRange", "", "cohortSize", "cohort_size", FALSE, "",
   "CohortSizeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "",
   "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, "",
-  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, ""
+  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "CohortSizeMin", "", "cohortSizeList", "cohort_size_list", FALSE, ""
 )
 ```
 

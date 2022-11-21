@@ -2511,7 +2511,7 @@ setMethod("size",
       ## evaluate the individual cohort size rules
       ## in the list
       individualResults <-
-        sapply(cohortSize@cohortSizeList,
+        sapply(cohortSize@cohort_size_list,
           size,
           dose = dose,
           data = data,
