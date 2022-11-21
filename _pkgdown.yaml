@@ -273,6 +273,7 @@ reference:
       - update-ModelPseudo
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
+      - mcmc-GeneralData-OneParExpExpPrior
       - nextBest
       - nextBest-NextBestMTD
       - nextBest-NextBestNCRM
