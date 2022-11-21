@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9107</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9108</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,12 +56,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -250,6 +244,21 @@ dlt_intervals
 <tr>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 <span style="     ">CohortSizeMax</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">cohortSizeList</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+cohort_size_list
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">CohortSizeMin</span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 </td>
@@ -1829,10 +1838,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1]   1.6454841   0.7876079   1.2419900   0.1102957   0.6991668  40.9927242</span></span>
-<span><span class="co">##  [7]   0.3332841 927.2587261   0.5224981   1.7308275   5.8774045   1.1322732</span></span>
-<span><span class="co">## [13]   0.5006231   2.6889258   1.3311849   0.9142155   0.8385558   0.1700071</span></span>
-<span><span class="co">## [19]   0.2309262   0.6423589</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.49290447 1.02226927 0.51117547 1.18258439 5.50302802 0.38683169</span></span>
+<span><span class="co">##  [7] 0.82354245 0.67314834 1.36414681 0.92894282 1.83532326 0.57300462</span></span>
+<span><span class="co">## [13] 2.46725230 0.01559225 4.27552081 2.41970230 1.26045058 2.02544471</span></span>
+<span><span class="co">## [19] 1.33054158 0.24456922</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -1850,10 +1859,10 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.20877722 0.98774113 0.04989145 0.61622571 0.98592989 0.27030048</span></span>
-<span><span class="co">##  [7] 0.77126969 0.64668805 0.93480820 0.94857250 0.21464052 0.75192315</span></span>
-<span><span class="co">## [13] 0.98695941 0.72124849 0.82722667 0.86999867 0.88944446 0.56133136</span></span>
-<span><span class="co">## [19] 0.78417468 0.96397944</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.95226235 0.95309742 0.75749696 0.88527286 0.36699715 0.62540430</span></span>
+<span><span class="co">##  [7] 0.64038248 0.90685516 0.99021724 0.05936853 0.99733091 0.70954384</span></span>
+<span><span class="co">## [13] 0.77966180 0.90700116 0.57155778 0.95247637 0.12330398 0.81648277</span></span>
+<span><span class="co">## [19] 0.94587667 0.98824751</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
