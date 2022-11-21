@@ -2132,7 +2132,7 @@ CohortSizeParts <- function(sizes) {
 
 #' @rdname CohortSizeMax-class
 #'
-#' @param cohort_size_list (`numeric`)\cr see slot definition.
+#' @param cohort_size_list (`list`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeMax.R
@@ -2141,59 +2141,53 @@ CohortSizeMax <- function(cohort_size_list) {
   .CohortSizeMax(cohort_size_list = cohort_size_list)
 }
 
-# nolint start
+# CohortSizeMin ----
 
-## --------------------------------------------------
-## Size based on minimum of multiple cohort size rules
-## --------------------------------------------------
+## class ----
 
-##' Size based on minimum of multiple cohort size rules
-##'
-##' This class can be used to combine multiple cohort size rules with the MIN
-##' operation.
-##'
-##' \code{cohortSizeList} contains all cohort size rules, which are again
-##' objects of class \code{\linkS4class{CohortSize}}. The minimum of these
-##' individual cohort sizes is taken to give the final cohort size.
-##'
-##' @slot cohortSizeList list of cohort size rules
-##'
-##' @example examples/Rules-class-CohortSizeMin.R
-##' @keywords classes
-##' @export
-.CohortSizeMin <-
-    setClass(Class="CohortSizeMin",
-             representation(cohortSizeList="list"),
-             prototype(cohortSizeList=
-                           list(CohortSizeRange(intervals=c(0, 30),
-                                                cohort_size=c(1, 3)),
-                                CohortSizeDLT(dlt_intervals=c(0, 1),
-                                              cohort_size=c(1, 3)))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+#' `CohortSizeMin`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeMin`] is the class for cohort size that is based on minimum of
+#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' size rules, which are again the objects of class [`CohortSize`]. The minimum
+#' of these individual cohort sizes is taken to give the final cohort size.
+#'
+#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' of class [`CohortSize`].
+#'
+#' @aliases CohortSizeMin
+#' @export
+#'
+.CohortSizeMin <- setClass(
+  Class = "CohortSizeMin",
+  slots = c(cohort_size_list = "list"),
+  prototype = prototype(
+    cohort_size_list =
+      list(
+        CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
+        CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+      )
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_max
+)
 
-                     o$check(all(sapply(object@cohortSizeList, is,
-                                        "CohortSize")),
-                             "all cohortSizeList elements have to be CohortSize objects")
+## constructor ----
 
-                     o$result()
-                 })
-validObject(.CohortSizeMin())
-
-
-##' Initialization function for "CohortSizeMin"
-##'
-##' @param cohortSizeList see \code{\linkS4class{CohortSizeMin}}
-##' @return the \code{\linkS4class{CohortSizeMin}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeMin <- function(cohortSizeList)
-{
-    .CohortSizeMin(cohortSizeList=cohortSizeList)
+#' @rdname CohortSizeMin-class
+#'
+#' @param cohort_size_list (`list`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeMin.R
+#'
+CohortSizeMin <- function(cohort_size_list) {
+  .CohortSizeMin(cohort_size_list = cohort_size_list)
 }
+
+# nolint start
 
 ## --------------------------------------------------
 ## Virtual class for safety window

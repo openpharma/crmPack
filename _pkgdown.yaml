@@ -95,6 +95,7 @@ reference:
       - CohortSizeConst
       - CohortSizeParts
       - CohortSizeMax
+      - CohortSizeMin
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -294,8 +295,6 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - CohortSizeMin-class
-      - CohortSizeMin
       - DADesign-class
       - DADesign
       - DASimulations-class
