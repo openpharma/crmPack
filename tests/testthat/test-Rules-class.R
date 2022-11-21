@@ -628,3 +628,81 @@ test_that("CohortSizeRange object can be created with user constructor", {
   expect_identical(result@intervals, c(0, 30, 50))
   expect_identical(result@cohort_size, c(20L, 60L, 90L))
 })
+
+## CohortSizeDLT ----
+
+test_that(".CohortSizeDLT works as expected", {
+  result <- expect_silent(.CohortSizeDLT())
+  expect_valid(result, "CohortSizeDLT")
+})
+
+test_that("CohortSizeDLT object can be created with user constructor", {
+  result <- expect_silent(CohortSizeDLT(c(0, 1, 2), c(20, 60, 90)))
+  expect_valid(result, "CohortSizeDLT")
+  expect_identical(result@dlt_intervals, c(0L, 1L, 2L))
+  expect_identical(result@cohort_size, c(20L, 60L, 90L))
+})
+
+## CohortSizeConst ----
+
+test_that(".CohortSizeConst works as expected", {
+  result <- expect_silent(.CohortSizeConst())
+  expect_valid(result, "CohortSizeConst")
+})
+
+test_that("CohortSizeConst object can be created with user constructor", {
+  result <- expect_silent(CohortSizeConst(5))
+  expect_valid(result, "CohortSizeConst")
+  expect_identical(result@size, 5L)
+})
+
+## CohortSizeParts ----
+
+test_that(".CohortSizeParts works as expected", {
+  result <- expect_silent(.CohortSizeParts())
+  expect_valid(result, "CohortSizeParts")
+})
+
+test_that("CohortSizeParts object can be created with user constructor", {
+  result <- expect_silent(CohortSizeParts(c(1, 4)))
+  expect_valid(result, "CohortSizeParts")
+  expect_identical(result@sizes, c(1L, 4L))
+})
+
+## CohortSizeMax ----
+
+test_that(".CohortSizeMax works as expected", {
+  result <- expect_silent(.CohortSizeMax())
+  expect_valid(result, "CohortSizeMax")
+})
+
+test_that("CohortSizeMax object can be created with user constructor", {
+  cohort_size_list <- h_cohort_size_list()
+  result <- expect_silent(CohortSizeMax(cohort_size_list = cohort_size_list))
+  expect_valid(result, "CohortSizeMax")
+  expect_identical(result@cohort_size_list, cohort_size_list)
+
+  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMax(cohort_size_list = cohort_size_list))
+  expect_valid(result, "CohortSizeMax")
+  expect_identical(result@cohort_size_list, cohort_size_list)
+})
+
+## CohortSizeMin ----
+
+test_that(".CohortSizeMin works as expected", {
+  result <- expect_silent(.CohortSizeMin())
+  expect_valid(result, "CohortSizeMin")
+})
+
+test_that("CohortSizeMin object can be created with user constructor", {
+  cohort_size_list <- h_cohort_size_list()
+  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  expect_valid(result, "CohortSizeMin")
+  expect_identical(result@cohort_size_list, cohort_size_list)
+
+  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  expect_valid(result, "CohortSizeMin")
+  expect_identical(result@cohort_size_list, cohort_size_list)
+})

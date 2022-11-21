@@ -1960,7 +1960,7 @@ setClass(
 #' @rdname CohortSizeRange-class
 #'
 #' @param intervals (`numeric`)\cr see slot definition.
-#' @param cohort_size (`integer`)\cr see slot definition.
+#' @param cohort_size (`numeric`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-CohortSizeRange.R
@@ -1972,252 +1972,222 @@ CohortSizeRange <- function(intervals, cohort_size) {
   )
 }
 
+# CohortSizeDLT ----
+
+## class ----
+
+#' `CohortSizeDLT`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeDLT`] is the class for cohort size based on number of DLTs.
+#'
+#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
+#'   relevant DLT intervals.
+#' @slot cohort_size (`integer`)\cr a vector with the cohort sizes corresponding
+#'   to the elements of `dlt_intervals`.
+#'
+#' @aliases CohortSizeDLT
+#' @export
+#'
+.CohortSizeDLT <- setClass(
+  Class = "CohortSizeDLT",
+  slots = c(
+    dlt_intervals = "integer",
+    cohort_size = "integer"
+  ),
+  prototype = prototype(
+    dlt_intervals = c(0L, 1L),
+    cohort_size = c(1L, 3L)
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_dlt
+)
+
+## constructor ----
+
+#' @rdname CohortSizeDLT-class
+#'
+#' @param dlt_intervals (`numeric`)\cr see slot definition.
+#' @param cohort_size (`numeric`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeDLT.R
+#'
+CohortSizeDLT <- function(dlt_intervals, cohort_size) {
+  .CohortSizeDLT(
+    dlt_intervals = safeInteger(dlt_intervals),
+    cohort_size = safeInteger(cohort_size)
+  )
+}
+
+# CohortSizeConst ----
+
+## class ----
+
+#' `CohortSizeConst`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeConst`] is the class for fixed and constant size of cohort.
+#'
+#' @slot size (`integer`)\cr cohort size.
+#'
+#' @aliases CohortSizeConst
+#' @export
+#'
+.CohortSizeConst <- setClass(
+  Class = "CohortSizeConst",
+  slots = c(size = "integer"),
+  prototype = prototype(size = 3L),
+  contains = "CohortSize",
+  validity = v_cohort_size_const
+)
+
+## constructor ----
+
+#' @rdname CohortSizeConst-class
+#'
+#' @param size (`number`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeConst.R
+#'
+CohortSizeConst <- function(size) {
+  .CohortSizeConst(size = safeInteger(size))
+}
+
+# CohortSizeParts ----
+
+## class ----
+
+#' `CohortSizeParts`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeParts`] is the class for cohort size that changes for the second
+#' part of the dose escalation. It works only in conjunction with [`DataParts`]
+#' objects.
+#'
+#' @slot sizes (`integer`)\cr a vector of length two with two sizes, one for
+#'   part 1, and one for part 2 respectively.
+#'
+#' @aliases CohortSizeParts
+#' @export
+#'
+.CohortSizeParts <- setClass(
+  Class = "CohortSizeParts",
+  slots = c(sizes = "integer"),
+  prototype = prototype(sizes = c(1L, 3L)),
+  contains = "CohortSize",
+  validity = v_cohort_size_parts
+)
+
+## constructor ----
+
+#' @rdname CohortSizeParts-class
+#'
+#' @param sizes (`numeric`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeParts.R
+#'
+CohortSizeParts <- function(sizes) {
+  .CohortSizeParts(sizes = safeInteger(sizes))
+}
+
+# CohortSizeMax ----
+
+## class ----
+
+#' `CohortSizeMax`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeMax`] is the class for cohort size that is based on maximum of
+#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' size rules, which are again the objects of class [`CohortSize`]. The maximum
+#' of these individual cohort sizes is taken to give the final cohort size.
+#'
+#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' of class [`CohortSize`].
+#'
+#' @aliases CohortSizeMax
+#' @export
+#'
+.CohortSizeMax <- setClass(
+  Class = "CohortSizeMax",
+  slots = c(cohort_size_list = "list"),
+  prototype = prototype(
+    cohort_size_list = list(
+      CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
+      CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+    )
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_max
+)
+
+## constructor ----
+
+#' @rdname CohortSizeMax-class
+#'
+#' @param cohort_size_list (`list`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeMax.R
+#'
+CohortSizeMax <- function(cohort_size_list) {
+  .CohortSizeMax(cohort_size_list = cohort_size_list)
+}
+
+# CohortSizeMin ----
+
+## class ----
+
+#' `CohortSizeMin`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`CohortSizeMin`] is the class for cohort size that is based on minimum of
+#' multiple cohort size rules. The `cohort_size_list` slot stores a set of cohort
+#' size rules, which are again the objects of class [`CohortSize`]. The minimum
+#' of these individual cohort sizes is taken to give the final cohort size.
+#'
+#' @slot cohort_size_list (`list`)\cr a list of cohort size rules, i.e. objects
+#' of class [`CohortSize`].
+#'
+#' @aliases CohortSizeMin
+#' @export
+#'
+.CohortSizeMin <- setClass(
+  Class = "CohortSizeMin",
+  slots = c(cohort_size_list = "list"),
+  prototype = prototype(
+    cohort_size_list =
+      list(
+        CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
+        CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
+      )
+  ),
+  contains = "CohortSize",
+  validity = v_cohort_size_max
+)
+
+## constructor ----
+
+#' @rdname CohortSizeMin-class
+#'
+#' @param cohort_size_list (`list`)\cr see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-CohortSizeMin.R
+#'
+CohortSizeMin <- function(cohort_size_list) {
+  .CohortSizeMin(cohort_size_list = cohort_size_list)
+}
+
 # nolint start
-
-##' Cohort size based on number of DLTs
-##'
-##' @slot DLTintervals an integer vector with the left bounds of the relevant
-##' DLT intervals
-##' @slot cohortSize an integer vector of the same length with the cohort
-##' sizes in the \code{DLTintervals}
-##'
-##' @example examples/Rules-class-CohortSizeDLT.R
-##' @export
-##' @keywords classes
-.CohortSizeDLT <-
-    setClass(Class="CohortSizeDLT",
-             representation(DLTintervals="integer",
-                            cohortSize="integer"),
-             prototype(DLTintervals=as.integer(c(0, 1)),
-                       cohortSize=as.integer(c(1, 3))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@DLTintervals)),
-                             "cohortSize must have same length as DLTintervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
-                             "DLTintervals has to be sorted and have unique values")
-                     o$check(all(object@DLTintervals >= 0),
-                             "DLTintervals must only contain non-negative integers")
-
-                     o$result()
-                 })
-validObject(.CohortSizeDLT())
-
-##' Initialization function for "CohortSizeDLT"
-##'
-##' @param DLTintervals see \code{\linkS4class{CohortSizeDLT}}
-##' @param cohortSize see \code{\linkS4class{CohortSizeDLT}}
-##' @return the \code{\linkS4class{CohortSizeDLT}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeDLT <- function(DLTintervals,
-                          cohortSize)
-{
-    .CohortSizeDLT(DLTintervals=safeInteger(DLTintervals),
-                   cohortSize=safeInteger(cohortSize))
-}
-
-
-## --------------------------------------------------
-## Constant cohort size
-## --------------------------------------------------
-
-##' Constant cohort size
-##'
-##' This class is used when the cohort size should be kept constant.
-##'
-##' @slot size the constant integer size
-##'
-##' @example examples/Rules-class-CohortSizeConst.R
-##' @keywords classes
-##' @export
-.CohortSizeConst <-
-    setClass(Class="CohortSizeConst",
-             representation(size="integer"),
-             prototype(size=3L),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(is.scalar(object@size) && (object@size >= 0),
-                             "size needs to be positive scalar")
-
-                     o$result()
-                 })
-validObject(.CohortSizeConst())
-
-##' Initialization function for "CohortSizeConst"
-##'
-##' @param size see \code{\linkS4class{CohortSizeConst}}
-##' @return the \code{\linkS4class{CohortSizeConst}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeConst <- function(size)
-{
-    .CohortSizeConst(size=safeInteger(size))
-}
-
-
-
-## --------------------------------------------------
-## Cohort size based on the parts
-## --------------------------------------------------
-
-##' Cohort size based on the parts
-##'
-##' This class is used when the cohort size should change for the second part of
-##' the dose escalation. Only works in conjunction with
-##' \code{\linkS4class{DataParts}} objects.
-##'
-##' @slot sizes the two sizes for part 1 and part 2
-##'
-##' @keywords classes
-##' @example examples/Rules-class-CohortSizeParts.R
-##' @export
-.CohortSizeParts <-
-    setClass(Class="CohortSizeParts",
-             representation(sizes="integer"),
-             prototype(sizes=as.integer(c(1, 3))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(all(object@sizes > 0),
-                             "the cohort sizes need to be positive")
-                     o$check(identical(length(object@sizes), 2L),
-                             "2 elements required in sizes")
-
-                     o$result()
-                 })
-validObject(.CohortSizeParts())
-
-##' Initialization function for "CohortSizeParts"
-##'
-##' @param sizes see \code{\linkS4class{CohortSizeParts}}
-##' @return the \code{\linkS4class{CohortSizeParts}} object
-##' @export
-##'
-##' @keywords methods
-CohortSizeParts <- function(sizes)
-{
-    .CohortSizeParts(sizes=safeInteger(sizes))
-}
-
-
-## --------------------------------------------------
-## Size based on maximum of multiple cohort size rules
-## --------------------------------------------------
-
-##' Size based on maximum of multiple cohort size rules
-##'
-##' This class can be used to combine multiple cohort size rules with the MAX
-##' operation.
-##'
-##' \code{cohortSizeList} contains all cohort size rules, which are again
-##' objects of class \code{\linkS4class{CohortSize}}. The maximum of these
-##' individual cohort sizes is taken to give the final cohort size.
-##'
-##' @slot cohortSizeList list of cohort size rules
-##'
-##' @example examples/Rules-class-CohortSizeMax.R
-##' @keywords classes
-##' @export
-.CohortSizeMax <-
-    setClass(Class="CohortSizeMax",
-             representation(cohortSizeList="list"),
-             prototype(cohortSizeList=
-                           list(CohortSizeRange(intervals=c(0, 30),
-                                                cohort_size=c(1, 3)),
-                                CohortSizeDLT(DLTintervals=c(0, 1),
-                                              cohortSize=c(1, 3)))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(all(sapply(object@cohortSizeList, is,
-                                        "CohortSize")),
-                             "all cohortSizeList elements have to be CohortSize objects")
-
-                     o$result()
-                 })
-validObject(.CohortSizeMax())
-
-
-##' Initialization function for "CohortSizeMax"
-##'
-##' @param cohortSizeList see \code{\linkS4class{CohortSizeMax}}
-##' @return the \code{\linkS4class{CohortSizeMax}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeMax <- function(cohortSizeList)
-{
-    .CohortSizeMax(cohortSizeList=cohortSizeList)
-}
-
-
-## --------------------------------------------------
-## Size based on minimum of multiple cohort size rules
-## --------------------------------------------------
-
-##' Size based on minimum of multiple cohort size rules
-##'
-##' This class can be used to combine multiple cohort size rules with the MIN
-##' operation.
-##'
-##' \code{cohortSizeList} contains all cohort size rules, which are again
-##' objects of class \code{\linkS4class{CohortSize}}. The minimum of these
-##' individual cohort sizes is taken to give the final cohort size.
-##'
-##' @slot cohortSizeList list of cohort size rules
-##'
-##' @example examples/Rules-class-CohortSizeMin.R
-##' @keywords classes
-##' @export
-.CohortSizeMin <-
-    setClass(Class="CohortSizeMin",
-             representation(cohortSizeList="list"),
-             prototype(cohortSizeList=
-                           list(CohortSizeRange(intervals=c(0, 30),
-                                                cohort_size=c(1, 3)),
-                                CohortSizeDLT(DLTintervals=c(0, 1),
-                                              cohortSize=c(1, 3)))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
-
-                     o$check(all(sapply(object@cohortSizeList, is,
-                                        "CohortSize")),
-                             "all cohortSizeList elements have to be CohortSize objects")
-
-                     o$result()
-                 })
-validObject(.CohortSizeMin())
-
-
-##' Initialization function for "CohortSizeMin"
-##'
-##' @param cohortSizeList see \code{\linkS4class{CohortSizeMin}}
-##' @return the \code{\linkS4class{CohortSizeMin}} object
-##'
-##' @export
-##' @keywords methods
-CohortSizeMin <- function(cohortSizeList)
-{
-    .CohortSizeMin(cohortSizeList=cohortSizeList)
-}
 
 ## --------------------------------------------------
 ## Virtual class for safety window

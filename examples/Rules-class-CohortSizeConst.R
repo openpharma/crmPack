@@ -1,4 +1,3 @@
 
-# This is to have along the study a constant cohort size of 3
-mySize <- CohortSizeConst(size=3)
-
+# Cohort of size 3, constant along the study.
+my_size <- CohortSizeConst(size = 3)

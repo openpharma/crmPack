@@ -536,3 +536,57 @@ v_cohort_size_range <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeDLT`] object
+#'   contains valid `dlt_intervals` and  `cohort_size` slots.
+v_cohort_size_dlt <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(
+      object@dlt_intervals,
+      lower = 0, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+    ),
+    "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+  )
+  v$check(
+    test_integer(
+      object@cohort_size,
+      lower = 0, any.missing = FALSE, len = length(object@dlt_intervals)
+    ),
+    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeConst`] object
+#'   contains valid `size` slot.
+v_cohort_size_const <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@size, lower = 0),
+    "size needs to be a non-negative scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeParts`] object
+#'   contains valid `sizes` slot.
+v_cohort_size_parts <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
+    "sizes needs to be an integer vector of length 2 with all elements positive"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeMax`] object
+#'   contains valid `cohort_size_list` slot.
+v_cohort_size_max <- function(object) {
+  v <- Validate()
+  v$check(
+    test_list(object@cohort_size_list, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
+    "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
+  )
+  v$result()
+}
