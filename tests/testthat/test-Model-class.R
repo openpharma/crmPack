@@ -1203,7 +1203,7 @@ test_that("MCMC throws the error for OneParExpExpPrior model when 'xLevel' does 
 
 test_that("No NA is returned in dose calculations for OneParExpExpPrior model", {
   model <- h_get_one_par_exp_exp_prior()
-  calc_dose <- doseFunction(model, alpha = 1)
+  calc_dose <- doseFunction(model, theta = 1)
 
   expect_false(is.na(calc_dose(0.95)))
 })
