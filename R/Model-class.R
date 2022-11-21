@@ -2662,13 +2662,14 @@ OneParExpNormalPrior <- function(skel_probs,
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`OneParExpExpPrior`] is the class for a standard CRM with an exponential prior on
-#' the log power parameter for the skeleton prior probabilities.
+#' the log power parameter for the skeleton prior probabilities. It is an
+#' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
 #' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
 #' @slot skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
 #'   of unique and sorted probability values between 0 and 1.
-#' @slot lambda (`number`)\cr prior rate parameter of of log power parameter alpha.
+#' @slot lambda (`number`)\cr rate parameter of prior exponential distribution for theta.
 #'
 #' @aliases OneParExpExpPrior
 #' @export
@@ -2693,14 +2694,14 @@ OneParExpNormalPrior <- function(skel_probs,
 #'   of unique and sorted probability values between 0 and 1.
 #' @param dose_grid (`numeric`)\cr dose grid. It must be must be a sorted vector
 #'   of the same length as `skel_probs`.
-#' @param lambda (`number`)\cr prior rate parameter of of log power parameter alpha.
+#' @param lambda (`number`)\cr rate parameter of prior exponential distribution for theta.
 #'
 #' @export
 #' @example examples/Model-class-OneParExpExpPrior.R
 #'
 OneParExpExpPrior <- function(skel_probs,
-                                 dose_grid,
-                                 lambda) {
+                              dose_grid,
+                              lambda) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
   assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
   assert_number(lambda, lower = .Machine$double.xmin, finite = TRUE)
@@ -2715,12 +2716,12 @@ OneParExpExpPrior <- function(skel_probs,
     lambda = lambda,
     datamodel = function() {
       for (i in 1:nObs) {
-        p[i] <- skel_probs[xLevel[i]]^exp(alpha)
+        p[i] <- skel_probs[xLevel[i]]^theta
         y[i] ~ dbern(p[i])
       }
     },
     priormodel = function() {
-      alpha ~ dexp(lambda)
+      theta ~ dexp(lambda)
     },
     modelspecs = function(from_prior) {
       ms <- list(lambda = lambda)
@@ -2730,10 +2731,10 @@ OneParExpExpPrior <- function(skel_probs,
       ms
     },
     init = function() {
-      list(alpha = 1)
+      list(theta = 1)
     },
     datanames = c("nObs", "y", "xLevel"),
-    sample = "alpha"
+    sample = "theta"
   )
 }
 

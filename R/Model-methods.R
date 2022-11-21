@@ -714,12 +714,12 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
-    assert_subset("alpha", names(samples@data))
-    alpha <- samples@data$alpha
+    assert_subset("theta", names(samples@data))
+    theta <- samples@data$theta
     skel_fun_inv <- model@skel_fun_inv
-    assert_probabilities(x, len = h_null_if_scalar(alpha))
+    assert_probabilities(x, len = h_null_if_scalar(theta))
 
-    skel_fun_inv(x^(1 / exp(alpha)))
+    skel_fun_inv(x^(1 / theta))
   }
 )
 
@@ -1140,6 +1140,30 @@ setMethod(
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
 
     skel_fun(dose)^exp(alpha)
+  }
+)
+
+## OneParExpExpPrior ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-OneParExpExpPrior
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "OneParExpExpPrior",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("theta", names(samples@data))
+    theta <- samples@data$theta
+    skel_fun <- model@skel_fun
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta))
+
+    skel_fun(dose)^theta
   }
 )
 
