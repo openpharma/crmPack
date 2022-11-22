@@ -2662,7 +2662,7 @@ OneParExpNormalPrior <- function(skel_probs,
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`OneParExpExpPrior`] is the class for a standard CRM with an exponential prior on
-#' the log power parameter for the skeleton prior probabilities. It is an
+#' the power parameter for the skeleton prior probabilities. It is an
 #' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
