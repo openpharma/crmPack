@@ -2619,7 +2619,6 @@ OneParExpNormalPrior <- function(skel_probs,
                                  sigma2) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
   assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
-  assert_number(sigma2, lower = .Machine$double.xmin, finite = TRUE)
 
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
@@ -2704,7 +2703,6 @@ OneParExpExpPrior <- function(skel_probs,
                               lambda) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
   assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
-  assert_number(lambda, lower = .Machine$double.xmin, finite = TRUE)
 
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
