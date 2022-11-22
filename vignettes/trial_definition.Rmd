@@ -54,7 +54,7 @@ Next, define the dose toxicity model.
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 56
+  ref_dose = 56
 )
 ```
 
@@ -142,7 +142,7 @@ Next, we define the rule for choosing the *best* dose for the *next* cohort
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
-  maxOverdoseProb = 0.25
+  max_overdose_prob = 0.25
 )
 ```
 
@@ -159,11 +159,11 @@ We elect to define the cohort size using a compound rule.  Both the dose to be u
 # Choose the rule for the cohort size.
 my_size_1 <- CohortSizeRange(
   intervals = c(0, 30),
-  cohortSize = c(1, 3)
+  cohort_size = c(1, 3)
 )
 my_size_2 <- CohortSizeDLT(
-  DLTintervals = c(0, 1),
-  cohortSize = c(1, 3)
+  dlt_intervals = c(0, 1),
+  cohort_size = c(1, 3)
 )
 my_size <- maxSize(my_size_1, my_size_2)
 ```

@@ -21,6 +21,7 @@ library(crmPack)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(stringr)
 ```
 ## Introduction
 This vignette picks up where the previous one ([Trial Definition](trial_definition.html)), ends.  To recap, our trial defines the six fundamental elements of a CRM trial as 
@@ -80,7 +81,7 @@ empty_data <- Data(doseGrid = doseGrid)
 model <- LogisticLogNormal(
   mean = c(-0.85, 1),
   cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
-  refDose = 56
+  ref_dose = 56
 )
 
 my_increments <- IncrementsRelative(
@@ -91,12 +92,12 @@ my_increments <- IncrementsRelative(
 my_next_best <- NextBestNCRM(
   target = c(0.2, 0.35),
   overdose = c(0.35, 1),
-  maxOverdoseProb = 0.25
+  max_overdose_prob = 0.25
 )
 
 my_size <- maxSize(
-  CohortSizeRange(intervals = c(0, 30), cohortSize = c(1, 3)),
-  CohortSizeDLT(DLTintervals = c(0, 1), cohortSize = c(1, 3))
+  CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3)),
+  CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
 )
 
 my_stopping <- (StoppingMinCohorts(nCohorts = 3) &
@@ -173,7 +174,7 @@ nextBest(
 )$plot
 ```
 
-The lower panel of the plot shows the posterior probability that each dose is in the overdose range.  The dashed horizontal black line shows the acceptable risk of overdose: Doses with red lines which go above this line are considered toxic.  The upper panel shows the probability that each dose is in the target toxicity range.  Clearly, a doses of `30` and `45` have the highest probability of being in the target toxicity range.  However, the risk that both are in the overdose range is unacceptable.  Therefore, `20` is the dose recommended for the next cohort.
+The lower panel of the plot shows the posterior probability that each dose is in the overdose range.  The dashed horizontal black line shows the acceptable risk of overdose: Doses with red lines which go above this line are considered toxic.  The upper panel shows the probability that each dose is in the target toxicity range.  Clearly, doses of `30` and `45` have the highest probability of being in the target toxicity range.  However, the risk that both are in the overdose range is unacceptable.  Therefore, `20` is the dose recommended for the next cohort.
 
 We can produce a tabulation of the model state with
 ```{r}
@@ -540,13 +541,17 @@ doseRecommendation$plot
 ```
 
 With a little bit of work, we can obtain a more detailed summary and plot of the posterior probabilities of toxicity at each dose:
-```{r}
+```{r, error=TRUE}
+slotNames(model)
+
 fullSamples <- tibble(
   Alpha = postSamples5@data$alpha0,
   Beta = postSamples5@data$alpha1
 ) %>%
   expand(nesting(Alpha, Beta), Dose = doseGrid) %>%
-  mutate(P = model@prob(Dose, Alpha, Beta))
+  rowwise() %>%
+  mutate(P = probFunction(model, alpha0 = Alpha, alpha1 = Beta)(dose = Dose)) %>%
+  ungroup()
 
 fullSummary <- fullSamples %>%
   group_by(Dose) %>%
