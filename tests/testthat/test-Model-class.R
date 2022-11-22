@@ -1107,6 +1107,8 @@ test_that("OneParExpExpPrior object can be created with user constructor", {
     )
   )
   expect_valid(result, "OneParExpExpPrior")
+  expect_identical(result@skel_probs, seq(from = 0.1, to = 0.9, length = 5))
+  expect_identical(result@lambda, 2)
 })
 
 test_that("OneParExpExpPrior throws the error when dose_grid and skel_probs have diff. lengths", {
