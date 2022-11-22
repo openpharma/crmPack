@@ -676,7 +676,7 @@ setMethod(
 ## OneParExpNormalPrior ----
 
 #' @describeIn dose compute the dose level reaching a specific target
-#'   probability of the occurrence of a DLE (`x`).
+#'   probability of the occurrence of a DLT (`x`).
 #'
 #' @aliases dose-OneParExpNormalPrior
 #' @export
@@ -701,7 +701,7 @@ setMethod(
 ## OneParExpExpPrior ----
 
 #' @describeIn dose compute the dose level reaching a specific target
-#'   probability of the occurrence of a DLE (`x`).
+#'   probability of the occurrence of a DLT (`x`).
 #'
 #' @aliases dose-OneParExpExpPrior
 #' @export
