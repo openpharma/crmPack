@@ -2451,11 +2451,11 @@ setMethod("size",
       interval <-
         findInterval(
           x = dltHappened,
-          vec = cohortSize@DLTintervals
+          vec = cohortSize@dlt_intervals
         )
 
       ## so the cohort size is
-      ret <- cohortSize@cohortSize[interval]
+      ret <- cohortSize@cohort_size[interval]
 
       return(ret)
     }
@@ -2479,7 +2479,7 @@ setMethod("size",
       ## evaluate the individual cohort size rules
       ## in the list
       individualResults <-
-        sapply(cohortSize@cohortSizeList,
+        sapply(cohortSize@cohort_size_list,
           size,
           dose = dose,
           data = data,
