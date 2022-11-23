@@ -214,26 +214,26 @@ test_that("v_data_mixture: error for nObsshare of wrong length", {
   )
 })
 
-# v_data_DA ----
+# v_data_da ----
 
-test_that("v_data_DA passes for valid object", {
+test_that("v_data_da passes for valid object", {
   object <- h_get_data_da()
-  expect_true(v_data_DA(object))
+  expect_true(v_data_da(object))
 })
 
-test_that("v_data_DA: error for Tmax of wrong length, negative values", {
+test_that("v_data_da: error for Tmax of wrong length, negative values", {
   object <- h_get_data_da()
 
   # We assign Tmax of wrong length and negative values.
   object@Tmax <- c(-10, -20)
 
   expect_equal(
-    v_data_DA(object),
+    v_data_da(object),
     "DLT window Tmax must be of type double of length 1 and greater than 0"
   )
 })
 
-test_that("v_data_DA: error for u of wrong length and values", {
+test_that("v_data_da: error for u of wrong length and values", {
   object <- h_get_data_da()
 
   # We assign vector u of length different than object@nObs
@@ -241,12 +241,12 @@ test_that("v_data_DA: error for u of wrong length and values", {
   object@u <- c(-1, -2, 100)
 
   expect_equal(
-    v_data_DA(object),
+    v_data_da(object),
     "u must be of type double, nObs length, non-negative and not greater than Tmax" # nolintr
   )
 })
 
-test_that("v_data_DA: error for t0 of wrong length, negative values", {
+test_that("v_data_da: error for t0 of wrong length, negative values", {
   object <- h_get_data_da()
 
   # We assign vector t0 of length different than object@nObs
@@ -254,7 +254,7 @@ test_that("v_data_DA: error for t0 of wrong length, negative values", {
   object@t0 <- c(1, -2)
 
   expect_equal(
-    v_data_DA(object),
+    v_data_da(object),
     "t0 must be of type double, nObs length, sorted non-negative"
   )
 })

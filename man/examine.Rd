@@ -52,13 +52,13 @@ listed.
 }
 \section{Functions}{
 \itemize{
-\item \code{examine,Design-method}: Examine a model-based CRM
+\item \code{examine(Design)}: Examine a model-based CRM
 
-\item \code{examine,RuleDesign-method}: Examine a rule-based design
+\item \code{examine(RuleDesign)}: Examine a rule-based design
 
-\item \code{examine,DADesign-method}: Examine a model-based CRM
+\item \code{examine(DADesign)}: Examine a model-based CRM
+
 }}
-
 \examples{
 # nolint start
 
@@ -79,7 +79,7 @@ myNextBest <- NextBestNCRM(target=c(0.2, 0.35),
 
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
+                           cohort_size=c(1, 3))
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
                          cohortSize=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
@@ -184,7 +184,7 @@ myNextBest <- NextBestNCRM(target=c(0.2,0.35),
 
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
+                           cohort_size=c(1, 3))
 mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
                          cohortSize=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)

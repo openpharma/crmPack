@@ -1750,7 +1750,7 @@
       result@data
     Output
       $alpha
-      [1] 2.258905 2.138613 1.755493 0.944640
+      [1] 0.2149170 0.3987768 1.0718321 0.8496711
       
 
 # MCMC computes correct values for OneParExpNormalPrior model and empty data
@@ -1768,7 +1768,7 @@
       result@data
     Output
       $alpha
-      [1] -0.2035109  0.4162697  0.7082235  0.4419355
+      [1] -0.8525427 -0.5374850  0.1646873 -0.5913058
       
 
 # MCMC computes correct values for FractionalCRM model and empty data

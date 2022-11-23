@@ -69,7 +69,7 @@ test_that("nextBest-NextBestNCRM returns expected values of the objects (no dose
   )
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 75)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM without doselimit", result$plot)
 })
@@ -103,7 +103,7 @@ test_that("nextBest-NextBestNCRM-DataParts returns expected values of the object
   )
 
   result <- nextBest(nb_ncrm, Inf, samples, model, data)
-  expect_identical(result$value, 50)
+  expect_identical(result$value, 75)
   expect_snapshot(result$probs)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestNCRM-DataParts nodlim", result$plot)
 })
@@ -825,39 +825,39 @@ test_that("IncrementsAbsoluteDLT works correctly", {
 })
 # maxDose-IncrementsNumDoseLevels ----
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel 'last' is defined", {
+test_that("IncrementsNumDoseLevels works correctly if basis_level 'last' is defined", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2,
-    basisLevel = "last"
+    max_levels = 2,
+    basis_level = "last"
   )
   result <- maxDose(
     increments,
     data = h_get_data_1()
   )
-  expect_equal(result, 14) # maxDose is 14 if basislevel='last'.
+  expect_equal(result, 14) # maxDose is 14 if basis_level='last'.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel is not defined and default is used", {
+test_that("IncrementsNumDoseLevels works correctly if basis_level is not defined and default is used", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2
+    max_levels = 2
   )
   result <- maxDose(
     increments,
     data = h_get_data_1()
   )
-  expect_equal(result, 14) # maxDose is 14 if basislevel not defined, then reference value is used.
+  expect_equal(result, 14) # maxDose is 14 if basis_level not defined, then reference value is used.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basislevel 'max' is defined", {
+test_that("IncrementsNumDoseLevels works correctly if basis_level 'max' is defined", {
   increments <- IncrementsNumDoseLevels(
-    maxLevels = 2,
-    basisLevel = "max"
+    max_levels = 2,
+    basis_level = "max"
   )
   result <- maxDose(
     increments,
     data = h_get_data_1()
   )
-  expect_equal(result, 20) # maxDose is 20 if basislevel='max'.
+  expect_equal(result, 20) # maxDose is 20 if basis_level='max'.
 })
 
 # maxDose-IncrementsRelativeDLTCurrent ----
@@ -1136,4 +1136,117 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
     message = "Lowest active dose not tested, stopping rule not applied."
   )
   expect_identical(result, expected) # First active dose not applied.
+})
+
+# stopTrial-StoppingSpecificDose ----
+
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. not met", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is not met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. is met", {
+  # StoppingSpecificDose works correctly if dose recommendation is not the same
+  # as the specific dose and stop is met.
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose rec = specific and stop crit. not met", {
+  # StoppingSpecificDose works correctly if dose recommendation is the same
+  # as the specific dose and stop is not met.
+  my_samples <- h_as_samples(
+    list(alpha0 = c(1.2, 0, -0.4, -0.1, 0.9), alpha1 = c(0.7, 1.7, 1.9, 0.6, 2.8))
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 80,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    FALSE,
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop crit. is met", {
+  # StoppingSpecificDose works correctly if dose recommendation is the same
+  # as the specific dose and stop is met.
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = h_stopping_specific_dose(),
+    dose = 80,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_1()
+  )
+  expected <- structure(
+    TRUE,
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
+  )
+  expect_identical(result, expected)
+})
+
+test_that("StoppingSpecificDose correclty replaces next best string with specific string", {
+  my_stopping <- StoppingSpecificDose(
+    rule = StoppingPatientsNearDose(nPatients = 9, percentage = 5),
+    dose = 80
+  )
+  my_samples <- h_as_samples(
+    list(
+      alpha0 = c(-1.88, -1.58, -2.43, -3.61, -2.15, -2.28, -3.32, -2.16, -2.79, -2.90),
+      alpha1 = c(1.08, 0.86, 0.67, 2.38, 5.99, 2.94, 0.74, 2.39, 1.74, 0.84)
+    )
+  )
+  result <- stopTrial(
+    stopping = my_stopping,
+    dose = 20,
+    samples = my_samples,
+    model = h_get_logistic_log_normal(),
+    data = h_get_data_sr_2()
+  )
+  expected <- structure(
+    TRUE,
+    message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients"
+  )
+  expect_identical(result, expected)
 })

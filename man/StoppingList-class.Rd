@@ -4,41 +4,48 @@
 \name{StoppingList-class}
 \alias{StoppingList-class}
 \alias{.StoppingList}
-\title{Stop based on multiple stopping rules}
-\description{
-This class can be used to combine multiple stopping rules.
+\alias{StoppingList}
+\title{\code{StoppingList}}
+\usage{
+StoppingList(stop_list, summary)
 }
-\details{
-\code{stopList} contains all stopping rules, which are again objects of
-class \code{\linkS4class{Stopping}}, and the \code{summary} is a function
-taking a logical vector of the size of \code{stopList} and returning a
-single logical value. For example, if the function \code{all} is given as
-\code{summary} function, then this means that all stopping rules must be
-fulfilled in order that the result of this rule is to stop.
+\arguments{
+\item{stop_list}{(\code{list})\cr see slot definition.}
+
+\item{summary}{(\code{function})\cr see slot definition.}
+}
+\description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{StoppingList}} is the class for testing a stopping rule that consists of
+many single stopping rules that are in turn the objects of class \code{Stopping}.
+The \code{summary} slot stores a function that takes a logical vector of the size
+of \code{stop_list} and returns a single logical value. For example, if the function
+\code{all} is specified as a \code{summary} function, then that all stopping rules
+defined in \code{stop_list} must be satisfied in order the result of this rule to
+be \code{TRUE}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{stopList}}{list of stopping rules}
+\item{\code{stop_list}}{(\code{list})\cr list of stopping rules.}
 
-\item{\code{summary}}{the summary function to combine the results of the stopping
-rules into a single result}
+\item{\code{summary}}{(\code{function})\cr a summary function to combine the results of
+the stopping rules into a single result.}
 }}
 
 \examples{
 
-# Define some stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
+# Define some stopping rules.
+my_stopping1 <- StoppingMinCohorts(nCohorts = 3)
+my_stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+my_stopping3 <- StoppingMinPatients(nPatients = 20)
 
-# Create a list of stopping rules (of class 'StoppingList') which will then be
-# summarized (in this specific example) with the 'any' function, meaning that the study 
-# would be stopped if 'any' of the single stopping rules is TRUE.
-mystopping <- StoppingList(stopList=c(myStopping1,myStopping2,myStopping3),
-                           summary=any)
-
-
+# Create a list of stopping rules (of class `StoppingList`) which will then be
+# summarized (in this specific example) with the `any` function, meaning that
+# the study would be stopped if any of the single stopping rules is `TRUE`.
+my_stopping <- StoppingList(
+  stop_list = c(my_stopping1, my_stopping2, my_stopping3),
+  summary = any
+)
 }
-\keyword{classes}

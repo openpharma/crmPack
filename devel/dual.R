@@ -177,9 +177,9 @@ myStopping3 <- new("StoppingTargetBiomarker",
 
 ## you can either write this:
 myStopping <- new("StoppingAny",
-                  stopList=
+                  stop_list=
                   list(new("StoppingAll",
-                           stopList=
+                           stop_list=
                            list(myStopping1,
                                 myStopping3)),
                        myStopping2))

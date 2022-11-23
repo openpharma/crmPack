@@ -26,9 +26,9 @@ efficacy for a given dose level, based on the model specific parameters.
 }
 \section{Functions}{
 \itemize{
-\item \code{efficacyFunction,ModelEff-method}: 
-}}
+\item \code{efficacyFunction(ModelEff)}: 
 
+}}
 \examples{
 my_data <- DataDual(
   doseGrid = c(0.001, seq(25, 300, 25)),

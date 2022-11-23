@@ -146,6 +146,7 @@ https
 httr
 IG
 IncrementMin
+IncrementsMin
 IncrementsNumDoseLevels
 IncrementsRelative
 IncrementsRelativeDLT
@@ -304,7 +305,7 @@ StoppingAll
 StoppingAny
 StoppingCohortNearDose
 StoppingCohortsNearDose
-StoppingGstarCIRatio
+StoppingMaxGainCIRatio
 StoppingHighestDose
 StoppingList
 StoppingMaxPatients

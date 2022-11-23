@@ -512,15 +512,15 @@ h_validate_combine_results <- function(v1, v2) {
   assert_true(test_true(v1) || test_character(v1, any.missing = FALSE, min.len = 1L))
   assert_true(test_true(v2) || test_character(v2, any.missing = FALSE, min.len = 1L))
 
-  isTRUE_v2 <- isTRUE(v2)
+  isTRUEv2 <- isTRUE(v2)
   if (isTRUE(v1)) {
-    if (isTRUE_v2) {
+    if (isTRUEv2) {
       TRUE
     } else {
       v2
     }
   } else {
-    if (isTRUE_v2) {
+    if (isTRUEv2) {
       v1
     } else {
       c(v1, v2)
@@ -641,7 +641,7 @@ h_plot_data_cohort_lines <- function(cohort,
 
   # If feasible, add vertical or horizontal green lines separating sub-sequent
   # cohorts.
-  if (placebo & length(unique(cohort)) > 1) {
+  if (placebo && length(unique(cohort)) > 1) {
     intercept <- head(cumsum(table(cohort)), n = -1) + 0.5
     if (vertical) {
       geom_vline(xintercept = intercept, colour = "green", linetype = "longdash") # nolintr
@@ -984,14 +984,14 @@ h_is_positive_definite <- function(x, size = 2, tol = 1e-08) {
 #' h_test_named_numeric(c(a = 1, b = 2), permutation.of = c("a", "b"))
 #' h_test_named_numeric(c(a = 1, b = 2), permutation.of = c("b", "a"))
 h_test_named_numeric <- function(x,
-                                 subset.of = NULL,
-                                 must.include = NULL,
-                                 permutation.of = NULL,
-                                 identical.to = NULL,
-                                 disjunct.from = NULL,
+                                 subset.of = NULL, # nolintr
+                                 must.include = NULL, # nolintr
+                                 permutation.of = NULL, # nolintr
+                                 identical.to = NULL, # nolintr
+                                 disjunct.from = NULL, # nolintr
                                  lower = 0 + .Machine$double.xmin,
                                  finite = TRUE,
-                                 any.missing = FALSE,
+                                 any.missing = FALSE, # nolintr
                                  len = 2,
                                  ...) {
   is_valid_num <- test_numeric(
