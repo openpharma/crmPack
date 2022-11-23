@@ -4,55 +4,68 @@
 \name{SafetyWindowSize-class}
 \alias{SafetyWindowSize-class}
 \alias{.SafetyWindowSize}
-\title{Safety window length based on cohort size.
-This class is used to decide the rolling rule from the clinical perspective.}
-\description{
-\code{patientGap} is to be used as follows. If for example, the
-cohort size is 4 and we want to specify three time intervals between these
-four patients: The interval between the 1st and 2nd patient = 7 units of time
-, the interval between the 2nd and 3rd patient = 5 units of time, the interval
-between the 3rd and 4th patient = 3 units of time, then we specify
-\code{patientGap} to be \code{c(7,5,3)}. Sometimes, we only think the interval
-between the 1st and 2nd patient should be increased for the safety consideration
-, and the rest time intervals can be the same, whatever the cohort size is, then
-we specify \code{patientGap} to be \code{c(7,3)}. The package will automatically
-repeat the last element of the vector for the rest time intervals.
+\alias{SafetyWindowSize}
+\title{\code{SafetyWindowSize}}
+\usage{
+SafetyWindowSize(gap, size, follow, follow_min)
 }
-\details{
-Note that \code{sizeIntervals} is to be read as follows. For instance, When we
-want to change the \code{patientGap} based on the cohort size, i.e. the time interval
-between the 1st and 2nd patient = 9 units of time and the rest time intervals are
-5 units of time when the cohort size is equal or larger than 4. And the time
-interval between the 1st and 2nd patient = 7 units of time and the rest time
-intervals are 3 units of time when the cohort size is smaller than 4, then we
-specify \code{sizeIntervals} to be \code{c(0, 4)}. That means, the right
-bound of the intervals are exclusive to the interval, and the last interval
-goes from the last value until infinity.
+\arguments{
+\item{gap}{\cr see slot definition.}
+
+\item{size}{\cr see slot definition.}
+
+\item{follow}{\cr see slot definition.}
+
+\item{follow_min}{\cr see slot definition.}
+}
+\description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{SafetyWindowSize}} is the class for safety window length based on cohort
+size. This class is used to decide the rolling rule from the clinical
+perspective.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{patientGap}}{Observed period of the previous patient before the next patient
-can be dosed}
+\item{\code{gap}}{(\code{list})\cr observed period of the previous patient before
+the next patient can be dosed. This is used as follows. If for instance,
+the cohort size is 4 and we want to specify three time intervals between
+these four consecutive patients, i.e. 7 units of time between the 1st and
+the 2nd patient, 5 units between the 2nd and the 3rd one, and finally 3
+units between the 3rd and the 4th one, then,
+\code{gap} = \code{list(c(7L, 5L, 3L))}. Sometimes, we want that the interval
+only between the 1st and 2nd patient should be increased for the
+safety consideration and the rest time intervals should remain constant,
+regardless of what the cohort size is. Then, \code{gap} = \code{list(c(7L, 3L))}
+and the the package will automatically repeat the last element of the vector
+for the remaining time intervals.}
 
-\item{\code{sizeIntervals}}{An integer vector with the left bounds of the relevant
-cohort size intervals}
+\item{\code{size}}{(\code{integer})\cr a vector with the left bounds of the
+relevant cohort size intervals. This is used as follows. For instance, when
+we want to change the \code{gap} based on the cohort size, i.e. the time
+interval between the 1st and 2nd patient = 9 units of time and the rest
+time intervals are of 5 units of time when the cohort size is equal to or
+larger than 4. And the time interval between the 1st and 2nd patient = 7 units
+of time and the rest time intervals are 3 units of time when the cohort size
+is smaller than 4, then we specify \code{size = c(0L, 4L)}. This means,
+the right bound of the intervals are exclusive to the interval, and the
+last interval goes from the last value until infinity.}
 
-\item{\code{patientFollow}}{The period of time that each patient in the cohort needs to be
-followed before the next cohort open}
+\item{\code{follow}}{(\code{count})\cr the period of time that each patient in the
+cohort needs to be followed before the next cohort opens.}
 
-\item{\code{patientFollowMin}}{At least one patient in the cohort needs to be followed at
-the minimal follow up time}
+\item{\code{follow_min}}{(\code{count})\cr at least one patient in the cohort needs
+to be followed at the minimal follow up time.}
 }}
 
 \examples{
-# As example, here is the rule for: 
-#   having patientGap as (7,3,3,3,...) for cohort size <4
-#   and having patientGap as (9,5,5,5...) for cohort size >=4
-
-myWindowLength <- SafetyWindowSize(patientGap = list(c(7,3),c(9,5)),
-                                   sizeIntervals = c(1,4),
-                                   patientFollow = 7,
-                                   patientFollowMin = 14)
+# Rule for having patient gap (7,3,3,3,...) for cohort size < 4, and
+# patient gap (9,5,5,5...) for cohort size >= 4.
+my_window_len <- SafetyWindowSize(
+  gap = list(c(7, 3), c(9, 5)),
+  size = c(1, 4),
+  follow = 7,
+  follow_min = 14
+)
 }
-\keyword{classes}

@@ -96,6 +96,8 @@ reference:
       - CohortSizeParts
       - CohortSizeMax
       - CohortSizeMin
+      - SafetyWindow
+      - SafetyWindowSize
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -188,6 +190,7 @@ reference:
       - v_cohort_size_const
       - v_cohort_size_parts
       - v_cohort_size_max
+      - v_safety_window_size
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -326,11 +329,8 @@ reference:
       - Report
       - RuleDesign-class
       - RuleDesign
-      - SafetyWindow-class
       - SafetyWindowConst-class
       - SafetyWindowConst
-      - SafetyWindowSize-class
-      - SafetyWindowSize
       - Samples-class
       - Samples
       - Simulations-class

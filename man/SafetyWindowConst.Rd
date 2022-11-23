@@ -4,14 +4,14 @@
 \alias{SafetyWindowConst}
 \title{Initialization function for \code{SafetyWindowConst}}
 \usage{
-SafetyWindowConst(patientGap, patientFollow, patientFollowMin)
+SafetyWindowConst(gap, follow, follow_min)
 }
 \arguments{
-\item{patientGap}{see \code{\linkS4class{SafetyWindowConst}}}
+\item{gap}{see \code{\linkS4class{SafetyWindowConst}}}
 
-\item{patientFollow}{see \code{\linkS4class{SafetyWindowConst}}}
+\item{follow}{see \code{\linkS4class{SafetyWindowConst}}}
 
-\item{patientFollowMin}{see \code{\linkS4class{SafetyWindowConst}}}
+\item{follow_min}{see \code{\linkS4class{SafetyWindowConst}}}
 }
 \value{
 the \code{\linkS4class{SafetyWindowConst}} object

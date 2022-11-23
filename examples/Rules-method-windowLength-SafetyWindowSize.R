@@ -57,10 +57,10 @@ sizeRecommendation <- size(mySize, dose=doseRecommendation$value, data = data)
 # Rule for the safety window length:
 #   -having patientGap as (0,7,3,3,...) for cohort size <4
 #   -and having patientGap as (0,9,5,5,...) for cohort size >=4
-myWindowLength <- SafetyWindowSize(patientGap = list(c(7,3),c(9,5)),
-                                   sizeInterval = c(1,4),
-                                   patientFollow = 7,
-                                   patientFollowMin = 14)
+myWindowLength <- SafetyWindowSize(gap = list(c(7,3),c(9,5)),
+                                   size = c(1,4),
+                                   follow = 7,
+                                   follow_min = 14)
 
 # Determine the safety window parameters for the next cohort
 windowLength(myWindowLength, size=sizeRecommendation)

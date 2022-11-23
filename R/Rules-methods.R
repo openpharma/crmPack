@@ -2954,7 +2954,7 @@ setMethod("stopTrial",
 ##' @param \dots additional arguments
 ##'
 ##' @return the `windowLength` as a list of safety window parameters
-##' (`patientGap`, `patientFollow`, `patientFollowMin`)
+##' (`gap`, `follow`, `follow_min`)
 ##'
 ##' @export
 ##' @keywords methods
@@ -2992,16 +2992,16 @@ setMethod("windowLength",
       interval <-
         findInterval(
           x = size,
-          vec = safetyWindow@sizeIntervals
+          vec = safetyWindow@size
         )
 
       ## so the safety window length is
       patientGap <- head(c(
-        0, safetyWindow@patientGap[[interval]],
-        rep(tail(safetyWindow@patientGap[[interval]], 1), 100)
+        0, safetyWindow@gap[[interval]],
+        rep(tail(safetyWindow@gap[[interval]], 1), 100)
       ), size)
-      patientFollow <- safetyWindow@patientFollow
-      patientFollowMin <- safetyWindow@patientFollowMin
+      patientFollow <- safetyWindow@follow
+      patientFollowMin <- safetyWindow@follow_min
 
       ret <- list(patientGap = patientGap, patientFollow = patientFollow, patientFollowMin = patientFollowMin)
 
@@ -3029,11 +3029,11 @@ setMethod("windowLength",
 
       ## first element should be 0.
       patientGap <- head(c(
-        0, safetyWindow@patientGap,
-        rep(tail(safetyWindow@patientGap, 1), 100)
+        0, safetyWindow@gap,
+        rep(tail(safetyWindow@gap, 1), 100)
       ), size)
-      patientFollow <- safetyWindow@patientFollow
-      patientFollowMin <- safetyWindow@patientFollowMin
+      patientFollow <- safetyWindow@follow
+      patientFollowMin <- safetyWindow@follow_min
 
       ret <- list(
         patientGap = patientGap,

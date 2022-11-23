@@ -8,7 +8,7 @@
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{CohortSize}} is a class for for cohort sizes.
+\code{\link{CohortSize}} is a class for cohort sizes.
 }
 \seealso{
 \code{\link{CohortSizeRange}}, \code{\link{CohortSizeDLT}}, \code{\link{CohortSizeConst}},
