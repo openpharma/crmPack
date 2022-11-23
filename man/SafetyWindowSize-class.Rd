@@ -10,13 +10,13 @@
 SafetyWindowSize(gap, size, follow, follow_min)
 }
 \arguments{
-\item{gap}{\cr see slot definition.}
+\item{gap}{see slot definition.}
 
-\item{size}{\cr see slot definition.}
+\item{size}{see slot definition.}
 
-\item{follow}{\cr see slot definition.}
+\item{follow}{see slot definition.}
 
-\item{follow_min}{\cr see slot definition.}
+\item{follow_min}{see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

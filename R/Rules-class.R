@@ -2271,10 +2271,10 @@ setClass(
 
 #' @rdname SafetyWindowSize-class
 #'
-#' @param gap \cr see slot definition.
-#' @param size \cr see slot definition.
-#' @param follow \cr see slot definition.
-#' @param follow_min \cr see slot definition.
+#' @param gap see slot definition.
+#' @param size see slot definition.
+#' @param follow see slot definition.
+#' @param follow_min see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-SafetyWindowSize.R
