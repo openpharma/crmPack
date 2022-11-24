@@ -2294,72 +2294,63 @@ SafetyWindowSize <- function(gap,
   )
 }
 
-# nolint start
+# SafetyWindowConst ----
 
-## --------------------------------------------------
-## Constant safety window length
-## --------------------------------------------------
+## class ----
 
-##' Constant safety window length
-##'
-##' This class is used when the `gap` should be kept constant.
-##'
-##' @slot gap the constant gap between patients.
-##' @slot follow how long to follow each patient.
-##' @slot follow_min minimum follow up.
-##'
-##' @example examples/Rules-class-SafetyWindowConst.R
-##' @keywords classes
-##' @export
-.SafetyWindowConst <-
-  setClass(Class="SafetyWindowConst",
-           representation(gap="numeric",
-                          follow="numeric",
-                          follow_min="numeric"),
-           prototype(gap=0,
-                     follow=1,
-                     follow_min=1),
-           contains="SafetyWindow",
-           validity=
-             function(object){
-               o <- Validate()
+#' `SafetyWindowConst`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`SafetyWindowConst`] is the class for safety window length and it is used
+#' when the `gap` should be kept constant.
+#'
+#' @slot gap (`integer`)\cr a vector, the constant gap between patients.
+#' @slot follow (`count`)\cr how long to follow each patient. The period of time
+#'   that each patient in the cohort needs to be followed before the next cohort
+#'   opens.
+#' @slot follow_min (`count`)\cr minimum follow up. At least one patient in the
+#'   cohort needs to be followed at the minimal follow up time.
+#'
+#' @aliases SafetyWindowConst
+#' @export
+#'
+.SafetyWindowConst <- setClass(
+  Class = "SafetyWindowConst",
+  slots = c(
+    gap = "integer",
+    follow = "integer",
+    follow_min = "integer"
+  ),
+  prototype = prototype(
+    gap = 0L,
+    follow = 1L,
+    follow_min = 1L
+  ),
+  contains = "SafetyWindow",
+  validity = v_safety_window_const
+)
 
-               o$check(all(object@gap >= 0),
-                       "gap should be non-negative number")
-               o$check(all(object@follow > 0),
-                       "follow should be positive number")
-               o$check(all(object@follow_min > 0),
-                       "follow_min should be positive number")
+## constructor ----
 
-               o$result()
-             })
-validObject(.SafetyWindowConst())
-
-
-##' Initialization function for `SafetyWindowConst`
-##'
-##' @param gap see \code{\linkS4class{SafetyWindowConst}}
-##' @param follow see \code{\linkS4class{SafetyWindowConst}}
-##' @param follow_min see \code{\linkS4class{SafetyWindowConst}}
-##'
-##' @return the \code{\linkS4class{SafetyWindowConst}} object
-##'
-##' @export
-##' @keywords methods
+#' @rdname SafetyWindowConst-class
+#'
+#' @param gap see slot definition.
+#' @param follow see slot definition.
+#' @param follow_min see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-SafetyWindowConst.R
+#'
 SafetyWindowConst <- function(gap,
                               follow,
-                              follow_min)
-{
-  if(follow > follow_min)
-  {
+                              follow_min) {
+  if (follow > follow_min) {
     warning("the value of follow_min is typically larger than the value of follow")
   }
-  .SafetyWindowConst(gap=gap,
-                     follow=follow,
-                     follow_min=follow_min)
+  .SafetyWindowConst(
+    gap = safeInteger(gap),
+    follow = safeInteger(follow),
+    follow_min = safeInteger(follow_min)
+  )
 }
-
-
-## ============================================================
-
-# nolint end

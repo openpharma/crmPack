@@ -1514,3 +1514,63 @@ test_that("v_safety_window_size returns message for non-valid follow_min", {
   object@follow_min <- NA_integer_
   expect_equal(v_safety_window_size(object), err_msg)
 })
+
+# SafetyWindowConst ----
+
+## v_safety_window_const ----
+
+test_that("v_safety_window_const passes for valid object", {
+  object <- SafetyWindowConst(8, 2, 18)
+  expect_true(v_safety_window_const(object))
+
+  object <- SafetyWindowConst(0, 2, 18)
+  expect_true(v_safety_window_const(object))
+
+  object <- SafetyWindowConst(c(2, 5), 2, 18)
+  expect_true(v_safety_window_const(object))
+})
+
+test_that("v_safety_window_const returns message for non-valid gap", {
+  err_msg <- "gap has to be an integer vector with non-negative and non-missing elements"
+  object <- SafetyWindowConst(8, 2, 18)
+
+  # Changing `gap` so that it is not a valid integer scalar.
+  object@gap <- -1L
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@gap <- c(1L, -2L)
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@gap <- NA_integer_
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@gap <- c(2L, NA_integer_)
+  expect_equal(v_safety_window_const(object), err_msg)
+})
+
+test_that("v_safety_window_const returns message for non-valid follow", {
+  err_msg <- "follow has to be a positive integer number"
+  object <- SafetyWindowConst(8, 2, 18)
+
+  # Changing `follow` so that it is not a valid integer scalar.
+  object@follow <- 0L
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@follow <- -1L
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@follow <- c(1L, 2L)
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@follow <- NA_integer_
+  expect_equal(v_safety_window_const(object), err_msg)
+})
+
+test_that("v_safety_window_const returns message for non-valid follow_min", {
+  err_msg <- "follow_min has to be a positive integer number"
+  object <- SafetyWindowConst(8, 2, 18)
+
+  # Changing `follow_min` so that it is not a valid integer scalar.
+  object@follow_min <- 0L
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@follow_min <- -1L
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@follow_min <- c(1L, 2L)
+  expect_equal(v_safety_window_const(object), err_msg)
+  object@follow_min <- NA_integer_
+  expect_equal(v_safety_window_const(object), err_msg)
+})
