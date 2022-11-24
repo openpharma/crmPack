@@ -2682,7 +2682,7 @@ OneParExpNormalPrior <- function(skel_probs,
     lambda = "numeric"
   ),
   contains = "GeneralModel",
-  validity = v_model_one_par_exp_exp_prior
+  validity = v_model_one_par_exp_prior
 )
 
 ## constructor ----

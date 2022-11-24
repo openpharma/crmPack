@@ -1109,6 +1109,9 @@ test_that("OneParExpPrior object can be created with user constructor", {
   expect_valid(result, "OneParExpPrior")
   expect_identical(result@skel_probs, c(0.1, 0.3, 0.5, 0.7, 0.9))
   expect_identical(result@lambda, 2)
+  expect_identical(result@skel_fun(1:5), result@skel_probs)
+  expect_identical(result@skel_fun_inv(result@skel_probs), c(1, 2, 3, 4, 5))
+
 })
 
 test_that("OneParExpPrior throws the error when dose_grid and skel_probs have diff. lengths", {
@@ -1175,7 +1178,7 @@ test_that("OneParExpPrior throws the error for not unique or not sorted skel_pro
 
 test_that("MCMC computes correct values for OneParExpPrior model", {
    data <- h_get_data(placebo = FALSE)
-   model <- h_get_one_par_exp_exp_prior()
+   model <- h_get_one_par_exp_prior()
    options <- h_get_mcmc_options()
 
    result <- mcmc(data = data, model = model, options = options)
@@ -1184,7 +1187,7 @@ test_that("MCMC computes correct values for OneParExpPrior model", {
 
 test_that("MCMC computes correct values for OneParExpPrior model and empty data", {
   data <- h_get_data(empty = TRUE, placebo = FALSE)
-  model <- h_get_one_par_exp_exp_prior()
+  model <- h_get_one_par_exp_prior()
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
@@ -1193,7 +1196,7 @@ test_that("MCMC computes correct values for OneParExpPrior model and empty data"
 
 test_that("MCMC throws the error for OneParExpPrior model when 'xLevel' does not match 'skel_probs'", {
   data <- h_get_data(placebo = FALSE)
-  model <- h_get_one_par_exp_exp_prior()
+  model <- h_get_one_par_exp_prior()
   model@skel_probs <- model@skel_probs[-1]
   options <- h_get_mcmc_options()
 
@@ -1204,7 +1207,7 @@ test_that("MCMC throws the error for OneParExpPrior model when 'xLevel' does not
 })
 
 test_that("No NA is returned in dose calculations for OneParExpPrior model", {
-  model <- h_get_one_par_exp_exp_prior()
+  model <- h_get_one_par_exp_prior()
   calc_dose <- doseFunction(model, theta = 1)
 
   expect_false(is.na(calc_dose(0.95)))

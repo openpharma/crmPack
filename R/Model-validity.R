@@ -550,7 +550,7 @@ v_model_one_par_exp_normal_prior <- function(object) { # nolintr
 }
 
 #' @describeIn v_model_objects validates that [`OneParExpPrior`] class slots are valid.
-v_model_one_par_exp_exp_prior <- function(object) {
+v_model_one_par_exp_prior <- function(object) {
   v <- Validate()
 
   is_skel_prob_ok <- test_probabilities(object@skel_probs, unique = TRUE, sorted = TRUE)
