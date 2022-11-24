@@ -1101,13 +1101,13 @@ test_that("No NA is returned in dose calculations for OneParExpNormalPrior model
 test_that("OneParExpPrior object can be created with user constructor", {
   result <- expect_silent(
     OneParExpPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = 1:5,
       lambda = 2
     )
   )
   expect_valid(result, "OneParExpPrior")
-  expect_identical(result@skel_probs, seq(from = 0.1, to = 0.9, length = 5))
+  expect_identical(result@skel_probs, c(0.1, 0.3, 0.5, 0.7, 0.9))
   expect_identical(result@lambda, 2)
 })
 
@@ -1125,7 +1125,7 @@ test_that("OneParExpPrior throws the error when dose_grid and skel_probs have di
 test_that("OneParExpPrior throws the error for not unique or not sorted dose_grid", {
   result <- expect_error(
     OneParExpPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = c(1, 3, 4, 5, 5),
       lambda = 2
     ),
@@ -1133,7 +1133,7 @@ test_that("OneParExpPrior throws the error for not unique or not sorted dose_gri
   )
   result <- expect_error(
     OneParExpPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = c(2, 1, 3, 4, 5),
       lambda = 2
     ),
