@@ -1428,3 +1428,89 @@ test_that("v_cohort_size_parts returns message for non-valid sizes", {
   object@cohort_size_list <- list(cohort_size_list[[1]])
   expect_equal(v_cohort_size_max(object), err_msg)
 })
+
+# SafetyWindowSize ----
+
+## v_safety_window_size ----
+
+test_that("v_safety_window_size passes for valid object", {
+  object <- h_safety_window_size()
+  expect_true(v_safety_window_size(object))
+
+  object <- h_safety_window_size(three_cohorts = TRUE)
+  expect_true(v_safety_window_size(object))
+})
+
+test_that("v_safety_window_size returns message for non-valid gap", {
+  err_msg1 <- "gap must be a list of length >= 1 with integer vectors only"
+  err_msg2 <- "every element in gap list has to be an integer vector with non-negative and non-missing values"
+  object <- h_safety_window_size()
+
+  # Changing `gap` so that it not a list of integers.
+  object@gap <- c(object@gap[-2], list(c(4, 6)))
+  expect_equal(v_safety_window_size(object), c(err_msg1, err_msg2))
+
+  # Changing `gap` so that it not a list of non-negative integers.
+  object@gap <- c(object@gap[-2], list(c(4L, -(5L))))
+  expect_equal(v_safety_window_size(object), c(err_msg2))
+  object@gap <- c(object@gap[-2], list(integer(0)))
+  expect_equal(v_safety_window_size(object), c(err_msg2))
+  object@gap <- c(object@gap[-2], list(NA_integer_))
+  expect_equal(v_safety_window_size(object), c(err_msg2))
+
+  # Changing `gap` so that it not a list of length >= 1.
+  object@gap <- list()
+  object@size <- integer()
+  expect_equal(v_safety_window_size(object), err_msg1)
+})
+
+test_that("v_safety_window_size returns message for non-valid size", {
+  err_msg <- "size has to be an integer vector, of the same length as gap, with positive, unique and sorted non-missing values" # nolinter
+  object <- h_safety_window_size()
+
+  # Changing `size` so that it contains not allowed elements.
+  object@size <- c(0L, 4L)
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@size <- c(1L, -30L)
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@size <- c(NA, 30L)
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@size <- c(2L, 1L)
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@size <- c(1L, 1L)
+  expect_equal(v_safety_window_size(object), err_msg)
+
+  # Changing `size` so that it not of the same length as `gap`.
+  object@size <- 1L
+  expect_equal(v_safety_window_size(object), err_msg)
+})
+
+test_that("v_safety_window_size returns message for non-valid follow", {
+  err_msg <- "follow has to be a positive integer number"
+  object <- h_safety_window_size()
+
+  # Changing `follow` so that it is not a valid integer scalar.
+  object@follow <- 0L
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@follow <- -1L
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@follow <- c(1L, 2L)
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@follow <- NA_integer_
+  expect_equal(v_safety_window_size(object), err_msg)
+})
+
+test_that("v_safety_window_size returns message for non-valid follow_min", {
+  err_msg <- "follow_min has to be a positive integer number"
+  object <- h_safety_window_size()
+
+  # Changing `follow_min` so that it is not a valid integer scalar.
+  object@follow_min <- 0L
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@follow_min <- -1L
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@follow_min <- c(1L, 2L)
+  expect_equal(v_safety_window_size(object), err_msg)
+  object@follow_min <- NA_integer_
+  expect_equal(v_safety_window_size(object), err_msg)
+})

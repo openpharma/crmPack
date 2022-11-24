@@ -94,7 +94,14 @@ class_changes <- tribble(
   "CohortSizeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "",
   "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, "",
   "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, "",
-  "CohortSizeMin", "", "cohortSizeList", "cohort_size_list", FALSE, ""
+  "CohortSizeMin", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "SafetyWindowSize", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowSize", "", "sizeIntervals", "size", FALSE, "",
+  "SafetyWindowSize", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowSize", "", "patientFollowMin", "follow_min", FALSE, "",
+  "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, ""
 )
 ```
 

@@ -24,7 +24,7 @@ windowLength(safetyWindow, size, ...)
 }
 \value{
 the \code{windowLength} as a list of safety window parameters
-(\code{patientGap}, \code{patientFollow}, \code{patientFollowMin})
+(\code{gap}, \code{follow}, \code{follow_min})
 }
 \description{
 This function determines the safety window length of
@@ -98,10 +98,10 @@ sizeRecommendation <- size(mySize, dose=doseRecommendation$value, data = data)
 # Rule for the safety window length:
 #   -having patientGap as (0,7,3,3,...) for cohort size <4
 #   -and having patientGap as (0,9,5,5,...) for cohort size >=4
-myWindowLength <- SafetyWindowSize(patientGap = list(c(7,3),c(9,5)),
-                                   sizeInterval = c(1,4),
-                                   patientFollow = 7,
-                                   patientFollowMin = 14)
+myWindowLength <- SafetyWindowSize(gap = list(c(7,3),c(9,5)),
+                                   size = c(1,4),
+                                   follow = 7,
+                                   follow_min = 14)
 
 # Determine the safety window parameters for the next cohort
 windowLength(myWindowLength, size=sizeRecommendation)
@@ -164,9 +164,9 @@ mySize <- CohortSizeConst(size=3)
 sizeRecommendation <- size(mySize, dose=doseRecommendation$value, data = data)
 
 # Rule for having safety window length with constant safety window parameters
-myWindowLength <- SafetyWindowConst(patientGap = c(7,3),
-                                    patientFollow = 7,
-                                    patientFollowMin = 14)
+myWindowLength <- SafetyWindowConst(gap = c(7,3),
+                                    follow = 7,
+                                    follow_min = 14)
 
 # Determine the safety window parameters for the next cohort
 windowLength(myWindowLength, size=sizeRecommendation)

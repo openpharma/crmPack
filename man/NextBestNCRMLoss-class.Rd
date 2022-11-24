@@ -30,8 +30,9 @@ NextBestNCRMLoss(
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{NextBestNCRMLoss}} is the class based on NCRM rule and loss function.
-This class is similar to \code{\link{NextBestNCRM}} class, the only difference is the
-addition of loss function. As in NCRM rule, first admissible doses are found,
+This class is similar to \code{\link{NextBestNCRM}} class, but differences are the
+addition of loss function and re-defined toxicity intervals, see each
+toxicity interval documentation and the note for details. As in NCRM rule, first admissible doses are found,
 which are those with probability to fall in overdose category being below
 \code{max_overdose_prob}. Next, within the admissible doses, the loss function is
 calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
