@@ -654,9 +654,9 @@ test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scal
   )
 })
 
-## OneParExpExpPrior ----
+## OneParExpPrior ----
 
-test_that("dose-OneParExpExpPrior works as expected", {
+test_that("dose-OneParExpPrior works as expected", {
   model <- h_get_one_par_exp_exp_prior()
   samples <- h_as_samples(list(theta = c(0, 0.5, 1, 2)))
 
@@ -664,7 +664,7 @@ test_that("dose-OneParExpExpPrior works as expected", {
   expect_snapshot(result)
 })
 
-test_that("dose-OneParExpExpPrior works as expected for scalar samples", {
+test_that("dose-OneParExpPrior works as expected for scalar samples", {
   model <- h_get_one_par_exp_exp_prior()
   samples <- h_as_samples(list(theta = 1))
 
@@ -672,7 +672,7 @@ test_that("dose-OneParExpExpPrior works as expected for scalar samples", {
   expect_snapshot(result)
 })
 
-test_that("dose-OneParExpExpPrior throws the error when x is not a valid scalar", {
+test_that("dose-OneParExpPrior throws the error when x is not a valid scalar", {
   model <- h_get_one_par_exp_exp_prior()
   samples <- h_as_samples(list(theta = c(1, 2)))
 
@@ -1150,9 +1150,9 @@ test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid s
   )
 })
 
-## OneParExpExpPrior ----
+## OneParExpPrior ----
 
-test_that("prob-OneParExpExpPrior works as expected", {
+test_that("prob-OneParExpPrior works as expected", {
   model <- h_get_one_par_exp_exp_prior()
   samples <- h_as_samples(list(theta = c(0, 0.5, 1, 2)))
 
@@ -1160,7 +1160,7 @@ test_that("prob-OneParExpExpPrior works as expected", {
   expect_snapshot(result)
 })
 
-test_that("prob-OneParExpExpPrior works as expected for scalar samples", {
+test_that("prob-OneParExpPrior works as expected for scalar samples", {
   model <- h_get_one_par_exp_exp_prior()
   samples <- h_as_samples(list(theta = 1))
 
@@ -1168,7 +1168,7 @@ test_that("prob-OneParExpExpPrior works as expected for scalar samples", {
   expect_snapshot(result)
 })
 
-test_that("prob-OneParExpExpPrior throws the error when dose is not a valid scalar", {
+test_that("prob-OneParExpPrior throws the error when dose is not a valid scalar", {
   model <- h_get_one_par_exp_exp_prior()
   samples <- h_as_samples(list(theta = c(1, 2)))
 

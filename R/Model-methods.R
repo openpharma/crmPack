@@ -698,19 +698,19 @@ setMethod(
   }
 )
 
-## OneParExpExpPrior ----
+## OneParExpPrior ----
 
 #' @describeIn dose compute the dose level reaching a specific target
 #'   probability of the occurrence of a DLT (`x`).
 #'
-#' @aliases dose-OneParExpExpPrior
+#' @aliases dose-OneParExpPrior
 #' @export
 #'
 setMethod(
   f = "dose",
   signature = signature(
     x = "numeric",
-    model = "OneParExpExpPrior",
+    model = "OneParExpPrior",
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
@@ -1143,18 +1143,18 @@ setMethod(
   }
 )
 
-## OneParExpExpPrior ----
+## OneParExpPrior ----
 
 #' @describeIn prob
 #'
-#' @aliases prob-OneParExpExpPrior
+#' @aliases prob-OneParExpPrior
 #' @export
 #'
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "OneParExpExpPrior",
+    model = "OneParExpPrior",
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {

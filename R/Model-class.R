@@ -2652,15 +2652,15 @@ OneParExpNormalPrior <- function(skel_probs,
   )
 }
 
-# OneParExpExpPrior ----
+# OneParExpPrior ----
 
 ## class ----
 
-#' `OneParExpExpPrior`
+#' `OneParExpPrior`
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`OneParExpExpPrior`] is the class for a standard CRM with an exponential prior on
+#' [`OneParExpPrior`] is the class for a standard CRM with an exponential prior on
 #' the power parameter for the skeleton prior probabilities. It is an
 #' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
 #'
@@ -2670,11 +2670,11 @@ OneParExpNormalPrior <- function(skel_probs,
 #'   of unique and sorted probability values between 0 and 1.
 #' @slot lambda (`number`)\cr rate parameter of prior exponential distribution for theta.
 #'
-#' @aliases OneParExpExpPrior
+#' @aliases OneParExpPrior
 #' @export
 #'
-.OneParExpExpPrior <- setClass(
-  Class = "OneParExpExpPrior",
+.OneParExpPrior <- setClass(
+  Class = "OneParExpPrior",
   slots = c(
     skel_fun = "function",
     skel_fun_inv = "function",
@@ -2687,7 +2687,7 @@ OneParExpNormalPrior <- function(skel_probs,
 
 ## constructor ----
 
-#' @rdname OneParExpExpPrior-class
+#' @rdname OneParExpPrior-class
 #'
 #' @param skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
 #'   of unique and sorted probability values between 0 and 1.
@@ -2696,9 +2696,9 @@ OneParExpNormalPrior <- function(skel_probs,
 #' @param lambda (`number`)\cr rate parameter of prior exponential distribution for theta.
 #'
 #' @export
-#' @example examples/Model-class-OneParExpExpPrior.R
+#' @example examples/Model-class-OneParExpPrior.R
 #'
-OneParExpExpPrior <- function(skel_probs,
+OneParExpPrior <- function(skel_probs,
                               dose_grid,
                               lambda) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
@@ -2707,7 +2707,7 @@ OneParExpExpPrior <- function(skel_probs,
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
 
-  .OneParExpExpPrior(
+  .OneParExpPrior(
     skel_fun = skel_fun,
     skel_fun_inv = skel_fun_inv,
     skel_probs = skel_probs,

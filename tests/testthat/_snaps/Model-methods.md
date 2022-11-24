@@ -201,14 +201,14 @@
     Output
       [1]  8.454708 11.684171
 
-# dose-OneParExpExpPrior works as expected
+# dose-OneParExpPrior works as expected
 
     Code
       result
     Output
       [1] 1.000000 1.825000 5.125000 8.321264
 
-# dose-OneParExpExpPrior works as expected for scalar samples
+# dose-OneParExpPrior works as expected for scalar samples
 
     Code
       result
@@ -418,14 +418,14 @@
     Output
       [1] 0.7509625 0.7509625
 
-# prob-OneParExpExpPrior works as expected
+# prob-OneParExpPrior works as expected
 
     Code
       result
     Output
       [1] 1.0000000 0.9486833 0.9000000 0.8100000
 
-# prob-OneParExpExpPrior works as expected for scalar samples
+# prob-OneParExpPrior works as expected for scalar samples
 
     Code
       result

@@ -52,7 +52,7 @@ reference:
       - DALogisticLogNormal
       - TITELogisticLogNormal
       - OneParExpNormalPrior
-      - OneParExpExpPrior
+      - OneParExpPrior
       - FractionalCRM
       - NextBest
       - NextBestMTD
@@ -239,7 +239,7 @@ reference:
       - dose-Effloglog-noSamples
       - dose-EffFlexi
       - dose-OneParExpNormalPrior
-      - dose-OneParExpExpPrior
+      - dose-OneParExpPrior
       - probFunction
       - probFunction-GeneralModel
       - probFunction-ModelTox
@@ -258,7 +258,7 @@ reference:
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
       - prob-OneParExpNormalPrior
-      - prob-OneParExpExpPrior
+      - prob-OneParExpPrior
       - efficacyFunction
       - efficacyFunction-ModelEff
       - efficacy
@@ -273,7 +273,7 @@ reference:
       - update-ModelPseudo
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
-      - mcmc-GeneralData-OneParExpExpPrior
+      - mcmc-GeneralData-OneParExpPrior
       - nextBest
       - nextBest-NextBestMTD
       - nextBest-NextBestNCRM

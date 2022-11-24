@@ -1762,7 +1762,7 @@
       [1] -1.0265273  0.3965024 -2.2694077  0.6403072
       
 
-# MCMC computes correct values for OneParExpExpPrior model
+# MCMC computes correct values for OneParExpPrior model
 
     Code
       result@data
@@ -1771,7 +1771,7 @@
       [1] 0.7980177 1.7746948 0.9487709 0.9468932
       
 
-# MCMC computes correct values for OneParExpExpPrior model and empty data
+# MCMC computes correct values for OneParExpPrior model and empty data
 
     Code
       result@data

@@ -108,6 +108,6 @@ valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
 \item \code{v_model_one_par_exp_normal_prior()}: validates that \code{\link{OneParExpNormalPrior}} class slots are valid.
 
-\item \code{v_model_one_par_exp_exp_prior()}: validates that \code{\link{OneParExpExpPrior}} class slots are valid.
+\item \code{v_model_one_par_exp_exp_prior()}: validates that \code{\link{OneParExpPrior}} class slots are valid.
 
 }}
