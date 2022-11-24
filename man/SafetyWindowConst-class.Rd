@@ -6,26 +6,25 @@
 \alias{.SafetyWindowConst}
 \title{Constant safety window length}
 \description{
-This class is used when the \code{patientGap} should be kept constant.
+This class is used when the \code{gap} should be kept constant.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{patientGap}}{the constant gap between patients.}
+\item{\code{gap}}{the constant gap between patients.}
 
-\item{\code{patientFollow}}{how long to follow each patient.}
+\item{\code{follow}}{how long to follow each patient.}
 
-\item{\code{patientFollowMin}}{minimum follow up.}
+\item{\code{follow_min}}{minimum follow up.}
 }}
 
 \examples{
-# This is to have along the study constant parameters settings of safety window length,
-# whatever the cohort size is.
+# This is to have along the study constant parameters settings of safety window
+# length, regardless of the cohort size.
 my_win_len <- SafetyWindowConst(
-  patientGap = c(7, 5, 3),
-  patientFollow = 7,
-  patientFollowMin = 14
+  gap = c(7, 5, 3),
+  follow = 7,
+  follow_min = 14
 )
-my_win_len
 }
 \keyword{classes}

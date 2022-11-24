@@ -8,7 +8,7 @@
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{Stopping}} is a class for for stopping rules.
+\code{\link{Stopping}} is a class for stopping rules.
 }
 \seealso{
 \code{\link{StoppingList}}, \code{\link{StoppingCohortsNearDose}}, \code{\link{StoppingPatientsNearDose}},
