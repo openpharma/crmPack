@@ -726,3 +726,18 @@ test_that("SafetyWindowSize object can be created with user constructor", {
   expect_identical(result@follow, 8L)
   expect_identical(result@follow_min, 15L)
 })
+
+## SafetyWindowConst ----
+
+test_that(".SafetyWindowConst works as expected", {
+  result <- expect_silent(.SafetyWindowConst())
+  expect_valid(result, "SafetyWindowConst")
+})
+
+test_that("SafetyWindowConst object can be created with user constructor", {
+  result <- expect_silent(SafetyWindowConst(8, 2, 18))
+  expect_valid(result, "SafetyWindowConst")
+  expect_identical(result@gap, 8L)
+  expect_identical(result@follow, 2L)
+  expect_identical(result@follow_min, 18L)
+})

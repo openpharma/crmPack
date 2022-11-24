@@ -636,3 +636,22 @@ v_safety_window_size <- function(object) {
   )
   v$result()
 }
+
+#' @describeIn v_safety_window validates that the [`SafetyWindowConst`] object
+#'   contains valid slots.
+v_safety_window_const <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@gap, lower = 0, any.missing = FALSE),
+    "gap has to be an integer vector with non-negative and non-missing elements"
+  )
+  v$check(
+    test_int(object@follow, lower = .Machine$double.xmin),
+    "follow has to be a positive integer number"
+  )
+  v$check(
+    test_int(object@follow_min, lower = .Machine$double.xmin),
+    "follow_min has to be a positive integer number"
+  )
+  v$result()
+}
