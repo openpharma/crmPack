@@ -38,3 +38,10 @@ of unique and sorted probability values between 0 and 1.}
 \item{\code{lambda}}{(\code{number})\cr rate parameter of prior exponential distribution for theta.}
 }}
 
+\examples{
+my_model <- OneParExpPrior(
+  skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
+  dose_grid = 1:5,
+  lambda = 2
+)
+}
