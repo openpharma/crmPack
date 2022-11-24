@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9109</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9110</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,12 +32,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -479,6 +473,16 @@
           <code><a href="CohortSizeMin-class.html">CohortSizeMin()</a></code> 
         </dt>
         <dd><code>CohortSizeMin</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="SafetyWindow-class.html">SafetyWindow-class</a></code> <code><a href="SafetyWindow-class.html">SafetyWindow</a></code> 
+        </dt>
+        <dd><code>SafetyWindow</code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="SafetyWindowSize-class.html">SafetyWindowSize()</a></code> 
+        </dt>
+        <dd><code>SafetyWindowSize</code></dd>
       </dl></div><div class="section level2">
       <h2 id="internal-helper-functions">Internal Helper Functions<a class="anchor" aria-label="anchor" href="#internal-helper-functions"></a></h2>
       
@@ -716,6 +720,11 @@ of the function that models dose-biomarker relationship defined in the
           <code><a href="v_cohort_size.html">v_cohort_size_range()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_dlt()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_const()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_parts()</a></code> <code><a href="v_cohort_size.html">v_cohort_size_max()</a></code> 
         </dt>
         <dd>Internal Helper Functions for Validation of <code>CohortSize</code> Objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="v_safety_window.html">v_safety_window_size()</a></code> 
+        </dt>
+        <dd>Internal Helper Functions for Validation of <code>SafetyWindow</code> Objects</dd>
       </dl></div><div class="section level2">
       <h2 id="custom-checkmate-assertions">Custom Checkmate Assertions<a class="anchor" aria-label="anchor" href="#custom-checkmate-assertions"></a></h2>
       
@@ -1076,11 +1085,6 @@ normal model</dd>
         <dd>Initialization function for "RuleDesign"</dd>
       </dl><dl><dt>
           
-          <code><a href="SafetyWindow-class.html">SafetyWindow-class</a></code> 
-        </dt>
-        <dd>The virtual class for safety window</dd>
-      </dl><dl><dt>
-          
           <code><a href="SafetyWindowConst-class.html">SafetyWindowConst-class</a></code> <code><a href="SafetyWindowConst-class.html">.SafetyWindowConst</a></code> 
         </dt>
         <dd>Constant safety window length</dd>
@@ -1089,17 +1093,6 @@ normal model</dd>
           <code><a href="SafetyWindowConst.html">SafetyWindowConst()</a></code> 
         </dt>
         <dd>Initialization function for <code>SafetyWindowConst</code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="SafetyWindowSize-class.html">SafetyWindowSize-class</a></code> <code><a href="SafetyWindowSize-class.html">.SafetyWindowSize</a></code> 
-        </dt>
-        <dd>Safety window length based on cohort size.
-This class is used to decide the rolling rule from the clinical perspective.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SafetyWindowSize.html">SafetyWindowSize()</a></code> 
-        </dt>
-        <dd>Initialization function for <code>SafetyWindowSize</code></dd>
       </dl><dl><dt>
           
           <code><a href="Samples-class.html">Samples-class</a></code> <code><a href="Samples-class.html">.Samples</a></code> 
