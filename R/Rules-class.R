@@ -1096,7 +1096,7 @@ IncrementsMin <- function(increments_list) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`Stopping`] is a class for for stopping rules.
+#' [`Stopping`] is a class for stopping rules.
 #'
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
@@ -1912,7 +1912,7 @@ StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`CohortSize`] is a class for for cohort sizes.
+#' [`CohortSize`] is a class for cohort sizes.
 #'
 #' @seealso [`CohortSizeRange`], [`CohortSizeDLT`], [`CohortSizeConst`],
 #'   [`CohortSizeParts`], [`CohortSizeMin`], [`CohortSizeMin`].
@@ -2188,123 +2188,113 @@ CohortSizeMin <- function(cohort_size_list) {
   .CohortSizeMin(cohort_size_list = cohort_size_list)
 }
 
-# nolint start
+# SafetyWindow ----
 
-## --------------------------------------------------
-## Virtual class for safety window
-## --------------------------------------------------
+## class ----
 
-##' The virtual class for safety window
-##'
-##' @seealso \code{\linkS4class{SafetyWindowSize}},
-##' \code{\linkS4class{SafetyWindowConst}},
-##'
-##' @export
-##' @keywords classes
-setClass(Class="SafetyWindow",
-         contains=list("VIRTUAL"))
+#' `SafetyWindow`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`SafetyWindow`] is a class for safety window.
+#'
+#' @seealso [`SafetyWindowSize`], [`SafetyWindowConst`].
+#'
+#' @aliases SafetyWindow
+#' @export
+#'
+setClass(
+  Class = "SafetyWindow"
+)
 
+# SafetyWindowSize ----
 
-## ============================================================
+## class ----
 
+#' `SafetyWindowSize`
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' [`SafetyWindowSize`] is the class for safety window length based on cohort
+#' size. This class is used to decide the rolling rule from the clinical
+#' perspective.
+#'
+#' @slot gap (`list`)\cr observed period of the previous patient before
+#'   the next patient can be dosed. This is used as follows. If for instance,
+#'   the cohort size is 4 and we want to specify three time intervals between
+#'   these four consecutive patients, i.e. 7 units of time between the 1st and
+#'   the 2nd patient, 5 units between the 2nd and the 3rd one, and finally 3
+#'   units between the 3rd and the 4th one, then,
+#'   `gap` = `list(c(7L, 5L, 3L))`. Sometimes, we want that the interval
+#'   only between the 1st and 2nd patient should be increased for the
+#'   safety consideration and the rest time intervals should remain constant,
+#'   regardless of what the cohort size is. Then, `gap` = `list(c(7L, 3L))`
+#'   and the the package will automatically repeat the last element of the vector
+#'   for the remaining time intervals.
+#' @slot size (`integer`)\cr a vector with the left bounds of the
+#'   relevant cohort size intervals. This is used as follows. For instance, when
+#'   we want to change the `gap` based on the cohort size, i.e. the time
+#'   interval between the 1st and 2nd patient = 9 units of time and the rest
+#'   time intervals are of 5 units of time when the cohort size is equal to or
+#'   larger than 4. And the time interval between the 1st and 2nd patient = 7 units
+#'   of time and the rest time intervals are 3 units of time when the cohort size
+#'   is smaller than 4, then we specify `size = c(0L, 4L)`. This means,
+#'   the right bound of the intervals are exclusive to the interval, and the
+#'   last interval goes from the last value until infinity.
+#' @slot follow (`count`)\cr the period of time that each patient in the
+#'   cohort needs to be followed before the next cohort opens.
+#' @slot follow_min (`count`)\cr at least one patient in the cohort needs
+#'   to be followed at the minimal follow up time.
+#'
+#' @aliases SafetyWindowSize
+#' @export
+#'
+.SafetyWindowSize <- setClass(
+  Class = "SafetyWindowSize",
+  slots = c(
+    gap = "list",
+    size = "integer",
+    follow = "integer",
+    follow_min = "integer"
+  ),
+  prototype = prototype(
+    gap = list(1:2, 1:2),
+    size = c(1L, 3L),
+    follow = 1L,
+    follow_min = 1L
+  ),
+  contains = "SafetyWindow",
+  validity = v_safety_window_size
+)
 
-## --------------------------------------------------
-## Safety window length based on cohort size
-## --------------------------------------------------
+## constructor ----
 
-##' Safety window length based on cohort size.
-##' This class is used to decide the rolling rule from the clinical perspective.
-##'
-##' \code{patientGap} is to be used as follows. If for example, the
-##' cohort size is 4 and we want to specify three time intervals between these
-##' four patients: The interval between the 1st and 2nd patient = 7 units of time
-##' , the interval between the 2nd and 3rd patient = 5 units of time, the interval
-##' between the 3rd and 4th patient = 3 units of time, then we specify
-##' \code{patientGap} to be \code{c(7,5,3)}. Sometimes, we only think the interval
-##' between the 1st and 2nd patient should be increased for the safety consideration
-##' , and the rest time intervals can be the same, whatever the cohort size is, then
-##' we specify \code{patientGap} to be \code{c(7,3)}. The package will automatically
-##' repeat the last element of the vector for the rest time intervals.
-##'
-##' Note that \code{sizeIntervals} is to be read as follows. For instance, When we
-##' want to change the `patientGap` based on the cohort size, i.e. the time interval
-##' between the 1st and 2nd patient = 9 units of time and the rest time intervals are
-##' 5 units of time when the cohort size is equal or larger than 4. And the time
-##' interval between the 1st and 2nd patient = 7 units of time and the rest time
-##' intervals are 3 units of time when the cohort size is smaller than 4, then we
-##' specify \code{sizeIntervals} to be \code{c(0, 4)}. That means, the right
-##' bound of the intervals are exclusive to the interval, and the last interval
-##' goes from the last value until infinity.
-##'
-##' @slot patientGap Observed period of the previous patient before the next patient
-##' can be dosed
-##' @slot sizeIntervals An integer vector with the left bounds of the relevant
-##' cohort size intervals
-##' @slot patientFollow The period of time that each patient in the cohort needs to be
-##' followed before the next cohort open
-##' @slot patientFollowMin At least one patient in the cohort needs to be followed at
-##' the minimal follow up time
-##'
-##' @example examples/Rules-class-SafetyWindowSize.R
-##' @export
-##' @keywords classes
-.SafetyWindowSize <-
-  setClass(Class="SafetyWindowSize",
-           representation(patientGap="list",
-                          sizeIntervals="numeric",
-                          patientFollow="numeric",
-                          patientFollowMin="numeric"),
-           prototype(patientGap=list(0),
-                     sizeIntervals=as.integer(c(1L,3L)),
-                     patientFollow=1,
-                     patientFollowMin=1),
-           contains="SafetyWindow",
-           validity=
-             function(object){
-               o <- Validate()
-
-               o$check(all(sapply(object@patientGap,function(x){x>=0})),
-                       "patientGap should be non-negative number")
-               o$check(all(object@sizeIntervals > 0),
-                       "sizeIntervals must only contain positive integers")
-               o$check(all(object@patientFollow > 0),
-                       "patientFollow should be positive number")
-               o$check(all(object@patientFollowMin > 0),
-                       "patientFollowMin should be positive number")
-
-               o$result()
-             })
-validObject(.SafetyWindowSize())
-
-##' Initialization function for `SafetyWindowSize`
-##'
-##' @param patientGap see \code{\linkS4class{SafetyWindowSize}}
-##' @param sizeIntervals see \code{\linkS4class{SafetyWindowSize}}
-##' @param patientFollow see \code{\linkS4class{SafetyWindowSize}}
-##' @param patientFollowMin see \code{\linkS4class{SafetyWindowSize}}
-##'
-##' @return the \code{\linkS4class{SafetyWindowSize}} object
-##'
-##' @export
-##' @keywords methods
-SafetyWindowSize <- function(patientGap,
-                             sizeIntervals,
-                             patientFollow,
-                             patientFollowMin)
-{
-  if(patientFollow > patientFollowMin)
-  {
-    warning("the value of patientFollowMin is typically larger than the value of patientFollow")
+#' @rdname SafetyWindowSize-class
+#'
+#' @param gap see slot definition.
+#' @param size see slot definition.
+#' @param follow see slot definition.
+#' @param follow_min see slot definition.
+#'
+#' @export
+#' @example examples/Rules-class-SafetyWindowSize.R
+#'
+SafetyWindowSize <- function(gap,
+                             size,
+                             follow,
+                             follow_min) {
+  if (follow > follow_min) {
+    warning("The value of follow_min is typically larger than the value of follow")
   }
-  .SafetyWindowSize(patientGap=patientGap,
-                    sizeIntervals=sizeIntervals,
-                    patientFollow=patientFollow,
-                    patientFollowMin=patientFollowMin)
+  .SafetyWindowSize(
+    gap = lapply(gap, safeInteger),
+    size = safeInteger(size),
+    follow = safeInteger(follow),
+    follow_min = safeInteger(follow_min)
+  )
 }
 
-
-## ============================================================
-
+# nolint start
 
 ## --------------------------------------------------
 ## Constant safety window length
@@ -2312,34 +2302,34 @@ SafetyWindowSize <- function(patientGap,
 
 ##' Constant safety window length
 ##'
-##' This class is used when the `patientGap` should be kept constant.
+##' This class is used when the `gap` should be kept constant.
 ##'
-##' @slot patientGap the constant gap between patients.
-##' @slot patientFollow how long to follow each patient.
-##' @slot patientFollowMin minimum follow up.
+##' @slot gap the constant gap between patients.
+##' @slot follow how long to follow each patient.
+##' @slot follow_min minimum follow up.
 ##'
 ##' @example examples/Rules-class-SafetyWindowConst.R
 ##' @keywords classes
 ##' @export
 .SafetyWindowConst <-
   setClass(Class="SafetyWindowConst",
-           representation(patientGap="numeric",
-                          patientFollow="numeric",
-                          patientFollowMin="numeric"),
-           prototype(patientGap=0,
-                     patientFollow=1,
-                     patientFollowMin=1),
+           representation(gap="numeric",
+                          follow="numeric",
+                          follow_min="numeric"),
+           prototype(gap=0,
+                     follow=1,
+                     follow_min=1),
            contains="SafetyWindow",
            validity=
              function(object){
                o <- Validate()
 
-               o$check(all(object@patientGap >= 0),
-                       "patientGap should be non-negative number")
-               o$check(all(object@patientFollow > 0),
-                       "patientFollow should be positive number")
-               o$check(all(object@patientFollowMin > 0),
-                       "patientFollowMin should be positive number")
+               o$check(all(object@gap >= 0),
+                       "gap should be non-negative number")
+               o$check(all(object@follow > 0),
+                       "follow should be positive number")
+               o$check(all(object@follow_min > 0),
+                       "follow_min should be positive number")
 
                o$result()
              })
@@ -2348,25 +2338,25 @@ validObject(.SafetyWindowConst())
 
 ##' Initialization function for `SafetyWindowConst`
 ##'
-##' @param patientGap see \code{\linkS4class{SafetyWindowConst}}
-##' @param patientFollow see \code{\linkS4class{SafetyWindowConst}}
-##' @param patientFollowMin see \code{\linkS4class{SafetyWindowConst}}
+##' @param gap see \code{\linkS4class{SafetyWindowConst}}
+##' @param follow see \code{\linkS4class{SafetyWindowConst}}
+##' @param follow_min see \code{\linkS4class{SafetyWindowConst}}
 ##'
 ##' @return the \code{\linkS4class{SafetyWindowConst}} object
 ##'
 ##' @export
 ##' @keywords methods
-SafetyWindowConst <- function(patientGap,
-                              patientFollow,
-                              patientFollowMin)
+SafetyWindowConst <- function(gap,
+                              follow,
+                              follow_min)
 {
-  if(patientFollow > patientFollowMin)
+  if(follow > follow_min)
   {
-    warning("the value of patientFollowMin is typically larger than the value of patientFollow")
+    warning("the value of follow_min is typically larger than the value of follow")
   }
-  .SafetyWindowConst(patientGap=patientGap,
-                     patientFollow=patientFollow,
-                     patientFollowMin=patientFollowMin)
+  .SafetyWindowConst(gap=gap,
+                     follow=follow,
+                     follow_min=follow_min)
 }
 
 
