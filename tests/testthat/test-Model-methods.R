@@ -658,7 +658,7 @@ test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scal
 
 test_that("dose-OneParExpPrior works as expected", {
   model <- h_get_one_par_exp_exp_prior()
-  samples <- h_as_samples(list(theta = c(0, 0.5, 1, 2)))
+  samples <- h_as_samples(list(theta = c(0.001, 0.5, 1, 2)))
 
   result <- dose(0.4, model, samples)
   expect_snapshot(result)
