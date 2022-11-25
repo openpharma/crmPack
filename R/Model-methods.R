@@ -717,8 +717,9 @@ setMethod(
     assert_subset("theta", names(samples@data))
     theta <- samples@data$theta
     skel_fun_inv <- model@skel_fun_inv
+    assert_numeric(theta, lower = .Machine$double.xmin, finite = TRUE)
     assert_probabilities(x, len = h_null_if_scalar(theta))
-    assert_numeric(theta, lower = 0 + .Machine$double.xmin, finite = TRUE)
+
     skel_fun_inv(x^(1 / theta))
   }
 )

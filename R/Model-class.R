@@ -2660,15 +2660,16 @@ OneParExpNormalPrior <- function(skel_probs,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`OneParExpPrior`] is the class for a standard CRM with an exponential prior on
-#' the power parameter for the skeleton prior probabilities. It is an
+#' [`OneParExpPrior`] is the class for a standard CRM with an exponential prior
+#' on the power parameter for the skeleton prior probabilities. It is an
 #' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
 #' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
 #' @slot skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
 #'   of unique and sorted probability values between 0 and 1.
-#' @slot lambda (`number`)\cr rate parameter of prior exponential distribution for theta.
+#' @slot lambda (`number`)\cr rate parameter of prior exponential distribution
+#'   for theta.
 #'
 #' @aliases OneParExpPrior
 #' @export
@@ -2689,11 +2690,10 @@ OneParExpNormalPrior <- function(skel_probs,
 
 #' @rdname OneParExpPrior-class
 #'
-#' @param skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
-#'   of unique and sorted probability values between 0 and 1.
+#' @param skel_probs see slot definition.
 #' @param dose_grid (`numeric`)\cr dose grid. It must be must be a sorted vector
 #'   of the same length as `skel_probs`.
-#' @param lambda (`number`)\cr rate parameter of prior exponential distribution for theta.
+#' @param lambda see slot definition.
 #'
 #' @export
 #' @example examples/Model-class-OneParExpPrior.R
@@ -2735,7 +2735,6 @@ OneParExpPrior <- function(skel_probs,
     sample = "theta"
   )
 }
-
 
 # FractionalCRM ----
 

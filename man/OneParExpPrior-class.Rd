@@ -10,19 +10,18 @@
 OneParExpPrior(skel_probs, dose_grid, lambda)
 }
 \arguments{
-\item{skel_probs}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
-of unique and sorted probability values between 0 and 1.}
+\item{skel_probs}{see slot definition.}
 
 \item{dose_grid}{(\code{numeric})\cr dose grid. It must be must be a sorted vector
 of the same length as \code{skel_probs}.}
 
-\item{lambda}{(\code{number})\cr rate parameter of prior exponential distribution for theta.}
+\item{lambda}{see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-\code{\link{OneParExpPrior}} is the class for a standard CRM with an exponential prior on
-the power parameter for the skeleton prior probabilities. It is an
+\code{\link{OneParExpPrior}} is the class for a standard CRM with an exponential prior
+on the power parameter for the skeleton prior probabilities. It is an
 implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
 }
 \section{Slots}{
@@ -35,7 +34,8 @@ implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
 \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
 of unique and sorted probability values between 0 and 1.}
 
-\item{\code{lambda}}{(\code{number})\cr rate parameter of prior exponential distribution for theta.}
+\item{\code{lambda}}{(\code{number})\cr rate parameter of prior exponential distribution
+for theta.}
 }}
 
 \examples{
