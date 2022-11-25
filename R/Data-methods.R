@@ -1,4 +1,6 @@
-# plot-Data ----
+# plot ----
+
+## Data ----
 
 #' Plot Method for the [`Data`] Class
 #'
@@ -73,7 +75,7 @@ setMethod(
   }
 )
 
-# plot-DataDual ----
+## DataDual ----
 
 #' Plot Method for the [`DataDual`] Class
 #'
@@ -139,7 +141,7 @@ setMethod(
   }
 )
 
-# plot-DataDA ----
+## DataDA ----
 
 #' Plot Method for the [`DataDA`] Class
 #'
@@ -226,7 +228,9 @@ setMethod(
   }
 )
 
-# update-Data ----
+# update ----
+
+## Data ----
 
 #' Updating `Data` Objects
 #'
@@ -315,7 +319,7 @@ setMethod(
   }
 )
 
-# update-DataParts ----
+## DataParts ----
 
 #' Updating `DataParts` Objects
 #'
@@ -370,7 +374,7 @@ setMethod(
   }
 )
 
-# update-DataDual ----
+## DataDual ----
 
 #' Updating `DataDual` Objects
 #'
@@ -413,7 +417,7 @@ setMethod(
   }
 )
 
-# update-DataDA ----
+## DataDA ----
 
 #' Updating `DataDA` Objects
 #'
@@ -496,6 +500,8 @@ setMethod(
 
 # getEff ----
 
+## generic ----
+
 #' Extracting Efficacy Responses for Subjects Categorized by the DLT
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -518,7 +524,7 @@ setGeneric(
   valueClass = "list"
 )
 
-# getEff-DataDual ----
+## DataDual ----
 
 #' @rdname getEff
 #' @aliases getEff-DataDual

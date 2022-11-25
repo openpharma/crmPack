@@ -4,28 +4,43 @@
 \name{SafetyWindowConst-class}
 \alias{SafetyWindowConst-class}
 \alias{.SafetyWindowConst}
-\title{Constant safety window length}
+\alias{SafetyWindowConst}
+\title{\code{SafetyWindowConst}}
+\usage{
+SafetyWindowConst(gap, follow, follow_min)
+}
+\arguments{
+\item{gap}{see slot definition.}
+
+\item{follow}{see slot definition.}
+
+\item{follow_min}{see slot definition.}
+}
 \description{
-This class is used when the \code{patientGap} should be kept constant.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{SafetyWindowConst}} is the class for safety window length and it is used
+when the \code{gap} should be kept constant.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{patientGap}}{the constant gap between patients.}
+\item{\code{gap}}{(\code{integer})\cr a vector, the constant gap between patients.}
 
-\item{\code{patientFollow}}{how long to follow each patient.}
+\item{\code{follow}}{(\code{count})\cr how long to follow each patient. The period of time
+that each patient in the cohort needs to be followed before the next cohort
+opens.}
 
-\item{\code{patientFollowMin}}{minimum follow up.}
+\item{\code{follow_min}}{(\code{count})\cr minimum follow up. At least one patient in the
+cohort needs to be followed at the minimal follow up time.}
 }}
 
 \examples{
-# This is to have along the study constant parameters settings of safety window length,
-# whatever the cohort size is.
+# This is to have along the study constant parameters settings of safety window
+# length, regardless of the cohort size.
 my_win_len <- SafetyWindowConst(
-  patientGap = c(7, 5, 3),
-  patientFollow = 7,
-  patientFollowMin = 14
+  gap = c(7, 5, 3),
+  follow = 7,
+  follow_min = 14
 )
-my_win_len
 }
-\keyword{classes}

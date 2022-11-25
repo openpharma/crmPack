@@ -3,12 +3,13 @@
 \docType{class}
 \name{SafetyWindow-class}
 \alias{SafetyWindow-class}
-\title{The virtual class for safety window}
+\alias{SafetyWindow}
+\title{\code{SafetyWindow}}
 \description{
-The virtual class for safety window
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{SafetyWindow}} is a class for safety window.
 }
 \seealso{
-\code{\linkS4class{SafetyWindowSize}},
-\code{\linkS4class{SafetyWindowConst}},
+\code{\link{SafetyWindowSize}}, \code{\link{SafetyWindowConst}}.
 }
-\keyword{classes}

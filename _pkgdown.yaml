@@ -91,6 +91,14 @@ reference:
       - StoppingMaxGainCIRatio
       - CohortSize
       - CohortSizeRange
+      - CohortSizeDLT
+      - CohortSizeConst
+      - CohortSizeParts
+      - CohortSizeMax
+      - CohortSizeMin
+      - SafetyWindow
+      - SafetyWindowSize
+      - SafetyWindowConst
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -179,6 +187,12 @@ reference:
       - v_stopping_all
       - v_stopping_tdci_ratio
       - v_cohort_size_range
+      - v_cohort_size_dlt
+      - v_cohort_size_const
+      - v_cohort_size_parts
+      - v_cohort_size_max
+      - v_safety_window_size
+      - v_safety_window_const
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
@@ -286,16 +300,6 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - CohortSizeConst-class
-      - CohortSizeConst
-      - CohortSizeDLT-class
-      - CohortSizeDLT
-      - CohortSizeMax-class
-      - CohortSizeMax
-      - CohortSizeMin-class
-      - CohortSizeMin
-      - CohortSizeParts-class
-      - CohortSizeParts
       - DADesign-class
       - DADesign
       - DASimulations-class
@@ -327,11 +331,6 @@ reference:
       - Report
       - RuleDesign-class
       - RuleDesign
-      - SafetyWindow-class
-      - SafetyWindowConst-class
-      - SafetyWindowConst
-      - SafetyWindowSize-class
-      - SafetyWindowSize
       - Samples-class
       - Samples
       - Simulations-class
