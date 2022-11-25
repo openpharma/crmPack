@@ -3,9 +3,12 @@
 \name{v_safety_window}
 \alias{v_safety_window}
 \alias{v_safety_window_size}
+\alias{v_safety_window_const}
 \title{Internal Helper Functions for Validation of \code{\link{SafetyWindow}} Objects}
 \usage{
 v_safety_window_size(object)
+
+v_safety_window_const(object)
 }
 \arguments{
 \item{object}{(\code{SafetyWindow})\cr object to validate.}
@@ -23,6 +26,9 @@ These functions are only used internally to validate the format of an input
 \section{Functions}{
 \itemize{
 \item \code{v_safety_window_size()}: validates that the \code{\link{SafetyWindowSize}} object
+contains valid slots.
+
+\item \code{v_safety_window_const()}: validates that the \code{\link{SafetyWindowConst}} object
 contains valid slots.
 
 }}
