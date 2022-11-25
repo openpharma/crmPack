@@ -2699,8 +2699,8 @@ OneParExpNormalPrior <- function(skel_probs,
 #' @example examples/Model-class-OneParExpPrior.R
 #'
 OneParExpPrior <- function(skel_probs,
-                              dose_grid,
-                              lambda) {
+                           dose_grid,
+                           lambda) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
   assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
 

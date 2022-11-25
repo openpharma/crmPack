@@ -1111,7 +1111,6 @@ test_that("OneParExpPrior object can be created with user constructor", {
   expect_identical(result@lambda, 2)
   expect_identical(result@skel_fun(1:5), result@skel_probs)
   expect_identical(result@skel_fun_inv(result@skel_probs), c(1, 2, 3, 4, 5))
-
 })
 
 test_that("OneParExpPrior throws the error when dose_grid and skel_probs have diff. lengths", {
