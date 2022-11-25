@@ -23,11 +23,40 @@ mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
 mySize <- maxSize(mySize1, mySize2)
 
 # Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts=3)
+myStopping1 <- StoppingMinCohorts(nCohorts=3, reportLabel="default")
+
 myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
                                   prob=0.5)
 myStopping3 <- StoppingMinPatients(nPatients=20)
-myStopping <- (myStopping1 & myStopping2) | myStopping3
+myStopping <- (myStopping1 | myStopping2) & myStopping3
+
+#"c(myStopping1 | myStopping2) & myStopping3"
+# (myStopping1 & myStopping3) | (myStopping2 & myStopping3)
+#"c(myStopping1 | myStopping2) | myStopping3"
+
+# myStopping <- StoppingAny(list(myStopping1, myStopping2), reportLabel = "bla") | myStopping3
+# stop1or2 <- StoppingAny(list(myStopping1, myStopping2), reportLabel = "bla")
+# myStopping <- stop1or2 | myStopping3
+
+#scenarios to be covered:
+#StoppingMinCohorts(nCohorts=3, reportLabel = NULL) # should be the default since "no reporting" is the default state
+#StoppingMinCohorts(nCohorts=3, reportLabel = "My specific Label Term") #user specified report label
+#
+#StoppingMinCohorts(nCohorts=3, reportLabel = "default")
+
+# Define the stopping rules
+myStopping1 <- StoppingMinCohorts(nCohorts=3,reportLabel="default")
+#myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
+#                                 prob=0.5)
+myStopping3 <- StoppingMinPatients(nPatients=20,reportLabel="default")
+
+# Create a list of stopping rules (of class 'StoppingList') which will then be
+# summarized (in this specific example) with the 'any' function, meaning that the study
+# would be stopped if 'any' of the single stopping rules is TRUE.
+mystopping <- StoppingList(stopList=c(myStopping1,myStopping3),
+                          summary=any)
+
+
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
@@ -36,7 +65,7 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 # Initialize the design
 design <- Design(model=model,
                  nextBest=myNextBest,
-                 stopping=myStopping,
+                 stopping=myStopping1,
                  increments=myIncrements,
                  cohortSize=mySize,
                  data=emptydata,
@@ -54,7 +83,7 @@ options <- McmcOptions(burnin=100,
 time <- system.time(mySims <- simulate(design,
                                        args=NULL,
                                        truth=myTruth,
-                                       nsim=1,
+                                       nsim=3,
                                        seed=819,
                                        mcmcOptions=options,
                                        parallel=FALSE))[3]

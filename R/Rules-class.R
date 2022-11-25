@@ -1107,7 +1107,8 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"
+  Class = "Stopping"#,
+  #slots = c(reportLabel="character")
 )
 
 # StoppingCohortsNearDose ----
@@ -1228,8 +1229,10 @@ StoppingPatientsNearDose <- function(nPatients,
 #'
 .StoppingMinCohorts <- setClass(
   Class = "StoppingMinCohorts",
-  slots = c(nCohorts = "integer"),
-  prototype = prototype(nCohorts = 2L),
+  slots = c(nCohorts = "integer",
+            reportLabel = "character"),
+  prototype = prototype(nCohorts = 2L,
+                        reportLabel="blah1"),
   contains = "Stopping",
   validity = v_stopping_min_cohorts
 )
@@ -1243,8 +1246,9 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts) {
-  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
+StoppingMinCohorts <- function(nCohorts,reportLabel=character(0)) {
+  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts),
+                      reportLabel = reportLabel)
 }
 
 # StoppingMinPatients ----
@@ -1265,7 +1269,7 @@ StoppingMinCohorts <- function(nCohorts) {
 #'
 .StoppingMinPatients <- setClass(
   Class = "StoppingMinPatients",
-  slots = c(nPatients = "integer"),
+  slots = c(nPatients = "integer",reportLabel="character"),
   prototype = prototype(nPatients = 20L),
   contains = "Stopping",
   validity = v_stopping_min_patients
@@ -1280,8 +1284,9 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients) {
-  .StoppingMinPatients(nPatients = safeInteger(nPatients))
+StoppingMinPatients <- function(nPatients,reportLabel=character(0)) {
+  .StoppingMinPatients(nPatients = safeInteger(nPatients),
+                       reportLabel=reportLabel)
 }
 
 # StoppingTargetProb ----

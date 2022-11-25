@@ -353,7 +353,6 @@ setMethod("simulate",
                                           data=thisData)
 
 
-
                       individual_results_tree <- attr(stopit, "individual")
 
                       flatten_tree <- function(tree) {
@@ -393,10 +392,13 @@ setMethod("simulate",
                            stop=
                            attr(stopit,
                                 "message"),
-                           highestStop = attr(stopit,"highest"),
+                           reportLabel = attr(stopit,"reportLabel"),
+                           #highestStop = attr(stopit,"highest"),
                            individual_stop_results = ind_results)
                   return(thisResult)
               }
+
+
 
               resultList <- getResultList(fun=runSim,
                                           nsim=nsim,
@@ -428,11 +430,14 @@ setMethod("simulate",
 
               ## highest level stopping reasons
 
-              highestStoppingParts <- lapply(resultList, "[[", "highestStop")
+              #highestStoppingParts <- lapply(resultList, "[[", "highestStop")
 
-              #print(paste("Rule 1 and 2",highestStoppingParts))
-              highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
-              #print(highestStoppingMatrix)
+
+              #highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
+
+              reportLabel <- lapply(resultList, "[[", "reportLabel")[1]
+
+              browser()
 
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,
@@ -441,8 +446,9 @@ setMethod("simulate",
                                  stopReasons=stopReasons,
                                  stopResults=stopResults,
                                  seed=RNGstate,
-                                 highestStoppingMatrix = highestStoppingMatrix)
-
+                                 reportLabel = reportLabel
+                                 #highestStoppingMatrix = highestStoppingMatrix,
+                                 )
               return(ret)
           })
 

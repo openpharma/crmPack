@@ -1640,8 +1640,15 @@ setMethod("stopTrial",
 
       highestLevelResults <- stats::setNames(
         unlist(individualResults),
-        as.character(stopping)
+        paste0(as.character(stopping),collapse=" | ")
       )
+
+
+      cat("Class from StoppingAll method: ", class(unlist(individualResults)),"\n")
+
+      cat("HighestLevelResults from StoppingAll method: ", highestLevelResults,"\n")
+
+      cat("HighestLevelResultsNames from StoppingAll method: ", names(highestLevelResults),"\n")
 
       return(structure(overallResult,
                        highest = highestLevelResults,
@@ -1699,10 +1706,18 @@ setMethod("stopTrial",
       ## but let them in the list structure
       overallText <- lapply(individualResults, attr, "message")
 
+
+
       highestLevelResults <- stats::setNames(
         unlist(individualResults),
         as.character(stopping)
       )
+
+      #cat("Class from StoppingAny method: ", class(individualResults),"\n")
+
+      #cat("HighestLevelResults from StoppingAny method: ", highestLevelResults,"\n")
+
+      #cat("HighestLevelResultsNames from StoppingAny method: ", names(highestLevelResults),"\n")
 
       return(structure(overallResult,
                        highest = highestLevelResults,
@@ -1842,6 +1857,18 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- nCohorts >= stopping@nCohorts
 
+     if(stopping@reportLabel == "default") {
+        reportLabel=
+          paste("Minimum number of ",
+                stopping@nCohorts,
+                " cohorts reached")
+
+      #} else if(stopping@reportLabel == character(0)) {
+
+      } else {
+        reportLabel = stopping@reportLabel
+      }
+
       ## generate message
       text <-
         paste(
@@ -1855,7 +1882,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        reportLabel = reportLabel
       ))
     }
 )
@@ -1881,6 +1909,18 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- data@nObs >= stopping@nPatients
 
+      if(stopping@reportLabel == "default") {
+        reportLabel= paste("Minimum number of",
+                           stopping@nPatients,
+                           "patients reached")
+
+
+        #} else if(stopping@reportLabel == character(0)) {
+
+      } else {
+        reportLabel = stopping@reportLabel
+      }
+
       ## generate message
       text <-
         paste(
@@ -1894,7 +1934,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        reportLabel = reportLabel
       ))
     }
 )
@@ -2294,7 +2335,7 @@ setMethod(
     #      "cohorts")
     paste("Minimum number of ",
           x@nCohorts,
-          " cohorts reached.")
+          " cohorts reached")
   }
 )
 
@@ -2307,7 +2348,7 @@ setMethod(
     paste("\u2265",x@nCohorts,
           "cohorts in",
           x@percentage,
-          "% dose range around NBD.")
+          "% dose range around NBD")
   }
 )
 

@@ -713,6 +713,7 @@ setMethod("show",
                   r$dfSave(object@nsim, "nsim"),
                   "simulations\n\n")
 
+
               cat("Stopping rules:\n")
               for(i in 1:length(object@highestStoppingReport)){
                 cat(paste(names(object@highestStoppingReport[i]),":"),

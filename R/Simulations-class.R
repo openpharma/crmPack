@@ -39,7 +39,9 @@
              representation(data="list",
                             doses="numeric",
                             seed="integer",
-                            highestStoppingMatrix = "matrix"),
+                            reportLabel = "list"
+                            #highestStoppingMatrix = "matrix"
+                            ),
              prototype(data=
                            list(Data(x=1:2,
                                      y=0:1,
@@ -48,8 +50,9 @@
                                      y=0:1,
                                      doseGrid=3:4)),
                        doses=c(1, 2),
-                       seed=1L,
-                       highestStoppingMatrix = as.matrix(c(TRUE,FALSE))),
+                       seed=1L#,
+                       #highestStoppingMatrix = as.matrix(c(TRUE,FALSE))
+                       ),
              validity=
                  function(object){
                      o <- Validate()
@@ -77,13 +80,15 @@ validObject(.GeneralSimulations())
 GeneralSimulations <- function(data,
                                doses,
                                seed,
-                               highestStoppingMatrix
+                               reportLabel
+                               #highestStoppingMatrix
                                )
 {
     .GeneralSimulations(data=data,
                         doses=doses,
                         seed=safeInteger(seed),
-                        highestStoppingMatrix = highestStoppingMatrix
+                        reportLabel = reportLabel
+                        #highestStoppingMatrix = highestStoppingMatrix
                         )
 }
 
