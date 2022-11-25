@@ -4,7 +4,9 @@
 test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
   mcmc_options <- McmcOptions(
     burnin = 50000, step = 2,
-    samples = 1000000
+    samples = 1000000,
+    rng_kind = "Wichmann-Hill",
+    rng_seed = 1
   )
 
 
