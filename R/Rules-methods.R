@@ -2335,11 +2335,7 @@ setMethod(
     #      " cohorts reached")
     paste("Minimum number of",
           x@nCohorts,
-<<<<<<< HEAD
           " cohorts reached")
-=======
-          "cohorts reached.")
->>>>>>> eaab81b20a084fe80bda5814346233caecf9f4fb
   }
 )
 
