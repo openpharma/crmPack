@@ -2330,12 +2330,16 @@ setMethod(
   f = "as.character",
   signature = "StoppingMinCohorts",
   definition = function(x, ...) {
-    #paste("\u2265",
+    #paste("Minimum number of ",
     #      x@nCohorts,
-    #      "cohorts")
-    paste("Minimum number of ",
+    #      " cohorts reached")
+    paste("Minimum number of",
           x@nCohorts,
+<<<<<<< HEAD
           " cohorts reached")
+=======
+          "cohorts reached.")
+>>>>>>> eaab81b20a084fe80bda5814346233caecf9f4fb
   }
 )
 
@@ -2386,11 +2390,11 @@ setMethod(
   f = "as.character",
   signature = "StoppingTargetProb",
   definition = function(x, ...) {
-    paste("[",
+    paste("P(",
           x@target[1],
-          "\u2264 prob(DLT | NBD) \u2264",
+          "\u2264 prob(DLE | NBD) \u2264",
           x@target[2],
-          "] \u2265",
+          ") \u2265",
           x@prob)
   }
 )
@@ -2406,7 +2410,7 @@ setMethod(
           x@thresh,
           "* NBD | P(DLE) = ",
           x@target,
-          ") C",
+          ") \u2265 ",
           x@prob
     )
 
@@ -2421,7 +2425,7 @@ setMethod(
   definition = function(x, ...) {
     paste("CV(MTD | P(DLE) = ",
           x@target,
-          "\u2264",
+          ") \u2264",
           x@thresh_cv,
           "%")
   }
@@ -2441,8 +2445,8 @@ setMethod(
           ") \u2265 ",
           x@prob,
           ifelse(x@scale=="relative",
-                 paste(" ( relative )"),
-                 " ( absolute )"
+                 paste("(relative)"),
+                 "(absolute)"
           )
     )
   }
