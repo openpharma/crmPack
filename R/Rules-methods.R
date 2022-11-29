@@ -1638,22 +1638,31 @@ setMethod("stopTrial",
       ## but let them in the list structure
       overallText <- lapply(individualResults, attr, "message")
 
-      highestLevelResults <- stats::setNames(
-        unlist(individualResults),
-        paste0(as.character(stopping),collapse=" | ")
-      )
+      if(stopping@reportComb == "default") {
+        reportComb <- "&"
 
 
-      cat("Class from StoppingAll method: ", class(unlist(individualResults)),"\n")
+        } else {
+          reportComb <- stopping@reportComb
+      }
 
-      cat("HighestLevelResults from StoppingAll method: ", highestLevelResults,"\n")
+      #highestLevelResults <- stats::setNames(
+      #  unlist(individualResults),
+      #  paste0(as.character(stopping),collapse=" | ")
+      #)
 
-      cat("HighestLevelResultsNames from StoppingAll method: ", names(highestLevelResults),"\n")
+
+      #cat("Class from StoppingAll method: ", class(unlist(individualResults)),"\n")
+
+      #cat("HighestLevelResults from StoppingAll method: ", highestLevelResults,"\n")
+
+      #cat("HighestLevelResultsNames from StoppingAll method: ", names(highestLevelResults),"\n")
 
       return(structure(overallResult,
-                       highest = highestLevelResults,
+                      # highest = highestLevelResults,
                        message = overallText,
-                       individual = individualResults
+                       individual = individualResults,
+                      reportComb = reportComb
       ))
     }
 )

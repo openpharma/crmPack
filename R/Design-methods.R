@@ -353,6 +353,28 @@ setMethod("simulate",
                                           data=thisData)
 
 
+                    #browser()
+
+
+                    label_list <- list()
+
+                    if(!is.null(attr(stopit, "individual"))){
+                    for(i in 1: length(attr(stopit, "individual"))){
+
+                        label_list[i] <- attr(attr(stopit, "individual")[[i]], "reportLabel")
+
+                    }
+
+                        reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb"))
+                    } else {
+
+                        reportLabel <- attr(stopit,"reportLabel")
+
+                        }
+
+
+
+                   # browser()
 
                     if (class(stopit) != "logical"){
                     individual_results_tree <- attr(stopit, "individual")
@@ -391,6 +413,8 @@ setMethod("simulate",
 
 
                   ## return the results
+
+
                   thisResult <-
                       list(data=thisData,
                            dose=thisDose,
@@ -400,13 +424,13 @@ setMethod("simulate",
                            stop=
                            attr(stopit,
                                 "message"),
-                           reportLabel = attr(stopit,"reportLabel"),
+                           reportLabel = reportLabel,
                            #highestStop = attr(stopit,"highest"),
                            individual_stop_results = ind_results)
                   return(thisResult)
               }
 
-
+           # browser()
 
               resultList <- getResultList(fun=runSim,
                                           nsim=nsim,

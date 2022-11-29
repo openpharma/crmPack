@@ -1702,10 +1702,12 @@ StoppingList <- function(stopList,
 ##' @export
 .StoppingAll <-
     setClass(Class="StoppingAll",
-             representation(stopList="list"),
+             representation(stopList="list",
+                            reportComb = "character"),
              prototype(stopList=
                            list(StoppingMinPatients(50),
                                 StoppingMinCohorts(5))),
+
              contains="Stopping",
              validity=
                  function(object){
@@ -1726,9 +1728,10 @@ validObject(.StoppingAll())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAll <- function(stopList)
+StoppingAll <- function(stopList, reportComb = character(0))
 {
-    .StoppingAll(stopList=stopList)
+    .StoppingAll(stopList=stopList,
+                 reportComb = reportComb)
 }
 
 
