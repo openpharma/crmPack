@@ -231,10 +231,10 @@ setMethod(
   }
 )
 
-# mcmc-GeneralData-OneParExpNormalPrior ----
+# mcmc-GeneralData-OneParLogNormalPrior ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the
-#'   [`OneParExpNormalPrior`] model, it is required that the length of
+#'   [`OneParLogNormalPrior`] model, it is required that the length of
 #'   skeleton prior probabilities vector should be equal to the length of the
 #'   number of doses.
 #'
@@ -242,13 +242,13 @@ setMethod(
 #'   when number of observations in `data` is `0`. For some models it might be
 #'   necessary to specify it manually here though.
 #'
-#' @aliases mcmc-GeneralData-OneParExpNormalPrior
+#' @aliases mcmc-GeneralData-OneParLogNormalPrior
 #'
 setMethod(
   f = "mcmc",
   signature = signature(
     data = "GeneralData",
-    model = "OneParExpNormalPrior",
+    model = "OneParLogNormalPrior",
     options = "McmcOptions"
   ),
   def = function(data,

@@ -187,14 +187,14 @@
     Output
       [1]  75.82941 108.33195
 
-# dose-OneParExpNormalPrior works as expected
+# dose-OneParLogNormalPrior works as expected
 
     Code
       result
     Output
       [1]  5.125000  7.512509  9.440417 11.771394
 
-# dose-OneParExpNormalPrior works as expected for scalar samples
+# dose-OneParLogNormalPrior works as expected for scalar samples
 
     Code
       result
@@ -404,14 +404,14 @@
     Output
       [1] 0.8722965 0.9371023
 
-# prob-OneParExpNormalPrior works as expected
+# prob-OneParLogNormalPrior works as expected
 
     Code
       result
     Output
       [1] 0.9000000 0.8405405 0.7509625 0.4590874
 
-# prob-OneParExpNormalPrior works as expected for scalar samples
+# prob-OneParLogNormalPrior works as expected for scalar samples
 
     Code
       result

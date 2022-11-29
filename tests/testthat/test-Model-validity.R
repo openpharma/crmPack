@@ -1039,12 +1039,12 @@ test_that("v_model_tite_logistic_log_normal returns message for wrong weight_met
 # v_model_one_par_exp_normal_prior ----
 
 test_that("v_model_one_par_exp_normal_prior passes for valid object", {
-  object <- h_get_one_par_exp_normal_prior()
+  object <- h_get_one_par_log_normal_prior()
   expect_true(v_model_one_par_exp_normal_prior(object))
 })
 
 test_that("v_model_one_par_exp_normal_prior passes for valid object (finit art. prec. interpolation)", {
-  object <- OneParExpNormalPrior(
+  object <- OneParLogNormalPrior(
     skel_probs = seq(from = 0.1, to = 0.7, length = 5),
     dose_grid = 1:5,
     sigma2 = 2
@@ -1053,7 +1053,7 @@ test_that("v_model_one_par_exp_normal_prior passes for valid object (finit art. 
 })
 
 test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_fun - skel_fun_inv", {
-  object <- h_get_one_par_exp_normal_prior()
+  object <- h_get_one_par_log_normal_prior()
 
   # Assigning wrong skel_fun/skel_fun_inv
   object@skel_fun <- function(x) 2 * x
@@ -1068,7 +1068,7 @@ test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_fun -
 })
 
 test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_probs", {
-  object <- h_get_one_par_exp_normal_prior()
+  object <- h_get_one_par_log_normal_prior()
   err_msg <- "skel_probs must be a unique sorted probability values between 0 and 1"
 
   # Assigning wrong skel_probs.
@@ -1085,7 +1085,7 @@ test_that("v_model_one_par_exp_normal_prior returns message for wrong skel_probs
 })
 
 test_that("v_model_one_par_exp_normal_prior returns message for wrong sigma2", {
-  object <- h_get_one_par_exp_normal_prior()
+  object <- h_get_one_par_log_normal_prior()
   err_msg <- "sigma2 must be a positive finite number"
 
   # Assigning wrong sigma2.

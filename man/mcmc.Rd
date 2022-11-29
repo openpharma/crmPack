@@ -10,8 +10,8 @@
 \alias{mcmc-GeneralData-DualEndpointBeta}
 \alias{mcmc,GeneralData,DualEndpointEmax,McmcOptions-method}
 \alias{mcmc-GeneralData-DualEndpointEmax}
-\alias{mcmc,GeneralData,OneParExpNormalPrior,McmcOptions-method}
-\alias{mcmc-GeneralData-OneParExpNormalPrior}
+\alias{mcmc,GeneralData,OneParLogNormalPrior,McmcOptions-method}
+\alias{mcmc-GeneralData-OneParLogNormalPrior}
 \alias{mcmc,GeneralData,OneParExpPrior,McmcOptions-method}
 \alias{mcmc-GeneralData-OneParExpPrior}
 \alias{mcmc,DataMixture,GeneralModel,McmcOptions-method}
@@ -30,7 +30,7 @@ mcmc(data, model, options, ...)
 
 \S4method{mcmc}{GeneralData,DualEndpointEmax,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
-\S4method{mcmc}{GeneralData,OneParExpNormalPrior,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
+\S4method{mcmc}{GeneralData,OneParLogNormalPrior,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
 \S4method{mcmc}{GeneralData,OneParExpPrior,McmcOptions}(data, model, options, from_prior = data@nObs == 0L, ...)
 
@@ -93,8 +93,8 @@ there must be at least one dose in the grid.
 \code{\link{DualEndpointEmax}} model, it is required that there is at least one dose
 in the grid.
 
-\item \code{mcmc(data = GeneralData, model = OneParExpNormalPrior, options = McmcOptions)}: Standard method which uses JAGS. For the
-\code{\link{OneParExpNormalPrior}} model, it is required that the length of
+\item \code{mcmc(data = GeneralData, model = OneParLogNormalPrior, options = McmcOptions)}: Standard method which uses JAGS. For the
+\code{\link{OneParLogNormalPrior}} model, it is required that the length of
 skeleton prior probabilities vector should be equal to the length of the
 number of doses.
 

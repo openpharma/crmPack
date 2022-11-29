@@ -1744,7 +1744,7 @@
       [1] 9.323290 2.114870 5.552484 2.024655
       
 
-# MCMC computes correct values for OneParExpNormalPrior model
+# MCMC computes correct values for OneParLogNormalPrior model
 
     Code
       result@data
@@ -1753,7 +1753,7 @@
       [1] 0.2149170 0.3987768 1.0718321 0.8496711
       
 
-# MCMC computes correct values for OneParExpNormalPrior model and empty data
+# MCMC computes correct values for OneParLogNormalPrior model and empty data
 
     Code
       result@data

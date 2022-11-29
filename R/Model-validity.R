@@ -507,7 +507,7 @@ v_model_tite_logistic_log_normal <- function(object) { # nolintr
   v$result()
 }
 
-#' @describeIn v_model_objects validates that [`OneParExpNormalPrior`] class slots are valid.
+#' @describeIn v_model_objects validates that [`OneParLogNormalPrior`] class slots are valid.
 v_model_one_par_exp_normal_prior <- function(object) { # nolintr
   v <- Validate()
 

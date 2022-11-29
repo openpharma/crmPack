@@ -980,24 +980,24 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
   expect_snapshot(result@data)
 })
 
-# OneParExpNormalPrior ----
+# OneParLogNormalPrior ----
 
 ## constructor ----
 
-test_that("OneParExpNormalPrior object can be created with user constructor", {
+test_that("OneParLogNormalPrior object can be created with user constructor", {
   result <- expect_silent(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = seq(from = 0.1, to = 0.9, length = 5),
       dose_grid = 1:5,
       sigma2 = 2
     )
   )
-  expect_valid(result, "OneParExpNormalPrior")
+  expect_valid(result, "OneParLogNormalPrior")
 })
 
-test_that("OneParExpNormalPrior throws the error when dose_grid and skel_probs have diff. lengths", {
+test_that("OneParLogNormalPrior throws the error when dose_grid and skel_probs have diff. lengths", {
   result <- expect_error(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = 1:6,
       sigma2 = 2
@@ -1006,9 +1006,9 @@ test_that("OneParExpNormalPrior throws the error when dose_grid and skel_probs h
   )
 })
 
-test_that("OneParExpNormalPrior throws the error for not unique or not sorted dose_grid", {
+test_that("OneParLogNormalPrior throws the error for not unique or not sorted dose_grid", {
   result <- expect_error(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = seq(from = 0.1, to = 0.9, length = 5),
       dose_grid = c(1, 3, 4, 5, 5),
       sigma2 = 2
@@ -1016,7 +1016,7 @@ test_that("OneParExpNormalPrior throws the error for not unique or not sorted do
     "Assertion on 'dose_grid' failed: Contains duplicated values, position 5."
   )
   result <- expect_error(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = seq(from = 0.1, to = 0.9, length = 5),
       dose_grid = c(2, 1, 3, 4, 5),
       sigma2 = 2
@@ -1025,9 +1025,9 @@ test_that("OneParExpNormalPrior throws the error for not unique or not sorted do
   )
 })
 
-test_that("OneParExpNormalPrior throws the error for not a probability values in skel_probs", {
+test_that("OneParLogNormalPrior throws the error for not a probability values in skel_probs", {
   result <- expect_error(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = c(0.1, 0.3, 0.5, 0.7, 1.1),
       dose_grid = 1:5,
       sigma2 = 2
@@ -1036,9 +1036,9 @@ test_that("OneParExpNormalPrior throws the error for not a probability values in
   )
 })
 
-test_that("OneParExpNormalPrior throws the error for not unique or not sorted skel_probs", {
+test_that("OneParLogNormalPrior throws the error for not unique or not sorted skel_probs", {
   result <- expect_error(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = c(0.1, 0.2, 0.2, 0.3, 0.4),
       dose_grid = 1:5,
       sigma2 = 2
@@ -1046,7 +1046,7 @@ test_that("OneParExpNormalPrior throws the error for not unique or not sorted sk
     "Assertion on 'skel_probs' failed: Contains duplicated values, position 3."
   )
   result <- expect_error(
-    OneParExpNormalPrior(
+    OneParLogNormalPrior(
       skel_probs = c(0.3, 0.1, 0.5, 0.7, 0.9),
       dose_grid = 1:5,
       sigma2 = 2
@@ -1057,27 +1057,27 @@ test_that("OneParExpNormalPrior throws the error for not unique or not sorted sk
 
 ## mcmc ----
 
-test_that("MCMC computes correct values for OneParExpNormalPrior model", {
+test_that("MCMC computes correct values for OneParLogNormalPrior model", {
   data <- h_get_data(placebo = FALSE)
-  model <- h_get_one_par_exp_normal_prior()
+  model <- h_get_one_par_log_normal_prior()
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
-test_that("MCMC computes correct values for OneParExpNormalPrior model and empty data", {
+test_that("MCMC computes correct values for OneParLogNormalPrior model and empty data", {
   data <- h_get_data(empty = TRUE, placebo = FALSE)
-  model <- h_get_one_par_exp_normal_prior()
+  model <- h_get_one_par_log_normal_prior()
   options <- h_get_mcmc_options()
 
   result <- mcmc(data = data, model = model, options = options)
   expect_snapshot(result@data)
 })
 
-test_that("MCMC throws the error for OneParExpNormalPrior model when 'xLevel' does not match 'skel_probs'", {
+test_that("MCMC throws the error for OneParLogNormalPrior model when 'xLevel' does not match 'skel_probs'", {
   data <- h_get_data(placebo = FALSE)
-  model <- h_get_one_par_exp_normal_prior()
+  model <- h_get_one_par_log_normal_prior()
   model@skel_probs <- model@skel_probs[-1]
   options <- h_get_mcmc_options()
 
@@ -1087,8 +1087,8 @@ test_that("MCMC throws the error for OneParExpNormalPrior model when 'xLevel' do
   )
 })
 
-test_that("No NA is returned in dose calculations for OneParExpNormalPrior model", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("No NA is returned in dose calculations for OneParLogNormalPrior model", {
+  model <- h_get_one_par_log_normal_prior()
   calc_dose <- doseFunction(model, alpha = 1)
 
   expect_false(is.na(calc_dose(0.95)))

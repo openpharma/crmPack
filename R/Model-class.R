@@ -2567,15 +2567,15 @@ TITELogisticLogNormal <- function(weight_method = "linear",
   )
 }
 
-# OneParExpNormalPrior ----
+# OneParLogNormalPrior ----
 
 ## class ----
 
-#' `OneParExpNormalPrior`
+#' `OneParLogNormalPrior`
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`OneParExpNormalPrior`] is the class for a standard CRM with a normal prior on
+#' [`OneParLogNormalPrior`] is the class for a standard CRM with a normal prior on
 #' the log power parameter for the skeleton prior probabilities.
 #'
 #' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
@@ -2586,11 +2586,11 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #'
 #' @seealso [`ModelLogNormal`].
 #'
-#' @aliases OneParExpNormalPrior
+#' @aliases OneParLogNormalPrior
 #' @export
 #'
-.OneParExpNormalPrior <- setClass(
-  Class = "OneParExpNormalPrior",
+.OneParLogNormalPrior <- setClass(
+  Class = "OneParLogNormalPrior",
   slots = c(
     skel_fun = "function",
     skel_fun_inv = "function",
@@ -2603,7 +2603,7 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 
 ## constructor ----
 
-#' @rdname OneParExpNormalPrior-class
+#' @rdname OneParLogNormalPrior-class
 #'
 #' @param skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
 #'   of unique and sorted probability values between 0 and 1.
@@ -2612,9 +2612,9 @@ TITELogisticLogNormal <- function(weight_method = "linear",
 #' @param sigma2 (`number`)\cr prior variance of log power parameter alpha.
 #'
 #' @export
-#' @example examples/Model-class-OneParExpNormalPrior.R
+#' @example examples/Model-class-OneParLogNormalPrior.R
 #'
-OneParExpNormalPrior <- function(skel_probs,
+OneParLogNormalPrior <- function(skel_probs,
                                  dose_grid,
                                  sigma2) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
@@ -2623,7 +2623,7 @@ OneParExpNormalPrior <- function(skel_probs,
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
 
-  .OneParExpNormalPrior(
+  .OneParLogNormalPrior(
     skel_fun = skel_fun,
     skel_fun_inv = skel_fun_inv,
     skel_probs = skel_probs,
@@ -2757,20 +2757,20 @@ OneParExpPrior <- function(skel_probs,
 #'
 .FractionalCRM <- setClass(
   Class = "FractionalCRM",
-  contains = "OneParExpNormalPrior"
+  contains = "OneParLogNormalPrior"
 )
 
 ## constructor ----
 
 #' @rdname FractionalCRM-class
 #'
-#' @inheritDotParams OneParExpNormalPrior
+#' @inheritDotParams OneParLogNormalPrior
 #'
 #' @export
 #' @example examples/Model-class-FractionalCRM.R
 #'
 FractionalCRM <- function(...) {
-  start <- OneParExpNormalPrior(...)
+  start <- OneParLogNormalPrior(...)
 
   # This is adapted from the TITELogisticLogNormal class.
   datamodel <- function() {

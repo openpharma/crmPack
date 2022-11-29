@@ -618,26 +618,26 @@ test_that("dose-LogisticIndepBeta-noSamples throws the error when x is not a val
   )
 })
 
-## OneParExpNormalPrior ----
+## OneParLogNormalPrior ----
 
-test_that("dose-OneParExpNormalPrior works as expected", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("dose-OneParLogNormalPrior works as expected", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
 
   result <- dose(0.4, model, samples)
   expect_snapshot(result)
 })
 
-test_that("dose-OneParExpNormalPrior works as expected for scalar samples", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("dose-OneParLogNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = 1))
 
   result <- dose(c(0.3, 0.7), model, samples)
   expect_snapshot(result)
 })
 
-test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scalar", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("dose-OneParLogNormalPrior throws the error when x is not a valid scalar", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(1, 2)))
 
   expect_error(
@@ -1118,26 +1118,26 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
   )
 })
 
-## OneParExpNormalPrior ----
+## OneParLogNormalPrior ----
 
-test_that("prob-OneParExpNormalPrior works as expected", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("prob-OneParLogNormalPrior works as expected", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
 
   result <- prob(60, model, samples)
   expect_snapshot(result)
 })
 
-test_that("prob-OneParExpNormalPrior works as expected for scalar samples", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("prob-OneParLogNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = 1))
 
   result <- prob(c(20, 60), model, samples)
   expect_snapshot(result)
 })
 
-test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid scalar", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("prob-OneParLogNormalPrior throws the error when dose is not a valid scalar", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(1, 2)))
 
   expect_error(
