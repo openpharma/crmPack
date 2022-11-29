@@ -14,7 +14,7 @@ specified dose level, based on the model parameters (samples)."><meta property="
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9110</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9112</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,12 +36,6 @@ specified dose level, based on the model parameters (samples)."><meta property="
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -113,6 +107,9 @@ specified dose level, based on the model parameters (samples).</p>
 <span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for numeric,OneParExpNormalPrior,Samples</span></span>
+<span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for numeric,OneParExpPrior,Samples</span></span>
 <span><span class="fu">prob</span><span class="op">(</span><span class="va">dose</span>, <span class="va">model</span>, <span class="va">samples</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -182,6 +179,7 @@ parameters.</p></li>
 a specified dose level, based on the <code><a href="LogisticIndepBeta-class.html">LogisticIndepBeta</a></code> model parameters.
 All model parameters (except <code>dose</code>) should be present in the <code>model</code> object.</p></li>
 <li><p><code>prob(dose = numeric, model = OneParExpNormalPrior, samples = Samples)</code>:</p></li>
+<li><p><code>prob(dose = numeric, model = OneParExpPrior, samples = Samples)</code>:</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
@@ -219,9 +217,9 @@ probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for Prob(DLT | dose = 50).</span></span></span>
 <span class="r-in"><span><span class="fu">prob</span><span class="op">(</span>dose <span class="op">=</span> <span class="fl">50</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.1681841 0.3359901 0.1739944 0.1739944 0.1739944 0.4257670 0.2743363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.2743363 0.2244789 0.2244789 0.2244789 0.2244789 0.2244789 0.3399867</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.1025029 0.1222794 0.1222794 0.1222794 0.1222794 0.3178717</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.5828888 0.6038346 0.4894112 0.4894112 0.2688782 0.2688782 0.4218338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.4897793 0.4897793 0.4897793 0.4897793 0.4695678 0.4695678 0.4695678</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.2263878 0.3805050 0.2430693 0.2430693 0.3548348 0.1313772</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'DataDual' class.</span></span></span>
 <span class="r-in"><span><span class="va">data_dual</span> <span class="op">&lt;-</span> <span class="fu"><a href="DataDual-class.html">DataDual</a></span><span class="op">(</span></span></span>

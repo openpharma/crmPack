@@ -262,6 +262,9 @@
     <loc>https://roche.github.io/crmPack/main/reference/OneParExpNormalPrior-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/main/reference/OneParExpPrior-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/main/reference/ProbitLogNormal-class.html</loc>
   </url>
   <url>
@@ -308,9 +311,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/SafetyWindowConst-class.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/main/reference/SafetyWindowConst.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/SafetyWindowSize-class.html</loc>
