@@ -353,7 +353,9 @@ setMethod("simulate",
                                           data=thisData)
 
 
-                      individual_results_tree <- attr(stopit, "individual")
+
+                    if (class(stopit) != "logical"){
+                    individual_results_tree <- attr(stopit, "individual")
 
                       flatten_tree <- function(tree) {
                           if (is.list(tree)) {
@@ -373,6 +375,12 @@ setMethod("simulate",
 
                       #vector of binary results (stopping TRUE or FALSE)
                       ind_results <- unlist(ind_only_tree)
+                    } else {
+
+                        ind_results <- stopit[1]
+
+                    }
+
 
                   }
 
@@ -427,6 +435,8 @@ setMethod("simulate",
               stopReasons <- lapply(resultList, "[[", "stop")
 
               stopResults <- lapply(resultList, "[[", "individual_stop_results")
+              stopMatrix <- as.matrix(do.call(rbind, stopResults))
+
 
               ## highest level stopping reasons
 
@@ -435,16 +445,16 @@ setMethod("simulate",
 
               #highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
 
-              reportLabel <- lapply(resultList, "[[", "reportLabel")[1]
+              reportLabel <- lapply(resultList, "[[", "reportLabel")
 
-              browser()
+
 
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,
                                  doses=recommendedDoses,
                                  fit=fitList,
                                  stopReasons=stopReasons,
-                                 stopResults=stopResults,
+                                 stopResults=stopMatrix,
                                  seed=RNGstate,
                                  reportLabel = reportLabel
                                  #highestStoppingMatrix = highestStoppingMatrix,

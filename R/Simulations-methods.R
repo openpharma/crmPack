@@ -447,13 +447,18 @@ setMethod("summary",
               propAtTarget <- mean((toxAtDoses > target[1]) &
                                    (toxAtDoses < target[2]))
 
-              highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
+              #highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
+              stoppingReport <- object@stopResults
+              colnames(stoppingReport) <- object@reportLabel[[1]]
+
+
+
 
               ## give back an object of class GeneralSimulationsSummary,
               ## for which we then define a print / plot method
                 ret <-
                   .GeneralSimulationsSummary(
-                    highestStoppingReport=highestStoppingReport,
+                    #highestStoppingReport=highestStoppingReport,
                     target=target,
                     targetDoseInterval=targetDoseInterval,
                     nsim=length(object@data),
@@ -467,7 +472,8 @@ setMethod("summary",
                     toxAtDosesSelected=toxAtDoses,
                     propAtTarget=propAtTarget,
                     doseGrid=doseGrid,
-                    placebo=object@data[[1]]@placebo)
+                    placebo=object@data[[1]]@placebo,
+                    stoppingReport = stoppingReport)
 
 
               return(ret)
@@ -715,13 +721,15 @@ setMethod("show",
 
 
               cat("Stopping rules:\n")
-              for(i in 1:length(object@highestStoppingReport)){
-                cat(paste(names(object@highestStoppingReport[i]),":"),
-                    r$dfSave(object@highestStoppingReport[i],
-                             "highestStoppingReport"),
-                    "%\n")
+              #for(i in 1:length(object@highestStoppingReport)){
+              #  cat(paste(names(object@highestStoppingReport[i]),":"),
+              #      r$dfSave(object@highestStoppingReport[i],
+              #               "highestStoppingReport"),
+              #      "%\n")
 
-              }
+              #}
+              cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
+
 
               cat("Target toxicity interval was",
                   r$dfSave(paste(round(object@target * 100),

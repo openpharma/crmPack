@@ -109,7 +109,7 @@ GeneralSimulations <- function(data,
     setClass(Class="Simulations",
              representation(fit="list",
                             stopReasons="list",
-                            stopResults = "list"),
+                            stopResults = "matrix"),
              ## note: this prototype is put together with the prototype
              ## for GeneralSimulations
              prototype(fit=
@@ -118,7 +118,7 @@ GeneralSimulations <- function(data,
                        stopReasons=
                            list("A", "A"),
                        stopResults =
-                           list(TRUE, TRUE)),
+                           matrix(TRUE, TRUE)),
              contains="GeneralSimulations",
              validity=
                  function(object){
@@ -153,7 +153,7 @@ Simulations <- function(fit,
     start <- GeneralSimulations(...)
     .Simulations(start,
                  fit=fit,
-                 stopReasons=stopReasons,
+                 stopReasons = stopReasons,
                  stopResults = stopResults)
 }
 
@@ -249,7 +249,7 @@ DualSimulations <- function(rhoEst,
 .GeneralSimulationsSummary <-
     setClass(Class="GeneralSimulationsSummary",
              representation(target="numeric",
-                            highestStoppingReport="numeric",
+                            stoppingReport="matrix",
                             targetDoseInterval="numeric",
                             nsim="integer",
                             propDLTs="ANY",
