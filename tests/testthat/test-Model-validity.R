@@ -1096,3 +1096,64 @@ test_that("v_model_one_par_exp_normal_prior returns message for wrong sigma2", {
   object@sigma2 <- 1:2
   expect_equal(v_model_one_par_exp_normal_prior(object), err_msg)
 })
+
+# v_model_one_par_exp_prior ----
+
+test_that("v_model_one_par_exp_prior passes for valid object", {
+  object <- h_get_one_par_exp_prior()
+  expect_true(v_model_one_par_exp_prior(object))
+})
+
+test_that("v_model_one_par_exp_prior passes for valid object (finit art. prec. interpolation)", {
+  object <- OneParExpPrior(
+    skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
+    dose_grid = 1:5,
+    lambda = 2
+  )
+  expect_true(v_model_one_par_exp_prior(object))
+})
+
+test_that("v_model_one_par_exp_prior returns message for wrong skel_fun - skel_fun_inv", {
+  object <- h_get_one_par_exp_prior()
+
+  # Assigning wrong skel_fun/skel_fun_inv
+  object@skel_fun <- function(x) 2 * x
+  object@skel_fun_inv <- function(x) x^2
+  expect_equal(
+    v_model_one_par_exp_prior(object),
+    c(
+      "skel_fun_inv must be an inverse funtion of skel_fun function on within the range of sekeleton probs",
+      "skel_fun_inv must be an inverse funtion of skel_fun function on outside the range of sekeleton probs"
+    )
+  )
+})
+
+test_that("v_model_one_par_exp_prior returns message for wrong skel_probs", {
+  object <- h_get_one_par_exp_prior()
+  err_msg <- "skel_probs must be a unique sorted probability values between 0 and 1"
+
+  # Assigning wrong skel_probs.
+  object@skel_probs <- c(-1, 0.5, Inf)
+  expect_equal(v_model_one_par_exp_prior(object), err_msg)
+
+  # Assigning non-unique skel_probs.
+  object@skel_probs <- c(0.2, 0.2)
+  expect_equal(v_model_one_par_exp_prior(object), err_msg)
+
+  # Assigning not sorted skel_probs.
+  object@skel_probs <- c(0.2, 0.1)
+  expect_equal(v_model_one_par_exp_prior(object), err_msg)
+})
+
+test_that("v_model_one_par_exp_prior returns message for wrong lambda", {
+  object <- h_get_one_par_exp_prior()
+  err_msg <- "lambda must be a positive finite number"
+
+  # Assigning wrong lambda.
+  object@lambda <- -1
+  expect_equal(v_model_one_par_exp_prior(object), err_msg)
+
+  # Assigning lambda which is not a scalar.
+  object@lambda <- 1:2
+  expect_equal(v_model_one_par_exp_prior(object), err_msg)
+})

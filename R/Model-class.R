@@ -2619,7 +2619,6 @@ OneParExpNormalPrior <- function(skel_probs,
                                  sigma2) {
   assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
   assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
-  assert_number(sigma2, lower = .Machine$double.xmin, finite = TRUE)
 
   skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
   skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
@@ -2650,6 +2649,90 @@ OneParExpNormalPrior <- function(skel_probs,
     },
     datanames = c("nObs", "y", "xLevel"),
     sample = "alpha"
+  )
+}
+
+# OneParExpPrior ----
+
+## class ----
+
+#' `OneParExpPrior`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`OneParExpPrior`] is the class for a standard CRM with an exponential prior
+#' on the power parameter for the skeleton prior probabilities. It is an
+#' implementation of a version of the one-parameter CRM (O’Quigley et al. 1990).
+#'
+#' @slot skel_fun (`function`)\cr function to calculate the prior DLT probabilities.
+#' @slot skel_fun_inv (`function`)\cr inverse function of `skel_fun`.
+#' @slot skel_probs (`numeric`)\cr skeleton prior probabilities. This is a vector
+#'   of unique and sorted probability values between 0 and 1.
+#' @slot lambda (`number`)\cr rate parameter of prior exponential distribution
+#'   for theta.
+#'
+#' @aliases OneParExpPrior
+#' @export
+#'
+.OneParExpPrior <- setClass(
+  Class = "OneParExpPrior",
+  slots = c(
+    skel_fun = "function",
+    skel_fun_inv = "function",
+    skel_probs = "numeric",
+    lambda = "numeric"
+  ),
+  contains = "GeneralModel",
+  validity = v_model_one_par_exp_prior
+)
+
+## constructor ----
+
+#' @rdname OneParExpPrior-class
+#'
+#' @param skel_probs see slot definition.
+#' @param dose_grid (`numeric`)\cr dose grid. It must be must be a sorted vector
+#'   of the same length as `skel_probs`.
+#' @param lambda see slot definition.
+#'
+#' @export
+#' @example examples/Model-class-OneParExpPrior.R
+#'
+OneParExpPrior <- function(skel_probs,
+                           dose_grid,
+                           lambda) {
+  assert_probabilities(skel_probs, unique = TRUE, sorted = TRUE) # So that skel_fun_inv exists.
+  assert_numeric(dose_grid, len = length(skel_probs), any.missing = FALSE, unique = TRUE, sorted = TRUE)
+
+  skel_fun <- approxfun(x = dose_grid, y = skel_probs, rule = 2)
+  skel_fun_inv <- approxfun(x = skel_probs, y = dose_grid, rule = 2)
+
+  .OneParExpPrior(
+    skel_fun = skel_fun,
+    skel_fun_inv = skel_fun_inv,
+    skel_probs = skel_probs,
+    lambda = lambda,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        p[i] <- skel_probs[xLevel[i]]^theta
+        y[i] ~ dbern(p[i])
+      }
+    },
+    priormodel = function() {
+      theta ~ dexp(lambda)
+    },
+    modelspecs = function(from_prior) {
+      ms <- list(lambda = lambda)
+      if (!from_prior) {
+        ms$skel_probs <- skel_probs
+      }
+      ms
+    },
+    init = function() {
+      list(theta = 1)
+    },
+    datanames = c("nObs", "y", "xLevel"),
+    sample = "theta"
   )
 }
 

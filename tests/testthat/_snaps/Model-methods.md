@@ -201,6 +201,20 @@
     Output
       [1]  8.454708 11.684171
 
+# dose-OneParExpPrior works as expected
+
+    Code
+      result
+    Output
+      [1] 1.000000 1.825000 5.125000 8.321264
+
+# dose-OneParExpPrior works as expected for scalar samples
+
+    Code
+      result
+    Output
+      [1] 3.75 9.25
+
 # prob-LogisticNormal works as expected
 
     Code
@@ -403,6 +417,20 @@
       result
     Output
       [1] 0.7509625 0.7509625
+
+# prob-OneParExpPrior works as expected
+
+    Code
+      result
+    Output
+      [1] 1.0000000 0.9486833 0.9000000 0.8100000
+
+# prob-OneParExpPrior works as expected for scalar samples
+
+    Code
+      result
+    Output
+      [1] 0.9 0.9
 
 # gain-ModelTox-ModelEff works as expected
 

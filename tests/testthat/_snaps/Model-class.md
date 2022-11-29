@@ -1762,6 +1762,24 @@
       [1] -1.0265273  0.3965024 -2.2694077  0.6403072
       
 
+# MCMC computes correct values for OneParExpPrior model
+
+    Code
+      result@data
+    Output
+      $theta
+      [1] 0.7980177 1.7746948 0.9487709 0.9468932
+      
+
+# MCMC computes correct values for OneParExpPrior model and empty data
+
+    Code
+      result@data
+    Output
+      $theta
+      [1] 0.37759092 0.07285336 0.21803431 0.61478103
+      
+
 # MCMC computes correct values for FractionalCRM model
 
     Code
