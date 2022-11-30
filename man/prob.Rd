@@ -28,8 +28,10 @@
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
 \alias{prob-LogisticIndepBeta-noSamples}
-\alias{prob,numeric,OneParExpNormalPrior,Samples-method}
-\alias{prob-OneParExpNormalPrior}
+\alias{prob,numeric,OneParLogNormalPrior,Samples-method}
+\alias{prob-OneParLogNormalPrior}
+\alias{prob,numeric,OneParExpPrior,Samples-method}
+\alias{prob-OneParExpPrior}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -60,7 +62,9 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model)
 
-\S4method{prob}{numeric,OneParExpNormalPrior,Samples}(dose, model, samples)
+\S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
@@ -132,7 +136,9 @@ parameters.
 a specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
-\item \code{prob(dose = numeric, model = OneParExpNormalPrior, samples = Samples)}: 
+\item \code{prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)}: 
+
+\item \code{prob(dose = numeric, model = OneParExpPrior, samples = Samples)}: 
 
 }}
 \note{

@@ -618,27 +618,63 @@ test_that("dose-LogisticIndepBeta-noSamples throws the error when x is not a val
   )
 })
 
-## OneParExpNormalPrior ----
+## OneParLogNormalPrior ----
 
-test_that("dose-OneParExpNormalPrior works as expected", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("dose-OneParLogNormalPrior works as expected", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
 
   result <- dose(0.4, model, samples)
   expect_snapshot(result)
 })
 
-test_that("dose-OneParExpNormalPrior works as expected for scalar samples", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("dose-OneParLogNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = 1))
 
   result <- dose(c(0.3, 0.7), model, samples)
   expect_snapshot(result)
 })
 
-test_that("dose-OneParExpNormalPrior throws the error when x is not a valid scalar", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("dose-OneParLogNormalPrior throws the error when x is not a valid scalar", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(1, 2)))
+
+  expect_error(
+    dose(c(40, 50), model, samples),
+    "Assertion on 'x' failed: Must have length 1."
+  )
+  expect_error(
+    dose(2, model, samples),
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+  expect_error(
+    dose(-2, model, samples),
+    "Assertion on 'x' failed: Probability must be within \\[0, 1\\] bounds but it is not."
+  )
+})
+
+## OneParExpPrior ----
+
+test_that("dose-OneParExpPrior works as expected", {
+  model <- h_get_one_par_exp_prior()
+  samples <- h_as_samples(list(theta = c(0.001, 0.5, 1, 2)))
+
+  result <- dose(0.4, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_prior()
+  samples <- h_as_samples(list(theta = 1))
+
+  result <- dose(c(0.3, 0.7), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("dose-OneParExpPrior throws the error when x is not a valid scalar", {
+  model <- h_get_one_par_exp_prior()
+  samples <- h_as_samples(list(theta = c(1, 2)))
 
   expect_error(
     dose(c(40, 50), model, samples),
@@ -1082,26 +1118,26 @@ test_that("prob-LogisticIndepBeta-noSamples throws the error when dose is not a 
   )
 })
 
-## OneParExpNormalPrior ----
+## OneParLogNormalPrior ----
 
-test_that("prob-OneParExpNormalPrior works as expected", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("prob-OneParLogNormalPrior works as expected", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(0, 0.5, 1, 2)))
 
   result <- prob(60, model, samples)
   expect_snapshot(result)
 })
 
-test_that("prob-OneParExpNormalPrior works as expected for scalar samples", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("prob-OneParLogNormalPrior works as expected for scalar samples", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = 1))
 
   result <- prob(c(20, 60), model, samples)
   expect_snapshot(result)
 })
 
-test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid scalar", {
-  model <- h_get_one_par_exp_normal_prior()
+test_that("prob-OneParLogNormalPrior throws the error when dose is not a valid scalar", {
+  model <- h_get_one_par_log_normal_prior()
   samples <- h_as_samples(list(alpha = c(1, 2)))
 
   expect_error(
@@ -1114,6 +1150,37 @@ test_that("prob-OneParExpNormalPrior throws the error when dose is not a valid s
   )
 })
 
+## OneParExpPrior ----
+
+test_that("prob-OneParExpPrior works as expected", {
+  model <- h_get_one_par_exp_prior()
+  samples <- h_as_samples(list(theta = c(0, 0.5, 1, 2)))
+
+  result <- prob(60, model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpPrior works as expected for scalar samples", {
+  model <- h_get_one_par_exp_prior()
+  samples <- h_as_samples(list(theta = 1))
+
+  result <- prob(c(20, 60), model, samples)
+  expect_snapshot(result)
+})
+
+test_that("prob-OneParExpPrior throws the error when dose is not a valid scalar", {
+  model <- h_get_one_par_exp_prior()
+  samples <- h_as_samples(list(theta = c(1, 2)))
+
+  expect_error(
+    prob(c(40, 50), model, samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+  expect_error(
+    prob(-3, model, samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
 # biomarker ----
 
 ## DualEndpoint ----
