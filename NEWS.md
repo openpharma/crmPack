@@ -1,4 +1,4 @@
-# Version 1.0.9000.9113
+# Version 1.0.9000.9114
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
 * Created a new vignette which describes how to use certain functions and features
   of `crmPack` after the major refactoring.
