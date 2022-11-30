@@ -106,7 +106,7 @@ valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
 \item \code{v_model_tite_logistic_log_normal()}: validates that \code{\link{TITELogisticLogNormal}} class slots are valid.
 
-\item \code{v_model_one_par_exp_normal_prior()}: validates that \code{\link{OneParExpNormalPrior}} class slots are valid.
+\item \code{v_model_one_par_exp_normal_prior()}: validates that \code{\link{OneParLogNormalPrior}} class slots are valid.
 
 \item \code{v_model_one_par_exp_prior()}: validates that \code{\link{OneParExpPrior}} class slots are valid.
 

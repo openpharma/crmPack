@@ -51,7 +51,7 @@ reference:
       - EffFlexi
       - DALogisticLogNormal
       - TITELogisticLogNormal
-      - OneParExpNormalPrior
+      - OneParLogNormalPrior
       - OneParExpPrior
       - FractionalCRM
       - NextBest
@@ -243,7 +243,7 @@ reference:
       - dose-LogisticIndepBeta-noSamples
       - dose-Effloglog-noSamples
       - dose-EffFlexi
-      - dose-OneParExpNormalPrior
+      - dose-OneParLogNormalPrior
       - dose-OneParExpPrior
       - probFunction
       - probFunction-GeneralModel
@@ -262,7 +262,7 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
-      - prob-OneParExpNormalPrior
+      - prob-OneParLogNormalPrior
       - prob-OneParExpPrior
       - efficacyFunction
       - efficacyFunction-ModelEff
