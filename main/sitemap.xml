@@ -259,10 +259,10 @@
     <loc>https://roche.github.io/crmPack/main/reference/NextBestThreePlusThree-class.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/main/reference/OneParExpNormalPrior-class.html</loc>
+    <loc>https://roche.github.io/crmPack/main/reference/OneParExpPrior-class.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/main/reference/OneParExpPrior-class.html</loc>
+    <loc>https://roche.github.io/crmPack/main/reference/OneParLogNormalPrior-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/ProbitLogNormal-class.html</loc>
