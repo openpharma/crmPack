@@ -1995,6 +1995,22 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- probTarget >= stopping@prob
 
+      if(stopping@reportLabel == "default") {
+        reportLabel=
+          paste("P(",
+                stopping@target[1],
+                "\u2264 prob(DLE | NBD) \u2264",
+                stopping@target[2],
+                ") \u2265",
+                stopping@prob)
+
+
+
+      } else {
+        reportLabel = stopping@reportLabel
+      }
+
+
       ## generate message
       text <-
         paste(
@@ -2011,7 +2027,8 @@ setMethod("stopTrial",
 
       ## return both
       return(structure(doStop,
-        message = text
+        message = text,
+        reportLabel = reportLabel
       ))
     }
 )
@@ -2715,6 +2732,8 @@ setMethod("size",
           x = dltHappened,
           vec = cohortSize@DLTintervals
         )
+
+
 
       ## so the cohort size is
       ret <- cohortSize@cohortSize[interval]
