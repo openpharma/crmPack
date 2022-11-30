@@ -1717,10 +1717,20 @@ setMethod("stopTrial",
 
 
 
-      highestLevelResults <- stats::setNames(
-        unlist(individualResults),
-        as.character(stopping)
-      )
+     # highestLevelResults <- stats::setNames(
+    #    unlist(individualResults),
+    #    as.character(stopping)
+    #  )
+
+      if(stopping@reportComb == "default") {
+        reportComb <- "|"
+
+
+      } else {
+
+        reportComb <- stopping@reportComb
+      }
+
 
       #cat("Class from StoppingAny method: ", class(individualResults),"\n")
 
@@ -1729,9 +1739,10 @@ setMethod("stopTrial",
       #cat("HighestLevelResultsNames from StoppingAny method: ", names(highestLevelResults),"\n")
 
       return(structure(overallResult,
-                       highest = highestLevelResults,
+                       #highest = highestLevelResults,
                        message = overallText,
-                       individual = individualResults
+                       individual = individualResults,
+                       reportComb = reportComb
       ))
     }
 )

@@ -449,6 +449,8 @@ setMethod("summary",
 
               #highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
               stoppingReport <- object@stopResults
+
+#browser()
               colnames(stoppingReport) <- object@reportLabel[[1]]
 
 
@@ -720,15 +722,29 @@ setMethod("show",
                   "simulations\n\n")
 
 
-              cat("Stopping rules:\n")
-              #for(i in 1:length(object@highestStoppingReport)){
-              #  cat(paste(names(object@highestStoppingReport[i]),":"),
-              #      r$dfSave(object@highestStoppingReport[i],
-              #               "highestStoppingReport"),
-              #      "%\n")
+              cat("Stopping rules:\n \n")
 
-              #}
-              cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
+
+
+              if(ncol(object@stoppingReport) > 1){
+                logPercent <- apply(object@stoppingReport,2,mean)*100
+
+
+                for(i in 1:ncol(object@stoppingReport)){
+                  cat(names(logPercent[i]),":",
+                      logPercent[i],
+                      "%\n \n")
+
+                }
+
+              } else{
+
+                cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
+              }
+
+
+              #browser()
+              #cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
 
 
               cat("Target toxicity interval was",

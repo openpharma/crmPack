@@ -353,7 +353,7 @@ setMethod("simulate",
                                           data=thisData)
 
 
-                    #browser()
+
 
 
                     label_list <- list()
@@ -365,7 +365,16 @@ setMethod("simulate",
 
                     }
 
-                        reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb"))
+
+                        if(class(object@stopping) == "StoppingAll"){
+
+                            reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb"))
+
+                        } else {
+                            reportLabel <- label_list
+
+                        }
+
                     } else {
 
                         reportLabel <- attr(stopit,"reportLabel")
@@ -374,9 +383,9 @@ setMethod("simulate",
 
 
 
-                   # browser()
 
-                    if (class(stopit) != "logical"){
+
+
                     individual_results_tree <- attr(stopit, "individual")
 
                       flatten_tree <- function(tree) {
@@ -397,11 +406,20 @@ setMethod("simulate",
 
                       #vector of binary results (stopping TRUE or FALSE)
                       ind_results <- unlist(ind_only_tree)
-                    } else {
 
-                        ind_results <- stopit[1]
 
-                    }
+
+
+
+                        if (class(object@stopping) == "StoppingAny"){
+                            reportResults <- ind_results
+
+                        } else {
+
+                            reportResults <- stopit[1]
+                        }
+
+
 
 
                   }
@@ -426,7 +444,8 @@ setMethod("simulate",
                                 "message"),
                            reportLabel = reportLabel,
                            #highestStop = attr(stopit,"highest"),
-                           individual_stop_results = ind_results)
+                           individual_stop_results = ind_results,
+                           reportResults = reportResults)
                   return(thisResult)
               }
 
@@ -458,7 +477,7 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
-              stopResults <- lapply(resultList, "[[", "individual_stop_results")
+              stopResults <- lapply(resultList, "[[", "reportResults")
               stopMatrix <- as.matrix(do.call(rbind, stopResults))
 
 
