@@ -31,6 +31,7 @@ binded
 binDLE
 biomarker
 Biomarker
+bmatrix
 Bov
 Bove
 Brezger
@@ -123,6 +124,7 @@ eot
 equi
 et
 firstSeparate
+frac
 fromPrior
 funder
 Gabe
@@ -252,6 +254,7 @@ pharmacokinetic
 pkgdown
 PLcohortSize
 plotlist
+pmatrix
 positivity
 PowerShell
 PR
@@ -394,3 +397,6 @@ xlab
 Yeung
 YJ
 yml
+alpha
+beta
+α
