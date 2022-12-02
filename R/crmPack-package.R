@@ -30,6 +30,7 @@
 #' @import ggplot2
 #' @import methods
 #' @import tibble
+#' @import tidyverse
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom graphics plot hist legend lines matlines matplot
 #' @importFrom stats binomial coef cov2cor gaussian glm lm median model.matrix
@@ -40,7 +41,8 @@
 #' @importFrom rjags jags.model jags.samples
 #' @importFrom futile.logger flog.threshold flog.logger flog.trace TRACE FATAL
 #' @importFrom kableExtra kbl add_header_above column_spec collapse_rows
-#'   kable_styling add_footnote
+#'   kable_styling add_footnote kable
+#'
 #' @keywords package
 #' @references Sabanes Bove D, Yeung WY, Palermo G, Jaki T (2019).
 #' "Model-Based Dose Escalation Designs in R with crmPack."

@@ -19,9 +19,6 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(crmPack)
 library(tidyverse)
-library(knitr)
-library(kableExtra)
-library(stringr)
 ```
 ## Introduction
 This vignette picks up where the previous one ([Trial Definition](trial_definition.html)), ends.  To recap, our trial defines the six fundamental elements of a CRM trial as 
@@ -203,12 +200,12 @@ tabulatePosterior <- function(mcmcSamples, observedData) {
     ) %>%
     replace_na(list(Treated = 0, WithDLT = 0)) %>%
     select(dose, Treated, WithDLT, target, overdose) %>%
-    kable(
+    kableExtra::kable(
       col.names = c("Dose", "Treated", "With DLT", "Target range", "Overdose range"),
       table.attr = "style='width:60%;'",
       digits = c(0, 0, 0, 3, 3)
     ) %>%
-    add_header_above(c(" " = 1, "Participants" = 2, "Probability that dose is in " = 2))
+    kableExtra::add_header_above(c(" " = 1, "Participants" = 2, "Probability that dose is in " = 2))
 }
 
 tabulatePosterior(postSamples, firstFour)
@@ -572,7 +569,7 @@ fullSummary <- fullSamples %>%
   )
 
 fullSummary %>%
-  kable(
+  kableExtra::kable(
     col.names = c("Dose", "Mean", "Median", "5th", "10th", "25th", "75th", "90th", "95th"),
     digits = c(0, rep(3, 8))
   ) %>%
