@@ -20,7 +20,7 @@ A CRM study consists of six basic elements:
 
 * The dose grid
 * The dose-toxicity model
-* The increment rule<sup>1</sup>
+* The increment rule_<sup>1</sup>
 * The dose recommendation rule<sup>1</sup>
 * The cohort size<sup>1</sup>
 * The stopping rule
@@ -60,11 +60,11 @@ model <- LogisticLogNormal(
 
 In `crmPack`, the `LogisticLogNormal` class fits a model of the following form:
 
-$$ log(\frac{p_i}{1 - p_i}) = \alpha + \beta (d_i - d^*) $$
+$$log(\frac{p_i}{1 - p_i}) = \alpha + \beta (d_i - d^*)$$
 
-where d<sup>*</sup> is a reference dose (specified by the `refDose` argument to the `LogisticLogNormal` function above) and the prior joint distribution of $\alpha$ and $\beta$ is 
+where $d^*$ is a reference dose (specified by the `ref_dose` argument to the `LogisticLogNormal` function above) and the prior joint distribution of $\alpha$ and $\beta$ is 
 
-$$ \begin{bmatrix}
+$$\begin{bmatrix}
 \alpha \\
 log(\beta)
 \end{bmatrix}	\sim
@@ -78,7 +78,8 @@ N\begin{pmatrix}
 \end{bmatrix}	
 \end{pmatrix}.
 $$
-The mean and covariance matrices are defined by the `mean` and `cov` parameters to the `LogisticLogNormal` call.  So the code above defines the prior joint distribution of &alpha; and log(&beta;) to be
+
+The mean and covariance matrices are defined by the `mean` and `cov` parameters to the `LogisticLogNormal` call.  So the code above defines the prior joint distribution of $\alpha$ and $log(\beta)$ to be
 
 $$ 
 N\begin{pmatrix}
