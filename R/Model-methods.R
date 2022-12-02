@@ -673,19 +673,19 @@ setMethod(
   }
 )
 
-## OneParExpNormalPrior ----
+## OneParLogNormalPrior ----
 
 #' @describeIn dose compute the dose level reaching a specific target
-#'   probability of the occurrence of a DLE (`x`).
+#'   probability of the occurrence of a DLT (`x`).
 #'
-#' @aliases dose-OneParExpNormalPrior
+#' @aliases dose-OneParLogNormalPrior
 #' @export
 #'
 setMethod(
   f = "dose",
   signature = signature(
     x = "numeric",
-    model = "OneParExpNormalPrior",
+    model = "OneParLogNormalPrior",
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
@@ -695,6 +695,32 @@ setMethod(
     assert_probabilities(x, len = h_null_if_scalar(alpha))
 
     skel_fun_inv(x^(1 / exp(alpha)))
+  }
+)
+
+## OneParExpPrior ----
+
+#' @describeIn dose compute the dose level reaching a specific target
+#'   probability of the occurrence of a DLT (`x`).
+#'
+#' @aliases dose-OneParExpPrior
+#' @export
+#'
+setMethod(
+  f = "dose",
+  signature = signature(
+    x = "numeric",
+    model = "OneParExpPrior",
+    samples = "Samples"
+  ),
+  definition = function(x, model, samples) {
+    assert_subset("theta", names(samples@data))
+    theta <- samples@data$theta
+    skel_fun_inv <- model@skel_fun_inv
+    assert_numeric(theta, lower = .Machine$double.xmin, finite = TRUE)
+    assert_probabilities(x, len = h_null_if_scalar(theta))
+
+    skel_fun_inv(x^(1 / theta))
   }
 )
 
@@ -1094,18 +1120,18 @@ setMethod(
   }
 )
 
-## OneParExpNormalPrior ----
+## OneParLogNormalPrior ----
 
 #' @describeIn prob
 #'
-#' @aliases prob-OneParExpNormalPrior
+#' @aliases prob-OneParLogNormalPrior
 #' @export
 #'
 setMethod(
   f = "prob",
   signature = signature(
     dose = "numeric",
-    model = "OneParExpNormalPrior",
+    model = "OneParLogNormalPrior",
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
@@ -1115,6 +1141,30 @@ setMethod(
     assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
 
     skel_fun(dose)^exp(alpha)
+  }
+)
+
+## OneParExpPrior ----
+
+#' @describeIn prob
+#'
+#' @aliases prob-OneParExpPrior
+#' @export
+#'
+setMethod(
+  f = "prob",
+  signature = signature(
+    dose = "numeric",
+    model = "OneParExpPrior",
+    samples = "Samples"
+  ),
+  definition = function(dose, model, samples) {
+    assert_subset("theta", names(samples@data))
+    theta <- samples@data$theta
+    skel_fun <- model@skel_fun
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta))
+
+    skel_fun(dose)^theta
   }
 )
 

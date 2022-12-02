@@ -687,3 +687,57 @@ test_that("CohortSizeMax object can be created with user constructor", {
   expect_valid(result, "CohortSizeMax")
   expect_identical(result@cohort_size_list, cohort_size_list)
 })
+
+## CohortSizeMin ----
+
+test_that(".CohortSizeMin works as expected", {
+  result <- expect_silent(.CohortSizeMin())
+  expect_valid(result, "CohortSizeMin")
+})
+
+test_that("CohortSizeMin object can be created with user constructor", {
+  cohort_size_list <- h_cohort_size_list()
+  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  expect_valid(result, "CohortSizeMin")
+  expect_identical(result@cohort_size_list, cohort_size_list)
+
+  cohort_size_list <- h_cohort_size_list(three_rules = TRUE)
+  result <- expect_silent(CohortSizeMin(cohort_size_list = cohort_size_list))
+  expect_valid(result, "CohortSizeMin")
+  expect_identical(result@cohort_size_list, cohort_size_list)
+})
+
+# SafetyWindow ----
+
+## SafetyWindowSize ----
+
+test_that(".SafetyWindowSize works as expected", {
+  result <- expect_silent(.SafetyWindowSize())
+  expect_valid(result, "SafetyWindowSize")
+})
+
+test_that("SafetyWindowSize object can be created with user constructor", {
+  result <- expect_silent(
+    SafetyWindowSize(list(c(8, 3), c(9, 4)), c(1, 5), 8, 15)
+  )
+  expect_valid(result, "SafetyWindowSize")
+  expect_identical(result@gap, list(c(8L, 3L), c(9L, 4L)))
+  expect_identical(result@size, c(1L, 5L))
+  expect_identical(result@follow, 8L)
+  expect_identical(result@follow_min, 15L)
+})
+
+## SafetyWindowConst ----
+
+test_that(".SafetyWindowConst works as expected", {
+  result <- expect_silent(.SafetyWindowConst())
+  expect_valid(result, "SafetyWindowConst")
+})
+
+test_that("SafetyWindowConst object can be created with user constructor", {
+  result <- expect_silent(SafetyWindowConst(8, 2, 18))
+  expect_valid(result, "SafetyWindowConst")
+  expect_identical(result@gap, 8L)
+  expect_identical(result@follow, 2L)
+  expect_identical(result@follow_min, 18L)
+})

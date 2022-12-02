@@ -121,3 +121,14 @@ h_cohort_size_list <- function(three_rules = FALSE) {
     list(size1, size2, size3)
   }
 }
+
+h_safety_window_size <- function(three_cohorts = FALSE) {
+  if (!three_cohorts) {
+    gap <- list(c(7, 3), c(9, 0))
+    size <- c(1, 4)
+  } else {
+    gap <- list(c(6, 3), c(0, 7), c(6, 2))
+    size <- c(1, 2, 7)
+  }
+  SafetyWindowSize(gap = gap, size = size, follow = 7, follow_min = 14)
+}

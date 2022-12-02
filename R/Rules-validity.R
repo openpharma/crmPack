@@ -590,3 +590,68 @@ v_cohort_size_max <- function(object) {
   )
   v$result()
 }
+
+# SafetyWindow ----
+
+#' Internal Helper Functions for Validation of [`SafetyWindow`] Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`SafetyWindow`] or inherited classes and therefore not exported.
+#'
+#' @name v_safety_window
+#' @param object (`SafetyWindow`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_safety_window validates that the [`SafetyWindowSize`] object
+#'   contains valid slots.
+v_safety_window_size <- function(object) {
+  v <- Validate()
+  v$check(
+    test_list(object@gap, types = "integer", any.missing = FALSE, min.len = 1),
+    "gap must be a list of length >= 1 with integer vectors only"
+  )
+  v$check(
+    all(sapply(object@gap, test_integer, lower = 0, any.missing = FALSE, min.len = 1)),
+    "every element in gap list has to be an integer vector with non-negative and non-missing values"
+  )
+  pg_len <- length(object@gap)
+  v$check(
+    test_integer(
+      object@size,
+      lower = .Machine$double.xmin, any.missing = FALSE, len = pg_len, unique = TRUE, sorted = TRUE
+    ),
+    "size has to be an integer vector, of the same length as gap, with positive, unique and sorted non-missing values"
+  )
+  v$check(
+    test_int(object@follow, lower = .Machine$double.xmin),
+    "follow has to be a positive integer number"
+  )
+  v$check(
+    test_int(object@follow_min, lower = .Machine$double.xmin),
+    "follow_min has to be a positive integer number"
+  )
+  v$result()
+}
+
+#' @describeIn v_safety_window validates that the [`SafetyWindowConst`] object
+#'   contains valid slots.
+v_safety_window_const <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@gap, lower = 0, any.missing = FALSE),
+    "gap has to be an integer vector with non-negative and non-missing elements"
+  )
+  v$check(
+    test_int(object@follow, lower = .Machine$double.xmin),
+    "follow has to be a positive integer number"
+  )
+  v$check(
+    test_int(object@follow_min, lower = .Machine$double.xmin),
+    "follow_min has to be a positive integer number"
+  )
+  v$result()
+}

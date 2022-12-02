@@ -47,10 +47,10 @@ class_changes <- tribble(
   "DALogisticLogNormal", "", "C_par", "c_par", FALSE, "",
   "DALogisticLogNormal", "", "conditionalPEM", "cond_pem", FALSE, "",
   "TITELogisticLogNormal", "", "weightMethod", "weight_method", FALSE, "",
-  "OneParExpNormalPrior", "", "skeletonFun", "skel_fun", FALSE, "",
-  "OneParExpNormalPrior", "", "", "skel_fun_inv", FALSE, "",
-  "OneParExpNormalPrior", "", "skeletonProbs", "skel_probs", FALSE, "",
-  "OneParExpNormalPrior()", "", "doseGrid", "dose_grid", FALSE, "",
+  "OneParLogNormalPrior", "", "skeletonFun", "skel_fun", FALSE, "",
+  "OneParLogNormalPrior", "", "", "skel_fun_inv", FALSE, "",
+  "OneParLogNormalPrior", "", "skeletonProbs", "skel_probs", FALSE, "",
+  "OneParLogNormalPrior()", "", "doseGrid", "dose_grid", FALSE, "",
   "DualEndpointBeta", "", "refDoseBeta", "ref_dose_beta", FALSE, "",
   "DualEndpointEmax", "", "refDoseEmax", "ref_dose_emax", FALSE, "",
   "DualEndpointRW", "", "useRW1", "rw1", FALSE, "",
@@ -93,7 +93,16 @@ class_changes <- tribble(
   "CohortSizeRange", "", "cohortSize", "cohort_size", FALSE, "",
   "CohortSizeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "",
   "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, "",
-  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, ""
+  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "CohortSizeMin", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "SafetyWindowSize", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowSize", "", "sizeIntervals", "size", FALSE, "",
+  "SafetyWindowSize", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowSize", "", "patientFollowMin", "follow_min", FALSE, "",
+  "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, "",
+  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, ""
 )
 ```
 

@@ -10,7 +10,7 @@
 CohortSizeMax(cohort_size_list)
 }
 \arguments{
-\item{cohort_size_list}{(\code{numeric})\cr see slot definition.}
+\item{cohort_size_list}{(\code{list})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
@@ -32,11 +32,11 @@ of class \code{\link{CohortSize}}.}
 # Rule for cohort of size 1 for doses <30 and cohort of size 3 for doses >=30.
 my_size1 <- CohortSizeRange(intervals = c(0, 10), cohort_size = c(1, 3))
 
-# Rule for cohort of size 1 until no DLT were observed cohort of size 3 as soon
-# as 1 DLT is observed.
+# Rule for cohort of size 1 until no DLT were observed and cohort of size 3
+# as soon as 1 DLT is observed.
 my_size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
 
-# Cohort size rules of class 'CohortSizeMax' which will then be
-# combined with the 'max' operation
+# Cohort size rules of class 'CohortSizeMax' which will then be combined with
+# the 'max' operation.
 mySize <- CohortSizeMax(cohort_size_list = list(my_size1, my_size2))
 }

@@ -1,8 +1,7 @@
-# This is to have along the study constant parameters settings of safety window length,
-# whatever the cohort size is.
+# This is to have along the study constant parameters settings of safety window
+# length, regardless of the cohort size.
 my_win_len <- SafetyWindowConst(
-  patientGap = c(7, 5, 3),
-  patientFollow = 7,
-  patientFollowMin = 14
+  gap = c(7, 5, 3),
+  follow = 7,
+  follow_min = 14
 )
-my_win_len
