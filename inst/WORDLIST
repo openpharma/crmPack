@@ -67,7 +67,7 @@ crmPackHelp
 crmPackUpgrade
 crmPackVersion
 CRMs
-customized
+customised
 DataCombo
 DataDual
 DataMixture
@@ -217,6 +217,7 @@ NCRM
 nd
 NEST
 Neuenschwander
+Neuenschwander's
 newDLTmodel
 nextBest
 NextBest
@@ -263,6 +264,7 @@ probmax
 probmin
 probs
 PROC
+programmatically
 PRs
 pseduo
 PseudoDualFlexiSimulations
@@ -327,6 +329,8 @@ STUDYID
 subclasses
 subfolder
 subtractive
+summarised
+Summarising
 swimlane
 targetDoseDuringTrial
 targetDoseEndOfTrial
@@ -368,6 +372,7 @@ trueDLE
 trueEff
 trueNu
 trueSigma
+truthy
 TsuTakawa
 ui
 UI
@@ -378,6 +383,7 @@ vectorial
 vectorize
 vectorized
 vectorof
+visualised
 waddella
 Wai
 Warne

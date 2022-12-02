@@ -34,7 +34,7 @@ The trial uses a logistic log Normal dose toxicity model
 
 $$ log(\frac{p_i}{1 - p_i}) = \alpha + \beta (d_i - d^*) $$
 
-where the prior joint distribution of &alpha; and &beta; is
+where the prior joint distribution of $\alpha$ and $\beta$ is
 
 $$ 
 \begin{bmatrix}
