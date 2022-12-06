@@ -239,12 +239,10 @@ setMethod(
 #'
 #' @param x (`proportion` or `numeric`)\cr a value of an independent variable
 #'   on which dose depends.
-#'   This must be a vector of size 1 or the size equal to the number of samples
-#'   in `samples`, if the number of samples in `samples` is greater than
-#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
-#'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
+#'   The following recycling rule applies when `samples` is not missing: vectors
+#'   of size 1 will be recycled to the size of the sample
+#'   (i.e. `sampleSize(samples@options)`). Otherwise, `x` must have the same size
+#'   as the sample.
 #' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
 #'   used to compute the resulting doses. Can also be missing for some models.
@@ -288,10 +286,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -318,10 +313,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -348,10 +340,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -378,10 +367,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -408,10 +394,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -438,10 +421,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -470,10 +450,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -502,10 +479,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -532,10 +506,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -582,10 +553,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("betaZ", names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
@@ -616,10 +584,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("phi1", "phi2"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
@@ -649,9 +614,7 @@ setMethod(
     model_params <- h_slots(model, c("phi1", "phi2"))
     nsamples <- length(model_params[[1]])
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = nsamples)
 
     dose(x, model, samples)
   }
@@ -741,10 +704,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("alpha", names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     alpha <- samples@data$alpha
     skel_fun_inv <- model@skel_fun_inv
@@ -770,10 +730,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("theta", names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(x, len = c(1L, nsamples))
-    }
+    assert_common_length(x, y_len = sampleSize(samples@options))
 
     theta <- samples@data$theta
     skel_fun_inv <- model@skel_fun_inv
@@ -806,12 +763,10 @@ setMethod(
 #'   probability.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a vector of size 1 or the size equal to the number of samples
-#'   in `samples`, if the number of samples in `samples` is greater than
-#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
-#'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
+#'   The following recycling rule applies when `samples` is not missing: vectors
+#'   of size 1 will be recycled to the size of the sample
+#'   (i.e. `sampleSize(samples@options)`). Otherwise, `dose` must have the same
+#'   size as the sample.
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
 #'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
@@ -855,10 +810,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -884,10 +836,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -913,10 +862,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -942,10 +888,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -971,10 +914,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1000,10 +940,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -1031,10 +968,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -1062,10 +996,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1091,10 +1022,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1120,10 +1048,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1151,10 +1076,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("betaZ", names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
@@ -1186,10 +1108,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("phi1", "phi2"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
@@ -1220,9 +1139,7 @@ setMethod(
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
 
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = nsamples)
 
     prob(dose, model, samples)
   }
@@ -1245,10 +1162,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("alpha", names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     alpha <- samples@data$alpha
     skel_fun <- model@skel_fun
@@ -1273,10 +1187,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("theta", names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     theta <- samples@data$theta
     skel_fun <- model@skel_fun
@@ -1305,11 +1216,10 @@ setMethod(
 #'   `nSamples x dimParameter`.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a vector of size 1 or the size equal to the number of samples
-#'   in `samples`, if the number of samples in `samples` is greater than
-#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
-#'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all.
+#'   The following recycling rule applies when `samples` is not missing: vectors
+#'   of size 1 will be recycled to the size of the sample
+#'   (i.e. `sampleSize(samples@options)`). Otherwise, `dose` must have the same
+#'   size as the sample.
 #' @param model (`ModelEff`)\cr the efficacy model with pseudo data prior.
 #' @param samples (`Samples`)\cr samples of model's parameters that will be
 #'   used to compute expected efficacy values. Can also be missing for some
@@ -1353,10 +1263,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("theta1", "theta2"), names(samples@data))
-    nsamples <- sampleSize(samples@options)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = sampleSize(samples@options))
 
     theta1 <- samples@data$theta1
     theta2 <- samples@data$theta2
@@ -1387,9 +1294,7 @@ setMethod(
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
 
     assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE, min.len = 1L)
-    if (nsamples > 1L) {
-      assert_length(dose, len = c(1L, nsamples))
-    }
+    assert_common_length(dose, y_len = nsamples)
 
     efficacy(dose, model, samples)
   }
@@ -1507,10 +1412,9 @@ setMethod(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if number of samples is greater than one. It can be
-#'   a vector of any finite length, if there is only one sample in samples, or
-#'   samples are not used at all, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
+#'   The following recycling rule applies when samples are not missing: vectors
+#'   of size 1 will be recycled to the size of the sample. Otherwise, `dose`
+#'   must have the same size as the sample.
 #' @param model_dle (`ModelTox`)\cr pseudo DLE (dose-limiting events)/toxicity
 #'   model.
 #' @param samples_dle (`Samples`)\cr the samples of model's
@@ -1554,9 +1458,7 @@ setMethod(
   definition = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
     dle <- prob(dose, model_dle, samples_dle)
     eff <- efficacy(dose, model_eff, samples_eff)
-    if (length(eff) > 1L) {
-      assert_length(dle, len = c(1L, length(eff)))
-    }
+    assert_common_length(dle, eff)
     eff / (1 + (dle / (1 - dle)))
   }
 )
@@ -1582,9 +1484,7 @@ setMethod(
   definition = function(dose, model_dle, model_eff, ...) {
     dle <- prob(dose, model_dle)
     eff <- efficacy(dose, model_eff)
-    if (length(eff) > 1L) {
-      assert_length(dle, len = c(1L, length(eff)))
-    }
+    assert_common_length(dle, eff)
     eff / (1 + (dle / (1 - dle)))
   }
 )

@@ -175,16 +175,22 @@ test_probability_range <- makeTestFunction(check_probability_range)
 #' @export
 expect_probability_range <- makeExpectationFunction(check_probability_range)
 
-# assert_length ----
+# assert_common_length ----
 
-#' Check if an argument is one of the given lengths
+#' Check if vectors are of compatible lengths
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Check that `x` is one of the lengths specified by the `len` parameter.
+#' Two vectors are of compatible size if and only if: \cr
+#' 1. At least one vector has size 1 \cr
+#' 2. or both vectors are of the same size. \cr
 #'
-#' @param x (`any`)\cr any object for which [base::length()] function is defined.
-#' @param len (`integer`)\cr a vector of allowable lengths.
+#' @param x (`any`)\cr the first vector, any object for which [base::length()]
+#'   function is defined.
+#' @param y (`any`)\cr the second vector, any object for which [base::length()]
+#'   function is defined.
+#' @param y_len (`count`)\cr length of the second vector. It must be specified
+#'   if and only if `y` is missing.
 #'
 #' @return `TRUE` if successful, otherwise a string with the error message.
 #'
@@ -192,39 +198,47 @@ expect_probability_range <- makeExpectationFunction(check_probability_range)
 #'
 #' @export
 #' @examples
-#' x <- 1:5
-#' check_length(x, len = 5)
-#' check_length(x, len = c(1, 5))
-#' check_length(x, len = c(2, 10))
-check_length <- function(x, len) {
-  assert_numeric(len, lower = 0L, finite = TRUE, any.missing = FALSE, min.len = 1L)
-  len <- safeInteger(len)
+#' check_common_length(1:5, 1)
+#' check_common_length(1:5, 5:6)
+#' check_common_length(1:5, 11:15)
+#' check_common_length(10, 1)
+#' check_common_length(10, 1:6)
+#' check_common_length(10, y_len = 14)
+check_common_length <- function(x, y, y_len) {
+  assert_true(xor(missing(y), missing(y_len)))
+  x_len <- length(x)
+  if (!missing(y)) {
+    y_len <- length(y)
+  } else {
+    y_len <- safeInteger(y_len)
+  }
+  assert_true(x_len >= 1L)
+  assert_int(y_len, lower = 1L)
 
-  is_xlen_ok <- any(length(x) == len)
-  if (is_xlen_ok) {
+  if (x_len == 1L || y_len == 1L || x_len == y_len) {
     TRUE
   } else {
     paste(
       "x is of length",
-      length(x),
-      "which is not allowed; the allowed lengths are:",
-      paste(len, collapse = ", "),
+      x_len,
+      "which is not allowed; the allowed lengths are: 1 or",
+      y_len,
       collapse = ""
     )
   }
 }
 
-#' @rdname check_length
-#' @inheritParams check_length
+#' @rdname check_common_length
+#' @inheritParams check_common_length
 #' @export
-assert_length <- makeAssertionFunction(check_length)
+assert_common_length <- makeAssertionFunction(check_common_length)
 
-#' @rdname check_length
-#' @inheritParams check_length
+#' @rdname check_common_length
+#' @inheritParams check_common_length
 #' @export
-test_length <- makeTestFunction(check_length)
+test_common_length <- makeTestFunction(check_common_length)
 
-#' @rdname check_length
-#' @inheritParams check_length
+#' @rdname check_common_length
+#' @inheritParams check_common_length
 #' @export
-expect_length <- makeExpectationFunction(check_length)
+expect_common_length <- makeExpectationFunction(check_common_length)
