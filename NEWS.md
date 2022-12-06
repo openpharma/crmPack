@@ -1,4 +1,8 @@
 # Version 1.0.9000.9114
+* Model methods (dose, prob, efficacy) were vectorized even more, that is, 
+  the first argument of these functions can be a vector of the same size as the
+  sample size (if the sample size is greater than 1).
+* Added new custom `checkmate` function `check_length`.
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
 * Created a new vignette which describes how to use certain functions and features
   of `crmPack` after the major refactoring.

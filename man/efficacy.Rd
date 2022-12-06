@@ -20,11 +20,11 @@ efficacy(dose, model, samples, ...)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
-This must be a scalar if number of samples in \code{samples} is greater than
+This must be a vector of size 1 or the size equal to the number of samples
+in \code{samples}, if the number of samples in \code{samples} is greater than
 one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
 finite length, if there is only one sample in \code{samples}, or \code{samples} are
-not used at all, as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model.}
+not used at all.}
 
 \item{model}{(\code{ModelEff})\cr the efficacy model with pseudo data prior.}
 
@@ -68,7 +68,8 @@ based on the \code{\link{Effloglog}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
 \item \code{efficacy(dose = numeric, model = EffFlexi, samples = Samples)}: compute the expected efficacy at a specified dose level,
-based on the samples of \code{\link{EffFlexi}} model parameters.
+based on the samples of \code{\link{EffFlexi}} model parameters. For this method,
+the \code{dose} argument must be a scalar.
 
 }}
 \examples{

@@ -17,10 +17,9 @@ gain(dose, model_dle, samples_dle, model_eff, samples_eff, ...)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
-This must be a scalar if number of samples in \code{samples} is greater than
-one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
-finite length, if there is only one sample in \code{samples}, or \code{samples} are
-not used at all, as e.g. in case of pseudo DLE
+This must be a scalar if number of samples is greater than one. It can be
+a vector of any finite length, if there is only one sample in samples, or
+samples are not used at all, as e.g. in case of pseudo DLE
 (dose-limiting events)/toxicity model.}
 
 \item{model_dle}{(\code{ModelTox})\cr pseudo DLE (dose-limiting events)/toxicity

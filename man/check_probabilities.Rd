@@ -5,7 +5,7 @@
 \alias{assert_probabilities}
 \alias{test_probabilities}
 \alias{expect_probabilities}
-\title{Check if an Argument is a Probability Vector}
+\title{Check if an argument is a probability vector}
 \usage{
 check_probabilities(
   x,

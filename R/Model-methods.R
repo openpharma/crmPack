@@ -239,7 +239,8 @@ setMethod(
 #'
 #' @param x (`proportion` or `numeric`)\cr a value of an independent variable
 #'   on which dose depends.
-#'   This must be a scalar if number of samples in `samples` is greater than
+#'   This must be a vector of size 1 or the size equal to the number of samples
+#'   in `samples`, if the number of samples in `samples` is greater than
 #'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
 #'   finite length, if there is only one sample in `samples`, or `samples` are
 #'   not used at all, as e.g. in case of pseudo DLE
@@ -285,12 +286,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
@@ -311,12 +316,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
@@ -337,12 +346,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     ((logit(x) - alpha0) / alpha1) + ref_dose
   }
 )
@@ -363,12 +376,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     exp((probit(x) - alpha0) / alpha1) * ref_dose
   }
 )
@@ -389,12 +406,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     ((probit(x) - alpha0) / alpha1) * ref_dose
   }
 )
@@ -415,13 +436,17 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_probabilities(x, len = h_null_if_scalar(rho0))
-
     num <- gamma * (logit(x) - logit(rho0)) + xmin * (logit(theta) - logit(x))
     num / (logit(theta) - logit(rho0))
   }
@@ -443,13 +468,17 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_probabilities(x, len = h_null_if_scalar(rho0))
-
     num <- gamma * (logit(x) - logit(rho0)) + xmin * (logit(theta) - logit(x))
     num / (logit(theta) - logit(rho0))
   }
@@ -471,12 +500,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
@@ -497,12 +530,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(alpha0))
-
     exp((logit(x) - alpha0) / alpha1) * ref_dose
   }
 )
@@ -543,11 +580,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset("betaZ", names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
-    assert_probabilities(x, len = h_null_if_scalar(betaZ))
-
     dose_temp <- (qnorm(x) - betaZ[, 1]) / betaZ[, 2]
     if (model@use_log_dose) {
       exp(dose_temp) * ref_dose
@@ -573,11 +614,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset(c("phi1", "phi2"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
-    assert_probabilities(x, len = h_null_if_scalar(phi1))
-
     log_dose <- (log(x / (1 - x)) - phi1) / phi2
     exp(log_dose)
   }
@@ -600,14 +645,14 @@ setMethod(
     samples = "missing"
   ),
   definition = function(x, model) {
-    assert_numeric(x, lower = 0L, upper = 1L, min.len = 1L, any.missing = FALSE)
-
+    assert_probabilities(x)
     model_params <- h_slots(model, c("phi1", "phi2"))
-    assert_subset(c("phi1", "phi2"), names(model_params))
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
+    nsamples <- length(model_params[[1]])
+    samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     dose(x, model, samples)
   }
 )
@@ -629,10 +674,13 @@ setMethod(
     samples = "missing"
   ),
   definition = function(x, model) {
+    assert_numeric(x, min.len = 1L, any.missing = FALSE)
     theta1 <- model@theta1
     theta2 <- model@theta2
     constant <- model@const
-    assert_numeric(x, min.len = 1L, any.missing = FALSE, len = h_null_if_scalar(theta1))
+    assert_length(theta1, 1L)
+    assert_length(theta2, 1L)
+    assert_length(constant, 1L)
 
     exp(exp((x - theta1) / theta2)) - constant
   }
@@ -641,7 +689,8 @@ setMethod(
 ## EffFlexi ----
 
 #' @describeIn dose compute the dose level reaching a specific target
-#'   probability of the occurrence of a DLE (`x`).
+#'   probability of the occurrence of a DLE (`x`). For this method `x` must
+#'   be a scalar.
 #'
 #' @aliases dose-EffFlexi
 #' @export
@@ -655,6 +704,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_number(x)
+    assert_subset("ExpEff", names(samples@data))
 
     samples_efficacy <- samples@data$ExpEff
     dose_grid <- model@data@doseGrid
@@ -689,11 +739,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset("alpha", names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     alpha <- samples@data$alpha
     skel_fun_inv <- model@skel_fun_inv
-    assert_probabilities(x, len = h_null_if_scalar(alpha))
-
     skel_fun_inv(x^(1 / exp(alpha)))
   }
 )
@@ -714,12 +768,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(x, model, samples) {
+    assert_probabilities(x)
     assert_subset("theta", names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(x, len = c(1L, nsamples))
+    }
+
     theta <- samples@data$theta
     skel_fun_inv <- model@skel_fun_inv
     assert_numeric(theta, lower = .Machine$double.xmin, finite = TRUE)
-    assert_probabilities(x, len = h_null_if_scalar(theta))
-
     skel_fun_inv(x^(1 / theta))
   }
 )
@@ -748,7 +806,8 @@ setMethod(
 #'   probability.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if number of samples in `samples` is greater than
+#'   This must be a vector of size 1 or the size equal to the number of samples
+#'   in `samples`, if the number of samples in `samples` is greater than
 #'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
 #'   finite length, if there is only one sample in `samples`, or `samples` are
 #'   not used at all, as e.g. in case of pseudo DLE
@@ -794,12 +853,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
@@ -819,12 +882,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
@@ -844,12 +911,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- model@ref_dose
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     plogis(alpha0 + alpha1 * (dose - ref_dose))
   }
 )
@@ -869,12 +940,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     pnorm(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
@@ -894,12 +969,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     pnorm(alpha0 + alpha1 * (dose / ref_dose))
   }
 )
@@ -919,13 +998,17 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
-
     num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
     plogis(num / (gamma - xmin))
   }
@@ -946,13 +1029,17 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
     theta <- model@theta
     xmin <- model@xmin
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(rho0))
-
     num <- gamma * logit(rho0) - xmin * logit(theta) + (logit(theta) - logit(rho0)) * dose
     plogis(num / (gamma - xmin))
   }
@@ -973,12 +1060,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
@@ -998,12 +1089,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
     plogis(alpha0 + alpha1 * log(dose / ref_dose))
   }
 )
@@ -1023,14 +1118,18 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
-    ref_dose <- as.numeric(model@ref_dose)
     comp <- samples@data$comp
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha0))
-
-    sel <- cbind(seq_len(nrow(alpha0)), comp)
+    ref_dose <- as.numeric(model@ref_dose)
+    sel <- cbind(seq_along(comp), comp)
     plogis(alpha0[sel] + alpha1[sel] * log(dose / ref_dose))
   }
 )
@@ -1050,11 +1149,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("betaZ", names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(betaZ))
-
     stand_dose <- if (model@use_log_dose) {
       log(dose / ref_dose)
     } else {
@@ -1081,11 +1184,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("phi1", "phi2"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(phi1))
-
     log_dose <- log(dose)
     exp(phi1 + phi2 * log_dose) / (1 + exp(phi1 + phi2 * log_dose))
   }
@@ -1108,14 +1215,15 @@ setMethod(
     samples = "missing"
   ),
   definition = function(dose, model) {
-    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
-
     model_params <- h_slots(model, c("phi1", "phi2"))
-    assert_subset(c("phi1", "phi2"), names(model_params))
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
+    nsamples <- length(model_params[[1]])
+    samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
+
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     prob(dose, model, samples)
   }
 )
@@ -1135,11 +1243,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("alpha", names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     alpha <- samples@data$alpha
     skel_fun <- model@skel_fun
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(alpha))
-
     skel_fun(dose)^exp(alpha)
   }
 )
@@ -1159,11 +1271,15 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("theta", names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     theta <- samples@data$theta
     skel_fun <- model@skel_fun
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta))
-
     skel_fun(dose)^theta
   }
 )
@@ -1189,11 +1305,11 @@ setMethod(
 #'   `nSamples x dimParameter`.
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if number of samples in `samples` is greater than
+#'   This must be a vector of size 1 or the size equal to the number of samples
+#'   in `samples`, if the number of samples in `samples` is greater than
 #'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
 #'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all, as e.g. in case of pseudo DLE
-#'   (dose-limiting events)/toxicity model.
+#'   not used at all.
 #' @param model (`ModelEff`)\cr the efficacy model with pseudo data prior.
 #' @param samples (`Samples`)\cr samples of model's parameters that will be
 #'   used to compute expected efficacy values. Can also be missing for some
@@ -1235,12 +1351,16 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("theta1", "theta2"), names(samples@data))
+    nsamples <- sampleSize(samples@options)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     theta1 <- samples@data$theta1
     theta2 <- samples@data$theta2
     constant <- model@const
-    assert_numeric(dose, lower = 0L, any.missing = FALSE, len = h_null_if_scalar(theta1))
-
     theta1 + theta2 * log(log(dose + constant))
   }
 )
@@ -1262,14 +1382,15 @@ setMethod(
     samples = "missing"
   ),
   definition = function(dose, model) {
-    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE)
-
     model_params <- h_slots(model, c("theta1", "theta2"))
-    assert_subset(c("theta1", "theta2"), names(model_params))
-    samples <- Samples(
-      data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
-    )
+    nsamples <- length(model_params[[1]])
+    samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
+
+    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE, min.len = 1L)
+    if (nsamples > 1L) {
+      assert_length(dose, len = c(1L, nsamples))
+    }
+
     efficacy(dose, model, samples)
   }
 )
@@ -1277,7 +1398,8 @@ setMethod(
 ## EffFlexi ----
 
 #' @describeIn efficacy compute the expected efficacy at a specified dose level,
-#' based on the samples of [`EffFlexi`] model parameters.
+#' based on the samples of [`EffFlexi`] model parameters. For this method,
+#' the `dose` argument must be a scalar.
 #'
 #' @aliases efficacy-EffFlexi
 #' @export
@@ -1325,8 +1447,8 @@ setMethod(
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' @param xLevel (`integer`)\cr the levels for the doses the
-#'   patients have been given w.r.t dose grid. See [`Data`] for more details.
+#' @param xLevel (`integer`)\cr the levels for the doses the patients have been
+#'   given w.r.t dose grid. See [`Data`] for more details.
 #' @param model (`DualEndpoint`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that store
 #'   the value of biomarker levels for all doses on the dose grid.
@@ -1385,10 +1507,9 @@ setMethod(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
-#'   This must be a scalar if number of samples in `samples` is greater than
-#'   one (i.e. `sampleSize(samples@options) > 1`). It can be a vector of any
-#'   finite length, if there is only one sample in `samples`, or `samples` are
-#'   not used at all, as e.g. in case of pseudo DLE
+#'   This must be a scalar if number of samples is greater than one. It can be
+#'   a vector of any finite length, if there is only one sample in samples, or
+#'   samples are not used at all, as e.g. in case of pseudo DLE
 #'   (dose-limiting events)/toxicity model.
 #' @param model_dle (`ModelTox`)\cr pseudo DLE (dose-limiting events)/toxicity
 #'   model.
@@ -1433,6 +1554,9 @@ setMethod(
   definition = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
     dle <- prob(dose, model_dle, samples_dle)
     eff <- efficacy(dose, model_eff, samples_eff)
+    if (length(eff) > 1L) {
+      assert_length(dle, len = c(1L, length(eff)))
+    }
     eff / (1 + (dle / (1 - dle)))
   }
 )
@@ -1458,6 +1582,9 @@ setMethod(
   definition = function(dose, model_dle, model_eff, ...) {
     dle <- prob(dose, model_dle)
     eff <- efficacy(dose, model_eff)
+    if (length(eff) > 1L) {
+      assert_length(dle, len = c(1L, length(eff)))
+    }
     eff / (1 + (dle / (1 - dle)))
   }
 )

@@ -23,7 +23,7 @@ NULL
 
 # assert_probabilities ----
 
-#' Check if an Argument is a Probability Vector
+#' Check if an argument is a probability vector
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -84,6 +84,7 @@ check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, unique = FA
 assert_probabilities <- makeAssertionFunction(check_probabilities)
 
 #' @rdname check_probabilities
+#' @inheritParams check_probabilities
 #' @export
 test_probabilities <- makeTestFunction(check_probabilities)
 
@@ -94,7 +95,7 @@ expect_probabilities <- makeExpectationFunction(check_probabilities)
 
 # assert_probability ----
 
-#' Check if an Argument is a Single Probability Value
+#' Check if an argument is a single probability value
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -123,6 +124,7 @@ check_probability <- function(x, bounds_closed = TRUE) {
 assert_probability <- makeAssertionFunction(check_probability)
 
 #' @rdname check_probability
+#' @inheritParams check_probability
 #' @export
 test_probability <- makeTestFunction(check_probability)
 
@@ -133,7 +135,7 @@ expect_probability <- makeExpectationFunction(check_probability)
 
 # assert_probability_range ----
 
-#' Check if an Argument is a Probability Range
+#' Check if an argument is a probability range
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
@@ -164,6 +166,7 @@ check_probability_range <- function(x, bounds_closed = TRUE) {
 assert_probability_range <- makeAssertionFunction(check_probability_range)
 
 #' @rdname check_probability_range
+#' @inheritParams check_probability_range
 #' @export
 test_probability_range <- makeTestFunction(check_probability_range)
 
@@ -171,3 +174,57 @@ test_probability_range <- makeTestFunction(check_probability_range)
 #' @inheritParams check_probability_range
 #' @export
 expect_probability_range <- makeExpectationFunction(check_probability_range)
+
+# assert_length ----
+
+#' Check if an argument is one of the given lengths
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' Check that `x` is one of the lengths specified by the `len` parameter.
+#'
+#' @param x (`any`)\cr any object for which [base::length()] function is defined.
+#' @param len (`integer`)\cr a vector of allowable lengths.
+#'
+#' @return `TRUE` if successful, otherwise a string with the error message.
+#'
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#' @examples
+#' x <- 1:5
+#' check_length(x, len = 5)
+#' check_length(x, len = c(1, 5))
+#' check_length(x, len = c(2, 10))
+check_length <- function(x, len) {
+  assert_numeric(len, lower = 0L, finite = TRUE, any.missing = FALSE, min.len = 1L)
+  len <- safeInteger(len)
+
+  is_xlen_ok <- any(length(x) == len)
+  if (is_xlen_ok) {
+    TRUE
+  } else {
+    paste(
+      "x is of length",
+      length(x),
+      "which is not allowed; the allowed lengths are:",
+      paste(len, collapse = ", "),
+      collapse = ""
+    )
+  }
+}
+
+#' @rdname check_length
+#' @inheritParams check_length
+#' @export
+assert_length <- makeAssertionFunction(check_length)
+
+#' @rdname check_length
+#' @inheritParams check_length
+#' @export
+test_length <- makeTestFunction(check_length)
+
+#' @rdname check_length
+#' @inheritParams check_length
+#' @export
+expect_length <- makeExpectationFunction(check_length)
