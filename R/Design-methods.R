@@ -344,7 +344,7 @@ setMethod("simulate",
                                            samples=thisSamples,
                                            model=object@model,
                                            data=thisData)$value
-
+                    #browser()
                       ## evaluate stopping rules
                       stopit <- stopTrial(object@stopping,
                                           dose=thisDose,
@@ -359,16 +359,39 @@ setMethod("simulate",
                     label_list <- list()
 
                     if(!is.null(attr(stopit, "individual"))){
+
+
+
                     for(i in 1: length(attr(stopit, "individual"))){
 
+                        if(identical(attr(attr(stopit, "individual")[[i]], "reportLabel"), character(0))){
+                            attr(attr(stopit, "individual")[[i]], "reportLabel") <- NULL
+
+                            #stop('all individual stopping rules must have reporting labels if combination should be reported')
+
+                        } #else {
+
                         label_list[i] <- attr(attr(stopit, "individual")[[i]], "reportLabel")
+                       # }
 
                     }
+                   # browser()
+
+                        if(class(object@stopping) == "StoppingAll" ){
+
+                         #   browser()
+
+                            if(length(object@stopping@reportComb)> 0) {
+                                if(any(sapply(label_list, is.null))){
+                                stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
+
+                                reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb")) }
+                            } else {
+
+                                reportLabel <- list()
+                            }
 
 
-                        if(class(object@stopping) == "StoppingAll"){
-
-                            reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb"))
 
                         } else {
                             reportLabel <- label_list
@@ -419,7 +442,7 @@ setMethod("simulate",
                             reportResults <- stopit[1]
                         }
 
-
+                   # browser()
 
 
                   }
@@ -431,7 +454,7 @@ setMethod("simulate",
 
 
                   ## return the results
-
+               # browser()
 
                   thisResult <-
                       list(data=thisData,

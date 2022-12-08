@@ -448,6 +448,9 @@ setMethod("summary",
                                    (toxAtDoses < target[2]))
 
               #highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
+
+              #if(!is.null)
+
               stoppingReport <- object@stopResults
 
 #browser()
@@ -722,10 +725,14 @@ setMethod("show",
                   "simulations\n\n")
 
 
-              cat("Stopping rules:\n \n")
 
 
 
+
+
+              if(!is.null(colnames(object@stoppingReport))){
+
+                cat("Stopping rules:\n \n")
               if(ncol(object@stoppingReport) > 1){
                 logPercent <- apply(object@stoppingReport,2,mean)*100
 
@@ -741,7 +748,7 @@ setMethod("show",
 
                 cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
               }
-
+              }
 
               #browser()
               #cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
