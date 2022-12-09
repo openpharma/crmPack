@@ -200,15 +200,19 @@ reference:
       - assert_probabilities
       - assert_probability
       - assert_probability_range
+      - assert_common_length
       - check_probabilities
       - check_probability
       - check_probability_range
+      - check_common_length
       - test_probabilities
       - test_probability
       - test_probability_range
+      - test_common_length
       - expect_probabilities
       - expect_probability
       - expect_probability_range
+      - expect_common_length
   - title: Methods
     contents:
       - plot-Data
