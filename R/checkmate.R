@@ -16,7 +16,7 @@
 #' - `test_` functions just return `TRUE` or `FALSE`.
 #'
 #' @seealso [assert_probabilities()], [assert_probability()],
-#'   [assert_probability_range()].
+#'   [assert_probability_range()], [assert_common_length()].
 #'
 #' @name assertions
 NULL
@@ -185,12 +185,13 @@ expect_probability_range <- makeExpectationFunction(check_probability_range)
 #' 1. At least one vector has size 1 \cr
 #' 2. or both vectors are of the same size. \cr
 #'
-#' @param x (`any`)\cr the first vector, any object for which [base::length()]
+#' @param x (`any`)\cr the first vector, any object for which [length()]
 #'   function is defined.
-#' @param y (`any`)\cr the second vector, any object for which [base::length()]
+#' @param y (`any`)\cr the second vector, any object for which [length()]
 #'   function is defined.
 #' @param y_len (`count`)\cr length of the second vector. It must be specified
 #'   if and only if `y` is missing.
+#' @inheritParams checkmate::check_numeric
 #'
 #' @return `TRUE` if successful, otherwise a string with the error message.
 #'

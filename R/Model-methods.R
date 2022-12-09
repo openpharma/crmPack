@@ -637,13 +637,13 @@ setMethod(
     samples = "missing"
   ),
   definition = function(x, model) {
-    assert_numeric(x, min.len = 1L, any.missing = FALSE)
+    assert_numeric(x, min.len = 1L, any.missing = FALSE, finite = TRUE)
     theta1 <- model@theta1
     theta2 <- model@theta2
     constant <- model@const
-    assert_length(theta1, 1L)
-    assert_length(theta2, 1L)
-    assert_length(constant, 1L)
+    assert_true(length(theta1) == 1L)
+    assert_true(length(theta2) == 1L)
+    assert_true(length(constant) == 1L)
 
     exp(exp((x - theta1) / theta2)) - constant
   }
@@ -1293,7 +1293,7 @@ setMethod(
     nsamples <- length(model_params[[1]])
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
 
-    assert_numeric(dose, lower = 0L, min.len = 1L, any.missing = FALSE, min.len = 1L)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_common_length(dose, y_len = nsamples)
 
     efficacy(dose, model, samples)

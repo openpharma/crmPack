@@ -77,12 +77,10 @@ dose(x, model, samples, ...)
 \arguments{
 \item{x}{(\code{proportion} or \code{numeric})\cr a value of an independent variable
 on which dose depends.
-This must be a vector of size 1 or the size equal to the number of samples
-in \code{samples}, if the number of samples in \code{samples} is greater than
-one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
-finite length, if there is only one sample in \code{samples}, or \code{samples} are
-not used at all, as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model.}
+The following recycling rule applies when \code{samples} is not missing: vectors
+of size 1 will be recycled to the size of the sample
+(i.e. \code{sampleSize(samples@options)}). Otherwise, \code{x} must have the same size
+as the sample.}
 
 \item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
