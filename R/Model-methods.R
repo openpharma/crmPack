@@ -286,7 +286,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -313,7 +313,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -340,7 +340,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -367,7 +367,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -394,7 +394,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -421,7 +421,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -450,7 +450,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -479,7 +479,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -506,7 +506,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -553,7 +553,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("betaZ", names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
@@ -584,7 +584,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("phi1", "phi2"), names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
@@ -614,7 +614,7 @@ setMethod(
     model_params <- h_slots(model, c("phi1", "phi2"))
     nsamples <- length(model_params[[1]])
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
-    assert_common_length(x, y_len = nsamples)
+    assert_length(x, len = nsamples)
 
     dose(x, model, samples)
   }
@@ -641,9 +641,9 @@ setMethod(
     theta1 <- model@theta1
     theta2 <- model@theta2
     constant <- model@const
-    assert_true(length(theta1) == 1L)
-    assert_true(length(theta2) == 1L)
-    assert_true(length(constant) == 1L)
+    assert_scalar(theta1)
+    assert_scalar(theta2)
+    assert_scalar(constant)
 
     exp(exp((x - theta1) / theta2)) - constant
   }
@@ -704,7 +704,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("alpha", names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     alpha <- samples@data$alpha
     skel_fun_inv <- model@skel_fun_inv
@@ -730,7 +730,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("theta", names(samples@data))
-    assert_common_length(x, y_len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples@options))
 
     theta <- samples@data$theta
     skel_fun_inv <- model@skel_fun_inv
@@ -810,7 +810,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -836,7 +836,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -862,7 +862,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -888,7 +888,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -914,7 +914,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -940,7 +940,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -968,7 +968,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -996,7 +996,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1022,7 +1022,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1048,7 +1048,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1076,7 +1076,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("betaZ", names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
@@ -1108,7 +1108,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("phi1", "phi2"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
@@ -1139,7 +1139,7 @@ setMethod(
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
 
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_common_length(dose, y_len = nsamples)
+    assert_length(dose, len = nsamples)
 
     prob(dose, model, samples)
   }
@@ -1162,7 +1162,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("alpha", names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     alpha <- samples@data$alpha
     skel_fun <- model@skel_fun
@@ -1187,7 +1187,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("theta", names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     theta <- samples@data$theta
     skel_fun <- model@skel_fun
@@ -1263,7 +1263,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("theta1", "theta2"), names(samples@data))
-    assert_common_length(dose, y_len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples@options))
 
     theta1 <- samples@data$theta1
     theta2 <- samples@data$theta2
@@ -1294,7 +1294,7 @@ setMethod(
     samples <- Samples(data = model_params, options = McmcOptions(samples = nsamples))
 
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_common_length(dose, y_len = nsamples)
+    assert_length(dose, len = nsamples)
 
     efficacy(dose, model, samples)
   }
@@ -1458,7 +1458,7 @@ setMethod(
   definition = function(dose, model_dle, samples_dle, model_eff, samples_eff, ...) {
     dle <- prob(dose, model_dle, samples_dle)
     eff <- efficacy(dose, model_eff, samples_eff)
-    assert_common_length(dle, eff)
+    assert_length(dle, len = length(eff))
     eff / (1 + (dle / (1 - dle)))
   }
 )
@@ -1484,7 +1484,7 @@ setMethod(
   definition = function(dose, model_dle, model_eff, ...) {
     dle <- prob(dose, model_dle)
     eff <- efficacy(dose, model_eff)
-    assert_common_length(dle, eff)
+    assert_length(dle, len = length(eff))
     eff / (1 + (dle / (1 - dle)))
   }
 )

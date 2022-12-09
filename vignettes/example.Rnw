@@ -37,7 +37,7 @@
 %% no indentation of paragraphs
 \noindent
 
-<<load, echo=FALSE, results=hide>>=
+<<load, echo=FALSE, results='hide'>>=
 # nolint start
 ## load package already here to be able to reference the package version!!
 library(crmPack)
@@ -57,7 +57,7 @@ email to the package maintainer:
 \href{mailto:sabanesd@roche.com}{\nolinkurl{sabanesd@roche.com}}
 Thank you very much in advance!
 
-<<setup, echo=FALSE, results=hide>>=
+<<setup, echo=FALSE, results='hide'>>=
 options(continue="  ")                  # use two blanks instead of "+" for
                                         # continued lines (for easy copying)
 @
@@ -73,7 +73,7 @@ internal MCMC computations. WinBUGS is not required or supported anymore.
 \label{sec:getting-started}
 
 Before being able to run anything, you have to load the package with
-<<load>>=
+<<load_crmPack>>=
 library(crmPack)
 @
 
@@ -279,7 +279,7 @@ Here it is important that the data set has to be defined before defining any mod
 Either an empty data set or a data set that contains all currently available observations is needed.
 
 Therefore, let's assume an empty data set is set up. For example, we will use 12 dose levels from 25 to 300 mg with increments of 25 mg. Then we have:
-<<emptydata>>=
+<<emptydata_12>>=
 emptydata <- Data(doseGrid=
                    seq(from=25, to=300, by=25))
 data1 <- emptydata
@@ -504,13 +504,13 @@ help(package="ggmcmc", help_type="html")
 Similarly, using models from \texttt{ModelPseudo} class, we can also obtain the prior and posterior samples of the model parameters via MCMC.
 
 For example, using the DLTmodel, data1, the empty data set and options specified in earlier examples.
-<<mcmc-DLTsamples, results=hide>>=
+<<mcmc-DLTsamples, results='hide'>>=
 DLTsamples <- mcmc(data=data1,model=DLTmodel,options=options)
 @
 
 The prior samples of the model parameters are now saved in the variable \texttt{DLTsamples}.
 
-<<mcmc-postDLTsamples, results=hide>>==
+<<mcmc-postDLTsamples, results='hide'>>==
 data3 <-Data(x=c(25,50,50,75,100,100,225,300),
              y=c(0,0,0,0,1,1,1,1),
              doseGrid=seq(from=25,to=300,by=25))
@@ -1287,7 +1287,7 @@ DLTSim <- simulate(DLTdesign,
 
 The above is an example when no MCMC sampling is involved and we have another example below for simulation when MCMC sampling is involved:
 
-<<DLTsampSim-run,results=hide>>=
+<<DLTsampSim-run,results='hide'>>=
 DLTsampSim <- simulate(DLTsamplesDesign,
                        args=NULL,
                        truth=TrueDLT,
@@ -1573,12 +1573,12 @@ the latent DLT and the biomarker variable.
 
 As the dual-endpoint models are more complex, it is advisable to use a
 sufficiently long Markov chain for fitting them. Here we just use for illustration
-purposes a quite small Markov chain -- again, for the real application, this would need to be at least 100 times longer!
+purposes a quite small Markov chain -- again, for the real application, this would need to be at least 25 times longer!
 
 <<dual-options>>=
 options <- McmcOptions(burnin=100,
                        step=2,
-                       samples=500)
+                       samples=2000)
 @
 
 Then we can obtain the MCMC samples:
@@ -1649,10 +1649,10 @@ print(nextDose$plot)
 @
 
 Here the bottom panel shows (as for the NCRM) the overdose probability, and we
-see that doses above 6~mg are too toxic. In the top panel, we see the
+see that doses above 14~mg are too toxic. In the top panel, we see the
 probability for each dose to reach at least 90\% of the maximum biomarker
 response in the dose grid --- this is here our target probability. While the
-numbers are low, we clearly see that there is a local maximum at 10~mg of the
+numbers are low, we clearly see that there is a local maximum at 6~mg of the
 target probability, confirming what we have seen in the previous data and
 model fit plots.
 
@@ -2155,7 +2155,7 @@ lty=c(NA,NA,NA,1,1,1),col=c('violet','violet','green3','red','blue','green3'))
 Similarly, we also get the DLT, efficacy and gain values and the corresponding real values of the TD30, TD35 and Gstar.
 
 Then after establishing the real scenarios, we can simulate the trials. First, we will look at two examples when the \texttt{Effloglog} class object is used as the efficacy model. We will show first an example when no MCMC samples are involved:
-<<simulateDualResponseDesign,results=hide>>=
+<<simulateDualResponseDesign,results='hide'>>=
 Sim1 <- simulate(object=design1,
                  args=NULL,
                  trueDLE=myTruthDLT,
@@ -2172,7 +2172,7 @@ The \texttt{simulate} function is used in all cases to simulate trials with spec
 
 When MCMC samples are used, we can also specify the simulations in a similar way with an additional argument \texttt{mcmcOptions} such that we have
 
-<<simulateDualResponsesamplesDesign,results=hide>>=
+<<simulateDualResponsesamplesDesign,results='hide'>>=
 Sim2 <- simulate(object=design2,
                  args=NULL,
                  trueDLE=myTruthDLT,
@@ -2186,7 +2186,7 @@ Sim2 <- simulate(object=design2,
 
 
 When the \texttt{EffFlexi} class object is used as the efficacy model, we will generate the simulations as follows:
-<<simulateDualResponseFlexiDesign,results=hide>>=
+<<simulateDualResponseFlexiDesign,results='hide'>>=
 Sim3<-simulate(object=design3,
                args=NULL,
                trueDLE=myTruthDLT,

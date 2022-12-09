@@ -169,57 +169,44 @@ test_that("check_probability_range returns error message as expected", {
   )
 })
 
-# check_common_length ----
+# check_length ----
 
-test_that("check_common_length returns TRUE as expected", {
+test_that("check_length returns TRUE as expected", {
   expect_equal(
-    c("x", "y", "y_len"),
-    formalArgs(check_common_length)
+    c("x", "len"),
+    formalArgs(check_length)
   )
   # x is of length 1.
-  expect_true(check_common_length(1, 1))
-  expect_true(check_common_length(1, y_len = 1))
-  expect_true(check_common_length(1, 1:2))
-  expect_true(check_common_length(1, y_len = 2))
-  expect_true(check_common_length(1, 1:15))
-  expect_true(check_common_length(1, y_len = 15))
-  # y is of length 1.
-  expect_true(check_common_length(1:2, 1))
-  expect_true(check_common_length(1:2, y_len = 1))
-  expect_true(check_common_length(1:15, 1))
-  expect_true(check_common_length(1:15, y_len = 1))
-  # x and y are both of length > 1.
-  expect_true(check_common_length(1:2, 1:2))
-  expect_true(check_common_length(1:2, y_len = 2))
-  expect_true(check_common_length(1:15, 1:15))
-  expect_true(check_common_length(1:15, y_len = 15))
+  expect_true(check_length(1, 1))
+  expect_true(check_length(1, 2))
+  expect_true(check_length(1, 15))
+  # the second vector is of length 1.
+  expect_true(check_length(1:2, 1))
+  expect_true(check_length(1:15, 1))
+  # x and the second vector are both of length > 1.
+  expect_true(check_length(1:2, 2))
+  expect_true(check_length(1:15, 15))
 })
 
-test_that("check_common_length returns error message as expected", {
-  # Only and only one, y or y_len must be specified.
+test_that("check_length returns error message as expected", {
   expect_error(
-    check_common_length(1),
-    "Assertion on 'xor\\(missing\\(y\\), missing\\(y_len\\)\\)' failed: Must be TRUE."
+    check_length(1),
+    ".*len.* is missing, with no default"
   )
   expect_error(
-    check_common_length(1, 1, 1),
-    "Assertion on 'xor\\(missing\\(y\\), missing\\(y_len\\)\\)' failed: Must be TRUE."
+    check_length(1, numeric(0)),
+    "Assertion on 'len' failed: Must have length 1."
   )
-  # x and y are of different lengths.
-  expect_identical(
-    check_common_length(1:2, 1:3),
-    "x is of length 2 which is not allowed; the allowed lengths are: 1 or 3"
+  expect_error(
+    check_length(1:5, 1:2),
+    "Assertion on 'len' failed: Must have length 1."
   )
-  expect_identical(
-    check_common_length(1:2, y_len = 3),
-    "x is of length 2 which is not allowed; the allowed lengths are: 1 or 3"
+  expect_error(
+    check_length(1:5, 1.5),
+    "Assertion on 'len' failed: Must be of type 'count', not 'double'."
   )
-  expect_identical(
-    check_common_length(1:2, 1:6),
-    "x is of length 2 which is not allowed; the allowed lengths are: 1 or 6"
-  )
-  expect_identical(
-    check_common_length(1:2, y_len = 6),
-    "x is of length 2 which is not allowed; the allowed lengths are: 1 or 6"
+  expect_error(
+    check_length(numeric(0), 4),
+    "Assertion on 'x_len >= 1L' failed: Must be TRUE."
   )
 })

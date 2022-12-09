@@ -16,7 +16,7 @@
 #' - `test_` functions just return `TRUE` or `FALSE`.
 #'
 #' @seealso [assert_probabilities()], [assert_probability()],
-#'   [assert_probability_range()], [assert_common_length()].
+#'   [assert_probability_range()], [assert_length()].
 #'
 #' @name assertions
 NULL
@@ -175,7 +175,7 @@ test_probability_range <- makeTestFunction(check_probability_range)
 #' @export
 expect_probability_range <- makeExpectationFunction(check_probability_range)
 
-# assert_common_length ----
+# assert_length ----
 
 #' Check if vectors are of compatible lengths
 #'
@@ -187,10 +187,7 @@ expect_probability_range <- makeExpectationFunction(check_probability_range)
 #'
 #' @param x (`any`)\cr the first vector, any object for which [length()]
 #'   function is defined.
-#' @param y (`any`)\cr the second vector, any object for which [length()]
-#'   function is defined.
-#' @param y_len (`count`)\cr length of the second vector. It must be specified
-#'   if and only if `y` is missing.
+#' @param len (`count`)\cr the length of the second vector.
 #' @inheritParams checkmate::check_numeric
 #'
 #' @return `TRUE` if successful, otherwise a string with the error message.
@@ -199,47 +196,40 @@ expect_probability_range <- makeExpectationFunction(check_probability_range)
 #'
 #' @export
 #' @examples
-#' check_common_length(1:5, 1)
-#' check_common_length(1:5, 5:6)
-#' check_common_length(1:5, 11:15)
-#' check_common_length(10, 1)
-#' check_common_length(10, 1:6)
-#' check_common_length(10, y_len = 14)
-check_common_length <- function(x, y, y_len) {
-  assert_true(xor(missing(y), missing(y_len)))
+#' check_length(1:5, 1)
+#' check_length(1:5, 6)
+#' check_length(1:5, 5)
+#' check_length(10, 1)
+#' check_length(10, 9)
+check_length <- function(x, len) {
   x_len <- length(x)
-  if (!missing(y)) {
-    y_len <- length(y)
-  } else {
-    y_len <- safeInteger(y_len)
-  }
   assert_true(x_len >= 1L)
-  assert_int(y_len, lower = 1L)
+  assert_count(len)
 
-  if (x_len == 1L || y_len == 1L || x_len == y_len) {
+  if (x_len == 1L || len == 1L || x_len == len) {
     TRUE
   } else {
     paste(
       "x is of length",
       x_len,
       "which is not allowed; the allowed lengths are: 1 or",
-      y_len,
+      len,
       collapse = ""
     )
   }
 }
 
-#' @rdname check_common_length
-#' @inheritParams check_common_length
+#' @rdname check_length
+#' @inheritParams check_length
 #' @export
-assert_common_length <- makeAssertionFunction(check_common_length)
+assert_length <- makeAssertionFunction(check_length)
 
-#' @rdname check_common_length
-#' @inheritParams check_common_length
+#' @rdname check_length
+#' @inheritParams check_length
 #' @export
-test_common_length <- makeTestFunction(check_common_length)
+test_length <- makeTestFunction(check_length)
 
-#' @rdname check_common_length
-#' @inheritParams check_common_length
+#' @rdname check_length
+#' @inheritParams check_length
 #' @export
-expect_common_length <- makeExpectationFunction(check_common_length)
+expect_length <- makeExpectationFunction(check_length)
