@@ -18,7 +18,7 @@ observed responses (if any)."><meta property="og:image" content="https://roche.g
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9113</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9114</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,12 +40,6 @@ observed responses (if any)."><meta property="og:image" content="https://roche.g
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -93,11 +87,10 @@ observed responses (if any).</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>dose</dt>
 <dd><p>(<code>number</code> or <code>numeric</code>)<br> the dose which is targeted.
-This must be a scalar if number of samples in <code>samples</code> is greater than
-one (i.e. <code>sampleSize(samples@options) &gt; 1</code>). It can be a vector of any
-finite length, if there is only one sample in <code>samples</code>, or <code>samples</code> are
-not used at all, as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model.</p></dd>
+The following recycling rule applies when <code>samples</code> is not missing: vectors
+of size 1 will be recycled to the size of the sample
+(i.e. <code>sampleSize(samples@options)</code>). Otherwise, <code>dose</code> must have the same
+size as the sample.</p></dd>
 
 
 <dt>model</dt>
@@ -143,7 +136,8 @@ based on the samples of <code><a href="Effloglog-class.html">Effloglog</a></code
 based on the <code><a href="Effloglog-class.html">Effloglog</a></code> model parameters.
 All model parameters (except <code>dose</code>) should be present in the <code>model</code> object.</p></li>
 <li><p><code>efficacy(dose = numeric, model = EffFlexi, samples = Samples)</code>: compute the expected efficacy at a specified dose level,
-based on the samples of <code><a href="EffFlexi-class.html">EffFlexi</a></code> model parameters.</p></li>
+based on the samples of <code><a href="EffFlexi-class.html">EffFlexi</a></code> model parameters. For this method,
+the <code>dose</code> argument must be a scalar.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

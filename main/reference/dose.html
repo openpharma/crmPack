@@ -24,7 +24,7 @@ The doses are computed based on the samples of the model parameters (samples).">
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9113</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9114</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,12 +46,6 @@ The doses are computed based on the samples of the model parameters (samples).">
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -145,11 +139,10 @@ The doses are computed based on the samples of the model parameters (samples).</
     <dl><dt>x</dt>
 <dd><p>(<code>proportion</code> or <code>numeric</code>)<br> a value of an independent variable
 on which dose depends.
-This must be a scalar if number of samples in <code>samples</code> is greater than
-one (i.e. <code>sampleSize(samples@options) &gt; 1</code>). It can be a vector of any
-finite length, if there is only one sample in <code>samples</code>, or <code>samples</code> are
-not used at all, as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model.</p></dd>
+The following recycling rule applies when <code>samples</code> is not missing: vectors
+of size 1 will be recycled to the size of the sample
+(i.e. <code>sampleSize(samples@options)</code>). Otherwise, <code>x</code> must have the same size
+as the sample.</p></dd>
 
 
 <dt>model</dt>
@@ -219,7 +212,8 @@ All model parameters (except <code>x</code>) should be present in the <code>mode
 probability of the occurrence of a DLE (<code>x</code>).
 All model parameters (except <code>x</code>) should be present in the <code>model</code> object.</p></li>
 <li><p><code>dose(x = numeric, model = EffFlexi, samples = Samples)</code>: compute the dose level reaching a specific target
-probability of the occurrence of a DLE (<code>x</code>).</p></li>
+probability of the occurrence of a DLE (<code>x</code>). For this method <code>x</code> must
+be a scalar.</p></li>
 <li><p><code>dose(x = numeric, model = OneParLogNormalPrior, samples = Samples)</code>: compute the dose level reaching a specific target
 probability of the occurrence of a DLT (<code>x</code>).</p></li>
 <li><p><code>dose(x = numeric, model = OneParExpPrior, samples = Samples)</code>: compute the dose level reaching a specific target
@@ -260,9 +254,10 @@ variable that dose depends on, represents toxicity probability.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Posterior for the dose achieving Prob(DLT) = 0.45.</span></span></span>
 <span class="r-in"><span><span class="fu">dose</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.45</span>, model <span class="op">=</span> <span class="va">my_model</span>, samples <span class="op">=</span> <span class="va">my_samples</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 200.48241  70.13436  70.13436  70.13436  70.13436  70.13436  70.13436</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  41.20226 607.82790 607.82790 139.08420  49.61371  49.61371  54.40145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15]  54.40145  91.31049  91.31049  91.31049  59.50787 114.54264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  101.76828  101.76828  101.76828   75.54384   75.54384  106.77504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 2347.60723  216.28507 8878.93175 8878.93175  720.97537 2370.23452</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]   14.59675   14.59675   14.59675   14.59675   14.59675   28.51014</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19]  114.98321   76.13979</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create data from the 'Data' (or 'DataDual') class.</span></span></span>
 <span class="r-in"><span><span class="va">dlt_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="Data-class.html">Data</a></span><span class="op">(</span></span></span>
