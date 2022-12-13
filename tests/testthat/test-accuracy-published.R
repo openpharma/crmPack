@@ -218,14 +218,9 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
                        tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
     tolerance
 
-  # if at least one computed result (mean or sd) has deviation larger than
-  # tolerance from corresponding published result, set result as FALSE
-  if ((FALSE %in% diff_org_mean) == TRUE |
-      (FALSE %in% diff_org_sd) == TRUE) {
-    result_org <- FALSE
-  } else {
-    result_org <- TRUE
-  }
+  # if all computed results (mean or sd) have deviation smaller than
+  # tolerance from corresponding published result, set result as TRUE
+  result_org <- ifelse(all(diff_org_mean) & all(diff_org_sd), TRUE, FALSE)
 
   # silent if all absolute differences are < tolerance
   expect_true(result_org)
@@ -239,12 +234,8 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
                         tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
     tolerance
 
-  if ((FALSE %in% diff_equi_mean) == TRUE |
-      (FALSE %in% diff_equi_sd) == TRUE) {
-    result_equi <- FALSE
-  } else {
-    result_equi <- TRUE
-  }
+  result_equi <- ifelse(all(diff_equi_mean) & all(diff_equi_sd), TRUE, FALSE)
+
   # silent if all absolute differences are < tolerance
   expect_true(result_equi)
 })
