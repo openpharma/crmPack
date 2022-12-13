@@ -2709,7 +2709,7 @@ setMethod("stopTrial",
       points <- data@doseGrid
 
       GainSamples <- matrix(
-        nrow = sampleSize(samples@options),
+        nrow = sampleSize(samples),
         ncol = length(points)
       )
 

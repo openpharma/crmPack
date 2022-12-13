@@ -7,12 +7,12 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A method that computes the number of samples for a given MCMC options triple.
+#' A method that computes the number of MCMC samples.
 #'
-#' @param object (`McmcOptions`)\cr object based on which the number of samples
-#'   is computed.
+#' @param object (`McmcOptions` or `Samples`)\cr object based on which the number
+#'   of samples is computed.
 #' @param ... not used.
-#' @return A number of samples for a given MCMC options.
+#' @return A number of samples.
 #' @export
 #'
 setGeneric(
@@ -25,7 +25,8 @@ setGeneric(
 
 # sampleSize-McmcOptions ----
 
-#' @rdname sampleSize
+#' @describeIn sampleSize compute the number of MCMC samples based on `McmcOptions`
+#'   object.
 #' @aliases sampleSize-McmcOptions
 #' @example examples/McmcOptions-methods-sampleSize.R
 setMethod(
@@ -47,8 +48,8 @@ setMethod(
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that determines if a sample from a given `iteration` should be
-#'   saved. The sample should be saved if and only if:
-#'   it is not in burn-in period and it matches the `step`.
+#' saved. The sample should be saved if and only if:
+#' it is not in burn-in period and it matches the `step`.
 #'
 #' @param object (`McmcOptions`)\cr object based on which the answer is
 #'   determined.
@@ -67,7 +68,7 @@ setGeneric(
 
 # saveSample-McmcOptions ----
 
-#' @rdname saveSample
+#' @describeIn saveSample determine if a sample should be saved.
 #' @aliases saveSample-McmcOptions
 #' @example examples/McmcOptions-methods-saveSample.R
 setMethod(

@@ -79,7 +79,7 @@ dose(x, model, samples, ...)
 on which dose depends.
 The following recycling rule applies when \code{samples} is not missing: vectors
 of size 1 will be recycled to the size of the sample
-(i.e. \code{sampleSize(samples@options)}). Otherwise, \code{x} must have the same size
+(i.e. \code{sampleSize(samples)}). Otherwise, \code{x} must have the same size
 as the sample.}
 
 \item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}

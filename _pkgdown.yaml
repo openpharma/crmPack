@@ -226,6 +226,7 @@ reference:
       - getEff-DataDual
       - sampleSize
       - sampleSize-McmcOptions
+      - sampleSize-Samples
       - saveSample
       - saveSample-McmcOptions
       - doseFunction

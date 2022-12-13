@@ -70,7 +70,7 @@ prob(dose, model, samples, ...)
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
 The following recycling rule applies when \code{samples} is not missing: vectors
 of size 1 will be recycled to the size of the sample
-(i.e. \code{sampleSize(samples@options)}). Otherwise, \code{dose} must have the same
+(i.e. \code{sampleSize(samples)}). Otherwise, \code{dose} must have the same
 size as the sample.}
 
 \item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model for single agent

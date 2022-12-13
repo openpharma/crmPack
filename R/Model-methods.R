@@ -241,7 +241,7 @@ setMethod(
 #'   on which dose depends.
 #'   The following recycling rule applies when `samples` is not missing: vectors
 #'   of size 1 will be recycled to the size of the sample
-#'   (i.e. `sampleSize(samples@options)`). Otherwise, `x` must have the same size
+#'   (i.e. `sampleSize(samples)`). Otherwise, `x` must have the same size
 #'   as the sample.
 #' @param model (`GeneralModel` or `ModelPseudo`)\cr the model.
 #' @param samples (`Samples`)\cr the samples of model's parameters that will be
@@ -286,7 +286,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -313,7 +313,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -340,7 +340,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -367,7 +367,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -394,7 +394,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -421,7 +421,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -450,7 +450,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -479,7 +479,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -506,7 +506,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -553,7 +553,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("betaZ", names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
@@ -584,7 +584,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset(c("phi1", "phi2"), names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
@@ -704,7 +704,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("alpha", names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     alpha <- samples@data$alpha
     skel_fun_inv <- model@skel_fun_inv
@@ -730,7 +730,7 @@ setMethod(
   definition = function(x, model, samples) {
     assert_probabilities(x)
     assert_subset("theta", names(samples@data))
-    assert_length(x, len = sampleSize(samples@options))
+    assert_length(x, len = sampleSize(samples))
 
     theta <- samples@data$theta
     skel_fun_inv <- model@skel_fun_inv
@@ -765,7 +765,7 @@ setMethod(
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
 #'   The following recycling rule applies when `samples` is not missing: vectors
 #'   of size 1 will be recycled to the size of the sample
-#'   (i.e. `sampleSize(samples@options)`). Otherwise, `dose` must have the same
+#'   (i.e. `sampleSize(samples)`). Otherwise, `dose` must have the same
 #'   size as the sample.
 #' @param model (`GeneralModel` or `ModelTox`)\cr the model for single agent
 #'   dose escalation or pseudo DLE (dose-limiting events)/toxicity model.
@@ -810,7 +810,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -836,7 +836,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -862,7 +862,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -888,7 +888,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -914,7 +914,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -940,7 +940,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -968,7 +968,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("rho0", "gamma"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     rho0 <- samples@data$rho0
     gamma <- samples@data$gamma
@@ -996,7 +996,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1022,7 +1022,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1048,7 +1048,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("alpha0", "alpha1"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha0 <- samples@data$alpha0
     alpha1 <- samples@data$alpha1
@@ -1076,7 +1076,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("betaZ", names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     betaZ <- samples@data$betaZ
     ref_dose <- as.numeric(model@ref_dose)
@@ -1108,7 +1108,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("phi1", "phi2"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     phi1 <- samples@data$phi1
     phi2 <- samples@data$phi2
@@ -1162,7 +1162,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("alpha", names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     alpha <- samples@data$alpha
     skel_fun <- model@skel_fun
@@ -1187,7 +1187,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset("theta", names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     theta <- samples@data$theta
     skel_fun <- model@skel_fun
@@ -1218,7 +1218,7 @@ setMethod(
 #' @param dose (`number` or `numeric`)\cr the dose which is targeted.
 #'   The following recycling rule applies when `samples` is not missing: vectors
 #'   of size 1 will be recycled to the size of the sample
-#'   (i.e. `sampleSize(samples@options)`). Otherwise, `dose` must have the same
+#'   (i.e. `sampleSize(samples)`). Otherwise, `dose` must have the same
 #'   size as the sample.
 #' @param model (`ModelEff`)\cr the efficacy model with pseudo data prior.
 #' @param samples (`Samples`)\cr samples of model's parameters that will be
@@ -1263,7 +1263,7 @@ setMethod(
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
     assert_subset(c("theta1", "theta2"), names(samples@data))
-    assert_length(dose, len = sampleSize(samples@options))
+    assert_length(dose, len = sampleSize(samples))
 
     theta1 <- samples@data$theta1
     theta2 <- samples@data$theta2
