@@ -1,36 +1,41 @@
 #' @include McmcOptions-class.R
 NULL
 
-# sampleSize ----
+# size ----
 
-#' Computing the Number of Samples
+## generic ----
+
+#' Size of an Object
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A method that computes the number of MCMC samples.
+#' A method that computes the size of a given object. This can be for instance
+#' a size of a MCMC sample, or the size of a cohort. See the help of a specific
+#' method for more details.
 #'
-#' @param object (`McmcOptions` or `Samples`)\cr object based on which the number
-#'   of samples is computed.
-#' @param ... not used.
-#' @return A number of samples.
+#' @param object (`McmcOptions` or `Samples` or `CohortSize`)\cr an object
+#'   for which the size is computed.
+#' @param ... further arguments passed to `size` specific methods.
+#'
+#' @return A size of a given object.
 #' @export
 #'
 setGeneric(
-  name = "sampleSize",
+  name = "size",
   def = function(object, ...) {
-    standardGeneric("sampleSize")
+    standardGeneric("size")
   },
   valueClass = "integer"
 )
 
-# sampleSize-McmcOptions ----
+## McmcOptions ----
 
-#' @describeIn sampleSize compute the number of MCMC samples based on `McmcOptions`
+#' @describeIn size compute the number of MCMC samples based on `McmcOptions`
 #'   object.
-#' @aliases sampleSize-McmcOptions
-#' @example examples/McmcOptions-methods-sampleSize.R
+#' @aliases size-McmcOptions
+#' @example examples/McmcOptions-methods-size.R
 setMethod(
-  f = "sampleSize",
+  f = "size",
   signature = signature(object = "McmcOptions"),
   definition = function(object, ...) {
     iterations_relative <- object@iterations - object@burnin
@@ -42,6 +47,8 @@ setMethod(
 )
 
 # saveSample ----
+
+## generic ----
 
 #' Determining if this Sample Should be Saved
 #'
@@ -66,7 +73,7 @@ setGeneric(
   valueClass = "logical"
 )
 
-# saveSample-McmcOptions ----
+## McmcOptions ----
 
 #' @describeIn saveSample determine if a sample should be saved.
 #' @aliases saveSample-McmcOptions

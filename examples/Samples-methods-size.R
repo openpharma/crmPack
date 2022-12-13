@@ -7,4 +7,4 @@ my_samples <- Samples(
   options = my_options
 )
 
-sampleSize(my_samples)
+size(my_samples)

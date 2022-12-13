@@ -490,7 +490,7 @@ setMethod("mcmc",
         ## sample from the (asymptotic) bivariate normal prior for theta
 
         tmp <- mvtnorm::rmvnorm(
-          n = sampleSize(options),
+          n = size(options),
           mean = c(slot(thismodel, "phi1"), slot(thismodel, "phi2")),
           sigma = solve(precision)
         )
@@ -571,7 +571,7 @@ setMethod(
   ),
   definition = function(data, model, options, ...) {
     model <- update(object = model, data = data)
-    sample_size <- sampleSize(options)
+    sample_size <- size(options)
 
     if (model@use_fixed) {
       nu <- model@nu
@@ -629,7 +629,7 @@ setMethod("mcmc",
       ## update the model
       thismodel <- update(object = model, data = data)
 
-      nSamples <- sampleSize(options)
+      nSamples <- size(options)
 
       ## Prepare samples container
       ### List parameter samples to save

@@ -3,19 +3,21 @@
 #' @include fromQuantiles.R
 NULL
 
-# sampleSize-Samples ----
+# size ----
 
-#' @describeIn sampleSize get the number of MCMC samples from `Samples` object.
-#' @aliases sampleSize-Samples
+## Samples ----
+
+#' @describeIn size get the number of MCMC samples from `Samples` object.
+#' @aliases size-Samples
 #'
 #' @export
-#' @example examples/Samples-methods-sampleSize.R
+#' @example examples/Samples-methods-size.R
 #'
 setMethod(
-  f = "sampleSize",
+  f = "size",
   signature = signature(object = "Samples"),
   definition = function(object, ...) {
-    sampleSize(object@options)
+    size(object@options)
   }
 )
 
@@ -187,7 +189,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(object),
+              probSamples <- matrix(nrow=size(object),
                                     ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -599,7 +601,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(object),
+              probSamples <- matrix(nrow=size(object),
                                     ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -655,7 +657,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object),
+              ExpEffSamples <- matrix(nrow=size(object),
                                       ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -711,7 +713,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object),
+              ExpEffSamples <- matrix(nrow=size(object),
                                       ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -803,7 +805,7 @@ setMethod("fitGain",
 
               ## first we have to get samples from the gain
               ## at the dose grid points.
-              GainSamples <- matrix(nrow=sampleSize(DLEsamples),
+              GainSamples <- matrix(nrow=size(DLEsamples),
                                     ncol=length(points))
 
               ## evaluate the probs, for all gain samples.
@@ -1380,7 +1382,7 @@ setMethod("plotDualResponses",
                 seq_along(data@doseGrid)} else {1:max(data@xLevel)}
 
               ##get the plot data for the efficacy
-              functionSamples <- matrix(nrow=sampleSize(Effsamples),
+              functionSamples <- matrix(nrow=size(Effsamples),
                                         ncol=length(xLevels))
               ##evaluate the efficacy for all samples
               for (i in seq_along(xLevels))
@@ -1665,7 +1667,7 @@ setMethod("fitPEM",
               ## first we have to get samples from the PEM
               ## at intercept points and 2 middel points between
               ## intercepts.
-              PEMSamples <- matrix(nrow=sampleSize(object),
+              PEMSamples <- matrix(nrow=size(object),
                                    ncol=length(points))
 
               i_max<-max(seq_along(points))

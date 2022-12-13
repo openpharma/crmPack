@@ -181,7 +181,8 @@ method_changes <- tribble(
   "nextBest-NextBestMaxGainSamples", "", "Effmodel", "model_eff", FALSE, "", "",
   "nextBest-NextBestMaxGainSamples", "", "Effsamples", "samples_eff", FALSE, "", "",
   "nextBest-NextBestMaxGainSamples", "", "SIM", "in_sim", FALSE, "", "",
-  "nextBest-NextBestMaxGainSamples", "", "", "", FALSE, "renamed elements in the list returned", ""
+  "nextBest-NextBestMaxGainSamples", "", "", "", FALSE, "renamed elements in the list returned", "",
+  "size", "size", "", "check", FALSE, "", ""
 )
 ```
 
