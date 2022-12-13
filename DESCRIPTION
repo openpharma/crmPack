@@ -33,8 +33,8 @@ Imports:
     futile.logger,
     GenSA,
     grid,
+    magrittr,
     gridExtra,
-    kableExtra,
     lifecycle,
     methods,
     mvtnorm,
@@ -42,14 +42,18 @@ Imports:
     rjags,
     survival,
     tibble,
-    tidyverse,
     tools,
-    utils
+    utils,
+    kableExtra
 Suggests:
+    tidyr,
+    dplyr,
     ggmcmc,
     knitr,
     testthat (>= 3.0.0),
-    vdiffr
+    vdiffr,
+    stringr,
+    rmarkdown
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
@@ -90,4 +94,5 @@ Collate:
     'crmPack-package.R'
     'helpers_model.R'
     'logger.R'
+    'utils-pipe.R'
     'utils.R'
