@@ -224,10 +224,17 @@ reference:
       - update-DataDA
       - getEff
       - getEff-DataDual
-      - sampleSize
-      - sampleSize-McmcOptions
       - saveSample
       - saveSample-McmcOptions
+      - size
+      - size-McmcOptions
+      - size-Samples
+      - size-CohortSizeRange
+      - size-CohortSizeDLT
+      - size-CohortSizeMax
+      - size-CohortSizeMin
+      - size-CohortSizeConst
+      - size-CohortSizeParts
       - doseFunction
       - doseFunction-GeneralModel
       - doseFunction-ModelPseudo
@@ -404,7 +411,6 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
-      - size
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method

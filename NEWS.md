@@ -1,4 +1,5 @@
 # Version 1.0.9000.9115
+* Added method `size` for objects of class `Samples`.
 * Added new custom `checkmate` function `check_length`.
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
 * Created a new vignette which describes how to use certain functions and features
