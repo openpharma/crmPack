@@ -200,15 +200,19 @@ reference:
       - assert_probabilities
       - assert_probability
       - assert_probability_range
+      - assert_length
       - check_probabilities
       - check_probability
       - check_probability_range
+      - check_length
       - test_probabilities
       - test_probability
       - test_probability_range
+      - test_length
       - expect_probabilities
       - expect_probability
       - expect_probability_range
+      - expect_length
   - title: Methods
     contents:
       - plot-Data
@@ -220,10 +224,17 @@ reference:
       - update-DataDA
       - getEff
       - getEff-DataDual
-      - sampleSize
-      - sampleSize-McmcOptions
       - saveSample
       - saveSample-McmcOptions
+      - size
+      - size-McmcOptions
+      - size-Samples
+      - size-CohortSizeRange
+      - size-CohortSizeDLT
+      - size-CohortSizeMax
+      - size-CohortSizeMin
+      - size-CohortSizeConst
+      - size-CohortSizeParts
       - doseFunction
       - doseFunction-GeneralModel
       - doseFunction-ModelPseudo
@@ -400,7 +411,6 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
-      - size
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method

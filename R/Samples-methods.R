@@ -1,23 +1,27 @@
-# nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Samples-methods.R] by DSB Mon 11/05/2015 17:46>
-##
-## Description:
-## Methods for processing the MCMC samples.
-##
-## History:
-## 25/03/2014   file creation
-## 10/07/2015   Adding more methods for pseudo models
-#####################################################################################
+#' @include McmcOptions-class.R
+#' @include Model-methods.R
+#' @include fromQuantiles.R
+NULL
 
-##' @include McmcOptions-methods.R
-##' @include Model-methods.R
-##' @include fromQuantiles.R
-{}
+# size ----
+
+## Samples ----
+
+#' @describeIn size get the number of MCMC samples from `Samples` object.
+#' @aliases size-Samples
+#'
+#' @export
+#' @example examples/Samples-methods-size.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(object = "Samples"),
+  definition = function(object, ...) {
+    size(object@options)
+  }
+)
+
+# nolint start
 
 ## --------------------------------------------------
 ## Extract certain parameter from "Samples" object to produce
@@ -185,7 +189,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(object@options),
+              probSamples <- matrix(nrow=size(object),
                                     ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -597,7 +601,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(object@options),
+              probSamples <- matrix(nrow=size(object),
                                     ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -653,7 +657,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
+              ExpEffSamples <- matrix(nrow=size(object),
                                       ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -709,7 +713,7 @@ setMethod("fit",
 
               ## first we have to get samples from the dose-tox
               ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
+              ExpEffSamples <- matrix(nrow=size(object),
                                       ncol=length(points))
 
               ## evaluate the probs, for all samples.
@@ -801,7 +805,7 @@ setMethod("fitGain",
 
               ## first we have to get samples from the gain
               ## at the dose grid points.
-              GainSamples <- matrix(nrow=sampleSize(DLEsamples@options),
+              GainSamples <- matrix(nrow=size(DLEsamples),
                                     ncol=length(points))
 
               ## evaluate the probs, for all gain samples.
@@ -1378,7 +1382,7 @@ setMethod("plotDualResponses",
                 seq_along(data@doseGrid)} else {1:max(data@xLevel)}
 
               ##get the plot data for the efficacy
-              functionSamples <- matrix(nrow=sampleSize(Effsamples@options),
+              functionSamples <- matrix(nrow=size(Effsamples),
                                         ncol=length(xLevels))
               ##evaluate the efficacy for all samples
               for (i in seq_along(xLevels))
@@ -1663,7 +1667,7 @@ setMethod("fitPEM",
               ## first we have to get samples from the PEM
               ## at intercept points and 2 middel points between
               ## intercepts.
-              PEMSamples <- matrix(nrow=sampleSize(object@options),
+              PEMSamples <- matrix(nrow=size(object),
                                    ncol=length(points))
 
               i_max<-max(seq_along(points))
