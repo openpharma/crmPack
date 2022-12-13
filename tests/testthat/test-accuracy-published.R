@@ -1,52 +1,46 @@
+test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
 
-
-
-test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
   mcmc_options <- McmcOptions(
-    burnin = 50000, step = 2,
-    samples = 1000000,
+    burnin = 50000,
+    step = 2,
+    samples = 10000,
     rng_kind = "Wichmann-Hill",
     rng_seed = 1
   )
 
-
-  ## One-parameter model
-  ## (A) Posterior summaries (original skeleton)
-  empty_data <- Data(dose_grid = c(
+  # One-parameter model
+  dose_grid <- c(
     1, 2.5, 5, 10, 15, 20, 25, 30,
     40, 50, 75, 100, 150, 200, 250
-  ))
+  )
+
+  # (A) Posterior summaries (original skeleton)
+  empty_data <- Data(dose_grid = dose_grid)
 
   data_obs_a <- Data(
     x = c(
-      rep(1, 3), rep(2.5, 4), rep(5, 5),
-      rep(10, 4), rep(25, 2)
+      rep(c(1, 2.5, 5, 10, 25),
+          times = c(3, 4, 5, 4, 2))
     ),
     y = c(
-      rep(0, 3), rep(0, 4), rep(0, 5),
-      rep(0, 4), rep(1, 2)
+      rep(c(0, 1),
+          times = c(16, 2))
     ),
     cohort = c(
-      rep(1, 3), rep(2, 4), rep(3, 5),
-      rep(4, 4), rep(7, 2)
+      rep(c(1, 2, 3, 4, 7),
+          times = c(3, 4, 5, 4, 2))
     ),
-    doseGrid = c(
-      1, 2.5, 5, 10, 15, 20, 25, 30,
-      40, 50, 75, 100, 150, 200, 250
-    ),
+    doseGrid = dose_grid,
     ID = 1:18
   )
 
-  model_power_a <- OneParExpNormalPrior(
+  model_power_a <- OneParLogNormalPrior(
     skel_probs = c(
       0.01, 0.015, 0.020, 0.025, 0.03,
       0.04, 0.05, 0.10, 0.17, 0.30,
       0.45, 0.70, 0.80, 0.90, 0.95
     ),
-    dose_grid = c(
-      1, 2.5, 5, 10, 15, 20, 25, 30,
-      40, 50, 75, 100, 150, 200, 250
-    ),
+    dose_grid = dose_grid,
     sigma2 = 1.34^2
   )
 
@@ -56,7 +50,7 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
     options = mcmc_options
   )
 
-  ## NCRM rule with loss function
+  # NCRM rule with loss function
   ncrm_loss <- NextBestNCRMLoss(
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
@@ -73,22 +67,16 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
   post_samples_a <- mcmc(data_obs_a, model_power_a, mcmc_options)
 
   dose_rec_loss_a <- nextBest(ncrm_loss,
-    doselimit = maxDose(
-      increments_no,
-      data_obs_a
-    ),
-    samples = post_samples_a,
-    model = model_power_a,
-    data = data_obs_a
+                              doselimit = maxDose(
+                                increments_no,
+                                data_obs_a
+                              ),
+                              samples = post_samples_a,
+                              model = model_power_a,
+                              data = data_obs_a
   )
 
-  ## (A) Actual table I
-  pat_info <- rbind(
-    "No. of patients" = c(3, 4, 5, 4, "-", "-", 2, "-", "-", "-"),
-    "No. of DLTs" = c(0, 0, 0, 0, "-", "-", 2, "-", "-", "-")
-  )
-  colnames(pat_info) <- c(1, 2.5, 5, 10, 15, 20, 25, 30, 40, 50)
-
+  # (A) Actual table I
   tab1_a_act <- rbind(
     "Skeleton (CRM)" = c(
       0.01, 0.015, 0.020, 0.025, 0.03,
@@ -100,50 +88,30 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
   )
 
 
-  ## (B) Actual table I
+  # (B) Actual table I
+  data_obs_b <- data_obs_a
+  data_obs_b@doseGrid <- dose_grid[1:10]
+  data_obs_b@nGrid <- length(data_obs_b@doseGrid)
 
-  data_obs_b <- Data(
-    x = c(
-      rep(1, 3), rep(2.5, 4), rep(5, 5),
-      rep(10, 4), rep(25, 2)
-    ),
-    y = c(
-      rep(0, 3), rep(0, 4), rep(0, 5),
-      rep(0, 4), rep(1, 2)
-    ),
-    cohort = c(
-      rep(1, 3), rep(2, 4), rep(3, 5),
-      rep(4, 4), rep(7, 2)
-    ),
-    doseGrid = c(
-      1, 2.5, 5, 10, 15, 20, 25, 30,
-      40, 50
-    ),
-    ID = 1:18
-  )
-
-  model_power_b <- OneParExpNormalPrior(
+  model_power_b <- OneParLogNormalPrior(
     skel_probs = c(
       0.063, 0.125, 0.188, 0.250, 0.313,
       0.375, 0.438, 0.500, 0.563, 0.625
     ),
-    dose_grid = c(
-      1, 2.5, 5, 10, 15, 20, 25, 30,
-      40, 50
-    ),
+    dose_grid = dose_grid[1:10],
     sigma2 = 1.34^2
   )
 
   post_samples_b <- mcmc(data_obs_b, model_power_b, mcmc_options)
 
   dose_rec_loss_b <- nextBest(ncrm_loss,
-    doselimit = maxDose(
-      increments_no,
-      data_obs_b
-    ),
-    samples = post_samples_b,
-    model = model_power_b,
-    data = data_obs_b
+                              doselimit = maxDose(
+                                increments_no,
+                                data_obs_b
+                              ),
+                              samples = post_samples_b,
+                              model = model_power_b,
+                              data = data_obs_b
   )
 
   tab1_b_act <- rbind(
@@ -156,15 +124,13 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
     "Std. dev." = t(dose_rec_loss_b$probs[, 7])[, 1:10]
   )
 
-  ## (A)+ (B) Actual table I
+  # (A)+ (B) Actual table I
   tab1_act <- list(
     "Posterior summaries (original skeleton)" = as.data.frame(tab1_a_act),
     "Posterior summaries (equidistant skeleton)" = as.data.frame(tab1_b_act)
   )
 
-
-  ## Expected table I (Neuenschwander et al.)
-
+  # Expected table I (Neuenschwander et al.)
   tab1 <- structure(list(
     dose1 = c(
       3, 0, NA, 0.01, 0.069, 0.055, NA, 0.063,
@@ -209,10 +175,10 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
   ),
   class = "data.frame",
   row.names = c(
-    "No. of patients", "No. of DLTs", "A)
-                                       Posterior summaries (original skeleton)",
-    "Skeleton (CRM)", "Mean", "Std. dev.", "B)
-                                       Posterior summaries (equidistant skeleton)",
+    "No. of patients", "No. of DLTs",
+    "A) Posterior summaries (original skeleton)",
+    "Skeleton (CRM)", "Mean", "Std. dev.",
+    "B) Posterior summaries (equidistant skeleton)",
     "Skeleton (CRM)", "Mean", "Std. dev."
   )
   )
@@ -233,29 +199,29 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
 
   names(tab1_b_exp) <- colnames(tab1_b_act)
 
-  ## (A)+ (B) Expected table I
+  # (A)+ (B) Expected table I
   tab1_exp <- list(
     "Posterior summaries (original skeleton)" = tab1_a_exp,
     "Posterior summaries (equidistant skeleton)" = tab1_b_exp
   )
 
-  ## test Posterior summaries for probabilities of DLT (CRM)
+  # test Posterior summaries for probabilities of DLT (CRM)
   # check whether absolute differences between published results and computed
   # results are smaller than chosen tolerance
   tolerance <- 0.01
   # original skeleton
   diff_org_mean <- abs(tab1_act$"Posterior summaries (original skeleton)"[2, ] -
-    tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
+                         tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
     tolerance
 
   diff_org_sd <- abs(tab1_act$"Posterior summaries (original skeleton)"[3, ] -
-    tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
+                       tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
     tolerance
 
   # if at least one computed result (mean or sd) has deviation larger than
   # tolerance from corresponding published result, set result as FALSE
   if ((FALSE %in% diff_org_mean) == TRUE |
-    (FALSE %in% diff_org_sd) == TRUE) {
+      (FALSE %in% diff_org_sd) == TRUE) {
     result_org <- FALSE
   } else {
     result_org <- TRUE
@@ -266,15 +232,15 @@ test_that("OneParExpNormalPrior reproduces same numbers as in paper by Neuenschw
 
   # equidistant skeleton
   diff_equi_mean <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[2, ] -
-    tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
+                          tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
     tolerance
 
   diff_equi_sd <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[3, ] -
-    tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
+                        tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
     tolerance
 
   if ((FALSE %in% diff_equi_mean) == TRUE |
-    (FALSE %in% diff_equi_sd) == TRUE) {
+      (FALSE %in% diff_equi_sd) == TRUE) {
     result_equi <- FALSE
   } else {
     result_equi <- TRUE
