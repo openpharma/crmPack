@@ -290,6 +290,7 @@ reference:
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - mcmc-GeneralData-OneParExpPrior
+      - names-Samples
       - nextBest
       - nextBest-NextBestMTD
       - nextBest-NextBestNCRM

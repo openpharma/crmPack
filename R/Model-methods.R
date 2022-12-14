@@ -285,7 +285,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -312,7 +312,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -339,7 +339,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -366,7 +366,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -393,7 +393,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -420,7 +420,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("rho0", "gamma"), names(samples@data))
+    assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(x, len = size(samples))
 
     rho0 <- samples@data$rho0
@@ -449,7 +449,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("rho0", "gamma"), names(samples@data))
+    assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(x, len = size(samples))
 
     rho0 <- samples@data$rho0
@@ -478,7 +478,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -505,7 +505,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(x, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -552,7 +552,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset("betaZ", names(samples@data))
+    assert_subset("betaZ", names(samples))
     assert_length(x, len = size(samples))
 
     betaZ <- samples@data$betaZ
@@ -583,7 +583,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset(c("phi1", "phi2"), names(samples@data))
+    assert_subset(c("phi1", "phi2"), names(samples))
     assert_length(x, len = size(samples))
 
     phi1 <- samples@data$phi1
@@ -667,7 +667,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_number(x)
-    assert_subset("ExpEff", names(samples@data))
+    assert_subset("ExpEff", names(samples))
 
     samples_efficacy <- samples@data$ExpEff
     dose_grid <- model@data@doseGrid
@@ -703,7 +703,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset("alpha", names(samples@data))
+    assert_subset("alpha", names(samples))
     assert_length(x, len = size(samples))
 
     alpha <- samples@data$alpha
@@ -729,7 +729,7 @@ setMethod(
   ),
   definition = function(x, model, samples) {
     assert_probabilities(x)
-    assert_subset("theta", names(samples@data))
+    assert_subset("theta", names(samples))
     assert_length(x, len = size(samples))
 
     theta <- samples@data$theta
@@ -809,7 +809,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -835,7 +835,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -861,7 +861,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -887,7 +887,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -913,7 +913,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -939,7 +939,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("rho0", "gamma"), names(samples@data))
+    assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(dose, len = size(samples))
 
     rho0 <- samples@data$rho0
@@ -967,7 +967,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("rho0", "gamma"), names(samples@data))
+    assert_subset(c("rho0", "gamma"), names(samples))
     assert_length(dose, len = size(samples))
 
     rho0 <- samples@data$rho0
@@ -995,7 +995,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -1021,7 +1021,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -1047,7 +1047,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("alpha0", "alpha1"), names(samples@data))
+    assert_subset(c("alpha0", "alpha1"), names(samples))
     assert_length(dose, len = size(samples))
 
     alpha0 <- samples@data$alpha0
@@ -1075,7 +1075,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset("betaZ", names(samples@data))
+    assert_subset("betaZ", names(samples))
     assert_length(dose, len = size(samples))
 
     betaZ <- samples@data$betaZ
@@ -1107,7 +1107,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("phi1", "phi2"), names(samples@data))
+    assert_subset(c("phi1", "phi2"), names(samples))
     assert_length(dose, len = size(samples))
 
     phi1 <- samples@data$phi1
@@ -1161,7 +1161,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset("alpha", names(samples@data))
+    assert_subset("alpha", names(samples))
     assert_length(dose, len = size(samples))
 
     alpha <- samples@data$alpha
@@ -1186,7 +1186,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset("theta", names(samples@data))
+    assert_subset("theta", names(samples))
     assert_length(dose, len = size(samples))
 
     theta <- samples@data$theta
@@ -1262,7 +1262,7 @@ setMethod(
   ),
   definition = function(dose, model, samples) {
     assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
-    assert_subset(c("theta1", "theta2"), names(samples@data))
+    assert_subset(c("theta1", "theta2"), names(samples))
     assert_length(dose, len = size(samples))
 
     theta1 <- samples@data$theta1

@@ -21,6 +21,30 @@ setMethod(
   }
 )
 
+# names ----
+
+## Samples ----
+
+#' The Names of the Sampled Parameters
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that returns names of the parameters that are sampled.
+#'
+#' @param x (`Samples`)\cr object with samples.
+#'
+#' @aliases names-Samples
+#' @export
+#' @example examples/Samples-methods-names.R
+#'
+setMethod(
+  f = "names",
+  signature = signature(x = "Samples"),
+  definition = function(x) {
+    names(x@data)
+  }
+)
+
 # nolint start
 
 ## --------------------------------------------------
@@ -62,8 +86,7 @@ setMethod("get",
                    inherits=NULL){
 
               ## check the parameter name
-              stopifnot(is.scalar(pos),
-                        pos %in% names(x@data))
+              stopifnot(is.scalar(pos), pos %in% names(x))
 
               ## get the samples for this parameter
               d <- x@data[[pos]]
