@@ -2619,7 +2619,7 @@ setMethod("stopTrial",
       varEta <- as.vector(M1 %*% M2 %*% t(M1))
 
       ## Find the upper and lower limit of the 95% credibility interval
-      CI <- exp(log(dose_target_samples) + c(-1.96, 1.96) * sqrt(varEta))
+      CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
       ratio <- CI[2] / CI[1]
 
       ## so can we stop?
@@ -2851,7 +2851,7 @@ setMethod("stopTrial",
       varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
 
       ## Find the upper and lower limit of the 95% credibility interval of Gstar
-      CIGstar <- exp(logGstar + c(-1.96, 1.96) * sqrt(varlogGstar))
+      CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
 
       ## The ratio of the upper to the lower 95% credibility interval
       ratioGstar <- CIGstar[2] / CIGstar[1]
@@ -2864,7 +2864,7 @@ setMethod("stopTrial",
 
       ## Find the upper and lower limit of the 95% credibility interval of
       ## TDtargetEndOfTrial
-      CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1.96, 1.96) * sqrt(varEta))
+      CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
 
       ## The ratio of the upper to the lower 95% credibility interval
       ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
