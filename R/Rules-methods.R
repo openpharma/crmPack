@@ -440,7 +440,7 @@ setMethod(
       # If 'Emax' parameter available, target biomarker level will be relative to 'Emax',
       # otherwise, it will be relative to the maximum biomarker level achieved
       # in dose range for a given sample.
-      if ("Emax" %in% names(samples@data)) {
+      if ("Emax" %in% names(samples)) {
         lwr <- nextBest@target[1] * samples@data$Emax
         upr <- nextBest@target[2] * samples@data$Emax
         colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
@@ -2133,7 +2133,7 @@ setMethod("stopTrial",
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
         ## maximum biomarker level achieved in the given dose range.
-        if ("Emax" %in% names(samples@data)) {
+        if ("Emax" %in% names(samples)) {
 
           ## For each sample, look which dose is maximizing the
           ## simultaneous probability to be in the target biomarker

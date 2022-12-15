@@ -9,7 +9,7 @@ test_that("mcmc-GeneralData works as expected", {
 
   expect_true(all(slotNames(result) == c("data", "options")))
   expect_identical(result@options, options)
-  expect_true(all(names(result@data) == c("alpha0", "alpha1")))
+  expect_identical(names(result), c("alpha0", "alpha1"))
   expect_numeric(result@data$alpha0, len = 100, any.missing = FALSE, finite = TRUE)
   expect_numeric(result@data$alpha1, len = 100, any.missing = FALSE, finite = TRUE)
 })
