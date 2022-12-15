@@ -117,6 +117,7 @@ reference:
       - h_test_named_numeric
       - h_in_range
       - h_find_interval
+      - h_validate_combine_results
       - h_jags_add_dummy
       - h_jags_join_models
       - h_jags_get_model_inits
@@ -369,7 +370,6 @@ reference:
       - fitPEM
       - get,Samples,character-method
       - getMinInfBeta
-      - h_validate_combine_results
       - logit
       - matchTolerance
       - maxSize
