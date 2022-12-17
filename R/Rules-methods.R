@@ -440,7 +440,7 @@ setMethod(
       # If 'Emax' parameter available, target biomarker level will be relative to 'Emax',
       # otherwise, it will be relative to the maximum biomarker level achieved
       # in dose range for a given sample.
-      if ("Emax" %in% names(samples@data)) {
+      if ("Emax" %in% names(samples)) {
         lwr <- nextBest@target[1] * samples@data$Emax
         upr <- nextBest@target[2] * samples@data$Emax
         colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
@@ -2133,7 +2133,7 @@ setMethod("stopTrial",
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
         ## maximum biomarker level achieved in the given dose range.
-        if ("Emax" %in% names(samples@data)) {
+        if ("Emax" %in% names(samples)) {
 
           ## For each sample, look which dose is maximizing the
           ## simultaneous probability to be in the target biomarker
@@ -2616,10 +2616,10 @@ setMethod("stopTrial",
       ## Find the variance of the log of the dose_target_samples(eta)
       M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
-      varEta <- M1 %*% M2 %*% t(M1)
+      varEta <- as.vector(M1 %*% M2 %*% t(M1))
 
       ## Find the upper and lower limit of the 95% credibility interval
-      CI <- exp(log(dose_target_samples) + c(-1.96, 1.96) * sqrt(varEta))
+      CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
       ratio <- CI[2] / CI[1]
 
       ## so can we stop?
@@ -2848,31 +2848,26 @@ setMethod("stopTrial",
       ## such that phi1 and phi2 and independent of theta1 and theta2
       emptyMatrix <- matrix(0, 2, 2)
       covBETA <- cbind(rbind(model@Pcov, emptyMatrix), rbind(emptyMatrix, Effmodel@Pcov))
-      varlogGstar <- t(deltaG) %*% covBETA %*% deltaG
-
-
+      varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
 
       ## Find the upper and lower limit of the 95% credibility interval of Gstar
-      CIGstar <- c()
-      CIGstar[2] <- exp(logGstar + 1.96 * sqrt(varlogGstar))
-      CIGstar[1] <- exp(logGstar - 1.96 * sqrt(varlogGstar))
+      CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
 
       ## The ratio of the upper to the lower 95% credibility interval
-      ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
+      ratioGstar <- CIGstar[2] / CIGstar[1]
 
       ## Find the variance of the log of the TDtargetEndOfTrial(eta)
       M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
 
-      varEta <- M1 %*% M2 %*% t(M1)
+      varEta <- as.vector(M1 %*% M2 %*% t(M1))
 
       ## Find the upper and lower limit of the 95% credibility interval of
       ## TDtargetEndOfTrial
-      CITDEOT <- c()
-      CITDEOT[2] <- exp(log(TDtargetEndOfTrial) + 1.96 * sqrt(varEta))
-      CITDEOT[1] <- exp(log(TDtargetEndOfTrial) - 1.96 * sqrt(varEta))
+      CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
+
       ## The ratio of the upper to the lower 95% credibility interval
-      ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
+      ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
 
       if (Gstar <= TDtargetEndOfTrial) {
         chooseTD <- FALSE
@@ -2987,7 +2982,6 @@ setMethod("windowLength",
       return(ret)
     }
 )
-
 
 ## ============================================================
 
