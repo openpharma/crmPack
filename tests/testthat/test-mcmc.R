@@ -12,7 +12,7 @@ test_that("JAGS model compile works as expected for an example model", {
   # We use JAGS through the rjags R package, so that we do not have to invoke
   # a system command 'jags' with base::system().
 
-  modfile <- "./_jags/model.bug"
+  modfile <- test_path("_jags/model.bug")
   data <- list(
     betaZ_mean = c(0, 1),
     betaZ_prec = structure(c(1, 0, 0, 1), .Dim = c(2, 2)),
