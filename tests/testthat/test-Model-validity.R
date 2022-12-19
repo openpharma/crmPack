@@ -1045,7 +1045,7 @@ test_that("v_model_one_par_exp_normal_prior passes for valid object", {
 
 test_that("v_model_one_par_exp_normal_prior passes for valid object (finit art. prec. interpolation)", {
   object <- OneParLogNormalPrior(
-    skel_probs = seq(from = 0.1, to = 0.7, length = 5),
+    skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
     dose_grid = 1:5,
     sigma2 = 2
   )
