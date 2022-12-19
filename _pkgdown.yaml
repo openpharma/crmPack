@@ -318,8 +318,8 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - DADesign-class
       - DADesign
+      - DADesign-class
       - DASimulations-class
       - DASimulations
       - Design-class

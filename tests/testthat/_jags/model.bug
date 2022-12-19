@@ -1,0 +1,25 @@
+model
+{
+    for (i in 1:nObs) {
+        stand_dose_temp[i] <- x[i]/ref_dose
+        stand_dose[i] <- ifelse(use_log_dose, log(stand_dose_temp[i]),
+            stand_dose_temp[i])
+        meanZ[i] <- betaZ[1] + betaZ[2] * stand_dose[i]
+        z[i] ~ dnorm(meanZ[i], 1)
+        y[i] ~ dinterval(z[i], 0.00000E+00)
+        condMeanW[i] <- betaW[xLevel[i]] + rho/sqrt(precW) *
+            (z[i] - meanZ[i])
+        w[i] ~ dnorm(condMeanW[i], condPrecW)
+    }
+    theta ~ dmnorm(betaZ_mean, betaZ_prec)
+    betaZ[1] <- theta[1]
+    betaZ[2] <- exp(theta[2])
+    condPrecW <- precW/(1 - pow(rho, 2))
+    betaW[1] ~ dnorm(0.00000E+00,
+        1.00000E-06)
+    for (i in 2:nGrid) {
+        delta[i - 1] ~ dnorm(0.00000E+00,
+            precBetaW/(doseGrid[i] - doseGrid[i - 1]))
+        betaW[i] <- betaW[i - 1] + delta[i - 1]
+    }
+}
