@@ -10,7 +10,8 @@ NULL
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' [`McmcOptions`] is a class for the three canonical MCMC options.
+#' [`McmcOptions`] is a class for the three canonical MCMC options as well as
+#' Random Number Generator settings.
 #'
 #' @slot iterations (`count`)\cr number of MCMC iterations.
 #' @slot burnin (`count`)\cr number of burn-in iterations which are not saved.
