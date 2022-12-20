@@ -1,4 +1,4 @@
-# Version 1.0.9000.9120
+# Version 1.0.9000.9121
 * Added method `names` for objects of class `Samples`.
 * Added method `size` for objects of class `Samples`.
 * Added new custom `checkmate` function `check_length`.
