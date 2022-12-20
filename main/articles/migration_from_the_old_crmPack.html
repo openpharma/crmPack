@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9118</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9119</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,12 +56,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -1982,10 +1976,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1]   0.44435937   0.01181477   0.93085186   1.01231510   2.35018146</span></span>
-<span><span class="co">##  [6]   1.25280651   2.57121090   6.19010475 207.84267809   0.42948391</span></span>
-<span><span class="co">## [11]   2.81394340   1.41698775   0.74017788  44.95631124   0.20677010</span></span>
-<span><span class="co">## [16]   5.58132378   0.59128102   0.13477833   0.42049878  58.66702785</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 1.134461e+00 1.032802e+01 4.089937e+00 1.353009e+00 7.121763e-01</span></span>
+<span><span class="co">##  [6] 1.049376e+01 1.798149e+00 5.208815e-17 4.696785e+06 1.593176e+00</span></span>
+<span><span class="co">## [11] 2.626139e-02 1.270428e+01 1.595711e+00 3.258272e+00 1.798974e+00</span></span>
+<span><span class="co">## [16] 1.396619e+00 1.441361e+00 1.261336e+01 6.380174e-01 1.357893e+00</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2003,9 +1997,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.9429264 0.8432304 0.9319322 0.9587773 0.8025647 0.7296265 0.8436161</span></span>
-<span><span class="co">##  [8] 0.2292029 0.4150413 0.8391627 0.7690255 0.3871683 0.9605760 0.3889303</span></span>
-<span><span class="co">## [15] 0.6138731 0.2507335 0.6097089 0.7930031 0.9046108 0.2493422</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.9861327 0.3027487 0.5466598 0.8432730 0.9675378 0.2957080 0.9795213</span></span>
+<span><span class="co">##  [8] 0.8150002 0.4644474 0.6780075 0.9258122 0.3564953 0.9673281 0.6793435</span></span>
+<span><span class="co">## [15] 0.9714741 0.6319819 0.9896763 0.2860343 0.8897185 0.5747761</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2016,6 +2010,17 @@ of a fixed model’s parameters values.</p>
 <span><span class="fu">true_prob_fun</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0.8179597</span></span></code></pre>
 </div>
+</div>
+<div class="section level2">
+<h2 id="new-random-number-generator-settings-for-the-mcmc">New Random Number Generator settings for the MCMC<a class="anchor" aria-label="anchor" href="#new-random-number-generator-settings-for-the-mcmc"></a>
+</h2>
+<p>The Random Number Generator (RNG) settings used by the JAGS for the
+MCMC are now configured solely through the <code>McmcOptions</code>
+class. The RNG settings are: <code>RNG type</code> and the
+<code>RNG seed</code> that corresponds to a given <code>RNG type</code>.
+Find out details in the help page for the <code>McmcOptions</code>
+class. Any RNG-related user settings at the R session level (such us
+those with <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code>) are ignored by the MCMC sampler.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
