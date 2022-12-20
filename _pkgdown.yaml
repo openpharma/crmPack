@@ -347,8 +347,8 @@ reference:
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
       - Report
-      - RuleDesign-class
       - RuleDesign
+      - RuleDesign-class
       - Samples-class
       - Samples
       - Simulations-class
