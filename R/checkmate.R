@@ -58,15 +58,15 @@ check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, unique = FA
   assert_number(len, null.ok = TRUE)
   assert_flag(sorted)
 
-  is_valid <- check_numeric(
+  result <- check_numeric(
     x,
     finite = TRUE, any.missing = FALSE, len = len, unique = unique, sorted = sorted
   )
 
-  if (isTRUE(is_valid)) {
+  if (isTRUE(result)) {
     in_bounds <- all(h_in_range(x, range = c(0L, 1L), bounds_closed = bounds_closed))
     if (!in_bounds) {
-      is_valid <- paste(
+      result <- paste(
         "Probability must be within",
         ifelse(bounds_closed[1], "[0,", "(0,"),
         ifelse(tail(bounds_closed, 1), "1]", "1)"),
@@ -75,7 +75,7 @@ check_probabilities <- function(x, bounds_closed = TRUE, len = NULL, unique = FA
     }
   }
 
-  is_valid
+  result
 }
 
 #' @rdname check_probabilities
@@ -233,3 +233,70 @@ test_length <- makeTestFunction(check_length)
 #' @inheritParams check_length
 #' @export
 expect_length <- makeExpectationFunction(check_length)
+
+# assert_range ----
+
+#' Check that an argument is a numerical range
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' An argument `x` is a numerical range if and only if (all conditions must be met): \cr
+#' 1. Is an object of type: `integer` or `double`. \cr
+#' 2. Is a vector or length two such that the value of the first number is not
+#' less than the second number. Equalness is allowed if and only if `unique` flag
+#' is set to `TRUE`. \cr
+#' 3. Lower bound of the interval is greater than or equal to `lower` and
+#' upper bound of the interval is less than or equal to `upper`. \cr
+#' 4. It contains only finite (given that `finite` is `TRUE`) and non-missing values.
+#'
+#' @inheritParams checkmate::check_numeric
+#'
+#' @return `TRUE` if successful, otherwise a string with the error message.
+#'
+#' @seealso [`assertions`] for more details.
+#'
+#' @export
+#' @examples
+#' check_range(c(1, 5))
+#' check_range(c(-5, 1))
+#' check_range(c(4, 1))
+#' check_range(c(1, 1))
+#' check_range(c(1, 1), unique = FALSE)
+#' check_range(1:3)
+check_range <- function(x, lower = -Inf, upper = Inf, finite = FALSE, unique = TRUE) {
+  assert_number(lower)
+  assert_number(upper)
+  assert_flag(finite)
+  assert_flag(unique)
+
+  result <- check_numeric(
+    x,
+    lower = lower,
+    upper = upper,
+    finite = finite,
+    any.missing = FALSE,
+    len = 2,
+    unique = unique,
+    sorted = TRUE
+  )
+
+  if (!isTRUE(result)) {
+    result <- paste("x must be a valid numerical range.", result)
+  }
+  result
+}
+
+#' @rdname check_range
+#' @inheritParams check_range
+#' @export
+assert_range <- makeAssertionFunction(check_range)
+
+#' @rdname check_range
+#' @inheritParams check_range
+#' @export
+test_range <- makeTestFunction(check_range)
+
+#' @rdname check_range
+#' @inheritParams check_range
+#' @export
+expect_range <- makeExpectationFunction(check_range)

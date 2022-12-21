@@ -210,3 +210,83 @@ test_that("check_length returns error message as expected", {
     "Assertion on 'x_len >= 1L' failed: Must be TRUE."
   )
 })
+
+# check_range ----
+
+test_that("check_range returns TRUE as expected", {
+  expect_equal(
+    c("x", "lower", "upper", "finite", "unique"),
+    formalArgs(check_range)
+  )
+  expect_true(check_range(c(1, 5)))
+  expect_true(check_range(c(0, 5)))
+  expect_true(check_range(c(-5, 5)))
+  expect_true(check_range(c(-5, -1)))
+  expect_true(check_range(c(1, 5), lower = 1, upper = 5))
+  expect_true(check_range(c(1, Inf)))
+  expect_true(check_range(c(-Inf, 5)))
+  expect_true(check_range(c(-Inf, Inf)))
+})
+
+test_that("check_range returns TRUE as expected when unique is FALSE", {
+  expect_true(check_range(c(1, 5), unique = FALSE))
+  expect_true(check_range(c(1, 1), unique = FALSE))
+  expect_true(check_range(c(-5, -5), unique = FALSE))
+  expect_true(check_range(c(1, 1), 1, 1, unique = FALSE))
+  expect_true(check_range(c(1, 1), 1, 1, finite = TRUE, unique = FALSE))
+})
+
+test_that("check_range throws the error as expected", {
+  expect_error(
+    check_range(1:2, lower = "0"),
+    "Assertion on 'lower' failed: Must be of type 'number', not 'character'."
+  )
+  expect_error(
+    check_range(1:2, upper = 3:4),
+    "Assertion on 'upper' failed: Must have length 1."
+  )
+  expect_error(
+    check_range(1:2, unique = 1),
+    "Assertion on 'unique' failed: Must be of type 'logical flag', not 'double'."
+  )
+  expect_error(
+    check_range(1:2, finite = 1),
+    "Assertion on 'finite' failed: Must be of type 'logical flag', not 'double'."
+  )
+})
+
+test_that("check_range returns error message as expected", {
+  em <- "x must be a valid numerical range."
+
+  expect_identical(check_range(c("a", "c")), paste(em, "Must be of type 'numeric', not 'character'"))
+  expect_identical(check_range(1), paste(em, "Must have length 2, but has length 1"))
+  expect_identical(check_range(c(1, 2, 3)), paste(em, "Must have length 2, but has length 3"))
+  expect_identical(check_range(c(1, 1)), paste(em, "Contains duplicated values, position 2"))
+  expect_identical(check_range(c(2, 1)), paste(em, "Must be sorted"))
+  expect_identical(check_range(c(1, NA)), paste(em, "Contains missing values (element 2)"))
+
+  # Adding lower or upper bounds.
+  expect_identical(check_range(c(1, 5), lower = 6), paste(em, "Element 1 is not >= 6"))
+  expect_identical(check_range(c(1, 5), upper = 0), paste(em, "Element 1 is not <= 0"))
+
+  # Restricting to finite.
+  expect_identical(check_range(c(1, Inf), finite = TRUE), paste(em, "Must be finite"))
+  expect_identical(check_range(c(-Inf, 5), finite = TRUE), paste(em, "Must be finite"))
+})
+
+test_that("check_range returns error message as expected when unique is FALSE", {
+  em <- "x must be a valid numerical range."
+
+  expect_identical(check_range(1, unique = FALSE), paste(em, "Must have length 2, but has length 1"))
+  expect_identical(check_range(c(1, 2, 3), unique = FALSE), paste(em, "Must have length 2, but has length 3"))
+  expect_identical(check_range(c(2, 1), unique = FALSE), paste(em, "Must be sorted"))
+  expect_identical(check_range(c(1, NA), unique = FALSE), paste(em, "Contains missing values (element 2)"))
+
+  # Adding lower or upper bounds.
+  expect_identical(check_range(c(1, 5), lower = 6, unique = FALSE), paste(em, "Element 1 is not >= 6"))
+  expect_identical(check_range(c(1, 5), upper = 0, unique = FALSE), paste(em, "Element 1 is not <= 0"))
+
+  # Restricting to finite.
+  expect_identical(check_range(c(1, Inf), finite = TRUE, unique = FALSE), paste(em, "Must be finite"))
+  expect_identical(check_range(c(-Inf, 5), finite = TRUE, unique = FALSE), paste(em, "Must be finite"))
+})
