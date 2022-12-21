@@ -202,18 +202,22 @@ reference:
       - assert_probability
       - assert_probability_range
       - assert_length
+      - assert_range
       - check_probabilities
       - check_probability
       - check_probability_range
       - check_length
+      - check_range
       - test_probabilities
       - test_probability
       - test_probability_range
       - test_length
+      - test_range
       - expect_probabilities
       - expect_probability
       - expect_probability_range
       - expect_length
+      - expect_range
   - title: Methods
     contents:
       - plot-Data

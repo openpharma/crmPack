@@ -98,7 +98,7 @@ v_next_best_dual_endpoint <- function(object) {
     )
   } else {
     v$check(
-      test_numeric(object@target, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      test_range(object@target),
       "target must be a numeric range"
     )
   }
@@ -439,7 +439,7 @@ v_stopping_target_biomarker <- function(object) {
     )
   } else {
     v$check(
-      test_numeric(object@target, finite = TRUE, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      test_range(object@target, finite = TRUE),
       "target must be a numeric range"
     )
   }
