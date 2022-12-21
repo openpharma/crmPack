@@ -240,13 +240,13 @@ expect_length <- makeExpectationFunction(check_length)
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' An argument `x` is a numerical range if and only if (all conditions must be met): \cr
-#' 1. Is an object of type: `integer` or `double`. \cr
+#' An argument `x` is a numerical range if and only if (all conditions must be met):
+#' 1. Is an object of type: `integer` or `double`.
 #' 2. Is a vector or length two such that the value of the first number is not
 #' less than the second number. Equalness is allowed if and only if `unique` flag
-#' is set to `TRUE`. \cr
+#' is set to `TRUE`.
 #' 3. Lower bound of the interval is greater than or equal to `lower` and
-#' upper bound of the interval is less than or equal to `upper`. \cr
+#' upper bound of the interval is less than or equal to `upper`.
 #' 4. It contains only finite (given that `finite` is `TRUE`) and non-missing values.
 #'
 #' @inheritParams checkmate::check_numeric

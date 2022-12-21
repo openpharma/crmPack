@@ -68,14 +68,14 @@ the heuristic implemented in \code{\link[checkmate]{vname}}.}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-An argument \code{x} is a numerical range if and only if (all conditions must be met): \cr
+An argument \code{x} is a numerical range if and only if (all conditions must be met):
 \enumerate{
-\item Is an object of type: \code{integer} or \code{double}. \cr
+\item Is an object of type: \code{integer} or \code{double}.
 \item Is a vector or length two such that the value of the first number is not
 less than the second number. Equalness is allowed if and only if \code{unique} flag
-is set to \code{TRUE}. \cr
+is set to \code{TRUE}.
 \item Lower bound of the interval is greater than or equal to \code{lower} and
-upper bound of the interval is less than or equal to \code{upper}. \cr
+upper bound of the interval is less than or equal to \code{upper}.
 \item It contains only finite (given that \code{finite} is \code{TRUE}) and non-missing values.
 }
 }
