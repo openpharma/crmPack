@@ -987,12 +987,16 @@ test_that("MCMC computes correct values for TITELogisticLogNormal model (adaptiv
 test_that("OneParLogNormalPrior object can be created with user constructor", {
   result <- expect_silent(
     OneParLogNormalPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = 1:5,
       sigma2 = 2
     )
   )
   expect_valid(result, "OneParLogNormalPrior")
+  expect_identical(result@skel_probs, c(0.1, 0.3, 0.5, 0.7, 0.9))
+  expect_identical(result@sigma2, 2)
+  expect_identical(result@skel_fun(c(1, 1.5, 3, 3.7, 5)), c(0.10, 0.20, 0.50, 0.64, 0.90))
+  expect_identical(result@skel_fun_inv(c(0.10, 0.20, 0.50, 0.64, 0.90)), c(1, 1.5, 3, 3.7, 5))
 })
 
 test_that("OneParLogNormalPrior throws the error when dose_grid and skel_probs have diff. lengths", {
@@ -1009,7 +1013,7 @@ test_that("OneParLogNormalPrior throws the error when dose_grid and skel_probs h
 test_that("OneParLogNormalPrior throws the error for not unique or not sorted dose_grid", {
   result <- expect_error(
     OneParLogNormalPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = c(1, 3, 4, 5, 5),
       sigma2 = 2
     ),
@@ -1017,7 +1021,7 @@ test_that("OneParLogNormalPrior throws the error for not unique or not sorted do
   )
   result <- expect_error(
     OneParLogNormalPrior(
-      skel_probs = seq(from = 0.1, to = 0.9, length = 5),
+      skel_probs = c(0.1, 0.3, 0.5, 0.7, 0.9),
       dose_grid = c(2, 1, 3, 4, 5),
       sigma2 = 2
     ),
