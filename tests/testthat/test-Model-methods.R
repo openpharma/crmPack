@@ -21,6 +21,30 @@ test_that("doseFunction-GeneralModel returns correct dose function", {
   expect_identical(dose_fun_env[["samples"]], samples)
 })
 
+test_that("doseFunction-GeneralModel returns correct dose function for matrix param", {
+  model <- h_get_logistic_log_normal_mix()
+  params <- list(
+    alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
+    alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
+    comp = c(1, 1, 1, 1)
+  )
+  samples <- h_as_samples(params, burnin = 10000, fixed = FALSE)
+  dose_args <- c("x", "model", "samples")
+
+  dose_fun <- doseFunction(model, alpha0 = params$alpha0, alpha1 = params$alpha1, comp = params$comp)
+  dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
+  dose_fun_env <- environment(dose_fun)
+
+  expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
+  expect_equal(dose_fun_dose_args, dose_args)
+  expect_subset(
+    setdiff(dose_fun_dose_args, "x"),
+    ls(envir = dose_fun_env)
+  )
+  expect_identical(dose_fun_env[["model"]], model)
+  expect_identical(dose_fun_env[["samples"]], samples)
+})
+
 test_that("doseFunction-GeneralModel throws the error when valid params are not provided", {
   model <- h_get_logistic_log_normal()
 
@@ -74,6 +98,30 @@ test_that("probFunction-GeneralModel returns correct prob function", {
   prob_args <- c("dose", "model", "samples")
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
+  prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
+  prob_fun_env <- environment(prob_fun)
+
+  expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
+  expect_equal(prob_fun_prob_args, prob_args)
+  expect_subset(
+    setdiff(prob_fun_prob_args, "dose"),
+    ls(envir = prob_fun_env)
+  )
+  expect_identical(prob_fun_env[["model"]], model)
+  expect_identical(prob_fun_env[["samples"]], samples)
+})
+
+test_that("probFunction-GeneralModel returns correct prob function for matrix param", {
+  model <- h_get_logistic_log_normal_mix()
+  params <- list(
+    alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
+    alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
+    comp = c(1, 1, 1, 1)
+  )
+  samples <- h_as_samples(params, burnin = 10000, fixed = FALSE)
+  prob_args <- c("dose", "model", "samples")
+
+  prob_fun <- probFunction(model, alpha0 = params$alpha0, alpha1 = params$alpha1, comp = params$comp)
   prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
   prob_fun_env <- environment(prob_fun)
 

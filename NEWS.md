@@ -1,4 +1,5 @@
 # Version 1.0.9000.9122
+* Removed helper `h_null_if_scalar`.
 * Added new custom `checkmate` function `check_range`.
 * Added method `names` for objects of class `Samples`.
 * Added method `size` for objects of class `Samples`.
