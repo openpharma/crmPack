@@ -21,40 +21,55 @@ test_that("doseFunction-GeneralModel returns correct dose function", {
   expect_identical(as.character(dose_fun_body$x), "x")
   expect_identical(as.character(dose_fun_body$model), "model")
 
-  # Objects that are being assigned to `model` and `samples` args of `dose` method
+  # Objects that were assigned to `model` and `samples` args of `dose` method
   # must exist in the `dose_fun` environment.
-  expect_subset(
-    c("model", as.character(dose_fun_body$samples)),
-    ls(envir = dose_fun_env)
-  )
+  samples_obj_name <- as.character(dose_fun_body$samples)
+  expect_subset(c("model", samples_obj_name), ls(envir = dose_fun_env))
 
-  # The objects that are being assigned to `model` and `samples` args of `dose` method
-  # must be valid.
+  # The objects that were assigned to `model` and `samples` args of `dose` method
+  # must be as expected.
   expect_identical(dose_fun_env$model, model)
-  expect_identical(dose_fun_env[[as.character(dose_fun_body$samples)]], samples)
+  expect_identical(dose_fun_env[[samples_obj_name]], samples)
 })
 
 test_that("doseFunction-GeneralModel returns correct dose function for matrix param", {
   model <- h_get_logistic_log_normal_mix()
-  params <- list(
-    alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
-    alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
-    comp = c(1, 1, 1, 1)
+  samples <- Samples(
+    list(
+      alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
+      alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
+      comp = c(1, 1, 1, 1)
+    ),
+    options = McmcOptions(samples = 4)
   )
-  samples <- h_as_samples(params, burnin = 10000, fixed = FALSE)
 
-  dose_fun <- doseFunction(model, alpha0 = params$alpha0, alpha1 = params$alpha1, comp = params$comp)
-  dose_fun_dose_args <- as.character(body(dose_fun)[[2]][-1])
+  dose_fun <- doseFunction(
+    model,
+    alpha0 = samples@data$alpha0, alpha1 = samples@data$alpha1, comp = samples@data$comp
+  )
   dose_fun_env <- environment(dose_fun)
 
+  expect_equal(formalArgs(doseFunction), c("model", "..."))
   expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
-  expect_equal(dose_fun_dose_args, c("x", "model", "samples"))
-  expect_subset(
-    setdiff(dose_fun_dose_args, "x"),
-    ls(envir = dose_fun_env)
-  )
-  expect_identical(dose_fun_env[["model"]], model)
-  expect_identical(dose_fun_env[["samples"]], samples)
+
+  # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
+  dose_fun_body <- as.list(body(dose_fun)[[2]])
+  expect_identical(as.character(dose_fun_body[[1]]), "dose")
+  expect_subset(c("x", "model", "samples"), names(dose_fun_body))
+
+  # Check that correct objects were assigned to `x` and `model` args of `dose`.
+  expect_identical(as.character(dose_fun_body$x), "x")
+  expect_identical(as.character(dose_fun_body$model), "model")
+
+  # Objects that were assigned to `model` and `samples` args of `dose` method
+  # must exist in the `dose_fun` environment.
+  samples_obj_name <- as.character(dose_fun_body$samples)
+  expect_subset(c("model", samples_obj_name), ls(envir = dose_fun_env))
+
+  # The objects that were assigned to `model` and `samples` args of `dose` method
+  # must be as expected.
+  expect_identical(dose_fun_env$model, model)
+  expect_identical(dose_fun_env[[samples_obj_name]], samples)
 })
 
 test_that("doseFunction-GeneralModel throws the error when valid params are not provided", {
@@ -106,43 +121,72 @@ test_that("doseFunction-ModelPseudo throws the error when no params are provided
 
 test_that("probFunction-GeneralModel returns correct prob function", {
   model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(list(alpha0 = 1, alpha1 = 2), burnin = 10000, fixed = FALSE)
+  samples <- Samples(list(alpha0 = 1, alpha1 = 2), options = McmcOptions(samples = 1))
 
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
-  prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
   prob_fun_env <- environment(prob_fun)
 
+  expect_equal(formalArgs(probFunction), c("model", "..."))
   expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
-  expect_equal(prob_fun_prob_args, c("dose", "model", "samples"))
-  expect_subset(
-    setdiff(prob_fun_prob_args, "dose"),
-    ls(envir = prob_fun_env)
-  )
-  expect_identical(prob_fun_env[["model"]], model)
-  expect_identical(prob_fun_env[["samples"]], samples)
+
+  # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
+  prob_fun_body <- as.list(body(prob_fun)[[2]])
+  expect_identical(as.character(prob_fun_body[[1]]), "prob")
+  expect_subset(c("dose", "model", "samples"), names(prob_fun_body))
+
+  # Check that correct objects were assigned to `dose` and `model` args of `prob`.
+  expect_identical(as.character(prob_fun_body$dose), "dose")
+  expect_identical(as.character(prob_fun_body$model), "model")
+
+  # Objects that were assigned to `model` and `samples` args of `prob` method
+  # must exist in the `prob_fun` environment.
+  samples_obj_name <- as.character(prob_fun_body$samples)
+  expect_subset(c("model", samples_obj_name), ls(envir = prob_fun_env))
+
+  # The objects that were assigned to `model` and `samples` args of `prob` method
+  # must be as expected.
+  expect_identical(prob_fun_env$model, model)
+  expect_identical(prob_fun_env[[samples_obj_name]], samples)
 })
 
 test_that("probFunction-GeneralModel returns correct prob function for matrix param", {
   model <- h_get_logistic_log_normal_mix()
-  params <- list(
-    alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
-    alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
-    comp = c(1, 1, 1, 1)
+  samples <- Samples(
+    list(
+      alpha0 = matrix(c(-0.94, -0.94, -2.37, -2.37, -0.67, -0.67, -1.28, -1.08), nrow = 4),
+      alpha1 = matrix(c(0.45, 0.45, 0.40, 0.40, 0.75, 0.75, 1.18, 0.63), nrow = 4),
+      comp = c(1, 1, 1, 1)
+    ),
+    options = McmcOptions(samples = 4)
   )
-  samples <- h_as_samples(params, burnin = 10000, fixed = FALSE)
 
-  prob_fun <- probFunction(model, alpha0 = params$alpha0, alpha1 = params$alpha1, comp = params$comp)
-  prob_fun_prob_args <- as.character(body(prob_fun)[[2]][-1])
+  prob_fun <- probFunction(
+    model,
+    alpha0 = samples@data$alpha0, alpha1 = samples@data$alpha1, comp = samples@data$comp
+  )
   prob_fun_env <- environment(prob_fun)
 
+  expect_equal(formalArgs(probFunction), c("model", "..."))
   expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
-  expect_equal(prob_fun_prob_args, c("dose", "model", "samples"))
-  expect_subset(
-    setdiff(prob_fun_prob_args, "dose"),
-    ls(envir = prob_fun_env)
-  )
-  expect_identical(prob_fun_env[["model"]], model)
-  expect_identical(prob_fun_env[["samples"]], samples)
+
+  # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
+  prob_fun_body <- as.list(body(prob_fun)[[2]])
+  expect_identical(as.character(prob_fun_body[[1]]), "prob")
+  expect_subset(c("dose", "model", "samples"), names(prob_fun_body))
+
+  # Check that correct objects were assigned to `dose` and `model` args of `prob`.
+  expect_identical(as.character(prob_fun_body$dose), "dose")
+  expect_identical(as.character(prob_fun_body$model), "model")
+
+  # Objects that were assigned to `model` and `samples` args of `prob` method
+  # must exist in the `prob_fun` environment.
+  samples_obj_name <- as.character(prob_fun_body$samples)
+  expect_subset(c("model", samples_obj_name), ls(envir = prob_fun_env))
+
+  # The objects that were assigned to `model` and `samples` args of `prob` method
+  # must be as expected.
+  expect_identical(prob_fun_env$model, model)
+  expect_identical(prob_fun_env[[samples_obj_name]], samples)
 })
 
 test_that("probFunction-GeneralModel throws the error when valid params are not provided", {
@@ -194,20 +238,32 @@ test_that("probFunction-ModelTox throws the error when no params are provided", 
 
 test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   model <- h_get_eff_log_log()
-  samples <- h_as_samples(list(theta1 = -4.8, theta2 = 3.7), burnin = 10000, fixed = FALSE)
+  samples <- Samples(list(theta1 = -4.8, theta2 = 3.7), options = McmcOptions(samples = 1))
 
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
-  eff_fun_eff_args <- as.character(body(eff_fun)[[2]][-1])
-  eff_fun_env <- environment(eff_fun)
+  prob_fun_env <- environment(eff_fun)
 
+  expect_equal(formalArgs(efficacyFunction), c("model", "..."))
   expect_function(eff_fun, args = "dose", nargs = 1, null.ok = FALSE)
-  expect_equal(eff_fun_eff_args, c("dose", "model", "samples"))
-  expect_subset(
-    setdiff(eff_fun_eff_args, "dose"),
-    ls(envir = eff_fun_env)
-  )
-  expect_identical(eff_fun_env[["model"]], model)
-  expect_identical(eff_fun_env[["samples"]], samples)
+
+  # Body of `eff_fun` must be a `efficacy` method with `dose`, `model` and `samples` args.
+  eff_fun_body <- as.list(body(eff_fun)[[2]])
+  expect_identical(as.character(eff_fun_body[[1]]), "efficacy")
+  expect_subset(c("dose", "model", "samples"), names(eff_fun_body))
+
+  # Check that correct objects were assigned to `dose` and `model` args of `efficacy`.
+  expect_identical(as.character(eff_fun_body$dose), "dose")
+  expect_identical(as.character(eff_fun_body$model), "model")
+
+  # Objects that were assigned to `model` and `samples` args of `efficacy` method
+  # must exist in the `eff_fun` environment.
+  samples_obj_name <- as.character(eff_fun_body$samples)
+  expect_subset(c("model", samples_obj_name), ls(envir = prob_fun_env))
+
+  # The objects that were assigned to `model` and `samples` args of `efficacy` method
+  # must be as expected.
+  expect_identical(prob_fun_env$model, model)
+  expect_identical(prob_fun_env[[samples_obj_name]], samples)
 })
 
 test_that("efficacyFunction-ModelEff throws the error when no params are provided", {
