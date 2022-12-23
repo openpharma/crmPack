@@ -266,3 +266,13 @@ prob(10, my_model, my_samples)
 true_prob_fun <- probFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_prob_fun(10)
 ```
+
+# New Random Number Generator settings for the MCMC
+
+The Random Number Generator (RNG) settings used by the JAGS for the MCMC are now
+configured solely through the `McmcOptions` class. The RNG settings are:
+`RNG type` and the `RNG seed` that corresponds to a given `RNG type`. Find out
+details in the help page for the `McmcOptions` class.
+Any RNG-related user settings at the R session level (such us those with
+`set.seed()`) are ignored by the MCMC sampler.
+
