@@ -1,5 +1,4 @@
 # Version 1.0.9000.9122
-* Removed helper `h_null_if_scalar`.
 * Added new custom `checkmate` function `check_range`.
 * Added method `names` for objects of class `Samples`.
 * Added method `size` for objects of class `Samples`.
@@ -13,7 +12,6 @@
   `numeric(0)`.
 * Added new helper functions for `nextBest` methods, particularly for plotting
   and finding the dose closest to the grid.
-* Added new helper function `h_dose_grid_range`.
 * Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
   specified.
