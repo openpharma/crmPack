@@ -1853,7 +1853,7 @@ setMethod("stopTrial",
 
 ##' @describeIn stopTrial Stop based on minimum number of cohorts
 ##'
-##' @example examples/Rules-method-stopTrial-StoppingMinCohorts.R
+##' @example examples/Rules-method-stopTrial-Stopping.R
 setMethod("stopTrial",
   signature =
     signature(
@@ -1923,7 +1923,7 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- data@nObs >= stopping@nPatients
 
-      if(stopping@reportLabel == "default") {
+      if(isTRUE(stopping@reportLabel == "default")) {
         reportLabel= paste("Minimum number of",
                            stopping@nPatients,
                            "patients reached")
@@ -1989,7 +1989,7 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- probTarget >= stopping@prob
 
-      if(stopping@reportLabel == "default") {
+      if(isTRUE(stopping@reportLabel == "default")) {
         reportLabel=
           paste("P(",
                 stopping@target[1],

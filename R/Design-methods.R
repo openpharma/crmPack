@@ -353,7 +353,7 @@ setMethod("simulate",
                                           data=thisData)
 
 
-
+                   # browser()
 
 
                     label_list <- list()
@@ -365,7 +365,7 @@ setMethod("simulate",
                     for(i in 1: length(attr(stopit, "individual"))){
 
                         if(identical(attr(attr(stopit, "individual")[[i]], "reportLabel"), character(0))){
-                            attr(attr(stopit, "individual")[[i]], "reportLabel") <- NULL
+                            attr(attr(stopit, "individual")[[i]], "reportLabel") <- NA
 
                             #stop('all individual stopping rules must have reporting labels if combination should be reported')
 
@@ -379,10 +379,10 @@ setMethod("simulate",
 
                         if(class(object@stopping) == "StoppingAll" ){
 
-                         #   browser()
+                           # browser()
 
                             if(length(object@stopping@reportComb)> 0) {
-                                if(any(sapply(label_list, is.null))){
+                                if(any(sapply(label_list, is.na))){
                                 stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
 
                                 reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb")) }
