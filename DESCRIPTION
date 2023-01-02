@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9122
+Version: 1.0.9000.9123
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -58,7 +58,7 @@ Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Collate:
     'Data-validity.R'
     'helpers.R'
