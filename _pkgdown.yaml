@@ -112,7 +112,6 @@ reference:
       - h_format_number
       - h_rapply
       - h_null_if_na
-      - h_null_if_scalar
       - h_is_positive_definite
       - h_test_named_numeric
       - h_in_range

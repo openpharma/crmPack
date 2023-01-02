@@ -48,10 +48,10 @@ setMethod(
 
     samples <- Samples(
       data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
+      options = McmcOptions(samples = NROW(model_params[[1]]))
     )
     function(x) {
-      dose(x, model, samples)
+      dose(x = x, model = model, samples = samples)
     }
   }
 )
@@ -75,7 +75,7 @@ setMethod(
       options = McmcOptions(samples = length(model_params[[1]]))
     )
     function(x) {
-      dose(x, model, samples)
+      dose(x = x, model = model, samples = samples)
     }
   }
 )
@@ -125,10 +125,10 @@ setMethod(
 
     samples <- Samples(
       data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
+      options = McmcOptions(samples = NROW(model_params[[1]]))
     )
     function(dose) {
-      prob(dose, model, samples)
+      prob(dose = dose, model = model, samples = samples)
     }
   }
 )
@@ -152,7 +152,7 @@ setMethod(
       options = McmcOptions(samples = length(model_params[[1]]))
     )
     function(dose) {
-      prob(dose, model, samples)
+      prob(dose = dose, model = model, samples = samples)
     }
   }
 )
@@ -202,10 +202,10 @@ setMethod(
 
     samples <- Samples(
       data = model_params,
-      options = McmcOptions(samples = length(model_params[[1]]))
+      options = McmcOptions(samples = NROW(model_params[[1]]))
     )
     function(dose) {
-      efficacy(dose, model, samples)
+      efficacy(dose = dose, model = model, samples = samples)
     }
   }
 )

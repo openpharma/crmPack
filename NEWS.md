@@ -12,7 +12,6 @@
   `numeric(0)`.
 * Added new helper functions for `nextBest` methods, particularly for plotting
   and finding the dose closest to the grid.
-* Added new helper function `h_dose_grid_range`.
 * Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
   specified.
