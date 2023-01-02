@@ -9,7 +9,7 @@ test_that("doseFunction-GeneralModel returns correct dose function", {
   dose_fun <- doseFunction(model, alpha0 = 1, alpha1 = 2)
   dose_fun_env <- environment(dose_fun)
 
-  expect_equal(formalArgs(doseFunction), c("model", "..."))
+  expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
   expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
@@ -49,7 +49,7 @@ test_that("doseFunction-GeneralModel returns correct dose function for matrix pa
   )
   dose_fun_env <- environment(dose_fun)
 
-  expect_equal(formalArgs(doseFunction), c("model", "..."))
+  expect_function(doseFunction, args = c("model", "..."), null.ok = FALSE)
   expect_function(dose_fun, args = "x", nargs = 1, null.ok = FALSE)
 
   # Body of `dose_fun` must be a `dose` method with `x`, `model` and `samples` args.
@@ -126,7 +126,7 @@ test_that("probFunction-GeneralModel returns correct prob function", {
   prob_fun <- probFunction(model, alpha0 = 1, alpha1 = 2)
   prob_fun_env <- environment(prob_fun)
 
-  expect_equal(formalArgs(probFunction), c("model", "..."))
+  expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
   expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
 
   # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
@@ -166,7 +166,7 @@ test_that("probFunction-GeneralModel returns correct prob function for matrix pa
   )
   prob_fun_env <- environment(prob_fun)
 
-  expect_equal(formalArgs(probFunction), c("model", "..."))
+  expect_function(probFunction, args = c("model", "..."), null.ok = FALSE)
   expect_function(prob_fun, args = "dose", nargs = 1, null.ok = FALSE)
 
   # Body of `prob_fun` must be a `prob` method with `dose`, `model` and `samples` args.
@@ -243,7 +243,7 @@ test_that("efficacyFunction-ModelEff returns correct efficacy function", {
   eff_fun <- efficacyFunction(model, theta1 = -4.8, theta2 = 3.7)
   prob_fun_env <- environment(eff_fun)
 
-  expect_equal(formalArgs(efficacyFunction), c("model", "..."))
+  expect_function(efficacyFunction, args = c("model", "..."), null.ok = FALSE)
   expect_function(eff_fun, args = "dose", nargs = 1, null.ok = FALSE)
 
   # Body of `eff_fun` must be a `efficacy` method with `dose`, `model` and `samples` args.
