@@ -674,6 +674,78 @@ NextBestMaxGainSamples <- function(prob_target_drt,
   )
 }
 
+# NextBestProbMTD ----
+
+## class ----
+
+#' `NextBestProbMTD`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestProbMTD`] is the class for finding the next best MTD
+#' estimate with highest probability to be the MTD. The dose which has the
+#' highest probability to be the MTD among the specified doses is used as
+#' next best dose. The posterior is calculated for each iteration and the
+#' maximum dose that is not toxic (below target) is determined.
+#' The allocation criteria is calculated as the frequency of a dose being
+#' selected as MTD. The dose with the highest allocation value is selected as
+#' next best dose.
+#' Note: this concept is also used in the R package trialr/R/crm_fit.R
+#'
+#' @slot target (`numeric`)\cr the target toxicity probability
+#' @slot method (`string`)\cr the method used to handle the remaining
+#'   allocation probability that is not allocated to the specified doses, i.e.
+#'   no dose has a posterior prob that is below the target probability.
+#'   Also applicable to cases where placebo is used.
+#'   Possible values are "none", "min" , "max".
+##### first instead of min?????
+#'   min = remaining allocation is added to first dose
+###### I have used the following description, but not so sure if really put into code.
+###### Needs to be discussed and checked again
+#'   none = do not aggregate, i.e. frequencies of all dose are report as they occur.
+#'          Except in case 'no dose is safe' has the highest allocation value.
+#'          This follows the idea used for the smallest distance to the target
+#'          dose approach, where always a dose is recommended,
+#'          even though the lowest dose estimated is above target
+##### last instead of max?????
+##### this needs some more explanation, why this could be useful.
+#'   max = remaining allocation is added to last dose
+#'.
+#'
+#' @aliases NextBestProbMTD
+#' @export
+#'
+.NextBestProbMTD <- setClass(
+  Class = "NextBestProbMTD",
+  slots = c(
+    target = "numeric",
+    method = "character"
+  ),
+  prototype = prototype(
+    target = 0.3,
+    method = "none"
+  ),
+  contains = "NextBest",
+  validity = v_next_best_prob_mtd
+)
+
+## constructor ----
+
+#' @rdname NextBestProbMTD-class
+#'
+#' @param target (`numeric`)\cr see slot definition.
+#' @param method (`string`)\cr see slot definition.
+#' @export
+#' @example examples/Rules-class-NextBestProbMTD.R
+#'
+NextBestProbMTD <- function(target,
+                            method) {
+  .NextBestProbMTD(
+    target = target,
+    method = method
+  )
+}
+
 # Increments ----
 
 ## class ----
