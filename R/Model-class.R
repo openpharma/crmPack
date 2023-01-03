@@ -2088,12 +2088,13 @@ Effloglog <- function(eff,
 
   eff_dose <- eff_dose + const
   # Get observed efficacy data without DLT (if any).
-  eff_obsrv <- getEff(data)$w_no_dlt
-  eff_dose_obsrv <- getEff(data)$x_no_dlt + const
+  eff_obsrv_w_x <- getEff(data, no_dlt = TRUE)
+  eff_obsrv <- eff_obsrv_w_x$w_no_dlt
+  eff_obsrv_dose <- eff_obsrv_w_x$x_no_dlt + const
 
   # Fit pseudo and observed (if any) efficacy.
   w <- c(eff, eff_obsrv)
-  x <- c(eff_dose, eff_dose_obsrv)
+  x <- c(eff_dose, eff_obsrv_dose)
   fit_eff <- suppressWarnings(lm(w ~ log(log(x))))
   X <- model.matrix(fit_eff)
   Y <- w
@@ -2274,7 +2275,7 @@ EffFlexi <- function(eff,
 
   use_fixed <- c(sigma2W = is.scalar(sigma2W), sigma2betaW = is.scalar(sigma2betaW))
 
-  x <- c(eff_dose, getEff(data)$x_no_dlt)
+  x <- c(eff_dose, getEff(data, no_dlt = TRUE)$x_no_dlt)
   x_level <- matchTolerance(x, data@doseGrid)
   X <- model.matrix(~ -1L + factor(x_level, levels = seq_len(data@nGrid)))
   X <- matrix(as.integer(X), ncol = ncol(X)) # To remove some obsolete attributes.
