@@ -729,7 +729,7 @@ setMethod("show",
 
 
 
-
+             # browser()
               if(!is.null(colnames(object@stoppingReport))){
 
                 cat("Stopping rules:\n \n")

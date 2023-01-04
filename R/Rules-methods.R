@@ -1649,9 +1649,7 @@ setMethod("stopTrial",
         } else {
           reportComb <- NA
       }
-     # } else {
-    #    reportComb <- stopping@reportComb
-    #  }
+
 
       return(structure(overallResult,
                        message = overallText,
@@ -1716,21 +1714,15 @@ setMethod("stopTrial",
     #    as.character(stopping)
     #  )
 
-      if(stopping@reportComb == "default") {
-        reportComb <- "|"
+      if(isTRUE(stopping@report)) {
+        reportComb <- " | "
 
 
       } else {
-
-        reportComb <- stopping@reportComb
+        reportComb <- NA
       }
 
 
-      #cat("Class from StoppingAny method: ", class(individualResults),"\n")
-
-      #cat("HighestLevelResults from StoppingAny method: ", highestLevelResults,"\n")
-
-      #cat("HighestLevelResultsNames from StoppingAny method: ", names(highestLevelResults),"\n")
 
       return(structure(overallResult,
                        #highest = highestLevelResults,

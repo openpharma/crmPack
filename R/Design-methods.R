@@ -375,7 +375,7 @@ setMethod("simulate",
                        # }
 
                     }
-                   # browser()
+                   #browser()
 
                         if(class(object@stopping) == "StoppingAll" ){
 
@@ -393,7 +393,21 @@ setMethod("simulate",
 
 
 
-                        } else {
+                        } else if(class(object@stopping) == "StoppingAny") {
+
+                            if(isTRUE(object@stopping@report)) {
+                                if(any(sapply(label_list, is.na))){
+                                    stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
+
+                                        reportLabel <- label_list}
+                            } else {
+
+                                reportLabel <- list()
+                            }
+
+
+
+                        }else {
                             reportLabel <- label_list
 
                         }
@@ -442,7 +456,7 @@ setMethod("simulate",
                             reportResults <- stopit[1]
                         }
 
-                   # browser()
+                   #browser()
 
 
                   }
@@ -513,7 +527,7 @@ setMethod("simulate",
 
               reportLabel <- lapply(resultList, "[[", "reportLabel")
 
-
+         #   browser()
 
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,

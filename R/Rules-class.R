@@ -1758,7 +1758,7 @@ StoppingAll <- function(stopList, report = logical(0L))
 .StoppingAny <-
     setClass(Class="StoppingAny",
              representation(stopList="list",
-                            reportComb = "character"),
+                            report = "logical"),
              prototype(stopList=
                            list(StoppingMinPatients(50),
                                 StoppingMinCohorts(5))),
@@ -1782,10 +1782,10 @@ validObject(.StoppingAny())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAny <- function(stopList, reportComb = character(0))
+StoppingAny <- function(stopList, report = logical(0L))
 {
     .StoppingAny(stopList=stopList,
-                 reportComb = reportComb)
+                 report = report)
 }
 
 
