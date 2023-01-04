@@ -381,7 +381,7 @@ setMethod("simulate",
 
                            # browser()
 
-                            if(length(object@stopping@reportComb)> 0) {
+                            if(object@stopping@report == T) {
                                 if(any(sapply(label_list, is.na))){
                                 stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
 

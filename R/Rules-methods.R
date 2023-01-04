@@ -1642,12 +1642,12 @@ setMethod("stopTrial",
       #browser()
 
       #if (identical(stopping@reportComb, character(0)) == FALSE){
-      if(isTRUE(stopping@reportComb == "default")) {
-        reportComb <- "&"
+      if(isTRUE(stopping@report == T)) {
+        reportComb <- " & "
 
 
         } else {
-          reportComb <- stopping@reportComb
+          reportComb <- NA
       }
      # } else {
     #    reportComb <- stopping@reportComb
@@ -1656,7 +1656,7 @@ setMethod("stopTrial",
       return(structure(overallResult,
                        message = overallText,
                        individual = individualResults,
-                      reportComb = reportComb
+                       reportComb = reportComb
       ))
     }
 )
@@ -1873,9 +1873,9 @@ setMethod("stopTrial",
 
      if(isTRUE(stopping@reportLabel == "default")) {
         reportLabel=
-          paste("Minimum number of ",
+          paste("Minimum number of",
                 stopping@nCohorts,
-                " cohorts reached")
+                "cohorts reached")
 
       #} else if(stopping@reportLabel == character(0)) {
 

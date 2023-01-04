@@ -1231,8 +1231,7 @@ StoppingPatientsNearDose <- function(nPatients,
   Class = "StoppingMinCohorts",
   slots = c(nCohorts = "integer",
             reportLabel = "character"),
-  prototype = prototype(nCohorts = 2L,
-                        reportLabel="blah1"),
+  prototype = prototype(nCohorts = 2L),
   contains = "Stopping",
   validity = v_stopping_min_cohorts
 )
@@ -1706,7 +1705,7 @@ StoppingList <- function(stopList,
 .StoppingAll <-
     setClass(Class="StoppingAll",
              representation(stopList="list",
-                            reportComb = "character"),
+                            report = "logical"),
              prototype(stopList=
                            list(StoppingMinPatients(50),
                                 StoppingMinCohorts(5))),
@@ -1731,10 +1730,10 @@ validObject(.StoppingAll())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAll <- function(stopList, reportComb = character(0))
+StoppingAll <- function(stopList, report = logical(0L))
 {
     .StoppingAll(stopList=stopList,
-                 reportComb = reportComb)
+                 report = report)
 }
 
 
