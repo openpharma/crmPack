@@ -66,7 +66,7 @@ myStopping3 <- StoppingMinPatients(nPatients=20, reportLabel = "default")
 # summarized by the 'all' function, meaning that the study would be stopped only if
 # 'all' the single stopping rules are TRUE
 #mystopping <- StoppingAll(stopList=c(myStopping1, myStopping2, myStopping3))
-myStopping <- StoppingAll(stopList=c(myStopping1, myStopping3), report=F)
+myStopping <- StoppingAll(stopList=c(myStopping1, myStopping3))
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),

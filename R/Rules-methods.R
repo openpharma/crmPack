@@ -1642,7 +1642,7 @@ setMethod("stopTrial",
       #browser()
 
       #if (identical(stopping@reportComb, character(0)) == FALSE){
-      if(isTRUE(stopping@report == T)) {
+      if(isTRUE(stopping@report)) {
         reportComb <- " & "
 
 
