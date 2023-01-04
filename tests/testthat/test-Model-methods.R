@@ -1523,6 +1523,176 @@ test_that("prob-OneParExpPrior throws the error when dose is not valid", {
   )
 })
 
+# efficacy ----
+
+## Effloglog ----
+
+test_that("efficacy-Effloglog works as expected", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(
+    list(
+      theta1 = c(15.1, 32.8, 12.8, 31.5),
+      theta2 = c(14.8, 14.8, 4.8, 26),
+      nu = c(0, 0, 0, 0)
+    )
+  )
+
+  result <- efficacy(dose = 75, model = model, samples = samples)
+  expect_equal(result, c(36.83751, 54.53751, 19.85, 69.68752), tolerance = 1e-7)
+})
+
+test_that("efficacy-Effloglog works as expected for scalar samples", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(list(theta1 = 15, theta2 = 20, nu = 0))
+
+  result <- efficacy(dose = 75, model = model, samples = samples)
+  expect_equal(result, 44.37502, tolerance = 1e-7)
+})
+
+test_that("efficacy-Effloglog works as expected for vectors", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(list(theta1 = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+
+  result <- efficacy(dose = c(75, 90), model = model, samples = samples)
+  expect_equal(result, c(44.37502, 76.28504), tolerance = 1e-7)
+})
+
+test_that("efficacy-Effloglog throws the error when dose and samples lengths differ", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(list(theta1 = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  expect_error(
+    efficacy(c(0.4, 0.6, 0.5), model, samples),
+    "Assertion on 'dose' failed: x is of length 3 which is not allowed; the allowed lengths are: 1 or 2."
+  )
+})
+
+test_that("efficacy-Effloglog throws the error when dose is negative", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(list(theta1 = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  expect_error(
+    efficacy(-1, model, samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+test_that("efficacy-Effloglog throws the error when sample parameter names are not valid", {
+  model <- h_get_eff_log_log()
+  samples <- h_as_samples(list(theta1_wrong = c(15, 28), theta2 = c(20, 32), nu = c(0, 1)))
+  expect_error(
+    efficacy(1, model, samples),
+    "Assertion on 'c\\(\"theta1\", \"theta2\"\\)' failed: Must be a subset*"
+  )
+})
+
+## Effloglog-noSamples ----
+
+test_that("efficacy-Effloglog-noSamples works as expected", {
+  model <- h_get_eff_log_log()
+  model_emptdat <- h_get_eff_log_log(emptydata = TRUE)
+
+  result <- efficacy(dose = 75, model = model)
+  expect_equal(result, 1.141211, tolerance = 1e-6)
+
+  result_emptdat <- efficacy(dose = 75, model = model_emptdat)
+  expect_equal(result_emptdat, 1.87099, tolerance = 1e-6)
+})
+
+test_that("efficacy-Effloglog-noSamples works as expected for vector dose", {
+  model <- h_get_eff_log_log()
+  model_emptdat <- h_get_eff_log_log(emptydata = TRUE)
+
+  result <- efficacy(dose = c(75, 90), model = model)
+  expect_equal(result, c(1.141211, 1.256280), tolerance = 1e-6)
+
+  result_emptdat <- efficacy(dose = c(75, 90), model = model_emptdat)
+  expect_equal(result_emptdat, c(1.87099, 1.965238), tolerance = 1e-6)
+})
+
+test_that("efficacy-Effloglog-noSamples throws the error when dose is negative", {
+  model <- h_get_eff_log_log()
+  expect_error(
+    efficacy(-1, model),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+## EffFlexi ----
+
+test_that("efficacy-EffFlexi works as expected", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
+
+  result <- efficacy(dose = 75, model = model, samples = samples)
+  expect_equal(result, c(0.47, 0.48, 0.46, 0.46))
+})
+
+test_that("efficacy-EffFlexi works as expected (dose interpolation)", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
+
+  result_d110 <- efficacy(dose = 110, model = model, samples = samples)
+  expect_equal(result_d110, c(1.274, 1.898, -0.072, 2.464))
+})
+
+test_that("efficacy-EffFlexi works as expected for row samples", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi(1)
+
+  result <- efficacy(dose = 75, model = model, samples = samples)
+  expect_equal(result, 0.47)
+})
+
+test_that("efficacy-EffFlexi works as expected for row samples (dose interpolation)", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi(1)
+
+  result <- efficacy(dose = 110, model = model, samples = samples)
+  expect_equal(result, 1.274)
+})
+
+test_that("efficacy-EffFlexi throws the error when dose is out of dose grid range", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
+
+  expect_error(
+    efficacy(dose = 20, model = model, samples = samples),
+    "Assertion on .*dose.* failed: Must be TRUE."
+  )
+  expect_error(
+    efficacy(dose = 310, model = model, samples = samples),
+    "Assertion on .*dose.* failed: Must be TRUE."
+  )
+})
+
+test_that("efficacy-EffFlexi throws the error when dose is not of length 1", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi(2)
+  expect_error(
+    efficacy(c(0.4, 0.6, 0.5), model, samples),
+    "Assertion on 'dose' failed: Must have length 1."
+  )
+})
+
+test_that("efficacy-EffFlexi throws the error when dose is negative", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
+  expect_error(
+    efficacy(-1, model, samples),
+    "Assertion on 'dose' failed: Element 1 is not >= 0."
+  )
+})
+
+test_that("efficacy-EffFlexi throws the error when sample parameter names are not valid", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
+  samples@data <- list(ExpEff_wrong = samples@data$ExpEff)
+
+  expect_error(
+    efficacy(25, model, samples),
+    "Assertion on '\"ExpEff\"' failed: Must be a subset*"
+  )
+})
+
 # biomarker ----
 
 ## DualEndpoint ----

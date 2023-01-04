@@ -1317,7 +1317,8 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_number(dose, lower = 0L)
+    assert_number(dose, lower = 0)
+    assert_subset("ExpEff", names(samples))
 
     samples_efficacy <- samples@data$ExpEff
     dose_grid <- model@data@doseGrid
@@ -1328,7 +1329,7 @@ setMethod(
     } else {
       # If dose not in doseGrid, do linear interpolation, given that dose is within doseGrid range.
       dose_level0 <- findInterval(dose, dose_grid)
-      stopifnot(all(dose_level0) > 0 && all(dose_level0) < model@data@nGrid)
+      assert_true(all(dose_level0 > 0 & dose_level0 < model@data@nGrid))
       dose_level1 <- dose_level0 + 1L
 
       eff0 <- samples_efficacy[, dose_level0]
