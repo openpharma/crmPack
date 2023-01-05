@@ -353,7 +353,42 @@ setMethod("simulate",
                                           data=thisData)
 
 
-                   # browser()
+                    #browser()
+
+
+                    individual_results_tree <- attr(stopit, "individual")
+
+                    flatten_tree <- function(tree) {
+                        if (is.list(tree)) {
+                            lapply(tree, flatten_tree)
+                        } else {
+                            ind_attr <- attr(tree, "individual")
+                            if (is.null(ind_attr)) {
+                                tree
+                            } else {
+                                lapply(ind_attr, flatten_tree)
+                            }
+                        }
+                    }
+
+                    browser()
+
+                    #####test####
+
+                    nested_object_list <- list()
+
+                    if(length(unlist(flatten_tree(individual_results_tree)))>length(attr(stopit, "individual"))){
+
+                        for (i in 1: length(attr(stopit, "individual"))) {
+
+                            nested_object_list[i] <- class(object@stopping@stopList[[i]])
+                        }
+
+                        browser()
+                    }
+
+
+                    ########
 
 
                     label_list <- list()
@@ -375,7 +410,7 @@ setMethod("simulate",
                        # }
 
                     }
-                   #browser()
+                   browser()
 
                         if(class(object@stopping) == "StoppingAll" ){
 
@@ -423,20 +458,22 @@ setMethod("simulate",
 
 
 
-                    individual_results_tree <- attr(stopit, "individual")
+                   # individual_results_tree <- attr(stopit, "individual")
 
-                      flatten_tree <- function(tree) {
-                          if (is.list(tree)) {
-                              lapply(tree, flatten_tree)
-                          } else {
-                              ind_attr <- attr(tree, "individual")
-                              if (is.null(ind_attr)) {
-                                  tree
-                              } else {
-                                  lapply(ind_attr, flatten_tree)
-                              }
-                          }
-                      }
+                   #   flatten_tree <- function(tree) {
+                         # if (is.list(tree)) {
+                         #     lapply(tree, flatten_tree)
+                         # } else {
+                         #     ind_attr <- attr(tree, "individual")
+                         #     if (is.null(ind_attr)) {
+                         #         tree
+                         #     } else {
+                         #         lapply(ind_attr, flatten_tree)
+                         #     }
+                         # }
+                      #}
+
+                #      browser()
 
                       #binary results (stopping TRUE or FALSE) and character string for stopping rule
                       ind_only_tree <- flatten_tree(individual_results_tree)
