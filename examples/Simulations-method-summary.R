@@ -23,12 +23,12 @@ mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
 mySize <- maxSize(mySize1, mySize2)
 
 # Choose the rule for stopping
-myStopping1 <- StoppingMinCohorts(nCohorts=3, reportLabel="default")
+#myStopping1 <- StoppingMinCohorts(nCohorts=3, reportLabel="default")
 
-myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20)
-myStopping <- (myStopping1 | myStopping2) & myStopping3
+#myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
+#                                  prob=0.5)
+#myStopping3 <- StoppingMinPatients(nPatients=20)
+#myStopping <- (myStopping1 | myStopping2) & myStopping3
 
 #"c(myStopping1 | myStopping2) & myStopping3"
 # (myStopping1 & myStopping3) | (myStopping2 & myStopping3)
@@ -45,18 +45,28 @@ myStopping <- (myStopping1 | myStopping2) & myStopping3
 #StoppingMinCohorts(nCohorts=3, reportLabel = "default")
 
 # Define the stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3,reportLabel="default")
+#myStopping1 <- StoppingMinCohorts(nCohorts=3, reportLabel="default")
 #myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35),
 #                                 prob=0.5)
-myStopping3 <- StoppingMinPatients(nPatients=20,reportLabel="default")
+#myStopping3 <- StoppingMinPatients(nPatients=20, reportLabel="default")
 
 # Create a list of stopping rules (of class 'StoppingList') which will then be
 # summarized (in this specific example) with the 'any' function, meaning that the study
 # would be stopped if 'any' of the single stopping rules is TRUE.
-mystopping <- StoppingList(stopList=c(myStopping1,myStopping3),
-                          summary=any)
+#mystopping <- StoppingList(stopList=c(myStopping1,myStopping3),
+#                          summary=any)
 
 
+# Define some stopping rules
+myStopping1 <- StoppingMinCohorts(nCohorts=3, reportLabel = "default")
+myStopping3 <- StoppingMinPatients(nPatients=20, reportLabel = "default")
+#myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35, reportLabel = "default"), prob=0.5)
+
+# Create a list of stopping rules (of class 'StoppingAll') which would then be
+# summarized by the 'all' function, meaning that the study would be stopped only if
+# 'all' the single stopping rules are TRUE
+#mystopping <- StoppingAll(stopList=c(myStopping1, myStopping2, myStopping3))
+myStopping <- StoppingAll(stopList=c(myStopping1, myStopping3), report=F)
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
@@ -65,7 +75,7 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 # Initialize the design
 design <- Design(model=model,
                  nextBest=myNextBest,
-                 stopping=myStopping1,
+                 stopping=myStopping,
                  increments=myIncrements,
                  cohortSize=mySize,
                  data=emptydata,
