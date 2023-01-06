@@ -1641,20 +1641,11 @@ setMethod("stopTrial",
 
       #browser()
 
-      #if (identical(stopping@reportComb, character(0)) == FALSE){
-      if(isTRUE(stopping@report)) {
-        reportComb <- " & "
-
-
-        } else {
-          reportComb <- NA
-      }
 
 
       return(structure(overallResult,
                        message = overallText,
-                       individual = individualResults,
-                       reportComb = reportComb
+                       individual = individualResults
       ))
     }
 )
@@ -1714,21 +1705,11 @@ setMethod("stopTrial",
     #    as.character(stopping)
     #  )
 
-      if(isTRUE(stopping@report)) {
-        reportComb <- " | "
-
-
-      } else {
-        reportComb <- NA
-      }
-
-
 
       return(structure(overallResult,
                        #highest = highestLevelResults,
                        message = overallText,
-                       individual = individualResults,
-                       reportComb = reportComb
+                       individual = individualResults
       ))
     }
 )

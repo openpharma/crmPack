@@ -1705,7 +1705,7 @@ StoppingList <- function(stopList,
 .StoppingAll <-
     setClass(Class="StoppingAll",
              representation(stopList="list",
-                            report = "logical"),
+                            report_label = "character"),
              prototype(stopList=
                            list(StoppingMinPatients(50),
                                 StoppingMinCohorts(5))),
@@ -1730,10 +1730,10 @@ validObject(.StoppingAll())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAll <- function(stopList, report = logical(0L))
+StoppingAll <- function(stopList, report_label = character(0))
 {
     .StoppingAll(stopList=stopList,
-                 report = report)
+                 report_label = report_label)
 }
 
 
@@ -1758,7 +1758,7 @@ StoppingAll <- function(stopList, report = logical(0L))
 .StoppingAny <-
     setClass(Class="StoppingAny",
              representation(stopList="list",
-                            report = "logical"),
+                            report_label = "character"),
              prototype(stopList=
                            list(StoppingMinPatients(50),
                                 StoppingMinCohorts(5))),
@@ -1782,10 +1782,10 @@ validObject(.StoppingAny())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAny <- function(stopList, report = logical(0L))
+StoppingAny <- function(stopList, report_label = character(0))
 {
     .StoppingAny(stopList=stopList,
-                 report = report)
+                 report_label = report_label)
 }
 
 

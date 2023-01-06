@@ -353,7 +353,7 @@ setMethod("simulate",
                                           data=thisData)
 
 
-                    #browser()
+                    browser()
 
 
                     individual_results_tree <- attr(stopit, "individual")
@@ -371,7 +371,7 @@ setMethod("simulate",
                         }
                     }
 
-                    #browser()
+                    browser()
 
                     #####test####
 

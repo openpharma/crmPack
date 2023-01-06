@@ -75,9 +75,9 @@ myStopping <- StoppingAll(stopList=c(myStopping1, myStopping2), report=T)
 #StoppingAny with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
 myStopping <- StoppingAny(stopList=c(myStopping1, myStopping3), report=T)
 #nestedStoppingAny Object with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
-myStopping <- StoppingAny(stopList = list(StoppingAll(stopList=list(myStopping1, myStopping3),report=T),myStopping2),report=T)
+myStopping <- StoppingAny(stopList = list(StoppingAll(stopList=list(myStopping1, myStopping3),report_label = "InnerStoppingAllLabel"),myStopping2),report_label = "OuterStoppingAnyLabel")
 #nestedStoppingAll Object with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
-myStopping <- StoppingAll(stopList = list(StoppingAny(stopList=list(myStopping1, myStopping3),report=T),myStopping2),report=T)
+myStopping <- StoppingAll(stopList = list(StoppingAny(stopList=list(myStopping1, myStopping3),report_label = "InnerStoppingAnyLabel"),myStopping2),report_label = "OuterStoppingAllLabel")
 
 
 
