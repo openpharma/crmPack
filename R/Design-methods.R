@@ -371,7 +371,7 @@ setMethod("simulate",
                         }
                     }
 
-                    browser()
+                    #browser()
 
                     #####test####
 
@@ -379,7 +379,7 @@ setMethod("simulate",
 
                     if(length(unlist(flatten_tree(individual_results_tree)))>length(attr(stopit, "individual"))){
 
-                        for (i in 1: length(attr(stopit, "individual"))) {
+                        for (i in 1 : length(attr(stopit, "individual"))) {
 
                             nested_object_list[i] <- class(object@stopping@stopList[[i]])
                         }
@@ -399,14 +399,14 @@ setMethod("simulate",
 
                     for(i in 1: length(attr(stopit, "individual"))){
 
-                        if(identical(attr(attr(stopit, "individual")[[i]], "reportLabel"), character(0))){
-                            attr(attr(stopit, "individual")[[i]], "reportLabel") <- NA
+                        if(identical(attr(attr(stopit, "individual")[[i]], "report_label"), character(0))){
+                            attr(attr(stopit, "individual")[[i]], "report_label") <- NA
 
                             #stop('all individual stopping rules must have reporting labels if combination should be reported')
 
                         } #else {
 
-                        label_list[i] <- attr(attr(stopit, "individual")[[i]], "reportLabel")
+                        label_list[i] <- attr(attr(stopit, "individual")[[i]], "report_label")
                        # }
 
                     }
@@ -414,19 +414,17 @@ setMethod("simulate",
 
                         if(class(object@stopping) == "StoppingAll" ){
 
-                           # browser()
+                           browser()
 
                             if(isTRUE(object@stopping@report)) {
                                 if(any(sapply(label_list, is.na))){
                                 stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
 
-                                reportLabel <- paste(label_list, collapse = attr(stopit, "reportComb")) }
+                                  report_label <- paste(label_list, collapse = attr(stopit, "reportComb")) }
                             } else {
 
-                                reportLabel <- list()
+                              report_label <- list()
                             }
-
-
 
                         } else if(class(object@stopping) == "StoppingAny") {
 
@@ -434,22 +432,22 @@ setMethod("simulate",
                                 if(any(sapply(label_list, is.na))){
                                     stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
 
-                                        reportLabel <- label_list}
+                                      report_label <- label_list}
                             } else {
 
-                                reportLabel <- list()
+                              report_label <- list()
                             }
 
 
 
                         }else {
-                            reportLabel <- label_list
+                          report_label <- label_list
 
                         }
 
                     } else {
 
-                        reportLabel <- attr(stopit,"reportLabel")
+                      report_label <- attr(stopit,"report_label")
 
                         }
 
@@ -516,7 +514,7 @@ setMethod("simulate",
                            stop=
                            attr(stopit,
                                 "message"),
-                           reportLabel = reportLabel,
+                           report_label = report_label,
                            #highestStop = attr(stopit,"highest"),
                            individual_stop_results = ind_results,
                            reportResults = reportResults)
@@ -562,7 +560,7 @@ setMethod("simulate",
 
               #highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
 
-              reportLabel <- lapply(resultList, "[[", "reportLabel")
+              report_label <- lapply(resultList, "[[", "report_label")
 
          #   browser()
 
@@ -573,7 +571,7 @@ setMethod("simulate",
                                  stopReasons=stopReasons,
                                  stopResults=stopMatrix,
                                  seed=RNGstate,
-                                 reportLabel = reportLabel
+                                 report_label = report_label
                                  #highestStoppingMatrix = highestStoppingMatrix,
                                  )
               return(ret)

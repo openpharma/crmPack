@@ -454,7 +454,7 @@ setMethod("summary",
               stoppingReport <- object@stopResults
 
 #browser()
-              colnames(stoppingReport) <- object@reportLabel[[1]]
+              colnames(stoppingReport) <- object@report_label[[1]]
 
 
 

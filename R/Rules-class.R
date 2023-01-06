@@ -1107,8 +1107,7 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"#,
-  #slots = c(reportLabel="character")
+  Class = "Stopping"
 )
 
 # StoppingCohortsNearDose ----
@@ -1230,8 +1229,9 @@ StoppingPatientsNearDose <- function(nPatients,
 .StoppingMinCohorts <- setClass(
   Class = "StoppingMinCohorts",
   slots = c(nCohorts = "integer",
-            reportLabel = "character"),
-  prototype = prototype(nCohorts = 2L),
+            report_label = "character"),
+  prototype = prototype(nCohorts = 2L,
+                        report_label = "defaultLabel"),
   contains = "Stopping",
   validity = v_stopping_min_cohorts
 )
@@ -1245,9 +1245,9 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts,reportLabel=character(0)) {
+StoppingMinCohorts <- function(nCohorts,report_label = character(0)) {
   .StoppingMinCohorts(nCohorts = safeInteger(nCohorts),
-                      reportLabel = reportLabel)
+                      report_label = report_label)
 }
 
 # StoppingMinPatients ----
@@ -1268,7 +1268,7 @@ StoppingMinCohorts <- function(nCohorts,reportLabel=character(0)) {
 #'
 .StoppingMinPatients <- setClass(
   Class = "StoppingMinPatients",
-  slots = c(nPatients = "integer",reportLabel="character"),
+  slots = c(nPatients = "integer",report_label="character"),
   prototype = prototype(nPatients = 20L),
   contains = "Stopping",
   validity = v_stopping_min_patients
@@ -1283,9 +1283,9 @@ StoppingMinCohorts <- function(nCohorts,reportLabel=character(0)) {
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients,reportLabel=character(0)) {
+StoppingMinPatients <- function(nPatients,report_label=character(0)) {
   .StoppingMinPatients(nPatients = safeInteger(nPatients),
-                       reportLabel=reportLabel)
+                       report_label=report_label)
 }
 
 # StoppingTargetProb ----
@@ -1311,7 +1311,7 @@ StoppingMinPatients <- function(nPatients,reportLabel=character(0)) {
   slots = c(
     target = "numeric",
     prob = "numeric",
-    reportLabel = "character"
+    report_label = "character"
   ),
   prototype = prototype(
     target = c(0.2, 0.35),
@@ -1333,11 +1333,11 @@ StoppingMinPatients <- function(nPatients,reportLabel=character(0)) {
 #'
 StoppingTargetProb <- function(target,
                                prob,
-                               reportLabel = character(0)) {
+                               report_label = character(0)) {
   .StoppingTargetProb(
     target = target,
     prob = prob,
-    reportLabel = reportLabel
+    report_label = report_label
   )
 }
 

@@ -58,15 +58,28 @@ mySize <- maxSize(mySize1, mySize2)
 
 
 # Define some stopping rules
-myStopping1 <- StoppingMinCohorts(nCohorts=3, reportLabel = "default")
-myStopping3 <- StoppingMinPatients(nPatients=20, reportLabel = "default")
-#myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35, reportLabel = "default"), prob=0.5)
+
+
 
 # Create a list of stopping rules (of class 'StoppingAll') which would then be
 # summarized by the 'all' function, meaning that the study would be stopped only if
 # 'all' the single stopping rules are TRUE
 #mystopping <- StoppingAll(stopList=c(myStopping1, myStopping2, myStopping3))
-myStopping <- StoppingAll(stopList=c(myStopping1, myStopping3))
+
+
+myStopping1 <- StoppingMinCohorts(nCohorts=3, report_label = "default")
+myStopping2 <- StoppingTargetProb(target=c(0.2, 0.35), prob=0.5, report_label = "default")
+myStopping3 <- StoppingMinPatients(nPatients=20, report_label = "default")
+#StoppingAll with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
+myStopping <- StoppingAll(stopList=c(myStopping1, myStopping2), report=T)
+#StoppingAny with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
+myStopping <- StoppingAny(stopList=c(myStopping1, myStopping3), report=T)
+#nestedStoppingAny Object with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
+myStopping <- StoppingAny(stopList = list(StoppingAll(stopList=list(myStopping1, myStopping3),report=T),myStopping2),report=T)
+#nestedStoppingAll Object with reporting (needs set report Labels in atomic rules - otherwise an error message will be displayed)
+myStopping <- StoppingAll(stopList = list(StoppingAny(stopList=list(myStopping1, myStopping3),report=T),myStopping2),report=T)
+
+
 
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0, 20),
