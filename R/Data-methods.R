@@ -512,7 +512,7 @@ setMethod(
 #'
 #' @param object (`DataDual`)\cr object from which the responses and dose levels
 #'   are extracted.
-#' @param ... not used.
+#' @param ... further arguments passed to class-specific methods.
 #' @return `list` with efficacy responses categorized by the DLT value.
 #' @export
 #'
@@ -527,33 +527,36 @@ setGeneric(
 ## DataDual ----
 
 #' @rdname getEff
+#'
+#' @param no_dlt (`flag`)\cr should only no DLT responses be returned? Otherwise,
+#'   all responses are returned.
+#'
 #' @aliases getEff-DataDual
 #' @example examples/Data-method-getEff.R
 #'
 setMethod(
   f = "getEff",
   signature = signature(object = "DataDual"),
-  definition = function(object, ...) {
-    x_dlt <- NULL
-    w_dlt <- NULL
-    x_no_dlt <- NULL
-    w_no_dlt <- NULL
+  definition = function(object, no_dlt = FALSE) {
+    assert_flag(no_dlt)
 
-    is_dlt <- object@y == 1
-    if (any(is_dlt)) {
-      x_dlt <- object@x[is_dlt]
-      w_dlt <- object@w[is_dlt]
-    }
-    if (any(!is_dlt)) {
-      x_no_dlt <- object@x[!is_dlt]
-      w_no_dlt <- object@w[!is_dlt]
+    is_dlt <- object@y == 1L
+    is_no_dlt <- !is_dlt
+
+    eff <- if (any(is_no_dlt)) {
+      list(x_no_dlt = object@x[is_no_dlt], w_no_dlt = object@w[is_no_dlt])
+    } else {
+      list(x_no_dlt = NULL, w_no_dlt = NULL)
     }
 
-    list(
-      x_dlt = x_dlt,
-      w_dlt = w_dlt,
-      x_no_dlt = x_no_dlt,
-      w_no_dlt = w_no_dlt
-    )
+    if (!no_dlt) {
+      eff_dlt <- if (any(is_dlt)) {
+        list(x_dlt = object@x[is_dlt], w_dlt = object@w[is_dlt])
+      } else {
+        list(x_dlt = NULL, w_dlt = NULL)
+      }
+      eff <- c(eff, eff_dlt)
+    }
+    eff
   }
 )

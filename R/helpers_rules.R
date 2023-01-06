@@ -394,7 +394,7 @@ h_next_best_tdsamples_plot <- function(dose_target_drt_samples,
   assert_numeric(dose_target_eot_samples, any.missing = FALSE)
   assert_number(dose_target_drt)
   assert_number(dose_target_eot)
-  assert_numeric(dose_grid_range, finite = TRUE, any.missing = FALSE, len = 2, sorted = TRUE)
+  assert_range(dose_grid_range, finite = TRUE, unique = FALSE)
   assert_class(nextBest, "NextBestTDsamples")
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
@@ -733,14 +733,15 @@ h_next_best_mgsamples_plot <- function(prob_target_drt,
                                        next_dose,
                                        doselimit,
                                        dose_grid_range) {
-  assert_numeric(dose_grid_range, len = 2, sorted = TRUE)
+  assert_range(dose_grid_range, finite = TRUE, unique = FALSE)
   assert_probability(prob_target_drt)
   assert_number(dose_target_drt)
   assert_probability(prob_target_eot)
   assert_number(dose_target_eot)
   assert_number(dose_mg, na.ok = TRUE)
   assert_numeric(
-    dose_mg_samples, lower = dose_grid_range[1], upper = dose_grid_range[2], finite = TRUE, any.missing = FALSE
+    dose_mg_samples,
+    lower = dose_grid_range[1], upper = dose_grid_range[2], finite = TRUE, any.missing = FALSE
   )
   assert_number(next_dose, na.ok = TRUE)
   assert_number(doselimit)
