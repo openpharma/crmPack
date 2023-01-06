@@ -1863,8 +1863,8 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- nCohorts >= stopping@nCohorts
 
-     if(isTRUE(stopping@reportLabel == "default")) {
-        reportLabel=
+     if(isTRUE(stopping@report_label == "default")) {
+       report_label=
           paste("Minimum number of",
                 stopping@nCohorts,
                 "cohorts reached")
@@ -1872,7 +1872,7 @@ setMethod("stopTrial",
       #} else if(stopping@reportLabel == character(0)) {
 
       } else {
-        reportLabel = stopping@reportLabel
+        report_label = stopping@report_label
       }
 
       ## generate message
@@ -1889,7 +1889,7 @@ setMethod("stopTrial",
       ## return both
       return(structure(doStop,
         message = text,
-        reportLabel = reportLabel
+        report_label = report_label
       ))
     }
 )
@@ -1915,8 +1915,8 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- data@nObs >= stopping@nPatients
 
-      if(isTRUE(stopping@reportLabel == "default")) {
-        reportLabel= paste("Minimum number of",
+      if(isTRUE(stopping@report_label == "default")) {
+        report_label= paste("Minimum number of",
                            stopping@nPatients,
                            "patients reached")
 
@@ -1924,7 +1924,7 @@ setMethod("stopTrial",
         #} else if(stopping@reportLabel == character(0)) {
 
       } else {
-        reportLabel = stopping@reportLabel
+        report_label = stopping@report_label
       }
 
       ## generate message
@@ -1941,7 +1941,7 @@ setMethod("stopTrial",
       ## return both
       return(structure(doStop,
         message = text,
-        reportLabel = reportLabel
+        report_label = report_label
       ))
     }
 )
@@ -1981,8 +1981,8 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- probTarget >= stopping@prob
 
-      if(isTRUE(stopping@reportLabel == "default")) {
-        reportLabel=
+      if(isTRUE(stopping@report_label == "default")) {
+        report_label=
           paste("P(",
                 stopping@target[1],
                 "\u2264 prob(DLE | NBD) \u2264",
@@ -1993,7 +1993,7 @@ setMethod("stopTrial",
 
 
       } else {
-        reportLabel = stopping@reportLabel
+        report_label = stopping@report_label
       }
 
 
@@ -2014,7 +2014,7 @@ setMethod("stopTrial",
       ## return both
       return(structure(doStop,
         message = text,
-        reportLabel = reportLabel
+        report_label = report_label
       ))
     }
 )
