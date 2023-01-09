@@ -17,17 +17,17 @@ knitr::opts_chunk$set(
 ```
 ```{r checkPacakges, echo=FALSE}
 notFound <- which(
-              !sapply(c("kableExtra", "tibble", "magrittr", "dplyr", 
-                        "tidyr", "stringr", "kableExtra", "knitr"), 
-                      requireNamespace, 
+              !sapply(c("kableExtra", "tibble", "magrittr", "dplyr",
+                        "tidyr", "stringr", "kableExtra", "knitr"),
+                      requireNamespace,
                       quietly=TRUE)
             )
 cantRun <- length(notFound) > 0
 ```
 ```{r, eval=cantRun, results="asis", echo=FALSE}
 cat(
-  "The following packages are required to run this vignette but are not installed:", 
-  paste0(names(notFound), collapse=", "), 
+  "The following packages are required to run this vignette but are not installed:",
+  paste0(names(notFound), collapse = ", "),
   ".  Please install them and try again."
 )
 knitr::knit_exit()

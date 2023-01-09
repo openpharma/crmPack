@@ -192,6 +192,7 @@ LogisticNormalFixedMixture
 LogisticNormalMixture
 LogisticsIndepBeta
 longdash
+magrittr
 mailto
 maxDose
 mcmc
