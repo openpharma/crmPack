@@ -472,44 +472,44 @@ test_that("v_next_best_max_gain_samples returns message for non-valid mg_derive"
   )
 })
 
-## v_next_best_prob_mtd ----
+## v_next_best_prob_mtd_lte ----
 
-test_that("v_next_best_prob_mtd passes for valid object", {
-  object <- NextBestProbMTD(0.3)
-  expect_true(v_next_best_prob_mtd(object))
+test_that("v_next_best_prob_mtd_lte passes for valid object", {
+  object <- NextBestProbMTDLTE(0.3)
+  expect_true(v_next_best_prob_mtd_lte(object))
 })
 
-test_that("v_next_best_prob_mtd returns message for non-valid target", {
+test_that("v_next_best_prob_mtd_lte returns message for non-valid target", {
   err_msg <- "target must be a probability value from (0, 1) interval"
-  object <- NextBestProbMTD(0.3)
+  object <- NextBestProbMTDLTE(0.3)
 
   # Changing `target` so that it does not represent allowed probability value.
   object@target <- 1
-  expect_equal(v_next_best_prob_mtd(object), err_msg)
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
   object@target <- 0
-  expect_equal(v_next_best_prob_mtd(object), err_msg)
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
   object@target <- -0.5
-  expect_equal(v_next_best_prob_mtd(object), err_msg)
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
 
   # Changing `target` so that it is not a scalar.
   object@target <- c(0.5, 0.6)
-  expect_equal(v_next_best_prob_mtd(object), err_msg)
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
 })
 
-test_that("v_next_best_prob_mtd returns message for non-valid method", {
-  object <- NextBestProbMTD(0.3)
+test_that("v_next_best_prob_mtd_lte returns message for non-valid method", {
+  object <- NextBestProbMTDLTE(0.3)
 
   # Changing `method` so that it has many arguments.
   object@method <- c('min', 'max')
   expect_equal(
-    v_next_best_prob_mtd(object),
+    v_next_best_prob_mtd_lte(object),
     "method must be a string equal either to none, min or max"
   )
 
   # Changing `method` to an invalid method.
   object@method <- 'xyz'
   expect_equal(
-    v_next_best_prob_mtd(object),
+    v_next_best_prob_mtd_lte(object),
     "method must be a string equal either to none, min or max"
   )
 })

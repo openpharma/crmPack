@@ -674,15 +674,15 @@ NextBestMaxGainSamples <- function(prob_target_drt,
   )
 }
 
-# NextBestProbMTD ----
+# NextBestProbMTDLTE ----
 
 ## class ----
 
-#' `NextBestProbMTD`
+#' `NextBestProbMTDLTE`
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`NextBestProbMTD`] is the class for finding the next best MTD
+#' [`NextBestProbMTDLTE`] is the class for finding the next best MTD
 #' estimate with highest probability to be the MTD. The dose which has the
 #' highest probability to be the MTD among the specified doses is used as
 #' next best dose. The posterior is calculated for each iteration and the
@@ -712,11 +712,11 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #'   max = remaining allocation is added to last dose
 #'.
 #'
-#' @aliases NextBestProbMTD
+#' @aliases NextBestProbMTDLTE
 #' @export
 #'
-.NextBestProbMTD <- setClass(
-  Class = "NextBestProbMTD",
+.NextBestProbMTDLTE <- setClass(
+  Class = "NextBestProbMTDLTE",
   slots = c(
     target = "numeric",
     method = "character"
@@ -726,21 +726,21 @@ NextBestMaxGainSamples <- function(prob_target_drt,
     method = "none"
   ),
   contains = "NextBest",
-  validity = v_next_best_prob_mtd
+  validity = v_next_best_prob_mtd_lte
 )
 
 ## constructor ----
 
-#' @rdname NextBestProbMTD-class
+#' @rdname NextBestProbMTDLTE-class
 #'
 #' @param target (`numeric`)\cr see slot definition.
 #' @param method (`string`)\cr see slot definition.
 #' @export
-#' @example examples/Rules-class-NextBestProbMTD.R
+#' @example examples/Rules-class-NextBestProbMTDLTE.R
 #'
-NextBestProbMTD <- function(target,
+NextBestProbMTDLTE <- function(target,
                             method = 'min') {
-  .NextBestProbMTD(
+  .NextBestProbMTDLTE(
     target = target,
     method = method
   )

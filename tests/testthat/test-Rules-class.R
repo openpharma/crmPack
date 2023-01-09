@@ -191,18 +191,18 @@ test_that("NextBestMaxGainSamples object can be created with user constructor", 
   expect_identical(result@mg_derive(c(1:5)), 15L) # nolintr
 })
 
-## NextBestProbMTD ----
+## NextBestProbMTDLTE ----
 
-test_that(".NextBestProbMTD works as expected", {
-  result <- expect_silent(.NextBestProbMTD())
-  expect_valid(result, "NextBestProbMTD")
+test_that(".NextBestProbMTDLTE works as expected", {
+  result <- expect_silent(.NextBestProbMTDLTE())
+  expect_valid(result, "NextBestProbMTDLTE")
 })
 
-test_that("NextBestProbMTD object can be created with user constructor", {
+test_that("NextBestProbMTDLTE object can be created with user constructor", {
   result <- expect_silent(
-    NextBestProbMTD(0.4, 'min')
+    NextBestProbMTDLTE(0.4, 'min')
   )
-  expect_valid(result, "NextBestProbMTD")
+  expect_valid(result, "NextBestProbMTDLTE")
   expect_identical(result@target, 0.4)
   expect_identical(result@method, 'min')
 })

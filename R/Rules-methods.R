@@ -1001,20 +1001,20 @@ setMethod(
   }
 )
 
-## NextBestProbMTD ----
+## NextBestProbMTDLTE ----
 
 #' @describeIn nextBest find the next best dose based on DLT and efficacy
 #'   responses with DLT and efficacy samples.
 #'
-#' @aliases nextBest-NextBestProbMTD
+#' @aliases nextBest-NextBestProbMTDLTE
 #'
 #' @export
-#' @example examples/Rules-method-nextBest-NextBestProbMTD.R
+#' @example examples/Rules-method-nextBest-NextBestProbMTDLTE.R
 #'
 setMethod(
   f = "nextBest",
   signature = signature(
-    nextBest = "NextBestProbMTD",
+    nextBest = "NextBestProbMTDLTE",
     doselimit = "numeric",
     samples = "Samples",
     model = "GeneralModel",

@@ -196,9 +196,9 @@ v_next_best_max_gain_samples <- function(object) {
   v$result()
 }
 
-#' @describeIn v_next_best validates that the [`NextBestProbMTD`] object
+#' @describeIn v_next_best validates that the [`NextBestProbMTDLTE`] object
 #'   contains valid `target` probability and `method` string value.
-v_next_best_prob_mtd <- function(object) {
+v_next_best_prob_mtd_lte <- function(object) {
   v <- Validate()
   v$check(
     test_probability(object@target, bounds_closed = FALSE),
