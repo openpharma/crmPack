@@ -33,8 +33,8 @@ Imports:
     futile.logger,
     GenSA,
     grid,
+    magrittr,
     gridExtra,
-    kableExtra,
     lifecycle,
     magrittr,
     methods,
@@ -44,16 +44,19 @@ Imports:
     survival,
     tibble,
     tools,
-    utils
+    utils,
+    kableExtra
 Suggests:
+    tidyr,
     dplyr,
     ggmcmc,
     knitr,
     rmarkdown,
     stringr,
     testthat (>= 3.0.0),
-    tidyr,
-    vdiffr
+    vdiffr,
+    stringr,
+    rmarkdown
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
