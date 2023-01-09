@@ -20,7 +20,7 @@ notFound <- which(
               !sapply(c("kableExtra", "tibble", "magrittr", "dplyr",
                         "tidyr", "stringr", "kableExtra", "knitr"),
                       requireNamespace,
-                      quietly=TRUE)
+                      quietly = TRUE)
             )
 cantRun <- length(notFound) > 0
 ```
