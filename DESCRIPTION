@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9127
+Version: 1.0.9000.9128
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -33,9 +33,10 @@ Imports:
     futile.logger,
     GenSA,
     grid,
-    magrittr,
     gridExtra,
+    kableExtra,
     lifecycle,
+    magrittr,
     methods,
     mvtnorm,
     parallel,
@@ -43,17 +44,16 @@ Imports:
     survival,
     tibble,
     tools,
-    utils,
-    kableExtra
+    utils
 Suggests:
-    tidyr,
     dplyr,
     ggmcmc,
     knitr,
-    testthat (>= 3.0.0),
-    vdiffr,
+    rmarkdown,
     stringr,
-    rmarkdown
+    testthat (>= 3.0.0),
+    tidyr,
+    vdiffr
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
