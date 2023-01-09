@@ -1025,31 +1025,24 @@ setMethod(
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
-    # determine which dose level is just below the target
-    # and calculate the rel frequency per dose level
-    # first element of vector = no dose safe,
-    # second element = 1st dose safe, etc.
-    prob_mtd_dist <- table(factor(apply(prob_samples <= nextBest@target, 1, sum),
+    # Determine which dose level is just below or equal to the target
+    # and calculate the relative frequency how often a dose is selected as MTD.
+    # The first element of the vector contains the relative frequency that none
+    # of the doses has an estimated toxicity below the MTD, the
+    # second element that the 1st dose is the MTD, etc.
+    prob_mtd_lte <- table(factor(apply(prob_samples <= nextBest@target, 1, sum),
                                   levels = 0:data@nGrid)) / size(samples)
 
-    # Calculate the relative frequency that a dose is safe applying the
-    # specified method for handling of not allocated frequency
-    # (handling of first element of the vector according to the selected method)
-    # If method = none: use raw frequencies corresponding to planned doses
-    #   to determine the next best dose, i.e. ignore the cases where no dose is
-    #   safe.
-    ######### which denominator is used? Number of iterations? Or number of itereations-number of cases no dose safe?
-    ######### here the maximum of no dose safe and first dose is used. TBD.
-    # If method = min: first dose = sum of no dose is safe (below target) and first
+    # Handling of first element of the vector according to the selected method.
+    # If method = min: first dose = sum of no dose is below target and minimum
     #   dose is below target
-    # If method = max: last dose = sum of no dose is safe (below target) and last
+    # If method = max: last dose = sum of no dose is below target and maximum
     #   dose is below target
+    allocation_crit <- as.vector(prob_mtd_lte)
+    names(allocation_crit) <- names(prob_mtd_lte)
 
-    allocation_crit <- as.vector(prob_mtd_dist)
-    names(allocation_crit) <- names(prob_mtd_dist)
-
-    # in case that placebo is used, the placebo frequency is added
-    # to no dose safe before further processing
+    # In case that placebo is used, the placebo frequency is added to the
+    # first element of the vector and removed before further processing
     if (data@placebo) {
       allocation_crit[1] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-2]}
@@ -1057,22 +1050,23 @@ setMethod(
     if (nextBest@method == "min") {
       allocation_crit[2] <- sum(allocation_crit[1:2])
     } else if (nextBest@method == "max") {
-      allocation_crit[length(allocation_crit)] <- sum(allocation_crit[1], tail(allocation_crit, 1))
-    } else if (nextBest@method == "none") {
-      allocation_crit[2] <- max(allocation_crit[1:2])
+      allocation_crit[length(allocation_crit)] <-
+        sum(allocation_crit[1], tail(allocation_crit, 1))
     }
     allocation_crit <- allocation_crit[-1]
 
-    # Determine the dose with the highest frequency, exclude first element of
-    # vector, i.e. no dose is safe (as covered before)
+    # Determine the dose with the highest relative frequency
     dose_target <- data@doseGrid[which.max(allocation_crit)]
 
     # Determine next dose
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo)
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
     next_dose_level <- which.min(abs(doses_eligible - dose_target))
     next_dose <- doses_eligible[next_dose_level]
 
-    ### How to display placebo and no dose safe?
     # Create a plot.
     p <- ggplot(
       data = data.frame(

@@ -697,20 +697,12 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #'   allocation probability that is not allocated to the specified doses, i.e.
 #'   no dose has a posterior prob that is below the target probability.
 #'   Also applicable to cases where placebo is used.
-#'   Possible values are "none", "min" , "max".
+#'   Possible values are "min" or "max".
 ##### first instead of min?????
 #'   min = remaining allocation is added to first dose
-###### I have used the following description, but not so sure if really put into code.
-###### Needs to be discussed and checked again
-#'   none = do not aggregate, i.e. frequencies of all dose are report as they occur.
-#'          Except in case 'no dose is safe' has the highest allocation value.
-#'          This follows the idea used for the smallest distance to the target
-#'          dose approach, where always a dose is recommended,
-#'          even though the lowest dose estimated is above target
 ##### last instead of max?????
 ##### this needs some more explanation, why this could be useful.
-#'   max = remaining allocation is added to last dose
-#'.
+#'   max = remaining allocation is added to last dose.
 #'
 #' @aliases NextBestProbMTDLTE
 #' @export
@@ -723,7 +715,7 @@ NextBestMaxGainSamples <- function(prob_target_drt,
   ),
   prototype = prototype(
     target = 0.3,
-    method = "none"
+    method = "min"
   ),
   contains = "NextBest",
   validity = v_next_best_prob_mtd_lte
@@ -739,7 +731,7 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #' @example examples/Rules-class-NextBestProbMTDLTE.R
 #'
 NextBestProbMTDLTE <- function(target,
-                            method = 'min') {
+                               method = 'min') {
   .NextBestProbMTDLTE(
     target = target,
     method = method

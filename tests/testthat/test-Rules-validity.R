@@ -503,14 +503,14 @@ test_that("v_next_best_prob_mtd_lte returns message for non-valid method", {
   object@method <- c('min', 'max')
   expect_equal(
     v_next_best_prob_mtd_lte(object),
-    "method must be a string equal either to none, min or max"
+    "method must be a string equal either to min or max"
   )
 
   # Changing `method` to an invalid method.
   object@method <- 'xyz'
   expect_equal(
     v_next_best_prob_mtd_lte(object),
-    "method must be a string equal either to none, min or max"
+    "method must be a string equal either to min or max"
   )
 })
 
