@@ -5,7 +5,10 @@ articles:
   migration_from_the_old_crmPack: migration_from_the_old_crmPack.html
   rolling-crm: rolling-crm.html
   simulations: simulations.html
-last_built: 2023-01-03T17:31Z
+  trial_analysis: trial_analysis.html
+  trial_definition: trial_definition.html
+  trial_simulation: trial_simulation.html
+last_built: 2023-01-09T11:35Z
 urls:
   reference: https://roche.github.io/crmPack/main/reference
   article: https://roche.github.io/crmPack/main/articles

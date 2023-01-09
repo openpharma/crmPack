@@ -16,6 +16,15 @@
     <loc>https://roche.github.io/crmPack/main/articles/simulations.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/main/articles/trial_analysis.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/main/articles/trial_definition.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/main/articles/trial_simulation.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/main/authors.html</loc>
   </url>
   <url>
@@ -659,6 +668,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/pinvGamma.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/main/reference/pipe.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/plot-Data-ModelTox-method.html</loc>
