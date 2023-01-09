@@ -5,7 +5,7 @@
 \alias{assert_probability_range}
 \alias{test_probability_range}
 \alias{expect_probability_range}
-\title{Check if an Argument is a Probability Range}
+\title{Check if an argument is a probability range}
 \usage{
 check_probability_range(x, bounds_closed = TRUE)
 

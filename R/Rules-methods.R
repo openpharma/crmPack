@@ -440,7 +440,7 @@ setMethod(
       # If 'Emax' parameter available, target biomarker level will be relative to 'Emax',
       # otherwise, it will be relative to the maximum biomarker level achieved
       # in dose range for a given sample.
-      if ("Emax" %in% names(samples@data)) {
+      if ("Emax" %in% names(samples)) {
         lwr <- nextBest@target[1] * samples@data$Emax
         upr <- nextBest@target[2] * samples@data$Emax
         colMeans(apply(biom_samples, 2L, function(s) (s >= lwr) & (s <= upr)))
@@ -2133,7 +2133,7 @@ setMethod("stopTrial",
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
         ## maximum biomarker level achieved in the given dose range.
-        if ("Emax" %in% names(samples@data)) {
+        if ("Emax" %in% names(samples)) {
 
           ## For each sample, look which dose is maximizing the
           ## simultaneous probability to be in the target biomarker
@@ -2359,209 +2359,188 @@ setMethod("minSize",
     }
 )
 
+# size ----
 
-## --------------------------------------------------
-## Determine the size of the next cohort
-## --------------------------------------------------
+## CohortSizeRange ----
 
-##' Determine the size of the next cohort
-##'
-##' This function determines the size of the next cohort.
-##'
-##' @param cohortSize The rule, an object of class
-##' \code{\linkS4class{CohortSize}}
-##' @param dose the next dose
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param \dots additional arguments
-##'
-##' @return the size as integer value
-##'
-##' @export
-##' @keywords methods
-setGeneric("size",
-  def =
-    function(cohortSize, dose, data, ...) {
-      ## if the recommended next dose is NA,
-      ## don't check and return 0
-      if (is.na(dose)) {
-        return(0L)
-      }
+#' @describeIn size Determines the size of the next cohort based on the range
+#'   into which the next dose falls into.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeRange
+#' @example examples/Rules-method-size-CohortSizeRange.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeRange"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    }
+    assert_class(data, "Data")
 
-      ## there should be no default method,
-      ## therefore just forward to next method!
-      standardGeneric("size")
-    },
-  valueClass = "integer"
+    # Determine in which interval the next dose is.
+    interval <- findInterval(x = dose, vec = object@intervals)
+    object@cohort_size[interval]
+  }
 )
 
-## --------------------------------------------------
-## The dose range method
-## --------------------------------------------------
+## CohortSizeDLT ----
 
-##' @describeIn size Determine the cohort size based on the range into which the
-##' next dose falls into
-##'
-##' @example examples/Rules-method-size-CohortSizeRange.R
-setMethod("size",
-  signature =
-    signature(
-      cohortSize = "CohortSizeRange",
-      dose = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(cohortSize, dose, data, ...) {
-
-      ## determine in which interval the next dose is
-      interval <-
-        findInterval(
-          x = dose,
-          vec = cohortSize@intervals
-        )
-
-      ## so the cohort size is
-      ret <- cohortSize@cohort_size[interval]
-
-      return(ret)
+#' @describeIn size Determines the size of the next cohort based on the number
+#'   of DLTs so far.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeDLT
+#' @example examples/Rules-method-size-CohortSizeDLT.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeDLT"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
     }
+    assert_class(data, "Data")
+
+    # Determine how many DLTs have occurred so far.
+    dlt_happened <- sum(data@y)
+
+    # Determine in which interval this is.
+    interval <- findInterval(x = dlt_happened, vec = object@dlt_intervals)
+    object@cohort_size[interval]
+  }
 )
 
-## --------------------------------------------------
-## The DLT range method
-## --------------------------------------------------
+## CohortSizeMax ----
 
-##' @describeIn size Determine the cohort size based on the number of DLTs so
-##' far
-##'
-##' @example examples/Rules-method-size-CohortSizeDLT.R
-setMethod("size",
-  signature =
-    signature(
-      cohortSize = "CohortSizeDLT",
-      dose = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(cohortSize, dose, data, ...) {
-
-      ## determine how many DLTs have occurred so far
-      dltHappened <- sum(data@y)
-
-      ## determine in which interval this is
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = cohortSize@dlt_intervals
-        )
-
-      ## so the cohort size is
-      ret <- cohortSize@cohort_size[interval]
-
-      return(ret)
+#' @describeIn size Determines the size of the next cohort based on maximum of
+#'   multiple cohort size rules.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeMax
+#' @example examples/Rules-method-size-CohortSizeMax.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeMax"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
     }
+    assert_class(data, "Data")
+
+    # Evaluate the individual cohort size rules in the list.
+    individual_results <- sapply(
+      object@cohort_size_list,
+      size,
+      dose = dose,
+      data = data
+    )
+    # The overall result.
+    max(individual_results)
+  }
 )
 
-## --------------------------------------------------
-## Size based on maximum of multiple cohort size rules
-## --------------------------------------------------
+## CohortSizeMin ----
 
-##' @describeIn size Size based on maximum of multiple cohort size rules
-##' @example examples/Rules-method-size-CohortSizeMax.R
-setMethod("size",
-  signature =
-    signature(
-      cohortSize = "CohortSizeMax",
-      dose = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(cohortSize, dose, data, ...) {
-      ## evaluate the individual cohort size rules
-      ## in the list
-      individualResults <-
-        sapply(cohortSize@cohort_size_list,
-          size,
-          dose = dose,
-          data = data,
-          ...
-        )
-
-      ## summarize to obtain overall result
-      overallResult <- max(individualResults)
-
-      return(overallResult)
+#' @describeIn size Determines the size of the next cohort based on minimum of
+#'   multiple cohort size rules.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeMin
+#' @example examples/Rules-method-size-CohortSizeMin.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeMin"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
     }
+    assert_class(data, "Data")
+
+    # Evaluate the individual cohort size rules in the list.
+    individual_results <- sapply(
+      object@cohort_size_list,
+      size,
+      dose = dose,
+      data = data
+    )
+    # The overall result.
+    min(individual_results)
+  }
 )
 
-## --------------------------------------------------
-## Size based on minimum of multiple cohort size rules
-## --------------------------------------------------
+## CohortSizeConst ----
 
-##' @describeIn size Size based on minimum of multiple cohort size rules
-##' @example examples/Rules-method-size-CohortSizeMin.R
-setMethod("size",
-  signature =
-    signature(
-      cohortSize = "CohortSizeMin",
-      dose = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(cohortSize, dose, data, ...) {
-      ## evaluate the individual cohort size rules
-      ## in the list
-      individualResults <-
-        sapply(cohortSize@cohort_size_list,
-          size,
-          dose = dose,
-          data = data,
-          ...
-        )
-
-      ## summarize to obtain overall result
-      overallResult <- min(individualResults)
-
-      return(overallResult)
+#' @describeIn size Constant cohort size.
+#'
+#' @param dose the next dose.
+#' @param ... not used.
+#'
+#' @aliases size-CohortSizeConst
+#' @example examples/Rules-method-size-CohortSizeConst.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeConst"
+  ),
+  definition = function(object, dose, ...) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      0L
+    } else {
+      object@size
     }
+  }
 )
 
-## --------------------------------------------------
-## Constant cohort size
-## --------------------------------------------------
+## CohortSizeParts ----
 
-##' @describeIn size Constant cohort size
-##' @example examples/Rules-method-size-CohortSizeConst.R
-setMethod("size",
-  signature =
-    signature(
-      cohortSize = "CohortSizeConst",
-      dose = "ANY",
-      data = "Data"
-    ),
-  def =
-    function(cohortSize, dose, data, ...) {
-      return(cohortSize@size)
+#' @describeIn size Determines the size of the next cohort based on the parts.
+#'
+#' @param dose the next dose.
+#' @param data the data input, an object of class [`Data`].
+#'
+#' @aliases size-CohortSizeParts
+#' @example examples/Rules-method-size-CohortSizeParts.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(
+    object = "CohortSizeParts"
+  ),
+  definition = function(object, dose, data) {
+    # If the recommended next dose is NA, don't check it and return 0.
+    if (is.na(dose)) {
+      return(0L)
+    } else {
+      assert_class(data, "DataParts")
+      object@sizes[data@nextPart]
     }
-)
-
-
-## --------------------------------------------------
-## Cohort size based on the parts
-## --------------------------------------------------
-
-##' @describeIn size Cohort size based on the parts
-##' @example examples/Rules-method-size-CohortSizeParts.R
-setMethod("size",
-  signature =
-    signature(
-      cohortSize = "CohortSizeParts",
-      dose = "ANY",
-      data = "DataParts"
-    ),
-  def =
-    function(cohortSize, dose, data, ...) {
-      return(cohortSize@sizes[data@nextPart])
-    }
+  }
 )
 
 ## ------------------------------------------------------------------------------------------------
@@ -2637,10 +2616,10 @@ setMethod("stopTrial",
       ## Find the variance of the log of the dose_target_samples(eta)
       M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
-      varEta <- M1 %*% M2 %*% t(M1)
+      varEta <- as.vector(M1 %*% M2 %*% t(M1))
 
       ## Find the upper and lower limit of the 95% credibility interval
-      CI <- exp(log(dose_target_samples) + c(-1.96, 1.96) * sqrt(varEta))
+      CI <- exp(log(dose_target_samples) + c(-1, 1) * 1.96 * sqrt(varEta))
       ratio <- CI[2] / CI[1]
 
       ## so can we stop?
@@ -2709,7 +2688,7 @@ setMethod("stopTrial",
       points <- data@doseGrid
 
       GainSamples <- matrix(
-        nrow = sampleSize(samples@options),
+        nrow = size(samples),
         ncol = length(points)
       )
 
@@ -2869,31 +2848,26 @@ setMethod("stopTrial",
       ## such that phi1 and phi2 and independent of theta1 and theta2
       emptyMatrix <- matrix(0, 2, 2)
       covBETA <- cbind(rbind(model@Pcov, emptyMatrix), rbind(emptyMatrix, Effmodel@Pcov))
-      varlogGstar <- t(deltaG) %*% covBETA %*% deltaG
-
-
+      varlogGstar <- as.vector(t(deltaG) %*% covBETA %*% deltaG)
 
       ## Find the upper and lower limit of the 95% credibility interval of Gstar
-      CIGstar <- c()
-      CIGstar[2] <- exp(logGstar + 1.96 * sqrt(varlogGstar))
-      CIGstar[1] <- exp(logGstar - 1.96 * sqrt(varlogGstar))
+      CIGstar <- exp(logGstar + c(-1, 1) * 1.96 * sqrt(varlogGstar))
 
       ## The ratio of the upper to the lower 95% credibility interval
-      ratioGstar <- as.numeric(CIGstar[2] / CIGstar[1])
+      ratioGstar <- CIGstar[2] / CIGstar[1]
 
       ## Find the variance of the log of the TDtargetEndOfTrial(eta)
       M1 <- matrix(c(-1 / (model@phi2), -(log(prob_target / (1 - prob_target)) - model@phi1) / (model@phi2)^2), 1, 2)
       M2 <- model@Pcov
 
-      varEta <- M1 %*% M2 %*% t(M1)
+      varEta <- as.vector(M1 %*% M2 %*% t(M1))
 
       ## Find the upper and lower limit of the 95% credibility interval of
       ## TDtargetEndOfTrial
-      CITDEOT <- c()
-      CITDEOT[2] <- exp(log(TDtargetEndOfTrial) + 1.96 * sqrt(varEta))
-      CITDEOT[1] <- exp(log(TDtargetEndOfTrial) - 1.96 * sqrt(varEta))
+      CITDEOT <- exp(log(TDtargetEndOfTrial) + c(-1, 1) * 1.96 * sqrt(varEta))
+
       ## The ratio of the upper to the lower 95% credibility interval
-      ratioTDEOT <- as.numeric(CITDEOT[2] / CITDEOT[1])
+      ratioTDEOT <- CITDEOT[2] / CITDEOT[1]
 
       if (Gstar <= TDtargetEndOfTrial) {
         chooseTD <- FALSE
@@ -3008,7 +2982,6 @@ setMethod("windowLength",
       return(ret)
     }
 )
-
 
 ## ============================================================
 

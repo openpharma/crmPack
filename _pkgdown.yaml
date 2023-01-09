@@ -112,11 +112,11 @@ reference:
       - h_format_number
       - h_rapply
       - h_null_if_na
-      - h_null_if_scalar
       - h_is_positive_definite
       - h_test_named_numeric
       - h_in_range
       - h_find_interval
+      - h_validate_combine_results
       - h_jags_add_dummy
       - h_jags_join_models
       - h_jags_get_model_inits
@@ -200,15 +200,23 @@ reference:
       - assert_probabilities
       - assert_probability
       - assert_probability_range
+      - assert_length
+      - assert_range
       - check_probabilities
       - check_probability
       - check_probability_range
+      - check_length
+      - check_range
       - test_probabilities
       - test_probability
       - test_probability_range
+      - test_length
+      - test_range
       - expect_probabilities
       - expect_probability
       - expect_probability_range
+      - expect_length
+      - expect_range
   - title: Methods
     contents:
       - plot-Data
@@ -220,10 +228,17 @@ reference:
       - update-DataDA
       - getEff
       - getEff-DataDual
-      - sampleSize
-      - sampleSize-McmcOptions
       - saveSample
       - saveSample-McmcOptions
+      - size
+      - size-McmcOptions
+      - size-Samples
+      - size-CohortSizeRange
+      - size-CohortSizeDLT
+      - size-CohortSizeMax
+      - size-CohortSizeMin
+      - size-CohortSizeConst
+      - size-CohortSizeParts
       - doseFunction
       - doseFunction-GeneralModel
       - doseFunction-ModelPseudo
@@ -279,6 +294,7 @@ reference:
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
       - mcmc-GeneralData-OneParExpPrior
+      - names-Samples
       - nextBest
       - nextBest-NextBestMTD
       - nextBest-NextBestNCRM
@@ -334,8 +350,8 @@ reference:
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
       - Report
-      - RuleDesign-class
       - RuleDesign
+      - RuleDesign-class
       - Samples-class
       - Samples
       - Simulations-class
@@ -357,7 +373,6 @@ reference:
       - fitPEM
       - get,Samples,character-method
       - getMinInfBeta
-      - h_validate_combine_results
       - logit
       - matchTolerance
       - maxSize
@@ -400,7 +415,6 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
-      - size
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method

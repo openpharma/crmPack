@@ -1,4 +1,8 @@
-# Version 1.0.9000.9114
+# Version 1.0.9000.9127
+* Added new custom `checkmate` function `check_range`.
+* Added method `names` for objects of class `Samples`.
+* Added method `size` for objects of class `Samples`.
+* Added new custom `checkmate` function `check_length`.
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
 * Created a new vignette which describes how to use certain functions and features
   of `crmPack` after the major refactoring.
@@ -8,7 +12,6 @@
   `numeric(0)`.
 * Added new helper functions for `nextBest` methods, particularly for plotting
   and finding the dose closest to the grid.
-* Added new helper function `h_dose_grid_range`.
 * Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
   specified.

@@ -490,7 +490,7 @@ setMethod("mcmc",
         ## sample from the (asymptotic) bivariate normal prior for theta
 
         tmp <- mvtnorm::rmvnorm(
-          n = sampleSize(options),
+          n = size(options),
           mean = c(slot(thismodel, "phi1"), slot(thismodel, "phi2")),
           sigma = solve(precision)
         )
@@ -571,7 +571,7 @@ setMethod(
   ),
   definition = function(data, model, options, ...) {
     model <- update(object = model, data = data)
-    sample_size <- sampleSize(options)
+    sample_size <- size(options)
 
     if (model@use_fixed) {
       nu <- model@nu
@@ -629,7 +629,7 @@ setMethod("mcmc",
       ## update the model
       thismodel <- update(object = model, data = data)
 
-      nSamples <- sampleSize(options)
+      nSamples <- size(options)
 
       ## Prepare samples container
       ### List parameter samples to save
@@ -654,8 +654,9 @@ setMethod("mcmc",
         x1 <- thismodel@eff_dose
       } else {
         ## Combine pseudo data with observed efficacy responses and no DLT observed
-        w1 <- c(thismodel@eff, getEff(data)$w_no_dlt)
-        x1 <- c(thismodel@eff_dose, getEff(data)$x_no_dlt)
+        eff_obsrv <- getEff(data, no_dlt = TRUE)
+        w1 <- c(thismodel@eff, eff_obsrv$w_no_dlt)
+        x1 <- c(thismodel@eff_dose, eff_obsrv$x_no_dlt)
       }
       x1Level <- matchTolerance(x1, data@doseGrid)
       ## betaW is constant, the average of the efficacy values

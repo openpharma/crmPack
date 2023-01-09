@@ -11,8 +11,8 @@ biomarker(xLevel, model, samples, ...)
 \S4method{biomarker}{integer,DualEndpoint,Samples}(xLevel, model, samples, ...)
 }
 \arguments{
-\item{xLevel}{(\code{integer})\cr the levels for the doses the
-patients have been given w.r.t dose grid. See \code{\link{Data}} for more details.}
+\item{xLevel}{(\code{integer})\cr the levels for the doses the patients have been
+given w.r.t dose grid. See \code{\link{Data}} for more details.}
 
 \item{model}{(\code{DualEndpoint})\cr the model.}
 
