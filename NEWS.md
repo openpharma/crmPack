@@ -1,4 +1,4 @@
-# Version 1.0.9000.9127
+# Version 1.0.9000.9128
 * Added new custom `checkmate` function `check_range`.
 * Added method `names` for objects of class `Samples`.
 * Added method `size` for objects of class `Samples`.
