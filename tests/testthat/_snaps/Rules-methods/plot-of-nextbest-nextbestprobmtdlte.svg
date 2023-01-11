@@ -100,6 +100,6 @@
 <text x='683.53' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>90</text>
 <text x='373.66' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='25.69px' lengthAdjust='spacingAndGlyphs'>Dose</text>
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='108.83px' lengthAdjust='spacingAndGlyphs'>Allocation criterion [%]</text>
-<text x='32.79' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='206.92px' lengthAdjust='spacingAndGlyphs'>Plot of nextBest-NextBestProbMTD</text>
+<text x='32.79' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='231.13px' lengthAdjust='spacingAndGlyphs'>Plot of nextBest-NextBestProbMTDLTE</text>
 </g>
 </svg>
