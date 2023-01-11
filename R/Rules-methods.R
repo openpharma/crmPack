@@ -1139,7 +1139,133 @@ setMethod(
         angle = 90
       )
 
-    list(value = next_dose, plot = p)
+    list(value = next_dose, allocation = allocation_crit, plot = p)
+
+  })
+
+## NextBestProbMTDMinDist ----
+
+#' @describeIn nextBest find the next best dose based on DLT and efficacy
+#'   responses with DLT and efficacy samples.
+#'
+#' @aliases nextBest-NextBestProbMTDMinDist
+#'
+#' @export
+#' @example examples/Rules-method-nextBest-NextBestProbMTDMinDist.R
+#'
+setMethod(
+  f = "nextBest",
+  signature = signature(
+    nextBest = "NextBestProbMTDMinDist",
+    doselimit = "numeric",
+    samples = "Samples",
+    model = "GeneralModel",
+    data = "Data"
+  ),
+  definition = function(nextBest, doselimit, samples, model, data, ...) {
+
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+
+    # Determine which dose level has the minimum distance to target
+    dose_min_mtd_dist <- apply(prob_samples, 1,
+                               function(x) which.min(abs(x - nextBest@target)))
+    prob_mtd_min_dist <- sapply(1:data@nGrid,
+                                function(x) mean(dose_min_mtd_dist == x))
+    allocation_crit <- prob_mtd_min_dist
+    names(allocation_crit) <- as.character(data@doseGrid)
+
+    # In case that placebo is used, the placebo frequency is added to the
+    # first element of the vector and removed before further processing
+    if (data@placebo) {
+      allocation_crit[1] <- sum(allocation_crit[1:2])
+      allocation_crit <- allocation_crit[-2]}
+
+    # Determine the dose with the highest relative frequency
+    dose_target <- data@doseGrid[which.max(allocation_crit)]
+
+    # Determine next dose
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
+    next_dose_level <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level]
+
+    # Create a plot.
+    p <- ggplot(
+      data = data.frame(
+        x = as.factor(data@doseGrid),
+        y = as.numeric(allocation_crit) * 100
+      ),
+      fill = "grey50",
+      colour = "grey50"
+    ) +
+      geom_col(aes(x, y)) +
+      scale_x_discrete() +
+      geom_text(
+        mapping = aes(
+          x = x,
+          y = y,
+          label = paste(round(y, 1), "%")
+        ),
+        size = 3,
+        hjust = 1.5,
+        vjust = -0.5
+      ) +
+      geom_vline(
+        xintercept = as.factor(dose_target),
+        linetype = "dotted",
+        size = 1,
+        colour = "green"
+      ) +
+      geom_text(
+        data = data.frame(x = as.factor(dose_target)),
+        aes(.data$x, 0),
+        label = "Best",
+        vjust = -0.5,
+        hjust = -0.5,
+        colour = "green",
+        angle = 90
+      ) +
+      xlab("Dose") +
+      ylab(paste("Allocation criterion [%]"))
+
+
+    if (is.finite(doselimit)) {
+      p <- p +
+        geom_vline(
+          xintercept = as.factor(doselimit),
+          linetype = "dotdash",
+          colour = "red", lwd = 1.1
+        ) +
+        geom_text(
+          data = data.frame(x = as.factor(doselimit)),
+          aes(.data$x, 0),
+          label = "Max",
+          vjust = -0.5,
+          hjust = -2,
+          colour = "red",
+          angle = 90
+        )
+    }
+    p <- p +
+      geom_vline(
+        xintercept = as.factor(next_dose),
+        colour = "blue", lwd = 0.6
+      ) +
+      geom_text(
+        data = data.frame(x = as.factor(next_dose)),
+        aes(.data$x, 0),
+        label = "Next",
+        vjust = -0.5,
+        hjust = -3,
+        colour = "blue",
+        angle = 90
+      )
+
+    list(value = next_dose, allocation = allocation_crit, plot = p)
 
   })
 
