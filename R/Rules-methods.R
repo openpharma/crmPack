@@ -1645,7 +1645,8 @@ setMethod("stopTrial",
 
       return(structure(overallResult,
                        message = overallText,
-                       individual = individualResults
+                       individual = individualResults,
+                       report_label = stopping@report_label
       ))
     }
 )
@@ -1709,7 +1710,8 @@ setMethod("stopTrial",
       return(structure(overallResult,
                        #highest = highestLevelResults,
                        message = overallText,
-                       individual = individualResults
+                       individual = individualResults,
+                       report_label = stopping@report_label
       ))
     }
 )
