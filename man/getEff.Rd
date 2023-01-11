@@ -8,13 +8,16 @@
 \usage{
 getEff(object, ...)
 
-\S4method{getEff}{DataDual}(object, ...)
+\S4method{getEff}{DataDual}(object, no_dlt = FALSE)
 }
 \arguments{
 \item{object}{(\code{DataDual})\cr object from which the responses and dose levels
 are extracted.}
 
-\item{...}{not used.}
+\item{...}{further arguments passed to class-specific methods.}
+
+\item{no_dlt}{(\code{flag})\cr should only no DLT responses be returned? Otherwise,
+all responses are returned.}
 }
 \value{
 \code{list} with efficacy responses categorized by the DLT value.
