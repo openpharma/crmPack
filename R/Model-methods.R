@@ -1303,7 +1303,9 @@ setMethod(
 ## EffFlexi ----
 
 #' @describeIn efficacy compute the expected efficacy at a specified dose level,
-#' based on the samples of [`EffFlexi`] model parameters.
+#' based on the samples of [`EffFlexi`] model parameters. If a given dose in
+#' the `dose` vector is from outside of the dose grid range, the `NA_real` is
+#' returned for this dose and the warning is thrown.
 #'
 #' @aliases efficacy-EffFlexi
 #' @export

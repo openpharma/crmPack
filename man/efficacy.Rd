@@ -67,7 +67,9 @@ based on the \code{\link{Effloglog}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
 \item \code{efficacy(dose = numeric, model = EffFlexi, samples = Samples)}: compute the expected efficacy at a specified dose level,
-based on the samples of \code{\link{EffFlexi}} model parameters.
+based on the samples of \code{\link{EffFlexi}} model parameters. If a given dose in
+the \code{dose} vector is from outside of the dose grid range, the \code{NA_real} is
+returned for this dose and the warning is thrown.
 
 }}
 \examples{
