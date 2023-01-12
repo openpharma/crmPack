@@ -1,4 +1,5 @@
 # Version 1.0.9000.9128
+* Added new function `ngrid` that returns a number of doses in grid.
 * Added new custom `checkmate` function `check_range`.
 * Added method `names` for objects of class `Samples`.
 * Added method `size` for objects of class `Samples`.
