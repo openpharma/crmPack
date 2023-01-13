@@ -1,4 +1,4 @@
-# Version 1.0.9000.9129
+# Version 1.0.9000.9130
 * Modified `efficacy-EffFlexi` method: allowed for vectorized dose; `NA` is now
   returned for doses from outside of the dose grid range (and the warning is thrown).
 * Added new function `ngrid` that returns a number of doses in grid.
