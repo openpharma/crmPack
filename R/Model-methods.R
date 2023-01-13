@@ -1326,17 +1326,17 @@ setMethod(
 
     dose_grid <- model@data@doseGrid
     dose_level <- matchTolerance(dose, dose_grid)
-    dose[which(!is.na(dose_level))] <- dose_grid[na.omit(dose_level)]
+    dose[which(!is.na(dose_level))] <- dose_grid[stats::na.omit(dose_level)]
 
     # linear interpolation, NA for doses that are outside of the dose_grid range.
     samples_eff <- samples@data$ExpEff
     eff <- if (length(dose) == n_samples) {
       sapply(seq_len(n_samples), function(s) {
-        approx(dose_grid, samples_eff[s, ], xout = dose[s])$y
+        stats::approx(dose_grid, samples_eff[s, ], xout = dose[s])$y
       })
     } else {
       eff <- apply(samples_eff, 1, function(s) {
-        approx(dose_grid, s, xout = dose)$y
+        stats::approx(dose_grid, s, xout = dose)$y
       })
       as.vector(eff)
     }
