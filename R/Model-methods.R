@@ -1215,7 +1215,7 @@ setMethod(
 #'   correspond to the sampling index, i.e. the layout is then
 #'   `nSamples x dimParameter`.
 #'
-#' @param dose (`number` or `numeric`)\cr the dose which is targeted.
+#' @param dose (`numeric`)\cr the dose which is targeted.
 #'   The following recycling rule applies when `samples` is not missing: vectors
 #'   of size 1 will be recycled to the size of the sample
 #'   (i.e. `size(samples)`). Otherwise, `dose` must have the same
@@ -1303,8 +1303,9 @@ setMethod(
 ## EffFlexi ----
 
 #' @describeIn efficacy compute the expected efficacy at a specified dose level,
-#' based on the samples of [`EffFlexi`] model parameters. For this method,
-#' the `dose` argument must be a scalar.
+#' based on the samples of [`EffFlexi`] model parameters. If a given dose in
+#' the `dose` vector is from outside of the dose grid range, the `NA_real` is
+#' returned for this dose and the warning is thrown.
 #'
 #' @aliases efficacy-EffFlexi
 #' @export
@@ -1317,27 +1318,35 @@ setMethod(
     samples = "Samples"
   ),
   definition = function(dose, model, samples) {
-    assert_number(dose, lower = 0)
+    n_samples <- size(samples)
+    assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1L)
+    assert_true(model@data@nGrid >= 1L)
     assert_subset("ExpEff", names(samples))
+    assert_length(dose, len = n_samples)
 
-    samples_efficacy <- samples@data$ExpEff
     dose_grid <- model@data@doseGrid
     dose_level <- matchTolerance(dose, dose_grid)
+    dose[which(!is.na(dose_level))] <- dose_grid[stats::na.omit(dose_level)]
 
-    if (!is.na(dose_level) == TRUE) {
-      samples_efficacy[, dose_level]
+    # linear interpolation, NA for doses that are outside of the dose_grid range.
+    samples_eff <- samples@data$ExpEff
+    eff <- if (length(dose) == n_samples) {
+      sapply(seq_len(n_samples), function(s) {
+        stats::approx(dose_grid, samples_eff[s, ], xout = dose[s])$y
+      })
     } else {
-      # If dose not in doseGrid, do linear interpolation, given that dose is within doseGrid range.
-      dose_level0 <- findInterval(dose, dose_grid)
-      assert_true(all(dose_level0 > 0 & dose_level0 < model@data@nGrid))
-      dose_level1 <- dose_level0 + 1L
-
-      eff0 <- samples_efficacy[, dose_level0]
-      eff1 <- samples_efficacy[, dose_level1]
-      dose0 <- dose_grid[dose_level0]
-      dose1 <- dose_grid[dose_level1]
-      eff0 + (eff1 - eff0) * ((dose - dose0) / (dose1 - dose0))
+      eff <- apply(samples_eff, 1, function(s) {
+        stats::approx(dose_grid, s, xout = dose)$y
+      })
+      as.vector(eff)
     }
+
+    if (any(is.na(eff))) {
+      warning(
+        paste("At least one dose out of", paste(dose, collapse = ", "), "is outside of the dose grid range")
+      )
+    }
+    eff
   }
 )
 
