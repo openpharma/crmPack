@@ -229,11 +229,6 @@ assert_length <- makeAssertionFunction(check_length)
 #' @export
 test_length <- makeTestFunction(check_length)
 
-#' @rdname check_length
-#' @inheritParams check_length
-#' @export
-expect_length <- makeExpectationFunction(check_length)
-
 # assert_range ----
 
 #' Check that an argument is a numerical range
