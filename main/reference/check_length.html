@@ -20,7 +20,7 @@ or both vectors are of the same size.
     
     <a class="navbar-brand me-2" href="../index.html">crmPack</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9128</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.9000.9129</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,12 +45,6 @@ or both vectors are of the same size.
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -84,9 +78,7 @@ or both vectors are of the same size.
 <span></span>
 <span><span class="fu">assert_length</span><span class="op">(</span><span class="va">x</span>, <span class="va">len</span>, .var.name <span class="op">=</span> <span class="fu">checkmate</span><span class="fu">::</span><span class="fu"><a href="https://mllg.github.io/checkmate/reference/vname.html" class="external-link">vname</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">test_length</span><span class="op">(</span><span class="va">x</span>, <span class="va">len</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">expect_length</span><span class="op">(</span><span class="va">x</span>, <span class="va">len</span>, info <span class="op">=</span> <span class="cn">NULL</span>, label <span class="op">=</span> <span class="fu">vname</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">test_length</span><span class="op">(</span><span class="va">x</span>, <span class="va">len</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -109,18 +101,6 @@ the heuristic implemented in <code><a href="https://mllg.github.io/checkmate/ref
 <dt>add</dt>
 <dd><p>[<code>AssertCollection</code>]<br>
 Collection to store assertion messages. See <code><a href="https://mllg.github.io/checkmate/reference/AssertCollection.html" class="external-link">AssertCollection</a></code>.</p></dd>
-
-
-<dt>info</dt>
-<dd><p>[<code>character(1)</code>]<br>
-Extra information to be included in the message for the testthat reporter.
-See <code><a href="https://testthat.r-lib.org/reference/expect_that.html" class="external-link">expect_that</a></code>.</p></dd>
-
-
-<dt>label</dt>
-<dd><p>[<code>character(1)</code>]<br>
-Name of the checked object to print in messages. Defaults to
-the heuristic implemented in <code><a href="https://mllg.github.io/checkmate/reference/vname.html" class="external-link">vname</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
