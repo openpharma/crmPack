@@ -38,9 +38,7 @@
     setClass(Class="GeneralSimulations",
              representation(data="list",
                             doses="numeric",
-                            seed="integer",
-                            reportLabel = "list"
-                            #highestStoppingMatrix = "matrix"
+                            seed="integer"
                             ),
              prototype(data=
                            list(Data(x=1:2,
@@ -50,8 +48,8 @@
                                      y=0:1,
                                      doseGrid=3:4)),
                        doses=c(1, 2),
-                       seed=1L#,
-                       #highestStoppingMatrix = as.matrix(c(TRUE,FALSE))
+                       seed=1L
+
                        ),
              validity=
                  function(object){
@@ -79,16 +77,12 @@ validObject(.GeneralSimulations())
 ##' @keywords methods
 GeneralSimulations <- function(data,
                                doses,
-                               seed,
-                               reportLabel
-                               #highestStoppingMatrix
+                               seed
                                )
 {
     .GeneralSimulations(data=data,
                         doses=doses,
-                        seed=safeInteger(seed),
-                        reportLabel = reportLabel
-                        #highestStoppingMatrix = highestStoppingMatrix
+                        seed=safeInteger(seed)
                         )
 }
 
@@ -102,6 +96,7 @@ GeneralSimulations <- function(data,
 ##'
 ##' @slot fit list with the final fits
 ##' @slot stopReasons list of stopping reasons for each simulation run
+##' @slot stopResult matrix of results of stopping rules for each simulation run
 ##'
 ##' @export
 ##' @keywords classes
@@ -109,7 +104,7 @@ GeneralSimulations <- function(data,
     setClass(Class="Simulations",
              representation(fit="list",
                             stopReasons="list",
-                            stopResults = "matrix"),
+                            stop_report = "matrix"),
              ## note: this prototype is put together with the prototype
              ## for GeneralSimulations
              prototype(fit=
@@ -117,7 +112,7 @@ GeneralSimulations <- function(data,
                                 c(0.1, 0.2)),
                        stopReasons=
                            list("A", "A"),
-                       stopResults =
+                       stop_report =
                            matrix(TRUE, TRUE)),
              contains="GeneralSimulations",
              validity=
@@ -147,14 +142,14 @@ validObject(.Simulations())
 ##' @keywords methods
 Simulations <- function(fit,
                         stopReasons,
-                        stopResults,
+                        stop_report,
                         ...)
 {
     start <- GeneralSimulations(...)
     .Simulations(start,
                  fit=fit,
                  stopReasons = stopReasons,
-                 stopResults = stopResults)
+                 stop_report = stop_report)
 }
 
 
@@ -249,7 +244,7 @@ DualSimulations <- function(rhoEst,
 .GeneralSimulationsSummary <-
     setClass(Class="GeneralSimulationsSummary",
              representation(target="numeric",
-                            stoppingReport="matrix",
+                            stop_report="matrix",
                             targetDoseInterval="numeric",
                             nsim="integer",
                             propDLTs="ANY",

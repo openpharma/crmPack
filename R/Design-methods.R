@@ -344,7 +344,7 @@ setMethod("simulate",
                                            samples=thisSamples,
                                            model=object@model,
                                            data=thisData)$value
-                    #browser()
+
                       ## evaluate stopping rules
                       stopit <- stopTrial(object@stopping,
                                           dose=thisDose,
@@ -353,145 +353,31 @@ setMethod("simulate",
                                           data=thisData)
 
 
-                    browser()
 
 
-                    individual_results_tree <- attr(stopit, "individual")
+                    # unpack stopping rule labels and individual logicals
+                      stopit_unpacked <- list()
 
-                    flatten_tree <- function(tree) {
-                        if (is.list(tree)) {
-                            lapply(tree, flatten_tree)
-                        } else {
-                            ind_attr <- attr(tree, "individual")
-                            if (is.null(ind_attr)) {
-                                tree
-                            } else {
-                                lapply(ind_attr, flatten_tree)
-                            }
-                        }
-                    }
-
-                    browser()
-
-                    #####test####
-
-                    nested_object_list <- list()
-
-                    if(length(unlist(flatten_tree(individual_results_tree)))>length(attr(stopit, "individual"))){
-
-                        for (i in 1 : length(attr(stopit, "individual"))) {
-
-                            nested_object_list[i] <- class(object@stopping@stopList[[i]])
-                        }
-
-                        browser()
-                    }
-
-
-                    ########
-
-
-                    label_list <- list()
-
-                    if(!is.null(attr(stopit, "individual"))){
+                      unpack_stopit <- function(stopit_tree) {
+                          if(is.list(stopit_tree)){
+                              lapply(stopit_tree,unpack_stopit)
+                          } else { #no list
+                              label <- attr(stopit_tree,"report_label")
+                              value <- stopit_tree[1]
+                              names(value) <- label
+                              stopit_unpacked <- append(stopit_unpacked,value)
+                              if(is.null(attr(stopit_tree,"individual"))){
+                                  stopit_unpacked
+                              } else {
+                                  append(stopit_unpacked,lapply(attr(stopit_tree,"individual"),unpack_stopit))
+                              }
+                          }
+                      }
 
 
 
-                    for(i in 1: length(attr(stopit, "individual"))){
+                    stopit_results <- unlist(unpack_stopit(stopit))
 
-                        if(identical(attr(attr(stopit, "individual")[[i]], "report_label"), character(0))){
-                            attr(attr(stopit, "individual")[[i]], "report_label") <- NA
-
-                            #stop('all individual stopping rules must have reporting labels if combination should be reported')
-
-                        } #else {
-
-                        label_list[i] <- attr(attr(stopit, "individual")[[i]], "report_label")
-                       # }
-
-                    }
-                   browser()
-
-                        if(class(object@stopping) == "StoppingAll" ){
-
-                           browser()
-
-                            if(isTRUE(object@stopping@report)) {
-                                if(any(sapply(label_list, is.na))){
-                                stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
-
-                                  report_label <- paste(label_list, collapse = attr(stopit, "reportComb")) }
-                            } else {
-
-                              report_label <- list()
-                            }
-
-                        } else if(class(object@stopping) == "StoppingAny") {
-
-                            if(isTRUE(object@stopping@report)) {
-                                if(any(sapply(label_list, is.na))){
-                                    stop('all individual stopping rules must have reporting labels if combination should be reported') } else{
-
-                                      report_label <- label_list}
-                            } else {
-
-                              report_label <- list()
-                            }
-
-
-
-                        }else {
-                          report_label <- label_list
-
-                        }
-
-                    } else {
-
-                      report_label <- attr(stopit,"report_label")
-
-                        }
-
-
-
-
-
-
-                   # individual_results_tree <- attr(stopit, "individual")
-
-                   #   flatten_tree <- function(tree) {
-                         # if (is.list(tree)) {
-                         #     lapply(tree, flatten_tree)
-                         # } else {
-                         #     ind_attr <- attr(tree, "individual")
-                         #     if (is.null(ind_attr)) {
-                         #         tree
-                         #     } else {
-                         #         lapply(ind_attr, flatten_tree)
-                         #     }
-                         # }
-                      #}
-
-                #      browser()
-
-                      #binary results (stopping TRUE or FALSE) and character string for stopping rule
-                      ind_only_tree <- flatten_tree(individual_results_tree)
-
-                      #vector of binary results (stopping TRUE or FALSE)
-                      ind_results <- unlist(ind_only_tree)
-
-
-
-
-
-                        if (class(object@stopping) == "StoppingAny"){
-                            reportResults <- ind_results
-
-                        } else {
-
-                            reportResults <- stopit[1]
-                        }
-
-                   #browser()
 
 
                   }
@@ -503,7 +389,7 @@ setMethod("simulate",
 
 
                   ## return the results
-               # browser()
+
 
                   thisResult <-
                       list(data=thisData,
@@ -514,10 +400,8 @@ setMethod("simulate",
                            stop=
                            attr(stopit,
                                 "message"),
-                           report_label = report_label,
-                           #highestStop = attr(stopit,"highest"),
-                           individual_stop_results = ind_results,
-                           reportResults = reportResults)
+
+                           report_results = stopit_results)
                   return(thisResult)
               }
 
@@ -549,30 +433,18 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
-              stopResults <- lapply(resultList, "[[", "reportResults")
-              stopMatrix <- as.matrix(do.call(rbind, stopResults))
+              # individual stopping rule results as matrix, labels as column names
+              stopResults <- lapply(resultList, "[[", "report_results")
+              stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
-
-              ## highest level stopping reasons
-
-              #highestStoppingParts <- lapply(resultList, "[[", "highestStop")
-
-
-              #highestStoppingMatrix <- as.matrix(do.call(rbind, highestStoppingParts))
-
-              report_label <- lapply(resultList, "[[", "report_label")
-
-         #   browser()
 
               ## return the results in the Simulations class object
               ret <- Simulations(data=dataList,
                                  doses=recommendedDoses,
                                  fit=fitList,
                                  stopReasons=stopReasons,
-                                 stopResults=stopMatrix,
-                                 seed=RNGstate,
-                                 report_label = report_label
-                                 #highestStoppingMatrix = highestStoppingMatrix,
+                                 stop_report=stop_matrix,
+                                 seed=RNGstate
                                  )
               return(ret)
           })

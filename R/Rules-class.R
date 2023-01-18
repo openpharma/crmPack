@@ -1230,8 +1230,7 @@ StoppingPatientsNearDose <- function(nPatients,
   Class = "StoppingMinCohorts",
   slots = c(nCohorts = "integer",
             report_label = "character"),
-  prototype = prototype(nCohorts = 2L,
-                        report_label = "defaultLabel"),
+  prototype = prototype(nCohorts = 2L),
   contains = "Stopping",
   validity = v_stopping_min_cohorts
 )
@@ -1785,7 +1784,8 @@ validObject(.StoppingAny())
 StoppingAny <- function(stopList, report_label = character(0))
 {
     .StoppingAny(stopList=stopList,
-                 report_label = report_label)
+                 report_label =
+                  report_label)
 }
 
 

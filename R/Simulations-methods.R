@@ -447,17 +447,13 @@ setMethod("summary",
               propAtTarget <- mean((toxAtDoses > target[1]) &
                                    (toxAtDoses < target[2]))
 
-              #highestStoppingReport <- apply(object@highestStoppingMatrix,2,mean)*100
-
-              #if(!is.null)
-
-              stoppingReport <- object@stopResults
-
-#browser()
-              colnames(stoppingReport) <- object@report_label[[1]]
 
 
+              # stopping rule result matrix
+              stop_report <- object@stop_report
 
+
+             # browser()
 
               ## give back an object of class GeneralSimulationsSummary,
               ## for which we then define a print / plot method
@@ -478,7 +474,7 @@ setMethod("summary",
                     propAtTarget=propAtTarget,
                     doseGrid=doseGrid,
                     placebo=object@data[[1]]@placebo,
-                    stoppingReport = stoppingReport)
+                    stop_report = stop_report)
 
 
               return(ret)
@@ -726,32 +722,18 @@ setMethod("show",
 
 
 
-
-
-
-             # browser()
-              if(!is.null(colnames(object@stoppingReport))){
-
+                # report stopping rules
+                logPercent <- apply(object@stop_report,2,mean)*100
                 cat("Stopping rules:\n \n")
-              if(ncol(object@stoppingReport) > 1){
-                logPercent <- apply(object@stoppingReport,2,mean)*100
+                for(i in 1:ncol(object@stop_report)){
+                  if(!is.na(names(logPercent)[i])){
+                    cat(names(logPercent[i]),":",
+                                logPercent[i],
+                               "%\n \n")
 
-
-                for(i in 1:ncol(object@stoppingReport)){
-                  cat(names(logPercent[i]),":",
-                      logPercent[i],
-                      "%\n \n")
-
+                  }
                 }
 
-              } else{
-
-                cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
-              }
-              }
-
-              #browser()
-              #cat(colnames(object@stoppingReport), ": ", apply(object@stoppingReport,2,mean)*100, "% \n\n")
 
 
               cat("Target toxicity interval was",
