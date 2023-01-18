@@ -227,6 +227,8 @@ reference:
       - update-DataDA
       - getEff
       - getEff-DataDual
+      - ngrid
+      - ngrid-Data
       - saveSample
       - saveSample-McmcOptions
       - size
