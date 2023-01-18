@@ -1852,7 +1852,6 @@ setMethod("stopTrial",
                 stopping@nCohorts,
                 "cohorts reached")
 
-      #} else if(stopping@reportLabel == character(0)) {
 
       } else {
         report_label = stopping@report_label

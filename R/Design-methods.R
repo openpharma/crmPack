@@ -354,14 +354,14 @@ setMethod("simulate",
 
 
 
-
+                   # browser()
                     # unpack stopping rule labels and individual logicals
                       stopit_unpacked <- list()
 
                       unpack_stopit <- function(stopit_tree) {
                           if(is.list(stopit_tree)){
                               lapply(stopit_tree,unpack_stopit)
-                          } else { #no list
+                          } else {
                               label <- attr(stopit_tree,"report_label")
                               value <- stopit_tree[1]
                               names(value) <- label
@@ -889,6 +889,8 @@ setMethod("simulate",
                                           model=object@model,
                                           data=thisData)
                   }
+
+
 
                   ## get the fit
                   thisFit <- fit(object=thisSamples,
