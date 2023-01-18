@@ -6,16 +6,16 @@
 \alias{ngrid-Data}
 \title{Number of Doses in Grid}
 \usage{
-ngrid(object, ...)
+ngrid(object, ignore_placebo = TRUE, ...)
 
-\S4method{ngrid}{Data}(object, ignore_placebo = TRUE)
+\S4method{ngrid}{Data}(object, ignore_placebo = TRUE, ...)
 }
 \arguments{
 \item{object}{(\code{Data})\cr object with dose grid.}
 
-\item{...}{further arguments passed to class-specific methods.}
-
 \item{ignore_placebo}{(\code{flag})\cr should placebo dose (if any) not be counted?}
+
+\item{...}{further arguments passed to class-specific methods.}
 }
 \value{
 \code{integer} the number of doses in grid.

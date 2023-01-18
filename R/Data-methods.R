@@ -573,13 +573,15 @@ setMethod(
 #' the placebo dose (if any) should be counted or not.
 #'
 #' @param object (`Data`)\cr object with dose grid.
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
 #' @param ... further arguments passed to class-specific methods.
 #' @return `integer` the number of doses in grid.
 #' @export
 #'
 setGeneric(
   name = "ngrid",
-  def = function(object, ...) {
+  def = function(object, ignore_placebo = TRUE, ...) {
+    assert_flag(ignore_placebo)
     standardGeneric("ngrid")
   },
   valueClass = "integer"
@@ -589,17 +591,13 @@ setGeneric(
 
 #' @rdname ngrid
 #'
-#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
-#'
 #' @aliases ngrid-Data
 #' @example examples/Data-method-ngrid.R
 #'
 setMethod(
   f = "ngrid",
   signature = signature(object = "Data"),
-  definition = function(object, ignore_placebo = TRUE) {
-    assert_flag(ignore_placebo)
-
+  definition = function(object, ignore_placebo, ...) {
     if (ignore_placebo && object@placebo) {
       max(object@nGrid - 1L, 0L)
     } else {
