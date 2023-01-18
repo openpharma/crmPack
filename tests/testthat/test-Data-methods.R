@@ -372,3 +372,45 @@ test_that("getEff-DataDual works as expected (DLT only), no_dlt", {
 
   expect_identical(result, expected)
 })
+
+# ngrid-Data ----
+
+test_that("ngrid-Data works as expected with placebo in grid", {
+  data <- h_get_data()
+  expect_identical(ngrid(data), 12L)
+  expect_identical(ngrid(data, ignore_placebo = FALSE), 13L)
+
+  data_1 <- Data(doseGrid = c(0.001, 25), placebo = TRUE)
+  expect_identical(ngrid(data_1), 1L)
+  expect_identical(ngrid(data_1, ignore_placebo = FALSE), 2L)
+
+  data_empty <- Data(doseGrid = 0.001, placebo = TRUE)
+  expect_identical(ngrid(data_empty), 0L)
+  expect_identical(ngrid(data_empty, ignore_placebo = FALSE), 1L)
+})
+
+test_that("ngrid-Data works as expected without placebo in grid", {
+  data <- h_get_data(placebo = FALSE)
+  expect_identical(ngrid(data), 12L)
+  expect_identical(ngrid(data, ignore_placebo = FALSE), 12L)
+
+  data_1 <- Data(doseGrid = 25, placebo = FALSE)
+  expect_identical(ngrid(data_1), 1L)
+  expect_identical(ngrid(data_1, ignore_placebo = FALSE), 1L)
+
+  data_empty <- Data(placebo = FALSE)
+  expect_identical(ngrid(data_empty), 0L)
+  expect_identical(ngrid(data_empty, ignore_placebo = FALSE), 0L)
+})
+
+test_that("ngrid-Data throws the error for non valid ignore_placebo", {
+  data <- h_get_data()
+  expect_error(
+    ngrid(data, ignore_placebo = c(TRUE, TRUE)),
+    "Assertion on 'ignore_placebo' failed: Must have length 1."
+  )
+  expect_error(
+    ngrid(data, ignore_placebo = 1),
+    "Assertion on 'ignore_placebo' failed: Must be of type 'logical flag', not 'double'."
+  )
+})
