@@ -682,27 +682,24 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`NextBestProbMTDLTE`] is the class for finding the next best MTD
-#' estimate with highest probability to be the MTD. The dose which has the
-#' highest probability to be the MTD among the specified doses is used as
-#' next best dose. The posterior is calculated for each iteration and the
-#' maximum dose that is not toxic (below target) is determined.
-#' The allocation criteria is calculated as the frequency of a dose being
-#' selected as MTD. The dose with the highest allocation value is selected as
-#' next best dose.
-#' Note: this concept is also used in the R package trialr/R/crm_fit.R
+#' [`NextBestProbMTDLTE`] is the class of finding a next best dose that selects
+#' the dose with the highest probability of having a toxicity rate less or equal
+#' to the toxicity target.
+#' The dose is determined by calculating the posterior toxicity probability
+#' for each dose per iteration and select the maximum dose that has a toxicity
+#' probability below or equal to the target. The dose with the highest frequency
+#' of being selected as MTD across iterations is the next best dose. Placebo
+#' is not considered in the calculation and removed from the dose grid for
+#' any calculations.
 #'
 #' @slot target (`numeric`)\cr the target toxicity probability
-#' @slot method (`string`)\cr the method used to handle the remaining
-#'   allocation probability that is not allocated to the specified doses, i.e.
-#'   no dose has a posterior prob that is below the target probability.
-#'   Also applicable to cases where placebo is used.
-#'   Possible values are "min" or "max".
-##### first instead of min?????
-#'   min = remaining allocation is added to first dose
-##### last instead of max?????
-##### this needs some more explanation, why this could be useful.
-#'   max = remaining allocation is added to last dose.
+#' @slot method (`string`)\cr the method to handle the cases where no dose
+#'   has a posterior toxicity probability below or equal to target. Possible
+#'   methods are `min` or `max`.
+#'   If `min` is specified, the cases where no dose
+#'   has a posterior toxicity probability below or equal to target are added
+#'   to the minimum dose and if max `max` is specified to the maximum dose.
+#'   Default is method is `min`.
 #'
 #' @aliases NextBestProbMTDLTE
 #' @export
@@ -746,15 +743,15 @@ NextBestProbMTDLTE <- function(target,
 #'
 #' @description `r lifecycle::badge("experimental")`
 #'
-#' [`NextBestProbMTDMinDist`] is the class for finding the next best MTD
-#' estimate with highest probability to be the MTD. The dose which has the
-#' highest probability to be the MTD among the specified doses is used as
-#' next best dose. The posterior is calculated for each iteration and the
-#' dose with the minimum distance to target is determined.
-#' The allocation criteria is calculated as the frequency of a dose being
-#' selected as MTD. The dose with the highest allocation value is selected as
-#' next best dose.
-#' Note: this concept is also used in the R package trialr/R/crm_fit.R
+#' [`NextBestProbMTDMinDist`] is the class of finding a next best dose that selects
+#' the dose with the highest probability of having a toxicity rate with the
+#' smallest distance to the toxicity target.
+#' The dose is determined by calculating the posterior toxicity probability
+#' for each dose per iteration and select the dose that has the smallest toxicity
+#' probability distance to the target. The dose with the highest frequency
+#' of being selected as MTD across iterations is the next best dose. Placebo
+#' is not considered in the calculation and removed from the dose grid for
+#' any calculations.
 #'
 #' @slot target (`numeric`)\cr the target toxicity probability
 #'

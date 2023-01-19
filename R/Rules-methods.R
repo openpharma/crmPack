@@ -1003,8 +1003,9 @@ setMethod(
 
 ## NextBestProbMTDLTE ----
 
-#' @describeIn nextBest find the next best dose based on DLT and efficacy
-#'   responses with DLT and efficacy samples.
+#' @describeIn nextBest find the next best dose based with the highest
+#'  probability of having a toxicity rate less or equal to the target toxicity
+#'  level.
 #'
 #' @aliases nextBest-NextBestProbMTDLTE
 #'
@@ -1025,10 +1026,11 @@ setMethod(
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
-    # Determine which dose level is just below or equal to the target
-    # and calculate the relative frequency how often a dose is selected as MTD.
-    # The first element of the vector contains the relative frequency that none
-    # of the doses has an estimated toxicity below the MTD, the
+    # Determine the maximum dose level with a toxicity probability below or
+    # equal to the target and calculate how often a dose is selected as MTD
+    # across iterations.
+    # The first element of the vector is the relative frequency that no
+    # dose in the grid is below or equal to the target, the
     # second element that the 1st dose is the MTD, etc.
     prob_mtd_lte <- table(factor(apply(prob_samples <= nextBest@target, 1, sum),
                                   levels = 0:data@nGrid)) / size(samples)
@@ -1039,7 +1041,7 @@ setMethod(
     # If method = max: last dose = sum of no dose is below target and maximum
     #   dose is below target
     allocation_crit <- as.vector(prob_mtd_lte)
-    names(allocation_crit) <- names(prob_mtd_lte)
+    names(allocation_crit) <- as.character(c(0, data@doseGrid))
 
     # In case that placebo is used, the placebo frequency is added to the
     # first element of the vector and removed before further processing
@@ -1077,16 +1079,15 @@ setMethod(
       colour = "grey50"
     ) +
       geom_col(aes(x, y)) +
-      scale_x_discrete() +
+      scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
       geom_text(
         mapping = aes(
-          x = x,
-          y = y,
-          label = paste(round(y, 1), "%")
+          x = Inf,
+          y = Inf
         ),
-        size = 3,
-        hjust = 1.5,
-        vjust = -0.5
+        label = paste("Method:", nextBest@method),
+        hjust = 1,
+        vjust = 1
       ) +
       geom_vline(
         xintercept = as.factor(dose_target),
@@ -1124,6 +1125,7 @@ setMethod(
           angle = 90
         )
     }
+
     p <- p +
       geom_vline(
         xintercept = as.factor(next_dose),
@@ -1140,13 +1142,13 @@ setMethod(
       )
 
     list(value = next_dose, allocation = allocation_crit, plot = p)
-
   })
 
 ## NextBestProbMTDMinDist ----
 
-#' @describeIn nextBest find the next best dose based on DLT and efficacy
-#'   responses with DLT and efficacy samples.
+#' @describeIn nextBest find the next best dose based with the highest
+#'  probability of having a toxicity rate with minimum distance to the
+#'  target toxicity level.
 #'
 #' @aliases nextBest-NextBestProbMTDMinDist
 #'
@@ -1203,17 +1205,7 @@ setMethod(
       colour = "grey50"
     ) +
       geom_col(aes(x, y)) +
-      scale_x_discrete() +
-      geom_text(
-        mapping = aes(
-          x = x,
-          y = y,
-          label = paste(round(y, 1), "%")
-        ),
-        size = 3,
-        hjust = 1.5,
-        vjust = -0.5
-      ) +
+      scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
       geom_vline(
         xintercept = as.factor(dose_target),
         linetype = "dotted",
@@ -1266,7 +1258,6 @@ setMethod(
       )
 
     list(value = next_dose, allocation = allocation_crit, plot = p)
-
   })
 
 # nolint start
