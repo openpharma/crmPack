@@ -226,7 +226,6 @@ reference:
       - expect_probabilities
       - expect_probability
       - expect_probability_range
-      - expect_length
       - expect_range
   - title: Methods
     contents:
@@ -239,6 +238,8 @@ reference:
       - update-DataDA
       - getEff
       - getEff-DataDual
+      - ngrid
+      - ngrid-Data
       - saveSample
       - saveSample-McmcOptions
       - size
