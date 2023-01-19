@@ -19,7 +19,7 @@ efficacy(dose, model, samples, ...)
 \S4method{efficacy}{numeric,EffFlexi,Samples}(dose, model, samples)
 }
 \arguments{
-\item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
+\item{dose}{(\code{numeric})\cr the dose which is targeted.
 The following recycling rule applies when \code{samples} is not missing: vectors
 of size 1 will be recycled to the size of the sample
 (i.e. \code{size(samples)}). Otherwise, \code{dose} must have the same
@@ -67,8 +67,9 @@ based on the \code{\link{Effloglog}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
 \item \code{efficacy(dose = numeric, model = EffFlexi, samples = Samples)}: compute the expected efficacy at a specified dose level,
-based on the samples of \code{\link{EffFlexi}} model parameters. For this method,
-the \code{dose} argument must be a scalar.
+based on the samples of \code{\link{EffFlexi}} model parameters. If a given dose in
+the \code{dose} vector is from outside of the dose grid range, the \code{NA_real} is
+returned for this dose and the warning is thrown.
 
 }}
 \examples{
