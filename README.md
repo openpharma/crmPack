@@ -53,5 +53,5 @@ trial design, implementation, simulation and analysis:
     crmPack](main/articles/migration_from_the_old_crmPack.html)
 
 -   Sabanes Bove et al (2019) [Model-based Dose Escalation Designs in R
-    with crmPack](crmPack-jss-paper.html). JSS 89:10 [DOI
+    with crmPack](main/articles/crmPack-jss-paper.html). JSS 89:10 [DOI
     10.18637/jss.v089.i10](https://www.jstatsoft.org/article/view/v089i10)

@@ -1638,38 +1638,86 @@ test_that("efficacy-EffFlexi works as expected for row samples", {
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi(1)
 
-  result <- efficacy(dose = 75, model = model, samples = samples)
-  expect_equal(result, 0.47)
+  result <- efficacy(dose = c(75, 200), model = model, samples = samples)
+  expect_equal(result, c(0.47, -0.27))
+})
+
+test_that("efficacy-EffFlexi works as expected for row samples (match tolerance)", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi(1)
+
+  result <- efficacy(dose = c(75.0000000003, 200), model = model, samples = samples)
+  expect_equal(result, c(0.47, -0.27))
 })
 
 test_that("efficacy-EffFlexi works as expected for row samples (dose interpolation)", {
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi(1)
 
-  result <- efficacy(dose = 110, model = model, samples = samples)
-  expect_equal(result, 1.274)
+  result <- efficacy(dose = c(75, 110), model = model, samples = samples)
+  expect_equal(result, c(0.470, 1.274))
 })
 
-test_that("efficacy-EffFlexi throws the error when dose is out of dose grid range", {
+test_that("efficacy-EffFlexi works as expected for vectors", {
   model <- h_get_eff_flexi()
   samples <- h_samples_eff_flexi()
 
-  expect_error(
-    efficacy(dose = 20, model = model, samples = samples),
-    "Assertion on .*dose.* failed: Must be TRUE."
-  )
-  expect_error(
-    efficacy(dose = 310, model = model, samples = samples),
-    "Assertion on .*dose.* failed: Must be TRUE."
-  )
+  result <- efficacy(dose = c(25, 75, 200, 300), model = model, samples = samples)
+  expect_equal(result, c(0.76, 0.48, -0.40, 2.51))
 })
 
-test_that("efficacy-EffFlexi throws the error when dose is not of length 1", {
+test_that("efficacy-EffFlexi works as expected for vectors (match tolerance)", {
   model <- h_get_eff_flexi()
-  samples <- h_samples_eff_flexi(2)
+  samples <- h_samples_eff_flexi()
+
+  result <- efficacy(dose = c(25, 75, 200.0000000004, 300), model = model, samples = samples)
+  expect_equal(result, c(0.76, 0.48, -0.40, 2.51))
+})
+
+test_that("efficacy-EffFlexi works as expected for vectors (dose interpolation)", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
+
+  result <- efficacy(dose = c(50, 140, 275, 210), model = model, samples = samples)
+  expect_equal(result, c(0.510, 1.766, 3.750, 7.028))
+})
+
+test_that("efficacy-EffFlexi throws warning and returns NA when dose is out of dose grid range", {
+  model <- h_get_eff_flexi()
+  samples1 <- h_samples_eff_flexi(1)
+  samples <- h_samples_eff_flexi()
+
+  expect_warning(
+    result_3 <- efficacy(dose = c(20, 15, 90), model = model, samples = samples1),
+    "At least one dose out of 20, 15, 90 is outside of the dose grid range"
+  )
+  expect_identical(result_3, c(NA_real_, NA_real_, 0.746))
+
+  expect_warning(
+    result_1a <- efficacy(dose = 20, model = model, samples = samples),
+    "At least one dose out of 20 is outside of the dose grid range"
+  )
+  expect_identical(result_1a, c(NA_real_, NA_real_, NA_real_, NA_real_))
+
+  expect_warning(
+    result_1b <- efficacy(dose = 310, model = model, samples = samples),
+    "At least one dose out of 310 is outside of the dose grid range"
+  )
+  expect_identical(result_1b, c(NA_real_, NA_real_, NA_real_, NA_real_))
+
+  expect_warning(
+    result_4d <- efficacy(dose = c(50, 20, 125, 400), model = model, samples = samples),
+    "At least one dose out of 50, 20, 125, 400 is outside of the dose grid range"
+  )
+  expect_identical(result_4d, c(0.51, NA_real_, 0.96, NA_real_))
+})
+
+test_that("efficacy-EffFlexi throws the error when dose and samples lengths differ", {
+  model <- h_get_eff_flexi()
+  samples <- h_samples_eff_flexi()
   expect_error(
     efficacy(c(0.4, 0.6, 0.5), model, samples),
-    "Assertion on 'dose' failed: Must have length 1."
+    "Assertion on 'dose' failed: x is of length 3 which is not allowed; the allowed lengths are: 1 or 4."
   )
 })
 

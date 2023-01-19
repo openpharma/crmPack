@@ -1,4 +1,7 @@
-# Version 1.0.9000.9127
+# Version 1.0.9000.9131
+* Added new function `ngrid` that returns the number of doses in the dose grid.
+* Modified `efficacy-EffFlexi` method: allowed for vectorized dose; `NA` is now
+  returned for doses from outside of the dose grid range (and the warning is thrown).
 * Added new custom `checkmate` function `check_range`.
 * Added method `names` for objects of class `Samples`.
 * Added method `size` for objects of class `Samples`.

@@ -4,7 +4,6 @@
 \alias{check_length}
 \alias{assert_length}
 \alias{test_length}
-\alias{expect_length}
 \title{Check if vectors are of compatible lengths}
 \usage{
 check_length(x, len)
@@ -12,8 +11,6 @@ check_length(x, len)
 assert_length(x, len, .var.name = checkmate::vname(x), add = NULL)
 
 test_length(x, len)
-
-expect_length(x, len, info = NULL, label = vname(x))
 }
 \arguments{
 \item{x}{(\code{any})\cr the first vector, any object for which \code{\link[=length]{length()}}
@@ -27,14 +24,6 @@ the heuristic implemented in \code{\link[checkmate]{vname}}.}
 
 \item{add}{[\code{AssertCollection}]\cr
 Collection to store assertion messages. See \code{\link[checkmate]{AssertCollection}}.}
-
-\item{info}{[character(1)]\cr
-Extra information to be included in the message for the testthat reporter.
-See \code{\link[testthat]{expect_that}}.}
-
-\item{label}{[\code{character(1)}]\cr
-Name of the checked object to print in messages. Defaults to
-the heuristic implemented in \code{\link[checkmate]{vname}}.}
 }
 \value{
 \code{TRUE} if successful, otherwise a string with the error message.
