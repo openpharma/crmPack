@@ -6,7 +6,7 @@ my_data <- Data(
   y = c(0, 0, 0, 0, 0, 0, 1, 1, 0),
   ID = 1:9,
   cohort = c(1, 1, 1, 2, 2, 2, 3, 3, 3),
-  doseGrid = c(1.5, 2.5, 3.5, 4.5, 6, 7 )
+  doseGrid = c(1.5, 2.5, 3.5, 4.5, 6, 7)
 )
 
 # Initialize the CRM model used to model the data.
@@ -41,4 +41,3 @@ dose_recommendation <- nextBest(
   model = my_model,
   data = my_data
 )
-
