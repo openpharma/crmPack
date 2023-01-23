@@ -1047,7 +1047,8 @@ setMethod(
     # first element of the vector and removed before further processing
     if (data@placebo) {
       allocation_crit[1] <- sum(allocation_crit[1:2])
-      allocation_crit <- allocation_crit[-2]}
+      allocation_crit <- allocation_crit[-2]
+    }
 
     if (nextBest@method == "min") {
       allocation_crit[2] <- sum(allocation_crit[1:2])
@@ -1181,7 +1182,8 @@ setMethod(
     # first element of the vector and removed before further processing
     if (data@placebo) {
       allocation_crit[1] <- sum(allocation_crit[1:2])
-      allocation_crit <- allocation_crit[-2]}
+      allocation_crit <- allocation_crit[-2]
+    }
 
     # Determine the dose with the highest relative frequency
     dose_target <- data@doseGrid[which.max(allocation_crit)]

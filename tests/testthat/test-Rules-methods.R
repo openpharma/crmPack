@@ -739,7 +739,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot", {
   )
   nb_prob_mtd <- NextBestProbMTDLTE(
     target = 0.3,
-    method = 'min'
+    method = "min"
   )
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
@@ -755,7 +755,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
   )
   nb_prob_mtd <- NextBestProbMTDLTE(
     target = 0.3,
-    method = 'min'
+    method = "min"
   )
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)

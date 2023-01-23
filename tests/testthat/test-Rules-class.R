@@ -200,11 +200,11 @@ test_that(".NextBestProbMTDLTE works as expected", {
 
 test_that("NextBestProbMTDLTE object can be created with user constructor", {
   result <- expect_silent(
-    NextBestProbMTDLTE(0.4, 'min')
+    NextBestProbMTDLTE(0.4, "min")
   )
   expect_valid(result, "NextBestProbMTDLTE")
   expect_identical(result@target, 0.4)
-  expect_identical(result@method, 'min')
+  expect_identical(result@method, "min")
 })
 
 ## NextBestProbMTDMinDist ----

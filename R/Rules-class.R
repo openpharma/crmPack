@@ -728,7 +728,7 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #' @example examples/Rules-class-NextBestProbMTDLTE.R
 #'
 NextBestProbMTDLTE <- function(target,
-                               method = 'min') {
+                               method = "min") {
   .NextBestProbMTDLTE(
     target = target,
     method = method

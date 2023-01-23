@@ -500,14 +500,14 @@ test_that("v_next_best_prob_mtd_lte returns message for non-valid method", {
   object <- NextBestProbMTDLTE(0.3)
 
   # Changing `method` so that it has many arguments.
-  object@method <- c('min', 'max')
+  object@method <- c("min", "max")
   expect_equal(
     v_next_best_prob_mtd_lte(object),
     "method must be a string equal either to min or max"
   )
 
   # Changing `method` to an invalid method.
-  object@method <- 'xyz'
+  object@method <- "xyz"
   expect_equal(
     v_next_best_prob_mtd_lte(object),
     "method must be a string equal either to min or max"
