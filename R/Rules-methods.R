@@ -1067,8 +1067,8 @@ setMethod(
       doselimit,
       data@placebo
     )
-    next_dose_level <- which.min(abs(doses_eligible - dose_target))
-    next_dose <- doses_eligible[next_dose_level]
+    next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
     p <- ggplot(
@@ -1194,8 +1194,8 @@ setMethod(
       doselimit,
       data@placebo
     )
-    next_dose_level <- which.min(abs(doses_eligible - dose_target))
-    next_dose <- doses_eligible[next_dose_level]
+    next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
     p <- ggplot(
