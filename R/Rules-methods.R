@@ -555,11 +555,34 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
+
+    # Matrix with samples from the dose-tox curve at the dose grid points.
+    prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
+    dlt_prob <- colMeans(prob_samples)
+
+    # Round to the next possible grid point.
+    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
+
+    dose_target <- which.min(abs(dlt_prob[doses_eligible] - nextBest@target))
+
+
+
+    next_dose_level <- which.min(abs(doses_eligible - dose_target))
+    # next_dose <- doses_eligible[next_dose_level]
+    #
     modelfit <- fit(samples, model, data)
+
     doses <- modelfit$dose
+
+    mean(doses)
+    mean(dose_target_samples)
+
     is_dose_eligible <- doses <= doselimit
+
     doses_eligible <- doses[is_dose_eligible]
+
     dlt_prob <- modelfit$middle[is_dose_eligible]
+
     next_dose_level <- which.min(abs(dlt_prob - nextBest@target))
     next_dose <- doses_eligible[next_dose_level]
 
