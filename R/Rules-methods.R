@@ -560,33 +560,70 @@ setMethod(
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     dlt_prob <- colMeans(prob_samples)
 
-    # Round to the next possible grid point.
-    doses_eligible <- h_next_best_eligible_doses(data@doseGrid, doselimit, data@placebo, levels = TRUE)
+    # Determine the dose with the closest distance
+    dose_target <- data@doseGrid[which.min(abs(dlt_prob - nextBest@target))]
 
-    dose_target <- which.min(abs(dlt_prob[doses_eligible] - nextBest@target))
+    # Determine next dose
+    doses_eligible <- h_next_best_eligible_doses(
+      data@doseGrid,
+      doselimit,
+      data@placebo
+    )
+    next_dose_level_eligible <- which.min(abs(doses_eligible - dose_target))
+    next_dose <- doses_eligible[next_dose_level_eligible]
+
+    # Create a plot.
+    p <- ggplot(
+      data = data.frame(x = data@doseGrid, y = dlt_prob),
+      aes(.data$x, .data$y),
+      fill = "grey50",
+      colour = "grey50"
+    ) +
+      geom_line() +
+      geom_point() +
+      coord_cartesian(xlim = range(data@doseGrid)) +
+      geom_vline(xintercept = dose_target, colour = "black", lwd = 1.1) +
+      geom_text(
+        data = data.frame(x = dose_target),
+        aes(.data$x, 0),
+        label = "Est",
+        vjust = -0.5,
+        hjust = 0.5,
+        colour = "black",
+        angle = 90
+      ) +
+      xlab("Dose") +
+      ylab("Posterior toxicity probability") +
+      geom_hline(yintercept = nextBest@target, linetype = "dotted")
+
+    if (is.finite(doselimit)) {
+      p <- p +
+        geom_vline(xintercept = doselimit, colour = "red", lwd = 1.1) +
+        geom_text(
+          data = data.frame(x = doselimit),
+          aes(.data$x, 0),
+          label = "Max",
+          vjust = -0.5,
+          hjust = -0.5,
+          colour = "red",
+          angle = 90
+        )
+    }
+
+    p <- p +
+      geom_vline(xintercept = next_dose, colour = "blue", lwd = 1.1) +
+      geom_text(
+        data = data.frame(x = next_dose),
+        aes(.data$x, 0),
+        label = "Next",
+        vjust = -0.5,
+        hjust = -1.5,
+        colour = "blue",
+        angle = 90
+      )
 
 
-
-    next_dose_level <- which.min(abs(doses_eligible - dose_target))
-    # next_dose <- doses_eligible[next_dose_level]
-    #
-    modelfit <- fit(samples, model, data)
-
-    doses <- modelfit$dose
-
-    mean(doses)
-    mean(dose_target_samples)
-
-    is_dose_eligible <- doses <= doselimit
-
-    doses_eligible <- doses[is_dose_eligible]
-
-    dlt_prob <- modelfit$middle[is_dose_eligible]
-
-    next_dose_level <- which.min(abs(dlt_prob - nextBest@target))
-    next_dose <- doses_eligible[next_dose_level]
-
-    list(value = next_dose)
+    list(value = next_dose, dlt_prop = dlt_prob, plot = p)
   }
 )
 
