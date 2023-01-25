@@ -1059,7 +1059,8 @@ setMethod(
     allocation_crit <- allocation_crit[-1]
 
     # Determine the dose with the highest relative frequency
-    dose_target <- data@doseGrid[which.max(allocation_crit)]
+    allocation_crit_dose <- as.numeric(names(allocation_crit))
+    dose_target <- allocation_crit_dose[which.max(allocation_crit)]
 
     # Determine next dose
     doses_eligible <- h_next_best_eligible_doses(
@@ -1073,13 +1074,13 @@ setMethod(
     # Create a plot.
     p <- ggplot(
       data = data.frame(
-        x = as.factor(data@doseGrid),
+        x = as.factor(allocation_crit_dose),
         y = as.numeric(allocation_crit) * 100
       ),
       fill = "grey50",
       colour = "grey50"
     ) +
-      geom_col(aes(x, y)) +
+      geom_col(aes(x, y), fill = "grey75") +
       scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
       geom_text(
         mapping = aes(
@@ -1092,17 +1093,16 @@ setMethod(
       ) +
       geom_vline(
         xintercept = as.factor(dose_target),
-        linetype = "dotted",
-        size = 1,
-        colour = "green"
+        lwd = 1.1,
+        colour = "black"
       ) +
       geom_text(
         data = data.frame(x = as.factor(dose_target)),
         aes(.data$x, 0),
-        label = "Best",
+        label = "Est",
         vjust = -0.5,
         hjust = -0.5,
-        colour = "green",
+        colour = "black",
         angle = 90
       ) +
       xlab("Dose") +
@@ -1113,7 +1113,6 @@ setMethod(
       p <- p +
         geom_vline(
           xintercept = as.factor(doselimit),
-          linetype = "dotdash",
           colour = "red", lwd = 1.1
         ) +
         geom_text(
@@ -1121,7 +1120,7 @@ setMethod(
           aes(.data$x, 0),
           label = "Max",
           vjust = -0.5,
-          hjust = -2,
+          hjust = -1.5,
           colour = "red",
           angle = 90
         )
@@ -1130,14 +1129,14 @@ setMethod(
     p <- p +
       geom_vline(
         xintercept = as.factor(next_dose),
-        colour = "blue", lwd = 0.6
+        colour = "blue", lwd = 1.1
       ) +
       geom_text(
         data = data.frame(x = as.factor(next_dose)),
         aes(.data$x, 0),
         label = "Next",
         vjust = -0.5,
-        hjust = -3,
+        hjust = -2.5,
         colour = "blue",
         angle = 90
       )
@@ -1179,14 +1178,15 @@ setMethod(
     names(allocation_crit) <- as.character(data@doseGrid)
 
     # In case that placebo is used, the placebo frequency is added to the
-    # first element of the vector and removed before further processing
+    # first active dose of the grid and removed before further processing
     if (data@placebo) {
       allocation_crit[1] <- sum(allocation_crit[1:2])
-      allocation_crit <- allocation_crit[-2]
+      allocation_crit <- allocation_crit[-1]
     }
 
     # Determine the dose with the highest relative frequency
-    dose_target <- data@doseGrid[which.max(allocation_crit)]
+    allocation_crit_dose <- as.numeric(names(allocation_crit))
+    dose_target <- allocation_crit_dose[which.max(allocation_crit)]
 
     # Determine next dose
     doses_eligible <- h_next_best_eligible_doses(
@@ -1200,27 +1200,26 @@ setMethod(
     # Create a plot.
     p <- ggplot(
       data = data.frame(
-        x = as.factor(data@doseGrid),
+        x = as.factor(allocation_crit_dose),
         y = as.numeric(allocation_crit) * 100
       ),
       fill = "grey50",
       colour = "grey50"
     ) +
-      geom_col(aes(x, y)) +
+      geom_col(aes(x, y), fill = "grey75") +
       scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
       geom_vline(
         xintercept = as.factor(dose_target),
-        linetype = "dotted",
-        size = 1,
-        colour = "green"
+        lwd = 1.1,
+        colour = "black"
       ) +
       geom_text(
         data = data.frame(x = as.factor(dose_target)),
         aes(.data$x, 0),
-        label = "Best",
+        label = "Est",
         vjust = -0.5,
         hjust = -0.5,
-        colour = "green",
+        colour = "black",
         angle = 90
       ) +
       xlab("Dose") +
@@ -1231,7 +1230,6 @@ setMethod(
       p <- p +
         geom_vline(
           xintercept = as.factor(doselimit),
-          linetype = "dotdash",
           colour = "red", lwd = 1.1
         ) +
         geom_text(
@@ -1239,22 +1237,23 @@ setMethod(
           aes(.data$x, 0),
           label = "Max",
           vjust = -0.5,
-          hjust = -2,
+          hjust = -1.5,
           colour = "red",
           angle = 90
         )
     }
+
     p <- p +
       geom_vline(
         xintercept = as.factor(next_dose),
-        colour = "blue", lwd = 0.6
+        colour = "blue", lwd = 1.1
       ) +
       geom_text(
         data = data.frame(x = as.factor(next_dose)),
         aes(.data$x, 0),
         label = "Next",
         vjust = -0.5,
-        hjust = -3,
+        hjust = -2.5,
         colour = "blue",
         angle = 90
       )
