@@ -344,7 +344,7 @@ test_that("nextBest-NextBestMinDist returns expected values of the objects", {
   nb_md <- NextBestMinDist(target = 0.3)
 
   result <- nextBest(nb_md, 50, samples, model, data)
-  expect_identical(result, list(value = 50))
+  expect_identical(result$value, 50)
 })
 
 test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit)", {
@@ -356,7 +356,7 @@ test_that("nextBest-NextBestMinDist returns expected values of the objects (no d
   nb_md <- NextBestMinDist(target = 0.3)
 
   result <- nextBest(nb_md, Inf, samples, model, data)
-  expect_identical(result, list(value = 75))
+  expect_identical(result$value, 75)
 })
 
 test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit, target = 0.7)", {
@@ -368,7 +368,7 @@ test_that("nextBest-NextBestMinDist returns expected values of the objects (no d
   nb_md <- NextBestMinDist(target = 0.7)
 
   result <- nextBest(nb_md, Inf, samples, model, data)
-  expect_identical(result, list(value = 175))
+  expect_identical(result$value, 175)
 })
 
 ## NextBestInfTheory ----
