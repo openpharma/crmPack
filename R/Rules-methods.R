@@ -1072,6 +1072,12 @@ setMethod(
     next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
+    doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
+      which(allocation_crit_dose == doselimit)
+    } else {
+      sum(allocation_crit_dose < doselimit) + 0.5
+    }
+
     p <- ggplot(
       data = data.frame(
         x = as.factor(allocation_crit_dose),
@@ -1081,17 +1087,9 @@ setMethod(
       colour = "grey50"
     ) +
       geom_col(aes(x, y), fill = "grey75") +
-      scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
-      geom_text(
-        mapping = aes(
-          x = Inf,
-          y = Inf
-        ),
-        label = paste("Method:", nextBest@method),
-        hjust = 1,
-        vjust = 1
-      ) +
-      geom_vline(
+      scale_x_discrete(drop = FALSE, guide = guide_axis(check.overlap = TRUE)) +
+       geom_vline(
+        #xintercept = as.factor(dose_target),
         xintercept = as.factor(dose_target),
         lwd = 1.1,
         colour = "black"
@@ -1108,15 +1106,27 @@ setMethod(
       xlab("Dose") +
       ylab(paste("Allocation criterion [%]"))
 
+    if (nextBest@method == "max") {
+      p <- p +
+        geom_text(
+          mapping = aes(
+            x = Inf,
+            y = Inf
+          ),
+          label = paste("Method:", nextBest@method),
+          hjust = 1,
+          vjust = 1
+        )
+    }
 
     if (is.finite(doselimit)) {
       p <- p +
         geom_vline(
-          xintercept = as.factor(doselimit),
+          xintercept = doselimit_factor,
           colour = "red", lwd = 1.1
         ) +
         geom_text(
-          data = data.frame(x = as.factor(doselimit)),
+          data = data.frame(x = doselimit_factor),
           aes(.data$x, 0),
           label = "Max",
           vjust = -0.5,
@@ -1180,7 +1190,7 @@ setMethod(
     # In case that placebo is used, the placebo frequency is added to the
     # first active dose of the grid and removed before further processing
     if (data@placebo) {
-      allocation_crit[1] <- sum(allocation_crit[1:2])
+      allocation_crit[2] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-1]
     }
 
@@ -1198,6 +1208,12 @@ setMethod(
     next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
+    doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
+      which(allocation_crit_dose == doselimit)
+    } else {
+      sum(allocation_crit_dose < doselimit) + 0.5
+    }
+
     p <- ggplot(
       data = data.frame(
         x = as.factor(allocation_crit_dose),
@@ -1229,11 +1245,11 @@ setMethod(
     if (is.finite(doselimit)) {
       p <- p +
         geom_vline(
-          xintercept = as.factor(doselimit),
+          xintercept = doselimit_factor,
           colour = "red", lwd = 1.1
         ) +
         geom_text(
-          data = data.frame(x = as.factor(doselimit)),
+          data = data.frame(x = doselimit_factor),
           aes(.data$x, 0),
           label = "Max",
           vjust = -0.5,

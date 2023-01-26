@@ -747,6 +747,46 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot", {
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE", result$plot)
 })
 
+test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-0.38, -0.13, 1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_prob_mtd <- NextBestProbMTDLTE(
+    target = 0.3,
+    method = "min"
+  )
+
+  result <- nextBest(nb_prob_mtd, 40, samples, model, data)
+  expected <- list(
+    value = 25,
+    allocation = setNames(c(0.75, 0, 0.25, rep(0, 9)), as.character(tail(data@doseGrid, -1)))
+  )
+  expect_identical(result[names(expected)], expected)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
+})
+
+test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo and max option)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-0.38, -0.13, 1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_prob_mtd <- NextBestProbMTDLTE(
+    target = 0.3,
+    method = "max"
+  )
+
+  result <- nextBest(nb_prob_mtd, 101, samples, model, data)
+  expected <- list(
+    value = 25,
+    allocation = setNames(c(0.5, 0, 0.25, rep(0, 8), 0.25), as.character(tail(data@doseGrid, -1)))
+  )
+  expect_identical(result[names(expected)], expected)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo and max option", result$plot)
+})
+
 test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
@@ -778,16 +818,33 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot", 
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist", result$plot)
 })
 
+test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (with placebo)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-0.38, -0.13, 1.43, 2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
+
+  result <- nextBest(nb_prob_mtd, 40, samples, model, data)
+  expected <- list(
+    value = 25,
+    allocation = setNames(c(0.75, 0.25, rep(0, 10)), as.character(tail(data@doseGrid, -1)))
+  )
+  expect_identical(result[names(expected)], expected)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist with placebo", result$plot)
+})
+
 test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
-    list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+    list(alpha0 = c(2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
   )
   nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
-  expect_identical(result$value, 125)
+  expect_identical(result$value, 25)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist without doselimit", result$plot)
 })
 
