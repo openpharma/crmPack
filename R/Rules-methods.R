@@ -1043,8 +1043,7 @@ setMethod(
     allocation_crit <- as.vector(prob_mtd_lte)
     names(allocation_crit) <- as.character(c(0, data@doseGrid))
 
-    # In case that placebo is used, the placebo frequency is added to the
-    # first element of the vector and removed before further processing
+    # In case that placebo is used, placebo and no dose are merged
     if (data@placebo) {
       allocation_crit[1] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-2]
@@ -1072,24 +1071,31 @@ setMethod(
     next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
+    plt_data <- if (data@placebo && data@doseGrid[1] == next_dose) {
+      data.frame(x = as.factor(data@doseGrid),
+                 y = c(0, as.numeric(allocation_crit)) * 100)
+    } else {
+      data.frame(x = as.factor(allocation_crit_dose),
+                 y = as.numeric(allocation_crit) * 100)
+    }
+
     doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
       which(allocation_crit_dose == doselimit)
     } else {
-      sum(allocation_crit_dose < doselimit) + 0.5
+      ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
+        yes = 1.5,
+        no = sum(allocation_crit_dose < doselimit) + 0.5
+      )
     }
 
     p <- ggplot(
-      data = data.frame(
-        x = as.factor(allocation_crit_dose),
-        y = as.numeric(allocation_crit) * 100
-      ),
+      data = plt_data,
       fill = "grey50",
       colour = "grey50"
     ) +
       geom_col(aes(x, y), fill = "grey75") +
       scale_x_discrete(drop = FALSE, guide = guide_axis(check.overlap = TRUE)) +
        geom_vline(
-        #xintercept = as.factor(dose_target),
         xintercept = as.factor(dose_target),
         lwd = 1.1,
         colour = "black"
@@ -1187,8 +1193,7 @@ setMethod(
     allocation_crit <- prob_mtd_min_dist
     names(allocation_crit) <- as.character(data@doseGrid)
 
-    # In case that placebo is used, the placebo frequency is added to the
-    # first active dose of the grid and removed before further processing
+    # In case that placebo is used, placebo and no dose are merged
     if (data@placebo) {
       allocation_crit[2] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-1]
@@ -1208,17 +1213,25 @@ setMethod(
     next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
+    plt_data <- if (data@placebo && data@doseGrid[1] == next_dose) {
+      data.frame(x = as.factor(data@doseGrid),
+                 y = c(0, as.numeric(allocation_crit)) * 100)
+    } else {
+      data.frame(x = as.factor(allocation_crit_dose),
+                 y = as.numeric(allocation_crit) * 100)
+    }
+
     doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
       which(allocation_crit_dose == doselimit)
     } else {
-      sum(allocation_crit_dose < doselimit) + 0.5
+      ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
+             yes = 1.5,
+             no = sum(allocation_crit_dose < doselimit) + 0.5
+      )
     }
 
     p <- ggplot(
-      data = data.frame(
-        x = as.factor(allocation_crit_dose),
-        y = as.numeric(allocation_crit) * 100
-      ),
+      data = plt_data,
       fill = "grey50",
       colour = "grey50"
     ) +
