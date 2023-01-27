@@ -622,7 +622,6 @@ setMethod(
         angle = 90
       )
 
-
     list(value = next_dose, dlt_prop = dlt_prob, plot = p)
   }
 )
