@@ -1157,7 +1157,11 @@ setMethod(
         angle = 90
       )
 
-    list(value = next_dose, allocation = allocation_crit, plot = p)
+    list(
+      value = next_dose,
+      allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
+      plot = p
+    )
   })
 
 ## NextBestProbMTDMinDist ----
@@ -1287,7 +1291,11 @@ setMethod(
         angle = 90
       )
 
-    list(value = next_dose, allocation = allocation_crit, plot = p)
+    list(
+      value = next_dose,
+      allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
+      plot = p
+    )
   })
 
 # nolint start

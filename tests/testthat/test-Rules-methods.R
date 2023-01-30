@@ -744,6 +744,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot", {
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE", result$plot)
 })
 
@@ -759,11 +760,8 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with 
   )
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
-  expected <- list(
-    value = 25,
-    allocation = setNames(c(0.75, 0, 0.25, rep(0, 9)), as.character(tail(data@doseGrid, -1)))
-  )
-  expect_identical(result[names(expected)], expected)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
 })
 
@@ -779,11 +777,8 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with 
   )
 
   result <- nextBest(nb_prob_mtd, 101, samples, model, data)
-  expected <- list(
-    value = 25,
-    allocation = setNames(c(0.5, 0, 0.25, rep(0, 8), 0.25), as.character(tail(data@doseGrid, -1)))
-  )
-  expect_identical(result[names(expected)], expected)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo and max option", result$plot)
 })
 
@@ -800,6 +795,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 125)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE without doselimit", result$plot)
 })
 
@@ -815,6 +811,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot", 
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist", result$plot)
 })
 
@@ -827,11 +824,8 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (w
   nb_prob_mtd <- NextBestProbMTDMinDist(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
-  expected <- list(
-    value = 25,
-    allocation = setNames(c(0.75, 0.25, rep(0, 10)), as.character(tail(data@doseGrid, -1)))
-  )
-  expect_identical(result[names(expected)], expected)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist with placebo", result$plot)
 })
 
@@ -845,6 +839,7 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 25)
+  expect_snapshot(result$allocation)
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDMinDist without doselimit", result$plot)
 })
 
