@@ -335,7 +335,7 @@ test_that("nextBest-NextBestDualEndpoint returns expected elements (absolute tar
 
 ## NextBestMinDist ----
 
-test_that("nextBest-NextBestMinDist returns expected values of the objects", {
+test_that("nextBest-NextBestMinDist returns expected values and plot", {
   data <- h_get_data(placebo = FALSE)
   model <- h_get_logistic_log_normal()
   samples <- h_as_samples(
@@ -345,6 +345,22 @@ test_that("nextBest-NextBestMinDist returns expected values of the objects", {
 
   result <- nextBest(nb_md, 50, samples, model, data)
   expect_identical(result$value, 50)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist", result$plot)
+})
+
+test_that("nextBest-NextBestMinDist returns expected values and plot (with placebo)", {
+  data <- h_get_data(placebo = TRUE)
+  model <- h_get_logistic_log_normal()
+  samples <- h_as_samples(
+    list(alpha0 = c(-0.38, -0.13, 1.43, 2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
+  )
+  nb_prob_mtd <- NextBestMinDist(target = 0.1)
+
+  result <- nextBest(nb_prob_mtd, 40, samples, model, data)
+  expect_identical(result$value, 25)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist with placebo", result$plot)
 })
 
 test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit)", {
@@ -357,18 +373,8 @@ test_that("nextBest-NextBestMinDist returns expected values of the objects (no d
 
   result <- nextBest(nb_md, Inf, samples, model, data)
   expect_identical(result$value, 75)
-})
-
-test_that("nextBest-NextBestMinDist returns expected values of the objects (no doselimit, target = 0.7)", {
-  data <- h_get_data(placebo = FALSE)
-  model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(
-    list(alpha0 = c(-1.8, -3.8, -2.2, -1.6), alpha1 = c(1.7, 3.3, 5.1, 2.2))
-  )
-  nb_md <- NextBestMinDist(target = 0.7)
-
-  result <- nextBest(nb_md, Inf, samples, model, data)
-  expect_identical(result$value, 175)
+  expect_snapshot(result$probs)
+  vdiffr::expect_doppelganger("Plot of nextBest-NextBestMinDist without doselimit", result$plot)
 })
 
 ## NextBestInfTheory ----

@@ -625,7 +625,11 @@ setMethod(
         angle = 90
       )
 
-    list(value = next_dose, dlt_prop = dlt_prob, plot = p)
+    list(
+      value = next_dose,
+      probs = cbind(dose = data@doseGrid, dlt_prob = dlt_prob),
+      plot = p
+    )
   }
 )
 
