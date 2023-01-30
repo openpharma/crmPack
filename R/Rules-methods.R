@@ -582,6 +582,9 @@ setMethod(
       geom_line() +
       geom_point() +
       coord_cartesian(xlim = range(data@doseGrid)) +
+      scale_x_continuous(labels = as.character(data@doseGrid),
+                         breaks = data@doseGrid,
+                         guide = guide_axis(check.overlap = TRUE)) +
       geom_vline(xintercept = dose_target, colour = "black", lwd = 1.1) +
       geom_text(
         data = data.frame(x = dose_target),
