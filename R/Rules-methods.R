@@ -1031,24 +1031,24 @@ setMethod(
     # across iterations.
     # The first element of the vector is the relative frequency that no
     # dose in the grid is below or equal to the target, the
-    # second element that the 1st dose is the MTD, etc.
+    # second element that the 1st dose of the grid is the MTD, etc..
     prob_mtd_lte <- table(factor(apply(prob_samples <= nextBest@target, 1, sum),
                                   levels = 0:data@nGrid)) / size(samples)
 
-    # Handling of first element of the vector according to the selected method.
-    # If method = min: first dose = sum of no dose is below target and minimum
-    #   dose is below target
-    # If method = max: last dose = sum of no dose is below target and maximum
-    #   dose is below target
     allocation_crit <- as.vector(prob_mtd_lte)
     names(allocation_crit) <- as.character(c(0, data@doseGrid))
 
-    # In case that placebo is used, placebo and no dose are merged
+    # In case that placebo is used, placebo and the portion that is not assigned
+    # to any dose of the grid are merged.
     if (data@placebo) {
       allocation_crit[1] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-2]
     }
 
+    # Handling of the portion that is not assigned to an active dose of
+    # the dose grid according to the selected method.
+    # If method = min: portion added to the minimum active dose of the dose grid.
+    # If method = max: portion added to the maximum active dose of the dose grid.
     if (nextBest@method == "min") {
       allocation_crit[2] <- sum(allocation_crit[1:2])
     } else if (nextBest@method == "max") {
@@ -1057,11 +1057,11 @@ setMethod(
     }
     allocation_crit <- allocation_crit[-1]
 
-    # Determine the dose with the highest relative frequency
+    # Determine the dose with the highest relative frequency.
     allocation_crit_dose <- as.numeric(names(allocation_crit))
     dose_target <- allocation_crit_dose[which.max(allocation_crit)]
 
-    # Determine next dose
+    # Determine next dose.
     doses_eligible <- h_next_best_eligible_doses(
       data@doseGrid,
       doselimit,
@@ -1071,7 +1071,7 @@ setMethod(
     next_dose <- doses_eligible[next_dose_level_eligible]
 
     # Create a plot.
-    plt_data <- if (data@placebo && data@doseGrid[1] == next_dose) {
+    plt_data <- if (data@placebo && (data@doseGrid[1] == next_dose)) {
       data.frame(x = as.factor(data@doseGrid),
                  y = c(0, as.numeric(allocation_crit)) * 100)
     } else {
@@ -1082,7 +1082,7 @@ setMethod(
     doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
       which(allocation_crit_dose == doselimit)
     } else {
-      ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
+      ifelse(test = data@placebo && (data@doseGrid[1] == next_dose),
         yes = 1.5,
         no = sum(allocation_crit_dose < doselimit) + 0.5
       )
@@ -1189,7 +1189,7 @@ setMethod(
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
-    # Determine which dose level has the minimum distance to target
+    # Determine which dose level has the minimum distance to target.
     dose_min_mtd_dist <- apply(prob_samples, 1,
                                function(x) which.min(abs(x - nextBest@target)))
     prob_mtd_min_dist <- sapply(1:data@nGrid,
@@ -1197,17 +1197,18 @@ setMethod(
     allocation_crit <- prob_mtd_min_dist
     names(allocation_crit) <- as.character(data@doseGrid)
 
-    # In case that placebo is used, placebo and no dose are merged
+    # In case that placebo is used, placebo and the portion that is not assigned
+    # to any dose of the grid are merged.
     if (data@placebo) {
       allocation_crit[2] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-1]
     }
 
-    # Determine the dose with the highest relative frequency
+    # Determine the dose with the highest relative frequency.
     allocation_crit_dose <- as.numeric(names(allocation_crit))
     dose_target <- allocation_crit_dose[which.max(allocation_crit)]
 
-    # Determine next dose
+    # Determine next dose.
     doses_eligible <- h_next_best_eligible_doses(
       data@doseGrid,
       doselimit,
