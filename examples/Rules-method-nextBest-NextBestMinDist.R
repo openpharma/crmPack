@@ -7,7 +7,7 @@ my_data <- Data(
   ID = 1:10,
   cohort = c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3),
   doseGrid = c(0.01, 1.5, 2.5, 3.5, 4.5, 6, 7),
-  placebo = T
+  placebo = TRUE
 )
 
 # Initialize the CRM model used to model the data.
