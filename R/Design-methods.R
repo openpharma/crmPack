@@ -103,7 +103,7 @@ getResultList <- function(fun,
 
             ## now process all simulations
             cores <- min(safeInteger(parallel),
-                         min(parallel::detectCores(), 5))
+                         parallel::detectCores())
 
             ## start the cluster
             cl <- parallel::makeCluster(cores)
