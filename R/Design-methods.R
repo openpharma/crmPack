@@ -84,7 +84,7 @@ setSeed <- function(seed=NULL)
 ##' to one list element)
 ##'
 ##' @importFrom parallel detectCores makeCluster clusterApply stopCluster
-#' @importFrom parallelly availableCores
+##' @importFrom parallelly availableCores
 ##' @keywords internal programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 getResultList <- function(fun,
