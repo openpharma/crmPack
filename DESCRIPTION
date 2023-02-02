@@ -40,6 +40,7 @@ Imports:
     methods,
     mvtnorm,
     parallel,
+    parallelly,
     rjags,
     survival,
     tibble,
