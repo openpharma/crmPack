@@ -65,7 +65,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Generate the MTD samples and derive the next best dose.
     dose_target_samples <- dose(x = nextBest@target, model, samples)
     dose_target <- nextBest@derive(dose_target_samples)
@@ -149,7 +148,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -291,7 +289,6 @@ setMethod("nextBest",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     # Compute probabilities to be in target and overdose tox interval.
@@ -377,7 +374,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
-
     # The last dose level tested (not necessarily the maximum one).
     last_level <- tail(data@xLevel, 1L)
 
@@ -432,7 +428,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
@@ -555,7 +550,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     dlt_prob <- colMeans(prob_samples)
@@ -654,7 +648,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -783,7 +776,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the nextBest@prob_target_drt
     # (or nextBest@prob_target_eot, respectively).
@@ -1090,7 +1082,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -1101,7 +1092,8 @@ setMethod(
     # dose in the grid is below or equal to the target, the
     # second element that the 1st dose of the grid is the MTD, etc..
     prob_mtd_lte <- table(factor(apply(prob_samples <= nextBest@target, 1, sum),
-                                  levels = 0:data@nGrid)) / size(samples)
+      levels = 0:data@nGrid
+    )) / size(samples)
 
     allocation_crit <- as.vector(prob_mtd_lte)
     names(allocation_crit) <- as.character(c(0, data@doseGrid))
@@ -1140,11 +1132,15 @@ setMethod(
 
     # Create a plot.
     plt_data <- if (data@placebo && (data@doseGrid[1] == next_dose)) {
-      data.frame(x = as.factor(data@doseGrid),
-                 y = c(0, as.numeric(allocation_crit)) * 100)
+      data.frame(
+        x = as.factor(data@doseGrid),
+        y = c(0, as.numeric(allocation_crit)) * 100
+      )
     } else {
-      data.frame(x = as.factor(allocation_crit_dose),
-                 y = as.numeric(allocation_crit) * 100)
+      data.frame(
+        x = as.factor(allocation_crit_dose),
+        y = as.numeric(allocation_crit) * 100
+      )
     }
 
     doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
@@ -1163,7 +1159,7 @@ setMethod(
     ) +
       geom_col(aes(x, y), fill = "grey75") +
       scale_x_discrete(drop = FALSE, guide = guide_axis(check.overlap = TRUE)) +
-       geom_vline(
+      geom_vline(
         xintercept = as.factor(dose_target),
         lwd = 1.1,
         colour = "black"
@@ -1230,7 +1226,8 @@ setMethod(
       allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
       plot = p
     )
-  })
+  }
+)
 
 ## NextBestProbMTDMinDist ----
 
@@ -1253,15 +1250,18 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
     # Determine which dose level has the minimum distance to target.
-    dose_min_mtd_dist <- apply(prob_samples, 1,
-                               function(x) which.min(abs(x - nextBest@target)))
-    prob_mtd_min_dist <- sapply(1:data@nGrid,
-                                function(x) mean(dose_min_mtd_dist == x))
+    dose_min_mtd_dist <- apply(
+      prob_samples, 1,
+      function(x) which.min(abs(x - nextBest@target))
+    )
+    prob_mtd_min_dist <- sapply(
+      1:data@nGrid,
+      function(x) mean(dose_min_mtd_dist == x)
+    )
     allocation_crit <- prob_mtd_min_dist
     names(allocation_crit) <- as.character(data@doseGrid)
 
@@ -1287,19 +1287,23 @@ setMethod(
 
     # Create a plot.
     plt_data <- if (data@placebo && data@doseGrid[1] == next_dose) {
-      data.frame(x = as.factor(data@doseGrid),
-                 y = c(0, as.numeric(allocation_crit)) * 100)
+      data.frame(
+        x = as.factor(data@doseGrid),
+        y = c(0, as.numeric(allocation_crit)) * 100
+      )
     } else {
-      data.frame(x = as.factor(allocation_crit_dose),
-                 y = as.numeric(allocation_crit) * 100)
+      data.frame(
+        x = as.factor(allocation_crit_dose),
+        y = as.numeric(allocation_crit) * 100
+      )
     }
 
     doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
       which(allocation_crit_dose == doselimit)
     } else {
       ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
-             yes = 1.5,
-             no = sum(allocation_crit_dose < doselimit) + 0.5
+        yes = 1.5,
+        no = sum(allocation_crit_dose < doselimit) + 0.5
       )
     }
 
@@ -1365,7 +1369,8 @@ setMethod(
       allocation = cbind(dose = allocation_crit_dose, allocation = allocation_crit),
       plot = p
     )
-  })
+  }
+)
 
 # nolint start
 
@@ -1547,7 +1552,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       ## determine if there are already cohorts
       ## belonging to part 2:
       alreadyInPart2 <- any(data@part == 2L)
@@ -1650,7 +1654,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       # Determine what was the last dose.
       lastDose <- tail(data@x, 1)
 
@@ -1687,7 +1690,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       ## apply the multiple increment rules
       individualResults <-
         sapply(increments@increments_list,
@@ -2495,12 +2497,10 @@ setMethod("stopTrial",
 
       ## if target is relative to maximum
       if (stopping@is_relative) {
-
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
         ## maximum biomarker level achieved in the given dose range.
         if ("Emax" %in% names(samples)) {
-
           ## For each sample, look which dose is maximizing the
           ## simultaneous probability to be in the target biomarker
           ## range and below overdose toxicity
@@ -2513,7 +2513,6 @@ setMethod("stopTrial",
             }
           )
         } else {
-
           ## For each sample, look which was the minimum dose giving
           ## relative target level
           targetIndex <- apply(
@@ -3093,7 +3092,6 @@ setMethod("stopTrial",
       ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
 
       if (TDtargetEndOfTrialEstimate <= Gstar) {
-
         ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
         CI <- CITDEOT
         ratio <- ratioTDEOT
@@ -3327,7 +3325,6 @@ setMethod("windowLength",
     ),
   def =
     function(safetyWindow, size, data, ...) {
-
       ## determine in which interval the next size is
       interval <-
         findInterval(
@@ -3365,7 +3362,6 @@ setMethod("windowLength",
     ),
   def =
     function(safetyWindow, size, ...) {
-
       ## first element should be 0.
       patientGap <- head(c(
         0, safetyWindow@gap,
