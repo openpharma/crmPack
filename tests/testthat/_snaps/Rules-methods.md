@@ -259,7 +259,7 @@
       [12,] 275.000 9.496774e-01
       [13,] 300.000 9.552602e-01
 
-# nextBest-NextBestMinDist returns expected values of the objects (no doselimit)
+# nextBest-NextBestMinDist returns expected values and plot (no doselimit)
 
     Code
       result$probs
@@ -277,4 +277,137 @@
       [10,]  250 0.85237854
       [11,]  275 0.87633603
       [12,]  300 0.89501585
+
+# nextBest-NextBestProbMTDLTE returns correct next dose and plot
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.00
+      50    50       0.25
+      75    75       0.25
+      100  100       0.00
+      125  125       0.50
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.00
+
+# nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo)
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.75
+      50    50       0.00
+      75    75       0.25
+      100  100       0.00
+      125  125       0.00
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.00
+
+# nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo and max option)
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.50
+      50    50       0.00
+      75    75       0.25
+      100  100       0.00
+      125  125       0.00
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.25
+
+# nextBest-NextBestProbMTDLTE returns correct next dose and plot (no doselimit)
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.00
+      50    50       0.25
+      75    75       0.25
+      100  100       0.00
+      125  125       0.50
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.00
+
+# nextBest-NextBestProbMTDMinDist returns correct next dose and plot
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.00
+      50    50       0.00
+      75    75       0.25
+      100  100       0.25
+      125  125       0.50
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.00
+
+# nextBest-NextBestProbMTDMinDist returns correct next dose and plot (with placebo)
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.75
+      50    50       0.25
+      75    75       0.00
+      100  100       0.00
+      125  125       0.00
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.00
+
+# nextBest-NextBestProbMTDMinDist returns correct next dose and plot (no doselimit)
+
+    Code
+      result$allocation
+    Output
+          dose allocation
+      25    25       0.25
+      50    50       0.00
+      75    75       0.25
+      100  100       0.25
+      125  125       0.25
+      150  150       0.00
+      175  175       0.00
+      200  200       0.00
+      225  225       0.00
+      250  250       0.00
+      275  275       0.00
+      300  300       0.00
 

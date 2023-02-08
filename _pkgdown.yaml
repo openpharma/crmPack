@@ -66,6 +66,8 @@ reference:
       - NextBestTDsamples
       - NextBestMaxGain
       - NextBestMaxGainSamples
+      - NextBestProbMTDLTE
+      - NextBestProbMTDMinDist
       - Increments
       - IncrementsRelative
       - IncrementsRelativeParts
@@ -172,6 +174,8 @@ reference:
       - v_next_best_td
       - v_next_best_td_samples
       - v_next_best_max_gain_samples
+      - v_next_best_prob_mtd_lte
+      - v_next_best_prob_mtd_min_dist
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
@@ -309,6 +313,8 @@ reference:
       - nextBest-NextBestTD
       - nextBest-NextBestMaxGain
       - nextBest-NextBestMaxGainSamples
+      - nextBest-NextBestProbMTDLTE
+      - nextBest-NextBestProbMTDMinDist
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
       - maxDose-IncrementsNumDoseLevels

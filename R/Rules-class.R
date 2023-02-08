@@ -675,6 +675,110 @@ NextBestMaxGainSamples <- function(prob_target_drt,
   )
 }
 
+# NextBestProbMTDLTE ----
+
+## class ----
+
+#' `NextBestProbMTDLTE`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestProbMTDLTE`] is the class of finding a next best dose that selects
+#' the dose with the highest probability of having a toxicity rate less or equal
+#' to the toxicity target.
+#' The dose is determined by calculating the posterior toxicity probability
+#' for each dose per iteration and select the maximum dose that has a toxicity
+#' probability below or equal to the target. The dose with the highest frequency
+#' of being selected as MTD across iterations is the next best dose. Placebo
+#' is not considered in the calculation and removed from the dose grid for
+#' any calculations.
+#'
+#' @slot target (`numeric`)\cr the target toxicity probability
+#' @slot method (`string`)\cr the method to handle the cases where no dose
+#'   has a posterior toxicity probability below or equal to target. Possible
+#'   methods are `min` or `max`.
+#'   If `min` is specified, the cases where no dose
+#'   has a posterior toxicity probability below or equal to target are added
+#'   to the minimum dose and if max `max` is specified to the maximum dose.
+#'   Default is method is `min`.
+#'
+#' @aliases NextBestProbMTDLTE
+#' @export
+#'
+.NextBestProbMTDLTE <- setClass(
+  Class = "NextBestProbMTDLTE",
+  slots = c(
+    target = "numeric",
+    method = "character"
+  ),
+  prototype = prototype(
+    target = 0.3,
+    method = "min"
+  ),
+  contains = "NextBest",
+  validity = v_next_best_prob_mtd_lte
+)
+
+## constructor ----
+
+#' @rdname NextBestProbMTDLTE-class
+#'
+#' @param target (`numeric`)\cr see slot definition.
+#' @param method (`string`)\cr see slot definition.
+#' @export
+#' @example examples/Rules-class-NextBestProbMTDLTE.R
+#'
+NextBestProbMTDLTE <- function(target,
+                               method = "min") {
+  .NextBestProbMTDLTE(
+    target = target,
+    method = method
+  )
+}
+
+# NextBestProbMTDMinDist ----
+
+## class ----
+
+#' `NextBestProbMTDMinDist`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' [`NextBestProbMTDMinDist`] is the class of finding a next best dose that selects
+#' the dose with the highest probability of having a toxicity rate with the
+#' smallest distance to the toxicity target.
+#' The dose is determined by calculating the posterior toxicity probability
+#' for each dose per iteration and select the dose that has the smallest toxicity
+#' probability distance to the target. The dose with the highest frequency
+#' of being selected as MTD across iterations is the next best dose. Placebo
+#' is not considered in the calculation and removed from the dose grid for
+#' any calculations.
+#'
+#' @slot target (`numeric`)\cr the target toxicity probability
+#'
+#' @aliases NextBestProbMTDMinDist
+#' @export
+#'
+.NextBestProbMTDMinDist <- setClass(
+  Class = "NextBestProbMTDMinDist",
+  slots = c(target = "numeric"),
+  prototype = prototype(target = 0.3),
+  contains = "NextBest",
+  validity = v_next_best_prob_mtd_min_dist
+)
+
+## constructor ----
+
+#' @rdname NextBestProbMTDMinDist-class
+#'
+#' @param target (`numeric`)\cr see slot definition.
+#' @export
+#' @example examples/Rules-class-NextBestProbMTDMinDist.R
+#'
+NextBestProbMTDMinDist <- function(target) {
+  .NextBestProbMTDMinDist(target = target)
+}
+
 # Increments ----
 
 ## class ----

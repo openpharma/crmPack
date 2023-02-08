@@ -472,6 +472,72 @@ test_that("v_next_best_max_gain_samples returns message for non-valid mg_derive"
   )
 })
 
+## v_next_best_prob_mtd_lte ----
+
+test_that("v_next_best_prob_mtd_lte passes for valid object", {
+  object <- NextBestProbMTDLTE(0.3)
+  expect_true(v_next_best_prob_mtd_lte(object))
+})
+
+test_that("v_next_best_prob_mtd_lte returns message for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
+  object <- NextBestProbMTDLTE(0.3)
+
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
+  object@target <- 0
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
+})
+
+test_that("v_next_best_prob_mtd_lte returns message for non-valid method", {
+  object <- NextBestProbMTDLTE(0.3)
+
+  # Changing `method` so that it has many arguments.
+  object@method <- c("min", "max")
+  expect_equal(
+    v_next_best_prob_mtd_lte(object),
+    "method must be a string equal either to min or max"
+  )
+
+  # Changing `method` to an invalid method.
+  object@method <- "xyz"
+  expect_equal(
+    v_next_best_prob_mtd_lte(object),
+    "method must be a string equal either to min or max"
+  )
+})
+
+## v_next_best_prob_mtd_min_dist ----
+
+test_that("v_next_best_prob_mtd_min_dist passes for valid object", {
+  object <- NextBestProbMTDMinDist(0.3)
+  expect_true(v_next_best_prob_mtd_min_dist(object))
+})
+
+test_that("v_next_best_prob_mtd_min_dist returns message for non-valid target", {
+  err_msg <- "target must be a probability value from (0, 1) interval"
+  object <- NextBestProbMTDMinDist(0.3)
+
+  # Changing `target` so that it does not represent allowed probability value.
+  object@target <- 1
+  expect_equal(v_next_best_prob_mtd_min_dist(object), err_msg)
+  object@target <- 0
+  expect_equal(v_next_best_prob_mtd_min_dist(object), err_msg)
+  object@target <- -0.5
+  expect_equal(v_next_best_prob_mtd_min_dist(object), err_msg)
+
+  # Changing `target` so that it is not a scalar.
+  object@target <- c(0.5, 0.6)
+  expect_equal(v_next_best_prob_mtd_min_dist(object), err_msg)
+})
+
 # Increments ----
 
 ## v_increments_relative ----

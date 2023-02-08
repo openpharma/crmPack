@@ -196,6 +196,32 @@ v_next_best_max_gain_samples <- function(object) {
   v$result()
 }
 
+#' @describeIn v_next_best validates that the [`NextBestProbMTDLTE`] object
+#'   contains valid `target` probability and `method` string value.
+v_next_best_prob_mtd_lte <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$check(
+    test_string(object@method, pattern = "^min$|^max$"),
+    "method must be a string equal either to min or max"
+  )
+  v$result()
+}
+
+#' @describeIn v_next_best validates that the [`NextBestProbMTDMinDist`] object
+#'   contains valid `target` probability and `method` string value.
+v_next_best_prob_mtd_min_dist <- function(object) {
+  v <- Validate()
+  v$check(
+    test_probability(object@target, bounds_closed = FALSE),
+    "target must be a probability value from (0, 1) interval"
+  )
+  v$result()
+}
+
 # Increments ----
 
 #' Internal Helper Functions for Validation of [`Increments`] Objects
