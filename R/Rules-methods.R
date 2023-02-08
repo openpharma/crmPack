@@ -560,10 +560,10 @@ setMethod(
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     dlt_prob <- colMeans(prob_samples)
 
-    # Determine the dose with the closest distance
+    # Determine the dose with the closest distance.
     dose_target <- data@doseGrid[which.min(abs(dlt_prob - nextBest@target))]
 
-    # Determine next dose
+    # Determine next dose.
     doses_eligible <- h_next_best_eligible_doses(
       data@doseGrid,
       doselimit,
