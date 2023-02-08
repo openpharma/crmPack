@@ -378,6 +378,7 @@ NextBestDualEndpoint <- function(target,
 #' @param target (`proportion`)\cr see slot definition.
 #'
 #' @export
+#' @example examples/Rules-class-NextBestMinDist.R
 #'
 NextBestMinDist <- function(target) {
   .NextBestMinDist(target = target)
