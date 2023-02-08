@@ -1,3 +1,4 @@
+
 # Example of usage for `NextBestMinDist` NextBest class.
 
 # Create the data.
