@@ -35,47 +35,51 @@ In the example data below, the dose grid reflects reality, but the DLT and sub-D
 doseList <- c(5, 15, 45, 70, 100, 220, 300, 600, 1000, 1800, 4000, 10000, 16000)
 
 observedData <- tibble(
-  Dose=c(rep(    5,  1),
-         rep(   15,  4),
-         rep(   45,  5),
-         rep(   70,  5),
-         rep(  100,  5),
-         rep(  220,  8),
-         rep(  300,  6),
-         rep(  600, 15),
-         rep( 1000,  8),
-         rep( 1800,  9),
-         rep( 4000, 10),
-         rep(10000, 14),
-         rep(16000,  2)),
-  Status=c(rep(0,  1),
-           rep(0,  4),
-           rep(0,  5),
-           rep(0,  5),
-           rep(0,  5),
-           rep(0,  7), 1,
-           rep(0,  5), 1,
-           rep(0, 10), 1, 1, 1, 1, 1,
-           rep(0,  5), 1, 1, 1,
-           rep(0,  8), 1,
-           rep(0,  8), 1, 1,
-           rep(0, 10), 1, 1, 1, 1,
-           rep(1,  1),
-           rep(2,  1))
+  Dose = c(
+    rep(5, 1),
+    rep(15, 4),
+    rep(45, 5),
+    rep(70, 5),
+    rep(100, 5),
+    rep(220, 8),
+    rep(300, 6),
+    rep(600, 15),
+    rep(1000, 8),
+    rep(1800, 9),
+    rep(4000, 10),
+    rep(10000, 14),
+    rep(16000, 2)
+  ),
+  Status = c(
+    rep(0, 1),
+    rep(0, 4),
+    rep(0, 5),
+    rep(0, 5),
+    rep(0, 5),
+    rep(0, 7), 1,
+    rep(0, 5), 1,
+    rep(0, 10), 1, 1, 1, 1, 1,
+    rep(0, 5), 1, 1, 1,
+    rep(0, 8), 1,
+    rep(0, 8), 1, 1,
+    rep(0, 10), 1, 1, 1, 1,
+    rep(1, 1),
+    rep(2, 1)
+  )
 )
 ```
 
 ```{r}
-observedData %>% 
-  group_by(Dose, Status) %>% 
-  summarise(N=n(), .groups="drop") %>% 
+observedData %>%
+  group_by(Dose, Status) %>%
+  summarise(N = n(), .groups = "drop") %>%
   pivot_wider(
-    names_from=Status,
-    values_from=N,
-    values_fill=0
+    names_from = Status,
+    values_from = N,
+    values_fill = 0
   ) %>%
-  rename(NoDLT=`0`, SubDLT=`1`, DLT=`2`) %>% 
-  mutate(Treated=NoDLT + SubDLT + DLT, .before=2)
+  rename(NoDLT = `0`, SubDLT = `1`, DLT = `2`) %>%
+  mutate(Treated = NoDLT + SubDLT + DLT, .before = 2)
 ```
 
 ### Analysis
@@ -96,11 +100,11 @@ model
 {
   #Independent univariate parameters for simplicity.
   #Recall JAGS uses precision, not variance.
-  alpha[1] ~ dnorm(meanAlpha1, 1/(sdAlpha1*sdAlpha1)) 
+  alpha[1] ~ dnorm(meanAlpha1, 1/(sdAlpha1*sdAlpha1))
   #                                                    Constrain the model
   alpha[2] ~ dnorm(meanAlpha2, 1/(sdAlpha2*sdAlpha2))  T(, alpha[1])
   #Common slope.  LogNormal distribution ensures slope is positive
-  gamma ~ dnorm(meanLogBeta, 1/(sdLogBeta*sdLogBeta)) 
+  gamma ~ dnorm(meanLogBeta, 1/(sdLogBeta*sdLogBeta))
   beta <- exp(gamma)
   for (i in 1:length(d))
   {
@@ -124,66 +128,71 @@ Inits
 
 Define a reporting function.
 ```{r}
-analyse <- function(m, caption)
-{
-  #Fit the model
-  results <- as_tibble(run.jags(m)$mcmc[[1]]) %>% 
-               rename(alpha1=`alpha[1]`, alpha2=`alpha[2]`) #Fix awkwardly named columns
+analyse <- function(m, caption) {
+  # Fit the model
+  results <- as_tibble(run.jags(m)$mcmc[[1]]) %>%
+    rename(alpha1 = `alpha[1]`, alpha2 = `alpha[2]`) # Fix awkwardly named columns
 
-  #Derive p(DLT) [P2] and p(DLT or subDLT) [P1]
+  # Derive p(DLT) [P2] and p(DLT or subDLT) [P1]
   results <- results %>%
-               expand(nesting(alpha1, alpha2, beta), Dose=doseList) %>% 
-               mutate(XHat=log(Dose/dRef),
-                      z1=alpha1 + beta*XHat,
-                      z2=alpha2 + beta*XHat,
-                      P1=exp(z1)/(1+exp(z1)),
-                      P2=exp(z2)/(1+exp(z2))) %>% 
-               # Old code.  Should update to pivot_longer
-               gather(key=Type, value=Prob, P1, P2)
+    expand(nesting(alpha1, alpha2, beta), Dose = doseList) %>%
+    mutate(
+      XHat = log(Dose / dRef),
+      z1 = alpha1 + beta * XHat,
+      z2 = alpha2 + beta * XHat,
+      P1 = exp(z1) / (1 + exp(z1)),
+      P2 = exp(z2) / (1 + exp(z2))
+    ) %>%
+    # Old code.  Should update to pivot_longer
+    gather(key = Type, value = Prob, P1, P2)
 
-  #Summarise
-  summary <- results %>% 
-               group_by(Dose, Type) %>% 
-               summarise(
-                 N=n(),
-                 Mean=mean(Prob, na.rm=TRUE),
-                 q50=median(Prob, na.rm=TRUE),
-                 q05=quantile(Prob, 0.05, na.rm=TRUE),
-                 q10=quantile(Prob, 0.10, na.rm=TRUE),
-                 q20=quantile(Prob, 0.20, na.rm=TRUE),
-                 q80=quantile(Prob, 0.80, na.rm=TRUE),
-                 q90=quantile(Prob, 0.90, na.rm=TRUE),
-                 q95=quantile(Prob, 0.95, na.rm=TRUE),
-                 .groups="drop"
-               )
-  
-  table <- summary %>%  
-             # Old code.  Should update to pivot_longer
-             gather(variable, value, -(Dose:Type)) %>%
-             unite(temp, Type, variable) %>%
-             spread(temp, value) %>% 
-             select(Dose, P1_N, P1_Mean, starts_with("P1_q"),
-                          P2_N, P2_Mean, starts_with("P2_q"))
+  # Summarise
+  summary <- results %>%
+    group_by(Dose, Type) %>%
+    summarise(
+      N = n(),
+      Mean = mean(Prob, na.rm = TRUE),
+      q50 = median(Prob, na.rm = TRUE),
+      q05 = quantile(Prob, 0.05, na.rm = TRUE),
+      q10 = quantile(Prob, 0.10, na.rm = TRUE),
+      q20 = quantile(Prob, 0.20, na.rm = TRUE),
+      q80 = quantile(Prob, 0.80, na.rm = TRUE),
+      q90 = quantile(Prob, 0.90, na.rm = TRUE),
+      q95 = quantile(Prob, 0.95, na.rm = TRUE),
+      .groups = "drop"
+    )
 
-  plot <- summary %>% 
-            ggplot() +
-              geom_line(aes(x=Dose, y=Mean, colour=Type)) +
-              geom_ribbon(aes(x=Dose, ymin=q05, ymax=q95, fill=Type), alpha=0.1) +
-              geom_ribbon(aes(x=Dose, ymin=q10, ymax=q90, fill=Type), alpha=0.1) +
-              geom_ribbon(aes(x=Dose, ymin=q20, ymax=q80, fill=Type), alpha=0.1) +
-              theme_light() +
-              scale_colour_manual(name=" ", labels = c("Mean p(DLT or subDLT)", "Mean p(DLT)"), values = c("darkblue", "red")) +
-              scale_fill_manual(name=" ", labels = c("Mean p(DLT or subDLT)", "Mean p(DLT)"), values = c("darkblue", "red")) +
-              labs(y="Probability", 
-                   x="Dose", 
-                   title=caption,
-                   caption="Shading shows the 90%, 80% and 60% central credible intervals")
+  table <- summary %>%
+    # Old code.  Should update to pivot_longer
+    gather(variable, value, -(Dose:Type)) %>%
+    unite(temp, Type, variable) %>%
+    spread(temp, value) %>%
+    select(
+      Dose, P1_N, P1_Mean, starts_with("P1_q"),
+      P2_N, P2_Mean, starts_with("P2_q")
+    )
+
+  plot <- summary %>%
+    ggplot() +
+    geom_line(aes(x = Dose, y = Mean, colour = Type)) +
+    geom_ribbon(aes(x = Dose, ymin = q05, ymax = q95, fill = Type), alpha = 0.1) +
+    geom_ribbon(aes(x = Dose, ymin = q10, ymax = q90, fill = Type), alpha = 0.1) +
+    geom_ribbon(aes(x = Dose, ymin = q20, ymax = q80, fill = Type), alpha = 0.1) +
+    theme_light() +
+    scale_colour_manual(name = " ", labels = c("Mean p(DLT or subDLT)", "Mean p(DLT)"), values = c("darkblue", "red")) +
+    scale_fill_manual(name = " ", labels = c("Mean p(DLT or subDLT)", "Mean p(DLT)"), values = c("darkblue", "red")) +
+    labs(
+      y = "Probability",
+      x = "Dose",
+      title = caption,
+      caption = "Shading shows the 90%, 80% and 60% central credible intervals"
+    )
   rv <- NULL
   rv$summary <- summary
   rv$graph <- plot
   rv$tableWide <- table
   rv$samples <- results
-  return (rv)
+  return(rv)
 }
 ```
 
@@ -198,7 +207,7 @@ sdAlpha1 <- 4
 sdAlpha2 <- 4
 sdLogBeta <- 3
 
-#Hack the observed data
+# Hack the observed data
 d <- observedData$Dose
 r <- observedData$Status
 ```
@@ -206,13 +215,15 @@ r <- observedData$Status
 Obtain the posterior
 
 ```{r}
-post <- analyse(modelString, caption="Posterior distribution")
+post <- analyse(modelString, caption = "Posterior distribution")
 
 post$tableWide %>%
-  select(-P2_N) %>% 
-  kable(digits=c(0, 0, rep(2,12)),
-        col.names=c("Dose", "N", rep(c("Mean", "Q05", "Q10", "Q20", "Median", "Q80", "Q90", "Q95"), 2))) %>%
-  add_header_above(c(" "= 2, "p(DLT or subDLT)"=8, "p(DLT)"=8))  %>%
+  select(-P2_N) %>%
+  kable(
+    digits = c(0, 0, rep(2, 12)),
+    col.names = c("Dose", "N", rep(c("Mean", "Q05", "Q10", "Q20", "Median", "Q80", "Q90", "Q95"), 2))
+  ) %>%
+  add_header_above(c(" " = 2, "p(DLT or subDLT)" = 8, "p(DLT)" = 8)) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 post$graph
@@ -222,11 +233,13 @@ post$graph
 The recommended dose (and stopping rules) can be based on any (combination) of the p~k~s.  For example, if the recommended dose is defined to be the highest dose with posterior mean p~1~ less than 0.2, then the recommended dose is
 
 ```{r recommendedDose, echo=TRUE}
-post$summary %>% 
-  ungroup() %>% 
-  filter(Mean < 0.2,
-         Type=="P1") %>%
-  summarise(Recommended=max(Dose))
+post$summary %>%
+  ungroup() %>%
+  filter(
+    Mean < 0.2,
+    Type == "P1"
+  ) %>%
+  summarise(Recommended = max(Dose))
 ```
 
 ### Integration with nCRM
@@ -235,11 +248,13 @@ Although an extension to the standard CRM model, there's no reason why oCRM can'
 For example, suppose the recommended dose is determined on the basis of the p~1~s [that is, on p(DLT or subDLT | dose)] and that the toxicity bands are defined as
 
 ```{r, echo=FALSE}
-tibble(Band=c("Underdosing", "Target toxicity", "Excess toxicity", "Unacceptable toxicity"), 
-       Lower=c(0, 0.15, 0.25, 0.4), 
-       Upper=c(0.15, 0.25, 0.4, 1)) %>% 
-  kable(table.attr="style='width:30%;'")  %>%
-  add_header_above(c(" "=1, "Bounds"=2)) %>% 
+tibble(
+  Band = c("Underdosing", "Target toxicity", "Excess toxicity", "Unacceptable toxicity"),
+  Lower = c(0, 0.15, 0.25, 0.4),
+  Upper = c(0.15, 0.25, 0.4, 1)
+) %>%
+  kable(table.attr = "style='width:30%;'") %>%
+  add_header_above(c(" " = 1, "Bounds" = 2)) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
@@ -247,14 +262,14 @@ Then band membership can be calculated for each of the MCMC samples...
 
 ```{r calculateBands, echo=TRUE}
 nCRM <- post$samples %>%
-          filter(Type == "P1") %>%
-          mutate(
-            Under=Prob <= 0.15,
-            Target=Prob > 0.15 & Prob <= 0.25,
-            Excess=Prob > 0.25 & Prob <= 0.4,
-            Unacceptable=Prob > 0.4,
-            Check=Under + Target + Excess + Unacceptable
-          )
+  filter(Type == "P1") %>%
+  mutate(
+    Under = Prob <= 0.15,
+    Target = Prob > 0.15 & Prob <= 0.25,
+    Excess = Prob > 0.25 & Prob <= 0.4,
+    Unacceptable = Prob > 0.4,
+    Check = Under + Target + Excess + Unacceptable
+  )
 ```
 
 ... and summarised by dose
@@ -264,18 +279,18 @@ nCRM %>%
   select(-Check) %>%
   group_by(Dose) %>%
   summarise(
-    Under=mean(Under),
-    Target=mean(Target),
-    Excess=mean(Excess),
-    Unacceptable=mean(Unacceptable),
-    .groups="drop"
+    Under = mean(Under),
+    Target = mean(Target),
+    Excess = mean(Excess),
+    Unacceptable = mean(Unacceptable),
+    .groups = "drop"
   ) %>%
   kable(
-    table.attr="style='width:40%;'",
-    digits=c(0, 3, 3, 3, 3)
-  ) %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>% 
-  add_header_above(c(" "=1, "Probability of band membership"=4))
+    table.attr = "style='width:40%;'",
+    digits = c(0, 3, 3, 3, 3)
+  ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  add_header_above(c(" " = 1, "Probability of band membership" = 4))
 ```
 
 ## Design discussion

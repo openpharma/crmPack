@@ -212,23 +212,22 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5531273/
 
 ## Fictitious observed data
 ```{r data}
-
 dose_grid <- c(5, 15, 45, 70, 100, 220, 300, 600, 1000, 1800, 4000, 10000, 16000)
 
 x <- c(
   rep(5, 1),
-  rep(15,  4),
-  rep(45,  5),
-  rep(70,  5),
-  rep(100,  5),
-  rep(220,  8),
-  rep(300,  6),
+  rep(15, 4),
+  rep(45, 5),
+  rep(70, 5),
+  rep(100, 5),
+  rep(220, 8),
+  rep(300, 6),
   rep(600, 15),
-  rep(1000,  8),
-  rep(1800,  9),
+  rep(1000, 8),
+  rep(1800, 9),
   rep(4000, 10),
   rep(10000, 14),
-  rep(16000,  2)
+  rep(16000, 2)
 )
 
 y <- c(
@@ -270,7 +269,6 @@ Data class by:
 Lets call it Data0 for a moment
 
 ```{r prototype_data, eval=FALSE}
-
 data <- Data(
   x = x,
   y = y, # here is a problem because y slot accepts only 0 and 1 values here
@@ -287,7 +285,6 @@ data <- Data(
     nGrid = "integer",
     y_categories = "integer",
     xLevel = "integer",
-
     placebo = "logical"
   ),
   prototype = prototype(
@@ -308,7 +305,6 @@ data <- Data(
 IT IS NOT READY YET. WILL BE PROPOSED AFTER THE THEORY IS ACCEPTED.
 
 ```{r prototype_model, eval=FALSE}
-
 LogisticLogNormOrd <- function(mean, cov, ref_dose = 0) {
   params <- ModelParamsNormal(mean, cov)
   .LogisticLogNormOrd(
@@ -317,7 +313,7 @@ LogisticLogNormOrd <- function(mean, cov, ref_dose = 0) {
     datamodel = function() {
       for (i in 1:nObs) {
         x_rel[i] <- log(x[i] / ref_dose)
-        for (j in 1:(y_categories-1)) {
+        for (j in 1:(y_categories - 1)) {
           logit(p[i, j]) <- alpha[j] + beta * x_rel[i]
           y[i, j] ~ dbern(p[i, j])
         }
@@ -325,7 +321,7 @@ LogisticLogNormOrd <- function(mean, cov, ref_dose = 0) {
     },
     priormodel = function() {
       theta ~ dmnorm(mean, prec)
-      alpha <- theta[1:(y_categories-1)]
+      alpha <- theta[1:(y_categories - 1)]
       beta <- exp(theta[y_categories])
     },
     modelspecs = function(from_prior) {
@@ -342,5 +338,4 @@ LogisticLogNormOrd <- function(mean, cov, ref_dose = 0) {
     sample = c("alpha", "beta")
   )
 }
-
 ```
