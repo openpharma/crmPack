@@ -1,93 +1,40 @@
-# Version 1.0.9000.9102
-* Renamed slots in `StoppingTDCIRatio` class.
-* Renamed `stopList` slot in `StoppingList`, `StoppingAll` and `StoppingAny` classes.
+# Version 1.0.9000.9133
+* Added new function `ngrid` that returns the number of doses in the dose grid.
+* Modified `efficacy-EffFlexi` method: allowed for vectorized dose; `NA` is now
+  returned for doses from outside of the dose grid range (and the warning is thrown).
+* Added new custom `checkmate` function `check_range`.
+* Added method `names` for objects of class `Samples`.
+* Added method `size` for objects of class `Samples`.
+* Added new custom `checkmate` function `check_length`.
 * Added `unique` flag to `assert_probabilities` checkmate custom functions.
-* In `StoppingTargetBiomarker` class, changed `scale` character slot to
-  `is_relative` flag.
 * Created a new vignette which describes how to use certain functions and features
   of `crmPack` after the major refactoring.
 * Removed `MASS` from `Imports` and `Rcpp`, `RcppArmadillo` from `Suggests` as
   it was used only in the some old development version.
-* Renamed class `IncrementMin` to `IncrementsMin`.
-* Renamed slots in `IncrementsRelativeParts`, `IncrementsRelativeDLT`,
-  `IncrementsNumDoseLevels`, `IncrementMin` and other dependent classes.
-* Renamed slots in `NextBestTD`, `NextBestTDsamples`, `NextBestMaxGain` and
-  `NextBestMaxGainSamples` classes.
-* Removed `Model` class.
-* Renamed `SIM` argument of `nextBest` methods to `in_sim`.
-* Renamed the elements of the list returned by `nextBest` methods for `NextBestMaxGain`
-  and `NextBestMaxGainSamples`.
-* Renamed two arguments of `nextBest` methods for `NextBestTDsamples`, `NextBestTD`,
-  `NextBestMaxGain` and `NextBestMaxGainSamples`: `Effmodel` to `model_eff`
-  and `Effsamples` to `samples_eff`.
 * `doselimit` argument in `nextBest` method is now specified as `Inf` instead of
   `numeric(0)`.
 * Added new helper functions for `nextBest` methods, particularly for plotting
   and finding the dose closest to the grid.
-* Added new helper function `h_dose_grid_range`.
 * Added new `NextBestNCRMLoss` class and corresponding `nextBest` method.
 * Warning message not printed anymore by `nextBest` methods when `doselimit` not
   specified.
 * Set prototype for `target = 0.3` for `NextBestMinDist` class.
 * Added new customized `checkmate` functions for probability values checking.
-* Created one `update` method for `ModelPseudo` and removed specific methods for
-  `LogisticIndepBeta`, `Effloglog`, `EffFlexi`. 
-* Renamed arguments of `gain` function.
-* Renamed generic function and method `biomLevel` to `biomarker`.
-  Changed its arguments.
-* Renamed several slots in `NextBestNCRM` and `NextBestDualEndpoint` classes.
-* Changed the `scale` character slot into `target_relative` flag slot in
-  `NextBestDualEndpoint` class.
 * Renamed the argument of `derive` function from `mtdSamples` to `mtd_samples` in
   `NextBestMTD` class.
 * Allowed for `from_prior` flag - argument to `modelspecs` function at `GeneralModel`
   class.
-* Added new slot `skel_fun_inv` into `OneParExpNormalPrior` class.
-* Removed `AllModels` class.
-* Added new slot `datanames_prior` for `GeneralModel` class.
-* Moved `datanames` slot from `AllModels` class to its child class `GeneralModel`.
-* Renamed several slots in `EffFlexi`, `DALogisticLogNormal`, `TITELogisticLogNormal`
-  and `OneParExpNormalPrior` classes and adjusted corresponding constructor functions.
-* Renamed `Eff` argument to `eff` and `Effdose` to `eff_dose` in `Effloglog` class
-  constructor.
-* Renamed `ExpEff` methods for pseudo-data efficacy models to `efficacy`.
-* Moved `dose` and `ExpEff` functions from model class slots to model class
-  methods for pseudo-data efficacy models.
-* Created new generic function - `efficacy`.
-* Renamed `prob` argument to `x` for `dose` methods.
-* Added `positive_number` class to handle strictly positive valued slots
-  (e.g. `ref_dose` in many model classes).
-* Renamed `refDoseBeta` slot to `ref_dose_beta` in `DualEndpointEmax` class.
-* Renamed `refDoseEmax` slot to `ref_dose_emax` in `DualEndpointBeta` class.
-* Replaced `smooth` character vector argument of `DualEndpointRW()` to `rw1` flag. 
-* Added new `ModelParamsNormal` class to represent parameters of bivariate normal
-  distribution.
-* Added new `doseFunction` and `probFunction` functions which return dose
-  and probability computing functions using model specific parameters.
-* Moved `dose` and `prob` functions from model class slots to model class methods
-  for several models.
-* Renamed `refDose` slot to `ref_dose` in `ModelLogNormal` class.
-* Created new `ModelLogNormal` class as a parent class for all the models with
-  reference dose and bivariate (log) normal prior on the model parameters.
 * Created new `ProbitLogNormalRel` model class to support the (standardized) dose.
 * Changed `ProbitLogNormal` so that it supports the log of (standardized) dose only.
 * Added logger feature. Its user interface consists of four functions:
   `enable_logging`, `disable_logging`, `is_logging_enabled`, `log_trace`.
-* Modified `mcmc` method arguments: renamed `fromPrior` to `from_prior`, removed
-  `program` and `verbose`.
-* Added new slot `RNG` to `McmcOptions` class which will be used by Random
-  Number Generator in `rJAGS`.
 * Re-factored `sampleSize` function so that it returns `0` if
   `burnin > iterations`.
-* Renamed elements in the list object returned by `getEff` function.
 * A vector under `t0` slot in `DataDA` class must be sorted in ascending order.
 * Replaced warning with message when no `cohort` or `ID` is provided to the user
   constructor `Data`.
-* Renamed arguments in `update-DataDA-method` method.
-* Updated the `update` method for Data-like classes: renamed `newCohort`
-  argument to `new_cohort`,
-  introduced validation of the updated object,
-  added `check` flag to possibly omit the validation of the updated object.
+* Introduced validation of the updated object for `update` methods for Data-like
+  classes. Added `check` flag to possibly omit the validation of the updated object.
 * Set up the package to use testthat.
 * Added lifecycle package.
 * Include rolling CRM design, which was previously only available in a separate

@@ -55,9 +55,9 @@ mySize <- CohortSizeConst(size=3)
 sizeRecommendation <- size(mySize, dose=doseRecommendation$value, data = data)
 
 # Rule for having safety window length with constant safety window parameters
-myWindowLength <- SafetyWindowConst(patientGap = c(7,3),
-                                    patientFollow = 7,
-                                    patientFollowMin = 14)
+myWindowLength <- SafetyWindowConst(gap = c(7,3),
+                                    follow = 7,
+                                    follow_min = 14)
 
 # Determine the safety window parameters for the next cohort
 windowLength(myWindowLength, size=sizeRecommendation)

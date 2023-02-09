@@ -29,9 +29,9 @@ myNextBest <- NextBestNCRM(target=c(0.2,0.35),
 
 # Choose the rule for the cohort-size
 mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
-mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
-                         cohortSize=c(1, 3))
+                           cohort_size=c(1, 3))
+mySize2 <- CohortSizeDLT(dlt_intervals=c(0, 1),
+                         cohort_size=c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 
 # Choose the rule for stopping

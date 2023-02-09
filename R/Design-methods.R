@@ -84,6 +84,7 @@ setSeed <- function(seed=NULL)
 ##' to one list element)
 ##'
 ##' @importFrom parallel detectCores makeCluster clusterApply stopCluster
+##' @importFrom parallelly availableCores
 ##' @keywords internal programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
 getResultList <- function(fun,
@@ -102,8 +103,10 @@ getResultList <- function(fun,
             stopifnot(is.scalar(parallel), parallel > 0)
 
             ## now process all simulations
-            cores <- min(safeInteger(parallel),
-                         min(parallel::detectCores(), 5))
+            cores <- min(
+              safeInteger(parallel),
+              parallelly::availableCores()
+            )
 
             ## start the cluster
             cl <- parallel::makeCluster(cores)
@@ -257,13 +260,13 @@ setMethod("simulate",
                       thisProb <- thisTruth(thisDose)
 
                       ## what is the cohort size at this dose?
-                      thisSize <- size(cohortSize=object@cohortSize,
+                      thisSize <- size(object@cohortSize,
                                        dose=thisDose,
                                        data=thisData)
 
                       ## In case there are placebo
                       if(thisData@placebo)
-                          thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                          thisSize.PL <- size(object@PLcohortSize,
                                               dose=thisDose,
                                               data=thisData)
 
@@ -505,7 +508,7 @@ setMethod("simulate",
                       thisProb <- thisTruth(thisDose)
 
                       ## what is the cohort size at this dose?
-                      thisSize <- size(cohortSize=object@cohortSize,
+                      thisSize <- size(object@cohortSize,
                                        dose=thisDose,
                                        data=thisData)
 
@@ -712,14 +715,14 @@ setMethod("simulate",
                       thisMeanBiomarker <- thisTrueBiomarker(thisDose)
 
                       ## what is the cohort size at this dose?
-                      thisSize <- size(cohortSize=object@cohortSize,
+                      thisSize <- size(object@cohortSize,
                                        dose=thisDose,
                                        data=thisData)
 
                       ## In case there are placebo
                       ## what is the cohort size at this dose for Placebo?
                       if(thisData@placebo)
-                          thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                          thisSize.PL <- size(object@PLcohortSize,
                                               dose=thisDose,
                                               data=thisData)
 
@@ -1013,12 +1016,12 @@ setMethod("examine",
                   while(! stopit)
                   {
                       ## what is the cohort size at this dose?
-                      thisSize <- size(cohortSize=object@cohortSize,
+                      thisSize <- size(object@cohortSize,
                                        dose=thisDose,
                                        data=baseData)
 
                       if(baseData@placebo)
-                        thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                        thisSize.PL <- size(object@PLcohortSize,
                                             dose=thisDose,
                                             data=baseData)
 
@@ -1190,7 +1193,7 @@ setMethod("examine",
                   while(! stopit)
                   {
                       ## what is the cohort size at this dose?
-                      thisSize <- size(cohortSize=object@cohortSize,
+                      thisSize <- size(object@cohortSize,
                                        dose=thisDose,
                                        data=baseData)
 
@@ -1373,7 +1376,7 @@ setMethod("examine",
               {
 
                 ## what is the cohort size at this dose?
-                thisSize <- size(cohortSize=object@cohortSize,
+                thisSize <- size(object@cohortSize,
                                  dose=thisDose,
                                  data=baseData)
 
@@ -1734,13 +1737,13 @@ setMethod("simulate",
 
 
                   ## what is the cohort size at this dose?
-                  thisSize <- size(cohortSize=object@cohortSize,
+                  thisSize <- size(object@cohortSize,
                                    dose=thisDose,
                                    data=thisData)
 
                   ## In case there are placebo
                   if(thisData@placebo)
-                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                    thisSize.PL <- size(object@PLcohortSize,
                                         dose=thisDose,
                                         data=thisData)
 
@@ -2046,13 +2049,13 @@ setMethod("simulate",
                   thisProb <- thisTruth(thisDose)
 
                   ## what is the cohort size at this dose?
-                  thisSize <- size(cohortSize=object@cohortSize,
+                  thisSize <- size(object@cohortSize,
                                    dose=thisDose,
                                    data=thisData)
 
                   ## In case there are placebo
                   if(thisData@placebo)
-                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                    thisSize.PL <- size(object@PLcohortSize,
                                         dose=thisDose,
                                         data=thisData)
 
@@ -2384,7 +2387,7 @@ setMethod("simulate",
                   thisMeanEff<-thisTruthEff(thisDose)
 
                   ## what is the cohort size at this dose?
-                  thisSize <- size(cohortSize=object@cohortSize,
+                  thisSize <- size(object@cohortSize,
                                    dose=thisDose,
                                    data=thisData)
 
@@ -2392,7 +2395,7 @@ setMethod("simulate",
                   ## In case there are placebo
                   ## what is the cohort size at this dose for Placebo?
                   if(thisData@placebo)
-                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                    thisSize.PL <- size(object@PLcohortSize,
                                         dose=thisDose,
                                         data=thisData)
 
@@ -2856,12 +2859,12 @@ setMethod("simulate",
 
 
                     ## what is the cohort size at this dose?
-                    thisSize <- size(cohortSize=object@cohortSize,
+                    thisSize <- size(object@cohortSize,
                                      dose=thisDose,
                                      data=thisData)
 
                     if(thisData@placebo)
-                      thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                      thisSize.PL <- size(object@PLcohortSize,
                                           dose=thisDose,
                                           data=thisData)
 
@@ -3260,7 +3263,7 @@ setMethod("simulate",
                   thisMeanEff<-thisTruthEff(thisDose)
 
                   ## what is the cohort size at this dose?
-                  thisSize <- size(cohortSize=object@cohortSize,
+                  thisSize <- size(object@cohortSize,
                                    dose=thisDose,
                                    data=thisData)
 
@@ -3798,7 +3801,7 @@ setMethod("simulate",
                   thisProb <- thisTruth(thisDose)
 
                   ## what is the cohort size at this dose?
-                  thisSize <- size(cohortSize=object@cohortSize,
+                  thisSize <- size(object@cohortSize,
                                    dose=thisDose,
                                    data=thisData)
 
@@ -3807,7 +3810,7 @@ setMethod("simulate",
 
                   ## In case there are placebo
                   if(thisData@placebo)
-                    thisSize.PL <- size(cohortSize=object@PLcohortSize,
+                    thisSize.PL <- size(object@PLcohortSize,
                                         dose=thisDose,
                                         data=thisData)
 

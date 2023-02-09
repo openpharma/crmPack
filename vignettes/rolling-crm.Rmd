@@ -103,25 +103,25 @@ plot(Priorsamples, model,emptydata,hazard=FALSE)
 Need to fill in (use the same rule in the section 8 of "using the package crmPack: introductory examples")
 
 ```{r Rules}
-myIncrements <- IncrementsRelative(intervals=c(0,20),
-                                   increments=c(1,0.33))
+myIncrements <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 
-nextMaxDose <- maxDose(myIncrements,data=data)
+nextMaxDose <- maxDose(myIncrements, data = data)
 
-myNextBest <- NextBestNCRM(target=c(0.2,0.35),
-                           overdose=c(0.35,1),
-                           max_overdose_prob=0.25)
+myNextBest <- NextBestNCRM(
+  target = c(0.2, 0.35),
+  overdose = c(0.35, 1),
+  max_overdose_prob = 0.25
+)
 
-mySize1 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
-mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
-                         cohortSize=c(1, 3))
+mySize1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
+mySize2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
 mySize <- maxSize(mySize1, mySize2)
 
-myStopping1 <- StoppingTargetProb(target=c(0.2, 0.35),
-                                  prob=0.5)
-myStopping2 <- StoppingMinPatients(nPatients=50)
-
+myStopping1 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5)
+myStopping2 <- StoppingMinPatients(nPatients = 50)
 myStopping <- (myStopping1 | myStopping2)
 ```
 

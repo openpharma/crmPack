@@ -14,7 +14,10 @@ ADTTE
 ADVS
 al
 AllModels
+amongst
 analyse
+analysing
+Analysing
 analysis
 anl
 args
@@ -64,6 +67,7 @@ crmPackHelp
 crmPackUpgrade
 crmPackVersion
 CRMs
+customised
 DataCombo
 DataDual
 DataMixture
@@ -116,6 +120,7 @@ Emax
 EMAX
 emptydata
 eot
+Equalness
 equi
 et
 firstSeparate
@@ -188,6 +193,7 @@ LogisticNormalFixedMixture
 LogisticNormalMixture
 LogisticsIndepBeta
 longdash
+magrittr
 mailto
 maxDose
 mcmc
@@ -213,6 +219,7 @@ NCRM
 nd
 NEST
 Neuenschwander
+Neuenschwander's
 newDLTmodel
 nextBest
 NextBest
@@ -232,6 +239,7 @@ npaszty
 nrow
 nSamples
 nsim
+O’Quigley
 onwards
 optimisation
 optimise
@@ -259,6 +267,7 @@ probmax
 probmin
 probs
 PROC
+programmatically
 PRs
 pseduo
 PseudoDualFlexiSimulations
@@ -305,7 +314,7 @@ StoppingAll
 StoppingAny
 StoppingCohortNearDose
 StoppingCohortsNearDose
-StoppingGstarCIRatio
+StoppingMaxGainCIRatio
 StoppingHighestDose
 StoppingList
 StoppingMaxPatients
@@ -323,6 +332,8 @@ STUDYID
 subclasses
 subfolder
 subtractive
+summarised
+Summarising
 swimlane
 targetDoseDuringTrial
 targetDoseEndOfTrial
@@ -364,6 +375,7 @@ trueDLE
 trueEff
 trueNu
 trueSigma
+truthy
 TsuTakawa
 ui
 UI
@@ -374,6 +386,7 @@ vectorial
 vectorize
 vectorized
 vectorof
+visualised
 waddella
 Wai
 Warne
@@ -384,3 +397,7 @@ xlab
 Yeung
 YJ
 yml
+### LaTeX keywords below here.
+bmatrix
+frac
+pmatrix

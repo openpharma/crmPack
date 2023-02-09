@@ -28,11 +28,16 @@ A method that determines if a sample from a given \code{iteration} should be
 saved. The sample should be saved if and only if:
 it is not in burn-in period and it matches the \code{step}.
 }
+\section{Functions}{
+\itemize{
+\item \code{saveSample(McmcOptions)}: determine if a sample should be saved.
+
+}}
 \examples{
 # Set up the MCMC option in order to have a burn-in of 10000 iterations and
 # then take every other iteration up to a collection of 10000 samples.
 my_options <- McmcOptions(burnin = 10000, step = 2, samples = 10000)
 
-sampleSize(my_options)
+size(my_options)
 saveSample(my_options, iteration = 5)
 }

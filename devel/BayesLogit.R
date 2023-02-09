@@ -164,7 +164,7 @@ initRes <- BayesLogit::logit(y=data@y,
                              X=X,
                              m0=c(priorphi1,priorphi2),
                              P0=precision,
-                             samp=sampleSize(options),
+                             samp=size(options),
                              burn=options@burnin)
 samples <- initRes$beta
 head(samples)

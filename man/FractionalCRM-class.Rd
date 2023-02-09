@@ -11,7 +11,7 @@ FractionalCRM(...)
 }
 \arguments{
 \item{...}{
-  Arguments passed on to \code{\link[=OneParExpNormalPrior]{OneParExpNormalPrior}}
+  Arguments passed on to \code{\link[=OneParLogNormalPrior]{OneParLogNormalPrior}}
   \describe{
     \item{\code{skel_probs}}{(\code{numeric})\cr skeleton prior probabilities. This is a vector
 of unique and sorted probability values between 0 and 1.}

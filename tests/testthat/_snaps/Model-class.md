@@ -1744,7 +1744,7 @@
       [1] 9.323290 2.114870 5.552484 2.024655
       
 
-# MCMC computes correct values for OneParExpNormalPrior model
+# MCMC computes correct values for OneParLogNormalPrior model
 
     Code
       result@data
@@ -1753,13 +1753,31 @@
       [1] 0.2149170 0.3987768 1.0718321 0.8496711
       
 
-# MCMC computes correct values for OneParExpNormalPrior model and empty data
+# MCMC computes correct values for OneParLogNormalPrior model and empty data
 
     Code
       result@data
     Output
       $alpha
       [1] -1.0265273  0.3965024 -2.2694077  0.6403072
+      
+
+# MCMC computes correct values for OneParExpPrior model
+
+    Code
+      result@data
+    Output
+      $theta
+      [1] 0.7980177 1.7746948 0.9487709 0.9468932
+      
+
+# MCMC computes correct values for OneParExpPrior model and empty data
+
+    Code
+      result@data
+    Output
+      $theta
+      [1] 0.37759092 0.07285336 0.21803431 0.61478103
       
 
 # MCMC computes correct values for FractionalCRM model
