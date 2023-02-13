@@ -317,168 +317,201 @@ setMethod("plot",
 ##' @export
 ##' @keywords methods
 setMethod("summary",
-          signature=
-          signature(object="GeneralSimulations"),
-          def=
-          function(object,
-                   truth,
-                   target=c(0.2, 0.35),
-                   ...){
+  signature =
+    signature(object = "GeneralSimulations"),
+  def =
+    function(object,
+             truth,
+             target = c(0.2, 0.35),
+             ...) {
+      ## extract dose grid
+      doseGrid <- object@data[[1]]@doseGrid
 
-              ## extract dose grid
-              doseGrid <- object@data[[1]]@doseGrid
+      ## evaluate true toxicity at doseGrid
+      trueTox <- truth(doseGrid, ...)
 
-              ## evaluate true toxicity at doseGrid
-              trueTox <- truth(doseGrid, ...)
+      ## find dose interval corresponding to target tox interval
+      targetDoseInterval <-
+        sapply(
+          target,
+          function(t) {
+            ## we have to be careful because it might be
+            ## that in the range of the dose grid, no
+            ## doses can be found that match the target
+            ## interval boundaries!
+            ## In that case we want to return NA
+            r <- try(
+              uniroot(
+                f = function(x) {
+                  truth(x, ...) - t
+                },
+                interval =
+                  range(doseGrid)
+              )$root,
+              silent = TRUE
+            )
+            if (inherits(r, "try-error")) {
+              return(NA_real_)
+            } else {
+              return(r)
+            }
+          }
+        )
 
-              ## find dose interval corresponding to target tox interval
-              targetDoseInterval <-
-                  sapply(target,
-                         function(t){
-                             ## we have to be careful because it might be
-                             ## that in the range of the dose grid, no
-                             ## doses can be found that match the target
-                             ## interval boundaries!
-                             ## In that case we want to return NA
-                             r <- try(uniroot(f=function(x){truth(x, ...) - t},
-                                              interval=
-                                              range(doseGrid))$root,
-                                      silent=TRUE)
-                             if(inherits(r, "try-error"))
-                             {
-                                 return(NA_real_)
-                             } else {
-                                 return(r)
-                             }
-                         })
+      ## what are the levels above target interval?
+      xAboveTarget <- which(trueTox > target[2])
 
-              ## what are the levels above target interval?
-              xAboveTarget <- which(trueTox > target[2])
+      ## proportion of DLTs in a trial:
+      if (object@data[[1]]@placebo) {
+        if (sum(object@data[[1]]@x == doseGrid[1])) {
+          propDLTs <- sapply(
+            object@data,
+            function(d) {
+              tapply(
+                d@y,
+                factor(d@x == d@doseGrid[1],
+                  labels = c("ACTV", "PLCB")
+                ),
+                mean
+              )
+            }
+          )
+        } else {
+          propDLTs <- sapply(
+            object@data,
+            function(d) {
+              c("ACTV" = mean(d@y), "PLCB" = NA)
+            }
+          )
+        }
+      } else {
+        propDLTs <- sapply(
+          object@data,
+          function(d) {
+            mean(d@y)
+          }
+        )
+      }
 
-              ## proportion of DLTs in a trial:
-              if(object@data[[1]]@placebo){
-                if( sum(object@data[[1]]@x == doseGrid[1]) ){
-                  propDLTs <- sapply(object@data,
-                                     function(d){
-                                         tapply(d@y,
-                                                factor(d@x == d@doseGrid[1],
-                                                       labels=c("ACTV","PLCB")),
-                                                mean)
-                                     })
-                }else{
-                  propDLTs <- sapply(object@data,
-                                     function(d){
-                                       c('ACTV' = mean(d@y),'PLCB' = NA)
-                                     })
-                }
-              }else{
-                propDLTs <- sapply(object@data,
-                                   function(d){
-                                     mean(d@y)
-                                   })
-              }
+      ## mean toxicity risk
+      if (object@data[[1]]@placebo) {
+        meanToxRisk <- sapply(
+          object@data,
+          function(d) {
+            mean(trueTox[d@xLevel[d@xLevel != 1]])
+          }
+        )
+      } else {
+        meanToxRisk <- sapply(
+          object@data,
+          function(d) {
+            mean(trueTox[d@xLevel])
+          }
+        )
+      }
 
-              ## mean toxicity risk
-              if(object@data[[1]]@placebo){
-                meanToxRisk <- sapply(object@data,
-                                      function(d){
-                                          mean(trueTox[d@xLevel[d@xLevel != 1]])
-                                      })
-              }else{
-                meanToxRisk <- sapply(object@data,
-                                      function(d){
-                                        mean(trueTox[d@xLevel])
-                                      })
-              }
+      ## doses selected for MTD
+      doseSelected <- object@doses
 
-              ## doses selected for MTD
-              doseSelected <- object@doses
+      ## replace NA by 0
+      doseSelected[is.na(doseSelected)] <- 0
 
-              ## replace NA by 0
-              doseSelected[is.na(doseSelected)] <- 0
+      ## dose most often selected as MTD
+      doseMostSelected <-
+        as.numeric(names(which.max(table(doseSelected))))
+      xMostSelected <-
+        matchTolerance(doseMostSelected,
+          table = doseGrid
+        )
 
-              ## dose most often selected as MTD
-              doseMostSelected <-
-                  as.numeric(names(which.max(table(doseSelected))))
-              xMostSelected <-
-                  matchTolerance(doseMostSelected,
-                        table=doseGrid)
+      ## observed toxicity rate at dose most often selected
+      ## Note: this does not seem very useful!
+      ## Reason: In case of a fine grid, few patients if any
+      ## will have been treated at this dose.
+      tmp <-
+        sapply(
+          object@data,
+          function(d) {
+            whichAtThisDose <- which(d@x == doseMostSelected)
+            nAtThisDose <- length(whichAtThisDose)
+            nDLTatThisDose <- sum(d@y[whichAtThisDose])
+            return(c(
+              nAtThisDose = nAtThisDose,
+              nDLTatThisDose = nDLTatThisDose
+            ))
+          }
+        )
 
-              ## observed toxicity rate at dose most often selected
-              ## Note: this does not seem very useful!
-              ## Reason: In case of a fine grid, few patients if any
-              ## will have been treated at this dose.
-              tmp <-
-                  sapply(object@data,
-                         function(d){
-                             whichAtThisDose <- which(d@x == doseMostSelected)
-                             nAtThisDose <- length(whichAtThisDose)
-                             nDLTatThisDose <- sum(d@y[whichAtThisDose])
-                             return(c(nAtThisDose=nAtThisDose,
-                                      nDLTatThisDose=nDLTatThisDose))
-                         })
+      obsToxRateAtDoseMostSelected <-
+        mean(tmp["nDLTatThisDose", ]) / mean(tmp["nAtThisDose", ])
 
-              obsToxRateAtDoseMostSelected <-
-                  mean(tmp["nDLTatThisDose",]) / mean(tmp["nAtThisDose",])
-
-              ## number of patients overall
-              if(object@data[[1]]@placebo){
-                nObs <- sapply(object@data,
-                               function(x){
-                                 data.frame(n.ACTV = sum(x@xLevel != 1L),
-                                            n.PLCB = sum(x@xLevel == 1L))
-                               })
-                nObs <- matrix(unlist(nObs), dim(nObs))
-              }else{
-                nObs <- sapply(object@data,
-                               slot,
-                               "nObs")
-              }
-
-
-              ## number of patients treated above target tox interval
-              nAboveTarget <- sapply(object@data,
-                                     function(d){
-                                         sum(d@xLevel %in% xAboveTarget)
-                                     })
-
-              ## Proportion of trials selecting target MTD
-              toxAtDoses <- truth(doseSelected, ...)
-              propAtTarget <- mean((toxAtDoses > target[1]) &
-                                   (toxAtDoses < target[2]))
-
-
-
-              # stopping rule result matrix
-              stop_report <- object@stop_report
-
-
-             # browser()
-
-              ## give back an object of class GeneralSimulationsSummary,
-              ## for which we then define a print / plot method
-                ret <-
-                  .GeneralSimulationsSummary(
-                    #highestStoppingReport=highestStoppingReport,
-                    target=target,
-                    targetDoseInterval=targetDoseInterval,
-                    nsim=length(object@data),
-                    propDLTs=propDLTs,
-                    meanToxRisk=meanToxRisk,
-                    doseSelected=doseSelected,
-                    doseMostSelected=doseMostSelected,
-                    obsToxRateAtDoseMostSelected=obsToxRateAtDoseMostSelected,
-                    nObs=nObs,
-                    nAboveTarget=nAboveTarget,
-                    toxAtDosesSelected=toxAtDoses,
-                    propAtTarget=propAtTarget,
-                    doseGrid=doseGrid,
-                    placebo=object@data[[1]]@placebo,
-                    stop_report = stop_report)
+      ## number of patients overall
+      if (object@data[[1]]@placebo) {
+        nObs <- sapply(
+          object@data,
+          function(x) {
+            data.frame(
+              n.ACTV = sum(x@xLevel != 1L),
+              n.PLCB = sum(x@xLevel == 1L)
+            )
+          }
+        )
+        nObs <- matrix(unlist(nObs), dim(nObs))
+      } else {
+        nObs <- sapply(
+          object@data,
+          slot,
+          "nObs"
+        )
+      }
 
 
-              return(ret)
-          })
+      ## number of patients treated above target tox interval
+      nAboveTarget <- sapply(
+        object@data,
+        function(d) {
+          sum(d@xLevel %in% xAboveTarget)
+        }
+      )
+
+      ## Proportion of trials selecting target MTD
+      toxAtDoses <- truth(doseSelected, ...)
+      propAtTarget <- mean((toxAtDoses > target[1]) &
+        (toxAtDoses < target[2]))
+
+
+
+      # stopping rule result matrix
+      stop_report <- object@stop_report
+
+
+      # browser()
+
+      ## give back an object of class GeneralSimulationsSummary,
+      ## for which we then define a print / plot method
+      ret <-
+        .GeneralSimulationsSummary(
+          # highestStoppingReport=highestStoppingReport,
+          target = target,
+          targetDoseInterval = targetDoseInterval,
+          nsim = length(object@data),
+          propDLTs = propDLTs,
+          meanToxRisk = meanToxRisk,
+          doseSelected = doseSelected,
+          doseMostSelected = doseMostSelected,
+          obsToxRateAtDoseMostSelected = obsToxRateAtDoseMostSelected,
+          nObs = nObs,
+          nAboveTarget = nAboveTarget,
+          toxAtDosesSelected = toxAtDoses,
+          propAtTarget = propAtTarget,
+          doseGrid = doseGrid,
+          placebo = object@data[[1]]@placebo,
+          stop_report = stop_report
+        )
+
+      return(ret)
+    }
+)
 
 
 ##' Summarize the model-based design simulations, relative to a given truth

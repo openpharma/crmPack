@@ -1098,6 +1098,9 @@ IncrementsMin <- function(increments_list) {
 #'
 #' [`Stopping`] is a class for for stopping rules.
 #'
+#' @slot report_label (`character`)\cr is the label used for reporting (default
+#' , custom or absent)
+#'
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
@@ -1107,7 +1110,8 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"
+  Class = "Stopping",
+  slots = c(report_label = "character")
 )
 
 # StoppingCohortsNearDose ----
@@ -1148,15 +1152,18 @@ setClass(
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
 #'
 StoppingCohortsNearDose <- function(nCohorts = 2L,
-                                    percentage = 50) {
+                                    percentage = 50,
+                                    report_label = character(0)) {
   .StoppingCohortsNearDose(
     nCohorts = safeInteger(nCohorts),
-    percentage = percentage
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1198,15 +1205,18 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #'
 #' @param nPatients (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
 #'
 StoppingPatientsNearDose <- function(nPatients,
-                                     percentage = 50) {
+                                     percentage = 50,
+                                     report_label = character(0)) {
   .StoppingPatientsNearDose(
     nPatients = safeInteger(nPatients),
-    percentage = percentage
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1228,8 +1238,7 @@ StoppingPatientsNearDose <- function(nPatients,
 #'
 .StoppingMinCohorts <- setClass(
   Class = "StoppingMinCohorts",
-  slots = c(nCohorts = "integer",
-            report_label = "character"),
+  slots = c(nCohorts = "integer"),
   prototype = prototype(nCohorts = 2L),
   contains = "Stopping",
   validity = v_stopping_min_cohorts
@@ -1240,13 +1249,17 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @rdname StoppingMinCohorts-class
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts,report_label = character(0)) {
-  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts),
-                      report_label = report_label)
+StoppingMinCohorts <- function(nCohorts,
+                               report_label = character(0)) {
+  .StoppingMinCohorts(
+    nCohorts = safeInteger(nCohorts),
+    report_label = report_label
+  )
 }
 
 # StoppingMinPatients ----
@@ -1267,7 +1280,7 @@ StoppingMinCohorts <- function(nCohorts,report_label = character(0)) {
 #'
 .StoppingMinPatients <- setClass(
   Class = "StoppingMinPatients",
-  slots = c(nPatients = "integer",report_label="character"),
+  slots = c(nPatients = "integer", report_label = "character"),
   prototype = prototype(nPatients = 20L),
   contains = "Stopping",
   validity = v_stopping_min_patients
@@ -1278,13 +1291,17 @@ StoppingMinCohorts <- function(nCohorts,report_label = character(0)) {
 #' @rdname StoppingMinPatients-class
 #'
 #' @param nPatients (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients,report_label=character(0)) {
-  .StoppingMinPatients(nPatients = safeInteger(nPatients),
-                       report_label=report_label)
+StoppingMinPatients <- function(nPatients,
+                                report_label = character(0)) {
+  .StoppingMinPatients(
+    nPatients = safeInteger(nPatients),
+    report_label = report_label
+  )
 }
 
 # StoppingTargetProb ----
@@ -1326,6 +1343,7 @@ StoppingMinPatients <- function(nPatients,report_label=character(0)) {
 #'
 #' @param target (`number`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
@@ -1387,17 +1405,20 @@ StoppingTargetProb <- function(target,
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh (`proportion`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
 #'
 StoppingMTDdistribution <- function(target,
                                     thresh,
-                                    prob) {
+                                    prob,
+                                    report_label = character(0)) {
   .StoppingMTDdistribution(
     target = target,
     thresh = thresh,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1442,15 +1463,18 @@ StoppingMTDdistribution <- function(target,
 #'
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh_cv (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
 #'
 StoppingMTDCV <- function(target = 0.3,
-                          thresh_cv = 40) {
+                          thresh_cv = 40,
+                          report_label = character(0)) {
   .StoppingMTDCV(
     target = target,
-    thresh_cv = thresh_cv
+    thresh_cv = thresh_cv,
+    report_label = report_label
   )
 }
 
@@ -1511,6 +1535,7 @@ StoppingMTDCV <- function(target = 0.3,
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param a (`number`)\cr see slot definition.
 #' @param b (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
@@ -1518,12 +1543,14 @@ StoppingMTDCV <- function(target = 0.3,
 StoppingLowestDoseHSRBeta <- function(target = 0.3,
                                       prob = 0.95,
                                       a = 1,
-                                      b = 1) {
+                                      b = 1,
+                                      report_label = character(0)) {
   .StoppingLowestDoseHSRBeta(
     target = target,
     prob = prob,
     a = a,
-    b = b
+    b = b,
+    report_label = report_label
   )
 }
 
@@ -1545,34 +1572,48 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 ##'
 ##' @export
 .StoppingTargetBiomarker <-
-    setClass(Class="StoppingTargetBiomarker",
-             representation(target="numeric",
-                            scale="character",
-                            prob="numeric"),
-             prototype(target=c(0.9, 1),
-                       scale="relative",
-                       prob=0.3),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "StoppingTargetBiomarker",
+    representation(
+      target = "numeric",
+      scale = "character",
+      prob = "numeric"
+    ),
+    prototype(
+      target = c(0.9, 1),
+      scale = "relative",
+      prob = 0.3
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
-                             "scale must be either 'relative' or 'absolute'")
-                     if(object@scale == "relative")
-                     {
-                       o$check(is.probRange(object@target),
-                               "target has to be a probability range when scale='relative'")
-                     } else {
-                       o$check(is.range(object@target),
-                               "target must be a numeric range")
-                     }
-                     o$check(is.probability(object@prob,
-                                            bounds=FALSE),
-                             "prob must be probability > 0 and < 1")
+        o$check(
+          is.scalar(object@scale) && object@scale %in% c("relative", "absolute"),
+          "scale must be either 'relative' or 'absolute'"
+        )
+        if (object@scale == "relative") {
+          o$check(
+            is.probRange(object@target),
+            "target has to be a probability range when scale='relative'"
+          )
+        } else {
+          o$check(
+            is.range(object@target),
+            "target must be a numeric range"
+          )
+        }
+        o$check(
+          is.probability(object@prob,
+            bounds = FALSE
+          ),
+          "prob must be probability > 0 and < 1"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.StoppingTargetBiomarker())
 
 
@@ -1582,16 +1623,20 @@ validObject(.StoppingTargetBiomarker())
 ##' @param scale see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @param prob see \code{\linkS4class{StoppingTargetBiomarker}}
 ##' @return the \code{\linkS4class{StoppingTargetBiomarker}} object
+##' @param report_label (`character`)\cr see slot definition.
 ##'
 ##' @export
 StoppingTargetBiomarker <- function(target,
-                                    scale=c("relative", "absolute"),
-                                    prob)
-{
+                                    scale = c("relative", "absolute"),
+                                    prob,
+                                    report_label = character(0)) {
   scale <- match.arg(scale)
-    .StoppingTargetBiomarker(target=target,
-                             scale=scale,
-                             prob=prob)
+  .StoppingTargetBiomarker(
+    target = target,
+    scale = scale,
+    prob = prob,
+    report_label = report_label
+  )
 }
 
 ## --------------------------------------------------
@@ -1604,19 +1649,21 @@ StoppingTargetBiomarker <- function(target,
 ##' @keywords classes
 ##' @export
 .StoppingHighestDose <-
-  setClass(Class="StoppingHighestDose",
-           contains="Stopping")
+  setClass(
+    Class = "StoppingHighestDose",
+    contains = "Stopping"
+  )
 validObject(.StoppingHighestDose())
 
 ##' Initialization function for "StoppingHighestDose"
+##' @param report_label (`character`)\cr see slot definition.
 ##'
 ##' @return the \code{\linkS4class{StoppingHighestDose}} object
 ##'
 ##' @export
 ##' @keywords methods
-StoppingHighestDose <- function()
-{
-  .StoppingHighestDose()
+StoppingHighestDose <- function(report_label = character(0)) {
+  .StoppingHighestDose(report_label = report_label)
 }
 
 
@@ -1643,27 +1690,40 @@ StoppingHighestDose <- function()
 ##' @keywords classes
 ##' @export
 .StoppingList <-
-    setClass(Class="StoppingList",
-             representation(stopList="list",
-                            summary="function"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5)),
-                       summary=all),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "StoppingList",
+    representation(
+      stopList = "list",
+      summary = "function"
+    ),
+    prototype(
+      stopList =
+        list(
+          StoppingMinPatients(50),
+          StoppingMinCohorts(5)
+        ),
+      summary = all
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
-                     testRes <- object@summary(rep(c(TRUE, FALSE),
-                                                   length.out=length(object@stopList)))
-                     o$check(is.bool(testRes),
-                             "summary function must return a boolean value")
+        o$check(
+          all(sapply(object@stopList, is, "Stopping")),
+          "all stopList elements have to Stopping objects"
+        )
+        testRes <- object@summary(rep(c(TRUE, FALSE),
+          length.out = length(object@stopList)
+        ))
+        o$check(
+          is.bool(testRes),
+          "summary function must return a boolean value"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.StoppingList())
 
 
@@ -1676,10 +1736,11 @@ validObject(.StoppingList())
 ##' @export
 ##' @keywords methods
 StoppingList <- function(stopList,
-                         summary)
-{
-    .StoppingList(stopList=stopList,
-                  summary=summary)
+                         summary) {
+  .StoppingList(
+    stopList = stopList,
+    summary = summary
+  )
 }
 
 
@@ -1697,28 +1758,38 @@ StoppingList <- function(stopList,
 ##' order that the result of this rule is to stop.
 ##'
 ##' @slot stopList list of stopping rules
+##' @slot report_label label for reporting
 ##'
 ##' @example examples/Rules-class-StoppingAll.R
 ##' @keywords classes
 ##' @export
 .StoppingAll <-
-    setClass(Class="StoppingAll",
-             representation(stopList="list",
-                            report_label = "character"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5))),
+  setClass(
+    Class = "StoppingAll",
+    representation(
+      stopList = "list",
+      report_label = "character"
+    ),
+    prototype(
+      stopList =
+        list(
+          StoppingMinPatients(50),
+          StoppingMinCohorts(5)
+        )
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
 
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+        o$check(
+          all(sapply(object@stopList, is, "Stopping")),
+          "all stopList elements have to Stopping objects"
+        )
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
-
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.StoppingAll())
 
 
@@ -1729,10 +1800,11 @@ validObject(.StoppingAll())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAll <- function(stopList, report_label = character(0))
-{
-    .StoppingAll(stopList=stopList,
-                 report_label = report_label)
+StoppingAll <- function(stopList, report_label = character(0)) {
+  .StoppingAll(
+    stopList = stopList,
+    report_label = report_label
+  )
 }
 
 
@@ -1750,27 +1822,38 @@ StoppingAll <- function(stopList, report_label = character(0))
 ##' order that the result of this rule is to stop.
 ##'
 ##' @slot stopList list of stopping rules
+##' @slot report_label label for reporting
 ##'
 ##' @example examples/Rules-class-StoppingAny.R
 ##' @keywords classes
 ##' @export
 .StoppingAny <-
-    setClass(Class="StoppingAny",
-             representation(stopList="list",
-                            report_label = "character"),
-             prototype(stopList=
-                           list(StoppingMinPatients(50),
-                                StoppingMinCohorts(5))),
-             contains="Stopping",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "StoppingAny",
+    representation(
+      stopList = "list",
+      report_label = "character"
+    ),
+    prototype(
+      stopList =
+        list(
+          StoppingMinPatients(50),
+          StoppingMinCohorts(5)
+        )
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(all(sapply(object@stopList, is, "Stopping")),
-                             "all stopList elements have to Stopping objects")
+        o$check(
+          all(sapply(object@stopList, is, "Stopping")),
+          "all stopList elements have to Stopping objects"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.StoppingAny())
 
 
@@ -1781,15 +1864,16 @@ validObject(.StoppingAny())
 ##'
 ##' @export
 ##' @keywords methods
-StoppingAny <- function(stopList, report_label = character(0))
-{
-    .StoppingAny(stopList=stopList,
-                 report_label =
-                  report_label)
+StoppingAny <- function(stopList, report_label = character(0)) {
+  .StoppingAny(
+    stopList = stopList,
+    report_label =
+      report_label
+  )
 }
 
 
-##-------------------------------------------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------------------------------------
 ## Stopping based on a target ratio of the 95% credibility interval
 ## ---------------------------------------------------------------------------------------------------------------
 
@@ -1804,22 +1888,32 @@ StoppingAny <- function(stopList, report_label = character(0))
 ##' @export
 ##' @keywords classes
 .StoppingTDCIRatio <-
-  setClass(Class="StoppingTDCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "StoppingTDCIRatio",
+    representation(
+      targetRatio = "numeric",
+      targetEndOfTrial = "numeric"
+    ),
+    prototype(
+      targetRatio = 5,
+      targetEndOfTrial = 0.3
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
+        o$check(
+          is.numeric(object@targetRatio) & object@targetRatio > 0,
+          "targetRatio must be a positive numerical number"
+        )
+        o$check(
+          is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
+          "targetEndOfTrial must be a numerical number lies between 0 and 1"
+        )
+        o$result()
+      }
+  )
 
 validObject(.StoppingTDCIRatio())
 
@@ -1832,10 +1926,11 @@ validObject(.StoppingTDCIRatio())
 ##' @export
 ##' @keywords methods
 StoppingTDCIRatio <- function(targetRatio,
-                              targetEndOfTrial)
-{
-  .StoppingTDCIRatio(targetRatio=targetRatio,
-                     targetEndOfTrial=targetEndOfTrial)
+                              targetEndOfTrial) {
+  .StoppingTDCIRatio(
+    targetRatio = targetRatio,
+    targetEndOfTrial = targetEndOfTrial
+  )
 }
 
 ## ----------------------------------------------------------------------------------------------------------------
@@ -1851,22 +1946,32 @@ StoppingTDCIRatio <- function(targetRatio,
 ##' @export
 ##' @keywords classes
 .StoppingGstarCIRatio <-
-  setClass(Class="StoppingGstarCIRatio",
-           representation(targetRatio="numeric",
-                          targetEndOfTrial="numeric"),
-           prototype(targetRatio=5,
-                     targetEndOfTrial=0.3),
-           contains="Stopping",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "StoppingGstarCIRatio",
+    representation(
+      targetRatio = "numeric",
+      targetEndOfTrial = "numeric"
+    ),
+    prototype(
+      targetRatio = 5,
+      targetEndOfTrial = 0.3
+    ),
+    contains = "Stopping",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               o$check(is.numeric(object@targetRatio) & object@targetRatio > 0,
-                       "targetRatio must be a positive numerical number")
-               o$check(is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
-                       "targetEndOfTrial must be a numerical number lies between 0 and 1")
-               o$result()
-             })
+        o$check(
+          is.numeric(object@targetRatio) & object@targetRatio > 0,
+          "targetRatio must be a positive numerical number"
+        )
+        o$check(
+          is.numeric(object@targetEndOfTrial) & object@targetEndOfTrial >= 0 & object@targetEndOfTrial <= 1,
+          "targetEndOfTrial must be a numerical number lies between 0 and 1"
+        )
+        o$result()
+      }
+  )
 
 validObject(.StoppingGstarCIRatio())
 
@@ -1879,10 +1984,11 @@ validObject(.StoppingGstarCIRatio())
 ##' @export
 ##' @keywords methods
 StoppingGstarCIRatio <- function(targetRatio,
-                                 targetEndOfTrial)
-{
-  .StoppingGstarCIRatio(targetRatio=targetRatio,
-                        targetEndOfTrial=targetEndOfTrial)
+                                 targetEndOfTrial) {
+  .StoppingGstarCIRatio(
+    targetRatio = targetRatio,
+    targetEndOfTrial = targetEndOfTrial
+  )
 }
 
 
@@ -1906,8 +2012,10 @@ StoppingGstarCIRatio <- function(targetRatio,
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="CohortSize",
-         contains=list("VIRTUAL"))
+setClass(
+  Class = "CohortSize",
+  contains = list("VIRTUAL")
+)
 
 
 ## --------------------------------------------------
@@ -1924,26 +2032,40 @@ setClass(Class="CohortSize",
 ##' @export
 ##' @keywords classes
 .CohortSizeRange <-
-    setClass(Class="CohortSizeRange",
-             representation(intervals="numeric",
-                            cohortSize="integer"),
-             prototype(intervals=c(0, 20),
-                       cohortSize=as.integer(c(1L, 3L))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "CohortSizeRange",
+    representation(
+      intervals = "numeric",
+      cohortSize = "integer"
+    ),
+    prototype(
+      intervals = c(0, 20),
+      cohortSize = as.integer(c(1L, 3L))
+    ),
+    contains = "CohortSize",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@intervals)),
-                             "cohortSize must have same length as intervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@intervals, strictly=TRUE),
-                             "intervals has to be sorted and have unique values")
+        o$check(
+          identical(
+            length(object@cohortSize),
+            length(object@intervals)
+          ),
+          "cohortSize must have same length as intervals"
+        )
+        o$check(
+          all(object@cohortSize >= 0),
+          "cohortSize must only contain positive integers"
+        )
+        o$check(
+          !is.unsorted(object@intervals, strictly = TRUE),
+          "intervals has to be sorted and have unique values"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.CohortSizeRange())
 
 ##' Initialization function for "CohortSizeRange"
@@ -1955,10 +2077,11 @@ validObject(.CohortSizeRange())
 ##' @export
 ##' @keywords methods
 CohortSizeRange <- function(intervals,
-                            cohortSize)
-{
-    .CohortSizeRange(intervals=intervals,
-                     cohortSize=safeInteger(cohortSize))
+                            cohortSize) {
+  .CohortSizeRange(
+    intervals = intervals,
+    cohortSize = safeInteger(cohortSize)
+  )
 }
 
 ## --------------------------------------------------
@@ -1976,28 +2099,44 @@ CohortSizeRange <- function(intervals,
 ##' @export
 ##' @keywords classes
 .CohortSizeDLT <-
-    setClass(Class="CohortSizeDLT",
-             representation(DLTintervals="integer",
-                            cohortSize="integer"),
-             prototype(DLTintervals=as.integer(c(0, 1)),
-                       cohortSize=as.integer(c(1, 3))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "CohortSizeDLT",
+    representation(
+      DLTintervals = "integer",
+      cohortSize = "integer"
+    ),
+    prototype(
+      DLTintervals = as.integer(c(0, 1)),
+      cohortSize = as.integer(c(1, 3))
+    ),
+    contains = "CohortSize",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(identical(length(object@cohortSize),
-                                       length(object@DLTintervals)),
-                             "cohortSize must have same length as DLTintervals")
-                     o$check(all(object@cohortSize >= 0),
-                             "cohortSize must only contain positive integers")
-                     o$check(! is.unsorted(object@DLTintervals, strictly=TRUE),
-                             "DLTintervals has to be sorted and have unique values")
-                     o$check(all(object@DLTintervals >= 0),
-                             "DLTintervals must only contain non-negative integers")
+        o$check(
+          identical(
+            length(object@cohortSize),
+            length(object@DLTintervals)
+          ),
+          "cohortSize must have same length as DLTintervals"
+        )
+        o$check(
+          all(object@cohortSize >= 0),
+          "cohortSize must only contain positive integers"
+        )
+        o$check(
+          !is.unsorted(object@DLTintervals, strictly = TRUE),
+          "DLTintervals has to be sorted and have unique values"
+        )
+        o$check(
+          all(object@DLTintervals >= 0),
+          "DLTintervals must only contain non-negative integers"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.CohortSizeDLT())
 
 ##' Initialization function for "CohortSizeDLT"
@@ -2009,10 +2148,11 @@ validObject(.CohortSizeDLT())
 ##' @export
 ##' @keywords methods
 CohortSizeDLT <- function(DLTintervals,
-                          cohortSize)
-{
-    .CohortSizeDLT(DLTintervals=safeInteger(DLTintervals),
-                   cohortSize=safeInteger(cohortSize))
+                          cohortSize) {
+  .CohortSizeDLT(
+    DLTintervals = safeInteger(DLTintervals),
+    cohortSize = safeInteger(cohortSize)
+  )
 }
 
 
@@ -2030,19 +2170,23 @@ CohortSizeDLT <- function(DLTintervals,
 ##' @keywords classes
 ##' @export
 .CohortSizeConst <-
-    setClass(Class="CohortSizeConst",
-             representation(size="integer"),
-             prototype(size=3L),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "CohortSizeConst",
+    representation(size = "integer"),
+    prototype(size = 3L),
+    contains = "CohortSize",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(is.scalar(object@size) && (object@size >= 0),
-                             "size needs to be positive scalar")
+        o$check(
+          is.scalar(object@size) && (object@size >= 0),
+          "size needs to be positive scalar"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.CohortSizeConst())
 
 ##' Initialization function for "CohortSizeConst"
@@ -2052,9 +2196,8 @@ validObject(.CohortSizeConst())
 ##'
 ##' @export
 ##' @keywords methods
-CohortSizeConst <- function(size)
-{
-    .CohortSizeConst(size=safeInteger(size))
+CohortSizeConst <- function(size) {
+  .CohortSizeConst(size = safeInteger(size))
 }
 
 
@@ -2075,21 +2218,27 @@ CohortSizeConst <- function(size)
 ##' @example examples/Rules-class-CohortSizeParts.R
 ##' @export
 .CohortSizeParts <-
-    setClass(Class="CohortSizeParts",
-             representation(sizes="integer"),
-             prototype(sizes=as.integer(c(1, 3))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "CohortSizeParts",
+    representation(sizes = "integer"),
+    prototype(sizes = as.integer(c(1, 3))),
+    contains = "CohortSize",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(all(object@sizes > 0),
-                             "the cohort sizes need to be positive")
-                     o$check(identical(length(object@sizes), 2L),
-                             "2 elements required in sizes")
+        o$check(
+          all(object@sizes > 0),
+          "the cohort sizes need to be positive"
+        )
+        o$check(
+          identical(length(object@sizes), 2L),
+          "2 elements required in sizes"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.CohortSizeParts())
 
 ##' Initialization function for "CohortSizeParts"
@@ -2099,9 +2248,8 @@ validObject(.CohortSizeParts())
 ##' @export
 ##'
 ##' @keywords methods
-CohortSizeParts <- function(sizes)
-{
-    .CohortSizeParts(sizes=safeInteger(sizes))
+CohortSizeParts <- function(sizes) {
+  .CohortSizeParts(sizes = safeInteger(sizes))
 }
 
 
@@ -2124,24 +2272,38 @@ CohortSizeParts <- function(sizes)
 ##' @keywords classes
 ##' @export
 .CohortSizeMax <-
-    setClass(Class="CohortSizeMax",
-             representation(cohortSizeList="list"),
-             prototype(cohortSizeList=
-                           list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
-                                CohortSizeDLT(DLTintervals=c(0, 1),
-                                              cohortSize=c(1, 3)))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "CohortSizeMax",
+    representation(cohortSizeList = "list"),
+    prototype(
+      cohortSizeList =
+        list(
+          CohortSizeRange(
+            intervals = c(0, 30),
+            cohortSize = c(1, 3)
+          ),
+          CohortSizeDLT(
+            DLTintervals = c(0, 1),
+            cohortSize = c(1, 3)
+          )
+        )
+    ),
+    contains = "CohortSize",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(all(sapply(object@cohortSizeList, is,
-                                        "CohortSize")),
-                             "all cohortSizeList elements have to be CohortSize objects")
+        o$check(
+          all(sapply(
+            object@cohortSizeList, is,
+            "CohortSize"
+          )),
+          "all cohortSizeList elements have to be CohortSize objects"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.CohortSizeMax())
 
 
@@ -2152,9 +2314,8 @@ validObject(.CohortSizeMax())
 ##'
 ##' @export
 ##' @keywords methods
-CohortSizeMax <- function(cohortSizeList)
-{
-    .CohortSizeMax(cohortSizeList=cohortSizeList)
+CohortSizeMax <- function(cohortSizeList) {
+  .CohortSizeMax(cohortSizeList = cohortSizeList)
 }
 
 
@@ -2177,24 +2338,38 @@ CohortSizeMax <- function(cohortSizeList)
 ##' @keywords classes
 ##' @export
 .CohortSizeMin <-
-    setClass(Class="CohortSizeMin",
-             representation(cohortSizeList="list"),
-             prototype(cohortSizeList=
-                           list(CohortSizeRange(intervals=c(0, 30),
-                                                cohortSize=c(1, 3)),
-                                CohortSizeDLT(DLTintervals=c(0, 1),
-                                              cohortSize=c(1, 3)))),
-             contains="CohortSize",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "CohortSizeMin",
+    representation(cohortSizeList = "list"),
+    prototype(
+      cohortSizeList =
+        list(
+          CohortSizeRange(
+            intervals = c(0, 30),
+            cohortSize = c(1, 3)
+          ),
+          CohortSizeDLT(
+            DLTintervals = c(0, 1),
+            cohortSize = c(1, 3)
+          )
+        )
+    ),
+    contains = "CohortSize",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(all(sapply(object@cohortSizeList, is,
-                                        "CohortSize")),
-                             "all cohortSizeList elements have to be CohortSize objects")
+        o$check(
+          all(sapply(
+            object@cohortSizeList, is,
+            "CohortSize"
+          )),
+          "all cohortSizeList elements have to be CohortSize objects"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.CohortSizeMin())
 
 
@@ -2205,9 +2380,8 @@ validObject(.CohortSizeMin())
 ##'
 ##' @export
 ##' @keywords methods
-CohortSizeMin <- function(cohortSizeList)
-{
-    .CohortSizeMin(cohortSizeList=cohortSizeList)
+CohortSizeMin <- function(cohortSizeList) {
+  .CohortSizeMin(cohortSizeList = cohortSizeList)
 }
 
 ## --------------------------------------------------
@@ -2221,8 +2395,10 @@ CohortSizeMin <- function(cohortSizeList)
 ##'
 ##' @export
 ##' @keywords classes
-setClass(Class="SafetyWindow",
-         contains=list("VIRTUAL"))
+setClass(
+  Class = "SafetyWindow",
+  contains = list("VIRTUAL")
+)
 
 
 ## ============================================================
@@ -2269,31 +2445,47 @@ setClass(Class="SafetyWindow",
 ##' @export
 ##' @keywords classes
 .SafetyWindowSize <-
-  setClass(Class="SafetyWindowSize",
-           representation(patientGap="list",
-                          sizeIntervals="numeric",
-                          patientFollow="numeric",
-                          patientFollowMin="numeric"),
-           prototype(patientGap=list(0),
-                     sizeIntervals=as.integer(c(1L,3L)),
-                     patientFollow=1,
-                     patientFollowMin=1),
-           contains="SafetyWindow",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "SafetyWindowSize",
+    representation(
+      patientGap = "list",
+      sizeIntervals = "numeric",
+      patientFollow = "numeric",
+      patientFollowMin = "numeric"
+    ),
+    prototype(
+      patientGap = list(0),
+      sizeIntervals = as.integer(c(1L, 3L)),
+      patientFollow = 1,
+      patientFollowMin = 1
+    ),
+    contains = "SafetyWindow",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               o$check(all(sapply(object@patientGap,function(x){x>=0})),
-                       "patientGap should be non-negative number")
-               o$check(all(object@sizeIntervals > 0),
-                       "sizeIntervals must only contain positive integers")
-               o$check(all(object@patientFollow > 0),
-                       "patientFollow should be positive number")
-               o$check(all(object@patientFollowMin > 0),
-                       "patientFollowMin should be positive number")
+        o$check(
+          all(sapply(object@patientGap, function(x) {
+            x >= 0
+          })),
+          "patientGap should be non-negative number"
+        )
+        o$check(
+          all(object@sizeIntervals > 0),
+          "sizeIntervals must only contain positive integers"
+        )
+        o$check(
+          all(object@patientFollow > 0),
+          "patientFollow should be positive number"
+        )
+        o$check(
+          all(object@patientFollowMin > 0),
+          "patientFollowMin should be positive number"
+        )
 
-               o$result()
-             })
+        o$result()
+      }
+  )
 validObject(.SafetyWindowSize())
 
 ##' Initialization function for `SafetyWindowSize`
@@ -2310,16 +2502,16 @@ validObject(.SafetyWindowSize())
 SafetyWindowSize <- function(patientGap,
                              sizeIntervals,
                              patientFollow,
-                             patientFollowMin)
-{
-  if(patientFollow > patientFollowMin)
-  {
+                             patientFollowMin) {
+  if (patientFollow > patientFollowMin) {
     warning("the value of patientFollowMin is typically larger than the value of patientFollow")
   }
-  .SafetyWindowSize(patientGap=patientGap,
-                    sizeIntervals=sizeIntervals,
-                    patientFollow=patientFollow,
-                    patientFollowMin=patientFollowMin)
+  .SafetyWindowSize(
+    patientGap = patientGap,
+    sizeIntervals = sizeIntervals,
+    patientFollow = patientFollow,
+    patientFollowMin = patientFollowMin
+  )
 }
 
 
@@ -2342,27 +2534,39 @@ SafetyWindowSize <- function(patientGap,
 ##' @keywords classes
 ##' @export
 .SafetyWindowConst <-
-  setClass(Class="SafetyWindowConst",
-           representation(patientGap="numeric",
-                          patientFollow="numeric",
-                          patientFollowMin="numeric"),
-           prototype(patientGap=0,
-                     patientFollow=1,
-                     patientFollowMin=1),
-           contains="SafetyWindow",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "SafetyWindowConst",
+    representation(
+      patientGap = "numeric",
+      patientFollow = "numeric",
+      patientFollowMin = "numeric"
+    ),
+    prototype(
+      patientGap = 0,
+      patientFollow = 1,
+      patientFollowMin = 1
+    ),
+    contains = "SafetyWindow",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               o$check(all(object@patientGap >= 0),
-                       "patientGap should be non-negative number")
-               o$check(all(object@patientFollow > 0),
-                       "patientFollow should be positive number")
-               o$check(all(object@patientFollowMin > 0),
-                       "patientFollowMin should be positive number")
+        o$check(
+          all(object@patientGap >= 0),
+          "patientGap should be non-negative number"
+        )
+        o$check(
+          all(object@patientFollow > 0),
+          "patientFollow should be positive number"
+        )
+        o$check(
+          all(object@patientFollowMin > 0),
+          "patientFollowMin should be positive number"
+        )
 
-               o$result()
-             })
+        o$result()
+      }
+  )
 validObject(.SafetyWindowConst())
 
 
@@ -2378,15 +2582,15 @@ validObject(.SafetyWindowConst())
 ##' @keywords methods
 SafetyWindowConst <- function(patientGap,
                               patientFollow,
-                              patientFollowMin)
-{
-  if(patientFollow > patientFollowMin)
-  {
+                              patientFollowMin) {
+  if (patientFollow > patientFollowMin) {
     warning("the value of patientFollowMin is typically larger than the value of patientFollow")
   }
-  .SafetyWindowConst(patientGap=patientGap,
-                     patientFollow=patientFollow,
-                     patientFollowMin=patientFollowMin)
+  .SafetyWindowConst(
+    patientGap = patientGap,
+    patientFollow = patientFollow,
+    patientFollowMin = patientFollowMin
+  )
 }
 
 

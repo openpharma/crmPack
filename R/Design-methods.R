@@ -354,31 +354,27 @@ setMethod("simulate",
 
 
 
-                   # browser()
+                    # browser()
                     # unpack stopping rule labels and individual logicals
-                      stopit_unpacked <- list()
+                    stopit_unpacked <- list()
 
-                      unpack_stopit <- function(stopit_tree) {
-                          if(is.list(stopit_tree)){
-                              lapply(stopit_tree,unpack_stopit)
-                          } else {
-                              label <- attr(stopit_tree,"report_label")
-                              value <- stopit_tree[1]
-                              names(value) <- label
-                              stopit_unpacked <- append(stopit_unpacked,value)
-                              if(is.null(attr(stopit_tree,"individual"))){
-                                  stopit_unpacked
-                              } else {
-                                  append(stopit_unpacked,lapply(attr(stopit_tree,"individual"),unpack_stopit))
-                              }
-                          }
+                    unpack_stopit <- function(stopit_tree) {
+                      if (is.list(stopit_tree)) {
+                        lapply(stopit_tree, unpack_stopit)
+                      } else {
+                        label <- attr(stopit_tree, "report_label")
+                        value <- stopit_tree[1]
+                        names(value) <- label
+                        stopit_unpacked <- append(stopit_unpacked, value)
+                        if (is.null(attr(stopit_tree, "individual"))) {
+                          stopit_unpacked
+                        } else {
+                          append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), unpack_stopit))
+                        }
                       }
-
-
+                    }
 
                     stopit_results <- unlist(unpack_stopit(stopit))
-
-
 
                   }
 
@@ -437,20 +433,17 @@ setMethod("simulate",
               stopResults <- lapply(resultList, "[[", "report_results")
               stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
-
               ## return the results in the Simulations class object
-              ret <- Simulations(data=dataList,
-                                 doses=recommendedDoses,
-                                 fit=fitList,
-                                 stopReasons=stopReasons,
-                                 stop_report=stop_matrix,
-                                 seed=RNGstate
-                                 )
+              ret <- Simulations(
+                data = dataList,
+                doses = recommendedDoses,
+                fit = fitList,
+                stopReasons = stopReasons,
+                stop_report = stop_matrix,
+                seed = RNGstate
+              )
               return(ret)
           })
-
-
-
 
 ##' Simulate outcomes from a rule-based design
 ##'
