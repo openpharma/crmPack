@@ -1043,3 +1043,39 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expect_identical(result, expected) # First active dose not applied.
 })
+
+
+test_that("Default label assignment for stopping rules works correctly.", {
+
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+
+  stopping <- StoppingMinCohorts(nCohorts=3, report_label = "default")
+
+  result <- stopTrial(stopping=stopping,
+                      model = model,
+                      samples = my_samples,
+                      dose = 7,
+                      data=data)
+
+  expect_equal(attr(result, "report_label"), "Minimum number of 3 cohorts reached")
+})
+
+
+test_that("Customized label assignment for stopping rules works correctly.", {
+
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+
+  stopping <- StoppingMinCohorts(nCohorts=3, report_label = "a customized label")
+
+  result <- stopTrial(stopping=stopping,
+                      model = model,
+                      samples = my_samples,
+                      dose = 7,
+                      data=data)
+
+  expect_equal(attr(result, "report_label"), "a customized label")
+})
