@@ -96,7 +96,7 @@ GeneralSimulations <- function(data,
 ##'
 ##' @slot fit list with the final fits
 ##' @slot stopReasons list of stopping reasons for each simulation run
-##' @slot stopResult matrix of results of stopping rules for each simulation run
+##' @slot stop_report matrix of results of stopping rules for each simulation run
 ##'
 ##' @export
 ##' @keywords classes
@@ -149,7 +149,8 @@ Simulations <- function(fit,
     .Simulations(start,
                  fit=fit,
                  stopReasons = stopReasons,
-                 stop_report = stop_report)
+                 stop_report = stop_report
+                 )
 }
 
 

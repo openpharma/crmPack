@@ -480,9 +480,13 @@ setMethod("summary",
         (toxAtDoses < target[2]))
 
 
-
+      #browser()
       # stopping rule result matrix
+      if(.hasSlot(object, "stop_report") == TRUE){
       stop_report <- object@stop_report
+      } else {
+        stop_report <- matrix()
+      }
 
 
       # browser()
@@ -757,6 +761,10 @@ setMethod("show",
 
                 # report stopping rules
                 logPercent <- apply(object@stop_report,2,mean)*100
+
+
+
+                if(!is.null(names(logPercent))){
                 cat("Stopping rules:\n \n")
                 for(i in 1:ncol(object@stop_report)){
                   if(!is.na(names(logPercent)[i])){
@@ -764,6 +772,7 @@ setMethod("show",
                                 logPercent[i],
                                "%\n \n")
 
+                    }
                   }
                 }
 

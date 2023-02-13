@@ -881,6 +881,8 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
+
+
                   }
 
 
@@ -949,6 +951,8 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+              stop_report <- matrix()
+
               ## return the results in the DualSimulations class object
               ret <- DualSimulations(
                          data=dataList,
@@ -958,6 +962,7 @@ setMethod("simulate",
                          fit=fitToxList,
                          fitBiomarker=fitBiomarkerList,
                          stopReasons=stopReasons,
+                         stop_report = stop_report,
                          seed=RNGstate)
 
               return(ret)
@@ -4157,12 +4162,15 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+              stop_report <- matrix()
+
               ## return the results in the Simulations class object
               ret <- DASimulations(data=dataList,
                                    doses=recommendedDoses,
                                    fit=fitList,
                                    trialduration=trialduration,
                                    stopReasons=stopReasons,
+                                   stop_report = stop_report,
                                    seed=RNGstate)
 
               return(ret)
