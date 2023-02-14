@@ -1,8 +1,8 @@
 test_that("Posterior summaries for probabilities of
           DLT (2-parameter logistic model) and recommended doses (NCRMLoss):
           crmPack vs. SAS", {
-  ## Data examples
-  ## Scenario 1
+
+  # Data examples for scenario 1
   set.seed(0504201914)
   mcmc_options <- McmcOptions(
     burnin = 5000,
@@ -58,7 +58,7 @@ test_that("Posterior summaries for probabilities of
     ID = 1:12
   )
 
-  ## Look at single trials
+  # Look at single trials
   for (i in 1:length(tab.sc1)) {
     date_time <- Sys.time()
     while ((as.numeric(Sys.time()) - as.numeric(date_time)) < 1) {}
@@ -74,7 +74,7 @@ test_that("Posterior summaries for probabilities of
     target = c(0.2, 0.35),
     overdose = c(0.35, 0.6),
     unacceptable = c(0.6, 1),
-    max_overdose_prob = 0.9999, # changed from 1 to 0.99
+    max_overdose_prob = 0.9999,
     losses = c(1, 0, 2, 3)
   )
 
@@ -98,7 +98,7 @@ test_that("Posterior summaries for probabilities of
       ncol = data.obs@nGrid
     )
 
-    ## evaluate the probs, for all samples.
+    # evaluate the probs, for all samples
     for (i in seq_len(data.obs@nGrid))
     {
       probSamples.mat[, i] <- prob(
@@ -120,17 +120,18 @@ test_that("Posterior summaries for probabilities of
     )
   }
 
-  ## Posterior summaries computed by SAS
+  # Posterior summaries computed by SAS
   SAS.sc1 <- vector("list", 4)
   names(SAS.sc1) <- names(tab.sc1)
 
   for (i in 1:4) {
-    temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit", i, ".csv"), header = TRUE, dec = ".")
+    temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit", i, ".csv"),
+                      header = TRUE, dec = ".")
     SAS.sc1[[i]] <- apply(as.matrix(temp[, -1]), 2, as.numeric)
     rownames(SAS.sc1[[i]]) <- temp[, 1]
   }
 
-  ## compare posterior summaries for probabilities of DLT (2-parameter logistic model): crmPack vs. SAS
+  # compare posterior summaries for probabilities of DLT: crmPack vs. SAS
   all_true <- c(F, F, F, F)
   for (i in 1:4) {
     all_true[i] <- all(abs(res.sc1[[i]] - SAS.sc1[[i]]) < 0.01)
@@ -138,8 +139,8 @@ test_that("Posterior summaries for probabilities of
 
   expect_true(all(all_true))
 
-  ## Recommended doses computed by SAS
+  # Recommended doses computed by SAS
   SAS.dose.Rec <- t(read.csv2(paste0(getwd(), "/testdata/sc1_recdose.csv")))[-1, ]
-  ## compare recommended doses: crmPack vs. SAS
+  # compare recommended doses: crmPack vs. SAS
   expect_equal(rec.dose.sc1, SAS.dose.Rec, tolerance = 0)
 })
