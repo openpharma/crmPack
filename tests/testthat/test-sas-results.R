@@ -125,12 +125,13 @@ test_that("Posterior summaries for probabilities of
   names(SAS.sc1) <- names(tab.sc1)
 
   for (i in 1:4) {
-    temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit", i, ".csv"), header = TRUE, dec = ".")
+    temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit", i, ".csv"),
+                      header = TRUE, dec = ".")
     SAS.sc1[[i]] <- apply(as.matrix(temp[, -1]), 2, as.numeric)
     rownames(SAS.sc1[[i]]) <- temp[, 1]
   }
 
-  ## compare posterior summaries for probabilities of DLT (2-parameter logistic model): crmPack vs. SAS
+  ## compare posterior summaries for probabilities of DLT: crmPack vs. SAS
   all_true <- c(F, F, F, F)
   for (i in 1:4) {
     all_true[i] <- all(abs(res.sc1[[i]] - SAS.sc1[[i]]) < 0.01)
