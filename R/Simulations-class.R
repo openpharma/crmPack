@@ -129,6 +129,7 @@ validObject(.Simulations())
 ##'
 ##' @param fit see \code{\linkS4class{Simulations}}
 ##' @param stopReasons see \code{\linkS4class{Simulations}}
+##' @param stop_report see \code{\linkS4class{Simulations}}
 ##' @param \dots additional parameters from \code{\link{GeneralSimulations}}
 ##' @return the \code{\linkS4class{Simulations}} object
 ##' @export

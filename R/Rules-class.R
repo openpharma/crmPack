@@ -1786,7 +1786,7 @@ StoppingList <- function(stop_list, summary) {
 #' @rdname StoppingAll-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
-#'
+#' @param report_label (`character`) \cr see slot definition.
 #' @export
 #' @example examples/Rules-class-StoppingAll.R
 #'
