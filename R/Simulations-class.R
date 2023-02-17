@@ -91,7 +91,7 @@ GeneralSimulations <- function(data,
 ##'
 ##' @slot fit list with the final fits
 ##' @slot stopReasons list of stopping reasons for each simulation run
-##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @export
 ##' @keywords classes
 .Simulations <-
@@ -218,6 +218,7 @@ DualSimulations <- function(rhoEst,
 ##' initialization function is provided for this class.
 ##'
 ##' @slot target target toxicity interval
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @slot targetDoseInterval corresponding target dose interval
 ##' @slot nsim number of simulations
 ##' @slot propDLTs proportions of DLTs in the trials
