@@ -354,6 +354,25 @@ setMethod("simulate",
                                           samples=thisSamples,
                                           model=object@model,
                                           data=thisData)
+                      stopit_unpacked <- list()
+
+                    unpack_stopit <- function(stopit_tree) {
+                      if (is.list(stopit_tree)) {
+                        lapply(stopit_tree, unpack_stopit)
+                      } else {
+                        label <- attr(stopit_tree, "report_label")
+                        value <- stopit_tree[1]
+                        names(value) <- label
+                        stopit_unpacked <- append(stopit_unpacked, value)
+                        if (is.null(attr(stopit_tree, "individual"))) {
+                          stopit_unpacked
+                        } else {
+                          append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), unpack_stopit))
+                        }
+                      }
+                    }
+
+                    stopit_results <- unlist(unpack_stopit(stopit))
                   }
 
                   ## get the fit
@@ -370,7 +389,9 @@ setMethod("simulate",
                                   select=c(middle, lower, upper)),
                            stop=
                            attr(stopit,
-                                "message"))
+                                "message"),
+
+                           report_results = stopit_results)
                   return(thisResult)
               }
 
@@ -400,13 +421,19 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
-              ## return the results in the Simulations class object
-              ret <- Simulations(data=dataList,
-                                 doses=recommendedDoses,
-                                 fit=fitList,
-                                 stopReasons=stopReasons,
-                                 seed=RNGstate)
+              # individual stopping rule results as matrix, labels as column names
+              stopResults <- lapply(resultList, "[[", "report_results")
+              stop_matrix <- as.matrix(do.call(rbind, stopResults))
 
+              ## return the results in the Simulations class object
+              ret <- Simulations(
+                data = dataList,
+                doses = recommendedDoses,
+                fit = fitList,
+                stopReasons = stopReasons,
+                stop_report = stop_matrix,
+                seed = RNGstate
+                )
               return(ret)
           })
 
@@ -915,6 +942,8 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+              stop_report <- matrix()
+
               ## return the results in the DualSimulations class object
               ret <- DualSimulations(
                          data=dataList,
@@ -924,6 +953,7 @@ setMethod("simulate",
                          fit=fitToxList,
                          fitBiomarker=fitBiomarkerList,
                          stopReasons=stopReasons,
+                         stop_report = stop_report,
                          seed=RNGstate)
 
               return(ret)
@@ -4123,12 +4153,14 @@ setMethod("simulate",
               ## the reasons for stopping
               stopReasons <- lapply(resultList, "[[", "stop")
 
+              stop_report <- matrix()
               ## return the results in the Simulations class object
               ret <- DASimulations(data=dataList,
                                    doses=recommendedDoses,
                                    fit=fitList,
                                    trialduration=trialduration,
                                    stopReasons=stopReasons,
+                                   stop_report = stop_report,
                                    seed=RNGstate)
 
               return(ret)

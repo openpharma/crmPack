@@ -7,7 +7,7 @@
 \alias{StoppingMTDdistribution}
 \title{\code{StoppingMTDdistribution}}
 \usage{
-StoppingMTDdistribution(target, thresh, prob)
+StoppingMTDdistribution(target, thresh, prob, report_label = character(0))
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
@@ -15,6 +15,8 @@ StoppingMTDdistribution(target, thresh, prob)
 \item{thresh}{(\code{proportion})\cr see slot definition.}
 
 \item{prob}{(\code{proportion})\cr see slot definition.}
+
+\item{report_label}{(\code{character})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

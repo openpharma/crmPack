@@ -7,12 +7,14 @@
 \alias{StoppingTDCIRatio}
 \title{\code{StoppingTDCIRatio}}
 \usage{
-StoppingTDCIRatio(target_ratio, prob_target)
+StoppingTDCIRatio(target_ratio, prob_target, report_label = character(0))
 }
 \arguments{
 \item{target_ratio}{(\code{numeric})\cr see slot definition.}
 
 \item{prob_target}{(\code{proportion})\cr see slot definition.}
+
+\item{report_label}{(\code{character})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

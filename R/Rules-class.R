@@ -1099,6 +1099,9 @@ IncrementsMin <- function(increments_list) {
 #'
 #' [`Stopping`] is a class for stopping rules.
 #'
+#' @slot report_label (`character`)\cr is the label used for reporting (default
+#' , custom or absent)
+#'
 #' @seealso [`StoppingList`], [`StoppingCohortsNearDose`], [`StoppingPatientsNearDose`],
 #'   [`StoppingMinCohorts`], [`StoppingMinPatients`], [`StoppingTargetProb`],
 #'   [`StoppingMTDdistribution`], [`StoppingTargetBiomarker`], [`StoppingHighestDose`]
@@ -1108,7 +1111,8 @@ IncrementsMin <- function(increments_list) {
 #' @export
 #'
 setClass(
-  Class = "Stopping"
+  Class = "Stopping",
+  slots = c(report_label = "character")
 )
 
 # StoppingCohortsNearDose ----
@@ -1149,15 +1153,18 @@ setClass(
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingCohortsNearDose.R
 #' @export
 #'
 StoppingCohortsNearDose <- function(nCohorts = 2L,
-                                    percentage = 50) {
+                                    percentage = 50,
+                                    report_label = character(0)) {
   .StoppingCohortsNearDose(
     nCohorts = safeInteger(nCohorts),
-    percentage = percentage
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1199,15 +1206,18 @@ StoppingCohortsNearDose <- function(nCohorts = 2L,
 #'
 #' @param nPatients (`number`)\cr see slot definition.
 #' @param percentage (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingPatientsNearDose.R
 #' @export
 #'
 StoppingPatientsNearDose <- function(nPatients,
-                                     percentage = 50) {
+                                     percentage = 50,
+                                     report_label = character(0)) {
   .StoppingPatientsNearDose(
     nPatients = safeInteger(nPatients),
-    percentage = percentage
+    percentage = percentage,
+    report_label = report_label
   )
 }
 
@@ -1240,12 +1250,17 @@ StoppingPatientsNearDose <- function(nPatients,
 #' @rdname StoppingMinCohorts-class
 #'
 #' @param nCohorts (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinCohorts.R
 #' @export
 #'
-StoppingMinCohorts <- function(nCohorts) {
-  .StoppingMinCohorts(nCohorts = safeInteger(nCohorts))
+StoppingMinCohorts <- function(nCohorts,
+                               report_label = character(0)) {
+    .StoppingMinCohorts(
+    nCohorts = safeInteger(nCohorts),
+    report_label = report_label
+  )
 }
 
 # StoppingMinPatients ----
@@ -1260,13 +1275,14 @@ StoppingMinCohorts <- function(nCohorts) {
 #' patients
 #'
 #' @slot nPatients (`number`)\cr minimum allowed number of patients.
+#' @slot report_label label for stopping rule reporting
 #'
 #' @aliases StoppingMinPatients
 #' @export
 #'
 .StoppingMinPatients <- setClass(
   Class = "StoppingMinPatients",
-  slots = c(nPatients = "integer"),
+  slots = c(nPatients = "integer", report_label = "character"),
   prototype = prototype(nPatients = 20L),
   contains = "Stopping",
   validity = v_stopping_min_patients
@@ -1277,12 +1293,17 @@ StoppingMinCohorts <- function(nCohorts) {
 #' @rdname StoppingMinPatients-class
 #'
 #' @param nPatients (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMinPatients.R
 #' @export
 #'
-StoppingMinPatients <- function(nPatients) {
-  .StoppingMinPatients(nPatients = safeInteger(nPatients))
+StoppingMinPatients <- function(nPatients,
+                                report_label = character(0)) {
+    .StoppingMinPatients(
+    nPatients = safeInteger(nPatients),
+    report_label = report_label
+  )
 }
 
 # StoppingTargetProb ----
@@ -1299,7 +1320,7 @@ StoppingMinPatients <- function(nPatients) {
 #' @slot target (`number`)\cr the target toxicity interval, e.g. `c(0.2, 0.35)`.
 #' @slot prob (`proportion`)\cr required target toxicity probability (except 0 or 1)
 #'   for reaching sufficient precision.
-#'
+#' @slot report_label (`character`) \cr label for stopping rule reporting
 #' @aliases StoppingTargetProb
 #' @export
 #'
@@ -1307,7 +1328,8 @@ StoppingMinPatients <- function(nPatients) {
   Class = "StoppingTargetProb",
   slots = c(
     target = "numeric",
-    prob = "numeric"
+    prob = "numeric",
+    report_label = "character"
   ),
   prototype = prototype(
     target = c(0.2, 0.35),
@@ -1323,15 +1345,18 @@ StoppingMinPatients <- function(nPatients) {
 #'
 #' @param target (`number`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingTargetProb.R
 #' @export
 #'
 StoppingTargetProb <- function(target,
-                               prob) {
+                               prob,
+                               report_label = character(0)) {
   .StoppingTargetProb(
     target = target,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1382,17 +1407,20 @@ StoppingTargetProb <- function(target,
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh (`proportion`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @example examples/Rules-class-StoppingMTDdistribution.R
 #' @export
 #'
 StoppingMTDdistribution <- function(target,
                                     thresh,
-                                    prob) {
+                                    prob,
+                                    report_label = character(0)) {
   .StoppingMTDdistribution(
     target = target,
     thresh = thresh,
-    prob = prob
+    prob = prob,
+    report_label = report_label
   )
 }
 
@@ -1437,15 +1465,18 @@ StoppingMTDdistribution <- function(target,
 #'
 #' @param target (`proportion`)\cr see slot definition.
 #' @param thresh_cv (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMTDCV.R
 #'
 StoppingMTDCV <- function(target = 0.3,
-                          thresh_cv = 40) {
+                          thresh_cv = 40,
+                          report_label = character(0)) {
   .StoppingMTDCV(
     target = target,
-    thresh_cv = thresh_cv
+    thresh_cv = thresh_cv,
+    report_label = report_label
   )
 }
 
@@ -1506,6 +1537,7 @@ StoppingMTDCV <- function(target = 0.3,
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param a (`number`)\cr see slot definition.
 #' @param b (`number`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingLowestDoseHSRBeta.R
@@ -1513,12 +1545,14 @@ StoppingMTDCV <- function(target = 0.3,
 StoppingLowestDoseHSRBeta <- function(target = 0.3,
                                       prob = 0.95,
                                       a = 1,
-                                      b = 1) {
+                                      b = 1,
+                                      report_label = character(0)) {
   .StoppingLowestDoseHSRBeta(
     target = target,
     prob = prob,
     a = a,
-    b = b
+    b = b,
+    report_label = report_label
   )
 }
 
@@ -1569,13 +1603,15 @@ StoppingLowestDoseHSRBeta <- function(target = 0.3,
 #' @param target (`numeric`)\cr see slot definition.
 #' @param prob (`proportion`)\cr see slot definition.
 #' @param is_relative (`flag`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingTargetBiomarker.R
 #'
 StoppingTargetBiomarker <- function(target,
                                     prob,
-                                    is_relative = TRUE) {
+                                    is_relative = TRUE,
+                                    report_label = character(0)) {
   .StoppingTargetBiomarker(
     target = target,
     is_relative = is_relative,
@@ -1616,15 +1652,16 @@ StoppingTargetBiomarker <- function(target,
 #'
 #' @param rule (`Stopping`)\cr see slot definition.
 #' @param dose (`number`)\cr see slot definition.
+#' @param report_label (`character`) \cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule, dose) {
+StoppingSpecificDose <- function(rule, dose,report_label = character(0)) {
   .StoppingSpecificDose(
     rule = rule,
-    dose = positive_number(dose)
-  )
+    dose = positive_number(dose),
+    report_label = report_label)
 }
 
 # StoppingHighestDose ----
@@ -1649,12 +1686,13 @@ StoppingSpecificDose <- function(rule, dose) {
 ## constructor ----
 
 #' @rdname StoppingHighestDose-class
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingHighestDose.R
 #'
-StoppingHighestDose <- function() {
-  .StoppingHighestDose()
+StoppingHighestDose <- function(report_label = character(0)) {
+  .StoppingHighestDose(report_label = report_label)
 }
 
 # StoppingList ----
@@ -1725,13 +1763,14 @@ StoppingList <- function(stop_list, summary) {
 #' to be `TRUE`.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
-#'
+#' @slot report_label label for reporting
 #' @aliases StoppingAll
 #' @export
 #'
 .StoppingAll <- setClass(
   Class = "StoppingAll",
-  slots = c(stop_list = "list"),
+  slots = c(stop_list = "list",
+      report_label = "character"),
   prototype = prototype(
     stop_list = list(
       StoppingMinPatients(50),
@@ -1747,12 +1786,13 @@ StoppingList <- function(stop_list, summary) {
 #' @rdname StoppingAll-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
-#'
+#' @param report_label (`character`) \cr see slot definition.
 #' @export
 #' @example examples/Rules-class-StoppingAll.R
 #'
-StoppingAll <- function(stop_list) {
-  .StoppingAll(stop_list = stop_list)
+StoppingAll <- function(stop_list, report_label = character(0)) {
+  .StoppingAll(stop_list = stop_list,
+    report_label = report_label)
 }
 
 # StoppingAny ----
@@ -1769,13 +1809,15 @@ StoppingAll <- function(stop_list) {
 #' this rule to be `TRUE`.
 #'
 #' @slot stop_list (`list`)\cr list of stopping rules.
+#' @slot report_label label for reporting
 #'
 #' @aliases StoppingAny
 #' @export
 #'
 .StoppingAny <- setClass(
   Class = "StoppingAny",
-  slots = c(stop_list = "list"),
+  slots = c(stop_list = "list",
+      report_label = "character"),
   prototype = prototype(
     stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
   ),
@@ -1788,12 +1830,14 @@ StoppingAll <- function(stop_list) {
 #' @rdname StoppingAny-class
 #'
 #' @param stop_list (`list`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingAny.R
 #'
-StoppingAny <- function(stop_list) {
-  .StoppingAny(stop_list = stop_list)
+StoppingAny <- function(stop_list, report_label = character(0)) {
+  .StoppingAny(stop_list = stop_list,
+  report_label = report_label)
 }
 
 # StoppingTDCIRatio ----
@@ -1838,14 +1882,16 @@ StoppingAny <- function(stop_list) {
 #'
 #' @param target_ratio (`numeric`)\cr see slot definition.
 #' @param prob_target (`proportion`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingTDCIRatio.R
 #'
-StoppingTDCIRatio <- function(target_ratio, prob_target) {
+StoppingTDCIRatio <- function(target_ratio, prob_target, report_label = character(0)) {
   .StoppingTDCIRatio(
     target_ratio = target_ratio,
-    prob_target = prob_target
+    prob_target = prob_target,
+    report_label = report_label
   )
 }
 
@@ -1894,14 +1940,16 @@ StoppingTDCIRatio <- function(target_ratio, prob_target) {
 #'
 #' @param target_ratio (`numeric`)\cr see slot definition.
 #' @param prob_target (`proportion`)\cr see slot definition.
+#' @param report_label (`character`)\cr see slot definition.
 #'
 #' @export
 #' @example examples/Rules-class-StoppingMaxGainCIRatio.R
 #'
-StoppingMaxGainCIRatio <- function(target_ratio, prob_target) {
+StoppingMaxGainCIRatio <- function(target_ratio, prob_target, report_label = character(0)) {
   .StoppingMaxGainCIRatio(
     target_ratio = target_ratio,
-    prob_target = prob_target
+    prob_target = prob_target,
+    report_label = report_label
   )
 }
 
