@@ -10,6 +10,13 @@
 
 \code{\link{Stopping}} is a class for stopping rules.
 }
+\section{Slots}{
+
+\describe{
+\item{\code{report_label}}{(\code{character})\cr is the label used for reporting (default
+, custom or absent)}
+}}
+
 \seealso{
 \code{\link{StoppingList}}, \code{\link{StoppingCohortsNearDose}}, \code{\link{StoppingPatientsNearDose}},
 \code{\link{StoppingMinCohorts}}, \code{\link{StoppingMinPatients}}, \code{\link{StoppingTargetProb}},

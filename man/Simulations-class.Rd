@@ -16,6 +16,8 @@ Additional slots fit and stopReasons compared to the general class
 \item{\code{fit}}{list with the final fits}
 
 \item{\code{stopReasons}}{list of stopping reasons for each simulation run}
+
+\item{\code{stop_report}}{matrix of stopping rule outcomes}
 }}
 
 \keyword{classes}

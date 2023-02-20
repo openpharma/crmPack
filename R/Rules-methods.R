@@ -1970,9 +1970,9 @@ setMethod("stopTrial",
       doStop <- data@nObs >= stopping@nPatients
 
       if(isTRUE(stopping@report_label == "default")) {
-        report_label = paste("Minimum number of",
-                           stopping@nPatients,
-                           "patients reached")
+        report_label = paste(
+          "Minimum number of", stopping@nPatients, "patients reached"
+        )
       } else {
         report_label = stopping@report_label
       }
