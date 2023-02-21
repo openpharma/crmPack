@@ -94,7 +94,7 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
 })
 
 
-<<<<<<< HEAD
+
 test_that("reporting labels and logicals are correctly returned using the recursive function in simulate",
           {
 

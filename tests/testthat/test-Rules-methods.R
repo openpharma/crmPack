@@ -1202,13 +1202,13 @@ test_that("Customized label assignment for stopping rules works correctly.", {
 
   my_stopping <- StoppingMinCohorts(nCohorts = 3, report_label = "a customized label")
 
-<<<<<<< HEAD
+
   result <- stopTrial(stopping = my_stopping,
                       model = my_model,
                       samples = my_samples,
                       dose = 7,
                       data = my_data)
-=======
+
   result <- stopTrial(
     stopping = my_stopping,
     model = my_model,
@@ -1216,7 +1216,7 @@ test_that("Customized label assignment for stopping rules works correctly.", {
     dose = 7,
     data = my_data
   )
->>>>>>> 0d533afefe2fc912145d11be78446cb71a7b5021
+
 
   expect_equal(attr(result, "report_label"), "a customized label")
 })
