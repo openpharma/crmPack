@@ -73,4 +73,3 @@ time <- system.time(mySims <- simulate(design,
 summary(mySims,truth=myTruth)
 
 # nolint end
-

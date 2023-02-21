@@ -1657,7 +1657,7 @@ StoppingTargetBiomarker <- function(target,
 #' @export
 #' @example examples/Rules-class-StoppingSpecificDose.R
 #'
-StoppingSpecificDose <- function(rule, dose,report_label = character(0)) {
+StoppingSpecificDose <- function(rule, dose, report_label = character(0)) {
   .StoppingSpecificDose(
     rule = rule,
     dose = positive_number(dose),
