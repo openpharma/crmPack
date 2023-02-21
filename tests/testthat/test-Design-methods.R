@@ -95,25 +95,29 @@ test_that("NextBestInfTheory produces consistent results with a dataset", {
 
 
 
-test_that("reporting labels and logicals are correctly returned using the recursive function in simulate",
-          {
+test_that("reporting labels and logicals are correctly returned using the recursive function in simulate", {
+  my_data <- h_get_data(placebo = FALSE)
+  model <- LogisticLogNormal(
+    mean = c(-0.85, 1),
+    cov =
+      matrix(c(1, -0.5, -0.5, 1),
+        nrow = 2
+      ),
+    ref_dose = 56
+  )
 
-            my_data <- h_get_data(placebo = FALSE)
-            model <- LogisticLogNormal(mean = c(-0.85, 1),
-                                       cov =
-                                         matrix(c(1, -0.5, -0.5, 1),
-                                                nrow = 2),
-                                       ref_dose = 56)
 
-
-            increments <- IncrementsRelative(intervals = c(0, 20),
-                                             increments = c(1, 0.33))
-            new_my_next_best <- NextBestNCRM(target = c(0.2, 0.35),
-                                             overdose = c(0.35, 1),
-                                             max_overdose_prob = 0.25)
-            my_size <- CohortSizeConst(size = 3)
-
-          })
+  increments <- IncrementsRelative(
+    intervals = c(0, 20),
+    increments = c(1, 0.33)
+  )
+  new_my_next_best <- NextBestNCRM(
+    target = c(0.2, 0.35),
+    overdose = c(0.35, 1),
+    max_overdose_prob = 0.25
+  )
+  my_size <- CohortSizeConst(size = 3)
+})
 
 
 test_that("reporting labels and logicals are correctly returned using the recursive function in simulate", {
@@ -145,30 +149,45 @@ test_that("reporting labels and logicals are correctly returned using the recurs
   my_truth <- probFunction(model, alpha0 = 175, alpha1 = 5)
 
 
-            stopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "label_rule1")
-            stopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5,
-                                            report_label = "label_rule2") #target toxicity level
-            stopping3 <- StoppingMinPatients(nPatients = 15,
-                                             report_label = "label_rule3")
-            stopping <- StoppingAll(stop_list =
-                                      list(StoppingAny(stop_list =
-                                                         list(stopping1, stopping2),
-                                                       report_label = "label_StoppingAny"),
-                                           stopping3),
-                                    report_label  = "label_StoppingAll")
+  stopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "label_rule1")
+  stopping2 <- StoppingTargetProb(
+    target = c(0.2, 0.35), prob = 0.5,
+    report_label = "label_rule2"
+  ) # target toxicity level
+  stopping3 <- StoppingMinPatients(
+    nPatients = 15,
+    report_label = "label_rule3"
+  )
+  stopping <- StoppingAll(
+    stop_list =
+      list(
+        StoppingAny(
+          stop_list =
+            list(stopping1, stopping2),
+          report_label = "label_StoppingAny"
+        ),
+        stopping3
+      ),
+    report_label = "label_StoppingAll"
+  )
 
 
 
   stopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "label_rule1")
-  stopping2 <- StoppingTargetProb(target = c(0.2, 0.35),
-                                  prob = 0.5,
-                                  report_label = "label_rule2") # target toxicity level
+  stopping2 <- StoppingTargetProb(
+    target = c(0.2, 0.35),
+    prob = 0.5,
+    report_label = "label_rule2"
+  ) # target toxicity level
   stopping3 <- StoppingMinPatients(nPatients = 15, report_label = "label_rule3")
-  stopping <- StoppingAll(stop_list =
-                            list(StoppingAny(
-                              stop_list = list(stopping1, stopping2),
-                              report_label = "label_StoppingAny"), stopping3),
-                          report_label = "label_StoppingAll")
+  stopping <- StoppingAll(
+    stop_list =
+      list(StoppingAny(
+        stop_list = list(stopping1, stopping2),
+        report_label = "label_StoppingAny"
+      ), stopping3),
+    report_label = "label_StoppingAll"
+  )
 
 
   design <- Design(
