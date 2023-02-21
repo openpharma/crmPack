@@ -1257,7 +1257,7 @@ StoppingPatientsNearDose <- function(nPatients,
 #'
 StoppingMinCohorts <- function(nCohorts,
                                report_label = character(0)) {
-    .StoppingMinCohorts(
+  .StoppingMinCohorts(
     nCohorts = safeInteger(nCohorts),
     report_label = report_label
   )
@@ -1300,7 +1300,7 @@ StoppingMinCohorts <- function(nCohorts,
 #'
 StoppingMinPatients <- function(nPatients,
                                 report_label = character(0)) {
-    .StoppingMinPatients(
+  .StoppingMinPatients(
     nPatients = safeInteger(nPatients),
     report_label = report_label
   )
@@ -1661,7 +1661,8 @@ StoppingSpecificDose <- function(rule, dose, report_label = character(0)) {
   .StoppingSpecificDose(
     rule = rule,
     dose = positive_number(dose),
-    report_label = report_label)
+    report_label = report_label
+  )
 }
 
 # StoppingHighestDose ----
@@ -1769,8 +1770,10 @@ StoppingList <- function(stop_list, summary) {
 #'
 .StoppingAll <- setClass(
   Class = "StoppingAll",
-  slots = c(stop_list = "list",
-      report_label = "character"),
+  slots = c(
+    stop_list = "list",
+    report_label = "character"
+  ),
   prototype = prototype(
     stop_list = list(
       StoppingMinPatients(50),
@@ -1791,8 +1794,10 @@ StoppingList <- function(stop_list, summary) {
 #' @example examples/Rules-class-StoppingAll.R
 #'
 StoppingAll <- function(stop_list, report_label = character(0)) {
-  .StoppingAll(stop_list = stop_list,
-    report_label = report_label)
+  .StoppingAll(
+    stop_list = stop_list,
+    report_label = report_label
+  )
 }
 
 # StoppingAny ----
@@ -1816,8 +1821,10 @@ StoppingAll <- function(stop_list, report_label = character(0)) {
 #'
 .StoppingAny <- setClass(
   Class = "StoppingAny",
-  slots = c(stop_list = "list",
-      report_label = "character"),
+  slots = c(
+    stop_list = "list",
+    report_label = "character"
+  ),
   prototype = prototype(
     stop_list = list(StoppingMinPatients(50), StoppingMinCohorts(5))
   ),
@@ -1836,8 +1843,10 @@ StoppingAll <- function(stop_list, report_label = character(0)) {
 #' @example examples/Rules-class-StoppingAny.R
 #'
 StoppingAny <- function(stop_list, report_label = character(0)) {
-  .StoppingAny(stop_list = stop_list,
-  report_label = report_label)
+  .StoppingAny(
+    stop_list = stop_list,
+    report_label = report_label
+  )
 }
 
 # StoppingTDCIRatio ----
