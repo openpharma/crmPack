@@ -892,7 +892,8 @@ test_that("StoppingMTDCV works correctly if CV is below threshold", {
   )
   expected <- structure(
     TRUE,
-    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %"
+    message = "CV of MTD is 40 % and thus below the required precision threshold of 50 %",
+    report_label = character(0)
   )
   expect_identical(result, expected) # CV is 23% < 30%.
 })
@@ -911,7 +912,8 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
   )
   expected <- structure(
     FALSE,
-    message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %"
+    message = "CV of MTD is 40 % and thus above the required precision threshold of 20 %",
+    report_label = character(0)
   )
   expect_identical(result, expected) # CV is 23% > 20%.
 })
@@ -936,7 +938,8 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
       "Probability that the lowest active dose of 25 being toxic",
       "based on posterior Beta distribution using a Beta(1,1) prior",
       "is 24% and thus below the required 90% threshold."
-    )
+    ),
+    report_label = character(0)
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -959,7 +962,8 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is tox
       "Probability that the lowest active dose of 25 being toxic",
       "based on posterior Beta distribution using a Beta(1,1) prior",
       "is 24% and thus above the required 10% threshold."
-    )
+    ),
+    report_label = character(0)
   )
   expect_identical(result, expected) # Prob being toxic is 24% > 10%.
 })
@@ -979,7 +983,8 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expected <- structure(
     FALSE,
-    message = "Lowest active dose not tested, stopping rule not applied."
+    message = "Lowest active dose not tested, stopping rule not applied.",
+    report_label = character(0)
   )
   expect_identical(result, expected) # First active dose not applied.
 })
@@ -1002,7 +1007,8 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
       "Probability that the lowest active dose of 25 being toxic based on",
       "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
       "below the required 90% threshold."
-    )
+    ),
+    report_label = character(0)
   )
   expect_identical(result, expected) # Prob being toxic is 24% < 90%.
 })
@@ -1025,7 +1031,8 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is tox
       "Probability that the lowest active dose of 25 being toxic based on",
       "posterior Beta distribution using a Beta(1,1) prior is 17% and thus",
       "above the required 10% threshold."
-    )
+    ),
+    report_label = character(0)
   )
   expect_identical(result, expected) # Prob being toxic is 24% > 10%.
 })
@@ -1045,7 +1052,8 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   )
   expected <- structure(
     FALSE,
-    message = "Lowest active dose not tested, stopping rule not applied."
+    message = "Lowest active dose not tested, stopping rule not applied.",
+    report_label = character(0)
   )
   expect_identical(result, expected) # First active dose not applied.
 })
@@ -1067,7 +1075,8 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   )
   expected <- structure(
     FALSE,
-    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
+    report_label = character(0)
   )
   expect_identical(result, expected)
 })
@@ -1090,7 +1099,8 @@ test_that("StoppingSpecificDose works correctly if dose rec. differs from specif
   )
   expected <- structure(
     TRUE,
-    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %",
+    report_label = character(0)
   )
   expect_identical(result, expected)
 })
@@ -1110,7 +1120,8 @@ test_that("StoppingSpecificDose works correctly if dose rec = specific and stop 
   )
   expected <- structure(
     FALSE,
-    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %"
+    message = "Probability for target toxicity is 0 % for dose 80 and thus below the required 80 %",
+    report_label = character(0)
   )
   expect_identical(result, expected)
 })
@@ -1133,7 +1144,8 @@ test_that("StoppingSpecificDose works correctly if dose rec. = specific and stop
   )
   expected <- structure(
     TRUE,
-    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %"
+    message = "Probability for target toxicity is 90 % for dose 80 and thus above the required 80 %",
+    report_label = character(0)
   )
   expect_identical(result, expected)
 })
@@ -1158,7 +1170,53 @@ test_that("StoppingSpecificDose correclty replaces next best string with specifi
   )
   expected <- structure(
     TRUE,
-    message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients"
+    message = "12 patients lie within 5% of the specific dose 80. This reached the required 9 patients",
+    report_label = character(0)
   )
   expect_identical(result, expected)
+})
+
+test_that("Default label assignment for stopping rules works correctly.", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+
+  my_stopping <- StoppingMinCohorts(nCohorts = 3, report_label = "default")
+
+  result <- stopTrial(
+    stopping = my_stopping,
+    model = my_model,
+    samples = my_samples,
+    dose = 7,
+    data = my_data
+  )
+
+  expect_equal(attr(result, "report_label"), "Minimum number of 3 cohorts reached")
+})
+
+
+test_that("Customized label assignment for stopping rules works correctly.", {
+  my_data <- h_get_data()
+  my_model <- h_get_logistic_kadane()
+  my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
+
+  my_stopping <- StoppingMinCohorts(nCohorts = 3, report_label = "a customized label")
+
+
+  result <- stopTrial(stopping = my_stopping,
+                      model = my_model,
+                      samples = my_samples,
+                      dose = 7,
+                      data = my_data)
+
+  result <- stopTrial(
+    stopping = my_stopping,
+    model = my_model,
+    samples = my_samples,
+    dose = 7,
+    data = my_data
+  )
+
+
+  expect_equal(attr(result, "report_label"), "a customized label")
 })
