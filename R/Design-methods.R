@@ -51,7 +51,7 @@ setSeed <- function(seed = NULL) {
     RNGstate <- get(".Random.seed", envir = .GlobalEnv)
   } else {
     R.seed <- get(".Random.seed", envir = .GlobalEnv)
-    ## make sure R.seed exists in parent frame:
+    # Make sure R.seed exists in parent frame:
     assign("R.seed", R.seed, envir = parent.frame())
     set.seed(seed)
     RNGstate <- structure(seed, kind = as.list(RNGkind()))
@@ -59,7 +59,7 @@ setSeed <- function(seed = NULL) {
       list(quote(assign(".Random.seed", R.seed, envir = .GlobalEnv))),
       envir = parent.frame()
     )
-    ## here we need the R.seed in the parent.frame!
+    # Here we need the R.seed in the parent.frame!
   }
 
   return(RNGstate)
