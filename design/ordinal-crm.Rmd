@@ -1,309 +1,453 @@
 ---
 title: "Design of ordinal CRM"
-author: "John Kirkpatrick"
+author: "John Kirkpatrick and Wojciech Wójciak"
 date: "Last run on `r Sys.Date()` by `r Sys.info()[['user']]` on `r Sys.info()['nodename']`"
-output: html_document
+output:
+  pdf_document:
+    number_sections: true
+  html_document:
+    number_sections: true
 ---
 
 ```{r setup, include=FALSE}
+library(ggplot2)
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(kableExtra)
-library(runjags)
 ```
 
-## The Ordinal CRM
-The ordinal CRM, or oCRM, is an extension to the standard CRM in which the patient's response is not binary (no DLT, DLT) but ordinal (for example: None, sub-DLT, DLT).  The number of categories in the response scale is arbitrary.  The responses are modelled using a standard parameterisation for ordered logistic regression:
+# The statistical model and theory about it.
 
-Let p~k~(d) be the probability that the response of a patient treated at dose d is in category k *_or higher_*, k=0, ..., K; d=1, ..., D.
+The patient's toxicity response is not binary (no DLT, DLT) but categorical (for example: no DLT,
+sub-DLT, DLT). Furthermore, multicategory toxicity responses are treated as ordinal due to their
+ordinal characteristics such as a monotone trend.
 
-Then logit(p~k~(d)) = &alpha;~k~ + &beta; log(d/d~ref~), k=1, ..., K.  [p~0~(d) = 1 by definition.]
+## The model: Cumulative Link Models
 
-where d~ref~ is a reference dose.  The &alpha;s are constrained such that &alpha;~1~ > &alpha;~2~ > ... > &alpha;~K~.
+These type of responses can be modeled using Generalized Linear Model (GLM), where the model is
+expressed in terms of the cumulative response probabilities. Hence, the name: Cumulative Link Model,
+or CLM. The CLM assumes the form: $$
+h[p_{ij}] = h[P(Y_i \leq j)] = \alpha_j + \mathbf x_i^T \boldsymbol \beta, \qquad j = 1, \ldots, c - 1; \, i \geq 1
+$$ where $c \in \{2, 3, \ldots \}$ denotes a number of toxicity categories on ordinal scale, and the
+components of the model are as follows:
 
-The model is a constrained parallel lines regression on the logit scale with appropriate priors imposed on the &alpha;~k~s and &beta;.
+1.  $h$ - link function. The most common link functions are "logit" and "probit", which result in
+    Cumulative Logit Model and Cumulative Probit Model respectively.
+2.  $Y_i$ - random variable that represents the response outcome category for subject $i \geq 1$,
+    i.e. $supp(Y_i) = \{1, 2, \ldots, c\},\, i \geq 1$. Probabilities
+    $P(Y_i = j),\, j = 1, \ldots, c$, for $i \geq 1$, are called category probabilities, and the
+    cumulative response probabilities for subject $i \geq 1$ are defined as
+    $$p_{ij} = P(Y_i \leq j) = P(Y_i = 1) + \cdots + P(Y_i = j), \qquad j = 1, \ldots, c; ~ i \geq 1,$$
+3.  $\mathbf x_i$ - a vector of covariates corresponding to main effects and interactions for
+    subject $i \geq 1$.
+4.  $\alpha_j$, $j = 1, \ldots, c - 1$ are "cutpoints" and $\boldsymbol\beta$ is a vector of effects
+    (without intercept term). Although each response category has a corresponding cutpoint, the
+    regression coefficients $\boldsymbol\beta$ are constant across categories. Each cumulative logs
+    has its own intercept ("cutpoint"). Furthermore, if link function $h$ is strictly increasing
+    function of $P(Y_i \leq j)$, $i \geq 1$ (such as logit or probit), then \begin{equation}
+      \label{alpha_ordering0}
+      -\infty < \alpha_1 < \alpha_2 < \cdots < \alpha_{c-1} < \infty,
+    \end{equation} because $P(Y_i \leq j)$ increases in $j$ at any fixed $\mathbf x_i$.
 
-Unfortunately, I know of no references for the oCRM, other than the FACTS user manual.
+Note that a model for $logit[p_{ij}]$ alone is an ordinary logistic model for a binary response in
+which categories $1$ to $j$ represent "success" and categories $j+1$ to $c$ represent "failure".
 
-## Example analysis from first prinicples
-This example is motivated by a real Roche study in which the study team became concerned by the number of episodes of cytokine release syndrome (CRS) that did not strictly meet the definition of a DLT given in the protocol, yet which were serious enough to cause some disquiet.
+### Why cumulative probabilities rather than category probabilities?
 
-In the example data below, the dose grid reflects reality, but the DLT and sub-DLT counts are entirely arbitrary.
+As explained by McCullagh and Nelder (1989), the choice and definition of response categories is
+often arbitrary. It is essential, therefore, if we are to arrive at valid conclusions, that the
+nature of those conclusions should not be affected by the number of choice of response categories.
+Such considerations lead to models that based on the cumulative probabilities rather than category
+probabilities. These two sets of probabilities are equivalent, but simple models for the cumulative
+probabilities are likely to have better properties for ordinal response scales than equally simple
+models based on the category probabilities.
 
-### Fictitious observed data
-```{r, echo=FALSE}
-doseList <- c(5, 15, 45, 70, 100, 220, 300, 600, 1000, 1800, 4000, 10000, 16000)
+### Backward compatible CLM model
 
-observedData <- tibble(
-  Dose = c(
-    rep(5, 1),
-    rep(15, 4),
-    rep(45, 5),
-    rep(70, 5),
-    rep(100, 5),
-    rep(220, 8),
-    rep(300, 6),
-    rep(600, 15),
-    rep(1000, 8),
-    rep(1800, 9),
-    rep(4000, 10),
-    rep(10000, 14),
-    rep(16000, 2)
-  ),
-  Status = c(
-    rep(0, 1),
-    rep(0, 4),
-    rep(0, 5),
-    rep(0, 5),
-    rep(0, 5),
-    rep(0, 7), 1,
-    rep(0, 5), 1,
-    rep(0, 10), 1, 1, 1, 1, 1,
-    rep(0, 5), 1, 1, 1,
-    rep(0, 8), 1,
-    rep(0, 8), 1, 1,
-    rep(0, 10), 1, 1, 1, 1,
-    rep(1, 1),
-    rep(2, 1)
-  )
+In current version of the `crmPack`, we support only two toxicity categories, i.e. no DLT and DLT.
+We code it as 0 (no DLT) and 1 (DLT) and we compute the probability of the DLT, i.e.
+$0 < P(DLT) < 1$. To preserve this schema for multi-category toxicities, we propose the following
+form of the CLM model:
+
+```{=tex}
+\begin{equation}
+  \label{model}
+  h[p_{ij}] = h[P(Y_i \geq j)] = \alpha_j + \mathbf x_i^T \boldsymbol \beta, \qquad j = 0, \ldots, c-1, \; i \geq 1,
+\end{equation}
+```
+where $c \in \mathbb N$, such that $c \geq 2$, denotes a number of toxicity categories on ordinal
+scale. This yields:
+
+```{=tex}
+\begin{equation}
+  \label{alpha_ordering}
+  \infty > \alpha_0 > \cdots > \alpha_{c-1} > -\infty.
+\end{equation}
+```
+This convention directly simplifies to existing `crmPack` coding for $c = 2$, i.e. $$
+P(DLT) = P(Y \geq 1) = P(Y = 1)
+$$ Also, since $P(Y \geq 0) = 1$, we are not interested in specifying $\alpha_0$.
+
+## The prior
+
+Specifying prior for $\boldsymbol \beta$ is straightforward. Let
+$\boldsymbol \alpha = [\alpha_1, \ldots, \alpha_{c-1}]^T$ be a random vector, where $c \geq 2$
+denotes a number of toxicity categories. Specifying prior for $\boldsymbol \alpha$ is challenging
+because of the ordering restriction \eqref{alpha_ordering} (or \eqref{alpha_ordering0}). In the
+following sections we present most popular approaches that are discussed in currently available
+subject domain literature, including our own comments and considerations.
+
+### Truncated prior distribution (we propose to implement this approach in crmPack)
+
+We specify this prior for model \eqref{model}.
+
+\begin{equation}
+  \label{prior1}
+  \begin{aligned}
+    \alpha_1 &\sim \mathcal{N}(\mu_1, \sigma^2_1), \\
+    \alpha_j | \alpha_{j-1} &\sim \mathcal{N}(\mu_j, \sigma^2_j)\, T(-\infty, \alpha_{j-1}), \quad j = 2, \ldots, c - 1 \geq 2,
+  \end{aligned}
+\end{equation} where $\mu_j \in \mathbb R$, $\sigma^2_j \in \mathbb R_+$. This yields
+$supp(\alpha_j) = (-\infty, \alpha_{j-1})$, $j = 2, \ldots, c - 1 \geq 2$, ensuring
+\eqref{alpha_ordering}.
+
+See McKinley et al. (2013) (equation (11)) and the references given therein, i.e. Albert and Chib
+(1993), Johnson and Albert (1999), Congdon (2005). Eventually see James et al. (2022)
+
+However, we see the following issues (drawbacks) with this model:
+
+1.  If $\alpha_k$ for some $k \in \{1, \ldots, c - 2\}$ is small by a chance, then it forces that
+    $\alpha_{k+1}$ will be even smaller, regardless of whether it is practically justified. This may
+    become an issue, especially if the number of categories $c$ is high. So the alternative could be
+    doubly-truncated distributions, which is somehow given in Congdon (2005), but it is unclear to
+    me how this should be used exactly. \newline John's experience is that it has not been an issue
+    in the models he has fitted to date.
+
+2.  It might not be entirely clear for the user what the exact (unconditional) distributions of
+    $\alpha_2, \ldots, \alpha_{c-1}$ are, as well as what the var-cov structure for
+    $\boldsymbol \alpha$ is. The user can obliviously work it out, but to do that, he needs to know
+    about conditional probability distributions tools and methods and it is still not that trivial.
+    For instance, see just the beginning of the computations for a bivariate $\boldsymbol \alpha$.
+    $$
+    \begin{aligned}
+      f_{\alpha_2}(x_2) &=  \int_{\mathbb R} f_{\alpha_1, \alpha_2}(x_1, x_2) \, dx_1 \\
+      & = \int_{\mathbb R} f_{\alpha_2|\alpha_1 = x_1} (x_2) f_{\alpha_1} (x_1) dx_1 \\
+      &= \int_{\mathbb R} \tfrac{1}{\sigma_2} \tfrac{\varphi(\tfrac{x_2 - \mu_2}{\sigma_2})}{\Phi(\tfrac{x_1 - \mu_2}{\sigma_2})}  I(x_2 < x_1) \tfrac{1}{\sigma_1} \varphi(\tfrac{x_1 - \mu_1}{\sigma_1}) \, dx_1 \\
+      &= \tfrac{1}{\sigma_1 \sigma_2} \varphi(\tfrac{x_2 - \mu_2}{\sigma_2}) \int_{x_2}^{\infty} \tfrac{\varphi(\tfrac{x_1 - \mu_1}{\sigma_1})}{\Phi(\tfrac{x_1 - \mu_2}{\sigma_2})} \, dx_1 \\
+      &= ...
+      \end{aligned}
+    $$ for $x_2 \in \mathbb R$, where $\varphi$ is the probability density function of the standard
+    normal distribution and $\Phi$ is its cumulative distribution function. Below is the example
+    shape of $f_{\alpha_2}$ function.
+
+```{r f_alpha2, eval=TRUE, fig.height = 3, fig.width = 5, fig.align = "center"}
+    f <- function(x2, mu1 = 8, mu2 = 5, sd1 = 2, sd2 = 2) {
+      phi <- dnorm
+      Phi <- pnorm
+      to_integrate <- function(x1, mu1, mu2, sd1, sd2) {
+        phi((x1 - mu1) / sd1) / Phi((x1 - mu2) / sd2)
+      }
+      intgrl <- integrate(
+        to_integrate,
+        lower = x2, upper = Inf,
+        mu1 = mu1, mu2 = mu2, sd1 = sd1, sd2 = sd2
+      )
+      1 / (sd1 * sd2) * phi((x2 - mu2) / sd2) * intgrl$value
+    }
+    f <- Vectorize(f)
+    
+    ggplot() +
+      geom_function(fun = dnorm, colour = "black", args = list(mean = 5, sd = 2)) +
+      geom_function(fun = f, colour = "red") +
+      scale_x_continuous(breaks = seq(-5, 15, 2), limits = c(-5, 15)) +
+      xlab("x2") +
+      ylab("PDF") +
+      ggtitle("PDF of: N(5, sd = 2) [black] and alpha2 (uncond.) [red]")
+    
+    optimize(f, interval = c(1, 7), maximum = TRUE)
+```
+
+3.  In JAGS, we can specify $\alpha_j,\, j = 2, \ldots, c - 1$ with
+
+    ```{=tex}
+    \begin{center}
+      \tt alpha[j] $\sim$ dnorm(meanAlpha[j], precAlpha[j]) T(, alpha[j-1])
+    \end{center}
+    ```
+    However, I think we need to make sure the sample that is being obtained by this is indeed from
+    an unconditional distribution of $\alpha_j$, $j = 2, \ldots, c-1$.
+
+### Multivariate Truncated Normal Distribution
+
+We specify this prior for model \eqref{model}.
+
+This approach allows a user for a full control of var-cov structure of random vector
+$\boldsymbol \alpha$. Following [15], we specify distribution of $\boldsymbol \alpha$ as
+multivariate truncated normal distribution. Consider first
+$\boldsymbol \alpha^* \sim N_{c-1}(\boldsymbol \mu, \Sigma)$. Now, let $\boldsymbol \alpha$ be
+truncation of $\boldsymbol \alpha^*$ above $\boldsymbol k \in \mathbb R^{c-1}$. $\boldsymbol \alpha$
+has a $(c-1)$-variate truncated normal distribution given by $$
+f_{\boldsymbol \alpha}(\boldsymbol x; \boldsymbol \mu, \Sigma, \boldsymbol k) =
+\frac{exp\{-\tfrac{1}{2}(\boldsymbol x - \boldsymbol \mu)^T \Sigma (\boldsymbol x - \boldsymbol \mu)\}}
+{\idotsint_{R^{c-1}_{\leq \boldsymbol k}} exp\{-\tfrac{1}{2}(\boldsymbol x - \boldsymbol \mu)^T \Sigma (\boldsymbol x - \boldsymbol \mu)\} \,dx_1 \dots dx_{c-1}}
+$$ where $$
+\begin{aligned}
+\boldsymbol x &\in \mathbb R^{c-1}_{\leq \boldsymbol k} \\
+\boldsymbol \mu &\in \mathbb R^{c-1} \\
+\Sigma &\text{ is } (c-1) \times (c-1) \text{ var-cov matrix,} \\
+\boldsymbol k &\in \mathbb R^{c-1},
+\end{aligned}
+$$ with $c \geq 2$. Due to CLM model restriction \eqref{alpha_ordering}, we further require that
+$\boldsymbol k = [k_1, k_2, \ldots, k_{c-1}]^T$ is such that
+$\infty = k_1 > k_2 > \cdots > k_{c-1} > -\infty$. Note that for $c = 2$ we obtain a univariate normal
+distribution without truncation, which somehow corresponds to $\alpha_1$ in \eqref{prior1}.
+
+Unfortunately, the marginals of multivariate truncated normal variates do not need to be truncated
+normal in general. The exact formula for the marginal probability densities functions are given in
+[16].
+
+Then, in JAGS we would simply need to generate these marginal r.vs. (see also `tmvtnorm` R package)
+
+### Transformation of the intercepts to an unconstrained space
+
+$\delta_1$ := $log(\alpha_1)$, $\delta_j$ := $log(\alpha_j - \alpha_{j-1})$,
+$j = 2, \ldots, c - 1 \geq 2$. Then, e.g. $\boldsymbol \delta \sim \mathcal{N}_{c-1}(\mu, \Sigma)$.
+
+Note that it is required that $\alpha_1$ \> $0$.
+
+See Albert and Chib (1997) for more details.
+
+### An ordered uniform distribution (Ishwaran, 2000)
+
+This approach was mentioned in few sources, but it is still a bit unclear to me. For instance, in
+Congdon (2005), on page 239, the author writes: "An alternative suggested by Ishwaran (2000) is a
+uniform density $$
+0 = \alpha_1 < \alpha_2 < \cdots < \alpha_{c-1} = U,
+$$ where $U$ is equal to or less than $c$." I think this approach is about to a simple sequence or
+non overlapping uniform distributions.
+
+### Latent response model
+
+With this approach, the observed response $Y$ is often taken to reflect an underlying continuous
+random variable $Y^*$ with $c-1$ thresholds or cut points. Albert and Chib (1993) presented a
+Bayesian analysis that utilizes the latent (response) variable model: $$
+Y^*_i = \mathbf x_i^T \boldsymbol\beta + \epsilon_i, \qquad i \geq 1,
+$$ where $\epsilon_i$ are iid and $\epsilon_i \sim \mathcal{N}(0, 1), i \geq 1$. Here we have that
+$$
+Y_i = j \quad \text{iff} \quad \alpha_{j-1} < Y^*_i \leq \alpha_j, \quad j = 2, \ldots, c - 1,
+$$ where $\alpha_0 := -\infty$ and $\alpha_c := \infty$.
+
+Following Congdon (2005) (see Chapter 7.2) that is based on Johnson and Albert (1999) (Chapter 4.3),
+the cut points are sampled in a way that takes account of the sampled $Y^*$. Thus, at iteration $t$:
+$$
+\alpha^{(t)}_j \sim \mathcal{N}(0, V_{\alpha})\, T(L_j, U_j), \quad j = 1, \ldots, c-1,\\
+$$ where $V_{\alpha}$ is preset and $$
+L_j = max(Y^{*(t)},\, Y_i = j) \\
+U_j = min(Y^{*(t)},\, Y_i = j+1)
+$$ and $$
+Y_i^* \sim \mathcal{N}(\mathbf x_i^T \boldsymbol\beta, \gamma_i)\, T(\alpha_{y_{i-1}}, \alpha_{y_i}),
+$$ where $\gamma_i \sim Ga(0.5v, 0.5v)$, with $v$ preset.
+
+## References
+
+[1] Agresti, A. (2010). Analysis of Ordinal Categorical Data. Hoboken, NJ: John Wiley & Sons.
+
+[2] Agresti, A. (2013). Categorical Data Analysis. Hoboken, NJ: John Wiley & Sons.
+
+[3] Agresti, A. (2015). Foundations of Linear and Generalized Linear Models. Hoboken, NJ: John Wiley
+& Sons.
+
+[4] Albert, J. H. and Chib, S. (1993). Bayesian analysis of binary and polychotomous response data.
+Journal of the American Statistical Association, 88(422): 669--679.
+
+[5] Albert, J. and Chib, S. (1997). Bayesian methods for cumulative, sequential and twostep ordinal
+data regression models. Technical report.
+
+[6] Congdon, P. (2005). Bayesian Model for Categorical Data, Willey.
+
+[7] Ishwaran, H. (2000). Univariate and Multirater Ordinal Cumulative Link Regression with Covariate
+SpecificCutpoints. The Canadian Journal of Statistics / La Revue Canadienne de Statistique, Vol. 28,
+No. 4 (Dec., 2000), pp. 715-730
+
+[8] James, N. T., Harrell Jr, F. E., Shepherd, B. E. (2022) Bayesian Cumulative Probability Models
+for Continuous and Mixed Outcomes. arXiv:2102.00330v2 [stat.ME]
+
+[9] Johnson, V. E. and Albert, J. H. (1999). Ordinal Data Modeling. Springer-Verlag, New York.
+
+[10] McKinley, T. J., Morters, M., Wood, J. L. N. (2015) Bayesian Model Choice in Cumulative Link
+Ordinal Regression Models.
+
+[11] McCullagh, P., and Nelder, J. A. (1989). Generalized Linear Models. 2nd ed. London: Chapman &
+Hall\
+<https://www.utstat.toronto.edu/~brunner/oldclass/2201s11/readings/glmbook.pdf>
+
+[12] Van Meter EM, Garrett-Mayer E, Bandyopadhyay D. Dose-finding clinical trial design for ordinal
+toxicity grades using the continuation ratio model: an extension of the continual reassessment
+method. Clin Trials. 2012 Jun;9(3):303-13. doi: 10.1177/1740774512443593. Epub 2012 Apr 30.\
+<https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5531273/>
+
+[13] Wikipedia, <https://en.wikipedia.org/wiki/Truncated_normal_distribution>.
+
+[14] Greene, William H. (2003). Econometric Analysis (5th ed.). Prentice Hall.
+
+[15] Horrace, William C., "Some Results on the Multivariate Truncated Normal Distribution" (2005).
+Economics - Faculty Scholarship. 19.
+
+[16] Jack Cartinhour (1990) One-dimensional marginal density functions of a truncated multivariate
+normal density function, Communications in Statistics - Theory and Methods, 19:1, 197-203, DOI:
+10.1080/03610929008830197
+
+# Prototype code
+
+## Fictitious observed data
+
+```{r data}
+dose_grid <- c(5, 15, 45, 70, 100, 220, 300, 600, 1000, 1800, 4000, 10000, 16000)
+
+x <- c(
+  rep(5, 1),
+  rep(15, 4),
+  rep(45, 5),
+  rep(70, 5),
+  rep(100, 5),
+  rep(220, 8),
+  rep(300, 6),
+  rep(600, 15),
+  rep(1000, 8),
+  rep(1800, 9),
+  rep(4000, 10),
+  rep(10000, 14),
+  rep(16000, 2)
+)
+
+y <- c(
+  rep(0, 1),
+  rep(0, 4),
+  rep(0, 5),
+  rep(0, 5),
+  rep(0, 5),
+  rep(0, 7), 1,
+  rep(0, 5), 1,
+  rep(0, 10), 1, 1, 1, 1, 1,
+  rep(0, 5), 1, 1, 1,
+  rep(0, 8), 1,
+  rep(0, 8), 1, 1,
+  rep(0, 10), 1, 1, 1, 1,
+  rep(1, 1),
+  rep(2, 1)
 )
 ```
 
-```{r}
-observedData %>%
-  group_by(Dose, Status) %>%
-  summarise(N = n(), .groups = "drop") %>%
-  pivot_wider(
-    names_from = Status,
-    values_from = N,
-    values_fill = 0
-  ) %>%
-  rename(NoDLT = `0`, SubDLT = `1`, DLT = `2`) %>%
-  mutate(Treated = NoDLT + SubDLT + DLT, .before = 2)
+## Data-class
+
+We need to adopt a new class for data as the existing one `Data` does not allow for categorical (\>2
+categories) toxicity. We propose to create new data class, named e.g. `DataCatTox`, which inherits
+from existing `GeneralData` class and is a parent of existing `Data` class. The new `DataCatTox`
+class:
+
+-   gets its slots from current `Data` and
+-   adds one new slot `yCategories`. It is a named integer vector that keeps all the possible values
+    for `y`. Default to `c("No DLT" = 0L, "DLT" = 1L)`.
+
+Eventually, instead of having `yCategories` as a named vector, we can introduce a new slot, e.g.
+`yLabels`. Below is the prototype code.
+
+```{r prototype_data, eval=FALSE}
+.DataCatTox <- setClass(
+  Class = "DataCatTox",
+  contains = "GeneralData",
+  slots = c(
+    x = "numeric",
+    y = "integer",
+    doseGrid = "numeric",
+    nGrid = "integer",
+    xLevel = "integer",
+    yCategories = "integer",
+    placebo = "logical"
+  ),
+  prototype = prototype(
+    x = numeric(),
+    y = integer(),
+    doseGrid = numeric(),
+    nGrid = 0L,
+    xLevel = integer(),
+    yCategories = c("No DLT" = 0L, "DLT" = 1L),
+    placebo = FALSE
+  ),
+  validity = v_data_cat_tox
+)
+
+.Data <- setClass(
+  Class = "Data",
+  contains = "DataCatTox",
+  validity = v_data # same as already existing v_data + minor update due to `y` labels.
+)
 ```
 
-### Analysis
-Define the model.
-```{r}
-modelString <- "
-data
-{
-  for (i in 1:length(d))
-  {
-    for (j in 1:2)
-    {
-      DLT[i, j] <- r[i] >= j
-    }
-  }
-}
-model
-{
-  #Independent univariate parameters for simplicity.
-  #Recall JAGS uses precision, not variance.
-  alpha[1] ~ dnorm(meanAlpha1, 1/(sdAlpha1*sdAlpha1))
-  #                                                    Constrain the model
-  alpha[2] ~ dnorm(meanAlpha2, 1/(sdAlpha2*sdAlpha2))  T(, alpha[1])
-  #Common slope.  LogNormal distribution ensures slope is positive
-  gamma ~ dnorm(meanLogBeta, 1/(sdLogBeta*sdLogBeta))
-  beta <- exp(gamma)
-  for (i in 1:length(d))
-  {
-    xhat[i] <- log(d[i] / dRef)
-    for (j in 1:2)
-    {
-      z[i, j] <- alpha[j] + beta * xhat[i]
-      p[i, j] <- exp(z[i, j]) / (1 + exp(z[i, j]))
-      DLT[i, j] ~ dbern(p[i, j])
-    }
-  }
-}
-Inits
-{
-  list(alpha=c(5, 3), gamma=0)
-}
-#monitor# alpha[1], alpha[2], beta
-#data# meanAlpha1, meanAlpha2, meanLogBeta, sdAlpha1, sdAlpha2, sdLogBeta, d, r, dRef
-"
-```
+Another option we considered was modification of existing `Data` class. The modification is done by:
 
-Define a reporting function.
-```{r}
-analyse <- function(m, caption) {
-  # Fit the model
-  results <- as_tibble(run.jags(m)$mcmc[[1]]) %>%
-    rename(alpha1 = `alpha[1]`, alpha2 = `alpha[2]`) # Fix awkwardly named columns
+-   allowing `y` to take on values from 0, 1, 2, 3, ....
+-   adding new slot `yCategories`, defined in the same way as in `DataCatTox` proposal, above.
 
-  # Derive p(DLT) [P2] and p(DLT or subDLT) [P1]
-  results <- results %>%
-    expand(nesting(alpha1, alpha2, beta), Dose = doseList) %>%
-    mutate(
-      XHat = log(Dose / dRef),
-      z1 = alpha1 + beta * XHat,
-      z2 = alpha2 + beta * XHat,
-      P1 = exp(z1) / (1 + exp(z1)),
-      P2 = exp(z2) / (1 + exp(z2))
-    ) %>%
-    # Old code.  Should update to pivot_longer
-    gather(key = Type, value = Prob, P1, P2)
+However, the main disadvantages of this approach is that if we modify existing `Data` class rather
+than subclasse it, we need to make sure that the `Data` instances that are passed to work with
+existing models have `length(yCategories) <= 2`, which would be quite unpractical. Not to mentioned
+some other changes to `Data` specific methods, such as, `update`, `plot` or validation function.
 
-  # Summarise
-  summary <- results %>%
-    group_by(Dose, Type) %>%
-    summarise(
-      N = n(),
-      Mean = mean(Prob, na.rm = TRUE),
-      q50 = median(Prob, na.rm = TRUE),
-      q05 = quantile(Prob, 0.05, na.rm = TRUE),
-      q10 = quantile(Prob, 0.10, na.rm = TRUE),
-      q20 = quantile(Prob, 0.20, na.rm = TRUE),
-      q80 = quantile(Prob, 0.80, na.rm = TRUE),
-      q90 = quantile(Prob, 0.90, na.rm = TRUE),
-      q95 = quantile(Prob, 0.95, na.rm = TRUE),
-      .groups = "drop"
-    )
+## Model-class (LogisticLogNormOrd)
 
-  table <- summary %>%
-    # Old code.  Should update to pivot_longer
-    gather(variable, value, -(Dose:Type)) %>%
-    unite(temp, Type, variable) %>%
-    spread(temp, value) %>%
-    select(
-      Dose, P1_N, P1_Mean, starts_with("P1_q"),
-      P2_N, P2_Mean, starts_with("P2_q")
-    )
+For simplicity of notation, unless we need to refer to particular subjects or to particular values
+of the explanatory variables, we replace $p_{ij}$ (i.e. $P(X_i \geq j)$) in such equations by $p_j$
+(i.e. $P(Y \geq j)$), keeping in mind that in the model this is actually a conditional probability
+at each fixed value for the explanatory variables.
 
-  plot <- summary %>%
-    ggplot() +
-    geom_line(aes(x = Dose, y = Mean, colour = Type)) +
-    geom_ribbon(aes(x = Dose, ymin = q05, ymax = q95, fill = Type), alpha = 0.1) +
-    geom_ribbon(aes(x = Dose, ymin = q10, ymax = q90, fill = Type), alpha = 0.1) +
-    geom_ribbon(aes(x = Dose, ymin = q20, ymax = q80, fill = Type), alpha = 0.1) +
-    theme_light() +
-    scale_colour_manual(name = " ", labels = c("Mean p(DLT or subDLT)", "Mean p(DLT)"), values = c("darkblue", "red")) +
-    scale_fill_manual(name = " ", labels = c("Mean p(DLT or subDLT)", "Mean p(DLT)"), values = c("darkblue", "red")) +
-    labs(
-      y = "Probability",
-      x = "Dose",
-      title = caption,
-      caption = "Shading shows the 90%, 80% and 60% central credible intervals"
-    )
-  rv <- NULL
-  rv$summary <- summary
-  rv$graph <- plot
-  rv$tableWide <- table
-  rv$samples <- results
-  return(rv)
-}
-```
+The following basic CLM can be considered as a single-agent toxicity model, in which the covariate
+is the natural logarithm of the dose $x$ divided by the reference dose $x^*$, i.e.: $$
+logit[p_j] = \alpha_j + \beta \, log(\tfrac{x}{x^*}), \quad j = 1, \ldots, c-1.
+$$ The prior is: $$
+log(\beta) \sim N(\mu_{\beta}, \sigma_{\beta}^2)
+$$ and for $\{\alpha_j\}_{j \in \{1, \ldots, c-1\}}$ we propose prior as in \eqref{prior1}.
 
-Define the hyperpriors and other model parameters.  Values are entirely arbitrary.
-
-```{r}
-dRef <- 450
-meanAlpha1 <- 5
-meanAlpha2 <- 3
-meanLogBeta <- log(1)
-sdAlpha1 <- 4
-sdAlpha2 <- 4
-sdLogBeta <- 3
-
-# Hack the observed data
-d <- observedData$Dose
-r <- observedData$Status
-```
-
-Obtain the posterior
-
-```{r}
-post <- analyse(modelString, caption = "Posterior distribution")
-
-post$tableWide %>%
-  select(-P2_N) %>%
-  kable(
-    digits = c(0, 0, rep(2, 12)),
-    col.names = c("Dose", "N", rep(c("Mean", "Q05", "Q10", "Q20", "Median", "Q80", "Q90", "Q95"), 2))
-  ) %>%
-  add_header_above(c(" " = 2, "p(DLT or subDLT)" = 8, "p(DLT)" = 8)) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
-
-post$graph
-```
-
-### Recommended dose
-The recommended dose (and stopping rules) can be based on any (combination) of the p~k~s.  For example, if the recommended dose is defined to be the highest dose with posterior mean p~1~ less than 0.2, then the recommended dose is
-
-```{r recommendedDose, echo=TRUE}
-post$summary %>%
-  ungroup() %>%
-  filter(
-    Mean < 0.2,
-    Type == "P1"
-  ) %>%
-  summarise(Recommended = max(Dose))
-```
-
-### Integration with nCRM
-Although an extension to the standard CRM model, there's no reason why oCRM can't be applied within an nCRM framework.
-
-For example, suppose the recommended dose is determined on the basis of the p~1~s [that is, on p(DLT or subDLT | dose)] and that the toxicity bands are defined as
-
-```{r, echo=FALSE}
-tibble(
-  Band = c("Underdosing", "Target toxicity", "Excess toxicity", "Unacceptable toxicity"),
-  Lower = c(0, 0.15, 0.25, 0.4),
-  Upper = c(0.15, 0.25, 0.4, 1)
-) %>%
-  kable(table.attr = "style='width:30%;'") %>%
-  add_header_above(c(" " = 1, "Bounds" = 2)) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
-```
-
-Then band membership can be calculated for each of the MCMC samples...
-
-```{r calculateBands, echo=TRUE}
-nCRM <- post$samples %>%
-  filter(Type == "P1") %>%
-  mutate(
-    Under = Prob <= 0.15,
-    Target = Prob > 0.15 & Prob <= 0.25,
-    Excess = Prob > 0.25 & Prob <= 0.4,
-    Unacceptable = Prob > 0.4,
-    Check = Under + Target + Excess + Unacceptable
+```{r prototype_model, eval=FALSE}
+LogisticLogNormOrd <- function(meanAlpha, precAlpha, meanBeta, precBeta, ref_dose = 0) {
+  .LogisticLogNormOrd(
+    meanAlpha = meanAlpha,
+    precAlpha = precAlpha,
+    meanBeta = meanBeta,
+    precBeta = precBeta,
+    datamodel = function() {
+      for (i in 1:nObs) {
+        x_rel[i] <- log(x[i] / ref_dose)
+        for (j in 1:(yCategories - 1)) {
+          logit(p[i, j]) <- alpha[j] + beta * x_rel[i]
+          y[i, j] ~ dbern(p[i, j])
+        }
+      }
+    },
+    priormodel = function() {
+      alpha[1] ~ dnorm(meanAlpha[1], precAlpha[1])
+      if(yCategories >= 3) {
+        for (j in 2:(yCategories-1)) {
+          alpha[j] ~ dnorm(meanAlpha[j], precAlpha[j])  T(, alpha[j-1])
+        }
+      }
+      beta ~ dnorm(meanBeta, precBeta)
+    },
+    modelspecs = function(from_prior) {
+      ms <- list(
+        meanAlpha = meanAlpha,
+        precAlpha = precAlpha,
+        meanBeta = meanBeta,
+        precBeta = precBeta
+      )
+      if (!from_prior) {
+        ms$ref_dose <- ref_dose
+      }
+      ms
+    },
+    init = function() {
+      list(alpha = c(5, 3), beta = 0) # TODO - length of alpha
+    },
+    datanames = c("nObs", "yCategories", "y", "x"),
+    sample = c("alpha", "beta")
   )
-```
-
-... and summarised by dose
-
-```{r ncrmSummary, echo=TRUE}
-nCRM %>%
-  select(-Check) %>%
-  group_by(Dose) %>%
-  summarise(
-    Under = mean(Under),
-    Target = mean(Target),
-    Excess = mean(Excess),
-    Unacceptable = mean(Unacceptable),
-    .groups = "drop"
-  ) %>%
-  kable(
-    table.attr = "style='width:40%;'",
-    digits = c(0, 3, 3, 3, 3)
-  ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
-  add_header_above(c(" " = 1, "Probability of band membership" = 4))
-```
-
-## Design discussion
-
-*  Which `Model`s should be extended to allow ordinal models?  
-*  Strictly speaking, the existing `Model` classes are special cases of the more general ordinal classes, with `k=2` rather than `k > 1` categories.  However, I suspect refactoring the existing classes to be sub-classes of the corresponding ordinal `Model` class.
-*  `nextBest` methods that handle the new `Model`s will be needed.
-* New `Stopping` rules will be required.
-* Realistically, I expect the maximum number of categories required will be `3` or `4`.  Should we impose a maximum or allow an arbitrary number?
-* How best to provide arbitrary labels for DLT categories, if at all?  The obvious options seem to me to be to provide alternate parameters in the constructor function(s).  For example `OrdinalLogisticLogNormal(k=3)` to provide unnamed categories or default labels, or `OrdinalLogisticLogNormal(dltGrades=c(0="None", 1="subDLT", 2="DLT"))` to provide custom labels and ordering.
-*  Other issues?
-
-## Environment
-```{r}
-sessionInfo()
+}
 ```
