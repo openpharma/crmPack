@@ -11,9 +11,8 @@ test_that("Posterior summaries for probabilities of
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
-  tab_sc1 <- vector("list")
 
-  tab_sc1$"Data example 1 (DLTs: 0)" <- Data(
+  data <- Data(
     x = c(rep(10, 3)),
     y = c(rep(0, 3)),
     cohort = c(rep(1, 3)),
@@ -35,35 +34,31 @@ test_that("Posterior summaries for probabilities of
     losses = c(1, 0, 2, 3)
   )
 
-  res_sc1 <- vector("list", 1)
-  names(res_sc1) <- names(tab_sc1)
-
-  data_obs <- tab_sc1[[1]]
-  postSamples <- mcmc(data_obs, model_bcrm_sc1, mcmc_options)
+  postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
   dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data_obs
+    postSamples, model_bcrm_sc1, data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
 
   prob_samples_mat <- matrix(
     nrow = size(postSamples@options),
-    ncol = data_obs@nGrid
+    ncol = data@nGrid
   )
 
   # evaluate the probs, for all samples
-  for (i in seq_len(data_obs@nGrid)) {
+  for (i in seq_len(data@nGrid)) {
     prob_samples_mat[, i] <- prob(
-      dose = data_obs@doseGrid[i],
+      dose = data@doseGrid[i],
       model_bcrm_sc1,
       postSamples
     )
   }
   pq75 <- apply(prob_samples_mat, 2, function(x) quantile(x, 0.75))
 
-  res_sc1[[1]] <- cbind(
+  res_sc1 <- cbind(
     LOSS = dose_rec_loss$probs[, "posterior_loss"],
     PTARGET = dose_rec_loss$probs[, "target"],
     POVEREX = dose_rec_loss$probs[, "excessive"],
@@ -74,18 +69,15 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  sas_sc1 <- vector("list", 1)
-  names(sas_sc1) <- names(tab_sc1)
-
   temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit1.csv"),
     header = TRUE, dec = "."
   )
-  sas_sc1[[1]] <- apply(as.matrix(temp[, -1]), 2, as.numeric)
-  rownames(sas_sc1[[1]]) <- temp[, 1]
+  sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
+  rownames(sas_sc1) <- temp[, 1]
 
   # Compare posterior summaries for probabilities of DLT: crmPack vs. SAS
   all_true <- c(FALSE)
-  all_true[1] <- all(abs(res_sc1[[1]] - sas_sc1[[1]]) < 0.01)
+  all_true <- all(abs(res_sc1 - sas_sc1) < 0.01)
 
   expect_true(all_true)
 
@@ -108,9 +100,8 @@ test_that("Posterior summaries for probabilities of
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
-  tab_sc1 <- vector("list")
 
-  tab_sc1$"Data example 2 (DLTs: 0,1)" <- Data(
+  data <- Data(
     x = c(rep(10, 3), rep(20, 3)),
     y = c(rep(0, 3), rep(0, 2), 1),
     cohort = c(rep(1, 3), rep(2, 3)),
@@ -132,35 +123,31 @@ test_that("Posterior summaries for probabilities of
     losses = c(1, 0, 2, 3)
   )
 
-  res_sc1 <- vector("list", 1)
-  names(res_sc1) <- names(tab_sc1)
-
-  data_obs <- tab_sc1[[1]]
-  postSamples <- mcmc(data_obs, model_bcrm_sc1, mcmc_options)
+  postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
   dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data_obs
+    postSamples, model_bcrm_sc1, data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
 
   prob_samples_mat <- matrix(
     nrow = size(postSamples@options),
-    ncol = data_obs@nGrid
+    ncol = data@nGrid
   )
 
   # evaluate the probs, for all samples
-  for (i in seq_len(data_obs@nGrid)) {
+  for (i in seq_len(data@nGrid)) {
     prob_samples_mat[, i] <- prob(
-      dose = data_obs@doseGrid[i],
+      dose = data@doseGrid[i],
       model_bcrm_sc1,
       postSamples
     )
   }
   pq75 <- apply(prob_samples_mat, 2, function(x) quantile(x, 0.75))
 
-  res_sc1[[1]] <- cbind(
+  res_sc1 <- cbind(
     LOSS = dose_rec_loss$probs[, "posterior_loss"],
     PTARGET = dose_rec_loss$probs[, "target"],
     POVEREX = dose_rec_loss$probs[, "excessive"],
@@ -171,18 +158,15 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  sas_sc1 <- vector("list", 1)
-  names(sas_sc1) <- names(tab_sc1)
-
   temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit2.csv"),
     header = TRUE, dec = "."
   )
-  sas_sc1[[1]] <- apply(as.matrix(temp[, -1]), 2, as.numeric)
-  rownames(sas_sc1[[1]]) <- temp[, 1]
+  sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
+  rownames(sas_sc1) <- temp[, 1]
 
   # compare posterior summaries for probabilities of DLT: crmPack vs. SAS
   all_true <- c(FALSE)
-  all_true[1] <- all(abs(res_sc1[[1]] - sas_sc1[[1]]) < 0.01)
+  all_true <- all(abs(res_sc1 - sas_sc1) < 0.01)
 
   expect_true(all_true)
 
@@ -205,9 +189,8 @@ test_that("Posterior summaries for probabilities of
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
-  tab_sc1 <- vector("list")
 
-  tab_sc1$"Data example 3 (DLTs: 0,0,0,0)" <- Data(
+  data <- Data(
     x = c(
       rep(10, 3), rep(20, 3),
       rep(35, 3), rep(50, 3)
@@ -235,35 +218,31 @@ test_that("Posterior summaries for probabilities of
     losses = c(1, 0, 2, 3)
   )
 
-  res_sc1 <- vector("list", 1)
-  names(res_sc1) <- names(tab_sc1)
-
-  data_obs <- tab_sc1[[1]]
-  postSamples <- mcmc(data_obs, model_bcrm_sc1, mcmc_options)
+  postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
   dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data_obs
+    postSamples, model_bcrm_sc1, data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
 
   prob_samples_mat <- matrix(
     nrow = size(postSamples@options),
-    ncol = data_obs@nGrid
+    ncol = data@nGrid
   )
 
   # evaluate the probs, for all samples
-  for (i in seq_len(data_obs@nGrid)) {
+  for (i in seq_len(data@nGrid)) {
     prob_samples_mat[, i] <- prob(
-      dose = data_obs@doseGrid[i],
+      dose = data@doseGrid[i],
       model_bcrm_sc1,
       postSamples
     )
   }
   pq75 <- apply(prob_samples_mat, 2, function(x) quantile(x, 0.75))
 
-  res_sc1[[1]] <- cbind(
+  res_sc1 <- cbind(
     LOSS = dose_rec_loss$probs[, "posterior_loss"],
     PTARGET = dose_rec_loss$probs[, "target"],
     POVEREX = dose_rec_loss$probs[, "excessive"],
@@ -274,18 +253,15 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  sas_sc1 <- vector("list", 1)
-  names(sas_sc1) <- names(tab_sc1)
-
   temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit3.csv"),
     header = TRUE, dec = "."
   )
-  sas_sc1[[1]] <- apply(as.matrix(temp[, -1]), 2, as.numeric)
-  rownames(sas_sc1[[1]]) <- temp[, 1]
+  sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
+  rownames(sas_sc1) <- temp[, 1]
 
   # compare posterior summaries for probabilities of DLT: crmPack vs. SAS
   all_true <- c(FALSE)
-  all_true[1] <- all(abs(res_sc1[[1]] - sas_sc1[[1]]) < 0.01)
+  all_true <- all(abs(res_sc1 - sas_sc1) < 0.01)
 
   expect_true(all_true)
 
@@ -308,8 +284,8 @@ test_that("Posterior summaries for probabilities of
   )
 
   dose_grid_sc1 <- c(10, 20, 35, 50, 65, 80, 90, 100)
-  tab_sc1 <- vector("list")
-  tab_sc1$"Data example 4 (DLTs: 0,0,0,1)" <- Data(
+
+  data <- Data(
     x = c(
       rep(10, 3), rep(20, 3),
       rep(35, 3), rep(50, 3)
@@ -337,35 +313,31 @@ test_that("Posterior summaries for probabilities of
     losses = c(1, 0, 2, 3)
   )
 
-  res_sc1 <- vector("list", 1)
-  names(res_sc1) <- names(tab_sc1)
-
-  data_obs <- tab_sc1[[1]]
-  postSamples <- mcmc(data_obs, model_bcrm_sc1, mcmc_options)
+  postSamples <- mcmc(data, model_bcrm_sc1, mcmc_options)
 
   dose_rec_loss <- expect_silent(nextBest(ncrm_loss_sc1,
     doselimit = Inf,
-    postSamples, model_bcrm_sc1, data_obs
+    postSamples, model_bcrm_sc1, data
   ))
 
   rec_dose_sc1 <- dose_rec_loss$value
 
   prob_samples_mat <- matrix(
     nrow = size(postSamples@options),
-    ncol = data_obs@nGrid
+    ncol = data@nGrid
   )
 
   # evaluate the probs, for all samples
-  for (i in seq_len(data_obs@nGrid)) {
+  for (i in seq_len(data@nGrid)) {
     prob_samples_mat[, i] <- prob(
-      dose = data_obs@doseGrid[i],
+      dose = data@doseGrid[i],
       model_bcrm_sc1,
       postSamples
     )
   }
   pq75 <- apply(prob_samples_mat, 2, function(x) quantile(x, 0.75))
 
-  res_sc1[[1]] <- cbind(
+  res_sc1 <- cbind(
     LOSS = dose_rec_loss$probs[, "posterior_loss"],
     PTARGET = dose_rec_loss$probs[, "target"],
     POVEREX = dose_rec_loss$probs[, "excessive"],
@@ -376,18 +348,15 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  sas_sc1 <- vector("list", 1)
-  names(sas_sc1) <- names(tab_sc1)
-
   temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit4.csv"),
     header = TRUE, dec = "."
   )
-  sas_sc1[[1]] <- apply(as.matrix(temp[, -1]), 2, as.numeric)
-  rownames(sas_sc1[[1]]) <- temp[, 1]
+  sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
+  rownames(sas_sc1) <- temp[, 1]
 
   # Compare posterior summaries for probabilities of DLT: crmPack vs. SAS
   all_true <- c(FALSE)
-  all_true[1] <- all(abs(res_sc1[[1]] - sas_sc1[[1]]) < 0.01)
+  all_true <- all(abs(res_sc1 - sas_sc1) < 0.01)
 
   expect_true(all_true)
 
