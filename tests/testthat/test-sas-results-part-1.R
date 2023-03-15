@@ -69,7 +69,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit1.csv"),
+  temp <- read.csv2(test_path("testdata/sc1_sit1.csv"),
     header = TRUE, dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
@@ -158,7 +158,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit2.csv"),
+  temp <- read.csv2(test_path("testdata/sc1_sit2.csv"),
     header = TRUE, dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
@@ -253,7 +253,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit3.csv"),
+  temp <- read.csv2(test_path("testdata/sc1_sit3.csv"),
     header = TRUE, dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
@@ -348,7 +348,7 @@ test_that("Posterior summaries for probabilities of
   )
 
   # Posterior summaries computed by SAS
-  temp <- read.csv2(paste0(getwd(), "/testdata/sc1_sit4.csv"),
+  temp <- read.csv2(test_path("testdata/sc1_sit4.csv"),
     header = TRUE, dec = "."
   )
   sas_sc1 <- apply(as.matrix(temp[, -1]), 2, as.numeric)
