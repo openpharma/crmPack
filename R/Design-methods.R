@@ -134,7 +134,7 @@ getResultList <- function(fun,
             tryCatch(
               {
                 if (exists("crmpack_extensions") == TRUE) {
-                  parallel::clusterCall(
+                  parallel::clusterEvalQ(
                     cl,
                     crmpack_extensions()
                   )
