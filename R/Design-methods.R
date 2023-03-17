@@ -96,7 +96,6 @@ getResultList <- function(fun,
         FUN = fun
       )
     } else {
-
       ## check that parallel parameter makes sense
       stopifnot(is.scalar(parallel), parallel > 0)
 
@@ -709,11 +708,12 @@ setMethod("simulate",
       trueBiomarkerArgnames <- names(formals(trueBiomarker))[-1]
 
       ## this is the covariance matrix we assume:
-      trueCov <- matrix(c(
-        sigma2W, sqrt(sigma2W) * rho,
-        sqrt(sigma2W) * rho, 1
-      ),
-      nrow = 2, byrow = TRUE
+      trueCov <- matrix(
+        c(
+          sigma2W, sqrt(sigma2W) * rho,
+          sqrt(sigma2W) * rho, 1
+        ),
+        nrow = 2, byrow = TRUE
       )
 
       ## seed handling
@@ -1100,7 +1100,6 @@ setMethod("simulate",
 setGeneric("examine",
   def =
     function(object, ..., maxNoIncrement = 100L) {
-
       ## check maxNoIncrement argument
       stopifnot(is.scalar(maxNoIncrement) && maxNoIncrement > 0)
 
@@ -1127,7 +1126,6 @@ setMethod("examine",
              mcmcOptions = McmcOptions(),
              ...,
              maxNoIncrement) {
-
       ## start with the empty table
       ret <- data.frame(
         dose = numeric(),
@@ -1340,7 +1338,6 @@ setMethod("examine",
     function(object,
              ...,
              maxNoIncrement) {
-
       ## start with the empty table
       ret <- data.frame(
         dose = numeric(),
@@ -1488,7 +1485,6 @@ setMethod("examine",
   def =
     function(object, mcmcOptions = McmcOptions(), ...,
              maxNoIncrement) {
-
       # A function to return follow up fulfull yes (TRUE) vs no (FALSE);
       ready_to_open <- function(day, window, thisSurv) {
         size <- length(thisSurv)
@@ -1570,7 +1566,6 @@ setMethod("examine",
       ## inside this loop we continue filling up the table, until
       ## stopping
       while (!stopit) {
-
         ## what is the cohort size at this dose?
         thisSize <- size(object@cohortSize,
           dose = thisDose,
@@ -1611,7 +1606,6 @@ setMethod("examine",
         ## for all possible number of DLTs:
         for (numDLTs in 0:nFollow)
         {
-
           ## If numDLTs>0, two extreme cases will be examinated;
           ## (1) DLTs occur on patients with the longer follow ups;
           ## (2) DLTs occur on patients with the shorter follow ups;
@@ -1685,7 +1679,6 @@ setMethod("examine",
             #                                            }
           } else {
             for (DLTsearly in 1:2) {
-
               # Update current {fact} variables
               thisDLTs <- factDLTs
               thisSurv <- factSurv
@@ -1707,8 +1700,6 @@ setMethod("examine",
                   trialtime = trialtime
                 ) #### the u will be updated
               } else {
-
-
                 # scenario 2: The patients with shortest follow up have DLTs
 
                 thisDLTs[rev(thiscensored)][1:numDLTs] <- rep(1, rep(numDLTs))
@@ -2048,7 +2039,6 @@ setMethod("simulate",
               new_cohort = FALSE
             )
           } else {
-
             ## update the data with this cohort
             thisData <- update(
               object = thisData,
@@ -2410,7 +2400,6 @@ setMethod("simulate",
               new_cohort = FALSE
             )
           } else {
-
             ## update the data with this cohort
             thisData <- update(
               object = thisData,
@@ -2843,7 +2832,6 @@ setMethod("simulate",
               new_cohort = FALSE
             )
           } else {
-
             ## update the data with this cohort
             thisData <- update(
               object = thisData,
@@ -3366,7 +3354,6 @@ setMethod("simulate",
                 new_cohort = FALSE
               )
             } else {
-
               ## update the data with this cohort
               thisData <- update(
                 object = thisData,
@@ -3840,7 +3827,6 @@ setMethod("simulate",
                 new_cohort = FALSE
               )
             } else {
-
               ## update the data with this cohort
               thisData <- update(
                 object = thisData,
@@ -4313,7 +4299,6 @@ setMethod("simulate",
 
         ## inside this loop we simulate the whole trial, until stopping
         while (!stopit) {
-
           ## what is the probability for tox. at this dose?
           thisProb <- thisTruth(thisDose)
 

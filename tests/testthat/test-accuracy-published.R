@@ -133,56 +133,57 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   )
 
   # Expected table I (Neuenschwander et al.)
-  tab1 <- structure(list(
-    dose1 = c(
-      3, 0, NA, 0.01, 0.069, 0.055, NA, 0.063,
-      0.024, 0.03
+  tab1 <- structure(
+    list(
+      dose1 = c(
+        3, 0, NA, 0.01, 0.069, 0.055, NA, 0.063,
+        0.024, 0.03
+      ),
+      dose2.5 = c(
+        4, 0, NA, 0.015, 0.085, 0.062, NA, 0.125,
+        0.054, 0.051
+      ),
+      dose5 = c(
+        5, 0, NA, 0.02, 0.099, 0.068, NA, 0.188,
+        0.09, 0.069
+      ),
+      dose10 = c(
+        4, 0, NA, 0.025, 0.111, 0.072, NA, 0.25,
+        0.13, 0.084
+      ),
+      dose15 = c(
+        NA, NA, NA, 0.03, 0.123, 0.076, NA, 0.313,
+        0.176, 0.097
+      ),
+      dose20 = c(
+        NA, NA, NA, 0.04, 0.144, 0.082, NA, 0.375,
+        0.226, 0.107
+      ),
+      dose25 = c(
+        2, 2, NA, 0.05, 0.163, 0.087, NA, 0.438,
+        0.281, 0.115
+      ),
+      dose30 = c(
+        NA, NA, NA, 0.1, 0.242, 0.101, NA, 0.5,
+        0.341, 0.119
+      ),
+      dose40 = c(
+        NA, NA, NA, 0.17, 0.33, 0.109, NA, 0.563,
+        0.405, 0.12
+      ),
+      dose50 = c(
+        NA, NA, NA, 0.3, 0.465, 0.108, NA, 0.625,
+        0.475, 0.117
+      )
     ),
-    dose2.5 = c(
-      4, 0, NA, 0.015, 0.085, 0.062, NA, 0.125,
-      0.054, 0.051
-    ),
-    dose5 = c(
-      5, 0, NA, 0.02, 0.099, 0.068, NA, 0.188,
-      0.09, 0.069
-    ),
-    dose10 = c(
-      4, 0, NA, 0.025, 0.111, 0.072, NA, 0.25,
-      0.13, 0.084
-    ),
-    dose15 = c(
-      NA, NA, NA, 0.03, 0.123, 0.076, NA, 0.313,
-      0.176, 0.097
-    ),
-    dose20 = c(
-      NA, NA, NA, 0.04, 0.144, 0.082, NA, 0.375,
-      0.226, 0.107
-    ),
-    dose25 = c(
-      2, 2, NA, 0.05, 0.163, 0.087, NA, 0.438,
-      0.281, 0.115
-    ),
-    dose30 = c(
-      NA, NA, NA, 0.1, 0.242, 0.101, NA, 0.5,
-      0.341, 0.119
-    ),
-    dose40 = c(
-      NA, NA, NA, 0.17, 0.33, 0.109, NA, 0.563,
-      0.405, 0.12
-    ),
-    dose50 = c(
-      NA, NA, NA, 0.3, 0.465, 0.108, NA, 0.625,
-      0.475, 0.117
+    class = "data.frame",
+    row.names = c(
+      "No. of patients", "No. of DLTs",
+      "A) Posterior summaries (original skeleton)",
+      "Skeleton (CRM)", "Mean", "Std. dev.",
+      "B) Posterior summaries (equidistant skeleton)",
+      "Skeleton (CRM)", "Mean", "Std. dev."
     )
-  ),
-  class = "data.frame",
-  row.names = c(
-    "No. of patients", "No. of DLTs",
-    "A) Posterior summaries (original skeleton)",
-    "Skeleton (CRM)", "Mean", "Std. dev.",
-    "B) Posterior summaries (equidistant skeleton)",
-    "Skeleton (CRM)", "Mean", "Std. dev."
-  )
   )
 
   tab1_a_exp <- rbind(
