@@ -1,0 +1,363 @@
+---
+title: "How to use parallel computing with extensions to the package, an example"
+author: "Oliver Boix"
+date: "14 March 2023"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Parallel computing with extensions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{crmPack}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+One of the big advantages of crmPack over existing R implementations is its flexible framework based on the S4 classes and methods system (Chambers 2008) and JAGS (Plummer 2003) for Bayesian computations. Users can extend the existing functionality easily to the specific needs of the study (Bove 2019).
+
+User written extensions of classes and methods can easily be used together with existing crmPack classes and methods in study set up and analysis. However, when trial simulations must be performed to derive the operation characteristics of a study setup, program run times can be long. The run time depends among other things on the number of study replications and mcmc samples. Utilizing parallel computing can overcome long run times, i.e. using multiple CPU cores can decrease run times dramatically. 
+
+Parallel computing is natively supported by crmPack. Whenever more than one CPU core (`nCores`) is specified in the simulation call, each core is initialized with the crmPack package and the global environment.
+
+Due to the nature of the S4 object system, classes and method can not just copied from the global environment, they need to be executed on any core that is initialized.
+
+To use user written extension with parallel computing and `crmPack`, the user written code needs to be embedded in a function that must have the fixed name `crmpack_extensions`. This function is executed at any core that is initialized, so that the user written S4 classes and methods are available.
+
+The following chapters gives an example how user written extensions can be used utilizing parallel computing with crmPack.
+
+## Usage
+
+User written code needs to be put into a function that must be named `crmpack_extensions` as follows.
+
+```{r high level example, eval=FALSE}
+crmpack_extensions <- function(){
+  
+ *..... user code .....*
+
+}
+```
+
+When the simulation function is executed with the parameter `parallel = TRUE` and `nCores =` a number greater than one, it is evaluated if a function with the name `crmpack_extensions` exists in the global environment. In case the function exists it is executed at the initialization of any core and is available for parallel computing.
+
+Note that the `<<-` operator must be used for any function that is defined  within the wrapper function `crmpack_extensions`. The `<<-` operator  makes the function visible within the global environment.
+
+Please test the newly written extensions with one CPU core, before utilizing the function `crmpack_extensions`. The submitted code can not be checked for validity and is executed directly at each core. In case of errors the returned error message may not help to identify the root problem. Debugging of mewly written code is much easier without using parallel computing.
+
+## Worked out example
+
+Lets assume we want want to use a logistic model with normal prior that is truncated for the slope parameter, so that the slope can have only positive values. This model representation is not part of the crmPack, but can easily be added. Please note that for this example the extra code is directly embedded into the `crmpack_extensions`. As mentioned before, user should write and test their code first without embedding into the `crmpack_extensions` function to assure that no problem occur during general execution.
+
+```{r LogisticNormalTruncPrior, eval=FALSE}
+library(crmPack)
+
+crmpack_extensions <- function() {
+  # LogisticNormalTruncPrior ----
+
+  ## class ----
+
+  #' `LogisticNormalTruncPrior`
+  #'
+  #' @description `r lifecycle::badge("experimental")`
+  #'
+  #' [`LogisticNormalTruncPrior`] is the class for the usual logistic regression
+  #'  model with bivariate normal prior on the intercept and slope.
+  #'
+  #' @aliases LogisticNormalTruncPrior
+  #' @export
+  #'
+  #' @slot mean1 the mean of the intercept
+  #' @slot mean2 the mean of the slope
+  #' @slot var1 the variance of the intercept
+  #' @slot var2 the variance of the slope
+  #'
+  .LogisticNormalTruncPrior <- setClass(
+    Class = "LogisticNormalTruncPrior",
+    contains = "GeneralModel",
+    slots = c(
+      mean1 = "numeric",
+      mean2 = "numeric",
+      var1 = "numeric",
+      var2 = "numeric"
+    )
+  )
+
+  ## constructor ----
+
+  #' @rdname LogisticNormalTruncPrior-class
+
+  #' Initialization function for the `LogisticNormalTruncPrior` class
+  #'
+  #' @param mean1 the mean of the intercept
+  #' @param mean2 the mean of the slope
+  #' @param var1 the variance of the intercept
+  #' @param var2 the variance of the slope
+  #' @return the \code{\linkS4class{LogisticNormalTruncPrior}} object
+  #'
+  #' @export
+  #' @keywords methods
+  LogisticNormalTruncPrior <<- function(mean1, mean2, var1, var2) {
+    .LogisticNormalTruncPrior(
+      mean1 = mean1,
+      mean2 = mean2,
+      var1 = var1,
+      var2 = var2,
+      datamodel = function() {
+        for (i in 1:nObs) {
+          y[i] ~ dbern(mean[i])
+          logit(mean[i]) <- alpha0 + alpha1 * x[i]
+        }
+      },
+      priormodel = function() {
+        alpha0 ~ dnorm(mean1, 1 / var1)
+        alpha1 ~ dnorm(mean2, 1 / var2) %_% I(0, )
+      },
+      datanames = c("nObs", "y", "x"),
+      modelspecs = function() {
+        list(
+          mean1 = mean1,
+          mean2 = mean2,
+          var1 = var1,
+          var2 = var2
+        )
+      },
+      init = function() {
+        list(alpha0 = mean1, alpha1 = mean2)
+      },
+      sample = c("alpha0", "alpha1")
+    )
+  }
+
+  ## dose ----
+
+  #' @describeIn dose compute the dose level reaching a specific toxicity
+  #'   probability.
+  #'
+  #' @aliases dose-LogisticNormalTruncPrior
+  #' @export
+  #'
+  setMethod(
+    f = "dose",
+    signature = signature(
+      x = "numeric",
+      model = "LogisticNormalTruncPrior",
+      samples = "Samples"
+    ),
+    definition = function(x, model, samples) {
+      checkmate::assert_probabilities(x)
+      checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
+      assert_length(x, len = size(samples))
+
+      alpha0 <- samples@data$alpha0
+      alpha1 <- samples@data$alpha1
+      (logit(x) - alpha0) / alpha1
+    }
+  )
+
+  ## prob ----
+
+  #' @describeIn prob compute the toxicity probability of a specific dose.
+  #'
+  #' @aliases prob-LogisticNormalTruncPrior
+  #' @export
+  #'
+  setMethod(
+    f = "prob",
+    signature = signature(
+      dose = "numeric",
+      model = "LogisticNormalTruncPrior",
+      samples = "Samples"
+    ),
+    definition = function(dose, model, samples) {
+      checkmate::assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
+      checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
+      assert_length(dose, len = size(samples))
+
+      alpha0 <- samples@data$alpha0
+      alpha1 <- samples@data$alpha1
+      1 / (1 + exp(-alpha0 - alpha1 * dose))
+    }
+  )
+}
+```
+
+The newly created model `LogisticNormalTruncPrior` can now be used to set up a study. First we load the function `crmpack_extensions` into the global environment, so that the function and coresponding classes and methods for `prob` and `dose` are available.
+
+```{r, eval=FALSE}
+# Execute the user written extensions.
+crmpack_extensions()
+
+# Create the dose grid.
+emptydata <- Data(
+  doseGrid = c(
+    10, 15, 20, 30, 40, 60, 80, 120, 160, 240, 320,
+    480, 640, 960, 1280, 1920, 2400, 3000, 4000
+  ),
+  placebo = F
+)
+
+# Create data for basic testing of the setup.
+my_data <- Data(
+  x = c(10, 20, 40, 80, 80, 160, 160),
+  y = c(0, 0, 0, 0, 0, 1, 1),
+  cohort = c(1, 2, 3, 4, 4, 5, 5),
+  ID = 1:7,
+  doseGrid = emptydata@doseGrid
+)
+
+# Setup the model.
+my_model <- LogisticNormalTruncPrior(
+  mean1 = -3,
+  mean2 = 0.00075,
+  var1 = 1,
+  var2 = 0.000009
+)
+
+# Options used for simulations.
+my_options <- McmcOptions(
+  burnin = 100,
+  step = 2,
+  samples = 100,
+  rng_kind = "Mersenne-Twister",
+  rng_seed = 94
+)
+
+# Create mcmc samples.
+my_samples <- mcmc(my_data, my_model, my_options)
+
+# Plot the dose toxicity curve.
+plot(my_samples, my_model, my_data)
+
+# Specify increments.
+my_increments <- IncrementsRelativeDLT(
+  dlt_intervals = c(0, 1),
+  increments = c(1, 0.5)
+)
+
+# Maximum dose.
+this_max_dose <- maxDose(my_increments, my_data)
+
+# Next best dose.
+my_next_best <- NextBestMinDist(target = 0.3)
+this_next_dose <- nextBest(my_next_best, this_max_dose, my_samples, my_model, my_data)$value
+
+# Stopping rule.
+my_stopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0)
+
+# Stop trial based on criteria and observed data.
+stopTrial(my_stopping, this_next_dose, my_samples, my_model, my_data)
+
+# Cohorts size.
+my_size <- CohortSizeDLT(
+  dlt_intervals = c(0, 1),
+  cohort_size = c(1, 3)
+)
+
+# Design.
+my_design <- Design(
+  model = my_model,
+  nextBest = my_next_best,
+  stopping = my_stopping,
+  increments = my_increments,
+  cohortSize = my_size,
+  data = emptydata,
+  startingDose = 10
+)
+```
+
+After setting up the whole model, it is very useful to check the model decisions in case that no DLT is observed until a certain dose level, before study simulations are performed. This check is also useful to additionally test the new written code.
+
+```{r, eval=FALSE}
+# Examine the design.
+examine(my_design, my_options)
+```
+
+When examine runs as expected, study simulation can be performed.
+
+```{r, eval=FALSE}
+# Set up scenarios
+safe_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/20000)
+late_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/2000)
+early_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/700)
+toxic_scenario <- probFunction(my_model, alpha0 = logit(0.6), alpha1 = (logit(0.3)-logit(0.6))/-300)
+peak_scenario  <- function(dose,
+                  scenario=cbind(emptydata@doseGrid, c(rep(0.05,11), rep(0.80,8))))
+  {scenario[match(dose, scenario[, 1]), 2]}
+
+
+# Helper function that outputs the elapsed time.
+report_time <- function(report_text){
+  cat(
+    format(Sys.time(), usetz = TRUE),
+    report_text,
+    "done - elapsed time from start:",
+    round(difftime(Sys.time(), start_time, units = "mins"), digits = 1),
+    "\n"
+  )
+}
+
+# Helper function that simulates a specific truth.
+get_oc <- function(truth) {
+  simulate(
+    my_design,
+    args = NULL,
+    truth = truth,
+    nsim = my_nsim,
+    mcmcOptions = my_options,
+    parallel = do_parallel,
+    nCores = parallelly::availableCores()
+  )
+}
+
+# get operation characteristics without utilizing parallel computing for one truth.
+time_no_parallel <- system.time({
+  start_time <- Sys.time()
+  cat(format(Sys.time(), usetz = TRUE), "start", "\n")
+
+  my_nsim = 100
+  do_parallel = FALSE
+
+  safe <- get_oc(safe_scenario)
+
+  report_time("safe")
+
+  late <- get_oc(late_scenario)
+
+  report_time("late")
+})
+
+# Get full operation characteristics utilizing parallel computing.
+time <- system.time({
+  start_time <- Sys.time()
+  cat(format(Sys.time(), usetz = TRUE), "start", "\n")
+
+  my_nsim = 100
+  do_parallel = TRUE
+
+  safe <- get_oc(safe_scenario)
+
+  report_time("safe")
+
+  late <- get_oc(late_scenario)
+
+  report_time("late")
+
+  early <- get_oc(early_scenario)
+
+  report_time("late")
+
+  toxic <- get_oc(toxic_scenario)
+
+  report_time("late")
+
+  peak <- get_oc(peak_scenario)
+
+  report_time("peak")
+})
+```
+
