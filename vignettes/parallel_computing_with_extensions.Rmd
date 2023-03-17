@@ -38,7 +38,7 @@ User written code needs to be put into a function that must be named `crmpack_ex
 ```{r high level example, eval=FALSE}
 crmpack_extensions <- function(){
   
- *..... user code .....*
+ ..... user code .....
 
 }
 ```
@@ -51,7 +51,7 @@ Please test the newly written extensions with one CPU core, before utilizing the
 
 ## Worked out example
 
-Lets assume we want want to use a logistic model with normal prior that is truncated for the slope parameter, so that the slope can have only positive values. This model representation is not part of the crmPack, but can easily be added. Please note that for this example the extra code is directly embedded into the `crmpack_extensions`. As mentioned before, user should write and test their code first without embedding into the `crmpack_extensions` function to assure that no problem occur during general execution.
+Lets assume we want want to use a logistic model with normal prior that is truncated for the slope parameter, so that the slope can have only positive values. This model representation is not part of the crmPack, but can easily be added. Please note that for this example the extra code is directly embedded into the `crmpack_extensions` function. As mentioned before, user should write and test their code first without embedding into the `crmpack_extensions` function to assure that no problem occur during general execution.
 
 ```{r LogisticNormalTruncPrior, eval=FALSE}
 library(crmPack)
