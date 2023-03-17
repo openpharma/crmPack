@@ -32,27 +32,43 @@
 ##' @export
 ##' @keywords classes
 .Samples <-
-    setClass(Class="Samples",
-             representation(data="list",
-                            options="McmcOptions"),
-             prototype(data=
-                           list(alpha=matrix(0, nrow=1, ncol=1),
-                                beta=matrix(0, nrow=1, ncol=1)),
-                       options=
-                           McmcOptions(burnin=1,
-                                       step=1,
-                                       samples=1)),
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "Samples",
+    representation(
+      data = "list",
+      options = "McmcOptions"
+    ),
+    prototype(
+      data =
+        list(
+          alpha = matrix(0, nrow = 1, ncol = 1),
+          beta = matrix(0, nrow = 1, ncol = 1)
+        ),
+      options =
+        McmcOptions(
+          burnin = 1,
+          step = 1,
+          samples = 1
+        )
+    ),
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(all(sapply(object@data,
-                                        NROW) == size(object@options)),
-                             "all data elements must have as many rows as the sample size was")
-                     o$check(all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
-                             "all data elements must be finite numeric values")
-                     o$result()
-                 })
+        o$check(
+          all(sapply(
+            object@data,
+            NROW
+          ) == size(object@options)),
+          "all data elements must have as many rows as the sample size was"
+        )
+        o$check(
+          all(sapply(object@data, test_numeric, finite = TRUE, any.missing = FALSE)),
+          "all data elements must be finite numeric values"
+        )
+        o$result()
+      }
+  )
 validObject(.Samples())
 
 
@@ -65,10 +81,11 @@ validObject(.Samples())
 ##' @export
 ##' @keywords methods
 Samples <- function(data,
-                    options)
-{
-    .Samples(data=data,
-             options=options)
+                    options) {
+  .Samples(
+    data = data,
+    options = options
+  )
 }
 
 # nolint end
