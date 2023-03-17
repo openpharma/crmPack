@@ -1,5 +1,4 @@
 test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
-
   mcmc_options <- McmcOptions(
     burnin = 50000,
     step = 2,
@@ -20,15 +19,18 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   data_obs_a <- Data(
     x = c(
       rep(c(1, 2.5, 5, 10, 25),
-          times = c(3, 4, 5, 4, 2))
+        times = c(3, 4, 5, 4, 2)
+      )
     ),
     y = c(
       rep(c(0, 1),
-          times = c(16, 2))
+        times = c(16, 2)
+      )
     ),
     cohort = c(
       rep(c(1, 2, 3, 4, 7),
-          times = c(3, 4, 5, 4, 2))
+        times = c(3, 4, 5, 4, 2)
+      )
     ),
     doseGrid = dose_grid,
     ID = 1:18
@@ -67,13 +69,13 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   post_samples_a <- mcmc(data_obs_a, model_power_a, mcmc_options)
 
   dose_rec_loss_a <- nextBest(ncrm_loss,
-                              doselimit = maxDose(
-                                increments_no,
-                                data_obs_a
-                              ),
-                              samples = post_samples_a,
-                              model = model_power_a,
-                              data = data_obs_a
+    doselimit = maxDose(
+      increments_no,
+      data_obs_a
+    ),
+    samples = post_samples_a,
+    model = model_power_a,
+    data = data_obs_a
   )
 
   # (A) Actual table I
@@ -105,13 +107,13 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   post_samples_b <- mcmc(data_obs_b, model_power_b, mcmc_options)
 
   dose_rec_loss_b <- nextBest(ncrm_loss,
-                              doselimit = maxDose(
-                                increments_no,
-                                data_obs_b
-                              ),
-                              samples = post_samples_b,
-                              model = model_power_b,
-                              data = data_obs_b
+    doselimit = maxDose(
+      increments_no,
+      data_obs_b
+    ),
+    samples = post_samples_b,
+    model = model_power_b,
+    data = data_obs_b
   )
 
   tab1_b_act <- rbind(
@@ -211,11 +213,11 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   tolerance <- 0.01
   # original skeleton
   diff_org_mean <- abs(tab1_act$"Posterior summaries (original skeleton)"[2, ] -
-                         tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
+    tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
     tolerance
 
   diff_org_sd <- abs(tab1_act$"Posterior summaries (original skeleton)"[3, ] -
-                       tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
+    tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
     tolerance
 
   # if all computed results (mean or sd) have deviation smaller than
@@ -227,11 +229,11 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
 
   # equidistant skeleton
   diff_equi_mean <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[2, ] -
-                          tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
+    tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
     tolerance
 
   diff_equi_sd <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[3, ] -
-                        tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
+    tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
     tolerance
 
   result_equi <- ifelse(all(diff_equi_mean) & all(diff_equi_sd), TRUE, FALSE)
