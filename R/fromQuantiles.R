@@ -129,13 +129,14 @@ Quantiles2LogisticNormal <- function(dosegrid,
   target <- function(param) {
     ## form the mean vector and covariance matrix
     mean <- param[1:2]
-    cov <- matrix(c(
-      param[3]^2,
-      prod(param[3:5]),
-      prod(param[3:5]),
-      param[4]^2
-    ),
-    nrow = 2L, ncol = 2L
+    cov <- matrix(
+      c(
+        param[3]^2,
+        prod(param[3:5]),
+        prod(param[3:5]),
+        param[4]^2
+      ),
+      nrow = 2L, ncol = 2L
     )
 
     ## simulate from the corresponding normal distribution

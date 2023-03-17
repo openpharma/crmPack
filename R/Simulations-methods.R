@@ -61,7 +61,6 @@ setMethod("plot",
                  "dosesTried"
                ),
              ...) {
-
       ## which plots should be produced?
       type <- match.arg(type,
         several.ok = TRUE
@@ -124,11 +123,12 @@ setMethod("plot",
             patient =
               rep(seq_len(maxPatients), each = 5L),
             Statistic =
-              factor(rep(
-                stats,
-                maxPatients
-              ),
-              levels = stats
+              factor(
+                rep(
+                  stats,
+                  maxPatients
+                ),
+                levels = stats
               ),
             traj =
               c(apply(simDosesMat, 2L, quantile,
@@ -153,13 +153,14 @@ setMethod("plot",
         }
         plotList[[plotIndex <- plotIndex + 1L]] <-
           ggplot() +
-          geom_step(aes(
-            x = patient,
-            y = traj,
-            group = Statistic,
-            linetype = Statistic
-          ),
-          size = 1.2, colour = "blue", data = traj.df
+          geom_step(
+            aes(
+              x = patient,
+              y = traj,
+              group = Statistic,
+              linetype = Statistic
+            ),
+            size = 1.2, colour = "blue", data = traj.df
           ) +
           ## scale_linetype_manual(values=lt) +
           xlab(myTitle) +
@@ -274,7 +275,6 @@ setMethod("plot",
                  "rho"
                ),
              ...) {
-
       ## start the plot list
       plotList <- list()
       plotIndex <- 0L
@@ -373,7 +373,6 @@ setMethod("summary",
              truth,
              target = c(0.2, 0.35),
              ...) {
-
       ## extract dose grid
       doseGrid <- object@data[[1]]@doseGrid
 
@@ -390,14 +389,15 @@ setMethod("summary",
             ## doses can be found that match the target
             ## interval boundaries!
             ## In that case we want to return NA
-            r <- try(uniroot(
-              f = function(x) {
-                truth(x, ...) - t
-              },
-              interval =
-                range(doseGrid)
-            )$root,
-            silent = TRUE
+            r <- try(
+              uniroot(
+                f = function(x) {
+                  truth(x, ...) - t
+                },
+                interval =
+                  range(doseGrid)
+              )$root,
+              silent = TRUE
             )
             if (inherits(r, "try-error")) {
               return(NA_real_)
@@ -576,7 +576,6 @@ setMethod("summary",
              truth,
              target = c(0.2, 0.35),
              ...) {
-
       ## call the parent method
       start <- callNextMethod(
         object = object,
@@ -671,7 +670,6 @@ setMethod("summary",
              trueBiomarker,
              target = c(0.2, 0.35),
              ...) {
-
       ## call the parent method
       start <- callNextMethod(
         object = object,
@@ -783,16 +781,17 @@ Report <-
           res <- paste(round(mean(vals), digits),
             unit,
             " (",
-            paste(round(
-              quantile(vals,
-                quantiles,
-                na.rm = TRUE
+            paste(
+              round(
+                quantile(vals,
+                  quantiles,
+                  na.rm = TRUE
+                ),
+                digits
               ),
-              digits
-            ),
-            unit,
-            collapse = ", ",
-            sep = ""
+              unit,
+              collapse = ", ",
+              sep = ""
             ),
             ")",
             sep = ""
@@ -967,7 +966,6 @@ setMethod("show",
     signature(object = "SimulationsSummary"),
   def =
     function(object) {
-
       ## call the parent method
       df <- callNextMethod(object)
       dfNames <- names(df)
@@ -1006,7 +1004,6 @@ setMethod("show",
     signature(object = "DualSimulationsSummary"),
   def =
     function(object) {
-
       ## call the parent method
       df <- callNextMethod(object)
       dfNames <- names(df)
@@ -1083,7 +1080,6 @@ setMethod("plot",
                  "nAboveTarget"
                ),
              ...) {
-
       ## which plots should be produced?
       type <- match.arg(type,
         several.ok = TRUE
@@ -1226,7 +1222,6 @@ setMethod("plot",
                  "meanFit"
                ),
              ...) {
-
       ## which plots should be produced?
       type <- match.arg(type,
         several.ok = TRUE
@@ -1266,10 +1261,11 @@ setMethod("plot",
           group =
             rep(1:4, each = length(x@doseGrid)),
           linetype =
-            factor(rep(linetype[c(1, 2, 3, 3)],
-              each = length(x@doseGrid)
-            ),
-            levels = linetype
+            factor(
+              rep(linetype[c(1, 2, 3, 3)],
+                each = length(x@doseGrid)
+              ),
+              levels = linetype
             ),
           lines =
             unlist(x@meanFit) * 100
@@ -1291,14 +1287,15 @@ setMethod("plot",
 
         ## now create and save the plot
         thisPlot <- ggplot() +
-          geom_line(aes(
-            x = dose,
-            y = lines,
-            group = group,
-            linetype = linetype,
-            col = linetype
-          ),
-          data = dat
+          geom_line(
+            aes(
+              x = dose,
+              y = lines,
+              group = group,
+              linetype = linetype,
+              col = linetype
+            ),
+            data = dat
           )
 
         thisPlot <- thisPlot +
@@ -1370,7 +1367,6 @@ setMethod("plot",
                  "meanBiomarkerFit"
                ),
              ...) {
-
       ## which plots should be produced?
       type <- match.arg(type,
         several.ok = TRUE
@@ -1410,10 +1406,11 @@ setMethod("plot",
           group =
             rep(1:4, each = length(x@doseGrid)),
           linetype =
-            factor(rep(linetype[c(1, 2, 3, 3)],
-              each = length(x@doseGrid)
-            ),
-            levels = linetype
+            factor(
+              rep(linetype[c(1, 2, 3, 3)],
+                each = length(x@doseGrid)
+              ),
+              levels = linetype
             ),
           lines =
             unlist(x@meanBiomarkerFit)
@@ -1435,14 +1432,15 @@ setMethod("plot",
 
         ## now create and save the plot
         thisPlot <- ggplot() +
-          geom_line(aes(
-            x = dose,
-            y = lines,
-            group = group,
-            linetype = linetype,
-            col = linetype
-          ),
-          data = dat
+          geom_line(
+            aes(
+              x = dose,
+              y = lines,
+              group = group,
+              linetype = linetype,
+              col = linetype
+            ),
+            data = dat
           )
 
         thisPlot <- thisPlot +
@@ -1645,7 +1643,6 @@ setMethod("summary",
           average = rowMeans(meanFitMatrix)
         )
       } else {
-
         ## fitted toxicity rate at dose most often selected
         fitAtDoseMostSelected <-
           sapply(
@@ -2001,7 +1998,6 @@ setMethod("plot",
                  "meanFit"
                ),
              ...) {
-
       ## which plots should be produced?
       type <- match.arg(type,
         several.ok = TRUE
@@ -2075,7 +2071,6 @@ setMethod("plot",
         ## by checking if there the lower limits of the 95% Credibility
         ## interval are calculated
         if (!is.null(x@meanFit$lower)) {
-
           ## which types of lines do we have?
           linetype <- c(
             "True toxicity",
@@ -2091,10 +2086,11 @@ setMethod("plot",
             group =
               rep(1:4, each = length(x@doseGrid)),
             linetype =
-              factor(rep(linetype[c(1, 2, 3, 3)],
-                each = length(x@doseGrid)
-              ),
-              levels = linetype
+              factor(
+                rep(linetype[c(1, 2, 3, 3)],
+                  each = length(x@doseGrid)
+                ),
+                levels = linetype
               ),
             lines =
               unlist(x@meanFit) * 100
@@ -2116,14 +2112,15 @@ setMethod("plot",
 
           ## now create and save the plot
           thisPlot <- ggplot() +
-            geom_line(aes(
-              x = dose,
-              y = lines,
-              group = group,
-              linetype = linetype,
-              col = linetype
-            ),
-            data = dat
+            geom_line(
+              aes(
+                x = dose,
+                y = lines,
+                group = group,
+                linetype = linetype,
+                col = linetype
+              ),
+              data = dat
             )
 
           thisPlot <- thisPlot +
@@ -2147,10 +2144,11 @@ setMethod("plot",
             group =
               rep(1:2, each = length(x@doseGrid)),
             linetype =
-              factor(rep(linetype[c(1, 2)],
-                each = length(x@doseGrid)
-              ),
-              levels = linetype
+              factor(
+                rep(linetype[c(1, 2)],
+                  each = length(x@doseGrid)
+                ),
+                levels = linetype
               ),
             lines =
               unlist(x@meanFit) * 100
@@ -2170,14 +2168,15 @@ setMethod("plot",
 
           ## now create and save the plot
           thisPlot <- ggplot() +
-            geom_line(aes(
-              x = dose,
-              y = lines,
-              group = group,
-              linetype = linetype,
-              col = linetype
-            ),
-            data = dat
+            geom_line(
+              aes(
+                x = dose,
+                y = lines,
+                group = group,
+                linetype = linetype,
+                col = linetype
+              ),
+              data = dat
             )
 
           thisPlot <- thisPlot +
@@ -2622,7 +2621,6 @@ setMethod("show",
     signature(object = "PseudoDualSimulationsSummary"),
   def =
     function(object) {
-
       ## call the parent method
       df <- callNextMethod(object)
       dfNames <- names(df)
@@ -2769,7 +2767,6 @@ setMethod("plot",
                  "meanEffFit"
                ),
              ...) {
-
       ## which plots should be produced?
       type <- match.arg(type,
         several.ok = TRUE
@@ -2812,10 +2809,11 @@ setMethod("plot",
             group =
               rep(1:4, each = length(x@doseGrid)),
             linetype =
-              factor(rep(linetype[c(1, 2, 3, 3)],
-                each = length(x@doseGrid)
-              ),
-              levels = linetype
+              factor(
+                rep(linetype[c(1, 2, 3, 3)],
+                  each = length(x@doseGrid)
+                ),
+                levels = linetype
               ),
             lines =
               unlist(x@meanEffFit)
@@ -2837,14 +2835,15 @@ setMethod("plot",
 
           ## now create and save the plot
           thisPlot <- ggplot() +
-            geom_line(aes(
-              x = dose,
-              y = lines,
-              group = group,
-              linetype = linetype,
-              col = linetype
-            ),
-            data = dat
+            geom_line(
+              aes(
+                x = dose,
+                y = lines,
+                group = group,
+                linetype = linetype,
+                col = linetype
+              ),
+              data = dat
             )
 
           thisPlot <- thisPlot +
@@ -2866,10 +2865,11 @@ setMethod("plot",
             group =
               rep(1:2, each = length(x@doseGrid)),
             linetype =
-              factor(rep(linetype[c(1, 2)],
-                each = length(x@doseGrid)
-              ),
-              levels = linetype
+              factor(
+                rep(linetype[c(1, 2)],
+                  each = length(x@doseGrid)
+                ),
+                levels = linetype
               ),
             lines =
               unlist(x@meanEffFit)
@@ -2889,14 +2889,15 @@ setMethod("plot",
 
           ## now create and save the plot
           thisPlot <- ggplot() +
-            geom_line(aes(
-              x = dose,
-              y = lines,
-              group = group,
-              linetype = linetype,
-              col = linetype
-            ),
-            data = dat
+            geom_line(
+              aes(
+                x = dose,
+                y = lines,
+                group = group,
+                linetype = linetype,
+                col = linetype
+              ),
+              data = dat
             )
 
           thisPlot <- thisPlot +

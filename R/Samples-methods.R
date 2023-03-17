@@ -86,7 +86,6 @@ setMethod("get",
              envir = NULL,
              mode = NULL,
              inherits = NULL) {
-
       ## check the parameter name
       stopifnot(is.scalar(pos), pos %in% names(x))
 
@@ -390,7 +389,6 @@ setMethod("approximate",
              logNormal = FALSE,
              verbose = TRUE,
              ...) {
-
       ## get the required quantiles at these dose levels:
       quants <- fit(object,
         model,
@@ -503,7 +501,6 @@ setMethod("plot",
              xlab = "Dose level",
              ylab = "Probability of DLT [%]",
              showLegend = TRUE) {
-
       ## check args
       stopifnot(is.bool(showLegend))
 
@@ -527,21 +524,22 @@ setMethod("plot",
                 each = nrow(plotData)
               ),
             Type =
-              factor(c(
-                rep(
-                  "Estimate",
-                  nrow(plotData)
-                ),
-                rep(
-                  "95% Credible Interval",
-                  nrow(plotData) * 2
-                )
-              ),
-              levels =
+              factor(
                 c(
-                  "Estimate",
-                  "95% Credible Interval"
-                )
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
               )
           )
         )
@@ -652,21 +650,22 @@ setMethod("plot",
                 each = nrow(plotData)
               ),
             Type =
-              factor(c(
-                rep(
-                  "Estimate",
-                  nrow(plotData)
-                ),
-                rep(
-                  "95% Credible Interval",
-                  nrow(plotData) * 2
-                )
-              ),
-              levels =
+              factor(
                 c(
-                  "Estimate",
-                  "95% Credible Interval"
-                )
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
               )
           )
         )
@@ -1043,7 +1042,6 @@ setMethod("plot",
              xlab = "Dose level",
              ylab = "Probability of DLT [%]",
              showLegend = TRUE) {
-
       ## check args
       stopifnot(is.bool(showLegend))
 
@@ -1068,21 +1066,22 @@ setMethod("plot",
                 each = nrow(plotData)
               ),
             Type =
-              factor(c(
-                rep(
-                  "Estimate",
-                  nrow(plotData)
-                ),
-                rep(
-                  "95% Credible Interval",
-                  nrow(plotData) * 2
-                )
-              ),
-              levels =
+              factor(
                 c(
-                  "Estimate",
-                  "95% Credible Interval"
-                )
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
               )
           )
         )
@@ -1148,7 +1147,6 @@ setMethod("plot",
              xlab = "Dose level",
              ylab = "Expected Efficacy",
              showLegend = TRUE) {
-
       ## check args
       stopifnot(is.bool(showLegend))
 
@@ -1172,21 +1170,22 @@ setMethod("plot",
                 each = nrow(plotData)
               ),
             Type =
-              factor(c(
-                rep(
-                  "Estimate",
-                  nrow(plotData)
-                ),
-                rep(
-                  "95% Credible Interval",
-                  nrow(plotData) * 2
-                )
-              ),
-              levels =
+              factor(
                 c(
-                  "Estimate",
-                  "95% Credible Interval"
-                )
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
               )
           )
         )
@@ -1425,7 +1424,6 @@ setMethod("plotGain",
     ),
   def =
     function(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...) {
-
       ## Get fitted values for probabilities of DLE at all dose levels
       plotDLEData <- fit(DLEsamples,
         model = DLEmodel,
@@ -1515,7 +1513,6 @@ setMethod("plotGain",
     ),
   def =
     function(DLEmodel, Effmodel, data, ...) {
-
       ## Make sure the model estimates are corresponds to the input data
       DLEmodel <- update(object = DLEmodel, data = data)
       Effmodel <- update(object = Effmodel, data = data)
@@ -1664,21 +1661,22 @@ setMethod("plotDualResponses",
                 each = nrow(plotDLEData)
               ),
             Type =
-              factor(c(
-                rep(
-                  "Estimate",
-                  nrow(plotDLEData)
-                ),
-                rep(
-                  "95% Credible Interval",
-                  nrow(plotDLEData) * 2
-                )
-              ),
-              levels =
+              factor(
                 c(
-                  "Estimate",
-                  "95% Credible Interval"
-                )
+                  rep(
+                    "Estimate",
+                    nrow(plotDLEData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotDLEData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
               )
           )
         )
@@ -1751,21 +1749,22 @@ setMethod("plotDualResponses",
             each = nrow(plotEffData)
           ),
         Type =
-          factor(c(
-            rep(
-              "Estimate",
-              nrow(plotEffData)
-            ),
-            rep(
-              "95% Credible Interval",
-              nrow(plotEffData) * 2
-            )
-          ),
-          levels =
+          factor(
             c(
-              "Estimate",
-              "95% Credible Interval"
-            )
+              rep(
+                "Estimate",
+                nrow(plotEffData)
+              ),
+              rep(
+                "95% Credible Interval",
+                nrow(plotEffData) * 2
+              )
+            ),
+            levels =
+              c(
+                "Estimate",
+                "95% Credible Interval"
+              )
           )
       ))
 
@@ -1823,7 +1822,6 @@ setMethod("plotDualResponses",
     ),
   def =
     function(DLEmodel, Effmodel, data, ...) {
-
       ## Get Toxicity plot
       ## get the fit
 
@@ -2025,7 +2023,6 @@ setMethod("fitPEM",
              middle = mean,
              hazard = FALSE,
              ...) {
-
       ## some checks
       stopifnot(is.probRange(quantiles))
 
@@ -2111,7 +2108,6 @@ setMethod("plot",
   def =
     function(x, y, data, hazard = FALSE, ...,
              showLegend = TRUE) {
-
       ## check args
       stopifnot(is.bool(showLegend))
 
@@ -2140,21 +2136,22 @@ setMethod("plot",
                 each = nrow(fitData)
               ),
             Type =
-              factor(c(
-                rep(
-                  "Estimate",
-                  nrow(fitData)
-                ),
-                rep(
-                  "95% Credible Interval",
-                  nrow(fitData) * 2
-                )
-              ),
-              levels =
+              factor(
                 c(
-                  "Estimate",
-                  "95% Credible Interval"
-                )
+                  rep(
+                    "Estimate",
+                    nrow(fitData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(fitData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
               )
           )
         )
