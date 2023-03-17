@@ -349,11 +349,11 @@ time <- system.time({
 
   early <- get_oc(early_scenario)
 
-  report_time("late")
+  report_time("early")
 
   toxic <- get_oc(toxic_scenario)
 
-  report_time("late")
+  report_time("toxic")
 
   peak <- get_oc(peak_scenario)
 
