@@ -1,5 +1,4 @@
 test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschwander et al.", {
-
   mcmc_options <- McmcOptions(
     burnin = 50000,
     step = 2,
@@ -20,15 +19,18 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   data_obs_a <- Data(
     x = c(
       rep(c(1, 2.5, 5, 10, 25),
-          times = c(3, 4, 5, 4, 2))
+        times = c(3, 4, 5, 4, 2)
+      )
     ),
     y = c(
       rep(c(0, 1),
-          times = c(16, 2))
+        times = c(16, 2)
+      )
     ),
     cohort = c(
       rep(c(1, 2, 3, 4, 7),
-          times = c(3, 4, 5, 4, 2))
+        times = c(3, 4, 5, 4, 2)
+      )
     ),
     doseGrid = dose_grid,
     ID = 1:18
@@ -67,13 +69,13 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   post_samples_a <- mcmc(data_obs_a, model_power_a, mcmc_options)
 
   dose_rec_loss_a <- nextBest(ncrm_loss,
-                              doselimit = maxDose(
-                                increments_no,
-                                data_obs_a
-                              ),
-                              samples = post_samples_a,
-                              model = model_power_a,
-                              data = data_obs_a
+    doselimit = maxDose(
+      increments_no,
+      data_obs_a
+    ),
+    samples = post_samples_a,
+    model = model_power_a,
+    data = data_obs_a
   )
 
   # (A) Actual table I
@@ -105,13 +107,13 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   post_samples_b <- mcmc(data_obs_b, model_power_b, mcmc_options)
 
   dose_rec_loss_b <- nextBest(ncrm_loss,
-                              doselimit = maxDose(
-                                increments_no,
-                                data_obs_b
-                              ),
-                              samples = post_samples_b,
-                              model = model_power_b,
-                              data = data_obs_b
+    doselimit = maxDose(
+      increments_no,
+      data_obs_b
+    ),
+    samples = post_samples_b,
+    model = model_power_b,
+    data = data_obs_b
   )
 
   tab1_b_act <- rbind(
@@ -131,56 +133,57 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   )
 
   # Expected table I (Neuenschwander et al.)
-  tab1 <- structure(list(
-    dose1 = c(
-      3, 0, NA, 0.01, 0.069, 0.055, NA, 0.063,
-      0.024, 0.03
+  tab1 <- structure(
+    list(
+      dose1 = c(
+        3, 0, NA, 0.01, 0.069, 0.055, NA, 0.063,
+        0.024, 0.03
+      ),
+      dose2.5 = c(
+        4, 0, NA, 0.015, 0.085, 0.062, NA, 0.125,
+        0.054, 0.051
+      ),
+      dose5 = c(
+        5, 0, NA, 0.02, 0.099, 0.068, NA, 0.188,
+        0.09, 0.069
+      ),
+      dose10 = c(
+        4, 0, NA, 0.025, 0.111, 0.072, NA, 0.25,
+        0.13, 0.084
+      ),
+      dose15 = c(
+        NA, NA, NA, 0.03, 0.123, 0.076, NA, 0.313,
+        0.176, 0.097
+      ),
+      dose20 = c(
+        NA, NA, NA, 0.04, 0.144, 0.082, NA, 0.375,
+        0.226, 0.107
+      ),
+      dose25 = c(
+        2, 2, NA, 0.05, 0.163, 0.087, NA, 0.438,
+        0.281, 0.115
+      ),
+      dose30 = c(
+        NA, NA, NA, 0.1, 0.242, 0.101, NA, 0.5,
+        0.341, 0.119
+      ),
+      dose40 = c(
+        NA, NA, NA, 0.17, 0.33, 0.109, NA, 0.563,
+        0.405, 0.12
+      ),
+      dose50 = c(
+        NA, NA, NA, 0.3, 0.465, 0.108, NA, 0.625,
+        0.475, 0.117
+      )
     ),
-    dose2.5 = c(
-      4, 0, NA, 0.015, 0.085, 0.062, NA, 0.125,
-      0.054, 0.051
-    ),
-    dose5 = c(
-      5, 0, NA, 0.02, 0.099, 0.068, NA, 0.188,
-      0.09, 0.069
-    ),
-    dose10 = c(
-      4, 0, NA, 0.025, 0.111, 0.072, NA, 0.25,
-      0.13, 0.084
-    ),
-    dose15 = c(
-      NA, NA, NA, 0.03, 0.123, 0.076, NA, 0.313,
-      0.176, 0.097
-    ),
-    dose20 = c(
-      NA, NA, NA, 0.04, 0.144, 0.082, NA, 0.375,
-      0.226, 0.107
-    ),
-    dose25 = c(
-      2, 2, NA, 0.05, 0.163, 0.087, NA, 0.438,
-      0.281, 0.115
-    ),
-    dose30 = c(
-      NA, NA, NA, 0.1, 0.242, 0.101, NA, 0.5,
-      0.341, 0.119
-    ),
-    dose40 = c(
-      NA, NA, NA, 0.17, 0.33, 0.109, NA, 0.563,
-      0.405, 0.12
-    ),
-    dose50 = c(
-      NA, NA, NA, 0.3, 0.465, 0.108, NA, 0.625,
-      0.475, 0.117
+    class = "data.frame",
+    row.names = c(
+      "No. of patients", "No. of DLTs",
+      "A) Posterior summaries (original skeleton)",
+      "Skeleton (CRM)", "Mean", "Std. dev.",
+      "B) Posterior summaries (equidistant skeleton)",
+      "Skeleton (CRM)", "Mean", "Std. dev."
     )
-  ),
-  class = "data.frame",
-  row.names = c(
-    "No. of patients", "No. of DLTs",
-    "A) Posterior summaries (original skeleton)",
-    "Skeleton (CRM)", "Mean", "Std. dev.",
-    "B) Posterior summaries (equidistant skeleton)",
-    "Skeleton (CRM)", "Mean", "Std. dev."
-  )
   )
 
   tab1_a_exp <- rbind(
@@ -211,11 +214,11 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
   tolerance <- 0.01
   # original skeleton
   diff_org_mean <- abs(tab1_act$"Posterior summaries (original skeleton)"[2, ] -
-                         tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
+    tab1_exp$"Posterior summaries (original skeleton)"[2, ]) <
     tolerance
 
   diff_org_sd <- abs(tab1_act$"Posterior summaries (original skeleton)"[3, ] -
-                       tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
+    tab1_exp$"Posterior summaries (original skeleton)"[3, ]) <
     tolerance
 
   # if all computed results (mean or sd) have deviation smaller than
@@ -227,11 +230,11 @@ test_that("OneParLogNormalPrior reproduces same numbers as in paper by Neuenschw
 
   # equidistant skeleton
   diff_equi_mean <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[2, ] -
-                          tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
+    tab1_exp$"Posterior summaries (equidistant skeleton)"[2, ]) <
     tolerance
 
   diff_equi_sd <- abs(tab1_act$"Posterior summaries (equidistant skeleton)"[3, ] -
-                        tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
+    tab1_exp$"Posterior summaries (equidistant skeleton)"[3, ]) <
     tolerance
 
   result_equi <- ifelse(all(diff_equi_mean) & all(diff_equi_sd), TRUE, FALSE)
