@@ -35,7 +35,7 @@ The following chapters gives an example how user written extensions can be used 
 
 User written code needs to be put into a function that must be named `crmpack_extensions` as follows.
 
-```{r high level example, eval=FALSE}
+```{r high level showcase, eval=FALSE}
 crmpack_extensions <- function(){
   
  ..... user code .....
@@ -53,7 +53,7 @@ Please test the newly written extensions with one CPU core, before utilizing the
 
 Let us assume we want to use a logistic model with a normal prior that is truncated for the slope parameter, so that the slope can have only positive values. This model representation is not part of the crmPack but can easily be added. Please note that for this example the extra code is directly embedded into the `crmpack_extensions` function. As mentioned before, user should write and test their code first without embedding into the `crmpack_extensions` function to assure that no problem occurs during general execution.
 
-```{r LogisticNormalTruncPrior, eval=FALSE}
+```{r LogisticNormalTruncPrior Definition, eval=FALSE}
 library(crmPack)
 
 crmpack_extensions <- function() {
@@ -188,7 +188,7 @@ crmpack_extensions <- function() {
 
 The newly created model `LogisticNormalTruncPrior` can now be used to set up a study. First, we load the function `crmpack_extensions` into the global environment, so that the function and coresponding classes and methods for `prob` and `dose` are available.
 
-```{r, eval=FALSE}
+```{r initial study setup, eval=FALSE}
 # Execute the user written extensions.
 crmpack_extensions()
 
@@ -272,14 +272,14 @@ my_design <- Design(
 
 After setting up the whole model, it is very useful to check the model decisions in case that no DLT is observed until a certain dose level before study simulations are performed. This check is also useful to additionally test the new written code.
 
-```{r, eval=FALSE}
+```{r examine the design, eval=FALSE}
 # Examine the design.
 examine(my_design, my_options)
 ```
 
 When examine runs as expected, study simulation can be performed.
 
-```{r, eval=FALSE}
+```{r perform study simulations, eval=FALSE}
 # Set up scenarios
 safe_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/20000)
 late_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/2000)
@@ -314,7 +314,8 @@ get_oc <- function(truth) {
   )
 }
 
-# get operation characteristics without utilizing parallel computing for one truth.
+# get operation characteristics without utilizing parallel computing for selected truth
+# (to reduce the run time).
 time_no_parallel <- system.time({
   start_time <- Sys.time()
   cat(format(Sys.time(), usetz = TRUE), "start", "\n")
