@@ -491,19 +491,19 @@ h_next_best_td_plot <- function(prob_target_drt,
   assert_number(doselimit)
   assert_number(next_dose, na.ok = TRUE)
 
-  dose_grid_range <- h_dose_grid_range(data)
+  dosegrid_range <- dose_grid_range(data)
 
   p <- ggplot(
     data = data.frame(x = data@doseGrid, y = prob_dlt),
     aes(x = .data$x, y = .data$y)
   ) +
     geom_line(colour = "red", size = 1.5) +
-    coord_cartesian(xlim = c(0, dose_grid_range[2])) +
+    coord_cartesian(xlim = c(0, dosegrid_range[2])) +
     ylim(c(0, 1)) +
     xlab("Dose Levels") +
     ylab("Probability of DLT")
 
-  if (h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = TRUE)) {
+  if (h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = TRUE)) {
     p <- p +
       geom_point(
         data = data.frame(x = dose_target_drt, y = prob_target_drt),
@@ -522,7 +522,7 @@ h_next_best_td_plot <- function(prob_target_drt,
       )
   }
 
-  if (h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = TRUE)) {
+  if (h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = TRUE)) {
     p <- p +
       geom_point(
         data = data.frame(x = dose_target_eot, y = prob_target_eot),
@@ -541,7 +541,7 @@ h_next_best_td_plot <- function(prob_target_drt,
       )
   }
 
-  maxdoselimit <- min(doselimit, dose_grid_range[2])
+  maxdoselimit <- min(doselimit, dosegrid_range[2])
 
   p +
     geom_vline(xintercept = maxdoselimit, colour = "brown", lwd = 1.1) +
@@ -607,7 +607,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
   assert_class(model, "ModelTox")
   assert_class(model_eff, "Effloglog")
 
-  dose_grid_range <- h_dose_grid_range(data)
+  dosegrid_range <- dose_grid_range(data)
 
   data_plot <- data.frame(
     dose = rep(data@doseGrid, 3),
@@ -626,12 +626,12 @@ h_next_best_mg_plot <- function(prob_target_drt,
   p <- ggplot(data = data_plot, aes(x = .data$dose, y = .data$y)) +
     geom_line(aes(group = group, color = group), size = 1.5) +
     ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
-    coord_cartesian(xlim = c(0, dose_grid_range[2])) +
+    coord_cartesian(xlim = c(0, dosegrid_range[2])) +
     ylim(range(data_plot$y)) +
     xlab("Dose Level") +
     ylab("Values")
 
-  if (h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE)) {
+  if (h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = FALSE)) {
     lab <- paste("TD", prob_target_eot * 100, "Estimate")
     p <- p +
       geom_point(
@@ -646,7 +646,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
       )
   }
 
-  if (h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE)) {
+  if (h_in_range(dose_mg, range = dosegrid_range, bounds_closed = FALSE)) {
     p <- p +
       geom_point(
         data = data.frame(x = dose_mg, y = max_gain),
@@ -661,7 +661,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
       )
   }
 
-  if (h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE)) {
+  if (h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = FALSE)) {
     lab <- paste("TD", prob_target_drt * 100, "Estimate")
     p <- p +
       geom_point(
@@ -676,7 +676,7 @@ h_next_best_mg_plot <- function(prob_target_drt,
       )
   }
 
-  maxdoselimit <- min(doselimit, dose_grid_range[2])
+  maxdoselimit <- min(doselimit, dosegrid_range[2])
 
   p +
     geom_vline(xintercept = maxdoselimit, colour = "brown", lwd = 1.1) +

@@ -742,10 +742,10 @@ setMethod(
       next_dose = next_dose_drt
     )
 
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
+    if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
       print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
+    if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
       print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
 
@@ -875,27 +875,27 @@ setMethod(
     dose_target_eot <- dose(x = prob_target_eot, model)
 
     # Find the dose which gives the maximum gain.
-    dose_grid_range <- h_dose_grid_range(data)
+    dosegrid_range <- dose_grid_range(data)
     opt <- optim(
-      par = dose_grid_range[1],
+      par = dosegrid_range[1],
       fn = function(DOSE) {
         -gain(DOSE, model_dle = model, model_eff = model_eff)
       },
       method = "L-BFGS-B",
-      lower = dose_grid_range[1],
-      upper = dose_grid_range[2]
+      lower = dosegrid_range[1],
+      upper = dosegrid_range[2]
     )
     dose_mg <- opt$par # this is G*. # no lintr
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
-    if (!h_in_range(dose_mg, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_mg, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -1009,14 +1009,14 @@ setMethod(
     gain_values <- apply(gain_samples, 2, FUN = nextBest@mg_derive)
 
     # Print info message if dose target is outside of the range.
-    dose_grid_range <- h_dose_grid_range(data)
-    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
+    dosegrid_range <- dose_grid_range(data)
+    if (!h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
-    if (!h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_mg, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -1047,7 +1047,7 @@ setMethod(
       dose_mg_samples = dose_mg_samples,
       next_dose = nb_doses_at_grid$next_dose,
       doselimit = doselimit,
-      dose_grid_range = dose_grid_range
+      dose_grid_range = dosegrid_range
     )
 
     list(

@@ -259,7 +259,7 @@
       [12,] 275.000 9.496774e-01
       [13,] 300.000 9.552602e-01
 
-# nextBest-NextBestMinDist returns expected values of the objects (no doselimit)
+# nextBest-NextBestMinDist returns expected values and plot (no doselimit)
 
     Code
       result$probs

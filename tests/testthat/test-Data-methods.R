@@ -393,27 +393,89 @@ test_that("ngrid throws the error for non valid ignore_placebo", {
 test_that("ngrid-Data works as expected with placebo in grid", {
   data <- h_get_data()
   expect_identical(ngrid(data), 12L)
-  expect_identical(ngrid(data, ignore_placebo = FALSE), 13L)
+  expect_identical(ngrid(data, FALSE), 13L)
 
   data_1 <- Data(doseGrid = c(0.001, 25), placebo = TRUE)
   expect_identical(ngrid(data_1), 1L)
-  expect_identical(ngrid(data_1, ignore_placebo = FALSE), 2L)
+  expect_identical(ngrid(data_1, FALSE), 2L)
 
-  data_empty <- Data(doseGrid = 0.001, placebo = TRUE)
+  data_2 <- Data(doseGrid = 0.001, placebo = TRUE)
+  expect_identical(ngrid(data_2), 0L)
+  expect_identical(ngrid(data_2, FALSE), 1L)
+
+  data_empty <- Data(placebo = TRUE)
   expect_identical(ngrid(data_empty), 0L)
-  expect_identical(ngrid(data_empty, ignore_placebo = FALSE), 1L)
+  expect_identical(ngrid(data_empty, FALSE), 0L)
 })
 
 test_that("ngrid-Data works as expected without placebo in grid", {
   data <- h_get_data(placebo = FALSE)
   expect_identical(ngrid(data), 12L)
-  expect_identical(ngrid(data, ignore_placebo = FALSE), 12L)
+  expect_identical(ngrid(data, FALSE), 12L)
 
   data_1 <- Data(doseGrid = 25, placebo = FALSE)
   expect_identical(ngrid(data_1), 1L)
-  expect_identical(ngrid(data_1, ignore_placebo = FALSE), 1L)
+  expect_identical(ngrid(data_1, FALSE), 1L)
+
+  data_2 <- Data(doseGrid = 0.001, placebo = FALSE)
+  expect_identical(ngrid(data_2), 1L)
+  expect_identical(ngrid(data_2, FALSE), 1L)
 
   data_empty <- Data(placebo = FALSE)
   expect_identical(ngrid(data_empty), 0L)
-  expect_identical(ngrid(data_empty, ignore_placebo = FALSE), 0L)
+  expect_identical(ngrid(data_empty, FALSE), 0L)
+})
+
+# dose_grid_range ----
+
+## generic ----
+
+test_that("dose_grid_range throws the error for non valid ignore_placebo", {
+  data <- h_get_data()
+  expect_error(
+    dose_grid_range(data, ignore_placebo = c(TRUE, TRUE)),
+    "Assertion on 'ignore_placebo' failed: Must have length 1."
+  )
+  expect_error(
+    dose_grid_range(data, ignore_placebo = 1),
+    "Assertion on 'ignore_placebo' failed: Must be of type 'logical flag', not 'double'."
+  )
+})
+
+## Data ----
+
+test_that("dose_grid_range-Data works as expected with placebo in grid", {
+  data <- h_get_data()
+  expect_identical(dose_grid_range(data), c(25, 300))
+  expect_identical(dose_grid_range(data, FALSE), c(0.001, 300))
+
+  data_1 <- Data(doseGrid = c(0.001, 25), placebo = TRUE)
+  expect_identical(dose_grid_range(data_1), c(25, 25))
+  expect_identical(dose_grid_range(data_1, FALSE), c(0.001, 25))
+
+  data_2 <- Data(doseGrid = 0.001, placebo = TRUE)
+  expect_identical(dose_grid_range(data_2), c(-Inf, Inf))
+  expect_identical(dose_grid_range(data_2, FALSE), c(0.001, 0.001))
+
+  data_empty <- Data(placebo = TRUE)
+  expect_identical(dose_grid_range(data_empty), c(-Inf, Inf))
+  expect_identical(dose_grid_range(data_empty, FALSE), c(-Inf, Inf))
+})
+
+test_that("dose_grid_range-Data works as expected without placebo in grid", {
+  data <- h_get_data(placebo = FALSE)
+  expect_identical(dose_grid_range(data), c(25, 300))
+  expect_identical(dose_grid_range(data, FALSE), c(25, 300))
+
+  data_1 <- Data(doseGrid = c(0.001, 25), placebo = FALSE)
+  expect_identical(dose_grid_range(data_1), c(0.001, 25))
+  expect_identical(dose_grid_range(data_1, FALSE), c(0.001, 25))
+
+  data_2 <- Data(doseGrid = 10, placebo = FALSE)
+  expect_identical(dose_grid_range(data_2), c(10, 10))
+  expect_identical(dose_grid_range(data_2, FALSE), c(10, 10))
+
+  data_empty <- Data(placebo = FALSE)
+  expect_identical(dose_grid_range(data_empty), c(-Inf, Inf))
+  expect_identical(dose_grid_range(data_empty, FALSE), c(-Inf, Inf))
 })
