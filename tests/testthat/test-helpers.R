@@ -310,18 +310,6 @@ test_that("h_null_if_na throws an error for non-scalar, atomic argument", {
   )
 })
 
-# h_null_if_scalar ----
-
-test_that("h_null_if_scalar returns NULL as expected", {
-  expect_null(h_null_if_scalar(2))
-  expect_null(h_null_if_scalar(array(data = 1:12, dim = c(1, 3, 4))))
-})
-
-test_that("h_null_if_scalar returns 1L as expected", {
-  expect_identical(h_null_if_scalar(c(1, 3)), 1L)
-  expect_identical(h_null_if_scalar(array(data = 1:24, dim = c(2, 3, 4))), 1L)
-})
-
 # h_is_positive_definite ----
 
 test_that("h_is_positive_definite returns TRUE for 2x2 positive-definite matrix", {

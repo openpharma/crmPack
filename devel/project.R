@@ -294,9 +294,9 @@ myStopping3 <- StoppingTargetProb(target=c(0.2, 0.35),
 
 ## you can either write this:
 ## myStopping <- new("StoppingAny",
-##                   stopList=
+##                   stop_list=
 ##                       list(new("StoppingAll",
-##                                stopList=
+##                                stop_list=
 ##                                    list(myStopping1,
 ##                                         myStopping3)),
 ##                            myStopping2))
@@ -322,12 +322,12 @@ myIncrements <- IncrementsRelative(intervals=c(0, 20),
 ## cohort size:
 ## DLT rule says to have size 1 if no DLT has happened,
 ## and size 3 if at least 1 DLT has happened
-mySize <- CohortSizeDLT(DLTintervals=c(0, 1),
-                        cohortSize=c(1, 3))
+mySize <- CohortSizeDLT(dlt_intervals=c(0, 1),
+                        cohort_size=c(1, 3))
 
 ## Range rule says to have size 1 until 30 mg, then size 3.
 mySize2 <- CohortSizeRange(intervals=c(0, 30),
-                           cohortSize=c(1, 3))
+                           cohort_size=c(1, 3))
 
 ## these two rules are now combined by taking the maximum
 mySizeCombined <- maxSize(mySize, mySize2)

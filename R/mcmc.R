@@ -231,10 +231,10 @@ setMethod(
   }
 )
 
-# mcmc-GeneralData-OneParExpNormalPrior ----
+# mcmc-GeneralData-OneParLogNormalPrior ----
 
 #' @describeIn mcmc Standard method which uses JAGS. For the
-#'   [`OneParExpNormalPrior`] model, it is required that the length of
+#'   [`OneParLogNormalPrior`] model, it is required that the length of
 #'   skeleton prior probabilities vector should be equal to the length of the
 #'   number of doses.
 #'
@@ -242,13 +242,52 @@ setMethod(
 #'   when number of observations in `data` is `0`. For some models it might be
 #'   necessary to specify it manually here though.
 #'
-#' @aliases mcmc-GeneralData-OneParExpNormalPrior
+#' @aliases mcmc-GeneralData-OneParLogNormalPrior
 #'
 setMethod(
   f = "mcmc",
   signature = signature(
     data = "GeneralData",
-    model = "OneParExpNormalPrior",
+    model = "OneParLogNormalPrior",
+    options = "McmcOptions"
+  ),
+  def = function(data,
+                 model,
+                 options,
+                 from_prior = data@nObs == 0L,
+                 ...) {
+    if (!from_prior) {
+      assert_true(length(model@skel_probs) == data@nGrid)
+    }
+
+    callNextMethod(
+      data = data,
+      model = model,
+      options = options,
+      from_prior = from_prior,
+      ...
+    )
+  }
+)
+
+# mcmc-GeneralData-OneParExpPrior ----
+
+#' @describeIn mcmc Standard method which uses JAGS. For the
+#'   [`OneParExpPrior`] model, it is required that the length of
+#'   skeleton prior probabilities vector should be equal to the length of the
+#'   number of doses.
+#'
+#' @param from_prior (`flag`)\cr sample from the prior only? Default to `TRUE`
+#'   when number of observations in `data` is `0`. For some models it might be
+#'   necessary to specify it manually here though.
+#'
+#' @aliases mcmc-GeneralData-OneParExpPrior
+#'
+setMethod(
+  f = "mcmc",
+  signature = signature(
+    data = "GeneralData",
+    model = "OneParExpPrior",
     options = "McmcOptions"
   ),
   def = function(data,
@@ -451,7 +490,7 @@ setMethod("mcmc",
         ## sample from the (asymptotic) bivariate normal prior for theta
 
         tmp <- mvtnorm::rmvnorm(
-          n = sampleSize(options),
+          n = size(options),
           mean = c(slot(thismodel, "phi1"), slot(thismodel, "phi2")),
           sigma = solve(precision)
         )
@@ -532,7 +571,7 @@ setMethod(
   ),
   definition = function(data, model, options, ...) {
     model <- update(object = model, data = data)
-    sample_size <- sampleSize(options)
+    sample_size <- size(options)
 
     if (model@use_fixed) {
       nu <- model@nu
@@ -590,7 +629,7 @@ setMethod("mcmc",
       ## update the model
       thismodel <- update(object = model, data = data)
 
-      nSamples <- sampleSize(options)
+      nSamples <- size(options)
 
       ## Prepare samples container
       ### List parameter samples to save
@@ -615,8 +654,9 @@ setMethod("mcmc",
         x1 <- thismodel@eff_dose
       } else {
         ## Combine pseudo data with observed efficacy responses and no DLT observed
-        w1 <- c(thismodel@eff, getEff(data)$w_no_dlt)
-        x1 <- c(thismodel@eff_dose, getEff(data)$x_no_dlt)
+        eff_obsrv <- getEff(data, no_dlt = TRUE)
+        w1 <- c(thismodel@eff, eff_obsrv$w_no_dlt)
+        x1 <- c(thismodel@eff_dose, eff_obsrv$x_no_dlt)
       }
       x1Level <- matchTolerance(x1, data@doseGrid)
       ## betaW is constant, the average of the efficacy values

@@ -377,13 +377,15 @@ model <- MinimalInformative(dosegrid = coarseGrid, refDose = 100,
 
 The resulting \code{model} (which is an object of class \code{LogisticLogNormal})
 has prior parameters
-$\mu = (\Sexpr{round(model@params@mean[1], 2)}, \Sexpr{round(model@params@mean[2], 2)})$ and
-$\Sigma=
-\left(\begin{smallmatrix}
-  \Sexpr{round(model@params@cov[1, 1], 2)} & \Sexpr{round(model@params@cov[1, 2], 2)} \\
-  \Sexpr{round(model@params@cov[2, 1], 2)} & \Sexpr{round(model@params@cov[2, 2], 2)}
-\end{smallmatrix}\right)
-$
+
+$\mu = (\Sexpr{runif(1)}, \Sexpr{2})$
+% $\mu = (\Sexpr{round(model@params@mean[1], 2)}, \Sexpr{round(model@params@mean[2], 2)})$ and
+% $\Sigma=
+% \left(\begin{smallmatrix}
+%   \Sexpr{round(model@params@cov[1, 1], 2)} & \Sexpr{round(model@params@cov[1, 2], 2)} \\
+%   \Sexpr{round(model@params@cov[2, 1], 2)} & \Sexpr{round(model@params@cov[2, 2], 2)}
+% \end{smallmatrix}\right)
+% $
 and will approximately have 5\% probability each for the DLT
 rate to exceed 10\% (\code{threshmin} argument) at the 25~mg dose and to be below 20\%
 (\code{threshmax}) at the 300~mg dose.
@@ -644,14 +646,14 @@ print(doseRecGain$plot)
 
 \paragraph{Stopping rules} In addition to the simple stopping rule based on the maximum number of patients in our trial, we can use another one relating to the precision of the dose with optimum gain:
 <<newdualstopping-rule>>=
-myStopping4 <- StoppingGstarCIRatio(
-  targetRatio = 5,
-  targetEndOfTrial = GainNextBest@prob_target_eot
+myStopping4 <- StoppingMaxGainCIRatio(
+  target_ratio = 5,
+  prob_target = GainNextBest@prob_target_eot
 )
 myStoppingDual <- myStopping1 | myStopping4
 @
 This stops the trial when 30 patients are reached, or when the ratio of the upper and lower confidence interval bounds around the dose recommendation is less
-than~\Sexpr{myStopping4@targetRatio}.
+than~\Sexpr{myStopping4@target_ratio}.
 
 \paragraph{Simulations} To simulate the operating characteristics, first a design has to be built:
 <<design>>=
@@ -914,7 +916,7 @@ We would like to thank Francesca Michielin and Peter Dutton for their valuable c
 on an earlier draft of the manuscript. This report is funded by the Roche Postdoctoral Fellowship programme (RPF-234) and research arising from Prof Jaki's Senior Research Fellowship (NIHR-SRF-2015-08-001) supported by the National Institute for Health Research. The views expressed in this publication are those of the authors and not necessarily those of the NHS, the National Institute for Health Research or the Department of Health. This manuscript was prepared using \pkg{knitr} \citep{knitr2018}.
 
 \bibstyle{jss}
-\bibliography{crmPack-jss-paper}
+\bibliography{vignettes}
 
 \end{document}
 

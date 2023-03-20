@@ -30,8 +30,9 @@ NextBestNCRMLoss(
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{NextBestNCRMLoss}} is the class based on NCRM rule and loss function.
-This class is similar to \code{\link{NextBestNCRM}} class, the only difference is the
-addition of loss function. As in NCRM rule, first admissible doses are found,
+This class is similar to \code{\link{NextBestNCRM}} class, but differences are the
+addition of loss function and re-defined toxicity intervals, see each
+toxicity interval documentation and the note for details. As in NCRM rule, first admissible doses are found,
 which are those with probability to fall in overdose category being below
 \code{max_overdose_prob}. Next, within the admissible doses, the loss function is
 calculated, i.e. \code{losses} \%*\% \code{target}. Finally, the corresponding
@@ -46,14 +47,13 @@ It has to be a probability range excluding 0 and 1.}
 \item{\code{overdose}}{(\code{numeric})\cr the overdose toxicity interval (lower limit
 excluded, upper limit included) or the excessive toxicity interval (lower
 limit excluded, upper limit included) if unacceptable is not provided.
-It has to be a probability range excluding 0. It is used to filter
-probability samples.}
+It has to be a probability range. It is used to filter probability samples.}
 
 \item{\code{unacceptable}}{(\code{numeric})\cr an unacceptable toxicity
 interval (lower limit excluded, upper limit included). This must be
 specified if the \code{overdose} does not include 1. Otherwise, it is \code{c(1, 1)}
 (default), which is essentially a scalar equals 1. It has to be a
-probability range excluding 0.}
+probability range.}
 
 \item{\code{losses}}{(\code{numeric})\cr a vector specifying the loss function. If the
 \code{unacceptable} is provided, the vector length must be 4, otherwise 3.}

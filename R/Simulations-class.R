@@ -35,32 +35,48 @@
 ##' @export
 ##' @keywords classes
 .GeneralSimulations <-
-    setClass(Class="GeneralSimulations",
-             representation(data="list",
-                            doses="numeric",
-                            seed="integer"),
-             prototype(data=
-                           list(Data(x=1:2,
-                                     y=0:1,
-                                     doseGrid=1:2),
-                                Data(x=3:4,
-                                     y=0:1,
-                                     doseGrid=3:4)),
-                       doses=c(1, 2),
-                       seed=1L),
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "GeneralSimulations",
+    representation(
+      data = "list",
+      doses = "numeric",
+      seed = "integer"
+    ),
+    prototype(
+      data =
+        list(
+          Data(
+            x = 1:2,
+            y = 0:1,
+            doseGrid = 1:2
+          ),
+          Data(
+            x = 3:4,
+            y = 0:1,
+            doseGrid = 3:4
+          )
+        ),
+      doses = c(1, 2),
+      seed = 1L
+    ),
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     nSims <- length(object@data)
+        nSims <- length(object@data)
 
-                     o$check(all(sapply(object@data, is, "Data")),
-                             "all data elements must be Data objects")
-                     o$check(identical(length(object@doses), nSims),
-                             "doses must have same length as the data list")
+        o$check(
+          all(sapply(object@data, is, "Data")),
+          "all data elements must be Data objects"
+        )
+        o$check(
+          identical(length(object@doses), nSims),
+          "doses must have same length as the data list"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.GeneralSimulations())
 
 ##' Initialization function for "GeneralSimulations"
@@ -74,11 +90,12 @@ validObject(.GeneralSimulations())
 ##' @keywords methods
 GeneralSimulations <- function(data,
                                doses,
-                               seed)
-{
-    .GeneralSimulations(data=data,
-                        doses=doses,
-                        seed=safeInteger(seed))
+                               seed) {
+  .GeneralSimulations(
+    data = data,
+    doses = doses,
+    seed = safeInteger(seed)
+  )
 }
 
 
@@ -95,30 +112,42 @@ GeneralSimulations <- function(data,
 ##' @export
 ##' @keywords classes
 .Simulations <-
-    setClass(Class="Simulations",
-             representation(fit="list",
-                            stopReasons="list"),
-             ## note: this prototype is put together with the prototype
-             ## for GeneralSimulations
-             prototype(fit=
-                           list(c(0.1, 0.2),
-                                c(0.1, 0.2)),
-                       stopReasons=
-                           list("A", "A")),
-             contains="GeneralSimulations",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "Simulations",
+    representation(
+      fit = "list",
+      stopReasons = "list"
+    ),
+    ## note: this prototype is put together with the prototype
+    ## for GeneralSimulations
+    prototype(
+      fit =
+        list(
+          c(0.1, 0.2),
+          c(0.1, 0.2)
+        ),
+      stopReasons =
+        list("A", "A")
+    ),
+    contains = "GeneralSimulations",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     nSims <- length(object@data)
+        nSims <- length(object@data)
 
-                     o$check(identical(length(object@fit), nSims),
-                             "fit must have same length as data")
-                     o$check(identical(length(object@stopReasons), nSims),
-                             "stopReasons must have same length as data")
+        o$check(
+          identical(length(object@fit), nSims),
+          "fit must have same length as data"
+        )
+        o$check(
+          identical(length(object@stopReasons), nSims),
+          "stopReasons must have same length as data"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.Simulations())
 
 
@@ -133,12 +162,12 @@ validObject(.Simulations())
 ##' @keywords methods
 Simulations <- function(fit,
                         stopReasons,
-                        ...)
-{
-    start <- GeneralSimulations(...)
-    .Simulations(start,
-                 fit=fit,
-                 stopReasons=stopReasons)
+                        ...) {
+  start <- GeneralSimulations(...)
+  .Simulations(start,
+    fit = fit,
+    stopReasons = stopReasons
+  )
 }
 
 
@@ -156,31 +185,45 @@ Simulations <- function(fit,
 ##' @export
 ##' @keywords classes
 .DualSimulations <-
-    setClass(Class="DualSimulations",
-             representation(rhoEst="numeric",
-                            sigma2West="numeric",
-                            fitBiomarker="list"),
-             prototype(rhoEst=c(0.2, 0.3),
-                       sigma2West=c(0.2, 0.3),
-                       fitBiomarker=
-                           list(c(0.1, 0.2),
-                                c(0.1, 0.2))),
-             contains="Simulations",
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "DualSimulations",
+    representation(
+      rhoEst = "numeric",
+      sigma2West = "numeric",
+      fitBiomarker = "list"
+    ),
+    prototype(
+      rhoEst = c(0.2, 0.3),
+      sigma2West = c(0.2, 0.3),
+      fitBiomarker =
+        list(
+          c(0.1, 0.2),
+          c(0.1, 0.2)
+        )
+    ),
+    contains = "Simulations",
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     nSims <- length(object@data)
+        nSims <- length(object@data)
 
-                     o$check(identical(length(object@fitBiomarker), nSims),
-                             "fitBiomarker list has to have same length as data")
-                     o$check(identical(length(object@rhoEst), nSims),
-                             "rhoEst vector has to have same length as data")
-                     o$check(identical(length(object@sigma2West), nSims),
-                             "sigma2West has to have same length as data")
+        o$check(
+          identical(length(object@fitBiomarker), nSims),
+          "fitBiomarker list has to have same length as data"
+        )
+        o$check(
+          identical(length(object@rhoEst), nSims),
+          "rhoEst vector has to have same length as data"
+        )
+        o$check(
+          identical(length(object@sigma2West), nSims),
+          "sigma2West has to have same length as data"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.DualSimulations())
 
 
@@ -197,13 +240,13 @@ validObject(.DualSimulations())
 DualSimulations <- function(rhoEst,
                             sigma2West,
                             fitBiomarker,
-                            ...)
-{
-    start <- Simulations(...)
-    .DualSimulations(start,
-                     rhoEst=rhoEst,
-                     sigma2West=sigma2West,
-                     fitBiomarker=fitBiomarker)
+                            ...) {
+  start <- Simulations(...)
+  .DualSimulations(start,
+    rhoEst = rhoEst,
+    sigma2West = sigma2West,
+    fitBiomarker = fitBiomarker
+  )
 }
 
 
@@ -231,21 +274,25 @@ DualSimulations <- function(rhoEst,
 ##' @export
 ##' @keywords classes
 .GeneralSimulationsSummary <-
-    setClass(Class="GeneralSimulationsSummary",
-             representation(target="numeric",
-                            targetDoseInterval="numeric",
-                            nsim="integer",
-                            propDLTs="ANY",
-                            meanToxRisk="numeric",
-                            doseSelected="numeric",
-                            toxAtDosesSelected="numeric",
-                            propAtTarget="numeric",
-                            doseMostSelected="numeric",
-                            obsToxRateAtDoseMostSelected="numeric",
-                            nObs="ANY",
-                            nAboveTarget="integer",
-                            doseGrid="numeric",
-                            placebo="logical"))
+  setClass(
+    Class = "GeneralSimulationsSummary",
+    representation(
+      target = "numeric",
+      targetDoseInterval = "numeric",
+      nsim = "integer",
+      propDLTs = "ANY",
+      meanToxRisk = "numeric",
+      doseSelected = "numeric",
+      toxAtDosesSelected = "numeric",
+      propAtTarget = "numeric",
+      doseMostSelected = "numeric",
+      obsToxRateAtDoseMostSelected = "numeric",
+      nObs = "ANY",
+      nAboveTarget = "integer",
+      doseGrid = "numeric",
+      placebo = "logical"
+    )
+  )
 
 
 ##' Class for the summary of model-based simulations output
@@ -264,10 +311,14 @@ DualSimulations <- function(rhoEst,
 ##' @export
 ##' @keywords classes
 .SimulationsSummary <-
-    setClass(Class="SimulationsSummary",
-             representation(fitAtDoseMostSelected="numeric",
-                            meanFit="list"),
-             contains="GeneralSimulationsSummary")
+  setClass(
+    Class = "SimulationsSummary",
+    representation(
+      fitAtDoseMostSelected = "numeric",
+      meanFit = "list"
+    ),
+    contains = "GeneralSimulationsSummary"
+  )
 
 
 ##' Class for the summary of dual-endpoint simulations output
@@ -286,11 +337,15 @@ DualSimulations <- function(rhoEst,
 ##' @export
 ##' @keywords classes
 .DualSimulationsSummary <-
-    setClass(Class="DualSimulationsSummary",
-             contains="SimulationsSummary",
-             representation=
-                 representation(biomarkerFitAtDoseMostSelected="numeric",
-                                meanBiomarkerFit="list"))
+  setClass(
+    Class = "DualSimulationsSummary",
+    contains = "SimulationsSummary",
+    representation =
+      representation(
+        biomarkerFitAtDoseMostSelected = "numeric",
+        meanBiomarkerFit = "list"
+      )
+  )
 ## ==============================================================================
 
 ## -------------------------------------------------------------------------------
@@ -326,40 +381,48 @@ DualSimulations <- function(rhoEst,
 ##'
 ##' @export
 .PseudoSimulations <-
-  setClass(Class="PseudoSimulations",
-           representation(fit="list",
-                          FinalTDtargetDuringTrialEstimates="numeric",
-                          FinalTDtargetEndOfTrialEstimates = "numeric",
-                          FinalTDtargetDuringTrialAtDoseGrid="numeric",
-                          FinalTDtargetEndOfTrialAtDoseGrid ="numeric",
-                          FinalTDEOTCIs="list",
-                          FinalTDEOTRatios="numeric",
-                          FinalCIs="list",
-                          FinalRatios="numeric",
-                          stopReasons="list"),
-           ## note: this prototype is put together with the prototype
-           ## for GeneralSimulations
-           prototype(FinalTDtargetDuringTrialEstimates= c(0.1,0.1),
-                     FinalTDtargetEndOfTrialEstimates=c(0.1,0.1),
-                     FinalTDtargetDuringTrialAtDoseGrid=c(0.1,0.1),
-                     FinalTDtargetEndOfTrialAtDoseGrid=c(0.1,0.1),
-                     FinalTDEOTCIs=list(c(0.1, 0.2),c(0.1, 0.2)),
-                     FinalTDEOTRatios=c(0.1,0.1),
-                     FinalCIs=list(c(0.1, 0.2),c(0.1, 0.2)),
-                     FinalRatios=c(0.1,0.1),
-             stopReasons=
-                       list("A", "A")),
-           contains="GeneralSimulations",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "PseudoSimulations",
+    representation(
+      fit = "list",
+      FinalTDtargetDuringTrialEstimates = "numeric",
+      FinalTDtargetEndOfTrialEstimates = "numeric",
+      FinalTDtargetDuringTrialAtDoseGrid = "numeric",
+      FinalTDtargetEndOfTrialAtDoseGrid = "numeric",
+      FinalTDEOTCIs = "list",
+      FinalTDEOTRatios = "numeric",
+      FinalCIs = "list",
+      FinalRatios = "numeric",
+      stopReasons = "list"
+    ),
+    ## note: this prototype is put together with the prototype
+    ## for GeneralSimulations
+    prototype(
+      FinalTDtargetDuringTrialEstimates = c(0.1, 0.1),
+      FinalTDtargetEndOfTrialEstimates = c(0.1, 0.1),
+      FinalTDtargetDuringTrialAtDoseGrid = c(0.1, 0.1),
+      FinalTDtargetEndOfTrialAtDoseGrid = c(0.1, 0.1),
+      FinalTDEOTCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
+      FinalTDEOTRatios = c(0.1, 0.1),
+      FinalCIs = list(c(0.1, 0.2), c(0.1, 0.2)),
+      FinalRatios = c(0.1, 0.1),
+      stopReasons =
+        list("A", "A")
+    ),
+    contains = "GeneralSimulations",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               nSims <- length(object@data)
-               o$check(identical(length(object@stopReasons), nSims),
-                       "stopReasons must have same length as data")
+        nSims <- length(object@data)
+        o$check(
+          identical(length(object@stopReasons), nSims),
+          "stopReasons must have same length as data"
+        )
 
-               o$result()
-             })
+        o$result()
+      }
+  )
 validObject(.PseudoSimulations())
 
 ##' Initialization function of the 'PseudoSimulations' class
@@ -387,20 +450,20 @@ PseudoSimulations <- function(fit,
                               FinalCIs,
                               FinalRatios,
                               stopReasons,
-                              ...)
-{
+                              ...) {
   start <- GeneralSimulations(...)
   .PseudoSimulations(start,
-                     fit=fit,
-                     FinalTDtargetDuringTrialEstimates=FinalTDtargetDuringTrialEstimates,
-                     FinalTDtargetEndOfTrialEstimates=FinalTDtargetEndOfTrialEstimates,
-                     FinalTDtargetDuringTrialAtDoseGrid=FinalTDtargetDuringTrialAtDoseGrid,
-                     FinalTDtargetEndOfTrialAtDoseGrid= FinalTDtargetEndOfTrialAtDoseGrid,
-                     FinalTDEOTCIs=FinalTDEOTCIs,
-                     FinalTDEOTRatios=FinalTDEOTRatios,
-                     FinalCIs=FinalCIs,
-                     FinalRatios=FinalRatios,
-                     stopReasons=stopReasons)
+    fit = fit,
+    FinalTDtargetDuringTrialEstimates = FinalTDtargetDuringTrialEstimates,
+    FinalTDtargetEndOfTrialEstimates = FinalTDtargetEndOfTrialEstimates,
+    FinalTDtargetDuringTrialAtDoseGrid = FinalTDtargetDuringTrialAtDoseGrid,
+    FinalTDtargetEndOfTrialAtDoseGrid = FinalTDtargetEndOfTrialAtDoseGrid,
+    FinalTDEOTCIs = FinalTDEOTCIs,
+    FinalTDEOTRatios = FinalTDEOTRatios,
+    FinalCIs = FinalCIs,
+    FinalRatios = FinalRatios,
+    stopReasons = stopReasons
+  )
 }
 
 ## ===============================================================================
@@ -436,32 +499,42 @@ PseudoSimulations <- function(fit,
 ##'
 ##' @export
 .PseudoDualSimulations <-
-  setClass(Class="PseudoDualSimulations",
-           representation(fitEff="list",
-                          FinalGstarEstimates="numeric",
-                          FinalGstarAtDoseGrid="numeric",
-                          FinalGstarCIs="list",
-                          FinalGstarRatios="numeric",
-                          FinalOptimalDose="numeric",
-                          FinalOptimalDoseAtDoseGrid="numeric",
-                          sigma2est="numeric"),
-           prototype( FinalGstarEstimates=c(0.1,0.1),
-                      FinalGstarAtDoseGrid=c(0.1,0.1),
-                      FinalGstarCIs=list(c(0.1, 0.2),
-                      c(0.1, 0.2)),
-                      FinalGstarRatios=c(0.01,0.01),
-                      FinalOptimalDose=c(0.01,0.01),
-                      FinalOptimalDoseAtDoseGrid=c(0.01,0.01),
-             sigma2est= c(0.001,0.002)),
-           contains="PseudoSimulations",
-           validity=
-             function(object){
-               o <- Validate()
-               nSims <- length(object@data)
-               o$check(identical(length(object@sigma2est),nSims),
-                       "sigma2est has to have same length as data")
-               o$result()
-             })
+  setClass(
+    Class = "PseudoDualSimulations",
+    representation(
+      fitEff = "list",
+      FinalGstarEstimates = "numeric",
+      FinalGstarAtDoseGrid = "numeric",
+      FinalGstarCIs = "list",
+      FinalGstarRatios = "numeric",
+      FinalOptimalDose = "numeric",
+      FinalOptimalDoseAtDoseGrid = "numeric",
+      sigma2est = "numeric"
+    ),
+    prototype(
+      FinalGstarEstimates = c(0.1, 0.1),
+      FinalGstarAtDoseGrid = c(0.1, 0.1),
+      FinalGstarCIs = list(
+        c(0.1, 0.2),
+        c(0.1, 0.2)
+      ),
+      FinalGstarRatios = c(0.01, 0.01),
+      FinalOptimalDose = c(0.01, 0.01),
+      FinalOptimalDoseAtDoseGrid = c(0.01, 0.01),
+      sigma2est = c(0.001, 0.002)
+    ),
+    contains = "PseudoSimulations",
+    validity =
+      function(object) {
+        o <- Validate()
+        nSims <- length(object@data)
+        o$check(
+          identical(length(object@sigma2est), nSims),
+          "sigma2est has to have same length as data"
+        )
+        o$result()
+      }
+  )
 
 validObject(.PseudoDualSimulations())
 
@@ -484,18 +557,18 @@ PseudoDualSimulations <- function(fitEff,
                                   FinalOptimalDose,
                                   FinalOptimalDoseAtDoseGrid,
                                   sigma2est,
-                                  ...)
-{
+                                  ...) {
   start <- PseudoSimulations(...)
   .PseudoDualSimulations(start,
-                         fitEff=fitEff,
-                         FinalGstarEstimates=FinalGstarEstimates,
-                         FinalGstarAtDoseGrid=FinalGstarAtDoseGrid,
-                         FinalGstarCIs=FinalGstarCIs,
-                         FinalGstarRatios=FinalGstarRatios,
-                         FinalOptimalDose=FinalOptimalDose,
-                         FinalOptimalDoseAtDoseGrid=FinalOptimalDoseAtDoseGrid,
-                         sigma2est=sigma2est)
+    fitEff = fitEff,
+    FinalGstarEstimates = FinalGstarEstimates,
+    FinalGstarAtDoseGrid = FinalGstarAtDoseGrid,
+    FinalGstarCIs = FinalGstarCIs,
+    FinalGstarRatios = FinalGstarRatios,
+    FinalOptimalDose = FinalOptimalDose,
+    FinalOptimalDoseAtDoseGrid = FinalOptimalDoseAtDoseGrid,
+    sigma2est = sigma2est
+  )
 }
 
 
@@ -517,18 +590,22 @@ PseudoDualSimulations <- function(fitEff,
 ##' @export
 ##' @keywords class
 .PseudoDualFlexiSimulations <-
-  setClass(Class="PseudoDualFlexiSimulations",
-           representation(sigma2betaWest="numeric"),
-           prototype(sigma2betaWest= c(0.001,0.002)),
-           contains="PseudoDualSimulations",
-           validity=
-             function(object){
-               o <- Validate()
-               nSims <- length(object@data)
-               o$check(identical(length(object@sigma2betaWest),nSims),
-                       "sigma2betaWest has to have same length as data")
-               o$result()
-             })
+  setClass(
+    Class = "PseudoDualFlexiSimulations",
+    representation(sigma2betaWest = "numeric"),
+    prototype(sigma2betaWest = c(0.001, 0.002)),
+    contains = "PseudoDualSimulations",
+    validity =
+      function(object) {
+        o <- Validate()
+        nSims <- length(object@data)
+        o$check(
+          identical(length(object@sigma2betaWest), nSims),
+          "sigma2betaWest has to have same length as data"
+        )
+        o$result()
+      }
+  )
 
 validObject(.PseudoDualFlexiSimulations())
 
@@ -537,11 +614,11 @@ validObject(.PseudoDualFlexiSimulations())
 ##' @param \dots additional parameters from \code{\linkS4class{PseudoDualSimulations}}
 ##' @return the \code{\linkS4class{PseudoDualFlexiSimulations}} object
 PseudoDualFlexiSimulations <- function(sigma2betaWest,
-                                       ...)
-{
+                                       ...) {
   start <- PseudoDualSimulations(...)
   .PseudoDualFlexiSimulations(start,
-                              sigma2betaWest=sigma2betaWest)
+    sigma2betaWest = sigma2betaWest
+  )
 }
 
 ## -------------------------------------------------------------------------------------------------------
@@ -604,34 +681,38 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @export
 ##' @keywords classes
 .PseudoSimulationsSummary <-
-  setClass(Class="PseudoSimulationsSummary",
-           representation(targetEndOfTrial="numeric",
-                          targetDoseEndOfTrial="numeric",
-                          targetDoseEndOfTrialAtDoseGrid="numeric",
-                          targetDuringTrial="numeric",
-                          targetDoseDuringTrial="numeric",
-                          targetDoseDuringTrialAtDoseGrid="numeric",
-                          TDEOTSummary="table",
-                          TDDTSummary="table",
-                          FinalDoseRecSummary="table",
-                          ratioTDEOTSummary="table",
-                          FinalRatioSummary="table",
-                          #doseRec="numeric",
-                          nsim="integer",
-                          propDLE="numeric",
-                          meanToxRisk="numeric",
-                          doseSelected="numeric",
-                          toxAtDosesSelected="numeric",
-                          propAtTargetEndOfTrial="numeric",
-                          propAtTargetDuringTrial="numeric",
-                          doseMostSelected="numeric",
-                          obsToxRateAtDoseMostSelected="numeric",
-                          nObs="integer",
-                          nAboveTargetEndOfTrial="integer",
-                          nAboveTargetDuringTrial="integer",
-                          doseGrid="numeric",
-                          fitAtDoseMostSelected="numeric",
-                          meanFit="list"))
+  setClass(
+    Class = "PseudoSimulationsSummary",
+    representation(
+      targetEndOfTrial = "numeric",
+      targetDoseEndOfTrial = "numeric",
+      targetDoseEndOfTrialAtDoseGrid = "numeric",
+      targetDuringTrial = "numeric",
+      targetDoseDuringTrial = "numeric",
+      targetDoseDuringTrialAtDoseGrid = "numeric",
+      TDEOTSummary = "table",
+      TDDTSummary = "table",
+      FinalDoseRecSummary = "table",
+      ratioTDEOTSummary = "table",
+      FinalRatioSummary = "table",
+      # doseRec="numeric",
+      nsim = "integer",
+      propDLE = "numeric",
+      meanToxRisk = "numeric",
+      doseSelected = "numeric",
+      toxAtDosesSelected = "numeric",
+      propAtTargetEndOfTrial = "numeric",
+      propAtTargetDuringTrial = "numeric",
+      doseMostSelected = "numeric",
+      obsToxRateAtDoseMostSelected = "numeric",
+      nObs = "integer",
+      nAboveTargetEndOfTrial = "integer",
+      nAboveTargetDuringTrial = "integer",
+      doseGrid = "numeric",
+      fitAtDoseMostSelected = "numeric",
+      meanFit = "list"
+    )
+  )
 ## ---------------------------------------------------------------------------------------------
 ##' Class for the summary of the dual responses simulations using pseudo models
 ##'
@@ -656,15 +737,19 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @export
 ##' @keywords class
 .PseudoDualSimulationsSummary <-
-  setClass(Class="PseudoDualSimulationsSummary",
-           contains="PseudoSimulationsSummary",
-           representation=
-             representation(targetGstar="numeric",
-                            targetGstarAtDoseGrid="numeric",
-                            GstarSummary="table",
-                            ratioGstarSummary="table",
-                            EffFitAtDoseMostSelected="numeric",
-                            meanEffFit="list"))
+  setClass(
+    Class = "PseudoDualSimulationsSummary",
+    contains = "PseudoSimulationsSummary",
+    representation =
+      representation(
+        targetGstar = "numeric",
+        targetGstarAtDoseGrid = "numeric",
+        GstarSummary = "table",
+        ratioGstarSummary = "table",
+        EffFitAtDoseMostSelected = "numeric",
+        meanEffFit = "list"
+      )
+  )
 
 ## ---------------------------------------------------------------------------------------------
 
@@ -680,21 +765,25 @@ PseudoDualFlexiSimulations <- function(sigma2betaWest,
 ##' @export
 ##' @keywords classes
 .DASimulations <-
-  setClass(Class="DASimulations",
-           representation(trialduration="numeric"),
-           prototype(trialduration=rep(0,2)),
-           contains="Simulations",
-           validity=
-             function(object){
-               o <- Validate()
+  setClass(
+    Class = "DASimulations",
+    representation(trialduration = "numeric"),
+    prototype(trialduration = rep(0, 2)),
+    contains = "Simulations",
+    validity =
+      function(object) {
+        o <- Validate()
 
-               nSims <- length(object@data)
+        nSims <- length(object@data)
 
-               o$check(identical(length(object@trialduration), nSims),
-                       "trialduration vector has to have same length as data")
+        o$check(
+          identical(length(object@trialduration), nSims),
+          "trialduration vector has to have same length as data"
+        )
 
-               o$result()
-             })
+        o$result()
+      }
+  )
 validObject(.DASimulations())
 
 
@@ -707,11 +796,11 @@ validObject(.DASimulations())
 ##' @export
 ##' @keywords methods
 DASimulations <- function(trialduration,
-                          ...)
-{
+                          ...) {
   start <- Simulations(...)
   .DASimulations(start,
-                 trialduration=trialduration)
+    trialduration = trialduration
+  )
 }
 
 # nolint end

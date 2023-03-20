@@ -1,4 +1,6 @@
-# plot-Data ----
+# plot ----
+
+## Data ----
 
 #' Plot Method for the [`Data`] Class
 #'
@@ -73,7 +75,7 @@ setMethod(
   }
 )
 
-# plot-DataDual ----
+## DataDual ----
 
 #' Plot Method for the [`DataDual`] Class
 #'
@@ -139,7 +141,7 @@ setMethod(
   }
 )
 
-# plot-DataDA ----
+## DataDA ----
 
 #' Plot Method for the [`DataDA`] Class
 #'
@@ -226,7 +228,9 @@ setMethod(
   }
 )
 
-# update-Data ----
+# update ----
+
+## Data ----
 
 #' Updating `Data` Objects
 #'
@@ -315,7 +319,7 @@ setMethod(
   }
 )
 
-# update-DataParts ----
+## DataParts ----
 
 #' Updating `DataParts` Objects
 #'
@@ -370,7 +374,7 @@ setMethod(
   }
 )
 
-# update-DataDual ----
+## DataDual ----
 
 #' Updating `DataDual` Objects
 #'
@@ -413,7 +417,7 @@ setMethod(
   }
 )
 
-# update-DataDA ----
+## DataDA ----
 
 #' Updating `DataDA` Objects
 #'
@@ -496,6 +500,8 @@ setMethod(
 
 # getEff ----
 
+## generic ----
+
 #' Extracting Efficacy Responses for Subjects Categorized by the DLT
 #'
 #' @description `r lifecycle::badge("stable")`
@@ -506,7 +512,7 @@ setMethod(
 #'
 #' @param object (`DataDual`)\cr object from which the responses and dose levels
 #'   are extracted.
-#' @param ... not used.
+#' @param ... further arguments passed to class-specific methods.
 #' @return `list` with efficacy responses categorized by the DLT value.
 #' @export
 #'
@@ -518,36 +524,84 @@ setGeneric(
   valueClass = "list"
 )
 
-# getEff-DataDual ----
+## DataDual ----
 
 #' @rdname getEff
+#'
+#' @param no_dlt (`flag`)\cr should only no DLT responses be returned? Otherwise,
+#'   all responses are returned.
+#'
 #' @aliases getEff-DataDual
 #' @example examples/Data-method-getEff.R
 #'
 setMethod(
   f = "getEff",
   signature = signature(object = "DataDual"),
-  definition = function(object, ...) {
-    x_dlt <- NULL
-    w_dlt <- NULL
-    x_no_dlt <- NULL
-    w_no_dlt <- NULL
+  definition = function(object, no_dlt = FALSE) {
+    assert_flag(no_dlt)
 
-    is_dlt <- object@y == 1
-    if (any(is_dlt)) {
-      x_dlt <- object@x[is_dlt]
-      w_dlt <- object@w[is_dlt]
-    }
-    if (any(!is_dlt)) {
-      x_no_dlt <- object@x[!is_dlt]
-      w_no_dlt <- object@w[!is_dlt]
+    is_dlt <- object@y == 1L
+    is_no_dlt <- !is_dlt
+
+    eff <- if (any(is_no_dlt)) {
+      list(x_no_dlt = object@x[is_no_dlt], w_no_dlt = object@w[is_no_dlt])
+    } else {
+      list(x_no_dlt = NULL, w_no_dlt = NULL)
     }
 
-    list(
-      x_dlt = x_dlt,
-      w_dlt = w_dlt,
-      x_no_dlt = x_no_dlt,
-      w_no_dlt = w_no_dlt
-    )
+    if (!no_dlt) {
+      eff_dlt <- if (any(is_dlt)) {
+        list(x_dlt = object@x[is_dlt], w_dlt = object@w[is_dlt])
+      } else {
+        list(x_dlt = NULL, w_dlt = NULL)
+      }
+      eff <- c(eff, eff_dlt)
+    }
+    eff
+  }
+)
+
+# ngrid ----
+
+## generic ----
+
+#' Number of Doses in Grid
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A function that gets the number of doses in grid. User can choose whether
+#' the placebo dose (if any) should be counted or not.
+#'
+#' @param object (`Data`)\cr object with dose grid.
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
+#' @param ... further arguments passed to class-specific methods.
+#' @return `integer` the number of doses in grid.
+#' @export
+#'
+setGeneric(
+  name = "ngrid",
+  def = function(object, ignore_placebo = TRUE, ...) {
+    assert_flag(ignore_placebo)
+    standardGeneric("ngrid")
+  },
+  valueClass = "integer"
+)
+
+## Data ----
+
+#' @rdname ngrid
+#'
+#' @aliases ngrid-Data
+#' @example examples/Data-method-ngrid.R
+#'
+setMethod(
+  f = "ngrid",
+  signature = signature(object = "Data"),
+  definition = function(object, ignore_placebo, ...) {
+    if (ignore_placebo && object@placebo) {
+      max(object@nGrid - 1L, 0L)
+    } else {
+      object@nGrid
+    }
   }
 )

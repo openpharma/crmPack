@@ -1,23 +1,51 @@
-# nolint start
-#####################################################################################
-## Author: Daniel Sabanes Bove [sabanesd *a*t* roche *.* com],
-##         Wai Yin Yeung [w *.* yeung1 *a*t* lancaster *.* ac *.* uk]
-## Project: Object-oriented implementation of CRM designs
-##
-## Time-stamp: <[Samples-methods.R] by DSB Mon 11/05/2015 17:46>
-##
-## Description:
-## Methods for processing the MCMC samples.
-##
-## History:
-## 25/03/2014   file creation
-## 10/07/2015   Adding more methods for pseudo models
-#####################################################################################
+#' @include McmcOptions-class.R
+#' @include Model-methods.R
+#' @include fromQuantiles.R
+NULL
 
-##' @include McmcOptions-methods.R
-##' @include Model-methods.R
-##' @include fromQuantiles.R
-{}
+# size ----
+
+## Samples ----
+
+#' @describeIn size get the number of MCMC samples from `Samples` object.
+#' @aliases size-Samples
+#'
+#' @export
+#' @example examples/Samples-methods-size.R
+#'
+setMethod(
+  f = "size",
+  signature = signature(object = "Samples"),
+  definition = function(object, ...) {
+    size(object@options)
+  }
+)
+
+# names ----
+
+## Samples ----
+
+#' The Names of the Sampled Parameters
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A method that returns names of the parameters that are sampled.
+#'
+#' @param x (`Samples`)\cr object with samples.
+#'
+#' @aliases names-Samples
+#' @export
+#' @example examples/Samples-methods-names.R
+#'
+setMethod(
+  f = "names",
+  signature = signature(x = "Samples"),
+  definition = function(x) {
+    names(x@data)
+  }
+)
+
+# nolint start
 
 ## --------------------------------------------------
 ## Extract certain parameter from "Samples" object to produce
@@ -44,81 +72,88 @@
 ##' @export
 ##' @keywords methods
 setMethod("get",
-          signature=
-              signature(x="Samples",
-                        pos="character",
-                        envir="ANY",
-                        mode="ANY",
-                        inherits="ANY"),
-          def=
-          function(x,
-                   pos,
-                   envir=NULL,
-                   mode=NULL,
-                   inherits=NULL){
+  signature =
+    signature(
+      x = "Samples",
+      pos = "character",
+      envir = "ANY",
+      mode = "ANY",
+      inherits = "ANY"
+    ),
+  def =
+    function(x,
+             pos,
+             envir = NULL,
+             mode = NULL,
+             inherits = NULL) {
+      ## check the parameter name
+      stopifnot(is.scalar(pos), pos %in% names(x))
 
-              ## check the parameter name
-              stopifnot(is.scalar(pos),
-                        pos %in% names(x@data))
+      ## get the samples for this parameter
+      d <- x@data[[pos]]
+      ## this can be either a vector or a matrix
 
-              ## get the samples for this parameter
-              d <- x@data[[pos]]
-              ## this can be either a vector or a matrix
+      ## how many parameters do we have?
+      nPars <- NCOL(d)
 
-              ## how many parameters do we have?
-              nPars <- NCOL(d)
+      ## what are the names of all parameter
+      ## elements?
+      elements <-
+        if (nPars == 1L) {
+          pos
+        } else {
+          paste(pos,
+            "[", seq_len(nPars), "]",
+            sep = ""
+          )
+        }
 
-              ## what are the names of all parameter
-              ## elements?
-              elements <-
-                  if(nPars == 1L)
-                      pos
-                  else
-                      paste(pos,
-                            "[", seq_len(nPars), "]",
-                            sep="")
+      ## in case we have a vector parameter
+      if (nPars > 1L) {
+        ## what are the indices to be returned?
+        indices <-
+          if (is.null(envir)) {
+            seq_along(elements)
+          } else {
+            stopifnot(
+              is.numeric(envir),
+              all(envir %in% seq_along(elements))
+            )
+            as.integer(envir)
+          }
 
-              ## in case we have a vector parameter
-              if(nPars > 1L)
-              {
-                  ## what are the indices to be returned?
-                  indices <-
-                      if(is.null(envir))
-                      {
-                          seq_along(elements)
-                      } else {
-                          stopifnot(is.numeric(envir),
-                                    all(envir %in% seq_along(elements)))
-                          as.integer(envir)
-                      }
+        ## subset the data matrix and par names appropriately
+        d <- d[, indices, drop = FALSE]
+        elements <- elements[indices]
 
-                  ## subset the data matrix and par names appropriately
-                  d <- d[, indices, drop=FALSE]
-                  elements <- elements[indices]
+        ## and also reduce the number of parameters
+        nPars <- length(indices)
+      }
 
-                  ## and also reduce the number of parameters
-                  nPars <- length(indices)
-              }
+      ## now we can build
+      ret <- data.frame(
+        Iteration = seq_len(NROW(d)),
+        Chain = 1L,
+        Parameter =
+          factor(rep(elements, each = NROW(d)),
+            levels = elements
+          ),
+        value = as.numeric(d)
+      )
 
-              ## now we can build
-              ret <- data.frame(Iteration=seq_len(NROW(d)),
-                                Chain=1L,
-                                Parameter=
-                                factor(rep(elements, each=NROW(d)),
-                                       levels=elements),
-                                value=as.numeric(d))
-
-              ## add the attributes
-              ret <- structure(ret,
-                               nChains=1L,
-                               nParameters=nPars,
-                               nIterations=x@options@iterations,
-                               nBurnin=x@options@burnin,
-                               nThin=x@options@step,
-                               description=elements,
-                               parallel=FALSE)
-              return(ret)
-          })
+      ## add the attributes
+      ret <- structure(ret,
+        nChains = 1L,
+        nParameters = nPars,
+        nIterations = x@options@iterations,
+        nBurnin = x@options@burnin,
+        nThin = x@options@step,
+        description = elements,
+        parallel = FALSE
+      )
+      return(ret)
+    }
+)
 
 
 ## --------------------------------------------------
@@ -140,15 +175,17 @@ setMethod("get",
 ##' @export
 ##' @keywords methods
 setGeneric("fit",
-           def=
-           function(object,
-                    model,
-                    data,
-                    ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("fit")},
-           valueClass="data.frame")
+  def =
+    function(object,
+             model,
+             data,
+             ...) {
+      ## there should be no default method,
+      ## therefore just forward to next method!
+      standardGeneric("fit")
+    },
+  valueClass = "data.frame"
+)
 
 
 ## --------------------------------------------------
@@ -167,53 +204,65 @@ setGeneric("fit",
 ##' @example examples/Sample-methods-fit.R
 ##'
 setMethod("fit",
-          signature=
-          signature(object="Samples",
-                    model="GeneralModel",
-                    data="Data"),
-          def=
-          function(object,
-                   model,
-                   data,
-                   points=data@doseGrid,
-                   quantiles=c(0.025, 0.975),
-                   middle=mean,
-                   ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(points))
+  signature =
+    signature(
+      object = "Samples",
+      model = "GeneralModel",
+      data = "Data"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             points = data@doseGrid,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      stopifnot(
+        is.probRange(quantiles),
+        is.numeric(points)
+      )
 
-              ## first we have to get samples from the dose-tox
-              ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(object@options),
-                                    ncol=length(points))
+      ## first we have to get samples from the dose-tox
+      ## curve at the dose grid points.
+      probSamples <- matrix(
+        nrow = size(object),
+        ncol = length(points)
+      )
 
-              ## evaluate the probs, for all samples.
-              for(i in seq_along(points))
-              {
-                  ## Now we want to evaluate for the
-                  ## following dose:
-                  probSamples[, i] <- prob(dose=points[i],
-                                           model,
-                                           object)
-              }
+      ## evaluate the probs, for all samples.
+      for (i in seq_along(points))
+      {
+        ## Now we want to evaluate for the
+        ## following dose:
+        probSamples[, i] <- prob(
+          dose = points[i],
+          model,
+          object
+        )
+      }
 
-              ## extract middle curve
-              middleCurve <- apply(probSamples, 2L, FUN=middle)
+      ## extract middle curve
+      middleCurve <- apply(probSamples, 2L, FUN = middle)
 
-              ## extract quantiles
-              quantCurve <- apply(probSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## extract quantiles
+      quantCurve <- apply(probSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## now create the data frame
-              ret <- data.frame(dose=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
+      ## now create the data frame
+      ret <- data.frame(
+        dose = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              ## return it
-              return(ret)
-          })
+      ## return it
+      return(ret)
+    }
+)
 
 ## --------------------------------------------------
 ## Get fitted dose-tox and dose-biomarker curves from Samples
@@ -226,50 +275,58 @@ setMethod("fit",
 ##'
 ##' @example examples/Sample-methods-fit-DualEndpoint.R
 setMethod("fit",
-          signature=
-          signature(object="Samples",
-                    model="DualEndpoint",
-                    data="DataDual"),
-          def=
-          function(object,
-                   model,
-                   data,
-                   quantiles=c(0.025, 0.975),
-                   middle=mean,
-                   ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles))
+  signature =
+    signature(
+      object = "Samples",
+      model = "DualEndpoint",
+      data = "DataDual"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      stopifnot(is.probRange(quantiles))
 
-              ## first obtain the dose-tox curve results from the parent method
-              start <- callNextMethod(object=object,
-                                      model=model,
-                                      data=data,
-                                      points=data@doseGrid,
-                                      quantiles=quantiles,
-                                      middle=middle,
-                                      ...)
+      ## first obtain the dose-tox curve results from the parent method
+      start <- callNextMethod(
+        object = object,
+        model = model,
+        data = data,
+        points = data@doseGrid,
+        quantiles = quantiles,
+        middle = middle,
+        ...
+      )
 
-              ## now obtain the dose-biomarker results
+      ## now obtain the dose-biomarker results
 
-              ## get the biomarker level samples
-              ## at the dose grid points.
-              biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples = object)
+      ## get the biomarker level samples
+      ## at the dose grid points.
+      biomLevelSamples <- biomarker(xLevel = seq_len(data@nGrid), model, samples = object)
 
-              ## extract middle curve
-              middleCurve <- apply(biomLevelSamples, 2L, FUN=middle)
+      ## extract middle curve
+      middleCurve <- apply(biomLevelSamples, 2L, FUN = middle)
 
-              ## extract quantiles
-              quantCurve <- apply(biomLevelSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## extract quantiles
+      quantCurve <- apply(biomLevelSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## now create the data frame
-              biomResults <- data.frame(middleBiomarker=middleCurve,
-                                        lowerBiomarker=quantCurve[1, ],
-                                        upperBiomarker=quantCurve[2, ])
+      ## now create the data frame
+      biomResults <- data.frame(
+        middleBiomarker = middleCurve,
+        lowerBiomarker = quantCurve[1, ],
+        upperBiomarker = quantCurve[2, ]
+      )
 
-              ## return both, pasted together
-              return(cbind(start, biomResults))
-          })
+      ## return both, pasted together
+      return(cbind(start, biomResults))
+    }
+)
 
 
 ## --------------------------------------------------
@@ -290,12 +347,14 @@ setMethod("fit",
 ##' @export
 ##' @keywords methods
 setGeneric("approximate",
-           def=
-           function(object, model, data, ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("approximate")},
-           valueClass="GeneralModel")
+  def =
+    function(object, model, data, ...) {
+      ## there should be no default method,
+      ## therefore just forward to next method!
+      standardGeneric("approximate")
+    },
+  valueClass = "GeneralModel"
+)
 
 
 
@@ -314,84 +373,102 @@ setGeneric("approximate",
 ##'
 ##' @example examples/Sample-methods-approximate.R
 setMethod("approximate",
-          signature=
-          signature(object="Samples"),
-          def=
-          function(object,
-                   model,
-                   data,
-                   points=
-                   seq(from=min(data@doseGrid),
-                       to=max(data@doseGrid),
-                       length=5L),
-                   refDose=median(points),
-                   logNormal=FALSE,
-                   verbose=TRUE,
-                   ...){
+  signature =
+    signature(object = "Samples"),
+  def =
+    function(object,
+             model,
+             data,
+             points =
+               seq(
+                 from = min(data@doseGrid),
+                 to = max(data@doseGrid),
+                 length = 5L
+               ),
+             refDose = median(points),
+             logNormal = FALSE,
+             verbose = TRUE,
+             ...) {
+      ## get the required quantiles at these dose levels:
+      quants <- fit(object,
+        model,
+        data,
+        points = points,
+        quantiles = c(0.025, 0.975),
+        middle = median
+      )
 
-              ## get the required quantiles at these dose levels:
-              quants <- fit(object,
-                            model,
-                            data,
-                            points=points,
-                            quantiles=c(0.025, 0.975),
-                            middle=median)
+      ## get better starting values if it is already a logistic normal
+      ## model
+      if (is(model, "LogisticNormal") && (!logNormal)) {
+        means <- sapply(
+          object@data,
+          mean
+        )
+        cov <- cov(as.data.frame(object@data))
 
-              ## get better starting values if it is already a logistic normal
-              ## model
-              if(is(model, "LogisticNormal") && (! logNormal))
-              {
-                  means <- sapply(object@data,
-                                  mean)
-                  cov <- cov(as.data.frame(object@data))
+        parstart <- c(
+          means[1], means[2],
+          sqrt(cov[1, 1]), sqrt(cov[2, 2]),
+          cov2cor(cov)[1, 2]
+        )
+      } else if (is(model, "LogisticLogNormal") && logNormal) {
+        datTrafo <- with(
+          object@data,
+          cbind(
+            alpha0,
+            log(alpha1)
+          )
+        )
 
-                  parstart <- c(means[1], means[2],
-                                sqrt(cov[1, 1]), sqrt(cov[2, 2]),
-                                cov2cor(cov)[1, 2])
-              } else if(is(model, "LogisticLogNormal") && logNormal) {
-                  datTrafo <- with(object@data,
-                                   cbind(alpha0,
-                                         log(alpha1)))
+        means <- colMeans(datTrafo)
+        cov <- cov(datTrafo)
 
-                  means <- colMeans(datTrafo)
-                  cov <- cov(datTrafo)
+        parstart <- c(
+          means[1], means[2],
+          sqrt(cov[1, 1]), sqrt(cov[2, 2]),
+          cov2cor(cov)[1, 2]
+        )
+      } else {
+        parstart <- NULL
+      }
 
-                  parstart <- c(means[1], means[2],
-                                sqrt(cov[1, 1]), sqrt(cov[2, 2]),
-                                cov2cor(cov)[1, 2])
-              } else {
-                  parstart <- NULL
-              }
+      ## run the approx function
+      quantRes <- Quantiles2LogisticNormal(
+        dosegrid = quants$dose,
+        refDose = refDose,
+        lower = quants$lower,
+        upper = quants$upper,
+        median = quants$middle,
+        verbose = verbose,
+        parstart = parstart,
+        logNormal = logNormal,
+        ...
+      )
 
-              ## run the approx function
-              quantRes <- Quantiles2LogisticNormal(dosegrid=quants$dose,
-                                                   refDose=refDose,
-                                                   lower=quants$lower,
-                                                   upper=quants$upper,
-                                                   median=quants$middle,
-                                                   verbose=verbose,
-                                                   parstart=parstart,
-                                                   logNormal=logNormal,
-                                                   ...)
+      if (verbose) {
+        matplot(
+          x = points,
+          quantRes$required,
+          type = "l", col = "blue", lty = 1
+        )
+        matlines(
+          x = points,
+          quantRes$quantiles,
+          col = "red", lty = 1
+        )
+        legend("bottomright",
+          legend = c("original", "approximation"),
+          col = c("blue", "red"),
+          lty = 1,
+          bty = "n"
+        )
+      }
 
-              if(verbose)
-              {
-                  matplot(x=points,
-                          quantRes$required,
-                          type="l", col="blue", lty=1)
-                  matlines(x=points,
-                           quantRes$quantiles,
-                           col="red", lty=1)
-                  legend("bottomright",
-                         legend=c("original", "approximation"),
-                         col=c("blue", "red"),
-                         lty=1,
-                         bty="n")
-              }
-
-              ## return the model
-              return(quantRes$model)
-          })
+      ## return the model
+      return(quantRes$model)
+    }
+)
 
 ## --------------------------------------------------
 ## Plot dose-tox fit from a model
@@ -414,62 +491,87 @@ setMethod("approximate",
 ##' @export
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
-          signature=
-          signature(x="Samples",
-                    y="GeneralModel"),
-          def=
-          function(x, y, data, ...,
-                   xlab="Dose level",
-                   ylab="Probability of DLT [%]",
-                   showLegend=TRUE){
+  signature =
+    signature(
+      x = "Samples",
+      y = "GeneralModel"
+    ),
+  def =
+    function(x, y, data, ...,
+             xlab = "Dose level",
+             ylab = "Probability of DLT [%]",
+             showLegend = TRUE) {
+      ## check args
+      stopifnot(is.bool(showLegend))
 
-              ## check args
-              stopifnot(is.bool(showLegend))
+      ## get the fit
+      plotData <- fit(x,
+        model = y,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean
+      )
 
-              ## get the fit
-              plotData <- fit(x,
-                              model=y,
-                              data=data,
-                              quantiles=c(0.025, 0.975),
-                              middle=mean)
+      ## make the plot
+      gdata <-
+        with(
+          plotData,
+          data.frame(
+            x = rep(dose, 3),
+            y = c(middle, lower, upper) * 100,
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(plotData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
 
-              ## make the plot
-              gdata <-
-                  with(plotData,
-                       data.frame(x=rep(dose, 3),
-                                  y=c(middle, lower, upper) * 100,
-                                  group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotData)),
-                                  Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotData) * 2)),
-                                         levels=
-                                         c("Estimate",
-                                           "95% Credible Interval"))))
+      ret <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("red"),
+        geom = "line",
+        xlab = xlab,
+        ylab = ylab,
+        ylim = c(0, 100)
+      )
 
-              ret <- ggplot2::qplot(x=x,
-                                    y=y,
-                                    data=gdata,
-                                    group=group,
-                                    linetype=Type,
-                                    colour=I("red"),
-                                    geom="line",
-                                    xlab=xlab,
-                                    ylab=ylab,
-                                    ylim=c(0, 100))
+      ret <- ret +
+        ggplot2::scale_linetype_manual(
+          breaks =
+            c(
+              "Estimate",
+              "95% Credible Interval"
+            ),
+          values = c(1, 2), guide = ifelse(showLegend,
+            "legend", FALSE
+          )
+        )
 
-              ret <- ret +
-                  ggplot2::scale_linetype_manual(breaks=
-                                                 c("Estimate",
-                                                   "95% Credible Interval"),
-                                                 values=c(1,2), guide=ifelse(showLegend,
-                                                 "legend", FALSE))
-
-              return(ret)
-          })
+      return(ret)
+    }
+)
 
 
 ## --------------------------------------------------
@@ -496,80 +598,108 @@ setMethod("plot",
 ##' @example examples/Sample-methods-plot-DualEndpoint.R
 ##' @export
 setMethod("plot",
-          signature=
-          signature(x="Samples",
-                    y="DualEndpoint"),
-          def=
-          function(x, y, data, extrapolate=TRUE, showLegend=FALSE, ...){
+  signature =
+    signature(
+      x = "Samples",
+      y = "DualEndpoint"
+    ),
+  def =
+    function(x, y, data, extrapolate = TRUE, showLegend = FALSE, ...) {
+      stopifnot(is.bool(extrapolate))
 
-              stopifnot(is.bool(extrapolate))
+      ## call the superclass method, to get the toxicity plot
+      plot1 <- callNextMethod(x, y, data, showLegend = showLegend, ...)
 
-              ## call the superclass method, to get the toxicity plot
-              plot1 <- callNextMethod(x, y, data, showLegend=showLegend, ...)
+      ## only look at these dose levels for the plot:
+      xLevels <-
+        if (extrapolate) {
+          seq_along(data@doseGrid)
+        } else {
+          1:max(data@xLevel)
+        }
 
-              ## only look at these dose levels for the plot:
-              xLevels <-
-                  if(extrapolate)
-                      seq_along(data@doseGrid)
-                  else
-                      1:max(data@xLevel)
+      ## get the plot data for the biomarker plot
+      functionSamples <- biomarker(xLevel = xLevels, model = y, samples = x)
 
-              ## get the plot data for the biomarker plot
-              functionSamples <- biomarker(xLevel = xLevels, model = y, samples = x)
+      ## extract mean curve
+      meanCurve <- colMeans(functionSamples)
 
-              ## extract mean curve
-              meanCurve <- colMeans(functionSamples)
+      ## extract quantiles
+      quantiles <- c(0.025, 0.975)
+      quantCurve <- apply(functionSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## extract quantiles
-              quantiles <- c(0.025, 0.975)
-              quantCurve <- apply(functionSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## now create the data frame
+      plotData <- data.frame(
+        dose = data@doseGrid[xLevels],
+        mean = meanCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              ## now create the data frame
-              plotData <- data.frame(dose=data@doseGrid[xLevels],
-                                     mean=meanCurve,
-                                     lower=quantCurve[1, ],
-                                     upper=quantCurve[2, ])
+      ## make the second plot
+      gdata <-
+        with(
+          plotData,
+          data.frame(
+            x = rep(dose, 3),
+            y = c(mean, lower, upper),
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(plotData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
 
-              ## make the second plot
-              gdata <-
-                  with(plotData,
-                       data.frame(x=rep(dose, 3),
-                                  y=c(mean, lower, upper),
-                                  group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotData)),
-                                  Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotData) * 2)),
-                                         levels=
-                                         c("Estimate",
-                                           "95% Credible Interval"))))
+      plot2 <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("blue"),
+        geom = "line",
+        xlab = "Dose level",
+        ylab = "Biomarker level"
+      )
 
-              plot2 <- ggplot2::qplot(x=x,
-                                      y=y,
-                                      data=gdata,
-                                      group=group,
-                                      linetype=Type,
-                                      colour=I("blue"),
-                                      geom="line",
-                                      xlab="Dose level",
-                                      ylab="Biomarker level")
+      plot2 <- plot2 +
+        ggplot2::scale_linetype_manual(
+          breaks =
+            c(
+              "Estimate",
+              "95% Credible Interval"
+            ),
+          values = c(1, 2),
+          guide = ifelse(showLegend,
+            "legend", FALSE
+          )
+        )
 
-              plot2 <- plot2 +
-                  ggplot2::scale_linetype_manual(breaks=
-                                                 c("Estimate",
-                                                   "95% Credible Interval"),
-                                                 values=c(1,2),
-                                                 guide=ifelse(showLegend,
-                                                 "legend", FALSE))
-
-              ## arrange both plots side by side
-              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
-              return(ret)
-          })
+      ## arrange both plots side by side
+      ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+      return(ret)
+    }
+)
 
 
 ## -------------------------------------------------------------------------------------
@@ -579,53 +709,65 @@ setMethod("plot",
 ##' for the dose-DLE curve using DLE samples for \dQuote{LogisticIndepBeta} model class
 ##' @example examples/Samples-method-fitDLE.R
 setMethod("fit",
-          signature=
-            signature(object="Samples",
-                      model="LogisticIndepBeta",
-                      data="Data"),
-          def=
-            function(object,
-                     model,
-                     data,
-                     points=data@doseGrid,
-                     quantiles=c(0.025, 0.975),
-                     middle=mean,
-                     ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(points))
+  signature =
+    signature(
+      object = "Samples",
+      model = "LogisticIndepBeta",
+      data = "Data"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             points = data@doseGrid,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      stopifnot(
+        is.probRange(quantiles),
+        is.numeric(points)
+      )
 
-              ## first we have to get samples from the dose-tox
-              ## curve at the dose grid points.
-              probSamples <- matrix(nrow=sampleSize(object@options),
-                                    ncol=length(points))
+      ## first we have to get samples from the dose-tox
+      ## curve at the dose grid points.
+      probSamples <- matrix(
+        nrow = size(object),
+        ncol = length(points)
+      )
 
-              ## evaluate the probs, for all samples.
-              for(i in seq_along(points))
-              {
-                ## Now we want to evaluate for the
-                ## following dose:
-                probSamples[, i] <- prob(dose=points[i],
-                                         model,
-                                         object)
-              }
+      ## evaluate the probs, for all samples.
+      for (i in seq_along(points))
+      {
+        ## Now we want to evaluate for the
+        ## following dose:
+        probSamples[, i] <- prob(
+          dose = points[i],
+          model,
+          object
+        )
+      }
 
-              ## extract middle curve
-              middleCurve <- apply(probSamples, 2L, FUN=middle)
+      ## extract middle curve
+      middleCurve <- apply(probSamples, 2L, FUN = middle)
 
-              ## extract quantiles
-              quantCurve <- apply(probSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## extract quantiles
+      quantCurve <- apply(probSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## now create the data frame
-              ret <- data.frame(dose=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
+      ## now create the data frame
+      ret <- data.frame(
+        dose = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              ## return it
-              return(ret)
-            })
+      ## return it
+      return(ret)
+    }
+)
 
 ## -------------------------------------------------------------------------------------
 ## Get fitted dose-efficacy curve from Samples for 'Effloglog' model class
@@ -635,53 +777,65 @@ setMethod("fit",
 ##' the dose-efficacy curve using efficacy samples for \dQuote{Effloglog} model class
 ##' @example examples/Samples-method-fitEff.R
 setMethod("fit",
-          signature=
-            signature(object="Samples",
-                      model="Effloglog",
-                      data="DataDual"),
-          def=
-            function(object,
-                     model,
-                     data,
-                     points=data@doseGrid,
-                     quantiles=c(0.025, 0.975),
-                     middle=mean,
-                     ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(points))
+  signature =
+    signature(
+      object = "Samples",
+      model = "Effloglog",
+      data = "DataDual"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             points = data@doseGrid,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      stopifnot(
+        is.probRange(quantiles),
+        is.numeric(points)
+      )
 
-              ## first we have to get samples from the dose-tox
-              ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
-                                      ncol=length(points))
+      ## first we have to get samples from the dose-tox
+      ## curve at the dose grid points.
+      ExpEffSamples <- matrix(
+        nrow = size(object),
+        ncol = length(points)
+      )
 
-              ## evaluate the probs, for all samples.
-              for(i in seq_along(points))
-              {
-                ## Now we want to evaluate for the
-                ## following dose:
-                ExpEffSamples[, i] <- efficacy(dose=points[i],
-                                             model,
-                                             object)
-              }
+      ## evaluate the probs, for all samples.
+      for (i in seq_along(points))
+      {
+        ## Now we want to evaluate for the
+        ## following dose:
+        ExpEffSamples[, i] <- efficacy(
+          dose = points[i],
+          model,
+          object
+        )
+      }
 
-              ## extract middle curve
-              middleCurve <- apply(ExpEffSamples, 2L, FUN=middle)
+      ## extract middle curve
+      middleCurve <- apply(ExpEffSamples, 2L, FUN = middle)
 
-              ## extract quantiles
-              quantCurve <- apply(ExpEffSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## extract quantiles
+      quantCurve <- apply(ExpEffSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## now create the data frame
-              ret <- data.frame(dose=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
+      ## now create the data frame
+      ret <- data.frame(
+        dose = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              ## return it
-              return(ret)
-            })
+      ## return it
+      return(ret)
+    }
+)
 ## ==========================================================================================
 ## --------------------------------------------------------------------
 ## Get fitted dose-efficacy based on the Efficacy Flexible model
@@ -691,53 +845,65 @@ setMethod("fit",
 ##' model class
 ##' @example examples/Samples-method-fitEffFlexi.R
 setMethod("fit",
-          signature=
-            signature(object="Samples",
-                      model="EffFlexi",
-                      data="DataDual"),
-          def=
-            function(object,
-                     model,
-                     data,
-                     points=data@doseGrid,
-                     quantiles=c(0.025, 0.975),
-                     middle=mean,
-                     ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(points))
+  signature =
+    signature(
+      object = "Samples",
+      model = "EffFlexi",
+      data = "DataDual"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             points = data@doseGrid,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      stopifnot(
+        is.probRange(quantiles),
+        is.numeric(points)
+      )
 
-              ## first we have to get samples from the dose-tox
-              ## curve at the dose grid points.
-              ExpEffSamples <- matrix(nrow=sampleSize(object@options),
-                                      ncol=length(points))
+      ## first we have to get samples from the dose-tox
+      ## curve at the dose grid points.
+      ExpEffSamples <- matrix(
+        nrow = size(object),
+        ncol = length(points)
+      )
 
-              ## evaluate the probs, for all samples.
-              for(i in seq_along(points))
-              {
-                ## Now we want to evaluate for the
-                ## following dose:
-                ExpEffSamples[, i] <- efficacy(dose=points[i],
-                                             model,
-                                             object)
-              }
+      ## evaluate the probs, for all samples.
+      for (i in seq_along(points))
+      {
+        ## Now we want to evaluate for the
+        ## following dose:
+        ExpEffSamples[, i] <- efficacy(
+          dose = points[i],
+          model,
+          object
+        )
+      }
 
-              ## extract middle curve
-              middleCurve <- apply(ExpEffSamples, 2L, FUN=middle)
+      ## extract middle curve
+      middleCurve <- apply(ExpEffSamples, 2L, FUN = middle)
 
-              ## extract quantiles
-              quantCurve <- apply(ExpEffSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## extract quantiles
+      quantCurve <- apply(ExpEffSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## now create the data frame
-              ret <- data.frame(dose=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
+      ## now create the data frame
+      ret <- data.frame(
+        dose = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              ## return it
-              return(ret)
-            })
+      ## return it
+      return(ret)
+    }
+)
 ## ==============================================================
 ## ----------------------------------------------------------------
 ## Get fitted values at all dose levels from gain samples
@@ -757,17 +923,19 @@ setMethod("fit",
 ##' @export
 ##' @keywords methods
 setGeneric("fitGain",
-           def=
-             function(DLEmodel,
-                      DLEsamples,
-                      Effmodel,
-                      Effsamples,
-                      data,
-                      ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("fitGain")},
-           valueClass="data.frame")
+  def =
+    function(DLEmodel,
+             DLEsamples,
+             Effmodel,
+             Effsamples,
+             data,
+             ...) {
+      ## there should be no default method,
+      ## therefore just forward to next method!
+      standardGeneric("fitGain")
+    },
+  valueClass = "data.frame"
+)
 
 ##' @describeIn fitGain This method returns a data frame with dose, middle, lower, upper quantiles for
 ##' the gain values obtained given the DLE and the efficacy samples
@@ -779,59 +947,71 @@ setGeneric("fitGain",
 ##' \code{\link{mean}}
 ##' @example examples/Samples-method-fitGain.R
 setMethod("fitGain",
-          signature=
-            signature(DLEmodel="ModelTox",
-                      DLEsamples="Samples",
-                      Effmodel="ModelEff",
-                      Effsamples="Samples",
-                      data="DataDual"),
-          def=
-            function(DLEmodel,
-                     DLEsamples,
-                     Effmodel,
-                     Effsamples,
-                     data,
-                     points=data@doseGrid,
-                     quantiles=c(0.025, 0.975),
-                     middle=mean,
-                     ...){
-              ## some checks
-              stopifnot(is.probRange(quantiles),
-                        is.numeric(points))
+  signature =
+    signature(
+      DLEmodel = "ModelTox",
+      DLEsamples = "Samples",
+      Effmodel = "ModelEff",
+      Effsamples = "Samples",
+      data = "DataDual"
+    ),
+  def =
+    function(DLEmodel,
+             DLEsamples,
+             Effmodel,
+             Effsamples,
+             data,
+             points = data@doseGrid,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             ...) {
+      ## some checks
+      stopifnot(
+        is.probRange(quantiles),
+        is.numeric(points)
+      )
 
-              ## first we have to get samples from the gain
-              ## at the dose grid points.
-              GainSamples <- matrix(nrow=sampleSize(DLEsamples@options),
-                                    ncol=length(points))
+      ## first we have to get samples from the gain
+      ## at the dose grid points.
+      GainSamples <- matrix(
+        nrow = size(DLEsamples),
+        ncol = length(points)
+      )
 
-              ## evaluate the probs, for all gain samples.
-              for(i in seq_along(points))
-              {
-                ## Now we want to evaluate for the
-                ## following dose:
-                GainSamples[, i] <- gain(dose=points[i],
-                                         DLEmodel,
-                                         DLEsamples,
-                                         Effmodel,
-                                         Effsamples)
-              }
+      ## evaluate the probs, for all gain samples.
+      for (i in seq_along(points))
+      {
+        ## Now we want to evaluate for the
+        ## following dose:
+        GainSamples[, i] <- gain(
+          dose = points[i],
+          DLEmodel,
+          DLEsamples,
+          Effmodel,
+          Effsamples
+        )
+      }
 
-              ## extract middle curve
-              middleCurve <- apply(GainSamples, 2L, FUN=middle)
+      ## extract middle curve
+      middleCurve <- apply(GainSamples, 2L, FUN = middle)
 
-              ## extract quantiles
-              quantCurve <- apply(GainSamples, 2L, quantile,
-                                  prob=quantiles)
+      ## extract quantiles
+      quantCurve <- apply(GainSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              ## now create the data frame
-              ret <- data.frame(dose=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
+      ## now create the data frame
+      ret <- data.frame(
+        dose = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              ## return it
-              return(ret)
-            })
+      ## return it
+      return(ret)
+    }
+)
 ## ---------------------------------------------------------------------------------
 ## Plot the fitted dose-DLE curve with pseudo DLE model with samples
 ## -------------------------------------------------------------------------------
@@ -852,63 +1032,88 @@ setMethod("fitGain",
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
-          signature=
-            signature(x="Samples",
-                      y="ModelTox"),
-          def=
-            function(x, y, data, ...,
-                     xlab="Dose level",
-                     ylab="Probability of DLT [%]",
-                     showLegend=TRUE){
+  signature =
+    signature(
+      x = "Samples",
+      y = "ModelTox"
+    ),
+  def =
+    function(x, y, data, ...,
+             xlab = "Dose level",
+             ylab = "Probability of DLT [%]",
+             showLegend = TRUE) {
+      ## check args
+      stopifnot(is.bool(showLegend))
 
-              ## check args
-              stopifnot(is.bool(showLegend))
 
+      ## get the fit
+      plotData <- fit(x,
+        model = y,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean
+      )
 
-              ## get the fit
-              plotData <- fit(x,
-                              model=y,
-                              data=data,
-                              quantiles=c(0.025, 0.975),
-                              middle=mean)
+      ## make the plot
+      gdata <-
+        with(
+          plotData,
+          data.frame(
+            x = rep(dose, 3),
+            y = c(middle, lower, upper) * 100,
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(plotData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
 
-              ## make the plot
-              gdata <-
-                with(plotData,
-                     data.frame(x=rep(dose, 3),
-                                y=c(middle, lower, upper) * 100,
-                                group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotData)),
-                                Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotData) * 2)),
-                                         levels=
-                                           c("Estimate",
-                                             "95% Credible Interval"))))
+      ret <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("red"),
+        geom = "line",
+        xlab = xlab,
+        ylab = ylab,
+        ylim = c(0, 100)
+      )
 
-              ret <- ggplot2::qplot(x=x,
-                                    y=y,
-                                    data=gdata,
-                                    group=group,
-                                    linetype=Type,
-                                    colour=I("red"),
-                                    geom="line",
-                                    xlab=xlab,
-                                    ylab=ylab,
-                                    ylim=c(0, 100))
+      ret <- ret +
+        ggplot2::scale_linetype_manual(
+          breaks =
+            c(
+              "Estimate",
+              "95% Credible Interval"
+            ),
+          values = c(1, 2), guide = ifelse(showLegend,
+            "legend", FALSE
+          )
+        )
 
-              ret <- ret +
-                ggplot2::scale_linetype_manual(breaks=
-                                                 c("Estimate",
-                                                   "95% Credible Interval"),
-                                               values=c(1,2), guide=ifelse(showLegend,
-                                                                           "legend", FALSE))
-
-              return(ret)
-            })
+      return(ret)
+    }
+)
 
 
 ## --------------------------------------------------------------------------------------------
@@ -932,66 +1137,91 @@ setMethod("plot",
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
-          signature=
-            signature(x="Samples",
-                      y="ModelEff"),
-          def=
-            function(x, y, data, ...,
-                     xlab="Dose level",
-                     ylab="Expected Efficacy",
-                     showLegend=TRUE){
+  signature =
+    signature(
+      x = "Samples",
+      y = "ModelEff"
+    ),
+  def =
+    function(x, y, data, ...,
+             xlab = "Dose level",
+             ylab = "Expected Efficacy",
+             showLegend = TRUE) {
+      ## check args
+      stopifnot(is.bool(showLegend))
 
-              ## check args
-              stopifnot(is.bool(showLegend))
+      ## get the fit
+      plotData <- fit(x,
+        model = y,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean
+      )
 
-              ## get the fit
-              plotData <- fit(x,
-                              model=y,
-                              data=data,
-                              quantiles=c(0.025, 0.975),
-                              middle=mean)
+      ## make the plot
+      gdata <-
+        with(
+          plotData,
+          data.frame(
+            x = rep(dose, 3),
+            y = c(middle, lower, upper),
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(plotData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(plotData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
 
-              ## make the plot
-              gdata <-
-                with(plotData,
-                     data.frame(x=rep(dose, 3),
-                                y=c(middle, lower, upper) ,
-                                group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotData)),
-                                Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotData) * 2)),
-                                         levels=
-                                           c("Estimate",
-                                             "95% Credible Interval"))))
+      ret <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("blue"),
+        geom = "line",
+        xlab = xlab,
+        ylab = ylab,
+        xlim = c(0, max(data@doseGrid))
+      )
 
-              ret <- ggplot2::qplot(x=x,
-                                    y=y,
-                                    data=gdata,
-                                    group=group,
-                                    linetype=Type,
-                                    colour=I("blue"),
-                                    geom="line",
-                                    xlab=xlab,
-                                    ylab=ylab,
-                                    xlim=c(0,max(data@doseGrid)))
+      ret <- ret +
+        ggplot2::scale_linetype_manual(
+          breaks =
+            c(
+              "Estimate",
+              "95% Credible Interval"
+            ),
+          values = c(1, 2), guide = ifelse(showLegend,
+            "legend", FALSE
+          )
+        )
 
-              ret <- ret +
-                ggplot2::scale_linetype_manual(breaks=
-                                                 c("Estimate",
-                                                   "95% Credible Interval"),
-                                               values=c(1,2), guide=ifelse(showLegend,
-                                                                           "legend", FALSE))
-
-              return(ret)
-            })
+      return(ret)
+    }
+)
 
 ## ----------------------------------------------------------------------------------------
 ## Plot of fitted dose-DLE curve based on a pseudo DLE model without sample
-##-------------------------------------------------------------------------------------
+## -------------------------------------------------------------------------------------
 ##' Plot of the fitted dose-tox based with a given pseudo DLE model and data without samples
 ##'
 ##' @param x the data of \code{\linkS4class{Data}} class object
@@ -1008,61 +1238,80 @@ setMethod("plot",
 ##' @keywords methods
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 setMethod("plot",
-          signature=
-            signature(x="Data",
-                      y="ModelTox"),
-          def=
-            function(x,y,
-                     xlab="Dose level",
-                     ylab="Probability of DLE",
-                     showLegend=TRUE,...){
-              ##check args
+  signature =
+    signature(
+      x = "Data",
+      y = "ModelTox"
+    ),
+  def =
+    function(x, y,
+             xlab = "Dose level",
+             ylab = "Probability of DLE",
+             showLegend = TRUE, ...) {
+      ## check args
 
-              stopifnot(is.bool(showLegend))
+      stopifnot(is.bool(showLegend))
 
-              ##Make sure the right model estimates are use with the given data
-              y <- update(object=y,data=x)
-
-
-              ##create data frame
-
-              plotData <- data.frame(dose=x@doseGrid,
-                                     probDLE=prob(dose=x@doseGrid,
-                                                  model=y))
-              ##Look for TD30 and TD35
-              TD30 <-dose(x=0.30,
-                          model=y)
-              TD35 <-dose(x=0.35,
-                          model=y)
-
-              ##make the plot
-              gdata <- with(plotData,
-                            data.frame(x=dose,
-                                       y=probDLE,
-                                       group=rep("Estimated DLE",each=nrow(plotData)),
-                                       Type=factor(rep("Estimated DLE",nrow(plotData)),levels="Estimated DLE")))
-
-              plot1 <- ggplot2::qplot(x=x,
-                                      y=y,
-                                      data=gdata,
-                                      group=group,
-                                      linetype=Type,
-                                      colour=I("red"),
-                                      geom="line",
-                                      xlab=xlab,
-                                      ylab=ylab,
-                                      ylim=c(0,1))
-
-              plot1 <- plot1 + ggplot2::scale_linetype_manual(breaks="Estimated DLE",
-                                                              values=c(1,2),
-                                                              guide=ifelse(showLegend,"legend",FALSE))
+      ## Make sure the right model estimates are use with the given data
+      y <- update(object = y, data = x)
 
 
-              plot1 <- plot1 +
-                geom_line(size=1.5,colour="red")
+      ## create data frame
 
-              return(plot1)
-            })
+      plotData <- data.frame(
+        dose = x@doseGrid,
+        probDLE = prob(
+          dose = x@doseGrid,
+          model = y
+        )
+      )
+      ## Look for TD30 and TD35
+      TD30 <- dose(
+        x = 0.30,
+        model = y
+      )
+      TD35 <- dose(
+        x = 0.35,
+        model = y
+      )
+
+      ## make the plot
+      gdata <- with(
+        plotData,
+        data.frame(
+          x = dose,
+          y = probDLE,
+          group = rep("Estimated DLE", each = nrow(plotData)),
+          Type = factor(rep("Estimated DLE", nrow(plotData)), levels = "Estimated DLE")
+        )
+      )
+
+      plot1 <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("red"),
+        geom = "line",
+        xlab = xlab,
+        ylab = ylab,
+        ylim = c(0, 1)
+      )
+
+      plot1 <- plot1 + ggplot2::scale_linetype_manual(
+        breaks = "Estimated DLE",
+        values = c(1, 2),
+        guide = ifelse(showLegend, "legend", FALSE)
+      )
+
+
+      plot1 <- plot1 +
+        geom_line(size = 1.5, colour = "red")
+
+      return(plot1)
+    }
+)
 
 
 ## ---------------------------------------------------------------------------------------------
@@ -1085,44 +1334,56 @@ setMethod("plot",
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 
 setMethod("plot",
-          signature=
-            signature(x="DataDual",
-                      y="ModelEff"),
-          def=
-            function(x,y,...,
-                     xlab="Dose level",
-                     ylab="Expected Efficacy",
-                     showLegend=TRUE){
-              ##check args
+  signature =
+    signature(
+      x = "DataDual",
+      y = "ModelEff"
+    ),
+  def =
+    function(x, y, ...,
+             xlab = "Dose level",
+             ylab = "Expected Efficacy",
+             showLegend = TRUE) {
+      ## check args
 
-              stopifnot(is.bool(showLegend))
-              y <- update(object=y,data=x)
+      stopifnot(is.bool(showLegend))
+      y <- update(object = y, data = x)
 
-              ##create data frame
+      ## create data frame
 
-              plotEffData<- data.frame(dose=x@doseGrid,
-                                       ExpEff=efficacy(dose=x@doseGrid,
-                                                     model=y))
+      plotEffData <- data.frame(
+        dose = x@doseGrid,
+        ExpEff = efficacy(
+          dose = x@doseGrid,
+          model = y
+        )
+      )
 
-              ##make the second plot
-              ggdata<-with(plotEffData,
-                           data.frame(x=dose,
-                                      y=ExpEff,
-                                      group=rep("Estimated Expected Efficacy",each=nrow(plotEffData)),
-                                      Type=factor(rep("Estimated Expected Efficacy",nrow(plotEffData)),levels="Estimated Expected Efficacy")))
+      ## make the second plot
+      ggdata <- with(
+        plotEffData,
+        data.frame(
+          x = dose,
+          y = ExpEff,
+          group = rep("Estimated Expected Efficacy", each = nrow(plotEffData)),
+          Type = factor(rep("Estimated Expected Efficacy", nrow(plotEffData)), levels = "Estimated Expected Efficacy")
+        )
+      )
 
-              ##Get efficacy plot
-              plot2 <- ggplot(data=ggdata, aes(x=x,y=y), group=group) +
-                xlab("Dose Levels")+
-                ylab(paste("Estimated Expected Efficacy")) + xlim(c(0,max(x@doseGrid))) +
-                geom_line(colour=I("blue"), size=1.5)
+      ## Get efficacy plot
+      plot2 <- ggplot(data = ggdata, aes(x = x, y = y), group = group) +
+        xlab("Dose Levels") +
+        ylab(paste("Estimated Expected Efficacy")) +
+        xlim(c(0, max(x@doseGrid))) +
+        geom_line(colour = I("blue"), size = 1.5)
 
-              plot2 <- plot2 +
-                geom_line(size=1.5,colour="blue")
+      plot2 <- plot2 +
+        geom_line(size = 1.5, colour = "blue")
 
 
-              return(plot2)
-            })
+      return(plot2)
+    }
+)
 
 ## ----------------------------------------------------------------------------------------------------------
 ## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model with samples
@@ -1143,76 +1404,95 @@ setMethod("plot",
 ##' @export
 ##' @keywords methods
 setGeneric("plotGain",
-           def=
-             function(DLEmodel,
-                      DLEsamples,
-                      Effmodel,
-                      Effsamples,
-                      data,...){
-               standardGeneric("plotGain")})
+  def =
+    function(DLEmodel,
+             DLEsamples,
+             Effmodel,
+             Effsamples,
+             data, ...) {
+      standardGeneric("plotGain")
+    }
+)
 ##' @describeIn plotGain Standard method
 setMethod("plotGain",
-          signature=
-            signature(DLEmodel="ModelTox",
-                      DLEsamples="Samples",
-                      Effmodel="ModelEff",
-                      Effsamples="Samples"),
-          def=
-            function(DLEmodel,DLEsamples,Effmodel,Effsamples,data,...){
-
-              ##Get fitted values for probabilities of DLE at all dose levels
-              plotDLEData <- fit(DLEsamples,
-                                 model=DLEmodel,
-                                 data=data,
-                                 quantiles=c(0.025, 0.975),
-                                 middle=mean)
-
-
-
-              ##Get fitted values for mean efficacy values at all dose levels
-              plotEffData <- fit(Effsamples,
-                                 model=Effmodel,
-                                 data=data,
-                                 quantiles=c(0.025, 0.975),
-                                 middle=mean)
-
-              ##Get fitted values for gain values at all dose levels
-              plotGainData <- fitGain(DLEmodel=DLEmodel,
-                                      DLEsamples=DLEsamples,
-                                      Effmodel=Effmodel,
-                                      Effsamples=Effsamples,
-                                      data=data)
-
-              ##For each of the dose levels, take the mean for the probabilties of DLE, mean efiicacy values
-              ## and gain values. Hence combine them into a data frame
-
-              plotData<-data.frame(dose=rep(data@doseGrid,3),
-                                   values=c(plotDLEData$middle,
-                                            plotEffData$middle,
-                                            plotGainData$middle))
-              ## only the line plots for the mean value of the DLE, efficacy and gain samples
-              ##at all dose levels
-              gdata<-with(plotData,
-                          data.frame(x=dose,
-                                     y=values,
-                                     group=c(rep("p(DLE)",length(data@doseGrid)),
-                                             rep("Mean Expected Efficacy",length(data@doseGrid)),
-                                             rep("Gain",length(data@doseGrid))),
-                                     Type=factor("Estimate",levels="Estimate")
-
-                          ))
-
-              plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
-                ggplot2::scale_colour_manual(name="curves",values=c("green3","blue","red"))+
-                xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
-                ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
+  signature =
+    signature(
+      DLEmodel = "ModelTox",
+      DLEsamples = "Samples",
+      Effmodel = "ModelEff",
+      Effsamples = "Samples"
+    ),
+  def =
+    function(DLEmodel, DLEsamples, Effmodel, Effsamples, data, ...) {
+      ## Get fitted values for probabilities of DLE at all dose levels
+      plotDLEData <- fit(DLEsamples,
+        model = DLEmodel,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean
+      )
 
 
 
-              return(plot1)
-            })
+      ## Get fitted values for mean efficacy values at all dose levels
+      plotEffData <- fit(Effsamples,
+        model = Effmodel,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean
+      )
 
-##----------------------------------------------------------------------------------------------------
+      ## Get fitted values for gain values at all dose levels
+      plotGainData <- fitGain(
+        DLEmodel = DLEmodel,
+        DLEsamples = DLEsamples,
+        Effmodel = Effmodel,
+        Effsamples = Effsamples,
+        data = data
+      )
+
+      ## For each of the dose levels, take the mean for the probabilties of DLE, mean efiicacy values
+      ## and gain values. Hence combine them into a data frame
+
+      plotData <- data.frame(
+        dose = rep(data@doseGrid, 3),
+        values = c(
+          plotDLEData$middle,
+          plotEffData$middle,
+          plotGainData$middle
+        )
+      )
+      ## only the line plots for the mean value of the DLE, efficacy and gain samples
+      ## at all dose levels
+      gdata <- with(
+        plotData,
+        data.frame(
+          x = dose,
+          y = values,
+          group = c(
+            rep("p(DLE)", length(data@doseGrid)),
+            rep("Mean Expected Efficacy", length(data@doseGrid)),
+            rep("Gain", length(data@doseGrid))
+          ),
+          Type = factor("Estimate", levels = "Estimate")
+        )
+      )
+
+      plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
+        geom_line(aes(group = group, color = group), size = 1.5) +
+        ggplot2::scale_colour_manual(name = "curves", values = c("green3", "blue", "red")) +
+        xlab("Dose Level") +
+        xlim(c(0, max(data@doseGrid))) +
+        ylab(paste("Values")) +
+        ylim(c(min(gdata$y), max(gdata$y)))
+
+
+
+      return(plot1)
+    }
+)
+
+## ----------------------------------------------------------------------------------------------------
 ## Plot the gain curve using a pseudo DLE and a pseudo Efficacy model without samples
 ## ----------------------------------------------------------------------------------------------------
 ##' Plot the gain curve in addition with the dose-DLE and dose-efficacy curve using a given DLE pseudo model,
@@ -1224,69 +1504,94 @@ setMethod("plotGain",
 ##' @export
 ##' @keywords methods
 setMethod("plotGain",
-          signature=
-            signature(DLEmodel="ModelTox",
-                      DLEsamples="missing",
-                      Effmodel="ModelEff",
-                      Effsamples="missing"),
-          def=
-            function(DLEmodel,Effmodel,data,...){
+  signature =
+    signature(
+      DLEmodel = "ModelTox",
+      DLEsamples = "missing",
+      Effmodel = "ModelEff",
+      Effsamples = "missing"
+    ),
+  def =
+    function(DLEmodel, Effmodel, data, ...) {
+      ## Make sure the model estimates are corresponds to the input data
+      DLEmodel <- update(object = DLEmodel, data = data)
+      Effmodel <- update(object = Effmodel, data = data)
 
-              ##Make sure the model estimates are corresponds to the input data
-              DLEmodel <- update(object=DLEmodel,data=data)
-              Effmodel <- update(object=Effmodel,data=data)
+      plotData <- data.frame(
+        dose = rep(data@doseGrid, 3),
+        values = c(
+          prob(
+            dose = data@doseGrid,
+            model = DLEmodel
+          ),
+          efficacy(
+            dose = data@doseGrid,
+            model = Effmodel
+          ),
+          gain(
+            dose = data@doseGrid,
+            model_dle = DLEmodel,
+            model_eff = Effmodel
+          )
+        )
+      )
+      gdata <- with(
+        plotData,
+        data.frame(
+          x = dose,
+          y = values,
+          group = c(
+            rep("p(DLE)", length(data@doseGrid)),
+            rep("Expected Efficacy", length(data@doseGrid)),
+            rep("Gain", length(data@doseGrid))
+          ),
+          Type = factor("Estimate", levels = "Estimate")
+        )
+      )
 
-              plotData<-data.frame(dose=rep(data@doseGrid,3),
-                                   values=c(prob(dose=data@doseGrid,
-                                                 model=DLEmodel),
-                                            efficacy(dose=data@doseGrid,
-                                                   model=Effmodel),
-                                            gain(dose=data@doseGrid,
-                                                 model_dle=DLEmodel,
-                                                 model_eff=Effmodel)))
-              gdata<-with(plotData,
-                          data.frame(x=dose,
-                                     y=values,
-                                     group=c(rep("p(DLE)",length(data@doseGrid)),
-                                             rep("Expected Efficacy",length(data@doseGrid)),
-                                             rep("Gain",length(data@doseGrid))),
-                                     Type=factor("Estimate",levels="Estimate")
+      ## plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)
 
-                          ))
-
-              ##plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)
-
-              plot1 <- ggplot(data=gdata, aes(x=x,y=y))+geom_line(aes(group=group,color=group),size=1.5)+
-                ggplot2::scale_colour_manual(name="curves",values=c("blue","green3","red"))+
-                xlab("Dose Level")+ xlim(c(0,max(data@doseGrid)))+
-                ylab(paste("Values")) + ylim(c(min(gdata$y),max(gdata$y)))
-
-
-
-              TD30 <- dose(x=0.3,model=DLEmodel)
-
-              Gainfun<-function(DOSE){
-                -gain(DOSE,model_dle=DLEmodel,model_eff=Effmodel)
-              }
-              Gstar<-(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$par)
-              MaxGain<--(optim(min(data@doseGrid),Gainfun,method = "L-BFGS-B",lower=min(data@doseGrid),upper=max(data@doseGrid))$value)
-
-
-              if ((TD30 < min(data@doseGrid))|(TD30 > max(data@doseGrid))) {
-                plot1<-plot1
-                print(paste("TD30",paste(TD30," not within dose Grid")))} else {plot1 <-plot1 + geom_point(data=data.frame(x=TD30,y=0.3),aes(x=x,y=y),colour="violet", shape=16, size=8) +
-                  annotate("text",label="p(DLE=0.3)",x=TD30+1,y=0.2,size=5,colour="violet")}
+      plot1 <- ggplot(data = gdata, aes(x = x, y = y)) +
+        geom_line(aes(group = group, color = group), size = 1.5) +
+        ggplot2::scale_colour_manual(name = "curves", values = c("blue", "green3", "red")) +
+        xlab("Dose Level") +
+        xlim(c(0, max(data@doseGrid))) +
+        ylab(paste("Values")) +
+        ylim(c(min(gdata$y), max(gdata$y)))
 
 
 
-              if ((Gstar < min(data@doseGrid))|(Gstar > max(data@doseGrid))) {
-                plot1<-plot1
-                print(paste("Gstar=",paste(Gstar," not within dose Grid")))} else {plot1 <- plot1 + geom_point(data=data.frame(x=Gstar,y=MaxGain),aes(x=x,y=y),colour="green3", shape=17, size=8) +
-                  annotate("text",label="Max Gain",x=Gstar,y=MaxGain-0.1,size=5,colour="green3")}
+      TD30 <- dose(x = 0.3, model = DLEmodel)
 
-              return(plot1)
-            })
-##==========================================================================================
+      Gainfun <- function(DOSE) {
+        -gain(DOSE, model_dle = DLEmodel, model_eff = Effmodel)
+      }
+      Gstar <- (optim(min(data@doseGrid), Gainfun, method = "L-BFGS-B", lower = min(data@doseGrid), upper = max(data@doseGrid))$par)
+      MaxGain <- -(optim(min(data@doseGrid), Gainfun, method = "L-BFGS-B", lower = min(data@doseGrid), upper = max(data@doseGrid))$value)
+
+
+      if ((TD30 < min(data@doseGrid)) | (TD30 > max(data@doseGrid))) {
+        plot1 <- plot1
+        print(paste("TD30", paste(TD30, " not within dose Grid")))
+      } else {
+        plot1 <- plot1 + geom_point(data = data.frame(x = TD30, y = 0.3), aes(x = x, y = y), colour = "violet", shape = 16, size = 8) +
+          annotate("text", label = "p(DLE=0.3)", x = TD30 + 1, y = 0.2, size = 5, colour = "violet")
+      }
+
+
+
+      if ((Gstar < min(data@doseGrid)) | (Gstar > max(data@doseGrid))) {
+        plot1 <- plot1
+        print(paste("Gstar=", paste(Gstar, " not within dose Grid")))
+      } else {
+        plot1 <- plot1 + geom_point(data = data.frame(x = Gstar, y = MaxGain), aes(x = x, y = y), colour = "green3", shape = 17, size = 8) +
+          annotate("text", label = "Max Gain", x = Gstar, y = MaxGain - 0.1, size = 5, colour = "green3")
+      }
+
+      return(plot1)
+    }
+)
+## ==========================================================================================
 
 ## -------------------------------------------------------------------------------
 ## Plot of the DLE and efficacy curve sides by side with samples
@@ -1312,133 +1617,189 @@ setMethod("plotGain",
 ##' @export
 ##' @keywords methods
 setGeneric("plotDualResponses",
-           def=
-             function(DLEmodel,
-                      DLEsamples,
-                      Effmodel,
-                      Effsamples,
-                      data,...){
-               standardGeneric("plotDualResponses")})
+  def =
+    function(DLEmodel,
+             DLEsamples,
+             Effmodel,
+             Effsamples,
+             data, ...) {
+      standardGeneric("plotDualResponses")
+    }
+)
 
 ##' @describeIn plotDualResponses function still to be documented
 setMethod("plotDualResponses",
-          signature=
-            signature(DLEmodel="ModelTox",
-                      DLEsamples="Samples",
-                      Effmodel="ModelEff",
-                      Effsamples="Samples"),
-          def=
-            function(DLEmodel, DLEsamples, Effmodel,Effsamples,data, extrapolate=TRUE, showLegend=FALSE,...){
+  signature =
+    signature(
+      DLEmodel = "ModelTox",
+      DLEsamples = "Samples",
+      Effmodel = "ModelEff",
+      Effsamples = "Samples"
+    ),
+  def =
+    function(DLEmodel, DLEsamples, Effmodel, Effsamples, data, extrapolate = TRUE, showLegend = FALSE, ...) {
+      stopifnot(is.bool(extrapolate))
+      ## Get Toxicity plot
+      ## get the fit
 
-              stopifnot(is.bool(extrapolate))
-              ## Get Toxicity plot
-              ## get the fit
+      plotDLEData <- fit(DLEsamples,
+        model = DLEmodel,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean
+      )
 
-              plotDLEData <- fit(DLEsamples,
-                                 model=DLEmodel,
-                                 data=data,
-                                 quantiles=c(0.025, 0.975),
-                                 middle=mean)
+      ## make the plot
+      gdata <-
+        with(
+          plotDLEData,
+          data.frame(
+            x = rep(dose, 3),
+            y = c(middle, lower, upper) * 100,
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(plotDLEData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(plotDLEData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(plotDLEData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
 
-              ## make the plot
-              gdata <-
-                with(plotDLEData,
-                     data.frame(x=rep(dose, 3),
-                                y=c(middle, lower, upper) * 100,
-                                group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(plotDLEData)),
-                                Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(plotDLEData)),
-                                           rep("95% Credible Interval",
-                                               nrow(plotDLEData) * 2)),
-                                         levels=
-                                           c("Estimate",
-                                             "95% Credible Interval"))))
+      ret1 <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = gdata,
+        group = group,
+        linetype = Type,
+        colour = I("red"),
+        geom = "line",
+        xlab = "Dose Levels",
+        ylab = "Probability of DLE [%]",
+        ylim = c(0, 100)
+      )
 
-              ret1 <- ggplot2::qplot(x=x,
-                                     y=y,
-                                     data=gdata,
-                                     group=group,
-                                     linetype=Type,
-                                     colour=I("red"),
-                                     geom="line",
-                                     xlab="Dose Levels",
-                                     ylab="Probability of DLE [%]",
-                                     ylim=c(0, 100))
+      ret1 <- ret1 + ggplot2::scale_linetype_manual(
+        breaks = c(
+          "Estimate",
+          "95% Credible Interval"
+        ),
+        values = c(1, 2), guide = ifelse(showLegend,
+          "legend", FALSE
+        )
+      )
+      ## only look at these dose levels for the plot:
 
-              ret1 <- ret1 + ggplot2::scale_linetype_manual(breaks=c("Estimate",
-                                                                     "95% Credible Interval"),
-                                                            values=c(1,2), guide=ifelse(showLegend,
-                                                                                        "legend", FALSE))
-              ##only look at these dose levels for the plot:
+      xLevels <- if (extrapolate) {
+        seq_along(data@doseGrid)
+      } else {
+        1:max(data@xLevel)
+      }
 
-              xLevels<- if (extrapolate) {
-                seq_along(data@doseGrid)} else {1:max(data@xLevel)}
+      ## get the plot data for the efficacy
+      functionSamples <- matrix(
+        nrow = size(Effsamples),
+        ncol = length(xLevels)
+      )
+      ## evaluate the efficacy for all samples
+      for (i in seq_along(xLevels))
+      {
+        ## Now we want to evaluate for the following dose
+        functionSamples[, i] <- efficacy(
+          dose = data@doseGrid[xLevels[i]],
+          model = Effmodel,
+          samples = Effsamples
+        )
+      }
+      ## extract mean curve
+      meanCurve <- colMeans(functionSamples)
 
-              ##get the plot data for the efficacy
-              functionSamples <- matrix(nrow=sampleSize(Effsamples@options),
-                                        ncol=length(xLevels))
-              ##evaluate the efficacy for all samples
-              for (i in seq_along(xLevels))
-              {
-                ##Now we want to evaluate for the following dose
-                functionSamples[,i] <- efficacy(dose=data@doseGrid[xLevels[i]],
-                                              model=Effmodel,
-                                              samples=Effsamples)
-              }
-              ##extract mean curve
-              meanCurve <- colMeans(functionSamples)
+      ## extract quantiles
+      quantiles <- c(0.025, 0.975)
+      quantCurve <- apply(functionSamples, 2L, quantile, prob = quantiles)
 
-              ##extract quantiles
-              quantiles=c(0.025, 0.975)
-              quantCurve <- apply(functionSamples, 2L, quantile, prob=quantiles)
+      ## now create the data frame
+      plotEffData <- data.frame(
+        dose = data@doseGrid[xLevels],
+        mean = meanCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
+      ## make the second plot
+      ggdata <- with(plotEffData, data.frame(
+        x = rep(dose, 3),
+        y = c(mean, lower, upper),
+        group =
+          rep(c("mean", "lower", "upper"),
+            each = nrow(plotEffData)
+          ),
+        Type =
+          factor(
+            c(
+              rep(
+                "Estimate",
+                nrow(plotEffData)
+              ),
+              rep(
+                "95% Credible Interval",
+                nrow(plotEffData) * 2
+              )
+            ),
+            levels =
+              c(
+                "Estimate",
+                "95% Credible Interval"
+              )
+          )
+      ))
 
-              ##now create the data frame
-              plotEffData <-data.frame(dose=data@doseGrid[xLevels],
-                                       mean=meanCurve,
-                                       lower=quantCurve[1,],
-                                       upper=quantCurve[2,])
-              ##make the second plot
-              ggdata<-with(plotEffData, data.frame(x=rep(dose,3),
-                                                   y=c(mean,lower,upper),
-                                                   group=
-                                                     rep(c("mean","lower","upper"),
-                                                         each=nrow(plotEffData)),
-                                                   Type=
-                                                     factor(c(rep("Estimate",
-                                                                  nrow(plotEffData)),
-                                                              rep("95% Credible Interval",
-                                                                  nrow(plotEffData) * 2)),
-                                                            levels=
-                                                              c("Estimate",
-                                                                "95% Credible Interval"))))
+      plot2 <- ggplot2::qplot(
+        x = x,
+        y = y,
+        data = ggdata,
+        group = group,
+        linetype = Type,
+        colour = I("blue"),
+        geom = "line",
+        xlab = "Dose level",
+        ylab = "Expected Efficacy"
+      )
 
-              plot2 <- ggplot2::qplot(x=x,
-                                       y=y,
-                                       data=ggdata,
-                                       group=group,
-                                       linetype=Type,
-                                       colour=I("blue"),
-                                       geom="line",
-                                       xlab="Dose level",
-                                       ylab="Expected Efficacy")
+      plot2 <- plot2 +
+        ggplot2::scale_linetype_manual(
+          breaks =
+            c(
+              "Estimate",
+              "95% Credible Interval"
+            ),
+          values = c(1, 2),
+          guide = ifelse(showLegend,
+            "legend", FALSE
+          )
+        )
 
-              plot2 <- plot2 +
-                ggplot2::scale_linetype_manual(breaks=
-                                                  c("Estimate",
-                                                    "95% Credible Interval"),
-                                                values=c(1,2),
-                                                guide=ifelse(showLegend,
-                                                             "legend", FALSE))
+      ## arrange both plots side by side
+      ret <- gridExtra::arrangeGrob(ret1, plot2, ncol = 2)
+      return(ret)
+    }
+)
 
-              ## arrange both plots side by side
-              ret <- gridExtra::arrangeGrob(ret1, plot2, ncol=2)
-              return(ret)
-            })
-
-##------------------------------------------------------------------------------
+## ------------------------------------------------------------------------------
 ## Plot of the DLE and efficacy curve sides by side without  samples
 ## -----------------------------------------------------------------------------
 ##' Plot of the dose-DLE and dose-efficacy curve side by side given a DLE pseudo model
@@ -1452,69 +1813,90 @@ setMethod("plotDualResponses",
 ##' @export
 ##' @keywords methods
 setMethod("plotDualResponses",
-          signature=
-            signature(DLEmodel="ModelTox",
-                      DLEsamples="missing",
-                      Effmodel="ModelEff",
-                      Effsamples="missing"),
-          def=
-            function(DLEmodel,Effmodel,data,...){
-
-              ## Get Toxicity plot
-              ## get the fit
-
-
-              ##Make sure the model estimates are corresponds to the input data
-              DLEmodel <- update(object=DLEmodel,data=data)
-              Effmodel <- update(object=Effmodel,data=data)
+  signature =
+    signature(
+      DLEmodel = "ModelTox",
+      DLEsamples = "missing",
+      Effmodel = "ModelEff",
+      Effsamples = "missing"
+    ),
+  def =
+    function(DLEmodel, Effmodel, data, ...) {
+      ## Get Toxicity plot
+      ## get the fit
 
 
-              plotDLEData <- data.frame(dose=data@doseGrid,
-                                        probDLE=prob(dose=data@doseGrid,
-                                                     model=DLEmodel))
-              ## make the plot
-              gdata <- with(plotDLEData,
-                            data.frame(x=dose,
-                                       y=probDLE,
-                                       group=rep("Estimated DLE",each=nrow(plotDLEData)),
-                                       Type=factor(rep("Estimated DLE",nrow(plotDLEData)),levels="Estimated DLE")))
-
-              plot1 <- ggplot(data=gdata, aes(x=x,y=y), group=group) +
-                xlab("Dose Levels")+
-                ylab(paste("Probability of DLE")) + ylim(c(0,1)) + xlim(c(0,max(data@doseGrid))) +
-                geom_line(colour=I("red"), size=1.5)
+      ## Make sure the model estimates are corresponds to the input data
+      DLEmodel <- update(object = DLEmodel, data = data)
+      Effmodel <- update(object = Effmodel, data = data)
 
 
-              plot1 <- plot1 +
-                geom_line(size=1.5,colour="red")
+      plotDLEData <- data.frame(
+        dose = data@doseGrid,
+        probDLE = prob(
+          dose = data@doseGrid,
+          model = DLEmodel
+        )
+      )
+      ## make the plot
+      gdata <- with(
+        plotDLEData,
+        data.frame(
+          x = dose,
+          y = probDLE,
+          group = rep("Estimated DLE", each = nrow(plotDLEData)),
+          Type = factor(rep("Estimated DLE", nrow(plotDLEData)), levels = "Estimated DLE")
+        )
+      )
 
-              ##only look at these dose levels for the plot:
+      plot1 <- ggplot(data = gdata, aes(x = x, y = y), group = group) +
+        xlab("Dose Levels") +
+        ylab(paste("Probability of DLE")) +
+        ylim(c(0, 1)) +
+        xlim(c(0, max(data@doseGrid))) +
+        geom_line(colour = I("red"), size = 1.5)
 
-              ##get the plot data for the efficacy
-              plotEffData<- data.frame(dose=data@doseGrid,
-                                       ExpEff=efficacy(dose=data@doseGrid,
-                                                     model=Effmodel))
 
-              ##make the second plot
-              ggdata<-with(plotEffData,
-                           data.frame(x=dose,
-                                      y=ExpEff,
-                                      group=rep("Estimated Expected Efficacy",each=nrow(plotEffData)),
-                                      Type=factor(rep("Estimated Expected Efficacy",nrow(plotEffData)),levels="Estimated Expected Efficacy")))
+      plot1 <- plot1 +
+        geom_line(size = 1.5, colour = "red")
 
-              ##Get efficacy plot
-              plot2 <- ggplot(data=ggdata, aes(x=x,y=y), group=group) +
-                xlab("Dose Levels")+
-                ylab(paste("Estimatimated Expected Efficacy")) + xlim(c(0,max(data@doseGrid))) +
-                geom_line(colour=I("blue"), size=1.5)
+      ## only look at these dose levels for the plot:
 
-              plot2 <- plot2 +
-                geom_line(size=1.5,colour="blue")
+      ## get the plot data for the efficacy
+      plotEffData <- data.frame(
+        dose = data@doseGrid,
+        ExpEff = efficacy(
+          dose = data@doseGrid,
+          model = Effmodel
+        )
+      )
 
-              ## arrange both plots side by side
-              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
-              return(ret)
-            })
+      ## make the second plot
+      ggdata <- with(
+        plotEffData,
+        data.frame(
+          x = dose,
+          y = ExpEff,
+          group = rep("Estimated Expected Efficacy", each = nrow(plotEffData)),
+          Type = factor(rep("Estimated Expected Efficacy", nrow(plotEffData)), levels = "Estimated Expected Efficacy")
+        )
+      )
+
+      ## Get efficacy plot
+      plot2 <- ggplot(data = ggdata, aes(x = x, y = y), group = group) +
+        xlab("Dose Levels") +
+        ylab(paste("Estimatimated Expected Efficacy")) +
+        xlim(c(0, max(data@doseGrid))) +
+        geom_line(colour = I("blue"), size = 1.5)
+
+      plot2 <- plot2 +
+        geom_line(size = 1.5, colour = "blue")
+
+      ## arrange both plots side by side
+      ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+      return(ret)
+    }
+)
 ## =======================================================================================================
 
 ## ----------------------------------------------------------------
@@ -1538,18 +1920,20 @@ setMethod("plotDualResponses",
 ##' @export
 ##' @keywords methods
 setGeneric("fitPEM",
-           def=
-             function(object,
-                      model,
-                      data,
-                      quantiles=c(0.025, 0.975),
-                      middle=mean,
-                      hazard=FALSE,
-                      ...){
-               ## there should be no default method,
-               ## therefore just forward to next method!
-               standardGeneric("fitPEM")},
-           valueClass="data.frame")
+  def =
+    function(object,
+             model,
+             data,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             hazard = FALSE,
+             ...) {
+      ## there should be no default method,
+      ## therefore just forward to next method!
+      standardGeneric("fitPEM")
+    },
+  valueClass = "data.frame"
+)
 
 
 #' Likelihood of DLTs in each interval
@@ -1562,73 +1946,56 @@ setGeneric("fitPEM",
 #'
 #' @keywords internal
 DLTLikelihood <- function(lambda,
-                          Tmax)
-{
-  npiece <-length(lambda)
-  h <- seq(from=0L, to=Tmax, length=npiece + 1)
+                          Tmax) {
+  npiece <- length(lambda)
+  h <- seq(from = 0L, to = Tmax, length = npiece + 1)
 
-  #Length of each time interval;
-  sT<-rep(0,npiece)
+  # Length of each time interval;
+  sT <- rep(0, npiece)
 
 
-  for(i in 1:npiece){
-
-    sT[i]<-h[i+1]-h[i]
-
+  for (i in 1:npiece) {
+    sT[i] <- h[i + 1] - h[i]
   }
 
 
-  #calculate the exponential part of the distribution:
-  s_ij <- function(t, j)
-  {
-    if(t > h[j])
-    {
-
-      min(t-h[j],h[j+1]-h[j])
-
+  # calculate the exponential part of the distribution:
+  s_ij <- function(t, j) {
+    if (t > h[j]) {
+      min(t - h[j], h[j + 1] - h[j])
     } else {
-
       0
     }
   }
 
 
-  #The cumulative hazard function
-  expNmu <- function(t)
-  {
-
+  # The cumulative hazard function
+  expNmu <- function(t) {
     ret <- 1
 
-    for(j in 1:npiece)
+    for (j in 1:npiece)
     {
-
-      ret <-ret * exp(- lambda[j] * s_ij(t, j))
+      ret <- ret * exp(-lambda[j] * s_ij(t, j))
     }
 
     return(ret)
   }
 
 
-  #CDF of the piecewise exponential
+  # CDF of the piecewise exponential
 
-  piece_exp.cdf<-function(x){
-
-    1-expNmu(x)
-
+  piece_exp.cdf <- function(x) {
+    1 - expNmu(x)
   }
 
-  DLTFreeS<-function(x)
-  {
-
-    (expNmu(x)-expNmu(Tmax))/piece_exp.cdf(Tmax)
-
+  DLTFreeS <- function(x) {
+    (expNmu(x) - expNmu(Tmax)) / piece_exp.cdf(Tmax)
   }
 
-  pDLT<-rep(0,npiece+1)
+  pDLT <- rep(0, npiece + 1)
 
-  for(i in 1:(npiece)){
-
-    pDLT[i] <- DLTFreeS(h[i]) - DLTFreeS(h[i+1])
+  for (i in 1:(npiece)) {
+    pDLT[i] <- DLTFreeS(h[i]) - DLTFreeS(h[i + 1])
   }
 
   return(pDLT)
@@ -1642,66 +2009,73 @@ DLTLikelihood <- function(lambda,
 ##' model class.
 ##' @example examples/Samples-method-fitPEM-DALogisticLogNormal.R
 setMethod("fitPEM",
-          signature=
-            signature(object="Samples",
-                      model="DALogisticLogNormal",
-                      data="DataDA"),
-          def=
-            function(object,
-                     model,
-                     data,
-                     quantiles=c(0.025, 0.975),
-                     middle=mean,
-                     hazard=FALSE,
-                     ...){
+  signature =
+    signature(
+      object = "Samples",
+      model = "DALogisticLogNormal",
+      data = "DataDA"
+    ),
+  def =
+    function(object,
+             model,
+             data,
+             quantiles = c(0.025, 0.975),
+             middle = mean,
+             hazard = FALSE,
+             ...) {
+      ## some checks
+      stopifnot(is.probRange(quantiles))
 
-              ## some checks
-              stopifnot(is.probRange(quantiles))
+      ## Plot points
+      points <- seq(0, data@Tmax, length = model@npiece + 1)
+      ## first we have to get samples from the PEM
+      ## at intercept points and 2 middel points between
+      ## intercepts.
+      PEMSamples <- matrix(
+        nrow = size(object),
+        ncol = length(points)
+      )
 
-              ##Plot points
-              points<-seq(0, data@Tmax, length=model@npiece+1)
-              ## first we have to get samples from the PEM
-              ## at intercept points and 2 middel points between
-              ## intercepts.
-              PEMSamples <- matrix(nrow=sampleSize(object@options),
-                                   ncol=length(points))
+      i_max <- max(seq_along(points))
+      ## evaluate the probs, for all samples.
 
-              i_max<-max(seq_along(points))
-              ## evaluate the probs, for all samples.
+      # The PEM
+      if (hazard == FALSE) {
+        PEMSamples <- t(apply(object@data$lambda, 1, function(x) {
+          fit <- DLTLikelihood(x, data@Tmax)
+          return(fit)
+        }))
+      } else if (hazard == TRUE) {
+        for (i in seq_along(points))
+        {
+          if (i == i_max) {
+            PEMSamples[, i_max] <- object@data$lambda[, model@npiece]
+          } else {
+            PEMSamples[, i] <- object@data$lambda[, i]
+          }
+        }
+      }
 
-              #The PEM
-              if(hazard==FALSE){
-                PEMSamples<-t(apply(object@data$lambda,1,function(x){
-                  fit<-DLTLikelihood(x, data@Tmax)
-                  return(fit)
-                }))
+      ## extract middle curve
+      middleCurve <- apply(PEMSamples, 2L, FUN = middle)
 
+      ## extract quantiles
+      quantCurve <- apply(PEMSamples, 2L, quantile,
+        prob = quantiles
+      )
 
-              }else if(hazard==TRUE){
-                for(i in seq_along(points))
-                {
-                  if(i==i_max){
-                    PEMSamples[,i_max]<-object@data$lambda[, model@npiece]}else{
-                      PEMSamples[,i]<-object@data$lambda[,i]}
-                }
+      ## now create the data frame
+      ret <- data.frame(
+        time = points,
+        middle = middleCurve,
+        lower = quantCurve[1, ],
+        upper = quantCurve[2, ]
+      )
 
-              }
-
-              ## extract middle curve
-              middleCurve <- apply(PEMSamples, 2L, FUN=middle)
-
-              ## extract quantiles
-              quantCurve <- apply(PEMSamples, 2L, quantile,
-                                  prob=quantiles)
-
-              ## now create the data frame
-              ret <- data.frame(time=points,
-                                middle=middleCurve,
-                                lower=quantCurve[1, ],
-                                upper=quantCurve[2, ])
-
-              ## return it
-              return(ret)})
+      ## return it
+      return(ret)
+    }
+)
 
 ## =======================================================================================================
 
@@ -1726,60 +2100,78 @@ setMethod("fitPEM",
 ##' @importFrom ggplot2 qplot scale_linetype_manual
 ##' @importFrom gridExtra arrangeGrob
 setMethod("plot",
-          signature=
-            signature(x="Samples",
-                      y="DALogisticLogNormal"
-            ),
-          def=
-            function(x, y, data, hazard=FALSE, ...,
+  signature =
+    signature(
+      x = "Samples",
+      y = "DALogisticLogNormal"
+    ),
+  def =
+    function(x, y, data, hazard = FALSE, ...,
+             showLegend = TRUE) {
+      ## check args
+      stopifnot(is.bool(showLegend))
 
-                     showLegend=TRUE){
+      ## call the superclass method, to get the toxicity plot
+      plot1 <- callNextMethod(x, y, data, showLegend = showLegend, ...)
 
-              ## check args
-              stopifnot(is.bool(showLegend))
+      ## get the fit
+      fitData <- fitPEM(x,
+        model = y,
+        data = data,
+        quantiles = c(0.025, 0.975),
+        middle = mean,
+        hazard = hazard
+      )
 
-              ## call the superclass method, to get the toxicity plot
-              plot1 <- callNextMethod(x, y, data, showLegend=showLegend, ...)
+      ## make the plot
+      Tpoints <- seq(0, data@Tmax, length = y@npiece + 1)
+      plotData <-
+        with(
+          fitData,
+          data.frame(
+            x = rep(Tpoints, 3),
+            y = c(middle, lower, upper) * 100,
+            group =
+              rep(c("mean", "lower", "upper"),
+                each = nrow(fitData)
+              ),
+            Type =
+              factor(
+                c(
+                  rep(
+                    "Estimate",
+                    nrow(fitData)
+                  ),
+                  rep(
+                    "95% Credible Interval",
+                    nrow(fitData) * 2
+                  )
+                ),
+                levels =
+                  c(
+                    "Estimate",
+                    "95% Credible Interval"
+                  )
+              )
+          )
+        )
+      plot2 <- qplot(
+        x = x,
+        y = y,
+        data = plotData,
+        group = group,
+        linetype = Type,
+        colour = I("blue"),
+        geom = "step",
+        xlab = "Time",
+        ylab = if (hazard) "Hazard rate*100" else "Probability of DLT [%]",
+        ylim = if (hazard) range(plotData$y) else c(0, 100)
+      )
 
-              ## get the fit
-              fitData <- fitPEM(x,
-                                model=y,
-                                data=data,
-                                quantiles=c(0.025,0.975),
-                                middle=mean,
-                                hazard=hazard)
-
-              ## make the plot
-              Tpoints<-seq(0,data@Tmax,length=y@npiece+1)
-              plotData <-
-                with(fitData,
-                     data.frame(x=rep(Tpoints, 3),
-                                y=c(middle, lower, upper) * 100,
-                                group=
-                                  rep(c("mean", "lower", "upper"),
-                                      each=nrow(fitData)),
-                                Type=
-                                  factor(c(rep("Estimate",
-                                               nrow(fitData)),
-                                           rep("95% Credible Interval",
-                                               nrow(fitData) * 2)),
-                                         levels=
-                                           c("Estimate",
-                                             "95% Credible Interval"))))
-              plot2 <- qplot(x=x,
-                             y=y,
-                             data=plotData,
-                             group=group,
-                             linetype=Type,
-                             colour=I("blue"),
-                             geom="step",
-                             xlab="Time",
-                             ylab=if(hazard) "Hazard rate*100" else "Probability of DLT [%]",
-                             ylim=if(hazard) range(plotData$y) else c(0, 100))
-
-              ret <- gridExtra::arrangeGrob(plot1, plot2, ncol=2)
-              return(ret)
-            })
+      ret <- gridExtra::arrangeGrob(plot1, plot2, ncol = 2)
+      return(ret)
+    }
+)
 
 
 ## =======================================================================================================

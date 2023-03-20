@@ -34,7 +34,8 @@ will be chosen by \verb{[rjags}].}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-\code{\link{McmcOptions}} is a class for the three canonical MCMC options.
+\code{\link{McmcOptions}} is a class for the three canonical MCMC options as well as
+Random Number Generator settings.
 }
 \section{Slots}{
 

@@ -12,7 +12,210 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tibble)
+library(kableExtra)
+library(checkmate)
 ```
+
+The following vignette describes the changes that were introduced to the `crmPack`
+package as a result of the package's refactoring. One row in below tables
+represents a single-type, consistent change.
+
+# Class and Methods Name Changes
+
+## Classes
+
+```{r class_changes, echo=FALSE}
+
+class_changes <- tribble(
+  ~class_name, ~class_new_name, ~slot_name, ~slot_new_name, ~was_removed, ~comment,
+  "", "positive_number", "", "", FALSE, "to handle strictly positive valued slots
+  (e.g. `ref_dose` in many model classes)",
+  "", "ModelLogNormal", "", "", FALSE, "new parent class for all the models with reference dose and
+  bivariate (log) normal prior on the model parameters",
+  "", "ModelParamsNormal", "", "", FALSE, "represents parameters of bivariate normal distribution",
+  "AllModels", "", "", "", TRUE, "",
+  "Model", "", "", "", TRUE, "",
+  "GeneralModel", "", "", "datanames", FALSE, "moved from `AllModels`",
+  "GeneralModel", "", "", "datanames_prior", FALSE, "",
+  "ModelEff", "", "dose", "", TRUE, "moved to model class method",
+  "ModelEff", "", "ExpEff", "", TRUE, "moved to model class method and renamed to `efficacy`",
+  "Effloglog", "", "several slots", "several slots", FALSE, "several slot changed, see man page",
+  "EffFlexi", "", "several slots", "several slots", FALSE, "several slot changed, see man page",
+  "EffFlexi()", "", "smooth", "", TRUE, "replaced by `rw1` flag",
+  "EffFlexi()", "", "", "rw1", FALSE, "replaces `smooth` string",
+  "DALogisticLogNormal", "", "C_par", "c_par", FALSE, "",
+  "DALogisticLogNormal", "", "conditionalPEM", "cond_pem", FALSE, "",
+  "TITELogisticLogNormal", "", "weightMethod", "weight_method", FALSE, "",
+  "OneParLogNormalPrior", "", "skeletonFun", "skel_fun", FALSE, "",
+  "OneParLogNormalPrior", "", "", "skel_fun_inv", FALSE, "",
+  "OneParLogNormalPrior", "", "skeletonProbs", "skel_probs", FALSE, "",
+  "OneParLogNormalPrior()", "", "doseGrid", "dose_grid", FALSE, "",
+  "DualEndpointBeta", "", "refDoseBeta", "ref_dose_beta", FALSE, "",
+  "DualEndpointEmax", "", "refDoseEmax", "ref_dose_emax", FALSE, "",
+  "DualEndpointRW", "", "useRW1", "rw1", FALSE, "",
+  "DualEndpointRW()", "", "smooth", "", TRUE, "replaced by `rw1` flag",
+  "DualEndpointRW()", "", "", "rw1", FALSE, "replaces `smooth` string",
+  "McmcOptions", "", "", "rng_kind", FALSE, "to be used by Random Number Generator in rJAGS",
+  "McmcOptions", "", "", "rng_seed", FALSE, "to be used by Random Number Generator in rJAGS",
+  "NextBestTD", "", "targetDuringTrial", "prob_target_drt", FALSE, "",
+  "NextBestTD", "", "targetEndOfTrial", "prob_target_eot", FALSE, "",
+  "NextBestTDsamples", "", "targetDuringTrial", "prob_target_drt", FALSE, "",
+  "NextBestTDsamples", "", "targetEndOfTrial", "prob_target_eot", FALSE, "",
+  "NextBestNCRM", "", "maxOverdoseProb", "max_overdose_prob", FALSE, "",
+  "NextBestDualEndpoint", "", "scale", "", TRUE, "replaced by `target_relative` flag",
+  "NextBestDualEndpoint", "", "", "target_relative", FALSE, "replaces `scale` string",
+  "NextBestDualEndpoint", "", "maxOverdoseProb", "max_overdose_prob", FALSE, "",
+  "NextBestDualEndpoint", "", "targetThresh", "target_thresh", FALSE, "",
+  "NextBestMaxGain", "", "DLEDuringTrialtarget", "prob_target_drt", FALSE, "",
+  "NextBestMaxGain", "", "DLEEndOfTrialtarget", "prob_target_eot", FALSE, "",
+  "NextBestMaxGainSamples", "", "DLEDuringTrialtarget", "prob_target_drt", FALSE, "",
+  "NextBestMaxGainSamples", "", "DLEEndOfTrialtarget", "prob_target_eot", FALSE, "",
+  "NextBestMaxGainSamples", "", "TDderive", "derive", FALSE, "",
+  "NextBestMaxGainSamples", "", "Gstarderive", "mg_derive", FALSE, "",
+  "IncrementsRelativeParts", "", "dltStart", "dlt_start", FALSE, "",
+  "IncrementsRelativeParts", "", "cleanStart", "clean_start", FALSE, "change applied also to other dependent classes",
+  "IncrementsRelativeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "change applied also to other dependent classes",
+  "IncrementsNumDoseLevels", "", "maxLevels", "max_levels", FALSE, "change applied also to other dependent classes",
+  "IncrementsNumDoseLevels", "", "", "basis_level", FALSE, "",
+  "IncrementMin", "IncrementsMin", "", "", FALSE, "",
+  "IncrementsMin", "", "IncrementsList", "increments_list", FALSE, "change applied also to other dependent classes",
+  "StoppingTargetBiomarker", "", "scale", "", TRUE, "replaced by `is_relative` flag",
+  "StoppingTargetBiomarker", "", "", "is_relative", FALSE, "replaces `scale` string",
+  "StoppingList", "", "stopList", "stop_list", FALSE, "",
+  "StoppingAll", "", "stopList", "stop_list", FALSE, "",
+  "StoppingAny", "", "stopList", "stop_list", FALSE, "",
+  "StoppingTDCIRatio", "", "targetRatio", "target_ratio", FALSE, "",
+  "StoppingTDCIRatio", "", "targetEndOfTrial", "prob_target", FALSE, "",
+  "StoppingGstarCIRatio", "", "targetRatio", "target_ratio", FALSE, "",
+  "StoppingGstarCIRatio", "", "targetEndOfTrial", "prob_target", FALSE, "",
+  "StoppingGstarCIRatio", "StoppingMaxGainCIRatio", "", "", FALSE, "",
+  "CohortSizeRange", "", "cohortSize", "cohort_size", FALSE, "",
+  "CohortSizeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "",
+  "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, "",
+  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "CohortSizeMin", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "SafetyWindowSize", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowSize", "", "sizeIntervals", "size", FALSE, "",
+  "SafetyWindowSize", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowSize", "", "patientFollowMin", "follow_min", FALSE, "",
+  "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, "",
+  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, ""
+)
+```
+
+```{r class_changes_kbl, echo=FALSE, results='markup'}
+
+cc <- class_changes
+cc <- cc[order(cc$class_name, cc$class_new_name, cc$slot_name, cc$slot_new_name), ]
+
+no_slot_change <- nchar(trimws(cc$slot_name)) == 0
+cc$class_name <- cell_spec(
+  cc$class_name,
+  strikeout = ifelse(cc$was_removed & no_slot_change, TRUE, FALSE)
+)
+cc$slot_name <- cell_spec(
+  cc$slot_name,
+  strikeout = ifelse(cc$was_removed & !no_slot_change, TRUE, FALSE)
+)
+
+cc <- cc[, -5]
+
+kbl(cc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
+  add_header_above(c("Name", "New Name", "Name", "New Name", "")) %>%
+  add_header_above(c("Class/Constructor[note]" = 2, "Slot/Arg[note]" = 2, "Comment")) %>%
+  column_spec(1:5, width = "6cm", border_left = TRUE, border_right = TRUE) %>%
+  collapse_rows(columns = 1, valign = "top") %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 11) %>%
+  add_footnote(
+    c(
+      "Class or class' user constructor. In the later case the Name/New Name is followed by ().",
+      "Slot in case of the class or argument in case of the class' user constructor"
+    ),
+    notation = "symbol"
+  )
+```
+
+Strikeout indicates that the class/slot was removed.
+
+## Methods
+
+```{r method_changes, echo=FALSE}
+
+method_changes <- tribble(
+  ~method_name, ~method_new_name, ~arg_name, ~arg_new_name, ~was_removed, ~output_changes, ~comment,
+  "update-Data", "", "newCohort", "new_cohort", FALSE, "", "",
+  "update-Data", "", "", "check", FALSE, "", "",
+  "update-DataParts", "", "", "check", FALSE, "", "",
+  "update-DataDual", "", "", "check", FALSE, "", "",
+  "update-DataDA", "", "", "check", FALSE, "", "",
+  "getEff", "", "", "", FALSE, "renamed elements in the list returned", "",
+  "mcmc", "", "fromPrior", "from_prior", FALSE, "", "",
+  "mcmc", "", "program", "", TRUE, "", "",
+  "mcmc", "", "verbose", "", TRUE, "", "",
+  "", "doseFunction", "", "", FALSE, "", "returns dose computing function for a given model",
+  "", "probFunction", "", "", FALSE, "", "returns probability computing function for a given model",
+  "dose", "", "prob", "x", FALSE, "", "",
+  "", "efficacy", "", "", FALSE, "", "new generic function",
+  "biomLevel", "biomarker", "", "", FALSE, "", "changed generic and methods",
+  "biomLevel", "", "dose", "", TRUE, "", "changed generic and methods",
+  "biomLevel-DualEndpoint", "", "dose", "", TRUE, "", "",
+  "biomLevel", "", "", "xLevel", FALSE, "", "added only for generic, reordered arguments for generic and methods",
+  "gain", "", "several arguments", "several arguments", FALSE, "", "several arguments (generic and methods) changed,
+  see man page",
+  "", "update-ModelPseudo", "", "", FALSE, "", "",
+  "update-LogisticIndepBeta", "", "", "", TRUE, "", "replaced by `update-ModelPseudo`",
+  "update-Effloglog", "", "", "", TRUE, "", "replaced by `update-ModelPseudo`",
+  "update-EffFlexi", "", "", "", TRUE, "", "replaced by `update-ModelPseudo`",
+  "nextBest-NextBestTD", "", "Effmodel", "model_eff", FALSE, "", "",
+  "nextBest-NextBestTD", "", "Effsamples", "samples_eff", FALSE, "", "",
+  "nextBest-NextBestTD", "", "SIM", "in_sim", FALSE, "", "",
+  "nextBest-NextBestTDsamples", "", "Effmodel", "model_eff", FALSE, "", "",
+  "nextBest-NextBestTDsamples", "", "Effsamples", "samples_eff", FALSE, "", "",
+  "nextBest-NextBestMaxGain", "", "Effmodel", "model_eff", FALSE, "", "",
+  "nextBest-NextBestMaxGain", "", "Effsamples", "samples_eff", FALSE, "", "",
+  "nextBest-NextBestMaxGain", "", "SIM", "in_sim", FALSE, "", "",
+  "nextBest-NextBestMaxGain", "", "", "", FALSE, "renamed elements in the list returned", "",
+  "nextBest-NextBestMaxGainSamples", "", "Effmodel", "model_eff", FALSE, "", "",
+  "nextBest-NextBestMaxGainSamples", "", "Effsamples", "samples_eff", FALSE, "", "",
+  "nextBest-NextBestMaxGainSamples", "", "SIM", "in_sim", FALSE, "", "",
+  "nextBest-NextBestMaxGainSamples", "", "", "", FALSE, "renamed elements in the list returned", "",
+  "size", "size", "", "check", FALSE, "", ""
+)
+```
+
+```{r method_changes_kbl, echo=FALSE, results='markup'}
+
+mc <- method_changes
+mc <- mc[order(mc$method_name, mc$method_new_name, mc$arg_name, mc$arg_new_name), ]
+
+no_arg_change <- nchar(trimws(mc$arg_name)) == 0
+mc$method_name <- cell_spec(
+  mc$method_name,
+  strikeout = ifelse(mc$was_removed & no_arg_change, TRUE, FALSE)
+)
+mc$arg_name <- cell_spec(
+  mc$arg_name,
+  strikeout = ifelse(mc$was_removed & !no_arg_change, TRUE, FALSE)
+)
+mc <- mc[, -5]
+
+kbl(mc, longtable = TRUE, booktabs = TRUE, col.names = NULL, escape = FALSE) %>%
+  add_header_above(c("Name", "New Name", "Name", "New Name", "", "")) %>%
+  add_header_above(c("Method" = 2, "Argument" = 2, "Output Changes", "Comment")) %>%
+  column_spec(1:6, width = "6cm", border_left = TRUE, border_right = TRUE) %>%
+  collapse_rows(columns = 1, valign = "top") %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 11)
+```
+
+Strikeout indicates that the method/argument was removed.
+
+# Moved `dose` and `prob` Functions from Slots to Methods
+
+Moved `dose` and `prob` functions from model class slots to model class methods.
+Example of usage: `dose`/`prob` function as a true dose-DLT/DLT-dose relationship.
 
 ## Generate data, define a model and get samples
 ```{r data_model_samples}
@@ -63,3 +266,13 @@ prob(10, my_model, my_samples)
 true_prob_fun <- probFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_prob_fun(10)
 ```
+
+# New Random Number Generator settings for the MCMC
+
+The Random Number Generator (RNG) settings used by the JAGS for the MCMC are now
+configured solely through the `McmcOptions` class. The RNG settings are:
+`RNG type` and the `RNG seed` that corresponds to a given `RNG type`. Find out
+details in the help page for the `McmcOptions` class.
+Any RNG-related user settings at the R session level (such us those with
+`set.seed()`) are ignored by the MCMC sampler.
+

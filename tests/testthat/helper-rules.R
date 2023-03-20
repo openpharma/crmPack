@@ -23,11 +23,15 @@ h_next_best_ncrm <- function(edge_case = FALSE) {
   }
 }
 
-h_next_best_ncrm_loss <- function(edge_case = FALSE) {
-  if (edge_case) {
+h_next_best_ncrm_loss <- function(edge_case = 0L) {
+  if (edge_case == 1L) {
     overdose <- c(0.35, 1)
     unacceptable <- c(1, 1)
     losses <- c(1, 0, 1)
+  } else if (edge_case == 2L) {
+    overdose <- c(0, 0)
+    unacceptable <- c(0, 1)
+    losses <- c(1, 0, 1, 2)
   } else {
     overdose <- c(0.35, 0.6)
     unacceptable <- c(0.6, 0.9)
@@ -105,4 +109,26 @@ h_stopping_list <- function() {
     ),
     summary = any
   )
+}
+
+h_cohort_size_list <- function(three_rules = FALSE) {
+  size1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(2, 6))
+  size2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(3, 9))
+  if (!three_rules) {
+    list(size1, size2)
+  } else {
+    size3 <- CohortSizeConst(size = 3L)
+    list(size1, size2, size3)
+  }
+}
+
+h_safety_window_size <- function(three_cohorts = FALSE) {
+  if (!three_cohorts) {
+    gap <- list(c(7, 3), c(9, 0))
+    size <- c(1, 4)
+  } else {
+    gap <- list(c(6, 3), c(0, 7), c(6, 2))
+    size <- c(1, 2, 7)
+  }
+  SafetyWindowSize(gap = gap, size = size, follow = 7, follow_min = 14)
 }

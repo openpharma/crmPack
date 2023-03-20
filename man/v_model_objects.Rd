@@ -18,6 +18,7 @@
 \alias{v_model_da_logistic_log_normal}
 \alias{v_model_tite_logistic_log_normal}
 \alias{v_model_one_par_exp_normal_prior}
+\alias{v_model_one_par_exp_prior}
 \title{Internal Helper Functions for Validation of \code{\link{GeneralModel}} and \code{\link{ModelPseudo}} Objects}
 \usage{
 v_general_model(object)
@@ -51,6 +52,8 @@ v_model_da_logistic_log_normal(object)
 v_model_tite_logistic_log_normal(object)
 
 v_model_one_par_exp_normal_prior(object)
+
+v_model_one_par_exp_prior(object)
 }
 \arguments{
 \item{object}{(\code{GeneralModel}) or (\code{ModelPseudo}) \cr object to validate.}
@@ -103,6 +106,8 @@ valid \code{ModelParamsNormal} objects as well as \code{weights} are correct.
 
 \item \code{v_model_tite_logistic_log_normal()}: validates that \code{\link{TITELogisticLogNormal}} class slots are valid.
 
-\item \code{v_model_one_par_exp_normal_prior()}: validates that \code{\link{OneParExpNormalPrior}} class slots are valid.
+\item \code{v_model_one_par_exp_normal_prior()}: validates that \code{\link{OneParLogNormalPrior}} class slots are valid.
+
+\item \code{v_model_one_par_exp_prior()}: validates that \code{\link{OneParExpPrior}} class slots are valid.
 
 }}

@@ -1,35 +1,41 @@
 #' @include McmcOptions-class.R
 NULL
 
-# sampleSize ----
+# size ----
 
-#' Computing the Number of Samples
+## generic ----
+
+#' Size of an Object
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' A method that computes the number of samples for a given MCMC options triple.
+#' A method that computes the size of a given object. This can be for instance
+#' a size of a MCMC sample, or the size of a cohort. See the help of a specific
+#' method for more details.
 #'
-#' @param object (`McmcOptions`)\cr object based on which the number of samples
-#'   is computed.
-#' @param ... not used.
-#' @return A number of samples for a given MCMC options.
+#' @param object (`McmcOptions` or `Samples` or `CohortSize`)\cr an object
+#'   for which the size is computed.
+#' @param ... further arguments passed to `size` specific methods.
+#'
+#' @return A size of a given object.
 #' @export
 #'
 setGeneric(
-  name = "sampleSize",
+  name = "size",
   def = function(object, ...) {
-    standardGeneric("sampleSize")
+    standardGeneric("size")
   },
   valueClass = "integer"
 )
 
-# sampleSize-McmcOptions ----
+## McmcOptions ----
 
-#' @rdname sampleSize
-#' @aliases sampleSize-McmcOptions
-#' @example examples/McmcOptions-methods-sampleSize.R
+#' @describeIn size compute the number of MCMC samples based on `McmcOptions`
+#'   object.
+#' @aliases size-McmcOptions
+#' @example examples/McmcOptions-methods-size.R
 setMethod(
-  f = "sampleSize",
+  f = "size",
   signature = signature(object = "McmcOptions"),
   definition = function(object, ...) {
     iterations_relative <- object@iterations - object@burnin
@@ -42,13 +48,15 @@ setMethod(
 
 # saveSample ----
 
+## generic ----
+
 #' Determining if this Sample Should be Saved
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
 #' A method that determines if a sample from a given `iteration` should be
-#'   saved. The sample should be saved if and only if:
-#'   it is not in burn-in period and it matches the `step`.
+#' saved. The sample should be saved if and only if:
+#' it is not in burn-in period and it matches the `step`.
 #'
 #' @param object (`McmcOptions`)\cr object based on which the answer is
 #'   determined.
@@ -65,9 +73,9 @@ setGeneric(
   valueClass = "logical"
 )
 
-# saveSample-McmcOptions ----
+## McmcOptions ----
 
-#' @rdname saveSample
+#' @describeIn saveSample determine if a sample should be saved.
 #' @aliases saveSample-McmcOptions
 #' @example examples/McmcOptions-methods-saveSample.R
 setMethod(

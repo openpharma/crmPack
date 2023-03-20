@@ -5,7 +5,7 @@
 \alias{assert_probability}
 \alias{test_probability}
 \alias{expect_probability}
-\title{Check if an Argument is a Single Probability Value}
+\title{Check if an argument is a single probability value}
 \usage{
 check_probability(x, bounds_closed = TRUE)
 

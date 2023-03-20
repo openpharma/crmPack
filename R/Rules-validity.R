@@ -60,29 +60,20 @@ v_next_best_ncrm_loss <- function(object) {
     test_probability_range(object@target, bounds_closed = FALSE),
     "target has to be a probability range excluding 0 and 1"
   )
-  is_overdose_valid <- test_probability_range(
-    object@overdose,
-    bounds_closed = c(FALSE, TRUE)
-  )
-  v$check(
-    is_overdose_valid,
-    "overdose has to be a probability range excluding 0"
-  )
-  is_unacceptable_valid <- test_probability_range(
-    object@unacceptable,
-    bounds_closed = c(FALSE, TRUE)
-  )
-  v$check(
-    is_unacceptable_valid,
-    "unacceptable has to be a probability range excluding 0"
-  )
-  if (is_overdose_valid && is_unacceptable_valid) {
+
+  is_overdose_ok <- test_probability_range(object@overdose, bounds_closed = TRUE)
+  v$check(is_overdose_ok, "overdose has to be a probability range")
+
+  is_unacceptable_ok <- test_probability_range(object@unacceptable, bounds_closed = TRUE)
+  v$check(is_unacceptable_ok, "unacceptable has to be a probability range")
+
+  if (is_overdose_ok && is_unacceptable_ok) {
     v$check(
       object@overdose[2] <= object@unacceptable[1],
       "lower bound of unacceptable has to be >= than upper bound of overdose"
     )
   }
-  if (is_unacceptable_valid) {
+  if (is_unacceptable_ok) {
     losses_len <- ifelse(all(object@unacceptable == c(1, 1)), 3L, 4L)
     v$check(
       test_numeric(object@losses, lower = 0, finite = TRUE, any.missing = FALSE, len = losses_len),
@@ -107,7 +98,7 @@ v_next_best_dual_endpoint <- function(object) {
     )
   } else {
     v$check(
-      test_numeric(object@target, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      test_range(object@target),
       "target must be a numeric range"
     )
   }
@@ -433,10 +424,6 @@ v_stopping_mtd_cv <- function(object) {
   v$result()
 }
 
-#' @describeIn v_stopping validates that the [`StoppingLowestDoseHSRBeta`]
-#'   object contains valid probability target, threshold and shape parameters.
-v_stopping_lowest_dose_hsr_beta <- v_increments_hsr_beta # nolintr
-
 #' @describeIn v_stopping validates that the [`StoppingTargetBiomarker`] object
 #'   contains valid `target`, `is_relative` and `prob`slots.
 v_stopping_target_biomarker <- function(object) {
@@ -452,7 +439,7 @@ v_stopping_target_biomarker <- function(object) {
     )
   } else {
     v$check(
-      test_numeric(object@target, finite = TRUE, any.missing = FALSE, len = 2, unique = TRUE, sorted = TRUE),
+      test_range(object@target, finite = TRUE),
       "target must be a numeric range"
     )
   }
@@ -495,6 +482,176 @@ v_stopping_all <- function(object) {
   v$check(
     all(sapply(object@stop_list, test_class, "Stopping")),
     "every stop_list element must be of class 'Stopping'"
+  )
+  v$result()
+}
+
+#' @describeIn v_stopping validates that the [`StoppingTDCIRatio`] object
+#'   contains valid `target_ratio` and  `prob_target` slots.
+v_stopping_tdci_ratio <- function(object) {
+  v <- Validate()
+  v$check(
+    test_number(object@target_ratio, lower = .Machine$double.xmin, finite = TRUE),
+    "target_ratio must be a positive number"
+  )
+  v$check(
+    test_probability(object@prob_target),
+    "prob_target must be a probability value from [0, 1] interval"
+  )
+  v$result()
+}
+
+# CohortSize ----
+
+#' Internal Helper Functions for Validation of [`CohortSize`] Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`CohortSize`] or inherited classes and therefore not exported.
+#'
+#' @name v_cohort_size
+#' @param object (`CohortSize`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeRange`] object
+#'   contains valid `intervals` and  `cohort_size` slots.
+v_cohort_size_range <- function(object) {
+  v <- Validate()
+  v$check(
+    test_numeric(
+      object@intervals,
+      lower = 0, finite = TRUE, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+    ),
+    "intervals must be a numeric vector with non-negative, sorted (asc.) and unique values"
+  )
+  v$check(
+    test_integer(
+      object@cohort_size,
+      lower = 0, any.missing = FALSE, len = length(object@intervals)
+    ),
+    "cohort_size must be an integer vector of the same length as intervals, containing non-negative values only"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeDLT`] object
+#'   contains valid `dlt_intervals` and  `cohort_size` slots.
+v_cohort_size_dlt <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(
+      object@dlt_intervals,
+      lower = 0, any.missing = FALSE, min.len = 1, unique = TRUE, sorted = TRUE
+    ),
+    "dlt_intervals must be an integer vector with non-negative, sorted (asc.) and unique values"
+  )
+  v$check(
+    test_integer(
+      object@cohort_size,
+      lower = 0, any.missing = FALSE, len = length(object@dlt_intervals)
+    ),
+    "cohort_size must be an integer vector of the same length as dlt_intervals, containing non-negative values only"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeConst`] object
+#'   contains valid `size` slot.
+v_cohort_size_const <- function(object) {
+  v <- Validate()
+  v$check(
+    test_int(object@size, lower = 0),
+    "size needs to be a non-negative scalar"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeParts`] object
+#'   contains valid `sizes` slot.
+v_cohort_size_parts <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@sizes, lower = .Machine$double.xmin, any.missing = FALSE, len = 2),
+    "sizes needs to be an integer vector of length 2 with all elements positive"
+  )
+  v$result()
+}
+
+#' @describeIn v_cohort_size validates that the [`CohortSizeMax`] object
+#'   contains valid `cohort_size_list` slot.
+v_cohort_size_max <- function(object) {
+  v <- Validate()
+  v$check(
+    test_list(object@cohort_size_list, types = "CohortSize", any.missing = FALSE, min.len = 2, unique = TRUE),
+    "cohort_size_list must be a list of CohortSize (unique) objects only and be of length >= 2"
+  )
+  v$result()
+}
+
+# SafetyWindow ----
+
+#' Internal Helper Functions for Validation of [`SafetyWindow`] Objects
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`SafetyWindow`] or inherited classes and therefore not exported.
+#'
+#' @name v_safety_window
+#' @param object (`SafetyWindow`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
+#' @describeIn v_safety_window validates that the [`SafetyWindowSize`] object
+#'   contains valid slots.
+v_safety_window_size <- function(object) {
+  v <- Validate()
+  v$check(
+    test_list(object@gap, types = "integer", any.missing = FALSE, min.len = 1),
+    "gap must be a list of length >= 1 with integer vectors only"
+  )
+  v$check(
+    all(sapply(object@gap, test_integer, lower = 0, any.missing = FALSE, min.len = 1)),
+    "every element in gap list has to be an integer vector with non-negative and non-missing values"
+  )
+  pg_len <- length(object@gap)
+  v$check(
+    test_integer(
+      object@size,
+      lower = .Machine$double.xmin, any.missing = FALSE, len = pg_len, unique = TRUE, sorted = TRUE
+    ),
+    "size has to be an integer vector, of the same length as gap, with positive, unique and sorted non-missing values"
+  )
+  v$check(
+    test_int(object@follow, lower = .Machine$double.xmin),
+    "follow has to be a positive integer number"
+  )
+  v$check(
+    test_int(object@follow_min, lower = .Machine$double.xmin),
+    "follow_min has to be a positive integer number"
+  )
+  v$result()
+}
+
+#' @describeIn v_safety_window validates that the [`SafetyWindowConst`] object
+#'   contains valid slots.
+v_safety_window_const <- function(object) {
+  v <- Validate()
+  v$check(
+    test_integer(object@gap, lower = 0, any.missing = FALSE),
+    "gap has to be an integer vector with non-negative and non-missing elements"
+  )
+  v$check(
+    test_int(object@follow, lower = .Machine$double.xmin),
+    "follow has to be a positive integer number"
+  )
+  v$check(
+    test_int(object@follow_min, lower = .Machine$double.xmin),
+    "follow_min has to be a positive integer number"
   )
   v$result()
 }

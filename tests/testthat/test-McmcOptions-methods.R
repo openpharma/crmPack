@@ -1,8 +1,8 @@
-# sampleSize ----
+# size ----
 
 test_that("Number of samples is correctly computed", {
   object <- McmcOptions(samples = 100, step = 3)
-  result <- sampleSize(object)
+  result <- size(object)
 
   expect_identical(result, 100L)
 })

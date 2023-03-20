@@ -4,27 +4,35 @@
 \name{CohortSizeRange-class}
 \alias{CohortSizeRange-class}
 \alias{.CohortSizeRange}
-\title{Cohort size based on dose range}
+\alias{CohortSizeRange}
+\title{\code{CohortSizeRange}}
+\usage{
+CohortSizeRange(intervals, cohort_size)
+}
+\arguments{
+\item{intervals}{(\code{numeric})\cr see slot definition.}
+
+\item{cohort_size}{(\code{numeric})\cr see slot definition.}
+}
 \description{
-Cohort size based on dose range
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{CohortSizeRange}} is the class for cohort size based on dose range.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{intervals}}{a vector with the left bounds of the relevant dose intervals}
+\item{\code{intervals}}{(\code{numeric})\cr a vector with the left bounds of the relevant
+dose intervals.}
 
-\item{\code{cohortSize}}{an integer vector of the same length with the cohort
-sizes in the \code{intervals}}
+\item{\code{cohort_size}}{(\code{integer})\cr an integer vector with the cohort sizes
+corresponding to the elements of \code{intervals}.}
 }}
 
 \examples{
 
-# As example, here is the rule for: 
-#   having cohort of size 1 for doses <30
-#   and having cohort of size 3 for doses >=30
+# Example for the rule having cohort of size 1 for doses <30
+# and having cohort of size 3 for doses >=30.
 
-mySize <- CohortSizeRange(intervals=c(0, 30),
-                          cohortSize=c(1, 3))
-
+my_size <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
 }
-\keyword{classes}
