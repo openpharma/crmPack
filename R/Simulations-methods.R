@@ -559,10 +559,6 @@ setMethod("summary",
     }
 )
 
-      return(ret)
-    }
-)
-
 ##' Summarize the model-based design simulations, relative to a given truth
 ##'
 ##' @param object the \code{\linkS4class{Simulations}} object we want to
