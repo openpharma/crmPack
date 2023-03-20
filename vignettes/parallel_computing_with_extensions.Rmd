@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 One of the big advantages of crmPack over existing R implementations is its flexible framework based on the S4 classes and methods system (Chambers 2008) and JAGS (Plummer 2003) for Bayesian computations. Users can extend the existing functionality easily to the specific needs of the study (Bove 2019).
 
-User written extensions of classes and methods can easily be used together with existing crmPack classes and methods in study set up and analysis. However, when trial simulations must be performed to derive the operation characteristics of a study setup, program run times can be long. The run time depends among other things on the number of study replications and mcmc samples. Utilizing parallel computing can overcome long run times, i.e. using multiple CPU cores can decrease run times dramatically. 
+User written extensions of classes and methods can easily be used together with existing crmPack classes and methods in study set up and analysis. However, when trial simulations must be performed to derive the operation characteristics of a study setup, program run times can be long. The run time depends among other things on the number of study replications and MCMC samples. Utilizing parallel computing can overcome long run times, i.e. using multiple CPU cores can decrease run times dramatically. 
 
 Parallel computing is natively supported by crmPack. Whenever more than one CPU core (`nCores`) is specified in the simulation call, each core is initialized with the crmPack package and the global environment.
 
@@ -43,15 +43,15 @@ crmpack_extensions <- function(){
 }
 ```
 
-When the simulation function is executed with the parameter `parallel = TRUE` and `nCores =` a number greater than one, it is evaluated if a function with the name `crmpack_extensions` exists in the global environment. In case the function exists it is executed at the initialization of any core and is available for parallel computing.
+When the simulation function is executed with the parameter `parallel = TRUE` and `nCores =` a number greater than one, it is evaluated if a function with the name `crmpack_extensions` exists in the global environment. In case the function exists, it is executed at the initialization of any core and is available for parallel computing.
 
-Note that the `<<-` operator must be used for any function that is defined  within the wrapper function `crmpack_extensions`. The `<<-` operator  makes the function visible within the global environment.
+Note that the `<<-` operator must be used for any function that is defined within the wrapper function `crmpack_extensions`. The `<<-` operator makes the function visible within the global environment.
 
-Please test the newly written extensions with one CPU core, before utilizing the function `crmpack_extensions`. The submitted code can not be checked for validity and is executed directly at each core. In case of errors the returned error message may not help to identify the root problem. Debugging of mewly written code is much easier without using parallel computing.
+Please test the newly written extensions with one CPU core, before utilizing the function `crmpack_extensions`. The submitted code cannot be checked for validity and is executed directly at each core. In case of errors the returned error message may not help to identify the root problem. Debugging of newly written code is much easier without using parallel computing.
 
 ## Worked out example
 
-Lets assume we want want to use a logistic model with normal prior that is truncated for the slope parameter, so that the slope can have only positive values. This model representation is not part of the crmPack, but can easily be added. Please note that for this example the extra code is directly embedded into the `crmpack_extensions` function. As mentioned before, user should write and test their code first without embedding into the `crmpack_extensions` function to assure that no problem occur during general execution.
+Let us assume we want to use a logistic model with a normal prior that is truncated for the slope parameter, so that the slope can have only positive values. This model representation is not part of the crmPack but can easily be added. Please note that for this example the extra code is directly embedded into the `crmpack_extensions` function. As mentioned before, user should write and test their code first without embedding into the `crmpack_extensions` function to assure that no problem occurs during general execution.
 
 ```{r LogisticNormalTruncPrior, eval=FALSE}
 library(crmPack)
@@ -186,7 +186,7 @@ crmpack_extensions <- function() {
 }
 ```
 
-The newly created model `LogisticNormalTruncPrior` can now be used to set up a study. First we load the function `crmpack_extensions` into the global environment, so that the function and coresponding classes and methods for `prob` and `dose` are available.
+The newly created model `LogisticNormalTruncPrior` can now be used to set up a study. First, we load the function `crmpack_extensions` into the global environment, so that the function and coresponding classes and methods for `prob` and `dose` are available.
 
 ```{r, eval=FALSE}
 # Execute the user written extensions.
@@ -270,7 +270,7 @@ my_design <- Design(
 )
 ```
 
-After setting up the whole model, it is very useful to check the model decisions in case that no DLT is observed until a certain dose level, before study simulations are performed. This check is also useful to additionally test the new written code.
+After setting up the whole model, it is very useful to check the model decisions in case that no DLT is observed until a certain dose level before study simulations are performed. This check is also useful to additionally test the new written code.
 
 ```{r, eval=FALSE}
 # Examine the design.
@@ -349,11 +349,11 @@ time <- system.time({
 
   early <- get_oc(early_scenario)
 
-  report_time("late")
+  report_time("early")
 
   toxic <- get_oc(toxic_scenario)
 
-  report_time("late")
+  report_time("toxic")
 
   peak <- get_oc(peak_scenario)
 
