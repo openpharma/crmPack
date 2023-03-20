@@ -696,6 +696,103 @@ setClass(
   Class = "Increments"
 )
 
+# IncrementsAbsolute ----
+
+## class ----
+
+#' `IncrementsAbsolute`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Increments control based on absolute differences in intervals
+#'
+#' #' Note that `intervals` is to be read as follows. If for example,
+#' we want to specify three intervals: First 0 to less than 50, second at least
+#' 50 up to less than 100 mg, and third at least 100 mg, then we specify
+#' `intervals` to be `c(0, 50, 100)`. That means, the right
+#' bound of the intervals are exclusive to the interval, and the last interval
+#' goes from the last value to infinity.
+#'
+#' @slot intervals a vector with the left bounds of the relevant intervals
+#' @slot increments a vector of the same length with the maximum allowable
+#' absolute increments in the` intervals`
+#' @aliases IncrementsAbsolute
+#' @export
+.IncrementsAbsolute <- setClass(
+  Class = "IncrementsAbsolute",
+  slots = c(
+    intervals = "numeric",
+    increments = "numeric"
+  ),
+  prototype = prototype(
+    intervals = c(0, 2),
+    increments = c(2, 1)
+  ),
+  contains = "Increments",
+  validity = v_increments_absolute
+)
+
+## constructor ----
+
+#' @rdname IncrementsAbsolute-class
+#'
+#' @param intervals (`numeric`)\cr a vector of right hand boundaries of the intervals
+#' @param increments (`numeric`)\cr a vector of the maximum increment allowed in the corresponding interval
+#' @return the [`IncrementsAbsolute`] object
+#'
+#' @export
+#' @importClassesFrom crmPack Increments
+#' @example examples/Rules-class-IncrementsAbsoute.R
+IncrementsAbsolute <- function(intervals = c(5, 10),
+                               increments = c(2, 1)) {
+  .IncrementsAbsolute(
+    intervals = intervals,
+    increments = increments
+  )
+}
+
+# IncrementsAbsoluteDLT ----
+
+## class ----
+
+#' `IncrementsAbsoluteDLT`
+#'
+#' @description `r lifecycle::badge("experimental")`
+#'
+#' Increments control based on absolute differences in intervals determined by
+#' the number of DLTS reported to date
+#'
+#' #' Note that `intervals` is to be read as follows. If for example,
+#' we want to specify three intervals: First 0 DLTs, second exactly one DLT, and
+#' third two or more DLTs, then we specify `intervals` to be `1:3`.
+#' That means, the right bound of the intervals are exclusive to the interval,
+#' and the last interval goes from the last value to infinity.
+#' @aliases IncrementsAbsoluteDLT
+#' @export
+.IncrementsAbsoluteDLT <- setClass(
+  Class = "IncrementsAbsoluteDLT",
+  contains = "IncrementsAbsolute",
+  validity = v_increments_absolute
+)
+
+## constructor ----
+
+#' @rdname IncrementsAbsoluteDLT-class
+#' @param intervals (`numeric`)\cr a vector of right hand boundaries of the DLT intervals
+#' @param increments (`numeric`)\cr a vector of the maximum increment allowed in the corresponding DLT interval
+#' @return the [IncrementsAbsoluteDLT] object
+#'
+#' @export
+#' @importClassesFrom crmPack Increments
+#' @example examples/Rules-class-IncrementsAbsouteDLT.R
+IncrementsAbsoluteDLT <- function(intervals = 1:2,
+                                  increments = 2:1) {
+  .IncrementsAbsoluteDLT(
+    intervals = intervals,
+    increments = increments
+  )
+}
+
 # IncrementsRelative ----
 
 ## class ----
@@ -876,6 +973,8 @@ IncrementsRelativeDLT <- function(dlt_intervals, increments) {
     increments = increments
   )
 }
+
+# nolint start
 
 # IncrementsRelativeDLTCurrent ----
 

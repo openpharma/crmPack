@@ -211,6 +211,53 @@ v_next_best_max_gain_samples <- function(object) {
 #'   or `TRUE` in case validation passes.
 NULL
 
+#' @describeIn v_increments validates that the [`IncrementsAbsolute`] object
+#'   contains valid `intervals` and `increments` parameters
+v_increments_absolute <- function(object) {
+  v <- Validate()
+  v$check(
+    test_numeric(
+      object@intervals,
+      lower = 0, finite = TRUE, any.missing = FALSE, unique = TRUE, sorted = TRUE
+    ),
+    "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
+  )
+  v$check(
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    "increments has to be a numerical vector of the same length as `intervals` with finite values"
+  )
+  v$result()
+}
+
+#' @describeIn v_increments validates that the [`IncrementsAbsoluteDLT`] object
+#'   contains valid `intervals` and `increments` parameters.
+v_increments_absolute_dlt <- function(object) {
+  v <- Validate()
+  v$check(
+    test_numeric(
+      object@intervals,
+      lower = 0, finite = TRUE, any.missing = FALSE, unique = TRUE, sorted = TRUE
+    ),
+    "intervals has to be a numerical vector with unique, finite, non-negative and sorted non-missing values"
+  )
+  v$check(
+    test_numeric(object@increments, finite = TRUE, any.missing = FALSE, len = length(object@intervals)),
+    "increments has to be a numerical vector of the same length as `intervals` with finite values"
+  )
+  v$result()
+}
+
+#' @description `r lifecycle::badge("stable")`
+#'
+#' These functions are only used internally to validate the format of an input
+#' [`Increments`] or inherited classes and therefore not exported.
+#'
+#' @name v_increments
+#' @param object (`Increments`)\cr object to validate.
+#' @return A `character` vector with the validation failure messages,
+#'   or `TRUE` in case validation passes.
+NULL
+
 #' @describeIn v_increments validates that the [`IncrementsRelative`] object
 #'   contains valid `intervals` and `increments` parameters.
 v_increments_relative <- function(object) {

@@ -2,6 +2,8 @@
 % Please edit documentation in R/Rules-methods.R
 \name{maxDose}
 \alias{maxDose}
+\alias{maxDose,IncrementsAbsolute,Data-method}
+\alias{maxDose,IncrementsAbsoluteDLT,Data-method}
 \alias{maxDose,IncrementsRelative,Data-method}
 \alias{maxDose,IncrementsNumDoseLevels,Data-method}
 \alias{maxDose-IncrementsNumDoseLevels}
@@ -14,6 +16,10 @@
 \title{Determine the maximum possible next dose}
 \usage{
 maxDose(increments, data, ...)
+
+\S4method{maxDose}{IncrementsAbsolute,Data}(increments, data)
+
+\S4method{maxDose}{IncrementsAbsoluteDLT,Data}(increments, data)
 
 \S4method{maxDose}{IncrementsRelative,Data}(increments, data, ...)
 
@@ -56,6 +62,12 @@ corresponding rule \code{increments} and the \code{data}.
 }
 \section{Functions}{
 \itemize{
+\item \code{maxDose(increments = IncrementsAbsolute, data = Data)}: Determine the maximum possible next dose based on
+absolute increments
+
+\item \code{maxDose(increments = IncrementsAbsoluteDLT, data = Data)}: Determine the maximum possible next dose based on
+absolute DLT count to date
+
 \item \code{maxDose(increments = IncrementsRelative, data = Data)}: Determine the maximum possible next dose based on
 relative increments
 
@@ -73,6 +85,40 @@ multiple increment rules (taking the minimum across individual increments).
 
 }}
 \examples{
+
+# Create the data.
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+)
+
+# In this example we define a rule for dose increments which would allow:
+# - doubling the dose if the last dose was below 20,
+# - only increasing the dose by 1.33 if the last dose was equal or above 20.
+my_increments <- IncrementsAbsolute(intervals = c(0, 20, 50), increments = 3:1)
+
+# Based on the rule above, we then calculate the maximum dose allowed.
+next_max_dose <- maxDose(my_increments, data = data)
+
+# Create the data.
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+)
+
+
+# In this example we define a rule for dose increments which would allow:
+# - escalating by 3 dose levels before any DLTs are reported,
+# - escalating by 2 dose levels if exactly one DLT has been reported,
+# - escalating by 1 dose level otherwise.
+my_increments <- IncrementsAbsoluteDLT(intervals = 1:3, increments = 3:1)
+
+# Based on the rule above, we then calculate the maximum dose allowed
+next_max_dose <- maxDose(my_increments, data = data)
 
 # Create the data
 data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
