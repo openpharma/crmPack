@@ -1,6 +1,6 @@
 library(crmPack)
 
-source("LogisticNormalTruncPrior.R")
+source("devel/parallel_extension_LogisticNormalTruncPrior.R")
 crmpack_extensions()
 
 emptydata <- Data(
@@ -109,6 +109,8 @@ get_oc <- function(truth) {
     nCores = parallelly::availableCores()
   )
 }
+
+#parallel = FALSE
 
 time <- system.time({
   start_time <- Sys.time()
