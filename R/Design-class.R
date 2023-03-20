@@ -45,26 +45,36 @@
 ##' @export
 ##' @keywords classes
 .RuleDesign <-
-    setClass(Class="RuleDesign",
-             representation(nextBest="NextBest",
-                            cohortSize="CohortSize",
-                            data="Data",
-                            startingDose="numeric"),
-             prototype(nextBest=.NextBestThreePlusThree(),
-                       cohortSize=CohortSizeConst(3),
-                       data=Data(doseGrid=1:3),
-                       startingDose=1),
-             validity=
-                 function(object){
-                     o <- Validate()
+  setClass(
+    Class = "RuleDesign",
+    representation(
+      nextBest = "NextBest",
+      cohortSize = "CohortSize",
+      data = "Data",
+      startingDose = "numeric"
+    ),
+    prototype(
+      nextBest = .NextBestThreePlusThree(),
+      cohortSize = CohortSizeConst(3),
+      data = Data(doseGrid = 1:3),
+      startingDose = 1
+    ),
+    validity =
+      function(object) {
+        o <- Validate()
 
-                     o$check(is.scalar(object@startingDose),
-                             "startingDose must be scalar")
-                     o$check(object@startingDose %~% object@data@doseGrid,
-                             "startingDose must be included in data@doseGrid (tolerance 1e-10)")
+        o$check(
+          is.scalar(object@startingDose),
+          "startingDose must be scalar"
+        )
+        o$check(
+          object@startingDose %~% object@data@doseGrid,
+          "startingDose must be included in data@doseGrid (tolerance 1e-10)"
+        )
 
-                     o$result()
-                 })
+        o$result()
+      }
+  )
 validObject(.RuleDesign())
 
 ##' Initialization function for "RuleDesign"
@@ -80,12 +90,13 @@ validObject(.RuleDesign())
 RuleDesign <- function(nextBest,
                        cohortSize,
                        data,
-                       startingDose)
-{
-    .RuleDesign(nextBest=nextBest,
-                cohortSize=cohortSize,
-                data=data,
-                startingDose=as.numeric(startingDose))
+                       startingDose) {
+  .RuleDesign(
+    nextBest = nextBest,
+    cohortSize = cohortSize,
+    data = data,
+    startingDose = as.numeric(startingDose)
+  )
 }
 
 
@@ -112,17 +123,23 @@ RuleDesign <- function(nextBest,
 ##' @export
 ##' @keywords classes
 .Design <-
-    setClass(Class="Design",
-             representation(model="GeneralModel",
-                            stopping="Stopping",
-                            increments="Increments",
-                            PLcohortSize="CohortSize"),
-             prototype(model=.LogisticNormal(),
-                       nextBest=.NextBestNCRM(),
-                       stopping=.StoppingMinPatients(),
-                       increments=.IncrementsRelative(),
-                       PLcohortSize=CohortSizeConst(0L)),
-             contains=list("RuleDesign"))
+  setClass(
+    Class = "Design",
+    representation(
+      model = "GeneralModel",
+      stopping = "Stopping",
+      increments = "Increments",
+      PLcohortSize = "CohortSize"
+    ),
+    prototype(
+      model = .LogisticNormal(),
+      nextBest = .NextBestNCRM(),
+      stopping = .StoppingMinPatients(),
+      increments = .IncrementsRelative(),
+      PLcohortSize = CohortSizeConst(0L)
+    ),
+    contains = list("RuleDesign")
+  )
 validObject(.Design())
 
 
@@ -140,15 +157,15 @@ validObject(.Design())
 Design <- function(model,
                    stopping,
                    increments,
-                   PLcohortSize=CohortSizeConst(0L),
-                   ...)
-{
-    start <- RuleDesign(...)
-    .Design(start,
-            model=model,
-            stopping=stopping,
-            increments=increments,
-            PLcohortSize=PLcohortSize)
+                   PLcohortSize = CohortSizeConst(0L),
+                   ...) {
+  start <- RuleDesign(...)
+  .Design(start,
+    model = model,
+    stopping = stopping,
+    increments = increments,
+    PLcohortSize = PLcohortSize
+  )
 }
 
 
@@ -171,14 +188,20 @@ Design <- function(model,
 ##' @export
 ##' @keywords classes
 .DualDesign <-
-    setClass(Class="DualDesign",
-             representation(model="DualEndpoint",
-                            data="DataDual"),
-             prototype(model=.DualEndpoint(),
-                       nextBest=.NextBestDualEndpoint(),
-                       data=DataDual(doseGrid=1:2),
-                       startingDose=1),
-             contains=list("Design"))
+  setClass(
+    Class = "DualDesign",
+    representation(
+      model = "DualEndpoint",
+      data = "DataDual"
+    ),
+    prototype(
+      model = .DualEndpoint(),
+      nextBest = .NextBestDualEndpoint(),
+      data = DataDual(doseGrid = 1:2),
+      startingDose = 1
+    ),
+    contains = list("Design")
+  )
 validObject(.DualDesign())
 
 
@@ -193,14 +216,16 @@ validObject(.DualDesign())
 ##' @keywords methods
 DualDesign <- function(model,
                        data,
-                       ...)
-{
-    start <- Design(data=data,
-                    model=model,
-                    ...)
-    .DualDesign(start,
-                model=model,
-                data=data)
+                       ...) {
+  start <- Design(
+    data = data,
+    model = model,
+    ...
+  )
+  .DualDesign(start,
+    model = model,
+    data = data
+  )
 }
 
 
@@ -216,18 +241,19 @@ DualDesign <- function(model,
 ##' @export
 ##' @keywords programming
 ##' @author Daniel Sabanes Bove \email{sabanesd@@roche.com}
-ThreePlusThreeDesign <- function(doseGrid)
-{
-    emptydata <- Data(doseGrid=doseGrid)
+ThreePlusThreeDesign <- function(doseGrid) {
+  emptydata <- Data(doseGrid = doseGrid)
 
-    design <- RuleDesign(nextBest=NextBestThreePlusThree(),
-                         data=emptydata,
-                         cohortSize=CohortSizeConst(size=3L),
-                         ## using a constant cohort size of 3,
-                         ## we obtain exactly the 3+3 design
-                         startingDose=head(emptydata@doseGrid, 1))
+  design <- RuleDesign(
+    nextBest = NextBestThreePlusThree(),
+    data = emptydata,
+    cohortSize = CohortSizeConst(size = 3L),
+    ## using a constant cohort size of 3,
+    ## we obtain exactly the 3+3 design
+    startingDose = head(emptydata@doseGrid, 1)
+  )
 
-    return(design)
+  return(design)
 }
 
 ## ===================================================================================
@@ -251,17 +277,23 @@ ThreePlusThreeDesign <- function(doseGrid)
 ##' @export
 ##' @keywords class
 .TDsamplesDesign <-
-  setClass(Class="TDsamplesDesign",
-           representation(model="ModelTox",
-                          stopping="Stopping",
-                          increments="Increments",
-                          PLcohortSize="CohortSize"),
-           prototype(model=.LogisticIndepBeta(),
-                     nextBest=.NextBestTDsamples(),
-                     stopping=.StoppingMinPatients(),
-                     increments=.IncrementsRelative(),
-                     PLcohortSize=CohortSizeConst(0L)),
-           contains=list("RuleDesign"))
+  setClass(
+    Class = "TDsamplesDesign",
+    representation(
+      model = "ModelTox",
+      stopping = "Stopping",
+      increments = "Increments",
+      PLcohortSize = "CohortSize"
+    ),
+    prototype(
+      model = .LogisticIndepBeta(),
+      nextBest = .NextBestTDsamples(),
+      stopping = .StoppingMinPatients(),
+      increments = .IncrementsRelative(),
+      PLcohortSize = CohortSizeConst(0L)
+    ),
+    contains = list("RuleDesign")
+  )
 
 validObject(.TDsamplesDesign())
 ##' Initialization function for 'TDsamplesDesign' class
@@ -275,9 +307,9 @@ validObject(.TDsamplesDesign())
 ##'
 ##' @export
 ##' @keywords methods
-TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst(0L),...){
-  start<-RuleDesign(...)
-  .TDsamplesDesign(start,model=model,stopping=stopping,increments=increments,PLcohortSize=PLcohortSize)
+TDsamplesDesign <- function(model, stopping, increments, PLcohortSize = CohortSizeConst(0L), ...) {
+  start <- RuleDesign(...)
+  .TDsamplesDesign(start, model = model, stopping = stopping, increments = increments, PLcohortSize = PLcohortSize)
 }
 
 ## =============================================================================
@@ -301,17 +333,23 @@ TDsamplesDesign<-function(model,stopping,increments,PLcohortSize=CohortSizeConst
 ##' @export
 ##' @keywords class
 .TDDesign <-
-  setClass(Class="TDDesign",
-           representation(model="ModelTox",
-                          stopping="Stopping",
-                          increments="Increments",
-                          PLcohortSize="CohortSize"),
-           prototype(model=.LogisticIndepBeta(),
-                     nextBest=.NextBestTD(),
-                     stopping=.StoppingMinPatients(),
-                     increments=.IncrementsRelative(),
-                     PLcohortSize=CohortSizeConst(0L)),
-           contains=list("RuleDesign"))
+  setClass(
+    Class = "TDDesign",
+    representation(
+      model = "ModelTox",
+      stopping = "Stopping",
+      increments = "Increments",
+      PLcohortSize = "CohortSize"
+    ),
+    prototype(
+      model = .LogisticIndepBeta(),
+      nextBest = .NextBestTD(),
+      stopping = .StoppingMinPatients(),
+      increments = .IncrementsRelative(),
+      PLcohortSize = CohortSizeConst(0L)
+    ),
+    contains = list("RuleDesign")
+  )
 
 validObject(.TDDesign())
 
@@ -326,21 +364,23 @@ validObject(.TDDesign())
 ##'
 ##' @export
 ##' @keywords methods
-TDDesign<-function(model,
-                   stopping,
-                   increments,
-                   PLcohortSize=CohortSizeConst(0L),
-                   ...){
-  start<-RuleDesign(...)
-  .TDDesign(start,model=model,stopping=stopping,increments=increments,
-            PLcohortSize=PLcohortSize)
-  }
+TDDesign <- function(model,
+                     stopping,
+                     increments,
+                     PLcohortSize = CohortSizeConst(0L),
+                     ...) {
+  start <- RuleDesign(...)
+  .TDDesign(start,
+    model = model, stopping = stopping, increments = increments,
+    PLcohortSize = PLcohortSize
+  )
+}
 
 
 
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response with samples using pseudo DLE and efficacy models
-##----------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------
 ##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
 ##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
 ##' with DLE and efficacy samples.It contain all slots in
@@ -355,15 +395,20 @@ TDDesign<-function(model,
 ##' @keywords class
 ##'
 .DualResponsesSamplesDesign <-
-setClass(Class="DualResponsesSamplesDesign",
-         representation(Effmodel="ModelEff",
-                        data="DataDual"),
-         prototype(nextBest=.NextBestMaxGainSamples(),
-                   data=DataDual(doseGrid=1:2),
-                   startingDose=1,
-                   model=.LogisticIndepBeta()),
-         contains=list("TDsamplesDesign")
-           )
+  setClass(
+    Class = "DualResponsesSamplesDesign",
+    representation(
+      Effmodel = "ModelEff",
+      data = "DataDual"
+    ),
+    prototype(
+      nextBest = .NextBestMaxGainSamples(),
+      data = DataDual(doseGrid = 1:2),
+      startingDose = 1,
+      model = .LogisticIndepBeta()
+    ),
+    contains = list("TDsamplesDesign")
+  )
 validObject(.DualResponsesSamplesDesign())
 
 ##' Initialization function for 'DualResponsesSamplesDesign"
@@ -376,20 +421,18 @@ validObject(.DualResponsesSamplesDesign())
 ##' @export
 ##' @keywords methods
 DualResponsesSamplesDesign <- function(Effmodel,
-                                data,
-                                ...)
-
-{
-
-  start <- TDsamplesDesign(data=data,...)
+                                       data,
+                                       ...) {
+  start <- TDsamplesDesign(data = data, ...)
   .DualResponsesSamplesDesign(start,
-                              Effmodel=Effmodel,
-                              data=data)
+    Effmodel = Effmodel,
+    data = data
+  )
 }
 
 ## ---------------------------------------------------------------------------------------------------
 ## class for design based on DLE and efficacy response without  samples using pseudo DLE and efficacy models
-##----------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------
 ##' This is a class of design based on DLE responses using the \code{\linkS4class{LogisticIndepBeta}} model
 ##' model and efficacy responses using \code{\linkS4class{ModelEff}}  model class
 ##' without DLE and efficacy samples. It contain all slots in
@@ -403,14 +446,19 @@ DualResponsesSamplesDesign <- function(Effmodel,
 ##' @export
 ##' @keywords class
 .DualResponsesDesign <-
-  setClass(Class="DualResponsesDesign",
-           representation(Effmodel="ModelEff",
-                          data="DataDual"),
-           prototype(nextBest=.NextBestMaxGain(),
-                     data=DataDual(doseGrid=1:2),
-                     startingDose=1,
-                     model=.LogisticIndepBeta()),
-           contains=list("TDDesign")
+  setClass(
+    Class = "DualResponsesDesign",
+    representation(
+      Effmodel = "ModelEff",
+      data = "DataDual"
+    ),
+    prototype(
+      nextBest = .NextBestMaxGain(),
+      data = DataDual(doseGrid = 1:2),
+      startingDose = 1,
+      model = .LogisticIndepBeta()
+    ),
+    contains = list("TDDesign")
   )
 validObject(.DualResponsesDesign())
 
@@ -425,14 +473,12 @@ validObject(.DualResponsesDesign())
 ##' @keywords methods
 DualResponsesDesign <- function(Effmodel,
                                 data,
-                                ...)
-
-{
-
-  start <- TDDesign(data=data,...)
+                                ...) {
+  start <- TDDesign(data = data, ...)
   .DualResponsesDesign(start,
-                       Effmodel=Effmodel,
-                       data=data)
+    Effmodel = Effmodel,
+    data = data
+  )
 }
 
 ## ===============================================================================
@@ -456,16 +502,21 @@ DualResponsesDesign <- function(Effmodel,
 ##' @export
 ##' @keywords classes
 .DADesign <-
-  setClass(Class="DADesign",
-           representation(model="GeneralModel",
-                          data="DataDA",
-                          safetyWindow="SafetyWindow"),
-           prototype(model=.DALogisticLogNormal(),
-                     nextBest=.NextBestNCRM(),
-                     data=DataDA(doseGrid=1:2),
-                     safetyWindow=.SafetyWindowConst()
-           ),
-           contains=list("Design"))
+  setClass(
+    Class = "DADesign",
+    representation(
+      model = "GeneralModel",
+      data = "DataDA",
+      safetyWindow = "SafetyWindow"
+    ),
+    prototype(
+      model = .DALogisticLogNormal(),
+      nextBest = .NextBestNCRM(),
+      data = DataDA(doseGrid = 1:2),
+      safetyWindow = .SafetyWindowConst()
+    ),
+    contains = list("Design")
+  )
 validObject(.DADesign())
 
 
@@ -482,21 +533,25 @@ validObject(.DADesign())
 DADesign <- function(model,
                      data,
                      safetyWindow,
-                     ...)
-{
-  start <- Design(data=data,
-                  model=model,
-                  ...)
+                     ...) {
+  start <- Design(
+    data = data,
+    model = model,
+    ...
+  )
   .DADesign(start,
-            safetyWindow=safetyWindow)
+    safetyWindow = safetyWindow
+  )
 }
-validObject(DADesign(model=.DALogisticLogNormal(),
-                     data=DataDA(doseGrid=1:2),
-                     safetyWindow=.SafetyWindowConst(),
-                     nextBest=.NextBestNCRM(),
-                     startingDose=1,
-                     cohortSize=CohortSizeConst(3),
-                     stopping=StoppingMinCohorts(10),
-                     increments=IncrementsNumDoseLevels(2)))
+validObject(DADesign(
+  model = .DALogisticLogNormal(),
+  data = DataDA(doseGrid = 1:2),
+  safetyWindow = .SafetyWindowConst(),
+  nextBest = .NextBestNCRM(),
+  startingDose = 1,
+  cohortSize = CohortSizeConst(3),
+  stopping = StoppingMinCohorts(10),
+  increments = IncrementsNumDoseLevels(2)
+))
 
 # nolint end
