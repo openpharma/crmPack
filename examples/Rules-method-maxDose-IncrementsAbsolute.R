@@ -1,4 +1,3 @@
-
 # Create the data.
 data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),

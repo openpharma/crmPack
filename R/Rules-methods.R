@@ -65,7 +65,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Generate the MTD samples and derive the next best dose.
     dose_target_samples <- dose(x = nextBest@target, model, samples)
     dose_target <- nextBest@derive(dose_target_samples)
@@ -149,7 +148,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -291,7 +289,6 @@ setMethod("nextBest",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     # Compute probabilities to be in target and overdose tox interval.
@@ -377,7 +374,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
-
     # The last dose level tested (not necessarily the maximum one).
     last_level <- tail(data@xLevel, 1L)
 
@@ -432,7 +428,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
@@ -555,7 +550,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     dlt_prob <- colMeans(prob_samples)
@@ -654,7 +648,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -783,7 +776,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the nextBest@prob_target_drt
     # (or nextBest@prob_target_eot, respectively).
@@ -1125,7 +1117,7 @@ setMethod(
     }
     tmp <- which(increments@intervals > used_max)
     if (length(tmp) == 0) {
-      #Max used dose above highest value in increments@intervals
+      # Max used dose above highest value in increments@intervals
       current_interval <- length(increments@intervals)
     } else {
       current_interval <- min(tmp) - 1
@@ -1155,7 +1147,7 @@ setMethod(
     dlt_count <- sum(data@y)
     tmp <- which(increments@intervals > dlt_count)
     if (length(tmp) == 0) {
-      #DLT count above highest value in increments@intervals
+      # DLT count above highest value in increments@intervals
       current_interval <- length(increments@intervals)
     } else {
       current_nterval <- min(tmp)
@@ -1313,7 +1305,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       ## determine if there are already cohorts
       ## belonging to part 2:
       alreadyInPart2 <- any(data@part == 2L)
@@ -1416,7 +1407,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       # Determine what was the last dose.
       lastDose <- tail(data@x, 1)
 
@@ -1453,7 +1443,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       ## apply the multiple increment rules
       individualResults <-
         sapply(increments@increments_list,
@@ -2261,12 +2250,10 @@ setMethod("stopTrial",
 
       ## if target is relative to maximum
       if (stopping@is_relative) {
-
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
         ## maximum biomarker level achieved in the given dose range.
         if ("Emax" %in% names(samples)) {
-
           ## For each sample, look which dose is maximizing the
           ## simultaneous probability to be in the target biomarker
           ## range and below overdose toxicity
@@ -2279,7 +2266,6 @@ setMethod("stopTrial",
             }
           )
         } else {
-
           ## For each sample, look which was the minimum dose giving
           ## relative target level
           targetIndex <- apply(
@@ -2859,7 +2845,6 @@ setMethod("stopTrial",
       ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
 
       if (TDtargetEndOfTrialEstimate <= Gstar) {
-
         ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
         CI <- CITDEOT
         ratio <- ratioTDEOT
@@ -3093,7 +3078,6 @@ setMethod("windowLength",
     ),
   def =
     function(safetyWindow, size, data, ...) {
-
       ## determine in which interval the next size is
       interval <-
         findInterval(
@@ -3131,7 +3115,6 @@ setMethod("windowLength",
     ),
   def =
     function(safetyWindow, size, ...) {
-
       ## first element should be 0.
       patientGap <- head(c(
         0, safetyWindow@gap,

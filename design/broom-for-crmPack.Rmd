@@ -41,17 +41,17 @@ I believe all three methods would be helpful in `crmPack`.
 As a simple example, consider the `results`, an object of class `Samples`, created by following crmPack model fit.
 ```{r}
 observedData <- Data(
-                  ID=1:9,
-                  x=c(1, 1, 1, 3, 3, 3, 9, 9, 9),
-                  y=c(0, 0, 0, 0, 0, 0, 0, 1, 0),
-                  cohort=rep(1:3, each=3),
-                  doseGrid=c(0.5, 1, 3, 9, 15, 25, 40)
-                )
+  ID = 1:9,
+  x = c(1, 1, 1, 3, 3, 3, 9, 9, 9),
+  y = c(0, 0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = rep(1:3, each = 3),
+  doseGrid = c(0.5, 1, 3, 9, 15, 25, 40)
+)
 model <- LogisticLogNormal(
-           mean=c(-3, 1),
-           cov=matrix(c(1, -0.5, -0.5, 1), nrow=2),
-           refDose=12
-         )
+  mean = c(-3, 1),
+  cov = matrix(c(1, -0.5, -0.5, 1), nrow = 2),
+  refDose = 12
+)
 results <- mcmc(observedData, model, McmcOptions())
 slotNames(results)
 class(results@data$alpha0)
@@ -84,9 +84,9 @@ setMethod(
     lapply(
       names(obj@data),
       function(col) tibble(!!{{ col }} := obj@data[[col]])
-    ) %>% 
-    bind_cols() %>% 
-    add_column(Sample=1:nrow(.), .before=1)
+    ) %>%
+      bind_cols() %>%
+      add_column(Sample = 1:nrow(.), .before = 1)
   }
 )
 
@@ -116,17 +116,17 @@ setMethod(
       tidy() %>%
       pivot_longer(
         -Sample,
-        names_to="Param",
-        values_to="Value"
+        names_to = "Param",
+        values_to = "Value"
       ) %>%
-      expand(nesting(Sample, Param, Value), Dose=data@doseGrid) %>%
+      expand(nesting(Sample, Param, Value), Dose = data@doseGrid) %>%
       pivot_wider(
-        names_from=Param,
-        values_from=Value,
-        id_cols=c(Sample, Dose)
+        names_from = Param,
+        values_from = Value,
+        id_cols = c(Sample, Dose)
       ) %>%
       # Need to generalise this step to handle arbitrary parameters to prob
-      mutate(Prob=model@prob(Dose, alpha0, alpha1))
+      mutate(Prob = model@prob(Dose, alpha0, alpha1))
   }
 )
 
@@ -152,21 +152,21 @@ setMethod(
   ),
   definition = function(obj, model, data, ...) {
     t <- obj %>%
-      augment(model, data) %>% 
-      group_by(Dose) %>% 
+      augment(model, data) %>%
+      group_by(Dose) %>%
       summarise(
-        Mean=mean(Prob),
-        .groups="drop"
-      ) 
+        Mean = mean(Prob),
+        .groups = "drop"
+      )
     # print(t)
-    
-    t %>% 
+
+    t %>%
       pivot_wider(
-        names_from=Dose,
-        values_from=Mean
-      ) %>% 
+        names_from = Dose,
+        values_from = Mean
+      ) %>%
       # When Models can be described, this could be replaced with Model=describe(model)
-      add_column(Model=class(model), .before=1)
+      add_column(Model = class(model), .before = 1)
   }
 )
 

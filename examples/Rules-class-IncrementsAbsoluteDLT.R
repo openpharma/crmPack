@@ -1,4 +1,3 @@
-
 # This is the example of a rule for incrementing by a maximum of:
 # * three dose levels no DLTs have been reported so far
 # * two dose levels exactly one DLT has been reported so far

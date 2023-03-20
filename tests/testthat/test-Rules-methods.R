@@ -738,39 +738,39 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 # maxDose-IncrementsAbsolute
 
 test_that("IncrementsAbsolute works correctly", {
-  grid <- c(0.1, 0.5, 1.5, 3, 6, 8, seq(from=10, to=80, by=2))
-  inc <- IncrementsAbsolute(intervals=c(0, 20, 50), increments=3:1)
+  grid <- c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+  inc <- IncrementsAbsolute(intervals = c(0, 20, 50), increments = 3:1)
 
   makeData <- function(n) {
     Data(
-      x=grid[1:n],
-      y=rep(0, n),
-      ID=1:n,
-      cohort=1:n,
-      doseGrid=grid
+      x = grid[1:n],
+      y = rep(0, n),
+      ID = 1:n,
+      cohort = 1:n,
+      doseGrid = grid
     )
   }
 
-  result <- maxDose(inc, Data(doseGrid=grid))
+  result <- maxDose(inc, Data(doseGrid = grid))
   expect_equal(result, grid[3]) # Empty grid
 
-  result <- maxDose(inc, data=makeData(1))
+  result <- maxDose(inc, data = makeData(1))
   expect_equal(result, grid[4]) # Only lowest dose
 
   # Top of first interval
-  result <- maxDose(inc, data=makeData(11))
+  result <- maxDose(inc, data = makeData(11))
   expect_equal(result, grid[14])
   # Bottom of second interval
-  result <- maxDose(inc, data=makeData(12))
+  result <- maxDose(inc, data = makeData(12))
   expect_equal(result, grid[14])
   # Top of second interval
-  result <- maxDose(inc, data=makeData(26))
+  result <- maxDose(inc, data = makeData(26))
   expect_equal(result, grid[28])
   # Bottom of third interval
-  result <- maxDose(inc, data=makeData(27))
+  result <- maxDose(inc, data = makeData(27))
   expect_equal(result, grid[28])
   # Highest dose
-  result <- maxDose(inc, data=makeData(length(grid)))
+  result <- maxDose(inc, data = makeData(length(grid)))
   expect_equal(result, grid[length(grid)])
 })
 
@@ -778,55 +778,55 @@ test_that("IncrementsAbsolute works correctly", {
 
 test_that("IncrementsAbsoluteDLT works correctly", {
   grid <- c(0.1, 0.5, 1.5, 3, 6, 8)
-  inc <- IncrementsAbsoluteDLT(intervals=1:3, increments=3:1)
+  inc <- IncrementsAbsoluteDLT(intervals = 1:3, increments = 3:1)
 
   makeData <- function(n, k) {
     Data(
-      x=grid[1:n],
-      y=c(rep(0, n-k), rep(1, k)),
-      ID=1:n,
-      cohort=1:n,
-      doseGrid=grid
+      x = grid[1:n],
+      y = c(rep(0, n - k), rep(1, k)),
+      ID = 1:n,
+      cohort = 1:n,
+      doseGrid = grid
     )
   }
-  result <- maxDose(inc, Data(doseGrid=grid))
+  result <- maxDose(inc, Data(doseGrid = grid))
   expect_equal(result, grid[3]) # Empty grid
 
-  result <- maxDose(inc, data=makeData(1, 0))
+  result <- maxDose(inc, data = makeData(1, 0))
   expect_equal(result, grid[4]) # Only lowest dose, no DLTs
-  result <- maxDose(inc, data=makeData(1, 1))
+  result <- maxDose(inc, data = makeData(1, 1))
   expect_equal(result, grid[3]) # Only lowest dose, 1 DLT
 
-  result <- maxDose(inc, data=makeData(2, 0))
+  result <- maxDose(inc, data = makeData(2, 0))
   expect_equal(result, grid[5]) # Two doses, no DLTs
-  result <- maxDose(inc, data=makeData(2, 1))
+  result <- maxDose(inc, data = makeData(2, 1))
   expect_equal(result, grid[4]) # Two doses, 1 DLT
-  result <- maxDose(inc, data=makeData(2, 2))
+  result <- maxDose(inc, data = makeData(2, 2))
   expect_equal(result, grid[3]) # Two doses, 2 DLTs
 
 
-  result <- maxDose(inc, data=makeData(3, 0))
+  result <- maxDose(inc, data = makeData(3, 0))
   expect_equal(result, grid[6]) # Three doses, no DLTs
-  result <- maxDose(inc, data=makeData(3, 1))
+  result <- maxDose(inc, data = makeData(3, 1))
   expect_equal(result, grid[5]) # Three doses, 1 DLT
-  result <- maxDose(inc, data=makeData(3, 2))
+  result <- maxDose(inc, data = makeData(3, 2))
   expect_equal(result, grid[4]) # Three doses, 2 DLTs
-  result <- maxDose(inc, data=makeData(3, 3))
+  result <- maxDose(inc, data = makeData(3, 3))
   expect_equal(result, grid[4]) # Three doses, 3 DLTs
 
-  result <- maxDose(inc, data=makeData(4, 4))
+  result <- maxDose(inc, data = makeData(4, 4))
   expect_equal(result, grid[5]) # Four doses, 4 DLTs
 
   # Highest dose
-  result <- maxDose(inc, data=makeData(length(grid), 0))
+  result <- maxDose(inc, data = makeData(length(grid), 0))
   expect_equal(result, grid[length(grid)])
-  result <- maxDose(inc, data=makeData(length(grid), 1))
+  result <- maxDose(inc, data = makeData(length(grid), 1))
   expect_equal(result, grid[length(grid)])
-  result <- maxDose(inc, data=makeData(length(grid), 2))
+  result <- maxDose(inc, data = makeData(length(grid), 2))
   expect_equal(result, grid[length(grid)])
-  result <- maxDose(inc, data=makeData(length(grid), 3))
+  result <- maxDose(inc, data = makeData(length(grid), 3))
   expect_equal(result, grid[length(grid)])
-  result <- maxDose(inc, data=makeData(length(grid), 4))
+  result <- maxDose(inc, data = makeData(length(grid), 4))
   expect_equal(result, grid[length(grid)])
 })
 # maxDose-IncrementsNumDoseLevels ----
