@@ -605,3 +605,60 @@ setMethod(
     }
   }
 )
+
+# dose_grid_range ----
+
+## generic ----
+
+#' Getting the Dose Grid Range
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' A function that returns a vector of length two with the minimum and maximum
+#' dose in a grid. It returns `c(-Inf, Inf)` if the range cannot be determined,
+#' which happens when the dose grid is empty. User can choose whether the
+#' placebo dose (if any) should be counted or not.
+#'
+#' @param object (`Data`)\cr object with dose grid.
+#' @param ... further arguments passed to class-specific methods.
+#' @return an `numeric` vector containing the minimum and maximum of all the
+#'   doses in a grid or `c(-Inf, Inf)`.
+#'
+#' @export
+#'
+setGeneric(
+  name = "dose_grid_range",
+  def = function(object, ...) {
+    standardGeneric("dose_grid_range")
+  },
+  valueClass = "numeric"
+)
+
+## Data ----
+
+#' @rdname dose_grid_range
+#'
+#' @param ignore_placebo (`flag`)\cr should placebo dose (if any) not be counted?
+#'
+#' @aliases dose_grid_range-Data
+#' @example examples/Data-method-dose_grid_range.R
+#'
+setMethod(
+  f = "dose_grid_range",
+  signature = signature(object = "Data"),
+  definition = function(object, ignore_placebo = TRUE) {
+    assert_flag(ignore_placebo)
+
+    dose_grid <- if (ignore_placebo && object@placebo && object@nGrid >= 1) {
+      object@doseGrid[-1]
+    } else {
+      object@doseGrid
+    }
+
+    if (length(dose_grid) == 0L) {
+      c(-Inf, Inf)
+    } else {
+      range(dose_grid)
+    }
+  }
+)
