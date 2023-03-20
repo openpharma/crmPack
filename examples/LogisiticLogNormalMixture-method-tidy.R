@@ -10,4 +10,4 @@ LogisticNormalMixture(
   weightpar = c(a = 1, b = 1),
   ref_dose = 50
 ) %>%
-tidy()
+  tidy()

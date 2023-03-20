@@ -12,4 +12,4 @@ LogisticNormalFixedMixture(
   weights = c(0.3, 0.7),
   ref_dose = 50
 ) %>%
-tidy()
+  tidy()

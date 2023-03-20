@@ -7,4 +7,4 @@ LogisticKadaneBetaGamma(
   shape = 0.5625,
   rate = 0.125
 ) %>%
-tidy()
+  tidy()

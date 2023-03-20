@@ -1,8 +1,9 @@
 # Define the dose grid.
 empty_data <- Data(
   doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100),
-  x=c(1, 3, 5, 10, 15),
-  y=c(0, 0, 0, 0, 1))
+  x = c(1, 3, 5, 10, 15),
+  y = c(0, 0, 0, 0, 1)
+)
 
 # Initialize the CRM model.
 model <- LogisticLogNormal(
@@ -55,6 +56,6 @@ design <- Design(
   startingDose = 3
 )
 
-samples <- mcmc(empty_data, model,  McmcOptions(burnin = 5000, step = 2, samples = 20000))
+samples <- mcmc(empty_data, model, McmcOptions(burnin = 5000, step = 2, samples = 20000))
 
 samples %>% tidy()

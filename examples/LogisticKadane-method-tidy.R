@@ -1,1 +1,1 @@
-LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) %>%  tidy()
+LogisticKadane(theta = 0.33, xmin = 1, xmax = 200) %>% tidy()
