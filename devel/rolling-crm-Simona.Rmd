@@ -542,9 +542,11 @@ myStopping <- (myStopping1 | myStopping2 | myStopping3)
 
 mysafetywindow=SafetyWindowConst(c(7,1),14,14)   ####I could use SafetyWindowSize or SafetyWindowConst
                                                ### for each cohort I want to follow first patient for 7 days then  all for at                                                   ### least 14 days    
-#SafetyWindowConst(patientGap = c(7,3),
-#                                    patientFollow = 7,  this is the minimal required condition for all patienst in the cohort
-#                                    patientFollowMin = 14) min is condition for at least one patient
+# SafetyWindowConst(
+#   gap = c(7,3),
+#   follow = 7, # this is the minimal required condition for all patienst in the cohort
+#   follow_min = 14 # min is condition for at least one patient
+# )
 
 emptydata <- DataDA(doseGrid=mydoseGrid,Tmax=myTmax, npiece=mynpiece)
 design <- DADesign(model=mymda_model,

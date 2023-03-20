@@ -12,7 +12,7 @@ CohortSizeRange(intervals, cohort_size)
 \arguments{
 \item{intervals}{(\code{numeric})\cr see slot definition.}
 
-\item{cohort_size}{(\code{integer})\cr see slot definition.}
+\item{cohort_size}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

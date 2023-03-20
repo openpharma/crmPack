@@ -43,6 +43,6 @@ doseRecommendation <- nextBest(myNextBest,
 mySize <- CohortSizeConst(size=3)
 
 # Determine the cohort size for the next cohort
-size(mySize, dose=doseRecommendation$value, data = data)
+size(mySize, dose=doseRecommendation$value)
 
 # nolint end

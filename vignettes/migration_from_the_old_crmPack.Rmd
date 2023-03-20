@@ -47,10 +47,10 @@ class_changes <- tribble(
   "DALogisticLogNormal", "", "C_par", "c_par", FALSE, "",
   "DALogisticLogNormal", "", "conditionalPEM", "cond_pem", FALSE, "",
   "TITELogisticLogNormal", "", "weightMethod", "weight_method", FALSE, "",
-  "OneParExpNormalPrior", "", "skeletonFun", "skel_fun", FALSE, "",
-  "OneParExpNormalPrior", "", "", "skel_fun_inv", FALSE, "",
-  "OneParExpNormalPrior", "", "skeletonProbs", "skel_probs", FALSE, "",
-  "OneParExpNormalPrior()", "", "doseGrid", "dose_grid", FALSE, "",
+  "OneParLogNormalPrior", "", "skeletonFun", "skel_fun", FALSE, "",
+  "OneParLogNormalPrior", "", "", "skel_fun_inv", FALSE, "",
+  "OneParLogNormalPrior", "", "skeletonProbs", "skel_probs", FALSE, "",
+  "OneParLogNormalPrior()", "", "doseGrid", "dose_grid", FALSE, "",
   "DualEndpointBeta", "", "refDoseBeta", "ref_dose_beta", FALSE, "",
   "DualEndpointEmax", "", "refDoseEmax", "ref_dose_emax", FALSE, "",
   "DualEndpointRW", "", "useRW1", "rw1", FALSE, "",
@@ -90,7 +90,19 @@ class_changes <- tribble(
   "StoppingGstarCIRatio", "", "targetRatio", "target_ratio", FALSE, "",
   "StoppingGstarCIRatio", "", "targetEndOfTrial", "prob_target", FALSE, "",
   "StoppingGstarCIRatio", "StoppingMaxGainCIRatio", "", "", FALSE, "",
-  "CohortSizeRange", "", "cohortSize", "cohort_size", FALSE, ""
+  "CohortSizeRange", "", "cohortSize", "cohort_size", FALSE, "",
+  "CohortSizeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "",
+  "CohortSizeDLT", "", "cohortSize", "cohort_size", FALSE, "",
+  "CohortSizeMax", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "CohortSizeMin", "", "cohortSizeList", "cohort_size_list", FALSE, "",
+  "SafetyWindowSize", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowSize", "", "sizeIntervals", "size", FALSE, "",
+  "SafetyWindowSize", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowSize", "", "patientFollowMin", "follow_min", FALSE, "",
+  "SafetyWindowConst", "", "patientGap", "gap", FALSE, "",
+  "SafetyWindowConst", "", "patientFollow", "follow", FALSE, "",
+  "SafetyWindowConst", "", "patientFollowMin", "follow_min", FALSE, "",
+  "OneParExpNormalPrior", "OneParLogNormalPrior", "", "", FALSE, ""
 )
 ```
 
@@ -169,7 +181,8 @@ method_changes <- tribble(
   "nextBest-NextBestMaxGainSamples", "", "Effmodel", "model_eff", FALSE, "", "",
   "nextBest-NextBestMaxGainSamples", "", "Effsamples", "samples_eff", FALSE, "", "",
   "nextBest-NextBestMaxGainSamples", "", "SIM", "in_sim", FALSE, "", "",
-  "nextBest-NextBestMaxGainSamples", "", "", "", FALSE, "renamed elements in the list returned", ""
+  "nextBest-NextBestMaxGainSamples", "", "", "", FALSE, "renamed elements in the list returned", "",
+  "size", "size", "", "check", FALSE, "", ""
 )
 ```
 
@@ -253,3 +266,13 @@ prob(10, my_model, my_samples)
 true_prob_fun <- probFunction(my_model, alpha0 = -0.8, alpha1 = 1)
 true_prob_fun(10)
 ```
+
+# New Random Number Generator settings for the MCMC
+
+The Random Number Generator (RNG) settings used by the JAGS for the MCMC are now
+configured solely through the `McmcOptions` class. The RNG settings are:
+`RNG type` and the `RNG seed` that corresponds to a given `RNG type`. Find out
+details in the help page for the `McmcOptions` class.
+Any RNG-related user settings at the R session level (such us those with
+`set.seed()`) are ignored by the MCMC sampler.
+

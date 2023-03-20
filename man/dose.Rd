@@ -32,8 +32,10 @@
 \alias{dose-Effloglog-noSamples}
 \alias{dose,numeric,EffFlexi,Samples-method}
 \alias{dose-EffFlexi}
-\alias{dose,numeric,OneParExpNormalPrior,Samples-method}
-\alias{dose-OneParExpNormalPrior}
+\alias{dose,numeric,OneParLogNormalPrior,Samples-method}
+\alias{dose-OneParLogNormalPrior}
+\alias{dose,numeric,OneParExpPrior,Samples-method}
+\alias{dose-OneParExpPrior}
 \title{Computing the Doses for a given independent variable, Model and Samples}
 \usage{
 dose(x, model, samples, ...)
@@ -68,16 +70,17 @@ dose(x, model, samples, ...)
 
 \S4method{dose}{numeric,EffFlexi,Samples}(x, model, samples)
 
-\S4method{dose}{numeric,OneParExpNormalPrior,Samples}(x, model, samples)
+\S4method{dose}{numeric,OneParLogNormalPrior,Samples}(x, model, samples)
+
+\S4method{dose}{numeric,OneParExpPrior,Samples}(x, model, samples)
 }
 \arguments{
 \item{x}{(\code{proportion} or \code{numeric})\cr a value of an independent variable
 on which dose depends.
-This must be a scalar if number of samples in \code{samples} is greater than
-one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
-finite length, if there is only one sample in \code{samples}, or \code{samples} are
-not used at all, as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model.}
+The following recycling rule applies when \code{samples} is not missing: vectors
+of size 1 will be recycled to the size of the sample
+(i.e. \code{size(samples)}). Otherwise, \code{x} must have the same size
+as the sample.}
 
 \item{model}{(\code{GeneralModel} or \code{ModelPseudo})\cr the model.}
 
@@ -160,10 +163,14 @@ probability of the occurrence of a DLE (\code{x}).
 All model parameters (except \code{x}) should be present in the \code{model} object.
 
 \item \code{dose(x = numeric, model = EffFlexi, samples = Samples)}: compute the dose level reaching a specific target
-probability of the occurrence of a DLE (\code{x}).
+probability of the occurrence of a DLE (\code{x}). For this method \code{x} must
+be a scalar.
 
-\item \code{dose(x = numeric, model = OneParExpNormalPrior, samples = Samples)}: compute the dose level reaching a specific target
-probability of the occurrence of a DLE (\code{x}).
+\item \code{dose(x = numeric, model = OneParLogNormalPrior, samples = Samples)}: compute the dose level reaching a specific target
+probability of the occurrence of a DLT (\code{x}).
+
+\item \code{dose(x = numeric, model = OneParExpPrior, samples = Samples)}: compute the dose level reaching a specific target
+probability of the occurrence of a DLT (\code{x}).
 
 }}
 \note{

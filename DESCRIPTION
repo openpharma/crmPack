@@ -1,6 +1,6 @@
 Package: crmPack
 Title: Object-Oriented Implementation of CRM Designs
-Version: 1.0.9000.9104
+Version: 1.0.9000.9133
 Authors@R: c(
     person("Daniel", "Sabanes Bove", , "daniel.sabanesbove@gmx.net", role = c("aut", "cre")),
     person("Wai", "Yin Yeung", , "winnie.yeung@roche.com", role = "aut"),
@@ -9,7 +9,8 @@ Authors@R: c(
     person("Thomas", "Jaki", , "jaki.thomas@gmail.com", role = "aut"),
     person("Jiawen", "Zhu", , "zhu.jiawen@gene.com", role = "aut"),
     person("Ziwei", "Liao", , "ziwei.liao.fdu@gmail.com", role = "aut"),
-    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut")
+    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut"),
+    person("Marlene", "Schulte-Goebel", , "marlene.schulte-goebel@merckgroup.com", role = "aut")
   )
 Description: Implements a wide range of model-based dose escalation
     designs, ranging from classical and modern continual reassessment
@@ -36,18 +37,24 @@ Imports:
     gridExtra,
     kableExtra,
     lifecycle,
+    magrittr,
     methods,
     mvtnorm,
     parallel,
+    parallelly,
     rjags,
     survival,
     tibble,
     tools,
     utils
 Suggests:
+    dplyr,
     ggmcmc,
     knitr,
+    rmarkdown,
+    stringr,
     testthat (>= 3.0.0),
+    tidyr,
     vdiffr
 VignetteBuilder: 
     knitr
@@ -58,7 +65,7 @@ Encoding: UTF-8
 Language: en-US
 LazyLoad: yes
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Collate:
     'Data-validity.R'
     'helpers.R'
@@ -89,4 +96,5 @@ Collate:
     'crmPack-package.R'
     'helpers_model.R'
     'logger.R'
+    'utils-pipe.R'
     'utils.R'

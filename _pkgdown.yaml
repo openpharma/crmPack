@@ -51,7 +51,8 @@ reference:
       - EffFlexi
       - DALogisticLogNormal
       - TITELogisticLogNormal
-      - OneParExpNormalPrior
+      - OneParLogNormalPrior
+      - OneParExpPrior
       - FractionalCRM
       - NextBest
       - NextBestMTD
@@ -91,6 +92,14 @@ reference:
       - StoppingMaxGainCIRatio
       - CohortSize
       - CohortSizeRange
+      - CohortSizeDLT
+      - CohortSizeConst
+      - CohortSizeParts
+      - CohortSizeMax
+      - CohortSizeMin
+      - SafetyWindow
+      - SafetyWindowSize
+      - SafetyWindowConst
   - title: Internal Helper Functions
     contents:
       - h_doses_unique_per_cohort
@@ -103,11 +112,11 @@ reference:
       - h_format_number
       - h_rapply
       - h_null_if_na
-      - h_null_if_scalar
       - h_is_positive_definite
       - h_test_named_numeric
       - h_in_range
       - h_find_interval
+      - h_validate_combine_results
       - h_jags_add_dummy
       - h_jags_join_models
       - h_jags_get_model_inits
@@ -153,6 +162,7 @@ reference:
       - v_model_da_logistic_log_normal
       - v_model_tite_logistic_log_normal
       - v_model_one_par_exp_normal_prior
+      - v_model_one_par_exp_prior
       - v_next_best_mtd
       - v_next_best_ncrm
       - v_next_best_ncrm_loss
@@ -179,20 +189,33 @@ reference:
       - v_stopping_all
       - v_stopping_tdci_ratio
       - v_cohort_size_range
+      - v_cohort_size_dlt
+      - v_cohort_size_const
+      - v_cohort_size_parts
+      - v_cohort_size_max
+      - v_safety_window_size
+      - v_safety_window_const
   - title: Custom Checkmate Assertions
     contents:
       - assert_probabilities
       - assert_probability
       - assert_probability_range
+      - assert_length
+      - assert_range
       - check_probabilities
       - check_probability
       - check_probability_range
+      - check_length
+      - check_range
       - test_probabilities
       - test_probability
       - test_probability_range
+      - test_length
+      - test_range
       - expect_probabilities
       - expect_probability
       - expect_probability_range
+      - expect_range
   - title: Methods
     contents:
       - plot-Data
@@ -204,10 +227,19 @@ reference:
       - update-DataDA
       - getEff
       - getEff-DataDual
-      - sampleSize
-      - sampleSize-McmcOptions
+      - ngrid
+      - ngrid-Data
       - saveSample
       - saveSample-McmcOptions
+      - size
+      - size-McmcOptions
+      - size-Samples
+      - size-CohortSizeRange
+      - size-CohortSizeDLT
+      - size-CohortSizeMax
+      - size-CohortSizeMin
+      - size-CohortSizeConst
+      - size-CohortSizeParts
       - doseFunction
       - doseFunction-GeneralModel
       - doseFunction-ModelPseudo
@@ -227,7 +259,8 @@ reference:
       - dose-LogisticIndepBeta-noSamples
       - dose-Effloglog-noSamples
       - dose-EffFlexi
-      - dose-OneParExpNormalPrior
+      - dose-OneParLogNormalPrior
+      - dose-OneParExpPrior
       - probFunction
       - probFunction-GeneralModel
       - probFunction-ModelTox
@@ -245,7 +278,8 @@ reference:
       - prob-LogisticLogNormalMixture
       - prob-DualEndpoint
       - prob-LogisticIndepBeta-noSamples
-      - prob-OneParExpNormalPrior
+      - prob-OneParLogNormalPrior
+      - prob-OneParExpPrior
       - efficacyFunction
       - efficacyFunction-ModelEff
       - efficacy
@@ -260,6 +294,8 @@ reference:
       - update-ModelPseudo
       - mcmc-GeneralData
       - mcmc-GeneralData-DualEndpointBeta
+      - mcmc-GeneralData-OneParExpPrior
+      - names-Samples
       - nextBest
       - nextBest-NextBestMTD
       - nextBest-NextBestNCRM
@@ -286,16 +322,6 @@ reference:
       - dapply
   - title: Classes
     contents:
-      - CohortSizeConst-class
-      - CohortSizeConst
-      - CohortSizeDLT-class
-      - CohortSizeDLT
-      - CohortSizeMax-class
-      - CohortSizeMax
-      - CohortSizeMin-class
-      - CohortSizeMin
-      - CohortSizeParts-class
-      - CohortSizeParts
       - DADesign-class
       - DADesign
       - DASimulations-class
@@ -325,13 +351,8 @@ reference:
       - PseudoSimulationsSummary-class
       - Quantiles2LogisticNormal
       - Report
-      - RuleDesign-class
       - RuleDesign
-      - SafetyWindow-class
-      - SafetyWindowConst-class
-      - SafetyWindowConst
-      - SafetyWindowSize-class
-      - SafetyWindowSize
+      - RuleDesign-class
       - Samples-class
       - Samples
       - Simulations-class
@@ -353,7 +374,6 @@ reference:
       - fitPEM
       - get,Samples,character-method
       - getMinInfBeta
-      - h_validate_combine_results
       - logit
       - matchTolerance
       - maxSize
@@ -396,7 +416,6 @@ reference:
       - simulate,RuleDesign-method
       - simulate,TDDesign-method
       - simulate,TDsamplesDesign-method
-      - size
       - summary,DualSimulations-method
       - summary,GeneralSimulations-method
       - summary,PseudoDualFlexiSimulations-method

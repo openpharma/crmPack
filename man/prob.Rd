@@ -28,8 +28,10 @@
 \alias{prob-LogisticIndepBeta}
 \alias{prob,numeric,LogisticIndepBeta,missing-method}
 \alias{prob-LogisticIndepBeta-noSamples}
-\alias{prob,numeric,OneParExpNormalPrior,Samples-method}
-\alias{prob-OneParExpNormalPrior}
+\alias{prob,numeric,OneParLogNormalPrior,Samples-method}
+\alias{prob-OneParLogNormalPrior}
+\alias{prob,numeric,OneParExpPrior,Samples-method}
+\alias{prob-OneParExpPrior}
 \title{Computing Toxicity Probabilities for a Given Dose, Model and Samples}
 \usage{
 prob(dose, model, samples, ...)
@@ -60,15 +62,16 @@ prob(dose, model, samples, ...)
 
 \S4method{prob}{numeric,LogisticIndepBeta,missing}(dose, model)
 
-\S4method{prob}{numeric,OneParExpNormalPrior,Samples}(dose, model, samples)
+\S4method{prob}{numeric,OneParLogNormalPrior,Samples}(dose, model, samples)
+
+\S4method{prob}{numeric,OneParExpPrior,Samples}(dose, model, samples)
 }
 \arguments{
 \item{dose}{(\code{number} or \code{numeric})\cr the dose which is targeted.
-This must be a scalar if number of samples in \code{samples} is greater than
-one (i.e. \code{sampleSize(samples@options) > 1}). It can be a vector of any
-finite length, if there is only one sample in \code{samples}, or \code{samples} are
-not used at all, as e.g. in case of pseudo DLE
-(dose-limiting events)/toxicity model.}
+The following recycling rule applies when \code{samples} is not missing: vectors
+of size 1 will be recycled to the size of the sample
+(i.e. \code{size(samples)}). Otherwise, \code{dose} must have the same
+size as the sample.}
 
 \item{model}{(\code{GeneralModel} or \code{ModelTox})\cr the model for single agent
 dose escalation or pseudo DLE (dose-limiting events)/toxicity model.}
@@ -132,7 +135,9 @@ parameters.
 a specified dose level, based on the \code{\link{LogisticIndepBeta}} model parameters.
 All model parameters (except \code{dose}) should be present in the \code{model} object.
 
-\item \code{prob(dose = numeric, model = OneParExpNormalPrior, samples = Samples)}: 
+\item \code{prob(dose = numeric, model = OneParLogNormalPrior, samples = Samples)}: 
+
+\item \code{prob(dose = numeric, model = OneParExpPrior, samples = Samples)}: 
 
 }}
 \note{

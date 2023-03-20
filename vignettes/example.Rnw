@@ -73,7 +73,7 @@ internal MCMC computations. WinBUGS is not required or supported anymore.
 \label{sec:getting-started}
 
 Before being able to run anything, you have to load the package with
-<<load>>=
+<<load_crmPack>>=
 library(crmPack)
 @
 
@@ -279,7 +279,7 @@ Here it is important that the data set has to be defined before defining any mod
 Either an empty data set or a data set that contains all currently available observations is needed.
 
 Therefore, let's assume an empty data set is set up. For example, we will use 12 dose levels from 25 to 300 mg with increments of 25 mg. Then we have:
-<<emptydata>>=
+<<emptydata_12>>=
 emptydata <- Data(doseGrid=
                    seq(from=25, to=300, by=25))
 data1 <- emptydata
@@ -882,8 +882,7 @@ mySize1 <- CohortSizeRange(intervals = c(0, 30), cohort_size = c(1, 3))
 Then for the DLT range:
 
 <<size-dlt>>=
-mySize2 <- CohortSizeDLT(DLTintervals=c(0, 1),
-                         cohortSize=c(1, 3))
+mySize2 <- CohortSizeDLT(dlt_intervals = c(0, 1), cohort_size = c(1, 3))
 @
 
 Finally we combine the two rules by taking the maximum number of patients of
@@ -1574,12 +1573,12 @@ the latent DLT and the biomarker variable.
 
 As the dual-endpoint models are more complex, it is advisable to use a
 sufficiently long Markov chain for fitting them. Here we just use for illustration
-purposes a quite small Markov chain -- again, for the real application, this would need to be at least 100 times longer!
+purposes a quite small Markov chain -- again, for the real application, this would need to be at least 25 times longer!
 
 <<dual-options>>=
 options <- McmcOptions(burnin=100,
                        step=2,
-                       samples=500)
+                       samples=2000)
 @
 
 Then we can obtain the MCMC samples:
@@ -1650,10 +1649,10 @@ print(nextDose$plot)
 @
 
 Here the bottom panel shows (as for the NCRM) the overdose probability, and we
-see that doses above 6~mg are too toxic. In the top panel, we see the
+see that doses above 14~mg are too toxic. In the top panel, we see the
 probability for each dose to reach at least 90\% of the maximum biomarker
 response in the dose grid --- this is here our target probability. While the
-numbers are low, we clearly see that there is a local maximum at 10~mg of the
+numbers are low, we clearly see that there is a local maximum at 6~mg of the
 target probability, confirming what we have seen in the previous data and
 model fit plots.
 

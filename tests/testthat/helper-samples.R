@@ -74,3 +74,19 @@ h_samples_dual_endpoint_beta <- function(fixed = TRUE) {
     )
   }
 }
+
+h_samples_eff_flexi <- function(n = 4) {
+  assert_int(n, lower = 1, upper = 4)
+  ExpEff <- matrix(
+    c(
+      0.76, 0.76, 0.77, 0.74, 0.51, 0.53, 0.51, 0.52, 0.47, 0.48, 0.46, 0.46,
+      0.93, 1.65, -0.76, 2.4, 1.79, 2.27, 0.96, 2.56, 3.11, 1.43, -2.28, 5.78,
+      2.48, 1.26, -3.1, 7.19, -0.27, 2.9, -0.4, 7.14, -0.52, 3.42, 1.66, 6.86,
+      -0.64, 3.37, 2.46, 6.34, -0.77, 3.37, 3.75, 3.85, 2.51, 2.5, 2.51, 2.51
+    ),
+    ncol = 12
+  )
+  ExpEff <- ExpEff[1:n, , drop = FALSE]
+
+  h_as_samples(list(ExpEff = ExpEff))
+}
