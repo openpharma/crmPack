@@ -60,142 +60,164 @@ Quantiles2LogisticNormal <- function(dosegrid,
                                      lower,
                                      median,
                                      upper,
-                                     level=0.95,
-                                     logNormal=FALSE,
-                                     parstart=NULL,
-                                     parlower=c(-10, -10, 0, 0, -0.95),
-                                     parupper=c(10, 10, 10, 10, 0.95),
-                                     seed=12345,
-                                     verbose=TRUE,
-                                     control=
-                                     list(threshold.stop=0.01,
-                                          maxit=50000,
-                                          temperature=50000,
-                                          max.time=600))
-{
-    ## extracts and checks
-    nDoses <- length(dosegrid)
-    stopifnot(! is.unsorted(dosegrid, strictly=TRUE),
-              ## the medians must be monotonically increasing:
-              ! is.unsorted(median),
-              identical(length(lower), nDoses),
-              identical(length(median), nDoses),
-              identical(length(upper), nDoses),
-              all(lower < median),
-              all(upper > median),
-              is.probability(level, bounds=FALSE),
-              is.bool(logNormal),
-              is.bool(verbose),
-              identical(length(parlower), 5L),
-              identical(length(parupper), 5L),
-              all(parlower < parstart),
-              all(parstart < parupper))
+                                     level = 0.95,
+                                     logNormal = FALSE,
+                                     parstart = NULL,
+                                     parlower = c(-10, -10, 0, 0, -0.95),
+                                     parupper = c(10, 10, 10, 10, 0.95),
+                                     seed = 12345,
+                                     verbose = TRUE,
+                                     control =
+                                       list(
+                                         threshold.stop = 0.01,
+                                         maxit = 50000,
+                                         temperature = 50000,
+                                         max.time = 600
+                                       )) {
+  ## extracts and checks
+  nDoses <- length(dosegrid)
+  stopifnot(
+    !is.unsorted(dosegrid, strictly = TRUE),
+    ## the medians must be monotonically increasing:
+    !is.unsorted(median),
+    identical(length(lower), nDoses),
+    identical(length(median), nDoses),
+    identical(length(upper), nDoses),
+    all(lower < median),
+    all(upper > median),
+    is.probability(level, bounds = FALSE),
+    is.bool(logNormal),
+    is.bool(verbose),
+    identical(length(parlower), 5L),
+    identical(length(parupper), 5L),
+    all(parlower < parstart),
+    all(parstart < parupper)
+  )
 
-    ## put verbose argument in the control list
-    control$verbose <- verbose
+  ## put verbose argument in the control list
+  control$verbose <- verbose
 
-    ## parametrize in terms of the means for the intercept alpha and the
-    ## (log) slope beta,
-    ## the corresponding standard deviations and the correlation.
-    ## Define start values for optimisation:
-    startValues <-
-        if(is.null(parstart))
-        {
-            ## find approximate means for alpha and slope beta
-            ## from fitting logistic model to medians:
-            startAlphaBeta <-
-                coef(lm(I(logit(median)) ~ I(log(dosegrid / refDose))))
+  ## parametrize in terms of the means for the intercept alpha and the
+  ## (log) slope beta,
+  ## the corresponding standard deviations and the correlation.
+  ## Define start values for optimisation:
+  startValues <-
+    if (is.null(parstart)) {
+      ## find approximate means for alpha and slope beta
+      ## from fitting logistic model to medians:
+      startAlphaBeta <-
+        coef(lm(I(logit(median)) ~ I(log(dosegrid / refDose))))
 
-            ## overall starting values:
-            c(meanAlpha=
-              startAlphaBeta[1],
-              meanBeta=
-              if(logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
-              sdAlpha=
-              1,
-              sdBeta=
-              1,
-              correlation=
-              0)
-        } else {
-            parstart
-        }
-
-    ## what is the target function which we want to minimize?
-    target <- function(param)
-    {
-        ## form the mean vector and covariance matrix
-        mean <- param[1:2]
-        cov <- matrix(c(param[3]^2,
-                        prod(param[3:5]),
-                        prod(param[3:5]),
-                        param[4]^2),
-                      nrow=2L, ncol=2L)
-
-        ## simulate from the corresponding normal distribution
-        set.seed(seed)
-        normalSamples <- mvtnorm::rmvnorm(n=1e4L,
-                                          mean=mean,
-                                          sigma=cov)
-
-        ## extract separate coefficients
-        alphaSamples <- normalSamples[, 1L]
-        betaSamples <- if(logNormal) exp(normalSamples[, 2L]) else normalSamples[, 2L]
-
-        ## and compute resulting quantiles
-        quants <- matrix(nrow=length(dosegrid),
-                         ncol=3L)
-        colnames(quants) <- c("lower", "median", "upper")
-
-        ## process each dose after another:
-        for(i in seq_along(dosegrid))
-        {
-            ## create samples of the probability
-            probSamples <-
-                plogis(alphaSamples + betaSamples * log(dosegrid[i] / refDose))
-
-            ## compute lower, median and upper quantile
-            quants[i, ] <-
-                quantile(probSamples,
-                         probs=c((1 - level) / 2, 0.5, (1 + level) / 2))
-        }
-
-        ## now we can compute the target value
-        ret <- max(abs(quants - c(lower, median, upper)))
-        return(structure(ret,
-                         mean=mean,
-                         cov=cov,
-                         quantiles=quants))
+      ## overall starting values:
+      c(
+        meanAlpha =
+          startAlphaBeta[1],
+        meanBeta =
+          if (logNormal) log(startAlphaBeta[2]) else startAlphaBeta[2],
+        sdAlpha =
+          1,
+        sdBeta =
+          1,
+        correlation =
+          0
+      )
+    } else {
+      parstart
     }
 
+  ## what is the target function which we want to minimize?
+  target <- function(param) {
+    ## form the mean vector and covariance matrix
+    mean <- param[1:2]
+    cov <- matrix(
+      c(
+        param[3]^2,
+        prod(param[3:5]),
+        prod(param[3:5]),
+        param[4]^2
+      ),
+      nrow = 2L, ncol = 2L
+    )
+
+    ## simulate from the corresponding normal distribution
     set.seed(seed)
-    ## now optimise the target
-    genSAres <- GenSA::GenSA(par=startValues,
-                        fn=target,
-                        lower=parlower,
-                        upper=parupper,
-                        control=control)
-    distance <- genSAres$value
-    pars <- genSAres$par
-    targetRes <- target(pars)
+    normalSamples <- mvtnorm::rmvnorm(
+      n = 1e4L,
+      mean = mean,
+      sigma = cov
+    )
 
-    ## and construct the model
-    ret <-
-        if(logNormal)
-            LogisticLogNormal(mean=attr(targetRes, "mean"),
-                              cov=attr(targetRes, "cov"),
-                              ref_dose=refDose)
-        else
-            LogisticNormal(mean=attr(targetRes, "mean"),
-                           cov=attr(targetRes, "cov"),
-                           ref_dose=refDose)
+    ## extract separate coefficients
+    alphaSamples <- normalSamples[, 1L]
+    betaSamples <- if (logNormal) exp(normalSamples[, 2L]) else normalSamples[, 2L]
 
-    ## return it together with the resulting distance and the quantiles
-    return(list(model=ret,
-                parameters=pars,
-                quantiles=attr(targetRes, "quantiles"),
-                required=cbind(lower, median, upper),
-                distance=distance))
+    ## and compute resulting quantiles
+    quants <- matrix(
+      nrow = length(dosegrid),
+      ncol = 3L
+    )
+    colnames(quants) <- c("lower", "median", "upper")
+
+    ## process each dose after another:
+    for (i in seq_along(dosegrid))
+    {
+      ## create samples of the probability
+      probSamples <-
+        plogis(alphaSamples + betaSamples * log(dosegrid[i] / refDose))
+
+      ## compute lower, median and upper quantile
+      quants[i, ] <-
+        quantile(probSamples,
+          probs = c((1 - level) / 2, 0.5, (1 + level) / 2)
+        )
+    }
+
+    ## now we can compute the target value
+    ret <- max(abs(quants - c(lower, median, upper)))
+    return(structure(ret,
+      mean = mean,
+      cov = cov,
+      quantiles = quants
+    ))
+  }
+
+  set.seed(seed)
+  ## now optimise the target
+  genSAres <- GenSA::GenSA(
+    par = startValues,
+    fn = target,
+    lower = parlower,
+    upper = parupper,
+    control = control
+  )
+  distance <- genSAres$value
+  pars <- genSAres$par
+  targetRes <- target(pars)
+
+  ## and construct the model
+  ret <-
+    if (logNormal) {
+      LogisticLogNormal(
+        mean = attr(targetRes, "mean"),
+        cov = attr(targetRes, "cov"),
+        ref_dose = refDose
+      )
+    } else {
+      LogisticNormal(
+        mean = attr(targetRes, "mean"),
+        cov = attr(targetRes, "cov"),
+        ref_dose = refDose
+      )
+    }
+
+  ## return it together with the resulting distance and the quantiles
+  return(list(
+    model = ret,
+    parameters = pars,
+    quantiles = attr(targetRes, "quantiles"),
+    required = cbind(lower, median, upper),
+    distance = distance
+  ))
 }
 
 ##' Get the minimal informative unimodal beta distribution
@@ -211,22 +233,26 @@ Quantiles2LogisticNormal <- function(dosegrid,
 ##'
 ##' @export
 ##' @keywords programming
-getMinInfBeta <- function(p, q)
-{
-    stopifnot(is.probability(p, bounds=FALSE),
-              is.probability(q, bounds=FALSE))
+getMinInfBeta <- function(p, q) {
+  stopifnot(
+    is.probability(p, bounds = FALSE),
+    is.probability(q, bounds = FALSE)
+  )
 
-    ret <-
-        if(q > p)
-        {
-            list(a=log(p) / log(q),
-                 b=1)
-        } else {
-            list(a=1,
-                 b=log(1-p) / log(1-q))
-        }
+  ret <-
+    if (q > p) {
+      list(
+        a = log(p) / log(q),
+        b = 1
+      )
+    } else {
+      list(
+        a = 1,
+        b = log(1 - p) / log(1 - q)
+      )
+    }
 
-    return(ret)
+  return(ret)
 }
 
 
@@ -276,63 +302,80 @@ getMinInfBeta <- function(p, q)
 ##' @keywords programming
 MinimalInformative <- function(dosegrid,
                                refDose,
-                               threshmin=0.2,
-                               threshmax=0.3,
-                               probmin=0.05,
-                               probmax=0.05,
-                               ...)
-{
-    ## extracts and checks
-    nDoses <- length(dosegrid)
-    stopifnot(! is.unsorted(dosegrid, strictly=TRUE),
-              is.probability(threshmin, bounds=FALSE),
-              is.probability(threshmax, bounds=FALSE),
-              is.probability(probmin, bounds=FALSE),
-              is.probability(probmax, bounds=FALSE))
-    xmin <- dosegrid[1]
-    xmax <- dosegrid[nDoses]
+                               threshmin = 0.2,
+                               threshmax = 0.3,
+                               probmin = 0.05,
+                               probmax = 0.05,
+                               ...) {
+  ## extracts and checks
+  nDoses <- length(dosegrid)
+  stopifnot(
+    !is.unsorted(dosegrid, strictly = TRUE),
+    is.probability(threshmin, bounds = FALSE),
+    is.probability(threshmax, bounds = FALSE),
+    is.probability(probmin, bounds = FALSE),
+    is.probability(probmax, bounds = FALSE)
+  )
+  xmin <- dosegrid[1]
+  xmax <- dosegrid[nDoses]
 
-    ## derive the beta distributions at the lowest and highest dose
-    betaAtMin <- getMinInfBeta(q=threshmin,
-                               p=1 - probmin)
-    betaAtMax <- getMinInfBeta(q=threshmax,
-                               p=probmax)
+  ## derive the beta distributions at the lowest and highest dose
+  betaAtMin <- getMinInfBeta(
+    q = threshmin,
+    p = 1 - probmin
+  )
+  betaAtMax <- getMinInfBeta(
+    q = threshmax,
+    p = probmax
+  )
 
-    ## get the medians of those beta distributions
-    medianMin <- with(betaAtMin,
-                      qbeta(p=0.5, a, b))
-    medianMax <- with(betaAtMax,
-                      qbeta(p=0.5, a, b))
+  ## get the medians of those beta distributions
+  medianMin <- with(
+    betaAtMin,
+    qbeta(p = 0.5, a, b)
+  )
+  medianMax <- with(
+    betaAtMax,
+    qbeta(p = 0.5, a, b)
+  )
 
-    ## now determine the medians of all beta distributions
-    beta <- (logit(medianMax) - logit(medianMin)) / (log(xmax) - log(xmin))
-    alpha <- logit(medianMax) - beta * log(xmax/refDose)
-    medianDosegrid <- plogis(alpha + beta * log(dosegrid/refDose))
+  ## now determine the medians of all beta distributions
+  beta <- (logit(medianMax) - logit(medianMin)) / (log(xmax) - log(xmin))
+  alpha <- logit(medianMax) - beta * log(xmax / refDose)
+  medianDosegrid <- plogis(alpha + beta * log(dosegrid / refDose))
 
-    ## finally for all doses calculate 95% credible interval bounds
-    ## (lower and upper)
-    lower <- upper <- dosegrid
-    for(i in seq_along(dosegrid))
-    {
-        ## get min inf beta distribution
-        thisMinBeta <- getMinInfBeta(p=0.5,
-                                     q=medianDosegrid[i])
+  ## finally for all doses calculate 95% credible interval bounds
+  ## (lower and upper)
+  lower <- upper <- dosegrid
+  for (i in seq_along(dosegrid))
+  {
+    ## get min inf beta distribution
+    thisMinBeta <- getMinInfBeta(
+      p = 0.5,
+      q = medianDosegrid[i]
+    )
 
-        ## derive required quantiles
-        lower[i] <- with(thisMinBeta,
-                         qbeta(p=0.025, a, b))
-        upper[i] <- with(thisMinBeta,
-                         qbeta(p=0.975, a, b))
-    }
+    ## derive required quantiles
+    lower[i] <- with(
+      thisMinBeta,
+      qbeta(p = 0.025, a, b)
+    )
+    upper[i] <- with(
+      thisMinBeta,
+      qbeta(p = 0.975, a, b)
+    )
+  }
 
-    ## now go to Quantiles2LogisticNormal
-    Quantiles2LogisticNormal(dosegrid=dosegrid,
-                             refDose=refDose,
-                             lower=lower,
-                             median=medianDosegrid,
-                             upper=upper,
-                             level=0.95,
-                             ...)
+  ## now go to Quantiles2LogisticNormal
+  Quantiles2LogisticNormal(
+    dosegrid = dosegrid,
+    refDose = refDose,
+    lower = lower,
+    median = medianDosegrid,
+    upper = upper,
+    level = 0.95,
+    ...
+  )
 }
 
 # nolint end

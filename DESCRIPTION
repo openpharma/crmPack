@@ -9,7 +9,8 @@ Authors@R: c(
     person("Thomas", "Jaki", , "jaki.thomas@gmail.com", role = "aut"),
     person("Jiawen", "Zhu", , "zhu.jiawen@gene.com", role = "aut"),
     person("Ziwei", "Liao", , "ziwei.liao.fdu@gmail.com", role = "aut"),
-    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut")
+    person("Dimitris", "Kontos", , "dimitris.kontos@clinbay.com", role = "aut"),
+    person("Marlene", "Schulte-Goebel", , "marlene.schulte-goebel@merckgroup.com", role = "aut")
   )
 Description: Implements a wide range of model-based dose escalation
     designs, ranging from classical and modern continual reassessment
