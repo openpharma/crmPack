@@ -487,8 +487,6 @@ setMethod("simulate",
 )
 
 
-
-
 ##' Simulate outcomes from a rule-based design
 ##'
 ##' @param object the \code{\linkS4class{RuleDesign}} object we want to simulate

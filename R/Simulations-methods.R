@@ -555,11 +555,13 @@ setMethod("summary",
           stop_report = stop_report
         )
 
-
       return(ret)
     }
 )
 
+      return(ret)
+    }
+)
 
 ##' Summarize the model-based design simulations, relative to a given truth
 ##'
