@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-One of the big advantages of `crmPack` over existing R implementations is its flexible framework based on the S4 classes and methods system [@Chambers2008]. Users can extend the existing functionality easily to the specific needs of the study [@Bove2019].
+One of the big advantages of `crmPack` over existing R implementations is its flexible framework based on the S4 classes and methods system [@Chambers2008]. Users can extend the existing functionality easily to the specific needs of the study [@SabanesBove2019].
 
 User defined extensions of classes and methods can be easily created and used together with existing `crmPack` classes and methods when setting up the study and performing analysis with observed data. As long as no parallel computing is used, no special care needs to be taken utilizing both native and user defined classes and methods.
 When trial simulations need to be performed to derive the operational characteristics of a study setup, run times may become long with single core processing. The run time depends mainly on the number of study replications and MCMC samples. In cases of long run times, utilizing parallel computing, i.e. using multiple CPU cores, can overcome these challenge and decrease run times significantly.
