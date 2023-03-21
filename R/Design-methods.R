@@ -131,6 +131,21 @@ getResultList <- function(fun,
         varlist = ls(.GlobalEnv)
       )
 
+      # load user extensions
+      tryCatch(
+        {
+          if (exists("crmpack_extensions") == TRUE) {
+            parallel::clusterEvalQ(
+              cl,
+              crmpack_extensions()
+            )
+          }
+        },
+        error = function(e) {
+          stop("Failed to export user extensions: ", e$message)
+        }
+      )
+
       ## now do the computations
       res <- parallel::parLapply(
         cl = cl,
