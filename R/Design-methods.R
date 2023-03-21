@@ -88,7 +88,8 @@ setSeed <- function(seed = NULL) {
 getResultList <- function(fun,
                           nsim,
                           vars,
-                          parallel = NULL) {
+
+parallel = NULL) {
   ret <-
     if (is.null(parallel)) {
       lapply(
@@ -130,7 +131,22 @@ getResultList <- function(fun,
         cl = cl,
         varlist = ls(.GlobalEnv)
       )
-
+            
+      # load user extensions
+      tryCatch(
+        {
+          if (exists("crmpack_extensions") == TRUE) {
+            parallel::clusterEvalQ(
+              cl,
+              crmpack_extensions()
+            )
+          }
+        },
+        error = function(e) {
+          stop("Failed to export user extensions: ", e$message)
+        }
+      )
+            
       ## now do the computations
       res <- parallel::parLapply(
         cl = cl,
