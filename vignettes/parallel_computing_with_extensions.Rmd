@@ -27,7 +27,7 @@ When trial simulations need to be performed to derive the operational characteri
 
 Parallel computing is supported by `crmPack` by design, i.e. whenever the simulation call is invoked with parameters `parallel = TRUE` and `nCores =` more than one CPU, each core is initialized with the `crmPack` package and the global environment.
 
-Due to the nature of the S4 object system, user defined classes and method that were defined in the global environment cannot just made available at each core by initializing the core with the global environment. User defined classes and method needs to be executed on any core that is initialized to warrant full functionality of the S4 objects. 
+Due to the nature of the S4 object system, user defined classes and method that were defined in the global environment cannot just be made available at each core by initializing the core with the global environment. User defined classes and method needs to be executed on any core that is initialized to warrant full functionality of the S4 objects. 
 
 To use user written extension with parallel computing and `crmPack`, the user written code needs to be embedded in a function that must have the fixed name `crmpack_extensions`. This function is executed at any core at the time of initialization of the core, so that the user written S4 classes and methods are available along with the `crmPack` package.
 
