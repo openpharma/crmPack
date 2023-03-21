@@ -65,7 +65,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Generate the MTD samples and derive the next best dose.
     dose_target_samples <- dose(x = nextBest@target, model, samples)
     dose_target <- nextBest@derive(dose_target_samples)
@@ -149,7 +148,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -291,7 +289,6 @@ setMethod("nextBest",
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     # Compute probabilities to be in target and overdose tox interval.
@@ -377,7 +374,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit, samples, model, data, ...) {
-
     # The last dose level tested (not necessarily the maximum one).
     last_level <- tail(data@xLevel, 1L)
 
@@ -432,7 +428,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Biomarker samples at the dose grid points.
     biom_samples <- samples@data$betaW
 
@@ -555,7 +550,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
     dlt_prob <- colMeans(prob_samples)
@@ -654,7 +648,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Matrix with samples from the dose-tox curve at the dose grid points.
     prob_samples <- sapply(data@doseGrid, prob, model = model, samples = samples)
 
@@ -742,10 +735,10 @@ setMethod(
       next_dose = next_dose_drt
     )
 
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
+    if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
       print(paste("TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
+    if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = TRUE) && !in_sim) {
       print(paste("TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
 
@@ -783,7 +776,6 @@ setMethod(
     data = "Data"
   ),
   definition = function(nextBest, doselimit = Inf, samples, model, data, ...) {
-
     # Generate target dose samples, i.e. the doses with probability of the
     # occurrence of a DLT that equals to the nextBest@prob_target_drt
     # (or nextBest@prob_target_eot, respectively).
@@ -875,27 +867,27 @@ setMethod(
     dose_target_eot <- dose(x = prob_target_eot, model)
 
     # Find the dose which gives the maximum gain.
-    dose_grid_range <- h_dose_grid_range(data)
+    dosegrid_range <- dose_grid_range(data)
     opt <- optim(
-      par = dose_grid_range[1],
+      par = dosegrid_range[1],
       fn = function(DOSE) {
         -gain(DOSE, model_dle = model, model_eff = model_eff)
       },
       method = "L-BFGS-B",
-      lower = dose_grid_range[1],
-      upper = dose_grid_range[2]
+      lower = dosegrid_range[1],
+      upper = dosegrid_range[2]
     )
     dose_mg <- opt$par # this is G*. # no lintr
     max_gain <- -opt$value
 
     # Print info message if dose target is outside of the range.
-    if (!h_in_range(dose_target_drt, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_target_drt, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_target_eot, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
-    if (!h_in_range(dose_mg, range = h_dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_mg, range = dose_grid_range(data), bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -1009,14 +1001,14 @@ setMethod(
     gain_values <- apply(gain_samples, 2, FUN = nextBest@mg_derive)
 
     # Print info message if dose target is outside of the range.
-    dose_grid_range <- h_dose_grid_range(data)
-    if (!h_in_range(dose_target_drt, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
+    dosegrid_range <- dose_grid_range(data)
+    if (!h_in_range(dose_target_drt, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_drt * 100, "=", dose_target_drt, "not within dose grid"))
     }
-    if (!h_in_range(dose_target_eot, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_target_eot, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated TD", prob_target_eot * 100, "=", dose_target_eot, "not within dose grid"))
     }
-    if (!h_in_range(dose_mg, range = dose_grid_range, bounds_closed = FALSE) && !in_sim) {
+    if (!h_in_range(dose_mg, range = dosegrid_range, bounds_closed = FALSE) && !in_sim) {
       print(paste("Estimated max gain dose =", dose_mg, "not within dose grid"))
     }
 
@@ -1047,7 +1039,7 @@ setMethod(
       dose_mg_samples = dose_mg_samples,
       next_dose = nb_doses_at_grid$next_dose,
       doselimit = doselimit,
-      dose_grid_range = dose_grid_range
+      dose_grid_range = dosegrid_range
     )
 
     list(
@@ -1249,7 +1241,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       ## determine if there are already cohorts
       ## belonging to part 2:
       alreadyInPart2 <- any(data@part == 2L)
@@ -1352,7 +1343,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       # Determine what was the last dose.
       lastDose <- tail(data@x, 1)
 
@@ -1389,7 +1379,6 @@ setMethod("maxDose",
     ),
   def =
     function(increments, data, ...) {
-
       ## apply the multiple increment rules
       individualResults <-
         sapply(increments@increments_list,
@@ -2197,12 +2186,10 @@ setMethod("stopTrial",
 
       ## if target is relative to maximum
       if (stopping@is_relative) {
-
         ## If there is an 'Emax' parameter, target biomarker level will
         ## be relative to 'Emax', otherwise will be relative to the
         ## maximum biomarker level achieved in the given dose range.
         if ("Emax" %in% names(samples)) {
-
           ## For each sample, look which dose is maximizing the
           ## simultaneous probability to be in the target biomarker
           ## range and below overdose toxicity
@@ -2215,7 +2202,6 @@ setMethod("stopTrial",
             }
           )
         } else {
-
           ## For each sample, look which was the minimum dose giving
           ## relative target level
           targetIndex <- apply(
@@ -2795,7 +2781,6 @@ setMethod("stopTrial",
       ## Find which is smaller (TDtargetEndOfTrialEstimate or Gstar)
 
       if (TDtargetEndOfTrialEstimate <= Gstar) {
-
         ## Find the upper and lower limit of the 95% credibility interval and its ratio of the smaller
         CI <- CITDEOT
         ratio <- ratioTDEOT
@@ -3029,7 +3014,6 @@ setMethod("windowLength",
     ),
   def =
     function(safetyWindow, size, data, ...) {
-
       ## determine in which interval the next size is
       interval <-
         findInterval(
@@ -3067,7 +3051,6 @@ setMethod("windowLength",
     ),
   def =
     function(safetyWindow, size, ...) {
-
       ## first element should be 0.
       patientGap <- head(c(
         0, safetyWindow@gap,
