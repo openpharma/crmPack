@@ -621,7 +621,7 @@ setMethod(
 #'
 #' @param object (`Data`)\cr object with dose grid.
 #' @param ... further arguments passed to class-specific methods.
-#' @return an `numeric` vector containing the minimum and maximum of all the
+#' @return A `numeric` vector containing the minimum and maximum of all the
 #'   doses in a grid or `c(-Inf, Inf)`.
 #'
 #' @export

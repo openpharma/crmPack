@@ -18,7 +18,7 @@ dose_grid_range(object, ...)
 \item{ignore_placebo}{(\code{flag})\cr should placebo dose (if any) not be counted?}
 }
 \value{
-an \code{numeric} vector containing the minimum and maximum of all the
+A \code{numeric} vector containing the minimum and maximum of all the
 doses in a grid or \code{c(-Inf, Inf)}.
 }
 \description{
