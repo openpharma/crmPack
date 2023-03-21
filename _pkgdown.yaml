@@ -108,7 +108,6 @@ reference:
       - h_all_equivalent
       - h_plot_data_df
       - h_plot_data_cohort_lines
-      - h_dose_grid_range
       - h_check_fun_formals
       - h_slots
       - h_format_number
@@ -233,6 +232,8 @@ reference:
       - getEff-DataDual
       - ngrid
       - ngrid-Data
+      - dose_grid_range
+      - dose_grid_range-Data
       - saveSample
       - saveSample-McmcOptions
       - size
