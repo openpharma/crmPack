@@ -88,8 +88,7 @@ setSeed <- function(seed = NULL) {
 getResultList <- function(fun,
                           nsim,
                           vars,
-
-parallel = NULL) {
+                          parallel = NULL) {
   ret <-
     if (is.null(parallel)) {
       lapply(
@@ -131,7 +130,7 @@ parallel = NULL) {
         cl = cl,
         varlist = ls(.GlobalEnv)
       )
-            
+
       # load user extensions
       tryCatch(
         {
@@ -146,7 +145,7 @@ parallel = NULL) {
           stop("Failed to export user extensions: ", e$message)
         }
       )
-            
+
       ## now do the computations
       res <- parallel::parLapply(
         cl = cl,

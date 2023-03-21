@@ -157,17 +157,18 @@ my_design <- Design(
 examine(my_design, my_options)
 
 # Set up simulation scenarios.
-safe_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/20000)
-late_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/2000)
-early_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/700)
-toxic_scenario <- probFunction(my_model, alpha0 = logit(0.6), alpha1 = (logit(0.3)-logit(0.6))/-300)
-peak_scenario  <- function(dose,
-                           scenario=cbind(emptydata@doseGrid, c(rep(0.05,11), rep(0.80,8))))
-{scenario[match(dose, scenario[, 1]), 2]}
+safe_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3) - logit(0.05)) / 20000)
+late_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3) - logit(0.05)) / 2000)
+early_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3) - logit(0.05)) / 700)
+toxic_scenario <- probFunction(my_model, alpha0 = logit(0.6), alpha1 = (logit(0.3) - logit(0.6)) / -300)
+peak_scenario <- function(dose,
+                          scenario = cbind(emptydata@doseGrid, c(rep(0.05, 11), rep(0.80, 8)))) {
+  scenario[match(dose, scenario[, 1]), 2]
+}
 
 
 # Helper function that outputs the used time.
-report_time <- function(report_text){
+report_time <- function(report_text) {
   cat(
     format(Sys.time(), usetz = TRUE),
     report_text,
@@ -195,8 +196,8 @@ time_no_parallel <- system.time({
   start_time <- Sys.time()
   cat(format(Sys.time(), usetz = TRUE), "start", "\n")
 
-  my_nsim = 10
-  do_parallel = FALSE
+  my_nsim <- 10
+  do_parallel <- FALSE
 
   safe <- get_oc(safe_scenario)
 
@@ -208,8 +209,8 @@ time_parallel <- system.time({
   start_time <- Sys.time()
   cat(format(Sys.time(), usetz = TRUE), "start", "\n")
 
-  my_nsim = 10
-  do_parallel = TRUE
+  my_nsim <- 10
+  do_parallel <- TRUE
 
   safe <- get_oc(safe_scenario)
 
