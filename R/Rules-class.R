@@ -1770,9 +1770,7 @@ StoppingList <- function(stop_list, summary) {
 .StoppingAll <- setClass(
   Class = "StoppingAll",
   slots = c(
-    stop_list = "list",
-    report_label = "character"
-  ),
+    stop_list = "list"),
   prototype = prototype(
     stop_list = list(
       StoppingMinPatients(50),
