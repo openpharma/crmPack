@@ -175,8 +175,6 @@ model<-DALogisticLogNormal(mean=c(-0.85,1),
 # Choose the rule for dose increments
 myIncrements <- IncrementsRelative(intervals=c(0,20),
                                    increments=c(1,0.33))
-# Choose the rule for selecting the next dose
-nextMaxDose <- maxDose(myIncrements,data=emptydata)
 
 myNextBest <- NextBestNCRM(target=c(0.2,0.35),
                            overdose=c(0.35,1),
