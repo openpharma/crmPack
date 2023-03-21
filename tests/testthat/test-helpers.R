@@ -109,42 +109,6 @@ test_that("h_plot_data_cohort_lines works as expected for single cohort", {
   )
 })
 
-# h_dose_grid_range ----
-
-test_that("h_dose_grid_range works as expected for regular dose grid", {
-  data <- Data(placebo = TRUE, doseGrid = c(0.01, 10, 25, 50, 75))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 75))
-
-  data <- Data(placebo = FALSE, doseGrid = c(10, 25, 50, 75))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 75))
-})
-
-test_that("h_dose_grid_range works as expected for empty grid", {
-  data <- Data(placebo = TRUE)
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(-Inf, Inf))
-
-  data <- Data(placebo = TRUE, doseGrid = 0.01)
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(-Inf, Inf))
-
-  data <- Data(placebo = FALSE)
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(-Inf, Inf))
-})
-
-test_that("h_dose_grid_range works as expected for non empty edge grid", {
-  data <- Data(placebo = TRUE, doseGrid = c(0.01, 10))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 10))
-
-  data <- Data(placebo = FALSE, doseGrid = c(10))
-  result <- h_dose_grid_range(data)
-  expect_identical(result, c(10, 10))
-})
-
 # h_check_fun_formals ----
 
 test_that("h_check_fun_formals returns TRUE for valid arguments", {
