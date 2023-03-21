@@ -38,9 +38,9 @@ The following paragraphs provide an example of how user defined extensions can b
 User written code needs to be embedded into a function that must be named `crmpack_extensions`. The following code gives a high level example, how this looks like.
 
 ```{r high level showcase, eval=FALSE}
-crmpack_extensions <- function(){
-  
- ..... user code .....
+crmpack_extensions <- function() {
+
+     #..... user code .....
 
 }
 ```
@@ -201,7 +201,7 @@ emptydata <- Data(
     10, 15, 20, 30, 40, 60, 80, 120, 160, 240, 320,
     480, 640, 960, 1280, 1920, 2400, 3000, 4000
   ),
-  placebo = F
+  placebo = FALSE
 )
 
 # Create data for basic testing of the setup.
@@ -284,17 +284,18 @@ When examine runs as expected, study simulation can be performed. To demonstrate
 
 ```{r perform study simulations, eval=FALSE}
 # Set up scenarios
-safe_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/20000)
-late_scenario  <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/2000)
-early_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3)-logit(0.05))/700)
-toxic_scenario <- probFunction(my_model, alpha0 = logit(0.6), alpha1 = (logit(0.3)-logit(0.6))/-300)
-peak_scenario  <- function(dose,
-                  scenario=cbind(emptydata@doseGrid, c(rep(0.05,11), rep(0.80,8))))
-  {scenario[match(dose, scenario[, 1]), 2]}
+safe_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3) - logit(0.05)) / 20000)
+late_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3) - logit(0.05)) / 2000)
+early_scenario <- probFunction(my_model, alpha0 = logit(0.05), alpha1 = (logit(0.3) - logit(0.05)) / 700)
+toxic_scenario <- probFunction(my_model, alpha0 = logit(0.6), alpha1 = (logit(0.3) - logit(0.6)) / -300)
+peak_scenario <- function(dose,
+                          scenario = cbind(emptydata@doseGrid, c(rep(0.05, 11), rep(0.80, 8)))) {
+  scenario[match(dose, scenario[, 1]), 2]
+}
 
 
 # Helper function that outputs the elapsed time.
-report_time <- function(report_text){
+report_time <- function(report_text) {
   cat(
     format(Sys.time(), usetz = TRUE),
     report_text,
@@ -323,8 +324,8 @@ time_no_parallel <- system.time({
   start_time <- Sys.time()
   cat(format(Sys.time(), usetz = TRUE), "start", "\n")
 
-  my_nsim = 100
-  do_parallel = FALSE
+  my_nsim <- 100
+  do_parallel <- FALSE
 
   safe <- get_oc(safe_scenario)
 
@@ -340,8 +341,8 @@ time <- system.time({
   start_time <- Sys.time()
   cat(format(Sys.time(), usetz = TRUE), "start", "\n")
 
-  my_nsim = 100
-  do_parallel = TRUE
+  my_nsim <- 100
+  do_parallel <- TRUE
 
   safe <- get_oc(safe_scenario)
 
