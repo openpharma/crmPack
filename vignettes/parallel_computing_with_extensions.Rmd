@@ -39,9 +39,7 @@ User written code needs to be embedded into a function that must be named `crmpa
 
 ```{r high level showcase, eval=FALSE}
 crmpack_extensions <- function() {
-
-     #..... user code .....
-
+  # ..... user code .....
 }
 ```
 
