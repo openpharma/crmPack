@@ -130,7 +130,7 @@ GeneralSimulations <- function(data,
       stopReasons =
         list("A", "A"),
       stop_report =
-        matrix(TRUE, TRUE)
+        matrix(TRUE)
     ),
     contains = "GeneralSimulations",
     validity =
