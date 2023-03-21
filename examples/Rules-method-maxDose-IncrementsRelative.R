@@ -1,4 +1,3 @@
-
 # Example of usage for `IncrementsRelative` maxDose class.
 
 # Create the data.
