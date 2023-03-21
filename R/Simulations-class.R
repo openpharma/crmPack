@@ -108,7 +108,7 @@ GeneralSimulations <- function(data,
 ##'
 ##' @slot fit list with the final fits
 ##' @slot stopReasons list of stopping reasons for each simulation run
-##'
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @export
 ##' @keywords classes
 .Simulations <-
@@ -116,7 +116,8 @@ GeneralSimulations <- function(data,
     Class = "Simulations",
     representation(
       fit = "list",
-      stopReasons = "list"
+      stopReasons = "list",
+      stop_report = "matrix"
     ),
     ## note: this prototype is put together with the prototype
     ## for GeneralSimulations
@@ -127,7 +128,9 @@ GeneralSimulations <- function(data,
           c(0.1, 0.2)
         ),
       stopReasons =
-        list("A", "A")
+        list("A", "A"),
+      stop_report =
+        matrix(TRUE, TRUE)
     ),
     contains = "GeneralSimulations",
     validity =
@@ -155,6 +158,7 @@ validObject(.Simulations())
 ##'
 ##' @param fit see \code{\linkS4class{Simulations}}
 ##' @param stopReasons see \code{\linkS4class{Simulations}}
+##' @param stop_report see \code{\linkS4class{Simulations}}
 ##' @param \dots additional parameters from \code{\link{GeneralSimulations}}
 ##' @return the \code{\linkS4class{Simulations}} object
 ##' @export
@@ -162,11 +166,13 @@ validObject(.Simulations())
 ##' @keywords methods
 Simulations <- function(fit,
                         stopReasons,
+                        stop_report,
                         ...) {
   start <- GeneralSimulations(...)
   .Simulations(start,
     fit = fit,
-    stopReasons = stopReasons
+    stopReasons = stopReasons,
+    stop_report = stop_report
   )
 }
 
@@ -256,6 +262,7 @@ DualSimulations <- function(rhoEst,
 ##' initialization function is provided for this class.
 ##'
 ##' @slot target target toxicity interval
+##' @slot stop_report matrix of stopping rule outcomes
 ##' @slot targetDoseInterval corresponding target dose interval
 ##' @slot nsim number of simulations
 ##' @slot propDLTs proportions of DLTs in the trials
@@ -278,6 +285,7 @@ DualSimulations <- function(rhoEst,
     Class = "GeneralSimulationsSummary",
     representation(
       target = "numeric",
+      stop_report = "matrix",
       targetDoseInterval = "numeric",
       nsim = "integer",
       propDLTs = "ANY",
