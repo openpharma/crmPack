@@ -72,7 +72,6 @@ multiple increment rules (taking the minimum across individual increments).
 
 }}
 \examples{
-
 # Example of usage for `IncrementsRelative` maxDose class.
 
 # Create the data.

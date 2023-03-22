@@ -741,29 +741,32 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 
 test_that("IncrementsRelative works correctly for last dose in 1st interval", {
   increments <- IncrementsRelative(intervals = c(0, 110), increments = c(1, 0.5))
-  data <- h_get_data(placebo = FALSE) # The last dose is 100.
-
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 200), ID = 1:2, cohort = c(1L, 2L)
+  )
   result <- maxDose(increments, data)
   expect_equal(result, 200)
 })
 
 test_that("IncrementsRelative works correctly for last dose in 2nd interval", {
   increments <- IncrementsRelative(intervals = c(0, 90), increments = c(1, 0.5))
-  data <- h_get_data(placebo = FALSE) # The last dose is 100.
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 200), ID = 1:2, cohort = c(1L, 2L)
+  )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 
   # Edge case: interval bound is equal to the last dose.
   increments <- IncrementsRelative(intervals = c(0, 100), increments = c(1, 0.5))
-  data <- h_get_data(placebo = FALSE) # The last dose is 100.
   result <- maxDose(increments, data)
   expect_equal(result, 150)
 })
 
 test_that("IncrementsRelative throws error when last dose is below the first interval", {
   increments <- IncrementsRelative(intervals = c(200, 300), increments = c(1, 0.5))
-  data <- h_get_data(placebo = FALSE) # The last dose is 100.
-
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 200), ID = 1:2, cohort = c(1L, 2L)
+  )
   expect_error(
     maxDose(increments, data),
     "Assertion on 'last_dose.*increments@intervals.*failed: Must be TRUE."
@@ -781,9 +784,8 @@ test_that("IncrementsRelative throws error when IncrementsRelative is empty", {
 
 test_that("IncrementsRelative throws error when Data is empty", {
   increments <- IncrementsRelative(intervals = c(0, 100), increments = c(1, 0.5))
-  empty_data <- h_get_data(empty = TRUE, placebo = FALSE)
   expect_error(
-    maxDose(increments, empty_data),
+    maxDose(increments, Data()),
     "Assertion on 'last_dose.*increments@intervals.*failed: Must be TRUE."
   )
 })
