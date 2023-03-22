@@ -742,7 +742,7 @@ test_that("nextBest-NextBestMaxGainSamples returns expected values of the object
 test_that("IncrementsRelative works correctly for last dose in 1st interval", {
   increments <- IncrementsRelative(intervals = c(0, 110), increments = c(1, 0.5))
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 200), ID = 1:2, cohort = 1:2
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 200)
@@ -751,7 +751,7 @@ test_that("IncrementsRelative works correctly for last dose in 1st interval", {
 test_that("IncrementsRelative works correctly for last dose in 2nd interval", {
   increments <- IncrementsRelative(intervals = c(0, 90), increments = c(1, 0.5))
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 200), ID = 1:2, cohort = 1:2
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
   )
   result <- maxDose(increments, data)
   expect_equal(result, 150)
@@ -765,7 +765,7 @@ test_that("IncrementsRelative works correctly for last dose in 2nd interval", {
 test_that("IncrementsRelative throws error when last dose is below the first interval", {
   increments <- IncrementsRelative(intervals = c(200, 300), increments = c(1, 0.5))
   data <- Data(
-    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 200), ID = 1:2, cohort = 1:2
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
   )
   expect_error(
     maxDose(increments, data),
