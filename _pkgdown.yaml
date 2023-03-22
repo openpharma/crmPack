@@ -54,6 +54,7 @@ reference:
       - OneParLogNormalPrior
       - OneParExpPrior
       - FractionalCRM
+      - Samples
       - NextBest
       - NextBestMTD
       - NextBestNCRM
@@ -162,6 +163,7 @@ reference:
       - v_model_tite_logistic_log_normal
       - v_model_one_par_exp_normal_prior
       - v_model_one_par_exp_prior
+      - v_samples
       - v_next_best_mtd
       - v_next_best_ncrm
       - v_next_best_ncrm_loss
@@ -356,8 +358,6 @@ reference:
       - Report
       - RuleDesign
       - RuleDesign-class
-      - Samples-class
-      - Samples
       - Simulations-class
       - Simulations
       - SimulationsSummary-class
