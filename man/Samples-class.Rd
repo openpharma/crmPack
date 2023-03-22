@@ -4,32 +4,48 @@
 \name{Samples-class}
 \alias{Samples-class}
 \alias{.Samples}
-\title{Class for the MCMC output}
+\alias{Samples}
+\title{\code{Samples}}
+\usage{
+Samples(data, options)
+}
+\arguments{
+\item{data}{see slot definition.}
+
+\item{options}{see slot definition.}
+}
 \description{
-Class for the MCMC output
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+\code{\link{Samples}} is the class to store the MCMC samples.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{data}}{a list where each entry contains the samples of a (vector-valued)
-parameter in a vector/matrix in the format (number of samples) x (dimension
-of the parameter).}
+\item{\code{data}}{(\code{list})\cr MCMC samples of the parameter. Each entry in this list
+must be a vector (in case of a scalar parameter) or matrix (in case of a
+vector-valued parameter) with samples.
+In case of matrix, every row is a separate sample, while columns correspond
+to the dimension of the parameter.}
 
-\item{\code{options}}{the \code{\linkS4class{McmcOptions}} which have been used}
+\item{\code{options}}{(\code{McmcOptions})\cr MCMC options that were used to generate the
+samples.}
 }}
 
 \examples{
 
-# Saving the mcmc options which were used to generate the samples
-options <- McmcOptions(burnin=10000,
-                       step=2,
-                       samples=10000)
+# The mcmc options that were used to generate the samples.
+my_options <- McmcOptions(
+  burnin = 1000,
+  step = 2,
+  samples = 1000
+)
 
 # Create an object of class 'Samples'
-# Here the parameters 'alpha' and 'beta' are randomly generated. Of coure in 
+# Here the parameters 'alpha' and 'beta' are randomly generated. Of course in
 # a real example these would come as an output from mcmc procedures
-samples <- Samples(data=list(alpha=rnorm(10000),beta=rnorm(10000)),
-                   options=options)
-
+my_samples <- Samples(
+  data = list(alpha = rnorm(1000), beta = rnorm(1000)),
+  options = my_options
+)
 }
-\keyword{classes}
