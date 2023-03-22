@@ -564,9 +564,7 @@ setMethod("plot",
               "Estimate",
               "95% Credible Interval"
             ),
-          values = c(1, 2), guide = ifelse(showLegend,
-            "legend", FALSE
-          )
+          values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
         )
 
       return(ret)
@@ -690,9 +688,7 @@ setMethod("plot",
               "95% Credible Interval"
             ),
           values = c(1, 2),
-          guide = ifelse(showLegend,
-            "legend", FALSE
-          )
+          guide = ifelse(showLegend, "legend", "none")
         )
 
       ## arrange both plots side by side
@@ -1106,9 +1102,7 @@ setMethod("plot",
               "Estimate",
               "95% Credible Interval"
             ),
-          values = c(1, 2), guide = ifelse(showLegend,
-            "legend", FALSE
-          )
+          values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
         )
 
       return(ret)
@@ -1210,9 +1204,7 @@ setMethod("plot",
               "Estimate",
               "95% Credible Interval"
             ),
-          values = c(1, 2), guide = ifelse(showLegend,
-            "legend", FALSE
-          )
+          values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
         )
 
       return(ret)
@@ -1302,7 +1294,7 @@ setMethod("plot",
       plot1 <- plot1 + ggplot2::scale_linetype_manual(
         breaks = "Estimated DLE",
         values = c(1, 2),
-        guide = ifelse(showLegend, "legend", FALSE)
+        guide = ifelse(showLegend, "legend", "none")
       )
 
 
@@ -1699,9 +1691,7 @@ setMethod("plotDualResponses",
           "Estimate",
           "95% Credible Interval"
         ),
-        values = c(1, 2), guide = ifelse(showLegend,
-          "legend", FALSE
-        )
+        values = c(1, 2), guide = ifelse(showLegend, "legend", "none")
       )
       ## only look at these dose levels for the plot:
 
@@ -1788,9 +1778,7 @@ setMethod("plotDualResponses",
               "95% Credible Interval"
             ),
           values = c(1, 2),
-          guide = ifelse(showLegend,
-            "legend", FALSE
-          )
+          guide = ifelse(showLegend, "legend", "none")
         )
 
       ## arrange both plots side by side
