@@ -1,4 +1,3 @@
-
 # The mcmc options that were used to generate the samples.
 my_options <- McmcOptions(
   burnin = 1000,
