@@ -312,6 +312,8 @@ reference:
       - nextBest-NextBestMaxGainSamples
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
+      - maxDose
+      - maxDose-IncrementsRelative
       - maxDose-IncrementsNumDoseLevels
       - maxDose-IncrementsHSRBeta
   - title: Functions

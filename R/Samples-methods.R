@@ -1110,7 +1110,7 @@ setMethod("plot",
 )
 
 
-## --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 ## Plot the fitted dose-efficacy curve using a pseudo efficacy model with samples
 ## -------------------------------------------------------------------------------------------
 ##' Plot the fitted dose-efficacy curve using a model from \code{\linkS4class{ModelEff}} class
