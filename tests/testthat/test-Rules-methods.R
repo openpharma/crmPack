@@ -790,11 +790,11 @@ test_that("IncrementsRelative throws error when Data is empty", {
   )
 })
 
-## IncrementsNumDoseLevels ----
+## IncrementsDoseLevels ----
 
-test_that("IncrementsNumDoseLevels works correctly if basis_level 'last' is defined", {
-  increments <- IncrementsNumDoseLevels(
-    max_levels = 2,
+test_that("IncrementsDoseLevels works correctly if basis_level 'last' is defined", {
+  increments <- IncrementsDoseLevels(
+    levels = 2,
     basis_level = "last"
   )
   result <- maxDose(
@@ -804,9 +804,9 @@ test_that("IncrementsNumDoseLevels works correctly if basis_level 'last' is defi
   expect_equal(result, 14) # maxDose is 14 if basis_level='last'.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basis_level is not defined and default is used", {
-  increments <- IncrementsNumDoseLevels(
-    max_levels = 2
+test_that("IncrementsDoseLevels works correctly if basis_level is not defined and default is used", {
+  increments <- IncrementsDoseLevels(
+    levels = 2
   )
   result <- maxDose(
     increments,
@@ -815,9 +815,9 @@ test_that("IncrementsNumDoseLevels works correctly if basis_level is not defined
   expect_equal(result, 14) # maxDose is 14 if basis_level not defined, then reference value is used.
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basis_level 'max' is defined", {
-  increments <- IncrementsNumDoseLevels(
-    max_levels = 2,
+test_that("IncrementsDoseLevels works correctly if basis_level 'max' is defined", {
+  increments <- IncrementsDoseLevels(
+    levels = 2,
     basis_level = "max"
   )
   result <- maxDose(

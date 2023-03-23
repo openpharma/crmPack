@@ -5,7 +5,7 @@
 \alias{v_increments_relative}
 \alias{v_increments_relative_parts}
 \alias{v_increments_relative_dlt}
-\alias{v_increments_num_dose_levels}
+\alias{v_increments_dose_levels}
 \alias{v_increments_hsr_beta}
 \alias{v_increments_min}
 \title{Internal Helper Functions for Validation of \code{\link{Increments}} Objects}
@@ -16,7 +16,7 @@ v_increments_relative_parts(object)
 
 v_increments_relative_dlt(object)
 
-v_increments_num_dose_levels(object)
+v_increments_dose_levels(object)
 
 v_increments_hsr_beta(object)
 
@@ -46,8 +46,8 @@ contains valid \code{dlt_start} and \code{clean_start} parameters.
 \item \code{v_increments_relative_dlt()}: validates that the \code{\link{IncrementsRelativeDLT}} object
 contains valid \code{dlt_intervals} and \code{increments} parameters.
 
-\item \code{v_increments_num_dose_levels()}: validates that the \code{\link{IncrementsNumDoseLevels}} object
-contains valid \code{max_levels} and \code{basis_level} option.
+\item \code{v_increments_dose_levels()}: validates that the \code{\link{IncrementsDoseLevels}} object
+contains valid \code{levels} and \code{basis_level} option.
 
 \item \code{v_increments_hsr_beta()}: validates that the \code{\link{IncrementsHSRBeta}}
 object contains valid probability target, threshold and shape parameters.
