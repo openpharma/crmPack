@@ -15,10 +15,8 @@ A \code{character} vector with the validation failure messages, or \code{TRUE}
 in case validation passes.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
-
-These functions are only used internally to validate the format of an input
-\code{\link{Samples}} or inherited classes and therefore not exported.
+These functions are only used internally to validate the format
+of an input \code{\link{Samples}} or inherited classes and therefore not exported.
 }
 \section{Functions}{
 \itemize{

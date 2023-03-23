@@ -5,10 +5,8 @@ NULL
 
 #' Internal Helper Functions for Validation of [`Samples`] Objects
 #'
-#' @description `r lifecycle::badge("stable")`
-#'
-#' These functions are only used internally to validate the format of an input
-#' [`Samples`] or inherited classes and therefore not exported.
+#' @description These functions are only used internally to validate the format
+#' of an input [`Samples`] or inherited classes and therefore not exported.
 #'
 #' @name v_samples_objects
 #' @param object (`Samples`)\cr object to validate.
