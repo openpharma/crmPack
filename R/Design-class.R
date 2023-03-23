@@ -551,7 +551,7 @@ validObject(DADesign(
   startingDose = 1,
   cohortSize = CohortSizeConst(3),
   stopping = StoppingMinCohorts(10),
-  increments = IncrementsNumDoseLevels(2)
+  increments = IncrementsDoseLevels(2)
 ))
 
 # nolint end

@@ -4,8 +4,8 @@
 \alias{maxDose}
 \alias{maxDose,IncrementsRelative,Data-method}
 \alias{maxDose-IncrementsRelative}
-\alias{maxDose,IncrementsNumDoseLevels,Data-method}
-\alias{maxDose-IncrementsNumDoseLevels}
+\alias{maxDose,IncrementsDoseLevels,Data-method}
+\alias{maxDose-IncrementsDoseLevels}
 \alias{maxDose,IncrementsHSRBeta,Data-method}
 \alias{maxDose-IncrementsHSRBeta}
 \alias{maxDose,IncrementsRelativeParts,DataParts-method}
@@ -18,7 +18,7 @@ maxDose(increments, data, ...)
 
 \S4method{maxDose}{IncrementsRelative,Data}(increments, data, ...)
 
-\S4method{maxDose}{IncrementsNumDoseLevels,Data}(increments, data, ...)
+\S4method{maxDose}{IncrementsDoseLevels,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsHSRBeta,Data}(increments, data, ...)
 
@@ -103,21 +103,18 @@ my_data <- Data(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
 )
 
-# In this first example we define a rule for dose increments which would allow:
-# Maximum skip one dose level, that is 2 dose levels higher than the last dose
-# given. Maximum increment is explicitly defined as:
-my_increments <- IncrementsNumDoseLevels(max_levels = 2, basis_level = "last")
-# Since the default method is based on the last dose given, maximum increment
-# can also be defined as:
-my_increments <- IncrementsNumDoseLevels(max_levels = 2)
+# In this first example we define a rule for dose increments which allows for
+# maximum skip one dose level, that is 2 dose levels higher than the last dose
+# given.
+my_increments <- IncrementsDoseLevels(levels = 2, basis_level = "last")
 
 # Based on the rule above, we then calculate the maximum dose allowed
 my_max_dose <- maxDose(my_increments, data = my_data)
 
-# In this second example we define a rule for dose increments which would allow:
-# Maximum skip one dose level, that is 2 dose levels higher than the max dose
-# given. Maximum increment is explicitly defined as:
-my_increments <- IncrementsNumDoseLevels(max_levels = 2, basis_level = "max")
+# In this second example we define a rule for dose increments which allows for
+# maximum skip one dose level, that is 2 dose levels higher than the max dose
+# given.
+my_increments <- IncrementsDoseLevels(levels = 2, basis_level = "max")
 
 # Based on the rule above, we then calculate the maximum dose allowed.
 max_dose <- maxDose(my_increments, data = my_data)

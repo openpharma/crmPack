@@ -1115,7 +1115,7 @@ setMethod(
 
 # nolint start
 
-# maxDose-IncrementsNumDoseLevels ----
+# maxDose-IncrementsDoseLevels ----
 
 #' @rdname maxDose
 #'
@@ -1124,14 +1124,14 @@ setMethod(
 #'   maximum dose levels to increment for the next dose.
 #'   Increment rule can be applied to last dose or maximum dose given so far.
 #'
-#' @aliases maxDose-IncrementsNumDoseLevels
-#' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
+#' @aliases maxDose-IncrementsDoseLevels
+#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
 #' @export
 #'
 setMethod(
   "maxDose",
   signature = signature(
-    increments = "IncrementsNumDoseLevels",
+    increments = "IncrementsDoseLevels",
     data = "Data"
   ),
   definition = function(increments, data, ...) {
@@ -1148,7 +1148,7 @@ setMethod(
 
     max_next_dose_level <- min(
       length(data@doseGrid),
-      basis_dose_level + increments@max_levels
+      basis_dose_level + increments@levels
     )
 
     data@doseGrid[max_next_dose_level]
