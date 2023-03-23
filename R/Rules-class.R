@@ -708,8 +708,7 @@ setClass(
 #' differences in intervals.
 #'
 #' @slot intervals (`numeric`)\cr a vector with the left bounds of the relevant
-#'   intervals. This parameters specifies the right bounds of the intervals.
-#'   For example, `intervals  = c(0, 50, 100)` specifies three intervals:
+#'   intervals. For example, `intervals  = c(0, 50, 100)` specifies three intervals:
 #'   \eqn{(0, 50)}, \eqn{[50, 100)} and \eqn{[100, +Inf)}. That means, the right
 #'   bound of the intervals are exclusive to the interval and the last interval
 #'   goes from the last value to infinity.
@@ -825,10 +824,9 @@ IncrementsRelativeParts <- function(dlt_start, clean_start, ...) {
 #' [`IncrementsRelativeDLT`] is the class for increments control based on
 #' relative differences in terms of DLTs.
 #'
-#' @slot dlt_intervals (`integer`)\cr an vector with the left bounds of the
-#'   relevant DLT intervals. This parameters specifies the right bounds of the
-#'   intervals. For example, `dlt_intervals  = c(0, 1, 3)` specifies three
-#'   intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
+#' @slot dlt_intervals (`integer`)\cr a vector with the left bounds of the
+#'   relevant DLT intervals. For example, `dlt_intervals  = c(0, 1, 3)` specifies
+#'   three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 #'   one, at least 3 DLTs. That means, the right bound of the intervals are
 #'   exclusive to the interval and the last interval goes from the last value to
 #'   infinity.
