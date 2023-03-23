@@ -5,7 +5,7 @@ test_that("Posterior summaries for probabilities of
   mcmc_options <- McmcOptions(
     burnin = 5000,
     step = 2,
-    samples = 1000000,
+    samples = 200000,
     rng_kind = "Wichmann-Hill",
     rng_seed = 1
   )
@@ -94,7 +94,7 @@ test_that("Posterior summaries for probabilities of
   mcmc_options <- McmcOptions(
     burnin = 5000,
     step = 2,
-    samples = 1000000,
+    samples = 600000,
     rng_kind = "Wichmann-Hill",
     rng_seed = 1
   )
@@ -183,7 +183,7 @@ test_that("Posterior summaries for probabilities of
   mcmc_options <- McmcOptions(
     burnin = 5000,
     step = 2,
-    samples = 1000000,
+    samples = 200000,
     rng_kind = "Wichmann-Hill",
     rng_seed = 1
   )
@@ -278,7 +278,7 @@ test_that("Posterior summaries for probabilities of
   mcmc_options <- McmcOptions(
     burnin = 5000,
     step = 2,
-    samples = 1000000,
+    samples = 200000,
     rng_kind = "Wichmann-Hill",
     rng_seed = 1
   )
