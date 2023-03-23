@@ -75,6 +75,7 @@ class_changes <- tribble(
   "IncrementsRelativeParts", "", "dltStart", "dlt_start", FALSE, "",
   "IncrementsRelativeParts", "", "cleanStart", "clean_start", FALSE, "change applied also to other dependent classes",
   "IncrementsRelativeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "change applied also to other dependent classes",
+  "IncrementsNumDoseLevels", "IncrementsDoseLevels", "", "", FALSE, "",
   "IncrementsDoseLevels", "", "maxLevels", "levels", FALSE, "change applied also to other dependent classes",
   "IncrementsDoseLevels", "", "", "basis_level", FALSE, "",
   "IncrementMin", "IncrementsMin", "", "", FALSE, "",
