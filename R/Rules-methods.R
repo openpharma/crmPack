@@ -2159,18 +2159,10 @@ setMethod(
     mtd_cv <- (mad(mtd_samples) / median(mtd_samples)) * 100
     do_stop <- (mtd_cv <= stopping@thresh_cv) && (mtd_cv >= 0)
 
-    if (isTRUE(stopping@report_label == "default")) {
-      report_label <-
-        paste(
-          "P(MTD >",
-          x@thresh,
-          "* NBD | P(DLE) = ",
-          x@target,
-          ") \u2265 ",
-          x@prob
-        )
+    report_label <- if (isTRUE(stopping@report_label == "default")) {
+      paste("P(MTD >", x@thresh, "* NBD | P(DLE) = ", x@target, ") \u2265 ", x@prob)
     } else {
-      report_label <- stopping@report_label
+      stopping@report_label
     }
 
     msg <- paste(

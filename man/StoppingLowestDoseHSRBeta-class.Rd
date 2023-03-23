@@ -24,7 +24,7 @@ StoppingLowestDoseHSRBeta(
 
 \item{b}{(\code{number})\cr see slot definition.}
 
-\item{report_label}{(\code{character})\cr see slot definition.}
+\item{report_label}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}

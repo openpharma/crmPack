@@ -21,7 +21,7 @@ StoppingTargetBiomarker(
 
 \item{is_relative}{(\code{flag})\cr see slot definition.}
 
-\item{report_label}{(\code{character})\cr see slot definition.}
+\item{report_label}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

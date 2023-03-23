@@ -13,8 +13,12 @@
 \section{Slots}{
 
 \describe{
-\item{\code{report_label}}{(\code{character})\cr is the label used for reporting (default
-, custom or absent)}
+\item{\code{report_label}}{(\code{string})\cr a label for the stopping report. The meaning
+of this parameters is twofold. If it equal to \code{character(0)} (default),
+then \code{report_label} will not be used in the report at all.
+Otherwise, if is an empty string, then a default label will be used, which
+is a class-specific. Finally, for other cases, user can provide a custom
+label.}
 }}
 
 \seealso{
