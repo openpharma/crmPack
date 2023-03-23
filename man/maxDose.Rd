@@ -3,6 +3,7 @@
 \name{maxDose}
 \alias{maxDose}
 \alias{maxDose,IncrementsRelative,Data-method}
+\alias{maxDose-IncrementsRelative}
 \alias{maxDose,IncrementsNumDoseLevels,Data-method}
 \alias{maxDose-IncrementsNumDoseLevels}
 \alias{maxDose,IncrementsHSRBeta,Data-method}
@@ -11,7 +12,7 @@
 \alias{maxDose,IncrementsRelativeDLT,Data-method}
 \alias{maxDose,IncrementsRelativeDLTCurrent,Data-method}
 \alias{maxDose,IncrementsMin,Data-method}
-\title{Determine the maximum possible next dose}
+\title{Determine the Maximum Possible Next Dose}
 \usage{
 maxDose(increments, data, ...)
 
@@ -30,18 +31,20 @@ maxDose(increments, data, ...)
 \S4method{maxDose}{IncrementsMin,Data}(increments, data, ...)
 }
 \arguments{
-\item{increments}{The rule, an object of class
-\code{\linkS4class{Increments}}}
+\item{increments}{(\code{Increments})\cr the rule for the next best dose.}
 
-\item{data}{The data input, an object of class \code{\linkS4class{Data}}}
+\item{data}{(\code{Data})\cr input data.}
 
-\item{\dots}{further arguments}
+\item{...}{additional arguments without method dispatch.}
 }
 \value{
-the maximum possible next dose
+A \code{number}, the maximum possible next dose.
 }
 \description{
-Determine the upper limit of the next dose based on the increments rule.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+This function determines the upper limit of the next dose based on the
+\code{increments}and the \code{data}.
 
 Increments control based on number of dose levels
 Increment rule to determine the maximum possible next dose based on
@@ -50,14 +53,10 @@ Increment rule can be applied to last dose or maximum dose given so far.
 
 Determine the maximum possible dose for escalation.
 }
-\details{
-This function outputs the maximum possible next dose, based on the
-corresponding rule \code{increments} and the \code{data}.
-}
 \section{Functions}{
 \itemize{
-\item \code{maxDose(increments = IncrementsRelative, data = Data)}: Determine the maximum possible next dose based on
-relative increments
+\item \code{maxDose(increments = IncrementsRelative, data = Data)}: determine the maximum possible next dose based on
+relative increments.
 
 \item \code{maxDose(increments = IncrementsRelativeParts, data = DataParts)}: Determine the maximum possible next dose based on
 relative increments and part 1 and 2
@@ -73,26 +72,28 @@ multiple increment rules (taking the minimum across individual increments).
 
 }}
 \examples{
+# Example of usage for `IncrementsRelative` maxDose class.
 
-# Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6, 8,
-                 seq(from=10, to=80, by=2)))
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+)
 
+# Define a rule for dose increments which allows:
+#  - doubling the dose if the last dose was below 20,
+#  - increasing the dose by 33\% of the last dose, only if the last dose was
+#    above or equal to 20.
+my_increments <- IncrementsRelative(
+  intervals = c(0, 20),
+  increments = c(1, 0.33)
+)
 
-# In this example we define a rule for dose increments which would allow:
-#   - doubling the dose if the last dose was below 20
-#   - only increasing the dose by 1.33 if the last dose was equal or above 20
-myIncrements <- IncrementsRelative(intervals=c(0, 20),
-                                   increments=c(1, 0.33))
-
-# Based on the rule above, we then calculate the maximum dose allowed
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
-
+# Based on the rule above, the maximum dose allowed is:
+my_next_max_dose <- maxDose(my_increments, data = my_data)
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
@@ -238,4 +239,3 @@ nextMaxDose <- maxDose(combIncrement,
 
 # nolint end
 }
-\keyword{methods}
