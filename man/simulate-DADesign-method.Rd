@@ -149,9 +149,9 @@ design <- DADesign(
 myTruth <- probFunction(model, alpha0 = 2, alpha1 = 3)
 curve(myTruth(x), from = 0, to = 100, ylim = c(0, 1))
 
-onset <- 15
-exp_cond.cdf <- function(x) {
-  1 - (pexp(x, 1 / onset, lower.tail = FALSE) - pexp(28, 1 / onset, lower.tail = FALSE)) / pexp(28, 1 / onset)
+exp_cond.cdf <- function(x, onset = 15) {
+  a <- pexp(28, 1 / onset, lower.tail = FALSE)
+  1 - (pexp(x, 1 / onset, lower.tail = FALSE) - a) / (1 - a)
 }
 
 # set up simulation settings
