@@ -23,17 +23,17 @@ dose levels.
 \section{Slots}{
 
 \describe{
-\item{\code{levels}}{(\code{count})\cr number of dose levels to increment for the next
-dose. It defaults to 1, which means that no dose skipping is allowed, i.e.
-the next dose can be maximum one level higher than the current base dose.
-The current base dose level is the dose level used to increment from
-(see \code{basis_level} parameter).}
+\item{\code{levels}}{(\code{count})\cr maximum number of dose levels to increment for
+the next dose. It defaults to 1, which means that no dose skipping is
+allowed, i.e. the next dose can be maximum one level higher than the current
+base dose. The current base dose level is the dose level used to increment
+from (see \code{basis_level} parameter).}
 
 \item{\code{basis_level}}{(\code{string})\cr defines the current base dose level. It can
 take one out of two possible values: \code{last} or \code{max}.
-If \code{last} is specified (default), the current base dose is set to the last
-given dose. If \code{max} is specified, then the current base dose is set to the
-maximum dose level given.}
+If \code{last} is specified (default), the current base dose level is set to the
+last dose given. If \code{max} is specified, then the current base dose level is
+set to the maximum dose level given.}
 }}
 
 \examples{

@@ -926,16 +926,16 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' [`IncrementsDoseLevels`] is the class for increments control based on the
 #' dose levels.
 #'
-#' @slot levels (`count`)\cr number of dose levels to increment for the next
-#'   dose. It defaults to 1, which means that no dose skipping is allowed, i.e.
-#'   the next dose can be maximum one level higher than the current base dose.
-#'   The current base dose level is the dose level used to increment from
-#'   (see `basis_level` parameter).
+#' @slot levels (`count`)\cr maximum number of dose levels to increment for
+#'   the next dose. It defaults to 1, which means that no dose skipping is
+#'   allowed, i.e. the next dose can be maximum one level higher than the current
+#'   base dose. The current base dose level is the dose level used to increment
+#'   from (see `basis_level` parameter).
 #' @slot basis_level (`string`)\cr defines the current base dose level. It can
 #'   take one out of two possible values: `last` or `max`.
-#'   If `last` is specified (default), the current base dose is set to the last
-#'   given dose. If `max` is specified, then the current base dose is set to the
-#'   maximum dose level given.
+#'   If `last` is specified (default), the current base dose level is set to the
+#'   last dose given. If `max` is specified, then the current base dose level is
+#'   set to the maximum dose level given.
 #'
 #' @aliases IncrementsDoseLevels
 #' @export
