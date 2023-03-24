@@ -34,7 +34,6 @@ knitr::knit_exit()
 ```
 ```{r setup, echo=FALSE}
 suppressPackageStartupMessages({
-  library(crmPack)
   library(tibble)
   library(magrittr)
   library(dplyr)

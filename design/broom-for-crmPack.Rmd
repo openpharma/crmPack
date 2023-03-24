@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
 library(kableExtra)
-library(crmPack)
 ```
 
 ##  Motivation

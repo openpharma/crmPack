@@ -30,7 +30,7 @@ A CRM study consists of six basic elements:
 There are many, many possible choices for each element.  In this introduction, we make simple choices for the value of each element.
 
 We start by loading the `crmPack` package ...
-```{r}
+```
 library(crmPack)
 ```
 

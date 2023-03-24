@@ -1104,23 +1104,30 @@ setGeneric("maxDose",
 setMethod(
   "maxDose",
   signature(increments = "IncrementsAbsolute", data = "Data"),
-  function(increments, data) {
+  function(
+    increments,
+    data,
+    delta = -1,
+    get_possible_intervals=function() {
+      if (length(used_max_index) == 0) {
+        used_max_index == length(increments@increments)
+      } else {
+        used_max_index == used_max_index[1]
+      }
+      which(increments@intervals > used_max)
+    }
+  ) {
     if (length(data@x) == 0) {
       return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
     }
     used_max <- max(data@x)
     used_max_index <- which(data@doseGrid == used_max)
-    if (length(used_max_index) == 0) {
-      used_max_index == length(increments@increments)
-    } else {
-      used_max_index == used_max_index[1]
-    }
-    tmp <- which(increments@intervals > used_max)
+    tmp <- get_possible_intervals()
     if (length(tmp) == 0) {
       # Max used dose above highest value in increments@intervals
       current_interval <- length(increments@intervals)
     } else {
-      current_interval <- min(tmp) - 1
+      current_interval <- min(tmp) + delta
     }
     allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
     data@doseGrid[allowed_index]
@@ -1138,22 +1145,16 @@ setMethod(
 setMethod(
   "maxDose",
   signature(increments = "IncrementsAbsoluteDLT", data = "Data"),
-  function(increments, data) {
-    if (length(data@x) == 0) {
-      return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
+  function(
+    increments,
+    data,
+    delta = 0,
+    get_possible_intervals=function() {
+      dlt_count <- sum(data@y)
+      which(increments@intervals > dlt_count)
     }
-    used_max <- max(data@x)
-    used_max_index <- which(data@doseGrid == used_max)
-    dlt_count <- sum(data@y)
-    tmp <- which(increments@intervals > dlt_count)
-    if (length(tmp) == 0) {
-      # DLT count above highest value in increments@intervals
-      current_interval <- length(increments@intervals)
-    } else {
-      current_nterval <- min(tmp)
-    }
-    allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
-    data@doseGrid[allowedIndex]
+  ) {
+      callNextMethod(increments, data, delta, get_possible_intervals)
   }
 )
 

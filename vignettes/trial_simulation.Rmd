@@ -22,8 +22,6 @@ a 2-parameter logistic regression model, using a log normal prior distribution,
 and custom cohort size, stopping and maximum increments rules:
 
 ```{r example, message = FALSE}
-library(crmPack)
-
 # Define the dose grid.
 empty_data <- Data(doseGrid = c(1, 3, 5, 10, 15, 20, 25, 40, 50, 80, 100))
 
