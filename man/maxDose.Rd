@@ -46,17 +46,19 @@ A \code{number}, the maximum possible next dose.
 This function determines the upper limit of the next dose based on the
 \code{increments}and the \code{data}.
 
-Increments control based on number of dose levels
-Increment rule to determine the maximum possible next dose based on
-maximum dose levels to increment for the next dose.
-Increment rule can be applied to last dose or maximum dose given so far.
-
 Determine the maximum possible dose for escalation.
 }
 \section{Functions}{
 \itemize{
 \item \code{maxDose(increments = IncrementsRelative, data = Data)}: determine the maximum possible next dose based on
 relative increments.
+
+\item \code{maxDose(increments = IncrementsDoseLevels, data = Data)}: determine the maximum possible next dose based on
+the number of dose grid levels. That is, the max dose is determined as
+the one which level is equal to: base dose level + level increment.
+The base dose level is the level of the last dose in grid or the level
+of the maximum dose applied, which is defined in \code{increments} object.
+Find out more in \code{\link{IncrementsDoseLevels}}.
 
 \item \code{maxDose(increments = IncrementsRelativeParts, data = DataParts)}: Determine the maximum possible next dose based on
 relative increments and part 1 and 2

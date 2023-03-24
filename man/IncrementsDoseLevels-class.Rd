@@ -15,7 +15,7 @@ IncrementsDoseLevels(levels = 1L, basis_level = "last")
 \item{basis_level}{(\code{string})\cr see slot definition.}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 \code{\link{IncrementsDoseLevels}} is the class for increments control based on the
 number of dose levels.

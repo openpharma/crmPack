@@ -1113,18 +1113,19 @@ setMethod(
   }
 )
 
-## IncrementsNumDoseLevels ----
+## IncrementsDoseLevels ----
 
 #' @describeIn maxDose determine the maximum possible next dose based on
-#'   the dose grid levels. That is, the max dose is determined as
-#'   the one which level is equal to: basis dose level + level increment.
-#'   The basis dose level is the level of the last dose in grid or the level
+#'   the number of dose grid levels. That is, the max dose is determined as
+#'   the one which level is equal to: base dose level + level increment.
+#'   The base dose level is the level of the last dose in grid or the level
 #'   of the maximum dose applied, which is defined in `increments` object.
+#'   Find out more in [`IncrementsDoseLevels`].
 #'
-#' @aliases maxDose-IncrementsRelative
+#' @aliases maxDose-IncrementsDoseLevels
 #'
 #' @export
-#' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
+#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
 #'
 setMethod(
   f = "maxDose",
@@ -1138,7 +1139,7 @@ setMethod(
     basis_dose_level <- ifelse(
       increments@basis_level == "last", data@xLevel[data@nObs], max(data@xLevel)
     )
-    max_dose_level <- min(basis_dose_level + increments@levels_to_add, data@nGrid)
+    max_dose_level <- min(basis_dose_level + increments@levels, data@nGrid)
     data@doseGrid[max_dose_level]
   }
 )
