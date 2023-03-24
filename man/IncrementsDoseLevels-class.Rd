@@ -18,7 +18,7 @@ IncrementsDoseLevels(levels = 1L, basis_level = "last")
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 \code{\link{IncrementsDoseLevels}} is the class for increments control based on the
-dose levels.
+number of dose levels.
 }
 \section{Slots}{
 

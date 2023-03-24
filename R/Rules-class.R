@@ -924,7 +924,7 @@ IncrementsRelativeDLTCurrent <- function(dlt_intervals = c(0, 1),
 #' @description `r lifecycle::badge("experimental")`
 #'
 #' [`IncrementsDoseLevels`] is the class for increments control based on the
-#' dose levels.
+#' number of dose levels.
 #'
 #' @slot levels (`count`)\cr maximum number of dose levels to increment for
 #'   the next dose. It defaults to 1, which means that no dose skipping is
