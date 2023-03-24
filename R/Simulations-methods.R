@@ -528,6 +528,12 @@ setMethod("summary",
       propAtTarget <- mean((toxAtDoses > target[1]) &
         (toxAtDoses < target[2]))
 
+      if (.hasSlot(object, "stop_report") == TRUE) {
+        stop_report <- object@stop_report
+      } else {
+        stop_report <- matrix()
+      }
+
       ## give back an object of class GeneralSimulationsSummary,
       ## for which we then define a print / plot method
       ret <-
@@ -545,14 +551,13 @@ setMethod("summary",
           toxAtDosesSelected = toxAtDoses,
           propAtTarget = propAtTarget,
           doseGrid = doseGrid,
-          placebo = object@data[[1]]@placebo
+          placebo = object@data[[1]]@placebo,
+          stop_report = stop_report
         )
-
 
       return(ret)
     }
 )
-
 
 ##' Summarize the model-based design simulations, relative to a given truth
 ##'
@@ -838,6 +843,24 @@ setMethod("show",
         r$dfSave(object@nsim, "nsim"),
         "simulations\n\n"
       )
+
+      # report stopping rules
+      logPercent <- colMeans(object@stop_report) * 100
+
+
+
+      if (!is.null(names(logPercent))) {
+        cat("Stopping rules:\n \n")
+        for (i in 1:ncol(object@stop_report)) {
+          if (!is.na(names(logPercent)[i])) {
+            cat(
+              names(logPercent[i]), ":",
+              logPercent[i],
+              "%\n \n"
+            )
+          }
+        }
+      }
 
       cat(
         "Target toxicity interval was",

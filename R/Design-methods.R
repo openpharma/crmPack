@@ -51,7 +51,7 @@ setSeed <- function(seed = NULL) {
     RNGstate <- get(".Random.seed", envir = .GlobalEnv)
   } else {
     R.seed <- get(".Random.seed", envir = .GlobalEnv)
-    ## make sure R.seed exists in parent frame:
+    # Make sure R.seed exists in parent frame:
     assign("R.seed", R.seed, envir = parent.frame())
     set.seed(seed)
     RNGstate <- structure(seed, kind = as.list(RNGkind()))
@@ -59,7 +59,7 @@ setSeed <- function(seed = NULL) {
       list(quote(assign(".Random.seed", R.seed, envir = .GlobalEnv))),
       envir = parent.frame()
     )
-    ## here we need the R.seed in the parent.frame!
+    # Here we need the R.seed in the parent.frame!
   }
 
   return(RNGstate)
@@ -392,6 +392,25 @@ setMethod("simulate",
             model = object@model,
             data = thisData
           )
+          stopit_unpacked <- list()
+
+          unpack_stopit <- function(stopit_tree) {
+            if (is.list(stopit_tree)) {
+              lapply(stopit_tree, unpack_stopit)
+            } else {
+              label <- attr(stopit_tree, "report_label")
+              value <- stopit_tree[1]
+              names(value) <- label
+              stopit_unpacked <- append(stopit_unpacked, value)
+              if (is.null(attr(stopit_tree, "individual"))) {
+                stopit_unpacked
+              } else {
+                append(stopit_unpacked, lapply(attr(stopit_tree, "individual"), unpack_stopit))
+              }
+            }
+          }
+
+          stopit_results <- unlist(unpack_stopit(stopit))
         }
 
         ## get the fit
@@ -414,7 +433,8 @@ setMethod("simulate",
               attr(
                 stopit,
                 "message"
-              )
+              ),
+            report_results = stopit_results
           )
         return(thisResult)
       }
@@ -449,20 +469,22 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      # individual stopping rule results as matrix, labels as column names
+      stopResults <- lapply(resultList, "[[", "report_results")
+      stop_matrix <- as.matrix(do.call(rbind, stopResults))
+
       ## return the results in the Simulations class object
       ret <- Simulations(
         data = dataList,
         doses = recommendedDoses,
         fit = fitList,
         stopReasons = stopReasons,
+        stop_report = stop_matrix,
         seed = RNGstate
       )
-
       return(ret)
     }
 )
-
-
 
 
 ##' Simulate outcomes from a rule-based design
@@ -1050,6 +1072,8 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      stop_report <- matrix()
+
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
         data = dataList,
@@ -1059,6 +1083,7 @@ setMethod("simulate",
         fit = fitToxList,
         fitBiomarker = fitBiomarkerList,
         stopReasons = stopReasons,
+        stop_report = stop_report,
         seed = RNGstate
       )
 
@@ -4669,6 +4694,7 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
+      stop_report <- matrix()
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
@@ -4676,6 +4702,7 @@ setMethod("simulate",
         fit = fitList,
         trialduration = trialduration,
         stopReasons = stopReasons,
+        stop_report = stop_report,
         seed = RNGstate
       )
 

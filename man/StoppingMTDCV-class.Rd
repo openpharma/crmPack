@@ -7,12 +7,14 @@
 \alias{StoppingMTDCV}
 \title{\code{StoppingMTDCV}}
 \usage{
-StoppingMTDCV(target = 0.3, thresh_cv = 40)
+StoppingMTDCV(target = 0.3, thresh_cv = 40, report_label = character(0))
 }
 \arguments{
 \item{target}{(\code{proportion})\cr see slot definition.}
 
 \item{thresh_cv}{(\code{number})\cr see slot definition.}
+
+\item{report_label}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
