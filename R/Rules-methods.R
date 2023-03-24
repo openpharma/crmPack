@@ -1129,7 +1129,7 @@ setMethod(
 setMethod(
   f = "maxDose",
   signature = signature(
-    increments = "IncrementsNumDoseLevels",
+    increments = "IncrementsDoseLevels",
     data = "Data"
   ),
   definition = function(increments, data, ...) {

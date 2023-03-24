@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestMinDist` NextBest class.
 
 # Create the data.
@@ -27,7 +26,7 @@ my_options <- McmcOptions(burnin = 100, step = 2, samples = 500)
 my_samples <- mcmc(my_data, my_model, my_options)
 
 # Define the rule for dose increments and calculate the maximum dose allowed.
-my_increments <- IncrementsNumDoseLevels(max_levels = 1)
+my_increments <- IncrementsDoseLevels(levels = 1)
 
 next_max_dose <- maxDose(my_increments, data = my_data)
 

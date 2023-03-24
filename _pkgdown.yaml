@@ -72,7 +72,7 @@ reference:
       - IncrementsRelativeParts
       - IncrementsRelativeDLT
       - IncrementsRelativeDLTCurrent
-      - IncrementsNumDoseLevels
+      - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
       - StoppingCohortsNearDose
@@ -176,7 +176,7 @@ reference:
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
-      - v_increments_num_dose_levels
+      - v_increments_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
       - v_stopping_cohorts_near_dose
@@ -316,7 +316,7 @@ reference:
       - stopTrial-StoppingMTDCV
       - maxDose
       - maxDose-IncrementsRelative
-      - maxDose-IncrementsNumDoseLevels
+      - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
   - title: Functions
     contents:
