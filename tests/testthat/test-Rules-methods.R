@@ -1237,7 +1237,7 @@ test_that("Default label assignment for stopping rules works correctly.", {
   my_model <- h_get_logistic_kadane()
   my_samples <- mcmc(my_data, my_model, h_get_mcmc_options(samples = 1000, burnin = 1000))
 
-  my_stopping <- StoppingMinCohorts(nCohorts = 3, report_label = "default")
+  my_stopping <- StoppingMinCohorts(nCohorts = 3, report_label = "")
 
   result <- stopTrial(
     stopping = my_stopping,

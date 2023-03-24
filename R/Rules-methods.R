@@ -1775,16 +1775,14 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- nCohorts >= stopping@nCohorts
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "\u2265", x@nCohorts,
-            "cohorts in",
-            x@percentage,
-            "% dose range around NBD"
-          )
+      report_label <- if (isTRUE(stopping@report_label == "")) {
+
+          paste("\u2265", x@nCohorts,"cohorts in", x@percentage,
+                "% dose range around NBD")
       } else {
-        report_label <- stopping@report_label
+
+        stopping@report_label
+
       }
 
       ## generate message
@@ -1839,17 +1837,14 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- nPatients >= stopping@nPatients
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "\u2265",
-            x@nPatients,
-            "patients in",
-            x@percentage,
-            "% dose range around NBD"
-          )
+      report_label <-  if (isTRUE(stopping@report_label == "")) {
+
+        paste("\u2265", x@nPatients, "patients in",
+            x@percentage, "% dose range around NBD")
+
       } else {
-        report_label <- stopping@report_label
+
+        stopping@report_label
       }
 
       ## generate message
@@ -1898,15 +1893,14 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- nCohorts >= stopping@nCohorts
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "Minimum number of",
-            stopping@nCohorts,
-            "cohorts reached"
-          )
-      } else {
-        report_label <- stopping@report_label
+      report_label <-  if (isTRUE(stopping@report_label == "")) {
+
+          paste( "Minimum number of", stopping@nCohorts,"cohorts reached")
+
+        } else {
+
+        stopping@report_label
+
       }
 
       ## generate message
@@ -1949,12 +1943,13 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- data@nObs >= stopping@nPatients
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <- paste(
-          "Minimum number of", stopping@nPatients, "patients reached"
-        )
-      } else {
-        report_label <- stopping@report_label
+      report_label  <- if (isTRUE(stopping@report_label == "")) {
+        paste("Minimum number of", stopping@nPatients, "patients reached")
+
+        } else {
+
+       stopping@report_label
+
       }
 
       ## generate message
@@ -2011,18 +2006,14 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- probTarget >= stopping@prob
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "P(",
-            stopping@target[1],
-            "\u2264 prob(DLE | NBD) \u2264",
-            stopping@target[2],
-            ") \u2265",
-            stopping@prob
-          )
-      } else {
-        report_label <- stopping@report_label
+      report_label <- if (isTRUE(stopping@report_label == "")) {
+
+          paste("P(", stopping@target[1], "\u2264 prob(DLE | NBD) \u2264",
+            stopping@target[2],") \u2265", stopping@prob)
+
+        } else {
+
+        stopping@report_label
       }
 
 
@@ -2087,18 +2078,13 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- prob >= stopping@prob
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "P(MTD >",
-            x@thresh,
-            "* NBD | P(DLE) = ",
-            x@target,
-            ") \u2265 ",
-            x@prob
-          )
+      report_label <- if (isTRUE(stopping@report_label == "")) {
+
+          paste("P(MTD >", x@thresh,"* NBD | P(DLE) = ", x@target, ") \u2265 ",
+            x@prob)
+
       } else {
-        report_label <- stopping@report_label
+         stopping@report_label
       }
 
       ## generate message
@@ -2159,7 +2145,7 @@ setMethod(
     mtd_cv <- (mad(mtd_samples) / median(mtd_samples)) * 100
     do_stop <- (mtd_cv <= stopping@thresh_cv) && (mtd_cv >= 0)
 
-    report_label <- if (isTRUE(stopping@report_label == "default")) {
+    report_label <- if (isTRUE(stopping@report_label == "")) {
       paste("P(MTD >", x@thresh, "* NBD | P(DLE) = ", x@target, ") \u2265 ", x@prob)
     } else {
       stopping@report_label
@@ -2216,11 +2202,10 @@ setMethod(
         0
       }
 
-    if (isTRUE(stopping@report_label == "default")) {
-      report_label <-
+    report_label <- if (isTRUE(stopping@report_label == "")) {
         paste("default_label")
     } else {
-      report_label <- stopping@report_label
+        stopping@report_label
     }
 
     do_stop <- tox_prob_first_dose > stopping@prob
@@ -2331,23 +2316,14 @@ setMethod("stopTrial",
       ## so can we stop?
       doStop <- probTarget >= stopping@prob
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
-          paste(
-            "P(",
-            x@target[1],
-            "\u2264",
-            "Biomarker \u2264",
-            x@target[2],
-            ") \u2265 ",
-            x@prob,
-            ifelse(x@scale == "relative",
-              paste("(relative)"),
-              "(absolute)"
-            )
+      report_label <- if (isTRUE(stopping@report_label == "")) {
+
+          paste("P(", x@target[1], "\u2264", "Biomarker \u2264", x@target[2],
+            ") \u2265 ", x@prob,
+            ifelse(x@scale == "relative", paste("(relative)"), "(absolute)")
           )
       } else {
-        report_label <- stopping@report_label
+         stopping@report_label
       }
 
       ## generate message
@@ -2437,12 +2413,14 @@ setMethod("stopTrial",
     function(stopping, dose, samples, model, data, ...) {
       isHighestDose <- (dose == data@doseGrid[data@nGrid])
 
-      if (isTRUE(stopping@report_label == "default")) {
-        report_label <-
+      report_label <- if (isTRUE(stopping@report_label == "")) {
+
           paste("Reached highest dose")
+
       } else {
-        report_label <- stopping@report_label
+        stopping@report_label
       }
+
       return(structure(isHighestDose,
         message =
           paste(

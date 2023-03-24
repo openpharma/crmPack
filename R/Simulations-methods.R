@@ -845,7 +845,7 @@ setMethod("show",
       )
 
       # report stopping rules
-      logPercent <- apply(object@stop_report, 2, mean) * 100
+      logPercent <- colMeans(object@stop_report) * 100
 
 
 
