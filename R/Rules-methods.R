@@ -1061,138 +1061,131 @@ setMethod(
   }
 )
 
-# nolint start
+# maxDose ----
 
-## --------------------------------------------------
-## Determine the maximum possible next dose
-## --------------------------------------------------
+## generic ----
 
-##' Determine the maximum possible next dose
-##'
-##' Determine the upper limit of the next dose based on the increments rule.
-##'
-##' This function outputs the maximum possible next dose, based on the
-##' corresponding rule \code{increments} and the \code{data}.
-##'
-##' @param increments The rule, an object of class
-##' \code{\linkS4class{Increments}}
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param \dots further arguments
-##' @return the maximum possible next dose
-##'
-##' @export
-##' @keywords methods
-setGeneric("maxDose",
-  def =
-    function(increments, data, ...) {
-      ## there should be no default method,
-      ## therefore just forward to next method!
-      standardGeneric("maxDose")
-    },
+#' Determine the Maximum Possible Next Dose
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function determines the upper limit of the next dose based on the
+#' `increments`and the `data`.
+#'
+#' @param increments (`Increments`)\cr the rule for the next best dose.
+#' @param data (`Data`)\cr input data.
+#' @param ... additional arguments without method dispatch.
+#'
+#' @return A `number`, the maximum possible next dose.
+#'
+#' @export
+#'
+setGeneric(
+  name = "maxDose",
+  def = function(increments, data, ...) {
+    standardGeneric("maxDose")
+  },
   valueClass = "numeric"
 )
 
+## IncrementsAbsolute ----
 
-## --------------------------------------------------
-## The maximum allowable absolute increments in intervals method
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' absolute increments
-##'
-##' @example examples/Rules-method-maxDose-IncrementsAbsolute.R
+#' @describeIn maxDose determine the maximum possible next dose based on
+#' absolute increments.
+#'
+#' @aliases maxDose-IncrementsAbsolute
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsAbsolute.R
+#'
 setMethod(
-  "maxDose",
-  signature(increments = "IncrementsAbsolute", data = "Data"),
-  function(increments, data) {
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsAbsolute",
+    data = "Data"
+  ),
+  definition = function(increments,
+                        data,
+                        delta = -1,
+                        get_possible_intervals = function() {
+                          if (length(used_max_index) == 0) {
+                            used_max_index == length(increments@increments)
+                          } else {
+                            used_max_index == used_max_index[1]
+                          }
+                          which(increments@intervals > used_max)
+                        }) {
     if (length(data@x) == 0) {
       return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
     }
     used_max <- max(data@x)
     used_max_index <- which(data@doseGrid == used_max)
-    if (length(used_max_index) == 0) {
-      used_max_index == length(increments@increments)
-    } else {
-      used_max_index == used_max_index[1]
-    }
-    tmp <- which(increments@intervals > used_max)
+    tmp <- get_possible_intervals()
     if (length(tmp) == 0) {
       # Max used dose above highest value in increments@intervals
       current_interval <- length(increments@intervals)
     } else {
-      current_interval <- min(tmp) - 1
+      current_interval <- min(tmp) + delta
     }
     allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
     data@doseGrid[allowed_index]
   }
 )
 
-## --------------------------------------------------
-## The maximum allowable absolute increments in DLT intervals method
-## --------------------------------------------------
+## IncrementsAbsoluteDLT ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' absolute DLT count to date
-##'
-##' @example examples/Rules-method-maxDose-IncrementsAbsoluteDLT.R
+#' @describeIn maxDose determine the maximum possible next dose based on
+#' absolute DLT count to date.
+#'
+#' @aliases maxDose-IncrementsAbsoluteDLT
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsAbsoluteDLT.R
+#'
 setMethod(
-  "maxDose",
-  signature(increments = "IncrementsAbsoluteDLT", data = "Data"),
-  function(increments, data) {
-    if (length(data@x) == 0) {
-      return(data@doseGrid[min(length(data@doseGrid), increments@increments[1])])
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsAbsoluteDLT",
+    data = "Data"
+  ),
+  definition = function(increments,
+                        data) {
+    get_possible_intervals <- function() {
+      dlt_count <- sum(data@y)
+      which(increments@intervals > dlt_count)
     }
-    used_max <- max(data@x)
-    used_max_index <- which(data@doseGrid == used_max)
-    dlt_count <- sum(data@y)
-    tmp <- which(increments@intervals > dlt_count)
-    if (length(tmp) == 0) {
-      # DLT count above highest value in increments@intervals
-      current_interval <- length(increments@intervals)
-    } else {
-      current_nterval <- min(tmp)
-    }
-    allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
-    data@doseGrid[allowedIndex]
+    callNextMethod(increments, data, 0, get_possible_intervals)
   }
 )
 
-## --------------------------------------------------
-## The maximum allowable relative increments in intervals method
-## --------------------------------------------------
+## IncrementsRelative ----
 
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelative.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelative",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine what was the last dose
-      lastDose <- tail(data@x, 1)
-
-      ## determine in which interval this dose was
-      lastInterval <-
-        findInterval(
-          x = lastDose,
-          vec = increments@intervals
-        )
-
-      ## so the maximum next dose is
-      ret <-
-        (1 + increments@increments[lastInterval]) *
-          lastDose
-
-      return(ret)
-    }
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments.
+#'
+#' @aliases maxDose-IncrementsRelative
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelative.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsRelative",
+    data = "Data"
+  ),
+  def = function(increments, data, ...) {
+    last_dose <- data@x[data@nObs]
+    # Determine in which interval the `last_dose` is.
+    assert_true(last_dose >= head(increments@intervals, 1))
+    last_dose_interval <- findInterval(x = last_dose, vec = increments@intervals)
+    (1 + increments@increments[last_dose_interval]) * last_dose
+  }
 )
 
-# maxDose-IncrementsNumDoseLevels ----
+# nolint start
+
+# maxDose-IncrementsDoseLevels ----
 
 #' @rdname maxDose
 #'
@@ -1201,14 +1194,14 @@ setMethod("maxDose",
 #'   maximum dose levels to increment for the next dose.
 #'   Increment rule can be applied to last dose or maximum dose given so far.
 #'
-#' @aliases maxDose-IncrementsNumDoseLevels
-#' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
+#' @aliases maxDose-IncrementsDoseLevels
+#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
 #' @export
 #'
 setMethod(
   "maxDose",
   signature = signature(
-    increments = "IncrementsNumDoseLevels",
+    increments = "IncrementsDoseLevels",
     data = "Data"
   ),
   definition = function(increments, data, ...) {
@@ -1225,7 +1218,7 @@ setMethod(
 
     max_next_dose_level <- min(
       length(data@doseGrid),
-      basis_dose_level + increments@max_levels
+      basis_dose_level + increments@levels
     )
 
     data@doseGrid[max_next_dose_level]

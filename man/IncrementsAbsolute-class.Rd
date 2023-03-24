@@ -10,31 +10,39 @@
 IncrementsAbsolute(intervals = c(5, 10), increments = c(2, 1))
 }
 \arguments{
-\item{intervals}{(\code{numeric}) \cr a vector of right hand boundaries of the intervals}
+\item{intervals}{(\code{numeric})\cr see slot definition.}
 
-\item{increments}{(\code{numeric}) \cr a vector of the maximum increment allowed in the corresponding interval}
-}
-\value{
-the \link{IncrementsAbsolute} object
+\item{increments}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Increments control based on absolute differences in intervals
+}
+\section{Slots}{
 
-#' Note that \code{intervals} is to be read as follows. If for example,
+\describe{
+\item{\code{intervals}}{a vector with the left bounds of the relevant intervals.}
+
+\item{\code{increments}}{a vector of the same length with the maximum allowable
+absolute increments in the\code{ intervals}.}
+}}
+
+\note{
+\code{intervals} is to be read as follows. If for example,
 we want to specify three intervals: First 0 to less than 50, second at least
 50 up to less than 100 mg, and third at least 100 mg, then we specify
 \code{intervals} to be \code{c(0, 50, 100)}. That means, the right
 bound of the intervals are exclusive to the interval, and the last interval
 goes from the last value to infinity.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{intervals}}{a vector with the left bounds of the relevant intervals}
-
-\item{\code{increments}}{a vector of the same length with the maximum allowable
-absolute increments in the \code{intervals}}
-}}
-
+\examples{
+# This is the example of a rule for incrementing by a maximum of:
+# * three dose levels if the highest dose used so far is <20
+# * two dose levels if the highest dose used so far is >=20 and <50
+# * one dose level otherwise
+my_increments <- IncrementsAbsolute(
+  intervals = c(0, 20, 50),
+  increments = 3:1
+)
+}

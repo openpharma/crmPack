@@ -26,7 +26,6 @@ represents a single-type, consistent change.
 ## Classes
 
 ```{r class_changes, echo=FALSE}
-
 class_changes <- tribble(
   ~class_name, ~class_new_name, ~slot_name, ~slot_new_name, ~was_removed, ~comment,
   "", "positive_number", "", "", FALSE, "to handle strictly positive valued slots
@@ -76,8 +75,9 @@ class_changes <- tribble(
   "IncrementsRelativeParts", "", "dltStart", "dlt_start", FALSE, "",
   "IncrementsRelativeParts", "", "cleanStart", "clean_start", FALSE, "change applied also to other dependent classes",
   "IncrementsRelativeDLT", "", "DLTintervals", "dlt_intervals", FALSE, "change applied also to other dependent classes",
-  "IncrementsNumDoseLevels", "", "maxLevels", "max_levels", FALSE, "change applied also to other dependent classes",
-  "IncrementsNumDoseLevels", "", "", "basis_level", FALSE, "",
+  "IncrementsNumDoseLevels", "IncrementsDoseLevels", "", "", FALSE, "",
+  "IncrementsDoseLevels", "", "maxLevels", "levels", FALSE, "change applied also to other dependent classes",
+  "IncrementsDoseLevels", "", "", "basis_level", FALSE, "",
   "IncrementMin", "IncrementsMin", "", "", FALSE, "",
   "IncrementsMin", "", "IncrementsList", "increments_list", FALSE, "change applied also to other dependent classes",
   "StoppingTargetBiomarker", "", "scale", "", TRUE, "replaced by `is_relative` flag",
@@ -107,7 +107,6 @@ class_changes <- tribble(
 ```
 
 ```{r class_changes_kbl, echo=FALSE, results='markup'}
-
 cc <- class_changes
 cc <- cc[order(cc$class_name, cc$class_new_name, cc$slot_name, cc$slot_new_name), ]
 
@@ -143,7 +142,6 @@ Strikeout indicates that the class/slot was removed.
 ## Methods
 
 ```{r method_changes, echo=FALSE}
-
 method_changes <- tribble(
   ~method_name, ~method_new_name, ~arg_name, ~arg_new_name, ~was_removed, ~output_changes, ~comment,
   "update-Data", "", "newCohort", "new_cohort", FALSE, "", "",
@@ -187,7 +185,6 @@ method_changes <- tribble(
 ```
 
 ```{r method_changes_kbl, echo=FALSE, results='markup'}
-
 mc <- method_changes
 mc <- mc[order(mc$method_name, mc$method_new_name, mc$arg_name, mc$arg_new_name), ]
 
