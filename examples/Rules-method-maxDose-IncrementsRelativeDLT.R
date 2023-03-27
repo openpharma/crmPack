@@ -19,4 +19,4 @@ my_increments <- IncrementsRelativeDLT(
 )
 
 # Based on the rule above, the maximum dose allowed is:
-nextMaxDose <- maxDose(my_increments, data = data)
+nextMaxDose <- maxDose(my_increments, data = my_data)
