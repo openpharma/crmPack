@@ -286,24 +286,24 @@ test_that("IncrementsRelativeDLTCurrent object can be created with user construc
   expect_identical(result@increments, c(2, 1, 1.5))
 })
 
-## IncrementsNumDoseLevels ----
+## IncrementsDoseLevels ----
 
-test_that(".IncrementsNumDoseLevels works as expected", {
-  result <- expect_silent(.IncrementsNumDoseLevels())
-  expect_valid(result, "IncrementsNumDoseLevels")
+test_that(".IncrementsDoseLevels works as expected", {
+  result <- expect_silent(.IncrementsDoseLevels())
+  expect_valid(result, "IncrementsDoseLevels")
 })
 
-test_that("IncrementsNumDoseLevels object can be created with user constructor (default)", {
-  result <- expect_silent(IncrementsNumDoseLevels())
-  expect_valid(result, "IncrementsNumDoseLevels")
-  expect_identical(result@max_levels, 1L)
+test_that("IncrementsDoseLevels object can be created with user constructor (default)", {
+  result <- expect_silent(IncrementsDoseLevels())
+  expect_valid(result, "IncrementsDoseLevels")
+  expect_identical(result@levels, 1L)
   expect_identical(result@basis_level, "last")
 })
 
-test_that("IncrementsNumDoseLevels object can be created with user constructor", {
-  result <- expect_silent(IncrementsNumDoseLevels(5L, "max"))
-  expect_valid(result, "IncrementsNumDoseLevels")
-  expect_identical(result@max_levels, 5L)
+test_that("IncrementsDoseLevels object can be created with user constructor", {
+  result <- expect_silent(IncrementsDoseLevels(5L, "max"))
+  expect_valid(result, "IncrementsDoseLevels")
+  expect_identical(result@levels, 5L)
   expect_identical(result@basis_level, "max")
 })
 

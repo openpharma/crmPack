@@ -1372,113 +1372,91 @@ setMethod(
   }
 )
 
-# nolint start
 
-## --------------------------------------------------
-## Determine the maximum possible next dose
-## --------------------------------------------------
+# maxDose ----
 
-##' Determine the maximum possible next dose
-##'
-##' Determine the upper limit of the next dose based on the increments rule.
-##'
-##' This function outputs the maximum possible next dose, based on the
-##' corresponding rule \code{increments} and the \code{data}.
-##'
-##' @param increments The rule, an object of class
-##' \code{\linkS4class{Increments}}
-##' @param data The data input, an object of class \code{\linkS4class{Data}}
-##' @param \dots further arguments
-##' @return the maximum possible next dose
-##'
-##' @export
-##' @keywords methods
-setGeneric("maxDose",
-  def =
-    function(increments, data, ...) {
-      ## there should be no default method,
-      ## therefore just forward to next method!
-      standardGeneric("maxDose")
-    },
+## generic ----
+
+#' Determine the Maximum Possible Next Dose
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' This function determines the upper limit of the next dose based on the
+#' `increments`and the `data`.
+#'
+#' @param increments (`Increments`)\cr the rule for the next best dose.
+#' @param data (`Data`)\cr input data.
+#' @param ... additional arguments without method dispatch.
+#'
+#' @return A `number`, the maximum possible next dose.
+#'
+#' @export
+#'
+setGeneric(
+  name = "maxDose",
+  def = function(increments, data, ...) {
+    standardGeneric("maxDose")
+  },
   valueClass = "numeric"
 )
 
+## IncrementsRelative ----
 
-## --------------------------------------------------
-## The maximum allowable relative increments in intervals method
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelative.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelative",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine what was the last dose
-      lastDose <- tail(data@x, 1)
-
-      ## determine in which interval this dose was
-      lastInterval <-
-        findInterval(
-          x = lastDose,
-          vec = increments@intervals
-        )
-
-      ## so the maximum next dose is
-      ret <-
-        (1 + increments@increments[lastInterval]) *
-          lastDose
-
-      return(ret)
-    }
-)
-
-# maxDose-IncrementsNumDoseLevels ----
-
-#' @rdname maxDose
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   relative increments.
 #'
-#' @description Increments control based on number of dose levels
-#'   Increment rule to determine the maximum possible next dose based on
-#'   maximum dose levels to increment for the next dose.
-#'   Increment rule can be applied to last dose or maximum dose given so far.
+#' @aliases maxDose-IncrementsRelative
 #'
-#' @aliases maxDose-IncrementsNumDoseLevels
-#' @example examples/Rules-method-maxDose-IncrementsNumDoseLevels.R
 #' @export
+#' @example examples/Rules-method-maxDose-IncrementsRelative.R
 #'
 setMethod(
-  "maxDose",
+  f = "maxDose",
   signature = signature(
-    increments = "IncrementsNumDoseLevels",
+    increments = "IncrementsRelative",
+    data = "Data"
+  ),
+  def = function(increments, data, ...) {
+    last_dose <- data@x[data@nObs]
+    # Determine in which interval the `last_dose` is.
+    assert_true(last_dose >= head(increments@intervals, 1))
+    last_dose_interval <- findInterval(x = last_dose, vec = increments@intervals)
+    (1 + increments@increments[last_dose_interval]) * last_dose
+  }
+)
+
+## IncrementsDoseLevels ----
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   the number of dose grid levels. That is, the max dose is determined as
+#'   the one which level is equal to: base dose level + level increment.
+#'   The base dose level is the level of the last dose in grid or the level
+#'   of the maximum dose applied, which is defined in `increments` object.
+#'   Find out more in [`IncrementsDoseLevels`].
+#'
+#' @aliases maxDose-IncrementsDoseLevels
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsDoseLevels",
     data = "Data"
   ),
   definition = function(increments, data, ...) {
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
     basis_dose_level <- ifelse(
-      increments@basis_level == "last",
-      tail(
-        data@xLevel,
-        1
-      ),
-      max(data@xLevel)
+      increments@basis_level == "last", data@xLevel[data@nObs], max(data@xLevel)
     )
-
-    max_next_dose_level <- min(
-      length(data@doseGrid),
-      basis_dose_level + increments@max_levels
-    )
-
-    data@doseGrid[max_next_dose_level]
+    max_dose_level <- min(basis_dose_level + increments@levels, data@nGrid)
+    data@doseGrid[max_dose_level]
   }
 )
 
+# nolint start
 
 # maxDose-IncrementsHSRBeta ----
 

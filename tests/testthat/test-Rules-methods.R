@@ -850,44 +850,118 @@ test_that("nextBest-NextBestProbMTDMinDist returns correct next dose and plot (n
 })
 
 
-# maxDose-IncrementsNumDoseLevels ----
+# maxDose ----
 
-test_that("IncrementsNumDoseLevels works correctly if basis_level 'last' is defined", {
-  increments <- IncrementsNumDoseLevels(
-    max_levels = 2,
-    basis_level = "last"
+## IncrementsRelative ----
+
+test_that("maxDose-IncrementsRelative works correctly for last dose in 1st interval", {
+  increments <- IncrementsRelative(intervals = c(0, 110), increments = c(1, 0.5))
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
   )
-  result <- maxDose(
-    increments,
-    data = h_get_data_1()
-  )
-  expect_equal(result, 14) # maxDose is 14 if basis_level='last'.
+  result <- maxDose(increments, data)
+  expect_equal(result, 200)
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basis_level is not defined and default is used", {
-  increments <- IncrementsNumDoseLevels(
-    max_levels = 2
+test_that("maxDose-IncrementsRelative works correctly for last dose in 2nd interval", {
+  increments <- IncrementsRelative(intervals = c(0, 90), increments = c(1, 0.5))
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
   )
-  result <- maxDose(
-    increments,
-    data = h_get_data_1()
-  )
-  expect_equal(result, 14) # maxDose is 14 if basis_level not defined, then reference value is used.
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
+
+  # Edge case: interval bound is equal to the last dose.
+  increments <- IncrementsRelative(intervals = c(0, 100), increments = c(1, 0.5))
+  result <- maxDose(increments, data)
+  expect_equal(result, 150)
 })
 
-test_that("IncrementsNumDoseLevels works correctly if basis_level 'max' is defined", {
-  increments <- IncrementsNumDoseLevels(
-    max_levels = 2,
-    basis_level = "max"
+test_that("maxDose-IncrementsRelative throws error when last dose is below the first interval", {
+  increments <- IncrementsRelative(intervals = c(200, 300), increments = c(1, 0.5))
+  data <- Data(
+    x = c(5, 100), y = c(1L, 0L), doseGrid = c(5, 100, 270), ID = 1:2, cohort = 1:2
   )
-  result <- maxDose(
-    increments,
-    data = h_get_data_1()
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'last_dose.*increments@intervals.*failed: Must be TRUE."
   )
-  expect_equal(result, 20) # maxDose is 20 if basis_level='max'.
 })
 
-# maxDose-IncrementsRelativeDLTCurrent ----
+test_that("maxDose-IncrementsRelative throws error when IncrementsRelative is empty", {
+  increments <- IncrementsRelative(intervals = numeric(0), increments = numeric(0))
+  data <- h_get_data()
+  expect_error(
+    maxDose(increments, data),
+    "Assertion on 'last_dose.*increments@intervals.*failed: Must be TRUE."
+  )
+})
+
+test_that("maxDose-IncrementsRelative throws error when Data is empty", {
+  increments <- IncrementsRelative(intervals = c(0, 100), increments = c(1, 0.5))
+  expect_error(
+    maxDose(increments, Data()),
+    "Assertion on 'last_dose.*increments@intervals.*failed: Must be TRUE."
+  )
+})
+
+## IncrementsDoseLevels ----
+
+test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 1 level increase", {
+  increments <- IncrementsDoseLevels(levels = 1)
+  data <- data <- Data(
+    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+  )
+  result <- maxDose(increments, data = data)
+  expect_equal(result, 250)
+})
+
+test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and 2 levels increase", {
+  increments <- IncrementsDoseLevels(levels = 2)
+  data <- data <- Data(
+    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+  )
+  result <- maxDose(increments, data = data)
+  expect_equal(result, 300)
+})
+
+test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 1 level increase", {
+  increments <- IncrementsDoseLevels(levels = 1, basis_level = "max")
+  data <- data <- Data(
+    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+  )
+  result <- maxDose(increments, data = data)
+  expect_equal(result, 300)
+})
+
+test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and 2 levels increase", {
+  increments <- IncrementsDoseLevels(levels = 2, basis_level = "max")
+  data <- data <- Data(
+    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+  )
+  result <- maxDose(increments, data = data)
+  expect_equal(result, 400)
+})
+
+test_that("maxDose-IncrementsDoseLevels works correctly for 'last' basis_level and over-grid increase", {
+  increments <- IncrementsDoseLevels(levels = 4)
+  data <- data <- Data(
+    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+  )
+  result <- maxDose(increments, data = data)
+  expect_equal(result, 400)
+})
+
+test_that("maxDose-IncrementsDoseLevels works correctly for 'max' basis_level and over-grid increase", {
+  increments <- IncrementsDoseLevels(levels = 3, basis_level = "max")
+  data <- data <- Data(
+    x = c(5, 250, 100), y = c(0L, 1L, 1L), doseGrid = c(5, 100, 250, 300, 400), ID = 1:3, cohort = 1:3
+  )
+  result <- maxDose(increments, data = data)
+  expect_equal(result, 400)
+})
+
+## IncrementsRelativeDLTCurrent ----
 
 test_that("IncrementsRelativeDLTCurrent works correctly", {
   increments <- IncrementsRelativeDLTCurrent(
@@ -901,7 +975,7 @@ test_that("IncrementsRelativeDLTCurrent works correctly", {
   expect_equal(result, 13.3) # maxDose is 13.3 because last dose was 10 with 1 DLT.
 })
 
-# maxDose-IncrementsHSRBeta ----
+## IncrementsHSRBeta ----
 
 test_that("IncrementsHSRBeta works correctly if toxcicity probability is below threshold probability", {
   my_data <- h_get_data()
@@ -990,8 +1064,9 @@ test_that("IncrementsHSRBeta works correctly if toxcicity probability is above t
   expect_equal(result, 75) # maxDose is 75 as toxicity probability of dose 100 is above 0.90.
 })
 
+# stopTrial ----
 
-# stopTrial-StoppingMTDCV ----
+## StoppingMTDCV ----
 
 test_that("StoppingMTDCV works correctly if CV is below threshold", {
   my_data <- h_get_data()
@@ -1031,7 +1106,7 @@ test_that("StoppingMTDCV works correctly if CV is above threshold", {
   expect_identical(result, expected) # CV is 23% > 20%.
 })
 
-# stopTrial-StoppingLowestDoseHSRBeta ----
+## StoppingLowestDoseHSRBeta ----
 
 test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not toxic", {
   my_data <- h_get_data()
@@ -1165,7 +1240,7 @@ test_that("StoppingLowestDoseHSRBeta works correctly if first active dose is not
   expect_identical(result, expected) # First active dose not applied.
 })
 
-# stopTrial-StoppingSpecificDose ----
+## StoppingSpecificDose ----
 
 test_that("StoppingSpecificDose works correctly if dose rec. differs from specific and stop crit. not met", {
   # StoppingSpecificDose works correctly if dose recommendation is not the same
