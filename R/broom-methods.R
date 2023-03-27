@@ -242,7 +242,7 @@ setMethod(
   f = "tidy",
   signature = signature(object = "CohortSizeMax"),
   definition = function(object, ...) {
-    rv <- lapply(object@cohortSizeList, tidy) %>%
+    rv <- lapply(object@cohort_size_list, tidy) %>%
       dplyr::bind_rows(.id = "Index")
     class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
@@ -259,7 +259,7 @@ setMethod(
   f = "tidy",
   signature = signature(object = "CohortSizeMin"),
   definition = function(object, ...) {
-    rv <- lapply(object@cohortSizeList, tidy) %>%
+    rv <- lapply(object@cohort_size_list, tidy) %>%
       dplyr::bind_rows(.id = "Index")
     class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
@@ -787,7 +787,7 @@ setMethod(
   f = "tidy",
   signature = signature(object = "StoppingAny"),
   definition = function(object, ...) {
-    rv <- lapply(object@stopList, tidy) %>%
+    rv <- lapply(object@stop_list, tidy) %>%
       dplyr::bind_rows(.id = "Index")
     class(rv) <- c(paste0("tbl_", class(object)), class(rv))
     return(rv)
@@ -821,7 +821,7 @@ setMethod(
   f = "tidy",
   signature = signature(object = "StoppingList"),
   definition = function(object, ...) {
-    rv <- lapply(object@stopList, tidy) %>%
+    rv <- lapply(object@stop_list, tidy) %>%
       dplyr::bind_rows(.id = "Index")
     tibble::tibble()
     return(rv)
