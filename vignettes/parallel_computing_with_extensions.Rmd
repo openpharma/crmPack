@@ -63,7 +63,7 @@ Please note that for this example the extra code is directly inserted into the o
 ```{r LogisticNormalTruncPrior Definition, eval = FALSE}
 library(crmPack)
 
-my_own_extension = function() {
+my_own_extension <- function() {
   # LogisticNormalTruncPrior ----
 
   ## class ----
@@ -191,7 +191,6 @@ my_own_extension = function() {
     }
   )
 }
-
 ```
 
 After the new code is defined and embedded into a fuction, we can store the function as value of a global option, which we will name `crmpack_extensions`.
