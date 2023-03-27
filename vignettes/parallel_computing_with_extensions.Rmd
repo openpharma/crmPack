@@ -182,7 +182,8 @@ my_own_extension <- function() {
     ),
     definition = function(dose, model, samples) {
       checkmate::assert_numeric(
-        dose, lower = 0L, any.missing = FALSE, min.len = 1
+        dose,
+        lower = 0L, any.missing = FALSE, min.len = 1
       )
       checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
       assert_length(dose, len = size(samples))
