@@ -826,7 +826,7 @@ test_that("maxDose-IncrementsRelativeDLT throws error when no of DLTs is below t
   data <- Data(x = c(5, 100), y = c(0L, 1L), doseGrid = c(5, 100), ID = 1:2, cohort = 1:2)
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_happened.*increments@dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*increments@dlt_intervals.*failed: Must be TRUE."
   )
 })
 
@@ -835,7 +835,7 @@ test_that("maxDose-IncrementsRelativeDLT throws error when IncrementsRelativeDLT
   data <- h_get_data()
   expect_error(
     maxDose(increments, data),
-    "Assertion on 'dlt_happened.*increments@dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*increments@dlt_intervals.*failed: Must be TRUE."
   )
 })
 
@@ -843,7 +843,7 @@ test_that("maxDose-IncrementsRelativeDLT throws error when Data is empty", {
   increments <- IncrementsRelativeDLT(dlt_intervals = c(1, 4), increments = c(1, 0.5))
   expect_error(
     maxDose(increments, Data()),
-    "Assertion on 'dlt_happened.*increments@dlt_intervals.*failed: Must be TRUE."
+    "Assertion on 'dlt_count.*increments@dlt_intervals.*failed: Must be TRUE."
   )
 })
 

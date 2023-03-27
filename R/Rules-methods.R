@@ -1130,11 +1130,11 @@ setMethod(
     data = "Data"
   ),
   definition = function(increments, data, ...) {
-    dlt_happened <- sum(data@y)
-    # Determine in which interval the `dlt_happened` is.
-    assert_true(dlt_happened >= head(increments@dlt_intervals, 1))
-    dlt_happened_interval <- findInterval(x = dlt_happened, vec = increments@dlt_intervals)
-    (1 + increments@increments[dlt_happened_interval]) * data@x[data@nObs]
+    dlt_count <- sum(data@y)
+    # Determine in which interval the `dlt_count` is.
+    assert_true(dlt_count >= head(increments@dlt_intervals, 1))
+    dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
+    (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
   }
 )
 
