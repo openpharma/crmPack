@@ -1134,6 +1134,7 @@ setMethod(
     allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
     data@doseGrid[allowed_index]
   }
+
 )
 
 ## --------------------------------------------------
@@ -1173,6 +1174,7 @@ setMethod(
     allowed_index <- min(length(data@doseGrid), used_max_index + increments@increments[current_interval])
     data@doseGrid[allowed_index]
   }
+
 )
 
 ## --------------------------------------------------
