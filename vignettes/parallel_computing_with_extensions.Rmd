@@ -181,7 +181,9 @@ my_own_extension <- function() {
       samples = "Samples"
     ),
     definition = function(dose, model, samples) {
-      checkmate::assert_numeric(dose, lower = 0L, any.missing = FALSE, min.len = 1)
+      checkmate::assert_numeric(
+        dose, lower = 0L, any.missing = FALSE, min.len = 1
+      )
       checkmate::assert_subset(c("alpha0", "alpha1"), names(samples))
       assert_length(dose, len = size(samples))
 
@@ -193,7 +195,7 @@ my_own_extension <- function() {
 }
 ```
 
-After the new code is defined and embedded into a fuction, we can store the function as value of a global option, which we will name `crmpack_extensions`.
+After the new code is defined and embedded into a function, we can store the function as value of a global option, which we will name `crmpack_extensions`.
 
 ```{r , eval = FALSE}
 # Store the function into the global option crmpack_extensions.
@@ -262,7 +264,9 @@ this_max_dose <- maxDose(my_increments, my_data)
 
 # Next best dose.
 my_next_best <- NextBestMinDist(target = 0.3)
-this_next_dose <- nextBest(my_next_best, this_max_dose, my_samples, my_model, my_data)$value
+this_next_dose <- nextBest(
+  my_next_best, this_max_dose, my_samples, my_model, my_data
+)$value
 
 # Stopping rule.
 my_stopping <- StoppingPatientsNearDose(nPatients = 9, percentage = 0)
@@ -313,8 +317,9 @@ safe_scenario <- scenario_setup(0.05, 0.3, 20000)
 late_scenario <- scenario_setup(0.05, 0.3, 2000)
 early_scenario <- scenario_setup(0.05, 0.3, 700)
 toxic_scenario <- scenario_setup(0.6, 0.3, -300)
-peak_scenario <- function(dose,
-                          scenario = cbind(emptydata@doseGrid, c(rep(0.05, 11), rep(0.80, 8)))) {
+peak_scenario <- function(
+    dose,
+    scenario = cbind(emptydata@doseGrid, c(rep(0.05, 11), rep(0.80, 8)))) {
   scenario[match(dose, scenario[, 1]), 2]
 }
 
@@ -342,8 +347,8 @@ get_oc <- function(truth) {
   )
 }
 
-# get operation characteristics without utilizing parallel computing for selected truth
-# (to reduce the run time).
+# get operation characteristics without utilizing parallel computing for
+# selected truth (to reduce the run time).
 time_no_parallel <- system.time({
   start_time <- Sys.time()
   cat(format(Sys.time(), usetz = TRUE), "start", "\n")
