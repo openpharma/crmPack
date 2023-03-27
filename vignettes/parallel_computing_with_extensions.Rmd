@@ -23,9 +23,9 @@ knitr::opts_chunk$set(
 One of the big advantages of `crmPack` over existing R implementations is its flexible framework based on the S4 classes and methods system [@Chambers2008]. Users can extend the existing functionality easily to the specific needs of the study [@SabanesBove2019].
 
 User defined extensions of classes and methods can be easily created and used together with existing `crmPack` classes and methods when setting up the study and performing analysis with observed data. As long as no parallel computing is used, no special care needs to be taken utilizing both native and user defined classes and methods.
-When trial simulations need to be performed to derive the operational characteristics of a study setup, run times may become long with single core processing. The run time depends mainly on the number of study replications and MCMC samples. In cases of long run times, utilizing parallel computing, i.e. using multiple CPU cores, can overcome these challenge and decrease run times significantly.
+When trial simulations need to be performed to derive the operational characteristics of a study setup, run times may become long with single core processing. The run time depends mainly on the number of study replications and MCMC samples. In cases of long run times, utilizing parallel computing, i.e., using multiple CPU cores, can overcome these challenge and decrease run times significantly.
 
-Parallel computing is supported by `crmPack` by design, i.e. whenever the simulation call is invoked with parameters `parallel = TRUE` and `nCores =` more than one CPU, each core is initialized with the `crmPack` package and the global environment.
+Parallel computing is supported by `crmPack` by design, i.e., whenever the simulation call is invoked with parameters `parallel = TRUE` and `nCores =` more than one CPU, each core is initialized with the `crmPack` package and the global environment.
 
 Due to the nature of the S4 object system, user defined classes and method that were defined in the global environment cannot just be made available at each core by initializing the core with the global environment. User defined classes and method needs to be executed at any core that is initialized to warrant full functionality of the S4 objects. 
 
@@ -300,7 +300,7 @@ After setting up the model and the design features, it is very useful to check t
 examine(my_design, my_options)
 ```
 
-When examine runs as expected, study simulations can be performed. To demonstrate the difference between single core processing an multiple core processing, two scenarios where processed with single core processing, followed by 5 scenarios utilizing parallel computing. 
+When examine runs as expected, study simulations can be performed. To demonstrate the difference between single core processing and multiple core processing, two scenarios where processed with single core processing, followed by 5 scenarios utilizing parallel computing. 
 
 With regard to run times in this example, please see the [note] at the end of the vignette.
 
@@ -404,7 +404,7 @@ time <- system.time({
 
 The analyses presented in this vignette have used chains of a very short length as well as a very limited number of trial simulations. This is purely for convenience. Study simulations for real trials should use considerably longer chains and a much higher number of trial simulations.
 
-In this example it can be seen that for small number of study simulations, the overhead of initializing the cluster for parallel computing, leads to longer run time of the simulations in comparison to single core processing. However, for a relevant number of study simulations, the substantial run time benefit utilizing parallel computation can easily be seen. 
+In this example it is apparent that for small number of study simulations, the overhead of initializing the cluster for parallel computing, leads to longer run time of the simulations in comparison to single core processing. However, for a relevant number of study simulations, the substantial run time benefit utilizing parallel computation can easily be seen. 
 
 ## References
 
