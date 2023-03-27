@@ -197,8 +197,8 @@ $$ where $$
 \end{aligned}
 $$ with $c \geq 2$. Due to CLM model restriction \eqref{alpha_ordering}, we further require that
 $\boldsymbol k = [k_1, k_2, \ldots, k_{c-1}]^T$ is such that
-$\infty = k_1 > k_2 > \cdots > k_{c-1} > -\infty$. Note that for $c = 2$ we obtain a univariate normal
-distribution without truncation, which somehow corresponds to $\alpha_1$ in \eqref{prior1}.
+$\infty = k_1 > k_2 > \cdots > k_{c-1} > -\infty$. Note that for $c = 2$ we obtain a univariate
+normal distribution without truncation, which somehow corresponds to $\alpha_1$ in \eqref{prior1}.
 
 Unfortunately, the marginals of multivariate truncated normal variates do not need to be truncated
 normal in general. The exact formula for the marginal probability densities functions are given in
@@ -339,8 +339,8 @@ y <- c(
 ## Data-class
 
 We need to adopt a new class for data as the existing one `Data` does not allow for categorical (\>2
-categories) toxicity. We propose to create new data class, named e.g. `DataCatTox`, which inherits
-from existing `GeneralData` class and is a parent of existing `Data` class. The new `DataCatTox`
+categories) toxicity. We propose to create new data class, named e.g. `DataOrdinal`, which inherits
+from existing `GeneralData` class and is a parent of existing `Data` class. The new `DataOrdinal`
 class:
 
 -   gets its slots from current `Data` and
@@ -351,8 +351,8 @@ Eventually, instead of having `yCategories` as a named vector, we can introduce 
 `yLabels`. Below is the prototype code.
 
 ```{r prototype_data, eval=FALSE}
-.DataCatTox <- setClass(
-  Class = "DataCatTox",
+.DataOrdinal <- setClass(
+  Class = "DataOrdinal",
   contains = "GeneralData",
   slots = c(
     x = "numeric",
@@ -377,7 +377,7 @@ Eventually, instead of having `yCategories` as a named vector, we can introduce 
 
 .Data <- setClass(
   Class = "Data",
-  contains = "DataCatTox",
+  contains = "DataOrdinal",
   validity = v_data # same as already existing v_data + minor update due to `y` labels.
 )
 ```
@@ -385,7 +385,7 @@ Eventually, instead of having `yCategories` as a named vector, we can introduce 
 Another option we considered was modification of existing `Data` class. The modification is done by:
 
 -   allowing `y` to take on values from 0, 1, 2, 3, ....
--   adding new slot `yCategories`, defined in the same way as in `DataCatTox` proposal, above.
+-   adding new slot `yCategories`, defined in the same way as in `DataOrdinal` proposal, above.
 
 However, the main disadvantages of this approach is that if we modify existing `Data` class rather
 than subclasse it, we need to make sure that the `Data` instances that are passed to work with
@@ -443,8 +443,11 @@ LogisticLogNormOrd <- function(meanAlpha, precAlpha, meanBeta, precBeta, ref_dos
       }
       ms
     },
-    init = function() {
-      list(alpha = c(5, 3), beta = 0) # TODO - length of alpha
+    init = function(yCategories) {
+      list(
+        alpha = seq(from = 5, to = 3, length.out = length(yCategories) - 1),
+        beta = 0
+      )
     },
     datanames = c("nObs", "yCategories", "y", "x"),
     sample = c("alpha", "beta")
