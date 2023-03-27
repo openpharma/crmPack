@@ -82,6 +82,7 @@ Collate:
     'McmcOptions-validity.R'
     'McmcOptions-class.R'
     'McmcOptions-methods.R'
+    'Samples-validity.R'
     'Samples-class.R'
     'mcmc.R'
     'Simulations-class.R'

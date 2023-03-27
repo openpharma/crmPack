@@ -54,6 +54,7 @@ reference:
       - OneParLogNormalPrior
       - OneParExpPrior
       - FractionalCRM
+      - Samples
       - NextBest
       - NextBestMTD
       - NextBestNCRM
@@ -71,7 +72,7 @@ reference:
       - IncrementsRelativeParts
       - IncrementsRelativeDLT
       - IncrementsRelativeDLTCurrent
-      - IncrementsNumDoseLevels
+      - IncrementsDoseLevels
       - IncrementsHSRBeta
       - IncrementsMin
       - StoppingCohortsNearDose
@@ -162,6 +163,7 @@ reference:
       - v_model_tite_logistic_log_normal
       - v_model_one_par_exp_normal_prior
       - v_model_one_par_exp_prior
+      - v_samples
       - v_next_best_mtd
       - v_next_best_ncrm
       - v_next_best_ncrm_loss
@@ -174,7 +176,7 @@ reference:
       - v_increments_relative
       - v_increments_relative_parts
       - v_increments_relative_dlt
-      - v_increments_num_dose_levels
+      - v_increments_dose_levels
       - v_increments_hsr_beta
       - v_increments_min
       - v_stopping_cohorts_near_dose
@@ -312,7 +314,9 @@ reference:
       - nextBest-NextBestMaxGainSamples
       - stopTrial-StoppingLowestDoseHSRBeta
       - stopTrial-StoppingMTDCV
-      - maxDose-IncrementsNumDoseLevels
+      - maxDose
+      - maxDose-IncrementsRelative
+      - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
   - title: Functions
     contents:
@@ -354,8 +358,6 @@ reference:
       - Report
       - RuleDesign
       - RuleDesign-class
-      - Samples-class
-      - Samples
       - Simulations-class
       - Simulations
       - SimulationsSummary-class

@@ -306,13 +306,13 @@ v_increments_relative_dlt <- function(object) {
   v$result()
 }
 
-#' @describeIn v_increments validates that the [`IncrementsNumDoseLevels`] object
-#'   contains valid `max_levels` and `basis_level` option.
-v_increments_num_dose_levels <- function(object) {
+#' @describeIn v_increments validates that the [`IncrementsDoseLevels`] object
+#'   contains valid `levels` and `basis_level` option.
+v_increments_dose_levels <- function(object) {
   v <- Validate()
   v$check(
-    test_int(object@max_levels, lower = .Machine$double.xmin),
-    "max_levels must be scalar positive integer"
+    test_int(object@levels, lower = .Machine$double.xmin),
+    "levels must be scalar positive integer"
   )
   v$check(
     test_string(object@basis_level, pattern = "^last$|^max$"),

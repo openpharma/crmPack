@@ -10,31 +10,30 @@
 IncrementsAbsoluteDLT(intervals = 1:2, increments = 2:1)
 }
 \arguments{
-\item{intervals}{(\code{numeric}) \cr a vector of right hand boundaries of the DLT intervals}
+\item{intervals}{(\code{numeric})\cr see slot definition.}
 
-\item{increments}{(\code{numeric}) \cr a vector of the maximum increment allowed in the corresponding DLT interval}
-}
-\value{
-the \link{IncrementsAbsoluteDLT} object
+\item{increments}{(\code{numeric})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
 Increments control based on absolute differences in intervals determined by
-the number of DLTS reported to date
-
-#' Note that \code{intervals} is to be read as follows. If for example,
+the number of DLTS reported to date.
+}
+\note{
+\code{intervals} is to be read as follows. If for example,
 we want to specify three intervals: First 0 DLTs, second exactly one DLT, and
 third two or more DLTs, then we specify \code{intervals} to be \code{1:3}.
 That means, the right bound of the intervals are exclusive to the interval,
 and the last interval goes from the last value to infinity.
 }
-\section{Slots}{
-
-\describe{
-\item{\code{intervals}}{a vector with the left bounds of the relevant DLT counts}
-
-\item{\code{increments}}{a vector of the same length with the maximum allowable
-absolute increments in the \code{intervals}}
-}}
-
+\examples{
+# This is the example of a rule for incrementing by a maximum of:
+# * three dose levels no DLTs have been reported so far
+# * two dose levels exactly one DLT has been reported so far
+# * one dose level otherwise
+my_increments <- IncrementsAbsoluteDLT(
+  intervals = 1:3,
+  increments = 3:1
+)
+}
