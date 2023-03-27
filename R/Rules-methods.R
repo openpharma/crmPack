@@ -1113,23 +1113,22 @@ setMethod(
   }
 )
 
-# nolint start
+## IncrementsDoseLevels ----
 
-# maxDose-IncrementsDoseLevels ----
-
-#' @rdname maxDose
-#'
-#' @description Increments control based on number of dose levels
-#'   Increment rule to determine the maximum possible next dose based on
-#'   maximum dose levels to increment for the next dose.
-#'   Increment rule can be applied to last dose or maximum dose given so far.
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   the number of dose grid levels. That is, the max dose is determined as
+#'   the one which level is equal to: base dose level + level increment.
+#'   The base dose level is the level of the last dose in grid or the level
+#'   of the maximum dose applied, which is defined in `increments` object.
+#'   Find out more in [`IncrementsDoseLevels`].
 #'
 #' @aliases maxDose-IncrementsDoseLevels
-#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
+#'
 #' @export
+#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
 #'
 setMethod(
-  "maxDose",
+  f = "maxDose",
   signature = signature(
     increments = "IncrementsDoseLevels",
     data = "Data"
@@ -1138,23 +1137,14 @@ setMethod(
     # Determine what is the basis level for increment,
     # i.e. the last dose or the max dose applied.
     basis_dose_level <- ifelse(
-      increments@basis_level == "last",
-      tail(
-        data@xLevel,
-        1
-      ),
-      max(data@xLevel)
+      increments@basis_level == "last", data@xLevel[data@nObs], max(data@xLevel)
     )
-
-    max_next_dose_level <- min(
-      length(data@doseGrid),
-      basis_dose_level + increments@levels
-    )
-
-    data@doseGrid[max_next_dose_level]
+    max_dose_level <- min(basis_dose_level + increments@levels, data@nGrid)
+    data@doseGrid[max_dose_level]
   }
 )
 
+# nolint start
 
 # maxDose-IncrementsHSRBeta ----
 
