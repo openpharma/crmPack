@@ -35,12 +35,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -63,7 +57,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.9000.9133" id="version-1090009133">Version 1.0.9000.9133<a class="anchor" aria-label="anchor" href="#version-1090009133"></a></h2>
-<ul><li>Added new function <code>ngrid</code> that returns the number of doses in the dose grid.</li>
+<ul><li>Added new function <code>dose_grid_range</code> that returns the range of doses in the dose grid.</li>
+<li>Added new function <code>ngrid</code> that returns the number of doses in the dose grid.</li>
 <li>Modified <code>efficacy-EffFlexi</code> method: allowed for vectorized dose; <code>NA</code> is now returned for doses from outside of the dose grid range (and the warning is thrown).</li>
 <li>Added new custom <code>checkmate</code> function <code>check_range</code>.</li>
 <li>Added method <code>names</code> for objects of class <code>Samples</code>.</li>

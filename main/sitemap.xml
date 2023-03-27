@@ -163,13 +163,13 @@
     <loc>https://roche.github.io/crmPack/main/reference/Increments-class.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/main/reference/IncrementsDoseLevels-class.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/main/reference/IncrementsHSRBeta-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/IncrementsMin-class.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/main/reference/IncrementsNumDoseLevels-class.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/IncrementsRelative-class.html</loc>
@@ -328,9 +328,6 @@
     <loc>https://roche.github.io/crmPack/main/reference/Samples-class.html</loc>
   </url>
   <url>
-    <loc>https://roche.github.io/crmPack/main/reference/Samples.html</loc>
-  </url>
-  <url>
     <loc>https://roche.github.io/crmPack/main/reference/Simulations-class.html</loc>
   </url>
   <url>
@@ -466,6 +463,9 @@
     <loc>https://roche.github.io/crmPack/main/reference/doseFunction.html</loc>
   </url>
   <url>
+    <loc>https://roche.github.io/crmPack/main/reference/dose_grid_range.html</loc>
+  </url>
+  <url>
     <loc>https://roche.github.io/crmPack/main/reference/efficacy.html</loc>
   </url>
   <url>
@@ -506,9 +506,6 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/h_check_fun_formals.html</loc>
-  </url>
-  <url>
-    <loc>https://roche.github.io/crmPack/main/reference/h_dose_grid_range.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/h_find_interval.html</loc>
@@ -872,6 +869,9 @@
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/v_safety_window.html</loc>
+  </url>
+  <url>
+    <loc>https://roche.github.io/crmPack/main/reference/v_samples_objects.html</loc>
   </url>
   <url>
     <loc>https://roche.github.io/crmPack/main/reference/v_stopping.html</loc>

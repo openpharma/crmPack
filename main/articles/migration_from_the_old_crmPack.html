@@ -59,12 +59,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -512,6 +506,37 @@ IncrementsMin
 </tr>
 <tr>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsDoseLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     "></span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+basis_level
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">IncrementsDoseLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+<span style="     ">maxLevels</span>
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+levels
+</td>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+change applied also to other dependent classes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 <span style="     ">IncrementsMin</span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
@@ -531,30 +556,14 @@ change applied also to other dependent classes
 <span style="     ">IncrementsNumDoseLevels</span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
+IncrementsDoseLevels
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
 <span style="     "></span>
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-basis_level
 </td>
 <td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-<span style="     ">IncrementsNumDoseLevels</span>
-</td>
-<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-</td>
-<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-<span style="     ">maxLevels</span>
-</td>
-<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-max_levels
-</td>
-<td style="text-align:left;width: 6cm; border-left:1px solid;border-right:1px solid;">
-change applied also to other dependent classes
 </td>
 </tr>
 <tr>
@@ -1985,10 +1994,10 @@ of a fixed model’s parameters values.</p>
 <span><span class="co"># given a particular models and samples.</span></span>
 <span><span class="co"># Every single dose corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/dose.html">dose</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 3.288861e+00 1.142211e+01 7.397016e-01 1.040678e+00 1.157911e+00</span></span>
-<span><span class="co">##  [6] 1.500464e+00 1.425438e+00 7.800850e-01 4.095033e+00 8.046662e-01</span></span>
-<span><span class="co">## [11] 4.633535e+00 3.884194e-01 3.164010e+00 2.977329e+01 6.800376e+00</span></span>
-<span><span class="co">## [16] 1.372428e+00 2.106645e-09 1.628172e+00 1.181168e+00 1.791637e+00</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 2.805396e+00 2.771273e-01 2.628380e-02 1.486240e+00 7.725428e-01</span></span>
+<span><span class="co">##  [6] 1.679345e+01 6.581837e-01 1.763434e+00 1.096323e+00 1.447133e+00</span></span>
+<span><span class="co">## [11] 1.597380e+00 2.937232e+00 3.070407e+00 1.135798e+00 2.691914e-01</span></span>
+<span><span class="co">## [16] 6.406984e-01 1.389369e+08 1.899917e-01 8.178203e+03 1.689639e-01</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True dose-DLT relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>
@@ -2006,9 +2015,9 @@ of a fixed model’s parameters values.</p>
 <code class="sourceCode R"><span><span class="co"># Toxicity probabilities for a given dose (equal to 10), model and samples.</span></span>
 <span><span class="co"># Every single probability value corresponds to one particular sample in `my_samples`.</span></span>
 <span><span class="fu"><a href="../reference/prob.html">prob</a></span><span class="op">(</span><span class="fl">10</span>, <span class="va">my_model</span>, <span class="va">my_samples</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] 0.6479220 0.2780871 0.7802167 0.8438793 0.9840123 0.5622099 0.8185522</span></span>
-<span><span class="co">##  [8] 0.8732629 0.3520833 0.9736790 0.4045853 0.9802929 0.6927658 0.4568453</span></span>
-<span><span class="co">## [15] 0.2122105 0.7853867 0.6274737 0.9450522 0.9637874 0.7659890</span></span></code></pre>
+<pre><code><span><span class="co">##  [1] 0.7349472 0.5188542 0.5990523 0.9683686 0.8720770 0.3722236 0.9470623</span></span>
+<span><span class="co">##  [8] 0.7697339 0.9958251 0.9626671 0.7945291 0.6321884 0.4755925 0.9953361</span></span>
+<span><span class="co">## [15] 0.5557195 0.9441003 0.4490561 0.9295888 0.6732218 0.6518654</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># True DLT-dose relationship.</span></span>
 <span><span class="co"># Say that -0.8 and 1 are the true values for models parameters alpha0 and alpha1 respectively.</span></span>

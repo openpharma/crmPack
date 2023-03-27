@@ -39,12 +39,6 @@ relative differences in terms of DLTs."><meta property="og:image" content="https
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -92,10 +86,9 @@ relative differences in terms of DLTs.</p>
     
 
 <dl><dt><code>dlt_intervals</code></dt>
-<dd><p>(<code>integer</code>)<br> an vector with the left bounds of the
-relevant DLT intervals. This parameters specifies the right bounds of the
-intervals. For example, <code>dlt_intervals  = c(0, 1, 3)</code> specifies three
-intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
+<dd><p>(<code>integer</code>)<br> a vector with the left bounds of the
+relevant DLT intervals. For example, <code>dlt_intervals  = c(0, 1, 3)</code> specifies
+three intervals (sets of DLTs: first, 0 DLT; second 1 or 2 DLTs; and the third
 one, at least 3 DLTs. That means, the right bound of the intervals are
 exclusive to the interval and the last interval goes from the last value to
 infinity.</p></dd>

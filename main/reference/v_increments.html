@@ -39,12 +39,6 @@ Increments or inherited classes and therefore not exported."><meta property="og:
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://Roche.github.io/crmPack/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -80,7 +74,7 @@ Increments or inherited classes and therefore not exported."><meta property="og:
 <span></span>
 <span><span class="fu">v_increments_relative_dlt</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">v_increments_num_dose_levels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span><span class="fu">v_increments_dose_levels</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">v_increments_hsr_beta</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
@@ -109,8 +103,8 @@ contains valid <code>intervals</code> and <code>increments</code> parameters.</p
 contains valid <code>dlt_start</code> and <code>clean_start</code> parameters.</p></li>
 <li><p><code>v_increments_relative_dlt()</code>: validates that the <code><a href="IncrementsRelativeDLT-class.html">IncrementsRelativeDLT</a></code> object
 contains valid <code>dlt_intervals</code> and <code>increments</code> parameters.</p></li>
-<li><p><code>v_increments_num_dose_levels()</code>: validates that the <code><a href="IncrementsNumDoseLevels-class.html">IncrementsNumDoseLevels</a></code> object
-contains valid <code>max_levels</code> and <code>basis_level</code> option.</p></li>
+<li><p><code>v_increments_dose_levels()</code>: validates that the <code><a href="IncrementsDoseLevels-class.html">IncrementsDoseLevels</a></code> object
+contains valid <code>levels</code> and <code>basis_level</code> option.</p></li>
 <li><p><code>v_increments_hsr_beta()</code>: validates that the <code><a href="IncrementsHSRBeta-class.html">IncrementsHSRBeta</a></code>
 object contains valid probability target, threshold and shape parameters.</p></li>
 <li><p><code>v_increments_min()</code>: validates that the <code><a href="IncrementsMin-class.html">IncrementsMin</a></code>
