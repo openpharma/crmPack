@@ -131,6 +131,19 @@ getResultList <- function(fun,
         varlist = ls(.GlobalEnv)
       )
 
+      # load user extensions from global options
+      crmpack_extensions <- getOption("crmpack_extensions")
+      if (is.null(crmpack_extensions) != TRUE) {
+        tryCatch(
+          {
+            parallel::clusterCall(cl, crmpack_extensions)
+          },
+          error = function(e) {
+            stop("Failed to export crmpack_extensions: ", e$message)
+          }
+        )
+      }
+
       ## now do the computations
       res <- parallel::parLapply(
         cl = cl,
