@@ -1334,26 +1334,26 @@ setMethod(
 ##'
 ##' @example examples/Rules-method-maxDose-IncrementsMin.R
 setMethod("maxDose",
-          signature =
-            signature(
-              increments = "IncrementsMin",
-              data = "Data"
-            ),
-          def =
-            function(increments, data, ...) {
-              ## apply the multiple increment rules
-              individualResults <-
-                sapply(increments@increments_list,
-                       maxDose,
-                       data = data,
-                       ...
-                )
+  signature =
+    signature(
+      increments = "IncrementsMin",
+      data = "Data"
+    ),
+  def =
+    function(increments, data, ...) {
+      ## apply the multiple increment rules
+      individualResults <-
+        sapply(increments@increments_list,
+          maxDose,
+          data = data,
+          ...
+        )
 
-              ## so the maximum increment is the minimum across the individual increments
-              ret <- min(individualResults)
+      ## so the maximum increment is the minimum across the individual increments
+      ret <- min(individualResults)
 
-              return(ret)
-            }
+      return(ret)
+    }
 )
 
 ## ============================================================
