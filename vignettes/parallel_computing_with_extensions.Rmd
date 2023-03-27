@@ -23,9 +23,9 @@ knitr::opts_chunk$set(
 One of the big advantages of `crmPack` over existing R implementations is its flexible framework based on the S4 classes and methods system [@Chambers2008]. Users can extend the existing functionality easily to the specific needs of the study [@SabanesBove2019].
 
 User defined extensions of classes and methods can be easily created and used together with existing `crmPack` classes and methods when setting up the study and performing analysis with observed data. As long as no parallel computing is used, no special care needs to be taken utilizing both native and user defined classes and methods.
-When trial simulations need to be performed to derive the operational characteristics of a study setup, run times may become long with single core processing. The run time depends mainly on the number of study replications and MCMC samples. In cases of long run times, utilizing parallel computing, i.e. using multiple CPU cores, can overcome these challenge and decrease run times significantly.
+When trial simulations need to be performed to derive the operational characteristics of a study setup, run times may become long with single core processing. The run time depends mainly on the number of study replications and MCMC samples. In cases of long run times, utilizing parallel computing, i.e., using multiple CPU cores, can overcome these challenge and decrease run times significantly.
 
-Parallel computing is supported by `crmPack` by design, i.e. whenever the simulation call is invoked with parameters `parallel = TRUE` and `nCores =` more than one CPU, each core is initialized with the `crmPack` package and the global environment.
+Parallel computing is supported by `crmPack` by design, i.e., whenever the simulation call is invoked with parameters `parallel = TRUE` and `nCores =` more than one CPU, each core is initialized with the `crmPack` package and the global environment.
 
 Due to the nature of the S4 object system, user defined classes and method that were defined in the global environment cannot just be made available at each core by initializing the core with the global environment. User defined classes and method needs to be executed at any core that is initialized to warrant full functionality of the S4 objects. 
 
@@ -47,7 +47,7 @@ options(
 
 ## Important information for usage
 
-When operation characteristics of the design needs to be derived utilizing parallel computing, the simulation function must be executed with the parameter `parallel = TRUE` and `nCores =` a number greater than one. In this case, it is evaluated if a global option with the name `crmpack_extensions` exists. If this is true, the value of the global option `crmpack_extensions` is executed at each core at the time of initialization, i.e. the character string that is equal to the global option `crmpack_extensions` is executed at any core of the cluster, so that the code is available for the use with parallel computing.
+When operation characteristics of the design needs to be derived utilizing parallel computing, the simulation function must be executed with the parameter `parallel = TRUE` and `nCores =` a number greater than one. In this case, it is evaluated if a global option with the name `crmpack_extensions` exists. If this is true, the value of the global option `crmpack_extensions` is executed at each core at the time of initialization, i.e., the character string that is equal to the global option `crmpack_extensions` is executed at any core of the cluster, so that the code is available for the use with parallel computing.
 
 Note that the `<<-` operator must be used for any new user defined constructor function that is defined within the wrapper function that is the value of the global option `crmpack_extensions`. The `<<-` operator will force a function to become visible within the global environment.
 
@@ -58,7 +58,7 @@ It is expected as a good practice, that any new written extension is first teste
 ## Worked out example
 
 Let us assume we want to utilize a two-parameter logistic regression model, where the slope parameter should have only positive values, with a normal prior that is truncated for the slope parameter, so that the slope can have only positive values. In this case we want to set the prior distribution of the slope parameter to be a truncated normal distribution bounded by zero on the lower end. This model representation is not part of the `crmPack` package but can easily be added as shown below.
-Please note that for this example the extra code is directly inserted into the option `crmpack_extensions` as a function. As mentioned before, user should write and test their code first without embedding it into a function which is set equal to the option `crmpack_extensions`, to assure that no errors occurs during the whole execution and the results are as expected.
+Please note that for this example the extra code is directly inserted into the option `crmpack_extensions` as a function. As mentioned before, user should write and test their code first without embedding it into a function which is set equal to the option `crmpack_extensions`, to assure that no errors occur during the whole execution and the results are as expected.
 
 ```{r LogisticNormalTruncPrior Definition, eval = FALSE}
 library(crmPack)
@@ -193,7 +193,7 @@ my_own_extension <- function() {
 }
 ```
 
-After the new code is defined and embedded into a fuction, we can store the function as value of a global option, which we will name `crmpack_extensions`.
+After the new code is defined and embedded into a function, we can store the function as value of a global option, which we will name `crmpack_extensions`.
 
 ```{r , eval = FALSE}
 # Store the function into the global option crmpack_extensions.
@@ -295,7 +295,7 @@ After setting up the model and the design features, it is very useful to check t
 examine(my_design, my_options)
 ```
 
-When examine runs as expected, study simulations can be performed. To demonstrate the difference between single core processing an multiple core processing, two scenarios where processed with single core processing, followed by 5 scenarios utilizing parallel computing. 
+When examine runs as expected, study simulations can be performed. To demonstrate the difference between single core processing and multiple core processing, two scenarios where processed with single core processing, followed by 5 scenarios utilizing parallel computing. 
 
 With regard to run times in this example, please see the [note] at the end of the vignette.
 
@@ -398,7 +398,7 @@ time <- system.time({
 
 The analyses presented in this vignette have used chains of a very short length as well as a very limited number of trial simulations. This is purely for convenience. Study simulations for real trials should use considerably longer chains and a much higher number of trial simulations.
 
-In this example it can be seen that for small number of study simulations, the overhead of initializing the cluster for parallel computing, leads to longer run time of the simulations in comparison to single core processing. However, for a relevant number of study simulations, the substantial run time benefit utilizing parallel computation can easily be seen. 
+In this example it is apparent that for small number of study simulations, the overhead of initializing the cluster for parallel computing, leads to longer run time of the simulations in comparison to single core processing. However, for a relevant number of study simulations, the substantial run time benefit utilizing parallel computation can easily be seen. 
 
 ## References
 
