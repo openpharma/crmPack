@@ -528,12 +528,6 @@ setMethod("summary",
       propAtTarget <- mean((toxAtDoses > target[1]) &
         (toxAtDoses < target[2]))
 
-      if (.hasSlot(object, "stop_report") == TRUE) {
-        stop_report <- object@stop_report
-      } else {
-        stop_report <- matrix()
-      }
-
       ## give back an object of class GeneralSimulationsSummary,
       ## for which we then define a print / plot method
       ret <-
@@ -552,7 +546,7 @@ setMethod("summary",
           propAtTarget = propAtTarget,
           doseGrid = doseGrid,
           placebo = object@data[[1]]@placebo,
-          stop_report = stop_report
+          stop_report = object@stop_report
         )
 
       return(ret)
@@ -846,9 +840,10 @@ setMethod("show",
 
       # report stopping rules
       logPercent <- colMeans(object@stop_report) * 100
-
+      # if at least one non-<NA> label is present write the initial stopping rule reporting header
       if (any(!is.na(names(logPercent)))) {
         cat("Stopping rules:\n \n")
+        # check for each stopping rule if it should be reported (non-<NA> column name - equals label)
         for (i in 1:ncol(object@stop_report)) {
           if (!is.na(names(logPercent)[i])) {
             cat(
