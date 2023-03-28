@@ -847,9 +847,7 @@ setMethod("show",
       # report stopping rules
       logPercent <- colMeans(object@stop_report) * 100
 
-
-
-      if (!is.null(names(logPercent))) {
+      if (any(!is.na(names(logPercent)))) {
         cat("Stopping rules:\n \n")
         for (i in 1:ncol(object@stop_report)) {
           if (!is.na(names(logPercent)[i])) {
