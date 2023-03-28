@@ -1072,7 +1072,8 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
-      stop_report <- matrix()
+      ## for dual simulations as it would fail in summary otherwise (for dual simulations reporting is not implemented)
+      stop_report <- matrix(TRUE)
 
       ## return the results in the DualSimulations class object
       ret <- DualSimulations(
@@ -4694,7 +4695,7 @@ setMethod("simulate",
       ## the reasons for stopping
       stopReasons <- lapply(resultList, "[[", "stop")
 
-      stop_report <- matrix()
+      stop_report <- matrix(TRUE)
       ## return the results in the Simulations class object
       ret <- DASimulations(
         data = dataList,
