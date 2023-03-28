@@ -4,12 +4,14 @@
 \alias{Simulations}
 \title{Initialization function for the "Simulations" class}
 \usage{
-Simulations(fit, stopReasons, ...)
+Simulations(fit, stopReasons, stop_report, ...)
 }
 \arguments{
 \item{fit}{see \code{\linkS4class{Simulations}}}
 
 \item{stopReasons}{see \code{\linkS4class{Simulations}}}
+
+\item{stop_report}{see \code{\linkS4class{Simulations}}}
 
 \item{\dots}{additional parameters from \code{\link{GeneralSimulations}}}
 }
