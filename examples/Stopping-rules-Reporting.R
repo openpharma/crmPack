@@ -31,7 +31,7 @@ mySize2 <- CohortSizeDLT(
 )
 mySize <- maxSize(mySize1, mySize2)
 
-myStopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "default")
+myStopping1 <- StoppingMinCohorts(nCohorts = 3, report_label = "")
 myStopping2 <- StoppingTargetProb(target = c(0.2, 0.35), prob = 0.5, report_label = "Stopping2")
 myStopping3 <- StoppingMinPatients(nPatients = 20, report_label = "Stopping3")
 
