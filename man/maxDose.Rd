@@ -4,13 +4,14 @@
 \alias{maxDose}
 \alias{maxDose,IncrementsRelative,Data-method}
 \alias{maxDose-IncrementsRelative}
+\alias{maxDose,IncrementsRelativeDLT,Data-method}
+\alias{maxDose-IncrementsRelativeDLT}
+\alias{maxDose,IncrementsRelativeParts,DataParts-method}
+\alias{maxDose,IncrementsRelativeDLTCurrent,Data-method}
 \alias{maxDose,IncrementsDoseLevels,Data-method}
 \alias{maxDose-IncrementsDoseLevels}
 \alias{maxDose,IncrementsHSRBeta,Data-method}
 \alias{maxDose-IncrementsHSRBeta}
-\alias{maxDose,IncrementsRelativeParts,DataParts-method}
-\alias{maxDose,IncrementsRelativeDLT,Data-method}
-\alias{maxDose,IncrementsRelativeDLTCurrent,Data-method}
 \alias{maxDose,IncrementsMin,Data-method}
 \title{Determine the Maximum Possible Next Dose}
 \usage{
@@ -18,15 +19,15 @@ maxDose(increments, data, ...)
 
 \S4method{maxDose}{IncrementsRelative,Data}(increments, data, ...)
 
-\S4method{maxDose}{IncrementsDoseLevels,Data}(increments, data, ...)
-
-\S4method{maxDose}{IncrementsHSRBeta,Data}(increments, data, ...)
+\S4method{maxDose}{IncrementsRelativeDLT,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsRelativeParts,DataParts}(increments, data, ...)
 
-\S4method{maxDose}{IncrementsRelativeDLT,Data}(increments, data, ...)
-
 \S4method{maxDose}{IncrementsRelativeDLTCurrent,Data}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsDoseLevels,Data}(increments, data, ...)
+
+\S4method{maxDose}{IncrementsHSRBeta,Data}(increments, data, ...)
 
 \S4method{maxDose}{IncrementsMin,Data}(increments, data, ...)
 }
@@ -53,21 +54,21 @@ Determine the maximum possible dose for escalation.
 \item \code{maxDose(increments = IncrementsRelative, data = Data)}: determine the maximum possible next dose based on
 relative increments.
 
+\item \code{maxDose(increments = IncrementsRelativeDLT, data = Data)}: determine the maximum possible next dose based on
+relative increments determined by DLTs so far.
+
+\item \code{maxDose(increments = IncrementsRelativeParts, data = DataParts)}: Determine the maximum possible next dose based on
+relative increments and part 1 and 2
+
+\item \code{maxDose(increments = IncrementsRelativeDLTCurrent, data = Data)}: Determine the maximum possible next dose based on
+relative increments determined by DLTs in the current cohort.
+
 \item \code{maxDose(increments = IncrementsDoseLevels, data = Data)}: determine the maximum possible next dose based on
 the number of dose grid levels. That is, the max dose is determined as
 the one which level is equal to: base dose level + level increment.
 The base dose level is the level of the last dose in grid or the level
 of the maximum dose applied, which is defined in \code{increments} object.
 Find out more in \code{\link{IncrementsDoseLevels}}.
-
-\item \code{maxDose(increments = IncrementsRelativeParts, data = DataParts)}: Determine the maximum possible next dose based on
-relative increments and part 1 and 2
-
-\item \code{maxDose(increments = IncrementsRelativeDLT, data = Data)}: Determine the maximum possible next dose based on
-relative increments determined by DLTs so far
-
-\item \code{maxDose(increments = IncrementsRelativeDLTCurrent, data = Data)}: Determine the maximum possible next dose based on
-relative increments determined by DLTs in the current cohort.
 
 \item \code{maxDose(increments = IncrementsMin, data = Data)}: Determine the maximum possible next dose based on
 multiple increment rules (taking the minimum across individual increments).
@@ -85,7 +86,7 @@ my_data <- Data(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
 )
 
-# Define a rule for dose increments which allows:
+# Define a rule for dose increments which allows for:
 #  - doubling the dose if the last dose was below 20,
 #  - increasing the dose by 33\% of the last dose, only if the last dose was
 #    above or equal to 20.
@@ -96,6 +97,67 @@ my_increments <- IncrementsRelative(
 
 # Based on the rule above, the maximum dose allowed is:
 my_next_max_dose <- maxDose(my_increments, data = my_data)
+# Example of usage for `IncrementsRelativeDLT` maxDose class.
+
+# Create the data.
+my_data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  ID = 1:8,
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
+)
+
+# Define a rule for dose increments which allows for:
+#  - doubling the dose if no DLTs were yet observed,
+#  - increasing the dose by 33\% if 1 or 2 DLTs were already observed,
+#  - increasing the dose by 20\% if at least 3 DLTs were already observed.
+my_increments <- IncrementsRelativeDLT(
+  dlt_intervals = c(0, 1, 3),
+  increments = c(1, 0.33, 0.2)
+)
+
+# Based on the rule above, the maximum dose allowed is:
+nextMaxDose <- maxDose(my_increments, data = my_data)
+
+# Create an object of class 'DataParts'.
+my_data <- DataParts(
+  x = c(0.1, 0.5, 1.5),
+  y = c(0, 0, 0),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
+  part = c(1L, 1L, 1L),
+  nextPart = 1L,
+  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
+)
+
+my_increments <- IncrementsRelativeParts(
+  dlt_start = 0,
+  clean_start = 1
+)
+
+next_max_dose <- maxDose(my_increments, data = my_data)
+
+# Create the data
+data <- Data(
+  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
+  y = c(0, 0, 0, 0, 0, 0, 1, 0),
+  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
+  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
+)
+
+# In this example we define a rule for dose increments which would allow:
+#   - doubling the dose if no DLTs were observed in current cohort
+#   - only increasing the dose by 1.33 if 1 or 2 DLTs were observed in current cohort
+#   - only increasing the dose by 1.2 if at least 3 DLTs were observed in current cohort
+my_increments <- IncrementsRelativeDLTCurrent(
+  dlt_intervals = c(0, 1, 3),
+  increments = c(1, 0.33, 0.2)
+)
+
+# Based on the rule above, we then calculate the maximum dose allowed
+next_max_dose <- maxDose(my_increments,
+  data = data
+)
 # Create the data.
 my_data <- Data(
   x = c(0.1, 0.5, 1.5, 3, 6, 8, 8, 8, 12, 12, 12, 16, 16, 16, 10, 10, 10),
@@ -138,68 +200,6 @@ my_increments <- IncrementsHSRBeta(target = 0.3, prob = 0.95)
 
 # Based on the rule above, we then calculate the maximum dose allowed.
 my_next_max_dose <- maxDose(my_increments, data = my_data)
-
-# Create an object of class 'DataParts'.
-my_data <- DataParts(
-  x = c(0.1, 0.5, 1.5),
-  y = c(0, 0, 0),
-  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2)),
-  part = c(1L, 1L, 1L),
-  nextPart = 1L,
-  part1Ladder = c(0.1, 0.5, 1.5, 3, 6, 10)
-)
-
-my_increments <- IncrementsRelativeParts(
-  dlt_start = 0,
-  clean_start = 1
-)
-
-next_max_dose <- maxDose(my_increments, data = my_data)
-# nolint start
-
-# Create the data
-data <- Data(x=c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-             y=c(0, 0, 0, 0, 0, 0, 1, 0),
-             cohort=c(0, 1, 2, 3, 4, 5, 5, 5),
-             doseGrid=
-               c(0.1, 0.5, 1.5, 3, 6,
-                 seq(from=10, to=80, by=2)))
-
-
-# In this example we define a rule for dose increments which would allow:
-#   - doubling the dose if no DLTs were yet observed
-#   - only increasing the dose by 1.33 if 1 or 2 DLTs were already observed
-#   - only increasing the dose by 1.2 if at least 3 DLTs were already observed
-myIncrements <- IncrementsRelativeDLT(dlt_intervals = c(0, 1, 3),
-                                      increments = c(1, 0.33, 0.2))
-
-# Based on the rule above, we then calculate the maximum dose allowed
-nextMaxDose <- maxDose(myIncrements,
-                       data=data)
-
-# nolint end
-
-# Create the data
-data <- Data(
-  x = c(0.1, 0.5, 1.5, 3, 6, 10, 10, 10),
-  y = c(0, 0, 0, 0, 0, 0, 1, 0),
-  cohort = c(0, 1, 2, 3, 4, 5, 5, 5),
-  doseGrid = c(0.1, 0.5, 1.5, 3, 6, seq(from = 10, to = 80, by = 2))
-)
-
-# In this example we define a rule for dose increments which would allow:
-#   - doubling the dose if no DLTs were observed in current cohort
-#   - only increasing the dose by 1.33 if 1 or 2 DLTs were observed in current cohort
-#   - only increasing the dose by 1.2 if at least 3 DLTs were observed in current cohort
-my_increments <- IncrementsRelativeDLTCurrent(
-  dlt_intervals = c(0, 1, 3),
-  increments = c(1, 0.33, 0.2)
-)
-
-# Based on the rule above, we then calculate the maximum dose allowed
-next_max_dose <- maxDose(my_increments,
-  data = data
-)
 # nolint start
 
 # Create the data

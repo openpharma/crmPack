@@ -322,6 +322,7 @@ reference:
       - stopTrial-StoppingMTDCV
       - maxDose
       - maxDose-IncrementsRelative
+      - maxDose-IncrementsRelativeDLT
       - maxDose-IncrementsDoseLevels
       - maxDose-IncrementsHSRBeta
   - title: Functions

@@ -1416,7 +1416,7 @@ setMethod(
     increments = "IncrementsRelative",
     data = "Data"
   ),
-  def = function(increments, data, ...) {
+  definition = function(increments, data, ...) {
     last_dose <- data@x[data@nObs]
     # Determine in which interval the `last_dose` is.
     assert_true(last_dose >= head(increments@intervals, 1))
@@ -1425,94 +1425,32 @@ setMethod(
   }
 )
 
-## IncrementsDoseLevels ----
+## IncrementsRelativeDLT ----
 
 #' @describeIn maxDose determine the maximum possible next dose based on
-#'   the number of dose grid levels. That is, the max dose is determined as
-#'   the one which level is equal to: base dose level + level increment.
-#'   The base dose level is the level of the last dose in grid or the level
-#'   of the maximum dose applied, which is defined in `increments` object.
-#'   Find out more in [`IncrementsDoseLevels`].
+#'   relative increments determined by DLTs so far.
 #'
-#' @aliases maxDose-IncrementsDoseLevels
+#' @aliases maxDose-IncrementsRelativeDLT
 #'
 #' @export
-#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
+#' @example examples/Rules-method-maxDose-IncrementsRelativeDLT.R
 #'
 setMethod(
   f = "maxDose",
   signature = signature(
-    increments = "IncrementsDoseLevels",
+    increments = "IncrementsRelativeDLT",
     data = "Data"
   ),
   definition = function(increments, data, ...) {
-    # Determine what is the basis level for increment,
-    # i.e. the last dose or the max dose applied.
-    basis_dose_level <- ifelse(
-      increments@basis_level == "last", data@xLevel[data@nObs], max(data@xLevel)
-    )
-    max_dose_level <- min(basis_dose_level + increments@levels, data@nGrid)
-    data@doseGrid[max_dose_level]
+    dlt_count <- sum(data@y)
+    # Determine in which interval the `dlt_count` is.
+    assert_true(dlt_count >= head(increments@dlt_intervals, 1))
+    dlt_count_interval <- findInterval(x = dlt_count, vec = increments@dlt_intervals)
+    (1 + increments@increments[dlt_count_interval]) * data@x[data@nObs]
   }
 )
 
 # nolint start
-
-# maxDose-IncrementsHSRBeta ----
-
-#' @rdname maxDose
-#'
-#' @description Determine the maximum possible dose for escalation.
-#'
-#' @aliases maxDose-IncrementsHSRBeta
-#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
-#' @export
-setMethod(
-  "maxDose",
-  signature = signature(
-    increments = "IncrementsHSRBeta",
-    data = "Data"
-  ),
-  definition = function(increments, data, ...) {
-    # Summary of observed data per dose level.
-    y <- factor(data@y, levels = c("0", "1"))
-    dlt_tab <- table(y, data@x)
-
-    # Ignore placebo if applied.
-    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
-      dlt_tab <- dlt_tab[, -1]
-    }
-
-    # Extract dose names as these get lost if only one dose available.
-    non_plcb_doses <- unique(sort(as.numeric(colnames(dlt_tab))))
-
-    # Toxicity probability per dose level.
-    x <- dlt_tab[2, ]
-    n <- apply(dlt_tab, 2, sum)
-    tox_prob <- pbeta(
-      increments@target,
-      x + increments@a,
-      n - x + increments@b,
-      lower.tail = FALSE
-    )
-
-    # Return the min toxic dose level or maximum dose level if no dose is toxic,
-    # while ignoring placebo.
-    dose_tox <- if (sum(tox_prob > increments@prob) > 0) {
-      min(non_plcb_doses[which(tox_prob > increments@prob)])
-    } else {
-      # Add small value to max dose, so that the max dose is always smaller.
-      max(data@doseGrid) + 0.01
-    }
-
-    # Determine the next maximum possible dose.
-    # In case that the first active dose is above probability threshold,
-    # the first active dose is reported as maximum. I.e. in case that placebo is used,
-    # the second dose is reported. Please note that this rule should be used together
-    # with the hard safety stopping rule to avoid inconsistent results.
-    max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
-  }
-)
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments, with special rules for
@@ -1577,45 +1515,6 @@ setMethod("maxDose",
     }
 )
 
-
-## --------------------------------------------------
-## The maximum allowable relative increments in terms of DLTs
-## --------------------------------------------------
-
-##' @describeIn maxDose Determine the maximum possible next dose based on
-##' relative increments determined by DLTs so far
-##'
-##' @example examples/Rules-method-maxDose-IncrementsRelativeDLT.R
-setMethod("maxDose",
-  signature =
-    signature(
-      increments = "IncrementsRelativeDLT",
-      data = "Data"
-    ),
-  def =
-    function(increments, data, ...) {
-      ## determine what was the last dose
-      lastDose <- tail(data@x, 1)
-
-      ## determine how many DLTs have occurred so far
-      dltHappened <- sum(data@y)
-
-      ## determine in which interval this is
-      interval <-
-        findInterval(
-          x = dltHappened,
-          vec = increments@dlt_intervals
-        )
-
-      ## so the maximum next dose is
-      ret <-
-        (1 + increments@increments[interval]) *
-          lastDose
-
-      return(ret)
-    }
-)
-
 ## --------------------------------------------------
 ## The maximum allowable relative increments in terms of DLTs
 ## --------------------------------------------------
@@ -1651,6 +1550,92 @@ setMethod("maxDose",
     }
 )
 
+## IncrementsDoseLevels ----
+
+#' @describeIn maxDose determine the maximum possible next dose based on
+#'   the number of dose grid levels. That is, the max dose is determined as
+#'   the one which level is equal to: base dose level + level increment.
+#'   The base dose level is the level of the last dose in grid or the level
+#'   of the maximum dose applied, which is defined in `increments` object.
+#'   Find out more in [`IncrementsDoseLevels`].
+#'
+#' @aliases maxDose-IncrementsDoseLevels
+#'
+#' @export
+#' @example examples/Rules-method-maxDose-IncrementsDoseLevels.R
+#'
+setMethod(
+  f = "maxDose",
+  signature = signature(
+    increments = "IncrementsDoseLevels",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    # Determine what is the basis level for increment,
+    # i.e. the last dose or the max dose applied.
+    basis_dose_level <- ifelse(
+      increments@basis_level == "last", data@xLevel[data@nObs], max(data@xLevel)
+    )
+    max_dose_level <- min(basis_dose_level + increments@levels, data@nGrid)
+    data@doseGrid[max_dose_level]
+  }
+)
+
+## IncrementsHSRBeta ----
+
+#' @rdname maxDose
+#'
+#' @description Determine the maximum possible dose for escalation.
+#'
+#' @aliases maxDose-IncrementsHSRBeta
+#' @example examples/Rules-method-maxDose-IncrementsHSRBeta.R
+#' @export
+setMethod(
+  "maxDose",
+  signature = signature(
+    increments = "IncrementsHSRBeta",
+    data = "Data"
+  ),
+  definition = function(increments, data, ...) {
+    # Summary of observed data per dose level.
+    y <- factor(data@y, levels = c("0", "1"))
+    dlt_tab <- table(y, data@x)
+
+    # Ignore placebo if applied.
+    if (data@placebo == TRUE & min(data@x) == data@doseGrid[1]) {
+      dlt_tab <- dlt_tab[, -1]
+    }
+
+    # Extract dose names as these get lost if only one dose available.
+    non_plcb_doses <- unique(sort(as.numeric(colnames(dlt_tab))))
+
+    # Toxicity probability per dose level.
+    x <- dlt_tab[2, ]
+    n <- apply(dlt_tab, 2, sum)
+    tox_prob <- pbeta(
+      increments@target,
+      x + increments@a,
+      n - x + increments@b,
+      lower.tail = FALSE
+    )
+
+    # Return the min toxic dose level or maximum dose level if no dose is toxic,
+    # while ignoring placebo.
+    dose_tox <- if (sum(tox_prob > increments@prob) > 0) {
+      min(non_plcb_doses[which(tox_prob > increments@prob)])
+    } else {
+      # Add small value to max dose, so that the max dose is always smaller.
+      max(data@doseGrid) + 0.01
+    }
+
+    # Determine the next maximum possible dose.
+    # In case that the first active dose is above probability threshold,
+    # the first active dose is reported as maximum. I.e. in case that placebo is used,
+    # the second dose is reported. Please note that this rule should be used together
+    # with the hard safety stopping rule to avoid inconsistent results.
+    max(data@doseGrid[data@doseGrid < dose_tox], data@doseGrid[data@placebo + 1])
+  }
+)
 
 ## --------------------------------------------------
 ## The maximum allowable relative increments in terms of DLTs
@@ -1682,7 +1667,6 @@ setMethod("maxDose",
       return(ret)
     }
 )
-
 
 ## ============================================================
 
