@@ -743,10 +743,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot", {
   samples <- h_as_samples(
     list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
   )
-  nb_prob_mtd <- NextBestProbMTDLTE(
-    target = 0.3,
-    method = "min"
-  )
+  nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 90, samples, model, data)
   expect_identical(result$value, 75)
@@ -760,10 +757,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with 
   samples <- h_as_samples(
     list(alpha0 = c(-0.38, -0.13, 1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
   )
-  nb_prob_mtd <- NextBestProbMTDLTE(
-    target = 0.3,
-    method = "min"
-  )
+  nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, 40, samples, model, data)
   expect_identical(result$value, 25)
@@ -771,22 +765,6 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with 
   vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo", result$plot)
 })
 
-test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo and max option)", {
-  data <- h_get_data(placebo = TRUE)
-  model <- h_get_logistic_log_normal()
-  samples <- h_as_samples(
-    list(alpha0 = c(-0.38, -0.13, 1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
-  )
-  nb_prob_mtd <- NextBestProbMTDLTE(
-    target = 0.3,
-    method = "max"
-  )
-
-  result <- nextBest(nb_prob_mtd, 101, samples, model, data)
-  expect_identical(result$value, 25)
-  expect_snapshot(result$allocation)
-  vdiffr::expect_doppelganger("Plot of nextBest-NextBestProbMTDLTE with placebo and max option", result$plot)
-})
 
 test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no doselimit)", {
   data <- h_get_data(placebo = FALSE)
@@ -794,10 +772,7 @@ test_that("nextBest-NextBestProbMTDLTE returns correct next dose and plot (no do
   samples <- h_as_samples(
     list(alpha0 = c(-2.38, -2.13, -1.43, -2.57), alpha1 = c(1.67, 1.3, 1.77, 2.51))
   )
-  nb_prob_mtd <- NextBestProbMTDLTE(
-    target = 0.3,
-    method = "min"
-  )
+  nb_prob_mtd <- NextBestProbMTDLTE(target = 0.3)
 
   result <- nextBest(nb_prob_mtd, Inf, samples, model, data)
   expect_identical(result$value, 125)

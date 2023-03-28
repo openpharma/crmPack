@@ -496,24 +496,6 @@ test_that("v_next_best_prob_mtd_lte returns message for non-valid target", {
   expect_equal(v_next_best_prob_mtd_lte(object), err_msg)
 })
 
-test_that("v_next_best_prob_mtd_lte returns message for non-valid method", {
-  object <- NextBestProbMTDLTE(0.3)
-
-  # Changing `method` so that it has many arguments.
-  object@method <- c("min", "max")
-  expect_equal(
-    v_next_best_prob_mtd_lte(object),
-    "method must be a string equal either to min or max"
-  )
-
-  # Changing `method` to an invalid method.
-  object@method <- "xyz"
-  expect_equal(
-    v_next_best_prob_mtd_lte(object),
-    "method must be a string equal either to min or max"
-  )
-})
-
 ## v_next_best_prob_mtd_min_dist ----
 
 test_that("v_next_best_prob_mtd_min_dist passes for valid object", {

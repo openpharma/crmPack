@@ -204,10 +204,6 @@ v_next_best_prob_mtd_lte <- function(object) {
     test_probability(object@target, bounds_closed = FALSE),
     "target must be a probability value from (0, 1) interval"
   )
-  v$check(
-    test_string(object@method, pattern = "^min$|^max$"),
-    "method must be a string equal either to min or max"
-  )
   v$result()
 }
 

@@ -1091,9 +1091,12 @@ setMethod(
     # The first element of the vector is the relative frequency that no
     # dose in the grid is below or equal to the target, the
     # second element that the 1st dose of the grid is the MTD, etc..
-    prob_mtd_lte <- table(factor(apply(prob_samples <= nextBest@target, 1, sum),
-      levels = 0:data@nGrid
-    )) / size(samples)
+    prob_mtd_lte <- prop.table(
+      table(factor(
+        rowSums(prob_samples <= nextBest@target),
+        levels = 0:data@nGrid
+      ))
+    )
 
     allocation_crit <- as.vector(prob_mtd_lte)
     names(allocation_crit) <- as.character(c(0, data@doseGrid))
@@ -1106,15 +1109,9 @@ setMethod(
     }
 
     # Handling of the portion that is not assigned to an active dose of
-    # the dose grid according to the selected method.
-    # If method = min: portion added to the minimum active dose of the dose grid.
-    # If method = max: portion added to the maximum active dose of the dose grid.
-    if (nextBest@method == "min") {
-      allocation_crit[2] <- sum(allocation_crit[1:2])
-    } else if (nextBest@method == "max") {
-      allocation_crit[length(allocation_crit)] <-
-        sum(allocation_crit[1], tail(allocation_crit, 1))
-    }
+    # the dose grid. The portion is added to the minimum active dose
+    # of the dose grid.
+    allocation_crit[2] <- sum(allocation_crit[1:2])
     allocation_crit <- allocation_crit[-1]
 
     # Determine the dose with the highest relative frequency.
@@ -1143,15 +1140,6 @@ setMethod(
       )
     }
 
-    doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
-      which(allocation_crit_dose == doselimit)
-    } else {
-      ifelse(test = data@placebo && (data@doseGrid[1] == next_dose),
-        yes = 1.5,
-        no = sum(allocation_crit_dose < doselimit) + 0.5
-      )
-    }
-
     p <- ggplot(
       data = plt_data,
       fill = "grey50",
@@ -1176,27 +1164,23 @@ setMethod(
       xlab("Dose") +
       ylab(paste("Allocation criterion [%]"))
 
-    if (nextBest@method == "max") {
-      p <- p +
-        geom_text(
-          mapping = aes(
-            x = Inf,
-            y = Inf
-          ),
-          label = paste("Method:", nextBest@method),
-          hjust = 1,
-          vjust = 1
-        )
-    }
-
     if (is.finite(doselimit)) {
+      doselimit_level <- if (sum(allocation_crit_dose == doselimit) > 0) {
+        which(allocation_crit_dose == doselimit)
+      } else {
+        ifelse(test = data@placebo && (data@doseGrid[1] == next_dose),
+               yes = 1.5,
+               no = sum(allocation_crit_dose < doselimit) + 0.5
+        )
+      }
+
       p <- p +
         geom_vline(
-          xintercept = doselimit_factor,
+          xintercept = doselimit_level,
           colour = "red", lwd = 1.1
         ) +
         geom_text(
-          data = data.frame(x = doselimit_factor),
+          data = data.frame(x = doselimit_level),
           aes(.data$x, 0),
           label = "Max",
           vjust = -0.5,
@@ -1255,18 +1239,16 @@ setMethod(
 
     # Determine which dose level has the minimum distance to target.
     dose_min_mtd_dist <- apply(
-      prob_samples, 1,
-      function(x) which.min(abs(x - nextBest@target))
+      prob_samples, 1, function(x) which.min(abs(x - nextBest@target))
     )
-    prob_mtd_min_dist <- sapply(
-      1:data@nGrid,
-      function(x) mean(dose_min_mtd_dist == x)
+
+    allocation_crit <- prop.table(
+      table(factor(dose_min_mtd_dist, levels = 1:data@nGrid))
     )
-    allocation_crit <- prob_mtd_min_dist
     names(allocation_crit) <- as.character(data@doseGrid)
 
-    # In case that placebo is used, placebo and the portion that is not assigned
-    # to any dose of the grid are merged.
+    # In case that placebo is used, placebo and the first non-placebo dose
+    # of the grid are merged.
     if (data@placebo) {
       allocation_crit[2] <- sum(allocation_crit[1:2])
       allocation_crit <- allocation_crit[-1]
@@ -1298,15 +1280,6 @@ setMethod(
       )
     }
 
-    doselimit_factor <- if (sum(allocation_crit_dose == doselimit) > 0) {
-      which(allocation_crit_dose == doselimit)
-    } else {
-      ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
-        yes = 1.5,
-        no = sum(allocation_crit_dose < doselimit) + 0.5
-      )
-    }
-
     p <- ggplot(
       data = plt_data,
       fill = "grey50",
@@ -1333,13 +1306,22 @@ setMethod(
 
 
     if (is.finite(doselimit)) {
+      doselimit_level <- if (any(allocation_crit_dose == doselimit)) {
+        which(allocation_crit_dose == doselimit)
+      } else {
+        ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
+               yes = 1.5,
+               no = sum(allocation_crit_dose < doselimit) + 0.5
+        )
+      }
+
       p <- p +
         geom_vline(
-          xintercept = doselimit_factor,
+          xintercept = doselimit_level,
           colour = "red", lwd = 1.1
         ) +
         geom_text(
-          data = data.frame(x = doselimit_factor),
+          data = data.frame(x = doselimit_level),
           aes(.data$x, 0),
           label = "Max",
           vjust = -0.5,

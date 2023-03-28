@@ -316,25 +316,6 @@
       275  275       0.00
       300  300       0.00
 
-# nextBest-NextBestProbMTDLTE returns correct next dose and plot (with placebo and max option)
-
-    Code
-      result$allocation
-    Output
-          dose allocation
-      25    25       0.50
-      50    50       0.00
-      75    75       0.25
-      100  100       0.00
-      125  125       0.00
-      150  150       0.00
-      175  175       0.00
-      200  200       0.00
-      225  225       0.00
-      250  250       0.00
-      275  275       0.00
-      300  300       0.25
-
 # nextBest-NextBestProbMTDLTE returns correct next dose and plot (no doselimit)
 
     Code

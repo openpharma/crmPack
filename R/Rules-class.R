@@ -693,28 +693,15 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #' is not considered in the calculation and removed from the dose grid for
 #' any calculations.
 #'
-#' @slot target (`numeric`)\cr the target toxicity probability
-#' @slot method (`string`)\cr the method to handle the cases where no dose
-#'   has a posterior toxicity probability below or equal to target. Possible
-#'   methods are `min` or `max`.
-#'   If `min` is specified, the cases where no dose
-#'   has a posterior toxicity probability below or equal to target are added
-#'   to the minimum dose and if max `max` is specified to the maximum dose.
-#'   Default is method is `min`.
+#' @slot target (`numeric`)\cr the target toxicity probability.
 #'
 #' @aliases NextBestProbMTDLTE
 #' @export
 #'
 .NextBestProbMTDLTE <- setClass(
   Class = "NextBestProbMTDLTE",
-  slots = c(
-    target = "numeric",
-    method = "character"
-  ),
-  prototype = prototype(
-    target = 0.3,
-    method = "min"
-  ),
+  slots = c(target = "numeric"),
+  prototype = prototype(target = 0.3),
   contains = "NextBest",
   validity = v_next_best_prob_mtd_lte
 )
@@ -724,16 +711,11 @@ NextBestMaxGainSamples <- function(prob_target_drt,
 #' @rdname NextBestProbMTDLTE-class
 #'
 #' @param target (`numeric`)\cr see slot definition.
-#' @param method (`string`)\cr see slot definition.
 #' @export
 #' @example examples/Rules-class-NextBestProbMTDLTE.R
 #'
-NextBestProbMTDLTE <- function(target,
-                               method = "min") {
-  .NextBestProbMTDLTE(
-    target = target,
-    method = method
-  )
+NextBestProbMTDLTE <- function(target) {
+  .NextBestProbMTDLTE(target = target)
 }
 
 # NextBestProbMTDMinDist ----
@@ -754,7 +736,7 @@ NextBestProbMTDLTE <- function(target,
 #' is not considered in the calculation and removed from the dose grid for
 #' any calculations.
 #'
-#' @slot target (`numeric`)\cr the target toxicity probability
+#' @slot target (`numeric`)\cr the target toxicity probability.
 #'
 #' @aliases NextBestProbMTDMinDist
 #' @export

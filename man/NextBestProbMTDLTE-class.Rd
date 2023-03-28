@@ -7,12 +7,10 @@
 \alias{NextBestProbMTDLTE}
 \title{\code{NextBestProbMTDLTE}}
 \usage{
-NextBestProbMTDLTE(target, method = "min")
+NextBestProbMTDLTE(target)
 }
 \arguments{
 \item{target}{(\code{numeric})\cr see slot definition.}
-
-\item{method}{(\code{string})\cr see slot definition.}
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -30,19 +28,12 @@ any calculations.
 \section{Slots}{
 
 \describe{
-\item{\code{target}}{(\code{numeric})\cr the target toxicity probability}
-
-\item{\code{method}}{(\code{string})\cr the method to handle the cases where no dose
-has a posterior toxicity probability below or equal to target. Possible
-methods are \code{min} or \code{max}.
-If \code{min} is specified, the cases where no dose
-has a posterior toxicity probability below or equal to target are added
-to the minimum dose and if max \code{max} is specified to the maximum dose.
-Default is method is \code{min}.}
+\item{\code{target}}{(\code{numeric})\cr the target toxicity probability.}
 }}
 
 \examples{
+
 # In the example below, the MTD is defined as the dose with the highest
-# probability of having a toxicity rate below 30\%
+# probability of having a toxicity rate below 30\%.
 next_best_prob_mtd_lte <- NextBestProbMTDLTE(target = 0.3)
 }
