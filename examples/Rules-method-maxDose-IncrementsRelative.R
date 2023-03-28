@@ -9,7 +9,7 @@ my_data <- Data(
   doseGrid = c(0.1, 0.5, 1.5, 3, 6, 8, seq(from = 10, to = 80, by = 2))
 )
 
-# Define a rule for dose increments which allows:
+# Define a rule for dose increments which allows for:
 #  - doubling the dose if the last dose was below 20,
 #  - increasing the dose by 33% of the last dose, only if the last dose was
 #    above or equal to 20.
