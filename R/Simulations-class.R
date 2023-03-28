@@ -149,7 +149,7 @@ GeneralSimulations <- function(data,
         )
 
         o$check(
-          identical(nrow(object@stop_report),nSims),
+          identical(nrow(object@stop_report), nSims),
           "stop_report must have same row count as data"
         )
 
