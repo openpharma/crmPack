@@ -1169,8 +1169,8 @@ setMethod(
         which(allocation_crit_dose == doselimit)
       } else {
         ifelse(test = data@placebo && (data@doseGrid[1] == next_dose),
-               yes = 1.5,
-               no = sum(allocation_crit_dose < doselimit) + 0.5
+          yes = 1.5,
+          no = sum(allocation_crit_dose < doselimit) + 0.5
         )
       }
 
@@ -1310,8 +1310,8 @@ setMethod(
         which(allocation_crit_dose == doselimit)
       } else {
         ifelse(test = data@placebo && data@doseGrid[1] == next_dose,
-               yes = 1.5,
-               no = sum(allocation_crit_dose < doselimit) + 0.5
+          yes = 1.5,
+          no = sum(allocation_crit_dose < doselimit) + 0.5
         )
       }
 

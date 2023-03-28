@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestProbMTDLTE` NextBest class.
 
 # Create the data.

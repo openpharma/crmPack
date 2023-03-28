@@ -1,4 +1,3 @@
-
 # Example of usage for `NextBestProbMTDMinDist` NextBest class.
 
 # Create the data.
