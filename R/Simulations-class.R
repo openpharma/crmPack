@@ -111,61 +111,51 @@ GeneralSimulations <- function(data,
 ##' @slot stop_report matrix of stopping rule outcomes
 ##' @export
 ##' @keywords classes
-.Simulations <-
-  setClass(
-    Class = "Simulations",
-    representation(
-      fit = "list",
-      stopReasons = "list",
-      stop_report = "matrix"
-    ),
-    ## note: this prototype is put together with the prototype
-    ## for GeneralSimulations
-    prototype(
-      fit =
-        list(
-          c(0.1, 0.2),
-          c(0.1, 0.2)
-        ),
-      stopReasons =
-        list("A", "A"),
-      stop_report =
-        matrix(TRUE)
-    ),
-    contains = "GeneralSimulations",
-    validity =
-      function(object) {
-        o <- Validate()
+.Simulations <- setClass(
+  Class = "Simulations",
+  slots = c(
+    fit = "list",
+    stopReasons = "list",
+    stop_report = "matrix"
+  ),
+  prototype = prototype(
+    fit = list(c(0.1, 0.2), c(0.1, 0.2)),
+    stopReasons = list("A", "A"),
+    stop_report = matrix(TRUE, nrow = 2)
+  ),
+  contains = "GeneralSimulations",
+  validity = function(object) {
+    nSims <- length(object@data)
+    o <- Validate()
 
-        nSims <- length(object@data)
+    o$check(
+      identical(length(object@fit), nSims),
+      "fit must have same length as data"
+    )
 
-        o$check(
-          identical(length(object@fit), nSims),
-          "fit must have same length as data"
-        )
-        o$check(
-          identical(length(object@stopReasons), nSims),
-          "stopReasons must have same length as data"
-        )
+    o$check(
+      identical(length(object@stopReasons), nSims),
+      "stopReasons must have same length as data"
+    )
 
-        o$check(
-          identical(nrow(object@stop_report), nSims),
-          "stop_report must have same row count as data"
-        )
+    o$check(
+      identical(nrow(object@stop_report), nSims),
+      "stop_report must have same row count as data"
+    )
 
-        o$check(
-          !any(is.na(object@stop_report)),
-          "stop_report must not contain NA values"
-        )
+    o$check(
+      !any(is.na(object@stop_report)),
+      "stop_report must not contain NA values"
+    )
 
-        o$check(
-          is.logical(object@stop_report),
-          "stop_report must be a matrix of class logical"
-        )
+    o$check(
+      is.logical(object@stop_report),
+      "stop_report must be a matrix of class logical"
+    )
 
-        o$result()
-      }
-  )
+    o$result()
+  }
+)
 validObject(.Simulations())
 
 
