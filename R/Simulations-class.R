@@ -148,6 +148,21 @@ GeneralSimulations <- function(data,
           "stopReasons must have same length as data"
         )
 
+        o$check(
+          identical(nrow(object@stop_report),nSims),
+          "stop_report must have same row count as data"
+        )
+
+        o$check(
+          !any(is.na(object@stop_report)),
+          "stop_report must not contain NA values"
+        )
+
+        o$check(
+          is.logical(object@stop_report),
+          "stop_report must be a matrix of class logical"
+        )
+
         o$result()
       }
   )
