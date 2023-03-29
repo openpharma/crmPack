@@ -1155,32 +1155,29 @@ setMethod(
     data = "DataParts"
   ),
   definition = function(increments, data, ...) {
+    all_in_part1 <- all(data@part == 1L)
+    incrmnt <- if (all_in_part1) {
+      part2_started <- data@nextPart == 2L
+      if (part2_started) {
+        any_dlt <- any(data@y == 1L)
+        if (any_dlt) {
+          increments@dlt_start
+        } else if (increments@clean_start <= 0L) {
+          increments@clean_start
+        }
+      } else {
+        1L
+      }
+    }
 
-    # If there are already cohorts belonging to part 2.
-    if (any(data@part == 2L)) {
+    if (is.null(incrmnt)) {
       callNextMethod(increments, data, ...)
     } else {
-      # Maximum dose level so far.
       max_dose_lev_part1 <- matchTolerance(max(data@x), data@part1Ladder)
-
-      # Determine the next maximum dose.
-      if (data@nextPart == 1L) {
-        # If still in part 1, then make one step further on the part 1 ladder.
-        data@part1Ladder[max_dose_lev_part1 + 1L]
-      } else {
-        # Otherwise (i.e. the next cohort will start part 2).
-        if (any(data@y == 1L)) {
-          # Any DLTs so far?
-          data@part1Ladder[max_dose_lev_part1 + increments@dlt_start]
-        } else {
-          if (increments@clean_start > 0) {
-            # Part 2 to be started higher than `max_dose_lev_part1`, then use the usual increments.
-            callNextMethod(increments, data, ...)
-          } else {
-            data@part1Ladder[max_dose_lev_part1 + increments@clean_start]
-          }
-        }
-      }
+      new_max_dose_level <- max_dose_lev_part1 + incrmnt
+      assert_true(new_max_dose_level >= 0L)
+      assert_true(new_max_dose_level <= length(data@part1Ladder))
+      data@part1Ladder[new_max_dose_level]
     }
   }
 )
