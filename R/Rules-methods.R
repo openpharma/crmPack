@@ -1106,7 +1106,7 @@ setMethod(
   ),
   definition = function(increments, data, ...) {
     last_dose <- data@x[data@nObs]
-    # Determine in which interval the `last_dose` is.
+    # Determine in which interval the `last_dose`is.
     assert_true(last_dose >= head(increments@intervals, 1))
     last_dose_interval <- findInterval(x = last_dose, vec = increments@intervals)
     (1 + increments@increments[last_dose_interval]) * last_dose
